@@ -28,7 +28,7 @@
     "jvectormap": "^2.0.4",
     "laravel-mix": "^2.0",
     "less": "^2.7.3",
-    "less-loader": "^4.1.0",
+    "less-loader": "^5.0.0",
     "lodash": "^4.17.10",
     "popper.js": "^1.12",
     "vue": "^2.5.7"
