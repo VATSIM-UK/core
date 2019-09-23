@@ -15,7 +15,7 @@
     "heroku-postbuild": "node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "dependencies": {
-    "admin-lte": "2.3.11",
+    "admin-lte": "2.4.18",
     "axios": "^0.19",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.7",
@@ -27,7 +27,7 @@
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
     "laravel-mix": "^2.0",
-    "less": "^2.7.3",
+    "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "lodash": "^4.17.10",
     "popper.js": "^1.12",
