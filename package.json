@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "admin-lte": "2.3.11",
-    "axios": "^0.18",
+    "axios": "^0.19",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.7",
     "bootstrap-tour": "^0.12.0",
