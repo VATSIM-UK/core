@@ -54,7 +54,7 @@
     "watson/rememberable": "2.0.3"
   },
   "require-dev": {
-    "codedungeon/phpunit-result-printer": "^0.23.4",
+    "codedungeon/phpunit-result-printer": "^0.26.1",
     "filp/whoops": "~2.0",
     "fzaninotto/faker": "~1.8",
     "laracasts/generators": "^1.1",

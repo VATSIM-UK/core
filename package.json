@@ -22,7 +22,7 @@
     "bootstrap-tour": "^0.12.0",
     "cross-env": "^6.0.0",
     "font-awesome": "^4.7.0",
-    "ionicons": "^3.0.0",
+    "ionicons": "^4.6.3",
     "jquery": "^3.3.1",
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
