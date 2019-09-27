@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7852c0971816a22af9f0e120a55e2de1",
+    "content-hash": "ad41d50dfdc465b2a162bfb715536b23",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -3451,23 +3451,27 @@
         },
         {
             "name": "planetteamspeak/ts3-php-framework",
-            "version": "1.1.28",
+            "version": "1.1.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/planetteamspeak/ts3phpframework.git",
-                "reference": "6af8373f26ddbc35a3fff2fc2aba2df2e307463f"
+                "reference": "fb08150b1785bfd0c135f9a337d23be42344b46c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/planetteamspeak/ts3phpframework/zipball/6af8373f26ddbc35a3fff2fc2aba2df2e307463f",
-                "reference": "6af8373f26ddbc35a3fff2fc2aba2df2e307463f",
+                "url": "https://api.github.com/repos/planetteamspeak/ts3phpframework/zipball/fb08150b1785bfd0c135f9a337d23be42344b46c",
+                "reference": "fb08150b1785bfd0c135f9a337d23be42344b46c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "5.7.*"
+                "friendsofphp/php-cs-fixer": "^2.0.0",
+                "phpunit/phpunit": "^4.8.35 || ^5.4.3 || ^6.0 || ^7.0",
+                "react/socket": "^0.8.5",
+                "satooshi/php-coveralls": "^1.1 || ^2.0",
+                "symfony/yaml": "~2.1|~3.0|~4.0"
             },
             "type": "library",
             "autoload": {
@@ -3497,7 +3501,7 @@
                 "teamspeak",
                 "ts3"
             ],
-            "time": "2017-12-06T16:53:01+00:00"
+            "time": "2018-08-03T11:46:37+00:00"
         },
         {
             "name": "predis/predis",
