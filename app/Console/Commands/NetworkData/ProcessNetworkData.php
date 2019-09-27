@@ -61,7 +61,7 @@ class ProcessNetworkData extends Command
         $this->processATC();
         $this->processPilots();
         event(new NetworkDataParsed());
-        Atc::flushCache();
+        //Atc::flushCache();
     }
 
     /**
