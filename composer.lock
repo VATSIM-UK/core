@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c1237882753a5f10cc777979fc460f21",
+    "content-hash": "7852c0971816a22af9f0e120a55e2de1",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -6023,33 +6023,23 @@
             "time": "2019-08-20T14:27:59+00:00"
         },
         {
-            "name": "symfony/dom-crawler",
-            "version": "v4.3.4",
+            "name": "watson/rememberable",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "cc686552948d627528c0e2e759186dff67c2610e"
+                "url": "https://github.com/dwightwatson/rememberable.git",
+                "reference": "e8fa80242eab6de2a6f418a98c727c80832c643a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/cc686552948d627528c0e2e759186dff67c2610e",
-                "reference": "cc686552948d627528c0e2e759186dff67c2610e",
+                "url": "https://api.github.com/repos/dwightwatson/rememberable/zipball/e8fa80242eab6de2a6f418a98c727c80832c643a",
+                "reference": "e8fa80242eab6de2a6f418a98c727c80832c643a",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3",
-                "symfony/polyfill-ctype": "~1.8",
-                "symfony/polyfill-mbstring": "~1.0"
-            },
-            "conflict": {
-                "masterminds/html5": "<2.6"
-            },
-            "require-dev": {
-                "masterminds/html5": "^2.6",
-                "symfony/css-selector": "~3.4|~4.0"
-            },
-            "suggest": {
-                "symfony/css-selector": ""
+                "illuminate/database": "^5.0|^6.0",
+                "illuminate/support": "^5.0|^6.0",
+                "php": ">=5.4.0"
             },
             "type": "library",
             "extra": {
@@ -6079,9 +6069,14 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony DomCrawler Component",
-            "homepage": "https://symfony.com",
-            "time": "2019-08-26T08:26:39+00:00"
+            "description": "Query caching for Laravel 5",
+            "keywords": [
+                "caching",
+                "eloquent",
+                "laravel",
+                "remember"
+            ],
+            "time": "2019-09-03T17:20:31+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
