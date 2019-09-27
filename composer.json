@@ -51,7 +51,7 @@
     "vatsim/sso": "dev-develop#7579e9f492d84f04bfd30df41f0073b3d7a01527",
     "vatsim/xml": "dev-master",
     "vluzrmos/slack-api": "dev-master",
-    "watson/rememberable": "2.0.3"
+    "watson/rememberable": "3.1.0"
   },
   "require-dev": {
     "codedungeon/phpunit-result-printer": "^0.26.1",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca09ff86105bc10a925e8f1e56a5e2ff",
+    "content-hash": "7852c0971816a22af9f0e120a55e2de1",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -6173,26 +6173,22 @@
         },
         {
             "name": "watson/rememberable",
-            "version": "2.0.3",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dwightwatson/rememberable.git",
-                "reference": "3e07db60fe86bc471a11589fb06b60bd0e59de71"
+                "reference": "e8fa80242eab6de2a6f418a98c727c80832c643a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dwightwatson/rememberable/zipball/3e07db60fe86bc471a11589fb06b60bd0e59de71",
-                "reference": "3e07db60fe86bc471a11589fb06b60bd0e59de71",
+                "url": "https://api.github.com/repos/dwightwatson/rememberable/zipball/e8fa80242eab6de2a6f418a98c727c80832c643a",
+                "reference": "e8fa80242eab6de2a6f418a98c727c80832c643a",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "~5.0",
-                "illuminate/support": "~5.0",
+                "illuminate/database": "^5.0|^6.0",
+                "illuminate/support": "^5.0|^6.0",
                 "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "0.9.*",
-                "phpunit/phpunit": "4.2.*"
             },
             "type": "library",
             "autoload": {
@@ -6217,7 +6213,7 @@
                 "laravel",
                 "remember"
             ],
-            "time": "2017-08-24T12:27:32+00:00"
+            "time": "2019-09-03T17:20:31+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",
