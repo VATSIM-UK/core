@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Site;
 use App\Models\Mship\State as State;
 use App\Repositories\Cts\BookingRepository;
 use App\Repositories\Cts\EventRepository;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Illuminate\Support\Facades\Cache as Cache;
 use Illuminate\Support\Facades\DB as DB;
 
@@ -26,8 +25,9 @@ class HomePageController extends \App\Http\Controllers\BaseController
             $html = file_get_contents('https://cts.vatsim.uk/extras/next_event.php');
 
             return $this->getHTMLByID('next', $html);
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
+        } catch (\HttpRequestException $e) {
+            // CTS likely unavailable.
+            return null;
         }
     }
 
