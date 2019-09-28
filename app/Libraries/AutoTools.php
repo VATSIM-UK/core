@@ -51,15 +51,16 @@ class AutoTools
                 'cid', 'rating_atc', 'rating_pilot',
                 'name_first', 'name_last', 'email',
                 'age_band', 'city', 'country', 'experience',
-                'unknown', 'reg_date', 'region', 'division',
+                'unknown', 'reg_date', 'region', 'division', 'unknown'
             ];
-            $results = $reader->fetchAssoc($keys);
 
-            $memberCollection = collect();
+            $data = [];
 
-            foreach ($results as $r) {
-                $memberCollection->push($r);
+            foreach ($reader->getRecords() as $r) {
+                $data .= array_combine($keys, $r); // Throwing exception due to bad data (likely that a line doesn't have all of the information required...
             }
+
+            $memberCollection = collect($data);
 
             return $memberCollection;
         });
