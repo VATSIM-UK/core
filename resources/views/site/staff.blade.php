@@ -88,7 +88,7 @@
                              width=50px
                              class="img-responsive center-block profile-picture"/>
                         <p class="text-center">Loui Ringer</p>
-                        
+
                         <h4>Marketing Team</h4>
                         <table class="table">
                             <tr>
@@ -118,6 +118,12 @@
                         <h4>Web Services Team</h4>
                         <table class="table">
                             <tr>
+                                <td>Web Services Manager<br/>
+                                    Developer
+                                </td>
+                                <td>Callum Axon</td>
+                            </tr>
+                            <tr>
                                 <td>System Administrator</td>
                                 <td>Nathan Davies</td>
                             </tr>
@@ -130,10 +136,6 @@
                                 <td>Andy Ford</td>
                             </tr>
                             <tr>
-                                <td>Developer</td>
-                                <td>Callum Axon</td>
-                            </tr>
-                            <tr>
                                 <td>Support</td>
                                 <td>George Barlow</td>
                             </tr>
@@ -142,7 +144,7 @@
                 </div>
             </div>
 
-            
+
         </div>
         <!-- End Row One -->
     </div>
@@ -224,7 +226,7 @@
                                 <tr>
                                     <td>TG Instructor (TG2)</td>
                                     <td>George Peppard</td>
-                                </tr>  
+                                </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
                                     <td>James Yuen</td>
@@ -248,7 +250,7 @@
                                     <td>Development Flight Instructor</td>
                                     <td>Tom Sirett</td>
                                 </tr>
-                             </table>   
+                             </table>
 
                         </div>
                     </div>
