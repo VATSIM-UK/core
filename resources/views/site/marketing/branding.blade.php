@@ -166,10 +166,11 @@
                 <ul>
                     <li>
                         Headers use Alegre Sans - <a href="http://www.dafont.com/alegre-sans-nc.font"
-                                                     rel="external nofollow" target="_blank">Download</a>;
+                                                     rel="external nofollow" target="_blank">Download</a>
                     </li>
                     <li>
-                        All other text use Calibri (default font included with windows).
+                        All other content should use DIN Alternate Regular - <a href="http://fontsgeek.com/fonts/DIN-Alternate-Regular" 
+                                                                                rel="external nofollow" target="_blank">Download</a>
                     </li>
                 </ul>
 
