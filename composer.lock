@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad41d50dfdc465b2a162bfb715536b23",
+    "content-hash": "f3ef8f2ea17c160313cc7101d060905e",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -6135,16 +6135,16 @@
         },
         {
             "name": "watson/rememberable",
-            "version": "3.1.0",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dwightwatson/rememberable.git",
-                "reference": "e8fa80242eab6de2a6f418a98c727c80832c643a"
+                "reference": "328f5a56b21a480f1fa3e579ea7401bfe2903f25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dwightwatson/rememberable/zipball/e8fa80242eab6de2a6f418a98c727c80832c643a",
-                "reference": "e8fa80242eab6de2a6f418a98c727c80832c643a",
+                "url": "https://api.github.com/repos/dwightwatson/rememberable/zipball/328f5a56b21a480f1fa3e579ea7401bfe2903f25",
+                "reference": "328f5a56b21a480f1fa3e579ea7401bfe2903f25",
                 "shasum": ""
             },
             "require": {
@@ -6175,7 +6175,7 @@
                 "laravel",
                 "remember"
             ],
-            "time": "2019-09-03T17:20:31+00:00"
+            "time": "2019-10-02T23:37:57+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",
