@@ -4152,16 +4152,16 @@
         },
         {
             "name": "spatie/laravel-cookie-consent",
-            "version": "2.9.0",
+            "version": "2.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-cookie-consent.git",
-                "reference": "1ed1ec190c309bb4978db91b9597c692dab3308e"
+                "reference": "03f4e69dd547bc8ac46334327bedae74da133bfb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-cookie-consent/zipball/1ed1ec190c309bb4978db91b9597c692dab3308e",
-                "reference": "1ed1ec190c309bb4978db91b9597c692dab3308e",
+                "url": "https://api.github.com/repos/spatie/laravel-cookie-consent/zipball/03f4e69dd547bc8ac46334327bedae74da133bfb",
+                "reference": "03f4e69dd547bc8ac46334327bedae74da133bfb",
                 "shasum": ""
             },
             "require": {
@@ -4216,7 +4216,7 @@
                 "law",
                 "spatie"
             ],
-            "time": "2019-09-04T06:48:11+00:00"
+            "time": "2019-10-02T09:36:22+00:00"
         },
         {
             "name": "spatie/laravel-permission",
