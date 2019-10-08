@@ -41,7 +41,7 @@
     "league/csv": "^9.3",
     "maatwebsite/excel": "~2.1.0",
     "malahierba-lab/public-id": "dev-master",
-    "planetteamspeak/ts3-php-framework": "1.1.28",
+    "planetteamspeak/ts3-php-framework": "1.1.33",
     "predis/predis": "^1.1",
     "pusher/pusher-php-server": "~4.0",
     "skymeyer/vatsimphp": "1.0.*",
@@ -50,7 +50,7 @@
     "vatsim/sso": "dev-develop#7579e9f492d84f04bfd30df41f0073b3d7a01527",
     "vatsim/xml": "dev-master",
     "vluzrmos/slack-api": "dev-master",
-    "watson/rememberable": "3.1.0"
+    "watson/rememberable": "3.2.1"
   },
   "require-dev": {
     "codedungeon/phpunit-result-printer": "^0.26.1",
