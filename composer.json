@@ -34,7 +34,6 @@
     "cobaltgrid/vatsim-stand-status": "^1.0",
     "doctrine/dbal": "~2.5",
     "guzzlehttp/guzzle": "~6.0",
-    "laravel/browser-kit-testing": "^1.0",
     "laravel/framework": "5.8.*",
     "laravel/passport": "^7.0",
     "laravel/tinker": "~1.0",
@@ -42,16 +41,16 @@
     "league/csv": "^8.0",
     "maatwebsite/excel": "~3.1.17",
     "malahierba-lab/public-id": "dev-master",
-    "planetteamspeak/ts3-php-framework": "1.1.28",
+    "planetteamspeak/ts3-php-framework": "1.1.33",
     "predis/predis": "^1.1",
-    "pusher/pusher-php-server": "~3.0",
+    "pusher/pusher-php-server": "~4.0",
     "skymeyer/vatsimphp": "1.0.*",
     "spatie/laravel-cookie-consent": "^2.4",
     "spatie/laravel-permission": "^2.23",
     "vatsim/sso": "dev-develop#7579e9f492d84f04bfd30df41f0073b3d7a01527",
     "vatsim/xml": "dev-master",
     "vluzrmos/slack-api": "dev-master",
-    "watson/rememberable": "2.0.3"
+    "watson/rememberable": "3.2.1"
   },
   "require-dev": {
     "codedungeon/phpunit-result-printer": "^0.26.1",
@@ -60,7 +59,7 @@
     "laracasts/generators": "^1.1",
     "laravel/homestead": "^9.1.0",
     "laravel/telescope": "^2.0",
-    "mockery/mockery": "0.9.*",
+    "mockery/mockery": "1.2.*",
     "phpunit/phpunit": "^7.0",
     "symfony/css-selector": "^4.0",
     "symfony/dom-crawler": "^4.0"
