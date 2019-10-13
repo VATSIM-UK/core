@@ -53,4 +53,16 @@ class ConfigTest extends TestCase
         $this->assertNotNull(Config::find('active'));
         $this->assertNull(Config::find('inactive'));
     }
+
+    /** @test */
+    public function theHelperFunctionReturnsTheValue()
+    {
+        Config::forceCreate([
+            'key'    => 'key',
+            'value'  => 'value',
+            'active' => 1
+        ]);
+
+        $this->assertEquals(sys_config('key'), 'value');
+    }
 }
