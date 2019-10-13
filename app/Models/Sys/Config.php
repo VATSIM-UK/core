@@ -9,6 +9,7 @@ class Config extends Model
 {
     protected $table = 'sys_config';
     protected $primaryKey = 'key';
+    protected $fillable = ['value'];
     public $timestamps = false;
 
     protected static function boot()
