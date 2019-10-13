@@ -217,3 +217,8 @@ function maskEmail($email)
 
     return "{$delimited[0]}@{$delimited[1]}";
 }
+
+function sys_config($key)
+{
+    return optional(\App\Models\Sys\Config::find($key))->value('value');
+}
