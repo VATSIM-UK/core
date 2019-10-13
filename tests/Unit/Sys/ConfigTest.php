@@ -12,6 +12,14 @@ class ConfigTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
+    public function itRespondsAppropriatelyToNoConfig()
+    {
+        $invalidKey = sys_config('does-not-exist');
+
+        $this->assertNull($invalidKey);
+    }
+
+    /** @test */
     public function itDoesNotAllowConfigKeysToBeCreated()
     {
         $this->expectException(QueryException::class);
