@@ -220,5 +220,11 @@ function maskEmail($email)
 
 function sys_config($key)
 {
-    return optional(\App\Models\Sys\Config::find($key))->value('value');
+    $cacheKey = 'sys_config_' . $key;
+
+    if (!cache($cacheKey)) {
+        cache([$cacheKey => \App\Models\Sys\Config::find($key)->value('value')], now()->addMinutes(10));
+    }
+
+    return cache($cacheKey);
 }
