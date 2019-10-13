@@ -32,7 +32,7 @@ class ConfigTest extends TestCase
             'active' => 1
         ]);
 
-        $this->assertNotNull(Config::find('key'));
+        $this->assertEquals(Config::find('key')->value('value'), 'value');
     }
 
     /** @test */
