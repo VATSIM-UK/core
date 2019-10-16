@@ -2,11 +2,7 @@
 
 namespace App\Console\Commands\ExternalServices;
 
-use App\Jobs\TGForumGroups\SyncPilots;
-use App\Jobs\TGForumGroups\SyncTG1;
-use App\Jobs\TGForumGroups\SyncTG2;
-use App\Jobs\TGForumGroups\SyncTGE;
-use App\Jobs\TGForumGroups\SyncTGNC;
+use App\Jobs\TGForumGroups\SyncTGMembersToForumGroups;
 use Illuminate\Console\Command;
 
 class SyncTGForumGroups extends Command
@@ -42,12 +38,11 @@ class SyncTGForumGroups extends Command
      */
     public function handle()
     {
-        SyncPilots::dispatch();
-        SyncTG1::dispatch();
-        SyncTG2::dispatch();
-        SyncTGE::dispatch();
-        SyncTGNC::dispatch();
-
-        $this->info('Done');
+        SyncTGMembersToForumGroups::dispatch(13, 2498); // Pilots
+        SyncTGMembersToForumGroups::dispatch(14, 2496); // TGNC
+        SyncTGMembersToForumGroups::dispatch(15, 2494); // TG1
+        SyncTGMembersToForumGroups::dispatch(16, 2495); // TG2
+        SyncTGMembersToForumGroups::dispatch(17, 2497); // TGE
+        SyncTGMembersToForumGroups::dispatch(12, 2499); // TG Heathrow
     }
 }
