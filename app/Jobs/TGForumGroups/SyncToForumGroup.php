@@ -3,6 +3,7 @@
 namespace App\Jobs\TGForumGroups;
 
 use Alawrence\Ipboard\Ipboard;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -31,13 +32,13 @@ class SyncToForumGroup implements ShouldQueue
     {
         $ipboard = new Ipboard();
 
-        require_once '/srv/www/community/init.php';
+        require_once config('services.community.init_file');
         require_once \IPS\ROOT_PATH . '/system/Db/Db.php';
 
         $members = \IPS\Db::i()->select('member_id', 'core_members', ['vatsim_cid=?', $this->cid]);
 
         if (count($members) != 1) {
-            Bugsnag::
+            Bugsnag::notifyException($members);
         }
 
         foreach ($members as $member) {
