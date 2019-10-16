@@ -2,7 +2,6 @@
 
 namespace App\Jobs\TGForumGroups;
 
-use Alawrence\Ipboard\Exceptions\IpboardMemberIdInvalid;
 use Alawrence\Ipboard\Ipboard;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -32,14 +31,13 @@ class SyncToForumGroup implements ShouldQueue
     {
         $ipboard = new Ipboard();
 
-        // Get the IP Board id based on the CID provided
-        // Need to think of a clever and clean way to get this...
-
-        $ipboardMemberId = 0;
+        require_once config('services.community.init_file');
+        require_once \IPS\ROOT_PATH . '/system/Member/Member.php';
 
         try {
-            $ipboardUser = $ipboard->getMemberById($ipboardMemberId);
-        } catch (IpboardMemberIdInvalid $e) {
+            $ipboardUser = \IPS\Member::load($this->cid, 'p.field_12');
+            $ipboardUser = $ipboard->getMemberById($ipboardUser->id);
+        } catch (\Exception $e) {
             //
         }
 
