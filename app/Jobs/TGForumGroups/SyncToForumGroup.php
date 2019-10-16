@@ -3,12 +3,12 @@
 namespace App\Jobs\TGForumGroups;
 
 use Alawrence\Ipboard\Ipboard;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 
 class SyncToForumGroup implements ShouldQueue
 {
@@ -38,12 +38,16 @@ class SyncToForumGroup implements ShouldQueue
         $members = \IPS\Db::i()->select('member_id', 'core_members', ['vatsim_cid=?', $this->cid]);
 
         if (count($members) != 1) {
-            Bugsnag::notifyException($members);
+            Log::info('Unable to sync TG Forum Groups for' . $this->cid);
         }
 
+        $ipboardUsers = [];
+
         foreach ($members as $member) {
-            $ipboardUser = $ipboard->getMemberById($member);
+            array_push($ipboardUsers, $member);
         }
+
+        $ipboardUser = $ipboard->getMemberById($ipboardUsers[0]);
 
         $currentPrimaryGroup = [$ipboardUser->primaryGroup->id];
         $currentSecondaryGroups = [];
