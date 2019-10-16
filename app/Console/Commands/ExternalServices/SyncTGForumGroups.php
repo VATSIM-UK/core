@@ -22,16 +22,6 @@ class SyncTGForumGroups extends Command
     protected $description = 'This command will sync members (of all types) of each TG into the relevant forum group.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
