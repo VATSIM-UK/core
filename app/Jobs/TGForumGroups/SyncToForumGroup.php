@@ -41,9 +41,13 @@ class SyncToForumGroup implements ShouldQueue
             Log::info('Unable to sync TG Forum Groups for' . $this->cid);
         }
 
+        $ipboardUsers = [];
+
         foreach ($members as $member) {
-            $ipboardUser = $ipboard->getMemberById($member);
+            array_push($ipboardUsers, $member);
         }
+
+        $ipboardUser = $ipboard->getMemberById($ipboardUsers[0]);
 
         $currentPrimaryGroup = [$ipboardUser->primaryGroup->id];
         $currentSecondaryGroups = [];
