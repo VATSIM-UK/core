@@ -31,14 +31,17 @@ class SyncToForumGroup implements ShouldQueue
     {
         $ipboard = new Ipboard();
 
-        require_once config('services.community.init_file');
-        require_once \IPS\ROOT_PATH . '/system/Member/Member.php';
+        require_once '/srv/www/community/init.php';
+        require_once \IPS\ROOT_PATH . '/system/Db/Db.php';
 
-        try {
-            $ipboardUser = \IPS\Member::load($this->cid, 'p.field_12');
-            $ipboardUser = $ipboard->getMemberById($ipboardUser->id);
-        } catch (\Exception $e) {
-            //
+        $members = \IPS\Db::i()->select('member_id', 'core_members', ['vatsim_cid=?', $this->cid]);
+
+        if (count($members) != 1) {
+            Bugsnag::
+        }
+
+        foreach ($members as $member) {
+            $ipboardUser = $ipboard->getMemberById($member);
         }
 
         $currentPrimaryGroup = [$ipboardUser->primaryGroup->id];
