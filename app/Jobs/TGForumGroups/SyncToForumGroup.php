@@ -33,42 +33,30 @@ class SyncToForumGroup implements ShouldQueue
         $ipboard = new Ipboard();
 
         // Get the IP Board id based on the CID provided
-//        require_once '/srv/www/community/init.php';
-//        require_once \IPS\ROOT_PATH . '/system/Db/Db.php';
-//
-//        $ipBoardMembers = \IPS\Db::i()->select(
-//            ['member_id', 'p.field_12'],
-//            'core_members',
-//            'p.field_12 = 1258635'
-//        );
-//
-//        $array = $ipBoardMembers->setKeyField('member_id')->setValueField('p.field_12');
+        // Need to think of a clever and clean way to get this...
 
         $ipboardMemberId = 0;
 
         try {
             $ipboardUser = $ipboard->getMemberById($ipboardMemberId);
         } catch (IpboardMemberIdInvalid $e) {
-            // What happens if we cannot find the member?
+            //
         }
 
-        // Get all existing secondary groups
+        $currentPrimaryGroup = [$ipboardUser->primaryGroup->id];
         $currentSecondaryGroups = [];
         foreach ($ipboardUser->secondaryGroups as $secondaryGroup) {
             array_push($currentSecondaryGroups, $secondaryGroup->id);
         }
-
-        // Get current primary group
-        $currentPrimaryGroup = [$ipboardUser->primaryGroup->id];
 
         // If they already have the group, don't do anything else
         if (in_array($this->forumGroup, $currentPrimaryGroup) || in_array($this->forumGroup, $currentSecondaryGroups)) {
             return;
         }
 
-        // If not, give them the group
+        // If they don't have the group, give it to them.
         $newSecondaryGroups = $currentSecondaryGroups;
         array_push($newSecondaryGroups, $this->forumGroup);
-        $ipboard->updateMember($ipboardMember->id, ['secondaryGroups' => $newSecondaryGroups]);
+        $ipboard->updateMember($ipboardUser->id, ['secondaryGroups' => $newSecondaryGroups]);
     }
 }
