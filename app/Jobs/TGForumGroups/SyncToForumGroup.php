@@ -69,7 +69,8 @@ class SyncToForumGroup implements ShouldQueue
         $this->assignSecondaryGroups($ipboardUser->id, $newSecondaryGroups);
     }
 
-    private function assignSecondaryGroups(int $ipboardUser, array $secondaryGroups) {
+    private function assignSecondaryGroups(int $ipboardUser, array $secondaryGroups)
+    {
         try {
             $client = new Client;
             $client->post(config('ipboard.api_url') . 'core/members/' . $ipboardUser . '?key=' . config('ipboard.api_key'), ['form_params' => [
