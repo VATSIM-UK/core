@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Bookings;
+namespace Tests\Unit\CTS;
 
 use App\Models\Cts\Booking;
 use App\Models\Cts\Event;
