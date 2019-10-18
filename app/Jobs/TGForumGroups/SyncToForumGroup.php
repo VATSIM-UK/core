@@ -3,6 +3,8 @@
 namespace App\Jobs\TGForumGroups;
 
 use Alawrence\Ipboard\Ipboard;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -63,6 +65,18 @@ class SyncToForumGroup implements ShouldQueue
         // If they don't have the group, give it to them.
         $newSecondaryGroups = $currentSecondaryGroups;
         array_push($newSecondaryGroups, $this->forumGroup);
-        $ipboard->updateMember($ipboardUser->id, ['secondaryGroups' => $newSecondaryGroups]);
+
+        $this->assignSecondaryGroups($ipboardUser->id, $newSecondaryGroups);
+    }
+
+    private function assignSecondaryGroups(int $ipboardUser, array $secondaryGroups) {
+        try {
+            $client = new Client;
+            $client->post(config('ipboard.api_url') . 'core/members/' . $ipboardUser . '?key=' . config('ipboard.api_key'), ['form_params' => [
+                'secondaryGroups' => $secondaryGroups
+            ]]);
+        } catch (ClientException $e) {
+            Log::info('Error trying to update the secondary groups for forum user id ' . $ipboardUser);
+        }
     }
 }
