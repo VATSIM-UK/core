@@ -2,6 +2,7 @@
 
 namespace App\Jobs\TGForumGroups;
 
+use App\Jobs\ExternalServices\IssueSecondaryForumGroup;
 use App\Repositories\Cts\MembershipRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -34,7 +35,7 @@ class SyncTGMembersToForumGroups implements ShouldQueue
         $members = $membershipRepository->getMembersOf($this->rtsId);
 
         foreach ($members as $member) {
-            SyncToForumGroup::dispatch($member->cid, $this->forumGroup);
+            IssueSecondaryForumGroup::dispatch($member->cid, $this->forumGroup);
         }
     }
 }

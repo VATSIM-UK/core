@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\TGForumGroups;
+namespace App\Jobs\ExternalServices;
 
 use Alawrence\Ipboard\Ipboard;
 use GuzzleHttp\Client;
@@ -12,7 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Log;
 
-class SyncToForumGroup implements ShouldQueue
+class IssueSecondaryForumGroup implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
