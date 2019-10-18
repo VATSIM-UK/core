@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\TGForumGroups;
+namespace App\Jobs\Cts;
 
 use App\Jobs\ExternalServices\IssueSecondaryForumGroup;
 use App\Repositories\Cts\MembershipRepository;

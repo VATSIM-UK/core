@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\ExternalServices;
 
-use App\Jobs\TGForumGroups\SyncTGMembersToForumGroups;
+use App\Jobs\Cts\SyncTGMembersToForumGroups;
 use Illuminate\Console\Command;
 
 class SyncTGForumGroups extends Command
