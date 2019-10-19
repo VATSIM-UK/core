@@ -38,7 +38,7 @@ class ValidationsController
     {
         $cacheKey = "validation_members_{$position->id}";
 
-        if(cache($cacheKey)) {
+        if (cache($cacheKey)) {
             return cache($cacheKey);
         }
 
