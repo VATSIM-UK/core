@@ -8,7 +8,6 @@ class ValidationPosition extends Model
 {
     protected $connection = 'cts';
     protected $table = 'validations_p';
-    protected $guarded = [];
 
     public $timestamps = false;
 
