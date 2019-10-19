@@ -2,10 +2,7 @@
 
 namespace App\Repositories\Cts;
 
-use App\Models\Cts\Member;
 use App\Models\Cts\ValidationPosition;
-use Carbon\Carbon;
-use Illuminate\Support\Collection;
 
 class ValidationPositionRepository
 {
@@ -21,8 +18,18 @@ class ValidationPositionRepository
 
     public function getValidatedMembersFor(ValidationPosition $validationPosition)
     {
-        return $validationPosition->members->map(function ($member) {
+        $cacheKey = "validation_members_{$validationPosition->id}";
+
+        if(cache($cacheKey)) {
+            return cache($cacheKey);
+        }
+
+        $members = $validationPosition->members->map(function ($member) {
             return ['id' => $member->cid, 'name' => $member->name];
         });
+
+        cache([$cacheKey, $members], now()->addMinutes(30));
+
+        return $members;
     }
 }
