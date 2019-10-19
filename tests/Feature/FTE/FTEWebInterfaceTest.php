@@ -93,7 +93,6 @@ class FTEWebInterfaceTest extends TestCase
     /** @test */
     public function testItLoadsTheExercise()
     {
-        $this->withoutExceptionHandling();
         $this->actingAs($this->user, 'web')
             ->get(route('fte.exercises', $this->exercise))
             ->assertSuccessful();
