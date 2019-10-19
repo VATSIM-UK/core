@@ -14,7 +14,7 @@ class ValidationsController
             return response()->json([
                 'status'  => '400',
                 'message' => 'No position was supplied.'
-            ],400);
+            ], 400);
         }
 
         $position = (new ValidationPositionRepository())->findByPosition($request->get('position'));
