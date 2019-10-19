@@ -26,7 +26,7 @@ class ValidationsController
             ])->setStatusCode(404);
         }
 
-        $validatedMembers = $positions->getValidatedMembersFor($position);
+        $validatedMembers = (new ValidationPositionRepository())->getValidatedMembersFor($position);
 
         return response()->json([
             $validatedMembers,
