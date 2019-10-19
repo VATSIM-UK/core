@@ -11,12 +11,12 @@ class ValidationPositionRepository
 {
     public function findByPositionId(int $id)
     {
-        return ValidationPosition::find($id);
+        return ValidationPosition::findOrFail($id);
     }
 
     public function findByPosition(string $position)
     {
-        return ValidationPosition::where('position', 'like', "%{$position}%")->first();
+        return ValidationPosition::where('position', 'like', "%{$position}%")->firstOrFail();
     }
 
     public function getValidatedMembersFor(ValidationPosition $validationPosition)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\CTS;
 
 use App\Repositories\Cts\ValidationPositionRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -17,9 +18,9 @@ class ValidationsController
             ], 400);
         }
 
-        $position = (new ValidationPositionRepository())->findByPosition($request->get('position'));
-
-        if (empty($position)) {
+        try {
+            $position = (new ValidationPositionRepository())->findByPosition($request->get('position'));
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status'  => '404',
                 'message' => 'Position could not be found.'
