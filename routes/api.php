@@ -6,7 +6,6 @@ Route::get('metar/{airportIcao}')->uses('Site\MetarController@get')->name('metar
 Route::group([
     'middleware' => 'api_auth'
 ], function () {
-
     Route::get('user')->uses('Api\OAuthUserController@view');
 
     // NETWORK DATA
