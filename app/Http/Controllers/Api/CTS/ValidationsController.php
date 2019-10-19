@@ -17,7 +17,7 @@ class ValidationsController
             ])->setStatusCode(400);
         }
 
-        $positions = new ValidationPositionRepository();
+        $position = (new ValidationPositionRepository())->findByPosition($request->get('position'));
         $position = $positions->findByPosition($request->get('position'));
 
         if (empty($position)) {
