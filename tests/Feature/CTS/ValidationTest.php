@@ -46,13 +46,13 @@ class ValidationTest extends TestCase
             ->assertStatus(200)
             ->assertExactJson([
                 [
+                    'position' => $position->position
+                ],
+                [
                     [
                         'id'   => $member->cid,
                         'name' => $member->name
                     ]
-                ],
-                [
-                    'position' => $position->position
                 ]
             ]);
     }

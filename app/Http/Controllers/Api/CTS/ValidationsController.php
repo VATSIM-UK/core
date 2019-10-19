@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\CTS;
 
+use App\Models\Cts\ValidationPosition;
 use App\Repositories\Cts\ValidationPositionRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -27,11 +28,24 @@ class ValidationsController
             ], 404);
         }
 
-        $validatedMembers = (new ValidationPositionRepository())->getValidatedMembersFor($position);
-
         return response()->json([
-            $validatedMembers,
             ['position' => $position->position],
+            $this->getValidatedMembers($position)
         ]);
+    }
+
+    private function getValidatedMembers(ValidationPosition $position)
+    {
+        $cacheKey = "validation_members_{$position->id}";
+
+        if(cache($cacheKey)) {
+            return cache($cacheKey);
+        }
+
+        $members = (new ValidationPositionRepository())->getValidatedMembersFor($position);
+
+        cache([$cacheKey, $members], now()->addMinutes(30));
+
+        return $members;
     }
 }

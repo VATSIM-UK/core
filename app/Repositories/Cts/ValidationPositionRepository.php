@@ -18,18 +18,8 @@ class ValidationPositionRepository
 
     public function getValidatedMembersFor(ValidationPosition $validationPosition)
     {
-        $cacheKey = "validation_members_{$validationPosition->id}";
-
-        if(cache($cacheKey)) {
-            return cache($cacheKey);
-        }
-
-        $members = $validationPosition->members->map(function ($member) {
+        return $validationPosition->members->map(function ($member) {
             return ['id' => $member->cid, 'name' => $member->name];
         });
-
-        cache([$cacheKey, $members], now()->addMinutes(30));
-
-        return $members;
     }
 }
