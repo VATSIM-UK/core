@@ -14,7 +14,7 @@ class ValidationsController
             return response()->json([
                 'status'  => '400',
                 'message' => 'No position was supplied.'
-            ])->setStatusCode(400);
+            ],400);
         }
 
         $position = (new ValidationPositionRepository())->findByPosition($request->get('position'));
@@ -23,7 +23,7 @@ class ValidationsController
             return response()->json([
                 'status'  => '404',
                 'message' => 'Position could not be found.'
-            ])->setStatusCode(404);
+            ], 404);
         }
 
         $validatedMembers = (new ValidationPositionRepository())->getValidatedMembersFor($position);
