@@ -1,5 +1,6 @@
 <?php
 
+Route::get('metar/{airportIcao}')->uses('Site\MetarController@get')->name('metar');
 
 Route::group([
     'middleware' => 'api_auth'
