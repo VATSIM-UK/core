@@ -21,20 +21,8 @@ class ValidationPositionRepository
 
     public function getValidatedMembersFor(ValidationPosition $validationPosition)
     {
-        return $this->formatValidatedMembers($validationPosition->members);
-    }
-
-    private function formatValidatedMembers($validatedMembers)
-    {
-        $formattedMembers = [];
-
-        foreach ($validatedMembers as $member) {
-            array_push($formattedMembers, [
-              'id' => $member->cid,
-              'name' => $member->name
-            ]);
-        }
-
-        return $formattedMembers;
+        return $validationPosition->members->map(function ($member) {
+            return ['id' => $member->cid, 'name' => $member->name];
+        });
     }
 }
