@@ -18,7 +18,6 @@ class ValidationsController
         }
 
         $position = (new ValidationPositionRepository())->findByPosition($request->get('position'));
-        $position = $positions->findByPosition($request->get('position'));
 
         if (empty($position)) {
             return response()->json([
