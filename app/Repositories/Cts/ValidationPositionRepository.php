@@ -20,7 +20,7 @@ class ValidationPositionRepository
     {
         $cacheKey = "validation_members_{$validationPosition->id}";
 
-        if(cache($cacheKey)) {
+        if (cache($cacheKey)) {
             return cache($cacheKey);
         }
 
