@@ -25,7 +25,7 @@ class ValidationTest extends TestCase
     /** @test */
     public function itReturns404WhenPositionDoesNotExist()
     {
-        $this->call('GET',  route('api.validations'), ['position' => 'EGKK'])
+        $this->call('GET', route('api.validations'), ['position' => 'EGKK'])
             ->assertStatus(404)
             ->assertJsonStructure([
                 'status', 'message'
@@ -42,7 +42,7 @@ class ValidationTest extends TestCase
             'position_id' => $position
         ]);
 
-        $this->call('GET',  route('api.validations'), ['position' => $position->position])
+        $this->call('GET', route('api.validations'), ['position' => $position->position])
             ->assertStatus(200)
             ->assertExactJson([
                 [
