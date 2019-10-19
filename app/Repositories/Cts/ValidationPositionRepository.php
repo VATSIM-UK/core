@@ -11,7 +11,7 @@ class ValidationPositionRepository
 {
     public function findByPositionId(int $id)
     {
-        return ValidationPosition::find($id)->first();
+        return ValidationPosition::find($id);
     }
 
     public function findByPosition(string $position)
