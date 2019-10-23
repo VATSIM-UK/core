@@ -29,8 +29,8 @@ class ValidationsController
         }
 
         return response()->json([
-            ['position' => $position->position],
-            $this->getValidatedMembers($position)
+            'status' => ['position' => $position->position],
+            'validated_members' => $this->getValidatedMembers($position)
         ]);
     }
 
