@@ -96,6 +96,48 @@ class MockCtsDatabase
                 priority int(1) default 1 not null
             ) charset=utf8mb4;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `memberships` 
+            (
+              `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+              `rts_id` smallint(5) unsigned NOT NULL DEFAULT 0,
+              `member_id` int(7) unsigned NOT NULL DEFAULT 0,
+              `type` enum('','H','A','V') NOT NULL DEFAULT '',
+              `rtsm` tinyint(1) unsigned DEFAULT 0,
+              `rtsi` tinyint(1) unsigned DEFAULT 0,
+              `hidden` enum('0','1') NOT NULL DEFAULT '0',
+              `sequence` smallint(3) NOT NULL DEFAULT 999,
+              `other` tinyint(1) NOT NULL DEFAULT 0,
+              `pending` tinyint(1) unsigned DEFAULT 0,
+              `joined` date DEFAULT NULL,
+              `confirmed` timestamp NULL DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `member_id` (`member_id`),
+              KEY `rts_id` (`rts_id`)
+            ) charset=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
+            'CREATE TABLE `validations` (
+                  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+                  `position_id` smallint(5) unsigned NOT NULL DEFAULT 0,
+                  `member_id` int(7) unsigned NOT NULL DEFAULT 0,
+                  `awarded_by` int(7) unsigned NOT NULL DEFAULT 0,
+                  `awarded_date` datetime NOT NULL DEFAULT \'0000-00-00 00:00:00\',
+                  PRIMARY KEY (`id`)
+                ) DEFAULT CHARSET=utf8mb4;'
+        );
+
+        DB::connection('cts')->statement(
+            'CREATE TABLE `validations_p` (
+                  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+                  `position` varchar(30) NOT NULL DEFAULT \'\',
+                  `rts` smallint(5) DEFAULT NULL,
+                  `min_rating` tinyint(1) NOT NULL DEFAULT 3,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
+        );
     }
 
     public static function destroy()
@@ -110,6 +152,18 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `events`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `memberships`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `validations`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `validations_p`;'
         );
     }
 }
