@@ -34,7 +34,7 @@ class FeedbackExport implements FromCollection, WithMapping, WithHeadings, Shoul
     {
         $prepend = [];
 
-        if ($this->request->input('include_target') && $this->request->targeted) {
+        if ($this->request->input('include_target') && $this->form->targeted) {
             $prepend[] = $feedback->account->id;
             $prepend[] = $feedback->account->name;
         }
