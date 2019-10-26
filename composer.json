@@ -46,7 +46,7 @@
     "pusher/pusher-php-server": "~4.0",
     "skymeyer/vatsimphp": "1.0.*",
     "spatie/laravel-cookie-consent": "^2.4",
-    "spatie/laravel-permission": "^2.23",
+    "spatie/laravel-permission": "^3.0",
     "vatsim/sso": "dev-develop#7579e9f492d84f04bfd30df41f0073b3d7a01527",
     "vatsim/xml": "dev-master",
     "vluzrmos/slack-api": "dev-master",
@@ -60,7 +60,7 @@
     "laravel/homestead": "^9.1.0",
     "laravel/telescope": "^2.0",
     "mockery/mockery": "1.2.*",
-    "phpunit/phpunit": "^7.0",
+    "phpunit/phpunit": "^8.4",
     "symfony/css-selector": "^4.0",
     "symfony/dom-crawler": "^4.0"
   },
