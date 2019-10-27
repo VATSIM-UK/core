@@ -28,7 +28,10 @@ class ResetPasswordTest extends TestCase
     public function testPasswordResetUpdatesCorrectly()
     {
         $this->user->password = 'Testing123';
-
+        
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+        
         // Check the user can visit the reset page
         $token = Password::broker()->createToken($this->user);
         $this->actingAs($this->user, 'vatsim-sso')
@@ -36,7 +39,7 @@ class ResetPasswordTest extends TestCase
             ->assertSuccessful();
 
         // Hold time to allow for comparision
-        Carbon::setTestNow($now = Carbon::now());
+        
 
         // Reset the password
         $this->followingRedirects()->actingAs($this->user, 'vatsim-sso')
