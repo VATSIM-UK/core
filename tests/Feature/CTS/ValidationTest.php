@@ -45,10 +45,10 @@ class ValidationTest extends TestCase
         $this->call('GET', route('api.validations'), ['position' => $position->position])
             ->assertStatus(200)
             ->assertExactJson([
-                [
+                'status' => [
                     'position' => $position->position
                 ],
-                [
+                'validated_members' => [
                     [
                         'id'   => $member->cid,
                         'name' => $member->name
