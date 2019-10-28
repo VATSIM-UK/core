@@ -29,6 +29,9 @@ class ResetPasswordTest extends TestCase
     {
         $this->user->password = 'Testing123';
 
+        $now = Carbon::today();
+        Carbon::setTestNow($now);
+
         // Check the user can visit the reset page
         $token = Password::broker()->createToken($this->user);
         $this->actingAs($this->user, 'vatsim-sso')
@@ -36,7 +39,7 @@ class ResetPasswordTest extends TestCase
             ->assertSuccessful();
 
         // Hold time to allow for comparision
-        Carbon::setTestNow(Carbon::now());
+
 
         // Reset the password
         $this->followingRedirects()->actingAs($this->user, 'vatsim-sso')
@@ -45,7 +48,7 @@ class ResetPasswordTest extends TestCase
             ->assertSuccessful();
 
         $this->assertTrue(Hash::check('Testing234', $this->user->fresh()->password));
-        $this->assertEquals(Carbon::now(), $this->user->fresh()->password_set_at);
-        $this->assertEquals(Carbon::now()->addDays($this->user->roles()->first()->password_lifetime), $this->user->fresh()->password_expires_at);
+        $this->assertEquals($now, $this->user->fresh()->password_set_at);
+        $this->assertEquals($now->addDays($this->user->roles()->first()->password_lifetime), $this->user->fresh()->password_expires_at);
     }
 }
