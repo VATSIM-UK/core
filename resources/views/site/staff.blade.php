@@ -135,10 +135,6 @@
                                 <td>Developer</td>
                                 <td>Andy Ford</td>
                             </tr>
-                            <tr>
-                                <td>Support</td>
-                                <td>George Barlow</td>
-                            </tr>
                         </table>
                     </div>
                 </div>
