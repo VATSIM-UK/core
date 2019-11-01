@@ -11,6 +11,7 @@ use App\Models\Mship\Note\Type as NoteTypeData;
 use App\Notifications\Mship\UserImpersonated;
 use Auth;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request as HttpRequest;
 use Redirect;
 use Session;
 use URL;
@@ -167,7 +168,7 @@ class Settings extends AdmController
      * Troubleshooting
      */
 
-    public function postImpersonate(Request $request, AccountData $mshipAccount)
+    public function postImpersonate(HttpRequest $request, AccountData $mshipAccount)
     {
         if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
