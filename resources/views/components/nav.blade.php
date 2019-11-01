@@ -4,6 +4,13 @@
             You are in a <b>NON-PRODUCTION</b> environment
         </div>
     @endif
+    @if (sys_config('notice'))
+        <div class="top_notification">
+            <div class="text">
+                {!! sys_config('notice') !!}
+            </div>
+        </div>
+    @endif
     <div class="nav_upper_container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse"

@@ -27,9 +27,11 @@ class HerokuPostDeploy extends Command
             case 'development':
                 $this->call('nova:install');
                 $this->call('migrate:fresh');
-                MockCtsDatabase::destroy();
-                MockCtsDatabase::create();
+                $this->call('cts:migrate:fresh');
                 break;
         }
+        $this->info('=====================');
+        $this->info('Success!');
+        $this->info('=====================');
     }
 }

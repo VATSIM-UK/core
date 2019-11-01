@@ -11,6 +11,9 @@ class Booking extends Model
     public const CREATED_AT = 'time_booked';
     public const UPDATED_AT = null;
     protected $attributes = ['local_id' => 0];
+    protected $hidden = [
+        'type_id', 'groupID', 'local_id', 'eurobook_id', 'eurobook_import', 'member_id', 'time_booked'
+    ];
 
     public function member()
     {

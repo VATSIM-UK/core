@@ -55,7 +55,7 @@ class ConditionModelTest extends TestCase
         $this->condition->save();
 
         $this->assertTrue(is_array($this->condition->fresh()->human_positions));
-        $this->assertArraySubset(['EGKK_XXX', 'EGLL_XXX'], $this->condition->fresh()->human_positions);
+        $this->assertEquals(['EGKK_XXX', 'EGLL_XXX'], $this->condition->fresh()->human_positions);
     }
 
     /** @test */

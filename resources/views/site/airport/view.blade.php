@@ -35,7 +35,7 @@
                 $('#additionalInfoController').hide();
             }
         });
-        $.get('{{ route('metar', $airport->icao) }}', function (data) {
+        $.get('{{ route('api.metar', $airport->icao) }}', function (data) {
             $('#metar').fadeOut(400, function () {
                 $('#metar').html(data);
                 $(this).fadeIn();

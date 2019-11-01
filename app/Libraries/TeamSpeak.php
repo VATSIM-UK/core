@@ -275,27 +275,37 @@ class TeamSpeak
      */
     public static function checkClientNickname(TeamSpeak3_Node_Client $client, Account $member)
     {
-        if (!$member->isValidDisplayName($client['client_nickname'])) {
+        if (!$member->isValidDisplayName($client['client_nickname']) && !$member->isDuplicateDisplayName($client['client_nickname'])) {
             $recentlyTold = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
             $hasGracePeriod = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
-            // if their nickname doesn't contain their name, or their grace period has ended
-            if (!$member->isPartiallyValidDisplayName($client['client_nickname']) || ($recentlyTold && !$hasGracePeriod)) {
-                self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
-                self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
-                self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
-                Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
-                Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
-                throw new ClientKickedFromServerException;
-            } elseif (!$hasGracePeriod) {
-                // set grace period to allow for possible mistakes
-                self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
-                self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke2'));
-                self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name.' - EGLL_N_TWR']));
 
-                $now = Carbon::now();
-                Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'], $now, 6 * 60);
-                Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'], $now, 3 * 60);
+            // Check to see if their name is at least partially right
+            if ($member->isPartiallyValidDisplayName($client['client_nickname'])) {
+
+                // If they have a grace period, allow it for now
+                if ($hasGracePeriod) {
+                    return;
+                } elseif (!$recentlyTold) {
+                    // Give them a grace period if they haven't recently had one
+
+                    self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
+                    self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke2'));
+                    self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name.' - EGLL_N_TWR']));
+
+                    $now = Carbon::now();
+                    Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'], $now, 6 * 60);
+                    Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'], $now, 3 * 60);
+                    return;
+                }
             }
+
+            // Either partially valid and grace period over, or doesn't even contain their name!
+            self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
+            self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
+            self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
+            throw new ClientKickedFromServerException;
         } else {
             Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
             Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
@@ -376,7 +386,7 @@ class TeamSpeak
     {
         $idleTime = floor($client['client_idle_time'] / 1000 / 60); // minutes
 
-        if ($member->hasPermissionTo('teamspeak/idle/permanent')) {
+        if ($member->hasPermissionTo('teamspeak/idle/permanent') || $member->is_on_network) {
             return;
         } elseif ($member->hasPermissionTo('teamspeak/idle/temporary')) {
             $maxIdleTime = 120;
