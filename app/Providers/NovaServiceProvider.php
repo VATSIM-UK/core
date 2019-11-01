@@ -2,8 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Mship\Account;
+use App\Nova\WaitingList;
+use App\Nova\WaitingListFlag;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Nova\Nova;
 
 class NovaServiceProvider extends ServiceProvider
 {
@@ -59,7 +64,7 @@ class NovaServiceProvider extends ServiceProvider
 
         $this->gate();
 
-        \Laravel\Nova\Nova::auth(function ($request) {
+        \Laravel\Nova\Nova::auth(function (Request $request) {
             return !app()->environment('production') ||
                 Gate::check('viewNova', [$request->user()]);
         });
@@ -74,10 +79,8 @@ class NovaServiceProvider extends ServiceProvider
      */
     protected function gate()
     {
-        Gate::define('viewNova', function ($user) {
-            return in_array($user->email, [
-                //
-            ]);
+        Gate::define('viewNova', function (Account $account) {
+            return $account->can('use-permission', 'adm');
         });
     }
 
@@ -112,7 +115,14 @@ class NovaServiceProvider extends ServiceProvider
      */
     protected function resources()
     {
-        \Laravel\Nova\Nova::resourcesIn(app_path('Nova'));
+        if (!app()->environment('local')) {
+            Nova::resources([
+                WaitingList::class,
+                WaitingListFlag::class
+            ]);
+        } else {
+            \Laravel\Nova\Nova::resourcesIn(app_path('Nova'));
+        }
     }
 
     /**

@@ -134,15 +134,15 @@ class WaitingList extends Resource
     {
         return [
             (new AddStudentToWaitingList)->canSee(function (Request $request) {
-                return $request->user()->can('addAccounts', $this);
+                return $request->user()->can('addAccounts', $this->model());
             })->canRun(function (Request $request) {
-                return $request->user()->can('addAccounts', $this);
+                return $request->user()->can('addAccounts', $this->model());
             }),
 
             (new AddFlagToWaitingList)->canSee(function (Request $request) {
-                return $request->user()->can('addFlags', $this);
+                return $request->user()->can('addFlags', $this->model());
             })->canRun(function (Request $request) {
-                return $request->user()->can('addFlags', $this);
+                return $request->user()->can('addFlags', $this->model());
             })
         ];
     }
