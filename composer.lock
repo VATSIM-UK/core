@@ -5927,8 +5927,8 @@
             },
             "require": {
                 "bonroyage/oauth": "1.*",
-                "illuminate/container": "5.*",
-                "illuminate/support": "5.*",
+                "illuminate/container": ">4.0.0",
+                "illuminate/support": ">4.0.0",
                 "php": ">=5.4.0"
             },
             "type": "library",
