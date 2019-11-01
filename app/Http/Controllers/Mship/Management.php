@@ -6,7 +6,7 @@ use App\Libraries\UKCP;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Token as SystemToken;
 use Auth;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Laravel\Passport\Client as OAuthClient;
 use Redirect;
 use Validator;
@@ -59,8 +59,8 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function postEmailAdd()
     {
-        $email = strtolower(Input::get('new_email'));
-        $email2 = strtolower(Input::get('new_email2'));
+        $email = strtolower(Request::input('new_email'));
+        $email2 = strtolower(Request::input('new_email2'));
 
         $validator = Validator::make(
             ['email' => $email],
@@ -169,7 +169,7 @@ class Management extends \App\Http\Controllers\BaseController
         // Now, let's go through and see if any that are CURRENTLY assigned have switched back to PRIMARY
         // If they have, we can just delete them!
         foreach ($userSsoEmails as $ssoEmail) {
-            if (Input::get('assign_' . $ssoEmail->sso_account_id, 'pri') == 'pri') {
+            if (Request::input('assign_' . $ssoEmail->sso_account_id, 'pri') == 'pri') {
                 $ssoEmail->delete();
             }
         }
@@ -177,12 +177,12 @@ class Management extends \App\Http\Controllers\BaseController
         // NOW, let's go through all the other systems and check if we have NONE primary assignments
         foreach ($ssoSystems as $ssosys) {
             // SKIP PRIMARY ASSIGNMENTS!
-            if (Input::get('assign_' . $ssosys->id, 'pri') == 'pri') {
+            if (Request::input('assign_' . $ssosys->id, 'pri') == 'pri') {
                 continue;
             }
 
             // We have an assignment - woohoo!
-            $assignedEmailID = Input::get('assign_' . $ssosys->id);
+            $assignedEmailID = Request::input('assign_' . $ssosys->id);
 
             // Let's do the assignment
             // The model will take care of checking if it exists or not, itself!

@@ -452,7 +452,7 @@
                                         @can('use-permission', "adm/mship/account/*/note/view")
 
                                             @foreach($account->notes as $note)
-                                                @if((array_key_exists($note->id, Input::get("filter", [])) && count(Input::get("filter", [])) > 0) OR count(Input::get("filter", [])) < 1)
+                                                @if((array_key_exists($note->id, Request::input("filter", [])) && count(Request::input("filter", [])) > 0) OR count(Request::input("filter", [])) < 1)
                                                     @include('adm.mship.account._note', ["note" => $note])
                                                 @endif
                                             @endforeach
@@ -476,7 +476,7 @@
                                             <div class="col-sm-4">
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input type="checkbox" name="filter[]" value="{{ $nt->id }}" {{ Input::get("filter.".$nt->id) ? "checked='checked'" : "" }} />
+                                                        <input type="checkbox" name="filter[]" value="{{ $nt->id }}" {{ Request::input("filter.".$nt->id) ? "checked='checked'" : "" }} />
                                                         {{ $nt->name }}
                                                     </label>
                                                 </div>
