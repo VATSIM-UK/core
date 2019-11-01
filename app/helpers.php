@@ -228,3 +228,8 @@ function sys_config($key)
 
     return cache($cacheKey);
 }
+
+function handleService(\App\Services\BaseService $service)
+{
+    return $service->handle();
+}
