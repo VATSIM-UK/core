@@ -15,7 +15,7 @@
     "heroku-postbuild": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "dependencies": {
-    "admin-lte": "2.4.18",
+    "admin-lte": "3.0.0",
     "axios": "^0.19",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.7",
