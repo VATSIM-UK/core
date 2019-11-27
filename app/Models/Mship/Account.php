@@ -442,7 +442,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
         if ($includeATC && $this->networkDataAtcCurrent) {
             $collect = collect();
-            foreach ($allowedNames as $name){
+            foreach ($allowedNames as $name) {
                 $collect->push($name." - {$this->networkDataAtcCurrent->callsign}");
             }
             $allowedNames = $allowedNames->merge($collect);
