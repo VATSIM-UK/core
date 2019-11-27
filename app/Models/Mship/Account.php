@@ -441,10 +441,12 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $allowedNames->push($this->real_name.$wildcard);
 
         if ($includeATC && $this->networkDataAtcCurrent) {
-            $allowedNames->push($this->name.$wildcard." - {$this->networkDataAtcCurrent->callsign}");
-            $allowedNames->push($this->real_name.$wildcard." - {$this->networkDataAtcCurrent->callsign}");
+            $collect = collect();
+            foreach ($allowedNames as $name){
+                $collect->push($name." - {$this->networkDataAtcCurrent->callsign}");
+            }
+            $allowedNames = $allowedNames->merge($collect);
         }
-
         return $allowedNames;
     }
 
@@ -458,7 +460,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function isValidDisplayName($displayName)
     {
         return !$this->allowedNames(true)->filter(function ($item, $key) use ($displayName) {
-            return strcasecmp($item, $displayName) == 0;
+            return strcmp($item, $displayName) == 0;
         })->isEmpty();
     }
 
