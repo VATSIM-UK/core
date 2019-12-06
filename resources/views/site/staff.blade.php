@@ -165,6 +165,7 @@
                                 <tr>
                                     <td>General Manager</td>
                                     <td>Oliver Rhodes</td>
+                                </tr>
                                 <tr>
                                     <td>Division Instructor</td>
                                     <td>Phillip Speer</td>
@@ -235,6 +236,7 @@
                                     <td>General Manager</td>
                                     <td>Tom Sirett</td>
                                 </tr>
+                                <tr>
                                     <td>Administrative Manager<br/>
                                         Initial Flight Instructor
                                     </td>
