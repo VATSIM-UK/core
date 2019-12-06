@@ -166,9 +166,7 @@
                                     <td>General Manager</td>
                                     <td>Oliver Rhodes</td>
                                 <tr>
-                                    <td>Division Instructor<br/>
-                                        TG Instructor (CTR)
-                                    </td>
+                                    <td>Division Instructor</td>
                                     <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
@@ -182,10 +180,6 @@
                                 <tr>
                                     <td>Division Instructor</td>
                                     <td>Mike Pike</td>
-                                </tr>
-                                <tr>
-                                    <td>Division Instructor</td>
-                                    <td>Sebastian Rekdal</td>
                                 </tr>
                                 <tr>
                                     <td>Division Instructor</td>
@@ -226,6 +220,10 @@
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
                                     <td>Nathaniel Leff</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (Enroute)</td>
+                                    <td>Sebastian Rekdal</td>
                                 </tr>
                             </table>
                             </div>
