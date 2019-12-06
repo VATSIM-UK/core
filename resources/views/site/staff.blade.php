@@ -225,7 +225,7 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
-                                    <td>James Yuen</td>
+                                    <td>Nathaniel Leff</td>
                                 </tr>
                             </table>
                             </div>
@@ -233,6 +233,10 @@
                         <div class="col-md-6">
                             <h4>Pilot Training Team</h4>
                             <table class="table">
+                                <tr>
+                                    <td>General Manager</td>
+                                    <td>Tom Sirett</td>
+                                </tr>
                                     <td>Administrative Manager<br/>
                                         Initial Flight Instructor
                                     </td>
@@ -240,11 +244,15 @@
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
-                                    <td>Lewis Hammett</td>
+                                    <td>Vacant</td>
+                                </tr>
+                                <tr>
+                                    <td>IFR Flight Instructor</td>
+                                    <td>Freddie Charlesworth</td>
                                 </tr>
                                 <tr>
                                     <td>Development Flight Instructor</td>
-                                    <td>Tom Sirett</td>
+                                    <td>Vacant</td>
                                 </tr>
                              </table>
 
