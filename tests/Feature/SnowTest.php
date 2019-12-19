@@ -18,9 +18,7 @@ class SnowTest extends \Tests\TestCase
         $this->get(route('site.home'))
             ->assertOk()
             ->assertSee($this->script);
-        $this->actingAs($this->user)
-            ->get(route('dashboard'))
-            ->assertOk()
+        $this->get(route('site.join'))->assertOk()
             ->assertSee($this->script);
 
         \Carbon\Carbon::setTestNow(new Carbon('5th January 2019'));
@@ -35,8 +33,7 @@ class SnowTest extends \Tests\TestCase
         $this->get(route('site.home'))
             ->assertOk()
             ->assertDontSee($this->script);
-        $this->actingAs($this->user)
-            ->get(route('dashboard'))
+        $this->get(route('site.join'))
             ->assertOk()
             ->assertDontSee($this->script);
     }
