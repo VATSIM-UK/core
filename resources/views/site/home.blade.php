@@ -479,6 +479,6 @@
 <script src="{{ mix('js/home.js') }}"></script>
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax.min.js"></script>
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax-video.min.js"></script>
-
+@include('partials/_snow')
 </body>
 </html>
