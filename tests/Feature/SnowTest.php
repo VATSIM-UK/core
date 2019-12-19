@@ -15,7 +15,7 @@ class SnowTest extends \Tests\TestCase
     public function testSnowDuringPeriod()
     {
         \Carbon\Carbon::setTestNow(new Carbon('1st December 2019'));
-        $this->get(route('home'))
+        $this->get(route('site.home'))
             ->assertOk()
             ->assertSee($this->script);
         $this->actingAs($this->user)
@@ -24,7 +24,7 @@ class SnowTest extends \Tests\TestCase
             ->assertSee($this->script);
 
         \Carbon\Carbon::setTestNow(new Carbon('5th January 2019'));
-        $this->get(route('home'))
+        $this->get(route('site.home'))
             ->assertOk()
             ->assertSee($this->script);
     }
@@ -32,7 +32,7 @@ class SnowTest extends \Tests\TestCase
     public function testNoSnowOutsidePeriod()
     {
         \Carbon\Carbon::setTestNow(new Carbon('10th January 2020'));
-        $this->get(route('home'))
+        $this->get(route('site.home'))
             ->assertOk()
             ->assertDontSee($this->script);
         $this->actingAs($this->user)
