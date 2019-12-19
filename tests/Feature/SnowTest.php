@@ -2,8 +2,8 @@
 
 use Carbon\Carbon;
 
-class SnowTest extends \Tests\TestCase {
-
+class SnowTest extends \Tests\TestCase
+{
     private $script;
 
     public function __construct($name = null, array $data = [], $dataName = '')
@@ -40,5 +40,4 @@ class SnowTest extends \Tests\TestCase {
             ->assertOk()
             ->assertDontSee($this->script);
     }
-
 }
