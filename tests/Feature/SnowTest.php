@@ -6,9 +6,8 @@ class SnowTest extends \Tests\TestCase {
 
     private $script;
 
-    public function __construct($name = null, array $data = [], $dataName = '')
+    public function setUp()
     {
-        parent::__construct($name, $data, $dataName);
         $this->script = '<script src="'.mix('js/snow.js').'"></script>';
     }
 
