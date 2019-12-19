@@ -31,5 +31,7 @@ mix.js('resources/assets/js/app.js', 'public/js/app-all.js');
 mix.sass('resources/assets/sass/home.scss', 'public/css/home.css');
 mix.babel(['resources/assets/js/home.js'], 'public/js/home.js');
 
+mix.js('resources/assets/js/snow.js', 'public/js/snow.js');
+
 // general
 mix.version();
