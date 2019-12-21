@@ -45,7 +45,7 @@
 <div class="container-fluid">
     <div class="header_container">
         <div id="banner" class="banner hidden-xs hidden-sm"></div>
-        
+
         <div class="breadcrumb_outer_container hidden-xs hidden-sm">
             <div class="breadcrumb_container">
                 <div class="breadcrumb_content_left">
@@ -126,6 +126,6 @@
 @endif
 
 @yield('scripts')
-
+@include('partials/_snow')
 </body>
 </html>
