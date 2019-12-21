@@ -6911,16 +6911,16 @@
         },
         {
             "name": "laravel/telescope",
-            "version": "v2.1.1",
+            "version": "v2.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/telescope.git",
-                "reference": "05af183b914b6f8dca890eadb3edccbbc3ce887b"
+                "reference": "7fd3dc40684d1d035676cf48a5ecc98dc8ef7089"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/telescope/zipball/05af183b914b6f8dca890eadb3edccbbc3ce887b",
-                "reference": "05af183b914b6f8dca890eadb3edccbbc3ce887b",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/7fd3dc40684d1d035676cf48a5ecc98dc8ef7089",
+                "reference": "7fd3dc40684d1d035676cf48a5ecc98dc8ef7089",
                 "shasum": ""
             },
             "require": {
@@ -6928,15 +6928,16 @@
                 "laravel/framework": "~5.8.0|^6.0|^7.0",
                 "moontoast/math": "^1.1",
                 "php": "^7.1.3",
-                "symfony/var-dumper": "^4.1"
+                "symfony/var-dumper": "^4.1|^5.0"
             },
             "require-dev": {
+                "ext-gd": "*",
                 "orchestra/testbench": "^3.8|^4.0|^5.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0-dev"
+                    "dev-master": "2.x-dev"
                 },
                 "laravel": {
                     "providers": [
@@ -6969,7 +6970,7 @@
                 "laravel",
                 "monitoring"
             ],
-            "time": "2019-11-23T16:51:14+00:00"
+            "time": "2019-12-19T14:33:58+00:00"
         },
         {
             "name": "mockery/mockery",
