@@ -165,10 +165,9 @@
                                 <tr>
                                     <td>General Manager</td>
                                     <td>Oliver Rhodes</td>
+                                </tr>
                                 <tr>
-                                    <td>Division Instructor<br/>
-                                        TG Instructor (CTR)
-                                    </td>
+                                    <td>Division Instructor</td>
                                     <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
@@ -182,10 +181,6 @@
                                 <tr>
                                     <td>Division Instructor</td>
                                     <td>Mike Pike</td>
-                                </tr>
-                                <tr>
-                                    <td>Division Instructor</td>
-                                    <td>Sebastian Rekdal</td>
                                 </tr>
                                 <tr>
                                     <td>Division Instructor</td>
@@ -225,7 +220,11 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
-                                    <td>James Yuen</td>
+                                    <td>Nathaniel Leff</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (Enroute)</td>
+                                    <td>Sebastian Rekdal</td>
                                 </tr>
                             </table>
                             </div>
@@ -233,6 +232,11 @@
                         <div class="col-md-6">
                             <h4>Pilot Training Team</h4>
                             <table class="table">
+                                <tr>
+                                    <td>General Manager</td>
+                                    <td>Tom Sirett</td>
+                                </tr>
+                                <tr>
                                     <td>Administrative Manager<br/>
                                         Initial Flight Instructor
                                     </td>
@@ -240,11 +244,15 @@
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
-                                    <td>Lewis Hammett</td>
+                                    <td>Vacant</td>
+                                </tr>
+                                <tr>
+                                    <td>IFR Flight Instructor</td>
+                                    <td>Freddie Charlesworth</td>
                                 </tr>
                                 <tr>
                                     <td>Development Flight Instructor</td>
-                                    <td>Tom Sirett</td>
+                                    <td>Vacant</td>
                                 </tr>
                              </table>
 
