@@ -60,9 +60,9 @@
                                 @foreach($permissions as $p)
                                     <li style="display: table;">
                                         @if(isset($role))
-                                            {!! Form::checkbox("permissions[".$p->id."]", $p->id, ($role->hasPermissionTo($p) OR Input::old("permissions.".$p->id) ? "checked='checked'" : "")) !!}
+                                            {!! Form::checkbox("permissions[".$p->id."]", $p->id, ($role->hasPermissionTo($p) OR Request::old("permissions.".$p->id) ? "checked='checked'" : "")) !!}
                                         @else
-                                            {!! Form::checkbox("permissions[".$p->id."]", $p->id, (Input::old("permissions.".$p->id) ? "checked='checked'" : "")) !!}
+                                            {!! Form::checkbox("permissions[".$p->id."]", $p->id, (Request::old("permissions.".$p->id) ? "checked='checked'" : "")) !!}
                                         @endif
                                         {{ $p->name }}
                                     </li>

@@ -10,8 +10,8 @@ use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Note\Type as NoteTypeData;
 use App\Notifications\Mship\UserImpersonated;
 use Auth;
-use Illuminate\Http\Request;
-use Input;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request as HttpRequest;
 use Redirect;
 use Session;
 use URL;
@@ -38,7 +38,7 @@ class Settings extends AdmController
         }
 
         // Check the selected security ID exists!
-        $security = SecurityData::find(Input::get('securityLevel', 0));
+        $security = SecurityData::find(Request::input('securityLevel', 0));
 
         if (!$security) {
             return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
@@ -83,7 +83,7 @@ class Settings extends AdmController
         }
 
         // Check the selected security ID exists!
-        $security = SecurityData::find(Input::get('securityLevel', 0));
+        $security = SecurityData::find(Request::input('securityLevel', 0));
 
         if (!$security) {
             return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
@@ -128,20 +128,20 @@ class Settings extends AdmController
         }
 
         // Is there any content?
-        if (strlen(Input::get('content')) < 10) {
+        if (strlen(Request::input('content')) < 10) {
             return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'notes'])
                 ->withError('You cannot add such a short note!');
         }
 
         // Check this type exists!
-        $noteType = NoteTypeData::find(Input::get('note_type_id'));
+        $noteType = NoteTypeData::find(Request::input('note_type_id'));
         if (!$noteType or !$noteType->exists) {
             return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'notes'])
                 ->withError('You selected an invalid note type.');
         }
 
         // Let's make a note and attach it to the user!
-        $mshipAccount->addNote($noteType, Input::get('content'), Auth::user());
+        $mshipAccount->addNote($noteType, Request::input('content'), Auth::user());
 
         return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'notes'])
             ->withSuccess('The note has been saved successfully!');
@@ -154,7 +154,7 @@ class Settings extends AdmController
         }
 
         // Get all filters
-        $filters = Input::get('filter', []);
+        $filters = Request::input('filter', []);
         $qs = '';
         foreach ($filters as $f) {
             $qs .= 'filter[' . $f . ']=1&';
@@ -168,7 +168,7 @@ class Settings extends AdmController
      * Troubleshooting
      */
 
-    public function postImpersonate(Request $request, AccountData $mshipAccount)
+    public function postImpersonate(HttpRequest $request, AccountData $mshipAccount)
     {
         if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
