@@ -228,3 +228,10 @@ function sys_config($key)
 
     return cache($cacheKey);
 }
+
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle)
+    {
+        return \Illuminate\Support\Str::contains($haystack, $needle);
+    }
+}
