@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "967a3e790d642d83bee3616ed8840c1c",
+    "content-hash": "1f3803aa6d32fb9379ee77d035528863",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -6061,12 +6061,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/VATSIM-UK/VatsimXML.git",
-                "reference": "4acc81205fe51006c39e144e50bd2c1e4967f393"
+                "reference": "9de09a99ded54c5a2734e11eff5415f8dc44df9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VATSIM-UK/VatsimXML/zipball/4acc81205fe51006c39e144e50bd2c1e4967f393",
-                "reference": "4acc81205fe51006c39e144e50bd2c1e4967f393",
+                "url": "https://api.github.com/repos/VATSIM-UK/VatsimXML/zipball/9de09a99ded54c5a2734e11eff5415f8dc44df9e",
+                "reference": "9de09a99ded54c5a2734e11eff5415f8dc44df9e",
                 "shasum": ""
             },
             "require": {
@@ -6098,9 +6098,9 @@
             "support": {
                 "issues": "https://github.com/A-Lawrence/VatsimXML/issues",
                 "wiki": "https://github.com/A-Lawrence/VatsimXML/wiki",
-                "source": "https://github.com/VATSIM-UK/VatsimXML/tree/2.3"
+                "source": "https://github.com/VATSIM-UK/VatsimXML/tree/2.3.1"
             },
-            "time": "2019-11-01T20:36:01+00:00"
+            "time": "2019-12-22T22:01:45+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
