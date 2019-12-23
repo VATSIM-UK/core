@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 use Spatie\Permission\Models\Permission as PermissionData;
 use Spatie\Permission\Models\Role as RoleData;
@@ -31,13 +31,13 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
     public function postCreate()
     {
         // Let's create!
-        $permission = new PermissionData(Input::only('name', 'guard_name'));
+        $permission = new PermissionData(Request::only('name', 'guard_name'));
         if (!$permission->save()) {
             return Redirect::route('adm.mship.permission.create')->withErrors($permission->errors());
         }
 
-        if (!is_null(Input::get('roles')) && $this->account->can('use-permission', 'adm/mship/permission/attach')) {
-            $permission->syncRoles(Input::get('roles'));
+        if (!is_null(Request::input('roles')) && $this->account->can('use-permission', 'adm/mship/permission/attach')) {
+            $permission->syncRoles(Request::input('roles'));
         }
 
         return Redirect::route('adm.mship.permission.index')->withSuccess("Permission '".$permission->name."' has been created - don't forget to attach it to some roles!");
@@ -68,13 +68,13 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
         if ($this->account->can('use-permission', 'adm/mship/permission/attach')) {
             // Detatch permissions!
             foreach ($permission->roles as $r) {
-                if (!in_array($r->id, Input::get('roles', []))) {
+                if (!in_array($r->id, Request::input('roles', []))) {
                     $permission->removeRole($r);
                 }
             }
 
             // Attach all permissions.
-            $permission->assignRole(Input::get('roles', []));
+            $permission->assignRole(Request::input('roles', []));
         }
 
         return Redirect::route('adm.mship.permission.index')->withSuccess("Permission '".$permission->name."' has been updated - don't forget to set the roles properly!");

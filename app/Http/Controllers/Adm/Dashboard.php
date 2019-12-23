@@ -8,7 +8,7 @@ use App\Models\Mship\State;
 use App\Models\Statistic;
 use Cache;
 use DB;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 
 class Dashboard extends \App\Http\Controllers\Adm\AdmController
@@ -72,7 +72,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
     public function anySearch($searchQuery = null)
     {
         if ($searchQuery == null) {
-            $searchQuery = Input::get('q', null);
+            $searchQuery = Request::input('q', null);
         }
 
         if (strlen($searchQuery) < 2 or $searchQuery == null) {
