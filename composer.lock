@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "16d82900efb71716f1cf4f0d27521abc",
+    "content-hash": "cf00669bb705b6af031babfdfe9be917",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -4393,16 +4393,16 @@
         },
         {
             "name": "spatie/laravel-permission",
-            "version": "3.3.1",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-permission.git",
-                "reference": "647c514ac5cbcd319ded1e8585d9802576876beb"
+                "reference": "fe0573ddb6fd95378eec67e401882564db830312"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/647c514ac5cbcd319ded1e8585d9802576876beb",
-                "reference": "647c514ac5cbcd319ded1e8585d9802576876beb",
+                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/fe0573ddb6fd95378eec67e401882564db830312",
+                "reference": "fe0573ddb6fd95378eec67e401882564db830312",
                 "shasum": ""
             },
             "require": {
@@ -4457,7 +4457,7 @@
                 "security",
                 "spatie"
             ],
-            "time": "2019-12-24T18:49:35+00:00"
+            "time": "2019-12-28T13:22:00+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
