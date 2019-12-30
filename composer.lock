@@ -6842,16 +6842,16 @@
         },
         {
             "name": "laravel/homestead",
-            "version": "v10.0.2",
+            "version": "v10.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/homestead.git",
-                "reference": "09fce4ceac4244bc101514d435f0d0f0e6f3ff3d"
+                "reference": "03e6095674557239008542eeee6ca0bddc1d80be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/homestead/zipball/09fce4ceac4244bc101514d435f0d0f0e6f3ff3d",
-                "reference": "09fce4ceac4244bc101514d435f0d0f0e6f3ff3d",
+                "url": "https://api.github.com/repos/laravel/homestead/zipball/03e6095674557239008542eeee6ca0bddc1d80be",
+                "reference": "03e6095674557239008542eeee6ca0bddc1d80be",
                 "shasum": ""
             },
             "require": {
@@ -6883,7 +6883,7 @@
                 }
             ],
             "description": "A virtual machine for web artisans.",
-            "time": "2019-12-14T18:54:07+00:00"
+            "time": "2019-12-23T16:08:22+00:00"
         },
         {
             "name": "laravel/telescope",
