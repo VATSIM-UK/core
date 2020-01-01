@@ -51,11 +51,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('members:certimport', ['--full'])
             ->twiceDaily(2, 14)
             ->runInBackground()
-            ->onFailure($this->failureMessage('Full import of cert has failed (members:certimport --full).'))
+            ->onFailure($this->failureMessage('Full import of cert has failed (members:certimport --full)'))
             ->emailOutputOnFailure($this->failureEmail);
 
         $schedule->command('members:certimport')
-            ->cron('30 */2 * * *')
+            ->cron('30 */2 * * *') // every second hour
             ->runInBackground()
             ->onFailure($this->failureMessage('Two-hourly import of cert has failed (members:certimport)'))
             ->emailOutputOnFailure($this->failureEmail);
@@ -111,7 +111,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('slack:manager')
             ->hourly()
             ->runInBackground()
-            ->onFailure($this->failureMessage('Slack manager has failed (slack:manage)'))
+            ->onFailure($this->failureMessage('Slack manager has failed (slack:manager)'))
             ->emailOutputOnFailure($this->failureEmail);
     }
 
