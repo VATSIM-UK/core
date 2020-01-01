@@ -38,11 +38,6 @@ class Kernel extends ConsoleKernel
             ->onFailure($this->failureMessage('Syncing of daily statistics has failed (sync:statistics:daily)'))
             ->emailOutputOnFailure($this->failureEmail);
 
-        $schedule->command('sync:helpdesk')
-            ->dailyAt('23:30')
-            ->onFailure($this->failureMessage('Syncing of core to helpdesk has failed (sync:helpdesk)'))
-            ->emailOutputOnFailure($this->failureEmail);
-
         $schedule->command('sync:community')
             ->dailyAt('00:01')
             ->onFailure($this->failureMessage('Syncing of community has failed (sync:community)'))
