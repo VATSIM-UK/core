@@ -63,25 +63,55 @@ class Kernel extends ConsoleKernel
         $schedule->command('members:certupdate', ['--type=daily', 5000])
             ->dailyAt('00:45')
             ->runInBackground()
-            ->onFailure($this->failureMessage('Daily cert import has failed (members:certupdate --type=daily 5000'))
+            ->onFailure($this->failureMessage('Daily cert import has failed (members:certupdate --type=daily 5000)'))
             ->emailOutputOnFailure($this->failureEmail);
 
         $schedule->command('members:certupdate', ['--type=weekly', 5000])
             ->weeklyOn(1, '01:15')
             ->runInBackground()
-            ->onFailure($this->failureMessage('Weekly monday cert import has failed (members:certupdate --type=weekly 5000'))
+            ->onFailure($this->failureMessage('Weekly monday cert import has failed (members:certupdate --type=weekly 5000)'))
             ->emailOutputOnFailure($this->failureEmail);
 
         $schedule->command('members:certupdate', ['--type=monthly', 5000])
             ->monthlyOn(1, '01:45')
             ->runInBackground()
-            ->onFailure($this->failureMessage('Weekly monday cert import has failed (members:certupdate --type=weekly 5000'))
+            ->onFailure($this->failureMessage('Weekly monday cert import has failed (members:certupdate --type=weekly 5000)'))
             ->emailOutputOnFailure($this->failureEmail);
 
         $schedule->command('members:certupdate', ['--type=all', 1000])
             ->monthlyOn(1, '01:45')
             ->runInBackground()
-            ->onFailure($this->failureMessage('Weekly monday cert import has failed (members:certupdate --type=weekly 5000'))
+            ->onFailure($this->failureMessage('Weekly monday cert import has failed (members:certupdate --type=weekly 5000)'))
+            ->emailOutputOnFailure($this->failureEmail);
+
+        $schedule->command('visit-transfer:cleanup')
+            ->everyMinute()
+            ->runInBackground()
+            ->onFailure($this->failureMessage('Cleaning up visit transfer applications has failed (visit-transfer:cleanup)'))
+            ->emailOutputOnFailure($this->failureEmail);
+
+        $schedule->command('visittransfer:statistics:daily')
+            ->everyMinute()
+            ->runInBackground()
+            ->onFailure($this->failureMessage('Daily statistics for visit-transfer has failed (visittransfer:statistics:daily)'))
+            ->emailOutputOnFailure($this->failureEmail);
+
+        $schedule->command('teaman:runner', ['-v'])
+            ->everyMinute()
+            ->runInBackground()
+            ->onFailure($this->failureMessage('TeamSpeak runner has failed (teaman:runner)'))
+            ->emailOutputOnFailure($this->failureEmail);
+
+        $schedule->command('networkdata:download')
+            ->cron('*/2 * * * *') // every second minute
+            ->runInBackground()
+            ->onFailure($this->failureMessage('Download of network data has failed (networkdata:download'))
+            ->emailOutputOnFailure($this->failureEmail);
+
+        $schedule->command('slack:manager')
+            ->hourly()
+            ->runInBackground()
+            ->onFailure($this->failureMessage('Slack manager has failed (slack:manage)'))
             ->emailOutputOnFailure($this->failureEmail);
     }
 
