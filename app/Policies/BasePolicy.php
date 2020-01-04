@@ -21,9 +21,4 @@ abstract class BasePolicy
     {
         return $account->roles->contains(Role::findByName('privacc')) ? true : null;
     }
-
-    public function forceDelete(Account $account)
-    {
-        return false;
-    }
 }
