@@ -75,7 +75,7 @@ class WaitingList extends Resource
 
             new Panel('Notes on Flags', [
                 Heading::make('When deleting a flag, the changes will be made to the data but to see them visually,
-                you need to fresh the page.')->canSeeWhen('addFlags', $this)
+                you need to refresh the page.')->canSeeWhen('addFlags', $this)
             ]),
 
             HasMany::make('Flags', 'flags', WaitingListFlag::class)
