@@ -92,7 +92,6 @@ class NovaServiceProvider extends ServiceProvider
     protected function cards()
     {
         return [
-            new \Laravel\Nova\Cards\Help,
         ];
     }
 
