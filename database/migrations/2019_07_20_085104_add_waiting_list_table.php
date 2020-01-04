@@ -90,6 +90,7 @@ class AddWaitingListTable extends Migration
             'updated_at' => \Carbon\Carbon::now(),
         ]);
 
+        $this->createPermission('nova');
         $this->createPermission('waitingLists/create');
         $this->createPermission('waitingLists/atc/view');
         $this->createPermission('waitingLists/atc/addAccounts');

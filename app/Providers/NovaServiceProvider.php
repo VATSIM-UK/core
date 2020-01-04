@@ -63,8 +63,7 @@ class NovaServiceProvider extends ServiceProvider
         $this->gate();
 
         \Laravel\Nova\Nova::auth(function (Request $request) {
-            return !app()->environment('production') ||
-                Gate::check('viewNova', [$request->user()]);
+            return Gate::check('accessNova', [$request->user()]);
         });
     }
 
@@ -77,8 +76,8 @@ class NovaServiceProvider extends ServiceProvider
      */
     protected function gate()
     {
-        Gate::define('viewNova', function (Account $account) {
-            return $account->can('use-permission', 'adm');
+        Gate::define('accessNova', function (Account $account) {
+            return $account->can('use-permission', 'nova');
         });
     }
 
