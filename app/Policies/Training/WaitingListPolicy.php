@@ -18,71 +18,52 @@ class WaitingListPolicy extends BasePolicy
         if (parent::before($account, $policy)) {
             return true;
         }
-        if ($account->checkPermissionTo('waitingLists/*')) {
+
+        if ($account->hasPermissionTo('waitingLists/*')) {
             return true;
         }
+
         return null;
-    }
-
-    public function addAccounts(Account $account, WaitingList $waitingList)
-    {
-        return $this->departmentWildcard($account, $waitingList)
-            || $account->hasPermissionTo("waitingLists/{$waitingList->department}/{$waitingList->slug}/accounts/add", self::GUARD);
-    }
-
-    public function removeAccount(Account $account, WaitingList $waitingList)
-    {
-        return true;
-    }
-
-    public function elevatedInformation(Account $account, WaitingList $waitingList)
-    {
-        return $this->departmentWildcard($account, $waitingList)
-            || $account->checkPermissionTo('waitingLists/elevatedInformation', self::GUARD);
-    }
-
-    public function addFlags(Account $account, WaitingList $waitingList)
-    {
-        return $this->departmentWildcard($account, $waitingList)
-            || $account->checkPermissionTo("waitingLists/{$waitingList->department}/flags/add", self::GUARD);
-    }
-
-    private function departmentWildcard(Account $account, string $department)
-    {
-        return $account->checkPermissionTo("waitingLists/{$department}/*", self::GUARD);
-    }
-
-    /**
-     * Can view any waiting list resources.
-     * @param Account $account
-     * @return bool
-     */
-    public function viewAny(Account $account)
-    {
-        return $account->checkPermissionTo("waitingLists/atc/base", self::GUARD)
-            || $account->checkPermissionTo("waitingLists/pilot/base", self::GUARD);
     }
 
     public function view(Account $account, WaitingList $waitingList)
     {
-        return $this->departmentWildcard($account, $waitingList->department)
-            || $account->checkPermissionTo("waitingLists/{$waitingList->department}/{$waitingList->slug}/view", self::GUARD);
+        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/view", self::GUARD);
     }
 
-    public function create(Account $account)
+    public function addAccounts(Account $account, WaitingList $waitingList)
     {
-        return $account->checkPermissionTo("waitingLists/create", self::GUARD);
+        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/addAccounts", self::GUARD);
+    }
+
+    public function removeAccount(Account $account, WaitingList $waitingList)
+    {
+        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/removeAccount", self::GUARD);
+    }
+
+    public function elevatedInformation(Account $account, WaitingList $waitingList)
+    {
+        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/elevatedInformation", self::GUARD);
+    }
+
+    public function addFlags(Account $account, WaitingList $waitingList)
+    {
+        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/addFlags", self::GUARD);
     }
 
     public function update(Account $account, WaitingList $waitingList)
     {
-        return $this->departmentWildcard($account, $waitingList->department)
-            || $account->getPermissionsViaRoles()->contains("waitingLists/{$waitingList->department}/{$waitingList->slug}/edit", self::GUARD);
+        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/update", self::GUARD);
     }
 
     public function delete(Account $account, WaitingList  $waitingList)
     {
-        return $this->departmentWildcard($account, $waitingList->department);
+        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/delete", self::GUARD);
+    }
+
+    public function create(Account $account)
+    {
+        return false;
     }
 
     public function restore(Account $account)
