@@ -21,26 +21,18 @@
             />
         </loading-card>
 
-
         <portal to="modals">
-            <transition name="fade">
-                <confirm-flag-change-modal
-                    v-if="flagConfirmModalOpen"
-                    @confirm="confirmFlagChange"
-                    @close="closeFlagChangeModal"
-                />
-            </transition>
-        </portal>
-
-        <portal to="modals">
-            <transition name="fade">
-                <text-input-modal
-                    v-if="notesModalOpen"
-                    @confirm="createNote"
-                    @close="closeNotesModal"
-                    :account="selectedAccount"
-                />
-            </transition>
+            <confirm-flag-change-modal
+                v-if="flagConfirmModalOpen"
+                @confirm="confirmFlagChange"
+                @close="closeFlagChangeModal"
+            />
+            <text-input-modal
+                v-if="notesModalOpen"
+                @confirm="createNote"
+                @close="closeNotesModal"
+                :account="selectedAccount"
+            />
         </portal>
     </div>
 </template>
