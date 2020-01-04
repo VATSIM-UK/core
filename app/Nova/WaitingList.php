@@ -59,14 +59,19 @@ class WaitingList extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
+            ID::make()->sortable()->onlyOnForms(),
 
             TextWithSlug::make('Name')
                 ->rules(['required'])
                 ->creationRules('unique:training_waiting_list,name')
                 ->slug('slug'),
 
-            Slug::make('Slug')->onlyOnForms(),
+            Slug::make('Slug')
+                ->hideFromDetail()
+                ->hideFromIndex()
+                ->hideWhenUpdating()
+                ->help('This is generated automatically and does not need to be amended.')
+                ->required(),
 
             Select::make('Department')->options([
                 'atc' => 'ATC Training',
