@@ -229,7 +229,6 @@ return [
         /*
          * Laravel Native Aliases (Deprecated)
          */
-        'Input' => Illuminate\Support\Facades\Input::class,
         'Inspiring' => Illuminate\Foundation\Inspiring::class,
 
         /*

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Adm\Mship\Account;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account as AccountData;
 use Auth;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 use Session;
 use Spatie\Permission\Models\Role as RoleData;
@@ -44,7 +44,7 @@ class Roles extends AdmController
         }
 
         // Let's try and load this RoleData
-        $role = RoleData::find(Input::get('role'));
+        $role = RoleData::find(Request::input('role'));
 
         if (!$role) {
             return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'roles'])

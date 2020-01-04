@@ -34,9 +34,9 @@
                             <div class="col-sm-4">
                                 <div class='checkbox'>
                                     @if(isset($permission))
-                                        {!! Form::checkbox("roles[".$r->id."]", $r->id, ($r->hasPermissionTo($permission) OR Input::old("roles.".$r->id) ? "checked='checked'" : "")) !!}
+                                        {!! Form::checkbox("roles[".$r->id."]", $r->id, ($r->hasPermissionTo($permission) OR Request::old("roles.".$r->id) ? "checked='checked'" : "")) !!}
                                     @else
-                                        {!! Form::checkbox("roles[".$r->id."]", $r->id, (Input::old("roles.".$r->id) ? "checked='checked'" : "")) !!}
+                                        {!! Form::checkbox("roles[".$r->id."]", $r->id, (Request::old("roles.".$r->id) ? "checked='checked'" : "")) !!}
                                     @endif
                                     {{ $r->name }}
                                 </div>
