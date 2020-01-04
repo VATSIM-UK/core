@@ -46,8 +46,6 @@ class NovaServiceProvider extends ServiceProvider
         }
 
         \Laravel\Nova\Nova::routes()
-            ->withAuthenticationRoutes()
-            ->withPasswordResetRoutes()
             ->register();
     }
 
