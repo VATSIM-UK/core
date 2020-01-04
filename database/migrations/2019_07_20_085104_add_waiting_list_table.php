@@ -90,15 +90,21 @@ class AddWaitingListTable extends Migration
             'updated_at' => \Carbon\Carbon::now(),
         ]);
 
-        $this->createPermission('waitingLists/*');
-        $this->createPermission('waitingLists/atc/base');
-        $this->createPermission('waitingLists/pilot/base');
-        $this->createPermission('waitingLists/atc/*');
-        $this->createPermission('waitingLists/pilot/*');
-        $this->createPermission('waitingLists/elevatedInformation');
         $this->createPermission('waitingLists/create');
-        $this->createPermission('waitingLists/atc/flags/add');
-        $this->createPermission('waitingLists/pilot/flags/add');
+        $this->createPermission('waitingLists/atc/view');
+        $this->createPermission('waitingLists/atc/addAccounts');
+        $this->createPermission('waitingLists/atc/removeAccount');
+        $this->createPermission('waitingLists/atc/elevatedInformation');
+        $this->createPermission('waitingLists/atc/addFlags');
+        $this->createPermission('waitingLists/atc/update');
+        $this->createPermission('waitingLists/atc/delete');
+        $this->createPermission('waitingLists/pilot/view');
+        $this->createPermission('waitingLists/pilot/addAccounts');
+        $this->createPermission('waitingLists/pilot/removeAccount');
+        $this->createPermission('waitingLists/pilot/elevatedInformation');
+        $this->createPermission('waitingLists/pilot/addFlags');
+        $this->createPermission('waitingLists/pilot/update');
+        $this->createPermission('waitingLists/pilot/delete');
     }
 
     /**
