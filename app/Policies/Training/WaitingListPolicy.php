@@ -18,12 +18,6 @@ class WaitingListPolicy extends BasePolicy
         if (parent::before($account, $policy)) {
             return true;
         }
-
-        if ($account->hasPermissionTo('waitingLists/*')) {
-            return true;
-        }
-
-        return null;
     }
 
     public function view(Account $account, WaitingList $waitingList)
@@ -63,7 +57,7 @@ class WaitingListPolicy extends BasePolicy
 
     public function create(Account $account)
     {
-        return false;
+        return $account->checkPermissionTo("waitingLists/create", self::GUARD);
     }
 
     public function restore(Account $account)
