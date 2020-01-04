@@ -18,7 +18,7 @@ return [
     |
     */
 
-    'name' => 'Nova Site',
+    'name' => 'VATSIM UK Administration Panel',
 
     /*
     |--------------------------------------------------------------------------
