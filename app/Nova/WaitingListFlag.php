@@ -24,6 +24,13 @@ class WaitingListFlag extends Resource
      */
     public static $title = 'id';
 
+    public static $group = 'Training';
+
+    public static function label()
+    {
+        return 'Waiting List Flags';
+    }
+
     /**
      * The columns that should be searched.
      *
