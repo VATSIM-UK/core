@@ -35,7 +35,6 @@ class AddFlagToWaitingList extends Action
         $flag = WaitingListFlag::create(
             [
                 'name' => $fields->name,
-                'default_value' => $fields->default_value,
                 'endorsement_id' => $fields->endorsement_id
             ]
         );
@@ -52,9 +51,6 @@ class AddFlagToWaitingList extends Action
     {
         return [
             Text::make('Name')->rules('required', 'min:3', 'unique:training_waiting_list_flags,name'),
-
-            Boolean::make('Default Value')->rules('required', 'boolean')
-                ->help('Ticking this field will mean that when the flag is assigned, it will default to true. The opposite is also true.'),
 
             Select::make('Endorsement', 'endorsement_id')->options(
                 Endorsement::all()->mapWithKeys(function ($item) {
