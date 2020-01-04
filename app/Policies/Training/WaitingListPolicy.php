@@ -35,11 +35,6 @@ class WaitingListPolicy extends BasePolicy
         return $account->checkPermissionTo("waitingLists/{$waitingList->department}/removeAccount", self::GUARD);
     }
 
-    public function elevatedInformation(Account $account, WaitingList $waitingList)
-    {
-        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/elevatedInformation", self::GUARD);
-    }
-
     public function addFlags(Account $account, WaitingList $waitingList)
     {
         return $account->checkPermissionTo("waitingLists/{$waitingList->department}/addFlags", self::GUARD);

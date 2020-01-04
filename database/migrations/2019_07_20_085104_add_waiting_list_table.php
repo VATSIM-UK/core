@@ -94,14 +94,12 @@ class AddWaitingListTable extends Migration
         $this->createPermission('waitingLists/atc/view');
         $this->createPermission('waitingLists/atc/addAccounts');
         $this->createPermission('waitingLists/atc/removeAccount');
-        $this->createPermission('waitingLists/atc/elevatedInformation');
         $this->createPermission('waitingLists/atc/addFlags');
         $this->createPermission('waitingLists/atc/update');
         $this->createPermission('waitingLists/atc/delete');
         $this->createPermission('waitingLists/pilot/view');
         $this->createPermission('waitingLists/pilot/addAccounts');
         $this->createPermission('waitingLists/pilot/removeAccount');
-        $this->createPermission('waitingLists/pilot/elevatedInformation');
         $this->createPermission('waitingLists/pilot/addFlags');
         $this->createPermission('waitingLists/pilot/update');
         $this->createPermission('waitingLists/pilot/delete');
