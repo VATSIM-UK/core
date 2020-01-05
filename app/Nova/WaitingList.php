@@ -93,7 +93,7 @@ class WaitingList extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->whereIn('department', $request->user()->authorisedDepartments());
+        return $query->whereIn('department', $request->user('web')->authorisedDepartments());
     }
 
     /**
@@ -145,7 +145,7 @@ class WaitingList extends Resource
             }),
 
             (new AddFlagToWaitingList)->canSee(function (Request $request) {
-                return $request->user()->can('addFlags', $this->model());
+                return $request->user()->can("waitingLists/{$this->model()->department}/addFlags", $this->model());
             })->canRun(function (Request $request) {
                 return $request->user()->can('addFlags', $this->model());
             })

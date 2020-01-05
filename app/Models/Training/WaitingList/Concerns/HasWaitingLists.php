@@ -20,11 +20,11 @@ trait HasWaitingLists
         if ($this->hasRole('privacc')) {
             $departments = ['atc', 'pilot'];
         }
-        if ($this->checkPermissionTo('waitingLists/atc/base')) {
-            Arr::add($departments, 0, 'atc');
+        if ($this->checkPermissionTo('waitingLists/atc/view', 'web')) {
+            array_push($departments, 'atc');
         }
-        if ($this->checkPermissionTo('waitingLists/pilot/base')) {
-            Arr::add($departments, 1, 'pilot');
+        if ($this->checkPermissionTo('waitingLists/pilot/view', 'web')) {
+            array_push($departments, 'pilot');
         }
 
         return $departments;
