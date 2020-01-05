@@ -78,13 +78,7 @@ class WaitingList extends Resource
                 'pilot' => 'Pilot Training',
             ])->displayUsingLabels()->rules(['required'])->sortable(),
 
-            new Panel('Notes on Flags', [
-                Heading::make('When deleting a flag, the changes will be made to the data but to see them visually,
-                you need to refresh the page.')->canSeeWhen('addFlags', $this)
-            ]),
-
             HasMany::make('Flags', 'flags', WaitingListFlag::class)
-                ->help('When removing a flag, please refresh the page.')
                 ->canSeeWhen('addFlags', $this),
 
             WaitingListsManager::make(),
