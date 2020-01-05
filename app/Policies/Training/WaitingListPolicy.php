@@ -25,6 +25,12 @@ class WaitingListPolicy extends BasePolicy
         return $account->checkPermissionTo("waitingLists/{$waitingList->department}/view", self::GUARD);
     }
 
+    public function viewAny(Account $account)
+    {
+        return $account->checkPermissionTo("waitingLists/atc/view") ||
+            $account->checkPermissionTo("waitingLists/pilot/view");
+    }
+
     public function addAccounts(Account $account, WaitingList $waitingList)
     {
         return $account->checkPermissionTo("waitingLists/{$waitingList->department}/addAccounts", self::GUARD);
