@@ -2,37 +2,24 @@
 
 namespace App\Nova;
 
-use App\Models\Atc\Endorsement;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
-class WaitingListFlag extends Resource
+class Endorsement extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'App\Models\Training\WaitingList\WaitingListFlag';
+    public static $model = 'App\Models\Atc\Endorsement';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'id';
-
-    public static $group = 'Training';
-
-    public static function label()
-    {
-        return 'Waiting List Flags';
-    }
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -40,13 +27,8 @@ class WaitingListFlag extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'name',
     ];
-
-    public static function authorizedToCreate(Request $request)
-    {
-        return false;
-    }
 
     public static function availableForNavigation(Request $request)
     {
@@ -62,13 +44,9 @@ class WaitingListFlag extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable()->onlyOnDetail(),
+            ID::make()->sortable(),
 
-            Text::make('Name'),
-
-            Boolean::make('Default Value'),
-
-            BelongsTo::make('Endorsement')->viewable(false),
+            Text::make('name'),
         ];
     }
 
