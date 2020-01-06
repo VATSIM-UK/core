@@ -19,8 +19,6 @@ class HerokuPostDeploy extends Command
         if (preg_match('/DEMO/', config('vatsim-sso.key'))) {
             $this->grantSuperman(Account::findOrRetrieve(1300001));
         }
-
-        $this->call('nova:install');
     }
 
     public function runMigrationsFor($environment)
