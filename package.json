@@ -14,7 +14,7 @@
     "build-waiting-lists-manager-prod": "cd nova-components/WaitingListsManager && yarn && yarn run prod",
     "build-waiting-lists-manager": "cd nova-components/WaitingListsManager && yarn && yarn run dev",
     "production": "node_modules/cross-env/src/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "heroku-postbuild": "yarn run prod && yarn run build-waiting-lists-manager-prod && pwd"
+    "heroku-postbuild": "yarn run prod"
   },
   "dependencies": {
     "admin-lte": "2.4.18",
