@@ -16,8 +16,7 @@ class HerokuPostDeploy extends Command
     {
         $this->runMigrationsFor(app()->environment());
 
-        if (preg_match('/DEMO/', config('vatsim-sso.key')))
-        {
+        if (preg_match('/DEMO/', config('vatsim-sso.key'))) {
             $this->grantSuperman(Account::findOrRetrieve(1300001));
         }
     }
