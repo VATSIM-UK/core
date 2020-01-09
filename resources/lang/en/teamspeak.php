@@ -7,7 +7,7 @@ return [
     'registration.notfound.exception' => 'No registration found for :dbid',
     'ban.network.ban' => 'You are currently serving a VATSIM.net ban.',
     'ban.system.ban' => 'You are currently serving a VATSIM UK ban.',
-    'inactive' => 'Your VATSIM membership is inactive - visit https://cert.vatsim.net/vatsimnet/statcheck.html',
+    'inactive' => 'VATSIM account inactive - visit https://cert.vatsim.net/vatsimnet/statcheck.html',
     'notification.mandatory.notify' => 'You must accept the new notifications that are published at https://www.vatsim.uk/dashboard',
     'notification.mandatory.poke' => 'You cannot connect to TeamSpeak until you read the notifications at https://www.vatsim.uk/dashboard',
     'notification.mandatory.kick' => 'You must accept the latest important notifications.',
