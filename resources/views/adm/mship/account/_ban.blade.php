@@ -9,8 +9,11 @@
                 <small>
                     <i class="fa fa-user"></i>
                     {{ !is_null($ban->banner) ? $ban->banner->name : 'Unknown' }}
-                    ({!! link_to_route("adm.mship.account.details", $ban->banned_by, [$ban->banned_by]) !!}
-                    )
+                    @if (!is_null($ban->banned_by))
+                        ({!! link_to_route("adm.mship.account.details", $ban->banned_by, [$ban->banned_by]) !!})
+                    @else
+                        (Unknown)
+                    @endif
 
                     &nbsp;&nbsp;&nbsp;&nbsp;
 
