@@ -75,6 +75,7 @@ jobs:
         directories:
           - node_modules
           - $HOME/.composer/cache/files
+          - nova-components/WaitingListsManager/node_modules
       notifications:
         email: false
     - stage: "Version"
