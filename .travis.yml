@@ -16,7 +16,9 @@ jobs:
         - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
         - yarn install
       install:
+        # Install Nova and component dependencies
         - php artisan nova:install
+        - cd nova-components/WaitingListsManager && composer install && cd ../../
         # If this is a PR, prep CodeCov
         - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
         - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
@@ -27,6 +29,12 @@ jobs:
           yarn run dev;
           else
           yarn run prod;
+          fi
+        # Setup Nova component dependencies
+        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
+          cd nova-components/WaitingListsManager && yarn && yarn run dev && cd ../../;
+          else
+          cd nova-components/WaitingListsManager && yarn && yarn run prod && cd ../../;
           fi
         - cp .env.example .env
         - php artisan key:generate
