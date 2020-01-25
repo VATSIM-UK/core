@@ -48,7 +48,7 @@ class WaitingListFeatureTest extends TestCase
             ])->assertSuccessful();
 
             Event::assertDispatched(AccountPromotedInWaitingList::class, function ($event) use ($account2) {
-                return $event->account->id === $account2->id && $event->waitingList->id === $this->waitingList->id;
+                return (int) $event->account->id === $account2->id && $event->waitingList->id === $this->waitingList->id;
             });
         });
     }
@@ -70,7 +70,7 @@ class WaitingListFeatureTest extends TestCase
             ])->assertSuccessful();
 
             Event::assertDispatched(AccountDemotedInWaitingList::class, function ($event) use ($account) {
-                return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+                return (int) $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
             });
         });
     }
@@ -88,7 +88,7 @@ class WaitingListFeatureTest extends TestCase
             ])->assertSuccessful();
 
             Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
-                return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+                return (int) $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
             });
         });
     }
@@ -106,7 +106,7 @@ class WaitingListFeatureTest extends TestCase
             ])->assertSuccessful();
 
             Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
-                return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+                return (int) $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
             });
         });
     }
