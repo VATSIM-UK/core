@@ -4,10 +4,6 @@
   "license": "MIT",
   "type": "project",
   "private": true,
-  "engines": {
-        "node": "8.12.x",
-        "npm": "6.4.x"
-  },
   "scripts": {
     "dev": "yarn run development",
     "development": "node_modules/cross-env/src/bin/cross-env.js NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
