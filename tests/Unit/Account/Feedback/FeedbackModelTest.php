@@ -88,4 +88,13 @@ class FeedbackModelTest extends TestCase
         $this->assertTrue(Feedback::sent()->get()->contains($this->feedback));
         $this->assertFalse(Feedback::sent()->get()->contains($unsentFeedback));
     }
+
+    /** @test */
+    public function itCalculatesActionedAtCorrectly()
+    {
+        $this->assertFalse($this->feedback->actioned);
+
+        $this->feedback->markActioned($this->privacc);
+        $this->assertTrue($this->feedback->fresh()->actioned);
+    }
 }

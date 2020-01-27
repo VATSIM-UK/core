@@ -74,6 +74,9 @@ return [
             'prefix'      => env('DB_MYSQL_PREFIX', ''),
             'strict'      => true,
             'engine'      => null,
+            'options'   => [
+                \PDO::ATTR_EMULATE_PREPARES => true
+            ]
         ],
 
         'cts' => [

@@ -98,7 +98,7 @@ class MockCtsDatabase
         );
 
         DB::connection('cts')->statement(
-            "CREATE TABLE `memberships` 
+            "CREATE TABLE `memberships`
             (
               `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
               `rts_id` smallint(5) unsigned NOT NULL DEFAULT 0,

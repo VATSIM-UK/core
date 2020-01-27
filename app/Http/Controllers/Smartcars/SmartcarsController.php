@@ -86,7 +86,7 @@ class SmartcarsController extends BaseController
 
             return $this->viewMake('fte.history')->with('pireps', $pireps);
         } else {
-            $this->authorize('view', $pirep);
+            $this->authorize('viewAccount', $pirep);
 
             return $this->viewMake('fte.completed-flight')
                 ->with('pirep', $pirep)
