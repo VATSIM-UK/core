@@ -5,7 +5,8 @@
   "type": "project",
   "private": true,
   "engines": {
-        "node": "10.x"
+        "node": "8.12.x",
+        "npm": "6.4.x"
   },
   "scripts": {
     "dev": "yarn run development",
