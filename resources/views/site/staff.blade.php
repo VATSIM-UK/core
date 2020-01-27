@@ -88,7 +88,6 @@
                              width=50px
                              class="img-responsive center-block profile-picture"/>
                         <p class="text-center">Loui Ringer</p>
-
                         <h4>Marketing Team</h4>
                         <table class="table">
                             <tr>

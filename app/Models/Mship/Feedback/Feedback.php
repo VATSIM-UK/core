@@ -175,4 +175,14 @@ class Feedback extends Model
         $this->actioned_by_id = $sender->id;
         $this->save();
     }
+
+    public function getOptions($options)
+    {
+        return json_decode($options);
+    }
+
+    public function getActionedAttribute()
+    {
+        return !is_null($this->actioned_at);
+    }
 }
