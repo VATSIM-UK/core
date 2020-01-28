@@ -7,14 +7,10 @@ use App\Nova\Actions\Training\AddStudentToWaitingList;
 use Benjaminhirsch\NovaSlugField\Slug;
 use Benjaminhirsch\NovaSlugField\TextWithSlug;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Panel;
 use Vatsimuk\WaitingListsManager\WaitingListsManager;
 
 class WaitingList extends Resource
