@@ -139,7 +139,7 @@ class WaitingList extends Resource
             }),
 
             (new AddFlagToWaitingList)->canSee(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$this->model()->department}/addFlags");
+                return $request->user()->can('use-permission', "waitingLists/{$request->findModelQuery()->first()->department}/addFlags");
             })->canRun(function (Request $request) {
                 return $request->user()->can('use-permission', "waitingLists/{$request->findModelQuery()->first()->department}/addFlags");
             })
