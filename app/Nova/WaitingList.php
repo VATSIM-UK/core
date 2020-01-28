@@ -133,15 +133,15 @@ class WaitingList extends Resource
     {
         return [
             (new AddStudentToWaitingList)->canSee(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$this->model()->department}/addAccounts");
+                return $request->user()->can('use-permission', "waitingLists/{$request->findModelQuery()->first()->department}/addAccounts");
             })->canRun(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$this->model()->department}/addAccounts");
+                return $request->user()->can('use-permission', "waitingLists/{$request->findModelQuery()->first()->department}/addAccounts");
             }),
 
             (new AddFlagToWaitingList)->canSee(function (Request $request) {
                 return $request->user()->can('use-permission', "waitingLists/{$this->model()->department}/addFlags");
             })->canRun(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$this->model()->department}/addFlags");
+                return $request->user()->can('use-permission', "waitingLists/{$request->findModelQuery()->first()->department}/addFlags");
             })
         ];
     }
