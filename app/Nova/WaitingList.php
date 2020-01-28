@@ -131,18 +131,20 @@ class WaitingList extends Resource
      */
     public function actions(Request $request)
     {
-        return [
-            (new AddStudentToWaitingList)->canSee(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$request->findModelQuery()->first()->department}/addAccounts");
-            })->canRun(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$request->findModelQuery()->first()->department}/addAccounts");
-            }),
+        $model = optional($request->findModelQuery()->first());
 
-            (new AddFlagToWaitingList)->canSee(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$request->findModelQuery()->first()->department}/addFlags");
-            })->canRun(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$request->findModelQuery()->first()->department}/addFlags");
-            })
+        return [
+            (new AddStudentToWaitingList)->canSee(function (Request $request) use ($model) {
+                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addAccounts");
+            })->canRun(function (Request $request) use ($model) {
+                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addAccounts");
+            })->onlyOnDetail(),
+
+            (new AddFlagToWaitingList)->canSee(function (Request $request) use ($model) {
+                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addFlags");
+            })->canRun(function (Request $request) use ($model) {
+                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addFlags");
+            })->onlyOnDetail()
         ];
     }
 }
