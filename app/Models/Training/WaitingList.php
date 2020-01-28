@@ -223,15 +223,6 @@ class WaitingList extends Model
         return $query->whereHas('staff');
     }
 
-    public function generateTemplatePermissions()
-    {
-        return collect([
-            "waitingLists/{$this->department}/{$this->slug}/view",
-            "waitingLists/{$this->department}/{$this->slug}/edit",
-            "waitingLists/{$this->department}/{$this->slug}/accounts/add",
-        ]);
-    }
-
     public function isAtcList()
     {
         return $this->department == self::ATC_DEPARTMENT;

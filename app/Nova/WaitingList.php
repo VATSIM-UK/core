@@ -7,13 +7,10 @@ use App\Nova\Actions\Training\AddStudentToWaitingList;
 use Benjaminhirsch\NovaSlugField\Slug;
 use Benjaminhirsch\NovaSlugField\TextWithSlug;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Panel;
 use Vatsimuk\WaitingListsManager\WaitingListsManager;
 
 class WaitingList extends Resource
@@ -131,17 +128,19 @@ class WaitingList extends Resource
      */
     public function actions(Request $request)
     {
+        $model = optional($request->findModelQuery()->first());
+
         return [
-            (new AddStudentToWaitingList)->canSee(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$this->model()->department}/addAccounts");
-            })->canRun(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$this->model()->department}/addAccounts");
+            (new AddStudentToWaitingList)->canSee(function (Request $request) use ($model) {
+                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addAccounts");
+            })->canRun(function (Request $request) use ($model) {
+                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addAccounts");
             }),
 
-            (new AddFlagToWaitingList)->canSee(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$this->model()->department}/addFlags");
-            })->canRun(function (Request $request) {
-                return $request->user()->can('use-permission', "waitingLists/{$this->model()->department}/addFlags");
+            (new AddFlagToWaitingList)->canSee(function (Request $request) use ($model) {
+                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addFlags");
+            })->canRun(function (Request $request) use ($model) {
+                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addFlags");
             })
         ];
     }

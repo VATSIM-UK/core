@@ -24,9 +24,6 @@ class TrainingEventServiceProvider extends ServiceProvider
         \App\Events\Training\AccountNoteChanged::class => [
             \App\Listeners\Training\WaitingList\LogNoteChanged::class,
         ],
-        \App\Events\Training\WaitingListCreated::class => [
-            \App\Listeners\Training\WaitingList\ScaffoldWaitingListPermissions::class,
-        ]
     ];
 
     /**
