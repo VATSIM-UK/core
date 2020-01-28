@@ -128,20 +128,20 @@ class WaitingList extends Resource
      */
     public function actions(Request $request)
     {
-        $model = optional($request->findModelQuery()->first());
-
         return [
-            (new AddStudentToWaitingList)->canSee(function (Request $request) use ($model) {
-                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addAccounts");
-            })->canRun(function (Request $request) use ($model) {
-                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addAccounts");
-            }),
+            (new AddStudentToWaitingList)
+                ->onlyOnDetail()
+                ->canSee(static function (NovaRequest $request) {
+                    $department = optional($request->findModelQuery()->first())->department;
+                    return $request->user()->can('use-permission', "waitingLists/{$department}/addAccounts") ?: true;
+                }),
 
-            (new AddFlagToWaitingList)->canSee(function (Request $request) use ($model) {
-                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addFlags");
-            })->canRun(function (Request $request) use ($model) {
-                return $request->user()->can('use-permission', "waitingLists/{$model->department}/addFlags");
-            })
+            (new AddFlagToWaitingList)
+                ->onlyOnDetail()
+                ->canSee(static function (NovaRequest $request) {
+                    $department = optional($request->findModelQuery()->first())->department;
+                    return $request->user()->can('use-permission', "waitingLists/{$department}/addFlags") ?: true;
+                })
         ];
     }
 }
