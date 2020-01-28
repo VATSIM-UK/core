@@ -7,6 +7,7 @@ use App\Nova\Actions\Training\AddStudentToWaitingList;
 use Benjaminhirsch\NovaSlugField\Slug;
 use Benjaminhirsch\NovaSlugField\TextWithSlug;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Heading;
@@ -138,13 +139,13 @@ class WaitingList extends Resource
                 return $request->user()->can('use-permission', "waitingLists/{$model->department}/addAccounts");
             })->canRun(function (Request $request) use ($model) {
                 return $request->user()->can('use-permission', "waitingLists/{$model->department}/addAccounts");
-            })->onlyOnDetail(),
+            }),
 
             (new AddFlagToWaitingList)->canSee(function (Request $request) use ($model) {
                 return $request->user()->can('use-permission', "waitingLists/{$model->department}/addFlags");
             })->canRun(function (Request $request) use ($model) {
                 return $request->user()->can('use-permission', "waitingLists/{$model->department}/addFlags");
-            })->onlyOnDetail()
+            })
         ];
     }
 }
