@@ -4,6 +4,7 @@
             <bucket
                 title="Eligible Waiting List (EWL)"
                 :accounts="eligibleAccounts"
+                :type="type"
                 @removeAccount="removeAccount"
                 @deferAccount="deferAccount"
                 @activeAccount="activeAccount"
@@ -13,6 +14,7 @@
             <bucket
                 title="Master Waiting List (MWL)"
                 :accounts="normalAccounts"
+                :type="type"
                 @removeAccount="removeAccount"
                 @deferAccount="deferAccount"
                 @activeAccount="activeAccount"
@@ -58,8 +60,15 @@
         mounted() {
             this.loadAccounts()
 
+            console.log(this.panel.fields[0].type)
             // required to detect any changes in the other buckets which might be present on the page.
             EventBus.$on('list-changed', this.loadAccounts)
+        },
+
+        computed: {
+            type() {
+                return this.panel.fields[0].type
+            }
         },
 
         methods: {
