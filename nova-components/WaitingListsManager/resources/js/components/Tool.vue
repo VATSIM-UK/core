@@ -60,9 +60,7 @@
         mounted() {
             this.loadAccounts()
 
-            console.log(this.panel)
             console.log(this.panel.fields[0].type)
-
             // required to detect any changes in the other buckets which might be present on the page.
             EventBus.$on('list-changed', this.loadAccounts)
         },
