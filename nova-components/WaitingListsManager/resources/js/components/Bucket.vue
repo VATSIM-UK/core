@@ -14,7 +14,7 @@
                     <th class="text-left">CID</th>
                     <th class="text-left">Added On</th>
                     <th class="text-left">Notes</th>
-                    <th class="text-left">Hour Check</th>
+                    <th class="text-left" v-if="showHourChecker">Hour Check</th>
                     <th>Status Change</th>
                     <th>Flags</th>
                     <th></th>
@@ -35,7 +35,7 @@
                             :account="account"
                             @changeNote="changeNote"/>
                     </td>
-                    <td>
+                    <td v-if="showHourChecker">
                         <span class="inline-block rounded-full w-2 h-2"
                               :class="{ 'bg-success': account.atcHourCheck, 'bg-danger': !account.atcHourCheck }"
                         ></span>
@@ -81,7 +81,7 @@
     export default {
         name: "Bucket",
 
-        props: ['accounts', 'title'],
+        props: ['accounts', 'title', 'type'],
 
         data() {
             return {
@@ -118,6 +118,10 @@
             numberOfAccounts() {
                 if (this.accounts) return this.$props.accounts.length
             },
+
+            showHourChecker () {
+                return this.type === 'atc'
+            }
         },
     }
 </script>
