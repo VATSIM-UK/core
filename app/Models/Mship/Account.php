@@ -22,6 +22,7 @@ use App\Models\Mship\Concerns\HasStates;
 use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Note\Type;
+use App\Models\Training\WaitingList\Concerns\HasWaitingLists;
 use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
@@ -162,7 +163,8 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
         HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount, HasForumAccount, HasCTSAccount,
-        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications, HasEmails, HasRoles;
+        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword,
+        HasNotifications, HasEmails, HasRoles, HasWaitingLists;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
