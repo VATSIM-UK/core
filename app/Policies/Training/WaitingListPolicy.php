@@ -31,9 +31,9 @@ class WaitingListPolicy extends BasePolicy
             $account->checkPermissionTo("waitingLists/pilot/view", self::GUARD);
     }
 
-    public function addAccounts(Account $account, WaitingList $waitingList)
+    public function addAccounts(Account $account)
     {
-        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/addAccounts", self::GUARD);
+        return $account->checkPermissionTo("waitingLists/addAccounts", self::GUARD);
     }
 
     public function removeAccount(Account $account, WaitingList $waitingList)
@@ -41,9 +41,9 @@ class WaitingListPolicy extends BasePolicy
         return $account->checkPermissionTo("waitingLists/{$waitingList->department}/removeAccount", self::GUARD);
     }
 
-    public function addFlags(Account $account, WaitingList $waitingList)
+    public function addFlags(Account $account)
     {
-        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/addFlags", self::GUARD);
+        return $account->checkPermissionTo("waitingLists/addFlags", self::GUARD);
     }
 
     public function update(Account $account, WaitingList $waitingList)

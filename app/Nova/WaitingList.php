@@ -131,16 +131,18 @@ class WaitingList extends Resource
         return [
             (new AddStudentToWaitingList)
                 ->onlyOnDetail()
-                ->canSee(static function (NovaRequest $request) {
-                    $department = optional($request->findModelQuery()->first())->department;
-                    return $request->user()->can('use-permission', "waitingLists/{$department}/addAccounts") ?: true;
+                ->canSee(function (Request $request) {
+                    return $request->user()->can('use-permission', "waitingLists/addAccounts");
+                })->canRun(function (Request $request) {
+                    return $request->user()->can('use-permission', "waitingLists/addAccounts");
                 }),
 
             (new AddFlagToWaitingList)
                 ->onlyOnDetail()
-                ->canSee(static function (NovaRequest $request) {
-                    $department = optional($request->findModelQuery()->first())->department;
-                    return $request->user()->can('use-permission', "waitingLists/{$department}/addFlags") ?: true;
+                ->canSee(function (Request $request) {
+                    return $request->user()->can('use-permission', "waitingLists/addFlags");
+                })->canRun(function (Request $request) {
+                    return $request->user()->can('use-permission', "waitingLists/addFlags");
                 })
         ];
     }
