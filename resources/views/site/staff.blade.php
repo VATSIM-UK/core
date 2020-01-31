@@ -37,22 +37,13 @@
                     </div>
                     <div class="panel-body">
 
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <h4 class="text-center">Division Director (VATUK1)</h4><br/>
                             <img src="{{ $teamPhotos[91] }}"
                                  width=50px
                                  class="img-responsive center-block profile-picture"/>
                             <p class="text-center">Simon Irvine</p>
                         </div>
-
-                        <div class="col-md-6">
-                            <h4 class="text-center">Deputy Division Director (VATUK2)</h4><br/>
-                            <img src="{{ $teamPhotos[3580] }}"
-                                 width=50px
-                                 class="img-responsive center-block profile-picture"/>
-                            <p class="text-center">Nathan Donnelly</p>
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -75,7 +66,19 @@
                         <p class="text-center">Chris Pawley</p>
                     </div>
                 </div>
-            </div>
+
+                    <div class="panel panel-ukblue">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Member Services
+                        </div>
+                        <div class="panel-body">
+                            <h4>Member Services Director (VATUK3)</h4><br/>
+                            <img src="{{ $teamPhotos[54] }}"
+                                 width=50px
+                                 class="img-responsive center-block profile-picture"/>
+                            <p class="text-center">Tom Earl</p>
+                        </div>
+                    </div>
+                </div>
 
             <!-- Marketing -->
             <div class="col-md-4">
@@ -88,7 +91,6 @@
                              width=50px
                              class="img-responsive center-block profile-picture"/>
                         <p class="text-center">Loui Ringer</p>
-
                         <h4>Marketing Team</h4>
                         <table class="table">
                             <tr>
@@ -201,10 +203,6 @@
                                 <tr>
                                     <td>TG Instructor (New Controller)</td>
                                     <td>Fergus Walsh</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Instructor (TG1)</td>
-                                    <td>Nathan Donnelly</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TG1)</td>
