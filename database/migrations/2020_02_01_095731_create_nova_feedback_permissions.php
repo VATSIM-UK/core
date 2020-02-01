@@ -14,14 +14,14 @@ class CreateNovaFeedbackPermissions extends Migration
      */
     public function up()
     {
+        $this->createPermission('feedback/submitter');
+        $this->createPermission('feedback/action');
         $this->createPermission('feedback/atc/view');
         $this->createPermission('feedback/pilot/view');
         $this->createPermission('feedback/group/view');
         $this->createPermission('feedback/atcmentor/view');
         $this->createPermission('feedback/eve/view');
         $this->createPermission('feedback/live/view');
-        $this->createPermission('feedback/submitter');
-        $this->createPermission('feedback/action');
 
         $this->deletePermission("adm/mship/feedback");
         $this->deletePermission("adm/mship/feedback/list");
@@ -62,7 +62,12 @@ class CreateNovaFeedbackPermissions extends Migration
 
     private function deletePermission(string $name)
     {
-        $permission = \Spatie\Permission\Models\Permission::findByName($name);
+        try {
+            $permission = \Spatie\Permission\Models\Permission::findByName($name);
+        } catch (\Spatie\Permission\Exceptions\PermissionDoesNotExist $e) {
+            return false;
+        }
+
         return \Spatie\Permission\Models\Permission::destroy($permission->id);
     }
 }
