@@ -65,7 +65,7 @@ class Feedback extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
+            ID::make()->sortable()->hideFromDetail(),
 
             Text::make('Feedback Form', function () {
                 return $this->form->name;
