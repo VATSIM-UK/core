@@ -59,7 +59,8 @@ class Feedback extends Resource
 
             BelongsTo::make('Subject', 'account', 'App\Nova\Account'),
 
-            BelongsTo::make('Submitted By', 'submitter', 'App\Nova\Account'),
+            BelongsTo::make('Submitted By', 'submitter', 'App\Nova\Account')
+                ->canSeeWhen("seeSubmitter", $this),
 
             Text::make('Feedback Form', function () {
                 return $this->form->name;
@@ -147,8 +148,8 @@ class Feedback extends Resource
     public function actions(Request $request)
     {
         return [
-            (new Actions\ActionFeedback)->onlyOnDetail(),
-            (new Actions\SendFeedback)->onlyOnDetail(),
+            (new Actions\ActionFeedback)->onlyOnDetail()->canSeeWhen('actionFeedback', $this),
+            (new Actions\SendFeedback)->onlyOnDetail()->canSeeWhen('actionFeedback', $this),
         ];
     }
 }
