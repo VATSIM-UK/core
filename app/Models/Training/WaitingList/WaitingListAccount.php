@@ -8,7 +8,7 @@ use App\Models\Training\WaitingList;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 
 class WaitingListAccount extends Pivot
 {
@@ -134,8 +134,8 @@ class WaitingListAccount extends Pivot
     {
         $hourCheckKey = "{$this->cacheKey()}:atcHourCheck";
 
-        if ((bool) Redis::exists($hourCheckKey)) {
-            return (bool) Redis::get($hourCheckKey);
+        if ((bool) Cache::has($hourCheckKey)) {
+            return (bool) Cache::get($hourCheckKey);
         }
 
         // gather the sessions from the last 3 months in the UK (isUK scope)
@@ -146,11 +146,11 @@ class WaitingListAccount extends Pivot
         $minutesRequired = 720;
         // for a user in a waiting list, they should have > 12 hours controlled within the UK.
         if ($hours >= $minutesRequired) {
-            Redis::set($hourCheckKey, true, 'EX', $this->cacheTtl);
+            Cache::put($hourCheckKey, true, $this->cacheTtl);
             return true;
         }
 
-        Redis::set($hourCheckKey, false, 'EX', $this->cacheTtl);
+        Cache::put($hourCheckKey, false, $this->cacheTtl);
         return false;
     }
 

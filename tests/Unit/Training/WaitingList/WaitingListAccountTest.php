@@ -6,7 +6,7 @@ use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList\WaitingListStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class WaitingListAccountTest extends TestCase
@@ -225,13 +225,13 @@ class WaitingListAccountTest extends TestCase
         // grab the pivot model
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
 
-        Redis::shouldReceive('exists')
+        Cache::shouldReceive('has')
             ->once()
             ->andReturn(false);
 
-        Redis::shouldReceive('set')
+        Cache::shouldReceive('put')
             ->once()
-            ->with("waiting-list-account:{$waitingListAccount->id}:atcHourCheck", false, 'EX', $ttlDay);
+            ->with("waiting-list-account:{$waitingListAccount->id}:atcHourCheck", false, $ttlDay);
 
         $this->assertFalse($waitingListAccount->atcHourCheck());
     }
@@ -254,13 +254,13 @@ class WaitingListAccountTest extends TestCase
         // grab the pivot model
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
 
-        Redis::shouldReceive('exists')
+        Cache::shouldReceive('has')
             ->once()
             ->andReturn(false);
 
-        Redis::shouldReceive('set')
+        Cache::shouldReceive('put')
             ->once()
-            ->with("waiting-list-account:{$waitingListAccount->id}:atcHourCheck", true, 'EX', $ttlDay);
+            ->with("waiting-list-account:{$waitingListAccount->id}:atcHourCheck", true, $ttlDay);
 
         $this->assertTrue($waitingListAccount->atcHourCheck());
     }
@@ -273,11 +273,11 @@ class WaitingListAccountTest extends TestCase
 
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
 
-        Redis::shouldReceive('exists')
+        Cache::shouldReceive('has')
             ->once()
             ->andReturn(true);
 
-        Redis::shouldReceive('get')
+        Cache::shouldReceive('get')
             ->once()
             ->andReturn(false);
 
