@@ -67,14 +67,15 @@ class Feedback extends Resource
         return [
             ID::make()->sortable(),
 
+            Text::make('Feedback Form', function () {
+                return $this->form->name;
+            }),
+
             BelongsTo::make('Subject', 'account', 'App\Nova\Account'),
 
             BelongsTo::make('Submitted By', 'submitter', 'App\Nova\Account')
                 ->canSeeWhen("seeSubmitter", $this),
 
-            Text::make('Feedback Form', function () {
-                return $this->form->name;
-            }),
             DateTime::make('Submitted At', 'created_at')->onlyOnDetail()->format('Do MMMM YYYY HH:mm'),
 
             new Panel('Actioned Information', [
