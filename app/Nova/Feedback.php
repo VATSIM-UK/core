@@ -159,8 +159,16 @@ class Feedback extends Resource
     public function actions(Request $request)
     {
         return [
-            (new Actions\ActionFeedback)->onlyOnDetail()->canSeeWhen('actionFeedback', $this),
-            (new Actions\SendFeedback)->onlyOnDetail()->canSeeWhen('actionFeedback', $this),
+            (new Actions\ActionFeedback)->onlyOnDetail()
+                ->canSeeWhen('actionFeedback', $this)
+                ->canRun(function () {
+                    return true;
+                }),
+            (new Actions\SendFeedback)->onlyOnDetail()
+                ->canSeeWhen('actionFeedback', $this)
+                ->canRun(function () {
+                    return true;
+                }),
         ];
     }
 }
