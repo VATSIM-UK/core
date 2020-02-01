@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Sixlive\TextCopy\TextCopy;
 
 class FeedbackResponse extends Resource
 {
@@ -87,7 +88,7 @@ class FeedbackResponse extends Resource
                 return $this->question->question;
             }),
 
-            Text::make('Response', 'response')->asHtml(),
+            TextCopy::make('Response', 'response')->copyButtonTitle('Copy Value'),
         ];
     }
 
