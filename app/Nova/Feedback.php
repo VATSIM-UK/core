@@ -83,7 +83,7 @@ class Feedback extends Resource
                 }),
                 DateTime::make('Actioned At')->canSee(function () {
                     return $this->actioned_at != null;
-                })->onlyOnDetail(),
+                })->onlyOnDetail()->format('Do MMMM YYYY HH:mm'),
                 BelongsTo::make('Actioned By', 'actioner', 'App\Nova\Account')->canSee(function () {
                     return $this->actioned_at != null;
                 })->onlyOnDetail(),
@@ -98,7 +98,7 @@ class Feedback extends Resource
                 }),
                 DateTime::make('Sent At')->canSee(function () {
                     return $this->sent_at != null;
-                })->onlyOnDetail(),
+                })->onlyOnDetail()->format('Do MMMM YYYY HH:mm'),
                 BelongsTo::make('Sent By', 'actioner', 'App\Nova\Account')->canSee(function () {
                     return $this->sent_at != null;
                 })->onlyOnDetail(),
