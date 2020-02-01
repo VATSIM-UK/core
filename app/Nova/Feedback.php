@@ -75,6 +75,7 @@ class Feedback extends Resource
             Text::make('Feedback Form', function () {
                 return $this->form->name;
             }),
+            DateTime::make('Submitted At', 'created_at')->onlyOnDetail()->format('Do MMMM YYYY HH:mm'),
 
             new Panel('Actioned Information', [
                 Boolean::make('Actioned', function () {
