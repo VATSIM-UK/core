@@ -1,0 +1,18 @@
+{
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        },
+        {
+            "type": "path",
+            "url": "nova-components/WaitingListsManager"
+        }
+    ],
+    "require": {
+        "benjaminhirsch/nova-slug-field": "^1.2",
+        "laravel/nova": "^2.0",
+        "vatsimuk/waiting-lists-manager": "dev-master",
+        "vyuldashev/nova-permission": "^2.4"
+    }
+}
