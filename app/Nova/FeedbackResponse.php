@@ -62,6 +62,21 @@ class FeedbackResponse extends Resource
         return false;
     }
 
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToUpdate(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToView(Request $request)
+    {
+        return false;
+    }
+
     /**
      * Remove from navigation as only a background resource.
      *
