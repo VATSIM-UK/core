@@ -13,7 +13,7 @@ class AdminMiddlewareTest extends TestCase
     /** @test */
     public function testAGuestCannotAccessAdmEndpoints()
     {
-        $this->get(route('adm.mship.feedback.new'))
+        $this->get(route('adm.dashboard'))
             ->assertRedirect(route('login'));
     }
 
