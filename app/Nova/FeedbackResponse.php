@@ -51,12 +51,6 @@ class FeedbackResponse extends Resource
         return $query->orderBy('id');
     }
 
-    /**
-     * Globally disable ability to create your own responses on the admin side.
-     *
-     * @param Request $request
-     * @return bool
-     */
     public static function authorizedToCreate(Request $request)
     {
         return false;
