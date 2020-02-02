@@ -167,7 +167,7 @@
                     </li>
                     @if(Auth::user()->can('use-permission', 'adm'))
                         <li class="dropdown dropdown-large">
-                            <a href="{{ route("adm.dashboard") }}" title="Admin Dashboard">
+                            <a href="{{ route("adm.index") }}" title="Admin Dashboard">
                                 <i class="fa fa-dashboard"></i>
                             </a>
                         </li>

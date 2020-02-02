@@ -13,14 +13,14 @@ class AdminMiddlewareTest extends TestCase
     /** @test */
     public function testAGuestCannotAccessAdmEndpoints()
     {
-        $this->get(route('adm.dashboard'))
+        $this->get(route('adm.index'))
             ->assertRedirect(route('login'));
     }
 
     /** @test */
     public function testANonStaffMemberCannotAccessAdmEndpoints()
     {
-        $this->actingAs($this->user)->get('adm/dashboard')
+        $this->actingAs($this->user)->get('adm')
             ->assertForbidden();
     }
 
@@ -28,7 +28,7 @@ class AdminMiddlewareTest extends TestCase
     public function testPrivaccCanBypassGuard()
     {
         $this->actingAs($this->privacc)
-            ->get('adm/dashboard')
+            ->get('adm')
             ->assertSuccessful();
     }
 
@@ -38,7 +38,7 @@ class AdminMiddlewareTest extends TestCase
         config()->set('app.env', 'production');
 
         $this->actingAs($this->privacc)
-            ->get('adm/dashboard')
+            ->get('adm')
             ->assertForbidden();
     }
 }
