@@ -56,6 +56,11 @@ class Feedback extends Resource
         return false;
     }
 
+    public static function availableForNavigation(Request $request)
+    {
+        return $request->user()->can('use-permission', 'feedback');
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
