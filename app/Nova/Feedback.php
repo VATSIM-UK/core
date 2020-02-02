@@ -10,6 +10,7 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 
 class Feedback extends Resource
@@ -59,6 +60,11 @@ class Feedback extends Resource
     public static function availableForNavigation(Request $request)
     {
         return $request->user()->can('use-permission', 'feedback');
+    }
+
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        return $query->where('account_id', '!=', $request->user()->id);
     }
 
     /**
