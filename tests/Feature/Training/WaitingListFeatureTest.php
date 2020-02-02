@@ -26,6 +26,8 @@ class WaitingListFeatureTest extends TestCase
     {
         parent::setUp();
 
+        $this->markNovaTest();
+
         $this->waitingList = factory(WaitingList::class)->create();
 
         Route::middlewareGroup('nova', []);
@@ -34,8 +36,6 @@ class WaitingListFeatureTest extends TestCase
     /** @test * */
     public function testAStudentCanBePromoted()
     {
-        $this->markNovaTest();
-
         [$account, $account2, $account3] = factory(Account::class, 3)->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
@@ -56,8 +56,6 @@ class WaitingListFeatureTest extends TestCase
     /** @test * */
     public function testAStudentCanBeDemoted()
     {
-        $this->markNovaTest();
-
         [$account, $account2, $account3] = factory(Account::class, 3)->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
