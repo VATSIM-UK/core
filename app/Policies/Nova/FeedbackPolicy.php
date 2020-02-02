@@ -31,24 +31,4 @@ class FeedbackPolicy extends BasePolicy
     {
         return $account->checkPermissionTo("feedback/submitter", self::GUARD);
     }
-
-    public function create()
-    {
-        return false;
-    }
-
-    public function restore(Account $account)
-    {
-        return false;
-    }
-
-    public function delete(Account $account)
-    {
-        return false;
-    }
-
-    public function forceDelete(Account $account)
-    {
-        return false;
-    }
 }
