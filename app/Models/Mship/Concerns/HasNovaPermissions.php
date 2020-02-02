@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Models\Training\WaitingList\Concerns;
+namespace App\Models\Mship\Concerns;
 
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
-use Illuminate\Support\Arr;
 
-trait HasWaitingLists
+trait HasNovaPermissions
 {
     public function waitingLists()
     {
@@ -14,7 +13,7 @@ trait HasWaitingLists
             'account_id', 'list_id')->using(WaitingListAccount::class)->withPivot(['id', 'position']);
     }
 
-    public function authorisedDepartments()
+    public function waitingListDepartments()
     {
         $departments = [];
         if ($this->hasRole('privacc')) {
