@@ -4,6 +4,11 @@
         <title>Be right back.</title>
 
         <link href="//fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                setTimeout(() => window.location.href = '/', 5000);
+            });
+        </script>
 
         <style>
             html, body {
