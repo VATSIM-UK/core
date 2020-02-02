@@ -64,7 +64,7 @@ class Feedback extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->where('account_id', '!=', $request->user()->id);
+        return $query->whereNotIn('account_id', $request->user()->hiddenFeedbackUsers());
     }
 
     /**

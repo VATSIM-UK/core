@@ -20,7 +20,7 @@ class FeedbackPolicy extends BasePolicy
     public function view(Account $account, Feedback $feedback)
     {
         return $account->checkPermissionTo("feedback/view/{$feedback->form->slug}", self::GUARD)
-            && $feedback->account_id != $account->id;
+            && $feedback->account_id != $account->hiddenFeedbackUsers();
     }
 
     public function actionFeedback(Account $account)

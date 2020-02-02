@@ -17,6 +17,7 @@ class CreateNovaFeedbackPermissions extends Migration
         $this->createPermission('feedback');
         $this->createPermission('feedback/submitter');
         $this->createPermission('feedback/action');
+        $this->createPermission('feedback/own');
         $this->createPermission('feedback/view/atc');
         $this->createPermission('feedback/view/pilot');
         $this->createPermission('feedback/view/group');

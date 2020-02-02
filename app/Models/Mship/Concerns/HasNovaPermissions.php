@@ -28,4 +28,13 @@ trait HasNovaPermissions
 
         return $departments;
     }
+
+    public function hiddenFeedbackUsers()
+    {
+        if ($this->can('use-permission', 'feedback/own')) {
+            return [];
+        }
+
+        return [$this->id];
+    }
 }
