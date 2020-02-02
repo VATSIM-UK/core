@@ -17,12 +17,12 @@ class CreateNovaFeedbackPermissions extends Migration
         $this->createPermission('feedback');
         $this->createPermission('feedback/submitter');
         $this->createPermission('feedback/action');
-        $this->createPermission('feedback/atc/view');
-        $this->createPermission('feedback/pilot/view');
-        $this->createPermission('feedback/group/view');
-        $this->createPermission('feedback/atcmentor/view');
-        $this->createPermission('feedback/eve/view');
-        $this->createPermission('feedback/live/view');
+        $this->createPermission('feedback/view/atc');
+        $this->createPermission('feedback/view/pilot');
+        $this->createPermission('feedback/view/group');
+        $this->createPermission('feedback/view/atcmentor');
+        $this->createPermission('feedback/view/eve');
+        $this->createPermission('feedback/view/live');
 
         $this->deletePermission("adm/mship/feedback");
         $this->deletePermission("adm/mship/feedback/list");
