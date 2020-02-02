@@ -466,7 +466,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <a href="{{ route('site.community.teamspeak') }}">
-                                    Teamspeak Guide
+                                    Teamspeak guide
                                 </a>
                             </div>
                         </div>
