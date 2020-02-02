@@ -6,6 +6,7 @@ use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList\WaitingListStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class WaitingListAccountTest extends TestCase
@@ -211,5 +212,75 @@ class WaitingListAccountTest extends TestCase
         $waitingListAccount->notes = 'This is a note';
 
         $this->assertEquals('This is a note', $waitingListAccount->notes);
+    }
+
+    /** @test */
+    public function itCachesHourRequirementFlagWhenNotMetAndNoKeyExists()
+    {
+        $ttlDay = 86400;
+        $account = factory(Account::class)->create();
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        // grab the pivot model
+        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
+
+        Cache::shouldReceive('has')
+            ->once()
+            ->andReturn(false);
+
+        Cache::shouldReceive('put')
+            ->once()
+            ->with("waiting-list-account:{$waitingListAccount->id}:atcHourCheck", false, $ttlDay);
+
+        $this->assertFalse($waitingListAccount->atcHourCheck());
+    }
+
+    /** @test */
+    public function itCachesHourRequirementWheMetAndKeyDoesntExist()
+    {
+        $ttlDay = 86400;
+        $account = factory(Account::class)->create();
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        factory(Atc::class)->create(
+            [
+                'account_id' => $account->id,
+                'minutes_online' => 721,
+                'disconnected_at' => now()
+            ]);
+
+        // grab the pivot model
+        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
+
+        Cache::shouldReceive('has')
+            ->once()
+            ->andReturn(false);
+
+        Cache::shouldReceive('put')
+            ->once()
+            ->with("waiting-list-account:{$waitingListAccount->id}:atcHourCheck", true, $ttlDay);
+
+        $this->assertTrue($waitingListAccount->atcHourCheck());
+    }
+
+    /** @test */
+    public function itShouldReturnTheValueIfExists()
+    {
+        $account = factory(Account::class)->create();
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
+
+        Cache::shouldReceive('has')
+            ->once()
+            ->andReturn(true);
+
+        Cache::shouldReceive('get')
+            ->once()
+            ->andReturn(false);
+
+        $this->assertFalse($waitingListAccount->atcHourCheck());
     }
 }

@@ -131,7 +131,8 @@
             "database/factories"
         ],
         "files": [
-            "app/helpers.php"
+            "app/helpers.php",
+            "app/CloudflareHelper.php"
         ],
         "psr-4": {
             "App\\": "app/"
