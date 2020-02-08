@@ -22,19 +22,22 @@ class WaitingListsManagerController extends Controller
 
     public function index(WaitingList $waitingList)
     {
-        return WaitingListAccountResource::collection(
-            $waitingList->accounts()->where('position', '>', 0)->orderBy('position')->get()
-                ->filter(function ($model, $key) {
-                    return $model->pivot->eligibility == false;
-                }));
+        return $this->getWaitingListAccounts($waitingList, false);
     }
 
     public function activeIndex(WaitingList $waitingList)
     {
+        return $this->getWaitingListAccounts($waitingList, true);
+    }
+
+    private function getWaitingListAccounts(&$waitingList, $eligibility)
+    {
         return WaitingListAccountResource::collection(
-            $waitingList->accounts()->where('position', '>', 0)->orderBy('position')->get()
-                ->filter(function ($model, $key) {
-                    return $model->pivot->eligibility == true;
+            $waitingList->accounts
+                ->where('deleted_at', '==', null)
+                ->sortBy('created_at')
+                ->filter(function ($model) use ($eligibility) {
+                    return $model->pivot->eligibility == $eligibility;
                 }));
     }
 

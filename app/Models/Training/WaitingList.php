@@ -6,6 +6,7 @@ use App\Events\Training\WaitingListCreated;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -56,7 +57,14 @@ class WaitingList extends Model
             Account::class,
             'training_waiting_list_account',
             'list_id'
-        )->using(WaitingListAccount::class)->withPivot(['id', 'position', 'deleted_at', 'notes'])->withTimestamps()->wherePivot('deleted_at', null);
+        )->using(WaitingListAccount::class)
+            ->withPivot([
+                'id',
+                'position',
+                'deleted_at',
+                'notes',
+                'created_at'
+            ])->wherePivot('deleted_at', null);
     }
 
     /**
@@ -100,12 +108,20 @@ class WaitingList extends Model
     /**
      * Add an Account to a waiting list.
      *
-     * @param Account $account | Collection
-     * @param Account $staffAccount
+     * @param  Account  $account  | Collection
+     * @param  Account  $staffAccount
+     * @param  Carbon|null  $createdAt
      */
-    public function addToWaitingList($account, Account $staffAccount)
+    public function addToWaitingList($account, Account $staffAccount, Carbon $createdAt = null)
     {
-        $this->accounts()->attach($account, ['position' => $this->nextPosition(), 'added_by' => $staffAccount->id]);
+        $timestamp = $createdAt != null ? $createdAt : Carbon::now();
+        $this->accounts()->attach($account, ['added_by' => $staffAccount->id,]);
+
+        // the following code is required as the timestamp for created_at gets overridden during the creation
+        // process, despite being disabled on the pivot!!
+        $pivot = $this->accounts()->find($account->id)->pivot;
+        $pivot->created_at = $timestamp;
+        $pivot->save();
     }
 
     /**

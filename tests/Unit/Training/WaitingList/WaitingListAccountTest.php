@@ -5,6 +5,7 @@ namespace Tests\Unit\Training\WaitingList;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList\WaitingListStatus;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
@@ -282,5 +283,32 @@ class WaitingListAccountTest extends TestCase
             ->andReturn(false);
 
         $this->assertFalse($waitingListAccount->atcHourCheck());
+    }
+
+    /** @test */
+    public function itShouldDefaultCreatedAtToNowIfNotProvided()
+    {
+        $account = factory(Account::class)->create();
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertDatabaseHas('training_waiting_list_account', [
+            'account_id' => $account->id,
+            'list_id' => $this->waitingList->id,
+            'created_at' => $this->knownDate
+        ]);
+    }
+
+    /** @test */
+    public function itShouldSetCreatedAtToGivenDateIfProvided()
+    {
+        $date = Carbon::parse('2020-01-01 12:00:00');
+        $account = factory(Account::class)->create();
+        $this->waitingList->addToWaitingList($account, $this->privacc, $date);
+
+        $this->assertDatabaseHas('training_waiting_list_account', [
+            'account_id' => $account->id,
+            'list_id' => $this->waitingList->id,
+            'created_at' => $date
+        ]);
     }
 }
