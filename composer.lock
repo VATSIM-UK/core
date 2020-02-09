@@ -4640,6 +4640,57 @@
             "time": "2020-01-13T10:41:09+00:00"
         },
         {
+            "name": "sixlive/nova-text-copy-field",
+            "version": "v1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sixlive/nova-text-copy-field.git",
+                "reference": "1de83cf4aa3599f12308835d6a6baca4fdd53f5b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sixlive/nova-text-copy-field/zipball/1de83cf4aa3599f12308835d6a6baca4fdd53f5b",
+                "reference": "1de83cf4aa3599f12308835d6a6baca4fdd53f5b",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "*",
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Sixlive\\TextCopy\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sixlive\\TextCopy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "TJ Miller",
+                    "email": "oss@tjmiller.co",
+                    "homepage": "https://www.tjmiller.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel Nova text field with click to copy support",
+            "homepage": "https://github.com/sixlive/nova-text-copy-field",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "time": "2019-03-03T19:28:38+00:00"
+        },
+        {
             "name": "skymeyer/vatsimphp",
             "version": "1.0.4",
             "source": {
@@ -6578,7 +6629,7 @@
         },
         {
             "name": "vatsimuk/waiting-lists-manager",
-            "version": "dev-nova-without-nova",
+            "version": "dev-feat/feedback-nova",
             "dist": {
                 "type": "path",
                 "url": "nova-components/WaitingListsManager",

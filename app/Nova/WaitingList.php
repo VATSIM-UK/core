@@ -84,7 +84,7 @@ class WaitingList extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->whereIn('department', $request->user('web')->authorisedDepartments());
+        return $query->whereIn('department', $request->user('web')->waitingListDepartments());
     }
 
     /**
