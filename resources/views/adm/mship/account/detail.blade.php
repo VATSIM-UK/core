@@ -394,9 +394,6 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @can('use-permission', "adm/mship/account/*/note/filter")
-                                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalNoteFilter">Change Filter</button>
-                                                @endcan
 
                                                 @can('use-permission', "adm/mship/account/*/note/create")
                                                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalNoteCreate">Add Note</button>

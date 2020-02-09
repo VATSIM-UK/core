@@ -11,8 +11,6 @@
 
     <ul class="sidebar-menu">
 
-        @include('adm.layout.sidebar.dashboard')
-
         @include('adm.layout.sidebar.membership')
 
         @include('adm.layout.sidebar.operations')

@@ -5,7 +5,6 @@ namespace App\Policies\Nova;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Policies\BasePolicy;
-use Illuminate\Support\Facades\Log;
 
 class FeedbackPolicy extends BasePolicy
 {

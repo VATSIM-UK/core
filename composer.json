@@ -90,6 +90,7 @@
         "planetteamspeak/ts3-php-framework": "1.1.33",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~4.0",
+        "sixlive/nova-text-copy-field": "^1.5",
         "skymeyer/vatsimphp": "1.0.*",
         "spatie/laravel-cookie-consent": "^2.4",
         "spatie/laravel-permission": "^3.0",
