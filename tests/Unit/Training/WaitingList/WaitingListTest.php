@@ -22,7 +22,7 @@ class WaitingListTest extends TestCase
         $this->waitingList = $this->createList();
     }
 
-    /** @test **/
+    /** @test * */
     public function itDisplaysNameOnToString()
     {
         $this->assertEquals($this->waitingList->name, $this->waitingList);
@@ -35,7 +35,7 @@ class WaitingListTest extends TestCase
         $this->assertNotNull($this->waitingList->slug);
     }
 
-    /** @test **/
+    /** @test * */
     public function itDetectsIfAtcList()
     {
         $atcList = factory(WaitingList::class)->create(['department' => 'atc']);
@@ -44,7 +44,7 @@ class WaitingListTest extends TestCase
         $this->assertFalse($atcList->isPilotList());
     }
 
-    /** @test **/
+    /** @test * */
     public function itDetectsIfPilotList()
     {
         $atcList = factory(WaitingList::class)->create(['department' => 'pilot']);
@@ -79,42 +79,12 @@ class WaitingListTest extends TestCase
         $this->waitingList->removeFromWaitingList($account);
 
         $this->assertDatabaseHas('training_waiting_list_account',
-            ['account_id' => $account->id, 'list_id' => $this->waitingList->id, 'deleted_at' => now(), 'position' => -1]);
+            [
+                'account_id' => $account->id, 'list_id' => $this->waitingList->id, 'deleted_at' => now()
+            ]);
     }
 
     /** @test * */
-    public function itCanHaveMultipleAccountsAssociatedWithIt()
-    {
-        $accounts = factory(Account::class, 3)->create();
-
-        $this->waitingList->addToWaitingList($accounts, $this->privacc);
-
-        $this->assertEquals(3, $this->waitingList->accounts->count());
-    }
-
-    /** @test */
-    public function itAssignsTheNextPositionByDefault()
-    {
-        $account = factory(Account::class)->create();
-        $accountSecond = factory(Account::class)->create();
-
-        $this->waitingList->addToWaitingList($account, $this->privacc);
-        $this->waitingList->addToWaitingList($accountSecond, $this->privacc);
-
-        $this->assertDatabaseHas('training_waiting_list_account', [
-            'list_id' => $this->waitingList->id,
-            'account_id' => $account->id,
-            'position' => 1,
-        ]);
-
-        $this->assertDatabaseHas('training_waiting_list_account', [
-            'list_id' => $this->waitingList->id,
-            'account_id' => $accountSecond->id,
-            'position' => 2,
-        ]);
-    }
-
-    /** @test **/
     public function itUpdatesPositionsOnWaitingListRemoval()
     {
         $accounts = factory(Account::class, 3)->create()->each(function ($account) {
@@ -126,29 +96,7 @@ class WaitingListTest extends TestCase
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $this->waitingList->id,
             'account_id' => $accounts[2]->id,
-            'position' => $accounts[2]->waitingLists->first()->pivot->position,
         ]);
-    }
-
-    /** @test */
-    public function itCanHaveStaffManagingTheList()
-    {
-        $staffAccount = factory(Account::class)->create();
-
-        $this->waitingList->addManager($staffAccount);
-
-        $this->assertDatabaseHas('training_waiting_list_staff',
-            ['list_id' => $this->waitingList->id, 'account_id' => $staffAccount->id]);
-    }
-
-    /** @test * */
-    public function itCanRetrieveStaffOnScope()
-    {
-        $staffAccount = factory(Account::class)->create();
-
-        $this->waitingList->addManager($staffAccount);
-
-        $this->assertEquals(1, $this->waitingList->staff()->get()->count());
     }
 
     /** @test */

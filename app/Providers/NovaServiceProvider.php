@@ -5,8 +5,8 @@ namespace App\Providers;
 use App\Models\Mship\Account;
 use App\Nova\WaitingList;
 use App\Nova\WaitingListFlag;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Nova\Nova;
 
@@ -19,7 +19,7 @@ class NovaServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (!class_exists('\Laravel\Nova\Nova')) {
+        if (! class_exists('\Laravel\Nova\Nova')) {
             return;
         }
 
@@ -41,7 +41,7 @@ class NovaServiceProvider extends ServiceProvider
      */
     protected function routes()
     {
-        if (!class_exists('\Laravel\Nova\Nova')) {
+        if (! class_exists('\Laravel\Nova\Nova')) {
             return;
         }
 
@@ -56,7 +56,7 @@ class NovaServiceProvider extends ServiceProvider
      */
     protected function authorization()
     {
-        if (!class_exists('\Laravel\Nova\Nova')) {
+        if (! class_exists('\Laravel\Nova\Nova')) {
             return;
         }
 
@@ -100,7 +100,7 @@ class NovaServiceProvider extends ServiceProvider
     public function tools()
     {
         return [
-//            \Vyuldashev\NovaPermission\NovaPermissionTool::make()
+            \Vyuldashev\NovaPermission\NovaPermissionTool::make()
         ];
     }
 
@@ -111,7 +111,7 @@ class NovaServiceProvider extends ServiceProvider
      */
     protected function resources()
     {
-        if (!app()->environment('local')) {
+        if (! app()->environment('local')) {
             Nova::resources([
                 WaitingList::class,
                 WaitingListFlag::class
