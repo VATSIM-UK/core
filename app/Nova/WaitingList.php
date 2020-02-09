@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use App\Nova\Actions\Training\AddFlagToWaitingList;
 use App\Nova\Actions\Training\AddStudentToWaitingList;
+use App\Nova\Actions\Training\AddStudentToWaitingListAdmin;
 use Benjaminhirsch\NovaSlugField\Slug;
 use Benjaminhirsch\NovaSlugField\TextWithSlug;
 use Illuminate\Http\Request;
@@ -137,6 +138,14 @@ class WaitingList extends Resource
                     return $request->user()->can('use-permission', "waitingLists/addAccounts");
                 }),
 
+            (new AddStudentToWaitingListAdmin)
+                ->onlyOnDetail()
+                ->canSee(function (Request $request) {
+                    return $request->user()->can('use-permission', "waitingLists/joinDate");
+                })->canRun(function (Request $request) {
+                    return $request->user()->can('use-permission', "waitingLists/joinDate");
+                }),
+
             (new AddFlagToWaitingList)
                 ->onlyOnDetail()
                 ->canSee(function (Request $request) {
@@ -144,6 +153,7 @@ class WaitingList extends Resource
                 })->canRun(function (Request $request) {
                     return $request->user()->can('use-permission', "waitingLists/addFlags");
                 })
+
         ];
     }
 }

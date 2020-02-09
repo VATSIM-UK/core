@@ -79,14 +79,9 @@ class WaitingListsManagerController extends Controller
         return WaitingListAccountResource::collection(
             $waitingList->accounts
                 ->where('deleted_at', '==', null)
-                ->sortBy('created_at')
+                ->sortByDesc('created_at')
                 ->filter(function ($model) use ($eligibility) {
                     return $model->pivot->eligibility == $eligibility;
                 }));
-    }
-
-    private function findAccount($id)
-    {
-        return Account::findOrFail($id);
     }
 }

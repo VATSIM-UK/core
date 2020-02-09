@@ -4,6 +4,7 @@ namespace App\Nova\Actions\Training;
 
 use App\Models\Mship\Account;
 use App\Services\Training\AddToWaitingList;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
@@ -11,13 +12,13 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
-use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Date;
 
-class AddStudentToWaitingList extends Action
+final class AddStudentToWaitingListAdmin extends AddStudentToWaitingList
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
-    public $name = 'Add Student';
+    public $name = 'Add Student [ADMIN]';
 
     /**
      * Perform the action on the given models.
@@ -32,16 +33,21 @@ class AddStudentToWaitingList extends Action
         $waitingList = $models->first();
 
         try {
-            $account = Account::findOrFail($cid);
+            $account = Account::findOrFail($fields->cid);
         } catch (ModelNotFoundException $e) {
-            return $this->dangerAction('The specified CID was not found.');
+            return $this->  dangerAction('The specified CID was not found.');
         }
 
         if ($waitingList->accounts->contains($account)) {
-           return $this->dangerAction('The account already exists in the waiting lists');
+            return $this->dangerAction('The account already exists in the waiting lists');
         }
 
-        handleService(new AddToWaitingList($waitingList, $account, Account::find(auth()->id())));
+        $createdAt = $fields->join_date;
+        if ($createdAt) {
+            $createdAt = Carbon::parse($fields->join_date);
+        }
+
+        handleService(new AddToWaitingList($waitingList, $account, Account::find(auth()->id()), $createdAt));
 
         return Action::message('Student added to Waiting List.');
     }
@@ -53,13 +59,10 @@ class AddStudentToWaitingList extends Action
      */
     public function fields()
     {
-        return [
-            Text::make('CID')->rules('required')
+        $additionalFields = [
+            Date::make('Join Date')
         ];
-    }
 
-    protected function dangerAction(string $message): array
-    {
-        return Action::danger($message);
+        return array_merge(parent::fields(), $additionalFields);
     }
 }
