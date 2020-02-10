@@ -61,10 +61,6 @@
                     <div class="panel-body">
                         <h4>Operations Director (VATUK9)</h4><br/>
                         <p class="text-left">Vacant</p>
-                        <!--<img src="$teamPhotos[54]"
-                             width=50px
-                             class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Chris Pawley</p>-->
                     </div>
                 </div>
 
