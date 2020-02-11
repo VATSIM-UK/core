@@ -39,14 +39,4 @@ class SendingFeedbackTest extends TestCase
             ->get(route('mship.feedback.view'))
             ->assertSuccessful();
     }
-
-    /** @test */
-    public function testItAllowsFeedbackToBeMarkedAsSent()
-    {
-        $this->actingAs($this->privacc)
-            ->post(route('adm.mship.feedback.send', $this->feedback->id))
-            ->assertRedirect()
-            ->assertSessionHasNoErrors()
-            ->assertSessionHas('success');
-    }
 }

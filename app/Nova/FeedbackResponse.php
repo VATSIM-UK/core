@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Sixlive\TextCopy\TextCopy;
 
 class FeedbackResponse extends Resource
 {
@@ -50,13 +51,22 @@ class FeedbackResponse extends Resource
         return $query->orderBy('id');
     }
 
-    /**
-     * Globally disable ability to create your own responses on the admin side.
-     *
-     * @param Request $request
-     * @return bool
-     */
     public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToUpdate(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToView(Request $request)
     {
         return false;
     }
@@ -87,7 +97,7 @@ class FeedbackResponse extends Resource
                 return $this->question->question;
             }),
 
-            Text::make('Response', 'response')->asHtml(),
+            TextCopy::make('Response', 'response')->copyButtonTitle('Copy Value'),
         ];
     }
 

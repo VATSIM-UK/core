@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Mship\Account;
+use App\Nova\Feedback;
+use App\Nova\FeedbackResponse;
 use App\Nova\WaitingList;
 use App\Nova\WaitingListFlag;
 use Illuminate\Http\Request;
@@ -114,7 +116,9 @@ class NovaServiceProvider extends ServiceProvider
         if (! app()->environment('local')) {
             Nova::resources([
                 WaitingList::class,
-                WaitingListFlag::class
+                WaitingListFlag::class,
+                Feedback::class,
+                FeedbackResponse::class
             ]);
         } else {
             \Laravel\Nova\Nova::resourcesIn(app_path('Nova'));

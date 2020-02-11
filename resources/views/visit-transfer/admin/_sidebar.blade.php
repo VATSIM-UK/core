@@ -7,21 +7,9 @@
 
     <ul class="treeview-menu">
 
-        <li {!! (\Request::is('adm/visit-transfer') ? 'class="active"' : '') !!}>
-            <a href="{{ URL::route("adm.visiting.dashboard") }}">
-                <i class="ion ion-ios-gear-outline"></i> <span> Dashboard</span>
-            </a>
-        </li>
-
         <li {!! (\Request::is('adm/visit-transfer/facility') ? 'class="active"' : '') !!}>
             <a href="{{ URL::route("adm.visiting.facility") }}">
                 <i class="ion ion-ios-gear-outline"></i> <span> Facility Settings</span>
-            </a>
-        </li>
-
-        <li {!! (\Request::is('adm/visit-transfer/hours') ? 'class="active"' : '') !!}>
-            <a href="{{ URL::route("adm.visiting.hours.create") }}">
-                <i class="ion ion-ios-clock"></i> <span> Hours Monitoring</span>
             </a>
         </li>
 
