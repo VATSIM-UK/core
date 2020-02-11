@@ -78,8 +78,8 @@ class WaitingListsManagerController extends Controller
     {
         return WaitingListAccountResource::collection(
             $waitingList->accounts
-                ->where('deleted_at', '==', null)
-                ->sortByDesc('created_at')
+                ->where('pivot.deleted_at', '==', null)
+                ->sortBy('pivot.created_at')
                 ->filter(function ($model) use ($eligibility) {
                     return $model->pivot->eligibility == $eligibility;
                 }));

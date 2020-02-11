@@ -4,6 +4,7 @@ namespace App\Nova\Actions\Training;
 
 use App\Models\Mship\Account;
 use App\Services\Training\AddToWaitingList;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
@@ -11,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
+use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\Text;
 
 class AddStudentToWaitingList extends Action
@@ -30,9 +32,10 @@ class AddStudentToWaitingList extends Action
     {
         /** @var \App\Models\Training\WaitingList $waitingList */
         $waitingList = $models->first();
+        $createdAt = Carbon::parse($fields->join_date);
 
         try {
-            $account = Account::findOrFail($cid);
+            $account = Account::findOrFail($fields->cid);
         } catch (ModelNotFoundException $e) {
             return $this->dangerAction('The specified CID was not found.');
         }
@@ -41,7 +44,7 @@ class AddStudentToWaitingList extends Action
            return $this->dangerAction('The account already exists in the waiting lists');
         }
 
-        handleService(new AddToWaitingList($waitingList, $account, Account::find(auth()->id())));
+        handleService(new AddToWaitingList($waitingList, $account, Account::find(auth()->id()), $createdAt));
 
         return Action::message('Student added to Waiting List.');
     }
@@ -54,7 +57,12 @@ class AddStudentToWaitingList extends Action
     public function fields()
     {
         return [
-            Text::make('CID')->rules('required')
+            Text::make('CID')->rules('required'),
+            Date::make('Join Date')->help(
+                'Optionally specify a join date if you need to fix it to a date
+                e.g. member is re-joining a list after deferring their place in training.
+                This cannot be todays date'
+            )->rules('nullable', 'before:today')
         ];
     }
 
