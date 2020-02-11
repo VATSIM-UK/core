@@ -41,7 +41,7 @@ class AddStudentToWaitingList extends Action
         }
 
         if ($waitingList->accounts->contains($account)) {
-           return $this->dangerAction('The account already exists in the waiting lists');
+            return $this->dangerAction('The account already exists in the waiting lists');
         }
 
         handleService(new AddToWaitingList($waitingList, $account, Account::find(auth()->id()), $createdAt));
