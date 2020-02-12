@@ -347,20 +347,21 @@
         <h1 class="text-primary">Welcome!</h1><br>
 
         <p>
-            VATSIM UK provides air traffic control and a wealth of information for controlling and flying in the United
-            Kingdom on VATSIM. We pride ourselves in providing regular and high quality air traffic control for our
-            pilots. This, combined with our great community, is what makes VATSIM UK such a great place to be. Get
-            involved!
+            VATSIM UK is the community for pilots and controllers who partake in the VATSIM network within the United
+            Kingdom. We work hard in the provision of training for air traffic controllers and pilots as well as resources
+            for all members who want to fly and control in the UK. Our outstanding community is what makes VATSIM UK such
+            a great place to be. We welcome members from all around the world to get involved flying, controlling or even
+            development of software!
         </p>
 
         <p>
-            To join our great community, simply follow the easy-to-follow steps over at our Join Us page. Whether as a
-            pilot, controller or both, you will receive a warm welcome by our community and will have a great time,
-            whilst making a lot of new friends along the way.
+            To join the division, we have made an easy to follow guide at our Join Us page. Whether as a pilot, controller
+            or both, you will receive a warm welcome by our community and we hope that this will be the first step to
+            finding many new friends within the hobby.
         </p>
         <br>
 
-        <p class="text-right text-light">Simon Irvine <br/> VATSIM UK Division Director</p>
+        <p class="text-right text-light">Chris Pawley <br/> VATSIM UK Division Director</p>
 
     </div>
     <!-- UK Welcome [END] -->
