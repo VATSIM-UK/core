@@ -33,8 +33,6 @@ class WaitingListFeatureTest extends TestCase
     /** @test * */
     public function testAStudentCanHaveTheirStatusChangedToDeferred()
     {
-        $this->withoutExceptionHandling();
-
         $account = factory(Account::class)->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
