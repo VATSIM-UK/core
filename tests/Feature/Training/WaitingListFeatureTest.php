@@ -2,11 +2,8 @@
 
 namespace Tests\Feature\Training;
 
-use App\Events\Training\AccountAddedToWaitingList;
 use App\Events\Training\AccountChangedStatusInWaitingList;
-use App\Events\Training\AccountDemotedInWaitingList;
 use App\Events\Training\AccountNoteChanged;
-use App\Events\Training\AccountPromotedInWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
@@ -34,56 +31,19 @@ class WaitingListFeatureTest extends TestCase
     }
 
     /** @test * */
-    public function testAStudentCanBePromoted()
-    {
-        [$account, $account2, $account3] = factory(Account::class, 3)->create();
-
-        $this->waitingList->addToWaitingList($account, $this->privacc);
-        $this->waitingList->addToWaitingList($account2, $this->privacc);
-        $this->waitingList->addToWaitingList($account3, $this->privacc);
-
-        Event::fakeFor(function () use ($account, $account2, $account3) {
-            $this->actingAs($this->privacc)->post("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/promote", [
-                'account_id' => $account2->id,
-            ])->assertSuccessful();
-
-            Event::assertDispatched(AccountPromotedInWaitingList::class, function ($event) use ($account2) {
-                return (int) $event->account->id === $account2->id && $event->waitingList->id === $this->waitingList->id;
-            });
-        });
-    }
-
-    /** @test * */
-    public function testAStudentCanBeDemoted()
-    {
-        [$account, $account2, $account3] = factory(Account::class, 3)->create();
-
-        $this->waitingList->addToWaitingList($account, $this->privacc);
-        $this->waitingList->addToWaitingList($account2, $this->privacc);
-        $this->waitingList->addToWaitingList($account3, $this->privacc);
-
-        Event::fakeFor(function () use ($account) {
-            $this->actingAs($this->privacc)->post("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/demote", [
-                'account_id' => $account->id,
-            ])->assertSuccessful();
-
-            Event::assertDispatched(AccountDemotedInWaitingList::class, function ($event) use ($account) {
-                return (int) $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
-            });
-        });
-    }
-
-    /** @test **/
     public function testAStudentCanHaveTheirStatusChangedToDeferred()
     {
+        $this->withoutExceptionHandling();
+
         $account = factory(Account::class)->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
         Event::fakeFor(function () use ($account) {
-            $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/defer", [
-                'account_id' => $account->id,
-            ])->assertSuccessful();
+            $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/defer",
+                [
+                    'account_id' => $account->id,
+                ])->assertSuccessful();
 
             Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
                 return (int) $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
@@ -91,7 +51,7 @@ class WaitingListFeatureTest extends TestCase
         });
     }
 
-    /** @test **/
+    /** @test * */
     public function testAStudentCanHaveTheirStatusChangedToActive()
     {
         $account = factory(Account::class)->create();
@@ -99,9 +59,10 @@ class WaitingListFeatureTest extends TestCase
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
         Event::fakeFor(function () use ($account) {
-            $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/active", [
-                'account_id' => $account->id,
-            ])->assertSuccessful();
+            $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/active",
+                [
+                    'account_id' => $account->id,
+                ])->assertSuccessful();
 
             Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
                 return (int) $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
@@ -135,7 +96,8 @@ class WaitingListFeatureTest extends TestCase
 
         Event::fakeFor(function () use ($waitingListAccount, $account) {
             $this->actingAs($this->privacc)
-                ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create", ['notes' => 'This is a note'])
+                ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create",
+                    ['notes' => 'This is a note'])
                 ->assertSuccessful();
 
             Event::assertDispatched(AccountNoteChanged::class, function ($event) use ($waitingListAccount) {

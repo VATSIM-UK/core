@@ -13,13 +13,12 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Date;
-use Laravel\Nova\Fields\Text;
 
-class AddStudentToWaitingList extends Action
+final class AddStudentToWaitingListAdmin extends AddStudentToWaitingList
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
-    public $name = 'Add Student';
+    public $name = 'Add Student [ADMIN]';
 
     /**
      * Perform the action on the given models.
@@ -32,16 +31,20 @@ class AddStudentToWaitingList extends Action
     {
         /** @var \App\Models\Training\WaitingList $waitingList */
         $waitingList = $models->first();
-        $createdAt = Carbon::parse($fields->join_date);
 
         try {
             $account = Account::findOrFail($fields->cid);
         } catch (ModelNotFoundException $e) {
-            return $this->dangerAction('The specified CID was not found.');
+            return $this->  dangerAction('The specified CID was not found.');
         }
 
         if ($waitingList->accounts->contains($account)) {
             return $this->dangerAction('The account already exists in the waiting lists');
+        }
+
+        $createdAt = $fields->join_date;
+        if ($createdAt) {
+            $createdAt = Carbon::parse($fields->join_date);
         }
 
         handleService(new AddToWaitingList($waitingList, $account, Account::find(auth()->id()), $createdAt));
@@ -56,18 +59,10 @@ class AddStudentToWaitingList extends Action
      */
     public function fields()
     {
-        return [
-            Text::make('CID')->rules('required'),
-            Date::make('Join Date')->help(
-                'Optionally specify a join date if you need to fix it to a date
-                e.g. member is re-joining a list after deferring their place in training.
-                This cannot be todays date'
-            )->rules('nullable', 'before:today')
+        $additionalFields = [
+            Date::make('Join Date')
         ];
-    }
 
-    protected function dangerAction(string $message): array
-    {
-        return Action::danger($message);
+        return array_merge(parent::fields(), $additionalFields);
     }
 }
