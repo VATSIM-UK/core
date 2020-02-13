@@ -39,10 +39,10 @@
 
                         <div class="col-md-12">
                             <h4 class="text-center">Division Director (VATUK1)</h4><br/>
-                            <img src="{{ $teamPhotos[91] }}"
+                            <img src="{{ $teamPhotos[54] }}"
                                  width=50px
                                  class="img-responsive center-block profile-picture"/>
-                            <p class="text-center">Simon Irvine</p>
+                            <p class="text-center">Chris Pawley</p>
                         </div>
                     </div>
                 </div>
@@ -60,10 +60,7 @@
                     </div>
                     <div class="panel-body">
                         <h4>Operations Director (VATUK9)</h4><br/>
-                        <img src="{{ $teamPhotos[54] }}"
-                             width=50px
-                             class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Chris Pawley</p>
+                        <p class="text-left">Vacant</p>
                     </div>
                 </div>
 
@@ -72,7 +69,7 @@
                         </div>
                         <div class="panel-body">
                             <h4>Member Services Director (VATUK3)</h4><br/>
-                            <img src="{{ $teamPhotos[54] }}"
+                            <img src="{{ $teamPhotos[7404] }}"
                                  width=50px
                                  class="img-responsive center-block profile-picture"/>
                             <p class="text-center">Tom Earl</p>
