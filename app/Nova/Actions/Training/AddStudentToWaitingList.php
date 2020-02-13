@@ -57,12 +57,7 @@ class AddStudentToWaitingList extends Action
     public function fields()
     {
         return [
-            Text::make('CID')->rules('required'),
-            Date::make('Join Date')->help(
-                'Optionally specify a join date if you need to fix it to a date
-                e.g. member is re-joining a list after deferring their place in training.
-                This cannot be todays date'
-            )->rules('nullable', 'before:today')
+            Text::make('CID')->rules('required')
         ];
     }
 
