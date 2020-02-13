@@ -60,7 +60,11 @@ final class AddStudentToWaitingListAdmin extends AddStudentToWaitingList
     public function fields()
     {
         $additionalFields = [
-            Date::make('Join Date')
+            Date::make('Join Date')->help(
+                'Optionally specify a join date if you need to fix it to a date
+                e.g. member is re-joining a list after deferring their place in training.
+                This cannot be todays date'
+            )->rules('nullable', 'before:today')
         ];
 
         return array_merge(parent::fields(), $additionalFields);
