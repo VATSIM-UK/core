@@ -19,105 +19,6 @@ use URL;
 class Settings extends AdmController
 {
     /*
-     * Account Security
-     */
-
-    public function postSecurityEnable(AccountData $mshipAccount)
-    {
-        if (!$mshipAccount) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Let's check the user doesn't currently have security on their account.
-        // We don't want to just override it for no reason, as that's bad.
-        $currentSecurity = $mshipAccount->current_security;
-
-        if ($currentSecurity && $currentSecurity->exists) {
-            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
-                ->withError('You cannot enable security on this account.');
-        }
-
-        // Check the selected security ID exists!
-        $security = SecurityData::find(Request::input('securityLevel', 0));
-
-        if (!$security) {
-            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
-                ->withError('Invalid security ID specified.');
-        }
-
-        // Create them a blank security entry!
-        $newSecurity = new AccountSecurityData();
-        $newSecurity->save();
-        $mshipAccount->security()
-            ->save($newSecurity);
-        $security->accountSecurity()
-            ->save($newSecurity);
-
-        return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
-            ->withSuccess('Security enabled for this account.');
-    }
-
-    public function postSecurityReset(AccountData $mshipAccount)
-    {
-        if (!$mshipAccount) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Let's check the user doesn't currently have security on their account.
-        // We can't reset non-existant security!
-        $currentSecurity = $mshipAccount->current_security;
-
-        if (!$currentSecurity or !$currentSecurity->exists) {
-            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
-                ->withError('You cannot reset non-existant security.');
-        }
-
-        return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
-            ->withSuccess('Security reset requested - user will receive an email.');
-    }
-
-    public function postSecurityChange(AccountData $mshipAccount)
-    {
-        if (!$mshipAccount) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Check the selected security ID exists!
-        $security = SecurityData::find(Request::input('securityLevel', 0));
-
-        if (!$security) {
-            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
-                ->withError('Invalid security ID specified.');
-        }
-
-        // Let's check the user doesn't currently have security on their account.
-        // We don't want to just override it for no reason, as that's bad.
-        $currentSecurity = $mshipAccount->current_security;
-
-        // It's also pointless changing to the same security ID.
-        if (!$currentSecurity or !$currentSecurity->exists or $currentSecurity->security_id == $security->security_id) {
-            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
-                ->withError('You cannot change security on this account.');
-        }
-
-        // Let's expire the current security
-        $currentSecurity->expire();
-        $currentSecurity->delete();
-
-        // Now, let's make a new one!
-        $newSecurity = new AccountSecurityData();
-        $newSecurity->save();
-        $mshipAccount->security()
-            ->save($newSecurity);
-        $security->accountSecurity()
-            ->save($newSecurity);
-
-        return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
-            ->withSuccess('Security has been upgraded on this account.');
-    }
-
-
-    /*
      * Notes
      */
 
@@ -146,23 +47,6 @@ class Settings extends AdmController
         return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'notes'])
             ->withSuccess('The note has been saved successfully!');
     }
-
-    public function postNoteFilter(AccountData $mshipAccount)
-    {
-        if (!$mshipAccount) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Get all filters
-        $filters = Request::input('filter', []);
-        $qs = '';
-        foreach ($filters as $f) {
-            $qs .= 'filter[' . $f . ']=1&';
-        }
-
-        return Redirect::to(URL::route('adm.mship.account.details', [$mshipAccount->id, 'notes']) . '?' . $qs);
-    }
-
 
     /*
      * Troubleshooting

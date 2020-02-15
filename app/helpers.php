@@ -229,6 +229,11 @@ function sys_config($key)
     return cache($cacheKey);
 }
 
+function handleService(\App\Services\BaseService $service)
+{
+    return $service->handle();
+}
+
 if (!function_exists('str_contains')) {
     function str_contains($haystack, $needle)
     {

@@ -288,6 +288,8 @@ class TeamSpeak
                     $now = Carbon::now();
                     Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'], $now, 6 * 60);
                     Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'], $now, 3 * 60);
+                    
+                    $recentlyTold = $hasGracePeriod = true;
                 }
 
                 if ($hasGracePeriod) {

@@ -11,8 +11,10 @@
     "watch-poll": "yarn run watch -- --watch-poll",
     "hot": "node_modules/cross-env/src/bin/cross-env.js NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
     "prod": "yarn run production",
+    "build-waiting-lists-manager-prod": "cd nova-components/WaitingListsManager && yarn && yarn run prod",
+    "build-waiting-lists-manager": "cd nova-components/WaitingListsManager && yarn && yarn run dev",
     "production": "node_modules/cross-env/src/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "heroku-postbuild": "node_modules/cross-env/src/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    "heroku-postbuild": "yarn run prod && yarn run build-waiting-lists-manager-prod"
   },
   "dependencies": {
     "admin-lte": "2.4.18",
@@ -27,7 +29,7 @@
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
     "laravel-mix": "^2.0",
-    "less": "^3.10.3",
+    "less": "^3.11.1",
     "less-loader": "^5.0.0",
     "lodash": "^4.17.10",
     "popper.js": "^1.16",
@@ -45,4 +47,5 @@
           }]
       ]
   }
+
 }

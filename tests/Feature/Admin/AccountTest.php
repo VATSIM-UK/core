@@ -20,8 +20,8 @@ class AccountTest extends TestCase
     public function testGetA404WhenTryingToViewNonExistentUser()
     {
         $this->actingAs($this->privacc)
-            ->get(route('adm.mship.account.details', '12345'))
-            ->assertNotFound();
+            ->get(route('adm.mship.account.details', '1300006'))
+            ->assertStatus(404);
     }
 
     /** @test */
