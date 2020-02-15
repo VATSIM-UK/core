@@ -8,7 +8,7 @@ use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type as NoteTypeData;
 use Auth;
 use Illuminate\Support\Collection;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 use Session;
 use Spatie\Permission\Models\Role as RoleData;
@@ -20,10 +20,10 @@ class Account extends AdmController
     {
         // Sorting and searching!
         $sortBy = in_array(
-            Input::get('sort_by'),
+            Request::input('sort_by'),
             ['id', 'name_first', 'name_last']
-        ) ? Input::get('sort_by') : 'id';
-        $sortDir = in_array(Input::get('sort_dir'), ['ASC', 'DESC']) ? Input::get('sort_dir') : 'ASC';
+        ) ? Request::input('sort_by') : 'id';
+        $sortDir = in_array(Request::input('sort_dir'), ['ASC', 'DESC']) ? Request::input('sort_dir') : 'ASC';
 
         // ORM it all!
         $memberSearch = AccountData::orderBy($sortBy, $sortDir)
@@ -109,8 +109,7 @@ class Account extends AdmController
             'roles.permissions',
             'qualifications',
             'states',
-            'secondaryEmails',
-            'feedback'
+            'secondaryEmails'
         );
 
         // Get all possible roles!
@@ -128,8 +127,6 @@ class Account extends AdmController
             ->orderBy('name', 'ASC')
             ->get();
 
-        $feedbackTargeted = $mshipAccount->feedback()->orderBy('created_at', 'desc')->get();
-
         $vtapplications = $mshipAccount->visitTransferApplications()->orderBy('updated_at', 'desc')->get();
 
         $this->setTitle("Account Details:  {$mshipAccount->name}");
@@ -142,7 +139,6 @@ class Account extends AdmController
             ->with('banReasons', $banReasons)
             ->with('noteTypes', $noteTypes)
             ->with('noteTypesAll', $noteTypesAll)
-            ->with('feedback', $feedbackTargeted)
             ->with('vtapplications', $vtapplications);
     }
 }

@@ -19,5 +19,5 @@
         @endforeach
     </ul>
 
-    <p>You may view the feedback in Core on <a href="{{route('adm.mship.feedback.all')}}">this page</a>.</p>
+    <p>You may view the feedback in Core's admin panel.</p>
 @stop

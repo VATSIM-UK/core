@@ -38,48 +38,49 @@ class BookingsRepositoryTest extends TestCase
         factory(Booking::class, 2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
 
         $bookingTodayOne = factory(Booking::class)->create([
-            'id' => '96155',
-            'date' => $this->today,
-            'from' => '17:00',
+            'id'        => '96155',
+            'date'      => $this->today,
+            'from'      => '17:00',
             'member_id' => factory(Member::class)->create()->id,
-            'type' => 'BK',
+            'type'      => 'BK',
         ]);
 
         $bookingTodayTwo = factory(Booking::class)->create([
-            'id' => '96156',
-            'date' => $this->today,
-            'from' => '18:00',
+            'id'        => '96156',
+            'date'      => $this->today,
+            'from'      => '18:00',
             'member_id' => factory(Member::class)->create()->id,
-            'type' => 'ME',
+            'type'      => 'ME',
         ]);
 
         $bookings = $this->subjectUnderTest->getTodaysBookings();
 
         $this->assertInstanceOf(Collection::class, $bookings);
         $this->assertCount(2, $bookings);
-        $this->assertArraySubset([
-            'id' => $bookingTodayOne->id,
-            'date' => $this->today,
-            'from' => Carbon::parse($bookingTodayOne->from)->format('H:i'),
-            'to' => Carbon::parse($bookingTodayOne->to)->format('H:i'),
+
+        $this->assertEquals([
+            'id'       => $bookingTodayOne->id,
+            'date'     => $this->today,
+            'from'     => Carbon::parse($bookingTodayOne->from)->format('H:i'),
+            'to'       => Carbon::parse($bookingTodayOne->to)->format('H:i'),
             'position' => $bookingTodayOne->position,
-            'member' => [
-                'id' => $bookingTodayOne['member']['cid'],
+            'type'     => $bookingTodayOne->type,
+            'member'   => [
+                'id'   => $bookingTodayOne['member']['cid'],
                 'name' => $bookingTodayOne['member']['name'],
             ],
-            'type' => $bookingTodayOne->type,
         ], $bookings->get(0)->toArray());
-        $this->assertArraySubset([
-            'id' => $bookingTodayTwo->id,
-            'date' => $this->today,
-            'from' => Carbon::parse($bookingTodayTwo->from)->format('H:i'),
-            'to' => Carbon::parse($bookingTodayTwo->to)->format('H:i'),
+        $this->assertEquals([
+            'id'       => $bookingTodayTwo->id,
+            'date'     => $this->today,
+            'from'     => Carbon::parse($bookingTodayTwo->from)->format('H:i'),
+            'to'       => Carbon::parse($bookingTodayTwo->to)->format('H:i'),
             'position' => $bookingTodayTwo->position,
-            'member' => [
-                'id' => $bookingTodayTwo['member']['cid'],
+            'type'     => $bookingTodayTwo->type,
+            'member'   => [
+                'id'   => $bookingTodayTwo['member']['cid'],
                 'name' => $bookingTodayTwo['member']['name'],
             ],
-            'type' => $bookingTodayTwo->type,
         ], $bookings->get(1)->toArray());
     }
 
@@ -92,12 +93,12 @@ class BookingsRepositoryTest extends TestCase
         $bookings = $this->subjectUnderTest->getTodaysBookings();
 
         $this->assertEquals([
-            'id' => $normalBooking->member->cid,
+            'id'   => $normalBooking->member->cid,
             'name' => $normalBooking->member->name,
         ], $bookings->get(0)['member']);
 
         $this->assertEquals([
-            'id' => '',
+            'id'   => '',
             'name' => 'Hidden',
         ], $bookings->get(1)['member']);
     }

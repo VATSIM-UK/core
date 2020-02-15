@@ -42,11 +42,10 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\TrackInactivity::class,
         ],
         'api' => [
-            // native
             'throttle:60,1',
             'bindings',
-
-            // custom
+        ],
+        'api_auth' => [
             'auth:api',
             'api.tracking',
         ],

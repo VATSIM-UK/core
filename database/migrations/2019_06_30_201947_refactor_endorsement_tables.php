@@ -25,6 +25,11 @@ class RefactorEndorsementTables extends Migration
 
         // Migrate existing endorsements
 
+
+        Schema::table('endorsement_conditions', function (Blueprint $table) {
+            $table->integer('endorsement_id')->after('endorsement');
+        });
+
         $endorsements = DB::table('endorsement_conditions')->distinct('endorsement')->pluck('endorsement');
         foreach ($endorsements as $endorsement) {
             $id = DB::table('endorsements')->insertGetId([
@@ -33,12 +38,11 @@ class RefactorEndorsementTables extends Migration
                 'updated_at' => \Carbon\Carbon::now(),
             ]);
             DB::table('endorsement_conditions')->where('endorsement', $endorsement)->update([
-                'endorsement' => $id
+                'endorsement_id' => $id
             ]);
         }
 
         Schema::table('endorsement_conditions', function (Blueprint $table) {
-            $table->renameColumn('endorsement', 'endorsement_id');
             $table->renameColumn('required_airfields', 'positions');
             $table->renameColumn('hours_months', 'within_months');
             $table->integer('type')->after('required_hours');
@@ -46,10 +50,10 @@ class RefactorEndorsementTables extends Migration
 
         Schema::table('endorsement_conditions', function (Blueprint $table) {
             $table->string('description')->nullable()->after('endorsement_id');
-            $table->integer('endorsement_id')->change();
             $table->integer('within_months')->nullable()->change();
+            $table->dropColumn('endorsement');
         });
-        
+
         DB::table('endorsement_conditions')->update([
             'type' => 1
         ]);
