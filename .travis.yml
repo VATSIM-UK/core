@@ -4,8 +4,6 @@ jobs:
       language: php
       php:
         - 7.3
-      node_js:
-        - 10
       addons:
         mariadb: '10.2'
       before_install:
@@ -16,6 +14,7 @@ jobs:
         - sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
         - sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
         - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
+        - nvm install 10.19
         - yarn install
       install:
         # Install Nova and component dependencies
