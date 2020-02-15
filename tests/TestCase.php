@@ -32,7 +32,7 @@ abstract class TestCase extends BaseTestCase
             config(['app.url' => 'http://'.config('app.url')]);
         }
 
-        Carbon::setTestNow();
+        Carbon::setTestNow(Carbon::now());
         $this->knownDate = Carbon::now();
 
         // Create tables for other services
