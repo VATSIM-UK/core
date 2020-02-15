@@ -30,12 +30,12 @@ class EventRepositoryTest extends TestCase
 
         $eventTodayOne = factory(Event::class)->create([
             'date' => Carbon::now()->toDateString(),
-            'from' => Carbon::now()->toTimeString(),
+            'from' => Carbon::now()->addSecond()->toTimeString(),
         ]);
 
         $eventTodayTwo = factory(Event::class)->create([
             'date' => Carbon::now()->toDateString(),
-            'from' => Carbon::now()->addHour()->toTimeString(),
+            'from' => Carbon::now()->addSecond()->toTimeString(),
         ]);
 
         $events = $this->repository->getTodaysEvents();

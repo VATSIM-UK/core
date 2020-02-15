@@ -5,6 +5,7 @@ namespace Tests\Unit\Endorsements;
 use App\Models\Atc\Endorsement;
 use App\Models\NetworkData\Atc;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class EndorsementModelTest extends TestCase
@@ -48,34 +49,98 @@ class EndorsementModelTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyReportsMetStatus()
+    public function itWillReportConditionsMetWhenAllAreMetForSingleAirfield()
     {
-        $condition = factory(Endorsement\Condition::class, 2)->make(['endorsement_id' => $this->endorsement->id, 'required_hours' => 1, 'within_months' => null, 'type' => Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD]);
-        $condition->first()->positions = ['EGKK_%', 'EGGW_GND'];
-        $condition->first()->save();
+        $this->createMockCondition();
 
-        $condition->last()->positions = ['EGLL_%'];
-        $condition->last()->save();
-
-        $this->assertEquals(2, $this->endorsement->conditions()->count());
-
+        // create the network data
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'EGKK_TWR',
             'minutes_online' => 60
         ]);
 
-        $session = factory(Atc::class)->create([
+        $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
+    }
+
+    /** @test */
+    public function itWillReportConditionsNotMetWhenNetworkDataNotPresentForSingleAirfield()
+    {
+        $this->createMockCondition();
+
+        // network data not present for the specified position
+        $this->assertFalse($this->endorsement->fresh()->conditionsMetForUser($this->user));
+    }
+
+    /** @test */
+    public function itWillReportConditionsMetForMultipleAirfieldsWhenNetworkDataPresent()
+    {
+        $this->createMockCondition(['EGKK_%', 'EGLL_%'], Endorsement\Condition::TYPE_SUM_OF_AIRFIELDS);
+
+        // create the network data
+        factory(Atc::class)->create([
             'account_id' => $this->user->id,
-            'callsign' => 'EGLL_TWR',
-            'minutes_online' => 59
+            'callsign' => 'EGKK_TWR',
+            'minutes_online' => 30
+        ]);
+        factory(Atc::class)->create([
+            'account_id' => $this->user->id,
+            'callsign' => 'EGLL_S_TWR',
+            'minutes_online' => 30
+        ]);
+
+        // should return true as it sums up to the 60 mins required in the mock condition.
+        $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
+    }
+
+    /** @test */
+    public function itWillReportConditionsNotMetForMultipleAirfieldsWhenRequiredTimeIsntMet()
+    {
+        $this->createMockCondition(['EGKK_%', 'EGLL_%'], Endorsement\Condition::TYPE_SUM_OF_AIRFIELDS);
+
+        // create the network data
+        factory(Atc::class)->create([
+            'account_id' => $this->user->id,
+            'callsign' => 'EGKK_TWR',
+            'minutes_online' => 10
+        ]);
+        factory(Atc::class)->create([
+            'account_id' => $this->user->id,
+            'callsign' => 'EGLL_S_TWR',
+            'minutes_online' => 10
         ]);
 
         $this->assertFalse($this->endorsement->fresh()->conditionsMetForUser($this->user));
+    }
 
-        $session->minutes_online = 66;
-        $session->save();
+    /** @test */
+    public function itShouldReturnValueFromCacheDuringConditionTest()
+    {
+        $this->createMockCondition();
 
+        Cache::shouldReceive('has')
+            ->once()
+            ->andReturn(true);
+
+        Cache::shouldReceive('get')
+            ->once()
+            ->andReturn(true);
+
+        // true assertion based upon the return value of the mocked cache facade above.
         $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
+    }
+
+    private function createMockCondition($positions = ['EGKK_%'], $type = Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD)
+    {
+        // create condition requiring an hour on a EGKK_TWR
+        return factory(Endorsement\Condition::class)->create(
+            [
+                'endorsement_id' => $this->endorsement->id,
+                'required_hours' => 1,
+                'within_months' => null,
+                'type' => $type,
+                'positions' => $positions
+            ]
+        );
     }
 }

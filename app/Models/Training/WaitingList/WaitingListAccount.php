@@ -8,6 +8,7 @@ use App\Models\Training\WaitingList;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class WaitingListAccount extends Pivot
 {
@@ -15,9 +16,12 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['position', 'added_by', 'deleted_at', 'notes'];
+    public $fillable = ['added_by', 'deleted_at', 'notes'];
 
     protected $appends = ['atcHourCheck'];
+
+    // 24 hours
+    protected $cacheTtl = 86400;
 
     public function status()
     {
@@ -52,12 +56,12 @@ class WaitingListAccount extends Pivot
     }
 
     /**
-     * @param \App\Models\Training\WaitingList\WaitingListStatus $listStatus
+     * @param  \App\Models\Training\WaitingList\WaitingListStatus  $listStatus
      */
     public function addStatus(WaitingListStatus $listStatus)
     {
         $nonEnded = $this->status->reject(function ($value, $key) {
-            return !is_null($value->pivot->end_at);
+            return ! is_null($value->pivot->end_at);
         });
 
         $nonEnded->each(function ($item, $key) {
@@ -68,7 +72,7 @@ class WaitingListAccount extends Pivot
     }
 
     /**
-     * @param \App\Models\Training\WaitingList\WaitingListStatus $listStatus
+     * @param  \App\Models\Training\WaitingList\WaitingListStatus  $listStatus
      * @return int
      */
     public function removeStatus(WaitingListStatus $listStatus)
@@ -84,7 +88,7 @@ class WaitingListAccount extends Pivot
     /**
      * Mark a Flag as true.
      *
-     * @param WaitingListFlag $listFlag
+     * @param  WaitingListFlag  $listFlag
      */
     public function markFlag(WaitingListFlag $listFlag)
     {
@@ -98,36 +102,21 @@ class WaitingListAccount extends Pivot
     {
         $flag = $this->flags()->get()->find($listFlag)->pivot;
 
-        if (!$flag->value) {
+        if (! $flag->value) {
             return;
         }
 
         $flag->unMark();
     }
 
-    public function setPositionAttribute($value)
-    {
-        $this->attributes['position'] = (int) $value;
-    }
-
-    public function decrementPosition($value = 1)
-    {
-        $this->position -= $value;
-        $this->save();
-
-        return $this->position;
-    }
-
-    public function incrementPosition($value = 1)
-    {
-        $this->position += $value;
-        $this->save();
-
-        return $this->position;
-    }
-
     public function atcHourCheck()
     {
+        $hourCheckKey = "{$this->cacheKey()}:atcHourCheck";
+
+        if ((bool) Cache::has($hourCheckKey)) {
+            return (bool) Cache::get($hourCheckKey);
+        }
+
         // gather the sessions from the last 3 months in the UK (isUK scope)
         $hours = Atc::where('account_id', $this->account_id)
             ->whereDate('disconnected_at', '>=', Carbon::parse('3 months ago'))->isUk()->sum('minutes_online');
@@ -136,9 +125,11 @@ class WaitingListAccount extends Pivot
         $minutesRequired = 720;
         // for a user in a waiting list, they should have > 12 hours controlled within the UK.
         if ($hours >= $minutesRequired) {
+            Cache::put($hourCheckKey, true, $this->cacheTtl);
             return true;
         }
 
+        Cache::put($hourCheckKey, false, $this->cacheTtl);
         return false;
     }
 
@@ -153,7 +144,7 @@ class WaitingListAccount extends Pivot
 
         // iterate through each of the flags to see if they are true. If a false flag is detected, stop iterating.
         $this->flags()->each(function ($model) use (&$checked) {
-            if (!$model->pivot->value) {
+            if (! $model->pivot->value) {
                 $checked = false;
                 return false;
             }
@@ -172,6 +163,11 @@ class WaitingListAccount extends Pivot
 
     public function setNotesAttribute($value)
     {
-        $this->attributes['notes'] = (string)$value;
+        $this->attributes['notes'] = (string) $value;
+    }
+
+    private function cacheKey()
+    {
+        return "waiting-list-account:{$this->id}";
     }
 }

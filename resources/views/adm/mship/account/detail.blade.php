@@ -13,9 +13,6 @@
                     @can('use-permission', "adm/mship/account/*/roles")
                         <li {!! $selectedTab == "roles" ? "class='active'" : "" !!}><a href="#role" role="tab" data-toggle="tab">Roles</a></li>
                     @endcan
-                    @can('use-permission', "adm/mship/account/*/feedback")
-                        <li {!! $selectedTab == "feedback" ? "class='active'" : "" !!}><a href="#feedback" role="tab" data-toggle="tab">Feedback</a></li>
-                    @endcan
                     @can('use-permission', "adm/visit-transfer/application/*")
                         <li {!! $selectedTab == "vtapps" ? "class='active'" : "" !!}><a href="#vtapps" role="tab" data-toggle="tab">V/T Applications</a></li>
                     @endcan
@@ -230,46 +227,6 @@
                         </div>
                     @endcan
 
-                    @can('use-permission', "adm/mship/account/*/feedback")
-                        <div class="tab-pane fade {{ $selectedTab == "feedback" ? "in active" : "" }}" id="feedback">
-                            <!-- general form elements -->
-                            <div class="box box-primary">
-
-                                    <div class="box-header">
-                                        <h3 class="box-title">Recieved Feedback</h3>
-                                    </div><!-- /.box-header -->
-                                    <div class="box-body">
-                                        <table class="table table-striped table-bordered table-condensed">
-                                          <thead>
-                                              <tr>
-                                                  <th>ID</th>
-                                                  <th>Feedback Form</th>
-                                                  <th>Date Submitted</th>
-                                                  <th>Action Taken</th>
-                                              </tr>
-                                          </thead>
-                                          <tbody>
-                                              @foreach($feedback as $f)
-                                              <tr>
-                                                  <td>{!! link_to_route('adm.mship.feedback.view', $f->id, [$f->id]) !!}</td>
-                                                  <td>{{ $f->form->name }}</td>
-                                                  <td>{{ $f->created_at->format("d-m-Y H:i A") }}</td>
-                                                  <td>
-                                                    @if ($f->actioned_at)
-                                                        {!! HTML::img("tick_mark_circle", "png", 35, 47) !!}
-                                                    @else
-                                                        {!! HTML::img("cross_mark_circle", "png", 35, 47) !!}
-                                                    @endif
-                                                  </td>
-                                              </tr>
-                                              @endforeach
-                                          </tbody>
-                                        </table>
-                                    </div><!-- /.box-body -->
-                            </div><!-- /.box -->
-                        </div>
-                    @endcan
-
                     @can('use-permission', "adm/visit-transfer/application/*")
                         <div class="tab-pane fade {{ $selectedTab == "vtapps" ? "in active" : "" }}" id="vtapps">
                             <!-- general form elements -->
@@ -437,9 +394,6 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @can('use-permission', "adm/mship/account/*/note/filter")
-                                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalNoteFilter">Change Filter</button>
-                                                @endcan
 
                                                 @can('use-permission', "adm/mship/account/*/note/create")
                                                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalNoteCreate">Add Note</button>

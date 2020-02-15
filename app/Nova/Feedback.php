@@ -10,6 +10,7 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 
 class Feedback extends Resource
@@ -46,6 +47,26 @@ class Feedback extends Resource
      */
     public static $group = 'Feedback';
 
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
+    }
+
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
+
+    public static function availableForNavigation(Request $request)
+    {
+        return $request->user()->can('use-permission', 'feedback');
+    }
+
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        return $query->whereNotIn('account_id', $request->user()->hiddenFeedbackUsers());
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -55,15 +76,18 @@ class Feedback extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
-            BelongsTo::make('Subject', 'account', 'App\Nova\Account'),
-
-            BelongsTo::make('Submitted By', 'submitter', 'App\Nova\Account'),
+            ID::make()->sortable()->hideFromDetail(),
 
             Text::make('Feedback Form', function () {
                 return $this->form->name;
             }),
+
+            BelongsTo::make('Subject', 'account', 'App\Nova\Account'),
+
+            BelongsTo::make('Submitted By', 'submitter', 'App\Nova\Account')
+                ->canSeeWhen("seeSubmitter", $this),
+
+            DateTime::make('Submitted At', 'created_at')->onlyOnDetail()->format('Do MMMM YYYY HH:mm'),
 
             new Panel('Actioned Information', [
                 Boolean::make('Actioned', function () {
@@ -71,7 +95,7 @@ class Feedback extends Resource
                 }),
                 DateTime::make('Actioned At')->canSee(function () {
                     return $this->actioned_at != null;
-                })->onlyOnDetail(),
+                })->onlyOnDetail()->format('Do MMMM YYYY HH:mm'),
                 BelongsTo::make('Actioned By', 'actioner', 'App\Nova\Account')->canSee(function () {
                     return $this->actioned_at != null;
                 })->onlyOnDetail(),
@@ -86,7 +110,7 @@ class Feedback extends Resource
                 }),
                 DateTime::make('Sent At')->canSee(function () {
                     return $this->sent_at != null;
-                })->onlyOnDetail(),
+                })->onlyOnDetail()->format('Do MMMM YYYY HH:mm'),
                 BelongsTo::make('Sent By', 'actioner', 'App\Nova\Account')->canSee(function () {
                     return $this->sent_at != null;
                 })->onlyOnDetail(),
@@ -147,8 +171,16 @@ class Feedback extends Resource
     public function actions(Request $request)
     {
         return [
-            (new Actions\ActionFeedback)->onlyOnDetail(),
-            (new Actions\SendFeedback)->onlyOnDetail(),
+            (new Actions\ActionFeedback)->onlyOnDetail()
+                ->canSeeWhen('actionFeedback', $this)
+                ->canRun(function () {
+                    return true;
+                }),
+            (new Actions\SendFeedback)->onlyOnDetail()
+                ->canSeeWhen('actionFeedback', $this)
+                ->canRun(function () {
+                    return true;
+                }),
         ];
     }
 }

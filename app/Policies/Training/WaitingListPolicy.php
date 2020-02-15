@@ -60,14 +60,4 @@ class WaitingListPolicy extends BasePolicy
     {
         return $account->checkPermissionTo("waitingLists/create", self::GUARD);
     }
-
-    public function restore(Account $account)
-    {
-        return false;
-    }
-
-    public function forceDelete(Account $account)
-    {
-        return false;
-    }
 }

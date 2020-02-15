@@ -109,8 +109,7 @@ class Account extends AdmController
             'roles.permissions',
             'qualifications',
             'states',
-            'secondaryEmails',
-            'feedback'
+            'secondaryEmails'
         );
 
         // Get all possible roles!
@@ -128,8 +127,6 @@ class Account extends AdmController
             ->orderBy('name', 'ASC')
             ->get();
 
-        $feedbackTargeted = $mshipAccount->feedback()->orderBy('created_at', 'desc')->get();
-
         $vtapplications = $mshipAccount->visitTransferApplications()->orderBy('updated_at', 'desc')->get();
 
         $this->setTitle("Account Details:  {$mshipAccount->name}");
@@ -142,7 +139,6 @@ class Account extends AdmController
             ->with('banReasons', $banReasons)
             ->with('noteTypes', $noteTypes)
             ->with('noteTypesAll', $noteTypesAll)
-            ->with('feedback', $feedbackTargeted)
             ->with('vtapplications', $vtapplications);
     }
 }
