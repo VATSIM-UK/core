@@ -81,7 +81,7 @@
         "guzzlehttp/guzzle": "~6.0",
         "laravel/framework": "6.*",
         "laravel/helpers": "^1.1",
-        "laravel/passport": "^7.0",
+        "laravel/passport": "^8.2",
         "laravel/tinker": "~2.0",
         "laravelcollective/html": "^6.0",
         "league/csv": "^8.0",
