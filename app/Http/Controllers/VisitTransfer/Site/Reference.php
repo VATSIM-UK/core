@@ -7,7 +7,7 @@ use App\Http\Requests\VisitTransfer\ReferenceSubmitRequest;
 use App\Models\Sys\Token;
 use App\Notifications\ApplicationReferenceCancelledByReferee;
 use Exception;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 
 class Reference extends BaseController
@@ -29,7 +29,7 @@ class Reference extends BaseController
         $reference = $token->related;
 
         try {
-            $reference->submit(Input::get('reference'));
+            $reference->submit(Request::input('reference'));
             $token->consume();
         } catch (Exception $e) {
             dd($e);

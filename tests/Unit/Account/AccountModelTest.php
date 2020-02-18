@@ -85,7 +85,7 @@ class AccountModelTest extends TestCase
     }
 
     /** @test */
-    public function itDeterminesThatANameIsStillValidEvenWithANickanemSet()
+    public function itDeterminesThatANameIsStillValidEvenWithANicknameSet()
     {
         $this->user->nickname = 'Delboy';
         $this->user->save();
@@ -102,6 +102,7 @@ class AccountModelTest extends TestCase
     public function itDeterminesWhenThereIsAnInvalidDisplayName()
     {
         $this->user->nickname = 'Delboy';
+        $this->user->name_last = 'Trotter';
         $this->user->save();
 
         $this->assertDatabaseHas('mship_account', [
@@ -111,6 +112,8 @@ class AccountModelTest extends TestCase
 
         $fullNickname = 'Rodney ' . $this->user->name_last;
         $this->assertFalse($this->user->isValidDisplayName($fullNickname));
+        $this->assertFalse($this->user->isValidDisplayName('DeLbOy TrOttEr'));
+        $this->assertTrue($this->user->isValidDisplayName('Delboy Trotter'));
     }
 
     /** @test */

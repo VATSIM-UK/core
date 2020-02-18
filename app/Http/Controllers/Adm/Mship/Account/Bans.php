@@ -16,7 +16,7 @@ use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
 use Auth;
 use Carbon\Carbon;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 use Session;
 use URL;
@@ -49,13 +49,13 @@ class Bans extends AdmController
                 ->withError('You are not able to ban a member that is already banned.');
         }
 
-        $banReason = Reason::find(Input::get('ban_reason_id'));
+        $banReason = Reason::find(Request::input('ban_reason_id'));
 
         // Create the user's ban
         $ban = $mshipAccount->addBan(
             $banReason,
-            Input::get('ban_reason_extra'),
-            Input::get('ban_note_content'),
+            Request::input('ban_reason_extra'),
+            Request::input('ban_note_content'),
             $this->account->id
         );
 
@@ -91,7 +91,7 @@ class Bans extends AdmController
         }
 
         // Attach the note.
-        $note = $ban->account->addNote(Type::isShortCode('discipline')->first(), Input::get('reason'), Auth::getUser());
+        $note = $ban->account->addNote(Type::isShortCode('discipline')->first(), Request::input('reason'), Auth::getUser());
         $ban->notes()->save($note);
         $ban->repeal();
 
@@ -126,7 +126,7 @@ class Bans extends AdmController
             return Redirect::route('adm.mship.account.index');
         }
 
-        $period_finish = Carbon::parse(Input::get('finish_date') . ' ' . Input::get('finish_time'), 'UTC');
+        $period_finish = Carbon::parse(Request::input('finish_date') . ' ' . Request::input('finish_time'), 'UTC');
         $max_timestamp = Carbon::create(2038, 1, 1, 0, 0, 0);
         if ($period_finish->gt($max_timestamp)) {
             $period_finish = $max_timestamp;
@@ -142,14 +142,14 @@ class Bans extends AdmController
             $noteComment = 'Ban has been extended from ' . $ban->period_finish->toDateTimeString() . ".\n";
         }
         $noteComment .= 'New finish: ' . $period_finish->toDateTimeString() . "\n";
-        $noteComment .= Input::get('note');
+        $noteComment .= Request::input('note');
 
         // Attach the note.
         $note = $ban->account->addNote(Type::isShortCode('discipline')->first(), $noteComment, Auth::getUser());
         $ban->notes()->save($note);
 
         // Modify the ban
-        $ban->reason_extra = $ban->reason_extra . "\n" . Input::get('reason_extra');
+        $ban->reason_extra = $ban->reason_extra . "\n" . Request::input('reason_extra');
         $ban->period_finish = $period_finish;
         $ban->save();
 
@@ -187,7 +187,7 @@ class Bans extends AdmController
         // Attach the note.
         $note = $ban->account->addNote(
             Type::isShortCode('discipline')->first(),
-            Input::get('comment'),
+            Request::input('comment'),
             Auth::getUser()
         );
         $ban->notes()->save($note);

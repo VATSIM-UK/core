@@ -4,6 +4,13 @@
             You are in a <b>NON-PRODUCTION</b> environment
         </div>
     @endif
+    @if (sys_config('notice'))
+        <div class="top_notification">
+            <div class="text">
+                {!! sys_config('notice') !!}
+            </div>
+        </div>
+    @endif
     <div class="nav_upper_container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse"
@@ -125,7 +132,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">{{ HTML::link('http://community.vatsim-uk.co.uk/downloads', 'Downloads') }}</li>
+                <li class="nav-item">{{ HTML::link('https://community.vatsim.uk/downloads', 'Downloads') }}</li>
 
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other Services <b class="caret"></b></a>
@@ -160,7 +167,7 @@
                     </li>
                     @if(Auth::user()->can('use-permission', 'adm'))
                         <li class="dropdown dropdown-large">
-                            <a href="{{ route("adm.dashboard") }}" title="Admin Dashboard">
+                            <a href="{{ route("adm.index") }}" title="Admin Dashboard">
                                 <i class="fa fa-dashboard"></i>
                             </a>
                         </li>

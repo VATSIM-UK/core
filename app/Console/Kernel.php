@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('telescope:prune')->daily();
+        // $schedule->command('sync:tg-forum-groups')->dailyAt('04:00');
     }
 
     /**

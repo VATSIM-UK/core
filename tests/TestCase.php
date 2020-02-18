@@ -32,7 +32,7 @@ abstract class TestCase extends BaseTestCase
             config(['app.url' => 'http://'.config('app.url')]);
         }
 
-        Carbon::setTestNow();
+        Carbon::setTestNow(Carbon::now());
         $this->knownDate = Carbon::now();
 
         // Create tables for other services
@@ -75,5 +75,12 @@ abstract class TestCase extends BaseTestCase
         }
 
         MockCtsDatabase::destroy();
+    }
+
+    public function markNovaTest()
+    {
+        if (!class_exists('\Laravel\Nova\Nova')) {
+            $this->markTestSkipped('Nova is required to pass test.');
+        }
     }
 }

@@ -119,13 +119,13 @@
 
 @section('scripts')
     <script>
-        $.get('{{ route('metar', $flight->departure->icao) }}', function (data) {
+        $.get('{{ route('api.metar', $flight->departure->icao) }}', function (data) {
             $('#dep-metar').fadeOut(400, function () {
                 $('#dep-metar').html(data);
                 $(this).fadeIn();
             });
         });
-        $.get('{{ route('metar', $flight->arrival->icao) }}', function (data) {
+        $.get('{{ route('api.metar', $flight->arrival->icao) }}', function (data) {
             $('#arr-metar').fadeOut(400, function () {
                 $('#arr-metar').html(data);
                 $(this).fadeIn();

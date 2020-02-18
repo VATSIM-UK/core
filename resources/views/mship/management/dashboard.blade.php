@@ -321,6 +321,17 @@
                         </div>
                     </div>
                 </div>
+                @if(!$_account->slack_id)
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a href="{{ route('slack.new') }}">
+                                    Slack guide
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
         <div class="col-md-6">
@@ -451,6 +462,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a href="{{ route('site.community.teamspeak') }}">
+                                    Teamspeak guide
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endif
 
@@ -501,6 +521,15 @@
                                 The UK Controller Plugin uses a key to identify who is using the plugin. <br/><b>Do not
                                     share
                                     your keys</b> as actions taken with these keys are logged against your account.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a href="{{ route('ukcp.guide') }}">
+                                    UK Controller Plugin guide
+                                </a>
                             </div>
                         </div>
                     </div>
