@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Models\Training\WaitingList\Concerns;
+namespace App\Models\Mship\Concerns;
 
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
-use Illuminate\Support\Arr;
 
-trait HasWaitingLists
+trait HasNovaPermissions
 {
     public function waitingLists()
     {
         return $this->belongsToMany(WaitingList::class, 'training_waiting_list_account',
-            'account_id', 'list_id')->using(WaitingListAccount::class)->withPivot(['id', 'position']);
+            'account_id', 'list_id')->using(WaitingListAccount::class)->withPivot(['id']);
     }
 
-    public function authorisedDepartments()
+    public function waitingListDepartments()
     {
         $departments = [];
         if ($this->hasRole('privacc')) {
@@ -28,5 +27,14 @@ trait HasWaitingLists
         }
 
         return $departments;
+    }
+
+    public function hiddenFeedbackUsers()
+    {
+        if ($this->can('use-permission', 'feedback/own')) {
+            return [];
+        }
+
+        return [$this->id];
     }
 }

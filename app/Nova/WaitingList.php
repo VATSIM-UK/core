@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use App\Nova\Actions\Training\AddFlagToWaitingList;
 use App\Nova\Actions\Training\AddStudentToWaitingList;
+use App\Nova\Actions\Training\AddStudentToWaitingListAdmin;
 use Benjaminhirsch\NovaSlugField\Slug;
 use Benjaminhirsch\NovaSlugField\TextWithSlug;
 use Illuminate\Http\Request;
@@ -84,7 +85,7 @@ class WaitingList extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->whereIn('department', $request->user('web')->authorisedDepartments());
+        return $query->whereIn('department', $request->user('web')->waitingListDepartments());
     }
 
     /**
@@ -143,6 +144,14 @@ class WaitingList extends Resource
                     return $request->user()->can('use-permission', "waitingLists/addFlags");
                 })->canRun(function (Request $request) {
                     return $request->user()->can('use-permission', "waitingLists/addFlags");
+                }),
+
+            (new AddStudentToWaitingListAdmin())
+                ->onlyOnDetail()
+                ->canSee(function (Request $request) {
+                    return $request->user()->can('use-permission', "waitingLists/addAccountsAdmin");
+                })->canRun(function (Request $request) {
+                    return $request->user()->can('use-permission', "waitingLists/addAccountsAdmin");
                 })
         ];
     }
