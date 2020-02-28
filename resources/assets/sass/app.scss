@@ -233,6 +233,16 @@ body, html {
   .panel-body .row-text-contain {
     word-break: break-word;
   }
+    .panel-footer.panel-footer-primary {
+        color: white;
+        background-color: $brand-primary;
+        a {
+            color: white;
+        }
+        a:hover {
+            color: $gray-lighter;
+        }
+    }
 }
 
 .panel-uk-danger {

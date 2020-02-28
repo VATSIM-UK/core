@@ -462,7 +462,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-footer bg-info">
+                    <div class="panel-footer panel-footer-primary">
                         <div class="row">
                             <div class="col-xs-12">
                                 <a href="{{ route('site.community.teamspeak') }}">
@@ -529,7 +529,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-footer bg-info">
+                <div class="panel-footer panel-footer-primary">
                     <div class="row">
                         <div class="col-xs-12">
                             <a href="{{ route('ukcp.guide') }}">
