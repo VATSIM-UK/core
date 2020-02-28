@@ -513,8 +513,8 @@
                                     </div>
                                 @empty
                                     <p>
-                                        No keys found.
-                                        <a href="{{ route('ukcp.token.refresh') }}">Create One?</a>
+                                        No keys found.</br>
+                                        <a class="btn btn-sm btn-info" href="{{ route('ukcp.token.refresh') }}">Create UKCP Token</a>
                                     </p>
                                 @endforelse
                             </div>
