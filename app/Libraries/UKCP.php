@@ -7,12 +7,16 @@ use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class UKCP
 {
 
     /** @var string */
     private $apiKey;
+
+    /** @var string */
+    const TOKEN_PATH_ROOT = 'ukcp/tokens/';
 
     /**
      * UKCP constructor.
@@ -54,7 +58,7 @@ class UKCP
 
     /**
      * @param Account $account
-     * @return bool
+     * @return string?
      */
     public function createTokenFor(Account $account)
     {
@@ -75,14 +79,18 @@ class UKCP
             return null;
         }
 
-        return $result;
+        $token = $this->getValidTokensFor($account)->first();
+
+        Storage::disk('local')->put(self::getPathForToken($token->id, $account), $token);
+        return $token;
     }
 
     /**
      * @param string $tokenId
+     * @param Account $account
      * @return bool
      */
-    public function deleteToken(string $tokenId)
+    public function deleteToken(string $tokenId, Account $account)
     {
         try {
             (new Client)->delete(config('services.ukcp.url') . '/token/' . $tokenId, ['headers' => [
@@ -93,6 +101,9 @@ class UKCP
             Bugsnag::notifyException($e);
             return false;
         }
+
+        // Delete local file
+        Storage::disk('local')->delete(self::getPathForToken($tokenId, $account));
 
         return true;
     }
@@ -111,5 +122,24 @@ class UKCP
         }
 
         return json_decode($result->getBody()->getContents());
+    }
+
+    /**
+     * @param $token object A token object
+     * @return false|string
+     */
+    public static function getKeyForToken($token)
+    {
+        return substr($token->id, -8);
+    }
+
+    /**
+     * @param $tokenID string The full length token ID
+     * @param $account Account
+     * @return string
+     */
+    public static function getPathForToken($tokenID, $account)
+    {
+        return self::TOKEN_PATH_ROOT . $account->id . '/' . $tokenID . '.json';
     }
 }

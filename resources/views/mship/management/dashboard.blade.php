@@ -496,7 +496,7 @@
                             <div class="row">
                                 @forelse($pluginKeys as $key)
                                     <div class="col-xs-6 row-text-contain" style="padding-bottom: 20px;">
-                                        [ <strong>Registration #{{ substr($key->id, -8) }}</strong> ]<br/>
+                                        [ <strong>Registration {{\App\Libraries\UKCP::getKeyForToken($key)}}</strong> ]<br/>
                                         <strong>CREATED</strong>:
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
                                            title="{{ $key->created_at }}">

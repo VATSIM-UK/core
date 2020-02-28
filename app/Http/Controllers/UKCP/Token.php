@@ -25,7 +25,7 @@ class Token extends BaseController
         $currentTokens = $this->ukcp->getValidTokensFor(auth()->user());
 
         foreach ($currentTokens as $token) {
-            $this->ukcp->deleteToken($token->id);
+            $this->ukcp->deleteToken($token->id, auth()->user());
         }
 
         $newToken = $this->ukcp->createTokenFor(auth()->user());
@@ -34,11 +34,6 @@ class Token extends BaseController
             return Redirect::route('mship.manage.dashboard')
                 ->withError('An unknown error occured, please contact Web Services.');
         }
-
-        $latestId = $this->ukcp->getValidTokensFor(auth()->user())->first()->id;
-        $tokenPath = 'ukcp/tokens/' . auth()->user()->id . '/' . $latestId . '.json';
-        Storage::disk('local')->put($tokenPath, $newToken);
-
         return redirect()->route('ukcp.guide')->withSuccess('Tokens Updated!');
     }
 
@@ -51,19 +46,6 @@ class Token extends BaseController
         }
 
         return $this->viewMake('ukcp.token.guide')->with('newToken', $latestId->first()->id);
-    }
-
-    public function destroy($tokenId)
-    {
-        $delete = $this->ukcp->deleteToken($tokenId);
-
-        if (!$delete) {
-            return Redirect::route('mship.manage.dashboard')
-                ->withError('An unknown error occured, please contact Web Services.');
-        }
-
-        return Redirect::route('mship.manage.dashboard')
-            ->withSuccess('Key has been deleted.');
     }
 
     public function download($tokenId)
