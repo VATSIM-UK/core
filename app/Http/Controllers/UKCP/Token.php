@@ -50,13 +50,17 @@ class Token extends BaseController
 
     public function download($tokenId)
     {
-        $tokenPath = storage_path('app/ukcp/tokens/') . auth()->user()->id . '/' . $tokenId . '.json';
         $headers = array(
             'Content-Type: application/json',
         );
 
         try {
-            return response()->download($tokenPath, substr($tokenId, -8) . '.json', $headers);
+            return Storage::disk('local')
+                ->download(
+                    $this->ukcp::getPathForToken($tokenId, auth()->user()),
+                    "{$this->ukcp::getKeyForToken($tokenId)}.json",
+                    $headers
+                );
         } catch (FileNotFoundException $e) {
             return redirect()->back()->with('error', 'There was an issue downloading your file. Please contact Web Services.');
         }

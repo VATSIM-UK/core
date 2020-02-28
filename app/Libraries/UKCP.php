@@ -125,12 +125,12 @@ class UKCP
     }
 
     /**
-     * @param $token object A token object
+     * @param $token object|string A token object or token ID string
      * @return false|string
      */
     public static function getKeyForToken($token)
     {
-        return substr($token->id, -8);
+        return substr(is_object($token) ? $token->id : $token, -8);
     }
 
     /**
