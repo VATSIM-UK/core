@@ -58,30 +58,29 @@ class UKCP
 
     /**
      * @param Account $account
-     * @return string?
+     * @return object|null
      */
     public function createTokenFor(Account $account)
     {
         $pluginAccount = collect($this->getAccountFor($account));
 
         if ($pluginAccount->isEmpty()) {
-            return $this->createAccountFor($account);
-        }
-
-        try {
-            $response = (new Client)->post(config('services.ukcp.url') . '/user/' . $account->id . '/token', ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
-            ]]);
-            $result = $response->getBody()->getContents();
-        } catch (ClientException $e) {
-            Log::error($e);
-            Bugsnag::notifyException($e);
-            return null;
+            $result = $this->createAccountFor($account);
+        }else{
+            try {
+                $response = (new Client)->post(config('services.ukcp.url') . '/user/' . $account->id . '/token', ['headers' => [
+                    'Authorization' => 'Bearer ' . $this->apiKey
+                ]]);
+                $result = $response->getBody()->getContents();
+            } catch (ClientException $e) {
+                Log::error($e);
+                Bugsnag::notifyException($e);
+                return null;
+            }
         }
 
         $token = $this->getValidTokensFor($account)->first();
-
-        Storage::disk('local')->put(self::getPathForToken($token->id, $account), $token);
+        Storage::disk('local')->put(self::getPathForToken($token->id, $account), $result);
         return $token;
     }
 
