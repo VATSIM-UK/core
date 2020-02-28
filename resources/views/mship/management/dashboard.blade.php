@@ -466,7 +466,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <a href="{{ route('site.community.teamspeak') }}">
-                                    Teamspeak guide
+                                    <span class='fa fa-info'></span>  Teamspeak Guide
                                 </a>
                             </div>
                         </div>
@@ -477,16 +477,16 @@
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="fa fa-signal"></i>
                         UK Controller Plugin
-                        <div class="pull-right">
-                            <a href="{{ route('ukcp.token.create') }}">
-                                <i class="fa fa-plus-circle"></i>
-                            </a>
-                        </div>
                     </div>
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-3">
                                 <b>UK CONTROLLER<br/>PLUGIN KEYS</b>
+                                @if(count($pluginKeys))
+                                    <a href="{{ route('ukcp.token.refresh') }}">Refresh Keys</a>
+                                    </br>
+                                    Note: Will invalidate all current tokens
+                                @endif
                             </div>
                             <div class="col-xs-9">
                                 <div class="row">
@@ -506,11 +506,12 @@
                                             </a>
                                             <br/>
                                             [ <a href="{{ route('ukcp.token.download', $key->id) }}">Download Key</a> ]
-                                            <br/>
-                                            [ <a href="{{ route('ukcp.token.destroy', $key->id) }}">Remove Key</a> ]
                                         </div>
                                     @empty
-                                        <p>No keys found.</p>
+                                        <p>
+                                            No keys found.
+                                            <a href="{{ route('ukcp.token.refresh') }}">Create One?</a>
+                                        </p>
                                     @endforelse
                                 </div>
                             </div>
@@ -528,7 +529,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <a href="{{ route('ukcp.guide') }}">
-                                    UK Controller Plugin guide
+                                    <span class='fa fa-info'></span> UK Controller Plugin Guide
                                 </a>
                             </div>
                         </div>

@@ -20,13 +20,12 @@ class Token extends BaseController
         parent::__construct();
     }
 
-    public function create()
+    public function refresh()
     {
         $currentTokens = $this->ukcp->getValidTokensFor(auth()->user());
 
-        if ($currentTokens->count() >= 4) {
-            return Redirect::route('mship.manage.dashboard')
-                ->withError('You currently have the maximum number of keys created. Please consider deleting unused ones first.');
+        foreach ($currentTokens as $token) {
+            $this->ukcp->deleteToken($token->id);
         }
 
         $newToken = $this->ukcp->createTokenFor(auth()->user());
@@ -40,7 +39,7 @@ class Token extends BaseController
         $tokenPath = 'ukcp/tokens/' . auth()->user()->id . '/' . $latestId . '.json';
         Storage::disk('local')->put($tokenPath, $newToken);
 
-        return $this->viewMake('ukcp.token.create')->with('newToken', $latestId);
+        return $this->viewMake('ukcp.token.guide')->with('newToken', $latestId);
     }
 
     public function show()
@@ -48,10 +47,10 @@ class Token extends BaseController
         $latestId = $this->ukcp->getValidTokensFor(auth()->user());
 
         if ($latestId->isEmpty()) {
-            return Redirect::route('ukcp.token.create');
+            return Redirect::route('ukcp.token.guide');
         }
 
-        return $this->viewMake('ukcp.token.create')->with('newToken', $latestId->first()->id);
+        return $this->viewMake('ukcp.token.guide')->with('newToken', $latestId->first()->id);
     }
 
     public function destroy($tokenId)
