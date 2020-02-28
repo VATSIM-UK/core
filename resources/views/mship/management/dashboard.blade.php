@@ -322,11 +322,11 @@
                     </div>
                 </div>
                 @if(!$_account->slack_id)
-                    <div class="panel-footer">
+                    <div class="panel-footer panel-footer-primary">
                         <div class="row">
                             <div class="col-xs-12">
                                 <a href="{{ route('slack.new') }}">
-                                    Slack guide
+                                    <span class='fa fa-info'></span> Slack Guide
                                 </a>
                             </div>
                         </div>
