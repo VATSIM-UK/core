@@ -39,7 +39,7 @@ class Token extends BaseController
         $tokenPath = 'ukcp/tokens/' . auth()->user()->id . '/' . $latestId . '.json';
         Storage::disk('local')->put($tokenPath, $newToken);
 
-        return $this->viewMake('ukcp.token.guide')->with('newToken', $latestId);
+        return redirect()->route('ukcp.guide')->withSuccess('Tokens Updated!');
     }
 
     public function show()
