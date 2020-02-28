@@ -66,7 +66,7 @@ class UKCP
 
         if ($pluginAccount->isEmpty()) {
             $result = $this->createAccountFor($account);
-        }else{
+        } else {
             try {
                 $response = (new Client)->post(config('services.ukcp.url') . '/user/' . $account->id . '/token', ['headers' => [
                     'Authorization' => 'Bearer ' . $this->apiKey
