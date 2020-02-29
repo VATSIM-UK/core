@@ -3,7 +3,6 @@
 
 namespace Tests\Unit;
 
-
 use App\Libraries\UKCP;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
@@ -65,5 +64,4 @@ class UKCPLibraryTest extends TestCase
 
         Storage::disk('local')->assertMissing(UKCP::getPathForToken($currentTokenID, $this->user));
     }
-
 }
