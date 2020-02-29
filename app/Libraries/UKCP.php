@@ -6,8 +6,10 @@ use App\Models\Mship\Account;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Psr\Http\Message\ResponseInterface;
 
 class UKCP
 {
@@ -15,22 +17,25 @@ class UKCP
     /** @var string */
     private $apiKey;
 
+    /** @var Client */
+    private $client;
+
     /** @var string */
     const TOKEN_PATH_ROOT = 'ukcp/tokens/';
 
     /**
      * UKCP constructor.
      */
-    public function __construct()
+    public function __construct(Client $client)
     {
         $this->apiKey = config('services.ukcp.key');
+        $this->client = $client;
     }
 
     public function createAccountFor(Account $account)
     {
         try {
-            $client = new Client;
-            $result = $client->post(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
+            $result = $this->client->post(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
                 'Authorization' => 'Bearer ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
@@ -44,12 +49,11 @@ class UKCP
 
     /**
      * @param Account $account
-     * @return array|\Illuminate\Support\Collection|mixed|\Psr\Http\Message\ResponseInterface
+     * @return array|Collection|mixed|ResponseInterface
      */
     public function getValidTokensFor(Account $account)
     {
         $tokens = optional($this->getAccountFor($account))->tokens;
-
         return collect($tokens)
             ->filter(function ($item) {
                 return $item->revoked === false;
@@ -68,7 +72,7 @@ class UKCP
             $result = $this->createAccountFor($account);
         } else {
             try {
-                $response = (new Client)->post(config('services.ukcp.url') . '/user/' . $account->id . '/token', ['headers' => [
+                $response = $this->client->post(config('services.ukcp.url') . '/user/' . $account->id . '/token', ['headers' => [
                     'Authorization' => 'Bearer ' . $this->apiKey
                 ]]);
                 $result = $response->getBody()->getContents();
@@ -92,7 +96,7 @@ class UKCP
     public function deleteToken(string $tokenId, Account $account)
     {
         try {
-            (new Client)->delete(config('services.ukcp.url') . '/token/' . $tokenId, ['headers' => [
+            $this->client->delete(config('services.ukcp.url') . '/token/' . $tokenId, ['headers' => [
                 'Authorization' => 'Bearer ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
@@ -110,8 +114,7 @@ class UKCP
     protected function getAccountFor(Account $account)
     {
         try {
-            $client = new Client;
-            $result = $client->get(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
+            $result = $this->client->get(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
                 'Authorization' => 'Bearer ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
@@ -119,7 +122,6 @@ class UKCP
             Bugsnag::notifyException($e);
             return null;
         }
-
         return json_decode($result->getBody()->getContents());
     }
 
