@@ -42,10 +42,10 @@ class Token extends BaseController
         $latestId = $this->ukcp->getValidTokensFor(auth()->user());
 
         if ($latestId->isEmpty()) {
-            return Redirect::route('ukcp.guide');
+            return Redirect::route('ukcp.token.refresh');
         }
 
-        return $this->viewMake('ukcp.guide')->with('newToken', $latestId->first()->id);
+        return $this->viewMake('ukcp.token.guide')->with('newToken', $latestId->first()->id);
     }
 
     public function download($tokenId)
