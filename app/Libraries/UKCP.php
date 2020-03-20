@@ -39,8 +39,6 @@ class UKCP
                 'Authorization' => 'Bearer ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
-            Log::error($e);
-            Bugsnag::notifyException($e);
             return null;
         }
 
