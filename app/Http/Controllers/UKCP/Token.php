@@ -34,7 +34,7 @@ class Token extends BaseController
             return Redirect::route('mship.manage.dashboard')
                 ->withError('An unknown error occured, please contact Web Services.');
         }
-        return redirect()->route('ukcp.guide')->withSuccess('Tokens Updated!');
+        return redirect()->route('ukcp.token.guide')->withSuccess('Tokens Updated!');
     }
 
     public function show()
