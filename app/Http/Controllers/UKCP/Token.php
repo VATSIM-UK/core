@@ -41,7 +41,7 @@ class Token extends BaseController
     {
         $latestId = $this->ukcp->getValidTokensFor(auth()->user());
 
-        if ($latestId->isEmpty()) 
+        if ($latestId->isEmpty()) {
             return Redirect::route('ukcp.token.refresh');
         }
 
