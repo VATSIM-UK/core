@@ -3,11 +3,9 @@
 namespace App\Libraries;
 
 use App\Models\Mship\Account;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Psr\Http\Message\ResponseInterface;
 
@@ -75,8 +73,6 @@ class UKCP
                 ]]);
                 $result = $response->getBody()->getContents();
             } catch (ClientException $e) {
-                Log::error($e);
-                Bugsnag::notifyException($e);
                 return null;
             }
         }
@@ -98,8 +94,6 @@ class UKCP
                 'Authorization' => 'Bearer ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
-            Log::error($e);
-            Bugsnag::notifyException($e);
             return false;
         }
 
@@ -116,8 +110,6 @@ class UKCP
                 'Authorization' => 'Bearer ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
-            Log::error($e);
-            Bugsnag::notifyException($e);
             return null;
         }
         return json_decode($result->getBody()->getContents());
