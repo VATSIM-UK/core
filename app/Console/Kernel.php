@@ -35,80 +35,54 @@ class Kernel extends ConsoleKernel
         // $schedule->command('sync:tg-forum-groups')->dailyAt('04:00');
 
         $schedule->command('sys:statistics:daily')
-            ->dailyAt('00:01')
-            ->onFailure($this->failureMessage('Syncing of daily statistics has failed (sync:statistics:daily)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->dailyAt('00:01');
 
         $schedule->command('sync:community')
-            ->dailyAt('00:01')
-            ->onFailure($this->failureMessage('Syncing of community has failed (sync:community)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->dailyAt('00:01');
 
         $schedule->command('members:certimport', ['--full'])
             ->twiceDaily(2, 14)
-            ->runInBackground()
-            ->onFailure($this->failureMessage('Full import of cert has failed (members:certimport --full)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
 
         $schedule->command('members:certimport')
             ->cron('30 */2 * * *') // every second hour
-            ->runInBackground()
-            ->onFailure($this->failureMessage('Two-hourly import of cert has failed (members:certimport)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
 
         $schedule->command('members:certupdate', ['--type=daily', 5000])
             ->dailyAt('00:45')
-            ->runInBackground()
-            ->onFailure($this->failureMessage('Daily cert import has failed (members:certupdate --type=daily 5000)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
 
         $schedule->command('members:certupdate', ['--type=weekly', 5000])
             ->weeklyOn(1, '01:15')
-            ->runInBackground()
-            ->onFailure($this->failureMessage('Weekly monday cert import has failed (members:certupdate --type=weekly 5000)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
 
         $schedule->command('members:certupdate', ['--type=monthly', 5000])
             ->monthlyOn(1, '01:45')
-            ->runInBackground()
-            ->onFailure($this->failureMessage('Weekly monday cert import has failed (members:certupdate --type=weekly 5000)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
 
         $schedule->command('members:certupdate', ['--type=all', 1000])
             ->monthlyOn(1, '01:45')
-            ->runInBackground()
-            ->onFailure($this->failureMessage('Weekly monday cert import has failed (members:certupdate --type=weekly 5000)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
 
         $schedule->command('visit-transfer:cleanup')
             ->everyMinute()
-            ->runInBackground()
-            ->onFailure($this->failureMessage('Cleaning up visit transfer applications has failed (visit-transfer:cleanup)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
 
         $schedule->command('visittransfer:statistics:daily')
             ->everyMinute()
-            ->runInBackground()
-            ->onFailure($this->failureMessage('Daily statistics for visit-transfer has failed (visittransfer:statistics:daily)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
 
         $schedule->command('teaman:runner', ['-v'])
             ->everyMinute()
-            ->runInBackground()
-            ->onFailure($this->failureMessage('TeamSpeak runner has failed (teaman:runner)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
 
         $schedule->command('networkdata:download')
             ->cron('*/2 * * * *') // every second minute
-            ->runInBackground()
-            ->onFailure($this->failureMessage('Download of network data has failed (networkdata:download)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
 
         $schedule->command('slack:manager')
             ->hourly()
-            ->runInBackground()
-            ->onFailure($this->failureMessage('Slack manager has failed (slack:manager)'))
-            ->emailOutputOnFailure($this->failureEmail);
+            ->runInBackground();
     }
 
     /**
