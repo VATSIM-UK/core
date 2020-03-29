@@ -29,7 +29,7 @@
                         </div>
                     </td>
                     <td>{{ account.id }}</td>
-                    <td>{{ this.moment(account.created_at).format("MMMM Do YYYY") }}</td>
+                    <td>{{ account.created_at }}</td>
                     <td>
                         <note-indicator
                             :account="account"
