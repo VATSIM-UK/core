@@ -125,9 +125,7 @@
 
             showHourChecker () {
                 return this.type === 'atc'
-            },
-
-
+            }
         },
     }
 </script>
