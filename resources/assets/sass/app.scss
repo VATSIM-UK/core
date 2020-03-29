@@ -8,6 +8,7 @@ $screen-sm: 802px;
 @import "_nav";
 @import "_visit-transfer";
 @import "_vuk-letters";
+@import "_padding-utils";
 
 body, html {
   margin: 0 auto;
@@ -232,6 +233,16 @@ body, html {
   .panel-body .row-text-contain {
     word-break: break-word;
   }
+    .panel-footer.panel-footer-primary {
+        color: white;
+        background-color: $brand-primary;
+        a {
+            color: white;
+        }
+        a:hover {
+            color: $gray-lighter;
+        }
+    }
 }
 
 .panel-uk-danger {

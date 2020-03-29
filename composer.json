@@ -112,7 +112,8 @@
         "phpunit/phpunit": "^8.4",
         "symfony/css-selector": "^4.0",
         "symfony/dom-crawler": "^5.0",
-        "timacdonald/log-fake": "^1.2"
+        "timacdonald/log-fake": "^1.2",
+        "ext-json": "*"
     },
     "autoload": {
         "classmap": [

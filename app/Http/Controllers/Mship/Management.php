@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Libraries\UKCP;
+use App\Libraries\UKCP as UKCPLibrary;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Token as SystemToken;
 use Auth;
@@ -13,6 +13,17 @@ use Validator;
 
 class Management extends \App\Http\Controllers\BaseController
 {
+    /**
+     * @var UKCPLibrary
+     */
+    private $ukcp;
+
+    public function __construct(UKCPLibrary $ukcp)
+    {
+        $this->ukcp = $ukcp;
+        parent::__construct();
+    }
+
     public function getLanding()
     {
         if (Auth::check()) {
@@ -34,7 +45,7 @@ class Management extends \App\Http\Controllers\BaseController
             'teamspeakRegistrations'
         );
 
-        $pluginKeys = (new UKCP)->getValidTokensFor(auth()->user());
+        $pluginKeys = $this->ukcp->getValidTokensFor(auth()->user());
 
         return $this->viewMake('mship.management.dashboard')->with('pluginKeys', $pluginKeys);
     }

@@ -6,6 +6,7 @@ use App\Events\Mship\AccountAltered;
 use App\Events\Mship\Qualifications\QualificationAdded;
 use App\Models\Mship\AccountQualification;
 use App\Models\Mship\Qualification;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Exception;
 use VatsimXML;
 

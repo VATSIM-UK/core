@@ -129,8 +129,7 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/')->uses('Token@show')->name('guide');
-    Route::get('/token')->uses('Token@create')->name('token.create');
-    Route::get('token/{id}/destroy')->uses('Token@destroy')->name('token.destroy');
+    Route::get('/token/refresh')->uses('Token@refresh')->name('token.refresh');
     Route::get('token/{id}/download')->uses('Token@download')->name('token.download');
 });
 
