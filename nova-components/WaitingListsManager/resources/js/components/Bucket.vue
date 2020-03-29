@@ -29,7 +29,7 @@
                         </div>
                     </td>
                     <td>{{ account.id }}</td>
-                    <td>{{ this.moment(account.created_at).format("MMMM Do YYYY") }}</td>
+                    <td>{{ createdFormatted(account.created_at) }}</td>
                     <td>
                         <note-indicator
                             :account="account"
@@ -111,6 +111,10 @@
                 if (!flag.endorsement_id) {
                     this.$emit('changeFlag', flag)
                 }
+            },
+
+            createdFormatted (created_at) {
+                return moment(created_at).format("MMMM Do YYYY")
             }
         },
 

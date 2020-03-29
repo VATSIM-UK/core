@@ -1,8 +1,8 @@
 Nova.booting((Vue, router) => {
-    Vue.component('waiting-lists-manager', require('./components/Tool'));
-    Vue.component('confirm-flag-change-modal', require('./components/ConfirmFlagChangeModal'))
-    Vue.component('text-input-modal', require('./components/TextInputModal'))
-    Vue.component('flag-indicator', require('./components/FlagIndicator'))
-    Vue.component('note-indicator', require('./components/NoteIndicator'))
-    Vue.component('bucket', require('./components/Bucket'))
+    Vue.component('waiting-lists-manager', require('./components/Tool').default),
+    Vue.component('confirm-flag-change-modal', require('./components/ConfirmFlagChangeModal').default),
+    Vue.component('text-input-modal', require('./components/TextInputModal').default),
+    Vue.component('flag-indicator', require('./components/FlagIndicator').default),
+    Vue.component('note-indicator', require('./components/NoteIndicator').default),
+    Vue.component('bucket', require('./components/Bucket').default);
 })
