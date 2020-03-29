@@ -9,7 +9,7 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    private $failureEmail = 'privileged-access@vatsim-uk.co.uk';
+    private $failureEmail = 'privileged-access@vatsim.uk';
 
     /**
      * The Artisan commands provided by your application.
@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('telescope:prune')->daily();
+        
         // $schedule->command('sync:tg-forum-groups')->dailyAt('04:00');
 
         $schedule->command('sys:statistics:daily')
@@ -100,7 +101,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('networkdata:download')
             ->cron('*/2 * * * *') // every second minute
             ->runInBackground()
-            ->onFailure($this->failureMessage('Download of network data has failed (networkdata:download'))
+            ->onFailure($this->failureMessage('Download of network data has failed (networkdata:download)'))
             ->emailOutputOnFailure($this->failureEmail);
 
         $schedule->command('slack:manager')
