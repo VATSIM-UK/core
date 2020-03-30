@@ -28,7 +28,7 @@
                             <p>{{ account.name }}</p>
                         </div>
                     </td>
-                    <td>{{ account.id }}</td
+                    <td>{{ account.id }}</td>
                     <td>{{ createdFormatted(account.created_at) }}</td>
                     <td>
                         <note-indicator
