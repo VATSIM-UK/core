@@ -31,8 +31,7 @@ class ReprocessBids extends Command
     {
         $bids = Bid::all();
 
-        foreach($bids as $bid)
-        {
+        foreach ($bids as $bid) {
             event(new BidCompleted($bid));
         }
     }
