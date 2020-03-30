@@ -63,7 +63,7 @@ class Posrep extends Model
 
     public function bid()
     {
-        return $this->hasOne(\App\Models\Smartcars\Flight::class, 'id', 'flight_id');
+        return $this->hasOne(\App\Models\Smartcars\Bid::class, 'id', 'bid_id');
     }
 
     public function aircraft()
