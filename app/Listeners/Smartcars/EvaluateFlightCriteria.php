@@ -88,6 +88,7 @@ class EvaluateFlightCriteria implements ShouldQueue
 
         $networkTime = NetworkData::where('disconnected_at', '>', $posreps->first()->created_at)
             ->where('connected_at', '<', $posreps->last()->created_at)
+            ->where('account_id', '=', $posreps->first()->bid->account->id)
             ->sum('minutes_online');
 
         if ($pirepTime < 0) {
