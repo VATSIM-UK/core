@@ -2,6 +2,7 @@
 
 namespace App\Models\Sso;
 
+use App\Events\Mship\AccountAltered;
 use App\Models\Model;
 
 /**
@@ -37,5 +38,14 @@ class Email extends Model
     public function ssoAccount()
     {
         return $this->belongsTo(\Laravel\Passport\Client::class, 'sso_account_id', 'id');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($email) {
+            event(new AccountAltered($email->email->account));
+        });
     }
 }

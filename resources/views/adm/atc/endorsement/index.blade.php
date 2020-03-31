@@ -18,11 +18,11 @@
                         <tbody>
                             @foreach($endorsements as $endorsement)
                             <tr>
-                                <td>{{ $endorsement }}</td>
+                                <td>{{ $endorsement->name }}</td>
                                 <td>
                                     {{ Form::open(['method' => 'GET', 'route' => ['adm.atc.endorsement.index']]) }}
                                     <div class="input-group">
-                                        {{ Form::hidden('endorsement', $endorsement) }}
+                                        {{ Form::hidden('id', $endorsement->id) }}
                                         {{ Form::text('cid', null, ['class' => 'form-control', 'placeholder' => "Enter the user's CID here"]) }}
                                         <span class="input-group-btn">
                                             {{ Form::submit('Go', ['class' => "btn"]) }}

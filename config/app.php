@@ -170,8 +170,10 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\NovaServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TrainingEventServiceProvider::class,
     ],
 
     /*
@@ -227,7 +229,6 @@ return [
         /*
          * Laravel Native Aliases (Deprecated)
          */
-        'Input' => Illuminate\Support\Facades\Input::class,
         'Inspiring' => Illuminate\Foundation\Inspiring::class,
 
         /*
@@ -251,7 +252,6 @@ return [
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
         'VatsimXML' => Vatsim\Xml\Facades\XML::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        'Slack' => Maknz\Slack\Facades\Slack::class,
         'IPBoard' => Alawrence\Ipboard\Facades\Ipboard::class,
     ],
 

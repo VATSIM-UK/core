@@ -3,12 +3,12 @@
 namespace App\Exceptions;
 
 use App;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Log;
-use Request;
-use Slack;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
+use Vluzrmos\SlackApi\Facades\SlackChat;
 
 class Handler extends ExceptionHandler
 {
@@ -59,10 +59,6 @@ class Handler extends ExceptionHandler
                 }
             }
 
-            if (class_exists(App::class) && App::isBooted() && App::environment('production')) {
-                $this->reportSlackError($e);
-            }
-
             if (class_exists('Log')) {
                 Log::info(Request::fullUrl());
             }
@@ -85,7 +81,7 @@ class Handler extends ExceptionHandler
 
     protected function reportSlackError(Exception $e)
     {
-        $channel = 'wslogging';
+        $channel = '#ws_alerts';
 
         $attachment = [
             'fallback' => 'Exception thrown: '.get_class($e),
@@ -143,7 +139,7 @@ class Handler extends ExceptionHandler
         }
 
         try {
-            Slack::setUsername('Error Handling')->to($channel)->attach($attachment)->send();
+            SlackChat::message($channel, '', ['attachments' => $attachment, 'username' => 'Error Handling']);
         } catch (Exception $e) {
         }
     }

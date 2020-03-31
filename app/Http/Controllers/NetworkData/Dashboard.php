@@ -11,7 +11,7 @@ class Dashboard extends AdmController
 {
     public function getDashboard()
     {
-        $statisticsRaw = Cache::remember('networkdata::statistics', 60, function () {
+        $statisticsRaw = Cache::remember('networkdata::statistics', 60 * 60, function () {
             $statistics = [];
 
             $statistics['atc_sessions_total'] = Atc::thisYear()->count();
@@ -20,7 +20,7 @@ class Dashboard extends AdmController
             return $statistics;
         });
 
-        $statisticsGraph = Cache::remember('networkdata::statistics.graph', 60 * 24, function () {
+        $statisticsGraph = Cache::remember('networkdata::statistics.graph', (60 * 24) * 60, function () {
             $statistics = [];
             $statisticKeys = ['applications.total', 'applications.open', 'applications.closed', 'applications.new'];
 

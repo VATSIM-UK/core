@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Site;
 
 use App\Models\Mship\State as State;
 use App\Repositories\Cts\BookingRepository;
+use App\Repositories\Cts\EventRepository;
 use Illuminate\Support\Facades\Cache as Cache;
 use Illuminate\Support\Facades\DB as DB;
 
@@ -14,7 +15,8 @@ class HomePageController extends \App\Http\Controllers\BaseController
         return $this->viewMake('site.home')
             ->with('nextEvent', $this->nextEvent())
             ->with('stats', $this->stats())
-            ->with('bookings', $this->todaysLiveAtcBookings());
+            ->with('bookings', $this->todaysLiveAtcBookings())
+            ->with('events', $this->todaysEvents());
     }
 
     private function nextEvent()
@@ -23,8 +25,9 @@ class HomePageController extends \App\Http\Controllers\BaseController
             $html = file_get_contents('https://cts.vatsim.uk/extras/next_event.php');
 
             return $this->getHTMLByID('next', $html);
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
+        } catch (\HttpRequestException $e) {
+            // CTS likely unavailable.
+            return null;
         }
     }
 
@@ -43,7 +46,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
 
     private function stats()
     {
-        $divisionMembers = Cache::remember('home.mship.stats', 1440, function () {
+        $divisionMembers = Cache::remember('home.mship.stats', 1440 * 60, function () {
             $stat['members_division'] = DB::table('mship_account_state')
                 ->leftJoin('mship_account', 'mship_account_state.account_id', '=', 'mship_account.id')
                 ->where('inactive', '=', 0)
@@ -61,6 +64,13 @@ class HomePageController extends \App\Http\Controllers\BaseController
     {
         $bookings = new BookingRepository();
 
-        return $bookings->getTodaysLiveAtcBookings();
+        return $bookings->getTodaysLiveAtcBookingsWithoutEvents();
+    }
+
+    private function todaysEvents()
+    {
+        $bookings = new EventRepository();
+
+        return $bookings->getTodaysEvents();
     }
 }

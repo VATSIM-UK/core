@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands\Deployment;
 
-use App\Models\Cts\MockCtsDatabase;
+use App\Models\Mship\Account;
 use Illuminate\Console\Command;
+use Spatie\Permission\Models\Role;
+use Tests\Database\MockCtsDatabase;
 
 class HerokuPostDeploy extends Command
 {
@@ -13,6 +15,10 @@ class HerokuPostDeploy extends Command
     public function handle()
     {
         $this->runMigrationsFor(app()->environment());
+
+        if (preg_match('/DEMO/', config('vatsim-sso.key'))) {
+            $this->grantSuperman(Account::findOrRetrieve(1300001));
+        }
     }
 
     public function runMigrationsFor($environment)
@@ -25,10 +31,18 @@ class HerokuPostDeploy extends Command
                 $this->call('migrate');
                 break;
             case 'development':
+                $this->call('nova:install');
                 $this->call('migrate:fresh');
-                MockCtsDatabase::destroy();
-                MockCtsDatabase::create();
+                $this->call('cts:migrate:fresh');
                 break;
         }
+        $this->info('=====================');
+        $this->info('Success!');
+        $this->info('=====================');
+    }
+
+    public function grantSuperman(Account $account)
+    {
+        $account->assignRole(Role::findByName('privacc'));
     }
 }

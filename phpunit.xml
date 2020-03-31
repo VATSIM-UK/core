@@ -7,7 +7,8 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         printerClass="Codedungeon\PHPUnitPrettyResultPrinter\Printer">
 <testsuites>
     <testsuite name="Feature">
         <directory suffix="Test.php">./tests/Feature</directory>
@@ -32,5 +33,6 @@
     <env name="SLACK_BOT_TOKEN" value="testing"/>
     <env name="SLACK_TOKEN_REGISTER" value="testing"/>
     <env name="SLACK_ENDPOINT" value="testing"/>
+    <ini name="memory_limit" value="-1"/>
 </php>
 </phpunit>

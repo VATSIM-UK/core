@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\VisitTransfer\Site;
 
+use App\Exceptions\Mship\InvalidCIDException;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\VisitTransfer\ApplicationFacilitySelectedRequested;
 use App\Http\Requests\VisitTransfer\ApplicationRefereeAddRequest;
@@ -17,9 +18,8 @@ use Auth;
 use ErrorException;
 use Exception;
 use Illuminate\Support\Facades\Gate;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
-use Request;
 use Validator;
 
 class Application extends BaseController
@@ -47,9 +47,9 @@ class Application extends BaseController
     public function postStart(ApplicationStartRequest $request)
     {
         try {
-            $application = $this->startApplication(Input::get('application_type'), Input::get('training_team'));
+            $application = $this->startApplication(Request::input('application_type'), Request::input('training_team'));
         } catch (Exception $e) {
-            return Redirect::route('visiting.application.start', [Input::get('application_type')])->withError($e->getMessage());
+            return Redirect::route('visiting.application.start', [Request::input('application_type')])->withError($e->getMessage());
         }
 
         return Redirect::route('visiting.application.facility', [$application->public_id])->withSuccess('Application started! Please complete all sections to submit your application.');
@@ -127,7 +127,7 @@ class Application extends BaseController
     public function postFacility(ApplicationFacilitySelectedRequested $request, \App\Models\VisitTransfer\Application $application)
     {
         try {
-            $application->setFacility(Facility::find(Input::get('facility_id')));
+            $application->setFacility(Facility::find(Request::input('facility_id')));
         } catch (Exception $e) {
             return Redirect::route('visiting.application.facility', [$application->public_id])->withError($e->getMessage());
         }
@@ -148,7 +148,7 @@ class Application extends BaseController
     public function postStatement(ApplicationStatementSubmitRequest $request, \App\Models\VisitTransfer\Application $application)
     {
         try {
-            $application->setStatement(Input::get('statement'));
+            $application->setStatement(Request::input('statement'));
         } catch (Exception $e) {
             return Redirect::route('visiting.application.statement', [$application->public_id])->withError($e->getMessage());
         }
@@ -169,7 +169,13 @@ class Application extends BaseController
     public function postReferees(ApplicationRefereeAddRequest $request, \App\Models\VisitTransfer\Application $application)
     {
         // Check if the CID is in the home region
-        $referee = Account::findOrRetrieve(Input::get('referee_cid'));
+        try {
+            $referee = Account::findOrRetrieve(Request::input('referee_cid'));
+        } catch (InvalidCIDException $e) {
+            return Redirect::back()
+                ->withError("There doesn't seem to be a VATSIM user with that ID.")
+                ->withInput();
+        }
 
         try {
             if ($referee->primary_permanent_state->pivot->region != Auth::user()->primary_permanent_state->pivot->region) {
@@ -184,8 +190,8 @@ class Application extends BaseController
         try {
             $application->addReferee(
                 $referee,
-                Input::get('referee_email'),
-                Input::get('referee_relationship')
+                Request::input('referee_email'),
+                Request::input('referee_relationship')
             );
         } catch (Exception $e) {
             return Redirect::route('visiting.application.referees', [$application->public_id])->withError($e->getMessage());
@@ -197,7 +203,7 @@ class Application extends BaseController
             $redirectRoute = 'visiting.application.submit';
         }
 
-        return Redirect::route($redirectRoute, [$application->public_id])->withSuccess('Referee '.Input::get('referee_cid').' added successfully! They will not be contacted until you submit your application.');
+        return Redirect::route($redirectRoute, [$application->public_id])->withSuccess('Referee '.Request::input('referee_cid').' added successfully! They will not be contacted until you submit your application.');
     }
 
     public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, \App\Models\VisitTransfer\Application $application, Reference $reference)

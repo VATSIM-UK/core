@@ -61,7 +61,7 @@ class ProcessNetworkData extends Command
         $this->processATC();
         $this->processPilots();
         event(new NetworkDataParsed());
-        Atc::flushCache();
+        //Atc::flushCache();
     }
 
     /**
@@ -102,6 +102,11 @@ class ProcessNetworkData extends Command
             } catch (InvalidCIDException $e) {
                 $this->info('Invalid CID: '.$controllerData['cid'], 'vvv');
                 DB::commit();
+                continue;
+            }
+
+            if (!$account) {
+                $this->info('Unable to find or retrieve CID: '.$controllerData['cid'], 'vvv');
                 continue;
             }
 
@@ -164,6 +169,11 @@ class ProcessNetworkData extends Command
                 continue;
             }
 
+            if (!$account) {
+                $this->info('Unable to find or retrieve CID: '.$pilotData['cid'], 'vvv');
+                continue;
+            }
+
             $flight = Pilot::firstOrNew([
                 'account_id' => $account->id,
                 'callsign' => $pilotData['callsign'],
@@ -182,6 +192,13 @@ class ProcessNetworkData extends Command
                 'route' => $pilotData['planned_route'],
                 'remarks' => $pilotData['planned_remarks'],
             ]);
+
+            if ($pilotData['latitude'] > 90 || $pilotData['latitude'] < -90) {
+                $pilotData['latitude'] =  null;
+            }
+            if ($pilotData['longitude'] > 180 || $pilotData['longitude'] < -180) {
+                $pilotData['longitude'] =  null;
+            }
 
             if ($flight->exists) {
                 $departureAirport = $this->getAirport($flight->departure_airport);
@@ -255,7 +272,7 @@ class ProcessNetworkData extends Command
      */
     private function getAirport(string $ident)
     {
-        return Cache::remember('airport_'.$ident, 720, function () use ($ident) {
+        return Cache::remember('airport_'.$ident, 720 * 60, function () use ($ident) {
             return Airport::where('icao', $ident)->first();
         });
     }

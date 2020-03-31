@@ -37,22 +37,13 @@
                     </div>
                     <div class="panel-body">
 
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <h4 class="text-center">Division Director (VATUK1)</h4><br/>
-                            <img src="{{ $teamPhotos[91] }}"
+                            <img src="{{ $teamPhotos[54] }}"
                                  width=50px
                                  class="img-responsive center-block profile-picture"/>
-                            <p class="text-center">Simon Irvine</p>
+                            <p class="text-center">Chris Pawley</p>
                         </div>
-
-                        <div class="col-md-6">
-                            <h4 class="text-center">Deputy Division Director (VATUK2)</h4><br/>
-                            <img src="{{ $teamPhotos[3580] }}"
-                                 width=50px
-                                 class="img-responsive center-block profile-picture"/>
-                            <p class="text-center">Nathan Donnelly</p>
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -62,32 +53,29 @@
     <div class="container">
         <!-- Row One -->
         <div class="row row-eq-height">
-            <!-- Community -->
+            <!-- Operations -->
             <div class="col-md-4">
-                <div class="panel panel-ukblue" style="height: 100%;">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Community
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Operations
                     </div>
                     <div class="panel-body">
-                        <h4>Community Director (VATUK3)</h4><br/>
-                        <img src="{{ $teamPhotos[2311] }}"
-                             width=50px
-                             class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Barrie Joplin</p>
-
-                        <h4>Community Team</h4>
-                        <table class="table">
-                            <tr>
-                                <td>Community Manager</td>
-                                <td>Nick Marinov</td>
-                            </tr>
-                            <tr>
-                                <td>Community Manager</td>
-                                <td>Leon Grant</td>
-                            </tr>
-                        </table>
+                        <h4>Operations Director (VATUK9)</h4><br/>
+                        <p class="text-left">Vacant</p>
                     </div>
                 </div>
-            </div>
+
+                    <div class="panel panel-ukblue">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Member Services
+                        </div>
+                        <div class="panel-body">
+                            <h4>Member Services Director (VATUK3)</h4><br/>
+                            <img src="{{ $teamPhotos[7404] }}"
+                                 width=50px
+                                 class="img-responsive center-block profile-picture"/>
+                            <p class="text-center">Tom Earl</p>
+                        </div>
+                    </div>
+                </div>
 
             <!-- Marketing -->
             <div class="col-md-4">
@@ -96,16 +84,15 @@
                     </div>
                     <div class="panel-body">
                         <h4>Marketing Director (VATUK4)</h4><br/>
-                        <img src="{{ $teamPhotos[5161] }}"
+                        <img src="{{ $teamPhotos[6738] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Trevor Hannant</p>
-
+                        <p class="text-center">Loui Ringer</p>
                         <h4>Marketing Team</h4>
                         <table class="table">
                             <tr>
-                                <td>Social Media Manager</td>
-                                <td>Loui Ringer</td>
+                                <td>Marketing Manager</td>
+                                <td>Ben Wright</td>
                             </tr>
                         </table>
                     </div>
@@ -126,6 +113,12 @@
                         <h4>Web Services Team</h4>
                         <table class="table">
                             <tr>
+                                <td>Web Services Manager<br/>
+                                    Developer
+                                </td>
+                                <td>Callum Axon</td>
+                            </tr>
+                            <tr>
                                 <td>System Administrator</td>
                                 <td>Nathan Davies</td>
                             </tr>
@@ -137,20 +130,12 @@
                                 <td>Developer</td>
                                 <td>Andy Ford</td>
                             </tr>
-                            <tr>
-                                <td>Developer</td>
-                                <td>Callum Axon</td>
-                            </tr>
-                            <tr>
-                                <td>Support</td>
-                                <td>George Barlow</td>
-                            </tr>
                         </table>
                     </div>
                 </div>
             </div>
 
-            
+
         </div>
         <!-- End Row One -->
     </div>
@@ -175,24 +160,13 @@
                                 <tr>
                                     <td>General Manager</td>
                                     <td>Oliver Rhodes</td>
-                                <tr>
-                                    <td>Administrative Manager</td>
-                                    <td></td>
                                 </tr>
                                 <tr>
-                                    <td>Senior Division Instructor<br/>
-                                        TG Instructor (CTR)
-                                    </td>
+                                    <td>Division Instructor</td>
                                     <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
-                                    <td>Senior Division Instructor<br/>
-                                        Head Examiner
-                                    </td>
-                                    <td>George Wright</td>
-                                </tr>
-                                <tr>
-                                    <td>Senior Division Instructor</td>
+                                    <td>Division Instructor</td>
                                     <td>Chris Pawley</td>
                                 </tr>
                                 <tr>
@@ -204,34 +178,44 @@
                                     <td>Mike Pike</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Manager (TGNC)</td>
-                                    <td>Josh Howker</td>
+                                    <td>Division Instructor</td>
+                                    <td>Jamie Paine</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Manager (TGNC)</td>
-                                    <td>Tom Szczypinski</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Manager (TWR)<br/>
-                                        TG Instructor (TG2)
-                                    </td>
-                                    <td>Lee Roberts</td>
+                                    <td>TG Manager (TWR)</td>
+                                    <td>Adam Meade</td>
                                 </tr>
                                 <tr>
                                     <td>TG Manager (APP)</td>
                                     <td>Nick Marinov</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG1)</td>
-                                    <td>Nathan Donnelly</td>
+                                    <td>TG Instructor (New Controller)</td>
+                                    <td>Ben Cook</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (New Controller)</td>
+                                    <td>Fergus Walsh</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TG1)</td>
-                                    <td>Fraser Cooper</td>
+                                    <td>Oliver Gates</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (TG2)</td>
+                                    <td>Lee Roberts</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (TG2)</td>
+                                    <td>George Peppard</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
-                                    <td>James Yuen</td>
+                                    <td>Nathaniel Leff</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (Enroute)</td>
+                                    <td>Sebastian Rekdal</td>
                                 </tr>
                             </table>
                             </div>
@@ -241,7 +225,8 @@
                             <table class="table">
                                 <tr>
                                     <td>General Manager</td>
-                                    <td><em>Vacant</em></td>
+                                    <td>Tom Sirett</td>
+                                </tr>
                                 <tr>
                                     <td>Administrative Manager<br/>
                                         Initial Flight Instructor
@@ -250,34 +235,42 @@
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
-                                    <td>Lewis Hammett</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
                                     <td>IFR Flight Instructor</td>
-                                    <td>Tom Knowles</td>
+                                    <td>Freddie Charlesworth</td>
                                 </tr>
                                 <tr>
                                     <td>Development Flight Instructor</td>
-                                    <td>James Gibson</td>
+                                    <td>Vacant</td>
                                 </tr>
-                             </table>   
+                             </table>
 
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Operations -->
+            <!-- Other Roles -->
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Operations
+                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Other Roles
                     </div>
                     <div class="panel-body">
-                        <h4>Operations Director (VATUK9)</h4><br/>
-                        <img src="{{ $teamPhotos[54] }}"
-                             width=50px
-                             class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Chris Pawley</p>
+                        <br/>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Division Conflict Resolution Manager</td>
+                                    <td>Sean Readman</td>
+                                </tr>
+                                <tr>
+                                    <td>Data Protection Officer</td>
+                                    <td>Chris Pawley</td>
+                                </tr>
+                            </tbody
+                        </table>
                     </div>
                 </div>
             </div>

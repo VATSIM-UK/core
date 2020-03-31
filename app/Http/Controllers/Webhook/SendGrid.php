@@ -42,7 +42,7 @@ class SendGrid extends WebhookController
     {
         $entry = [
             'broker' => 'sendgrid',
-            'message_id' => $event['sg_message_id'],
+            'message_id' => $event['sg_message_id'] || 'unknown',
             'name' => $event['event'],
             'recipient' => $event['email'],
             'data' => array_diff_key($event, array_flip($this->excludeData)),

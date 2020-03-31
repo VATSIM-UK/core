@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Events\Mship\AccountAltered;
 use App\Models\Mship\Account\Email;
 use App\Models\Mship\Account\Email as AccountEmail;
 use Carbon\Carbon;
@@ -65,8 +66,26 @@ trait HasEmails
         }
 
         $this->attributes['email'] = strtolower($primaryEmail);
+        $save = $this->save();
 
-        return $this->save();
+        if ($this->email != strtolower($primaryEmail)) {
+            event(new AccountAltered($this));
+        }
+
+        return $save;
+    }
+
+    /**
+     * Retrieve an email address for a given SSO service
+     *
+     * @param $sso_account_id
+     * @return string
+     */
+    public function getEmailForService($ssoAccountId)
+    {
+        $emailForService = $this->ssoEmails()->where('sso_account_id', $ssoAccountId)->with('email')->first();
+
+        return $emailForService ? $emailForService->email->email : $this->email;
     }
 
     /**
@@ -95,7 +114,13 @@ trait HasEmails
             $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
             $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 
-            return $this->secondaryEmails()->save($newSecondaryEmail);
+            $save = $this->secondaryEmails()->save($newSecondaryEmail);
+
+            if ($verified) {
+                event(new AccountAltered($this));
+            }
+
+            return $save;
         }
 
         return $this->secondaryEmails->filter(function ($e) use ($newEmail) {

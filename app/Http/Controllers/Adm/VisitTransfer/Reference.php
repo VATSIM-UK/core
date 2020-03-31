@@ -7,7 +7,7 @@ use App\Http\Requests\VisitTransfer\ReferenceAcceptRequest;
 use App\Http\Requests\VisitTransfer\ReferenceRejectRequest;
 use App\Models\VisitTransfer\Reference as ReferenceModel;
 use Auth;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 
 class Reference extends AdmController
@@ -57,16 +57,16 @@ class Reference extends AdmController
     {
         $rejectionReason = '';
 
-        if (Input::get('rejection_reason') != 'other') {
-            $rejectionReason = Input::get('rejection_reason');
+        if (Request::input('rejection_reason') != 'other') {
+            $rejectionReason = Request::input('rejection_reason');
         }
 
-        if (Input::get('rejection_reason_extra', null)) {
-            $rejectionReason .= "\n".Input::get('rejection_reason_extra');
+        if (Request::input('rejection_reason_extra', null)) {
+            $rejectionReason .= "\n".Request::input('rejection_reason_extra');
         }
 
         try {
-            $reference->reject($rejectionReason, Input::get('rejection_staff_note', null), Auth::user());
+            $reference->reject($rejectionReason, Request::input('rejection_staff_note', null), Auth::user());
         } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }
@@ -77,7 +77,7 @@ class Reference extends AdmController
     public function postAccept(ReferenceAcceptRequest $request, ReferenceModel $reference)
     {
         try {
-            $reference->accept(Input::get('accept_staff_note', null), Auth::user());
+            $reference->accept(Request::input('accept_staff_note', null), Auth::user());
         } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }

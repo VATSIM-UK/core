@@ -13,8 +13,11 @@ class Notification extends \App\Http\Controllers\BaseController
 
     public function postAcknowledge($notification)
     {
+        if ($this->account->hasReadNotification($notification)) {
+            return redirect()->route('mship.manage.dashboard');
+        }
         $this->account->readSystemNotifications()
-            ->attach($notification->id, ['created_at' => Carbon::now()]);
+            ->attach($notification->id);
 
         // If this is an interrupt AND we're got no more important notifications, then let's go back!
         if (Session::has('force_notification_read_return_url')) {

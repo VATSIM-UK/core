@@ -8,7 +8,7 @@ use App\Models\Smartcars\Airport;
 use App\Models\Smartcars\Bid;
 use App\Models\Smartcars\Pirep;
 use App\Models\Smartcars\Posrep;
-use Input;
+use Illuminate\Support\Facades\Request;
 
 class Flight extends AdmController
 {
@@ -16,8 +16,8 @@ class Flight extends AdmController
     {
         $flights = \App\Models\Smartcars\Flight::with('departure')->with('arrival')->where('enabled', '=', 1);
 
-        $departure = Airport::findByIcao(Input::get('departureicao'));
-        if (Input::get('departureicao', null) != null) {
+        $departure = Airport::findByIcao(Request::input('departureicao'));
+        if (Request::input('departureicao', null) != null) {
             if (!$departure) {
                 return 'NONE';
             }
@@ -25,8 +25,8 @@ class Flight extends AdmController
             $flights->where('departure_id', '=', $departure->id);
         }
 
-        $arrival = Airport::findByIcao(Input::get('arrivalicao'));
-        if (Input::get('arrivalicao', null) != null) {
+        $arrival = Airport::findByIcao(Request::input('arrivalicao'));
+        if (Request::input('arrivalicao', null) != null) {
             if (!$arrival) {
                 return 'NONE';
             }
@@ -34,9 +34,9 @@ class Flight extends AdmController
             $flights->where('arrival_id', '=', $arrival->id);
         }
 
-        if (Input::get('mintime', '') != '' && Input::get('maxtime', '') != '') {
-            $flights->where('flight_time', '>=', Input::get('mintime'))
-                ->where('flight_time', '<=', Input::get('maxtime'));
+        if (Request::input('mintime', '') != '' && Request::input('maxtime', '') != '') {
+            $flights->where('flight_time', '>=', Request::input('mintime'))
+                ->where('flight_time', '<=', Request::input('maxtime'));
         }
 
         $flights = $flights->get();
@@ -62,7 +62,7 @@ class Flight extends AdmController
 
     public function getBids()
     {
-        $bids = Bid::pending()->accountId(Input::get('dbid'))->get();
+        $bids = Bid::pending()->accountId(Request::input('dbid'))->get();
 
         if ($bids->count() == 0) {
             return 'NONE';
@@ -93,31 +93,37 @@ class Flight extends AdmController
 
     public function postPosition()
     {
-        $aircraft = Aircraft::findByRegistration(Input::get('aircraft'));
+        $aircraft = Aircraft::findByRegistration(Request::input('aircraft'));
 
-        $bid = Bid::find(Input::get('bidid'));
+        $bid = Bid::find(Request::input('bidid'));
+
+        // Check bid has flight
+        if (!$bid) {
+            return 'ERROR';
+        }
+
         $flight = $bid->flight;
 
-        if ($flight->id != Input::get('routeid')) {
+        if ($flight->id != Request::input('routeid')) {
             return 'ERROR';
         }
 
         $posrep = new Posrep;
         $posrep->bid_id = $bid->id;
         $posrep->aircraft_id = $aircraft->id;
-        $posrep->route = Input::get('route') ?: '';
-        $posrep->altitude = Input::get('altitude');
-        $posrep->heading_mag = Input::get('magneticheading');
-        $posrep->heading_true = Input::get('trueheading');
-        $posrep->latitude = str_replace(',', '.', Input::get('latitude'));
-        $posrep->longitude = str_replace(',', '.', Input::get('longitude'));
-        $posrep->groundspeed = Input::get('groundspeed');
-        $posrep->distance_remaining = Input::get('distanceremaining');
-        $posrep->phase = Input::get('phase');
-        $posrep->time_departure = Input::get('departuretime');
-        $posrep->time_remaining = Input::get('timeremaining') !== 'N/A' ? Input::get('timeremaining') : null;
-        $posrep->time_arrival = Input::get('arrivaltime') !== 'N/A' ? Input::get('arrivaltime') : null;
-        $posrep->network = Input::get('onlinenetwork');
+        $posrep->route = Request::input('route') ?: '';
+        $posrep->altitude = Request::input('altitude');
+        $posrep->heading_mag = Request::input('magneticheading');
+        $posrep->heading_true = Request::input('trueheading');
+        $posrep->latitude = str_replace(',', '.', Request::input('latitude'));
+        $posrep->longitude = str_replace(',', '.', Request::input('longitude'));
+        $posrep->groundspeed = Request::input('groundspeed');
+        $posrep->distance_remaining = Request::input('distanceremaining');
+        $posrep->phase = Request::input('phase');
+        $posrep->time_departure = Request::input('departuretime');
+        $posrep->time_remaining = Request::input('timeremaining') !== 'N/A' ? Request::input('timeremaining') : null;
+        $posrep->time_arrival = Request::input('arrivaltime') !== 'N/A' ? Request::input('arrivaltime') : null;
+        $posrep->network = Request::input('onlinenetwork');
         $posrep->save();
 
         return 'SUCCESS';
@@ -125,24 +131,30 @@ class Flight extends AdmController
 
     public function postReport()
     {
-        $aircraft = Aircraft::find(Input::get('aircraft'));
+        $aircraft = Aircraft::find(Request::input('aircraft'));
 
-        $bid = Bid::find(Input::get('bidid'));
+        $bid = Bid::find(Request::input('bidid'));
+
+        // Check bid has flight
+        if (!$bid) {
+            return 'ERROR';
+        }
+
         $flight = $bid->flight;
 
-        if ($flight->id != Input::get('routeid')) {
+        if ($flight->id != Request::input('routeid')) {
             return 'ERROR';
         }
 
         $pirep = new Pirep;
         $pirep->aircraft_id = $aircraft->id;
         $pirep->bid_id = $bid->id;
-        $pirep->route = Input::get('route') ?: '';
-        $pirep->flight_time = str_replace('.', ':', Input::get('flighttime')).':00';
-        $pirep->landing_rate = Input::get('landingrate');
-        $pirep->comments = Input::get('comments');
-        $pirep->fuel_used = Input::get('fuelused');
-        $pirep->log = Input::get('log');
+        $pirep->route = Request::input('route') ?: '';
+        $pirep->flight_time = str_replace('.', ':', Request::input('flighttime')).':00';
+        $pirep->landing_rate = Request::input('landingrate');
+        $pirep->comments = Request::input('comments');
+        $pirep->fuel_used = Request::input('fuelused');
+        $pirep->log = Request::input('log');
         $pirep->save();
 
         $bid->complete();
@@ -152,13 +164,13 @@ class Flight extends AdmController
 
     public function getBid()
     {
-        $flight = \App\Models\Smartcars\Flight::find(Input::get('routeid'));
+        $flight = \App\Models\Smartcars\Flight::find(Request::input('routeid'));
 
         if (!$flight) {
             return 'INVALID_ROUTEID';
         }
 
-        $bidCheck = Bid::pending()->flightId($flight->id)->accountId(Input::get('dbid'))->count();
+        $bidCheck = Bid::pending()->flightId($flight->id)->accountId(Request::input('dbid'))->count();
 
         if ($bidCheck > 0) {
             return 'FLIGHT_ALREADY_BID';
@@ -166,7 +178,7 @@ class Flight extends AdmController
 
         $bid = new Bid;
         $bid->flight_id = $flight->id;
-        $bid->account_id = Input::get('dbid');
+        $bid->account_id = Request::input('dbid');
         $bid->save();
 
         return 'FLIGHT_BID';
@@ -174,9 +186,9 @@ class Flight extends AdmController
 
     public function getBidDelete()
     {
-        $bid = \App\Models\Smartcars\Bid::find(Input::get('bidid'));
+        $bid = \App\Models\Smartcars\Bid::find(Request::input('bidid'));
 
-        if ($bid->account_id != Input::get('dbid')) {
+        if ($bid->account_id != Request::input('dbid')) {
             return 'AUTH_FAILED';
         }
 

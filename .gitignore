@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/vendor/nova
 /storage/*.key
 /vendor
 /.idea
@@ -14,6 +15,7 @@ yarn-error.log
 .env
 .env.testing
 .phpunit.result.cache
+auth.json
 
 _ide_helper.php
 .phpstorm.meta.php
@@ -23,3 +25,4 @@ _ide_helper.php
 /nova/*
 !/nova/composer.json
 !/nova/src/NovaCoreServiceProvider.php
+.gitmodules

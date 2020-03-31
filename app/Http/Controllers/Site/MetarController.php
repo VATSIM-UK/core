@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Site;
 
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\TransferException;
 use Illuminate\Support\Facades\Cache;
 
 class MetarController
 {
     public function get($airportIcao)
     {
-        return Cache::remember("vatsim.metar.$airportIcao", 5, function () use ($airportIcao) {
+        return Cache::remember("vatsim.metar.$airportIcao", 5 * 60, function () use ($airportIcao) {
             $client = new \GuzzleHttp\Client();
 
             try {
@@ -17,7 +19,10 @@ class MetarController
                 if ($response->getStatusCode() === 200) {
                     return (string) $response->getBody();
                 }
-            } catch (GuzzleHttp\Exception\TransferException $e) {
+            } catch (\Exception $e) {
+                if (!$e instanceof TransferException || !$e instanceof ConnectException) {
+                    throw $e;
+                }
             }
 
             return 'METAR UNAVAILABLE';

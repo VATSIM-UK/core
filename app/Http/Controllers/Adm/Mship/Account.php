@@ -3,25 +3,12 @@
 namespace App\Http\Controllers\Adm\Mship;
 
 use App\Http\Controllers\Adm\AdmController;
-use App\Http\Requests\Mship\Account\Ban\CommentRequest;
-use App\Http\Requests\Mship\Account\Ban\CreateRequest;
-use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
-use App\Http\Requests\Mship\Account\Ban\RepealRequest;
-use App\Models\Contact;
 use App\Models\Mship\Account as AccountData;
-use App\Models\Mship\Account\Ban as BanData;
 use App\Models\Mship\Ban\Reason;
-use App\Models\Mship\Note\Type;
 use App\Models\Mship\Note\Type as NoteTypeData;
-use App\Notifications\Mship\BanCreated;
-use App\Notifications\Mship\BanModified;
-use App\Notifications\Mship\BanRepealed;
-use App\Notifications\Mship\UserImpersonated;
 use Auth;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 use Session;
 use Spatie\Permission\Models\Role as RoleData;
@@ -33,10 +20,10 @@ class Account extends AdmController
     {
         // Sorting and searching!
         $sortBy = in_array(
-            Input::get('sort_by'),
+            Request::input('sort_by'),
             ['id', 'name_first', 'name_last']
-        ) ? Input::get('sort_by') : 'id';
-        $sortDir = in_array(Input::get('sort_dir'), ['ASC', 'DESC']) ? Input::get('sort_dir') : 'ASC';
+        ) ? Request::input('sort_by') : 'id';
+        $sortDir = in_array(Request::input('sort_dir'), ['ASC', 'DESC']) ? Request::input('sort_dir') : 'ASC';
 
         // ORM it all!
         $memberSearch = AccountData::orderBy($sortBy, $sortDir)
@@ -94,21 +81,21 @@ class Account extends AdmController
             ->with('sortDirSwitch', ($sortDir == 'DESC' ? 'ASC' : 'DESC'));
     }
 
-    public function getDetail(AccountData $account, $tab = 'basic', $tabId = 0)
+    public function getDetail(AccountData $mshipAccount, $tab = 'basic', $tabId = 0)
     {
-        if (!$account or $account->is_system) {
+        if (!$mshipAccount or $mshipAccount->is_system) {
             return Redirect::route('adm.mship.account.index');
         }
 
         // Do they have permission to view their own profile?
         // This is to prevent people doing silly things....
-        if ($this->account->id == $account->id && !$this->account->can('use-permission', 'adm/mship/account/own')) {
+        if ($this->account->id == $mshipAccount->id && !$this->account->can('use-permission', 'adm/mship/account/own')) {
             return Redirect::route('adm.mship.account.index')
                 ->withError('You cannot view or manage your own profile.');
         }
 
         // Lazy eager loading
-        $account->load(
+        $mshipAccount->load(
             'bans',
             'bans.banner',
             'bans.reason',
@@ -122,13 +109,12 @@ class Account extends AdmController
             'roles.permissions',
             'qualifications',
             'states',
-            'secondaryEmails',
-            'feedback'
+            'secondaryEmails'
         );
 
         // Get all possible roles!
         $availableRoles = RoleData::all()
-            ->diff($account->roles);
+            ->diff($mshipAccount->roles);
 
         // Get all ban reasons.
         $banReasons = Reason::all();
@@ -141,379 +127,18 @@ class Account extends AdmController
             ->orderBy('name', 'ASC')
             ->get();
 
-        $feedbackTargeted = $account->feedback()->orderBy('created_at', 'desc')->get();
+        $vtapplications = $mshipAccount->visitTransferApplications()->orderBy('updated_at', 'desc')->get();
 
-        $vtapplications = $account->visitTransferApplications()->orderBy('updated_at', 'desc')->get();
-
-        $this->setTitle('Account Details: '.$account->name);
+        $this->setTitle("Account Details:  {$mshipAccount->name}");
 
         return $this->viewMake('adm.mship.account.detail')
             ->with('selectedTab', $tab)
             ->with('selectedTabId', $tabId)
-            ->with('account', $account)
+            ->with('account', $mshipAccount)
             ->with('availableRoles', $availableRoles)
             ->with('banReasons', $banReasons)
             ->with('noteTypes', $noteTypes)
             ->with('noteTypesAll', $noteTypesAll)
-            ->with('feedback', $feedbackTargeted)
             ->with('vtapplications', $vtapplications);
-    }
-
-    public function postRoleAttach(AccountData $account)
-    {
-        if (!$account) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Let's try and load this RoleData
-        $role = RoleData::find(Input::get('role'));
-
-        if (!$role) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
-                ->withError('The selected role does not exist.');
-        }
-
-        // Let's add!
-        if (!$account->roles->contains($role->id)) {
-            $account->roles()
-                ->attach($role);
-        }
-
-        return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
-            ->withSuccess($role->name.' role attached successfully. This user inherited '.count($role->permissions).' permissions.');
-    }
-
-    public function getRoleDetach(AccountData $account, RoleData $role)
-    {
-        if (!$account) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        if (!$role) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
-                ->withError('The selected role does not exist.');
-        }
-
-        if (!$account->roles->contains($role->id)) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
-                ->withError('This role is not attached to this user.');
-        }
-
-        // Let's remove!
-        $account->roles()
-            ->detach($role);
-
-        return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
-            ->withSuccess($role->name.' role detached successfully. This user lost '.count($role->permissions).' permissions.');
-    }
-
-    public function postSecurityEnable(AccountData $account)
-    {
-        if (!$account) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Let's check the user doesn't currently have security on their account.
-        // We don't want to just override it for no reason, as that's bad.
-        $currentSecurity = $account->current_security;
-
-        if ($currentSecurity && $currentSecurity->exists) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
-                ->withError('You cannot enable security on this account.');
-        }
-
-        // Check the selected security ID exists!
-        $security = SecurityData::find(Input::get('securityLevel', 0));
-
-        if (!$security) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
-                ->withError('Invalid security ID specified.');
-        }
-
-        // Create them a blank security entry!
-        $newSecurity = new AccountSecurityData();
-        $newSecurity->save();
-        $account->security()
-            ->save($newSecurity);
-        $security->accountSecurity()
-            ->save($newSecurity);
-
-        return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
-            ->withSuccess('Security enabled for this account.');
-    }
-
-    public function postSecurityReset(AccountData $account)
-    {
-        if (!$account) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Let's check the user doesn't currently have security on their account.
-        // We can't reset non-existant security!
-        $currentSecurity = $account->current_security;
-
-        if (!$currentSecurity or !$currentSecurity->exists) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
-                ->withError('You cannot reset non-existant security.');
-        }
-
-        return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
-            ->withSuccess('Security reset requested - user will receive an email.');
-    }
-
-    public function postSecurityChange(AccountData $account)
-    {
-        if (!$account) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Check the selected security ID exists!
-        $security = SecurityData::find(Input::get('securityLevel', 0));
-
-        if (!$security) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
-                ->withError('Invalid security ID specified.');
-        }
-
-        // Let's check the user doesn't currently have security on their account.
-        // We don't want to just override it for no reason, as that's bad.
-        $currentSecurity = $account->current_security;
-
-        // It's also pointless changing to the same security ID.
-        if (!$currentSecurity or !$currentSecurity->exists or $currentSecurity->security_id == $security->security_id) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
-                ->withError('You cannot change security on this account.');
-        }
-
-        // Let's expire the current security
-        $currentSecurity->expire();
-        $currentSecurity->delete();
-
-        // Now, let's make a new one!
-        $newSecurity = new AccountSecurityData();
-        $newSecurity->save();
-        $account->security()
-            ->save($newSecurity);
-        $security->accountSecurity()
-            ->save($newSecurity);
-
-        return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
-            ->withSuccess('Security has been upgraded on this account.');
-    }
-
-    public function postBanAdd(CreateRequest $request, AccountData $account)
-    {
-        if (!$account) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        if ($account->is_banned) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'bans'])
-                ->withError('You are not able to ban a member that is already banned.');
-        }
-
-        $banReason = Reason::find(Input::get('ban_reason_id'));
-
-        // Create the user's ban
-        $ban = $account->addBan(
-            $banReason,
-            Input::get('ban_reason_extra'),
-            Input::get('ban_note_content'),
-            $this->account->id
-        );
-
-        $account->notify(new BanCreated($ban));
-
-        return Redirect::route('adm.mship.account.details', [$account->id, 'bans', $ban->id])
-            ->withSuccess('You have successfully banned this member.');
-    }
-
-    public function getBans()
-    {
-        $bans = BanData::isLocal()
-            ->orderByDesc('created_at')
-            ->paginate(15);
-
-        return $this->viewMake('adm.mship.account.ban.index')
-            ->with('bans', $bans);
-    }
-
-    public function getBanRepeal(AccountData\Ban $ban)
-    {
-        if (!$ban) {
-            // TODO: Could got to the master ban list?
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        $this->setTitle('Ban Repeal');
-
-        return $this->viewMake('adm.mship.account.ban.repeal')
-            ->with('ban', $ban);
-    }
-
-    public function postBanRepeal(RepealRequest $request, AccountData\Ban $ban)
-    {
-        if (!$ban) {
-            // TODO: Could got to the master ban list?
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Attach the note.
-        $note = $ban->account->addNote(Type::isShortCode('discipline')->first(), Input::get('reason'), Auth::getUser());
-        $ban->notes()->save($note);
-        $ban->repeal();
-
-        $ban->account->notify(new BanRepealed($ban));
-
-        return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
-            ->withSuccess('Ban has been repealed.');
-    }
-
-    public function getBanComment(AccountData\Ban $ban)
-    {
-        if (!$ban) {
-            // TODO: Could got to the master ban list?
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        $this->setTitle('Ban Comment');
-
-        return $this->viewMake('adm.mship.account.ban.comment')
-            ->with('ban', $ban);
-    }
-
-    public function postBanComment(CommentRequest $request, AccountData\Ban $ban)
-    {
-        if (!$ban) {
-            // TODO: Could got to the master ban list?
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Attach the note.
-        $note = $ban->account->addNote(
-            Type::isShortCode('discipline')->first(),
-            Input::get('comment'),
-            Auth::getUser()
-        );
-        $ban->notes()->save($note);
-
-        return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
-            ->withSuccess('Your comment for this ban has been noted.');
-    }
-
-    public function getBanModify(AccountData\Ban $ban)
-    {
-        if (!$ban) {
-            // TODO: Could got to the master ban list?
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        $this->setTitle('Ban Modification');
-
-        return $this->viewMake('adm.mship.account.ban.modify')
-            ->with('ban', $ban);
-    }
-
-    public function postBanModify(ModifyRequest $request, AccountData\Ban $ban)
-    {
-        if (!$ban) {
-            // TODO: Could got to the master ban list?
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        $period_finish = Carbon::parse(Input::get('finish_date').' '.Input::get('finish_time'), 'UTC');
-        $max_timestamp = Carbon::create(2038, 1, 1, 0, 0, 0);
-        if ($period_finish->gt($max_timestamp)) {
-            $period_finish = $max_timestamp;
-        }
-
-        if ($ban->period_finish->eq($period_finish)) {
-            return Redirect::back()->withInput()->withError("You didn't change the ban period.");
-        }
-
-        if ($ban->period_finish->gt($period_finish)) {
-            $noteComment = 'Ban has been reduced from '.$ban->period_finish->toDateTimeString().".\n";
-        } else {
-            $noteComment = 'Ban has been extended from '.$ban->period_finish->toDateTimeString().".\n";
-        }
-        $noteComment .= 'New finish: '.$period_finish->toDateTimeString()."\n";
-        $noteComment .= Input::get('note');
-
-        // Attach the note.
-        $note = $ban->account->addNote(Type::isShortCode('discipline')->first(), $noteComment, Auth::getUser());
-        $ban->notes()->save($note);
-
-        // Modify the ban
-        $ban->reason_extra = $ban->reason_extra."\n".Input::get('reason_extra');
-        $ban->period_finish = $period_finish;
-        $ban->save();
-
-        $ban->account->notify(new BanModified($ban));
-
-        return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
-            ->withSuccess('This ban has been modified.');
-    }
-
-    public function postNoteCreate(AccountData $account)
-    {
-        if (!$account) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Is there any content?
-        if (strlen(Input::get('content')) < 10) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'notes'])
-                ->withError('You cannot add such a short note!');
-        }
-
-        // Check this type exists!
-        $noteType = NoteTypeData::find(Input::get('note_type_id'));
-        if (!$noteType or !$noteType->exists) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'notes'])
-                ->withError('You selected an invalid note type.');
-        }
-
-        // Let's make a note and attach it to the user!
-        $account->addNote($noteType, Input::get('content'), Auth::user());
-
-        return Redirect::route('adm.mship.account.details', [$account->id, 'notes'])
-            ->withSuccess('The note has been saved successfully!');
-    }
-
-    public function postNoteFilter(AccountData $account)
-    {
-        if (!$account) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        // Get all filters
-        $filters = Input::get('filter', []);
-        $qs = '';
-        foreach ($filters as $f) {
-            $qs .= 'filter['.$f.']=1&';
-        }
-
-        return Redirect::to(URL::route('adm.mship.account.details', [$account->id, 'notes']).'?'.$qs);
-    }
-
-    public function postImpersonate(Request $request, AccountData $account)
-    {
-        if (!$account) {
-            return Redirect::route('adm.mship.account.index');
-        }
-
-        $attributes = $this->validate($request, [
-            'reason' => 'required|string|min:5',
-        ]);
-
-        Contact::where('key', 'PRIVACC')->first()
-            ->notify(new UserImpersonated($account, $request->user(), $attributes['reason']));
-
-        // Let's do the login!
-        Auth::loginUsingId($account->id, false);
-        Session::put('auth_override', true);
-
-        return Redirect::to(URL::route('mship.manage.dashboard'))
-            ->withSuccess('You are now impersonating this user - your reason has been logged. Be good!');
     }
 }

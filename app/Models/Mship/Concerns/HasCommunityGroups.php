@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Events\Mship\AccountAltered;
 use App\Exceptions\Community\AlreadyAGroupTierMemberException;
 use App\Models\Community\Group;
 
@@ -32,6 +33,7 @@ trait HasCommunityGroups
         $this->guestAgainstMultipleMembershipsToSameTier($group);
 
         $this->communityGroups()->save($group);
+        event(new AccountAltered($this));
     }
 
     public function syncWithDefaultCommunityGroup()

@@ -45,6 +45,16 @@ return [
         ],
     ],
 
+    'ukcp' => [
+        'url' => env('UKCP_URL'),
+        'key' => env('UKCP_KEY'),
+    ],
+
+    'chartfox' => [
+        'private_token' => env('CHARTFOX_PRIVATE_TOKEN'),
+        'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
+    ],
+    
     /*
     |--------------------------------------------------------------------------
     | VATSIM UK Hosted Services
