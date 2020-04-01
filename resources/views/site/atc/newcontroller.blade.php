@@ -186,7 +186,7 @@
 					</h3>
 					
 					<p>
-						In light of the high traffic levels that Gatwick regularly sees, S1-rated members wishing to control there must complete an additional endorsement, detailed on our <a href="https://www.vatsim.uk/controllers/endorsements/gatwick" rel="external nofollow">Core system</a>.
+						In light of the high traffic levels that Gatwick regularly sees, S1-rated members wishing to control there must complete an additional endorsement. You can find details about that <a href="https://www.vatsim.uk/controllers/endorsements/gatwick" rel="external nofollow">here</a>.
 					</p>
                 </div>
             </div>
