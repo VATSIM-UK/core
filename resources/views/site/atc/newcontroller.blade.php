@@ -10,7 +10,7 @@
                 </div>
                 <div class="panel-body">
                                         <p>
-                        Welcome to the exciting world of air traffic control (ATC) in VATSIM UK. If you have already have some experience of VATSIM as a pilot, this will certainly provide you with a head start, but it is by no means necessary. You do not even need to own a copy of Flight Simulator; the software for VATSIM ATC is standalone and entirely free of charge!
+                        Welcome to the exciting world of air traffic control (ATC) in VATSIM UK. If you already have some experience of VATSIM as a pilot, this will certainly provide you with a head start, but it is by no means necessary. You do not even need to own a copy of Flight Simulator; the software for VATSIM ATC is standalone and entirely free of charge!
                     </p>
 					
 					<p>
