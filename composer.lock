@@ -653,16 +653,16 @@
         },
         {
             "name": "cobaltgrid/vatsim-stand-status",
-            "version": "v1.0.1",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoff/vatsim-stand-status.git",
-                "reference": "809126e4e903ad912b66f02f4f409f238b5f0ab0"
+                "reference": "b3f9f85ca136b81968ccb043062cdee80d4b2407"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoff/vatsim-stand-status/zipball/809126e4e903ad912b66f02f4f409f238b5f0ab0",
-                "reference": "809126e4e903ad912b66f02f4f409f238b5f0ab0",
+                "url": "https://api.github.com/repos/atoff/vatsim-stand-status/zipball/b3f9f85ca136b81968ccb043062cdee80d4b2407",
+                "reference": "b3f9f85ca136b81968ccb043062cdee80d4b2407",
                 "shasum": ""
             },
             "require": {
@@ -693,7 +693,7 @@
                 "stands",
                 "vatsim"
             ],
-            "time": "2018-08-11T20:18:25+00:00"
+            "time": "2020-04-01T11:23:11+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -7050,8 +7050,7 @@
             "dist": {
                 "type": "path",
                 "url": "nova-components/WaitingListsManager",
-                "reference": "adeae093d6b4d73f1ac87ddac2e5672622b89189",
-                "shasum": null
+                "reference": "adeae093d6b4d73f1ac87ddac2e5672622b89189"
             },
             "require": {
                 "php": ">=7.1.0"
