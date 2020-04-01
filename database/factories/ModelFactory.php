@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Mship\Qualification;
+
 $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $faker) {
     return [
         'id' => rand(10000000, 99999999),
@@ -12,7 +14,7 @@ $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $fak
 
 $factory->defineAs(App\Models\Mship\Account::class, 'withQualification', function (Faker\Generator $faker) {
     $id = rand(10000000, 99999999);
-    $qual = factory(\App\Models\Mship\Qualification::class)->create();
+    $qual = factory(Qualification::class)->create();
     // Assoc qualification to account
     \DB::table('mship_account_qualification')->insert([
         'account_id' => $id,
@@ -31,8 +33,17 @@ $factory->defineAs(App\Models\Mship\Account::class, 'withQualification', functio
 });
 
 $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
+    $foundUniqueCode = false;
+    while (!$foundUniqueCode) {
+        $code = $faker->bothify('?##');
+        if (!Qualification::code($code)->exists()) {
+            $foundUniqueCode = true;
+        }
+    }
+
+
     return [
-        'code' => $faker->bothify('?##'),
+        'code' => $code,
         'name_small' => $faker->word,
         'name_long' => $faker->word,
         'name_grp' => $faker->word,
