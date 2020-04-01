@@ -34,9 +34,9 @@ $factory->defineAs(App\Models\Mship\Account::class, 'withQualification', functio
 
 $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
     $foundUniqueCode = false;
-    while (!$foundUniqueCode){
+    while (!$foundUniqueCode) {
         $code = $faker->bothify('?##');
-        if(!Qualification::code($code)->exists()){
+        if (!Qualification::code($code)->exists()) {
             $foundUniqueCode = true;
         }
     }
