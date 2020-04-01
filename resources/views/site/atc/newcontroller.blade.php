@@ -68,7 +68,7 @@
 					</p>
 					
 					<p>
-						Joining the New Controller TG will automatically place you on the waiting list for an <b>Introduction to ATC (OBS_PT1) group session</b>. We run these approximately monthly; when a place is available to you, you’ll receive an email inviting you to join a session. Where sessions are full, you may wish to check back regularly – places may become available if students cancel their attendance.
+						Joining the New Controller TG will automatically place you on the waiting list for an <b>Introduction to ATC (OBS_PT1) group session</b>. We run these approximately once a month; when a place is available to you, you’ll receive an email inviting you to join a session. Where sessions are full, you may wish to check back regularly – places may become available if students cancel their attendance.
 					</p>
 					
 					<p>
