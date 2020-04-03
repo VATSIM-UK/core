@@ -31,8 +31,40 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('telescope:prune')->daily();
-        
-        // $schedule->command('sync:tg-forum-groups')->dailyAt('04:00');
+
+        // === By Minute === //
+
+        $schedule->command('visit-transfer:cleanup')
+            ->everyMinute()
+            ->runInBackground()
+            ->withoutOverlapping();
+
+        $schedule->command('visittransfer:statistics:daily')
+            ->everyMinute()
+            ->runInBackground()
+            ->withoutOverlapping();
+
+        $schedule->command('teaman:runner', ['-v'])
+            ->everyMinute()
+            ->runInBackground()
+            ->withoutOverlapping();
+
+        $schedule->command('networkdata:download')
+            ->cron('*/2 * * * *') // every second minute
+            ->runInBackground()
+            ->withoutOverlapping();
+
+        // === By Hour === //
+
+        $schedule->command('members:certimport')
+            ->cron('30 */2 * * *') // every second hour
+            ->runInBackground();
+
+        $schedule->command('slack:manager')
+            ->hourly()
+            ->runInBackground();
+
+        // === By Day ===
 
         $schedule->command('sys:statistics:daily')
             ->dailyAt('00:01');
@@ -40,48 +72,29 @@ class Kernel extends ConsoleKernel
         $schedule->command('sync:community')
             ->dailyAt('00:01');
 
+        $schedule->command('members:certupdate', ['--type=daily', 5000])
+            ->dailyAt('00:45')
+            ->runInBackground();
+
+        // $schedule->command('sync:tg-forum-groups')->dailyAt('04:00');
+
         $schedule->command('members:certimport', ['--full'])
             ->twiceDaily(2, 14)
             ->runInBackground();
 
-        $schedule->command('members:certimport')
-            ->cron('30 */2 * * *') // every second hour
-            ->runInBackground();
-
-        $schedule->command('members:certupdate', ['--type=daily', 5000])
-            ->dailyAt('00:45')
-            ->runInBackground();
+        // === By Week === //
 
         $schedule->command('members:certupdate', ['--type=weekly', 5000])
             ->weeklyOn(1, '01:15')
             ->runInBackground();
 
+        // === By Month === //
         $schedule->command('members:certupdate', ['--type=monthly', 5000])
             ->monthlyOn(1, '01:45')
             ->runInBackground();
 
         $schedule->command('members:certupdate', ['--type=all', 1000])
             ->monthlyOn(1, '01:45')
-            ->runInBackground();
-
-        $schedule->command('visit-transfer:cleanup')
-            ->everyMinute()
-            ->runInBackground();
-
-        $schedule->command('visittransfer:statistics:daily')
-            ->everyMinute()
-            ->runInBackground();
-
-        $schedule->command('teaman:runner', ['-v'])
-            ->everyMinute()
-            ->runInBackground();
-
-        $schedule->command('networkdata:download')
-            ->cron('*/2 * * * *') // every second minute
-            ->runInBackground();
-
-        $schedule->command('slack:manager')
-            ->hourly()
             ->runInBackground();
     }
 
@@ -93,12 +106,5 @@ class Kernel extends ConsoleKernel
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');
-    }
-
-    private function failureMessage(string $message): Closure
-    {
-        return function () use (&$message) {
-            Slack::sendToWebServices("Scheduled Task Failure - @channel - {$message}");
-        };
     }
 }
