@@ -32,14 +32,10 @@ class VatsimApi
     public function ratings()
     {
         $url = $this->baseUrl . 'ratings';
-
-        try {
-            $result = $this->client->get($url, ['headers' => [
-                'Authorization' => 'Token ' . $this->apiKey
-            ]]);
-        } catch (ClientException $e) {
-            return null;
-        }
+        
+        $result = $this->client->get($url, ['headers' => [
+            'Authorization' => 'Token ' . $this->apiKey
+        ]]);
 
         return $result;
     }
@@ -51,13 +47,9 @@ class VatsimApi
     {
         $url = $this->baseUrl . 'ratings/' . $account->id;
 
-        try {
-            $result = $this->client->get($url, ['headers' => [
-                'Authorization' => 'Token ' . $this->apiKey
-            ]]);
-        } catch (ClientException $e) {
-            return null;
-        }
+        $result = $this->client->get($url, ['headers' => [
+            'Authorization' => 'Token ' . $this->apiKey
+        ]]);
 
         return $result;
     }
