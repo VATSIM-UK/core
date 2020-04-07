@@ -26,6 +26,9 @@ class VatsimApi
         $this->client = $client;
     }
 
+    /*
+     * Returns a list of users that are in your region and division.
+     */
     public function ratings()
     {
         $url = $this->baseUrl . 'ratings';
@@ -41,6 +44,9 @@ class VatsimApi
         return $result;
     }
 
+    /*
+     * Returns a set of data for a specific user..
+     */
     public function ratingsFor(Account $account)
     {
         $url = $this->baseUrl . 'ratings/' . $account->id;
