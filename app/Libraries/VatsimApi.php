@@ -32,7 +32,7 @@ class VatsimApi
     public function ratings()
     {
         $url = $this->baseUrl . 'ratings';
-        
+
         $result = $this->client->get($url, ['headers' => [
             'Authorization' => 'Token ' . $this->apiKey
         ]]);
