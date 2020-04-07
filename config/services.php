@@ -54,7 +54,12 @@ return [
         'private_token' => env('CHARTFOX_PRIVATE_TOKEN'),
         'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
     ],
-    
+
+    'vatsim-api' => [
+        'base' => env('VATSIM_API_BASE', 'https://api.vatsim.net/api'),
+        'key' => env('VATSIM_API_KEY', ''),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | VATSIM UK Hosted Services

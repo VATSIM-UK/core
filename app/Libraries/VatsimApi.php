@@ -21,8 +21,8 @@ class VatsimApi
      */
     public function __construct(Client $client)
     {
-        $this->baseUrl = config('vatsim-api.base');
-        $this->apiKey = config('vatsim-api.key');
+        $this->baseUrl = config('services.vatsim-api.base');
+        $this->apiKey = config('services.vatsim-api.key');
         $this->client = $client;
     }
 
@@ -31,7 +31,7 @@ class VatsimApi
      */
     public function ratings()
     {
-        $url = $this->baseUrl . 'ratings';
+        $url = $this->baseUrl . '/ratings/';
 
         $result = $this->client->get($url, ['headers' => [
             'Authorization' => 'Token ' . $this->apiKey
@@ -41,11 +41,11 @@ class VatsimApi
     }
 
     /*
-     * Returns a set of data for a specific user..
+     * Returns a set of data for a specific user.
      */
     public function ratingsFor(Account $account)
     {
-        $url = $this->baseUrl . 'ratings/' . $account->id;
+        $url = $this->baseUrl . '/ratings/' . $account->id;
 
         $result = $this->client->get($url, ['headers' => [
             'Authorization' => 'Token ' . $this->apiKey
