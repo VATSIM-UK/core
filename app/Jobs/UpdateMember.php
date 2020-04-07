@@ -12,6 +12,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use VatsimXML;
 
+/* This needs updating */
+
 class UpdateMember extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;

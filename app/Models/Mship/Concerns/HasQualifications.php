@@ -10,6 +10,8 @@ use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Exception;
 use VatsimXML;
 
+/* This needs updating */
+
 trait HasQualifications
 {
     public function qualifications()

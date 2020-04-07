@@ -12,6 +12,8 @@ use Exception;
 use Illuminate\Support\Facades\Validator;
 use VatsimXML;
 
+/* This needs updating */
+
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
  */

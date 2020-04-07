@@ -8,6 +8,8 @@ use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
+/* This needs updating */
+
 class UpdateMembers extends Command
 {
     use DispatchesJobs;
