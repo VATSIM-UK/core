@@ -35,7 +35,7 @@ class VatsimApi
 
         try {
             $result = $this->client->get($url, ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
+                'Authorization' => 'Token ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
             return null;
@@ -53,7 +53,7 @@ class VatsimApi
 
         try {
             $result = $this->client->get($url, ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
+                'Authorization' => 'Token ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
             return null;
