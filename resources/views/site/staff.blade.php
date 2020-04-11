@@ -73,6 +73,17 @@
                                  width=50px
                                  class="img-responsive center-block profile-picture"/>
                             <p class="text-center">Tom Earl</p>
+                            <h4>Member Services Team</h4>
+                            <table class="table">
+                                <tr>
+                                    <td>Member Services Assistant</td>
+                                    <td>Adam Meade</td>
+                                </tr>
+                                <tr>
+                                    <td>Member Services Assistant</td>
+                                    <td>Matthew Wilson</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -183,7 +194,7 @@
                                 </tr>
                                 <tr>
                                     <td>TG Manager (TWR)</td>
-                                    <td>Adam Meade</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
                                     <td>TG Manager (APP)</td>
@@ -231,7 +242,7 @@
                                     <td>Administrative Manager<br/>
                                         Initial Flight Instructor
                                     </td>
-                                    <td>Matthew Wilson</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
