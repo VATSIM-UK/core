@@ -111,7 +111,7 @@ class LoginController extends BaseController
 
     private function updateAccount(Account $account)
     {
-        try{
+        try {
             (new UpdateMember($account->id))->handle();
         } catch (\Exception $e) {
             // Service likely unavailable, let the user continue with login.
