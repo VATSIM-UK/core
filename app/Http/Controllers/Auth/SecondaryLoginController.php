@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Request;
+use App\Models\Mship\Account;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
 
 class SecondaryLoginController extends BaseController
 {
-    public static function attemptSecondaryAuth()
-    {
-        $member = Auth::guard('vatsim-sso')->user();
+    use AuthenticatesUsers;
 
-        if ($member->hasPassword()) {
+    public static function attemptSecondaryAuth(Account $account)
+    {
+        if ($account->hasPassword()) {
             return redirect()->route('auth-secondary');
         }
 
@@ -35,5 +37,29 @@ class SecondaryLoginController extends BaseController
         $response = $this->login($request);
 
         return $response;
+    }
+
+    /**
+     * Validate the user login request.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return void
+     */
+    protected function validateLogin(Request $request)
+    {
+        $this->validate($request, [
+            'password' => 'required|string',
+        ]);
+    }
+
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        return ['id' => Auth::guard('vatsim-sso')->user()->id, 'password' => $request->input('password')];
     }
 }
