@@ -59,8 +59,8 @@
                     <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Operations
                     </div>
                     <div class="panel-body">
-                        <h4>Operations Director (VATUK9)</h4><br/>
-                        <p class="text-left">Vacant</p>
+                        <h4 class="text-center">Operations Director (VATUK9)</h4><br/>
+                        <p class="text-center">Vacant</p>
                     </div>
                 </div>
 
@@ -68,12 +68,12 @@
                         <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Member Services
                         </div>
                         <div class="panel-body">
-                            <h4>Member Services Director (VATUK3)</h4><br/>
+                            <h4 class="text-center">Member Services Director (VATUK3)</h4><br/>
                             <img src="{{ $teamPhotos[7404] }}"
                                  width=50px
                                  class="img-responsive center-block profile-picture"/>
                             <p class="text-center">Tom Earl</p>
-                            <h4>Member Services Team</h4>
+                            <h4 class="text-center">Member Services Team</h4>
                             <table class="table">
                                 <tr>
                                     <td>Member Services Assistant</td>
@@ -94,12 +94,12 @@
                     <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Marketing
                     </div>
                     <div class="panel-body">
-                        <h4>Marketing Director (VATUK4)</h4><br/>
+                        <h4 class="text-center">Marketing Director (VATUK4)</h4><br/>
                         <img src="{{ $teamPhotos[6738] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
                         <p class="text-center">Loui Ringer</p>
-                        <h4>Marketing Team</h4>
+                        <h4 class="text-center">Marketing Team</h4>
                         <table class="table">
                             <tr>
                                 <td>Marketing Manager</td>
@@ -121,7 +121,7 @@
                              class="img-responsive center-block profile-picture"/>
                         <p class="text-center">Calum Tοwers</p>
 
-                        <h4>Web Services Team</h4>
+                        <h4 class="text-center">Web Services Team</h4>
                         <table class="table">
                             <tr>
                                 <td>Web Services Manager<br/>
@@ -166,7 +166,7 @@
                         <p class="text-center">Daniel Crookes</p>
 
                         <div class="col-md-6">
-                           <h4>ATC Training Team</h4>
+                           <h4 class="text-center">ATC Training Team</h4>
                             <table class="table">
                                 <tr>
                                     <td>General Manager</td>
@@ -191,14 +191,6 @@
                                 <tr>
                                     <td>Division Instructor</td>
                                     <td>Jamie Paine</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Manager (TWR)</td>
-                                    <td>Vacant</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Manager (APP)</td>
-                                    <td>Nick Marinov</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (New Controller)</td>
@@ -232,7 +224,7 @@
                             </div>
 
                         <div class="col-md-6">
-                            <h4>Pilot Training Team</h4>
+                            <h4 class="text-center">Pilot Training Team</h4>
                             <table class="table">
                                 <tr>
                                     <td>General Manager</td>
@@ -280,7 +272,7 @@
                                     <td>Data Protection Officer</td>
                                     <td>Chris Pawley</td>
                                 </tr>
-                            </tbody
+                            </tbody>
                         </table>
                     </div>
                 </div>
