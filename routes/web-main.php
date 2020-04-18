@@ -4,12 +4,11 @@
 Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('dashboard');
 
 // Authentication
-Route::get('login')->uses('Auth\LoginController@getLogin');
-Route::post('login')->uses('Auth\LoginController@loginMain')->name('login');
+Route::get('login')->uses('Auth\LoginController@login')->name('login');
+Route::post('login')->uses('Auth\LoginController@login')->name('login');
 Route::get('login-secondary')->uses('Auth\LoginController@showLoginForm')->middleware('auth:vatsim-sso')->name('auth-secondary');
-Route::post('login-secondary')->uses('Auth\LoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
-Route::get('login-vatsim')->uses('Auth\LoginController@vatsimSsoReturn')->name('auth-vatsim-sso');
-Route::post('logout')->uses('Auth\LoginController@logout')->name('logout');
+Route::post('login-secondary')->uses('Auth\SecondaryLoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
+Route::post('logout')->uses('Auth\LoginController@logout')->name('logout')->middleware('auth_full_group');
 
 // Password
 Route::group([

@@ -59,10 +59,6 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/VATSIM-UK/VatsimSSO"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/VATSIM-UK/laravel-ipboard"
         },
         {
@@ -85,6 +81,7 @@
         "laravel/tinker": "~2.0",
         "laravelcollective/html": "^6.0",
         "league/csv": "^8.0",
+        "league/oauth2-client": "^2.4",
         "maatwebsite/excel": "~3.1.17",
         "malahierba-lab/public-id": "dev-master",
         "planetteamspeak/ts3-php-framework": "1.1.33",
@@ -95,7 +92,7 @@
         "spatie/laravel-cookie-consent": "^2.4",
         "spatie/laravel-permission": "^3.0",
         "symfony/translation": "4.3.8",
-        "vatsim/sso": "dev-develop#7579e9f492d84f04bfd30df41f0073b3d7a01527",
+        "vatsim/sso": "3.*",
         "vatsim/xml": "dev-master",
         "vluzrmos/slack-api": "dev-master",
         "watson/rememberable": "3.2.1",

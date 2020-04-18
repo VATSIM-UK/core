@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\BaseController;
 use App\Jobs\UpdateMember;
 use App\Models\Mship\Account;
-use Auth;
+use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Session;
-use VatsimSSO;
+use App\Http\Controllers\Auth\VatsimOAuthController;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 /**
  * This controller handles authenticating users for the application and
@@ -22,12 +23,7 @@ class LoginController extends BaseController
 {
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/mship/manage/dashboard';
+    protected $provider;
 
     /**
      * Create a new controller instance.
@@ -36,159 +32,88 @@ class LoginController extends BaseController
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('showLoginForm', 'loginSecondary', 'logout');
+        $this->provider = new VatsimOAuthController();
     }
 
-    public function getLogin()
+    public function mainLogin(Request $request)
     {
-        if (Auth::guard('vatsim-sso')->check() && !Auth::check()) {
-            return $this->attemptSecondaryAuth();
+        $this->login($request);
+    }
+
+    public function login(Request $request)
+    {
+        if (!$request->has('code') || !$request->has('state')) {
+            $authorizationUrl = $this->provider->getAuthorizationUrl(); // Generates state
+            $request->session()->put('vatsimauthstate', $this->provider->getState());
+            return redirect()->away($authorizationUrl);
+        } elseif ($request->input('state') !== session()->pull('vatsimauthstate')) {
+            return redirect()->route('dashboard')->withError("Something went wrong, please try again (state mismatch).");
         } else {
-            return redirect()->route('dashboard');
+            return $this->verifyLogin($request);
         }
     }
 
-    /**
-     * Handle a login request to the application.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
-     */
-    public function loginMain(Request $request)
+    protected function verifyLogin(Request $request)
     {
+        try {
+            $accessToken = $this->provider->getAccessToken('authorization_code', [
+                'code' => $request->input('code')
+            ]);
+        } catch (IdentityProviderException $e) {
+            return redirect()->route('dashboard')->withError("Something went wrong, please try again later.");
+        }
+        $resourceOwner = json_decode(json_encode($this->provider->getResourceOwner($accessToken)->toArray()));
 
-        // user has not been authenticated with VATSIM SSO
-        if (!Auth::guard('vatsim-sso')->check()) {
-            return $this->attemptVatsimAuth();
+        if (!
+        (isset($resourceOwner->data) &&
+            isset($resourceOwner->data->cid) &&
+            isset($resourceOwner->data->personal->name_first) &&
+            isset($resourceOwner->data->personal->name_last) &&
+            isset($resourceOwner->data->personal->email) &&
+            $resourceOwner->data->oauth->token_valid === "true")
+        ) {
+            return redirect()->route('dashboard')->withError("We need you to grant us all marked permissions");
         }
 
-        if (!Auth::check()) {
-            $this->attemptSecondaryAuth();
-        }
+        $account = $this->completeLogin($resourceOwner, $accessToken);
 
-        return redirect()->intended(route('mship.manage.dashboard'));
+        Auth::guard('vatsim-sso')->loginUsingId($account->id);
+
+        return SecondaryLoginController::attemptSecondaryAuth();
     }
 
-    protected function getVatsimAuth()
+    protected function completeLogin($resourceOwner, $token)
     {
-        return Auth::guard('vatsim-sso')->user()->id;
-    }
-
-    protected function attemptVatsimAuth()
-    {
-        $allowSuspended = true;
-        $allowInactive = true;
-        $token = VatsimSSO::requestToken(route('auth-vatsim-sso'), $allowSuspended, $allowInactive);
-        if ($token) {
-            $key = $token->token->oauth_token;
-            $secret = $token->token->oauth_token_secret;
-            Session::put('credentials.vatsim-sso', compact('key', 'secret'));
-            return redirect()->to(VatsimSSO::sendToVatsim());
-        }
-        // Check if there was a CURL error code
-        if (VATSIMSSO::error()['code']) {
-            Log::error('VATSIMSSO was unable to reach CERT. Code:'.VATSIMSSO::error()['code'].' Message:'.VATSIMSSO::error()['message']);
-            return redirect()->back()->withErrors(['connection' => "We were unable to contact VATSIM's certification service. Please try again later. If this persists, please contact Web Services."]);
-        }
-        throw new \Exception('SSO failed: '.VatsimSSO::error()['message']);
-    }
-
-    protected function setVatsimAuth($userId)
-    {
-        Auth::guard('vatsim-sso')->loginUsingId($userId);
-    }
-
-    protected function attemptSecondaryAuth()
-    {
-        $member = Auth::guard('vatsim-sso')->user();
-
-        if ($member->hasPassword()) {
-            return redirect()->route('auth-secondary');
-        }
-
-        $intended = Session::pull('url.intended', route('site.home'));
-
-        Auth::login(Auth::guard('vatsim-sso')->user(), true);
-
-        return redirect($intended);
-    }
-
-    public function loginSecondary(Request $request)
-    {
-        if (!Auth::guard('vatsim-sso')->check()) {
-            return redirect()->route('dashboard')
-                ->withError('Could not authenticate: VATSIM.net authentication is not present.');
-        }
-
-        Auth::shouldUse('web');
-        $response = $this->login($request);
-
-        return $response;
-    }
-
-    /**
-     * Get the needed authorization credentials from the request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return array
-     */
-    protected function credentials(Request $request)
-    {
-        return ['id' => Auth::guard('vatsim-sso')->user()->id, 'password' => $request->input('password')];
-    }
-
-    /**
-     * Validate the user login request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return void
-     */
-    protected function validateLogin(Request $request)
-    {
-        $this->validate($request, [
-            'password' => 'required|string',
-        ]);
-    }
-
-    public function vatsimSsoReturn(Request $request)
-    {
-        $ssoCredentials = $request->session()->remove('credentials.vatsim-sso');
-
-        $login = VatsimSSO::checkLogin($ssoCredentials['key'], $ssoCredentials['secret'], $request->input('oauth_verifier'));
-        if ($login) {
-            return $this->vSsoValidationSuccess($login->user, $login->request);
-        } else {
-            return $this->vSsoValidationFailure(VatsimSSO::error());
-        }
-    }
-
-    public function vSsoValidationSuccess($user, $request)
-    {
-        $account = Account::firstOrNew(['id' => $user->id]);
-        $account->name_first = utf8_decode($user->name_first);
-        $account->name_last = utf8_decode($user->name_last);
-        $account->email = $user->email;
-        $account->experience = $user->experience;
-        $account->joined_at = $user->reg_date;
+        $account = Account::firstOrNew(['id' => $resourceOwner->data->cid]);
+        $account->name_first = $resourceOwner->data->personal->name_first;
+        $account->name_last = $resourceOwner->data->personal->name_last;
+        $account->email = $resourceOwner->data->personal->email;
         $account->last_login = Carbon::now();
         $account->last_login_ip = \Request::ip();
-        $account->is_inactive = $user->rating->id == -1 ? true : false;
-        $account->updateVatsimRatings($user->rating->id, $user->pilot_rating->rating);
-        $account->updateDivision($user->division->code, $user->region->code);
-        $account->save();
 
-        if (!is_numeric($user->rating->id) || !is_numeric($user->pilot_rating->rating)) {
-            $job = new UpdateMember($user);
-            $this->dispatch($job);
+        if ($resourceOwner->data->oauth->token_valid) { // User has given us permanent access to updated data
+            $account->vatsim_access_token = $token->getToken();
+            $account->vatsim_refresh_token = $token->getRefreshToken();
+            $account->vatsim_token_expires = $token->getExpires();
         }
 
-        $this->setVatsimAuth($user->id);
+        $account->save();
 
-        return $this->attemptSecondaryAuth();
+        $this->updateMember($account);
+
+        return $account;
     }
 
-    public function vSsoValidationFailure($error)
+    public function logout()
     {
-        return redirect()->route('dashboard')->withError('Could not authenticate: '.$error['message']);
+        auth()->logout();
+
+        return redirect(route('site.home'));
+    }
+
+    private function updateMember(Account $account)
+    {
+        $job = new UpdateMember($account);
+        return $this->dispatch($job);
     }
 }

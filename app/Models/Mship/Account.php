@@ -4,6 +4,7 @@ namespace App\Models\Mship;
 
 use App\Events\Mship\AccountAltered;
 use App\Exceptions\Mship\InvalidCIDException;
+use App\Http\Controllers\VatsimOAuthController;
 use App\Jobs\UpdateMember;
 use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
@@ -34,6 +35,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use League\OAuth2\Client\Token\AccessToken;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
@@ -197,9 +199,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'password_expires_at',
     ];
     protected $attributes = [
-        'name_first' => '',
-        'name_last' => '',
-        'inactive' => false,
+        'name_first'    => '',
+        'name_last'     => '',
+        'inactive'      => false,
         'last_login_ip' => '0.0.0.0',
     ];
     protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
@@ -253,7 +255,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         }
 
         try {
-            return self::findOrFail((int) $accountId);
+            return self::findOrFail((int)$accountId);
         } catch (ModelNotFoundException $e) {
             dispatch((new UpdateMember($accountId))->onConnection('sync'));
 
@@ -352,7 +354,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     public function setIsInactiveAttribute($value)
     {
-        $this->inactive = (bool) $value;
+        $this->inactive = (bool)$value;
     }
 
     public function getStatusStringAttribute()
@@ -396,7 +398,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getRealNameAttribute()
     {
-        return $this->name_first.' '.$this->name_last;
+        return $this->name_first . ' ' . $this->name_last;
     }
 
     /**
@@ -409,7 +411,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function getNameAttribute()
     {
         if ($this->nickname != null) {
-            return $this->nickname.' '.$this->name_last;
+            return $this->nickname . ' ' . $this->name_last;
         }
 
         return $this->real_name;
@@ -439,13 +441,13 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         }
 
         $allowedNames = collect();
-        $allowedNames->push($this->name.$wildcard);
-        $allowedNames->push($this->real_name.$wildcard);
+        $allowedNames->push($this->name . $wildcard);
+        $allowedNames->push($this->real_name . $wildcard);
 
         if ($includeATC && $this->networkDataAtcCurrent) {
             $collect = collect();
             foreach ($allowedNames as $name) {
-                $collect->push($name." - {$this->networkDataAtcCurrent->callsign}");
+                $collect->push($name . " - {$this->networkDataAtcCurrent->callsign}");
             }
             $allowedNames = $allowedNames->merge($collect);
         }
@@ -476,7 +478,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function isDuplicateDisplayName($displayName)
     {
         return !$this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
-            return preg_match("/^".$item."$/i", $displayName) == 1;
+            return preg_match("/^" . $item . "$/i", $displayName) == 1;
         })->isEmpty();
     }
 
@@ -488,9 +490,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function getSessionTimeoutAttribute()
     {
         $timeout = $this->roles()
-                        ->orderBy('session_timeout', 'DESC')
-                        ->first()
-                        ->session_timeout;
+            ->orderBy('session_timeout', 'DESC')
+            ->first()
+            ->session_timeout;
 
         return $timeout === null ? 0 : $timeout;
     }
@@ -515,5 +517,36 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * Return a valid access token for the user or return null if none
+     *
+     * @return \League\OAuth2\Client\Token\AccessToken
+     * @return null
+     */
+    public function getTokenAttribute()
+    {
+        if ($this->vatsim_access_token === null) {
+            return null;
+        } else {
+            $token = new AccessToken([
+                'access_token'  => $this->vatsim_access_token,
+                'refresh_token' => $this->vatsim_refresh_token,
+                'expires'       => $this->vatsim_token_expires,
+            ]);
+
+            if ($token->hasExpired()) {
+                $token = VatsimOAuthController::updateToken($token);
+            }
+
+            $this->update([
+                'vatsim_access_token'  => ($token) ? $token->getToken() : null,
+                'vatsim_refresh_token' => ($token) ? $token->getRefreshToken() : null,
+                'vatsim_token_expires' => ($token) ? $token->getExpires() : null,
+            ]);
+
+            return $token;
+        }
     }
 }

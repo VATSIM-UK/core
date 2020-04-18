@@ -156,7 +156,6 @@ return [
 
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
-        Vatsim\OAuth\OAuthServiceProvider::class,
         Vatsim\Xml\XmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
