@@ -8,10 +8,8 @@ use App\Models\Mship\Account;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Auth\VatsimOAuthController;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 /**
@@ -41,11 +39,13 @@ class LoginController extends BaseController
             $authorizationUrl = $this->provider->getAuthorizationUrl();
             $request->session()->put('vatsimauthstate', $this->provider->getState());
             return redirect()->away($authorizationUrl);
-        } elseif ($request->input('state') !== session()->pull('vatsimauthstate')) {
-            return redirect()->route('dashboard')->withError("Something went wrong, please try again.");
-        } else {
-            return $this->verifyLogin($request);
         }
+
+        if ($request->input('state') !== session()->pull('vatsimauthstate')) {
+            return redirect()->route('dashboard')->withError("Something went wrong, please try again.");
+        }
+
+        return $this->verifyLogin($request);
     }
 
     protected function verifyLogin(Request $request)
