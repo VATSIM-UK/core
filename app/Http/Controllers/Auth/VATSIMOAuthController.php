@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use League\OAuth2\Client\Token;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 

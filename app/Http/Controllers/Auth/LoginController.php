@@ -60,13 +60,16 @@ class LoginController extends BaseController
 
         $resourceOwner = json_decode(json_encode($this->provider->getResourceOwner($accessToken)->toArray()));
 
-        if (!
-        (isset($resourceOwner->data) &&
-            isset($resourceOwner->data->cid) &&
-            isset($resourceOwner->data->personal->name_first) &&
-            isset($resourceOwner->data->personal->name_last) &&
-            isset($resourceOwner->data->personal->email) &&
-            $resourceOwner->data->oauth->token_valid === "true")
+        if (
+            ! $resourceOwner->data ||
+            ! $resourceOwner->data->cid ||
+            ! $resourceOwner->data->personal ||
+            ! $resourceOwner->data->personal->name_first ||
+            ! $resourceOwner->data->personal->name_last ||
+            ! $resourceOwner->data->personal->email ||
+            ! $resourceOwner->data ||
+            ! $resourceOwner->data->vatsim ||
+            ! $resourceOwner->data->oauth->token_valid === "true"
         ) {
             return redirect()->route('dashboard')->withError("You cannot use our services unless you provide the relevant permissions upon login. Please try again.");
         }
@@ -91,8 +94,13 @@ class LoginController extends BaseController
         $account->name_first = $resourceOwner->data->personal->name_first;
         $account->name_last = $resourceOwner->data->personal->name_last;
         $account->email = $resourceOwner->data->personal->email;
+        // $account->experience = null; Not in return
+        // $account->joined_at = null; Not in return
         $account->last_login = Carbon::now();
         $account->last_login_ip = \Request::ip();
+        $account->is_inactive = null;
+        $account->updateVatsimRatings($resourceOwner->data->vatsim->rating->id, $resourceOwner->data->vatsim->pilotrating->id);
+        $account->updateDivision($resourceOwner->data->vatsim->division->id, $resourceOwner->data->vatsim->region->id); //null
 
         if ($resourceOwner->data->oauth->token_valid) {
             $account->vatsim_access_token = $token->getToken();
@@ -102,19 +110,6 @@ class LoginController extends BaseController
 
         $account->save();
 
-        // New SSO does not provide us with any other member info (e.g. ratings)
-        // so we'll need to fetch it from AutoTools or the API.
-        $this->updateAccount($account);
-
         return $account;
-    }
-
-    private function updateAccount(Account $account)
-    {
-        try {
-            (new UpdateMember($account->id))->handle();
-        } catch (\Exception $e) {
-            // Service likely unavailable, let the user continue with login.
-        }
     }
 }
