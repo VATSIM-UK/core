@@ -13,10 +13,8 @@ class FlushEndorsementCache implements ShouldQueue
     public function handle(AtcSessionEnded $event)
     {
         $user = $event->atcSession->account;
-        $endorsementIds = Endorsement::pluck('id');
-
-        foreach ($endorsementIds as $endorsementId) {
-            Cache::forget(Endorsement::generateCacheKey($endorsementId, $user->id));
-        }
+        Endorsement::pluck('id')->each(function ($id) use ($user){
+            Cache::forget(Endorsement::generateCacheKey($id, $user->id));
+        });
     }
 }

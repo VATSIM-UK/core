@@ -39,7 +39,7 @@ class Endorsement extends Model
         return $allMet;
     }
 
-    public static function generateCacheKey($endorsementId, $accountId)
+    public static function generateCacheKey(int $endorsementId, int $accountId)
     {
         return "endorsement:{$endorsementId}:account:{$accountId}:met";
     }
