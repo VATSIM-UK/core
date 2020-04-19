@@ -21,7 +21,7 @@ class Endorsement extends Model
 
     public function conditionsMetForUser(Account $account): bool
     {
-        $cacheKey = self::generateCacheKey($this->id, $account->id);
+        $cacheKey = $this->generateCacheKey($account);
         $cacheTtl = 86400; // 24 hours
 
         if (Cache::has($cacheKey)) {
@@ -39,8 +39,8 @@ class Endorsement extends Model
         return $allMet;
     }
 
-    public static function generateCacheKey(int $endorsementId, int $accountId)
+    public function generateCacheKey(Account $account)
     {
-        return "endorsement:{$endorsementId}:account:{$accountId}:met";
+        return "endorsement:{$this->id}:account:{$account->id}:met";
     }
 }
