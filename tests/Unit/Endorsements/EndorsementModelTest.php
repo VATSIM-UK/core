@@ -140,16 +140,16 @@ class EndorsementModelTest extends TestCase
 
         $this->assertFalse($this->endorsement->fresh()->conditionsMetForUser($this->user));
 
+        $spy->shouldHaveReceived('put')
+            ->once();
+
         $atc = factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'EGKK_TWR',
             'connected_at' => Carbon::now()->subHours(2)
         ]);
-
         $atc->disconnectAt(Carbon::now());
 
-        $spy->shouldHaveReceived('put')
-            ->once();
         $spy->shouldHaveReceived('forget')
             ->times(Endorsement::count());
 
