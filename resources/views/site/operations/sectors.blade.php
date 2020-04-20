@@ -60,27 +60,27 @@
 
                     <p>
                         <strong>EGNX / EGBB / EGBE</strong><br>
-                        LON_C, LON
+                        LON_C, LON_SC, LON
                     </p>
 
                     <p>
                         <strong>EGSS / EGGW</strong><br>
-                        LTC_NW, LTC_N, LON_C, LON
+                        LTC_NW, LTC_N, LTC, LON_C, LON_SC, LON
                     </p>
 
                     <p>
                         <strong>EGLL / EGLC / EGKB</strong><br>
-                        LTC_SE, LTC_S, LON_D, LON_S, LON
+                        LTC_SE, LTC_S, LTC, LON_D, LON_S, LON_SC, LON
                     </p>
 
                     <p>
                         <strong>EGKK</strong><br>
-                        LTC_SW, LTC_S, LON_S, LON
+                        LTC_SW, LTC_S, LTC, LON_S, LON_SC, LON
                     </p>
 
                     <p>
                         <strong>EGHI / EGHH</strong><br>
-                        LON_S, LON
+                        LON_S, LON_SC, LON
                     </p>
 
                     <p>
@@ -122,15 +122,20 @@
                             <td rowspan="4" class="vertical-center" style="color: #ffffff; background: #777777;">
                                 Bandbox<br>
                                 LON_CTR<br>
-                                123.900
+                                (127.825)
                             </td>
                             <td rowspan="2" style="background: #6d4457; color: #ffffff;">
                                 South Central<br>
                                 LON_SC_CTR<br>
-                                132.600
+                                (132.600)
                             </td>
                             <td style="background: #000080; color: #ffffff;">
                                 South LON_S_CTR (129.425)
+                            </td>
+                            <td rowspan="2" style="background: #6d4457; color: #ffffff;">
+                                TC Bandbox<br>
+                                LTC_CTR<br>
+                                (135.800)
                             </td>
                         </tr>
                         <tr>
@@ -139,12 +144,12 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="background: #800000; color: #ffffff;">
+                            <td colspan="3" style="background: #800000; color: #ffffff;">
                                 North LON_N_CTR (133.700)
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="background: #008000; color: #ffffff;">
+                            <td colspan="3" style="background: #008000; color: #ffffff;">
                                 West LON_W_CTR (126.075)
                             </td>
                         </tr>
@@ -210,7 +215,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td rowspan="4" class="vertical-center" style="background: #f09626; color: #000000;">
+                            <td rowspan="5" class="vertical-center" style="background: #f09626; color: #000000;">
                                 Central<br>
                                 LON_C<br>
                                 (127.100)
@@ -235,10 +240,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <td rowspan="2" style="background: #fab464; color: #000000;">
-                                Clacton<br>
+                            <td rowspan="3" style="background: #fab464; color: #000000;">
+                                <br>Clacton<br>
                                 LON_E<br>
-                                (121.225)
+                                (118.475)
                             </td>
                             <td style="background: #faf096; color: #000000;">
                                 TC North East LTC_NE (118.825)
@@ -246,7 +251,12 @@
                         </tr>
                         <tr>
                             <td colspan="2" style="background: #fab464; color: #000000;">
-                                Clacton LON_E (121.225)
+                                TC East LTC_E (121.225)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="background: #fab464; color: #000000;">
+                                Clacton LON_E (118.475)
                             </td>
                         </tr>
                         <tr>
