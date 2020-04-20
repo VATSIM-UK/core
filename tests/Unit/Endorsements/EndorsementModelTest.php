@@ -4,6 +4,7 @@ namespace Tests\Unit\Endorsements;
 
 use App\Models\Atc\Endorsement;
 use App\Models\NetworkData\Atc;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
@@ -129,6 +130,32 @@ class EndorsementModelTest extends TestCase
         // true assertion based upon the return value of the mocked cache facade above.
         $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
     }
+
+    /** @test */
+    public function itFlushesUserEndorsementCacheAfterATCSession()
+    {
+        $this->createMockCondition();
+
+        $spy = Cache::spy();
+
+        $this->assertFalse($this->endorsement->fresh()->conditionsMetForUser($this->user));
+
+        $spy->shouldHaveReceived('put')
+            ->once();
+
+        $atc = factory(Atc::class)->create([
+            'account_id' => $this->user->id,
+            'callsign' => 'EGKK_TWR',
+            'connected_at' => Carbon::now()->subHours(2)
+        ]);
+        $atc->disconnectAt(Carbon::now());
+
+        $spy->shouldHaveReceived('forget')
+            ->times(Endorsement::count());
+
+        $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
+    }
+
 
     private function createMockCondition($positions = ['EGKK_%'], $type = Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD)
     {
