@@ -321,7 +321,7 @@
                     </h2>
 
                     <p>
-                        For the purpose of <a "{{ route('site.atc.bookings') }}" rel="">controller bookings</a>, 
+                        For the purpose of <a href="{{ route('site.atc.bookings') }}">controller bookings</a>, 
                         the &#39;Primary Sectors&#39; are defined as:
                     </p>
 
