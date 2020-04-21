@@ -103,13 +103,13 @@
                         SCO_E, SCO
                     </p>
 
-                    <p>
-                        <strong>Frequencies</strong>
-                    </p>
+                    <h2>
+                        Frequencies
+                    </h2>
 
-                    <p>
+                    <h3>
                         Standard Frequencies - London
-                    </p>
+                    </h3>
 
                     <p>
                         This table highlights the frequencies you may see on a typical night, without splitting from the
@@ -152,9 +152,9 @@
                     </table>
                     </p>
 
-                    <p>
-                        <strong>Sector Splits - London</strong>
-                    </p>
+                    <h3>
+                        Sector Splits - London
+                    </h3>
 
                     <p>
                         For the cases where the 4 main sectors are split (common for events), additional frequencies
@@ -297,9 +297,9 @@
                     </table>
                     </p>
 
-                    <p>
-                        <strong>Radio Callsigns</strong>
-                    </p>
+                    <h2>
+                        Radio Callsigns
+                    </h2>
 
                     <p>
                         All area control sectors within the UK (listed above) are called either &quot;London Control&quot;
@@ -316,12 +316,13 @@
                         sector you are in.
                     </p>
 
-                    <p>
-                        <strong>Primary Sectors</strong>
-                    </p>
+                    <h2>
+                        Information for Controllers
+                    </h2>
 
                     <p>
-                        For the purpose of controller bookings, the &#39;Primary Sectors&#39; are defined as:
+                        For the purpose of <a href="{{ route('site.atc.bookings') }}">controller bookings</a>, 
+                        the &#39;Primary Sectors&#39; are defined as:
                     </p>
 
                     <ul>
@@ -341,6 +342,42 @@
                             SCO_CTR
                         </li>
                     </ul>
+                    
+                    <p>
+                        The &#39;Secondary Sectors&#39; are defined as:
+                    <p>
+                    
+                    <ul>
+                        <li>
+                            LON_D_CTR
+                        </li>
+                        <li>
+                            LON_E_CTR
+                        </li>
+                        <li>
+                            LTC_S_CTR
+                        </li>
+                        <li>
+                            LTC_N_CTR
+                        </li>
+                        <li>
+                            MAN_CTR
+                        </li>
+                        <li>
+                            SCO_CTR
+                        </li>
+                    </ul>
+                    
+                    <p>
+                        Members may open either a single Primary or Secondary sector, or a valid combination of 
+                        Primary (e.g. LON_SC_CTR) or Secondary (e.g. LTC_CTR) sectors.<br>
+                    </p>
+                    
+                    <p>
+                        Further splits require the remaining portion of the Primary or Secondary sector to be 
+                        staffed too - e.g. opening LTC_NE_CTR requires LTC_NW_CTR (as the remaining portion of 
+                        LTC_N_CTR) to be online.
+                    </p>
 
                 </div>
             </div>
