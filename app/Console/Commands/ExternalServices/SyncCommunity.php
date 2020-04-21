@@ -3,6 +3,7 @@
 namespace App\Console\Commands\ExternalServices;
 
 use App\Console\Commands\Command;
+use App\Models\Community\Group;
 use App\Models\Mship\Account;
 use DB;
 use Exception;
@@ -38,9 +39,9 @@ class SyncCommunity extends Command
         }
 
         require_once config('services.community.init_file');
-        require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
-        require_once \IPS\ROOT_PATH.'/system/Member/Club/Club.php';
-        require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
+        require_once \IPS\ROOT_PATH . '/system/Member/Member.php';
+        require_once \IPS\ROOT_PATH . '/system/Member/Club/Club.php';
+        require_once \IPS\ROOT_PATH . '/system/Db/Db.php';
 
         $members = \IPS\Db::i()->select(
             'm.member_id, m.temp_ban, l.token_identifier, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14',
@@ -60,20 +61,20 @@ class SyncCommunity extends Command
 
             if (empty($member['token_identifier']) || !is_numeric($member['token_identifier'])) {
                 if ($verbose) {
-                    $this->output->writeln('<error>FAILURE: '.$member['member_id'].' has no valid CID.</error>');
+                    $this->output->writeln('<error>FAILURE: ' . $member['member_id'] . ' has no valid CID.</error>');
                 }
                 $countFailure++;
                 continue;
             }
 
             if ($verbose) {
-                $this->output->write($member['member_id'].' // '.$member['token_identifier']);
+                $this->output->write($member['member_id'] . ' // ' . $member['token_identifier']);
             }
 
             $member_core = Account::where('id', $member['token_identifier'])->with('states', 'qualifications')->first();
             if ($member_core === null) {
                 if ($verbose) {
-                    $this->output->writeln(' // <error>FAILURE: cannot retrieve member '.$member['member_id'].' from Core.</error>');
+                    $this->output->writeln(' // <error>FAILURE: cannot retrieve member ' . $member['member_id'] . ' from Core.</error>');
                 }
                 $countFailure++;
                 continue;
@@ -104,7 +105,7 @@ class SyncCommunity extends Command
 
             // Check for changes
             $changeEmail = strcasecmp($member['email'], $email);
-            $changeName = strcmp($member['name'], $member_core->name_first.' '.$member_core->name_last);
+            $changeName = strcmp($member['name'], $member_core->name_first . ' ' . $member_core->name_last);
             $changeState = strcasecmp($member['member_title'], $state);
             $changeCID = strcmp($member['field_12'], $member_core->id);
             $changeARating = strcmp($member['field_13'], $aRatingString);
@@ -122,13 +123,13 @@ class SyncCommunity extends Command
                 || $changeARating || $changePRating || $changeBan;
 
             if ($verbose) {
-                $this->output->write(' // ID: '.$member_core->id);
-                $this->output->write(' // Email ('.($emailLocal ? 'local' : 'latest').'):'.$email.($changeEmail ? '(changed)' : ''));
-                $this->output->write(' // Display: '.$member_core->name_first.' '.$member_core->name_last.($changeName ? '(changed)' : ''));
-                $this->output->write(' // State: '.$state.($changeState ? '(changed)' : ''));
-                $this->output->write(' // ATC rating: '.$aRatingString);
-                $this->output->write(' // Pilot ratings: '.$pRatingString);
-                $this->output->write(' // Community groups: '.$groups->implode('name', ','));
+                $this->output->write(' // ID: ' . $member_core->id);
+                $this->output->write(' // Email (' . ($emailLocal ? 'local' : 'latest') . '):' . $email . ($changeEmail ? '(changed)' : ''));
+                $this->output->write(' // Display: ' . $member_core->name_first . ' ' . $member_core->name_last . ($changeName ? '(changed)' : ''));
+                $this->output->write(' // State: ' . $state . ($changeState ? '(changed)' : ''));
+                $this->output->write(' // ATC rating: ' . $aRatingString);
+                $this->output->write(' // Pilot ratings: ' . $pRatingString);
+                $this->output->write(' // Community groups: ' . $groups->implode('name', ','));
             }
 
             $ips_member = \IPS\Member::load($member['member_id']);
@@ -136,7 +137,7 @@ class SyncCommunity extends Command
             if ($changesPending) {
                 try {
                     // ActiveRecord / Member fields
-                    $ips_member->name = $member_core->name_first.' '.$member_core->name_last;
+                    $ips_member->name = $member_core->name_first . ' ' . $member_core->name_last;
                     $ips_member->email = $email;
                     $ips_member->member_title = $state;
                     // Check/set bans
@@ -161,7 +162,7 @@ class SyncCommunity extends Command
                     $countSuccess++;
                 } catch (Exception $e) {
                     $countFailure++;
-                    $this->output->writeln(' // <error>FAILURE: Error saving '.$member_core->id.' details to forum.</error>'.$e->getMessage());
+                    $this->output->writeln(' // <error>FAILURE: Error saving ' . $member_core->id . ' details to forum.</error>' . $e->getMessage());
                 }
             } elseif ($verbose) {
                 $this->output->writeln(' // No changes required.');
@@ -170,15 +171,16 @@ class SyncCommunity extends Command
             // Sync Community Group
 
             // Load & Map IPB Groups
-            $ips_clubs = \IPS\Db::i()->select('id,name', 'core_clubs');
+            $ips_clubs = \IPS\Db::i()->select('id,name', 'core_clubs', "name IN ('" . Group::notDefault()->pluck('name')->implode("','") . "')");
             $club_map = [];
+
             for ($i = 0; $i < $ips_clubs->count(); $i++) {
                 $ips_clubs->next();
                 $club = $ips_clubs->current();
                 $club_map[$club['id']] = $club['name'];
             }
 
-            // Proccess core group membership.
+            // Process core group membership.
             foreach ($groups as $group) {
                 $ips_club_id = array_search($group->name, $club_map);
                 if ($ips_club_id !== false) {
@@ -191,8 +193,13 @@ class SyncCommunity extends Command
                 }
             }
 
-            // Proccess member's IPB-side Club membership.
+            // Process member's IPB-side Club membership.
             foreach ($ips_member->clubs() as $ips_member_club) {
+                if (!isset($club_map[$ips_member_club])) {
+                    // This must not be a community group. Skip
+                    continue;
+                }
+
                 $name = $club_map[$ips_member_club];
 
                 if ($groups->pluck('name')->search($name) === false) {
@@ -206,9 +213,9 @@ class SyncCommunity extends Command
 
         if ($verbose) {
             $this->output->writeln('Run Results:');
-            $this->output->writeln('Total Accounts: '.$countTotal);
-            $this->output->writeln('Successful Updates: '.$countSuccess);
-            $this->output->writeln('Failed Updates: '.$countFailure);
+            $this->output->writeln('Total Accounts: ' . $countTotal);
+            $this->output->writeln('Successful Updates: ' . $countSuccess);
+            $this->output->writeln('Failed Updates: ' . $countFailure);
         }
     }
 }

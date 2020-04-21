@@ -100,8 +100,6 @@ class CreateForeignKeys extends Migration
 
         DB::statement('delete from mship_oauth_emails where sso_account_id not in (select id from oauth_clients)');
         Schema::table('mship_oauth_emails', function (Blueprint $table) {
-            $table->foreign('account_email_id')->references('id')->on('mship_account_email')->onDelete('cascade');
-            $table->foreign('sso_account_id')->references('id')->on('oauth_clients')->onDelete('cascade');
         });
 
         Schema::table('mship_permission_role', function (Blueprint $table) {
@@ -119,14 +117,12 @@ class CreateForeignKeys extends Migration
             $table->unsignedInteger('user_id')->change();
             $table->unsignedInteger('client_id')->change();
             $table->foreign('user_id')->references('id')->on('mship_account');
-            $table->foreign('client_id')->references('id')->on('oauth_clients')->onDelete('cascade');
         });
 
         Schema::table('oauth_auth_codes', function (Blueprint $table) {
             $table->unsignedInteger('user_id')->change();
             $table->unsignedInteger('client_id')->change();
             $table->foreign('user_id')->references('id')->on('mship_account');
-            $table->foreign('client_id')->references('id')->on('oauth_clients')->onDelete('cascade');
         });
 
         DB::table('oauth_clients')->where('user_id', 0)->update(['user_id' => null]);
@@ -137,7 +133,6 @@ class CreateForeignKeys extends Migration
 
         Schema::table('oauth_personal_access_clients', function (Blueprint $table) {
             $table->unsignedInteger('client_id')->change();
-            $table->foreign('client_id')->references('id')->on('oauth_clients')->onDelete('cascade');
         });
 
         Schema::table('oauth_refresh_tokens', function (Blueprint $table) {

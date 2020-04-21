@@ -1,7 +1,7 @@
 @if(Session::get("success", false))
     <div class='col-md-12'>
         <div class="alert alert-success">
-            <i class="fa fa-ban"></i>
+            <i class="fa fa-check"></i>
             <b>Success!</b><br />
             {{ Session::pull('success') }}
         </div>

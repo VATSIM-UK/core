@@ -15,6 +15,7 @@ class FacilityCreateUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|min:5',
+            'open' => 'required|boolean',
             'description' => 'min:25',
             'can_visit' => 'required|in:1,0',
             'can_transfer' => 'required|in:1,0',
@@ -41,6 +42,8 @@ class FacilityCreateUpdateRequest extends FormRequest
         return [
             'name.required' => 'You must provide a name of at least 5 characters.',
             'name.min' => 'You must provide a name of at least 5 characters.',
+            'open.required' => 'You must provide whether or not the facility is open for applications.',
+            'open.boolean' => 'The facility can only be open or closed.',
             'description.min' => 'Your description must be at least 25 characters.',
             'can_visit.required' => 'You must specify if somebody can visit this facility.',
             'can_visit.in' => "You have provided in invalid response to 'can visit'.",

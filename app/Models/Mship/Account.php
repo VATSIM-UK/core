@@ -16,6 +16,7 @@ use App\Models\Mship\Concerns\HasHelpdeskAccount;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
 use App\Models\Mship\Concerns\HasNotifications;
+use App\Models\Mship\Concerns\HasNovaPermissions;
 use App\Models\Mship\Concerns\HasPassword;
 use App\Models\Mship\Concerns\HasQualifications;
 use App\Models\Mship\Concerns\HasStates;
@@ -162,7 +163,8 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
         HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount, HasForumAccount, HasCTSAccount,
-        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications, HasEmails, HasRoles;
+        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword,
+        HasNotifications, HasEmails, HasRoles, HasNovaPermissions;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
@@ -238,10 +240,10 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     /**
-     * Find an account by its ID or retrieve it from Cert.
+     * Find an account by its ID or retrieve it from Cert. If false, user does not exist at VATSIM.NET
      *
      * @param $accountId
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|boolean|static[]
      * @throws InvalidCIDException
      */
     public static function findOrRetrieve($accountId)
@@ -256,6 +258,11 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             dispatch((new UpdateMember($accountId))->onConnection('sync'));
 
             $account = self::find($accountId);
+
+            if (!$account) {
+                // User doesn't exist at VATSIM.NET
+                throw new InvalidCIDException();
+            }
 
             return $account;
         }
@@ -418,6 +425,33 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         return $this->name;
     }
 
+    public function getFullyDefinedAttribute()
+    {
+        return $this->name_first && $this->name_last && $this->email;
+    }
+
+    private function allowedNames($includeATC = false, $withNumberWildcard = false)
+    {
+        $wildcard = "";
+
+        if ($withNumberWildcard) {
+            $wildcard = "\d";
+        }
+
+        $allowedNames = collect();
+        $allowedNames->push($this->name.$wildcard);
+        $allowedNames->push($this->real_name.$wildcard);
+
+        if ($includeATC && $this->networkDataAtcCurrent) {
+            $collect = collect();
+            foreach ($allowedNames as $name) {
+                $collect->push($name." - {$this->networkDataAtcCurrent->callsign}");
+            }
+            $allowedNames = $allowedNames->merge($collect);
+        }
+        return $allowedNames;
+    }
+
     /**
      * Determine if the given name, matches either the user's nickname or real name.
      *
@@ -427,29 +461,23 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function isValidDisplayName($displayName)
     {
-        $allowedNames = collect();
-        $allowedNames->push($this->name);
-        $allowedNames->push($this->real_name);
-
-        if ($this->networkDataAtcCurrent) {
-            $allowedNames->push($this->name.' - '.$this->networkDataAtcCurrent->callsign);
-            $allowedNames->push($this->real_name.' - '.$this->networkDataAtcCurrent->callsign);
-        }
-
-        return $allowedNames->filter(function ($item, $key) use ($displayName) {
-            return strcasecmp($item, $displayName) == 0;
-        })->count() > 0;
+        return !$this->allowedNames(true)->filter(function ($item, $key) use ($displayName) {
+            return strcmp($item, $displayName) == 0;
+        })->isEmpty();
     }
 
     public function isPartiallyValidDisplayName($displayName)
     {
-        $allowedNames = collect();
-        $allowedNames->push($this->name);
-        $allowedNames->push($this->real_name);
-
-        return $allowedNames->filter(function ($item, $key) use ($displayName) {
+        return !$this->allowedNames()->filter(function ($item, $key) use ($displayName) {
             return strstr(strtolower($displayName), strtolower($item)) != false;
-        })->count() > 0;
+        })->isEmpty();
+    }
+
+    public function isDuplicateDisplayName($displayName)
+    {
+        return !$this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
+            return preg_match("/^".$item."$/i", $displayName) == 1;
+        })->isEmpty();
     }
 
     /**

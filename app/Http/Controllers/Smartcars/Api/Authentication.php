@@ -6,7 +6,7 @@ use App\Exceptions\Mship\InvalidCIDException;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use App\Models\Smartcars\Session;
-use Input;
+use Illuminate\Support\Facades\Request;
 
 class Authentication extends AdmController
 {
@@ -32,7 +32,7 @@ class Authentication extends AdmController
         Session::deleteOldSessions();
 
         try {
-            $account = Account::findOrRetrieve(Input::get('userid'));
+            $account = Account::findOrRetrieve(Request::input('userid'));
         } catch (InvalidCIDException $e) {
             return 'AUTH_FAILED';
         }
@@ -45,10 +45,10 @@ class Authentication extends AdmController
             return 'ACCOUNT_INACTIVE';
         }
 
-        $passwordOK = $account->verifyPassword(Input::get('password'));
+        $passwordOK = $account->verifyPassword(Request::input('password'));
 
         if ($account->hasPassword() && $passwordOK) {
-            $session = Session::create(['account_id' => $account->id, 'session_id' => Input::get('sessionid')]);
+            $session = Session::create(['account_id' => $account->id, 'session_id' => Request::input('sessionid')]);
 
             return response()->csv($this->preparePilotInfo($session->account, $session));
         }
@@ -60,14 +60,14 @@ class Authentication extends AdmController
     {
         Session::deleteOldSessions();
 
-        $session = Session::sessionId(Input::get('oldsessionid'))->accountId(Input::get('dbid'))->first();
+        $session = Session::sessionId(Request::input('oldsessionid'))->accountId(Request::input('dbid'))->first();
 
         if ($session) {
             if ($session->account->is_banned) {
                 return 'ACCOUNT_INACTIVE';
             }
 
-            $session->session_id = Input::get('sessionid');
+            $session->session_id = Request::input('sessionid');
             $session->save();
 
             return response()->csv($this->preparePilotInfo($session->account, $session));
@@ -80,7 +80,7 @@ class Authentication extends AdmController
     {
         Session::deleteOldSessions();
 
-        $session = Session::sessionId(Input::get('sessionid'))->accountId(Input::get('dbid'))->first();
+        $session = Session::sessionId(Request::input('sessionid'))->accountId(Request::input('dbid'))->first();
 
         if ($session) {
             return response()->csv([$session->session_id, $session->account->name_first, $session->account->name_last]);

@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Slack;
 
 use App\Models\Sys\Token;
-use DB;
-use Redirect;
-use Response;
-use SlackUserAdmin;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
+use Vluzrmos\SlackApi\Facades\SlackUserAdmin;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
@@ -26,15 +27,17 @@ class Registration extends \App\Http\Controllers\BaseController
 
         if (!($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
             DB::beginTransaction();
-            $_slackToken = Token::generate('slack_registration', false, $this->account);
+            $_slackToken = Token::generate('slack_registration', false, $this->account, 60 * 24 * 7);
 
             $result = SlackUserAdmin::invite($this->account->email, [
                 'first_name' => $this->account->name_first,
                 'last_name' => $this->account->name_last,
+                'resend' => true
             ]);
 
             if ($result->ok !== true) {
                 DB::rollBack();
+                Log::error("Error inviting {$this->account->real_name} ({$this->account->id }) to slack. Response: ". json_encode($result));
 
                 return Redirect::route('mship.manage.dashboard')
                     ->withError('There was an error inviting you to join Slack. Please contact the Web Services Department.');

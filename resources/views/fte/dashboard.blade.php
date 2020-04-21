@@ -55,7 +55,7 @@
                     <div class="panel-body">
                         @if($exercise->image)
                             <div class="text-center">
-                                <img src="{{ $exercise->image->asset() }}" class="img-responsive center-block" alt="{{ $exercise->name }}">
+                                <img src="{{ $exercise->image }}" class="img-responsive center-block" alt="{{ $exercise->name }}">
                             </div>
                         @endif
                         <p style="margin-top: 10px;">{{ $exercise->description }}</p>

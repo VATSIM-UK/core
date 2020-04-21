@@ -26,8 +26,8 @@
                 return factory(\App\Models\Mship\Ban\Reason::class)->create()->id;
             },
             'reason_extra' => $faker->paragraph,
-            'period_start' => \Carbon\Carbon::now(),
-            'period_start' => \Carbon\Carbon::now()->addDays($faker->randomDigit),
+            'period_start' => \Carbon\Carbon::now()->subDay(),
+            'period_finish' => \Carbon\Carbon::now()->addDays($faker->randomDigitNotNull),
             'created_at' => \Carbon\Carbon::now(),
             'updated_at' => \Carbon\Carbon::now(),
         ];

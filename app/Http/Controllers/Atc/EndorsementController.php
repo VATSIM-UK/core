@@ -2,28 +2,18 @@
 
 namespace App\Http\Controllers\Atc;
 
+use App\Http\Controllers\BaseController;
 use App\Models\Atc\Endorsement;
-use Carbon\Carbon;
-use Redirect;
+use Illuminate\Support\Facades\Redirect;
 
-class EndorsementController extends \App\Http\Controllers\BaseController
+class EndorsementController extends BaseController
 {
     public function getGatwickGroundIndex()
     {
-        $requirements = Endorsement::where('endorsement', '=', 'EGKK_GND')->get();
+        $endorsement = Endorsement::with('conditions')->where('name', 'EGKK_GND')->first();
 
-        $hours = $requirements->map(function ($r) {
-            $data = $this->account->networkDataAtc()
-                ->withCallsignIn(json_decode($r->required_airfields))
-                ->whereBetween('connected_at', [Carbon::now()->subMonth($r->hours_months), Carbon::now()])
-                ->get(['minutes_online', 'callsign'])
-                ->mapToGroups(function ($item) {
-                    return [substr($item['callsign'], 0, 4) => ($item['minutes_online'] / 60)];
-                })->transform(function ($item) {
-                    return $item->sum();
-                });
-
-            return $data;
+        $hours = $endorsement->conditions->map(function ($condition) {
+            return $condition->progressForUser($this->account);
         });
 
         if (!$this->account->qualificationAtc->isS1) {
@@ -32,7 +22,8 @@ class EndorsementController extends \App\Http\Controllers\BaseController
         }
 
         return $this->viewMake('controllers.endorsements.gatwick_ground')
-            ->with('requirements', $requirements)
+            ->with('endorsment', $endorsement)
+            ->with('conditions', $endorsement->conditions)
             ->with('hours', $hours->all());
     }
 }

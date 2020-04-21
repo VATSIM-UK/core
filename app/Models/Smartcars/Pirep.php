@@ -2,6 +2,8 @@
 
 namespace App\Models\Smartcars;
 
+use App\Models\Mship\Account;
+use App\Models\Smartcars\Bid;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -22,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $failed_at
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Smartcars\Bid $bid
+ * @property-read Bid $bid
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep belongsTo($cid)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereAircraftId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereBidId($value)
@@ -59,6 +61,11 @@ class Pirep extends Model
         return $this->belongsTo(\App\Models\Smartcars\Bid::class, 'bid_id', 'id');
     }
 
+    public function getAccountAttribute()
+    {
+        return $this->bid->account->name;
+    }
+
     public function scopeBelongsTo($query, $cid)
     {
         return $query->whereHas('bid', function ($query) use ($cid) {
@@ -66,11 +73,11 @@ class Pirep extends Model
         });
     }
 
-    public function mark($passed, $reason, $failed_at)
+    public function mark($passed, $reason, $failedAt)
     {
         $this->passed = $passed;
         $this->pass_reason = $reason;
-        $this->failed_at = $failed_at;
+        $this->failed_at = $failedAt;
     }
 
     public function markPassed($reason = 'Flight passed all criteria.')
@@ -78,9 +85,9 @@ class Pirep extends Model
         $this->mark(true, $reason, null);
     }
 
-    public function markFailed($reason, $failed_at)
+    public function markFailed($reason, $failedAt = null)
     {
-        $this->mark(false, $reason, $failed_at);
+        $this->mark(false, $reason, $failedAt);
     }
 
     public function failedAt()

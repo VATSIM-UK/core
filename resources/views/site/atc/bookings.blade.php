@@ -77,7 +77,7 @@
 
                     <ul>
                         <li>
-                            When approved by the Community Director, controllers may be allocated positions to control.
+                            When approved by the Marketing Director, controllers may be allocated positions to control.
                             Allocated controlling shall take priority over controller bookings.
                         </li>
                     </ul>
