@@ -93,20 +93,26 @@
                             of:
                             <ul>
                                 <li>
-                                    Controllers wishing to bandbox two or more primary area sectors (e.g. LON_SC_CTR)
-                                    should book a single sector (e.g. LON_C_CTR) and then log on to the bandboxed
-                                    position. Other members may then log on to or book the other primary sectors without
-                                    the need for obtaining the first controller&rsquo;s preference;
+                                    Controllers wishing to bandbox two or more primary area sectors should book a
+                                    single sector and then log on to the bandboxed position. Other members may then
+                                    log on to or book the other Primary or Secondary sectors without the need for 
+                                    obtaining the first controller&rsquo;s preference;
                                 </li>
                                 <li>
-                                    If a controller does choose to book a position bandboxing the primary area sectors,
-                                    other controllers may choose to log on to or book a contained primary sector without
-                                    obtaining the first controller&rsquo;s preference. This action must leave the
-                                    bandbox controller with a minimum of one primary sector to control.
+                                    If a controller does choose to book a position bandboxing the Primary area
+                                    sectors, other controllers may choose to log on to or book a contained Primary or
+                                    Secondary sector without obtaining the first controller&rsquo;s preference. This 
+                                    action must leave the bandbox controller with a minimum of one Primary or Secondary 
+                                    sector to control.
                                 </li>
                             </ul>
                         </li>
                     </ul>
+                    
+                    <p>
+                        Primary and Secondary Sectors are defined on the <a "{{ route('site.operations.sectors') }}" rel="">Area Sectors</a> page.
+                    </p>
+                    
                 </div>
             </div>
         </div>
