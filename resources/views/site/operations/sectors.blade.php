@@ -369,11 +369,14 @@
                     </ul>
                     
                     <p>
-                        Members may open either a single Primary or Secondary sector, or a valid combination of Primary (e.g. LON_SC_CTR) or Secondary (e.g. LTC_CTR) sectors.<br>
+                        Members may open either a single Primary or Secondary sector, or a valid combination of 
+                        Primary (e.g. LON_SC_CTR) or Secondary (e.g. LTC_CTR) sectors.<br>
                     </p>
                     
                     <p>
-                        Further splits require the remaining portion of the Primary or Secondary sector to be staffed too - e.g. opening LTC_NE_CTR requires LTC_NW_CTR (as the remaining portion of LTC_N_CTR) to be online.
+                        Further splits require the remaining portion of the Primary or Secondary sector to be 
+                        staffed too - e.g. opening LTC_NE_CTR requires LTC_NW_CTR (as the remaining portion of 
+                        LTC_N_CTR) to be online.
                     </p>
 
                 </div>
