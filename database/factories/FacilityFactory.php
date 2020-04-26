@@ -3,6 +3,7 @@
 $factory->define(\App\Models\VisitTransfer\Facility::class, function ($faker) {
     return [
         'name' => $faker->name,
+        'training_team' => 'atc',
         'open' => true,
         'description' => $faker->paragraph,
     ];
