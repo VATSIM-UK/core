@@ -55,6 +55,10 @@
         },
         {
             "type": "vcs",
+            "url": "https://github.com/VATSIM-UK/laravel-slack-api/"
+        },
+        {
+            "type": "vcs",
             "url": "https://github.com/VATSIM-UK/VatsimSSO"
         },
         {
