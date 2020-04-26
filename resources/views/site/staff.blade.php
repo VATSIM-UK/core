@@ -205,6 +205,10 @@
                                     <td>Oliver Gates</td>
                                 </tr>
                                 <tr>
+                                    <td>TG Instructor (TG1)</td>
+                                    <td>Vacant</td>
+                                </tr>
+                                <tr>
                                     <td>TG Instructor (TG2)</td>
                                     <td>Lee Roberts</td>
                                 </tr>
@@ -228,13 +232,11 @@
                             <table class="table">
                                 <tr>
                                     <td>General Manager</td>
-                                    <td>Tom Sirett</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
-                                    <td>Administrative Manager<br/>
-                                        Initial Flight Instructor
-                                    </td>
-                                    <td>Vacant</td>
+                                    <td>Initial Flight Instructor</td>
+                                    <td>Matthew Wilson</td>
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
@@ -243,10 +245,6 @@
                                 <tr>
                                     <td>IFR Flight Instructor</td>
                                     <td>Freddie Charlesworth</td>
-                                </tr>
-                                <tr>
-                                    <td>Development Flight Instructor</td>
-                                    <td>Vacant</td>
                                 </tr>
                              </table>
 
