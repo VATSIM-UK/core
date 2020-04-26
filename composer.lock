@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1228c7fd7e0ad51a9bc5e1c16dabffbd",
+    "content-hash": "76a2850a8407b26975a1614902b6b197",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -657,16 +657,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/VATSIM-UK/vatsim-stand-status.git",
-                "reference": "4fda90d758cefd3599165466d41bffd4fcd01036"
+                "reference": "04502ef732bec8f506cd6f78963eef03d3ccbfe4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VATSIM-UK/vatsim-stand-status/zipball/4fda90d758cefd3599165466d41bffd4fcd01036",
-                "reference": "4fda90d758cefd3599165466d41bffd4fcd01036",
+                "url": "https://api.github.com/repos/VATSIM-UK/vatsim-stand-status/zipball/04502ef732bec8f506cd6f78963eef03d3ccbfe4",
+                "reference": "04502ef732bec8f506cd6f78963eef03d3ccbfe4",
                 "shasum": ""
             },
             "require": {
-                "skymeyer/vatsimphp": "dev-bump-monolog"
+                "skymeyer/vatsimphp": "dev-master"
             },
             "type": "library",
             "autoload": {
@@ -695,7 +695,7 @@
             "support": {
                 "source": "https://github.com/VATSIM-UK/vatsim-stand-status/tree/master"
             },
-            "time": "2020-04-26T16:04:28+00:00"
+            "time": "2020-04-26T20:32:56+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -4068,20 +4068,23 @@
         },
         {
             "name": "phpseclib/bcmath_compat",
-            "version": "1.0.4",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/bcmath_compat.git",
-                "reference": "f805922db4b3d8c1e174dafb74ac7374264e8880"
+                "reference": "89cbb63742a32730b7187773a60b6b12b9db4479"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/bcmath_compat/zipball/f805922db4b3d8c1e174dafb74ac7374264e8880",
-                "reference": "f805922db4b3d8c1e174dafb74ac7374264e8880",
+                "url": "https://api.github.com/repos/phpseclib/bcmath_compat/zipball/89cbb63742a32730b7187773a60b6b12b9db4479",
+                "reference": "89cbb63742a32730b7187773a60b6b12b9db4479",
                 "shasum": ""
             },
             "require": {
                 "phpseclib/phpseclib": ">=2.0.19"
+            },
+            "provide": {
+                "ext-bcmath": "7.3.5"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.8.35|^5.7|^6.0",
@@ -4118,7 +4121,7 @@
                 "math",
                 "polyfill"
             ],
-            "time": "2020-01-10T11:44:43+00:00"
+            "time": "2020-04-26T16:34:33+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -5062,16 +5065,16 @@
         },
         {
             "name": "skymeyer/vatsimphp",
-            "version": "dev-bump-monolog",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/VATSIM-UK/Vatsimphp.git",
-                "reference": "5a3a179617ef2a9af18ff53caea0b6b754b95d1e"
+                "url": "https://github.com/skymeyer/Vatsimphp.git",
+                "reference": "6048432267f3e413702e663492e86cc692cb148b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VATSIM-UK/Vatsimphp/zipball/5a3a179617ef2a9af18ff53caea0b6b754b95d1e",
-                "reference": "5a3a179617ef2a9af18ff53caea0b6b754b95d1e",
+                "url": "https://api.github.com/repos/skymeyer/Vatsimphp/zipball/6048432267f3e413702e663492e86cc692cb148b",
+                "reference": "6048432267f3e413702e663492e86cc692cb148b",
                 "shasum": ""
             },
             "require": {
@@ -5093,6 +5096,7 @@
                     "Vatsimphp\\": "src/Vatsimphp"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache-2.0"
             ],
@@ -5111,10 +5115,7 @@
                 "vatsim",
                 "virtual air traffic"
             ],
-            "support": {
-                "source": "https://github.com/VATSIM-UK/Vatsimphp/tree/bump-monolog"
-            },
-            "time": "2020-04-26T15:43:11+00:00"
+            "time": "2020-04-26T19:46:29+00:00"
         },
         {
             "name": "spatie/laravel-cookie-consent",
