@@ -68,6 +68,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/VATSIM-UK/public-id"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/VATSIM-UK/Vatsimphp"
         }
     ],
     "require": {
@@ -90,6 +94,7 @@
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~4.0",
         "sixlive/nova-text-copy-field": "^1.5",
+        "skymeyer/vatsimphp": "dev-bump-monolog",
         "spatie/laravel-cookie-consent": "^2.4",
         "spatie/laravel-permission": "^3.0",
         "symfony/translation": "^5.0",
