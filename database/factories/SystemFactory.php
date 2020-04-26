@@ -9,7 +9,7 @@ $factory->define(App\Models\Sys\Notification::class, function ($faker) {
     ];
 });
 
-$factory->defineAs(App\Models\Sys\Notification::class, 'must_read', function ($faker) use ($factory) {
+$factory->state(App\Models\Sys\Notification::class, 'must_read', function ($faker) use ($factory) {
     $raw = $factory->raw(App\Models\Sys\Notification::class);
 
     return array_merge($raw, [
@@ -18,7 +18,7 @@ $factory->defineAs(App\Models\Sys\Notification::class, 'must_read', function ($f
     ]);
 });
 
-$factory->defineAs(App\Models\Sys\Notification::class, 'important', function ($faker) use ($factory) {
+$factory->state(App\Models\Sys\Notification::class, 'important', function ($faker) use ($factory) {
     $raw = $factory->raw(App\Models\Sys\Notification::class);
 
     return array_merge($raw, [

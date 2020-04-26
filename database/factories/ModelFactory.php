@@ -12,7 +12,7 @@ $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $fak
     ];
 });
 
-$factory->defineAs(App\Models\Mship\Account::class, 'withQualification', function (Faker\Generator $faker) {
+$factory->state(App\Models\Mship\Account::class, 'withQualification', function (Faker\Generator $faker) {
     $id = rand(10000000, 99999999);
     $qual = factory(Qualification::class)->create();
     // Assoc qualification to account
@@ -51,7 +51,7 @@ $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generato
     ];
 });
 
-$factory->defineAs(App\Models\Mship\Qualification::class, 'atc', function (Faker\Generator $faker) use ($factory) {
+$factory->state(App\Models\Mship\Qualification::class, 'atc', function (Faker\Generator $faker) use ($factory) {
     $atc = $factory->raw(App\Models\Mship\Qualification::class);
 
     return array_merge($atc, [
@@ -60,7 +60,7 @@ $factory->defineAs(App\Models\Mship\Qualification::class, 'atc', function (Faker
     ]);
 });
 
-$factory->defineAs(App\Models\Mship\Qualification::class, 'pilot', function (Faker\Generator $faker) use ($factory) {
+$factory->state(App\Models\Mship\Qualification::class, 'pilot', function (Faker\Generator $faker) use ($factory) {
     $atc = $factory->raw(App\Models\Mship\Qualification::class);
 
     return array_merge($atc, [
