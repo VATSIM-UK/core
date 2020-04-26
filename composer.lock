@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2721c09c16274d8105a053ac30ff426d",
+    "content-hash": "1228c7fd7e0ad51a9bc5e1c16dabffbd",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -650,6 +650,52 @@
                 "time"
             ],
             "time": "2020-04-21T14:14:05+00:00"
+        },
+        {
+            "name": "cobaltgrid/vatsim-stand-status",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/VATSIM-UK/vatsim-stand-status.git",
+                "reference": "4fda90d758cefd3599165466d41bffd4fcd01036"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/VATSIM-UK/vatsim-stand-status/zipball/4fda90d758cefd3599165466d41bffd4fcd01036",
+                "reference": "4fda90d758cefd3599165466d41bffd4fcd01036",
+                "shasum": ""
+            },
+            "require": {
+                "skymeyer/vatsimphp": "dev-bump-monolog"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CobaltGrid\\VatsimStandStatus\\": "src/"
+                }
+            },
+            "license": [
+                "AGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Toff",
+                    "email": "admin@cobaltgrid.com",
+                    "homepage": "https://www.cobaltgrid.com"
+                }
+            ],
+            "description": "A PHP library to access the status of aircraft stands on VATSIM",
+            "homepage": "https://github.com/atoff/vatsim-stand-status",
+            "keywords": [
+                "flight simulator",
+                "stand",
+                "stands",
+                "vatsim"
+            ],
+            "support": {
+                "source": "https://github.com/VATSIM-UK/vatsim-stand-status/tree/master"
+            },
+            "time": "2020-04-26T16:04:28+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -9641,6 +9687,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "alawrence/laravel-ipboard": 20,
+        "cobaltgrid/vatsim-stand-status": 20,
         "malahierba-lab/public-id": 20,
         "skymeyer/vatsimphp": 20,
         "vatsim/sso": 20,
