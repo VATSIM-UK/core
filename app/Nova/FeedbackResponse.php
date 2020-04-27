@@ -3,8 +3,11 @@
 namespace App\Nova;
 
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Sixlive\TextCopy\TextCopy;
 
 class FeedbackResponse extends Resource
@@ -22,14 +25,6 @@ class FeedbackResponse extends Resource
      * @var int
      */
     public static $perPageViaRelationship = 10;
-
-    /**
-     * Indicates if the resource should be displayed in the sidebar.
-     *
-     * @var bool
-     */
-    public static $displayInNavigation = false;
-
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
@@ -71,10 +66,26 @@ class FeedbackResponse extends Resource
         return false;
     }
 
+    public function authorizedToView(Request $request)
+    {
+        return false;
+    }
+
+    /**
+     * Remove from navigation as only a background resource.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function fields(Request $request)
@@ -93,7 +104,7 @@ class FeedbackResponse extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function cards(Request $request)
@@ -104,7 +115,7 @@ class FeedbackResponse extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function filters(Request $request)
@@ -115,7 +126,7 @@ class FeedbackResponse extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function lenses(Request $request)
@@ -126,7 +137,7 @@ class FeedbackResponse extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function actions(Request $request)

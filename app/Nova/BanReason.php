@@ -30,11 +30,15 @@ class BanReason extends Resource
     public static $search = [];
 
     /**
-     * Indicates if the resource should be displayed in the sidebar.
+     * Removes BanReason from navigation bar.
      *
-     * @var bool
+     * @param Request $request
+     * @return bool
      */
-    public static $displayInNavigation = false;
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
 
     /**
      * Get the fields displayed by the resource.

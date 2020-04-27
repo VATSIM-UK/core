@@ -31,12 +31,10 @@ class Bid extends Resource
         'id',
     ];
 
-    /**
-     * Indicates if the resource should be displayed in the sidebar.
-     *
-     * @var bool
-     */
-    public static $displayInNavigation = false;
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
 
     /**
      * Get the fields displayed by the resource.
