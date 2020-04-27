@@ -100,28 +100,29 @@ class ProcessNetworkData extends Command
             try {
                 $account = Account::findOrRetrieve($controllerData['cid']);
             } catch (InvalidCIDException $e) {
-                $this->info('Invalid CID: '.$controllerData['cid'], 'vvv');
+                $this->info('Invalid CID: ' . $controllerData['cid'], 'vvv');
                 DB::commit();
                 continue;
             }
 
             if (!$account) {
-                $this->info('Unable to find or retrieve CID: '.$controllerData['cid'], 'vvv');
+                $this->info('Unable to find or retrieve CID: ' . $controllerData['cid'], 'vvv');
                 continue;
             }
 
             $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
             $atc = Atc::updateOrCreate(
                 [
-                    'account_id' => $account->id,
-                    'callsign' => $controllerData['callsign'],
-                    'frequency' => $controllerData['frequency'],
+                    'account_id'       => $account->id,
+                    'callsign'         => $controllerData['callsign'],
+                    'frequency'        => $controllerData['frequency'],
                     'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
-                    'facility_type' => $controllerData['facilitytype'],
-                    'connected_at' => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
-                    'disconnected_at' => null,
-                    'deleted_at' => null,
-                ], [
+                    'facility_type'    => $controllerData['facilitytype'],
+                    'connected_at'     => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
+                    'disconnected_at'  => null,
+                    'deleted_at'       => null,
+                ],
+                [
                     'updated_at' => Carbon::now(),
                 ]
             );
@@ -164,40 +165,40 @@ class ProcessNetworkData extends Command
             try {
                 $account = Account::findOrRetrieve($pilotData['cid']);
             } catch (InvalidCIDException $e) {
-                $this->info('Invalid CID: '.$pilotData['cid'], 'vvv');
+                $this->info('Invalid CID: ' . $pilotData['cid'], 'vvv');
                 DB::commit();
                 continue;
             }
 
             if (!$account) {
-                $this->info('Unable to find or retrieve CID: '.$pilotData['cid'], 'vvv');
+                $this->info('Unable to find or retrieve CID: ' . $pilotData['cid'], 'vvv');
                 continue;
             }
 
             $flight = Pilot::firstOrNew([
-                'account_id' => $account->id,
-                'callsign' => $pilotData['callsign'],
-                'flight_type' => $pilotData['planned_flighttype'],
+                'account_id'        => $account->id,
+                'callsign'          => $pilotData['callsign'],
+                'flight_type'       => $pilotData['planned_flighttype'],
                 'departure_airport' => $pilotData['planned_depairport'],
-                'arrival_airport' => $pilotData['planned_destairport'],
-                'connected_at' => Carbon::createFromFormat('YmdHis', $pilotData['time_logon']),
-                'disconnected_at' => null,
+                'arrival_airport'   => $pilotData['planned_destairport'],
+                'connected_at'      => Carbon::createFromFormat('YmdHis', $pilotData['time_logon']),
+                'disconnected_at'   => null,
             ]);
 
             $flight->fill([
                 'alternative_airport' => $pilotData['planned_altairport'],
-                'aircraft' => $pilotData['planned_aircraft'],
-                'cruise_altitude' => $pilotData['planned_altitude'],
-                'cruise_tas' => $pilotData['planned_tascruise'],
-                'route' => $pilotData['planned_route'],
-                'remarks' => $pilotData['planned_remarks'],
+                'aircraft'            => $pilotData['planned_aircraft'],
+                'cruise_altitude'     => $pilotData['planned_altitude'],
+                'cruise_tas'          => $pilotData['planned_tascruise'],
+                'route'               => $pilotData['planned_route'],
+                'remarks'             => $pilotData['planned_remarks'],
             ]);
 
             if ($pilotData['latitude'] > 90 || $pilotData['latitude'] < -90) {
-                $pilotData['latitude'] =  null;
+                $pilotData['latitude'] = null;
             }
             if ($pilotData['longitude'] > 180 || $pilotData['longitude'] < -180) {
-                $pilotData['longitude'] =  null;
+                $pilotData['longitude'] = null;
             }
 
             if ($flight->exists) {
@@ -272,7 +273,7 @@ class ProcessNetworkData extends Command
      */
     private function getAirport(string $ident)
     {
-        return Cache::remember('airport_'.$ident, 720 * 60, function () use ($ident) {
+        return Cache::remember('airport_' . $ident, 720 * 60, function () use ($ident) {
             return Airport::where('icao', $ident)->first();
         });
     }

@@ -6,7 +6,7 @@ $factory->define(\App\Models\VisitTransfer\Application::class, function ($faker)
     ];
 });
 
-$factory->defineAs(\App\Models\VisitTransfer\Application::class, 'atc_visit', function ($faker) use ($factory) {
+$factory->state(\App\Models\VisitTransfer\Application::class, 'atc_visit', function ($faker) use ($factory) {
     $application = $factory->raw(\App\Models\VisitTransfer\Application::class);
 
     return array_merge($application, [
@@ -15,7 +15,7 @@ $factory->defineAs(\App\Models\VisitTransfer\Application::class, 'atc_visit', fu
     ]);
 });
 
-$factory->defineAs(\App\Models\VisitTransfer\Application::class, 'atc_transfer', function ($faker) use ($factory) {
+$factory->state(\App\Models\VisitTransfer\Application::class, 'atc_transfer', function ($faker) use ($factory) {
     $application = $factory->raw(\App\Models\VisitTransfer\Application::class);
 
     return array_merge($application, [
@@ -24,7 +24,7 @@ $factory->defineAs(\App\Models\VisitTransfer\Application::class, 'atc_transfer',
     ]);
 });
 
-$factory->defineAs(\App\Models\VisitTransfer\Application::class, 'pilot_visit', function ($faker) use ($factory) {
+$factory->state(\App\Models\VisitTransfer\Application::class, 'pilot_visit', function ($faker) use ($factory) {
     $application = $factory->raw(\App\Models\VisitTransfer\Application::class);
 
     return array_merge($application, [
