@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "76a2850a8407b26975a1614902b6b197",
+    "content-hash": "6cd448adc33fe6a3e8e5c988388a78b0",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -657,16 +657,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/VATSIM-UK/vatsim-stand-status.git",
-                "reference": "04502ef732bec8f506cd6f78963eef03d3ccbfe4"
+                "reference": "68294104c5c27db040776a3e0b83d528a42b903f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VATSIM-UK/vatsim-stand-status/zipball/04502ef732bec8f506cd6f78963eef03d3ccbfe4",
-                "reference": "04502ef732bec8f506cd6f78963eef03d3ccbfe4",
+                "url": "https://api.github.com/repos/VATSIM-UK/vatsim-stand-status/zipball/68294104c5c27db040776a3e0b83d528a42b903f",
+                "reference": "68294104c5c27db040776a3e0b83d528a42b903f",
                 "shasum": ""
             },
             "require": {
-                "skymeyer/vatsimphp": "dev-master"
+                "skymeyer/vatsimphp": "^2.0"
             },
             "type": "library",
             "autoload": {
@@ -695,7 +695,7 @@
             "support": {
                 "source": "https://github.com/VATSIM-UK/vatsim-stand-status/tree/master"
             },
-            "time": "2020-04-26T20:32:56+00:00"
+            "time": "2020-04-27T12:40:24+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -3920,16 +3920,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.11.0",
+            "version": "1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "c2a205e82f9cf1cc9fab86b79e808d86dd680470"
+                "reference": "f79611d6dc1f6b7e8e30b738fc371b392001dbfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/c2a205e82f9cf1cc9fab86b79e808d86dd680470",
-                "reference": "c2a205e82f9cf1cc9fab86b79e808d86dd680470",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/f79611d6dc1f6b7e8e30b738fc371b392001dbfd",
+                "reference": "f79611d6dc1f6b7e8e30b738fc371b392001dbfd",
                 "shasum": ""
             },
             "require": {
@@ -4009,7 +4009,7 @@
                 "xls",
                 "xlsx"
             ],
-            "time": "2020-03-02T13:09:03+00:00"
+            "time": "2020-04-27T08:12:48+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -5065,22 +5065,22 @@
         },
         {
             "name": "skymeyer/vatsimphp",
-            "version": "dev-master",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/skymeyer/Vatsimphp.git",
-                "reference": "6048432267f3e413702e663492e86cc692cb148b"
+                "reference": "0fec03cce27f0d0d951f63a6b926e401fe3c4896"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/skymeyer/Vatsimphp/zipball/6048432267f3e413702e663492e86cc692cb148b",
-                "reference": "6048432267f3e413702e663492e86cc692cb148b",
+                "url": "https://api.github.com/repos/skymeyer/Vatsimphp/zipball/0fec03cce27f0d0d951f63a6b926e401fe3c4896",
+                "reference": "0fec03cce27f0d0d951f63a6b926e401fe3c4896",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "monolog/monolog": "^2.0",
-                "php": ">=7.1"
+                "php": ">=7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.4"
@@ -5115,20 +5115,20 @@
                 "vatsim",
                 "virtual air traffic"
             ],
-            "time": "2020-04-26T19:46:29+00:00"
+            "time": "2020-04-26T23:12:53+00:00"
         },
         {
             "name": "spatie/laravel-cookie-consent",
-            "version": "2.12.2",
+            "version": "2.12.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-cookie-consent.git",
-                "reference": "38dc70f7c53290f03fbb2bd4b0da292b7293b977"
+                "reference": "1b31394ecd79cd090a1aa7826931bd18d7a0a66c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-cookie-consent/zipball/38dc70f7c53290f03fbb2bd4b0da292b7293b977",
-                "reference": "38dc70f7c53290f03fbb2bd4b0da292b7293b977",
+                "url": "https://api.github.com/repos/spatie/laravel-cookie-consent/zipball/1b31394ecd79cd090a1aa7826931bd18d7a0a66c",
+                "reference": "1b31394ecd79cd090a1aa7826931bd18d7a0a66c",
                 "shasum": ""
             },
             "require": {
@@ -5182,7 +5182,7 @@
                 "law",
                 "spatie"
             ],
-            "time": "2020-04-16T17:49:57+00:00"
+            "time": "2020-04-27T07:22:06+00:00"
         },
         {
             "name": "spatie/laravel-permission",
@@ -7941,16 +7941,16 @@
         },
         {
             "name": "laravel/homestead",
-            "version": "v10.7.0",
+            "version": "v10.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/homestead.git",
-                "reference": "73713c09c40da30f9258c3c656441654ec8e47e6"
+                "reference": "4e4b5b92d8192ccdbdeac826be88a9bfdfde99d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/homestead/zipball/73713c09c40da30f9258c3c656441654ec8e47e6",
-                "reference": "73713c09c40da30f9258c3c656441654ec8e47e6",
+                "url": "https://api.github.com/repos/laravel/homestead/zipball/4e4b5b92d8192ccdbdeac826be88a9bfdfde99d0",
+                "reference": "4e4b5b92d8192ccdbdeac826be88a9bfdfde99d0",
                 "shasum": ""
             },
             "require": {
@@ -7982,7 +7982,7 @@
                 }
             ],
             "description": "A virtual machine for web artisans.",
-            "time": "2020-03-26T14:32:10+00:00"
+            "time": "2020-04-26T23:51:08+00:00"
         },
         {
             "name": "laravel/telescope",
@@ -8264,23 +8264,20 @@
         },
         {
             "name": "phpdocumentor/reflection-common",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionCommon.git",
-                "reference": "63a995caa1ca9e5590304cd845c15ad6d482a62a"
+                "reference": "6568f4687e5b41b054365f9ae03fcb1ed5f2069b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/63a995caa1ca9e5590304cd845c15ad6d482a62a",
-                "reference": "63a995caa1ca9e5590304cd845c15ad6d482a62a",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/6568f4687e5b41b054365f9ae03fcb1ed5f2069b",
+                "reference": "6568f4687e5b41b054365f9ae03fcb1ed5f2069b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~6"
             },
             "type": "library",
             "extra": {
@@ -8312,7 +8309,7 @@
                 "reflection",
                 "static analysis"
             ],
-            "time": "2018-08-07T13:53:10+00:00"
+            "time": "2020-04-27T09:25:28+00:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -9690,7 +9687,6 @@
         "alawrence/laravel-ipboard": 20,
         "cobaltgrid/vatsim-stand-status": 20,
         "malahierba-lab/public-id": 20,
-        "skymeyer/vatsimphp": 20,
         "vatsim/sso": 20,
         "vatsim/xml": 20,
         "vluzrmos/slack-api": 20,
