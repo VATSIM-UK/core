@@ -11,7 +11,7 @@
     ],
     "require": {
         "benjaminhirsch/nova-slug-field": "^1.2",
-        "laravel/nova": "^3.0",
+        "laravel/nova": "3.4.0",
         "sixlive/nova-text-copy-field": "^1.5",
         "vatsimuk/waiting-lists-manager": "@dev",
         "vyuldashev/nova-permission": "^2.4"
