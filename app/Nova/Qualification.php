@@ -24,10 +24,12 @@ class Qualification extends Resource
      */
     public static $title = 'code';
 
-    public static function availableForNavigation(Request $request)
-    {
-        return false;
-    }
+    /**
+     * Indicates if the resource should be displayed in the sidebar.
+     *
+     * @var bool
+     */
+    public static $displayInNavigation = false;
 
     public static function authorizable()
     {

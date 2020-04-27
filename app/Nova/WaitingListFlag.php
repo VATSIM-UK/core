@@ -43,12 +43,14 @@ class WaitingListFlag extends Resource
         'id',
     ];
 
-    public static function authorizedToCreate(Request $request)
-    {
-        return false;
-    }
+    /**
+     * Indicates if the resource should be displayed in the sidebar.
+     *
+     * @var bool
+     */
+    public static $displayInNavigation = false;
 
-    public static function availableForNavigation(Request $request)
+    public static function authorizedToCreate(Request $request)
     {
         return false;
     }
