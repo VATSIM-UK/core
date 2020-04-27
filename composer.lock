@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6cd448adc33fe6a3e8e5c988388a78b0",
+    "content-hash": "3eab05286ee825e21b31c9bd3368a587",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -653,16 +653,16 @@
         },
         {
             "name": "cobaltgrid/vatsim-stand-status",
-            "version": "dev-master",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/VATSIM-UK/vatsim-stand-status.git",
-                "reference": "68294104c5c27db040776a3e0b83d528a42b903f"
+                "url": "https://github.com/atoff/vatsim-stand-status.git",
+                "reference": "790940cf96fd49846f67e8a601d3bc653e0c3454"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VATSIM-UK/vatsim-stand-status/zipball/68294104c5c27db040776a3e0b83d528a42b903f",
-                "reference": "68294104c5c27db040776a3e0b83d528a42b903f",
+                "url": "https://api.github.com/repos/atoff/vatsim-stand-status/zipball/790940cf96fd49846f67e8a601d3bc653e0c3454",
+                "reference": "790940cf96fd49846f67e8a601d3bc653e0c3454",
                 "shasum": ""
             },
             "require": {
@@ -674,6 +674,7 @@
                     "CobaltGrid\\VatsimStandStatus\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "AGPL-3.0-or-later"
             ],
@@ -692,10 +693,7 @@
                 "stands",
                 "vatsim"
             ],
-            "support": {
-                "source": "https://github.com/VATSIM-UK/vatsim-stand-status/tree/master"
-            },
-            "time": "2020-04-27T12:40:24+00:00"
+            "time": "2020-04-27T12:57:35+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -9685,7 +9683,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "alawrence/laravel-ipboard": 20,
-        "cobaltgrid/vatsim-stand-status": 20,
         "malahierba-lab/public-id": 20,
         "vatsim/sso": 20,
         "vatsim/xml": 20,
