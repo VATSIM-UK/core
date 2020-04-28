@@ -116,7 +116,7 @@
                     <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Web Services
                     </div>
                     <div class="panel-body">
-                        <h4>Web Services Director (VATUK8)</h4><br/>
+                        <h4 class="text-center">Web Services Director (VATUK8)</h4><br/>
                         <img src="{{ $teamPhotos[5125] }}"
                              class="img-responsive center-block profile-picture"/>
                         <p class="text-center">Calum Tοwers</p>
@@ -159,7 +159,7 @@
                     <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Training
                     </div>
                     <div class="panel-body">
-                        <h4>Training Director (VATUK5)</h4><br/>
+                        <h4 class="text-center">Training Director (VATUK5)</h4><br/>
                         <img src="{{ $teamPhotos[6286] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
@@ -264,7 +264,7 @@
                             <tbody>
                                 <tr>
                                     <td>Division Conflict Resolution Manager</td>
-                                    <td>Sean Readman</td>
+                                    <td>Sean Reedman</td>
                                 </tr>
                                 <tr>
                                     <td>Data Protection Officer</td>
