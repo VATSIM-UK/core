@@ -121,6 +121,17 @@ Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middlew
     Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
 });
 
+// Discord
+Route::group([
+    'as' => 'discord.',
+    'prefix' => 'discord',
+    'namespace' => 'Discord',
+    'middleware' => 'auth_full_group'
+], function () {
+    Route::get('/')->uses('Registration@create')->name('create');
+    Route::get('/store')->uses('Registration@store')->name('store');
+});
+
 // UKCP
 Route::group([
     'as'         => 'ukcp.',

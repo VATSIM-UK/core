@@ -43,6 +43,7 @@ use Watson\Rememberable\Rememberable;
  *
  * @property int $id
  * @property string|null $slack_id
+ * @property string|null $discord_id
  * @property string $name_first
  * @property string $name_last
  * @property string|null $nickname

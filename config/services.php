@@ -39,6 +39,12 @@ return [
         'token' => env('SLACK_SECRET'),
     ],
 
+    'discord' => [
+        'client_id' => env('DISCORD_CLIENT'),
+        'client_secret' => env('DISCORD_SECRET'),
+        'redirect_uri' => env('DISCORD_REDIRECT_URI'),
+    ],
+
     'google' => [
         'maps' => [
             'jsapi' => env('MAPS_API_KEY', ''),
