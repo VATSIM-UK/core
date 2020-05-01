@@ -33,7 +33,7 @@ class DiscordTest extends TestCase
         $queryString = collect(explode('&', $redirectUrl[1]));
 
         $parameters = $queryString->mapWithKeys(function ($item) {
-           return [explode('=', $item)[0] => explode('=', $item)[1]];
+            return [explode('=', $item)[0] => explode('=', $item)[1]];
         });
 
         $this->assertArrayHasKey('scope', $parameters);
