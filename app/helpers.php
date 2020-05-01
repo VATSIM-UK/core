@@ -179,7 +179,7 @@ function minutesToHours($minutes)
 
 function is_local_environment()
 {
-    return config('app.local') == 'true';
+    return env('APP_IS_LOCAL') == 'true';
 }
 
 function currentUserHasAuth()
@@ -189,10 +189,10 @@ function currentUserHasAuth()
 
 function appUrl()
 {
-    $appUrl = config('app.url');
+    $appUrl = env('APP_URL', 'http://localhost');
 
-    if (config('app.heroku_name') != null) {
-        $appUrl = 'http://' . config('app.heroku_name') . '.herokuapp.com';
+    if (env('HEROKU_APP_NAME') != null) {
+        $appUrl = 'http://' . env('HEROKU_APP_NAME') . '.herokuapp.com';
     }
 
     return $appUrl;
