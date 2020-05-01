@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         if ($this->app->runningInConsole()) {
-            URL::forceRootUrl(env('APP_PROTOCOL', 'https') . '://' . Config::get('app.url'));
+            URL::forceRootUrl(config('app.protocol') . '://' . Config::get('app.url'));
         }
 
         $this->registerBugsnagCallback();

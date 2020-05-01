@@ -41,7 +41,7 @@ class Mailgun extends WebhookController
     private function verifyMailgun(Request $request)
     {
         $data = $request->input('timestamp').$request->input('token');
-        $signature = hash_hmac('sha256', $data, env('MAILGUN_SECRET'));
+        $signature = hash_hmac('sha256', $data, config('services.mailgun.secret'));
 
         return $signature === $request->input('signature');
     }
