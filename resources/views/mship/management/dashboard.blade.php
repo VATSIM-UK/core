@@ -299,7 +299,7 @@
                 </div>
             </div>
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-slack"></i>
+                <div class="panel-heading"><i class="fab fa-slack"></i>
                     Slack Registration
                     <div class="pull-right">
                         @if(!$_account->slack_id)
