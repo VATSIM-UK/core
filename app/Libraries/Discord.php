@@ -32,11 +32,7 @@ class Discord
             'Authorization' => "Bot {$this->token}"
         ])->put($this->baseUrl . "/guilds/{$this->guildId}/members/{$account->discord_id}/roles/{$roleId}");
 
-        if ($response->status() > 300) {
-            return false;
-        }
-
-        return true;
+        return $this->result($response);
     }
 
     public function removeRole(Account $account, string $role)

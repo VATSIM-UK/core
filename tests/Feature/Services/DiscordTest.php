@@ -64,12 +64,6 @@ class DiscordTest extends TestCase
     }
 
     /** @test */
-    public function testItSavesADiscordId()
-    {
-        $this->markTestSkipped('Not yet tested.');
-    }
-
-    /** @test */
     public function testItRedirectsWhenCodeMissing()
     {
         $emptyString = $this->actingAs($this->user)
@@ -87,23 +81,8 @@ class DiscordTest extends TestCase
                 'code' => null
             ]));
 
-        $emptyString->assertRedirect(route('discord.show'))
-            ->assertSee('Error');
-        $missingCode->assertRedirect(route('discord.show'))
-            ->assertSee('Error');
-        $nullCode->assertRedirect(route('discord.show'))
-            ->assertSee('Error');
-    }
-
-    /** @test */
-    public function testItRequiresTheIdentifyScope()
-    {
-        $this->markTestSkipped('Not yet tested.');
-    }
-
-    /** @test */
-    public function testItDoesNotAllowDuplicateDiscordIds()
-    {
-        $this->markTestSkipped('Not yet tested.');
+        $emptyString->assertRedirect(route('discord.show'));
+        $missingCode->assertRedirect(route('discord.show'));
+        $nullCode->assertRedirect(route('discord.show'));
     }
 }
