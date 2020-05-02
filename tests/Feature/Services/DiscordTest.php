@@ -33,7 +33,7 @@ class DiscordTest extends TestCase
         $queryString = collect(explode('&', $redirectUrl[1]));
 
         $parameters = $queryString->mapWithKeys(function ($item) {
-           return [explode('=', $item)[0] => explode('=', $item)[1]];
+            return [explode('=', $item)[0] => explode('=', $item)[1]];
         });
 
         $this->assertArrayHasKey('scope', $parameters);
@@ -44,13 +44,36 @@ class DiscordTest extends TestCase
         $this->assertArrayHasKey('client_id', $parameters);
 
         $expected = [
-          "scope" => "identify",
-          "response_type" => "code",
-          "approval_prompt" => "auto",
-          "redirect_uri" => urlencode(config('services.discord.redirect_uri')),
-          'client_id' => config('services.discord.client_id')
+            "scope"           => "identify",
+            "response_type"   => "code",
+            "approval_prompt" => "auto",
+            "redirect_uri"    => urlencode(config('services.discord.redirect_uri')),
+            'client_id'       => config('services.discord.client_id')
         ];
 
         $this->assertEquals($parameters->except('state')->toArray(), $expected);
+    }
+
+    /** @test */
+    public function testItRedirectsWhenCodeMissing()
+    {
+        $emptyString = $this->actingAs($this->user)
+            ->get(route('discord.store', [
+                'code' => ''
+            ]));
+
+        $missingCode = $this->actingAs($this->user)
+            ->get(route('discord.store', [
+                //
+            ]));
+
+        $nullCode = $this->actingAs($this->user)
+            ->get(route('discord.store', [
+                'code' => null
+            ]));
+
+        $emptyString->assertRedirect(route('mship.manage.dashboard'));
+        $missingCode->assertRedirect(route('mship.manage.dashboard'));
+        $nullCode->assertRedirect(route('mship.manage.dashboard'));
     }
 }
