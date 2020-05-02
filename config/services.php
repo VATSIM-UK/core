@@ -40,7 +40,7 @@ return [
     ],
 
     'discord' => [
-        'invite' => env('DISCORD_INVITE'),
+        'invite_url' => env('DISCORD_INVITE_URL'),
         'client_id' => env('DISCORD_CLIENT'),
         'client_secret' => env('DISCORD_SECRET'),
         'redirect_uri' => env('DISCORD_REDIRECT_URI'),
