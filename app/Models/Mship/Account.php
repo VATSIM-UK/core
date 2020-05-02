@@ -43,7 +43,7 @@ use Watson\Rememberable\Rememberable;
  *
  * @property int $id
  * @property string|null $slack_id
- * @property string|null $discord_id
+ * @property int|null $discord_id
  * @property string $name_first
  * @property string $name_last
  * @property string|null $nickname
@@ -205,7 +205,10 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     ];
     protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
-    protected $casts = ['inactive' => 'boolean'];
+    protected $casts = [
+        'inactive' => 'boolean',
+        'discord_id' => 'int'
+    ];
 
     public function routeNotificationForSlack()
     {

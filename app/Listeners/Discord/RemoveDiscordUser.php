@@ -3,17 +3,12 @@
 namespace App\Listeners\Discord;
 
 use App\Events\Discord\DiscordUnlinked;
+use App\Exceptions\Discord\InvalidDiscordRemovalException;
+use App\Libraries\Discord;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class RemoveDiscordUser implements ShouldQueue
 {
-    /**
-     * The name of the connection the job should be sent to.
-     *
-     * @var string|null
-     */
-    public $connection = 'sync';
-
     /**
      * Handle the event.
      *
@@ -23,14 +18,15 @@ class RemoveDiscordUser implements ShouldQueue
     public function handle(DiscordUnlinked $event)
     {
         $account = $event->account;
+        $discord = new Discord();
 
-        // Get Discord User
-        $account->discord_id;
+        $role = $discord->removeRole($account, 'Member');
+        $kick = $discord->kick($account);
 
-        // Kick the Discord user
-        //
+        if (!$role && !$kick) {
+            throw new InvalidDiscordRemovalException($account);
+        }
 
-        // Update their Discord id
         $account->discord_id = null;
         $account->save();
     }

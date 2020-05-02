@@ -56,11 +56,7 @@ class Registration extends BaseController
             return $this->error('This Discord account is already linked to a VATSIM UK account. Please contact Web Services.');
         }
 
-        $user = $request->user();
-        $user->discord_id = $discordUser->getId();
-        $user->save();
-
-        event(new DiscordLinked($request->user()));
+         event(new DiscordLinked($request->user(), $discordUser->getId()));
 
         return redirect()->route('mship.manage.dashboard')->withSuccess('Your Discord account has been linked and you will be able to access our Discord server shortly.');
     }

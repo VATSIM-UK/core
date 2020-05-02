@@ -13,8 +13,12 @@ class DiscordLinked extends Event
     /* @var Account */
     public $account;
 
-    public function __construct(Account $account)
+    /* @var int */
+    public $discordId;
+
+    public function __construct(Account $account, int $discordId)
     {
         $this->account = $account;
+        $this->discordId = $discordId;
     }
 }

@@ -41,6 +41,8 @@ return [
 
     'discord' => [
         'invite_url' => env('DISCORD_INVITE_URL'),
+        'guild_id' => env('DISCORD_GUILD_ID'),
+        'token' => env('DISCORD_TOKEN'),
         'client_id' => env('DISCORD_CLIENT'),
         'client_secret' => env('DISCORD_SECRET'),
         'redirect_uri' => env('DISCORD_REDIRECT_URI'),
