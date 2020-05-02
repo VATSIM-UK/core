@@ -15,13 +15,9 @@ class Registration extends BaseController
      */
     private $provider;
 
-    protected function initProvider()
+    public function show()
     {
-        $this->provider = new Discord([
-            'clientId'     => config('services.discord.client_id'),
-            'clientSecret' => config('services.discord.client_secret'),
-            'redirectUri'  => config('services.discord.redirect_uri'),
-        ]);
+        return $this->viewMake('discord.new');
     }
 
     public function create(Request $request)
@@ -68,5 +64,14 @@ class Registration extends BaseController
     protected function error(string $message)
     {
         return redirect()->route('mship.manage.dashboard')->withError($message);
+    }
+
+    protected function initProvider()
+    {
+        $this->provider = new Discord([
+            'clientId'     => config('services.discord.client_id'),
+            'clientSecret' => config('services.discord.client_secret'),
+            'redirectUri'  => config('services.discord.redirect_uri'),
+        ]);
     }
 }

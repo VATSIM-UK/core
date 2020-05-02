@@ -128,7 +128,8 @@ Route::group([
     'namespace' => 'Discord',
     'middleware' => 'auth_full_group'
 ], function () {
-    Route::get('/')->uses('Registration@create')->name('create');
+    Route::get('/')->uses('Registration@show')->name('show');
+    Route::get('/create')->uses('Registration@create')->name('create');
     Route::get('/store')->uses('Registration@store')->name('store');
 });
 

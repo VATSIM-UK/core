@@ -8,6 +8,15 @@ use Tests\TestCase;
 class DiscordTest extends TestCase
 {
     /** @test */
+    public function testItShowsRegistrationPage()
+    {
+        $this->actingAs($this->user)
+            ->get(route('discord.show'))
+            ->assertSee('Discord Registration')
+            ->assertOk();
+    }
+
+    /** @test */
     public function testItRedirectsToOAuth()
     {
         $response = $this->actingAs($this->user)
@@ -57,7 +66,7 @@ class DiscordTest extends TestCase
     /** @test */
     public function testItSavesADiscordId()
     {
-        //
+        $this->markTestSkipped('Not yet tested.');
     }
 
     /** @test */
@@ -86,12 +95,12 @@ class DiscordTest extends TestCase
     /** @test */
     public function testItRequiresTheIdentifyScope()
     {
-        //
+        $this->markTestSkipped('Not yet tested.');
     }
 
     /** @test */
     public function testItDoesNotAllowDuplicateDiscordIds()
     {
-        //
+        $this->markTestSkipped('Not yet tested.');
     }
 }
