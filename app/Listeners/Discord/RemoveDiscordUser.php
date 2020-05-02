@@ -20,10 +20,9 @@ class RemoveDiscordUser implements ShouldQueue
         $account = $event->account;
         $discord = new Discord();
 
-        $role = $discord->removeRole($account, 'Member');
         $kick = $discord->kick($account);
 
-        if (!$role && !$kick) {
+        if (!$kick) {
             throw new InvalidDiscordRemovalException($account);
         }
 
