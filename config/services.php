@@ -40,6 +40,7 @@ return [
     ],
 
     'discord' => [
+        'invite' => env('DISCORD_INVITE'),
         'client_id' => env('DISCORD_CLIENT'),
         'client_secret' => env('DISCORD_SECRET'),
         'redirect_uri' => env('DISCORD_REDIRECT_URI'),
@@ -60,7 +61,7 @@ return [
         'private_token' => env('CHARTFOX_PRIVATE_TOKEN'),
         'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
     ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | VATSIM UK Hosted Services

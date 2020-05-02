@@ -36,7 +36,7 @@ class Registration extends BaseController
         $this->initProvider();
 
         if (empty($request->input('code'))) {
-            return redirect()->route('mship.manage.dashboard');
+            return $this->error('Something went wrong. Please try again.');
         }
 
         try {
@@ -50,7 +50,7 @@ class Registration extends BaseController
             return $this->error("We didn't get all of the permissions required, please try again.");
         }
 
-        if (Account::where('discord_id', $discordUser->getId())) {
+        if (Account::where('discord_id', $discordUser->getId())->get()->isNotEmpty()) {
             return $this->error('This Discord account is already linked to a VATSIM UK account. Please contact Web Services.');
         }
 
@@ -58,12 +58,24 @@ class Registration extends BaseController
         $user->discord_id = $discordUser->getId();
         $user->save();
 
-        return redirect()->route('mship.manage.dashboard')->withSuccess('Your Discord account has been linked.');
+        // fire event to upgrade user's permissions
+
+        return redirect()->route('mship.manage.dashboard')->withSuccess('Your Discord account has been linked and you will be able to access our Discord server shortly.');
+    }
+
+    public function destroy(Request $request)
+    {
+        $request->user()->discord_id = null;
+        $request->user()->save();
+
+        // fire event to trigger kicking from server
+
+        return redirect()->back()->withSuccess('Your Discord account has been unlinked.');
     }
 
     protected function error(string $message)
     {
-        return redirect()->route('mship.manage.dashboard')->withError($message);
+        return redirect()->route('discord.show')->withError($message);
     }
 
     protected function initProvider()

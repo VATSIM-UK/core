@@ -11,7 +11,9 @@
                     </div>
                     <div class="panel-body">
                         <p>
-                            Our community Discord server is the place to go to chat to other members of the UK Division and the wider network.<br />
+                            Our community Discord server is the place to go to chat to other members of the UK Division and the wider network.
+                        </p>
+                        <p>
                             Registration should take you less than 60 seconds!
                         </p>
                     </div>
@@ -23,59 +25,60 @@
         <div class="row">
 
             <div class="col-md-4 col-md-offset-2">
-                <div class="panel panel-uk-success">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-ok-circle"></i> &thinsp; I am a member of the
-                        UK division
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"> Step 1: Join our Discord Server
                     </div>
                     <div class="panel-body">
-                        <ol>
-                            <li>
-                                Send us a ticket using&nbsp;our <strong>Helpdesk</strong> <a
-                                    href="https://helpdesk.vatsim.uk/" rel="external nofollow">here</a>, letting us know
-                                what course you would like to enrol on.
-                            </li>
-                            <li>
-                                You will receive&nbsp;a response within <strong>72 hours</strong>.
-                            </li>
-                            <li>
-                                You will either be added to the waiting list or you will be informed that your mentoring
-                                permissions have been assigned.
-                            </li>
-                            <li>
-                                Once your mentoring permissions have been assigned navigate to our <a
-                                    href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
-                                    (CTS</a>).
-                            </li>
-                            <li>
-                                Sign into the CTS using our SSO.
-                            </li>
-                            <li>
-                                Select the Students Drop down menu and navigate to <strong>Sessions &gt; Managment</strong>
-                            </li>
-                            <li>
-                                Add a session request using the <strong>&#39;Request Session&#39;</strong> drop down box,
-                                <em>e.g P1_VATSIM for the P1 (Online Pilot) Course</em>
-                            </li>
-                            <li>
-                                Add availability to the system and&nbsp;ensure this is kept up to date.
-                            </li>
-                        </ol>
+                        <p>
+                            The first step is to join our Discord server.
+                        </p>
+                        <p>
+                            Whether you've used Discord before or not, clicking the button below will take you to a page to either sign in or register with Discord.
+                        </p>
+                        <br />
+                        <p>
+
+                            @if(!$_account->discord_id)
+                                <a href="{{ route('discord.invite') }}" style="text-decoration: none;" target="_blank">
+                                    <button class="btn btn-primary center-block"><li class="fab fa-discord"></li> &thinsp; Join Discord Server</button>
+                                </a>
+                            @endif
+                            @if($_account->discord_id)
+                                <a href="#" style="text-decoration: none;">
+                                    <button class="btn btn-primary center-block" disabled><li class="fab fa-discord"></li> &thinsp; Already Joined</button>
+                                </a>
+                                <p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
+                        @endif
+                        </p>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4">
-                <div class="panel panel-uk-danger">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-remove-circle"></i> &thinsp; I am not a member
-                        of the UK divison
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"> Step 2: Link Your Discord Account to VATSIM UK
                     </div>
                     <div class="panel-body">
-                        <ol>
-                            <li>
-                                When your V/T application has been processed you will be contacted by the Pilot Training
-                                Team using our HelpDesk.
-                            </li>
-                        </ol>
+                        <p>
+                            The second step is to link your Discord account to your VATSIM UK account.
+                        </p>
+                        <p>
+                            This allows us to assign you the relevant permissions on our Discord server.
+                        </p>
+                        <br />
+                        <p>
+                            @if(!$_account->discord_id)
+                                <a href="{{ route('discord.create') }}" style="text-decoration: none;">
+                                    <button class="btn btn-primary center-block"><li class="fab fa-discord"></li> &thinsp; Link Discord Account</button>
+                                </a>
+                            @endif
+                            @if($_account->discord_id)
+                                <a href="#" style="text-decoration: none;">
+                                    <button class="btn btn-primary center-block" disabled><li class="fab fa-discord"></li> &thinsp; Discord Account {{ $_account->discord_id }} Linked</button>
+                                </a>
+                                <p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
+                            @endif
+                        </p>
                     </div>
                 </div>
             </div>

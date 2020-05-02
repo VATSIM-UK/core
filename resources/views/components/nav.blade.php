@@ -114,6 +114,7 @@
                                 <li class="dropdown-header">Third-Party Services</li>
                                 <li>{!! link_to_route("site.community.teamspeak", "TeamSpeak") !!}</li>
                                 <li>{!! link_to_route("slack.new", "Slack") !!}</li>
+                                <li>{!! link_to_route("discord.show", "Discord") !!}</li>
                                 <li class="divider"></li>
                                 <li>{!! link_to_route('site.community.terms', "Terms & Conditions") !!}</li>
                             </ul>

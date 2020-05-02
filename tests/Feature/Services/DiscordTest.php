@@ -87,9 +87,12 @@ class DiscordTest extends TestCase
                 'code' => null
             ]));
 
-        $emptyString->assertRedirect(route('mship.manage.dashboard'));
-        $missingCode->assertRedirect(route('mship.manage.dashboard'));
-        $nullCode->assertRedirect(route('mship.manage.dashboard'));
+        $emptyString->assertRedirect(route('discord.show'))
+            ->assertSee('Error');
+        $missingCode->assertRedirect(route('discord.show'))
+            ->assertSee('Error');
+        $nullCode->assertRedirect(route('discord.show'))
+            ->assertSee('Error');
     }
 
     /** @test */

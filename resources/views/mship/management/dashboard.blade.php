@@ -473,6 +473,40 @@
                     </div>
                 </div>
             @endif
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="fab fa-discord"></i>
+                    Discord Registration
+                    <div class="pull-right">
+                        @if(!$_account->discord_id)
+                            <a href="{{ route("discord.show") }}">
+                                <i class="fa fa-plus-circle"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            @if($_account->discord_id)
+                                Currently registered with Discord ID {{ $_account->discord_id }}. <br/>
+                                <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
+                            @else
+                                You are not yet
+                                registered.  {!! link_to_route("discord.show", "Click here to register.") !!}
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer panel-footer-primary">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a href="{{ route('discord.show') }}">
+                                <span class='fa fa-info'></span> Discord Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-signal"></i>

@@ -173,7 +173,13 @@
                             <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.community.teamspeak') }}">TeamSpeak / Slack</a>
+                            <a class="nav-link" href="{{ route('site.community.teamspeak') }}">TeamSpeak</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('slack.new') }}">Slack</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('discord.show') }}">Discord</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="https://www.facebook.com/vatsimuk">Facebook</a>
