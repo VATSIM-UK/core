@@ -55,6 +55,12 @@ class DiscordTest extends TestCase
     }
 
     /** @test */
+    public function testItSavesADiscordId()
+    {
+        //
+    }
+
+    /** @test */
     public function testItRedirectsWhenCodeMissing()
     {
         $emptyString = $this->actingAs($this->user)
@@ -75,5 +81,17 @@ class DiscordTest extends TestCase
         $emptyString->assertRedirect(route('mship.manage.dashboard'));
         $missingCode->assertRedirect(route('mship.manage.dashboard'));
         $nullCode->assertRedirect(route('mship.manage.dashboard'));
+    }
+
+    /** @test */
+    public function testItRequiresTheIdentifyScope()
+    {
+        //
+    }
+
+    /** @test */
+    public function testItDoesNotAllowDuplicateDiscordIds()
+    {
+        //
     }
 }
