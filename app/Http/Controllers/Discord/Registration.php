@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Discord;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
-use http\Exception;
 use Illuminate\Http\Request;
 use Wohali\OAuth2\Client\Provider\Discord;
+use Exception;
 
 class Registration extends BaseController
 {
