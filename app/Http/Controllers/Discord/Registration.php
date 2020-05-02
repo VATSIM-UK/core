@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Discord;
 
+use App\Events\Discord\DiscordLinked;
+use App\Events\Discord\DiscordUnlinked;
 use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use Illuminate\Http\Request;
@@ -54,23 +56,20 @@ class Registration extends BaseController
             return $this->error('This Discord account is already linked to a VATSIM UK account. Please contact Web Services.');
         }
 
-        $user = auth()->user();
+        $user = $request->user();
         $user->discord_id = $discordUser->getId();
         $user->save();
 
-        // fire event to upgrade user's permissions
+        event(new DiscordLinked($request->user()));
 
         return redirect()->route('mship.manage.dashboard')->withSuccess('Your Discord account has been linked and you will be able to access our Discord server shortly.');
     }
 
     public function destroy(Request $request)
     {
-        $request->user()->discord_id = null;
-        $request->user()->save();
+        event(new DiscordUnlinked($request->user()));
 
-        // fire event to trigger kicking from server
-
-        return redirect()->back()->withSuccess('Your Discord account has been unlinked.');
+        return redirect()->back()->withSuccess('Your Discord account is being removed. This should take less than 15 minutes.');
     }
 
     protected function error(string $message)
