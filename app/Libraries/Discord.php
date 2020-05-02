@@ -21,7 +21,7 @@ class Discord
     {
         $this->token = config('services.discord.token');
         $this->guildId = config('services.discord.guild_id');
-        $this->baseUrl = 'https://discordapp.com/api/';
+        $this->baseUrl = 'https://discordapp.com/api/v6';
     }
 
     public function grantRole(Account $account, string $role)
