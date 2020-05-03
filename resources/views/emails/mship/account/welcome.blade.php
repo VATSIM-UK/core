@@ -65,7 +65,7 @@
 
 <p>
     The UK TeamSpeak Server, Slack and Forum - these are used for voice and written communications for the entire UK community. Feel free to join the community and ask questions and meet others:
-    <li> TeamSpeak &amp; Slack - {!! link_to_route('site.community.teamspeak') !!}</li>
+    <li> TeamSpeak - {!! link_to_route('site.community.teamspeak') !!}</li>
     <li> Forum - {!! link_to("https://community.vatsim.uk/", "https://community.vatsim.uk/") !!}</li>
 </p>
 
