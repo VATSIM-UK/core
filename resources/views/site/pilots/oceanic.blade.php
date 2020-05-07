@@ -28,8 +28,8 @@
                     </p>
 
                     <p>
-                        <a href="https://community.vatsim.uk/downloads/" rel="">Download the Oceanic
-                            procedures document</a> for further information.
+                        <a href="https://community.vatsim.uk/files/downloads/file/130-oceanic-pilot-briefing/">Download 
+                        the Oceanic procedures document</a> for further information.
                     </p>
                 </div>
             </div>
