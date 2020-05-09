@@ -1,8 +1,6 @@
 name: Run Tests
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -16,6 +14,7 @@ jobs:
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Write Nova Secrets
+      shell: bash
       env:
         NOVA_USERNAME = ${{ secrets.NOVA_USERNAME }}
         NOVA_PASSWORD = ${{ secrets.NOVA_PASSWORD }}
