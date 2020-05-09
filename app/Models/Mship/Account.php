@@ -206,11 +206,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
     protected $casts = ['inactive' => 'boolean'];
 
-    public function routeNotificationForSlack()
-    {
-        return env('SLACK_ENDPOINT');
-    }
-
     protected static function boot()
     {
         parent::boot();

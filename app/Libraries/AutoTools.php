@@ -22,9 +22,9 @@ class AutoTools
         $url = sprintf(
             $sprintUrl,
             self::$base_url,
-            env('VATSIM_CERT_AT_USER'),
-            urlencode(env('VATSIM_CERT_AT_PASS')),
-            env('VATSIM_CERT_AT_DIV')
+            config('services.autotools.username'),
+            urlencode(config('services.autotools.password')),
+            config('services.autotools.division')
         );
 
         $cacheName = $withTimestamp ? 'autotools_divdbfullwpilot_timestamp' : 'autotools_dividbfullwpilot_full';

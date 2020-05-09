@@ -34,7 +34,7 @@ class TeamSpeak
 
     public static function enabled()
     {
-        return env('TS_HOST') && env('TS_USER')  && env('TS_PASS') && env('TS_PORT') && env('TS_QUERY_PORT');
+        return config('services.teamspeak.host') && config('services.teamspeak.username')  && config('services.teamspeak.password') && config('services.teamspeak.port') && config('services.teamspeak.query_port');
     }
 
     /**
@@ -48,12 +48,12 @@ class TeamSpeak
     {
         $connectionUrl = sprintf(
             'serverquery://%s:%s@%s:%s/?nickname=%s&server_port=%s%s#no_query_clients',
-            urlencode(env('TS_USER')),
-            urlencode(env('TS_PASS')),
-            env('TS_HOST'),
-            env('TS_QUERY_PORT'),
+            urlencode(config('services.teamspeak.username')),
+            urlencode(config('services.teamspeak.password')),
+            config('services.teamspeak.host'),
+            config('services.teamspeak.port'),
             urlencode($nickname),
-            env('TS_PORT'),
+            config('services.teamspeak.query_port'),
             $nonBlocking ? '&blocking=0' : ''
         );
 
@@ -288,7 +288,7 @@ class TeamSpeak
                     $now = Carbon::now();
                     Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'], $now, 6 * 60);
                     Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'], $now, 3 * 60);
-                    
+
                     $recentlyTold = $hasGracePeriod = true;
                 }
 

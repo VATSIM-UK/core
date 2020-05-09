@@ -18,7 +18,7 @@ class Slack extends WebhookController
 
     public function __construct()
     {
-        $this->commandRoutes['/register']['token'] = env('SLACK_TOKEN_REGISTER', null);
+        $this->commandRoutes['/register']['token'] = config('services.slack.token_register');
     }
 
     /**

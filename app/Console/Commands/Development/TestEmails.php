@@ -68,7 +68,7 @@ class TestEmails extends Command
             $this->log('ERROR: this command cannot be run in production!', 'error');
 
             return;
-        } elseif (env('MAIL_HOST') !== 'mailtrap.io') {
+        } elseif (config('mail.host') !== 'mailtrap.io') {
             $this->log('ERROR: you should be using mailtrap.io before running this command!', 'error');
 
             return;
