@@ -51,9 +51,9 @@ class TeamSpeak
             urlencode(config('services.teamspeak.username')),
             urlencode(config('services.teamspeak.password')),
             config('services.teamspeak.host'),
-            config('services.teamspeak.port'),
-            urlencode($nickname),
             config('services.teamspeak.query_port'),
+            urlencode($nickname),
+            config('services.teamspeak.port'),
             $nonBlocking ? '&blocking=0' : ''
         );
 
