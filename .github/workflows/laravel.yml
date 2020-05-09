@@ -9,15 +9,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-#    services:
-#      mysql:
-#        image: mysql:5.7
-#        env:
-#          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-#        ports:
-#          - 3306:3306
-#        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
@@ -38,11 +29,13 @@ jobs:
     - name: Set Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Databases
+      env:
+
       run: |
-        sudo systemctl start mysql
+        sudo /etc/init.d/mysql start
         sudo apt-get install -y mysql-client
-        mysql -e 'create database IF NOT EXISTS core;' -uroot
-        mysql -e 'create database IF NOT EXISTS core_testing;' -uroot
-        mysql -e 'create database IF NOT EXISTS cts;' -uroot
+        mysql -e  -uroot -proot 'create database IF NOT EXISTS core;'
+        mysql -e  -uroot -proot 'create database IF NOT EXISTS core_testing;'
+        mysql -e  -uroot -proot 'create database IF NOT EXISTS cts;'
     - name: Execute PHPUnit Tests
       run: vendor/bin/phpunit
