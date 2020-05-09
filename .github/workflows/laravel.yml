@@ -39,6 +39,7 @@ jobs:
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Databases
       run: |
+        sudo apt-get install -y mysql-client
         mysql -e 'create database IF NOT EXISTS core;' -uroot
         mysql -e 'create database IF NOT EXISTS core_testing;' -uroot
         mysql -e 'create database IF NOT EXISTS cts;' -uroot
