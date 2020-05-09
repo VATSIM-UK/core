@@ -16,8 +16,8 @@ jobs:
     - name: Write Nova Secrets
       shell: bash
       env:
-        NOVA_USERNAME = ${{ secrets.NOVA_USERNAME }}
-        NOVA_PASSWORD = ${{ secrets.NOVA_PASSWORD }}
+        NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+        NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
       run: |
         cp auth.json.example auth.json
         sed -i 's/your-password/"$NOVA_USERNAME"/g' auth.json
