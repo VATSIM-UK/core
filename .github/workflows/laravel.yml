@@ -29,8 +29,6 @@ jobs:
     - name: Set Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Databases
-      env:
-
       run: |
         sudo /etc/init.d/mysql start
         sudo apt-get install -y mysql-client
