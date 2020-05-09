@@ -9,6 +9,15 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
     - uses: actions/checkout@v2
     - name: Copy .env
@@ -21,7 +30,6 @@ jobs:
         cp auth.json.example auth.json
         sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
         sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
-        cat auth.json
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Generate key
