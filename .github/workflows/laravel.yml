@@ -61,13 +61,17 @@ jobs:
         mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
     - name: Migrate Database
       run: php artisan migrate
-    - name: Restore NPM Cache
+    - name: Get Yarn Cache
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - name: Restore Yarn Cache
       uses: actions/cache@v1
+      id: yarn-cache
       with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.os }}-node-
+          ${{ runner.os }}-yarn-
     - name: Install Assets
       run: yarn
     - name: Compile Assets
