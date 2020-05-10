@@ -48,10 +48,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->alias('bugsnag.multi', \Illuminate\Contracts\Logging\Log::class);
         $this->app->alias('bugsnag.multi', \Psr\Log\LoggerInterface::class);
 
-        if ($this->app->isLocal()) {
-            $this->app->register(TelescopeServiceProvider::class);
-        }
-
+        $this->app->register(TelescopeServiceProvider::class);
         $this->app->singleton(UKCP::class);
     }
 
