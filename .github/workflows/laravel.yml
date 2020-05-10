@@ -50,8 +50,12 @@ jobs:
         mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
     - name: Migrate Database
       run: php artisan migrate
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
     - name: Install Assets
-      run: yarn
+      run: yarn --frozen-lockfile
     - name: Compile Assets
       run: yarn run prod
     - name: Execute PHPUnit Tests
