@@ -41,6 +41,11 @@ jobs:
         mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
         mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
         mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
+    - name: Migrate Database
+      env:
+        DB_MYSQL_USER: root
+        DB_MYSQL_PASS: root
+      run: php artisan migrate
     - name: Install Assets
       run: yarn
     - name: Compile Assets
