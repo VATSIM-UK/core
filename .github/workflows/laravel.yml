@@ -23,7 +23,7 @@ jobs:
         uses: allenevans/set-env@v1.0.0
         with:
           APP_ENV: testing
-          APP_KEY:
+          APP_KEY: 
           APP_URL: 127.0.0.1
           DB_MYSQL_HOST: localhost
           DB_MYSQL_PORT: 3306
@@ -35,6 +35,7 @@ jobs:
           SSO_CERT: ${{ secrets.SSO_CERT }}
           SSO_KEY: ${{ secrets.SSO_KEY }}
           SSO_SECRET: ${{ secrets.SSO_SECRET }}
+        run: touch .env
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
       - name: Install Nova
