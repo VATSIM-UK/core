@@ -56,9 +56,13 @@ jobs:
       - name: Migrate Database
         run: php artisan migrate
       - name: Install Assets
-        run: yarn
+        run: |
+          yarn
+          cd nova-components/WaitingListsManager && yarn && cd ../../
       - name: Compile Assets
-        run: yarn run prod
+        run: |
+          yarn run prod
+          cd nova-components/WaitingListsManager && yarn run prod && cd ../../
       - name: Serve Application
         run: php artisan serve -q &
       - name: Execute PHPUnit Tests
