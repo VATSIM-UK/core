@@ -73,10 +73,15 @@ jobs:
       - name: Migrate Database
         run: php artisan migrate
 
+      - name: Setup Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+
       - name: Get Yarn Cache Directory
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Run Yarn Cache
+      - name: Restore Yarn Cache
         uses: actions/cache@v1
         id: yarn-cache
         with:
