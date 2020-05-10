@@ -18,7 +18,7 @@ class RemoveDiscordUser implements ShouldQueue
     public function handle(DiscordUnlinked $event)
     {
         $account = $event->account;
-        $discord = new Discord();
+        $discord = app()->make(Discord::class);
 
         $kick = $discord->kick($account);
 

@@ -40,12 +40,13 @@ return [
     ],
 
     'discord' => [
-        'invite_url' => env('DISCORD_INVITE_URL'),
-        'guild_id' => env('DISCORD_GUILD_ID'),
-        'token' => env('DISCORD_TOKEN'),
-        'client_id' => env('DISCORD_CLIENT'),
-        'client_secret' => env('DISCORD_SECRET'),
-        'redirect_uri' => env('DISCORD_REDIRECT_URI'),
+        'invite_url' => env('DISCORD_INVITE_URL', null),
+        'guild_id' => env('DISCORD_GUILD_ID', null),
+        'token' => env('DISCORD_TOKEN', null),
+        'client_id' => env('DISCORD_CLIENT', null),
+        'client_secret' => env('DISCORD_SECRET', null),
+        'redirect_uri' => env('DISCORD_REDIRECT_URI', null),
+        'base_discord_uri' => env('DISCORD_API_BASE', 'https://discordapp.com/api/v6')
     ],
 
     'google' => [

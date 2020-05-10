@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Discord;
 use App\Events\Discord\DiscordLinked;
 use App\Events\Discord\DiscordUnlinked;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Mship\Account\DiscordRegistration;
 use App\Models\Mship\Account;
+use Exception;
 use Illuminate\Http\Request;
 use Wohali\OAuth2\Client\Provider\Discord;
-use Exception;
 
 class Registration extends BaseController
 {
@@ -17,6 +18,17 @@ class Registration extends BaseController
      */
     private $provider;
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->provider = new Discord([
+            'clientId'     => config('services.discord.client_id'),
+            'clientSecret' => config('services.discord.client_secret'),
+            'redirectUri'  => config('services.discord.redirect_uri'),
+        ]);
+    }
+
     public function show()
     {
         return $this->viewMake('discord.new');
@@ -24,8 +36,6 @@ class Registration extends BaseController
 
     public function create(Request $request)
     {
-        $this->initProvider();
-
         $authUrl = $this->provider->getAuthorizationUrl([
             'scope' => ['identify']
         ]);
@@ -33,16 +43,12 @@ class Registration extends BaseController
         return redirect()->away($authUrl);
     }
 
-    public function store(Request $request)
+    public function store(DiscordRegistration $request)
     {
-        $this->initProvider();
-
-        if (empty($request->input('code'))) {
-            return $this->error('Something went wrong. Please try again.');
-        }
+        $inputs = $request->validated();
 
         try {
-            $token = $this->provider->getAccessToken('authorization_code', ['code' => $request->input('code')]);
+            $token = $this->provider->getAccessToken('authorization_code', ['code' => $inputs['code']]);
             $discordUser = $this->provider->getResourceOwner($token);
         } catch (Exception $e) {
             return $this->error('Something went wrong. Please try again.');
@@ -71,14 +77,5 @@ class Registration extends BaseController
     protected function error(string $message)
     {
         return redirect()->route('discord.show')->withError($message);
-    }
-
-    protected function initProvider()
-    {
-        $this->provider = new Discord([
-            'clientId'     => config('services.discord.client_id'),
-            'clientSecret' => config('services.discord.client_secret'),
-            'redirectUri'  => config('services.discord.redirect_uri'),
-        ]);
     }
 }

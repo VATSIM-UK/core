@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use App\Http\Controllers\BaseController;
+use App\Libraries\Discord;
 use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
-use GuzzleHttp\Client;
 use HTML;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
@@ -53,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $this->app->singleton(UKCP::class);
+        $this->app->singleton(Discord::class);
     }
 
     /**

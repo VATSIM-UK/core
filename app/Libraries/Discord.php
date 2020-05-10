@@ -12,72 +12,73 @@ class Discord
     private $token;
 
     /** @var int */
-    private $guildId;
+    private $guild_id;
 
     /** @var string */
-    private $baseUrl;
+    private $base_url;
+
+    /** @var array */
+    private $headers;
 
     public function __construct()
     {
         $this->token = config('services.discord.token');
-        $this->guildId = config('services.discord.guild_id');
-        $this->baseUrl = 'https://discordapp.com/api/v6';
+        $this->guild_id = config('services.discord.guild_id');
+        $this->base_url = config('services.discord.base_discord_uri') . "/guilds";
+        $this->headers = ["Authorization" => "Bot {$this->token}"];
     }
 
-    public function grantRole(Account $account, string $role)
+    public function grantRole(Account $account, string $role): bool
     {
-        $roleId = $this->findRole($role);
+        $role_id = $this->findRole($role);
 
-        $response = Http::withHeaders([
-            'Authorization' => "Bot {$this->token}"
-        ])->put($this->baseUrl . "/guilds/{$this->guildId}/members/{$account->discord_id}/roles/{$roleId}");
+        $response = Http::withHeaders($this->headers)
+            ->put("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role_id}");
 
         return $this->result($response);
     }
 
-    public function removeRole(Account $account, string $role)
+    public function removeRole(Account $account, string $role): bool
     {
-        $roleId = $this->findRole($role);
+        $role_id = $this->findRole($role);
 
-        $response = Http::withHeaders([
-            'Authorization' => "Bot {$this->token}"
-        ])->delete($this->baseUrl . "/guilds/{$this->guildId}/members/{$account->discord_id}/roles/{$roleId}");
+        $response = Http::withHeaders($this->headers)
+            ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role_id}");
 
         return $this->result($response);
     }
 
-    public function setNickname(Account $account, string $nickname)
+    public function setNickname(Account $account, string $nickname): bool
     {
-        $response = Http::withHeaders([
-            'Authorization' => "Bot {$this->token}"
-        ])->patch($this->baseUrl . "/guilds/{$this->guildId}/members/{$account->discord_id}", [
-            'nick' => $nickname
-        ]);
+        $response = Http::withHeaders($this->headers)
+            ->patch("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}",
+            [
+                'nick' => $nickname
+            ]
+        );
 
         return $this->result($response);
     }
 
-    public function kick(Account $account)
+    public function kick(Account $account): bool
     {
-        $response = Http::withHeaders([
-            'Authorization' => "Bot {$this->token}"
-        ])->delete($this->baseUrl . "/guilds/{$this->guildId}/members/{$account->discord_id}");
+        $response = Http::withHeaders($this->headers)
+            ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}");
 
         return $this->result($response);
     }
 
-    private function findRole(string $roleName)
+    private function findRole(string $roleName): int
     {
-        $response = Http::withHeaders([
-            'Authorization' => "Bot {$this->token}"
-        ])->get($this->baseUrl . "/guilds/{$this->guildId}/roles")->json();
+        $response = Http::withHeaders($this->headers)
+            ->get("{$this->base_url}/{$this->guild_id}/roles")->json();
 
-        $roleId = collect($response)
+        $role_id = collect($response)
             ->where('name', $roleName)
             ->pluck('id')
             ->first();
 
-        return (int)$roleId;
+        return (int)$role_id;
     }
 
     protected function result(Response $response)

@@ -19,7 +19,7 @@ class SetupDiscordUser implements ShouldQueue
     {
         $account = $event->account;
         $discordId = $event->discordId;
-        $discord = new Discord();
+        $discord = app()->make(Discord::class);
 
         $account->discord_id = $discordId;
 
