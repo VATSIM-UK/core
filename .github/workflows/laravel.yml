@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
     - name: Setup Environment File
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
     - name: Write Nova Secrets
       env:
         NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
@@ -42,16 +42,10 @@ jobs:
         mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
         mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
     - name: Migrate Database
-      env:
-        DB_MYSQL_USER: root
-        DB_MYSQL_PASS: root
       run: php artisan migrate
     - name: Install Assets
       run: yarn
     - name: Compile Assets
       run: yarn run prod
     - name: Execute PHPUnit Tests
-      env:
-        DB_MYSQL_USER: root
-        DB_MYSQL_PASS: root
       run: vendor/bin/phpunit
