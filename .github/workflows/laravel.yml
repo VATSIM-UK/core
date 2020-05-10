@@ -38,8 +38,8 @@ jobs:
     - name: Create Databases
       run: |
         sudo /etc/init.d/mysql start
-        mysql -e -h127.0.0.1 -uroot -proot 'CREATE DATABASE IF NOT EXISTS core;'
-        mysql -e -h127.0.0.1 -uroot -proot 'CREATE DATABASE IF NOT EXISTS core_testing;'
-        mysql -e -h127.0.0.1 -uroot -proot 'CREATE DATABASE IF NOT EXISTS cts;'
+        mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
+        mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
+        mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
     - name: Execute PHPUnit Tests
       run: vendor/bin/phpunit
