@@ -2,6 +2,7 @@ name: Test Coverage
 on: [push]
 jobs:
   run:
+    name: Generate & Report
     runs-on: ubuntu-latest
     env:
       PYTHON: '3.7'
