@@ -33,7 +33,7 @@ jobs:
           DB_MYSQL_NAME: core
           CTS_DATABASE: cts
           SSO_BASE: http://sso.hardern.net/server/
-          #SSO_CERT: ${{ secrets.SSO_CERT }}
+          SSO_CERT: ${{ secrets.SSO_CERT }}
           SSO_KEY: ${{ secrets.SSO_KEY }}
           SSO_SECRET: ${{ secrets.SSO_SECRET }}
       - name: Install Composer Dependencies

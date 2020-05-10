@@ -36,8 +36,8 @@ return [
     ],
 
     'slack' => [
-        'token' => env('SLACK_SECRET'),
-        'token_register' => env('SLACK_TOKEN_REGISTER')
+        'token' => env('SLACK_SECRET', 'secret'),
+        'token_register' => env('SLACK_TOKEN_REGISTER', 'token')
     ],
 
     'teamspeak' => [
