@@ -30,6 +30,7 @@ jobs:
         sed -i 's%^SSO_CERT.*$%SSO_CERT=\"${SSO_CERT}\"%' .env
         sed -i "s%^SSO_KEY.*$%SSO_KEY=${SSO_KEY}%" .env
         sed -i "s%^SSO_SECRET.*$%SSO_SECRET=${SSO_SECRET}%" .env
+        cat .env
     - name: Install Composer Dependencies
       run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
     - name: Install Nova
