@@ -59,15 +59,10 @@ jobs:
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
-      - name: Install Nova
+      - name: Install Nova & Waiting Lists
         run: |
           php artisan nova:install
           cd nova-components/WaitingListsManager && composer install && cd ../../
-
-      - name: Cache Routes
-        run: php artisan route:cache
-      - name: Cache Config
-        run: php artisan config:cache
 
       - name: Create Databases
         run: |
@@ -91,7 +86,7 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install Core Assets
-        #if: steps.yarn-cache.outputs.cache-hit != 'true'
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn
       - name: Compile Core Assets
         run: yarn run prod
@@ -101,6 +96,11 @@ jobs:
         run: cd nova-components/WaitingListsManager && yarn && cd ../../
       - name: Compile Waiting Lists Manager Assets
         run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
+
+      - name: Cache Routes
+        run: php artisan route:cache
+      - name: Cache Config
+        run: php artisan config:cache
 
       - name: Serve Application
         run: php artisan serve -q &
