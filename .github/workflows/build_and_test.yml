@@ -91,13 +91,11 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install Core Assets
-        #if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn
       - name: Compile Core Assets
         run: yarn run prod
 
       - name: Install Waiting Lists Manager Assets
-        #if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: cd nova-components/WaitingListsManager && yarn && cd ../../
       - name: Compile Waiting Lists Manager Assets
         run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
@@ -110,12 +108,12 @@ jobs:
       - name: Serve Application
         run: php artisan serve -q &
 
-#      - name: Execute PHPUnit Tests
-#        run: vendor/bin/phpunit --coverage-clover=coverage.xml
-#
-#      - name: Upload Code Coverage Report
-#        uses: codecov/codecov-action@v1.0.5
-#        with:
-#          token: ${{secrets.CODECOV_TOKEN}}
-#          file: ./coverage.xml
-#          fail_ci_if_error: true
+      - name: Execute PHPUnit Tests
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Upload Code Coverage Report
+        uses: codecov/codecov-action@v1.0.5
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          file: ./coverage.xml
+          fail_ci_if_error: true
