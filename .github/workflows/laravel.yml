@@ -36,13 +36,13 @@ jobs:
     - name: Set Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Databases
-      env:
-        DB_MYSQL_USER: root
-        DB_MYSQL_PASS: root
       run: |
         sudo /etc/init.d/mysql start
         mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
         mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
         mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
     - name: Execute PHPUnit Tests
+      env:
+        DB_MYSQL_USER: root
+        DB_MYSQL_PASS: root
       run: vendor/bin/phpunit
