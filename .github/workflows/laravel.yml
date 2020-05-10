@@ -1,4 +1,4 @@
-name: Run Tests
+name: Laravel Tests
 
 on:
   pull_request:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   laravel-tests:
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
