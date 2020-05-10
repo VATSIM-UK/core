@@ -48,6 +48,13 @@ jobs:
       - name: Serve Application
         run: php artisan serve -q &
       - name: Execute PHPUnit Tests
+        env:
+          APP_URL: 127.0.0.1
+          DB_MYSQL_HOST: localhost
+          DB_MYSQL_PORT: 3306
+          DB_MYSQL_USER: root
+          DB_MYSQL_PASS: root
+          CTS_DATABASE: cts
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v1.0.5
