@@ -37,7 +37,7 @@ return [
     |
     */
 
-    'enabled' => (env('APP_DEBUG', true) && env('APP_ENV') != 'testing'),
+    'enabled' => env('TELESCOPE_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -61,6 +61,7 @@ return [
 
     'middleware' => [
         'web',
+        'auth_full_group',
         Authorize::class,
     ],
 
