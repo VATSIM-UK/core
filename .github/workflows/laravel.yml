@@ -27,9 +27,9 @@ jobs:
         SSO_KEY: ${{ secrets.SSO_KEY }}
         SSO_SECRET: ${{ secrets.SSO_SECRET }}
       run: |
-        - sed -i "s%^SSO_CERT.*$%SSO_CERT=\${SSO_CERT}\%" .env
-        - sed -i "s%^SSO_KEY.*$%SSO_KEY=${SSO_KEY}%" .env
-        - sed -i "s%^SSO_SECRET.*$%SSO_SECRET=${SSO_SECRET}%" .env
+        sed -i 's%^SSO_CERT.*$%SSO_CERT=\$"{SSO_CERT}"\%' .env
+        sed -i "s%^SSO_KEY.*$%SSO_KEY=${SSO_KEY}%" .env
+        sed -i "s%^SSO_SECRET.*$%SSO_SECRET=${SSO_SECRET}%" .env
     - name: Install Composer Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Install Nova
