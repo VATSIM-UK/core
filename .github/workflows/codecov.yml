@@ -1,0 +1,13 @@
+name: Example workflow for Codecov
+on: [push, pull_request]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Upload Coverage to Codecov
+        uses: ./
+        with:
+          flags: unittest
+          name: codecov-1

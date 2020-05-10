@@ -6,9 +6,7 @@ on:
 
 jobs:
   laravel-tests:
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
@@ -39,8 +37,8 @@ jobs:
     - name: Create Databases
       run: |
         sudo /etc/init.d/mysql start
-        mysql -h127.0.0.1 -uroot -proot 'create database IF NOT EXISTS core;'
-        mysql -h127.0.0.1 -uroot -proot 'create database IF NOT EXISTS core_testing;'
-        mysql -h127.0.0.1 -uroot -proot 'create database IF NOT EXISTS cts;'
+        mysql -e -h127.0.0.1 -uroot -proot 'CREATE DATABASE IF NOT EXISTS core;'
+        mysql -e -h127.0.0.1 -uroot -proot 'CREATE DATABASE IF NOT EXISTS core_testing;'
+        mysql -e -h127.0.0.1 -uroot -proot 'CREATE DATABASE IF NOT EXISTS cts;'
     - name: Execute PHPUnit Tests
       run: vendor/bin/phpunit
