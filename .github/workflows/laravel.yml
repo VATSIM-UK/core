@@ -39,8 +39,8 @@ jobs:
     - name: Create Databases
       run: |
         sudo /etc/init.d/mysql start
-        mysql -e -uroot -proot 'create database IF NOT EXISTS core;'
-        mysql -e -uroot -proot 'create database IF NOT EXISTS core_testing;'
-        mysql -e -uroot -proot 'create database IF NOT EXISTS cts;'
+        mysql -e -u root -proot 'create database IF NOT EXISTS core;'
+        mysql -e -u root -proot 'create database IF NOT EXISTS core_testing;'
+        mysql -e -u root -proot 'create database IF NOT EXISTS cts;'
     - name: Execute PHPUnit Tests
       run: vendor/bin/phpunit
