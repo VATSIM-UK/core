@@ -11,6 +11,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
       - name: Write Nova Secrets
         env:
           NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
@@ -19,6 +20,7 @@ jobs:
           cp auth.json.example auth.json
           sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
           sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
+          
       - name: Create Environment File
         run: touch .env
       - name: Set Environment Variables
@@ -37,6 +39,7 @@ jobs:
           SSO_CERT: ${{ secrets.SSO_CERT }}
           SSO_KEY: ${{ secrets.SSO_KEY }}
           SSO_SECRET: ${{ secrets.SSO_SECRET }}
+
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
@@ -55,14 +58,17 @@ jobs:
         with:
           path: vendor
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
+
       - name: Install Nova
         run: |
           php artisan nova:install
           cd nova-components/WaitingListsManager && composer install && cd ../../
+
       - name: Cache Routes
         run: php artisan route:cache
       - name: Cache Config
         run: php artisan config:cache
+
       - name: Create Databases
         run: |
           sudo /etc/init.d/mysql start
@@ -71,6 +77,7 @@ jobs:
           mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
       - name: Migrate Database
         run: php artisan migrate
+
       - name: Get Yarn Cache Directory
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -82,19 +89,24 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
       - name: Install Core Assets
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn
+      - name: Compile Core Assets
+        run: yarn run prod
+
       - name: Install Waiting Lists Manager Assets
         run: cd nova-components/WaitingListsManager && yarn && cd ../../
-      - name: Compile Assets
-        run: |
-          yarn run prod
-          cd nova-components/WaitingListsManager && yarn run prod && cd ../../
+      - name: Compile Waiting Lists Manager Assets
+        run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
+
       - name: Serve Application
         run: php artisan serve -q &
+
       - name: Execute PHPUnit Tests
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v1.0.5
         with:
