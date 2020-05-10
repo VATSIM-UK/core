@@ -73,11 +73,6 @@ jobs:
       - name: Migrate Database
         run: php artisan migrate
 
-      - name: Setup Yarn
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12'
-
       - name: Get Yarn Cache Directory
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -89,6 +84,11 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+      - name: Restore node_modules Cache
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install Core Assets
         if: steps.yarn-cache.outputs.cache-hit != 'true'
