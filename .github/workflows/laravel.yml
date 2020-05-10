@@ -41,6 +41,10 @@ jobs:
         mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
         mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
         mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
+    - name: Install Assets
+      run: yarn
+    - name: Compile Assets
+      run: yarn run prod
     - name: Execute PHPUnit Tests
       env:
         DB_MYSQL_USER: root
