@@ -136,7 +136,8 @@
     "extra": {
         "laravel": {
             "dont-discover": [
-                "laravelcollective/html"
+                "laravelcollective/html",
+                "laravel/telescope"
             ]
         },
         "merge-plugin": {
