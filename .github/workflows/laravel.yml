@@ -17,6 +17,16 @@ jobs:
         env:
           NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
           NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
+      - name: Set Environment Variables
+        uses: allenevans/set-env@v1.0.0
+        with:
+          APP_ENV: testing
+          APP_URL: 127.0.0.1
+          DB_MYSQL_HOST: localhost
+          DB_MYSQL_PORT: 3306
+          DB_MYSQL_USER: root
+          DB_MYSQL_PASS: root
+          CTS_DATABASE: cts
         run: |
           cp auth.json.example auth.json
           sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
@@ -40,8 +50,6 @@ jobs:
           mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
           mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
       - name: Migrate Database
-        env:
-          APP_ENV: testing
         run: php artisan migrate
       - name: Install Assets
         run: yarn
@@ -50,13 +58,6 @@ jobs:
       - name: Serve Application
         run: php artisan serve -q &
       - name: Execute PHPUnit Tests
-        env:
-          APP_URL: 127.0.0.1
-          DB_MYSQL_HOST: localhost
-          DB_MYSQL_PORT: 3306
-          DB_MYSQL_USER: root
-          DB_MYSQL_PASS: root
-          CTS_DATABASE: cts
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v1.0.5
