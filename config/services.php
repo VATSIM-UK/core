@@ -55,7 +55,7 @@ return [
     ],
 
     'ukcp' => [
-        'url' => env('UKCP_URL'),
+        'url' => env('UKCP_URL', 'https://ukcp.vatsim.uk'),
         'key' => env('UKCP_KEY'),
     ],
 
