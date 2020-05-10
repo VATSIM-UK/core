@@ -50,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->alias('bugsnag.multi', \Psr\Log\LoggerInterface::class);
 
         $this->app->register(TelescopeServiceProvider::class);
-        Telescope::ignoreMigrations();
+        Telescope::ignoreMigrations();]
 
         $this->app->singleton(UKCP::class);
     }
