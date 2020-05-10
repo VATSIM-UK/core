@@ -49,17 +49,13 @@
 <h2>What next?</h2>
 
 <p>
-    If you're interested in flying, there are a number of 'How to....' guides and training available:
-    {!! link_to("https://www.vatsim.uk/pilot-info/", "https://www.vatsim.uk/pilot-info/") !!}
-</p>
-<p>
-    Pilot Training
-    {!! link_to("https://www.vatsim.uk/pilot-training/", "https://www.vatsim.uk/pilot-training/") !!}
+    If you're interested in flying, VATSIM UK offers multiple pilot training courses:
+    {!! link_to_route('site.pilots.landing') !!}
 </p>
 
 <p>
     If you're interested in providing ATC:
-    {!! link_to("https://www.vatsim.uk/becoming-a-controller/", "https://www.vatsim.uk/becoming-a-controller/") !!}
+    {!! link_to_route('site.atc.newController') !!}
 </p>
 
 <p>
@@ -69,7 +65,7 @@
 
 <p>
     The UK TeamSpeak Server, Slack and Forum - these are used for voice and written communications for the entire UK community. Feel free to join the community and ask questions and meet others:
-    <li> TeamSpeak &amp; Slack - {!! link_to("https://www.vatsim.uk/tsreg/", "https://www.vatsim.uk/tsreg/") !!}</li>
+    <li> TeamSpeak - {!! link_to_route('site.community.teamspeak') !!}</li>
     <li> Forum - {!! link_to("https://community.vatsim.uk/", "https://community.vatsim.uk/") !!}</li>
 </p>
 

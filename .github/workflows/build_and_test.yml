@@ -1,0 +1,119 @@
+name: Build & Test
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  laravel-tests:
+    name: Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Write Nova Secrets
+        env:
+          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
+        run: |
+          cp auth.json.example auth.json
+          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
+          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
+
+      - name: Create Environment File
+        run: touch .env
+      - name: Set Environment Variables
+        uses: allenevans/set-env@v1.0.0
+        with:
+          APP_ENV: testing
+          APP_KEY: ${{ secrets.APP_KEY }}
+          APP_URL: 127.0.0.1
+          DB_MYSQL_HOST: localhost
+          DB_MYSQL_PORT: 3306
+          DB_MYSQL_USER: root
+          DB_MYSQL_PASS: root
+          DB_MYSQL_NAME: core
+          CTS_DATABASE: cts
+          SSO_BASE: http://sso.hardern.net/server/
+          SSO_CERT: ${{ secrets.SSO_CERT }}
+          SSO_KEY: ${{ secrets.SSO_KEY }}
+          SSO_SECRET: ${{ secrets.SSO_SECRET }}
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Restore Composer Cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - name: Restore Vendor From Cache
+        uses: actions/cache@v1
+        with:
+          path: vendor
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
+
+      - name: Install Nova & Waiting Lists
+        run: |
+          php artisan nova:install
+          cd nova-components/WaitingListsManager && composer install && cd ../../
+
+      - name: Create Databases
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
+      - name: Migrate Database
+        run: php artisan migrate
+
+      - name: Setup Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+
+      - name: Get Yarn Cache Directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Restore Yarn Cache
+        uses: actions/cache@v1
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Core Assets
+        run: yarn
+      - name: Compile Core Assets
+        run: yarn run prod
+
+      - name: Install Waiting Lists Manager Assets
+        run: cd nova-components/WaitingListsManager && yarn && cd ../../
+      - name: Compile Waiting Lists Manager Assets
+        run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
+
+      - name: Cache Routes
+        run: php artisan route:cache
+      - name: Cache Config
+        run: php artisan config:cache
+
+      - name: Serve Application
+        run: php artisan serve -q &
+
+      - name: Execute PHPUnit Tests
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Upload Code Coverage Report
+        uses: codecov/codecov-action@v1.0.5
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          file: ./coverage.xml
+          fail_ci_if_error: true

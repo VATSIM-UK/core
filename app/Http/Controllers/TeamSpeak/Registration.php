@@ -34,7 +34,7 @@ class Registration extends \App\Http\Controllers\BaseController
             $confirmation = $registration->confirmation;
         }
 
-        $autoURL = 'ts3server://'.env('TS_HOST').'?nickname='.$this->account->name_first.'%20';
+        $autoURL = 'ts3server://'.config('services.teamspeak.host').'?nickname='.$this->account->name_first.'%20';
         $autoURL .= $this->account->name_last.'&token='.$confirmation->privilege_key;
 
         $this->pageTitle = 'New Registration';

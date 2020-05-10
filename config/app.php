@@ -14,6 +14,7 @@ return [
     */
 
     'name' => 'VATSIM UK Core',
+    'heroku_name' => env('HEROKU_APP_NAME'),
 
     /*
     |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    'local' => env('APP_IS_LOCAL', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -53,6 +55,7 @@ return [
     |
     */
 
+    'protocol' => env('APP_PROTOCOL', 'https'),
     'url' => appUrl(),
 
     /*
