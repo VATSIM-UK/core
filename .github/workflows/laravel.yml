@@ -33,8 +33,6 @@ jobs:
       run: php artisan route:cache
     - name: Cache Config
       run: php artisan config:cache
-    - name: Set Directory Permissions
-      run: chmod -R 777 storage bootstrap/cache
     - name: Create Databases
       run: |
         sudo /etc/init.d/mysql start
