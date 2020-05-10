@@ -24,16 +24,23 @@ jobs:
         sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
     - name: Install Composer Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+    - name: Install Nova
+      run: |
+        php artisan nova:install
+        cd nova-components/WaitingListsManager && composer install && cd ../../
     - name: Generate App Key
       run: php artisan key:generate
+    - name: Cache Routes
+      run: php artisan route:cache
+    - name: Cache Config
+      run: php artisan config:cache
     - name: Set Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Databases
       run: |
         sudo /etc/init.d/mysql start
-        sudo apt-get install -y mysql-client
-        mysql -e  -uroot -proot 'create database IF NOT EXISTS core;'
-        mysql -e  -uroot -proot 'create database IF NOT EXISTS core_testing;'
-        mysql -e  -uroot -proot 'create database IF NOT EXISTS cts;'
+        mysql -e -uroot -proot 'create database IF NOT EXISTS core;'
+        mysql -e -uroot -proot 'create database IF NOT EXISTS core_testing;'
+        mysql -e -uroot -proot 'create database IF NOT EXISTS cts;'
     - name: Execute PHPUnit Tests
       run: vendor/bin/phpunit
