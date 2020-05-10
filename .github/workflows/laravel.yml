@@ -52,7 +52,7 @@ jobs:
           SSO_SECRET: ${{ secrets.SSO_SECRET }}
         run: |
           cat .env
-          vendor/bin/phpunit
+          vendor/bin/phpunit --coverage-clover=coverage.xml
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v1.0.5
         with:
