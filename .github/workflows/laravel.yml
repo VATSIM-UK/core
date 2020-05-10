@@ -53,6 +53,6 @@ jobs:
     - name: Install Assets
       run: yarn
     - name: Compile Assets
-      run: yarn run prod
+      run: yarn run dev
     - name: Execute PHPUnit Tests
       run: vendor/bin/phpunit
