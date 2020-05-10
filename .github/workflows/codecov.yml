@@ -6,6 +6,7 @@ on:
 
 jobs:
   run:
+    name: Report Coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
