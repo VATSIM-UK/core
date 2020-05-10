@@ -25,6 +25,8 @@ class VATSIMSSOTest extends TestCase
     /** @test */
     public function testItWillRedirectToCorrectSSO()
     {
+        $this->withoutExceptionHandling(); // Debug GitHub actions
+
         $this->post(route('login'))
             ->assertSessionHasNoErrors()
             ->assertRedirect(VatsimSSO::sendToVatsim());
