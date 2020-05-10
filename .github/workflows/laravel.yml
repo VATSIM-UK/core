@@ -47,6 +47,7 @@ jobs:
         run: yarn run prod
       - name: Execute PHPUnit Tests
         env:
+          SSO_BASE: http://sso.hardern.net/server/
           SSO_CERT: ${{ secrets.SSO_CERT }}
           SSO_KEY: ${{ secrets.SSO_KEY }}
           SSO_SECRET: ${{ secrets.SSO_SECRET }}
