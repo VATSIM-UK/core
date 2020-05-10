@@ -17,6 +17,10 @@ jobs:
         env:
           NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
           NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
+        run: |
+          cp auth.json.example auth.json
+          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
+          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
       - name: Set Environment Variables
         uses: allenevans/set-env@v1.0.0
         with:
@@ -27,10 +31,6 @@ jobs:
           DB_MYSQL_USER: root
           DB_MYSQL_PASS: root
           CTS_DATABASE: cts
-        run: |
-          cp auth.json.example auth.json
-          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
-          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
       - name: Install Nova
