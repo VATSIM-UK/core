@@ -20,7 +20,7 @@ jobs:
           cp auth.json.example auth.json
           sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
           sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
-          
+
       - name: Create Environment File
         run: touch .env
       - name: Set Environment Variables
@@ -51,13 +51,13 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
-      - name: Install Composer Dependencies
-        run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
-      - name: Cache PHP Dependencies
+      - name: Vendor Cache
         uses: actions/cache@v1
         with:
           path: vendor
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
       - name: Install Nova
         run: |
