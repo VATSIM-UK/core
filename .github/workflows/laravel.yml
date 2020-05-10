@@ -42,7 +42,7 @@ jobs:
       - name: Migrate Database
         run: php artisan migrate
       - name: Install Assets
-        run: yarn cache clean && yarn
+        run: yarn
       - name: Compile Assets
         run: yarn run prod
       - name: Execute PHPUnit Tests
