@@ -41,8 +41,6 @@ jobs:
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - name: Install Composer Dependencies
-        run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
       - name: Cache Composer Downloads
         uses: actions/cache@v1
         with:
@@ -50,6 +48,8 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
       - name: Cache PHP Dependencies
         uses: actions/cache@v1
         with:
@@ -71,10 +71,22 @@ jobs:
           mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
       - name: Migrate Database
         run: php artisan migrate
-      - name: Install Assets
-        run: |
-          yarn
-          cd nova-components/WaitingListsManager && yarn && cd ../../
+      - name: Get Yarn Cache Directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Run Yarn Cache
+        uses: actions/cache@v1
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install Core Assets
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn
+      - name: Install Waiting Lists Manager Assets
+        run: cd nova-components/WaitingListsManager && yarn && cd ../../
       - name: Compile Assets
         run: |
           yarn run prod
