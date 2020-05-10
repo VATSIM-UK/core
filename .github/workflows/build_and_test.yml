@@ -96,7 +96,20 @@ jobs:
       - name: Compile Core Assets
         run: yarn run prod
 
+      - name: Get Yarn Waiting Lists Manager Cache Directory
+        id: yarn-waiting-lists-manager-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Run Yarn Waiting Lists Manager Cache
+        uses: actions/cache@v1
+        id: yarn-waiting-lists-manager-cache
+        with:
+          path: nova-components/WaitingListsManager/${{ steps.yarn-waiting-lists-manager-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-waiting-lists-manager-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-waiting-lists-manager-
+
       - name: Install Waiting Lists Manager Assets
+        if: steps.yarn-waiting-lists-manager-cache.outputs.cache-hit != 'true'
         run: cd nova-components/WaitingListsManager && yarn && cd ../../
       - name: Compile Waiting Lists Manager Assets
         run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
