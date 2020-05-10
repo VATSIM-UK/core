@@ -78,7 +78,6 @@
         "bugsnag/bugsnag-laravel": "^2.0",
         "cobaltgrid/vatsim-stand-status": "~1.0",
         "doctrine/dbal": "~2.10",
-        "facade/ignition": "^2.0",
         "guzzlehttp/guzzle": "~6.0",
         "laravel/framework": "^7.0",
         "laravel/helpers": "^1.1",
@@ -103,7 +102,9 @@
         "wikimedia/composer-merge-plugin": "^1.4"
     },
     "require-dev": {
+        "ext-json": "*",
         "codedungeon/phpunit-result-printer": "^0.26.1",
+        "facade/ignition": "^2.0",
         "fzaninotto/faker": "~1.8",
         "laracasts/generators": "^1.1",
         "laravel/homestead": "^10.0.2",
@@ -112,8 +113,7 @@
         "phpunit/phpunit": "^8.5",
         "symfony/css-selector": "^4.0",
         "symfony/dom-crawler": "^5.0",
-        "timacdonald/log-fake": "^1.2",
-        "ext-json": "*"
+        "timacdonald/log-fake": "^1.2"
     },
     "autoload": {
         "classmap": [
