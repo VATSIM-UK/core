@@ -73,8 +73,6 @@
     "require": {
         "php": ">=7.2",
         "alawrence/laravel-ipboard": "dev-master",
-        "barryvdh/laravel-debugbar": "~3.0",
-        "barryvdh/laravel-ide-helper": "^2.6",
         "bugsnag/bugsnag-laravel": "^2.0",
         "cobaltgrid/vatsim-stand-status": "~1.0",
         "doctrine/dbal": "~2.10",
@@ -103,6 +101,8 @@
     },
     "require-dev": {
         "ext-json": "*",
+        "barryvdh/laravel-debugbar": "^3.3",
+        "barryvdh/laravel-ide-helper": "^2.7",
         "codedungeon/phpunit-result-printer": "^0.26.1",
         "facade/ignition": "^2.0",
         "fzaninotto/faker": "~1.8",
