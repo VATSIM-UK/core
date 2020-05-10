@@ -45,6 +45,8 @@ jobs:
         run: yarn
       - name: Compile Assets
         run: yarn run prod
+      - name: Serve Application
+        run: php artisan serve -q &
       - name: Execute PHPUnit Tests
         env:
           SSO_BASE: "http://sso.hardern.net/server/"
