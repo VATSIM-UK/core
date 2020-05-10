@@ -62,7 +62,7 @@ jobs:
       - name: Serve Application
         run: php artisan serve -q &
       - name: Execute PHPUnit Tests
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+        run: vendor/bin/phpunit
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v1.0.5
         with:
