@@ -1,19 +1,27 @@
-name: Code Coverage
-
-on:
-  pull_request:
-    branches: [ master ]
-
+name: Test Coverage
+on: [push]
 jobs:
   run:
-    name: Report Coverage
     runs-on: ubuntu-latest
+    env:
+      PYTHON: '3.7'
     steps:
-      - uses: codecov/codecov-action@v1
-      - name: Checkout Code
-        uses: actions/checkout@master
-      - name: Upload Coverage to Codecov
-        uses: ./
+      - uses: actions/checkout@master
+      - name: Setup Python
+        uses: actions/setup-python@master
         with:
-          flags: unittest
-          name: codecov-1
+          python-version: 3.7
+      - name: Generate Report
+        run: |
+          pip install pytest
+          pip install pytest-cov
+          pytest --cov=./ --cov-report=xml
+      - name: Upload To Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
+          env_vars: OS,PYTHON
+          name: codecov-umbrella
+          fail_ci_if_error: true
