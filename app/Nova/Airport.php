@@ -2,9 +2,8 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 
 class Airport extends Resource
@@ -35,7 +34,7 @@ class Airport extends Resource
     public static $group = 'Smartcars';
 
     /**
-     * Removes BanReason from navigation bar.
+     * Removes Airport from navigation bar.
      *
      * @param Request $request
      * @return bool
