@@ -64,6 +64,12 @@ jobs:
           php artisan nova:install
           cd nova-components/WaitingListsManager && composer install && cd ../../
 
+      - name: Publish Horizon
+        run: php artisan horizon:publish
+
+      - name: Publish Telescope
+        run: php artisan telescope:publish
+
       - name: Create Databases
         run: |
           sudo /etc/init.d/mysql start
