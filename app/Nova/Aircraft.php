@@ -37,6 +37,17 @@ class Aircraft extends Resource
     public static $group = 'Smartcars';
 
     /**
+     * Removes BanReason from navigation bar.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
+
+    /**
      * Get the fields displayed by the resource.
      *
      * @param  \Illuminate\Http\Request  $request

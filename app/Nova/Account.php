@@ -25,6 +25,17 @@ class Account extends Resource
     public static $group = 'Membership';
 
     /**
+     * Removes BanReason from navigation bar.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
+
+    /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
