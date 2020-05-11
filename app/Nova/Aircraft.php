@@ -2,12 +2,10 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Aircraft extends Resource
 {
@@ -35,6 +33,17 @@ class Aircraft extends Resource
     ];
 
     public static $group = 'Smartcars';
+
+    /**
+     * Removes Aircraft from navigation bar.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
 
     /**
      * Get the fields displayed by the resource.

@@ -73,4 +73,34 @@ class AdminMiddlewareTest extends TestCase
             ->get(config('telescope.path'))
             ->assertSuccessful();
     }
+
+    /** @test */
+    public function testHorizonIsNotAvailableToGuests()
+    {
+        $this->get(config('horizon.path'))
+            ->assertRedirect(route('login'));
+    }
+
+    /** @test */
+    public function testHorizonIsNotAvailableToNormalUsers()
+    {
+        $this->actingAs($this->user)
+            ->get(config('horizon.path'))
+            ->assertForbidden();
+    }
+
+    /** @test */
+    public function testHorizonIsAvailableToAuthorisedUsers()
+    {
+        $admin = factory(Account::class)->create();
+        $admin->givePermissionTo('horizon');
+
+        $this->actingAs($admin)
+            ->get(config('horizon.path'))
+            ->assertSuccessful();
+
+        $this->actingAs($this->privacc)
+            ->get(config('horizon.path'))
+            ->assertSuccessful();
+    }
 }
