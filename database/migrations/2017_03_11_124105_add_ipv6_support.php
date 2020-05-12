@@ -94,12 +94,12 @@ class AddIpv6Support extends Migration
 
     public function convertOldIPsToNew($table, $oldcolumn, $newcolumn)
     {
-        DB::table($table)->update([$newcolumn => DB::raw('INET_NTOA(`' . $oldcolumn . '`)')]);
+        DB::table($table)->update([$newcolumn => DB::raw('INET_NTOA(`'.$oldcolumn.'`)')]);
     }
 
     public function convertNewIPsToOld($table, $oldcolumn, $newcolumn)
     {
-        DB::table($table)->update([$oldcolumn => DB::raw('INET_ATON(`' . $newcolumn . '`)')]);
+        DB::table($table)->update([$oldcolumn => DB::raw('INET_ATON(`'.$newcolumn.'`)')]);
     }
 
     /**

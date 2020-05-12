@@ -22,15 +22,13 @@ use Illuminate\Support\Facades\DB;
             }
 
             require_once config('services.community.init_file');
-            require_once \IPS\ROOT_PATH . '/system/Member/Member.php';
-            require_once \IPS\ROOT_PATH . '/system/Member/Club/Club.php';
-            require_once \IPS\ROOT_PATH . '/system/Db/Db.php';
+            require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
+            require_once \IPS\ROOT_PATH.'/system/Member/Club/Club.php';
+            require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
             $ipsAccount = \IPS\Db::i()->select(
                 'member_id, field_12',
-                'core_pfields_content',
-                [ 'field_12=?', $this->id ]
-            );
+                'core_pfields_content', [ 'field_12=?', $this->id ]);
 
             if (count($ipsAccount) == 0) {
                 // No user. Abort;

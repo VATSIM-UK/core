@@ -8,8 +8,7 @@ use Illuminate\Queue\SerializesModels;
 
 class NewFeedbackEvent
 {
-    use InteractsWithSockets;
-    use SerializesModels;
+    use InteractsWithSockets, SerializesModels;
 
     public $feedback;
 

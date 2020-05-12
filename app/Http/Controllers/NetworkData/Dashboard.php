@@ -29,7 +29,7 @@ class Dashboard extends AdmController
                 $counts = [];
 
                 foreach ($statisticKeys as $key) {
-                    $counts[$key] = Statistic::getStatistic($date->toDateString(), 'visittransfer::' . $key);
+                    $counts[$key] = Statistic::getStatistic($date->toDateString(), 'visittransfer::'.$key);
                 }
 
                 $statistics[$date->toDateString()] = $counts;

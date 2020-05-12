@@ -12,7 +12,7 @@ class ApplicationCannotBeWithdrawnException extends \Exception
     {
         $this->application = $application;
 
-        $this->message = 'Application #' . $this->application->id . ' cannot be withdrawn.';
+        $this->message = 'Application #'.$this->application->id.' cannot be withdrawn.';
     }
 
     public function __toString()

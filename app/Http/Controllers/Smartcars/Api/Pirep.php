@@ -47,13 +47,13 @@ class Pirep extends AdmController
 
         $return = '';
         foreach ($pireps as $p) {
-            $return .= $p->id . '|';
-            $return .= $p->bid->flight->code . '|';
-            $return .= $p->bid->flight->flightnum . '|';
-            $return .= $p->created_at->toDateString() . '|';
-            $return .= $p->bid->flight->departure->icao . '|';
-            $return .= $p->bid->flight->arrival->icao . '|';
-            $return .= $p->bid->flight->aircraft->id . ';';
+            $return .= $p->id.'|';
+            $return .= $p->bid->flight->code.'|';
+            $return .= $p->bid->flight->flightnum.'|';
+            $return .= $p->created_at->toDateString().'|';
+            $return .= $p->bid->flight->departure->icao.'|';
+            $return .= $p->bid->flight->arrival->icao.'|';
+            $return .= $p->bid->flight->aircraft->id.';';
         }
 
         return rtrim($return, ';');

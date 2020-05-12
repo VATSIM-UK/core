@@ -109,7 +109,7 @@ class Token extends Model
             }
         }
 
-        $token = new self();
+        $token = new self;
         $token->type = $type;
         $token->expires_at = \Carbon\Carbon::now()->addMinutes($expireMinutes)->toDateTimeString();
         $token->code = uniqid(uniqid());

@@ -41,7 +41,7 @@ class Application extends BaseController
         return $this->viewMake('visit-transfer.site.application.terms')
             ->with('applicationType', $applicationType)
             ->with('trainingTeam', $trainingTeam)
-            ->with('application', new \App\Models\VisitTransfer\Application());
+            ->with('application', new \App\Models\VisitTransfer\Application);
     }
 
     public function postStart(ApplicationStartRequest $request)
@@ -203,14 +203,14 @@ class Application extends BaseController
             $redirectRoute = 'visiting.application.submit';
         }
 
-        return Redirect::route($redirectRoute, [$application->public_id])->withSuccess('Referee ' . Request::input('referee_cid') . ' added successfully! They will not be contacted until you submit your application.');
+        return Redirect::route($redirectRoute, [$application->public_id])->withSuccess('Referee '.Request::input('referee_cid').' added successfully! They will not be contacted until you submit your application.');
     }
 
     public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, \App\Models\VisitTransfer\Application $application, Reference $reference)
     {
         $reference->delete();
 
-        return Redirect::route('visiting.application.referees', [$application->public_id])->withSuccess('Referee ' . $reference->account->name . ' deleted.');
+        return Redirect::route('visiting.application.referees', [$application->public_id])->withSuccess('Referee '.$reference->account->name.' deleted.');
     }
 
     public function getSubmit(\App\Models\VisitTransfer\Application $application)
@@ -263,6 +263,6 @@ class Application extends BaseController
 
     private function getCurrentOpenApplicationForUser()
     {
-        return Auth::check() ? Auth::user()->visit_transfer_current : new \App\Models\VisitTransfer\Application();
+        return Auth::check() ? Auth::user()->visit_transfer_current : new \App\Models\VisitTransfer\Application;
     }
 }

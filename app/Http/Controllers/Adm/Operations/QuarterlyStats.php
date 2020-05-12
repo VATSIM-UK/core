@@ -20,8 +20,8 @@ class QuarterlyStats extends AdmController
     {
         $this->generateValidation($request);
 
-        $startDate = Carbon::parse($request->get('year') . '-' . $request->get('quarter'));
-        $endDate = Carbon::parse($request->get('year') . '-' . $request->get('quarter'))->addMonths(3);
+        $startDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'));
+        $endDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'))->addMonths(3);
 
         $stats = collect([
             ['name' => 'Left Division', 'value' => $this->membersLeftDivision($startDate, $endDate)],
@@ -45,7 +45,7 @@ class QuarterlyStats extends AdmController
                 'required',
                 Rule::in(['01-01', '04-01', '07-01', '10-01']),
             ],
-            'year' => 'required|numeric|min:2016|max:' . Carbon::now()->year,
+            'year' => 'required|numeric|min:2016|max:'.Carbon::now()->year,
         ]);
     }
 

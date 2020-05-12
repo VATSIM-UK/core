@@ -10,7 +10,7 @@ class DuplicateFacilityNameException extends \Exception
     {
         $this->name = $name;
 
-        $this->message = 'The name ' . $this->name . ' is already in use for a facility.';
+        $this->message = 'The name '.$this->name.' is already in use for a facility.';
     }
 
     public function __toString()

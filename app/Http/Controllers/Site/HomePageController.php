@@ -33,7 +33,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
 
     public function getHTMLByID($id, $html)
     {
-        $dom = new \DOMDocument();
+        $dom = new \DOMDocument;
         libxml_use_internal_errors(true);
         $dom->loadHTML($html);
         $node = $dom->getElementById($id);

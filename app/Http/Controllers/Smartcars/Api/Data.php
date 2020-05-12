@@ -17,7 +17,7 @@ class Data extends AdmController
         $averageLandingRate = (int) Account::find(Request::input('dbid'))->pireps()->avg('landing_rate');
         $totalPireps = $totalFlights;
 
-        return $totalHours . ',' . $totalFlights . ',' . $averageLandingRate . ',' . $totalPireps;
+        return $totalHours.','.$totalFlights.','.$averageLandingRate.','.$totalPireps;
     }
 
     public function getAirports()
@@ -27,12 +27,12 @@ class Data extends AdmController
         $return = '';
 
         foreach ($airports as $a) {
-            $return .= $a->id . '|';
-            $return .= $a->icao . '|';
-            $return .= $a->name . '|';
-            $return .= $a->latitude . '|';
-            $return .= $a->longitude . '|';
-            $return .= $a->country . ';';
+            $return .= $a->id.'|';
+            $return .= $a->icao.'|';
+            $return .= $a->name.'|';
+            $return .= $a->latitude.'|';
+            $return .= $a->longitude.'|';
+            $return .= $a->country.';';
         }
 
         return rtrim($return, ';');
@@ -45,12 +45,12 @@ class Data extends AdmController
         $return = '';
 
         foreach ($aircraft as $a) {
-            $return .= $a->id . ',';
-            $return .= $a->fullname . ',';
-            $return .= $a->icao . ',';
-            $return .= $a->registration . ',';
-            $return .= $a->max_passengers . ',';
-            $return .= $a->max_cargo_kg . ',';
+            $return .= $a->id.',';
+            $return .= $a->fullname.',';
+            $return .= $a->icao.',';
+            $return .= $a->registration.',';
+            $return .= $a->max_passengers.',';
+            $return .= $a->max_cargo_kg.',';
             $return .= '1;';
         }
 

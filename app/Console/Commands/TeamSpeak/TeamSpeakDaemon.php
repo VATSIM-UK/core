@@ -58,7 +58,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
                     if ($connectionFailures == 3) {
                         throw new TeamSpeak3_Transport_Exception("TeamSpeak Daemon failed to connect 3 times.");
                     }
-                    $this->log('TeamSpeak connection failed: ' . $e->getMessage() . '. Trying again in 15 seconds...');
+                    $this->log('TeamSpeak connection failed: '.$e->getMessage(). '. Trying again in 15 seconds...');
                     sleep(15);
                 }
             }

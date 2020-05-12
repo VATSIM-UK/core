@@ -74,7 +74,7 @@ class UpdateFeedbackFormRequest extends Request
                             continue;
                         }
                     }
-                    $validator->errors()->add($question['name'], 'The question "' . $question['name'] . '" requires values!');
+                    $validator->errors()->add($question['name'], 'The question "'.$question['name'].'" requires values!');
                 }
             }
         });

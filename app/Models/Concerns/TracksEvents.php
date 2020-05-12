@@ -22,7 +22,7 @@ trait TracksEvents
      */
     public static function bootTracksEvents()
     {
-        $instance = new static();
+        $instance = new static;
 
         foreach ($instance->trackedEvents as $event) {
             static::$event(function ($model) use ($event) {

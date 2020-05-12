@@ -40,19 +40,19 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
 
         // Global searches!
         $members = Cache::remember("adm_dashboard_membersearch_{$searchQuery}", 60 * 60, function () use ($searchQuery) {
-            return Account::where('id', 'LIKE', '%' . $searchQuery . '%')
-                ->orWhere(\DB::raw("CONCAT(`name_first`, ' ', `name_last`)"), 'LIKE', '%' . $searchQuery . '%')
+            return Account::where('id', 'LIKE', '%'.$searchQuery.'%')
+                ->orWhere(\DB::raw("CONCAT(`name_first`, ' ', `name_last`)"), 'LIKE', '%'.$searchQuery.'%')
                 ->limit(25)
                 ->get();
         });
 
         $emails = Cache::remember("adm_dashboard_emailssearch_{$searchQuery}", 60 * 60, function () use ($searchQuery) {
-            return AccountEmail::where('email', 'LIKE', '%' . $searchQuery . '%')
+            return AccountEmail::where('email', 'LIKE', '%'.$searchQuery.'%')
                 ->limit(25)
                 ->get();
         });
 
-        $this->setTitle('Global Search Results: ' . $searchQuery);
+        $this->setTitle('Global Search Results: '.$searchQuery);
 
         return $this->viewMake('adm.search')
             ->with('members', $members)

@@ -46,9 +46,7 @@ class ResetPasswordController extends BaseController
     protected function credentials(Request $request)
     {
         return array_merge(['id' => Auth::guard('vatsim-sso')->user()->id], $request->only(
-            'password',
-            'password_confirmation',
-            'token'
+            'password', 'password_confirmation', 'token'
         ));
     }
 

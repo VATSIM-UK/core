@@ -34,6 +34,6 @@ class ServerGroup extends Group
     {
         parent::boot();
 
-        static::addGlobalScope(new GroupScope());
+        static::addGlobalScope(new GroupScope);
     }
 }

@@ -52,7 +52,7 @@ class ApplicationReferenceRequest extends Notification implements ShouldQueue
     {
         $subject = "[{$this->application->public_id}] {$this->application->type_string} Reference Request";
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
             ->view('visit-transfer.emails.reference.request', [

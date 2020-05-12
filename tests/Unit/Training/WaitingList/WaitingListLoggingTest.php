@@ -13,8 +13,7 @@ use TiMacDonald\Log\LogFake;
 
 class WaitingListLoggingTest extends TestCase
 {
-    use DatabaseTransactions;
-    use WaitingListTestHelper;
+    use DatabaseTransactions, WaitingListTestHelper;
 
     private $waitingList;
     private $account;
@@ -29,11 +28,11 @@ class WaitingListLoggingTest extends TestCase
 
         $this->waitingList->addToWaitingList($this->account, $this->privacc);
     }
-
+    
     /** @test */
     public function itLogsTheChangeInContentForNotesInLists()
     {
-        Log::swap(new LogFake());
+        Log::swap(new LogFake);
 
         $waitingListAccount = $this->waitingList->accounts->find($this->account->id)->pivot;
 
@@ -46,10 +45,8 @@ class WaitingListLoggingTest extends TestCase
         $listener = app()->make(LogNoteChanged::class);
         $listener->handle($event);
 
-        Log::channel('training')->assertLoggedMessage(
-            'info',
+        Log::channel('training')->assertLoggedMessage('info',
             "A note about {$this->account->name} ({$this->account->id}) in waiting list {$this->waitingList->name} ({$this->waitingList->id}) was changed from 
-            {$event->oldNoteContent} to {$event->newNoteContent}"
-        );
+            {$event->oldNoteContent} to {$event->newNoteContent}");
     }
 }

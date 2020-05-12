@@ -20,11 +20,8 @@ class AtcSessionModelTest extends TestCase
         $atcSession->qualification_id = $qualification->id;
         $this->user->networkDataAtc()->save($atcSession);
 
-        $this->assertInstanceOf(
-            \App\Models\NetworkData\Atc::class,
-            $atcSession,
-            'NetworkData::AtcSession not created.'
-        );
+        $this->assertInstanceOf(\App\Models\NetworkData\Atc::class, $atcSession,
+            'NetworkData::AtcSession not created.');
         $this->assertEquals(true, $atcSession->exists, "NetworkData::AtcSession doesn't exist.");
     }
 
@@ -43,10 +40,8 @@ class AtcSessionModelTest extends TestCase
         $atcSession->disconnectAt($currentTimestamp);
 
         $this->assertFalse($atcSession->is_online, 'NetworkData::AtcSession is still online.');
-        $this->assertTrue(
-            $atcSession->disconnected_at->toDateTimeString() === $currentTimestamp->toDateTimeString(),
-            'NetworkData::AtcSession not disconnected at current time.'
-        );
+        $this->assertTrue($atcSession->disconnected_at->toDateTimeString() === $currentTimestamp->toDateTimeString(),
+            'NetworkData::AtcSession not disconnected at current time.');
     }
 
     /** @test */
@@ -63,11 +58,8 @@ class AtcSessionModelTest extends TestCase
 
         $atcSession->fresh()->disconnectAt($atcSession->connected_at->addMinutes(2));
 
-        $this->assertEquals(
-            2,
-            $atcSession->fresh()->minutes_online,
-            "NetworkData::AtcSession hasn't calculated minutes online."
-        );
+        $this->assertEquals(2, $atcSession->fresh()->minutes_online,
+            "NetworkData::AtcSession hasn't calculated minutes online.");
     }
 
     /** @test */

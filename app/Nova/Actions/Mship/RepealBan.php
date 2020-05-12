@@ -16,9 +16,7 @@ use Laravel\Nova\Fields\Textarea;
 
 class RepealBan extends Action
 {
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Perform the action on the given models.
@@ -33,12 +31,8 @@ class RepealBan extends Action
         $ban = $models->first();
 
         // Add note before repealing the ban...
-        handleService(new AddNote(
-            $ban->account,
-            Type::isShortCode('discipline')->first(),
-            Auth::user(),
-            $fields->reason
-        ));
+        handleService(new AddNote($ban->account, Type::isShortCode('discipline')->first(), Auth::user(),
+            $fields->reason));
 
         // Repeal ban from account...
         handleService(new RepealBanService($ban));

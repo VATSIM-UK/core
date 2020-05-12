@@ -50,7 +50,7 @@ class FeedbackSummary extends Notification implements ShouldQueue
     {
         $subject = 'Feedback Summary';
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
             ->view('emails.mship.feedback.summary', [

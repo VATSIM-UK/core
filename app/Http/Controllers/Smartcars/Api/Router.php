@@ -31,7 +31,7 @@ class Router extends AdmController
         Debugbar::disable();
 
         if (config('app.debug_smartcars')) {
-            Log::info($request->method() . '::' . $request->fullUrl());
+            Log::info($request->method().'::'.$request->fullUrl());
             Log::info(json_encode($request->all()));
         }
 
@@ -52,45 +52,45 @@ class Router extends AdmController
     {
         switch ($request->get('action')) {
             case 'automaticlogin':
-                return App::call(Authentication::class . '@postAuto');
+                return App::call(Authentication::class.'@postAuto');
 
             case 'verifysession':
-                return App::call(Authentication::class . '@postVerify');
+                return App::call(Authentication::class.'@postVerify');
 
             case 'getpilotcenterdata':
-                return App::call(Data::class . '@getPilotInfo');
+                return App::call(Data::class.'@getPilotInfo');
 
             case 'getairports':
-                return App::call(Data::class . '@getAirports');
+                return App::call(Data::class.'@getAirports');
 
             case 'getaircraft':
-                return App::call(Data::class . '@getAircraft');
+                return App::call(Data::class.'@getAircraft');
 
             case 'searchflights':
-                return App::call(Flight::class . '@getSearch');
+                return App::call(Flight::class.'@getSearch');
 
             case 'getbidflights':
-                return App::call(Flight::class . '@getBids');
+                return App::call(Flight::class.'@getBids');
 
             case 'bidonflight':
                 if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
-                return App::call(Flight::class . '@getBid');
+                return App::call(Flight::class.'@getBid');
 
             case 'deletebidflight':
                 if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
-                return App::call(Flight::class . '@getBidDelete');
+                return App::call(Flight::class.'@getBidDelete');
 
             case 'searchpireps':
-                return App::call(Pirep::class . '@getSearch');
+                return App::call(Pirep::class.'@getSearch');
 
             case 'getpirepdata':
-                return App::call(Pirep::class . '@getData');
+                return App::call(Pirep::class.'@getData');
 
             case 'createflight':
                 return '';
@@ -107,13 +107,13 @@ class Router extends AdmController
     {
         switch ($request->get('action')) {
             case 'manuallogin':
-                return App::call(Authentication::class . '@postManual');
+                return App::call(Authentication::class.'@postManual');
 
             case 'searchflights':
-                return App::call(Flight::class . '@getSearch');
+                return App::call(Flight::class.'@getSearch');
 
             case 'getbidflights':
-                return App::call(Flight::class . '@getBids');
+                return App::call(Flight::class.'@getBids');
 
             case 'bidonflight':
                 return '';
@@ -135,14 +135,14 @@ class Router extends AdmController
                     return 'AUTH_FAILED';
                 }
 
-                return App::call(Flight::class . '@postPosition');
+                return App::call(Flight::class.'@postPosition');
 
             case 'filepirep':
                 if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
-                return App::call(Flight::class . '@postReport');
+                return App::call(Flight::class.'@postReport');
 
             default:
                 return 'Script OK, Frame Version: VATSIM_UK_CUSTOM_1, Interface Version: VATSIM_UK_CUSTOM_1';

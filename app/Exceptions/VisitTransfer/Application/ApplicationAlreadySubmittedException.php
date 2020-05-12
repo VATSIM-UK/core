@@ -12,7 +12,7 @@ class ApplicationAlreadySubmittedException extends \Exception
     {
         $this->application = $application;
 
-        $this->message = 'Application #' . $this->application->id . ' has already been submitted.';
+        $this->message = 'Application #'.$this->application->id.' has already been submitted.';
     }
 
     public function __toString()

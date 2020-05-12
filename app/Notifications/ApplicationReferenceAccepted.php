@@ -48,7 +48,7 @@ class ApplicationReferenceAccepted extends Notification implements ShouldQueue
     {
         $subject = "[{$this->application->public_id}] Reference from '{$this->reference->account->name}' Accepted";
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
             ->view('visit-transfer.emails.applicant.reference_accepted', ['recipient' => $notifiable, 'subject' => $subject, 'reference' => $this->reference, 'application' => $this->application]);

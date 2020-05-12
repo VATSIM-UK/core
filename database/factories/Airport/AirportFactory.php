@@ -4,8 +4,8 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Models\Airport::class, function (Faker $faker) {
     return [
-        'icao' => $faker->randomLetter . $faker->randomLetter . $faker->randomLetter . $faker->randomLetter,
-        'iata' => $faker->randomLetter . $faker->randomLetter . $faker->randomLetter,
+        'icao' => $faker->randomLetter.$faker->randomLetter.$faker->randomLetter.$faker->randomLetter,
+        'iata' => $faker->randomLetter.$faker->randomLetter.$faker->randomLetter,
         'name' => $faker->city,
         'fir_type' => $faker->randomElement([1, 2]),
         'major' => $faker->optional(0.7, false)->passthrough(true),

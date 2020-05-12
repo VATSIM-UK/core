@@ -46,7 +46,7 @@ class SlackInvitation extends Notification implements ShouldQueue
     {
         $subject = 'Why not join us on Slack?';
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Community Department')
             ->subject($subject)
             ->view('emails.mship.account.slack_invite', ['account' => $notifiable, 'recipient' => $notifiable, 'subject' => $subject]);

@@ -31,8 +31,8 @@ class SyncBanToForum
         }
 
         require_once $IPSInitFile;
-        require_once \IPS\ROOT_PATH . '/system/Member/Member.php';
-        require_once \IPS\ROOT_PATH . '/system/Db/Db.php';
+        require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
+        require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
         $account = $event->ban->account;
         if ($account->is_banned) {

@@ -16,7 +16,7 @@ class AutoTools
         $sprintUrl = '%sdivdbfullwpilot.php?authid=%s&authpassword=%s&div=%s';
 
         if ($withTimestamp) {
-            $sprintUrl .= '&timestamp=' . (time() - 60 * 119);
+            $sprintUrl .= '&timestamp='.(time() - 60 * 119);
         }
 
         $url = sprintf(
@@ -43,9 +43,9 @@ class AutoTools
                 return collect();
             }
 
-            \Storage::put('autotools' . DIRECTORY_SEPARATOR . 'divdbfullwpilot.csv', $data);
+            \Storage::put('autotools'.DIRECTORY_SEPARATOR.'divdbfullwpilot.csv', $data);
 
-            $reader = Reader::createFromPath(storage_path('app' . DIRECTORY_SEPARATOR . 'autotools' . DIRECTORY_SEPARATOR . 'divdbfullwpilot.csv'), 'r');
+            $reader = Reader::createFromPath(storage_path('app'.DIRECTORY_SEPARATOR.'autotools'.DIRECTORY_SEPARATOR.'divdbfullwpilot.csv'), 'r');
 
             $keys = [
                 'cid', 'rating_atc', 'rating_pilot',

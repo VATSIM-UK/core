@@ -35,7 +35,7 @@ class ModifyRequest extends Request
     protected function getValidatorInstance()
     {
         $data = $this->all();
-        $data['period_finish'] = array_get($data, 'finish_date', null) . ' ' . array_get($data, 'finish_time', null) . ':00';
+        $data['period_finish'] = array_get($data, 'finish_date', null).' '.array_get($data, 'finish_time', null).':00';
         $this->getInputSource()->replace($data);
 
         return parent::getValidatorInstance();

@@ -47,7 +47,7 @@ class Email extends \App\Http\Controllers\BaseController
     public function postEmail(Request $request)
     {
         $this->validate($request, [
-            'recipient' => 'required|integer|min:800000|not_in:' . $this->account->id,
+            'recipient' => 'required|integer|min:800000|not_in:'.$this->account->id,
             'subject' => 'required|string|max:255',
             'message' => 'required|string|max:65535',
         ]);

@@ -145,9 +145,9 @@ abstract class Command extends BaseCommand
         preg_match('/\/app\/Console\/Commands\/.*$/', __FILE__, $directory);
         $directory = array_get($directory, 0, '');
         if (App::environment('production')) {
-            return 'https://gitlab.com/vatsim-uk/core/blob/production' . $directory;
+            return 'https://gitlab.com/vatsim-uk/core/blob/production'.$directory;
         } else {
-            return 'https://gitlab.com/vatsim-uk/core/blob/development' . $directory;
+            return 'https://gitlab.com/vatsim-uk/core/blob/development'.$directory;
         }
     }
 

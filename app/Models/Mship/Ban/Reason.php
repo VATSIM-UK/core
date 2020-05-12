@@ -65,6 +65,6 @@ class Reason extends Model
 
     public function __toString()
     {
-        return $this->name . ' (Duration ' . $this->period_amount . $this->period_unit . ')';
+        return $this->name.' (Duration '.$this->period_amount.$this->period_unit.')';
     }
 }

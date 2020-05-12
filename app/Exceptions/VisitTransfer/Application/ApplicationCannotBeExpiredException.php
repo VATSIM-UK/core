@@ -12,7 +12,7 @@ class ApplicationCannotBeExpiredException extends \Exception
     {
         $this->application = $application;
 
-        $this->message = 'Application #' . $this->application->id . ' cannot be expired.';
+        $this->message = 'Application #'.$this->application->id.' cannot be expired.';
     }
 
     public function __toString()

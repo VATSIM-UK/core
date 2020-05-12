@@ -146,7 +146,7 @@ trait HasQualifications
     {
         $output = '';
         foreach ($this->qualifications_pilot as $p) {
-            $output .= $p->code . ', ';
+            $output .= $p->code.', ';
         }
         if ($output == '') {
             $output = 'None';

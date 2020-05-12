@@ -16,9 +16,7 @@ use Laravel\Nova\Fields\Text;
 
 class AddFlagToWaitingList extends Action
 {
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use InteractsWithQueue, Queueable, SerializesModels;
 
     public $name = 'Add Flag';
 

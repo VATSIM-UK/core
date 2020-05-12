@@ -18,14 +18,14 @@ class AuthenticationTest extends TestCase
      */
     protected $authenticationInstance;
 
-    public function setUp(): void
+    public function setUp():void
     {
         parent::setUp();
         $this->authenticationInstance = new \App\Http\Controllers\Auth\LoginController();
         Session::flush();
     }
 
-    public function tearDown(): void
+    public function tearDown():void
     {
         parent::tearDown();
         $this->authenticationInstance = null;
@@ -42,7 +42,7 @@ class AuthenticationTest extends TestCase
     {
         // In this test, we assert that we're getting a redirect to the login page if no auth at all
         $expectedStatus = 302;
-        $expectedRedirectRegExp = '#\h*<title>Redirecting to ' . route('dashboard') . '<\/title>\h*#';
+        $expectedRedirectRegExp = '#\h*<title>Redirecting to '.route('dashboard').'<\/title>\h*#';
         $expectedObjectType = 'Illuminate\Http\RedirectResponse';
 
         $result = $this->authenticationInstance->getLogin();

@@ -12,8 +12,7 @@ use Tests\TestCase;
 
 class WaitingListAccountTest extends TestCase
 {
-    use DatabaseTransactions;
-    use WaitingListTestHelper;
+    use DatabaseTransactions, WaitingListTestHelper;
 
     private $waitingList;
 
@@ -79,8 +78,7 @@ class WaitingListAccountTest extends TestCase
                 'account_id' => $account->id,
                 'minutes_online' => 721,
                 'disconnected_at' => now()
-            ]
-        );
+            ]);
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -97,8 +95,7 @@ class WaitingListAccountTest extends TestCase
                 'account_id' => $account->id,
                 'minutes_online' => 20,
                 'disconnected_at' => now()
-            ]
-        );
+            ]);
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -115,8 +112,7 @@ class WaitingListAccountTest extends TestCase
                 'account_id' => $account->id,
                 'minutes_online' => 60,
                 'disconnected_at' => now()
-            ]
-        );
+            ]);
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -134,8 +130,7 @@ class WaitingListAccountTest extends TestCase
                 'account_id' => $account->id,
                 'minutes_online' => 60,
                 'disconnected_at' => now(), 'callsign' => 'LFPG_APP'
-            ]
-        );
+            ]);
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -154,8 +149,7 @@ class WaitingListAccountTest extends TestCase
                 [
                     'account_id' => $account->id, 'minutes_online' => 60,
                     'disconnected_at' => now()->subMonth(3)->subDay(1)
-                ]
-            );
+                ]);
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -173,8 +167,7 @@ class WaitingListAccountTest extends TestCase
                 [
                     'account_id' => $account->id, 'minutes_online' => 60,
                     'disconnected_at' => now()->subMonth(3)
-                ]
-            );
+                ]);
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -192,8 +185,7 @@ class WaitingListAccountTest extends TestCase
                 [
                     'account_id' => $account->id, 'minutes_online' => 60,
                     'disconnected_at' => now()
-                ]
-            );
+                ]);
 
         // last session brings the total to 11 hours 59 minutes of controlling time.
         factory(Atc::class, 1)
@@ -201,8 +193,7 @@ class WaitingListAccountTest extends TestCase
                 [
                     'account_id' => $account->id, 'minutes_online' => 59,
                     'disconnected_at' => now()
-                ]
-            );
+                ]);
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -259,8 +250,7 @@ class WaitingListAccountTest extends TestCase
                 'account_id' => $account->id,
                 'minutes_online' => 721,
                 'disconnected_at' => now()
-            ]
-        );
+            ]);
 
         // grab the pivot model
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;

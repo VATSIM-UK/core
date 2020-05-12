@@ -19,7 +19,7 @@ class ReferenceSubmitRequest extends FormRequest
             'reference_relationship' => 'required',
             'reference_hours_minimum' => 'required',
             'reference_recent_transfer' => 'required',
-            'reference_not_staff' => 'required_if:application_type,' . Application::TYPE_TRANSFER,
+            'reference_not_staff' => 'required_if:application_type,'.Application::TYPE_TRANSFER,
             'reference' => 'required|string|min:50|max:1000',
         ];
     }

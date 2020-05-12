@@ -15,7 +15,7 @@ class AlreadyAGroupTierMemberException extends \Exception
         $this->account = $account;
         $this->group = $group;
 
-        $this->message = 'It is not possible to join ' . $group->name . ' whilst still a member.';
+        $this->message = 'It is not possible to join '.$group->name.' whilst still a member.';
     }
 
     public function __toString()

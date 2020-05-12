@@ -51,7 +51,7 @@ class WaitingListPolicy extends BasePolicy
         return $account->checkPermissionTo("waitingLists/{$waitingList->department}/update", self::GUARD);
     }
 
-    public function delete(Account $account, WaitingList $waitingList)
+    public function delete(Account $account, WaitingList  $waitingList)
     {
         return $account->checkPermissionTo("waitingLists/{$waitingList->department}/delete", self::GUARD);
     }

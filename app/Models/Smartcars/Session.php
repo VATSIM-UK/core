@@ -42,7 +42,7 @@ class Session extends Model
 
     public static function deleteOldSessions()
     {
-        \DB::query('DELETE FROM smartcars_session WHERE updated_at < ' . \Carbon\Carbon::now()->subHours(24));
+        \DB::query('DELETE FROM smartcars_session WHERE updated_at < '.\Carbon\Carbon::now()->subHours(24));
     }
 
     public function scopeSessionId($query, $sessionId)

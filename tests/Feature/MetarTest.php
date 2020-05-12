@@ -31,4 +31,5 @@ class MetarTest extends \Tests\TestCase
         $response = $this->get(route('api.metar', ['EGKK']))->content();
         $this->assertEquals('METAR UNAVAILABLE', $response);
     }
+
 }

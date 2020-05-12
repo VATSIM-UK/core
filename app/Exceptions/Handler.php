@@ -85,7 +85,7 @@ class Handler extends ExceptionHandler
         $channel = '#ws_alerts';
 
         $attachment = [
-            'fallback' => 'Exception thrown: ' . get_class($e),
+            'fallback' => 'Exception thrown: '.get_class($e),
             'text' => $e->getTraceAsString(),
             'author_name' => get_class($e),
             'color' => 'danger',

@@ -15,12 +15,8 @@ trait HasCommunityGroups
      */
     public function communityGroups()
     {
-        return $this->belongsToMany(
-            \App\Models\Community\Group::class,
-            'community_membership',
-            'account_id',
-            'group_id'
-        )
+        return $this->belongsToMany(\App\Models\Community\Group::class, 'community_membership',
+            'account_id', 'group_id')
             ->withTimestamps()
             ->withPivot(['created_at', 'updated_at', 'deleted_at'])
             ->wherePivot('deleted_at', null);

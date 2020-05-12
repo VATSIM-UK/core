@@ -12,7 +12,7 @@ class DuplicateApplicationException extends \Exception
     {
         $this->applicant = $applicant;
 
-        $this->message = 'There is already an open application for ' . $this->applicant->name . ' (' . $this->applicant->account_id . ').  Duplicate applications are not permitted.';
+        $this->message = 'There is already an open application for '.$this->applicant->name.' ('.$this->applicant->account_id.').  Duplicate applications are not permitted.';
     }
 
     public function __toString()

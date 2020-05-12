@@ -37,14 +37,14 @@ class NetworkStatistics extends Command
     public function handle()
     {
         $currentPeriod = $this->getStartPeriod();
-        $this->log('Start Period: ' . $currentPeriod->toDateString());
+        $this->log('Start Period: '.$currentPeriod->toDateString());
 
         while ($currentPeriod->lte($this->getEndPeriod())) {
-            $this->log('=========== START OF CYCLE ' . $currentPeriod->toDateString() . ' ===========');
+            $this->log('=========== START OF CYCLE '.$currentPeriod->toDateString().' ===========');
 
             $this->addTotalAtcSessionsCount($currentPeriod);
 
-            $this->log('============ END OF CYCLE ' . $currentPeriod->toDateString() . '  ===========');
+            $this->log('============ END OF CYCLE '.$currentPeriod->toDateString().'  ===========');
 
             $currentPeriod = $currentPeriod->addDay();
         }
@@ -69,15 +69,15 @@ class NetworkStatistics extends Command
         $this->log('Counting total completed ATC sessions for given day');
 
         try {
-            $count = Atc::where('connected_at', 'LIKE', $currentPeriod->toDateString() . ' %')
-                ->where('disconnected_at', 'LIKE', $currentPeriod->toDateString() . ' %')
+            $count = Atc::where('connected_at', 'LIKE', $currentPeriod->toDateString().' %')
+                ->where('disconnected_at', 'LIKE', $currentPeriod->toDateString().' %')
                 ->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'networkdata::atc.global.total', $count);
 
-            $this->log('Done. ' . $count . ' total ATC sessions.');
+            $this->log('Done. '.$count.' total ATC sessions.');
         } catch (\Exception $e) {
-            $this->log('Error: ' . $e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             Bugsnag::notifyException($e);
         }
     }
@@ -94,7 +94,7 @@ class NetworkStatistics extends Command
         try {
             $startPeriod = Carbon::parse($this->argument('startPeriod'), 'UTC');
         } catch (\Exception $e) {
-            $this->log('Error: ' . $e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             Bugsnag::notifyException($e);
         }
 
@@ -117,7 +117,7 @@ class NetworkStatistics extends Command
         try {
             $endPeriod = Carbon::parse($this->argument('endPeriod'), 'UTC');
         } catch (\Exception $e) {
-            $this->log('Error: ' . $e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             Bugsnag::notifyException($e);
         }
 

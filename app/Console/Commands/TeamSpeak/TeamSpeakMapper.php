@@ -130,7 +130,7 @@ class TeamSpeakMapper extends Command
             $newModels[] = [
                 'channel_id' => $channel->id,
                 'channelgroup_id' => $rtsGroup->dbid,
-                'permission_id' => Permission::where('display_name', 'LIKE', 'TeamSpeak / Channel / ' . explode(' ', $channel->name)[0] . '%')->first()->id,
+                'permission_id' => Permission::where('display_name', 'LIKE', 'TeamSpeak / Channel / '.explode(' ', $channel->name)[0].'%')->first()->id,
             ];
         }
 

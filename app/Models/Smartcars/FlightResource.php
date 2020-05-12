@@ -47,7 +47,7 @@ class FlightResource extends Model
     public function asset()
     {
         if ($this->type === 'file') {
-            return asset('storage/' . $this->resource);
+            return asset('storage/'.$this->resource);
         }
 
         return $this->resource;

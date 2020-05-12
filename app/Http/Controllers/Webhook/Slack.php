@@ -66,7 +66,7 @@ class Slack extends WebhookController
 
         $slackToken->consume();
 
-        return 'Registration completed successfully, ' . $account->name . ' (' . $account->id . ').';
+        return 'Registration completed successfully, '.$account->name.' ('.$account->id.').';
     }
 
     private function payload($key)

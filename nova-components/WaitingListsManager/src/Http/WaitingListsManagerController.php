@@ -82,7 +82,6 @@ class WaitingListsManagerController extends Controller
                 ->sortBy('pivot.created_at')
                 ->filter(function ($model) use ($eligibility) {
                     return $model->pivot->eligibility == $eligibility;
-                })
-        );
+                }));
     }
 }

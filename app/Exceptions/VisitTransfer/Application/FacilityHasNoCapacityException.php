@@ -12,7 +12,7 @@ class FacilityHasNoCapacityException extends \Exception
     {
         $this->facility = $facility;
 
-        $this->message = $this->facility->name . " doesn't have enough training spaces for an application at this time.";
+        $this->message = $this->facility->name." doesn't have enough training spaces for an application at this time.";
     }
 
     public function __toString()

@@ -243,14 +243,14 @@ class TeamSpeak
     public static function checkMemberMandatoryNotifications(TeamSpeak3_Node_Client $client, Account $member)
     {
         if ($member->has_unread_must_acknowledge_notifications) {
-            $recentlyNotified = Cache::has(self::CACHE_NOTIFICATION_MANDATORY . $client['client_database_id']);
+            $recentlyNotified = Cache::has(self::CACHE_NOTIFICATION_MANDATORY.$client['client_database_id']);
             $timeSincePublished = $member->unread_must_acknowledge_time_elapsed;
 
             if ($timeSincePublished < 12) {
                 if (!$recentlyNotified) {
                     self::pokeClient($client, trans('teamspeak.notification.mandatory.notify'));
                     Cache::put(
-                        self::CACHE_NOTIFICATION_MANDATORY . $client['client_database_id'],
+                        self::CACHE_NOTIFICATION_MANDATORY.$client['client_database_id'],
                         Carbon::now(),
                         20 * 60
                     );
@@ -258,7 +258,7 @@ class TeamSpeak
             } else {
                 self::pokeClient($client, trans('teamspeak.notification.mandatory.poke'));
                 self::kickClient($client, trans('teamspeak.notification.mandatory.kick'));
-                throw new ClientKickedFromServerException();
+                throw new ClientKickedFromServerException;
             }
         } elseif ($member->has_unread_important_notifications) {
             self::pokeClient($client, trans('teamspeak.notification.important.poke.1'));
@@ -276,8 +276,8 @@ class TeamSpeak
     public static function checkClientNickname(TeamSpeak3_Node_Client $client, Account $member)
     {
         if (!$member->isValidDisplayName($client['client_nickname']) && !$member->isDuplicateDisplayName($client['client_nickname'])) {
-            $recentlyTold = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT . $client['client_database_id']);
-            $hasGracePeriod = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE . $client['client_database_id']);
+            $recentlyTold = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+            $hasGracePeriod = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
 
             // Check to see if their name is at least partially right
             if ($member->isPartiallyValidDisplayName($client['client_nickname'])) {
@@ -286,8 +286,8 @@ class TeamSpeak
                 if (!$recentlyTold) {
                     // Give them a grace period if they haven't recently had one
                     $now = Carbon::now();
-                    Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT . $client['client_database_id'], $now, 6 * 60);
-                    Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE . $client['client_database_id'], $now, 3 * 60);
+                    Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'], $now, 6 * 60);
+                    Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'], $now, 3 * 60);
 
                     $recentlyTold = $hasGracePeriod = true;
                 }
@@ -295,7 +295,7 @@ class TeamSpeak
                 if ($hasGracePeriod) {
                     self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
                     self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke2'));
-                    self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name . ' - EGLL_N_TWR']));
+                    self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name.' - EGLL_N_TWR']));
 
                     return;
                 }
@@ -305,12 +305,12 @@ class TeamSpeak
             self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
             self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
             self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
-            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT . $client['client_database_id']);
-            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE . $client['client_database_id']);
-            throw new ClientKickedFromServerException();
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
+            throw new ClientKickedFromServerException;
         } else {
-            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT . $client['client_database_id']);
-            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE . $client['client_database_id']);
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
         }
     }
 
@@ -396,18 +396,18 @@ class TeamSpeak
             $maxIdleTime = 60;
         }
 
-        $notified = Cache::has(self::CACHE_PREFIX_IDLE_NOTIFY . $client['client_database_id']);
+        $notified = Cache::has(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id']);
         if ($idleTime >= $maxIdleTime) {
             self::pokeClient($client, trans('teamspeak.idle.kick.poke.1', ['maxIdleTime' => $maxIdleTime]));
             self::pokeClient($client, trans('teamspeak.idle.kick.poke.2'));
             self::kickClient($client, trans('teamspeak.idle.kick.reason'));
-            throw new ClientKickedFromServerException();
+            throw new ClientKickedFromServerException;
         } elseif ($idleTime >= $maxIdleTime - 5 && !$notified) {
             self::pokeClient($client, trans('teamspeak.idle.poke', ['idleTime' => $idleTime]));
-            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY . $client['client_database_id'], Carbon::now(), 5 * 60);
+            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 5 * 60);
         } elseif (($maxIdleTime - 15 > 0) && ($idleTime >= $maxIdleTime - 15 && !$notified)) {
             self::messageClient($client, trans('teamspeak.idle.message', ['idleTime' => $idleTime, 'maxIdleTime' => $maxIdleTime]));
-            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY . $client['client_database_id'], Carbon::now(), 10 * 60);
+            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 10 * 60);
         }
     }
 
@@ -498,6 +498,6 @@ class TeamSpeak
         self::kickClient($client, $reason);
         $client->deleteDb();
         self::getActiveRegistration($client)->delete($client->getParent());
-        throw new ClientKickedFromServerException();
+        throw new ClientKickedFromServerException;
     }
 }

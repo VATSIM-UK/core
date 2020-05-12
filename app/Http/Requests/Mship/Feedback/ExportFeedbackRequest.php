@@ -20,7 +20,7 @@ class ExportFeedbackRequest extends FormRequest
         if (!$form) {
             return false;
         }
-        if (!Auth::user()->can('use-permission', 'adm/mship/feedback/list/*') && !Auth::user()->can('use-permission', 'adm/mship/feedback/list/' . $form->slug)) {
+        if (!Auth::user()->can('use-permission', 'adm/mship/feedback/list/*') && !Auth::user()->can('use-permission', 'adm/mship/feedback/list/'.$form->slug)) {
             return false;
         }
 

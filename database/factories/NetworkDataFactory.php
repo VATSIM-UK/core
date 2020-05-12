@@ -10,7 +10,7 @@
             'account_id' => function () {
                 return factory(\App\Models\Mship\Account::class)->create()->id;
             },
-            'callsign' => $faker->randomElement(['EGLL', 'EGKK', 'EGCC', 'EGBB']) . '_' . $faker->randomElement(['N', 'S', 'F', '']) . '_' . $facility[1],
+            'callsign' => $faker->randomElement(['EGLL', 'EGKK', 'EGCC', 'EGBB']).'_'.$faker->randomElement(['N', 'S', 'F', '']).'_'.$facility[1],
             'frequency' => $faker->randomFloat(3, 118, 134),
             'connected_at' => $faker->dateTimeBetween('6 hours ago'),
             'facility_type' => $facility[0],

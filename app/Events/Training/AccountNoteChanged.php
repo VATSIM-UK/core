@@ -11,9 +11,7 @@ use Illuminate\Queue\SerializesModels;
 
 class AccountNoteChanged implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithSockets;
-    use SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $account;
     /** @var WaitingListAccount */

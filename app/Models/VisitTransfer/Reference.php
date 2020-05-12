@@ -75,8 +75,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class Reference extends Model
 {
-    use Notifiable;
-    use SoftDeletes;
+    use Notifiable, SoftDeletes;
 
     protected $table = 'vt_reference';
     protected $primaryKey = 'id';
@@ -265,7 +264,7 @@ class Reference extends Model
         $this->save();
 
         if ($staffReason) {
-            $noteContent = 'VT Reference from ' . $this->account->name . " was rejected.\n" . $staffReason;
+            $noteContent = 'VT Reference from '.$this->account->name." was rejected.\n".$staffReason;
             $note = $this->application->account->addNote(
                 Type::isShortCode('visittransfer')->first(),
                 $noteContent,
@@ -308,7 +307,7 @@ class Reference extends Model
         $this->save();
 
         if ($staffComment) {
-            $noteContent = 'VT Reference from ' . $this->account->name . " was accepted.\n" . $staffComment;
+            $noteContent = 'VT Reference from '.$this->account->name." was accepted.\n".$staffComment;
             $note = $this->application->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!

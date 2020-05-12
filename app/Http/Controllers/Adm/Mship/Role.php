@@ -39,7 +39,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
             $role->syncPermissions(Request::input('permissions'));
         }
 
-        return Redirect::route('adm.mship.role.index')->withSuccess("Role '" . $role->name . "' has been created - don't forget to attach it to some roles!");
+        return Redirect::route('adm.mship.role.index')->withSuccess("Role '".$role->name."' has been created - don't forget to attach it to some roles!");
     }
 
     public function getUpdate(RoleData $role)
@@ -77,7 +77,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
             $role->syncPermissions(Request::input('permissions'));
         }
 
-        return Redirect::route('adm.mship.role.index')->withSuccess("Role '" . $role->name . "' has been updated - don't forget to set the permissions properly!");
+        return Redirect::route('adm.mship.role.index')->withSuccess("Role '".$role->name."' has been updated - don't forget to set the permissions properly!");
     }
 
     public function anyDelete(RoleData $role)

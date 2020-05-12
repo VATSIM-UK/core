@@ -37,7 +37,7 @@ class NovaCoreServiceProvider extends ServiceProvider
         }
 
         if (!$this->app->configurationIsCached()) {
-            $this->mergeConfigFrom(__DIR__ . '/../config/nova.php', 'nova');
+            $this->mergeConfigFrom(__DIR__.'/../config/nova.php', 'nova');
         }
 
         Route::middlewareGroup('nova', config('nova.middleware', []));
@@ -54,7 +54,7 @@ class NovaCoreServiceProvider extends ServiceProvider
     public function register()
     {
         if (!defined('NOVA_PATH')) {
-            define('NOVA_PATH', realpath(__DIR__ . '/../'));
+            define('NOVA_PATH', realpath(__DIR__.'/../'));
         }
     }
 }

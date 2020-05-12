@@ -51,7 +51,7 @@ class MemberEmail extends Notification implements ShouldQueue
 
         $subject = "Message from {$author->name}: {$this->post->thread->subject}";
 
-        $message = (new MailMessage())
+        $message = (new MailMessage)
             ->from('no-reply@vatsim.uk', 'VATSIM UK')
             ->subject($subject)
             ->view('emails.mship.member_email', [

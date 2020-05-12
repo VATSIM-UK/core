@@ -13,9 +13,7 @@ use Laravel\Nova\Fields\Textarea;
 
 class SendFeedback extends Action
 {
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Perform the action on the given models.

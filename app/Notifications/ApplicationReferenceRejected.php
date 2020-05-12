@@ -48,7 +48,7 @@ class ApplicationReferenceRejected extends Notification implements ShouldQueue
     {
         $subject = "[{$this->application->public_id}] Reference from '{$this->reference->account->name}' Rejected";
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
             ->view('visit-transfer.emails.applicant.reference_rejected', [

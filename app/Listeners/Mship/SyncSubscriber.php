@@ -12,7 +12,7 @@ class SyncSubscriber
      */
     public function syncToAllServices($event)
     {
-        $ranRecently = !Cache::add('SYNCSUB_' . $event->account->id, '1', 3);
+        $ranRecently = !Cache::add('SYNCSUB_'.$event->account->id, '1', 3);
 
         if ($ranRecently || !$event->account->fully_defined) {
             // Prevent unnecessary executions
@@ -24,7 +24,7 @@ class SyncSubscriber
         \App\Jobs\Mship\SyncToMoodle::dispatch($event->account);
         // \App\Jobs\Mship\SyncToForums::dispatch($event->account); - Re-enable tests (Feat/Adm/AccountTest & Unit/Mship/Sync/AccountAltered)
 
-        Log::debug($event->account->real_name . ' (' . $event->account->id . ') was queued to sync to external services');
+        Log::debug($event->account->real_name.' ('.$event->account->id.') was queued to sync to external services');
     }
 
     /**
@@ -35,8 +35,8 @@ class SyncSubscriber
     public function subscribe($events)
     {
         $events->listen(
-            \App\Events\Mship\AccountAltered::class,
-            '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
+                \App\Events\Mship\AccountAltered::class,
+                '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
         );
     }
 }

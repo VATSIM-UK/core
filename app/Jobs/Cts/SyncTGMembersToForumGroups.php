@@ -12,10 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 
 class SyncTGMembersToForumGroups implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $rtsId;
     protected $forumGroup;

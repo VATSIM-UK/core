@@ -62,7 +62,7 @@ class UserImpersonated extends Notification implements ShouldQueue
     {
         $subject = "{$this->impersonator->name} impersonated {$this->target->name}";
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->from('admin@vatsim.uk', 'VATSIM UK - Admin')
             ->subject($subject)
             ->view('emails.mship.user_impersonated', [

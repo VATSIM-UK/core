@@ -112,12 +112,12 @@ class Feedback extends \App\Http\Controllers\BaseController
             foreach ($rules as $rule) {
                 $automaticRuleErrors = ['required', 'exists', 'integer'];
                 if (!array_search($rule, $automaticRuleErrors)) {
-                    $errormessages[$question->slug . '.' . $rule] = "Looks like you answered '" . $question->question . "' incorrectly. Please try again.";
+                    $errormessages[$question->slug.'.'.$rule] = "Looks like you answered '".$question->question."' incorrectly. Please try again.";
                 }
             }
-            $errormessages[$question->slug . '.required'] = "You have not supplied an answer for '" . $question->question . "'.";
-            $errormessages[$question->slug . '.exists'] = 'This user was not found. Please ensure that you have entered the CID correctly, and that they are a UK member';
-            $errormessages[$question->slug . '.integer'] = 'You have not entered a valid integer.';
+            $errormessages[$question->slug.'.required'] = "You have not supplied an answer for '".$question->question."'.";
+            $errormessages[$question->slug.'.exists'] = 'This user was not found. Please ensure that you have entered the CID correctly, and that they are a UK member';
+            $errormessages[$question->slug.'.integer'] = 'You have not entered a valid integer.';
 
             // Add the answer to the array, ready for inserting
             $answerdata[] = new Answer([
@@ -160,7 +160,7 @@ class Feedback extends \App\Http\Controllers\BaseController
 
     public function getUserSearch($name, Request $request)
     {
-        $matches = Account::whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE '%" . $name . "%'")
+        $matches = Account::whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE '%".$name."%'")
             ->where('id', '!=', \Auth::user()->id)
             ->limit(5)
             ->with(['states'])
@@ -174,7 +174,7 @@ class Feedback extends \App\Http\Controllers\BaseController
                     if ($state->code = 'INTERNATIONAL' && ($state->region->first() == '*' || $state->division->first() == '*')) {
                         $user->state = 'Intl.';
                     } else {
-                        $user->state = $state->region->first() . '/' . $state->division->first();
+                        $user->state = $state->region->first().'/'.$state->division->first();
                     }
                 }
             }

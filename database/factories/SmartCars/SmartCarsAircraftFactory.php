@@ -7,7 +7,7 @@ $factory->define(\App\Models\Smartcars\Aircraft::class, function (Faker $faker) 
         'icao' => $faker->randomElement(['L', 'M', 'H']),
         'name' => 'Cessna',
         'fullname' => $faker->words(2, true),
-        'registration' => 'G' . strtoupper($faker->randomLetter . $faker->randomLetter . $faker->randomLetter . $faker->randomLetter),
+        'registration' => 'G'.strtoupper($faker->randomLetter.$faker->randomLetter.$faker->randomLetter.$faker->randomLetter),
         'range_nm' => $faker->numberBetween(0, 1000),
         'weight_kg' => $faker->numberBetween(1000, 10000),
         'cruise_altitude' => $faker->numberBetween(7000, 40000),

@@ -10,8 +10,7 @@ use Tests\TestCase;
 
 class WaitingListTest extends TestCase
 {
-    use DatabaseTransactions;
-    use WaitingListTestHelper;
+    use DatabaseTransactions, WaitingListTestHelper;
 
     private $waitingList;
     private $staffUser;
@@ -63,10 +62,8 @@ class WaitingListTest extends TestCase
 
         $this->assertCount(1, $this->waitingList->accounts);
 
-        $this->assertDatabaseHas(
-            'training_waiting_list_account',
-            ['account_id' => $account->id, 'list_id' => $this->waitingList->id]
-        );
+        $this->assertDatabaseHas('training_waiting_list_account',
+            ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
     }
 
     /** @test * */
@@ -76,19 +73,15 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
-        $this->assertDatabaseHas(
-            'training_waiting_list_account',
-            ['account_id' => $account->id, 'list_id' => $this->waitingList->id]
-        );
+        $this->assertDatabaseHas('training_waiting_list_account',
+            ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
 
         $this->waitingList->removeFromWaitingList($account);
 
-        $this->assertDatabaseHas(
-            'training_waiting_list_account',
+        $this->assertDatabaseHas('training_waiting_list_account',
             [
                 'account_id' => $account->id, 'list_id' => $this->waitingList->id, 'deleted_at' => now()
-            ]
-        );
+            ]);
     }
 
     /** @test * */

@@ -64,9 +64,7 @@ use Watson\Rememberable\Rememberable;
  */
 class Atc extends Model
 {
-    use PublicId;
-    use SoftDeletes;
-    use Rememberable;
+    use PublicId, SoftDeletes, Rememberable;
 
     protected static $public_id_salt = 'vatsim-uk-network-data-atc-sessions';
     protected static $public_id_min_length = 10;

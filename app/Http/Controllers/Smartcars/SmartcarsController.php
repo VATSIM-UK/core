@@ -62,7 +62,7 @@ class SmartcarsController extends BaseController
         ]);
         $guideRoute = route('fte.guide');
 
-        return redirect()->back()->with('success', 'Exercise booked successfully.<br>Make sure you have our flight tracking software, smartCARS, setup!<br>Unsure? <a href="' . $guideRoute . '">Click here</a> to get started.');
+        return redirect()->back()->with('success', 'Exercise booked successfully.<br>Make sure you have our flight tracking software, smartCARS, setup!<br>Unsure? <a href="'.$guideRoute.'">Click here</a> to get started.');
     }
 
     public function cancelExercise(Flight $exercise)
