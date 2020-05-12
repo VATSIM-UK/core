@@ -132,9 +132,9 @@ class Feedback extends Resource
     public function cards(Request $request)
     {
         return [
-            (new Metrics\TotalFeedback),
-            (new Metrics\TotalFeedbackGraph),
-            (new Metrics\ActionedUnactionedFeedback),
+            (new Metrics\TotalFeedback()),
+            (new Metrics\TotalFeedbackGraph()),
+            (new Metrics\ActionedUnactionedFeedback()),
         ];
     }
 
@@ -147,7 +147,7 @@ class Feedback extends Resource
     public function filters(Request $request)
     {
         return [
-            new Filters\FeedbackForm
+            new Filters\FeedbackForm()
         ];
     }
 
@@ -171,12 +171,12 @@ class Feedback extends Resource
     public function actions(Request $request)
     {
         return [
-            (new Actions\ActionFeedback)->onlyOnDetail()
+            (new Actions\ActionFeedback())->onlyOnDetail()
                 ->canSeeWhen('actionFeedback', $this)
                 ->canRun(function () {
                     return true;
                 }),
-            (new Actions\SendFeedback)->onlyOnDetail()
+            (new Actions\SendFeedback())->onlyOnDetail()
                 ->canSeeWhen('actionFeedback', $this)
                 ->canRun(function () {
                     return true;

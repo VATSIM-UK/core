@@ -141,7 +141,7 @@ class ManageSlack extends Command
 
     private function messageDsgAdvisingOfBannedUser($localUser, $slackUser)
     {
-        $attachment = Slack::generateAttachmentForMessage("A banned user is using slack", ['Name' => $localUser->real_name, 'CID' => $localUser->id , 'Slack Details' => $slackUser->real_name. ' ('.$slackUser->id.')'], [], null, 'danger');
+        $attachment = Slack::generateAttachmentForMessage("A banned user is using slack", ['Name' => $localUser->real_name, 'CID' => $localUser->id , 'Slack Details' => $slackUser->real_name . ' (' . $slackUser->id . ')'], [], null, 'danger');
 
         Slack::sendToWebServices("<!here>", $attachment);
     }

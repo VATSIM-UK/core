@@ -12,7 +12,7 @@ class DuplicateRefereeException extends \Exception
     {
         $this->referee = $referee;
 
-        $this->message = $this->referee->name.' ('.$this->referee->account_id.') has already been added to this application.';
+        $this->message = $this->referee->name . ' (' . $this->referee->account_id . ') has already been added to this application.';
     }
 
     public function __toString()

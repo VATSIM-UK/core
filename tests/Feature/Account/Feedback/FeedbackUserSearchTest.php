@@ -12,7 +12,7 @@ class FeedbackUserSearchTest extends TestCase
 
     private $otherUser;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
 

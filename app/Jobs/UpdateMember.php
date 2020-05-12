@@ -14,7 +14,8 @@ use VatsimXML;
 
 class UpdateMember extends Job implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
+    use InteractsWithQueue;
+    use SerializesModels;
 
     protected $accountID;
     protected $data;
@@ -53,7 +54,7 @@ class UpdateMember extends Job implements ShouldQueue
             $this->data->division = '';
         }
 
-        $member = Account::firstOrNew([(new Account)->getKeyName() => $this->accountID]);
+        $member = Account::firstOrNew([(new Account())->getKeyName() => $this->accountID]);
 
         // if member no longer exists, delete
         // else process update

@@ -16,7 +16,9 @@ use Laravel\Nova\Fields\Textarea;
 
 class AddNoteToAccount extends Action
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $name = 'Add Note';
 

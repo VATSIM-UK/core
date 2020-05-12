@@ -37,7 +37,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
             if ($result->ok !== true) {
                 DB::rollBack();
-                Log::error("Error inviting {$this->account->real_name} ({$this->account->id }) to slack. Response: ". json_encode($result));
+                Log::error("Error inviting {$this->account->real_name} ({$this->account->id }) to slack. Response: " . json_encode($result));
 
                 return Redirect::route('mship.manage.dashboard')
                     ->withError('There was an error inviting you to join Slack. Please contact the Web Services Department.');

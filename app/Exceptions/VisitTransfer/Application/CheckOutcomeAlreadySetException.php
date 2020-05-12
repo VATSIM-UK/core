@@ -14,7 +14,7 @@ class CheckOutcomeAlreadySetException extends \Exception
         $this->application = $application;
         $this->check = $check;
 
-        $this->message = "The check '".$check."' already has an outcome.";
+        $this->message = "The check '" . $check . "' already has an outcome.";
     }
 
     public function __toString()

@@ -49,8 +49,12 @@ class AccountBanTest extends TestCase
     {
         $reason = factory(Reason::class)->create();
 
-        $service = new BanAccount($this->account, $reason, $this->privacc,
-            ['ban_internal_note' => 'Testing an internal note.', 'ban_reason_extra' => 'Testing the note to a user.']);
+        $service = new BanAccount(
+            $this->account,
+            $reason,
+            $this->privacc,
+            ['ban_internal_note' => 'Testing an internal note.', 'ban_reason_extra' => 'Testing the note to a user.']
+        );
 
         $service->handle();
 
@@ -68,8 +72,12 @@ class AccountBanTest extends TestCase
     {
         $reason = factory(Reason::class)->create();
 
-        $banService = new BanAccount($this->account, $reason, $this->privacc,
-            ['ban_internal_note' => 'Testing an internal note.', 'ban_reason_extra' => 'Testing the note to a user.']);
+        $banService = new BanAccount(
+            $this->account,
+            $reason,
+            $this->privacc,
+            ['ban_internal_note' => 'Testing an internal note.', 'ban_reason_extra' => 'Testing the note to a user.']
+        );
 
         $banService->handle();
 

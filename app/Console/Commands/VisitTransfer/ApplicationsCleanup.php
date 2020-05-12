@@ -60,7 +60,7 @@ class ApplicationsCleanup extends Command
             ->get();
         foreach ($applications as $application) {
             foreach ($application->referees as $referee) {
-                if (!$referee->is_submitted && $referee->contacted_at && $referee->contacted_at->addDays(14)->lt(new Carbon)) {
+                if (!$referee->is_submitted && $referee->contacted_at && $referee->contacted_at->addDays(14)->lt(new Carbon())) {
                     $application->lapse();
                     continue;
                 }

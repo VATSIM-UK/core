@@ -130,7 +130,7 @@ class WaitingList extends Resource
     public function actions(Request $request)
     {
         return [
-            (new AddStudentToWaitingList)
+            (new AddStudentToWaitingList())
                 ->onlyOnDetail()
                 ->canSee(function (Request $request) {
                     return $request->user()->can('use-permission', "waitingLists/addAccounts");
@@ -138,7 +138,7 @@ class WaitingList extends Resource
                     return $request->user()->can('use-permission', "waitingLists/addAccounts");
                 }),
 
-            (new AddFlagToWaitingList)
+            (new AddFlagToWaitingList())
                 ->onlyOnDetail()
                 ->canSee(function (Request $request) {
                     return $request->user()->can('use-permission', "waitingLists/addFlags");

@@ -50,7 +50,7 @@ class ApplicationReferenceSubmitted extends Notification implements ShouldQueue
         if ($notifiable instanceof Account) {
             $subject = "[{$this->application->public_id}] Reference from '{$this->reference->account->name}' Submitted";
 
-            return (new MailMessage)
+            return (new MailMessage())
                 ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
                 ->subject($subject)
                 ->view('visit-transfer.emails.applicant.reference_submitted', [
@@ -62,7 +62,7 @@ class ApplicationReferenceSubmitted extends Notification implements ShouldQueue
         } elseif ($notifiable instanceof Reference) {
             $subject = "[{$this->application->public_id}] Thank You for Your Reference";
 
-            return (new MailMessage)
+            return (new MailMessage())
                 ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
                 ->subject($subject)
                 ->view('visit-transfer.emails.reference.reference_submitted', [

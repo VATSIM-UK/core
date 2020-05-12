@@ -14,7 +14,7 @@ $factory->define(\App\Models\Smartcars\Pirep::class, function (Faker $faker) {
         'flight_time' => $faker->time,
         'landing_rate' => $faker->numberBetween(-1000, 50),
         'comments' => $faker->optional(0.4)->paragraph,
-        'fuel_used' => $faker->numberBetween(0, 80).'.00',
+        'fuel_used' => $faker->numberBetween(0, 80) . '.00',
         'log' => $faker->paragraph,
         'status' => 2,
         'passed' => 1,

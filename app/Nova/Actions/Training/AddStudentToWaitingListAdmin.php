@@ -16,7 +16,9 @@ use Laravel\Nova\Fields\Date;
 
 final class AddStudentToWaitingListAdmin extends AddStudentToWaitingList
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $name = 'Add Student [ADMIN]';
 

@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Log;
 
 class IssueSecondaryForumGroup implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $cid;
     protected $forumGroup;
@@ -78,7 +81,7 @@ class IssueSecondaryForumGroup implements ShouldQueue
     private function assignSecondaryGroups(int $ipboardUser, array $secondaryGroups)
     {
         try {
-            $client = new Client;
+            $client = new Client();
             $client->post(config('ipboard.api_url') . 'core/members/' . $ipboardUser . '?key=' . config('ipboard.api_key'), ['form_params' => [
                 'secondaryGroups' => $secondaryGroups
             ]]);

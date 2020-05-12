@@ -17,8 +17,11 @@ abstract class StorageWrapper
      */
     public function store(CoreUploadedFile $image)
     {
-        return $image->storeAs($this->basePath,
-            "{$image->getFullFileName()}.{$image->getClientOriginalExtension()}", ['disk' => $this->disk]);
+        return $image->storeAs(
+            $this->basePath,
+            "{$image->getFullFileName()}.{$image->getClientOriginalExtension()}",
+            ['disk' => $this->disk]
+        );
     }
 
     /**
@@ -51,6 +54,6 @@ abstract class StorageWrapper
      */
     protected function parseFileName($fileName)
     {
-        return $this->basePath. "/" . $fileName;
+        return $this->basePath . "/" . $fileName;
     }
 }

@@ -126,7 +126,8 @@ use Malahierba\PublicId\PublicId;
  */
 class Application extends Model
 {
-    use PublicId, SoftDeletes;
+    use PublicId;
+    use SoftDeletes;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
     protected static $public_id_min_length = 8;
@@ -443,10 +444,10 @@ class Application extends Model
     public function getTypeStringAttribute()
     {
         if ($this->is_visit) {
-            return $this->training_team.' Visit';
+            return $this->training_team . ' Visit';
         }
 
-        return $this->training_team.' Transfer';
+        return $this->training_team . ' Transfer';
     }
 
     public function getNumberReferencesRequiredRelativeAttribute()
@@ -612,7 +613,7 @@ class Application extends Model
         $this->save();
 
         if ($staffReason) {
-            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was progressed to 'Under Review'.\n".$staffReason;
+            $noteContent = 'VT Application for ' . $this->type_string . ' ' . $this->facility->name . " was progressed to 'Under Review'.\n" . $staffReason;
             $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
@@ -630,7 +631,7 @@ class Application extends Model
         $this->save();
 
         if ($staffReason) {
-            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was rejected.\n".$staffReason;
+            $noteContent = 'VT Application for ' . $this->type_string . ' ' . $this->facility->name . " was rejected.\n" . $staffReason;
             $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
@@ -655,7 +656,7 @@ class Application extends Model
         $this->status = self::STATUS_ACCEPTED;
         $this->save();
 
-        $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was accepted.\n";
+        $noteContent = 'VT Application for ' . $this->type_string . ' ' . $this->facility->name . " was accepted.\n";
 
         if ($staffComment) {
             $noteContent .= $staffComment;
@@ -691,7 +692,7 @@ class Application extends Model
         //        $this->status = ($this->is_visit ? self::STATUS_COMPLETED : self::STATUS_PENDING_CERT);
         $this->save();
 
-        $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was completed.\n";
+        $noteContent = 'VT Application for ' . $this->type_string . ' ' . $this->facility->name . " was completed.\n";
 
         if ($staffComment) {
             $noteContent .= $staffComment;
@@ -707,7 +708,7 @@ class Application extends Model
     {
         // $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
 
-        $columnName = 'check_outcome_'.$check;
+        $columnName = 'check_outcome_' . $check;
         $this->{$columnName} = (int) $outcome;
         $this->save();
     }
@@ -885,7 +886,7 @@ class Application extends Model
 
     private function guardAgainstDuplicateCheckOutcomeSubmission($check)
     {
-        $tableColumnName = 'check_outcome_'.$check;
+        $tableColumnName = 'check_outcome_' . $check;
         if ($this->{$tableColumnName} !== null) {
             throw new CheckOutcomeAlreadySetException($this, $check);
         }

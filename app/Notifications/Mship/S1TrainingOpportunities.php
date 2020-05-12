@@ -42,7 +42,7 @@ class S1TrainingOpportunities extends Notification implements ShouldQueue
     {
         $subject = 'Further Training Opportunities';
 
-        return (new MailMessage)
+        return (new MailMessage())
             ->from('atc-team@vatsim.uk', 'VATSIM UK - ATC Training')
             ->subject($subject)
             ->view('emails.mship.s1_training_opportunities', ['recipient' => $notifiable, 'subject' => $subject]);

@@ -48,7 +48,7 @@ class ApplicationReferenceCancelledByReferee extends Notification implements Sho
     {
         $subject = "[{$this->application->public_id}] Reference from '{$this->reference->account->name}' was cancelled";
 
-        return (new MailMessage)
+        return (new MailMessage())
             ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
             ->view('visit-transfer.emails.applicant.reference_cancelled', ['recipient' => $notifiable, 'subject' => $subject, 'reference' => $this->reference, 'application' => $this->application]);

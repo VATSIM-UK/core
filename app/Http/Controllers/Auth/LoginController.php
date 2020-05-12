@@ -87,10 +87,10 @@ class LoginController extends BaseController
         }
         // Check if there was a CURL error code
         if (VATSIMSSO::error()['code']) {
-            Log::error('VATSIMSSO was unable to reach CERT. Code:'.VATSIMSSO::error()['code'].' Message:'.VATSIMSSO::error()['message']);
+            Log::error('VATSIMSSO was unable to reach CERT. Code:' . VATSIMSSO::error()['code'] . ' Message:' . VATSIMSSO::error()['message']);
             return redirect()->back()->withErrors(['connection' => "We were unable to contact VATSIM's certification service. Please try again later. If this persists, please contact Web Services."]);
         }
-        throw new \Exception('SSO failed: '.VatsimSSO::error()['message']);
+        throw new \Exception('SSO failed: ' . VatsimSSO::error()['message']);
     }
 
     protected function setVatsimAuth($userId)
@@ -189,6 +189,6 @@ class LoginController extends BaseController
 
     public function vSsoValidationFailure($error)
     {
-        return redirect()->route('dashboard')->withError('Could not authenticate: '.$error['message']);
+        return redirect()->route('dashboard')->withError('Could not authenticate: ' . $error['message']);
     }
 }

@@ -4,7 +4,7 @@ use Faker\Generator as Faker;
 
 $factory->define(\App\Models\Smartcars\Flight::class, function (Faker $faker) {
     return [
-        'code' => strtoupper($faker->randomLetter).$faker->numberBetween(0, 50),
+        'code' => strtoupper($faker->randomLetter) . $faker->numberBetween(0, 50),
         'name' => $faker->words(3, true),
         'description' => $faker->paragraph,
         'image' => null,

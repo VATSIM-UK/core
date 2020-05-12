@@ -14,7 +14,8 @@ use Tests\TestCase;
 
 class ReferenceTest extends TestCase
 {
-    use DatabaseTransactions, WithFaker;
+    use DatabaseTransactions;
+    use WithFaker;
 
     public function setUp(): void
     {

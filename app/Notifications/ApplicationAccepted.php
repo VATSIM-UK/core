@@ -46,10 +46,10 @@ class ApplicationAccepted extends Notification implements ShouldQueue
     {
         $subject = "[{$this->application->public_id}] New {$this->application->facility->name} {$this->application->type_string} Applicant";
 
-        return (new MailMessage)
+        return (new MailMessage())
             ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
-            ->view('visit-transfer.emails.training.accepted_application', ['recipientName' => strtoupper($this->application->facility->training_team).' Training Team', 'subject' => $subject, 'application' => $this->application]);
+            ->view('visit-transfer.emails.training.accepted_application', ['recipientName' => strtoupper($this->application->facility->training_team) . ' Training Team', 'subject' => $subject, 'application' => $this->application]);
     }
 
     /**

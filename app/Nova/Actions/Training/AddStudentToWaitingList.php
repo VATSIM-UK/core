@@ -17,7 +17,9 @@ use Laravel\Nova\Fields\Text;
 
 class AddStudentToWaitingList extends Action
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $name = 'Add Student';
 

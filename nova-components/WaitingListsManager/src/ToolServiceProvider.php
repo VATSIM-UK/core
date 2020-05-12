@@ -25,8 +25,8 @@ class ToolServiceProvider extends ServiceProvider
         });
 
         Nova::serving(function (ServingNova $event) {
-            Nova::script('waiting-lists-manager', __DIR__.'/../dist/js/tool.js');
-            Nova::style('waiting-lists-manager', __DIR__.'/../dist/css/tool.css');
+            Nova::script('waiting-lists-manager', __DIR__ . '/../dist/js/tool.js');
+            Nova::style('waiting-lists-manager', __DIR__ . '/../dist/css/tool.css');
         });
     }
 
@@ -47,7 +47,7 @@ class ToolServiceProvider extends ServiceProvider
 
         Route::middleware(['nova', SubstituteBindings::class])
                 ->prefix('nova-vendor/waiting-lists-manager')
-                ->group(__DIR__.'/../routes/api.php');
+                ->group(__DIR__ . '/../routes/api.php');
     }
 
     /**

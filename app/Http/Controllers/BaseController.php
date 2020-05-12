@@ -16,7 +16,9 @@ use View;
 
 class BaseController extends \Illuminate\Routing\Controller
 {
-    use DispatchesJobs, ValidatesRequests, RedirectsUsers;
+    use DispatchesJobs;
+    use ValidatesRequests;
+    use RedirectsUsers;
     use AuthorizesRequests {
         authorize as protected doAuthorize;
     }
@@ -147,12 +149,12 @@ class BaseController extends \Illuminate\Routing\Controller
                 $time = 'night';
         }
 
-        $dir = public_path('images/banner/'.$time);
+        $dir = public_path('images/banner/' . $time);
         $images = array_diff(scandir($dir), ['.', '..']);
         if (count($images) == 0) {
             return asset('images/banner/fallback.jpg');
         }
-        $url = asset("images/banner/$time/".$images[array_rand($images)]);
+        $url = asset("images/banner/$time/" . $images[array_rand($images)]);
         Cache::put($key, $url, 60 * 60);
 
         return $url;
@@ -180,7 +182,7 @@ class BaseController extends \Illuminate\Routing\Controller
         }
 
         if ($linkToPrevious) {
-            $uri = $this->breadcrumb->last()->get('uri').'/'.$uri;
+            $uri = $this->breadcrumb->last()->get('uri') . '/' . $uri;
         }
 
         $element = collect(['name' => $name, 'uri' => $uri]);

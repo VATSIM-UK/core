@@ -37,10 +37,10 @@ class VisitTransferStatistics extends Command
     public function handle()
     {
         $currentPeriod = $this->getStartPeriod();
-        $this->log('Start Period: '.$currentPeriod->toDateString());
+        $this->log('Start Period: ' . $currentPeriod->toDateString());
 
         while ($currentPeriod->lte($this->getEndPeriod())) {
-            $this->log('=========== START OF CYCLE '.$currentPeriod->toDateString().' ===========');
+            $this->log('=========== START OF CYCLE ' . $currentPeriod->toDateString() . ' ===========');
 
             $this->addTotalApplicationCount($currentPeriod);
 
@@ -50,7 +50,7 @@ class VisitTransferStatistics extends Command
 
             $this->addNewApplicationCount($currentPeriod);
 
-            $this->log('============ END OF CYCLE '.$currentPeriod->toDateString().'  ===========');
+            $this->log('============ END OF CYCLE ' . $currentPeriod->toDateString() . '  ===========');
 
             $currentPeriod = $currentPeriod->addDay();
         }
@@ -73,14 +73,14 @@ class VisitTransferStatistics extends Command
         $this->log('Counting total applications');
 
         try {
-            $count = Application::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
+            $count = Application::where('created_at', '<=', $currentPeriod->toDateString() . ' 23:59:59')
                 ->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.total', $count);
 
-            $this->log('Done.  '.$count.' total applications');
+            $this->log('Done.  ' . $count . ' total applications');
         } catch (\Exception $e) {
-            $this->log('Error: '.$e->getMessage());
+            $this->log('Error: ' . $e->getMessage());
             Bugsnag::notifyException($e);
         }
     }
@@ -95,14 +95,14 @@ class VisitTransferStatistics extends Command
         $this->log('Counting open applications');
 
         try {
-            $count = Application::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
+            $count = Application::where('created_at', '<=', $currentPeriod->toDateString() . ' 23:59:59')
                 ->statusIn(Application::$APPLICATION_IS_CONSIDERED_OPEN)->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.open', $count);
 
-            $this->log('Done.  '.$count.' open applications');
+            $this->log('Done.  ' . $count . ' open applications');
         } catch (\Exception $e) {
-            $this->log('Error: '.$e->getMessage());
+            $this->log('Error: ' . $e->getMessage());
             Bugsnag::notifyException($e);
         }
     }
@@ -117,14 +117,14 @@ class VisitTransferStatistics extends Command
         $this->log('Counting rejected applications');
 
         try {
-            $count = Application::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
+            $count = Application::where('created_at', '<=', $currentPeriod->toDateString() . ' 23:59:59')
                 ->statusIn(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.closed', $count);
 
-            $this->log('Done. '.$count.' rejected applications');
+            $this->log('Done. ' . $count . ' rejected applications');
         } catch (\Exception $e) {
-            $this->log('Error: '.$e->getMessage());
+            $this->log('Error: ' . $e->getMessage());
             Bugsnag::notifyException($e);
         }
     }
@@ -139,13 +139,13 @@ class VisitTransferStatistics extends Command
         $this->log('Counting new applications for given day');
 
         try {
-            $count = Application::where('created_at', 'LIKE', $currentPeriod->toDateString().' %')->count();
+            $count = Application::where('created_at', 'LIKE', $currentPeriod->toDateString() . ' %')->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.new', $count);
 
-            $this->log('Done. '.$count.' new applications');
+            $this->log('Done. ' . $count . ' new applications');
         } catch (\Exception $e) {
-            $this->log('Error: '.$e->getMessage());
+            $this->log('Error: ' . $e->getMessage());
             Bugsnag::notifyException($e);
         }
     }
@@ -162,7 +162,7 @@ class VisitTransferStatistics extends Command
         try {
             $startPeriod = Carbon::parse($this->argument('startPeriod'), 'UTC');
         } catch (\Exception $e) {
-            $this->log('Error: '.$e->getMessage());
+            $this->log('Error: ' . $e->getMessage());
             Bugsnag::notifyException($e);
         }
 
@@ -185,7 +185,7 @@ class VisitTransferStatistics extends Command
         try {
             $endPeriod = Carbon::parse($this->argument('endPeriod'), 'UTC');
         } catch (\Exception $e) {
-            $this->log('Error: '.$e->getMessage());
+            $this->log('Error: ' . $e->getMessage());
             Bugsnag::notifyException($e);
         }
 

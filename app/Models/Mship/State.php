@@ -111,6 +111,6 @@ class State extends \App\Models\Model
 
     public function __toString()
     {
-        return '['.$this->code.'] '.$this->name;
+        return '[' . $this->code . '] ' . $this->name;
     }
 }

@@ -161,10 +161,27 @@ use Watson\Rememberable\Rememberable;
  */
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
-        HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount, HasForumAccount, HasCTSAccount,
-        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword,
-        HasNotifications, HasEmails, HasRoles, HasNovaPermissions;
+    use SoftDeletingTrait;
+    use Rememberable;
+    use Notifiable;
+    use Authenticatable;
+    use Authorizable;
+    use HasCommunityGroups;
+    use HasNetworkData;
+    use HasMoodleAccount;
+    use HasHelpdeskAccount;
+    use HasForumAccount;
+    use HasCTSAccount;
+    use HasVisitTransferApplications;
+    use HasQualifications;
+    use HasStates;
+    use HasBans;
+    use HasTeamSpeakRegistrations;
+    use HasPassword;
+    use HasNotifications;
+    use HasEmails;
+    use HasRoles;
+    use HasNovaPermissions;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
@@ -391,7 +408,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getRealNameAttribute()
     {
-        return $this->name_first.' '.$this->name_last;
+        return $this->name_first . ' ' . $this->name_last;
     }
 
     /**
@@ -404,7 +421,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function getNameAttribute()
     {
         if ($this->nickname != null) {
-            return $this->nickname.' '.$this->name_last;
+            return $this->nickname . ' ' . $this->name_last;
         }
 
         return $this->real_name;
@@ -434,13 +451,13 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         }
 
         $allowedNames = collect();
-        $allowedNames->push($this->name.$wildcard);
-        $allowedNames->push($this->real_name.$wildcard);
+        $allowedNames->push($this->name . $wildcard);
+        $allowedNames->push($this->real_name . $wildcard);
 
         if ($includeATC && $this->networkDataAtcCurrent) {
             $collect = collect();
             foreach ($allowedNames as $name) {
-                $collect->push($name." - {$this->networkDataAtcCurrent->callsign}");
+                $collect->push($name . " - {$this->networkDataAtcCurrent->callsign}");
             }
             $allowedNames = $allowedNames->merge($collect);
         }
@@ -471,7 +488,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function isDuplicateDisplayName($displayName)
     {
         return !$this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
-            return preg_match("/^".$item."$/i", $displayName) == 1;
+            return preg_match("/^" . $item . "$/i", $displayName) == 1;
         })->isEmpty();
     }
 

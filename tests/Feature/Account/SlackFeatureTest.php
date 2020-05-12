@@ -9,7 +9,7 @@ class SlackFeatureTest extends TestCase
 {
     use DatabaseTransactions;
 
-    protected function setUp():void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -22,7 +22,9 @@ class SlackFeatureTest extends TestCase
         $this->actingAs($this->user)
             ->get(route('slack.new'))
             ->assertRedirect(route('mship.manage.dashboard'))
-            ->assertSessionHas('error',
-                'You already have a Slack registration with this account. Please contact the Web Services Department if you believe this to be an error.');
+            ->assertSessionHas(
+                'error',
+                'You already have a Slack registration with this account. Please contact the Web Services Department if you believe this to be an error.'
+            );
     }
 }

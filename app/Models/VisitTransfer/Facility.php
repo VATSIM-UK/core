@@ -63,7 +63,8 @@ use Malahierba\PublicId\PublicId;
  */
 class Facility extends Model
 {
-    use PublicId, Notifiable;
+    use PublicId;
+    use Notifiable;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-facility';
     protected static $public_id_min_length = 8;
@@ -128,14 +129,14 @@ class Facility extends Model
 
     public static function create(array $attributes = [])
     {
-        (new self)->guardAgainstDuplicateFacilityName(array_get($attributes, 'name', ''));
+        (new self())->guardAgainstDuplicateFacilityName(array_get($attributes, 'name', ''));
 
         return static::query()->create($attributes);
     }
 
     public function update(array $attributes = [], array $options = [])
     {
-        (new self)->guardAgainstDuplicateFacilityName(array_get($attributes, 'name', ''), $this->id);
+        (new self())->guardAgainstDuplicateFacilityName(array_get($attributes, 'name', ''), $this->id);
 
         if (strcasecmp(array_get($attributes, 'training_spaces', null), 'null') == 0) {
             $attributes['training_spaces'] = null;

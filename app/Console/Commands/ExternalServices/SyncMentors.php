@@ -57,11 +57,11 @@ class SyncMentors extends Command
 
         // intialise scripts for interfacing with the forums
         require_once config('services.community.init_file');
-        require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
-        require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
+        require_once \IPS\ROOT_PATH . '/system/Member/Member.php';
+        require_once \IPS\ROOT_PATH . '/system/Db/Db.php';
 
         // get the relevant DB IDs
-        foreach (DB::table(config('services.cts.database').'.rts')->get(['id', 'name']) as $rts) {
+        foreach (DB::table(config('services.cts.database') . '.rts')->get(['id', 'name']) as $rts) {
             $this->rtsIDs[snake_case($rts->name)] = $rts->id;
         }
         $this->memberForumIDs = DB::table("{$this->communityDB}.ibf_core_members")
@@ -97,15 +97,15 @@ class SyncMentors extends Command
                 'p.callsign',
                 'm.name',
                 'rts.id as rts_id',
-                DB::raw("IF (v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id != ".$this->rtsIDs['pilots'].' AND taken_date > "'.$this->atcCutoffDate.'"), FALSE, TRUE) AS atc_cutoff'),
-                DB::raw("IF (v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id = ".$this->rtsIDs['pilots'].' AND taken_date > "'.$this->pilotCutoffDate.'"), FALSE, TRUE) AS pilot_cutoff')
+                DB::raw("IF (v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id != " . $this->rtsIDs['pilots'] . ' AND taken_date > "' . $this->atcCutoffDate . '"), FALSE, TRUE) AS atc_cutoff'),
+                DB::raw("IF (v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id = " . $this->rtsIDs['pilots'] . ' AND taken_date > "' . $this->pilotCutoffDate . '"), FALSE, TRUE) AS pilot_cutoff')
             )->leftJoin("{$this->ctsDB}.positions AS p", 'p.id', '=', 'v.position_id')
             ->leftJoin("{$this->ctsDB}.members AS m", 'v.member_id', '=', 'm.id')
             ->leftJoin("{$this->ctsDB}.rts", 'p.rts_id', '=', 'rts.id')
             ->where('v.status', 5)
             ->where(function ($query) {
-                $query->where(DB::raw("v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id != ".$this->rtsIDs['pilots'].' AND taken_date > "'.$this->atcCutoffDate.'")'), true)
-                    ->orWhere(DB::raw("v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id = ".$this->rtsIDs['pilots'].' AND taken_date > "'.$this->pilotCutoffDate.'")'), true);
+                $query->where(DB::raw("v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id != " . $this->rtsIDs['pilots'] . ' AND taken_date > "' . $this->atcCutoffDate . '")'), true)
+                    ->orWhere(DB::raw("v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id = " . $this->rtsIDs['pilots'] . ' AND taken_date > "' . $this->pilotCutoffDate . '")'), true);
             })->orderBy('name')
             ->orderBy('callsign')
             ->get();

@@ -33,6 +33,6 @@ class Membership extends BaseController
             \Auth::user()->fresh()->syncWithDefaultCommunityGroup();
         }
 
-        return redirect($this->redirectPath())->withSuccess("You have successfully been deployed to the '".$chosenGroup->name."' Group!");
+        return redirect($this->redirectPath())->withSuccess("You have successfully been deployed to the '" . $chosenGroup->name . "' Group!");
     }
 }

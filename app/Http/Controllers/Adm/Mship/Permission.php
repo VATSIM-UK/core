@@ -40,7 +40,7 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
             $permission->syncRoles(Request::input('roles'));
         }
 
-        return Redirect::route('adm.mship.permission.index')->withSuccess("Permission '".$permission->name."' has been created - don't forget to attach it to some roles!");
+        return Redirect::route('adm.mship.permission.index')->withSuccess("Permission '" . $permission->name . "' has been created - don't forget to attach it to some roles!");
     }
 
     public function getUpdate(PermissionData $permission)
@@ -77,7 +77,7 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
             $permission->assignRole(Request::input('roles', []));
         }
 
-        return Redirect::route('adm.mship.permission.index')->withSuccess("Permission '".$permission->name."' has been updated - don't forget to set the roles properly!");
+        return Redirect::route('adm.mship.permission.index')->withSuccess("Permission '" . $permission->name . "' has been updated - don't forget to set the roles properly!");
     }
 
     public function anyDelete(PermissionData $permission)

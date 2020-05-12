@@ -31,7 +31,7 @@ class AirportController extends BaseController
 
     private function loadStandStatus($airport)
     {
-        $file_path = resource_path().'/assets/data/stands/'.strtolower($airport->icao).'.csv';
+        $file_path = resource_path() . '/assets/data/stands/' . strtolower($airport->icao) . '.csv';
         if (File::exists($file_path)) {
             return (new StandStatus($airport->icao, $file_path, $airport->latitude, $airport->longitude, false, null))->setMaxAircraftAltitude($airport->elevation + 300)->parseData();
         }

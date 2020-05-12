@@ -73,8 +73,8 @@ class TestEmails extends Command
 
             return;
         } elseif (!$this->confirm(
-            'This command will make changes to the database that must be manually reversed.'.PHP_EOL
-            .' Do you wish to continue?'
+            'This command will make changes to the database that must be manually reversed.' . PHP_EOL
+            . ' Do you wish to continue?'
         )) {
             return;
         }

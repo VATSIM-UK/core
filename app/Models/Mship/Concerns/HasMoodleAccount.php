@@ -14,7 +14,7 @@ trait HasMoodleAccount
         if (!$this->moodleEnabled()) {
             return false;
         }
-        $moodleAccount = DB::table(config('services.moodle.database').'.mdl_user')
+        $moodleAccount = DB::table(config('services.moodle.database') . '.mdl_user')
             ->where('username', $this->id)
             ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber'])
             ->first();
@@ -48,7 +48,7 @@ trait HasMoodleAccount
      */
     protected function createMoodleAccount()
     {
-        DB::table(config('services.moodle.database').'.mdl_user')->insert([
+        DB::table(config('services.moodle.database') . '.mdl_user')->insert([
             'auth' => 'vatsim',
             'deleted' => 0,
             'confirmed' => 1,
@@ -94,7 +94,7 @@ trait HasMoodleAccount
 
         $dirty = array_keys(array_diff_assoc($old, $new));
         if (!empty($dirty)) {
-            DB::table(config('services.moodle.database').'.mdl_user')->where('username', (string) $this->id)->update($new);
+            DB::table(config('services.moodle.database') . '.mdl_user')->where('username', (string) $this->id)->update($new);
         } else {
             // do nothing - account is up to date
         }
@@ -121,7 +121,7 @@ trait HasMoodleAccount
             || $this->hasState('VISITING')
             || $this->hasState('TRANSFERRING');
     }
-    
+
     private function moodleEnabled()
     {
         return config('services.moodle.database') && DB::table('oauth_clients')->where('name', 'Moodle')->first();

@@ -48,7 +48,7 @@ class ApplicationReferenceNoLongerNeeded extends Notification implements ShouldQ
     {
         $subject = "[{$this->application->public_id}] Reference No Longer Required";
 
-        return (new MailMessage)
+        return (new MailMessage())
             ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
             ->view('visit-transfer.emails.reference.reference_not_required', [

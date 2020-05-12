@@ -43,15 +43,15 @@ class Flight extends AdmController
 
         $return = '';
         foreach ($flights as $f) {
-            $return .= $f->id.'|';
-            $return .= $f->code.'|';
-            $return .= $f->flightnum.'|';
-            $return .= $f->departure->icao.'|';
-            $return .= $f->arrival->icao.'|';
-            $return .= $f->route.'|';
-            $return .= $f->cruise_altitude.'|'; // Cruise altitude.
-            $return .= $f->aircraft->id.'|';
-            $return .= $f->flight_time.':00|';
+            $return .= $f->id . '|';
+            $return .= $f->code . '|';
+            $return .= $f->flightnum . '|';
+            $return .= $f->departure->icao . '|';
+            $return .= $f->arrival->icao . '|';
+            $return .= $f->route . '|';
+            $return .= $f->cruise_altitude . '|'; // Cruise altitude.
+            $return .= $f->aircraft->id . '|';
+            $return .= $f->flight_time . ':00|';
             $return .= '00:00 GMT|'; // Departure time
             $return .= '23:59 GMT|'; // Arrival time
             $return .= '0123456;'; // Days of week.
@@ -71,16 +71,16 @@ class Flight extends AdmController
         $return = '';
         foreach ($bids as $b) {
             $f = $b->flight;
-            $return .= $b->id.'|';
-            $return .= $f->id.'|';
-            $return .= $f->code.'|';
-            $return .= $f->flightnum.'|';
-            $return .= $f->departure->icao.'|';
-            $return .= $f->arrival->icao.'|';
-            $return .= $f->route.'|';
-            $return .= $f->cruise_altitude.'|'; // Cruise altitude.
-            $return .= $f->aircraft->id.'|';
-            $return .= $f->flight_time.':00|';
+            $return .= $b->id . '|';
+            $return .= $f->id . '|';
+            $return .= $f->code . '|';
+            $return .= $f->flightnum . '|';
+            $return .= $f->departure->icao . '|';
+            $return .= $f->arrival->icao . '|';
+            $return .= $f->route . '|';
+            $return .= $f->cruise_altitude . '|'; // Cruise altitude.
+            $return .= $f->aircraft->id . '|';
+            $return .= $f->flight_time . ':00|';
             $return .= '00:00 GMT|'; // Departure time
             $return .= '23:55 GMT|'; // Arrival time
             $return .= '0|'; // Load
@@ -108,7 +108,7 @@ class Flight extends AdmController
             return 'ERROR';
         }
 
-        $posrep = new Posrep;
+        $posrep = new Posrep();
         $posrep->bid_id = $bid->id;
         $posrep->aircraft_id = $aircraft->id;
         $posrep->route = Request::input('route') ?: '';
@@ -146,11 +146,11 @@ class Flight extends AdmController
             return 'ERROR';
         }
 
-        $pirep = new Pirep;
+        $pirep = new Pirep();
         $pirep->aircraft_id = $aircraft->id;
         $pirep->bid_id = $bid->id;
         $pirep->route = Request::input('route') ?: '';
-        $pirep->flight_time = str_replace('.', ':', Request::input('flighttime')).':00';
+        $pirep->flight_time = str_replace('.', ':', Request::input('flighttime')) . ':00';
         $pirep->landing_rate = Request::input('landingrate');
         $pirep->comments = Request::input('comments');
         $pirep->fuel_used = Request::input('fuelused');
@@ -176,7 +176,7 @@ class Flight extends AdmController
             return 'FLIGHT_ALREADY_BID';
         }
 
-        $bid = new Bid;
+        $bid = new Bid();
         $bid->flight_id = $flight->id;
         $bid->account_id = Request::input('dbid');
         $bid->save();

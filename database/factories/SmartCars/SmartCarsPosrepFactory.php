@@ -20,7 +20,7 @@ $factory->define(\App\Models\Smartcars\Posrep::class, function (Faker $faker) {
         'distance_remaining' => $faker->numberBetween(0, 100),
         'phase' => $faker->numberBetween(0, 10),
         'time_departure' => $dep,
-        'time_remaining' => "00:".$faker->numberBetween(10, 59).":00",
+        'time_remaining' => "00:" . $faker->numberBetween(10, 59) . ":00",
         'time_arrival' => Carbon\Carbon::instance($dep)->addMinutes($faker->numberBetween(10, 59)),
         'network' => "VATSIM",
         'created_at' => \Carbon\Carbon::now(),

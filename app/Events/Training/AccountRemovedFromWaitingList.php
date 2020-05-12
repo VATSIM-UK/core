@@ -11,7 +11,9 @@ use Illuminate\Queue\SerializesModels;
 
 class AccountRemovedFromWaitingList
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public $account;
 
