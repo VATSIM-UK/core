@@ -25,6 +25,8 @@ jobs:
         - cp .env.example .env
         - php artisan key:generate
         - php artisan migrate -vvv -n
+        - php artisan telescope:publish
+        - php artisan horizon:publish
         - php artisan route:cache
       before_script:
         - php artisan serve -q &
