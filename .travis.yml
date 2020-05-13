@@ -1,7 +1,7 @@
 jobs:
   include:
     - stage: "Test"
-      if: type = push
+      if: branch = master AND type = push
       language: php
       php:
         - 7.3
