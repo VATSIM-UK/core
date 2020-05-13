@@ -113,6 +113,10 @@ jobs:
         run: php artisan serve -q &
 
       - name: Execute PHPUnit Tests
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.3'
+          coverage: none
         run: vendor/bin/phpunit
 
       - name: Upload Code Coverage Report
