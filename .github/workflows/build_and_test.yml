@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        phpunit: ['vendor/bin/phpunit', 'vendor/bin/phpunit --coverage-clover=coverage.xml']
+        phpunit: ['without-coverage', 'with-coverage']
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -116,11 +116,17 @@ jobs:
         run: php artisan serve -q &
 
       - name: Execute PHPUnit Tests
-        run: ${{ matrix.phpunit }}
+        if: ${{ matrix.phpunit }} == 'without-coverage'
+        run: vendor/bin/phpunit
+
+      - name: Execute PHPUnit Tests With Coverage
+        if: ${{ matrix.phpunit }} == 'with-coverage'
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v1.0.5
+        if: ${{ matrix.phpunit }} == 'with-coverage'
         with:
           token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage.xml
-          fail_ci_if_error: false
+          fail_ci_if_error: true
