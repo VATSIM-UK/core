@@ -47,6 +47,8 @@ class AdminMiddlewareTest extends TestCase
     /** @test */
     public function testTelescopeIsNotAvailableToGuests()
     {
+        config()->set('telescope.enabled', 'true');
+
         $this->get(config('telescope.path'))
             ->assertRedirect(route('login'));
     }
@@ -54,6 +56,8 @@ class AdminMiddlewareTest extends TestCase
     /** @test */
     public function testTelescopeIsNotAvailableToNormalUsers()
     {
+        config()->set('telescope.enabled', 'true');
+
         $this->actingAs($this->user)
             ->get(config('telescope.path'))
             ->assertForbidden();
@@ -62,6 +66,8 @@ class AdminMiddlewareTest extends TestCase
     /** @test */
     public function testTelescopeIsAvailableToAuthorisedUsers()
     {
+        config()->set('telescope.enabled', 'true');
+
         $admin = factory(Account::class)->create();
         $admin->givePermissionTo('telescope');
 
