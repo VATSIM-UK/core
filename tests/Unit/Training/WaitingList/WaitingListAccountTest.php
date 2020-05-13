@@ -294,7 +294,7 @@ class WaitingListAccountTest extends TestCase
         $this->assertDatabaseHas('training_waiting_list_account', [
             'account_id' => $account->id,
             'list_id' => $this->waitingList->id,
-            'created_at' => $this->knownDate
+            'created_at' => Carbon::now()
         ]);
     }
 

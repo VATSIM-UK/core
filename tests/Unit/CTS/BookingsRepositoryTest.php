@@ -18,6 +18,9 @@ class BookingsRepositoryTest extends TestCase
     protected $subjectUnderTest;
 
     /* @var Carbon */
+    protected $knownDate;
+
+    /* @var Carbon */
     protected $today;
 
     /* @var Carbon */
@@ -27,7 +30,10 @@ class BookingsRepositoryTest extends TestCase
     {
         parent::setUp();
 
+        $this->seedLegacyTables();
         $this->subjectUnderTest = resolve(BookingRepository::class);
+
+        $this->knownDate = Carbon::now();
         $this->today = $this->knownDate->toDateString();
         $this->tomorrow = $this->knownDate->copy()->addDay()->toDateString();
     }

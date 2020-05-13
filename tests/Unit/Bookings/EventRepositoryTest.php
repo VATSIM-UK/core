@@ -20,6 +20,7 @@ class EventRepositoryTest extends TestCase
     {
         parent::setUp();
 
+        $this->seedLegacyTables();
         $this->repository = resolve(EventRepository::class);
     }
 

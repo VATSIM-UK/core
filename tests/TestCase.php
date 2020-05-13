@@ -23,26 +23,6 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        // Exclude Middleware Across All Tests
-        $this->withoutMiddleware(VerifyCsrfToken::class);
-
-        // Add HTTP protocol
-        $parsed = parse_url(config('app.url'));
-        if (empty($parsed['scheme'])) {
-            config(['app.url' => 'http://'.config('app.url')]);
-        }
-
-        Carbon::setTestNow(Carbon::now());
-        $this->knownDate = Carbon::now();
-
-        // Create tables for other services
-        $this->seedLegacyTables();
-
-        // Force regeneration of permissions cache
-        app()['cache']->forget('spatie.permission.cache');
-        $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->registerPermissions();
-
-        \Illuminate\Support\Facades\Notification::fake();
         // Create global super admin for testing
         $this->createPrivaccUser();
 

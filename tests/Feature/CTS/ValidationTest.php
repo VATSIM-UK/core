@@ -12,6 +12,13 @@ class ValidationTest extends TestCase
 {
     use DatabaseTransactions;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seedLegacyTables();
+    }
+
     /** @test */
     public function itReturns400WhenPositionNotSupplied()
     {

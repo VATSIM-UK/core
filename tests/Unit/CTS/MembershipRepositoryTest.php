@@ -18,6 +18,7 @@ class MembershipRepositoryTest extends TestCase
     {
         parent::setUp();
 
+        $this->seedLegacyTables();
         $this->subjectUnderTest = resolve(MembershipRepository::class);
     }
 

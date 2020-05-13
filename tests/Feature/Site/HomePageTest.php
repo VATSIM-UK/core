@@ -11,6 +11,13 @@ class HomePageTest extends TestCase
 {
     use DatabaseTransactions;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seedLegacyTables();
+    }
+
     /** @test */
     public function testItLoadsTheHomepage()
     {
@@ -21,7 +28,7 @@ class HomePageTest extends TestCase
     public function testItShowsLiveAtcBookingsOnTheHomepage()
     {
         $booking = factory(Booking::class)->create([
-            'date' => $this->knownDate->toDateString(),
+            'date' => Carbon::now()->toDateString(),
             'position' => 'EGKK_APP',
             'type' => 'BK'
         ]);
@@ -41,7 +48,7 @@ class HomePageTest extends TestCase
     public function testItDoesntShowExamCandidatesOnTheHomepage()
     {
         $booking = factory(Booking::class)->create([
-            'date' => $this->knownDate->toDateString(),
+            'date' => Carbon::now()->toDateString(),
             'position' => 'EGKK_APP',
             'type' => 'EX'
         ]);
@@ -56,13 +63,13 @@ class HomePageTest extends TestCase
     public function testItDoesntShowPilotOrSweatboxBookingsOnTheHomepage()
     {
         $pilot = factory(Booking::class)->create([
-            'date' => $this->knownDate->toDateString(),
+            'date' => Carbon::now()->toDateString(),
             'position' => 'P1_VATSIM',
             'type' => 'BK'
         ]);
 
         $sweatbox = factory(Booking::class)->create([
-            'date' => $this->knownDate->toDateString(),
+            'date' => Carbon::now()->toDateString(),
             'position' => 'EGKK_SBAT',
             'type' => 'BK'
         ]);
