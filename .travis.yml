@@ -1,11 +1,10 @@
 jobs:
   include:
     - stage: "Test"
-      if: branch = master AND type = push
+      if: branch = master
       language: php
       php:
         - 7.3
-        - 7.4
       addons:
         mariadb: '10.2'
       before_install:
@@ -33,7 +32,7 @@ jobs:
         - sed -i "s%^SSO_KEY.*$%SSO_KEY=${SSO_KEY}%" .env
         - sed -i "s%^SSO_SECRET.*$%SSO_SECRET=${SSO_SECRET}%" .env
       script:
-        - phpdbg -dmemory_limit=3G -qrr vendor/bin/phpunit --coverage-clover=coverage.xml;
+        - vendor/bin/phpunit
       cache:
         yarn: true
         directories:
