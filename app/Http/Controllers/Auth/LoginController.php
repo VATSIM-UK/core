@@ -41,7 +41,7 @@ class LoginController extends BaseController
 
     public function getLogin()
     {
-        if (Auth::guard('vatsim-sso')->check() && !Auth::check()) {
+        if (Auth::guard('vatsim-sso')->check() && ! Auth::check()) {
             return $this->attemptSecondaryAuth();
         } else {
             return redirect()->route('dashboard');
@@ -58,11 +58,11 @@ class LoginController extends BaseController
     {
 
         // user has not been authenticated with VATSIM SSO
-        if (!Auth::guard('vatsim-sso')->check()) {
+        if (! Auth::guard('vatsim-sso')->check()) {
             return $this->attemptVatsimAuth();
         }
 
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             $this->attemptSecondaryAuth();
         }
 
@@ -83,11 +83,13 @@ class LoginController extends BaseController
             $key = $token->token->oauth_token;
             $secret = $token->token->oauth_token_secret;
             Session::put('credentials.vatsim-sso', compact('key', 'secret'));
+
             return redirect()->to(VatsimSSO::sendToVatsim());
         }
         // Check if there was a CURL error code
         if (VATSIMSSO::error()['code']) {
             Log::error('VATSIMSSO was unable to reach CERT. Code:'.VATSIMSSO::error()['code'].' Message:'.VATSIMSSO::error()['message']);
+
             return redirect()->back()->withErrors(['connection' => "We were unable to contact VATSIM's certification service. Please try again later. If this persists, please contact Web Services."]);
         }
         throw new \Exception('SSO failed: '.VatsimSSO::error()['message']);
@@ -115,7 +117,7 @@ class LoginController extends BaseController
 
     public function loginSecondary(Request $request)
     {
-        if (!Auth::guard('vatsim-sso')->check()) {
+        if (! Auth::guard('vatsim-sso')->check()) {
             return redirect()->route('dashboard')
                 ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }
@@ -177,7 +179,7 @@ class LoginController extends BaseController
         $account->updateDivision($user->division->code, $user->region->code);
         $account->save();
 
-        if (!is_numeric($user->rating->id) || !is_numeric($user->pilot_rating->rating)) {
+        if (! is_numeric($user->rating->id) || ! is_numeric($user->pilot_rating->rating)) {
             $job = new UpdateMember($user);
             $this->dispatch($job);
         }

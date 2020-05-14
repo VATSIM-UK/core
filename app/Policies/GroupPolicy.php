@@ -12,6 +12,6 @@ class GroupPolicy
 
     public function deploy(Account $user, Group $group)
     {
-        return !$group->hasMember($user) && $user->hasState('DIVISION') && $user->communityGroups()->where('tier', $group->tier)->count() == 0;
+        return ! $group->hasMember($user) && $user->hasState('DIVISION') && $user->communityGroups()->where('tier', $group->tier)->count() == 0;
     }
 }

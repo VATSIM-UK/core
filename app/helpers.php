@@ -113,7 +113,7 @@ function is_relative_date_string($suspectedRelativeDateString)
 
 function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute = false)
 {
-    if (!$ts1 or !$ts2) {
+    if (! $ts1 or ! $ts2) {
         return 'unknown length';
     }
 
@@ -128,19 +128,19 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
     $units = [];
 
     if ($diff->y > 0) {
-        $units[] = $diff->y . ' ' . str_plural('year', $diff->y);
+        $units[] = $diff->y.' '.str_plural('year', $diff->y);
     }
 
     if ($diff->m > 0) {
-        $units[] = $diff->m . ' ' . str_plural('month', $diff->m);
+        $units[] = $diff->m.' '.str_plural('month', $diff->m);
     }
 
     if ($diff->d > 0) {
-        $units[] = $diff->d . ' ' . str_plural('day', $diff->d);
+        $units[] = $diff->d.' '.str_plural('day', $diff->d);
     }
 
     if ($diff->h > 0) {
-        $units[] = $diff->h . ' ' . str_plural('hour', $diff->h);
+        $units[] = $diff->h.' '.str_plural('hour', $diff->h);
     }
 
     if (count($units) == 1) {
@@ -148,7 +148,7 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
     }
 
     $lastElement = array_pop($units);
-    $unitsString = implode(', ', $units) . ' and ' . $lastElement;
+    $unitsString = implode(', ', $units).' and '.$lastElement;
 
     return $unitsString;
 }
@@ -161,7 +161,7 @@ function array_merge_concat($a1, $a2, $sep = ' ')
         if (is_numeric($key)) {
             $final_array[] = $value;
         } elseif (array_key_exists($key, $a1)) {
-            $final_array[$key] = $final_array[$key] . $sep . $value;
+            $final_array[$key] = $final_array[$key].$sep.$value;
         } else {
             $final_array[$key] = $value;
         }
@@ -192,7 +192,7 @@ function appUrl()
     $appUrl = env('APP_URL', 'http://localhost');
 
     if (env('HEROKU_APP_NAME') != null) {
-        $appUrl = 'http://' . env('HEROKU_APP_NAME') . '.herokuapp.com';
+        $appUrl = 'http://'.env('HEROKU_APP_NAME').'.herokuapp.com';
     }
 
     return $appUrl;
@@ -220,9 +220,9 @@ function maskEmail($email)
 
 function sys_config($key)
 {
-    $cacheKey = 'sys_config_' . $key;
+    $cacheKey = 'sys_config_'.$key;
 
-    if (!cache($cacheKey)) {
+    if (! cache($cacheKey)) {
         cache([$cacheKey => optional(\App\Models\Sys\Config::find($key))->value('value')], now()->addMinutes(10));
     }
 
@@ -234,7 +234,7 @@ function handleService(\App\Services\BaseService $service)
     return $service->handle();
 }
 
-if (!function_exists('str_contains')) {
+if (! function_exists('str_contains')) {
     function str_contains($haystack, $needle)
     {
         return \Illuminate\Support\Str::contains($haystack, $needle);

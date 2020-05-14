@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Cache;
 use Malahierba\PublicId\PublicId;
 
 /**
- * App\Models\VisitTransfer\Application
+ * App\Models\VisitTransfer\Application.
  *
  * @property int $id
  * @property int $type
@@ -429,7 +429,7 @@ class Application extends Model
 
     public function getTrainingTeamAttribute()
     {
-        if (!$this->exists) {
+        if (! $this->exists) {
             return 'Unknown';
         }
 
@@ -492,7 +492,7 @@ class Application extends Model
 
     public function isStatusNotIn($stati)
     {
-        return !$this->isStatusIn($stati);
+        return ! $this->isStatusIn($stati);
     }
 
     public function setFacility(Facility $facility)
@@ -762,7 +762,7 @@ class Application extends Model
 
     public function check90DayQualification()
     {
-        if (!$this->submitted_at) {
+        if (! $this->submitted_at) {
             return false;
         }
 

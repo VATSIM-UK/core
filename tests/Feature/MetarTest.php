@@ -1,6 +1,5 @@
 <?php
 
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 
 class MetarTest extends \Tests\TestCase
@@ -15,7 +14,7 @@ class MetarTest extends \Tests\TestCase
     {
         $metar = 'EGKK 122050Z 21004KT CAVOK 09/02 Q1017';
         Http::fake([
-            'http://metar.vatsim.net/*' => Http::response($metar, 200)
+            'http://metar.vatsim.net/*' => Http::response($metar, 200),
         ]);
 
         $response = $this->get(route('api.metar', ['EGKK']))->content();
@@ -25,11 +24,10 @@ class MetarTest extends \Tests\TestCase
     public function testItHandlesDowntimeGracefully()
     {
         Http::fake([
-            'http://metar.vatsim.net/*' => Http::response('', 502)
+            'http://metar.vatsim.net/*' => Http::response('', 502),
         ]);
 
         $response = $this->get(route('api.metar', ['EGKK']))->content();
         $this->assertEquals('METAR UNAVAILABLE', $response);
     }
-
 }

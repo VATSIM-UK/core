@@ -31,7 +31,7 @@ class Slack
 
     public static function sendToWebServices($message, $attachment = null, $username = null)
     {
-        return self::send("#web_alerts", $message, $attachment, $username);
+        return self::send('#web_alerts', $message, $attachment, $username);
     }
 
     /**
@@ -49,7 +49,7 @@ class Slack
 
         return SlackChat::message($channel, $message, [
             'attachments' => [$attachment],
-            'username' => $username
+            'username' => $username,
         ]);
     }
 }

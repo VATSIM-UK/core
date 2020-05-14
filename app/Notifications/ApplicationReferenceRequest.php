@@ -35,7 +35,7 @@ class ApplicationReferenceRequest extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if (!$this->reference->is_requested) {
+        if (! $this->reference->is_requested) {
             return []; // Already been completed
         } else {
             return ['mail', 'database'];

@@ -17,7 +17,7 @@ class MandatoryPasswords
     public function validate($makeResponse)
     {
         if (Auth::check()) {
-            if (Auth::user()->mandatory_password && !Auth::user()->hasPassword()) {
+            if (Auth::user()->mandatory_password && ! Auth::user()->hasPassword()) {
                 if ($makeResponse) {
                     return redirect()->guest(route('password.create'))->withError('You are required to set a secondary password.');
                 } else {

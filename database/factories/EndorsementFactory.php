@@ -14,6 +14,6 @@ $factory->define(\App\Models\Atc\Endorsement\Condition::class, function ($faker)
         'positions' => ['EGLL_%'],
         'required_hours' => $faker->numberBetween(1, 100),
         'type' => 1,
-        'within_months' => $faker->optional(0.5)->randomDigit
+        'within_months' => $faker->optional(0.5)->randomDigit,
     ];
 });

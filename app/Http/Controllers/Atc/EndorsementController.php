@@ -16,7 +16,7 @@ class EndorsementController extends BaseController
             return $condition->progressForUser($this->account);
         });
 
-        if (!$this->account->qualificationAtc->isS1) {
+        if (! $this->account->qualificationAtc->isS1) {
             return Redirect::route('mship.manage.dashboard')
                 ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
         }

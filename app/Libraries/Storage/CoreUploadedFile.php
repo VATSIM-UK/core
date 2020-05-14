@@ -18,6 +18,6 @@ class CoreUploadedFile extends UploadedFile
 
     public function getPathFileName()
     {
-        return $this->getFullFileName() . '.' . $this->extension();
+        return $this->getFullFileName().'.'.$this->extension();
     }
 }

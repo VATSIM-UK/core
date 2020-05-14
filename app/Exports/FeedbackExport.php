@@ -17,7 +17,6 @@ class FeedbackExport implements FromCollection, WithMapping, WithHeadings, Shoul
     private $feedback;
     private $form;
 
-
     public function __construct(Request $request, $feedback, Form $form)
     {
         $this->request = $request;
@@ -65,9 +64,9 @@ class FeedbackExport implements FromCollection, WithMapping, WithHeadings, Shoul
             $question_number++;
         }
         $rows[] = [];
+
         return $rows;
     }
-
 
     /**
      * @return array

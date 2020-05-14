@@ -28,7 +28,7 @@ class WaitingListLoggingTest extends TestCase
 
         $this->waitingList->addToWaitingList($this->account, $this->privacc);
     }
-    
+
     /** @test */
     public function itLogsTheChangeInContentForNotesInLists()
     {

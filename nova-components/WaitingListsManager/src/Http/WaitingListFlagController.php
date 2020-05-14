@@ -9,7 +9,7 @@ class WaitingListFlagController extends Controller
 {
     public function toggle(WaitingListAccountFlag $flag)
     {
-        if (!$flag->value) {
+        if (! $flag->value) {
             $flag->mark();
         } else {
             $flag->unMark();

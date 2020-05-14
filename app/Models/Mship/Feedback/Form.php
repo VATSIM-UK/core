@@ -7,7 +7,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\Mship\Feedback\Form
+ * App\Models\Mship\Feedback\Form.
  *
  * @property int $id
  * @property string $name

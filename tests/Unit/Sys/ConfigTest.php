@@ -27,7 +27,7 @@ class ConfigTest extends TestCase
         Config::create([
             'key'    => 'key',
             'value'  => 'value',
-            'active' => 1
+            'active' => 1,
         ]);
     }
 
@@ -37,7 +37,7 @@ class ConfigTest extends TestCase
         $key = Config::forceCreate([
             'key'    => 'key',
             'value'  => 'value',
-            'active' => 1
+            'active' => 1,
         ]);
 
         $this->assertEquals(Config::find('key')->value('value'), 'value');
@@ -49,13 +49,13 @@ class ConfigTest extends TestCase
         Config::forceCreate([
             'key'    => 'active',
             'value'  => 'active-value',
-            'active' => 1
+            'active' => 1,
         ]);
 
         Config::forceCreate([
             'key'    => 'inactive',
             'value'  => 'inactive-value',
-            'active' => 0
+            'active' => 0,
         ]);
 
         $this->assertNotNull(Config::find('active'));
@@ -68,7 +68,7 @@ class ConfigTest extends TestCase
         Config::forceCreate([
             'key'    => 'key',
             'value'  => 'value',
-            'active' => 1
+            'active' => 1,
         ]);
 
         $this->assertEquals(sys_config('key'), 'value');

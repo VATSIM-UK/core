@@ -126,10 +126,12 @@ class WaitingListAccount extends Pivot
         // for a user in a waiting list, they should have > 12 hours controlled within the UK.
         if ($hours >= $minutesRequired) {
             Cache::put($hourCheckKey, true, $this->cacheTtl);
+
             return true;
         }
 
         Cache::put($hourCheckKey, false, $this->cacheTtl);
+
         return false;
     }
 
@@ -146,6 +148,7 @@ class WaitingListAccount extends Pivot
         $this->flags()->each(function ($model) use (&$checked) {
             if (! $model->pivot->value) {
                 $checked = false;
+
                 return false;
             }
         });
@@ -158,7 +161,7 @@ class WaitingListAccount extends Pivot
         // is the status of the account deferred
         // are all the flags true
         // and is the atc hour check true
-        return $this->atcHourCheck() && $this->allFlagsChecker() && $this->status->first()->name == "Active";
+        return $this->atcHourCheck() && $this->allFlagsChecker() && $this->status->first()->name == 'Active';
     }
 
     public function setNotesAttribute($value)

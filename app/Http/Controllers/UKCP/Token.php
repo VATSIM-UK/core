@@ -30,10 +30,11 @@ class Token extends BaseController
 
         $newToken = $this->ukcp->createTokenFor(auth()->user());
 
-        if (!$newToken) {
+        if (! $newToken) {
             return Redirect::route('mship.manage.dashboard')
                 ->withError('An unknown error occured, please contact Web Services.');
         }
+
         return redirect()->route('ukcp.guide')->withSuccess('Tokens Updated!');
     }
 
@@ -56,7 +57,7 @@ class Token extends BaseController
                     $this->ukcp::getPathForToken($tokenId, auth()->user()),
                     "{$this->ukcp::getKeyForToken($tokenId)}.json",
                     [
-                        'Content-Type: application/json'
+                        'Content-Type: application/json',
                     ]
                 );
         } catch (FileNotFoundException $e) {
