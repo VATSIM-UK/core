@@ -3,22 +3,14 @@ codecov:
 coverage:
   status:
     project:
-      default: off
-      application:
+      default:
         target: 80%
-        flags:
-          - application
-flags:
-  application:
-    paths:
-      - app/
-      - nova-components/WaitingListsManager/src/
-    ignore:
-      - app/Console/Kernel.php
-      - app/Exceptions/Handler.php
-      - app/Http/Kernel.php
-      - app/helpers.php
-      - app/CloudflareHelper.php
-  tests:
-    paths:
-      - tests/
+        paths:
+          - app/
+          - nova-components/WaitingListsManager/src/
+ignore:
+  - app/Console/Kernel.php
+  - app/Exceptions/Handler.php
+  - app/Http/Kernel.php
+  - app/helpers.php
+  - app/CloudflareHelper.php
