@@ -3,15 +3,27 @@ codecov:
 coverage:
   status:
     project:
-      app:
+      default: off
+      application:
         target: auto
         threshold: 0%
-        paths:
-          - app/
-          - nova-components/WaitingListsManager/src/
+        flags:
+          - application
+      waitinglistsmanager:
+        target: auto
+        threshold: 0%
+        flags:
+            - waitinglistsmanager
 ignore:
   - app/Console/Kernel.php
   - app/Exceptions/Handler.php
   - app/Http/Kernel.php
   - app/helpers.php
   - app/CloudflareHelper.php
+flags:
+  application:
+    paths:
+      - app/
+  waitinglistsmanager:
+    paths:
+      - nova-components/WaitingListsManager/src/
