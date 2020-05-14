@@ -5,7 +5,7 @@ namespace App\Models\TeamSpeak;
 use App\Models\Model;
 
 /**
- * App\Models\TeamSpeak\Channel
+ * App\Models\TeamSpeak\Channel.
  *
  * @property int $id
  * @property int|null $parent_id
@@ -56,7 +56,7 @@ class Channel extends Model
      */
     public function getProtectedAttribute($value)
     {
-        if (is_null($value) && !is_null($this->parent)) {
+        if (is_null($value) && ! is_null($this->parent)) {
             return $this->parent->protected;
         } else {
             if (is_null($value) && is_null($this->parent)) {

@@ -5,7 +5,7 @@ namespace App\Models\Email;
 use App\Models\Model;
 
 /**
- * App\Models\Email\Event
+ * App\Models\Email\Event.
  *
  * @property int $id
  * @property string $broker

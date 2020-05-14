@@ -35,7 +35,7 @@ final class AddStudentToWaitingListAdmin extends AddStudentToWaitingList
         try {
             $account = Account::findOrFail($fields->cid);
         } catch (ModelNotFoundException $e) {
-            return $this->  dangerAction('The specified CID was not found.');
+            return $this->dangerAction('The specified CID was not found.');
         }
 
         if ($waitingList->accounts->contains($account)) {
@@ -64,7 +64,7 @@ final class AddStudentToWaitingListAdmin extends AddStudentToWaitingList
                 'Optionally specify a join date if you need to fix it to a date
                 e.g. member is re-joining a list after deferring their place in training.
                 This cannot be todays date'
-            )->rules('nullable', 'before:today')
+            )->rules('nullable', 'before:today'),
         ];
 
         return array_merge(parent::fields(), $additionalFields);

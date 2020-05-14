@@ -16,7 +16,7 @@ class AccountAlteredEventTest extends TestCase
 {
     use DatabaseTransactions;
 
-    protected function setUp():void
+    protected function setUp(): void
     {
         parent::setUp();
 

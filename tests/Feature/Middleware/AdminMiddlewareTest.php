@@ -4,8 +4,6 @@ namespace Tests\Feature\Middleware;
 
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AdminMiddlewareTest extends TestCase

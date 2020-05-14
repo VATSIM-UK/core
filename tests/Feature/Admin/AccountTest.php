@@ -29,7 +29,7 @@ class AccountTest extends TestCase
     {
         // Add a ban
         $ban = factory(Ban::class)->create([
-            'account_id' => $this->user->id
+            'account_id' => $this->user->id,
         ]);
 
         $this->actingAs($this->privacc)
@@ -42,7 +42,7 @@ class AccountTest extends TestCase
                 $ban->period_start->format('dS M Y'),
                 $ban->period_finish->format('dS M Y'),
                 'Local',
-                'Active'
+                'Active',
             ]);
     }
 

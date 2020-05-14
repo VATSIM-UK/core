@@ -111,7 +111,7 @@ class WaitingListFlagTest extends TestCase
 
         $this->assertTrue($waitingListAccount->flags()->find($flag->id)->pivot->value);
     }
-    
+
     /** @test */
     public function itAssignsDefaultFlagsOnAddingAccountToList()
     {

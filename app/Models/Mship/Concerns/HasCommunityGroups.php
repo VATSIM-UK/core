@@ -50,7 +50,7 @@ trait HasCommunityGroups
 
     private function guardAgainstNonDivisionJoiningACommunityGroup()
     {
-        if (!$this->hasState('DIVISION')) {
+        if (! $this->hasState('DIVISION')) {
             throw new \App\Exceptions\Community\MustBeADivisionMemberException($this);
         }
     }

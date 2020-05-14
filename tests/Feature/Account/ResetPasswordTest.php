@@ -40,7 +40,6 @@ class ResetPasswordTest extends TestCase
 
         // Hold time to allow for comparision
 
-
         // Reset the password
         $this->followingRedirects()->actingAs($this->user, 'vatsim-sso')
             ->from(route('password.reset', $token))

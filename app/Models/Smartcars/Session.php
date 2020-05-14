@@ -5,7 +5,7 @@ namespace App\Models\Smartcars;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Smartcars\Session
+ * App\Models\Smartcars\Session.
  *
  * @property int $id
  * @property string $session_id

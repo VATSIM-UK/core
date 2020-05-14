@@ -154,7 +154,7 @@ class ApplicationTest extends TestCase
     public function itSendsAcceptanceEmailToTrainingTeam()
     {
         Notification::fake();
-        
+
         $this->user->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
 
         $facility = factory(\App\Models\VisitTransfer\Facility::class, 'atc_visit')->create();

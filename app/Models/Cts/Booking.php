@@ -12,7 +12,7 @@ class Booking extends Model
     public const UPDATED_AT = null;
     protected $attributes = ['local_id' => 0];
     protected $hidden = [
-        'type_id', 'groupID', 'local_id', 'eurobook_id', 'eurobook_import', 'member_id', 'time_booked'
+        'type_id', 'groupID', 'local_id', 'eurobook_id', 'eurobook_import', 'member_id', 'time_booked',
     ];
 
     public function member()
@@ -39,21 +39,21 @@ class Booking extends Model
 
     public function isEvent()
     {
-        return $this->type == "EV";
+        return $this->type == 'EV';
     }
 
     public function isExam()
     {
-        return $this->type == "EX";
+        return $this->type == 'EX';
     }
 
     public function isMemberBooking()
     {
-        return $this->type == "BK";
+        return $this->type == 'BK';
     }
 
     public function isMentoring()
     {
-        return $this->type == "ME";
+        return $this->type == 'ME';
     }
 }

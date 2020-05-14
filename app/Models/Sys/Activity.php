@@ -7,7 +7,7 @@ use App\Models\Model;
 use Request;
 
 /**
- * App\Models\Sys\Activity
+ * App\Models\Sys\Activity.
  *
  * @property int $id
  * @property int|null $actor_id

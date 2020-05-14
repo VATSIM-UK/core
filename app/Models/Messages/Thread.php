@@ -6,7 +6,7 @@ use App\Models\Model;
 use App\Models\Mship\Account;
 
 /**
- * App\Models\Messages\Thread
+ * App\Models\Messages\Thread.
  *
  * @property int $id
  * @property string $subject

@@ -3,7 +3,7 @@
 namespace App\Models\Mship;
 
 /**
- * App\Models\Mship\State
+ * App\Models\Mship\State.
  *
  * @property int $id
  * @property string $code
