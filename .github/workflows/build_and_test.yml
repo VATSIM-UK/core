@@ -3,9 +3,10 @@ name: Build & Test
 on:
   push:
     branches:
-      - 'master'
-    tags-ignore:
+      - '*'
       - '**'
+    tags-ignore:
+      - v*
 
 jobs:
   laravel-tests:
