@@ -5,7 +5,7 @@ namespace App\Models\Sys;
 use App\Models\Model;
 
 /**
- * App\Models\Sys\Notification
+ * App\Models\Sys\Notification.
  *
  * @property int $id
  * @property string $title
@@ -86,7 +86,7 @@ class Notification extends Model
 
     public function scopeSince($query, $sinceTimestamp)
     {
-        if (!($sinceTimestamp instanceof \Carbon\Carbon)) {
+        if (! ($sinceTimestamp instanceof \Carbon\Carbon)) {
             $sinceTimestamp = \Carbon\Carbon::parse($sinceTimestamp);
         }
 

@@ -6,7 +6,7 @@ use App\Models\Airport;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Airport\Runway
+ * App\Models\Airport\Runway.
  *
  * @property int $id
  * @property int $airport_id
@@ -34,12 +34,12 @@ class Runway extends Model
 {
     protected $table = 'airport_runways';
     protected $fillable = [
-            'ident',
-            'heading',
-            'width',
-            'length',
-            'surface_type',
-        ];
+        'ident',
+        'heading',
+        'width',
+        'length',
+        'surface_type',
+    ];
 
     const SURFACE_TYPE_ASPHALT = 1;
     const SURFACE_TYPE_GRASS = 2;

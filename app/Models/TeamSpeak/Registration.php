@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use TeamSpeak3;
 
 /**
- * App\Models\TeamSpeak\Registration
+ * App\Models\TeamSpeak\Registration.
  *
  * @property int $id
  * @property int $account_id

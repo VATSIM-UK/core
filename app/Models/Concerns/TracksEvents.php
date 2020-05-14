@@ -38,7 +38,7 @@ trait TracksEvents
      */
     public function addActivity($event)
     {
-        if (!App::runningInConsole()) {
+        if (! App::runningInConsole()) {
             Activity::create([
                 'actor_id' => Auth::check() ? Auth::id() : null,
                 'subject_id' => $this->getKey(),

@@ -2,12 +2,10 @@
 
 namespace App\Models\Smartcars;
 
-use App\Models\Mship\Account;
-use App\Models\Smartcars\Bid;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Smartcars\Pirep
+ * App\Models\Smartcars\Pirep.
  *
  * @property int $id
  * @property int $bid_id

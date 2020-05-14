@@ -5,7 +5,7 @@ namespace App\Models\Smartcars;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Smartcars\Airport
+ * App\Models\Smartcars\Airport.
  *
  * @property int $id
  * @property string $icao

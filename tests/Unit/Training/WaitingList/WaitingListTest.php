@@ -80,7 +80,7 @@ class WaitingListTest extends TestCase
 
         $this->assertDatabaseHas('training_waiting_list_account',
             [
-                'account_id' => $account->id, 'list_id' => $this->waitingList->id, 'deleted_at' => now()
+                'account_id' => $account->id, 'list_id' => $this->waitingList->id, 'deleted_at' => now(),
             ]);
     }
 

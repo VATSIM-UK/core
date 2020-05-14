@@ -5,7 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 class AddLegacyPermissions extends Migration
 {
     /**
-     * Run the migrations,
+     * Run the migrations,.
      *
      * @return void
      */
@@ -186,7 +186,7 @@ class AddLegacyPermissions extends Migration
     }
 
     /**
-     * Reverse the migrations,
+     * Reverse the migrations,.
      *
      * @return void
      */

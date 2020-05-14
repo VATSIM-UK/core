@@ -1,9 +1,6 @@
 <?php
 
-use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreateAddStudentAdminPermission extends Migration
 {
@@ -21,7 +18,7 @@ class CreateAddStudentAdminPermission extends Migration
     {
         return \Spatie\Permission\Models\Permission::create([
             'name' => $name,
-            'guard_name' => $guard
+            'guard_name' => $guard,
         ]);
     }
 }

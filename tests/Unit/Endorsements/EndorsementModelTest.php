@@ -26,7 +26,7 @@ class EndorsementModelTest extends TestCase
     public function itCanBeCreated()
     {
         $endorsement = Endorsement::create([
-            'name' => 'My First Endorsement'
+            'name' => 'My First Endorsement',
         ]);
 
         $this->assertDatabaseHas('endorsements', ['id' => $endorsement->id, 'name' => $endorsement->name]);
@@ -43,7 +43,6 @@ class EndorsementModelTest extends TestCase
         $this->assertEquals($this->endorsement->fresh()->conditions()->first()->id, $condition->id);
         $this->assertCount(1, $this->endorsement->fresh()->conditions);
 
-
         $condition = factory(Endorsement\Condition::class)->make(['endorsement_id' => null]);
         $this->endorsement->conditions()->save($condition);
         $this->assertCount(2, $this->endorsement->fresh()->conditions);
@@ -58,7 +57,7 @@ class EndorsementModelTest extends TestCase
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'EGKK_TWR',
-            'minutes_online' => 60
+            'minutes_online' => 60,
         ]);
 
         $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
@@ -82,12 +81,12 @@ class EndorsementModelTest extends TestCase
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'EGKK_TWR',
-            'minutes_online' => 30
+            'minutes_online' => 30,
         ]);
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'EGLL_S_TWR',
-            'minutes_online' => 30
+            'minutes_online' => 30,
         ]);
 
         // should return true as it sums up to the 60 mins required in the mock condition.
@@ -103,12 +102,12 @@ class EndorsementModelTest extends TestCase
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'EGKK_TWR',
-            'minutes_online' => 10
+            'minutes_online' => 10,
         ]);
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'EGLL_S_TWR',
-            'minutes_online' => 10
+            'minutes_online' => 10,
         ]);
 
         $this->assertFalse($this->endorsement->fresh()->conditionsMetForUser($this->user));
@@ -146,7 +145,7 @@ class EndorsementModelTest extends TestCase
         $atc = factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'EGKK_TWR',
-            'connected_at' => Carbon::now()->subHours(2)
+            'connected_at' => Carbon::now()->subHours(2),
         ]);
         $atc->disconnectAt(Carbon::now());
 
@@ -155,7 +154,6 @@ class EndorsementModelTest extends TestCase
 
         $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
     }
-
 
     private function createMockCondition($positions = ['EGKK_%'], $type = Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD)
     {
@@ -166,7 +164,7 @@ class EndorsementModelTest extends TestCase
                 'required_hours' => 1,
                 'within_months' => null,
                 'type' => $type,
-                'positions' => $positions
+                'positions' => $positions,
             ]
         );
     }

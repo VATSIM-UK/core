@@ -15,7 +15,7 @@ class WaitingListNoteController extends Controller
     public function create(WaitingListAccount $waitingListAccount, Request $request)
     {
         $this->validate($request, [
-            'notes' => 'string|nullable'
+            'notes' => 'string|nullable',
         ]);
 
         $currentNoteContent = $waitingListAccount->notes;

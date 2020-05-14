@@ -39,7 +39,7 @@ class CheckAdminPermissions
         if ($hasRoutePermission) {
             return $next($request);
         }
-        
+
         abort(403);
     }
 
