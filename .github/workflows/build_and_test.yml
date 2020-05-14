@@ -13,6 +13,21 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Set PHP Version
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.3'
+      - name: Install PCOV
+        if: ${{ matrix.phpunit == 'with-coverage' }}
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: pcov
+      - name: Remove xDebug
+        if: ${{ matrix.phpunit == 'without-coverage' }}
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+
       - name: Write Nova Secrets
         env:
           NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
