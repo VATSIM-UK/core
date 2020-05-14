@@ -14,10 +14,11 @@ flags:
       - app/
       - nova-components/WaitingListsManager/src/
     ignore:
+      - app/Console/Kernel.php
+      - app/Exceptions/Handler.php
       - app/Http/Kernel.php
       - app/helpers.php
       - app/CloudflareHelper.php
-      - app/Exceptions/Handler.php
   tests:
     paths:
       - tests/
