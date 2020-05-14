@@ -1,0 +1,23 @@
+codecov:
+  branch: master
+coverage:
+  status:
+    project:
+      default: off
+      application:
+        target: 80%
+        flags:
+          - application
+flags:
+  application:
+    paths:
+      - app/
+      - nova-components/WaitingListsManager/src/
+    ignore:
+      - app/Http/Kernel.php
+      - app/helpers.php
+      - app/CloudflareHelper.php
+      - app/Exceptions/Handler.php
+  tests:
+    paths:
+      - tests/
