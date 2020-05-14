@@ -3,6 +3,7 @@
 namespace App\Nova\Actions\Mship;
 
 use App\Models\Mship\Ban\Reason;
+use App\Nova\Account;
 use App\Services\Mship\BanAccount as BanAccountService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -54,7 +55,7 @@ class BanAccount extends Action
                 })
             )->rules('required'),
 
-            Text::make('Ban Notes', 'ban_reason_extra')->help('This will be sent to the user.')->rules('min:5'),
+             Text::make('Ban Notes', 'ban_reason_extra')->help('This will be sent to the user.')->rules('min:5'),
 
             // formerly called ban_note_content
             Textarea::make('Internal Note', 'ban_internal_note')->rules(['required', 'min:5']),

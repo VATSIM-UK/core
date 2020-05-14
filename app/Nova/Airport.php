@@ -28,7 +28,7 @@ class Airport extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'icao',
+        'name', 'icao'
     ];
 
     public static $group = 'Smartcars';
@@ -68,7 +68,7 @@ class Airport extends Resource
                 ->help('Enter in a decimal format e.g. 52.3456'),
 
             Text::make('Longitude')->rules('required', 'numeric', 'min:-180', 'max:180')
-                ->help('Enter in a decimal format e.g. -1.7374'),
+                ->help('Enter in a decimal format e.g. -1.7374')
         ];
     }
 

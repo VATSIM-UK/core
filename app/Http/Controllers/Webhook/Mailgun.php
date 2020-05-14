@@ -20,7 +20,7 @@ class Mailgun extends WebhookController
 
     public function event(Request $request)
     {
-        if (! $this->verifyMailgun($request)) {
+        if (!$this->verifyMailgun($request)) {
             return Response::make('Unauthorised.', 406);
         }
 

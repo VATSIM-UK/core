@@ -18,7 +18,7 @@ class AddHorizonPermission extends Migration
     {
         return \Spatie\Permission\Models\Permission::create([
             'name' => $name,
-            'guard_name' => $guard,
+            'guard_name' => $guard
         ]);
     }
 }

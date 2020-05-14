@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
+use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\Text;
 
 class AddStudentToWaitingList extends Action
@@ -56,7 +57,7 @@ class AddStudentToWaitingList extends Action
     public function fields()
     {
         return [
-            Text::make('CID')->rules('required'),
+            Text::make('CID')->rules('required')
         ];
     }
 

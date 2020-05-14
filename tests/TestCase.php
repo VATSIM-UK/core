@@ -2,12 +2,13 @@
 
 namespace Tests;
 
-use App\Http\Middleware\VerifyCsrfToken;
-use App\Models\Mship\Account;
+use App\Models\Sys\Notification;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use App\Models\Mship\Account;
 use Spatie\Permission\Models\Role;
 use Tests\Database\MockCtsDatabase;
+use App\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -58,7 +59,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function seedLegacyTables()
     {
-        if (! method_exists($this, 'beginDatabaseTransaction')) {
+        if (!method_exists($this, 'beginDatabaseTransaction')) {
             return;
         }
 
@@ -69,7 +70,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function dropLegacyTables()
     {
-        if (! method_exists($this, 'beginDatabaseTransaction')) {
+        if (!method_exists($this, 'beginDatabaseTransaction')) {
             return;
         }
 
@@ -78,7 +79,7 @@ abstract class TestCase extends BaseTestCase
 
     public function markNovaTest()
     {
-        if (! class_exists('\Laravel\Nova\Nova')) {
+        if (!class_exists('\Laravel\Nova\Nova')) {
             $this->markTestSkipped('Nova is required to pass test.');
         }
     }

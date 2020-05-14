@@ -3,7 +3,9 @@
 namespace App\Policies\Training;
 
 use App\Models\Mship\Account;
+use App\Models\Training\WaitingList\WaitingListFlag;
 use App\Policies\BasePolicy;
+use Faker\Provider\Base;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class WaitingListFlagsPolicy extends BasePolicy
@@ -12,7 +14,7 @@ class WaitingListFlagsPolicy extends BasePolicy
 
     public function viewAny(Account $account)
     {
-        return $account->checkPermissionTo('waitingLists/atc/addFlags', 'web') ||
-            $account->checkPermissionTo('waitingLists/pilot/addFlags');
+        return $account->checkPermissionTo("waitingLists/atc/addFlags", 'web') ||
+            $account->checkPermissionTo("waitingLists/pilot/addFlags");
     }
 }

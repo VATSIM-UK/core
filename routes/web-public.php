@@ -11,9 +11,9 @@ Route::group([
     Route::get('/airports/{ukAirportByICAO}')->uses('AirportController@show')->name('airport.view');
 
     Route::group([
-        'as' => 'atc.',
-        'prefix' => 'atc',
-    ], function () {
+           'as' => 'atc.',
+           'prefix' => 'atc',
+        ], function () {
             Route::get('/')->uses('ATCPagesController@viewLanding')->name('landing');
             Route::get('/new-controller')->uses('ATCPagesController@viewNewController')->name('newController');
             Route::get('/progression-guide')->uses('ATCPagesController@viewProgressionGuide')->name('progression');

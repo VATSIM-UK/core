@@ -2,8 +2,8 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
 
 class Endorsement extends Resource
 {

@@ -93,7 +93,7 @@ class Account extends Resource
      */
     public function authorizedToAttachAny(NovaRequest $request, $model)
     {
-        return ! in_array(get_class($model), self::$disallowAttach);
+        return !in_array(get_class($model), self::$disallowAttach);
     }
 
     /**

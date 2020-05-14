@@ -17,14 +17,14 @@ class Registration extends \App\Http\Controllers\BaseController
             return Redirect::route('mship.manage.dashboard');
         }
 
-        if (! $this->account->new_ts_registration) {
+        if (!$this->account->new_ts_registration) {
             $registration_ip = Request::ip();
             $registration = $this->createRegistration($this->account->id, $registration_ip);
         } else {
             $registration = $this->account->new_ts_registration->load('confirmation');
         }
 
-        if (! $registration->confirmation) {
+        if (!$registration->confirmation) {
             $confirmation = $this->createConfirmation(
                 $registration->id,
                 md5($registration->created_at->timestamp),

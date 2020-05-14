@@ -27,7 +27,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
             return $this->getHTMLByID('next', $html);
         } catch (\HttpRequestException $e) {
             // CTS likely unavailable.
-            return;
+            return null;
         }
     }
 

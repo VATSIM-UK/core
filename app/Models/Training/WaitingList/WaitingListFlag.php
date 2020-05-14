@@ -14,7 +14,7 @@ class WaitingListFlag extends Model
     {
         parent::boot();
 
-        self::deleting(function (self $flag) {
+        self::deleting(function (WaitingListFlag $flag) {
             $flag->waitingListAccounts()->detach();
         });
     }

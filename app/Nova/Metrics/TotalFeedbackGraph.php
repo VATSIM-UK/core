@@ -8,8 +8,7 @@ use Laravel\Nova\Metrics\Trend;
 
 class TotalFeedbackGraph extends Trend
 {
-    public $name = 'Total Feedback Trends';
-
+    public $name = "Total Feedback Trends";
     /**
      * Calculate the value of the metric.
      *

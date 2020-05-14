@@ -5,8 +5,8 @@ namespace App\Models\Mship\Concerns;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Trait HasCTSAccount.
- */
+     * Trait HasCTSAccount
+     */
     trait HasCTSAccount
     {
         /**
@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
         {
             $ctsDatabase = config('services.cts.database');
             $ssoAccountId = DB::table('oauth_clients')->where('name', 'CT System')->first();
-            if (! $ssoAccountId || ! $ctsDatabase) {
+            if (!$ssoAccountId || !$ctsDatabase) {
                 return;
             }
 
@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\DB;
 
             $ctsAccount = DB::table("{$ctsDatabase}.members")->where('cid', $this->id)->first();
 
-            if (! $ctsAccount) {
+            if (!$ctsAccount) {
                 // No user exists. Abort.
                 return;
             }

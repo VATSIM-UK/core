@@ -2,8 +2,10 @@
 
 namespace Tests\Feature\Middleware;
 
+use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 

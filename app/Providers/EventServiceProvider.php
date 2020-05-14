@@ -35,7 +35,7 @@ class EventServiceProvider extends ServiceProvider
 
         AtcSessionEnded::class => [
             //AtcSessionRecordedSuccessNotification::class, // temporarily disabled
-            FlushEndorsementCache::class,
+            FlushEndorsementCache::class
         ],
 
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [

@@ -52,7 +52,6 @@ class BookingRepository
 
             return $booking;
         });
-
         return $bookings;
     }
 
@@ -65,7 +64,7 @@ class BookingRepository
             ];
         }
 
-        if (! $booking->member) {
+        if (!$booking->member) {
             return [
                 'id' => '',
                 'name' => 'Unknown',

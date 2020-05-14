@@ -100,13 +100,13 @@ class ProcessNetworkData extends Command
             try {
                 $account = Account::findOrRetrieve($controllerData['cid']);
             } catch (InvalidCIDException $e) {
-                $this->info('Invalid CID: '.$controllerData['cid'], 'vvv');
+                $this->info('Invalid CID: ' . $controllerData['cid'], 'vvv');
                 DB::commit();
                 continue;
             }
 
-            if (! $account) {
-                $this->info('Unable to find or retrieve CID: '.$controllerData['cid'], 'vvv');
+            if (!$account) {
+                $this->info('Unable to find or retrieve CID: ' . $controllerData['cid'], 'vvv');
                 continue;
             }
 
@@ -165,13 +165,13 @@ class ProcessNetworkData extends Command
             try {
                 $account = Account::findOrRetrieve($pilotData['cid']);
             } catch (InvalidCIDException $e) {
-                $this->info('Invalid CID: '.$pilotData['cid'], 'vvv');
+                $this->info('Invalid CID: ' . $pilotData['cid'], 'vvv');
                 DB::commit();
                 continue;
             }
 
-            if (! $account) {
-                $this->info('Unable to find or retrieve CID: '.$pilotData['cid'], 'vvv');
+            if (!$account) {
+                $this->info('Unable to find or retrieve CID: ' . $pilotData['cid'], 'vvv');
                 continue;
             }
 
@@ -212,11 +212,11 @@ class ProcessNetworkData extends Command
                 $wasAtAlternativeAirport = $flight->isAtAirport($alternativeAirport);
 
                 // update their location
-                $flight->current_latitude = ! empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
-                $flight->current_longitude = ! empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
-                $flight->current_altitude = ! empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
-                $flight->current_groundspeed = ! empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
-                $flight->current_heading = ! empty($pilotData['heading']) ? $pilotData['heading'] : null;
+                $flight->current_latitude = !empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
+                $flight->current_longitude = !empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
+                $flight->current_altitude = !empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
+                $flight->current_groundspeed = !empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
+                $flight->current_heading = !empty($pilotData['heading']) ? $pilotData['heading'] : null;
 
                 // check their new location
                 $isAtDepartureAirport = $flight->isAtAirport($departureAirport);
@@ -224,22 +224,22 @@ class ProcessNetworkData extends Command
                 $isAtAlternativeAirport = $flight->isAtAirport($alternativeAirport);
 
                 // determine if they have departed or arrived at their planned airports
-                $departed = $wasAtDepartureAirport && ! $isAtDepartureAirport;
+                $departed = $wasAtDepartureAirport && !$isAtDepartureAirport;
                 if ($departed) {
                     $flight->departed_at = $this->lastUpdatedAt;
                 }
 
-                $arrivedAtMainAirport = ! $wasAtArrivalAirport && $isAtArrivalAirport;
-                $arrivedAtAlternativeAirport = ! $wasAtAlternativeAirport && $isAtAlternativeAirport;
+                $arrivedAtMainAirport = !$wasAtArrivalAirport && $isAtArrivalAirport;
+                $arrivedAtAlternativeAirport = !$wasAtAlternativeAirport && $isAtAlternativeAirport;
                 if ($arrivedAtMainAirport || $arrivedAtAlternativeAirport) {
                     $flight->arrived_at = $this->lastUpdatedAt;
                 }
             } else {
                 // pilot just connected
-                $flight->current_latitude = ! empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
-                $flight->current_longitude = ! empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
-                $flight->current_altitude = ! empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
-                $flight->current_groundspeed = ! empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
+                $flight->current_latitude = !empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
+                $flight->current_longitude = !empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
+                $flight->current_altitude = !empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
+                $flight->current_groundspeed = !empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
             }
 
             $flight->touch();
@@ -273,7 +273,7 @@ class ProcessNetworkData extends Command
      */
     private function getAirport(string $ident)
     {
-        return Cache::remember('airport_'.$ident, 720 * 60, function () use ($ident) {
+        return Cache::remember('airport_' . $ident, 720 * 60, function () use ($ident) {
             return Airport::where('icao', $ident)->first();
         });
     }

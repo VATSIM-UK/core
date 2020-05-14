@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\TeamSpeak\Registration;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Redirect;
@@ -83,6 +84,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('mshipRegistration', function ($value) {
             return Auth::user()->teamspeakRegistrations()->findOrFail($value);
         });
+
 
         Route::model('ban', \App\Models\Mship\Account\Ban::class, function () {
             return Redirect::route('adm.mship.account.index')->withError('The ban ID you provided was not found.');

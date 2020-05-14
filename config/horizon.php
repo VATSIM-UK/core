@@ -171,7 +171,7 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['notifications', 'default'],
+                'queue' => ['notifications','default'],
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 3,
@@ -181,7 +181,7 @@ return [
         'local' => [
             '1' => [
                 'connection' => 'redis',
-                'queue' => ['notifications', 'default'],
+                'queue' => ['notifications','default'],
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 3,

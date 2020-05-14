@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Tests\Unit;
 
 use App\Libraries\UKCP;
@@ -15,7 +16,7 @@ class UKCPLibraryTest extends TestCase
     {
         $token = json_encode([
             'api-url' => 'http://awebaddress.test',
-            'api-key' => '1234',
+            'api-key' => '1234'
         ]);
 
         $this->mock(Client::class, function (MockInterface $mock) use ($token) {
@@ -23,13 +24,13 @@ class UKCPLibraryTest extends TestCase
                 ->andReturn(
                         new \GuzzleHttp\Psr7\Response(200, [], json_encode([
                             'id' => $this->user->id,
-                            'tokens' => [],
+                            'tokens' => []
                         ])),
                         new \GuzzleHttp\Psr7\Response(200, [], json_encode([
                             'id' => $this->user->id,
                             'tokens' => [
-                                ['id' => '1234abc', 'revoked' => false],
-                            ],
+                                ['id' => '1234abc', 'revoked' => false]
+                            ]
                         ])));
 
             $mock->shouldReceive('post')

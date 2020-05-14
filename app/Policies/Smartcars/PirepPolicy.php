@@ -6,6 +6,7 @@ use App\Models\Mship\Account;
 use App\Models\Smartcars\Pirep;
 use App\Policies\BasePolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Spatie\Permission\Models\Role;
 
 class PirepPolicy extends BasePolicy
 {
@@ -50,9 +51,11 @@ class PirepPolicy extends BasePolicy
 
     public function view(Account $account)
     {
+        return null;
     }
 
     public function viewAny(Account $account)
     {
+        return null;
     }
 }

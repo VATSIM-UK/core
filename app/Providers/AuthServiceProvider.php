@@ -9,6 +9,7 @@ use App\Models\Smartcars;
 use App\Models\Training\WaitingList;
 use App\Models\VisitTransfer;
 use App\Nova\Qualification;
+use App\Nova\WaitingListFlag;
 use App\Policies\GroupPolicy;
 use App\Policies\MembershipPolicy;
 use App\Policies\Nova\AccountPolicy;
@@ -45,7 +46,7 @@ class AuthServiceProvider extends ServiceProvider
         WaitingList\WaitingListFlag::class => WaitingListFlagsPolicy::class,
         Account::class => AccountPolicy::class,
         Qualification::class => QualificationPolicy::class,
-        Feedback::class => FeedbackPolicy::class,
+        Feedback::class => FeedbackPolicy::class
     ];
 
     /**

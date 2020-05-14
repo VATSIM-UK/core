@@ -2,8 +2,9 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Bid extends Resource
 {
