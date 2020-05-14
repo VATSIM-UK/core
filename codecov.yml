@@ -3,8 +3,9 @@ codecov:
 coverage:
   status:
     project:
-      default:
-        target: 80%
+      app:
+        target: auto
+        threshold: 0%
         paths:
           - app/
           - nova-components/WaitingListsManager/src/
