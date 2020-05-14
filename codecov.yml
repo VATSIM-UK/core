@@ -7,11 +7,11 @@ coverage:
         threshold: 0%
         flags:
           - application
-      waiting-lists-manager:
+      waitinglistsmanager:
         target: auto
         threshold: 0%
         flags:
-            - waiting-lists-manager
+            - waitinglistsmanager
 ignore:
   - app/Console/Kernel.php
   - app/Exceptions/Handler.php
@@ -22,6 +22,6 @@ flags:
   application:
     paths:
       - app/
-  waiting-lists-manager:
+  waitinglistsmanager:
     paths:
       - nova-components/WaitingListsManager/src/
