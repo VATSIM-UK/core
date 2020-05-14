@@ -6,10 +6,10 @@ use Alawrence\Ipboard\Ipboard;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
 class IssueSecondaryForumGroup implements ShouldQueue
@@ -35,12 +35,13 @@ class IssueSecondaryForumGroup implements ShouldQueue
         $ipboard = new Ipboard();
 
         require_once config('services.community.init_file');
-        require_once \IPS\ROOT_PATH . '/system/Db/Db.php';
+        require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
         $members = \IPS\Db::i()->select('member_id', 'core_pfields_content', ['field_12=?', $this->cid]);
 
         if (count($members) != 1) {
-            Log::info('Unable to sync TG Forum Groups for' . $this->cid);
+            Log::info('Unable to sync TG Forum Groups for'.$this->cid);
+
             return;
         }
 
@@ -51,7 +52,8 @@ class IssueSecondaryForumGroup implements ShouldQueue
         }
 
         if (empty($ipboardUsers)) {
-            Log::info('The array for ' . $this->cid . 'is empty');
+            Log::info('The array for '.$this->cid.'is empty');
+
             return;
         }
 
@@ -79,11 +81,11 @@ class IssueSecondaryForumGroup implements ShouldQueue
     {
         try {
             $client = new Client;
-            $client->post(config('ipboard.api_url') . 'core/members/' . $ipboardUser . '?key=' . config('ipboard.api_key'), ['form_params' => [
-                'secondaryGroups' => $secondaryGroups
+            $client->post(config('ipboard.api_url').'core/members/'.$ipboardUser.'?key='.config('ipboard.api_key'), ['form_params' => [
+                'secondaryGroups' => $secondaryGroups,
             ]]);
         } catch (ClientException $e) {
-            Log::info('Error trying to update the secondary groups for forum user id ' . $ipboardUser);
+            Log::info('Error trying to update the secondary groups for forum user id '.$ipboardUser);
         }
     }
 }

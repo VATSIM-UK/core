@@ -6,13 +6,10 @@ use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type as NoteTypeData;
-use Auth;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
 use Redirect;
-use Session;
 use Spatie\Permission\Models\Role as RoleData;
-use URL;
 
 class Account extends AdmController
 {
@@ -83,13 +80,13 @@ class Account extends AdmController
 
     public function getDetail(AccountData $mshipAccount, $tab = 'basic', $tabId = 0)
     {
-        if (!$mshipAccount or $mshipAccount->is_system) {
+        if (! $mshipAccount or $mshipAccount->is_system) {
             return Redirect::route('adm.mship.account.index');
         }
 
         // Do they have permission to view their own profile?
         // This is to prevent people doing silly things....
-        if ($this->account->id == $mshipAccount->id && !$this->account->can('use-permission', 'adm/mship/account/own')) {
+        if ($this->account->id == $mshipAccount->id && ! $this->account->can('use-permission', 'adm/mship/account/own')) {
             return Redirect::route('adm.mship.account.index')
                 ->withError('You cannot view or manage your own profile.');
         }

@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Log;
 class SyncSubscriber
 {
     /**
-     * Syncs to all services
+     * Syncs to all services.
      */
     public function syncToAllServices($event)
     {
-        $ranRecently = !Cache::add('SYNCSUB_'.$event->account->id, '1', 3);
+        $ranRecently = ! Cache::add('SYNCSUB_'.$event->account->id, '1', 3);
 
-        if ($ranRecently || !$event->account->fully_defined) {
+        if ($ranRecently || ! $event->account->fully_defined) {
             // Prevent unnecessary executions
             return;
         }

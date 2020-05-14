@@ -5,7 +5,6 @@ namespace App\Console\Commands\Deployment;
 use App\Models\Mship\Account;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Role;
-use Tests\Database\MockCtsDatabase;
 
 class HerokuPostDeploy extends Command
 {

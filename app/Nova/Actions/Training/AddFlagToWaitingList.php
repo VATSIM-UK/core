@@ -10,7 +10,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
-use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 
@@ -35,7 +34,7 @@ class AddFlagToWaitingList extends Action
         $flag = WaitingListFlag::create(
             [
                 'name' => $fields->name,
-                'endorsement_id' => $fields->endorsement_id
+                'endorsement_id' => $fields->endorsement_id,
             ]
         );
 
@@ -56,7 +55,7 @@ class AddFlagToWaitingList extends Action
                 Endorsement::all()->mapWithKeys(function ($item) {
                     return [$item['id'] => $item['name']];
                 })
-            )->help('If an option is chosen here, this will be an automated flag. This cannot be reversed.')
+            )->help('If an option is chosen here, this will be an automated flag. This cannot be reversed.'),
         ];
     }
 }

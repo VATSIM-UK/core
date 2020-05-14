@@ -34,13 +34,12 @@ $factory->state(App\Models\Mship\Account::class, 'withQualification', function (
 
 $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
     $foundUniqueCode = false;
-    while (!$foundUniqueCode) {
+    while (! $foundUniqueCode) {
         $code = $faker->bothify('?##');
-        if (!Qualification::code($code)->exists()) {
+        if (! Qualification::code($code)->exists()) {
             $foundUniqueCode = true;
         }
     }
-
 
     return [
         'code' => $code,

@@ -5,8 +5,8 @@ namespace App\Models\Mship\Concerns;
 use Illuminate\Support\Facades\DB;
 
 /**
-     * Trait HasForumAccount
-     */
+ * Trait HasForumAccount.
+ */
     trait HasForumAccount
     {
         /**
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
             // Check forum enabled
             $communityClient = DB::table('oauth_clients')->where('name', 'Community')->first();
 
-            if (!config('services.community.init_file') || !config('services.community.database') || !$communityClient) {
+            if (! config('services.community.init_file') || ! config('services.community.database') || ! $communityClient) {
                 return;
             }
 
@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\DB;
 
             $ipsAccount = \IPS\Db::i()->select(
                 'member_id, field_12',
-                'core_pfields_content', [ 'field_12=?', $this->id ]);
+                'core_pfields_content', ['field_12=?', $this->id]);
 
             if (count($ipsAccount) == 0) {
                 // No user. Abort;
@@ -81,7 +81,7 @@ use Illuminate\Support\Facades\DB;
 
                 if ($groups->pluck('name')->search($name) === false) {
                     $ipsMemberClub = \IPS\Member\Club::load($ipsMemberClub);
-                    if (!$ipsMemberClub->isLeader($ipsAccount) && !$ipsMemberClub->isModerator($ipsAccount)) {
+                    if (! $ipsMemberClub->isLeader($ipsAccount) && ! $ipsMemberClub->isModerator($ipsAccount)) {
                         $ipsMemberClub->removeMember($ipsAccount);
                     }
                 }

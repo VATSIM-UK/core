@@ -1,9 +1,9 @@
 <?php
 
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 
 class RefactorEndorsementTables extends Migration
 {
@@ -25,7 +25,6 @@ class RefactorEndorsementTables extends Migration
 
         // Migrate existing endorsements
 
-
         Schema::table('endorsement_conditions', function (Blueprint $table) {
             $table->integer('endorsement_id')->after('endorsement');
         });
@@ -38,7 +37,7 @@ class RefactorEndorsementTables extends Migration
                 'updated_at' => \Carbon\Carbon::now(),
             ]);
             DB::table('endorsement_conditions')->where('endorsement', $endorsement)->update([
-                'endorsement_id' => $id
+                'endorsement_id' => $id,
             ]);
         }
 
@@ -55,7 +54,7 @@ class RefactorEndorsementTables extends Migration
         });
 
         DB::table('endorsement_conditions')->update([
-            'type' => 1
+            'type' => 1,
         ]);
     }
 

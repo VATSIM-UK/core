@@ -1,9 +1,8 @@
 [master_build_status]: https://travis-ci.com/VATSIM-UK/core.svg?branch=master
-[master_style_ci_status]: https://github.styleci.io/repos/75443611/shield?branch=master
-[code_climate_maintainability]: https://api.codeclimate.com/v1/badges/6a47acbf3b7798883e7e/maintainability
+[master_test_status]: https://github.com/VATSIM-UK/core/workflows/Build%20&%20Test/badge.svg?event=push
 [master_codecov_status]: https://codecov.io/gh/VATSIM-UK/core/branch/master/graphs/badge.svg
-[beta_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/135269.png
 [production_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/93858.png
+[beta_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/135269.png
 [alpha_status]: https://vatsim-uk.deploybot.com/badge/77558059841720/140917.png
 
 <p align="center">
@@ -18,9 +17,8 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 
 |      Check      |                            Provider                           |              Status             |
 |-----------------|---------------------------------------------------------------|---------------------------------|
-| Build           | [TravisCI](https://travis-ci.com/VATSIM-UK/core)              | ![master_build_status]          |
-| Code Style      | [StyleCI](https://github.styleci.io/repos/75443611)           | ![master_style_ci_status]       |
-| Maintainability | [CodeClimate](https://codeclimate.com/github/VATSIM-UK/core)  | ![code_climate_maintainability] |
+| Deployment      | [TravisCI](https://travis-ci.com/VATSIM-UK/core)              | ![master_build_status]          |
+| Tests           | [GitHub](https://github.com/VATSIM-UK/core/actions?query=workflow%3A%22Build+%26+Test%22+branch%3Amaster)  | ![master_test_status]  |
 | Coverage        | [CodeCov](https://codecov.io/gh/VATSIM-UK/core/branch/master) | ![master_codecov_status]        |
 
 # Environments

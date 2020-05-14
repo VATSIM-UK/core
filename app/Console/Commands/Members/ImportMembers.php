@@ -48,7 +48,7 @@ class ImportMembers extends Command
 
         $this->log('Member list and email list obtained.');
 
-        $members = AutoTools::getDivisionData(!$this->option('full'));
+        $members = AutoTools::getDivisionData(! $this->option('full'));
 
         foreach ($members as $member) {
             $this->log("Processing {$member['cid']} {$member['name_first']} {$member['name_last']}: ", null, false);

@@ -11,7 +11,7 @@ class WaitingListAccountFlag extends Pivot
     protected $table = 'training_waiting_list_account_flag';
     protected $appends = ['value'];
     public $timestamps = false;
-    protected $primaryKey  = 'id';
+    protected $primaryKey = 'id';
 
     public function mark()
     {
@@ -31,7 +31,7 @@ class WaitingListAccountFlag extends Pivot
             return $this->flag->endorsement->conditionsMetForUser($this->waitingListAccount->account);
         }
 
-        return !is_null($this->marked_at);
+        return ! is_null($this->marked_at);
     }
 
     public function waitingListAccount()

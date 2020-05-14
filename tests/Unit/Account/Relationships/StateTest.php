@@ -77,7 +77,7 @@ class StateTest extends TestCase
             'start_at' => Carbon::now(),
         ]);
 
-        $this->insertFiveDuplicatedStates($regionState, "EUD", "EUR");
+        $this->insertFiveDuplicatedStates($regionState, 'EUD', 'EUR');
 
         $this->assertEquals(6, $this->user->fresh()->states()->count());
 
@@ -91,8 +91,7 @@ class StateTest extends TestCase
             'division' => 'EUD',
         ]);
 
-
-        $this->insertFiveDuplicatedStates($regionState, "EUD", "EUR");
+        $this->insertFiveDuplicatedStates($regionState, 'EUD', 'EUR');
         $this->user->states()->attach($internationalState, [
             'region' => 'WA',
             'division' => 'ASIA',

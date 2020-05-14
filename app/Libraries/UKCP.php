@@ -11,7 +11,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class UKCP
 {
-
     /** @var string */
     private $apiKey;
 
@@ -33,11 +32,11 @@ class UKCP
     public function createAccountFor(Account $account)
     {
         try {
-            $result = $this->client->post(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
+            $result = $this->client->post(config('services.ukcp.url').'/user/'.$account->id, ['headers' => [
+                'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
-            return null;
+            return;
         }
 
         return $result->getBody()->getContents();
@@ -50,6 +49,7 @@ class UKCP
     public function getValidTokensFor(Account $account)
     {
         $tokens = optional($this->getAccountFor($account))->tokens;
+
         return collect($tokens)
             ->filter(function ($item) {
                 return $item->revoked === false;
@@ -68,17 +68,18 @@ class UKCP
             $result = $this->createAccountFor($account);
         } else {
             try {
-                $response = $this->client->post(config('services.ukcp.url') . '/user/' . $account->id . '/token', ['headers' => [
-                    'Authorization' => 'Bearer ' . $this->apiKey
+                $response = $this->client->post(config('services.ukcp.url').'/user/'.$account->id.'/token', ['headers' => [
+                    'Authorization' => 'Bearer '.$this->apiKey,
                 ]]);
                 $result = $response->getBody()->getContents();
             } catch (ClientException $e) {
-                return null;
+                return;
             }
         }
 
         $token = $this->getValidTokensFor($account)->first();
         Storage::disk('local')->put(self::getPathForToken($token->id, $account), $result);
+
         return $token;
     }
 
@@ -90,8 +91,8 @@ class UKCP
     public function deleteToken(string $tokenId, Account $account)
     {
         try {
-            $this->client->delete(config('services.ukcp.url') . '/token/' . $tokenId, ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
+            $this->client->delete(config('services.ukcp.url').'/token/'.$tokenId, ['headers' => [
+                'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
             return false;
@@ -106,12 +107,13 @@ class UKCP
     protected function getAccountFor(Account $account)
     {
         try {
-            $result = $this->client->get(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
+            $result = $this->client->get(config('services.ukcp.url').'/user/'.$account->id, ['headers' => [
+                'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
-            return null;
+            return;
         }
+
         return json_decode($result->getBody()->getContents());
     }
 
@@ -131,6 +133,6 @@ class UKCP
      */
     public static function getPathForToken($tokenID, $account)
     {
-        return self::TOKEN_PATH_ROOT . $account->id . '/' . $tokenID . '.json';
+        return self::TOKEN_PATH_ROOT.$account->id.'/'.$tokenID.'.json';
     }
 }

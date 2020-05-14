@@ -15,11 +15,11 @@ class Condition extends Model
         'positions',
         'required_hours',
         'type',
-        'within_months'
+        'within_months',
     ];
 
     protected $casts = [
-        'positions' => 'array'
+        'positions' => 'array',
     ];
 
     private $progress;
@@ -39,18 +39,18 @@ class Condition extends Model
 
     public function getHumanDescriptionAttribute()
     {
-        $description = "<b>$this->required_hours hour" . ($this->required_hours > 1 ? 's </b>' : ' </b>');
+        $description = "<b>$this->required_hours hour".($this->required_hours > 1 ? 's </b>' : ' </b>');
 
         if ($this->within_months) {
-            $description .= "within the last <b>$this->within_months month" . ($this->required_hours > 1 ? 's </b>' : ' </b>');
+            $description .= "within the last <b>$this->within_months month".($this->required_hours > 1 ? 's </b>' : ' </b>');
         }
 
         switch ($this->type) {
             case self::TYPE_ON_SINGLE_AIRFIELD:
-                $description .= "on <b>one of the qualifying positions</b>";
+                $description .= 'on <b>one of the qualifying positions</b>';
                 break;
             case self::TYPE_SUM_OF_AIRFIELDS:
-                $description .= "on the <b>total hours across all qualifying positions</b>";
+                $description .= 'on the <b>total hours across all qualifying positions</b>';
                 break;
         }
 
@@ -69,6 +69,7 @@ class Condition extends Model
                         return true;
                     }
                 }
+
                 return false;
             case self::TYPE_SUM_OF_AIRFIELDS:
                 return $this->required_hours <= $airfieldGroups->sum();

@@ -23,7 +23,7 @@ class HomePageTest extends TestCase
         $booking = factory(Booking::class)->create([
             'date' => $this->knownDate->toDateString(),
             'position' => 'EGKK_APP',
-            'type' => 'BK'
+            'type' => 'BK',
         ]);
 
         $url = "https://cts.vatsim.uk/bookings/bookinfo.php?cb={$booking->id}";
@@ -43,7 +43,7 @@ class HomePageTest extends TestCase
         $booking = factory(Booking::class)->create([
             'date' => $this->knownDate->toDateString(),
             'position' => 'EGKK_APP',
-            'type' => 'EX'
+            'type' => 'EX',
         ]);
 
         $this->get(route('site.home'))
@@ -58,13 +58,13 @@ class HomePageTest extends TestCase
         $pilot = factory(Booking::class)->create([
             'date' => $this->knownDate->toDateString(),
             'position' => 'P1_VATSIM',
-            'type' => 'BK'
+            'type' => 'BK',
         ]);
 
         $sweatbox = factory(Booking::class)->create([
             'date' => $this->knownDate->toDateString(),
             'position' => 'EGKK_SBAT',
-            'type' => 'BK'
+            'type' => 'BK',
         ]);
 
         $this->get(route('site.home'))

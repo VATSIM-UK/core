@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Http\Controllers\BaseController;
 use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
-use GuzzleHttp\Client;
 use HTML;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
@@ -27,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         if ($this->app->runningInConsole()) {
-            URL::forceRootUrl(env('APP_PROTOCOL', 'https') . '://' . Config::get('app.url'));
+            URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
         }
 
         $this->registerBugsnagCallback();

@@ -33,7 +33,7 @@ class AssignFlags
 
         $flags->each(function (WaitingListFlag $flag) use ($waitingListAccount) {
             // if the default value is to be true, set the flag to be marked
-            if ((bool)$flag->default_value) {
+            if ((bool) $flag->default_value) {
                 $waitingListAccount->addFlag($flag, now());
             } else {
                 $waitingListAccount->addFlag($flag);

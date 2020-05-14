@@ -27,7 +27,7 @@ class Pirep extends Resource
      */
     public static $title = 'id';
 
-    public static $group = "Smartcars";
+    public static $group = 'Smartcars';
 
     public static $with = ['bid'];
 
@@ -78,16 +78,16 @@ class Pirep extends Resource
             new Panel('Approval Information', [
                 Boolean::make('Passed'),
                 DateTime::make('Failed At', function () {
-                    return !$this->passed;
+                    return ! $this->passed;
                 })->onlyOnDetail()->canSee(function () {
-                    return !$this->passed;
+                    return ! $this->passed;
                 }),
                 Text::make('Fail Reason', function () {
                     return $this->pass_reason;
                 })->onlyOnDetail()->canSee(function () {
-                    return !is_null($this->failed_at);
-                })
-            ])
+                    return ! is_null($this->failed_at);
+                }),
+            ]),
         ];
     }
 

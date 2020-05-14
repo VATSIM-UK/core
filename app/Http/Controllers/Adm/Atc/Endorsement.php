@@ -14,11 +14,11 @@ class Endorsement extends AdmController
     public function getIndex(Request $request)
     {
         $validator = Validator::make($request->all(), [
-          'id' => 'required|integer|exists:endorsements',
-          'cid' => 'required|integer',
-      ]);
+            'id' => 'required|integer|exists:endorsements',
+            'cid' => 'required|integer',
+        ]);
 
-        if (!$validator->fails()) {
+        if (! $validator->fails()) {
             return $this->getUserEndorsement($request);
         }
 

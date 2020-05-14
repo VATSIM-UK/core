@@ -44,7 +44,7 @@ class TeamspeakManagementTest extends TestCase
             ->assertNotFound();
     }
 
-    protected function setUp():void
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -45,7 +45,7 @@ class AddMemberNicknameToAccount extends Migration
         $nicknames = DB::table('mship_account')->select('id', 'nickname')->get();
 
         foreach ($nicknames as $nick) {
-            if (!is_null($nick->nickname)) {
+            if (! is_null($nick->nickname)) {
                 DB::table('teamspeak_alias')->insert([
                     'account_id' => $nick->id,
                     'display_name' => $nick->nickname,

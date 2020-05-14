@@ -40,7 +40,7 @@ class PirepModelTest extends TestCase
 
     public function testItCanBeMarkedFailedWithoutPosrep()
     {
-        $this->pirep->markFailed("It went wrong");
+        $this->pirep->markFailed('It went wrong');
         $this->pirep->save();
 
         $this->assertEquals('It went wrong', $this->pirep->fresh()->pass_reason);
@@ -56,10 +56,10 @@ class PirepModelTest extends TestCase
     public function testItCanBeMarkedFailedWithPosrep()
     {
         $posrep = factory(Posrep::class)->create([
-            'bid_id' =>$this->pirep->bid->id
+            'bid_id' =>$this->pirep->bid->id,
         ]);
 
-        $this->pirep->markFailed("It went wrong", $posrep->id);
+        $this->pirep->markFailed('It went wrong', $posrep->id);
         $this->pirep->save();
 
         $this->assertEquals('It went wrong', $this->pirep->fresh()->pass_reason);
@@ -69,7 +69,7 @@ class PirepModelTest extends TestCase
             'id' => $this->pirep->id,
             'pass_reason' => $this->pirep->fresh()->pass_reason,
             'passed' => false,
-            'failed_at' => $posrep->id
+            'failed_at' => $posrep->id,
         ]);
 
         $this->assertEquals($posrep->id, $this->pirep->fresh()->failedAt->id);

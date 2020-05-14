@@ -18,7 +18,7 @@ class ValidationTest extends TestCase
         $this->call('GET', route('api.validations'), ['position' => ''])
             ->assertStatus(400)
             ->assertJsonStructure([
-                'status', 'message'
+                'status', 'message',
             ]);
     }
 
@@ -28,7 +28,7 @@ class ValidationTest extends TestCase
         $this->call('GET', route('api.validations'), ['position' => 'EGKK'])
             ->assertStatus(404)
             ->assertJsonStructure([
-                'status', 'message'
+                'status', 'message',
             ]);
     }
 
@@ -39,21 +39,21 @@ class ValidationTest extends TestCase
         $position = factory(ValidationPosition::class)->create();
         $validation = factory(Validation::class)->create([
             'member_id'   => $member,
-            'position_id' => $position
+            'position_id' => $position,
         ]);
 
         $this->call('GET', route('api.validations'), ['position' => $position->position])
             ->assertStatus(200)
             ->assertExactJson([
                 'status' => [
-                    'position' => $position->position
+                    'position' => $position->position,
                 ],
                 'validated_members' => [
                     [
                         'id'   => $member->cid,
-                        'name' => $member->name
-                    ]
-                ]
+                        'name' => $member->name,
+                    ],
+                ],
             ]);
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models\Community;
 use App\Models\Model;
 
 /**
- * App\Models\Community\Membership
+ * App\Models\Community\Membership.
  *
  * @property int $id
  * @property int $group_id

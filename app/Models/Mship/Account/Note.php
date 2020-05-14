@@ -5,7 +5,7 @@ namespace App\Models\Mship\Account;
 use App\Models\Model;
 
 /**
- * App\Models\Mship\Account\Note
+ * App\Models\Mship\Account\Note.
  *
  * @property int $id
  * @property int $note_type_id

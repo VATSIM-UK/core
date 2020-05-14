@@ -6,7 +6,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\Mship\Ban\Reason
+ * App\Models\Mship\Ban\Reason.
  *
  * @property int $id
  * @property string $name

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * App\Models\Contact
+ * App\Models\Contact.
  *
  * @property int $id
  * @property string $key
