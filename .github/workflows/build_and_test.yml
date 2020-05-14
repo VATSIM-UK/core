@@ -1,6 +1,12 @@
 name: Build & Test
 
-on: push
+on:
+  push:
+    branches:
+      - '*'
+      - '**'
+    tags-ignore:
+      - v*
 
 jobs:
   laravel-tests:
@@ -8,10 +14,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        phpunit: ['without-coverage', 'with-coverage']
+        php: ['7.3', '7.4']
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Configure PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: pcov
 
       - name: Write Nova Secrets
         env:
@@ -115,17 +127,11 @@ jobs:
       - name: Serve Application
         run: php artisan serve -q &
 
-      - name: Execute PHPUnit Tests
-        if: ${{ matrix.phpunit == 'without-coverage' }}
-        run: vendor/bin/phpunit
-
       - name: Execute PHPUnit Tests With Coverage
-        if: ${{ matrix.phpunit == 'with-coverage' }}
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v1.0.5
-        if: ${{ matrix.phpunit == 'with-coverage' }}
         with:
           token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage.xml
