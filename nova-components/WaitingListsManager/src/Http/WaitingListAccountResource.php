@@ -12,10 +12,6 @@ class WaitingListAccountResource extends JsonResource
      */
     public function toArray($request)
     {
-        if ($request = 'test') {
-            return [];
-        }
-
         return [
             'id' => $this->id,
             'pivot_id' => $this->pivot->id,
