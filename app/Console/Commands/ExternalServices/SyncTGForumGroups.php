@@ -30,9 +30,9 @@ class SyncTGForumGroups extends Command
     {
         SyncTGMembersToForumGroups::dispatch(13, 2498); // Pilots
         SyncTGMembersToForumGroups::dispatch(14, 2496); // TGNC
-        SyncTGMembersToForumGroups::dispatch(15, 2494); // TG1
-        SyncTGMembersToForumGroups::dispatch(16, 2495); // TG2
         SyncTGMembersToForumGroups::dispatch(17, 2497); // TGE
         SyncTGMembersToForumGroups::dispatch(12, 2499); // TG Heathrow
+        SyncTGMembersToForumGroups::dispatch(18, 2494); // TG TWR
+        SyncTGMembersToForumGroups::dispatch(19, 2495); // TG APP
     }
 }
