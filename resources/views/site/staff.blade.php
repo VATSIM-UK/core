@@ -205,19 +205,19 @@
                                     <td>Fergus Walsh</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (APP)</td>
-                                    <td>Oliver Gates</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Instructor (APP)</td>
-                                    <td>Vacant</td>
-                                </tr>
-                                <tr>
                                     <td>TG Instructor (TWR)</td>
                                     <td>George Peppard</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TWR)</td>
+                                    <td>Vacant</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (APP)</td>
+                                    <td>Oliver Gates</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (APP)</td>
                                     <td>Vacant</td>
                                 </tr>
                                 <tr>
