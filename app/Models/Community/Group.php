@@ -6,7 +6,7 @@ use App\Models\Model;
 use App\Models\Mship\Account;
 
 /**
- * App\Models\Community\Group
+ * App\Models\Community\Group.
  *
  * @property int $id
  * @property string $name

@@ -2,9 +2,8 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 
 class Airport extends Resource
@@ -29,10 +28,21 @@ class Airport extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'icao'
+        'name', 'icao',
     ];
 
     public static $group = 'Smartcars';
+
+    /**
+     * Removes Airport from navigation bar.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -58,7 +68,7 @@ class Airport extends Resource
                 ->help('Enter in a decimal format e.g. 52.3456'),
 
             Text::make('Longitude')->rules('required', 'numeric', 'min:-180', 'max:180')
-                ->help('Enter in a decimal format e.g. -1.7374')
+                ->help('Enter in a decimal format e.g. -1.7374'),
         ];
     }
 

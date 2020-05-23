@@ -2,7 +2,6 @@
 
 namespace App\Nova\Actions;
 
-use App\Nova\Utilities\FeedbackActionFields;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;

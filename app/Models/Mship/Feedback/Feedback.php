@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * App\Models\Mship\Feedback\Feedback
+ * App\Models\Mship\Feedback\Feedback.
  *
  * @property int $id
  * @property int $form_id
@@ -183,6 +183,6 @@ class Feedback extends Model
 
     public function getActionedAttribute()
     {
-        return !is_null($this->actioned_at);
+        return ! is_null($this->actioned_at);
     }
 }

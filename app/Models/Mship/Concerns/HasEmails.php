@@ -76,7 +76,7 @@ trait HasEmails
     }
 
     /**
-     * Retrieve an email address for a given SSO service
+     * Retrieve an email address for a given SSO service.
      *
      * @param $sso_account_id
      * @return string
@@ -110,7 +110,7 @@ trait HasEmails
      */
     public function addSecondaryEmail($newEmail, $verified = false)
     {
-        if (!$this->hasEmail($newEmail)) {
+        if (! $this->hasEmail($newEmail)) {
             $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
             $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 

@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Malahierba\PublicId\PublicId;
 
 /**
- * App\Models\VisitTransfer\Facility
+ * App\Models\VisitTransfer\Facility.
  *
  * @property int $id
  * @property string $name
@@ -157,7 +157,7 @@ class Facility extends Model
         }
 
         foreach ($input_emails as $key => $email) {
-            if (!$current_emails->contains('email', $email)) {
+            if (! $current_emails->contains('email', $email)) {
                 $new_email = new Facility\Email(['email' => $email]);
                 $this->emails()->save($new_email);
             }
@@ -263,7 +263,7 @@ class Facility extends Model
             throw new DuplicateFacilityNameException($proposedName);
         }
 
-        if (!$excludeCurrent && self::where('name', 'LIKE', $proposedName)->count() > 0) {
+        if (! $excludeCurrent && self::where('name', 'LIKE', $proposedName)->count() > 0) {
             throw new DuplicateFacilityNameException($proposedName);
         }
     }

@@ -18,7 +18,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * App\Models\VisitTransfer\Reference
+ * App\Models\VisitTransfer\Reference.
  *
  * @property int $id
  * @property int $application_id
@@ -362,7 +362,7 @@ class Reference extends Model
     /** Guards */
     private function guardAgainstReSubmittingReference()
     {
-        if (!$this->is_requested) {
+        if (! $this->is_requested) {
             throw new ReferenceNotRequestedException($this);
         }
     }
@@ -378,7 +378,7 @@ class Reference extends Model
     {
         parent::boot();
 
-        static::deleting(function (Reference $reference) {
+        static::deleting(function (self $reference) {
             $reference->tokens()->delete();
             event(new ReferenceDeleted($reference));
         });

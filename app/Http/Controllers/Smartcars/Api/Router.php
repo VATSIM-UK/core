@@ -73,14 +73,14 @@ class Router extends AdmController
                 return App::call(Flight::class.'@getBids');
 
             case 'bidonflight':
-                if (!$this->verify()) {
+                if (! $this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
                 return App::call(Flight::class.'@getBid');
 
             case 'deletebidflight':
-                if (!$this->verify()) {
+                if (! $this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
@@ -131,14 +131,14 @@ class Router extends AdmController
                 return '';
 
             case 'positionreport':
-                if (!$this->verify()) {
+                if (! $this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
                 return App::call(Flight::class.'@postPosition');
 
             case 'filepirep':
-                if (!$this->verify()) {
+                if (! $this->verify()) {
                     return 'AUTH_FAILED';
                 }
 

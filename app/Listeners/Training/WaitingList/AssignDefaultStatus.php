@@ -28,7 +28,7 @@ class AssignDefaultStatus
         // to cover old records e.g. if user was re-added to list, position will always be greater than zero.
 
         $event->waitingList->accounts
-            ->where('id', (int)$event->account->id)
+            ->where('id', (int) $event->account->id)
             ->where('deleted_at', '==', null)->first()->pivot
             ->addStatus(WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS));
     }

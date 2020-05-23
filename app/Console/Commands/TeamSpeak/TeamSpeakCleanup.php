@@ -80,7 +80,7 @@ class TeamSpeakCleanup extends Command
             ->where('dbid', $client['cldbid'])
             ->exists();
 
-        if (!$isRegistered) {
+        if (! $isRegistered) {
             try {
                 $this->tscon->clientDeleteDb($client['cldbid']);
                 $this->log("No registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}");

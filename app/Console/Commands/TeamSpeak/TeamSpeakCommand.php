@@ -86,7 +86,7 @@ abstract class TeamSpeakCommand extends Command
         self::$command->log($e->getTraceAsString());
 
         $member = Registration::where('dbid', self::$command->currentMember)->first();
-        if (!is_null(self::$command->currentMember) && !is_null($member)) {
+        if (! is_null(self::$command->currentMember) && ! is_null($member)) {
             $member = $member->account;
         } else {
             return;

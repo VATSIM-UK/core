@@ -133,26 +133,26 @@ class WaitingList extends Resource
             (new AddStudentToWaitingList)
                 ->onlyOnDetail()
                 ->canSee(function (Request $request) {
-                    return $request->user()->can('use-permission', "waitingLists/addAccounts");
+                    return $request->user()->can('use-permission', 'waitingLists/addAccounts');
                 })->canRun(function (Request $request) {
-                    return $request->user()->can('use-permission', "waitingLists/addAccounts");
+                    return $request->user()->can('use-permission', 'waitingLists/addAccounts');
                 }),
 
             (new AddFlagToWaitingList)
                 ->onlyOnDetail()
                 ->canSee(function (Request $request) {
-                    return $request->user()->can('use-permission', "waitingLists/addFlags");
+                    return $request->user()->can('use-permission', 'waitingLists/addFlags');
                 })->canRun(function (Request $request) {
-                    return $request->user()->can('use-permission', "waitingLists/addFlags");
+                    return $request->user()->can('use-permission', 'waitingLists/addFlags');
                 }),
 
             (new AddStudentToWaitingListAdmin())
                 ->onlyOnDetail()
                 ->canSee(function (Request $request) {
-                    return $request->user()->can('use-permission', "waitingLists/addAccountsAdmin");
+                    return $request->user()->can('use-permission', 'waitingLists/addAccountsAdmin');
                 })->canRun(function (Request $request) {
-                    return $request->user()->can('use-permission', "waitingLists/addAccountsAdmin");
-                })
+                    return $request->user()->can('use-permission', 'waitingLists/addAccountsAdmin');
+                }),
         ];
     }
 }

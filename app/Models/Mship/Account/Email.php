@@ -10,7 +10,7 @@ use App\Notifications\Mship\EmailVerification;
 use Carbon\Carbon;
 
 /**
- * App\Models\Mship\Account\Email
+ * App\Models\Mship\Account\Email.
  *
  * @property int $id
  * @property string $email
@@ -123,7 +123,7 @@ class Email extends Model
     {
         $saveResult = parent::save($options);
 
-        if (!$this->is_verified) {
+        if (! $this->is_verified) {
             $generatedToken = Token::generate('mship_account_email_verify', false, $this);
 
             $this->account->notify(new EmailVerification($this, $generatedToken));

@@ -20,7 +20,7 @@ class WaitingListAccountResource extends JsonResource
             'created_at' => $this->pivot->created_at,
             'status' => new WaitingListStatusResource($this->pivot->status->first()),
             'flags' => $this->pivot->flags,
-            'notes' => $this->pivot->notes
+            'notes' => $this->pivot->notes,
         ];
     }
 }

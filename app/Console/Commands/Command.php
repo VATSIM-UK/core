@@ -27,7 +27,7 @@ abstract class Command extends BaseCommand
         } else {
             if (App::environment('production')) {
                 $attachment = Slack::generateAttachmentForMessage('posix_isatty is not available in production - install POSIX extension (php-common)', [], [], null, 'danger');
-                Slack::sendToWebServices("", $attachment);
+                Slack::sendToWebServices('', $attachment);
             }
         }
 

@@ -1,6 +1,7 @@
 jobs:
   include:
     - stage: "Test"
+      if: branch = master AND type = push
       language: php
       php:
         - 7.3
@@ -17,60 +18,23 @@ jobs:
         - nvm install 10.19
         - yarn install
       install:
-        # Install Nova and component dependencies
         - php artisan nova:install
         - cd nova-components/WaitingListsManager && composer install && cd ../../
-        # If this is a PR, prep CodeCov
-        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
-        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-          chmod +x ./cc-test-reporter;
-          fi
-        # If this is not a PR and we are not running on master, run yarn as dev to improve performance
-        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
-          yarn run dev;
-          else
-          yarn run prod;
-          fi
-        # Setup Nova component dependencies
-        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
-          cd nova-components/WaitingListsManager && yarn && yarn run dev && cd ../../;
-          else
-          cd nova-components/WaitingListsManager && yarn && yarn run prod && cd ../../;
-          fi
+        - yarn run prod;
+        - cd nova-components/WaitingListsManager && yarn && yarn run prod && cd ../../;
         - cp .env.example .env
         - php artisan key:generate
         - php artisan migrate -vvv -n
+        - php artisan telescope:publish
+        - php artisan horizon:publish
         - php artisan route:cache
       before_script:
-        # If this is a PR, prep CodeCov
-        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-          ./cc-test-reporter before-build;
-          fi
-        # If this is not a PR and we are not running on master, remove xdebug to improve performance
-        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
-          phpenv config-rm xdebug.ini;
-          fi
         - php artisan serve -q &
         - sed -i 's%^SSO_CERT.*$%SSO_CERT=\"${SSO_CERT}\"%' .env
         - sed -i "s%^SSO_KEY.*$%SSO_KEY=${SSO_KEY}%" .env
         - sed -i "s%^SSO_SECRET.*$%SSO_SECRET=${SSO_SECRET}%" .env
       script:
-        # If this is not a PR and we are not running on master, run PHPUnit without coverage, otherwise, with.
-        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
-          vendor/bin/phpunit;
-          else
-          phpdbg -dmemory_limit=3G -qrr vendor/bin/phpunit --coverage-clover=coverage.xml;
-          fi
-      after_success:
-        # If this is a PR, make a request to CodeCov
-        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-          bash <(curl -s https://codecov.io/bash);
-          fi
-      after_script:
-        # If this is a PR, send coverage report to CodeCov
-        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-          ./cc-test-reporter after-build --coverage-input-type clover --exit-code $TRAVIS_TEST_RESULT;
-          fi
+        - vendor/bin/phpunit
       cache:
         yarn: true
         directories:

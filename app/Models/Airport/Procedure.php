@@ -6,7 +6,7 @@ use App\Models\Airport;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Airport\Procedure
+ * App\Models\Airport\Procedure.
  *
  * @property int $id
  * @property int $airport_id
@@ -41,13 +41,13 @@ class Procedure extends Model
 {
     protected $table = 'airport_procedures';
     protected $fillable = [
-            'type',
-            'ident',
-            'initial_fix',
-            'initial_altitude',
-            'final_altitude',
-            'remarks',
-        ];
+        'type',
+        'ident',
+        'initial_fix',
+        'initial_altitude',
+        'final_altitude',
+        'remarks',
+    ];
 
     const TYPE_SID = 1;
     const TYPE_STAR = 2;

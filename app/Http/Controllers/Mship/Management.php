@@ -89,7 +89,7 @@ class Management extends \App\Http\Controllers\BaseController
                 ->withError('Emails entered are different.  You need to enter the same email, twice.');
         }
 
-        if (!$this->account->hasEmail($email)) {
+        if (! $this->account->hasEmail($email)) {
             $this->account->addSecondaryEmail($email);
         } else {
             return Redirect::route('mship.manage.dashboard')
@@ -97,7 +97,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         return Redirect::route('mship.manage.dashboard')
-            ->withSuccess('Your new email (' . $email . ') has been added successfully! You will be sent a verification link to activate this email address.');
+            ->withSuccess('Your new email ('.$email.') has been added successfully! You will be sent a verification link to activate this email address.');
     }
 
     public function getEmailDelete(AccountEmail $email)
@@ -123,7 +123,7 @@ class Management extends \App\Http\Controllers\BaseController
         $email->delete();
 
         return Redirect::route('mship.manage.dashboard')
-            ->withSuccess('Your secondary email (' . $email->email . ') has been removed!');
+            ->withSuccess('Your secondary email ('.$email->email.') has been removed!');
     }
 
     public function getEmailAssignments()
@@ -180,7 +180,7 @@ class Management extends \App\Http\Controllers\BaseController
         // Now, let's go through and see if any that are CURRENTLY assigned have switched back to PRIMARY
         // If they have, we can just delete them!
         foreach ($userSsoEmails as $ssoEmail) {
-            if (Request::input('assign_' . $ssoEmail->sso_account_id, 'pri') == 'pri') {
+            if (Request::input('assign_'.$ssoEmail->sso_account_id, 'pri') == 'pri') {
                 $ssoEmail->delete();
             }
         }
@@ -188,16 +188,16 @@ class Management extends \App\Http\Controllers\BaseController
         // NOW, let's go through all the other systems and check if we have NONE primary assignments
         foreach ($ssoSystems as $ssosys) {
             // SKIP PRIMARY ASSIGNMENTS!
-            if (Request::input('assign_' . $ssosys->id, 'pri') == 'pri') {
+            if (Request::input('assign_'.$ssosys->id, 'pri') == 'pri') {
                 continue;
             }
 
             // We have an assignment - woohoo!
-            $assignedEmailID = Request::input('assign_' . $ssosys->id);
+            $assignedEmailID = Request::input('assign_'.$ssosys->id);
 
             // Let's do the assignment
             // The model will take care of checking if it exists or not, itself!
-            if (!$userVerifiedEmails->contains($assignedEmailID)) {
+            if (! $userVerifiedEmails->contains($assignedEmailID)) {
                 continue; // This isn't a valid EMAIL ID for this user.
             }
 
@@ -214,7 +214,7 @@ class Management extends \App\Http\Controllers\BaseController
         // Search tokens for this code!
         $token = SystemToken::where('code', '=', $code)->valid()->first();
         // Is it valid? Has it expired? Etc?
-        if (!$token) {
+        if (! $token) {
             return $this->viewMake('mship.management.email.verify')->with(
                 'error',
                 'You have provided an invalid email verification token. (ERR1)'
@@ -238,7 +238,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         // Is it valid and linked to something?!?!
-        if (!$token->related or $token->type != 'mship_account_email_verify') {
+        if (! $token->related or $token->type != 'mship_account_email_verify') {
             return $this->viewMake('mship.management.email.verify')->with(
                 'error',
                 'You have provided an invalid email verification token. (ERR4)'
@@ -253,11 +253,11 @@ class Management extends \App\Http\Controllers\BaseController
 
         // Consumed, let's send away!
         if ($this->account) {
-            return Redirect::route('mship.manage.dashboard')->withSuccess('Your new email address (' . $token->related->email . ') has been verified!');
+            return Redirect::route('mship.manage.dashboard')->withSuccess('Your new email address ('.$token->related->email.') has been verified!');
         } else {
             return $this->viewMake('mship.management.email.verify')->with(
                 'success',
-                'Your new email address (' . $token->related->email . ') has been verified!'
+                'Your new email address ('.$token->related->email.') has been verified!'
             );
         }
     }

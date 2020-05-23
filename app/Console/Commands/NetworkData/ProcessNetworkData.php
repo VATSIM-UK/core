@@ -105,7 +105,7 @@ class ProcessNetworkData extends Command
                 continue;
             }
 
-            if (!$account) {
+            if (! $account) {
                 $this->info('Unable to find or retrieve CID: '.$controllerData['cid'], 'vvv');
                 continue;
             }
@@ -113,15 +113,16 @@ class ProcessNetworkData extends Command
             $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
             $atc = Atc::updateOrCreate(
                 [
-                    'account_id' => $account->id,
-                    'callsign' => $controllerData['callsign'],
-                    'frequency' => $controllerData['frequency'],
+                    'account_id'       => $account->id,
+                    'callsign'         => $controllerData['callsign'],
+                    'frequency'        => $controllerData['frequency'],
                     'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
-                    'facility_type' => $controllerData['facilitytype'],
-                    'connected_at' => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
-                    'disconnected_at' => null,
-                    'deleted_at' => null,
-                ], [
+                    'facility_type'    => $controllerData['facilitytype'],
+                    'connected_at'     => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
+                    'disconnected_at'  => null,
+                    'deleted_at'       => null,
+                ],
+                [
                     'updated_at' => Carbon::now(),
                 ]
             );
@@ -169,35 +170,35 @@ class ProcessNetworkData extends Command
                 continue;
             }
 
-            if (!$account) {
+            if (! $account) {
                 $this->info('Unable to find or retrieve CID: '.$pilotData['cid'], 'vvv');
                 continue;
             }
 
             $flight = Pilot::firstOrNew([
-                'account_id' => $account->id,
-                'callsign' => $pilotData['callsign'],
-                'flight_type' => $pilotData['planned_flighttype'],
+                'account_id'        => $account->id,
+                'callsign'          => $pilotData['callsign'],
+                'flight_type'       => $pilotData['planned_flighttype'],
                 'departure_airport' => $pilotData['planned_depairport'],
-                'arrival_airport' => $pilotData['planned_destairport'],
-                'connected_at' => Carbon::createFromFormat('YmdHis', $pilotData['time_logon']),
-                'disconnected_at' => null,
+                'arrival_airport'   => $pilotData['planned_destairport'],
+                'connected_at'      => Carbon::createFromFormat('YmdHis', $pilotData['time_logon']),
+                'disconnected_at'   => null,
             ]);
 
             $flight->fill([
                 'alternative_airport' => $pilotData['planned_altairport'],
-                'aircraft' => $pilotData['planned_aircraft'],
-                'cruise_altitude' => $pilotData['planned_altitude'],
-                'cruise_tas' => $pilotData['planned_tascruise'],
-                'route' => $pilotData['planned_route'],
-                'remarks' => $pilotData['planned_remarks'],
+                'aircraft'            => $pilotData['planned_aircraft'],
+                'cruise_altitude'     => $pilotData['planned_altitude'],
+                'cruise_tas'          => $pilotData['planned_tascruise'],
+                'route'               => $pilotData['planned_route'],
+                'remarks'             => $pilotData['planned_remarks'],
             ]);
 
             if ($pilotData['latitude'] > 90 || $pilotData['latitude'] < -90) {
-                $pilotData['latitude'] =  null;
+                $pilotData['latitude'] = null;
             }
             if ($pilotData['longitude'] > 180 || $pilotData['longitude'] < -180) {
-                $pilotData['longitude'] =  null;
+                $pilotData['longitude'] = null;
             }
 
             if ($flight->exists) {
@@ -211,11 +212,11 @@ class ProcessNetworkData extends Command
                 $wasAtAlternativeAirport = $flight->isAtAirport($alternativeAirport);
 
                 // update their location
-                $flight->current_latitude = !empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
-                $flight->current_longitude = !empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
-                $flight->current_altitude = !empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
-                $flight->current_groundspeed = !empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
-                $flight->current_heading = !empty($pilotData['heading']) ? $pilotData['heading'] : null;
+                $flight->current_latitude = ! empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
+                $flight->current_longitude = ! empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
+                $flight->current_altitude = ! empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
+                $flight->current_groundspeed = ! empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
+                $flight->current_heading = ! empty($pilotData['heading']) ? $pilotData['heading'] : null;
 
                 // check their new location
                 $isAtDepartureAirport = $flight->isAtAirport($departureAirport);
@@ -223,22 +224,22 @@ class ProcessNetworkData extends Command
                 $isAtAlternativeAirport = $flight->isAtAirport($alternativeAirport);
 
                 // determine if they have departed or arrived at their planned airports
-                $departed = $wasAtDepartureAirport && !$isAtDepartureAirport;
+                $departed = $wasAtDepartureAirport && ! $isAtDepartureAirport;
                 if ($departed) {
                     $flight->departed_at = $this->lastUpdatedAt;
                 }
 
-                $arrivedAtMainAirport = !$wasAtArrivalAirport && $isAtArrivalAirport;
-                $arrivedAtAlternativeAirport = !$wasAtAlternativeAirport && $isAtAlternativeAirport;
+                $arrivedAtMainAirport = ! $wasAtArrivalAirport && $isAtArrivalAirport;
+                $arrivedAtAlternativeAirport = ! $wasAtAlternativeAirport && $isAtAlternativeAirport;
                 if ($arrivedAtMainAirport || $arrivedAtAlternativeAirport) {
                     $flight->arrived_at = $this->lastUpdatedAt;
                 }
             } else {
                 // pilot just connected
-                $flight->current_latitude = !empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
-                $flight->current_longitude = !empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
-                $flight->current_altitude = !empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
-                $flight->current_groundspeed = !empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
+                $flight->current_latitude = ! empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
+                $flight->current_longitude = ! empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
+                $flight->current_altitude = ! empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
+                $flight->current_groundspeed = ! empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
             }
 
             $flight->touch();

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Smartcars\Bid
+ * App\Models\Smartcars\Bid.
  *
  * @property int $id
  * @property int $flight_id

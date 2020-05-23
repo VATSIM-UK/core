@@ -6,7 +6,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\Mship\Feedback\Question
+ * App\Models\Mship\Feedback\Question.
  *
  * @property int $id
  * @property int $type_id

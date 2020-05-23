@@ -3,11 +3,12 @@
 namespace App\Exceptions;
 
 use App;
-use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
+use Throwable;
 use Vluzrmos\SlackApi\Facades\SlackChat;
 
 class Handler extends ExceptionHandler
@@ -45,13 +46,13 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $e
+     * @param  Throwable  $e
      * @return void
-     * @throws \Exception $exception
+     * @throws Throwable $exception
      */
-    public function report(Exception $e)
+    public function report(Throwable $e)
     {
-        if (!$this->shouldntReport($e)) {
+        if (! $this->shouldntReport($e)) {
             if (extension_loaded('newrelic')) {
                 try {
                     newrelic_notice_error(null, $e);
@@ -71,10 +72,10 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Exception $e
+     * @param  Throwable $e
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
+    public function render($request, Throwable $e)
     {
         return parent::render($request, $e);
     }
@@ -117,7 +118,7 @@ class Handler extends ExceptionHandler
             ],
         ];
 
-        if (!App::runningInConsole()) {
+        if (! App::runningInConsole()) {
             if (method_exists('Auth', 'check') && Auth::check()) {
                 $attachment['fields'][] = [
                     'title' => 'Member:',

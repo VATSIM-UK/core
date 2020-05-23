@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\CTS;
 
-use App\Models\Cts\Booking;
 use App\Models\Cts\Event;
 use App\Repositories\Cts\EventRepository;
 use Carbon\Carbon;
@@ -16,7 +15,7 @@ class EventRepositoryTest extends TestCase
 
     private $repository;
 
-    protected function setUp():void
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -109,7 +109,7 @@ class Application extends BaseController
                 ->withInput();
         }
         $facility = Facility::findByPublicID(Request::input('facility-code'));
-        if (!$facility) {
+        if (! $facility) {
             return Redirect::back()
                 ->withError('That facility code is invalid.')
                 ->withInput();

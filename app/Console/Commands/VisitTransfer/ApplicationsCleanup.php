@@ -60,7 +60,7 @@ class ApplicationsCleanup extends Command
             ->get();
         foreach ($applications as $application) {
             foreach ($application->referees as $referee) {
-                if (!$referee->is_submitted && $referee->contacted_at && $referee->contacted_at->addDays(14)->lt(new Carbon)) {
+                if (! $referee->is_submitted && $referee->contacted_at && $referee->contacted_at->addDays(14)->lt(new Carbon)) {
                     $application->lapse();
                     continue;
                 }
@@ -74,7 +74,7 @@ class ApplicationsCleanup extends Command
     private function runAutomatedChecks()
     {
         $submittedApplications = Application::submitted()->get()->filter(function ($application) {
-            return !$application->is_pending_references;
+            return ! $application->is_pending_references;
         });
 
         foreach ($submittedApplications as $application) {
@@ -108,7 +108,7 @@ class ApplicationsCleanup extends Command
     {
         $acceptedApplications = Application::status(Application::STATUS_ACCEPTED)->get()
             ->filter(function ($application) {
-                return !$application->training_required;
+                return ! $application->training_required;
             });
 
         foreach ($acceptedApplications as $application) {

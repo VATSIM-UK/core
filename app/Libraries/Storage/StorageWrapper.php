@@ -29,7 +29,7 @@ abstract class StorageWrapper
      */
     public function retrieve($fileName)
     {
-        return url('/') . Storage::url($this->parseFileName($fileName));
+        return url('/').Storage::url($this->parseFileName($fileName));
     }
 
     /**
@@ -51,6 +51,6 @@ abstract class StorageWrapper
      */
     protected function parseFileName($fileName)
     {
-        return $this->basePath. "/" . $fileName;
+        return $this->basePath.'/'.$fileName;
     }
 }

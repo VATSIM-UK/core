@@ -6,7 +6,7 @@ use App\Models\Airport;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Airport\Navaid
+ * App\Models\Airport\Navaid.
  *
  * @property int $id
  * @property int $airport_id
@@ -37,14 +37,14 @@ class Navaid extends Model
 {
     protected $table = 'airport_navaids';
     protected $fillable = [
-            'type',
-            'name',
-            'heading',
-            'ident',
-            'frequency',
-            'frequency_band',
-            'remarks',
-        ];
+        'type',
+        'name',
+        'heading',
+        'ident',
+        'frequency',
+        'frequency_band',
+        'remarks',
+    ];
 
     const FREQUENCY_BAND_MHZ = 1;
     const FREQUENCY_BAND_KHZ = 2;

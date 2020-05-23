@@ -14,6 +14,7 @@ return [
     */
 
     'name' => 'VATSIM UK Core',
+    'heroku_name' => env('HEROKU_APP_NAME'),
 
     /*
     |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    'local' => env('APP_IS_LOCAL', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -53,6 +55,7 @@ return [
     |
     */
 
+    'protocol' => env('APP_PROTOCOL', 'https'),
     'url' => appUrl(),
 
     /*
@@ -170,6 +173,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\HorizonServiceProvider::class,
         App\Providers\NovaServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,

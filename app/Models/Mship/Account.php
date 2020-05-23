@@ -39,7 +39,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
 
 /**
- * App\Models\Mship\Account
+ * App\Models\Mship\Account.
  *
  * @property int $id
  * @property string|null $slack_id
@@ -206,11 +206,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
     protected $casts = ['inactive' => 'boolean'];
 
-    public function routeNotificationForSlack()
-    {
-        return env('SLACK_ENDPOINT');
-    }
-
     protected static function boot()
     {
         parent::boot();
@@ -240,15 +235,15 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     /**
-     * Find an account by its ID or retrieve it from Cert. If false, user does not exist at VATSIM.NET
+     * Find an account by its ID or retrieve it from Cert. If false, user does not exist at VATSIM.NET.
      *
      * @param $accountId
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|boolean|static[]
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|bool|static[]
      * @throws InvalidCIDException
      */
     public static function findOrRetrieve($accountId)
     {
-        if (!is_numeric($accountId)) {
+        if (! is_numeric($accountId)) {
             throw new InvalidCIDException();
         }
 
@@ -259,7 +254,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
             $account = self::find($accountId);
 
-            if (!$account) {
+            if (! $account) {
                 // User doesn't exist at VATSIM.NET
                 throw new InvalidCIDException();
             }
@@ -327,7 +322,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             $noteType = Type::isDefault()->first()->getKey();
         }
 
-        if (!is_null($writer) && is_object($writer)) {
+        if (! is_null($writer) && is_object($writer)) {
             $writer = $writer->getKey();
         }
 
@@ -338,7 +333,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $note->content = $noteContent;
         $note->save();
 
-        if (!is_null($attachment)) {
+        if (! is_null($attachment)) {
             $note->attachment()->save($attachment);
         }
 
@@ -432,7 +427,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     private function allowedNames($includeATC = false, $withNumberWildcard = false)
     {
-        $wildcard = "";
+        $wildcard = '';
 
         if ($withNumberWildcard) {
             $wildcard = "\d";
@@ -449,6 +444,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             }
             $allowedNames = $allowedNames->merge($collect);
         }
+
         return $allowedNames;
     }
 
@@ -461,22 +457,22 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function isValidDisplayName($displayName)
     {
-        return !$this->allowedNames(true)->filter(function ($item, $key) use ($displayName) {
+        return ! $this->allowedNames(true)->filter(function ($item, $key) use ($displayName) {
             return strcmp($item, $displayName) == 0;
         })->isEmpty();
     }
 
     public function isPartiallyValidDisplayName($displayName)
     {
-        return !$this->allowedNames()->filter(function ($item, $key) use ($displayName) {
+        return ! $this->allowedNames()->filter(function ($item, $key) use ($displayName) {
             return strstr(strtolower($displayName), strtolower($item)) != false;
         })->isEmpty();
     }
 
     public function isDuplicateDisplayName($displayName)
     {
-        return !$this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
-            return preg_match("/^".$item."$/i", $displayName) == 1;
+        return ! $this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
+            return preg_match('/^'.$item.'$/i', $displayName) == 1;
         })->isEmpty();
     }
 

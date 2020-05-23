@@ -36,7 +36,7 @@ class ValidationPositionRepositoryTest extends TestCase
     public function itCanFindAPositionByCallsign()
     {
         $position = factory(ValidationPosition::class)->create([
-            'position' => 'Shanwick (EGGX_FSS)'
+            'position' => 'Shanwick (EGGX_FSS)',
         ]);
 
         $search = $this->subjectUnderTest->findByPosition('EGGX_FSS');
@@ -50,7 +50,7 @@ class ValidationPositionRepositoryTest extends TestCase
         $position = factory(ValidationPosition::class)->create();
 
         factory(Validation::class, 10)->create([
-            'position_id' => $position->id
+            'position_id' => $position->id,
         ]);
 
         $this->assertCount(10, $position->members);
@@ -64,12 +64,12 @@ class ValidationPositionRepositoryTest extends TestCase
 
         factory(Validation::class)->create([
             'position_id' => $position->id,
-            'member_id' => $member->id
+            'member_id' => $member->id,
         ]);
 
         $expected = [
             'id' => $member->cid,
-            'name' => $member->name
+            'name' => $member->name,
         ];
 
         $this->assertContains($expected, $this->subjectUnderTest->getValidatedMembersFor($position));

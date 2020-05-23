@@ -18,7 +18,7 @@ class Slack extends WebhookController
 
     public function __construct()
     {
-        $this->commandRoutes['/register']['token'] = env('SLACK_TOKEN_REGISTER', null);
+        $this->commandRoutes['/register']['token'] = config('services.slack.token_register');
     }
 
     /**
@@ -32,7 +32,7 @@ class Slack extends WebhookController
     {
         $this->slackPayload = $request->all();
 
-        if (!($route = $this->route($this->payload('command')))) {
+        if (! ($route = $this->route($this->payload('command')))) {
             return Response::make('Invalid command routing.  Please seek support (web-support@vatsim.uk).');
         }
 
@@ -47,13 +47,13 @@ class Slack extends WebhookController
     {
         $slackToken = Token::ofType('slack_registration')->hasCode($this->payload('text'))->first();
 
-        if (!$slackToken || !$slackToken->exists) {
+        if (! $slackToken || ! $slackToken->exists) {
             return 'Invalid registration token provided.';
         }
 
         $account = $slackToken->related;
 
-        if (!$account || !$account->exists) {
+        if (! $account || ! $account->exists) {
             return 'Invalid user associated with token.';
         }
 

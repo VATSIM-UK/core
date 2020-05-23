@@ -58,15 +58,15 @@ class NotificationTest extends TestCase
     public function testNotificationBannerDoesntShowOnSecondaryLogin()
     {
         factory(Notification::class)->create();
-        $this->user->password = "123";
+        $this->user->password = '123';
         $this->user->save();
 
         $this->followingRedirects()->actingAs($this->user, 'vatsim-sso')
             ->get(route('auth-secondary'))
-            ->assertDontSee("You currently have unread notifications");
+            ->assertDontSee('You currently have unread notifications');
 
         $this->followingRedirects()->actingAs($this->user, 'web')
             ->get(route('dashboard'))
-            ->assertSee("You currently have unread notifications");
+            ->assertSee('You currently have unread notifications');
     }
 }
