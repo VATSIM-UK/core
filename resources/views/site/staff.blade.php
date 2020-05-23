@@ -193,6 +193,10 @@
                                     <td>Jamie Paine</td>
                                 </tr>
                                 <tr>
+                                    <td>Division Instructor</td>
+                                    <td>Lee Roberts</td>
+                                </tr>
+                                <tr>
                                     <td>TG Instructor (New Controller)</td>
                                     <td>Ben Cook</td>
                                 </tr>
@@ -201,20 +205,20 @@
                                     <td>Fergus Walsh</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG1)</td>
-                                    <td>Oliver Gates</td>
+                                    <td>TG Instructor (TWR)</td>
+                                    <td>George Peppard</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG1)</td>
+                                    <td>TG Instructor (TWR)</td>
                                     <td>Vacant</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG2)</td>
-                                    <td>Lee Roberts</td>
+                                    <td>TG Instructor (APP)</td>
+                                    <td>Oliver Gates</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG2)</td>
-                                    <td>George Peppard</td>
+                                    <td>TG Instructor (APP)</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
@@ -264,7 +268,7 @@
                             <tbody>
                                 <tr>
                                     <td>Division Conflict Resolution Manager</td>
-                                    <td>Sean Reedman</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
                                     <td>Data Protection Officer</td>
