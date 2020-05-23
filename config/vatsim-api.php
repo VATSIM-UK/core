@@ -10,6 +10,6 @@ return [
     /*
      * The API key for the VATSIM API
      */
-    'key' => env('VATSIM_API_KEY', '')
+    'key' => env('VATSIM_API_KEY', ''),
 
 ];

@@ -31,28 +31,28 @@ class VatsimApi
      */
     public function ratingsFor($id)
     {
-        $url = $this->baseUrl . '/ratings/' . $id;
+        $url = $this->baseUrl.'/ratings/'.$id;
 
         $result = json_decode(
             $result = $this->client->get($url, ['headers' => [
-                'Authorization' => 'Token ' . $this->apiKey
+                'Authorization' => 'Token '.$this->apiKey,
             ]])->getBody()
                 ->getContents()
         );
 
         return json_decode(json_encode([
-            "name_last" => $result->name_last,
-            "name_first" => $result->name_first,
-            "email" => '[hidden]', // Retained for backwards compatibility
-            "rating" => (string) $result->rating,
-            "regdate" => $result->reg_date, // Currently returning datetime in a different format vs AutoTools
-            "pilotrating" => (string) $result->pilotrating,
-            "country" => $result->country,
-            "region" => $result->region,
-            "division" => $result->division,
-            "atctime" => '0', // Retained for backwards compatibility
-            "pilottime" => '0', // Retained for backwards compatibility
-            "cid" => $result->id,
+            'name_last' => $result->name_last,
+            'name_first' => $result->name_first,
+            'email' => '[hidden]', // Retained for backwards compatibility
+            'rating' => (string) $result->rating,
+            'regdate' => $result->reg_date, // Currently returning datetime in a different format vs AutoTools
+            'pilotrating' => (string) $result->pilotrating,
+            'country' => $result->country,
+            'region' => $result->region,
+            'division' => $result->division,
+            'atctime' => '0', // Retained for backwards compatibility
+            'pilottime' => '0', // Retained for backwards compatibility
+            'cid' => $result->id,
         ]));
     }
 
@@ -72,10 +72,10 @@ class VatsimApi
 //        );
 
         return json_decode(json_encode([
-            "rating" => '',
-            "PreviousRating" => '',
-            "PreviousRatingInt" => '',
-            "cid" => '',
+            'rating' => '',
+            'PreviousRating' => '',
+            'PreviousRatingInt' => '',
+            'cid' => '',
         ]));
     }
 }
