@@ -8,9 +8,6 @@ on:
     tags-ignore:
       - v*
   pull_request:
-    branches:
-      - '*'
-      - '**'
 
 jobs:
   laravel-tests:
@@ -39,12 +36,13 @@ jobs:
           sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
 
       - name: Create Environment File
-        run: touch .env
+        run: |
+          touch .env
+          php artisan key:generate
       - name: Set Environment Variables
         uses: allenevans/set-env@v1.0.0
         with:
           APP_ENV: testing
-          APP_KEY: ${{ secrets.APP_KEY }}
           APP_URL: 127.0.0.1
           DB_MYSQL_HOST: localhost
           DB_MYSQL_PORT: 3306
