@@ -269,15 +269,17 @@
                                 <tr>
                                     <td>Division Conflict Resolution Manager</td>
                                     <td>Phillip Speer</td>
+                                </tr>
                                 <tr>
-                                    <td>Division Conflict Resolution Manager</td>
-                                    <td>Sean Reedman</td>
+                                    <td>Data Protection Officer</td>
+                                    <td>Chris Pawley</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 
         <!-- End Row Two -->
