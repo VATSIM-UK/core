@@ -133,9 +133,4 @@ jobs:
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
       - name: Upload Code Coverage Report
-        uses: codecov/codecov-action@v1.0.5
-        with:
-          file: ./coverage.xml
-          flag: application
-          name: Coverage Report
-          fail_ci_if_error: true
+        run: bash <(curl -s https://codecov.io/bash)
