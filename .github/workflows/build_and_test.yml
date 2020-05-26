@@ -26,6 +26,7 @@ jobs:
           coverage: pcov
 
       - name: Write Nova Secrets
+        if: github.repository == 'VATSIM-UK/core'
         env:
           NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
           NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
