@@ -74,6 +74,7 @@ jobs:
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
       - name: Install Nova & Waiting Lists
+        if: github.repository == 'VATSIM-UK/core'
         run: |
           php artisan nova:install
           cd nova-components/WaitingListsManager && composer install && cd ../../
