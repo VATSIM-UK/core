@@ -119,12 +119,13 @@ jobs:
       - name: Compile Waiting Lists Manager Assets
         run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
 
+      - name: Generate Application Key
+        run: php artisan key:generate
+        
       - name: Cache Routes
         run: php artisan route:cache
       - name: Cache Config
         run: php artisan config:cache
-      - name: Generate Application Key
-        run: php artisan key:generate
 
       - name: Serve Application
         run: php artisan serve -q &
