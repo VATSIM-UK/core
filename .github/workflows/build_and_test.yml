@@ -72,6 +72,9 @@ jobs:
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
+      - name: Generate Application Key
+        run: php artisan key:generate
+        
       - name: Install Nova & Waiting Lists
         run: |
           php artisan nova:install
@@ -119,9 +122,6 @@ jobs:
       - name: Compile Waiting Lists Manager Assets
         run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
 
-      - name: Generate Application Key
-        run: php artisan key:generate
-        
       - name: Cache Routes
         run: php artisan route:cache
       - name: Cache Config
