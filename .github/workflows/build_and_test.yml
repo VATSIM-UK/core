@@ -36,9 +36,7 @@ jobs:
           sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
 
       - name: Create Environment File
-        run: |
-          touch .env
-          php artisan key:generate
+        run: touch .env
       - name: Set Environment Variables
         uses: allenevans/set-env@v1.0.0
         with:
@@ -125,6 +123,8 @@ jobs:
         run: php artisan route:cache
       - name: Cache Config
         run: php artisan config:cache
+      - name: Generate Application Key
+        run: php artisan key:generate
 
       - name: Serve Application
         run: php artisan serve -q &
