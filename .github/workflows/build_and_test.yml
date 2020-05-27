@@ -27,6 +27,7 @@ jobs:
           coverage: pcov
 
       - name: Write Nova Secrets
+        if: ${{ github.repository == 'VATSIM-UK/core' }}
         env:
           NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
           NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
@@ -70,10 +71,16 @@ jobs:
         with:
           path: vendor
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
+
+      - name: Remove Nova From Composer
+        if: ${{ github.repository != 'VATSIM-UK/core' }}
+        run: sed -i 's/"composer-nova.json"//g' composer.json && composer update
+
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
       - name: Install Nova & Waiting Lists
+        if: ${{ github.repository == 'VATSIM-UK/core' }}
         run: |
           php artisan nova:install
           cd nova-components/WaitingListsManager && composer install && cd ../../
