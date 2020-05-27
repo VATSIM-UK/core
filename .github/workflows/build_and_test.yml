@@ -20,10 +20,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Run Some Scripts
-        run: |
-          echo ${{ secrets.NOVA_USERNAME && secrets.NOVA_PASSWORD }}
-
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -31,7 +27,7 @@ jobs:
           coverage: pcov
 
       - name: Write Nova Secrets
-        if: ${{ github.repository == 'VATSIM-UK/core' }}
+        if: ${{ secrets.NOVA_USERNAME != 0 && secrets.NOVA_PASSWORD != 0 }}
         env:
           NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
           NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
@@ -80,14 +76,14 @@ jobs:
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
 
       - name: Remove Nova From Composer
-        if: ${{ github.repository != 'VATSIM-UK/core' }}
+        if: ${{ secrets.NOVA_USERNAME == 0 || secrets.NOVA_PASSWORD == 0 }}
         run: sed -i 's/"composer-nova.json"//g' composer.json && composer update
 
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
       - name: Install Nova & Waiting Lists
-        if: ${{ github.repository == 'VATSIM-UK/core' }}
+        if: ${{ secrets.NOVA_USERNAME != 0 && secrets.NOVA_PASSWORD != 0 }}
         run: |
           php artisan nova:install
           cd nova-components/WaitingListsManager && composer install && cd ../../
