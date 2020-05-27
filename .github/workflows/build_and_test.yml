@@ -32,8 +32,8 @@ jobs:
       - name: Write Nova Secrets
         run: |
           cp auth.json.example auth.json
-          sed -i "s/your-username/${env.NOVA_USERNAME}/g" auth.json
-          sed -i "s/your-password/${env.NOVA_PASSWORD}/g" auth.json
+          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
+          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
 
       - name: Create Environment File
         run: touch .env
