@@ -22,10 +22,7 @@ jobs:
 
       - name: Run Some Scripts
         run: |
-          echo ${{ github.repository }}
-          echo ${{ github.head_ref }}
-          echo ${{ github.base_ref }}
-          echo ${{ github.actor }}
+          echo ${{ secrets.NOVA_USERNAME && secrets.NOVA_PASSWORD }}
 
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
