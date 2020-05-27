@@ -12,6 +12,9 @@ on:
 jobs:
   laravel-tests:
     name: Run
+    env:
+      NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+      NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,14 +30,10 @@ jobs:
           coverage: pcov
 
       - name: Write Nova Secrets
-        if: ${{ secrets.NOVA_USERNAME != 0 && secrets.NOVA_PASSWORD != 0 }}
-        env:
-          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
-          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
         run: |
           cp auth.json.example auth.json
-          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
-          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
+          sed -i "s/your-username/${env.NOVA_USERNAME}/g" auth.json
+          sed -i "s/your-password/${env.NOVA_PASSWORD}/g" auth.json
 
       - name: Create Environment File
         run: touch .env
@@ -76,14 +75,14 @@ jobs:
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
 
       - name: Remove Nova From Composer
-        if: ${{ secrets.NOVA_USERNAME == 0 || secrets.NOVA_PASSWORD == 0 }}
+        if: ${{ env.NOVA_USERNAME == 0 || env.NOVA_PASSWORD == 0 }}
         run: sed -i 's/"composer-nova.json"//g' composer.json && composer update
 
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
       - name: Install Nova & Waiting Lists
-        if: ${{ secrets.NOVA_USERNAME != 0 && secrets.NOVA_PASSWORD != 0 }}
+        if: ${{ env.NOVA_USERNAME != 0 && env.NOVA_PASSWORD != 0 }}
         run: |
           php artisan nova:install
           cd nova-components/WaitingListsManager && composer install && cd ../../
