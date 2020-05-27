@@ -276,7 +276,7 @@
                             <tbody>
                                 <tr>
                                     <td>Division Conflict Resolution Manager</td>
-                                    <td>Vacant</td>
+                                    <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
                                     <td>Data Protection Officer</td>
