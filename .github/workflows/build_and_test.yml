@@ -55,6 +55,9 @@ jobs:
           SSO_KEY: SSO_DEMO_VACC
           SSO_SECRET: 04i_~ruVUE.1-do1--sc
 
+      - name: Add Composer GitHub Token
+        run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
+
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
