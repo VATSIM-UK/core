@@ -20,6 +20,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Run Some Scripts
+        run: |
+          echo ${{ github.repository }}
+          echo ${{ github.head_ref }}
+          echo ${{ github.base_ref }}
+          echo ${{ github.actor }}
+
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
         with:
