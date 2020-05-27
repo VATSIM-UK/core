@@ -85,6 +85,7 @@
         "laravel/passport": "^8.2",
         "laravel/telescope": "^3.3",
         "laravel/tinker": "^2.0",
+        "laravel/ui": "^2.0",
         "laravelcollective/html": "^6.0",
         "league/csv": "^8.0",
         "maatwebsite/excel": "~3.1.17",
