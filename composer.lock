@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "890fb51fb77e0d799b9007e4593e02aa",
+    "content-hash": "97ef70c7f1a90caf8299d3b317e1cbaf",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -7238,7 +7238,7 @@
                 "wiki": "https://github.com/KHardern/VatsimSSO/wiki",
                 "source": "https://github.com/VATSIM-UK/VatsimSSO/tree/develop"
             },
-            "time": "2017-04-10T01:02:52+00:00"
+            "time": "2019-11-01T21:04:09+00:00"
         },
         {
             "name": "vatsim/xml",
