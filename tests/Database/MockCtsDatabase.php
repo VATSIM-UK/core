@@ -138,6 +138,41 @@ class MockCtsDatabase
                   PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
         );
+
+        DB::connection('cts')->statement(
+            'CREATE TABLE `sessions` (
+                `id` smallint unsigned auto_increment
+                    primary key,
+                `rts_id` smallint unsigned default 0 not null,
+                `position` varchar(12) default \'\' not null,
+                `progress_sheet_id` mediumint not null,
+                `student_id` int(7) unsigned default 0 not null,
+                `student_rating` tinyint(1) unsigned default 0 not null,
+                `date_1` date null,
+                `from_1` time null,
+                `to_1` time null,
+                `date_2` date null,
+                `from_2` time null,
+                `to_2` time null,
+                `date_3` date null,
+                `from_3` time null,
+                `to_3` time null,
+                `taken` tinyint(1) unsigned default 0 null,
+                `mentor_id` int(7) unsigned null,
+                `mentor_rating` tinyint(1) unsigned null,
+                `taken_date` date null,
+                `taken_from` time null,
+                `taken_to` time null,
+                `request_time` datetime null,
+                `taken_time` datetime null,
+                `book_done` tinyint(1) unsigned default 0 null,
+                `session_done` tinyint(1) unsigned default 0 null,
+                `noShow` int(1) default 0 not null,
+                `cancelled_datetime` datetime null,
+                `no_avail_count` smallint default 0 not null,
+                `filed` datetime null
+            )'
+        );
     }
 
     public static function destroy()
@@ -164,6 +199,10 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `validations_p`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `sessions`;'
         );
     }
 }
