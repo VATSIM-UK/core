@@ -41,6 +41,7 @@ class Registration extends \App\Http\Controllers\BaseController
         $view = $this->viewMake('teamspeak.new')
             ->withRegistration($registration)
             ->withConfirmation($confirmation)
+            ->with('teamspeak_url', config('teamspeak.host'))
             ->with('auto_url', $autoURL);
 
         return $view;
