@@ -37,13 +37,11 @@ class Registration extends \App\Http\Controllers\BaseController
         $autoURL = 'ts3server://'.config('services.teamspeak.host').'?nickname='.$this->account->name_first.'%20';
         $autoURL .= $this->account->name_last.'&token='.$confirmation->privilege_key;
 
-        $teamspeakURL = config('teamspeak.host');
-
         $this->pageTitle = 'New Registration';
         $view = $this->viewMake('teamspeak.new')
             ->withRegistration($registration)
             ->withConfirmation($confirmation)
-            ->with('teamspeak_url', $teamspeakURL)
+            ->with('teamspeak_url', config('teamspeak.host'))
             ->with('auto_url', $autoURL);
 
         return $view;
