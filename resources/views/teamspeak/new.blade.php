@@ -39,7 +39,7 @@
                         <li>
                             Click the "More" tab so that you are presented with a connection settings screen
                             <blockquote style="font-size: 9pt;">
-                                Server Address: {{ $_ENV['TS_HOST'] }}<br />
+                                Server Address: {{ $teamspeak_url }}<br />
                                 Nickname: {{ $_account->name_first . " " . $_account->name_last }}<br />
                                 One-Time Privilege Key: {{ $confirmation->privilege_key }}
                             </blockquote>
