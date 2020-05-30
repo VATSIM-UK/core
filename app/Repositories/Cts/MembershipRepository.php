@@ -3,19 +3,19 @@
 namespace App\Repositories\Cts;
 
 use App\Models\Cts\Membership;
+use Illuminate\Database\Eloquent\Collection;
 
 class MembershipRepository
 {
-    public function getMembersOf($rtsId)
+    public function getMembersOf(int $rtsId): Collection
     {
-        $memberships = Membership::where('rts_id', '=', $rtsId)->get();
+        return Membership::where('rts_id', '=', $rtsId)->get()->map(function ($membership) {
+            return $membership->member;
+        });
+    }
 
-        $members = collect();
-
-        foreach ($memberships as $membership) {
-            $members->push($membership->member);
-        }
-
-        return $members;
+    public function getActiveMembersOfRts(int $rtsId): Collection
+    {
+        return Membership::where('rts_id', $rtsId)->where('type', 'H')->get();
     }
 }

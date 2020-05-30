@@ -8,6 +8,7 @@ class Membership extends Model
 {
     protected $connection = 'cts';
     protected $guarded = [];
+    protected $hidden = ['id'];
 
     public $timestamps = false;
     public $incrementing = false;

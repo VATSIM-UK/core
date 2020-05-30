@@ -30,4 +30,18 @@ class MembershipRepositoryTest extends TestCase
 
         $this->assertEquals($membership->member, $members->first());
     }
+
+    /** @test */
+    public function itCanReturnCollectionOfActiveMembersInRts()
+    {
+        $rts = 1;
+        $membership = factory(Membership::class)->create(['id' => 1, 'rts_id' => $rts, 'type' => 'H']);
+        $outOfScopeMembership = factory(Membership::class)->create(['id' => 2, 'rts_id' => $rts, 'type' => 'V']);
+
+        $result = $this->subjectUnderTest->getActiveMembersOfRts($rts);
+
+        $this->assertTrue($result->contains($membership));
+        $this->assertFalse($result->contains($outOfScopeMembership));
+    }
+
 }
