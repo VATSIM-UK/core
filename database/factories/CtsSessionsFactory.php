@@ -15,6 +15,6 @@ $factory->define(Session::class, function (Faker $faker) {
         'student_rating' => $faker->numberBetween(1, 9),
         'noShow' => 0,
         'no_avail_count' => 0,
-        'session_done' => false
+        'session_done' => false,
     ];
 });

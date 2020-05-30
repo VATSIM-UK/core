@@ -178,7 +178,7 @@ return [
         App\Providers\ResponseMacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TrainingEventServiceProvider::class,
-        App\Providers\CtsServiceProvider::class
+        App\Providers\CtsServiceProvider::class,
     ],
 
     /*

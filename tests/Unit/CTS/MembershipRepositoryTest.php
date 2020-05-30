@@ -43,5 +43,4 @@ class MembershipRepositoryTest extends TestCase
         $this->assertTrue($result->contains($membership));
         $this->assertFalse($result->contains($outOfScopeMembership));
     }
-
 }
