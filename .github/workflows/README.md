@@ -3,7 +3,7 @@
 This repository has three Actions workflows:
 
 | Name | Triggers | Branch Restrictions | Description |
-|-|-|-|-|-|
+|-|-|-|-|
 | **Test** | [`push`, `pull_request`] | | This workflow installs and compiles dependencies and assets before running the test and coverage suite against core. |
 | **Release** | [`repository_dispatch`: types[`release-trigger`]] | `master` | This workflow runs semantic release against the master branch to tag and publish a new release. |
 | **Deploy** | [`release`] | `master` | This workflow initiates a GitHub deployment, installs and compiles dependenices, generates configuration files from secrets and uploads the application to VATSIM UK's production systems. The workflow is responsible for all server-side file management including version housekeeping. |
