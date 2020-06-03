@@ -74,7 +74,8 @@ class Kernel extends ConsoleKernel
             ->dailyAt('00:45')
             ->runInBackground();
 
-        // $schedule->command('sync:tg-forum-groups')->dailyAt('04:00');
+        $schedule->command('sync:tg-forum-groups')
+            ->dailyAt('04:00');
 
         $schedule->command('members:certimport', ['--full'])
             ->twiceDaily(2, 14)
