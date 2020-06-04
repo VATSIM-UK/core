@@ -87,7 +87,7 @@ return [
     */
 
     'waits' => [
-        'redis:queue' => 600,
+        'redis:default' => 600,
     ],
 
     /*
