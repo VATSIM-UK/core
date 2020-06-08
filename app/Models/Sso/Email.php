@@ -6,7 +6,7 @@ use App\Events\Mship\AccountAltered;
 use App\Models\Model;
 
 /**
- * App\Models\Sso\Email
+ * App\Models\Sso\Email.
  *
  * @property int $id
  * @property int|null $account_email_id

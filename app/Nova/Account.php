@@ -25,6 +25,17 @@ class Account extends Resource
     public static $group = 'Membership';
 
     /**
+     * Removes Account from navigation bar.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
+
+    /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
@@ -82,7 +93,7 @@ class Account extends Resource
      */
     public function authorizedToAttachAny(NovaRequest $request, $model)
     {
-        return !in_array(get_class($model), self::$disallowAttach);
+        return ! in_array(get_class($model), self::$disallowAttach);
     }
 
     /**

@@ -1,0 +1,144 @@
+name: Build & Test
+
+on:
+  push:
+    branches:
+      - '*'
+      - '**'
+    tags-ignore:
+      - v*
+  pull_request:
+
+jobs:
+  laravel-tests:
+    name: Run
+    env:
+      NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+      NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['7.3', '7.4']
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Configure PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: pcov
+
+      - name: Write Nova Secrets
+        run: |
+          cp auth.json.example auth.json
+          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
+          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
+
+      - name: Create Environment File
+        run: touch .env
+      - name: Set Environment Variables
+        uses: allenevans/set-env@v1.1.0
+        with:
+          APP_ENV: testing
+          APP_KEY: base64:wx/g4ayECKlSzOYSguRFoCrsd+KSbAyEiy0J8zWxxyU=
+          APP_URL: 127.0.0.1
+          DB_MYSQL_HOST: localhost
+          DB_MYSQL_PORT: 3306
+          DB_MYSQL_USER: root
+          DB_MYSQL_PASS: root
+          DB_MYSQL_NAME: core
+          CTS_DATABASE: cts
+          SSO_BASE: http://sso.hardern.net/server/
+          SSO_CERT: "\n-----BEGIN RSA PRIVATE KEY-----\nMIIEpgIBAAKCAQEA2S5RckDw7SnEoZDmjaQHAQGajVlb7iwKIAX6nXbZBO7Uo3pN\nItjmAbfkMqKBgWDVowM3UjbKivZNWGzkmxirArpbw9q7JhcX2LW6RfXx+5zn2+zW\nm58nQtnEgZtj8U9z3yjJEwfGbiJHEt56pNY0VFV5sDbEiQ52d/bPHlH17j/SUfm6\neWCbUWW5S8kI8LDuN40qtxCZ0InTfRvcI3bx0+UBf9T6SYQWK2DsS+bz2YtKxVom\nOs9NdLbcPDK1rKPCJ+gvvmhCCt7jDbf1oFUzhPb6hjsIl1uRyjdtjhDb5FIokH+O\n3LuZdvSGF/SkoBnkfnqg5yTjC0GrnPg+Dr++1QIDAQABAoIBAQDIAisJwJrgnx2x\n+WMKQGwe1h5CXHAYOMCeW0NBLsmQDG8RmrldBUlVfcgPha8kukwlEvooocMIFOqI\nK8iguSgMnBmUlmTSIGRatIm2kljm8spotIWzze93VlvtTHDPM++vLb135CovFSxF\nSVTDZ23L2Of3i4iV/BbIRijacHq/jJ605OBcHhgW0ONCPUxL+uUd7siD68Y/BcYu\nkm1OfQaxxryKdnE4UWzVKm0fwIzGvS/Baraek3kQCqOs7+OixV2YWFw6Xafq3WAp\nPe5I/pJSevu90dGN01k84fVS6q3q419Z+VxarPYYznLrGGgUxM5zKlU4VHGwvA2p\n857ydg3hAoGBAPFuOulYQW8DIas4rlPPGofQI+dT0w8xf/YB1WmCtlt0GkSmEzd+\nJJZtcJiQSlTC4BuACvTBoIgo3vUC2wM5gZLz9NCeUHrwW0558q1YnGx1GNKcWgKK\nLrYvWPCrOKVnDvfhSQ4P3CPeUyks4OUTiPHY+5QlBpY7c1hSBnJWSNKZAoGBAOZJ\ndtle62ZK6S3TlIgbElaa1h8J5QyEFmcCPl47B4+SUNIljccO55OQhe89paMD2EH6\nTbz9eP/s4U7X1tTb2onYtd7g3ldod/RBhrRHg7oXTmQj9wXopJsHwgNnYG59BPt2\nxpnB7aTmMZCXTO2YRxR4CCTtnOO/TZeNZV/xIK+dAoGBAJQ2sJHZ7WmiSYQcquCm\njsn7nF8CFdsI715uJ767UQn5z7p/HeL+XKXAj9QJGKjKbdxUEeXKDKwqMx3E4AEt\nx38Ypx1/Yzbl4Zfew31pnbXzeQaql5Nhk2Wi0X4GDyNzjjvcoQWx9NpMPU9Uzsey\n42pdY6zBwjZuTtRUnsKId/JZAoGBALzXVXyfF85Ec76+mDicaodWZWwCgy+mSXCj\nKF3BbkvPojMR1Jd9o20gwJQVK3ToPDiud30ZJlZH++LZoDPhLe6IJWvlXq6y3lsQ\nONQxKNY7Mm9wBqtzwTfYPsLnzO4N2z4Sgn2nx6bHlbGKQO09SFyCqbsOlu8z+v7i\nVlU8uJ8JAoGBAOmzlKBcEjJdlD0ZxkgMxp+YqpKkC+ojzf4tORn6jo2d/aKUOIAR\nbfRCMTmDmqyVoUH/SYgQWzD36zAy8HyHEz0U1k6+QMzWPbsEGQSQrk0DgnlOBPWo\nO0gQ0RDS3gD8C5XHvy5vryYjUOB10rUn9A2xLQw4sqKv2suHvIhc0Eit\n-----END RSA PRIVATE KEY-----"
+          SSO_KEY: SSO_DEMO_VACC
+          SSO_SECRET: 04i_~ruVUE.1-do1--sc
+
+      - name: Add Composer GitHub Token
+        run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Restore Composer Cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - name: Restore Vendor From Cache
+        uses: actions/cache@v1
+        with:
+          path: vendor
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
+
+      - name: Remove Nova From Composer
+        if: ${{ env.NOVA_USERNAME == 0 || env.NOVA_PASSWORD == 0 }}
+        run: sed -i 's/"composer-nova.json"//g' composer.json && composer update
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
+
+      - name: Install Nova & Waiting Lists
+        if: ${{ env.NOVA_USERNAME != 0 && env.NOVA_PASSWORD != 0 }}
+        run: |
+          php artisan nova:install
+          cd nova-components/WaitingListsManager && composer install && cd ../../
+
+      - name: Publish Horizon
+        run: php artisan horizon:publish
+
+      - name: Publish Telescope
+        run: php artisan telescope:publish
+
+      - name: Create Databases
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
+      - name: Migrate Database
+        run: php artisan migrate
+
+      - name: Setup Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+
+      - name: Get Yarn Cache Directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Restore Yarn Cache
+        uses: actions/cache@v1
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Core Assets
+        run: yarn
+      - name: Compile Core Assets
+        run: yarn run prod
+
+      - name: Install Waiting Lists Manager Assets
+        run: cd nova-components/WaitingListsManager && yarn && cd ../../
+      - name: Compile Waiting Lists Manager Assets
+        run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
+
+      - name: Cache Routes
+        run: php artisan route:cache
+      - name: Cache Config
+        run: php artisan config:cache
+
+      - name: Serve Application
+        run: php artisan serve -q &
+
+      - name: Execute PHPUnit Tests With Coverage
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Upload Code Coverage Report
+        run: bash <(curl -s https://codecov.io/bash)

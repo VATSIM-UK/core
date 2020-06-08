@@ -193,6 +193,10 @@
                                     <td>Jamie Paine</td>
                                 </tr>
                                 <tr>
+                                    <td>Division Instructor</td>
+                                    <td>Lee Roberts</td>
+                                </tr>
+                                <tr>
                                     <td>TG Instructor (New Controller)</td>
                                     <td>Ben Cook</td>
                                 </tr>
@@ -201,20 +205,28 @@
                                     <td>Fergus Walsh</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG1)</td>
+                                    <td>TG Instructor (TWR)</td>
+                                    <td>George Peppard</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (TWR)</td>
+                                    <td>James Yuen</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (TWR)</td>
+                                    <td>Adam Farquharson</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (APP)</td>
                                     <td>Oliver Gates</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG1)</td>
-                                    <td>Vacant</td>
+                                    <td>TG Instructor (APP)</td>
+                                    <td>Charlie Watson</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG2)</td>
-                                    <td>Lee Roberts</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Instructor (TG2)</td>
-                                    <td>George Peppard</td>
+                                    <td>TG Instructor (APP)</td>
+                                    <td>Jack Edwards</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
@@ -264,7 +276,7 @@
                             <tbody>
                                 <tr>
                                     <td>Division Conflict Resolution Manager</td>
-                                    <td>Sean Reedman</td>
+                                    <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
                                     <td>Data Protection Officer</td>

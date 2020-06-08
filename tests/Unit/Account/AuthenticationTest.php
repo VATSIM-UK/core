@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Account;
 
-use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
@@ -12,20 +11,20 @@ class AuthenticationTest extends TestCase
     use DatabaseTransactions;
 
     /**
-     * Instance used for the tests
+     * Instance used for the tests.
      *
      * @var \App\Http\Controllers\Auth\LoginController
      */
     protected $authenticationInstance;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
         $this->authenticationInstance = new \App\Http\Controllers\Auth\LoginController();
         Session::flush();
     }
 
-    public function tearDown():void
+    public function tearDown(): void
     {
         parent::tearDown();
         $this->authenticationInstance = null;

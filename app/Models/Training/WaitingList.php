@@ -31,7 +31,7 @@ class WaitingList extends Model
     const PILOT_DEPARTMENT = 'pilot';
 
     /**
-     * A Waiting List can be managed by many Staff Members (Accounts)
+     * A Waiting List can be managed by many Staff Members (Accounts).
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -61,7 +61,7 @@ class WaitingList extends Model
                 'id',
                 'deleted_at',
                 'notes',
-                'created_at'
+                'created_at',
             ])->wherePivot('deleted_at', null);
     }
 
@@ -113,7 +113,7 @@ class WaitingList extends Model
     public function addToWaitingList(Account $account, Account $staffAccount, Carbon $createdAt = null)
     {
         $timestamp = $createdAt != null ? $createdAt : Carbon::now();
-        $this->accounts()->attach($account, ['added_by' => $staffAccount->id,]);
+        $this->accounts()->attach($account, ['added_by' => $staffAccount->id]);
 
         // the following code is required as the timestamp for created_at gets overridden during the creation
         // process, despite being disabled on the pivot!!

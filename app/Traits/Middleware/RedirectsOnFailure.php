@@ -24,14 +24,14 @@ trait RedirectsOnFailure
         $class = get_class($this);
 
         // if other middleware is already failing, defer checking
-        if (!empty(Session::get($this->sessionPrefix)) && !in_array($class, Session::get($sessionKey))) {
+        if (! empty(Session::get($this->sessionPrefix)) && ! in_array($class, Session::get($sessionKey))) {
             return $next($request);
         }
 
-        if (!empty(Session::get($this->sessionPrefix)) && in_array($class, Session::get($sessionKey)) && $this->inExceptArray($request)) {
+        if (! empty(Session::get($this->sessionPrefix)) && in_array($class, Session::get($sessionKey)) && $this->inExceptArray($request)) {
             // check if the middleware passes after the request is processed
             $response = $next($request);
-            if (!$this->validate(false)) {
+            if (! $this->validate(false)) {
                 return $this->pass($response);
             } else {
                 return $response;
@@ -56,7 +56,7 @@ trait RedirectsOnFailure
         if (Session::has($sessionKey) && in_array($class, Session::get($sessionKey))) {
             // remove the class from the array of failing middleware
             $failingMiddleware = array_diff(Session::pull($sessionKey), [$class]);
-            if (!empty($failingMiddleware)) {
+            if (! empty($failingMiddleware)) {
                 Session::put($sessionKey, $failingMiddleware);
             }
         }
@@ -69,7 +69,7 @@ trait RedirectsOnFailure
         $sessionKey = $this->sessionPrefix;
         $class = get_class($this);
 
-        if (!Session::has($sessionKey) || !in_array($class, Session::get($sessionKey))) {
+        if (! Session::has($sessionKey) || ! in_array($class, Session::get($sessionKey))) {
             Session::push($sessionKey, $class);
         }
 

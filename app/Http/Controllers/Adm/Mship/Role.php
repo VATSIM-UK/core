@@ -35,7 +35,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
         $role = new RoleData($data);
         $role->save();
 
-        if (!is_null(Request::input('permissions')) && $this->account->can('use-permission', 'adm/mship/role/attach')) {
+        if (! is_null(Request::input('permissions')) && $this->account->can('use-permission', 'adm/mship/role/attach')) {
             $role->syncPermissions(Request::input('permissions'));
         }
 
@@ -44,7 +44,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
 
     public function getUpdate(RoleData $role)
     {
-        if (!$role or !$role->exists) {
+        if (! $role or ! $role->exists) {
             return Redirect::route('adm.mship.role.index')->withError("Role doesn't exist!");
         }
 
@@ -58,7 +58,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
 
     public function postUpdate(RoleData $role)
     {
-        if (!$role or !$role->exists) {
+        if (! $role or ! $role->exists) {
             return Redirect::route('adm.mship.role.index')->withError("Role doesn't exist!");
         }
 
@@ -68,12 +68,12 @@ class Role extends \App\Http\Controllers\Adm\AdmController
         $role->save();
 
         foreach ($role->permissions as $p) {
-            if (!in_array($p->id, Request::input('permissions', []))) {
+            if (! in_array($p->id, Request::input('permissions', []))) {
                 $role->revokePermissionTo($p);
             }
         }
 
-        if (!is_null(Request::input('permissions')) && $this->account->can('use-permission', 'adm/mship/role/attach')) {
+        if (! is_null(Request::input('permissions')) && $this->account->can('use-permission', 'adm/mship/role/attach')) {
             $role->syncPermissions(Request::input('permissions'));
         }
 
@@ -82,7 +82,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
 
     public function anyDelete(RoleData $role)
     {
-        if (!$role or !$role->exists) {
+        if (! $role or ! $role->exists) {
             return Redirect::route('adm.mship.role.index')->withError("Role doesn't exist!");
         }
 

@@ -12,10 +12,10 @@ class ValidationsController
 {
     public function view(Request $request)
     {
-        if (!$request->get('position')) {
+        if (! $request->get('position')) {
             return response()->json([
                 'status'  => '400',
-                'message' => 'No position was supplied.'
+                'message' => 'No position was supplied.',
             ], 400);
         }
 
@@ -24,13 +24,13 @@ class ValidationsController
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status'  => '404',
-                'message' => 'Position could not be found.'
+                'message' => 'Position could not be found.',
             ], 404);
         }
 
         return response()->json([
             'status' => ['position' => $position->position],
-            'validated_members' => $this->getValidatedMembers($position)
+            'validated_members' => $this->getValidatedMembers($position),
         ]);
     }
 

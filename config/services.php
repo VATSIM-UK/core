@@ -36,7 +36,16 @@ return [
     ],
 
     'slack' => [
-        'token' => env('SLACK_SECRET'),
+        'token' => env('SLACK_SECRET', 'secret'),
+        'token_register' => env('SLACK_TOKEN_REGISTER', 'token'),
+    ],
+
+    'teamspeak' => [
+        'host' => env('TS_HOST'),
+        'username' => env('TS_USER'),
+        'password' => env('TS_PASS'),
+        'port' => env('TS_PORT'),
+        'query_port' => env('TS_QUERY_PORT'),
     ],
 
     'discord' => [
@@ -56,7 +65,7 @@ return [
     ],
 
     'ukcp' => [
-        'url' => env('UKCP_URL'),
+        'url' => env('UKCP_URL', 'https://ukcp.vatsim.uk'),
         'key' => env('UKCP_KEY'),
     ],
 

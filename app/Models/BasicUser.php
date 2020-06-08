@@ -6,7 +6,7 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
 /**
- * App\Models\BasicUser
+ * App\Models\BasicUser.
  *
  * @property int $id
  * @property string $username

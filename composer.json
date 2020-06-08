@@ -73,16 +73,19 @@
     "require": {
         "php": ">=7.2",
         "alawrence/laravel-ipboard": "dev-master",
-        "barryvdh/laravel-debugbar": "~3.0",
-        "barryvdh/laravel-ide-helper": "^2.6",
-        "bugsnag/bugsnag-laravel": "^2.0",
+        "barryvdh/laravel-debugbar": "^3.3",
+        "barryvdh/laravel-ide-helper": "^2.7",
+        "bugsnag/bugsnag-laravel": "^2.4",
         "cobaltgrid/vatsim-stand-status": "~1.0",
         "doctrine/dbal": "~2.10",
         "guzzlehttp/guzzle": "~6.0",
         "laravel/framework": "^7.0",
         "laravel/helpers": "^1.1",
+        "laravel/horizon": "^4.3",
         "laravel/passport": "^8.2",
+        "laravel/telescope": "^3.3",
         "laravel/tinker": "^2.0",
+        "laravel/ui": "^2.0",
         "laravelcollective/html": "^6.0",
         "league/csv": "^8.0",
         "maatwebsite/excel": "~3.1.17",
@@ -90,7 +93,6 @@
         "planetteamspeak/ts3-php-framework": "1.1.33",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~4.0",
-        "sixlive/nova-text-copy-field": "^1.5",
         "skymeyer/vatsimphp": "^2.0",
         "spatie/laravel-cookie-consent": "^2.4",
         "spatie/laravel-permission": "^3.0",
@@ -103,18 +105,17 @@
         "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {
+        "ext-json": "*",
         "codedungeon/phpunit-result-printer": "^0.26.1",
-        "filp/whoops": "~2.0",
+        "facade/ignition": "^2.0",
         "fzaninotto/faker": "~1.8",
         "laracasts/generators": "^1.1",
         "laravel/homestead": "^10.0.2",
-        "laravel/telescope": "^3.0",
         "mockery/mockery": "1.3.*",
         "phpunit/phpunit": "^8.5",
         "symfony/css-selector": "^4.0",
         "symfony/dom-crawler": "^5.0",
-        "timacdonald/log-fake": "^1.2",
-        "ext-json": "*"
+        "timacdonald/log-fake": "^1.2"
     },
     "autoload": {
         "classmap": [

@@ -1,6 +1,5 @@
 <?php
 
-
 return [
     // Activity Entries
     'activity.entry.mship.account.created' => ':actor created the membership account :subject (:subject_id).',

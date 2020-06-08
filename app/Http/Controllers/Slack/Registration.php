@@ -25,19 +25,19 @@ class Registration extends \App\Http\Controllers\BaseController
                 ->withError('You already have a Slack registration with this account. Please contact the Web Services Department if you believe this to be an error.');
         }
 
-        if (!($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
+        if (! ($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
             DB::beginTransaction();
             $_slackToken = Token::generate('slack_registration', false, $this->account, 60 * 24 * 7);
 
             $result = SlackUserAdmin::invite($this->account->email, [
                 'first_name' => $this->account->name_first,
                 'last_name' => $this->account->name_last,
-                'resend' => true
+                'resend' => true,
             ]);
 
             if ($result->ok !== true) {
                 DB::rollBack();
-                Log::error("Error inviting {$this->account->real_name} ({$this->account->id }) to slack. Response: ". json_encode($result));
+                Log::error("Error inviting {$this->account->real_name} ({$this->account->id }) to slack. Response: ".json_encode($result));
 
                 return Redirect::route('mship.manage.dashboard')
                     ->withError('There was an error inviting you to join Slack. Please contact the Web Services Department.');
@@ -59,7 +59,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
     public function getConfirmed()
     {
-        if (!$this->account->slack_id) {
+        if (! $this->account->slack_id) {
             return Redirect::route('slack.new');
         }
 

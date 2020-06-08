@@ -68,11 +68,11 @@ class TestEmails extends Command
             $this->log('ERROR: this command cannot be run in production!', 'error');
 
             return;
-        } elseif (env('MAIL_HOST') !== 'mailtrap.io') {
+        } elseif (config('mail.host') !== 'mailtrap.io') {
             $this->log('ERROR: you should be using mailtrap.io before running this command!', 'error');
 
             return;
-        } elseif (!$this->confirm(
+        } elseif (! $this->confirm(
             'This command will make changes to the database that must be manually reversed.'.PHP_EOL
             .' Do you wish to continue?'
         )) {
@@ -83,7 +83,7 @@ class TestEmails extends Command
         $id = 1;
         $ids = Account::orderBy('id')->pluck('id')->toArray();
         while (true) {
-            if (!in_array($id, $ids)) {
+            if (! in_array($id, $ids)) {
                 break;
             } else {
                 $id++;

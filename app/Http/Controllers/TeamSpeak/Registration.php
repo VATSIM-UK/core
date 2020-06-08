@@ -17,14 +17,14 @@ class Registration extends \App\Http\Controllers\BaseController
             return Redirect::route('mship.manage.dashboard');
         }
 
-        if (!$this->account->new_ts_registration) {
+        if (! $this->account->new_ts_registration) {
             $registration_ip = Request::ip();
             $registration = $this->createRegistration($this->account->id, $registration_ip);
         } else {
             $registration = $this->account->new_ts_registration->load('confirmation');
         }
 
-        if (!$registration->confirmation) {
+        if (! $registration->confirmation) {
             $confirmation = $this->createConfirmation(
                 $registration->id,
                 md5($registration->created_at->timestamp),
@@ -34,13 +34,14 @@ class Registration extends \App\Http\Controllers\BaseController
             $confirmation = $registration->confirmation;
         }
 
-        $autoURL = 'ts3server://'.env('TS_HOST').'?nickname='.$this->account->name_first.'%20';
+        $autoURL = 'ts3server://'.config('services.teamspeak.host').'?nickname='.$this->account->name_first.'%20';
         $autoURL .= $this->account->name_last.'&token='.$confirmation->privilege_key;
 
         $this->pageTitle = 'New Registration';
         $view = $this->viewMake('teamspeak.new')
             ->withRegistration($registration)
             ->withConfirmation($confirmation)
+            ->with('teamspeak_url', config('teamspeak.host'))
             ->with('auto_url', $autoURL);
 
         return $view;

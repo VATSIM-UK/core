@@ -13,7 +13,7 @@ class Policy
 
     protected function deny($reason = null)
     {
-        if (!is_null($reason)) {
+        if (! is_null($reason)) {
             Session::flash('authorization.error', $reason);
         }
 

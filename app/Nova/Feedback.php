@@ -38,7 +38,7 @@ class Feedback extends Resource
         'id',
     ];
 
-    public static $with =  ['answers', 'account', 'submitter'];
+    public static $with = ['answers', 'account', 'submitter'];
 
     /**
      * The group assigned to this resource.
@@ -85,7 +85,7 @@ class Feedback extends Resource
             BelongsTo::make('Subject', 'account', 'App\Nova\Account'),
 
             BelongsTo::make('Submitted By', 'submitter', 'App\Nova\Account')
-                ->canSeeWhen("seeSubmitter", $this),
+                ->canSeeWhen('seeSubmitter', $this),
 
             DateTime::make('Submitted At', 'created_at')->onlyOnDetail()->format('Do MMMM YYYY HH:mm'),
 
@@ -147,7 +147,7 @@ class Feedback extends Resource
     public function filters(Request $request)
     {
         return [
-            new Filters\FeedbackForm
+            new Filters\FeedbackForm,
         ];
     }
 

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tests\Feature\Services;
 
 use Tests\TestCase;

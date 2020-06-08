@@ -88,7 +88,7 @@ class AirportTest extends TestCase
         $this->assertFalse($airport->hasProcedures());
         $airport->departure_procedures = 'Procedure here';
         $airport->save();
-        
+
         $this->assertTrue($airport->fresh()->hasProcedures());
     }
 }

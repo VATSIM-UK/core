@@ -10,8 +10,8 @@ use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Note\Type as NoteTypeData;
 use App\Notifications\Mship\UserImpersonated;
 use Auth;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 use Session;
 use URL;
@@ -24,7 +24,7 @@ class Settings extends AdmController
 
     public function postNoteCreate(AccountData $mshipAccount)
     {
-        if (!$mshipAccount) {
+        if (! $mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -36,7 +36,7 @@ class Settings extends AdmController
 
         // Check this type exists!
         $noteType = NoteTypeData::find(Request::input('note_type_id'));
-        if (!$noteType or !$noteType->exists) {
+        if (! $noteType or ! $noteType->exists) {
             return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'notes'])
                 ->withError('You selected an invalid note type.');
         }
@@ -54,7 +54,7 @@ class Settings extends AdmController
 
     public function postImpersonate(HttpRequest $request, AccountData $mshipAccount)
     {
-        if (!$mshipAccount) {
+        if (! $mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -75,7 +75,7 @@ class Settings extends AdmController
 
     public function sync(AccountData $mshipAccount)
     {
-        if (!$mshipAccount) {
+        if (! $mshipAccount) {
             return Redirect::route('adm.mship.account.index')
                 ->withError('This user does not exist');
         }

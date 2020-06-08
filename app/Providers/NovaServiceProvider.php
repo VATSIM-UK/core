@@ -118,7 +118,7 @@ class NovaServiceProvider extends ServiceProvider
                 WaitingList::class,
                 WaitingListFlag::class,
                 Feedback::class,
-                FeedbackResponse::class
+                FeedbackResponse::class,
             ]);
         } else {
             \Laravel\Nova\Nova::resourcesIn(app_path('Nova'));
