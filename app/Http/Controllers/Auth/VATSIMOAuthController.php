@@ -20,7 +20,7 @@ class VATSIMOAuthController extends GenericProvider
         parent::__construct([
             'clientId'                => config('vatsim-connect.id'),
             'clientSecret'            => config('vatsim-connect.secret'),
-            'redirectUri'             => route('login'),
+            'redirectUri'             => route('login.post'),
             'urlAuthorize'            => config('vatsim-connect.base').'/oauth/authorize',
             'urlAccessToken'          => config('vatsim-connect.base').'/oauth/token',
             'urlResourceOwnerDetails' => config('vatsim-connect.base').'/api/user',
