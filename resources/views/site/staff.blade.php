@@ -210,7 +210,11 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TWR)</td>
-                                    <td>Vacant</td>
+                                    <td>James Yuen</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (TWR)</td>
+                                    <td>Adam Farquharson</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (APP)</td>
@@ -218,7 +222,11 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (APP)</td>
-                                    <td>Vacant</td>
+                                    <td>Charlie Watson</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (APP)</td>
+                                    <td>Jack Edwards</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
@@ -268,7 +276,7 @@
                             <tbody>
                                 <tr>
                                     <td>Division Conflict Resolution Manager</td>
-                                    <td>Vacant</td>
+                                    <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
                                     <td>Data Protection Officer</td>
