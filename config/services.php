@@ -67,6 +67,7 @@ return [
     'vatsim-api' => [
         'base' => env('VATSIM_API_BASE', 'https://api.vatsim.net/api'),
         'key' => env('VATSIM_API_KEY', ''),
+    ],
 
     'autotools' => [
         'division' => env('VATSIM_AT_DIV'),
