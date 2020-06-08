@@ -73,6 +73,12 @@ return [
         'private_token' => env('CHARTFOX_PRIVATE_TOKEN'),
         'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
     ],
+    
+    'autotools' => [
+        'division' => env('VATSIM_AT_DIV'),
+        'username' => env('VATSIM_CERT_AT_USER'),
+        'password' => env('VATSIM_CERT_AT_PASS'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
