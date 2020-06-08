@@ -24,8 +24,8 @@ class Discord
     {
         $this->token = config('services.discord.token');
         $this->guild_id = config('services.discord.guild_id');
-        $this->base_url = config('services.discord.base_discord_uri') . "/guilds";
-        $this->headers = ["Authorization" => "Bot {$this->token}"];
+        $this->base_url = config('services.discord.base_discord_uri').'/guilds';
+        $this->headers = ['Authorization' => "Bot {$this->token}"];
     }
 
     public function grantRole(Account $account, string $role): bool
@@ -53,7 +53,7 @@ class Discord
         $response = Http::withHeaders($this->headers)
             ->patch("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}",
             [
-                'nick' => $nickname
+                'nick' => $nickname,
             ]
         );
 
@@ -78,7 +78,7 @@ class Discord
             ->pluck('id')
             ->first();
 
-        return (int)$role_id;
+        return (int) $role_id;
     }
 
     protected function result(Response $response)

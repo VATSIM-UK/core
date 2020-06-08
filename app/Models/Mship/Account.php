@@ -207,7 +207,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
     protected $casts = [
         'inactive' => 'boolean',
-        'discord_id' => 'int'
+        'discord_id' => 'int',
     ];
 
     protected static function boot()

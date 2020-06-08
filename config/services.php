@@ -55,7 +55,7 @@ return [
         'client_id' => env('DISCORD_CLIENT', null),
         'client_secret' => env('DISCORD_SECRET', null),
         'redirect_uri' => env('DISCORD_REDIRECT_URI', null),
-        'base_discord_uri' => env('DISCORD_API_BASE', 'https://discordapp.com/api/v6')
+        'base_discord_uri' => env('DISCORD_API_BASE', 'https://discordapp.com/api/v6'),
     ],
 
     'google' => [
@@ -73,7 +73,7 @@ return [
         'private_token' => env('CHARTFOX_PRIVATE_TOKEN'),
         'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
     ],
-    
+
     'autotools' => [
         'division' => env('VATSIM_AT_DIV'),
         'username' => env('VATSIM_CERT_AT_USER'),

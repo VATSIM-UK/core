@@ -126,7 +126,7 @@ Route::group([
     'as' => 'discord.',
     'prefix' => 'discord',
     'namespace' => 'Discord',
-    'middleware' => 'auth_full_group'
+    'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/')->uses('Registration@show')->name('show');
     Route::redirect('/invite', config('services.discord.invite_url'))->name('invite');

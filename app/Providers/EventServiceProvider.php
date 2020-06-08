@@ -6,8 +6,6 @@ use App\Events\Discord\DiscordLinked;
 use App\Events\Discord\DiscordUnlinked;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\Smartcars\BidCompleted;
-use App\Listeners\Discord\GrantDiscordRole;
-use App\Listeners\Discord\KickDiscordUser;
 use App\Listeners\Discord\RemoveDiscordUser;
 use App\Listeners\Discord\SetupDiscordUser;
 use App\Listeners\NetworkData\FlushEndorsementCache;
@@ -101,7 +99,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         DiscordLinked::class => [
-            SetupDiscordUser::class
+            SetupDiscordUser::class,
         ],
 
         DiscordUnlinked::class => [

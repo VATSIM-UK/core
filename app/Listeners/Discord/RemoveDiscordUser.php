@@ -22,7 +22,7 @@ class RemoveDiscordUser implements ShouldQueue
 
         $kick = $discord->kick($account);
 
-        if (!$kick) {
+        if (! $kick) {
             throw new InvalidDiscordRemovalException($account);
         }
 

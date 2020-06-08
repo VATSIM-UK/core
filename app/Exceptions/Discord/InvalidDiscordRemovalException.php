@@ -11,7 +11,7 @@ class InvalidDiscordRemovalException extends \Exception
     public function __construct(Account $account)
     {
         $this->account = $account;
-        $this->message = 'There was an error removing ' . $account->name . ' from Discord.';
+        $this->message = 'There was an error removing '.$account->name.' from Discord.';
     }
 
     public function __toString()

@@ -11,7 +11,7 @@ class InvalidDiscordSetupException extends \Exception
     public function __construct(Account $account)
     {
         $this->account = $account;
-        $this->message = 'There was an error setting up ' . $account->name . ' on Discord.';
+        $this->message = 'There was an error setting up '.$account->name.' on Discord.';
     }
 
     public function __toString()

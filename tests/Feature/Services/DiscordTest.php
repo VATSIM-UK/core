@@ -53,11 +53,11 @@ class DiscordTest extends TestCase
         $this->assertArrayHasKey('client_id', $parameters);
 
         $expected = [
-            "scope"           => "identify",
-            "response_type"   => "code",
-            "approval_prompt" => "auto",
-            "redirect_uri"    => urlencode(config('services.discord.redirect_uri')),
-            'client_id'       => config('services.discord.client_id')
+            'scope'           => 'identify',
+            'response_type'   => 'code',
+            'approval_prompt' => 'auto',
+            'redirect_uri'    => urlencode(config('services.discord.redirect_uri')),
+            'client_id'       => config('services.discord.client_id'),
         ];
 
         $this->assertEquals($parameters->except('state')->toArray(), $expected);
@@ -68,7 +68,7 @@ class DiscordTest extends TestCase
     {
         $emptyString = $this->actingAs($this->user)
             ->get(route('discord.store', [
-                'code' => ''
+                'code' => '',
             ]));
 
         $missingCode = $this->actingAs($this->user)
@@ -78,7 +78,7 @@ class DiscordTest extends TestCase
 
         $nullCode = $this->actingAs($this->user)
             ->get(route('discord.store', [
-                'code' => null
+                'code' => null,
             ]));
 
         $emptyString->assertRedirect(route('discord.show'));

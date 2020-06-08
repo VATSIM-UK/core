@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class AddDiscordIdColumn extends Migration
 {
     /**
-     * Run the migrations.t
+     * Run the migrations.t.
      *
      * @return void
      */

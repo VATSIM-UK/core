@@ -37,7 +37,7 @@ class Registration extends BaseController
     public function create(Request $request)
     {
         $authUrl = $this->provider->getAuthorizationUrl([
-            'scope' => ['identify']
+            'scope' => ['identify'],
         ]);
 
         return redirect()->away($authUrl);
