@@ -47,7 +47,7 @@ trait HasQualifications
      */
     public function addQualification(Qualification $qualification)
     {
-        if (!$this->hasQualification($qualification)) {
+        if (! $this->hasQualification($qualification)) {
             $this->qualifications()->attach($qualification);
             $this->touch();
             event(new QualificationAdded($this, $qualification));
@@ -95,7 +95,7 @@ trait HasQualifications
 
         $ids = collect($qualifications)->pluck('id');
 
-        if (!empty($ids)) {
+        if (! empty($ids)) {
             $this->qualifications()->syncWithoutDetaching($ids);
             event(new AccountAltered($this));
         }

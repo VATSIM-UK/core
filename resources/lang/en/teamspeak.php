@@ -1,6 +1,5 @@
 <?php
 
-
 return [
     'registration.notfound.poke' => 'No registration found. Visit https://www.vatsim.uk/dashboard to register.',
     'registration.notfound.kick' => 'No registration found.',

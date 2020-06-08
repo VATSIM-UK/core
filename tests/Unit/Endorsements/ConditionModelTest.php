@@ -21,6 +21,7 @@ class ConditionModelTest extends TestCase
 
         $this->condition = factory(Condition::class)->create();
     }
+
     /** @test */
     public function itCanBeCreated()
     {
@@ -29,7 +30,7 @@ class ConditionModelTest extends TestCase
             'positions' => ['EGLL_TWR', 'EGPH_%'],
             'required_hours' => 10,
             'type' => Condition::TYPE_SUM_OF_AIRFIELDS,
-            'within_months' => null
+            'within_months' => null,
         ]);
 
         $this->assertDatabaseHas('endorsement_conditions', [
@@ -38,7 +39,7 @@ class ConditionModelTest extends TestCase
             'positions' => json_encode(['EGLL_TWR', 'EGPH_%']),
             'required_hours' => 10,
             'type' => Condition::TYPE_SUM_OF_AIRFIELDS,
-            'within_months' => null
+            'within_months' => null,
         ]);
     }
 
@@ -81,28 +82,28 @@ class ConditionModelTest extends TestCase
             'callsign' => 'EGLL_TWR',
             'minutes_online' => 60,
             'connected_at' => Carbon::now()->subMonths(3),
-            'disconnected_at' => Carbon::now()->subMonths(3)
+            'disconnected_at' => Carbon::now()->subMonths(3),
         ]);
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'EGLL_TWR',
             'minutes_online' => 60,
             'connected_at' => Carbon::now()->subMonths(1),
-            'disconnected_at' => Carbon::now()->subMonths(1)
+            'disconnected_at' => Carbon::now()->subMonths(1),
         ]);
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'ESSEX_TWR',
             'minutes_online' => 60,
             'connected_at' => Carbon::now()->subMonths(1),
-            'disconnected_at' => Carbon::now()->subMonths(1)
+            'disconnected_at' => Carbon::now()->subMonths(1),
         ]);
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'ESSEX_APP',
             'minutes_online' => 120,
             'connected_at' => Carbon::now()->subMonths(1),
-            'disconnected_at' => Carbon::now()->subMonths(1)
+            'disconnected_at' => Carbon::now()->subMonths(1),
         ]);
 
         $data = $condition->progressForUser($this->user);
@@ -124,14 +125,14 @@ class ConditionModelTest extends TestCase
             'callsign' => 'EGLL_TWR',
             'minutes_online' => 5 * 60,
             'connected_at' => Carbon::now()->subMonths(1),
-            'disconnected_at' => Carbon::now()->subMonths(1)
+            'disconnected_at' => Carbon::now()->subMonths(1),
         ]);
         $session = factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'ESSEX_APP',
             'minutes_online' => 5 * 60,
             'connected_at' => Carbon::now()->subMonths(1),
-            'disconnected_at' => Carbon::now()->subMonths(1)
+            'disconnected_at' => Carbon::now()->subMonths(1),
         ]);
 
         $this->assertFalse($condition->isMetForUser($this->user));
@@ -151,14 +152,14 @@ class ConditionModelTest extends TestCase
             'callsign' => 'EGLL_TWR',
             'minutes_online' => 5 * 60,
             'connected_at' => Carbon::now()->subMonths(1),
-            'disconnected_at' => Carbon::now()->subMonths(1)
+            'disconnected_at' => Carbon::now()->subMonths(1),
         ]);
         $session = factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'callsign' => 'ESSEX_APP',
             'minutes_online' => 4 * 60,
             'connected_at' => Carbon::now()->subMonths(1),
-            'disconnected_at' => Carbon::now()->subMonths(1)
+            'disconnected_at' => Carbon::now()->subMonths(1),
         ]);
 
         $this->assertFalse($condition->isMetForUser($this->user));

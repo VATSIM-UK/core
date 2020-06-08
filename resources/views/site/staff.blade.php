@@ -116,7 +116,7 @@
                     <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Web Services
                     </div>
                     <div class="panel-body">
-                        <h4>Web Services Director (VATUK8)</h4><br/>
+                        <h4 class="text-center">Web Services Director (VATUK8)</h4><br/>
                         <img src="{{ $teamPhotos[5125] }}"
                              class="img-responsive center-block profile-picture"/>
                         <p class="text-center">Calum Tοwers</p>
@@ -159,7 +159,7 @@
                     <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Training
                     </div>
                     <div class="panel-body">
-                        <h4>Training Director (VATUK5)</h4><br/>
+                        <h4 class="text-center">Training Director (VATUK5)</h4><br/>
                         <img src="{{ $teamPhotos[6286] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
@@ -193,6 +193,10 @@
                                     <td>Jamie Paine</td>
                                 </tr>
                                 <tr>
+                                    <td>Division Instructor</td>
+                                    <td>Lee Roberts</td>
+                                </tr>
+                                <tr>
                                     <td>TG Instructor (New Controller)</td>
                                     <td>Ben Cook</td>
                                 </tr>
@@ -201,16 +205,28 @@
                                     <td>Fergus Walsh</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG1)</td>
+                                    <td>TG Instructor (TWR)</td>
+                                    <td>George Peppard</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (TWR)</td>
+                                    <td>James Yuen</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (TWR)</td>
+                                    <td>Adam Farquharson</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (APP)</td>
                                     <td>Oliver Gates</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG2)</td>
-                                    <td>Lee Roberts</td>
+                                    <td>TG Instructor (APP)</td>
+                                    <td>Charlie Watson</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG2)</td>
-                                    <td>George Peppard</td>
+                                    <td>TG Instructor (APP)</td>
+                                    <td>Jack Edwards</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
@@ -228,13 +244,11 @@
                             <table class="table">
                                 <tr>
                                     <td>General Manager</td>
-                                    <td>Tom Sirett</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
-                                    <td>Administrative Manager<br/>
-                                        Initial Flight Instructor
-                                    </td>
-                                    <td>Vacant</td>
+                                    <td>Initial Flight Instructor</td>
+                                    <td>Matthew Wilson</td>
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
@@ -243,10 +257,6 @@
                                 <tr>
                                     <td>IFR Flight Instructor</td>
                                     <td>Freddie Charlesworth</td>
-                                </tr>
-                                <tr>
-                                    <td>Development Flight Instructor</td>
-                                    <td>Vacant</td>
                                 </tr>
                              </table>
 
@@ -266,7 +276,7 @@
                             <tbody>
                                 <tr>
                                     <td>Division Conflict Resolution Manager</td>
-                                    <td>Sean Readman</td>
+                                    <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
                                     <td>Data Protection Officer</td>

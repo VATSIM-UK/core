@@ -10,7 +10,7 @@ class DivisionMemberTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -30,7 +30,7 @@ class DivisionMemberTest extends TestCase
 
     public function testItDoesntAllowMemberToStartVisitingAtcApplication()
     {
-        factory(Facility::class, 'atc_visit')->create();
+        factory(Facility::class)->states('atc_visit')->create();
 
         $this->get(route('visiting.landing'))
             ->assertSeeText(trans('application.dashboard.apply.atc.visit.unable'));
@@ -38,7 +38,7 @@ class DivisionMemberTest extends TestCase
 
     public function testItDoesntAllowMemberToStartTransferringAtcApplication()
     {
-        factory(Facility::class, 'atc_transfer')->create();
+        factory(Facility::class)->states('atc_transfer')->create();
 
         $this->get(route('visiting.landing'))
             ->assertSeeText(trans('application.dashboard.apply.atc.transfer.unable'));

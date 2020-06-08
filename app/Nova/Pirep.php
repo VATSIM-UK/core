@@ -2,16 +2,13 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\BelongsTo;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
-use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 
 class Pirep extends Resource
@@ -30,7 +27,7 @@ class Pirep extends Resource
      */
     public static $title = 'id';
 
-    public static $group = "Smartcars";
+    public static $group = 'Smartcars';
 
     public static $with = ['bid'];
 
@@ -40,6 +37,17 @@ class Pirep extends Resource
      * @var array
      */
     public static $search = [];
+
+    /**
+     * Removes Pirep from navigation bar.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -70,16 +78,16 @@ class Pirep extends Resource
             new Panel('Approval Information', [
                 Boolean::make('Passed'),
                 DateTime::make('Failed At', function () {
-                    return !$this->passed;
+                    return ! $this->passed;
                 })->onlyOnDetail()->canSee(function () {
-                    return !$this->passed;
+                    return ! $this->passed;
                 }),
                 Text::make('Fail Reason', function () {
                     return $this->pass_reason;
                 })->onlyOnDetail()->canSee(function () {
-                    return !is_null($this->failed_at);
-                })
-            ])
+                    return ! is_null($this->failed_at);
+                }),
+            ]),
         ];
     }
 

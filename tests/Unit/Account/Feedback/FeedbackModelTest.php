@@ -25,7 +25,7 @@ class FeedbackModelTest extends TestCase
         $this->assertNull($this->feedback->actioned_comment);
         $this->assertNull($this->feedback->actioned_by_id);
 
-        $this->feedback->markActioned($this->privacc, "Test");
+        $this->feedback->markActioned($this->privacc, 'Test');
 
         $this->assertNotNull($this->feedback->actioned_at);
         $this->assertNotNull($this->feedback->actioned_comment);

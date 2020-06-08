@@ -55,7 +55,7 @@ trait HasPassword
         // else password needs hashing, hash and store it
         if ($password === null) {
             $this->attributes['password'] = null;
-        } elseif (!Hash::needsRehash($password)) {
+        } elseif (! Hash::needsRehash($password)) {
             $this->attributes['password'] = $password;
         } else {
             $this->attributes['password'] = Hash::make($password);
@@ -79,7 +79,7 @@ trait HasPassword
      */
     public function hasPasswordExpired()
     {
-        if (!$this->hasPassword()) {
+        if (! $this->hasPassword()) {
             return false;
         }
 

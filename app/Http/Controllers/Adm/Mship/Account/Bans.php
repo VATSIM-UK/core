@@ -18,8 +18,6 @@ use Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Request;
 use Redirect;
-use Session;
-use URL;
 
 class Bans extends AdmController
 {
@@ -33,14 +31,13 @@ class Bans extends AdmController
             ->with('bans', $bans);
     }
 
-
     /*
      * Additions
      */
 
     public function postBanAdd(CreateRequest $request, AccountData $mshipAccount)
     {
-        if (!$mshipAccount) {
+        if (! $mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -65,14 +62,13 @@ class Bans extends AdmController
             ->withSuccess('You have successfully banned this member.');
     }
 
-
     /*
      * Repeals
      */
 
     public function getBanRepeal(AccountData\Ban $ban)
     {
-        if (!$ban) {
+        if (! $ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
@@ -85,7 +81,7 @@ class Bans extends AdmController
 
     public function postBanRepeal(RepealRequest $request, AccountData\Ban $ban)
     {
-        if (!$ban) {
+        if (! $ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
@@ -101,14 +97,13 @@ class Bans extends AdmController
             ->withSuccess('Ban has been repealed.');
     }
 
-
     /*
      * Modifications
      */
 
     public function getBanModify(AccountData\Ban $ban)
     {
-        if (!$ban) {
+        if (! $ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
@@ -121,12 +116,12 @@ class Bans extends AdmController
 
     public function postBanModify(ModifyRequest $request, AccountData\Ban $ban)
     {
-        if (!$ban) {
+        if (! $ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
 
-        $period_finish = Carbon::parse(Request::input('finish_date') . ' ' . Request::input('finish_time'), 'UTC');
+        $period_finish = Carbon::parse(Request::input('finish_date').' '.Request::input('finish_time'), 'UTC');
         $max_timestamp = Carbon::create(2038, 1, 1, 0, 0, 0);
         if ($period_finish->gt($max_timestamp)) {
             $period_finish = $max_timestamp;
@@ -137,11 +132,11 @@ class Bans extends AdmController
         }
 
         if ($ban->period_finish->gt($period_finish)) {
-            $noteComment = 'Ban has been reduced from ' . $ban->period_finish->toDateTimeString() . ".\n";
+            $noteComment = 'Ban has been reduced from '.$ban->period_finish->toDateTimeString().".\n";
         } else {
-            $noteComment = 'Ban has been extended from ' . $ban->period_finish->toDateTimeString() . ".\n";
+            $noteComment = 'Ban has been extended from '.$ban->period_finish->toDateTimeString().".\n";
         }
-        $noteComment .= 'New finish: ' . $period_finish->toDateTimeString() . "\n";
+        $noteComment .= 'New finish: '.$period_finish->toDateTimeString()."\n";
         $noteComment .= Request::input('note');
 
         // Attach the note.
@@ -149,7 +144,7 @@ class Bans extends AdmController
         $ban->notes()->save($note);
 
         // Modify the ban
-        $ban->reason_extra = $ban->reason_extra . "\n" . Request::input('reason_extra');
+        $ban->reason_extra = $ban->reason_extra."\n".Request::input('reason_extra');
         $ban->period_finish = $period_finish;
         $ban->save();
 
@@ -159,14 +154,13 @@ class Bans extends AdmController
             ->withSuccess('This ban has been modified.');
     }
 
-
     /*
      * Comments
      */
 
     public function getBanComment(AccountData\Ban $ban)
     {
-        if (!$ban) {
+        if (! $ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
@@ -179,7 +173,7 @@ class Bans extends AdmController
 
     public function postBanComment(CommentRequest $request, AccountData\Ban $ban)
     {
-        if (!$ban) {
+        if (! $ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }

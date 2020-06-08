@@ -5,13 +5,13 @@ namespace App\Models\Mship\Concerns;
 use DB;
 
 /**
- * Trait SyncsToMoodle
+ * Trait SyncsToMoodle.
  */
 trait HasMoodleAccount
 {
     public function syncUserToMoodle()
     {
-        if (!$this->moodleEnabled()) {
+        if (! $this->moodleEnabled()) {
             return false;
         }
         $moodleAccount = DB::table(config('services.moodle.database').'.mdl_user')
@@ -28,11 +28,11 @@ trait HasMoodleAccount
      */
     public function syncToMoodle($moodleAccount)
     {
-        if (!$this->moodleEnabled()) {
+        if (! $this->moodleEnabled()) {
             return false;
         }
 
-        if (!$moodleAccount && $this->canLoginToMoodle()) {
+        if (! $moodleAccount && $this->canLoginToMoodle()) {
             $this->createMoodleAccount();
         } elseif ($moodleAccount) {
             $this->updateMoodleAccount($this->canLoginToMoodle(), $moodleAccount);
@@ -93,7 +93,7 @@ trait HasMoodleAccount
         ];
 
         $dirty = array_keys(array_diff_assoc($old, $new));
-        if (!empty($dirty)) {
+        if (! empty($dirty)) {
             DB::table(config('services.moodle.database').'.mdl_user')->where('username', (string) $this->id)->update($new);
         } else {
             // do nothing - account is up to date
@@ -121,7 +121,7 @@ trait HasMoodleAccount
             || $this->hasState('VISITING')
             || $this->hasState('TRANSFERRING');
     }
-    
+
     private function moodleEnabled()
     {
         return config('services.moodle.database') && DB::table('oauth_clients')->where('name', 'Moodle')->first();

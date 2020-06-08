@@ -28,6 +28,17 @@ class Ban extends Resource
     public static $group = 'Membership';
 
     /**
+     * Removes Ban from navigation bar.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
+
+    /**
      * The columns that should be searched.
      *
      * @var array

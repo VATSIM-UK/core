@@ -5,7 +5,7 @@ namespace App\Models\Api;
 use App\Models\Model;
 
 /**
- * App\Models\Api\Request
+ * App\Models\Api\Request.
  *
  * @property int $id
  * @property int $api_account_id

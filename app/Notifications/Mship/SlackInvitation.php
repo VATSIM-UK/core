@@ -29,7 +29,7 @@ class SlackInvitation extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if (!$notifiable->slack_id) {
+        if (! $notifiable->slack_id) {
             return ['mail', 'database'];
         } else {
             return [];

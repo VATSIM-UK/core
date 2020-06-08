@@ -18,7 +18,7 @@ class Flight extends AdmController
 
         $departure = Airport::findByIcao(Request::input('departureicao'));
         if (Request::input('departureicao', null) != null) {
-            if (!$departure) {
+            if (! $departure) {
                 return 'NONE';
             }
 
@@ -27,7 +27,7 @@ class Flight extends AdmController
 
         $arrival = Airport::findByIcao(Request::input('arrivalicao'));
         if (Request::input('arrivalicao', null) != null) {
-            if (!$arrival) {
+            if (! $arrival) {
                 return 'NONE';
             }
 
@@ -98,7 +98,7 @@ class Flight extends AdmController
         $bid = Bid::find(Request::input('bidid'));
 
         // Check bid has flight
-        if (!$bid) {
+        if (! $bid) {
             return 'ERROR';
         }
 
@@ -136,7 +136,7 @@ class Flight extends AdmController
         $bid = Bid::find(Request::input('bidid'));
 
         // Check bid has flight
-        if (!$bid) {
+        if (! $bid) {
             return 'ERROR';
         }
 
@@ -166,7 +166,7 @@ class Flight extends AdmController
     {
         $flight = \App\Models\Smartcars\Flight::find(Request::input('routeid'));
 
-        if (!$flight) {
+        if (! $flight) {
             return 'INVALID_ROUTEID';
         }
 

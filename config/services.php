@@ -36,7 +36,16 @@ return [
     ],
 
     'slack' => [
-        'token' => env('SLACK_SECRET'),
+        'token' => env('SLACK_SECRET', 'secret'),
+        'token_register' => env('SLACK_TOKEN_REGISTER', 'token'),
+    ],
+
+    'teamspeak' => [
+        'host' => env('TS_HOST'),
+        'username' => env('TS_USER'),
+        'password' => env('TS_PASS'),
+        'port' => env('TS_PORT'),
+        'query_port' => env('TS_QUERY_PORT'),
     ],
 
     'google' => [
@@ -46,7 +55,7 @@ return [
     ],
 
     'ukcp' => [
-        'url' => env('UKCP_URL'),
+        'url' => env('UKCP_URL', 'https://ukcp.vatsim.uk'),
         'key' => env('UKCP_KEY'),
     ],
 
@@ -54,7 +63,13 @@ return [
         'private_token' => env('CHARTFOX_PRIVATE_TOKEN'),
         'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
     ],
-    
+
+    'autotools' => [
+        'division' => env('VATSIM_AT_DIV'),
+        'username' => env('VATSIM_CERT_AT_USER'),
+        'password' => env('VATSIM_CERT_AT_PASS'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | VATSIM UK Hosted Services

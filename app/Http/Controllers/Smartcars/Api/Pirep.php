@@ -19,7 +19,7 @@ class Pirep extends AdmController
 
         $departure = Airport::findByIcao(Request::input('departureicao'));
         if (Request::input('departureicao', null) != null) {
-            if (!$departure) {
+            if (! $departure) {
                 return 'NONE';
             }
 
@@ -30,7 +30,7 @@ class Pirep extends AdmController
 
         $arrival = Airport::findByIcao(Request::input('arrivalicao'));
         if (Request::input('arrivalicao', null) != null) {
-            if (!$arrival) {
+            if (! $arrival) {
                 return 'NONE';
             }
 

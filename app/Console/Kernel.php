@@ -2,8 +2,6 @@
 
 namespace App\Console;
 
-use App\Libraries\Slack;
-use Closure;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -76,7 +74,8 @@ class Kernel extends ConsoleKernel
             ->dailyAt('00:45')
             ->runInBackground();
 
-        // $schedule->command('sync:tg-forum-groups')->dailyAt('04:00');
+        $schedule->command('sync:tg-forum-groups')
+            ->dailyAt('04:00');
 
         $schedule->command('members:certimport', ['--full'])
             ->twiceDaily(2, 14)

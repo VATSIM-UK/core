@@ -8,7 +8,7 @@ use Laravel\Nova\Metrics\Partition;
 
 class ActionedUnactionedFeedback extends Partition
 {
-    public $name = "Actioned vs Unactioned Feedback";
+    public $name = 'Actioned vs Unactioned Feedback';
 
     /**
      * Calculate the value of the metric.
@@ -23,7 +23,7 @@ class ActionedUnactionedFeedback extends Partition
             'Un-Actioned' => Feedback::unActioned()->count(),
         ])->colors([
             'Actioned' => '#2ECC40',
-            'Un-Actioned' => '#FF4136'
+            'Un-Actioned' => '#FF4136',
         ]);
     }
 

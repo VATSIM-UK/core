@@ -22,10 +22,10 @@ class NotifyAllReferees implements ShouldQueue
     {
         $refereesToBeNotified = $event->application->referees->filter(function ($ref) {
             if ($ref->reminded_at == null) {
-                return !$ref->is_submitted;
+                return ! $ref->is_submitted;
             }
 
-            return $ref->reminded_at->isPast() && !$ref->is_submitted;
+            return $ref->reminded_at->isPast() && ! $ref->is_submitted;
         });
 
         $contactAt = Carbon::now();

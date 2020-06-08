@@ -41,21 +41,21 @@ class EvaluateFlightCriteria implements ShouldQueue
                 }
             }
 
-            if (!$positionValid) {
+            if (! $positionValid) {
                 $pirep->markFailed("Failed: You went off track at posrep #{$posrep->id}.", $posrep->id);
                 $pirep->save();
 
                 return;
             }
 
-            if (!$altitudeValid) {
+            if (! $altitudeValid) {
                 $pirep->markFailed("Failed: You went outside of the altitude restriction at posrep #{$posrep->id}.", $posrep->id);
                 $pirep->save();
 
                 return;
             }
 
-            if (!$speedValid) {
+            if (! $speedValid) {
                 $pirep->markFailed("Failed: You went outside of the speed restriction at posrep #{$posrep->id}.", $posrep->id);
                 $pirep->save();
 
@@ -71,7 +71,7 @@ class EvaluateFlightCriteria implements ShouldQueue
             return;
         }
 
-        if (!$this->onNetwork($pirep, $posreps)) {
+        if (! $this->onNetwork($pirep, $posreps)) {
             $pirep->markFailed('Failed: You were not connected to the VATSIM network.');
             $pirep->save();
 

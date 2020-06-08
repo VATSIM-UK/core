@@ -33,9 +33,9 @@ class FacilityTest extends TestCase
 
     private function insertFacilities()
     {
-        factory(Facility::class, 'atc_visit')->create();
-        factory(Facility::class, 'atc_transfer')->create();
-        factory(Facility::class, 'pilot_visit')->create();
+        factory(Facility::class)->states('atc_visit')->create();
+        factory(Facility::class)->states('atc_transfer')->create();
+        factory(Facility::class)->states('pilot_visit')->create();
     }
 
     public function testNoOptionToApplyWithNoFacilities()
@@ -60,7 +60,7 @@ class FacilityTest extends TestCase
 
     public function testOptionToApplyWithHiddenFacilities()
     {
-        factory(Facility::class, 'atc_visit')->create(['public' => false]);
+        factory(Facility::class)->states('atc_visit')->create(['public' => false]);
 
         $this->actingAs($this->internationalUser)
             ->get(route('visiting.landing'))

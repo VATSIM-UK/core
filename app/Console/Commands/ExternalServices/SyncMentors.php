@@ -114,7 +114,7 @@ class SyncMentors extends Command
         $currentForumMember = null;
         for ($i = 0; $i < count($positions); $i++) {
             // if we've started processing a new mentor
-            if (!array_key_exists($i - 1, $positions) || $positions[$i]->id !== $positions[$i - 1]->id) {
+            if (! array_key_exists($i - 1, $positions) || $positions[$i]->id !== $positions[$i - 1]->id) {
                 $this->log("Processing {$positions[$i]->id} - {$positions[$i]->name}");
                 $currentMentor = $positions[$i];
                 $currentForumMember = \IPS\Member::load($this->memberForumIDs[$currentMentor->id]);
@@ -132,7 +132,7 @@ class SyncMentors extends Command
             $currentForumMember = $this->determineGroup($positions[$i], $currentForumMember);
 
             // if this is the last row for the current mentor
-            if (!array_key_exists($i + 1, $positions) || $positions[$i]->id != $positions[$i + 1]->id) {
+            if (! array_key_exists($i + 1, $positions) || $positions[$i]->id != $positions[$i + 1]->id) {
                 $groups = explode(',', $currentForumMember->mgroup_others);
                 $groups = implode("\n", array_map(function ($s) {
                     return $this->forumGroupIDs[$s];

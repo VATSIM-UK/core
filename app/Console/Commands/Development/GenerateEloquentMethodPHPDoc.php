@@ -45,7 +45,7 @@ class GenerateEloquentMethodPHPDoc extends Command
 
         $scrapedInfo = new ReflectionClass($this->scraped_class);
         foreach ($scrapedInfo->getMethods() as $method) {
-            if (!$this->isMagicMethod($method) && !$this->isModelMethod($method)) {
+            if (! $this->isMagicMethod($method) && ! $this->isModelMethod($method)) {
                 $this->log('* @method static ', null, false);
                 $docBlockTags = (new DocBlock($method))->getTags();
 

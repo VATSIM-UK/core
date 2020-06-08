@@ -5,7 +5,7 @@ namespace App\Models\Mship\Feedback\Question;
 use App\Models\Model;
 
 /**
- * App\Models\Mship\Feedback\Question\Type
+ * App\Models\Mship\Feedback\Question\Type.
  *
  * @property int $id
  * @property string $name

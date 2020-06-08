@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\Smartcars\BidCompleted;
+use App\Listeners\NetworkData\FlushEndorsementCache;
 use App\Listeners\Smartcars\EvaluateFlightCriteria;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -34,6 +35,7 @@ class EventServiceProvider extends ServiceProvider
 
         AtcSessionEnded::class => [
             //AtcSessionRecordedSuccessNotification::class, // temporarily disabled
+            FlushEndorsementCache::class,
         ],
 
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [

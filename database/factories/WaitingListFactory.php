@@ -8,7 +8,7 @@ $factory->define(App\Models\Training\WaitingList::class, function (Faker $faker)
     return [
         'name' => $name,
         'slug' => str_slug($name),
-        'department' => $faker->randomElement(['atc', 'pilot'])
+        'department' => $faker->randomElement(['atc', 'pilot']),
     ];
 });
 

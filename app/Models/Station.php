@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Station
+ * App\Models\Station.
  *
  * @property int $id
  * @property string $callsign
@@ -30,15 +30,15 @@ class Station extends Model
 {
     protected $table = 'stations';
     protected $fillable = [
-            'callsign',
-            'name',
-            'frequency',
-            'type',
-            'sub_station',
-        ];
+        'callsign',
+        'name',
+        'frequency',
+        'type',
+        'sub_station',
+    ];
     protected $casts = [
-            'sub_station' => 'boolean',
-        ];
+        'sub_station' => 'boolean',
+    ];
 
     const TYPE_ATIS = 1;
     const TYPE_DELIVERY = 2;
