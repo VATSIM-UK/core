@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Http\Request;
 
 class SecondaryLoginController extends BaseController
 {
@@ -28,7 +28,7 @@ class SecondaryLoginController extends BaseController
 
     public function loginSecondary(Request $request)
     {
-        if (!Auth::guard('vatsim-sso')->check()) {
+        if (! Auth::guard('vatsim-sso')->check()) {
             return redirect()->route('dashboard')
                 ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }

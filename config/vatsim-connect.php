@@ -19,7 +19,7 @@ return [
     'secret' => env('VATSIM_OAUTH_SECRET'),
 
     /**
-     * The scopes the user will be requested
+     * The scopes the user will be requested.
      */
     'scopes' => explode(',', env('VATSIM_OAUTH_SCOPES')),
 

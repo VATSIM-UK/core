@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
-use App\Jobs\UpdateMember;
 use App\Models\Mship\Account;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
@@ -35,14 +33,15 @@ class LoginController extends BaseController
 
     public function login(Request $request)
     {
-        if (!$request->has('code') || !$request->has('state')) {
+        if (! $request->has('code') || ! $request->has('state')) {
             $authorizationUrl = $this->provider->getAuthorizationUrl();
             $request->session()->put('vatsimauthstate', $this->provider->getState());
+
             return redirect()->away($authorizationUrl);
         }
 
         if ($request->input('state') !== session()->pull('vatsimauthstate')) {
-            return redirect()->route('dashboard')->withError("Something went wrong, please try again.");
+            return redirect()->route('dashboard')->withError('Something went wrong, please try again.');
         }
 
         return $this->verifyLogin($request);
@@ -52,10 +51,10 @@ class LoginController extends BaseController
     {
         try {
             $accessToken = $this->provider->getAccessToken('authorization_code', [
-                'code' => $request->input('code')
+                'code' => $request->input('code'),
             ]);
         } catch (IdentityProviderException $e) {
-            return redirect()->route('dashboard')->withError("Something went wrong, please try again.");
+            return redirect()->route('dashboard')->withError('Something went wrong, please try again.');
         }
 
         $resourceOwner = json_decode(json_encode($this->provider->getResourceOwner($accessToken)->toArray()));
@@ -69,9 +68,9 @@ class LoginController extends BaseController
             ! $resourceOwner->data->personal->email ||
             ! $resourceOwner->data ||
             ! $resourceOwner->data->vatsim ||
-            ! $resourceOwner->data->oauth->token_valid === "true"
+            ! $resourceOwner->data->oauth->token_valid === 'true'
         ) {
-            return redirect()->route('dashboard')->withError("You cannot use our services unless you provide the relevant permissions upon login. Please try again.");
+            return redirect()->route('dashboard')->withError('You cannot use our services unless you provide the relevant permissions upon login. Please try again.');
         }
 
         $account = $this->completeLogin($resourceOwner, $accessToken);

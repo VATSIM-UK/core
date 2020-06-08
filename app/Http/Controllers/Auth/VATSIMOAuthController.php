@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Provider\GenericProvider;
 
-class VatsimOAuthController extends GenericProvider
+class VATSIMOAuthController extends GenericProvider
 {
     /**
      * @var GenericProvider
@@ -21,29 +21,29 @@ class VatsimOAuthController extends GenericProvider
             'clientId'                => config('vatsim-connect.id'),
             'clientSecret'            => config('vatsim-connect.secret'),
             'redirectUri'             => route('login'),
-            'urlAuthorize'            => config('vatsim-connect.base') . '/oauth/authorize',
-            'urlAccessToken'          => config('vatsim-connect.base') . '/oauth/token',
-            'urlResourceOwnerDetails' => config('vatsim-connect.base') . '/api/user',
+            'urlAuthorize'            => config('vatsim-connect.base').'/oauth/authorize',
+            'urlAccessToken'          => config('vatsim-connect.base').'/oauth/token',
+            'urlResourceOwnerDetails' => config('vatsim-connect.base').'/api/user',
             'scopes'                  => config('vatsim-connect.scopes'),
-            'scopeSeparator'          => ' '
+            'scopeSeparator'          => ' ',
         ]);
     }
 
     /**
-     * Gets an (updated) user token
+     * Gets an (updated) user token.
      * @param Token $token
      * @return Token
      * @return null
      */
     public static function updateToken($token)
     {
-        $controller = new VatsimOAuthController;
+        $controller = new self;
         try {
             return $controller->getAccessToken('refresh_token', [
-                'refresh_token' => $token->getRefreshToken()
+                'refresh_token' => $token->getRefreshToken(),
             ]);
         } catch (IdentityProviderException $e) {
-            return null;
+            return;
         }
     }
 }

@@ -250,7 +250,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         }
 
         try {
-            return self::findOrFail((int)$accountId);
+            return self::findOrFail((int) $accountId);
         } catch (ModelNotFoundException $e) {
             dispatch((new UpdateMember($accountId))->onConnection('sync'));
 
@@ -349,7 +349,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     public function setIsInactiveAttribute($value)
     {
-        $this->inactive = (bool)$value;
+        $this->inactive = (bool) $value;
     }
 
     public function getStatusStringAttribute()
@@ -393,7 +393,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getRealNameAttribute()
     {
-        return $this->name_first . ' ' . $this->name_last;
+        return $this->name_first.' '.$this->name_last;
     }
 
     /**
@@ -406,7 +406,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function getNameAttribute()
     {
         if ($this->nickname != null) {
-            return $this->nickname . ' ' . $this->name_last;
+            return $this->nickname.' '.$this->name_last;
         }
 
         return $this->real_name;
@@ -436,13 +436,13 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         }
 
         $allowedNames = collect();
-        $allowedNames->push($this->name . $wildcard);
-        $allowedNames->push($this->real_name . $wildcard);
+        $allowedNames->push($this->name.$wildcard);
+        $allowedNames->push($this->real_name.$wildcard);
 
         if ($includeATC && $this->networkDataAtcCurrent) {
             $collect = collect();
             foreach ($allowedNames as $name) {
-                $collect->push($name . " - {$this->networkDataAtcCurrent->callsign}");
+                $collect->push($name." - {$this->networkDataAtcCurrent->callsign}");
             }
             $allowedNames = $allowedNames->merge($collect);
         }
@@ -516,7 +516,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     /**
-     * Return a valid access token for the user or return null if none
+     * Return a valid access token for the user or return null if none.
      *
      * @return \League\OAuth2\Client\Token\AccessToken
      * @return null
@@ -524,7 +524,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function getTokenAttribute()
     {
         if ($this->vatsim_access_token === null) {
-            return null;
+            return;
         } else {
             $token = new AccessToken([
                 'access_token'  => $this->vatsim_access_token,
