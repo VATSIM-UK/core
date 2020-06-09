@@ -21,7 +21,19 @@ jobs:
           echo "::set-env name=VERSION::$(git tag --sort=committerdate | tail -1)"
 
       #
-      # GITHUB DEPLOYMENT
+      # SLACK NOTIFICATION JOB START
+      #
+      - name: Slack Notification Start
+        uses: rtCamp/action-slack-notify@v2.0.2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
+          SLACK_MESSAGE: ${{ format('*START* - deployment of version *{0}* to Production *{1}* :rocket:', env.VERSION, env.APP_URL)}}
+          SLACK_USERNAME: Github Actions
+          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          SLACK_COLOR: warning
+
+      #
+      # GITHUB DEPLOYMENT JOB START
       #
       - uses: chrnorm/deployment-action@releases/v1
         name: Create GitHub Deployment
@@ -297,3 +309,26 @@ jobs:
           target_url: https://core.ndavies.io
           state: "success"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
+
+      #
+      # SLACK NOTIFICATIONS JOB END
+      #
+      - name: Slack Notification (Failed)
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2.0.2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
+          SLACK_MESSAGE: ${{ format('*FAILED* - deployment of version *{0}* to Production *{1}* :fire:', env.VERSION, env.APP_URL)}}
+          SLACK_USERNAME: Github Actions
+          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          SLACK_COLOR: danger
+      
+      - name: Slack Notification (Success)
+        if: success()
+        uses: rtCamp/action-slack-notify@v2.0.2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
+          SLACK_MESSAGE: ${{ format('*SUCCESS* - deployment of version *{0}* to Production *{1}* :white_check_mark:', env.VERSION, env.APP_URL)}}
+          SLACK_USERNAME: Github Actions
+          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          SLACK_COLOR: good
