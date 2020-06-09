@@ -69,6 +69,7 @@ Below is a table of all secrets used within the workflows directly. See [.env Co
 | `NOVA_USERNAME` | [`test.yml`, `deploy.yml`] | Nova is a licensed download; username for composer auth |
 | `NOVA_PASSWORD` | [`test.yml`, `deploy.yml`] | Nova is a licensed download; password for composer auth |
 | `PAT` | [`test.yml`, `release.yml`] | Personal Access Token with `repo` permissions. More Info: see above under [Actions -> Important Notes](#important-notes) |
+| `ACTIONS_SLACK_WEBHOOK` | `deploy.yml` | Slack Incoming Webhook Token for Deployment status Slack Notifications |
 | `APPLICATION_ROOT` | `deploy.yml` | Specifies the target deployment application root for use when uploading and for creating / managing additional app directories / links. |
 | `SSH_HOST` | `deploy.yml` | SSH target host for deployment |
 | `SSH_PORT` | `deploy.yml` | SSH port for deployment |
