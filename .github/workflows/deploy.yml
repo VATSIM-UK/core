@@ -278,9 +278,19 @@ jobs:
           envs: APPLICATION_ROOT,VERSIONS_TO_KEEP
       
       #
-      # GITHUB DEPLOYMENT
+      # GITHUB DEPLOYMENT JOB END
       #
-      - name: Update Deployment Status
+      - name: Update Deployment Status (Failed)
+        if: failure()
+        uses: chrnorm/deployment-status@releases/v1
+        with:
+          token: ${{ github.token }}
+          target_url: https://core.ndavies.io
+          state: "failed"
+          deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
+
+      - name: Update Deployment Status (Success)
+        if: success()
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: ${{ github.token }}
