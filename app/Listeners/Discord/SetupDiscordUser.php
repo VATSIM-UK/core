@@ -23,9 +23,7 @@ class SetupDiscordUser implements ShouldQueue
         $discord = app()->make(Discord::class);
 
         $account->discord_id = $discordId;
-
-        $role = $discord->grantRole($event->account, 'Member');
-
+        
         DiscordRole::all()->filter(function ($value) use ($account) {
             return $account->hasPermissionTo((int) $value['permission_id']);
         })->each(function ($value) use ($discord) {
