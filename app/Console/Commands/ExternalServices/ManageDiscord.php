@@ -79,7 +79,7 @@ class ManageDiscord extends Command
         $discord = $this->discord;
 
         DiscordRole::all()->filter(function ($value) use ($account) {
-            return !$account->hasPermissionTo((int) $value['permission_id']);
+            return ! $account->hasPermissionTo((int) $value['permission_id']);
         })->each(function ($value) use ($account, $discord) {
             $discord->removeRoleById($account, (int) $value['discord_id']);
         });

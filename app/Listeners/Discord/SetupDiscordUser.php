@@ -3,9 +3,6 @@
 namespace App\Listeners\Discord;
 
 use App\Events\Discord\DiscordLinked;
-use App\Exceptions\Discord\InvalidDiscordSetupException;
-use App\Libraries\Discord;
-use App\Models\Discord\DiscordRole;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SetupDiscordUser implements ShouldQueue
