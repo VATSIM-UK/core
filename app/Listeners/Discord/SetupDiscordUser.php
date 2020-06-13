@@ -18,24 +18,7 @@ class SetupDiscordUser implements ShouldQueue
      */
     public function handle(DiscordLinked $event)
     {
-        $account = $event->account;
-        $discordId = $event->discordId;
-        $discord = app()->make(Discord::class);
-
-        $account->discord_id = $discordId;
-        
-        DiscordRole::all()->filter(function ($value) use ($account) {
-            return $account->hasPermissionTo((int) $value['permission_id']);
-        })->each(function ($value) use ($discord) {
-            $discord->grantRoleById((int) $value['discord_id']);
-        });
-
-        $nickname = $discord->setNickname($account, $account->name);
-
-        if (!$role || !$nickname) {
-            throw new InvalidDiscordSetupException($account);
-        }
-
-        $account->save();
+        $event->account->discord_id = $event->discordId;
+        $event->account->save();
     }
 }
