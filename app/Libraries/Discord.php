@@ -53,7 +53,7 @@ class Discord
     public function removeRoleById(Account $account, int $role): bool
     {
         $response = Http::withHeaders($this->headers)
-            ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role_id}");
+            ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
 
         return $this->result($response);
     }
