@@ -32,8 +32,13 @@ class Discord
     {
         $role_id = $this->findRole($role);
 
+        return $this->grantRoleById($account, $role_id);
+    }
+
+    public function grantRoleById(Account $account, int $role): bool
+    {
         $response = Http::withHeaders($this->headers)
-            ->put("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role_id}");
+            ->put("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
 
         return $this->result($response);
     }
