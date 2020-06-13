@@ -7,7 +7,7 @@
             <div class="col-md-4 col-md-offset-4">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading">
-                        <i class="fab fa-discord"></i> &thinsp; Discord Registration
+                        <em class="fab fa-discord"></em> &thinsp; Discord Registration
                     </div>
                     <div class="panel-body">
                         <p>
@@ -40,12 +40,12 @@
 
                             @if(!$_account->discord_id)
                                 <a href="{{ route('discord.invite') }}" style="text-decoration: none;" target="_blank">
-                                    <button class="btn btn-primary center-block"><li class="fab fa-discord"></li> &thinsp; Join Discord Server</button>
+                                    <button class="btn btn-primary center-block"><em class="fab fa-discord"></em> &thinsp; Join Discord Server</button>
                                 </a>
                             @endif
                             @if($_account->discord_id)
                                 <a href="#" style="text-decoration: none;">
-                                    <button class="btn btn-primary center-block" disabled><li class="fab fa-discord"></li> &thinsp; Already Joined</button>
+                                    <button class="btn btn-primary center-block" disabled><em class="fab fa-discord"></em> &thinsp; Already Joined</button>
                                 </a>
                                 <p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
                         @endif
@@ -69,12 +69,12 @@
                         <p>
                             @if(!$_account->discord_id)
                                 <a href="{{ route('discord.create') }}" style="text-decoration: none;">
-                                    <button class="btn btn-primary center-block"><li class="fab fa-discord"></li> &thinsp; Link Discord Account</button>
+                                    <button class="btn btn-primary center-block"><em class="fab fa-discord"></em> &thinsp; Link Discord Account</button>
                                 </a>
                             @endif
                             @if($_account->discord_id)
                                 <a href="#" style="text-decoration: none;">
-                                    <button class="btn btn-primary center-block" disabled><li class="fab fa-discord"></li> &thinsp; Discord Account {{ $_account->discord_id }} Linked</button>
+                                    <button class="btn btn-primary center-block" disabled><em class="fab fa-discord"></em> &thinsp; Discord Account {{ $_account->discord_id }} Linked</button>
                                 </a>
                                 <p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
                             @endif

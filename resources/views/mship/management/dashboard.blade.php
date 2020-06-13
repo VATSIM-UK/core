@@ -474,12 +474,12 @@
                 </div>
             @endif
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fab fa-discord"></i>
+                <div class="panel-heading"><em class="fab fa-discord"></em>
                     Discord Registration
                     <div class="pull-right">
                         @if(!$_account->discord_id)
                             <a href="{{ route("discord.show") }}">
-                                <i class="fa fa-plus-circle"></i>
+                                <em class="fa fa-plus-circle"></em>
                             </a>
                         @endif
                     </div>
