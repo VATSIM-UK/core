@@ -53,11 +53,11 @@ class DiscordTest extends TestCase
         $this->assertArrayHasKey('client_id', $parameters);
 
         $expected = [
-            'scope'           => 'identify',
-            'response_type'   => 'code',
+            'scope' => 'identify',
+            'response_type' => 'code',
             'approval_prompt' => 'auto',
-            'redirect_uri'    => urlencode(config('services.discord.redirect_uri')),
-            'client_id'       => config('services.discord.client_id'),
+            'redirect_uri' => urlencode(config('services.discord.redirect_uri')),
+            'client_id' => config('services.discord.client_id'),
         ];
 
         $this->assertEquals($parameters->except('state')->toArray(), $expected);
@@ -67,22 +67,28 @@ class DiscordTest extends TestCase
     public function testItRedirectsWhenCodeMissing()
     {
         $emptyString = $this->actingAs($this->user)
+            ->from(route('discord.show'))
             ->get(route('discord.store', [
                 'code' => '',
             ]));
 
         $missingCode = $this->actingAs($this->user)
+            ->from(route('discord.show'))
             ->get(route('discord.store', [
                 //
             ]));
 
         $nullCode = $this->actingAs($this->user)
+            ->from(route('discord.show'))
             ->get(route('discord.store', [
                 'code' => null,
             ]));
 
-        $emptyString->assertRedirect(route('discord.show'));
-        $missingCode->assertRedirect(route('discord.show'));
-        $nullCode->assertRedirect(route('discord.show'));
+        $emptyString->assertRedirect(route('discord.show'))
+            ->assertSessionHasErrors('code');
+        $missingCode->assertRedirect(route('discord.show'))
+            ->assertSessionHasErrors('code');
+        $nullCode->assertRedirect(route('discord.show'))
+            ->assertSessionHasErrors('code');
     }
 }
