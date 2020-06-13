@@ -34,7 +34,7 @@ class SetupDiscordUser implements ShouldQueue
 
         $nickname = $discord->setNickname($account, $account->name);
 
-        if (!$role || !$nickname) {
+        if (! $role || ! $nickname) {
             throw new InvalidDiscordSetupException($account);
         }
 
