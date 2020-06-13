@@ -23,9 +23,11 @@ class ManageDiscord extends Command
      */
     protected $description = 'Ensure Discord users are in sync with VATSIM UK\'s data';
 
-    protected Discord $discord;
+    /** @var Discord */
+    protected $discord;
 
-    protected Account $account;
+    /** @var Account */
+    protected $account;
 
     /**
      * Create a new command instance.
