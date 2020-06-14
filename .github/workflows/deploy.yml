@@ -128,6 +128,7 @@ jobs:
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           SESSION_DOMAIN: .vatsim.uk
           DB_MYSQL_HOST: ${{ secrets.DB_MYSQL_HOST }}
+          DB_MYSQL_PORT: ${{ secrets.DB_MYSQL_PORT }}
           DB_MYSQL_USER: ${{ secrets.DB_MYSQL_USER }}
           DB_MYSQL_PASS: ${{ secrets.DB_MYSQL_PASS }}
           DB_MYSQL_NAME: ${{ secrets.DB_MYSQL_NAME }}
