@@ -2,50 +2,85 @@
 
 @section('content')
 
-    <div class="row">
+    <div class="row equal">
 
-        <div class="col-md-8 col-md-offset-2 ">
+        <div class="col-md-12">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-map-marker"></i> &thinsp; Area Sectors
+                <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; UK Area Sectors
                 </div>
                 <div class="panel-body">
                     <p>
                         The London (EGTT) and Scottish (EGPX) Flight Information Regions (FIRs) cover the enroute
-                        airspace
-                        of the United Kingdom and coverage for underlying approach or aerodrome positions that are not
-                        online (&quot;top-down&quot;). The London airspace is split into sectors that may seem daunting
-                        at
-                        first, but are easy to understand if you take a few minutes to digest the information below. The
-                        main London sectors (North, South, Central &amp; West) are shown in the diagram below. These
-                        sectors
-                        are able to be split further during high traffic situations.
+                        airspace of the United Kingdom and coverage for underlying approach or aerodrome positions 
+                        that are not online (&quot;top-down&quot;). 
+                        
+                        Our airspace is split into sectors that may seem daunting at first, but are easier to 
+                        understand if you take a few minutes to digest the information below.
                     </p>
-
-                    <img class="img-responsive center-block" src="/images/areasector1.png">
+                    
+                    <h3>
+                        Radio Callsigns
+                    </h3>
 
                     <p>
-                        The diagram below illustrates the most basic of splits for Scottish (SCO_CTR) airspace. SCO_CTR
-                        covers both areas in the absence of a split controller.
-                    </p>
-
-                    <p>
-                        <img class="img-responsive center-block" src="/images/areasector2.png">
+                        All area control sectors within the UK are called either &quot;London Control&quot; or 
+                        &quot;Scottish Control&quot; over the radio. London Area (LON) and London Terminal (LTC) 
+                        Control are referred to as &quot;London Control&quot;, regardless of which sector you are 
+                        speaking to. Equally, Scottish Area (SCO) and Scottish Terminal (STC) Control are referred 
+                        to as &quot;Scottish Control&quot; regardless of sector.
                     </p>
 
                     <p>
-                        If there are no aerodrome or approach services at your departure aerodrome, use this list to
-                        determine which area sector to call. Contact the first controller listed that is online.&nbsp;If
-                        in
-                        doubt, don&#39;t be afraid to ask.&nbsp;Another good place to check is the controller
-                        information,
-                        where information is usually displayed as to which areas the controller is covering.
+                        The Manchester TMA sectors (MAN) are splits of the London North sector, however are referred to
+                        as &quot;Scottish Control&quot; when open. This is because they are controlled from the Area Control
+                        Centre in Prestwick, Scotland, in real life. When only the parent sector, London North (LON_N), is
+                        online, they are still referred to as &quot;London Control&quot; regardless of which part of the
+                        sector you are in.
                     </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row equal">
+
+        <div class="col-md-12">
+            <div class="panel panel-ukblue">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-top-down">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-plane"></i> &thinsp; Airfield Top-Down <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                    </div>
+                </a>
+                <div id="sectors-top-down" class="panel-collapse collapse panel-body">
+                    <h3>What is top-down?</h3>
+                    
                     <p>
-                        If there are no aerodrome or approach services at your departure aerodrome, use this list to
-                        determine which area sector to call. Contact the first controller listed that is online.&nbsp;If
-                        in doubt, don&#39;t be afraid to ask.&nbsp;Another good place to check is the controller
-                        information, where information is usually displayed as to which areas the controller is
-                        covering.
+                    In the absence of local aerodrome or approach ATC, our area sectors provide top-down service at airfields 
+                    contained within the sector(s) they are controlling. You should request clearance, pushback, taxi etc. as 
+                    you would if there were an aerodrome controller online, but should note that the extent of the top-down
+                    service may be reduced by the controller if it is busy.
+                    </p>
+                    
+                    <h3>Are all airfields covered top-down?</h3>
+                    
+                    <p>
+                    At airfields outside of <a href="https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification.">
+                    controlled airspace</a> you may, if you wish, depart at your own discretion. However, if you intend to join 
+                    controlled airspace, it is generally advisable to request airways clearance from the controller prior to departure.
+                    </p>
+                    
+                    <h3>How do I know who to call?</h3>
+                    
+                    <p>
+                    If there are no aerodrome or approach services at your departure aerodrome, use the information below to 
+                    determine which area sector to call. Contact the first controller listed (from left to right) that you can 
+                    see online. Sometimes, the callsign mauy differ slightly, so it's best to cross-check with the frequency too.
+                    </p>
+                    
+                    <p>
+                    If in doubt, don't be afraid to ask. Another good place to check is the controller information, where 
+                    information is usually displayed as to which areas the controller is covering.
                     </p>
 
                     <p>
@@ -102,14 +137,43 @@
                         <strong>EGPD / EGPE</strong><br>
                         SCO_E, SCO
                     </p>
+                </div>
+            </div>
+        </div>
 
-                    <h2>
-                        Frequencies
-                    </h2>
+    </div>
+    
+    <div class="row equal">
 
+        <div class="col-md-12">
+            <div class="panel panel-ukblue">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-london">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-plane"></i> &thinsp; London (EGTT) FIR <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                    </div>
+                </a>
+                <div id="sectors-london" class="panel-collapse collapse panel-body">
+                    
+                    <p>
+                    The London airspace is split into sectors that may seem daunting at first, but are easy to understand if you take a few minutes to digest the information below. 
+                    The main London sectors (North, South, Central & West) are shown in the diagram below. These sectors are able to be split further during high traffic situations.
+                    </p>
+
+                    <img class="img-responsive center-block" src="/images/egttsectors-lon.png">
+                    
+                    <p>
+                    The diagram below illustrates the London Terminal Control splits that you might see on a regular basis.
+                    </p>
+
+                    <img class="img-responsive center-block" src="/images/egttsectors-ltc.png">
+                    
                     <h3>
-                        Standard Frequencies - London
+                        Frequencies
                     </h3>
+
+                    <h4>
+                        London Standard Frequencies
+                    </h4>
 
                     <p>
                         This table highlights the frequencies you may see on a typical night, without splitting from the
@@ -157,9 +221,9 @@
                     </table>
                     </p>
 
-                    <h3>
-                        Sector Splits - London
-                    </h3>
+                    <h4>
+                        London Sector Split Frequencies
+                    </h4>
 
                     <p>
                         For the cases where the 4 main sectors are split (common for events), additional frequencies
@@ -306,30 +370,48 @@
                         </tbody>
                     </table>
                     </p>
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="row equal">
 
-                    <h2>
-                        Radio Callsigns
-                    </h2>
-
+        <div class="col-md-12">
+            <div class="panel panel-ukblue">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-scottish">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-plane"></i> &thinsp; Scottish (EGPX) FIR <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                    </div>
+                </a>
+                <div id="sectors-scottish" class="panel-collapse collapse panel-body">
+                    
                     <p>
-                        All area control sectors within the UK (listed above) are called either &quot;London Control&quot;
-                        or &quot;Scottish Control&quot; over RT. London Area (LON) and London Terminal (LTC) Control are
-                        referred to as &quot;London Control&quot;, regardless of which sector you are speaking to.
-                        Equally Scottish Area (SCO) and Scottish Terminal (STC) Control are referred to as &quot;Scottish
-                        Control&quot; regardless of sector.
+                    The diagram below illustrates the most basic of splits for Scottish (SCO_CTR) airspace. SCO_CTR covers both areas in the absence of a split controller.
+                    Other splits are more common during events - the top-down table above reflects these splits - do ask a controller if you are unsure.
                     </p>
 
-                    <p>
-                        The Manchester TMA sectors (MAN) are splits of the London North sector, however are referred to
-                        as &quot;Scottish Control&quot; when open. When only the parent sector, London North (LON_N), is
-                        online they are still referred to as &quot;London Control&quot; regardless of which part of the
-                        sector you are in.
-                    </p>
+                    <img class="img-responsive center-block" src="/images/egpxsectors.png">
+                    
+                </div>
+            </div>
+        </div>
 
-                    <h2>
-                        Information for Controllers
-                    </h2>
+    </div>
+    
+    <div class="row equal">
 
+        <div class="col-md-12">
+            <div class="panel panel-ukblue">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-controller-info">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-plane"></i> &thinsp; Information for Controllers <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                    </div>
+                </a>
+                <div id="sectors-controller-info" class="panel-collapse collapse panel-body">
+                    
                     <p>
                         For the purpose of <a href="{{ route('site.atc.bookings') }}">controller bookings</a>, 
                         the &#39;Primary Sectors&#39; are defined as:
@@ -388,7 +470,7 @@
                         staffed too - e.g. opening LTC_NE_CTR requires LTC_NW_CTR (as the remaining portion of 
                         LTC_N_CTR) to be online.
                     </p>
-
+                    
                 </div>
             </div>
         </div>
