@@ -412,8 +412,9 @@
                 <div id="sectors-london" class="panel-collapse collapse panel-body">
                     
                     <p>
-                    The London airspace is split into sectors that may seem daunting at first, but are easy to understand if you take a few minutes to digest the information below. 
-                    The main London sectors (North, South, Central & West) are shown in the diagram below. These sectors are able to be split further during high traffic situations.
+                    The London airspace is split into sectors that may seem daunting at first, but are easy to understand if you
+                    take a few minutes to digest the information below. The main London sectors (North, South, Central &amp; West) 
+                    are shown in the diagram below. These sectors are able to be split further during high traffic situations.
                     </p>
 
                     <img class="img-responsive center-block" src="/images/egttsectors-lon.png">
@@ -646,8 +647,9 @@
                 <div id="sectors-scottish" class="panel-collapse collapse panel-body">
                     
                     <p>
-                    The diagram below illustrates the most basic of splits for Scottish (SCO_CTR) airspace. SCO_CTR covers both areas in the absence of a split controller.
-                    Other splits are more common during events - the top-down table above reflects these splits - do ask a controller if you are unsure.
+                    The diagram below illustrates the most basic of splits for Scottish (SCO_CTR) airspace. SCO_CTR covers both 
+                    areas in the absence of a split controller. Other splits are more common during events - the top-down table 
+                    above reflects these splits - do ask a controller if you are unsure.
                     </p>
 
                     <img class="img-responsive center-block" src="/images/egpxsectors.png">
