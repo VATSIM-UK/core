@@ -95,205 +95,228 @@
                         <tbody class="text-center">
                             
                             <tr>
-                            <td colspan="8">
-                            <p><strong>London (EGTT) FIR</strong></p>
-                            </td>
+                                <td colspan="8">
+                                    <p>
+                                        <strong>London (EGTT) FIR</strong>
+                                    </p>
+                                </td>
                             </tr>
                             
                             <tr>
                                 <td class="vertical-center">
+                                    <p>
+                                        <strong>Airfields</strong>
+                                    </p>
+                                </td>
+                                
+                                <td class="vertical-center" colspan="7">
+                                    <p>
+                                        <i class="fa fa-arrow-left" aria-hidden="true"></i> <strong>Top-Down Priority (Left to Right)</strong>
+                                    </p>
+                                </td>
+                            </tr>   
+                            
+                            <tr>
+                                <td class="vertical-center">
                                 <p>
-                                    Manchester (EGCC)</ br>
-                                    Leeds (EGNM)</ br>
-                                    Doncaster (EGCN)</ br>
-                                    Humberside (EGNJ)</ br>
-                                    Newcastle (EGNT)</ br>
+                                    Manchester (EGCC)<br>
+                                    Leeds (EGNM)<br>
+                                    Doncaster (EGCN)<br>
+                                    Humberside (EGNJ)<br>
+                                    Newcastle (EGNT)<br>
                                     Teeside (EGNV)
                                 </p>
                                 </td>
                                 <td class="vertical-center">
                                 <p>
-                                    <strong>MAN_E_CTR</strong></ br>
+                                    <strong>MAN_E_CTR</strong><br>
                                     133.800
                                 </p>
                                 </td>
                                 <td class="vertical-center">
                                 <p>
-                                    <strong>MAN_CTR</strong></ br>
+                                    <strong>MAN_CTR</strong><br>
                                     118.775
                                 </p>
                                 </td>
                                 <td class="vertical-center">
                                 <p>
-                                    <strong>LON_N_CTR</strong></ br>
+                                    <strong>LON_N_CTR</strong><br>
                                     133.700
                                 </p>
                                 </td>
                                 <td class="vertical-center">
                                 <p>
-                                    <strong>LON_CTR</strong></ br>
+                                    <strong>LON_CTR</strong><br>
                                     127.825
                                 </p>
+                                </td>
+                                <td colspan="3">
                                 </td>
                             </tr>
                             
                             <tr>
                                 <td class="vertical-center">
                                     <p>
-                                        Liverpool (EGGP)</ br>
-                                        Hawarden (EGNR)</ br>
-                                        Isle of Man (EGNS)</ br>
+                                        Liverpool (EGGP)<br>
+                                        Hawarden (EGNR)<br>
+                                        Isle of Man (EGNS)<br>
                                         Blackpool (EGNH)
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>MAN_W_CTR</strong></ br>
+                                        <strong>MAN_W_CTR</strong><br>
                                         128.050
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>MAN_CTR</strong></ br>
+                                        <strong>MAN_CTR</strong><br>
                                         118.775
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_N_CTR</strong></ br>
+                                        <strong>LON_N_CTR</strong><br>
                                         133.700
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_CTR</strong></ br>
+                                        <strong>LON_CTR</strong><br>
                                         127.825
                                     </p>
+                                </td>
+                                <td colspan="3">
                                 </td>
                             </tr>
                             
                             <tr>
                                 <td class="vertical-center">
                                     <p>
-                                        East Midlands (EGNX)</ br>
-                                        Birmingham (EGBB)</ br>
+                                        East Midlands (EGNX)<br>
+                                        Birmingham (EGBB)<br>
                                         Coventry (EGBE)
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_C_CTR</strong></ br>
+                                        <strong>LON_C_CTR</strong><br>
                                         127.1100
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_SC_CTR</strong></ br>
+                                        <strong>LON_SC_CTR</strong><br>
                                         132.600
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_CTR</strong></ br>
+                                        <strong>LON_CTR</strong><br>
                                         127.825
                                     </p>
+                                </td>
+                                <td colspan="4">
                                 </td>
                             </tr>
                             
                             <tr>
                                 <td class="vertical-center">
                                     <p>
-                                        London/Stansted (EGSS)</ br>
+                                        London/Stansted (EGSS)<br>
                                         London/Luton (EGGW)
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LTC_NW_CTR</strong></ br>
+                                        <strong>LTC_NW_CTR</strong><br>
                                         121.275
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LTC_N_CTR</strong></ br>
+                                        <strong>LTC_N_CTR</strong><br>
                                         119.775
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LTC_CTR</strong></ br>
+                                        <strong>LTC_CTR</strong><br>
                                         135.800
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_C_CTR</strong></ br>
+                                        <strong>LON_C_CTR</strong><br>
                                         127.100
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_SC_CTR</strong></ br>
+                                        <strong>LON_SC_CTR</strong><br>
                                         132.600
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_CTR</strong></ br>
+                                        <strong>LON_CTR</strong><br>
                                         127.825
                                     </p>
                                 </td>
+                                <td> </td>
                             </tr>
                             
                             <tr>
                                 <td class="vertical-center">
                                     <p>
-                                    London/Heathrow (EGLL)</ br>
-                                    London/City (EGLC)</ br>
-                                    Southend (EGMC)</ br>
-                                    Biggin Hill (EGKB)</ br>
+                                    London/Heathrow (EGLL)<br>
+                                    London/City (EGLC)<br>
+                                    Southend (EGMC)<br>
+                                    Biggin Hill (EGKB)<br>
                                     Lydd (EGMD)
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LTC_SE_CTR</strong></ br>
+                                        <strong>LTC_SE_CTR</strong><br>
                                         120.525
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LTC_S_CTR</strong></ br>
+                                        <strong>LTC_S_CTR</strong><br>
                                         134.125
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LTC_CTR</strong></ br>
+                                        <strong>LTC_CTR</strong><br>
                                         135.800
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_D_CTR</strong></ br>
+                                        <strong>LON_D_CTR</strong><br>
                                         134.900
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_S_CTR</strong></ br>
+                                        <strong>LON_S_CTR</strong><br>
                                         129.425
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_SC_CTR</strong></ br>
+                                        <strong>LON_SC_CTR</strong><br>
                                         132.600
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_CTR</strong></ br>
+                                        <strong>LON_CTR</strong><br>
                                         127.825
                                     </p>
                                 </td>
@@ -302,97 +325,102 @@
                             <tr>
                                 <td class="vertical-center">
                                     <p>
-                                        London/Gatwick (EGKK)</ br>
+                                        London/Gatwick (EGKK)<br>
                                         Farnborough (EGLF)
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LTC_SW_CTR</strong></ br>
+                                        <strong>LTC_SW_CTR</strong><br>
                                         133.175
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LTC_S_CTR</strong></ br>
+                                        <strong>LTC_S_CTR</strong><br>
                                         134.125
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LTC_CTR</strong></ br>
+                                        <strong>LTC_CTR</strong><br>
                                         135.800
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_S_CTR</strong></ br>
+                                        <strong>LON_S_CTR</strong><br>
                                         129.425
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_SC_CTR</strong></ br>
+                                        <strong>LON_SC_CTR</strong><br>
                                         132.600
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_CTR</strong></ br>
+                                        <strong>LON_CTR</strong><br>
                                         127.825
                                     </p>
                                 </td>
+                                <td> </td>
                             </tr>
                             
                             <tr>
                                 <td class="vertical-center">
                                     <p>
-                                        Southampton (EGHI)</ br>
+                                        Southampton (EGHI)<br>
                                         Bournemouth (EGHH)
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_S_CTR</strong></ br>
+                                        <strong>LON_S_CTR</strong><br>
                                         129.425
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_SC_CTR</strong></ br>
+                                        <strong>LON_SC_CTR</strong><br>
                                         132.600
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_CTR</strong></ br>
+                                        <strong>LON_CTR</strong><br>
                                         127.825
                                     </p>
+                                </td>
+                                <td colspan="4">
                                 </td>
                             </tr>
                             
                             <tr>
                                 <td class="vertical-center">
                                     <p>
-                                        Bristol (EGGD)</ br>
-                                        Cardiff (EGFF)</ br>
-                                        Exeter (EGTE)</ br>
-                                        Gloucester (EGBJ)</ br>
-                                        Newquay (EGHQ)</ br>
+                                        Bristol (EGGD)<br>
+                                        Cardiff (EGFF)<br>
+                                        Exeter (EGTE)<br>
+                                        Gloucester (EGBJ)<br>
+                                        Newquay (EGHQ)<br>
                                         Channel Islands (JJ/JB/JA)
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_W_CTR</strong></ br>
+                                        <strong>LON_W_CTR</strong><br>
                                         126.075
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>LON_CTR</strong></ br>
+                                        <strong>LON_CTR</strong><br>
                                         127.825
                                     </p>
+                                </td>
+                                <td colspan="5">
                                 </td>
                             </tr>
                             
@@ -406,46 +434,62 @@
                         <tbody class="text-center">
                             
                             <tr>
-                            <td colspan="8">
-                            <p><strong>Scottish (EGTT) FIR</strong></p>
-                            </td>
+                                <td colspan="8">
+                                    <p>
+                                        <strong>Scottish (EGTT) FIR</strong>
+                                    </p>
+                                </td>
                             </tr>
                             
                             <tr>
                                 <td class="vertical-center">
                                     <p>
-                                        Edinburgh (EGPH)</ br>
-                                        Glasgow (EGPF)</ br>
+                                        <strong>Airfields</strong>
+                                    </p>
+                                </td>
+                                
+                                <td class="vertical-center" colspan="5">
+                                    <p>
+                                        <i class="fa fa-arrow-left" aria-hidden="true"></i> <strong>Top-Down Priority (Left to Right)</strong>
+                                    </p>
+                                </td>
+                            </tr>   
+                            
+                            <tr>
+                                <td class="vertical-center">
+                                    <p>
+                                        Edinburgh (EGPH)<br>
+                                        Glasgow (EGPF)<br>
                                         Prestwick (EGPK)
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>STC_CTR</strong></ br>
+                                        <strong>STC_CTR</strong><br>
                                         126.300
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>SCO_D_CTR</strong></ br>
+                                        <strong>SCO_D_CTR</strong><br>
                                         135.850
                                     </p>
                                 </td>
                                 <td class="vertical-center"
                                     <p>
-                                        <strong>SCO_WD_CTR</strong></ br>
+                                        <strong>SCO_WD_CTR</strong><br>
                                         133.200
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>SCO_S_CTR</strong></ br>
+                                        <strong>SCO_S_CTR</strong><br>
                                         134.775
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>SCO_CTR</strong></ br>
+                                        <strong>SCO_CTR</strong><br>
                                         135.525
                                     </p>
                                 </td>
@@ -454,37 +498,37 @@
                             <tr>
                                 <td class="vertical-center">
                                     <p>
-                                        Belfast/Aldergrove (EGAA)</ br>
+                                        Belfast/Aldergrove (EGAA)<br>
                                         Belfast/City (EGAC)
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>STC_A_CTR</strong></ br>
+                                        <strong>STC_A_CTR</strong><br>
                                         123.775
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>SCO_R_CTR</strong></ br>
+                                        <strong>SCO_R_CTR</strong><br>
                                         129.100
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>SCO_W_CTR</strong></ br>
+                                        <strong>SCO_W_CTR</strong><br>
                                         132.725
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>SCO_WD_CTR</strong></ br>
+                                        <strong>SCO_WD_CTR</strong><br>
                                         133.200
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>SCO_CTR</strong></ br>
+                                        <strong>SCO_CTR</strong><br>
                                         135.525
                                     </p>
                                 </td>
@@ -493,27 +537,29 @@
                             <tr>
                                 <td class="vertical-center">
                                     <p>
-                                        Aberdeen/Dyce (EGPD)</ br>
+                                        Aberdeen/Dyce (EGPD)<br>
                                         Inverness (EGPE)
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>SCO_S_CTR</strong></ br>
+                                        <strong>SCO_S_CTR</strong><br>
                                         134.775
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>SCO_E_CTR</strong></ br>
+                                        <strong>SCO_E_CTR</strong><br>
                                         121.325
                                     </p>
                                 </td>
                                 <td class="vertical-center">
                                     <p>
-                                        <strong>SCO_CTR</strong></ br>
+                                        <strong>SCO_CTR</strong><br>
                                         135.525
                                     </p>
+                                </td>
+                                <td colspan="2">
                                 </td>
                             </tr>
                             
