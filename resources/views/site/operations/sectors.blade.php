@@ -32,10 +32,10 @@
 
                     <p>
                         The Manchester TMA sectors (MAN) are splits of the London North sector, however are referred to
-                        as &quot;Scottish Control&quot; when open. This is because they are controlled from the Area Control
-                        Centre in Prestwick, Scotland, in real life. When only the parent sector, London North (LON_N), is
-                        online, they are still referred to as &quot;London Control&quot; regardless of which part of the
-                        sector you are in.
+                        as &quot;Scottish Control&quot; when open. This is because in real life, they are controlled from 
+                        the Area Control Centre in Prestwick, Scotland. On VATSIM, when only the parent sector, London 
+                        North (LON_N), is online, they are still referred to as &quot;London Control&quot; regardless of 
+                        which part of the sector you are in.
                     </p>
                 </div>
             </div>
