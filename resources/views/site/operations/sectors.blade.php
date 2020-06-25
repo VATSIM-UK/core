@@ -49,7 +49,7 @@
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-top-down">
                     <div class="panel-heading">
-                        <i class="fa fa-road"></i> &thinsp; Airfield Top-Down <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                        <i class="fa fa-road" aria-hidden="true" /> &thinsp; Airfield Top-Down <i class="pull-right glyphicon glyphicon-menu-down" aria-hidden="true" />
                     </div>
                 </a>
                 <div id="sectors-top-down" class="panel-collapse collapse panel-body">
