@@ -19,7 +19,9 @@
                         mentoring, no matter how small. Mentoring is, however, a privilege and not a right.
                     </p>
 
-                    <h2>Prerequisites For Mentoring</h2>
+                    <h2>
+                        Prerequisites For Mentoring
+                    </h2>
                     
                     <p>
                         There are two prerequisites for ATC mentors in the UK:
@@ -45,7 +47,9 @@
                         working towards their S2 rating.
                     </p>
 
-                    <h2>Mentor Training</h2>
+                    <h2>
+                        Mentor Training
+                    </h2>
                     
                     <p>
                         Your first mentoring session(s) at a particular level will be conducted in collaboration with a
@@ -57,21 +61,27 @@
                         that they are comfortable with any changes that have happened in the meantime.
                     </p>
 
-                    <h2>Mentoring Positions</h2>
+                    <h2>
+                        Mentoring Positions
+                    </h2>
                     
                     <p>
                         At present, members may mentor across the primary rating Training Groups (TGTWR and TGAPP), and
                         for the remaining Training Groups (TGLL, TGNC, TGE). Mentors should enquire for each separately.
                     </p>
 
-                    <h2>Expectations</h2>
+                    <h2>
+                        Expectations
+                    </h2>
                     
                     <p>
                         By becoming a mentor, you agree to the following terms, which are in place to ensure efficient
                         training and fair treatment to students.
                     </p>
 
-                    <h3>Preferential Mentoring</h3>
+                    <h3>
+                        Preferential Mentoring
+                    </h3>
                     
                     <p>
                         There is to be no preferential mentoring in VATSIM UK. Mentoring sessions should be accepted in the
@@ -82,7 +92,9 @@
                         immediately.
                     </p>
 
-                    <h3>Mentoring Reports</h3>
+                    <h3>
+                        Mentoring Reports
+                    </h3>
                     
                     <p>
                         All mentoring sessions in VATSIM UK are completed along with a session report in the Central
@@ -127,26 +139,34 @@
                         </li>
                     </ul>
 
-                    <h2>Practical Considerations</h2>
+                    <h2>
+                        Practical Considerations
+                    </h2>
                     
                     <p>
                         There are a few practical considerations with regards to mentoring.
                     </p>
 
-                    <h3>Callsigns</h3>
+                    <h3>
+                        Callsigns
+                    </h3>
                     
                     <p>
                         Information regarding mentoring callsigns may be found in VATSIM UK's Division Policy, which is
                         available on the website Downloads section.
                     </p>
 
-                    <h3>Advertising Sessions and Traffic Requests</h3>
+                    <h3>
+                        Advertising Sessions and Traffic Requests
+                    </h3>
                     
                     <p>
                         Advertisements for mentoring sessions and specific requests may be made in this <a href="https://community.vatsim.uk/topic/22218-traffic-requests-here/">forum thread</a>.
                     </p>
 
-                    <h3>Use Of Sweatbox</h3>
+                    <h3>
+                        Use Of Sweatbox
+                    </h3>
                     
                     <p>
                         VATSIM provides the Sweatbox server - a simulation environment that allows mentors to generate
@@ -158,7 +178,9 @@
                         on the live network.
                     </p>
 
-                    <h3>Session Structure</h3>
+                    <h3>
+                        Session Structure
+                    </h3>
                     
                     <p>
                         There is no clear answer regarding how to structure a session, it depends on many factors. However,
@@ -169,7 +191,9 @@
                         element during the gaps in traffic, to keep the student engaged.
                     </p>
 
-                    <h3>When To Interrupt</h3>
+                    <h3>
+                        When To Interrupt
+                    </h3>
                     
                     <p>
                         An important consideration when mentoring is when to interupt the student mid-flow to correct them
@@ -184,7 +208,9 @@
                         are confident in what they are doing and can explain why everything is as it should be.
                     </p>
 
-                    <h2>Solo Validations</h2>
+                    <h2>
+                        Solo Validations
+                    </h2>
                     
                     <p>
                         When a student is nearing an exam, they may be eligible for a solo validation on their exam
@@ -197,7 +223,9 @@
                         discretion of the Training Group staff.
                     </p>
 
-                    <h2>Staff Drop Ins</h2>
+                    <h2>
+                        Staff Drop Ins
+                    </h2>
                     
                     <p>
                         From time to time, an instructor may sit in on a mentoring session or review mentoring reports and
@@ -206,7 +234,9 @@
                         far as practical.
                     </p>
 
-                    <h2>Get Started</h2>
+                    <h2>
+                        Get Started
+                    </h2>
                     
                     <p>
                         If you are interested in mentoring in VATSIM UK, please open a ticket in the 
