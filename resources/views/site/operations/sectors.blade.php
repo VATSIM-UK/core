@@ -6,7 +6,8 @@
 
         <div class="col-md-12">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; UK Area Sectors
+                <div class="panel-heading">
+                    <i class="fa fa-map-marker" aria-hidden="true" /> &thinsp; UK Area Sectors
                 </div>
                 <div class="panel-body">
                     <p>
@@ -49,7 +50,8 @@
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-top-down">
                     <div class="panel-heading">
-                        <i class="fa fa-road" aria-hidden="true" /> &thinsp; Airfield Top-Down <i class="pull-right glyphicon glyphicon-menu-down" aria-hidden="true" />
+                        <i class="fa fa-road" aria-hidden="true" /> &thinsp; Airfield Top-Down 
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true" />
                     </div>
                 </a>
                 <div id="sectors-top-down" class="panel-collapse collapse panel-body">
@@ -406,7 +408,8 @@
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-london">
                     <div class="panel-heading">
-                        <i class="glyphicon glyphicon-plane"></i> &thinsp; London (EGTT) FIR <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                        <i class="fa fa-map-o" aria-hidden="true" /> &thinsp; London (EGTT) FIR 
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true" />
                     </div>
                 </a>
                 <div id="sectors-london" class="panel-collapse collapse panel-body">
@@ -641,7 +644,8 @@
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-scottish">
                     <div class="panel-heading">
-                        <i class="glyphicon glyphicon-plane"></i> &thinsp; Scottish (EGPX) FIR <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                        <i class="fa fa-map-o" aria-hidden="true" /> &thinsp; Scottish (EGPX) FIR
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true" />
                     </div>
                 </a>
                 <div id="sectors-scottish" class="panel-collapse collapse panel-body">
@@ -666,7 +670,8 @@
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-controller-info">
                     <div class="panel-heading">
-                        <i class="glyphicon glyphicon-plane"></i> &thinsp; Information for Controllers <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                        <i class="fa fa-info-circle" aria-hidden="true" /> &thinsp; Information for Controllers 
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true" />
                     </div>
                 </a>
                 <div id="sectors-controller-info" class="panel-collapse collapse panel-body">
