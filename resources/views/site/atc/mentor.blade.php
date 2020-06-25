@@ -116,24 +116,24 @@
 
                     <ul>
                         <li> 
-                            <b>Not Covered</b> - The student has not covered the competency.
+                            <strong>Not Covered</strong> - The student has not covered the competency.
                         </li>
                         <li> 
-                            <b>Covered</b> - Key facts and concepts can be recalled, with some understanding shown. If the 
+                            <strong>Covered</strong> - Key facts and concepts can be recalled, with some understanding shown. If the 
                             student has demonstrated practical application, it will be with significant mentor input.
                         </li>
                         <li> 
-                            <b>Developing</b> - Knowledge is satisfactorily applied to practical situations with some mentor 
+                            <strong>Developing</strong> - Knowledge is satisfactorily applied to practical situations with some mentor 
                             input. A strong understanding is shown, either explicitly (e.g. answering questions) or 
                             implicitly (e.g. in practical decision-making).
                         </li>
                         <li> 
-                            <b>Good</b> - Routine situations are handled with little mentor input; more uncommon situations 
+                            <strong>Good</strong> - Routine situations are handled with little mentor input; more uncommon situations 
                             are handled with some mentor input. Understanding of multiple competencies is integrated, either 
                             explicitly (e.g. answering questions) or implicitly (e.g. in practical decision-making).
                         </li>
                         <li> 
-                            <b>Test Standard</b> - Most situations are handled with minimal mentor input. Appropriate 
+                            <strong>Test Standard</strong> - Most situations are handled with minimal mentor input. Appropriate 
                             consideration is given to the long-term effects of actions. The student can justify decisions, 
                             explaining where appropriate why they chose to take it rather than an alternative.
                         </li>
