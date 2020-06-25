@@ -217,10 +217,9 @@
                         position, in order to practice without mentor supervision. The minimum requirement for being awarded
                         a solo validation is that the student must have achieved "Satisfactory" in all criteria on the
                         mentoring report. If you feel that the student is ready for a solo validation, please open a ticket
-                        with ATC Training in the <a href="https://helpdesk.vatsim.uk/" target="_blank">Helpdesk</a> 
-                        (Link opens in a new tab). Ultimately, whilst these requests are usually honoured, there may be one 
-                        or two instances where the request for a solo validation is declined, which is entirely at the 
-                        discretion of the Training Group staff.
+                        with ATC Training in the <a href="https://helpdesk.vatsim.uk/">Helpdesk</a>. Ultimately, whilst these 
+                        requests are usually honoured, there may be one or two instances where the request for a solo 
+                        validation is declined, which is entirely at the discretion of the Training Group staff.
                     </p>
 
                     <h2>
@@ -240,8 +239,8 @@
                     
                     <p>
                         If you are interested in mentoring in VATSIM UK, please open a ticket in the 
-                        <a href="https://helpdesk.vatsim.uk/" target="_blank">Helpdesk</a> (Link opens in a new tab), stating 
-                        which Training Group(s) you would be interested in mentoring in.
+                        <a href="https://helpdesk.vatsim.uk/">Helpdesk</a>, stating which Training Group(s) you would be 
+                        interested in mentoring in.
                     </p>
                     
                 </div>
