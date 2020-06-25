@@ -4,12 +4,17 @@
 
     <div class="row equal">
 
-        <div class="col-md-12">
+        <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
                 <div class="panel-heading">
-                    <i class="fa fa-map-marker" aria-hidden="true" /> &thinsp; UK Area Sectors
+                    <i class="fa fa-map-marker" aria-hidden="true"></i> &thinsp; UK Area Sectors
                 </div>
                 <div class="panel-body">
+                    
+                    <h3>
+                        Introduction
+                    </h3>
+                    
                     <p>
                         The London (EGTT) and Scottish (EGPX) Flight Information Regions (FIRs) cover the enroute
                         airspace of the United Kingdom and coverage for underlying approach or aerodrome positions 
@@ -38,6 +43,7 @@
                         North (LON_N), is online, they are still referred to as &quot;London Control&quot; regardless of 
                         which part of the sector you are in.
                     </p>
+                    
                 </div>
             </div>
         </div>
@@ -46,12 +52,12 @@
 
     <div class="row equal">
 
-        <div class="col-md-12">
+        <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-top-down">
                     <div class="panel-heading">
-                        <i class="fa fa-road" aria-hidden="true" /> &thinsp; Airfield Top-Down 
-                        <i class="pull-right fa fa-arrow-down" aria-hidden="true" />
+                        <i class="fa fa-road" aria-hidden="true"></i> &thinsp; Airfield Top-Down 
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
                 <div id="sectors-top-down" class="panel-collapse collapse panel-body">
@@ -404,12 +410,12 @@
     
     <div class="row equal">
 
-        <div class="col-md-12">
+        <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-london">
                     <div class="panel-heading">
-                        <i class="fa fa-map-o" aria-hidden="true" /> &thinsp; London (EGTT) FIR 
-                        <i class="pull-right fa fa-arrow-down" aria-hidden="true" />
+                        <i class="fa fa-map-o" aria-hidden="true"></i> &thinsp; London (EGTT) FIR 
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
                 <div id="sectors-london" class="panel-collapse collapse panel-body">
@@ -640,12 +646,12 @@
     
     <div class="row equal">
 
-        <div class="col-md-12">
+        <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-scottish">
                     <div class="panel-heading">
-                        <i class="fa fa-map-o" aria-hidden="true" /> &thinsp; Scottish (EGPX) FIR
-                        <i class="pull-right fa fa-arrow-down" aria-hidden="true" />
+                        <i class="fa fa-map-o" aria-hidden="true"></i> &thinsp; Scottish (EGPX) FIR
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
                 <div id="sectors-scottish" class="panel-collapse collapse panel-body">
@@ -666,12 +672,12 @@
     
     <div class="row equal">
 
-        <div class="col-md-12">
+        <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-controller-info">
                     <div class="panel-heading">
-                        <i class="fa fa-info-circle" aria-hidden="true" /> &thinsp; Information for Controllers 
-                        <i class="pull-right fa fa-arrow-down" aria-hidden="true" />
+                        <i class="fa fa-info-circle" aria-hidden="true"></i> &thinsp; Information for Controllers 
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
                 <div id="sectors-controller-info" class="panel-collapse collapse panel-body">
