@@ -18,7 +18,7 @@
                 <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Pilot Training
                 </div>
                 <div class="panel-body">
-                    <p>Welcome to the VATSIM UK’s Pilot Training Department.</p>
+                    <p>Welcome to VATSIM UK’s Pilot Training Department.</p>
 
                     <p>Who said learning can’t be fun! Here at the Pilot Training Department in VATSIM UK we believe
                         that the key to enjoying the network to its full potential is Pilot Training. Pilot Training
