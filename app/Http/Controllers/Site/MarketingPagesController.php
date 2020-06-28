@@ -26,4 +26,12 @@ class MarketingPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.marketing.live-streaming');
     }
+
+    public function viewPartners()
+    {
+        $this->setTitle('Partners');
+        $this->addBreadcrumb('Partners', route('site.marketing.partners'));
+
+        return $this->viewMake('site.marketing.partners');
+    }
 }

@@ -128,6 +128,7 @@
                             <ul>
                                 <li>{!! link_to_route("site.marketing.live-streaming", "Live Streaming") !!}</li>
                                 <li>{!! link_to_route("site.marketing.branding", "Branding Guidelines") !!}</li>
+                                <li>{!! link_to_route("site.marketing.partners", "Partners") !!}</li>
                             </ul>
                         </li>
                     </ul>

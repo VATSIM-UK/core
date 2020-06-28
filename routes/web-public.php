@@ -55,5 +55,6 @@ Route::group([
     ], function () {
         Route::get('/live-streaming')->uses('MarketingPagesController@viewLiveStreaming')->name('live-streaming');
         Route::get('/branding')->uses('MarketingPagesController@viewBranding')->name('branding');
+        Route::get('/partners')->uses('MarketingPagesController@viewPartners')->name('partners');
     });
 });
