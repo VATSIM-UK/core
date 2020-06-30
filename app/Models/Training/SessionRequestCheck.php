@@ -4,8 +4,8 @@ namespace App\Models\Training;
 
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SessionRequestCheck extends Model
 {
@@ -18,7 +18,7 @@ class SessionRequestCheck extends Model
     const SECOND_WARNING_SENT = 2;
     const TD_NOTIFICATION_SENT = 3;
 
-   public function account(): BelongsTo
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
     }

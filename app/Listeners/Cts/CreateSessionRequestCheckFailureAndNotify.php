@@ -2,10 +2,8 @@
 
 namespace App\Listeners\Cts;
 
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Models\Training\SessionRequestCheck;
 use App\Events\Cts\StudentFailedSessionRequestCheck;
+use App\Models\Training\SessionRequestCheck;
 use App\Notifications\Training\FirstSessionCheckWarning;
 use App\Notifications\Training\SecondSessionCheckWarning;
 

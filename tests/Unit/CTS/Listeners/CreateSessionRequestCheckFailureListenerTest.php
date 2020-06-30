@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Cts\Listeners;
 
-use Tests\TestCase;
+use App\Events\Cts\StudentFailedSessionRequestCheck;
+use App\Listeners\Cts\CreateSessionRequestCheckFailureAndNotify;
 use App\Models\Mship\Account;
 use App\Models\Training\SessionRequestCheck;
-use Illuminate\Support\Facades\Notification;
-use App\Events\Cts\StudentFailedSessionRequestCheck;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Notifications\Training\FirstSessionCheckWarning;
-use App\Listeners\Cts\CreateSessionRequestCheckFailureAndNotify;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class CreateSessionRequestCheckFailureListenerTest extends TestCase
 {
