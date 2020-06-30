@@ -205,6 +205,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
     protected $casts = ['inactive' => 'boolean'];
+    protected $connection = 'mysql';
 
     protected static function boot()
     {

@@ -18,6 +18,9 @@ class TrainingEventServiceProvider extends ServiceProvider
         \App\Events\Training\AccountNoteChanged::class => [
             \App\Listeners\Training\WaitingList\LogNoteChanged::class,
         ],
+        \App\Events\Cts\StudentFailedSessionRequestCheck::class => [
+            \App\Listeners\Cts\SendSessionRequestCheckFailureNotification::class
+        ]
     ];
 
     /**
