@@ -102,7 +102,6 @@ class CreateSessionRequestCheckFailureListenerTest extends TestCase
         $this->assertEquals(3, $check->fresh()->stage);
     }
 
-
     private function mockStudentFailedSessionRequestEvent(Account $account, int $rtsId)
     {
         $event = \Mockery::mock(StudentFailedSessionRequestCheck::class);
