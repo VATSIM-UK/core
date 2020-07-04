@@ -2,14 +2,17 @@
 
 namespace Tests\Unit\Cts\Listeners;
 
-use Tests\TestCase;
+use App\Events\Cts\StudentFailedSessionRequestCheck;
+use App\Listeners\Cts\CreateSessionRequestCheckFailureAndNotify;
 use App\Models\Mship\Account;
 use App\Models\Training\SessionRequestCheck;
-use Illuminate\Support\Facades\Notification;
-use App\Events\Cts\StudentFailedSessionRequestCheck;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Notifications\Training\FirstSessionCheckWarning;
-use App\Listeners\Cts\CreateSessionRequestCheckFailureAndNotify;
+use App\Notifications\Training\SecondSessionCheckWarning;
+use App\Notifications\Training\TrainingDepartmentSessionCheckFailure;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class CreateSessionRequestCheckFailureListenerTest extends TestCase
 {
@@ -48,8 +51,7 @@ class CreateSessionRequestCheckFailureListenerTest extends TestCase
         $inactiveCheck = factory(SessionRequestCheck::class)->create(['deleted_at' => now()]);
 
         $event = $this->mockStudentFailedSessionRequestEvent($inactiveCheck->account, $inactiveCheck->rts_id);
-        $listener = new CreateSessionRequestCheckFailureAndNotify();
-        $listener->handle($event);
+        $this->createAndHandleListener($event);
 
         $this->assertCount(1, SessionRequestCheck::all());
     }
@@ -62,12 +64,44 @@ class CreateSessionRequestCheckFailureListenerTest extends TestCase
         $check = factory(SessionRequestCheck::class)->create(['stage' => 0]);
 
         $event = $this->mockStudentFailedSessionRequestEvent($check->account, $check->rts_id);
-        $listener = new CreateSessionRequestCheckFailureAndNotify();
-        $listener->handle($event);
+        $this->createAndHandleListener($event);
 
         Notification::assertSentTo($check->account, FirstSessionCheckWarning::class);
         $this->assertEquals(1, $check->fresh()->stage);
     }
+
+    /** @test */
+    public function itShouldDispatchSecondNotificationWhenTheStageIsOneAndIncrement()
+    {
+        Notification::fake();
+
+        $check = factory(SessionRequestCheck::class)->create(['stage' => 1]);
+
+        $event = $this->mockStudentFailedSessionRequestEvent($check->account, $check->rts_id);
+        $this->createAndHandleListener($event);
+
+        Notification::assertSentTo($check->account, SecondSessionCheckWarning::class);
+        $this->assertEquals(2, $check->fresh()->stage);
+    }
+
+    /** @test */
+    public function itShouldDispatchFinalNotification()
+    {
+        Notification::fake();
+
+        $trainingDepartment = 'atc-training@vatsim.uk';
+
+        $check = factory(SessionRequestCheck::class)->create(['stage' => 2]);
+
+        $event = $this->mockStudentFailedSessionRequestEvent($check->account, $check->rts_id);
+        $this->createAndHandleListener($event);
+
+        Notification::assertSentTo(new AnonymousNotifiable, TrainingDepartmentSessionCheckFailure::class, function ($notification, $channels, $notifiable) use ($trainingDepartment) {
+            return $notifiable->routes['mail'] === $trainingDepartment;
+        });
+        $this->assertEquals(3, $check->fresh()->stage);
+    }
+
 
     private function mockStudentFailedSessionRequestEvent(Account $account, int $rtsId)
     {
@@ -76,5 +110,11 @@ class CreateSessionRequestCheckFailureListenerTest extends TestCase
         $event->rtsId = $rtsId;
 
         return $event;
+    }
+
+    private function createAndHandleListener(StudentFailedSessionRequestCheck $event)
+    {
+        $listener = new CreateSessionRequestCheckFailureAndNotify();
+        $listener->handle($event);
     }
 }

@@ -6,9 +6,8 @@ use App\Models\Mship\Account;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Spatie\EventSourcing\ShouldBeStored;
 
-class StudentFailedSessionRequestCheck implements ShouldBeStored
+class StudentFailedSessionRequestCheck
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

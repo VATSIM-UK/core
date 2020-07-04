@@ -12,4 +12,9 @@ class Member extends Model
 
     public $timestamps = false;
     public $incrementing = false;
+
+    public static function findByCID(int $cid): Member
+    {
+        return self::where(compact('cid'))->first();
+    }
 }

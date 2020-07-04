@@ -2,12 +2,12 @@
 
 namespace App\Listeners\Cts;
 
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Models\Training\SessionRequestCheck;
 use App\Events\Cts\StudentFailedSessionRequestCheck;
+use App\Models\Training\SessionRequestCheck;
 use App\Notifications\Training\FirstSessionCheckWarning;
 use App\Notifications\Training\SecondSessionCheckWarning;
+use App\Notifications\Training\TrainingDepartmentSessionCheckFailure;
+use Illuminate\Support\Facades\Notification;
 
 class CreateSessionRequestCheckFailureAndNotify
 {
@@ -42,8 +42,8 @@ class CreateSessionRequestCheckFailureAndNotify
                 break;
             case SessionRequestCheck::SECOND_WARNING_SENT:
                 // send notification to TD via helpdesk
-                // incrementStage to 3
-                // soft delete
+                Notification::route('mail', 'atc-training@vatsim.uk')->notify(new TrainingDepartmentSessionCheckFailure);
+                $check->incrementStage();
                 break;
         }
     }
