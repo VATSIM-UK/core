@@ -54,7 +54,5 @@ class CheckStudentHasSessionRequestTest extends TestCase
     /** @test */
     public function itPerformsACheckForEachActiveMemberInAnRts()
     {
-
     }
-
 }

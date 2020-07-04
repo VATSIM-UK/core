@@ -7,8 +7,8 @@ use Faker\Generator as Faker;
 
 $factory->define(SessionRequestCheck::class, function (Faker $faker) {
     return [
-       'rts_id' => 1,
-       'account_id' => factory(\App\Models\Mship\Account::class),
-       'stage' => 0,
+        'rts_id' => 1,
+        'account_id' => factory(\App\Models\Mship\Account::class),
+        'stage' => 0,
     ];
 });
