@@ -16,12 +16,19 @@
                     </h3>
                     
                     <p>
-                        The London (EGTT) and Scottish (EGPX) Flight Information Regions (FIRs) cover the enroute
-                        airspace of the United Kingdom and coverage for underlying approach or aerodrome positions 
-                        that are not online (&quot;top-down&quot;). 
-                        
-                        Our airspace is split into sectors that may seem daunting at first, but are easier to 
-                        understand if you take a few minutes to digest the information below.
+                        This page is to help pilots flying in UK airspace determine when they should contact one of our Area (CTR) sectors. We have tried to keep this as simple as possible, splitting the information into distinct sections depending on your type of flight. 
+                    </p>
+                    
+                    <p>   
+                        If you are ever unsure, please PM one of our controllers saying that you have read the website but are unsure whether you need to contact them. They will gladly advise!
+                    </p>
+                    
+                    <p>
+                        <strong>Do not call</strong> EGTT_I_CTR or EGPX_I_CTR as civilian ‘airliner’ traffic – these positions are for Flight Information Services outside of controlled airspace only.
+                    </p>
+                    
+                    <p>
+                        <strong>Do not call</strong> EGVV_CTR or EGQQ_CTR as a civilian ‘airliner’ – these positions are primarily for Military operations. UK FIS may be available on request/as coordinated with civilian area controllers (normally only above FL100). 
                     </p>
                     
                     <h3>
@@ -29,20 +36,13 @@
                     </h3>
 
                     <p>
-                        All area control sectors within the UK are called either &quot;London Control&quot; or 
-                        &quot;Scottish Control&quot; over the radio. London Area (LON) and London Terminal (LTC) 
-                        Control are referred to as &quot;London Control&quot;, regardless of which sector you are 
-                        speaking to. Equally, Scottish Area (SCO) and Scottish Terminal (STC) Control are referred 
-                        to as &quot;Scottish Control&quot; regardless of sector.
+                        The two main radio callsigns for Area controllers in the UK are:
                     </p>
 
-                    <p>
-                        The Manchester TMA sectors (MAN) are splits of the London North sector, however are referred to
-                        as &quot;Scottish Control&quot; when open. This is because in real life, they are controlled from 
-                        the Area Control Centre in Prestwick, Scotland. On VATSIM, when only the parent sector, London 
-                        North (LON_N), is online, they are still referred to as &quot;London Control&quot; regardless of 
-                        which part of the sector you are in.
-                    </p>
+                    <ol>
+                        <li>&quot;London Control&quot; - all LON and LTC sectors</li>
+                        <li>&quot;Scottish Control&quot; - all SCO, STC and MAN sectors</li>
+                    </ol>
                     
                 </div>
             </div>
@@ -54,518 +54,116 @@
 
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
-                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-top-down">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-departing-ifr">
                     <div class="panel-heading">
-                        <i class="fa fa-road" aria-hidden="true"></i> &thinsp; Airfield Top-Down 
+                        <i class="fa fa-plane" aria-hidden="true"></i> &thinsp; I am <strong>departing IFR</strong> from a UK airfield... 
                         <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
-                <div id="sectors-top-down" class="panel-collapse collapse panel-body">
-                    <h3>What is top-down?</h3>
+                <div id="sectors-departing-ifr" class="panel-collapse collapse panel-body">
                     
                     <p>
-                    In the absence of local aerodrome or approach ATC, our area sectors provide top-down service at airfields 
-                    contained within the sector(s) they are controlling. You should request clearance, pushback, taxi etc. as 
-                    you would if there were an aerodrome controller online, but should note that the extent of the top-down
-                    service may be reduced by the controller if it is busy.
+                        Always contact <strong>local ATC</strong> (DEL/GND/TWR/APP) where it is online. There are a number of APP positions that cover more than one airfield top-down:
+                    </p>
+                    
+                    <ul>
+                        <li>
+                            <strong>EGAA_R_APP</strong> - Belfast/Aldergrove (EGAA) and Belfast/City (EGAC)
+                        </li>
+                        <li>
+                            <strong>EGGP_APP</strong> - Liverpool (EGGP) and Hawarden (EGNR)
+                        </li>
+                        <li>
+                            <strong>EGNT_APP</strong> - Newcastle (EGNT) and Teeside (EGNV)
+                        </li>
+                        <li>
+                            <strong>ESSEX_APP</strong> – London/Stansted (EGSS), London/Luton (EGGW) and Cambridge (EGSC)
+                        </li>
+                        <li>
+                            <strong>SOLENT_APP</strong> – Southampton (EGHI) and Bournemouth (EGHH)
+                        </li>
+                        <li>
+                            <strong>THAMES_APP</strong> – London/City (EGLC), Southend (EGMC) and Biggin Hill (EGKB)
+                        </li>
+                    </ul>
+                    
+                    <h3>
+                        What is top-down?
+                    </h3>
+                    
+                    <p>
+                        In the absence of local ATC, our area sectors provide a top-down service at airfields contained within the sector(s) they are controlling. You should request clearance, pushback, taxi etc. as you would if there were an aerodrome controller online.
                     </p>
                     
                     <h3>Are all airfields covered top-down?</h3>
                     
                     <p>
-                    At airfields outside of <a href="https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification.">
-                    controlled airspace</a> you may, if you wish, depart at your own discretion. However, if you intend to join 
-                    controlled airspace, it is generally advisable to request airways clearance from the controller prior to departure.
+                        At airfields <strong>outside</strong> of <a href="https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification." target="_blank">
+                        controlled airspace</a> you may, if you wish, depart at your own discretion. However, if you intend to join 
+                        controlled airspace, it is generally advisable to request airways clearance from the controller <strong>prior</strong> to departure.
                     </p>
                     
-                    <h3>How do I know who to call?</h3>
+                    <h3>
+                        How do I know who to call?
+                    </h3>
                     
                     <p>
-                    If there are no aerodrome or approach services at your departure aerodrome, use the information below to 
-                    determine which area sector to call. Contact the first controller listed (from left to right) that you can 
-                    see online. Sometimes, the callsign mauy differ slightly, so it's best to cross-check with the frequency too.
+                        In the absence of local ATC, contact the first controller listed below that you see online (the priority is from left to right). Sometimes, the callsign may differ slightly, so it is best to cross-check the frequency too.
                     </p>
                     
                     <p>
-                    If in doubt, don't be afraid to ask. Another good place to check is the controller information, where 
-                    information is usually displayed as to which areas the controller is covering.
+                        The location of these airports within our sectors are also marked on the diagrams in the next section.
+                    </p>
+                    
+                    <p style="margin-left: 40px">
+                        <strong>Manchester (EGCC), Leeds (EGNM), Doncaster (EGCN), Humberside (EGNJ), Newcastle (EGNT), Teeside (EGNV)</strong><br>
+                        MAN_E_CTR (133.800) &#8594; MAN_CTR (118.775) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>Liverpool (EGGP), Hawarden (EGNR), Isle of Man (EGNS), Blackpool (EGNH)</strong><br>
+                        MAN_W_CTR (128.050) &#8594; MAN_CTR (118.775) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>East Midlands (EGNX), Birmingham (EGBB), Coventry (EGBE)</strong><br>
+                        LON_C_CTR (127.100) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>London/Stansted (EGSS), London/Luton (EGGW), Cambridge (EGSC)</strong><br>
+                        LTC_NW_CTR (121.275) &#8594; LTC_N_CTR (119.775) &#8594; LTC_CTR (135.800) &#8594; LON_C_CTR (127.100) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>London/Heathrow (EGLL), London/City (EGLC), Southend (EGMC), Biggin Hill (EGKB), Lydd (EGMD)</strong><br>
+                        LTC_SE_CTR (120.525) &#8594; LTC_S_CTR (134.125) &#8594; LTC_CTR (135.800) &#8594; LON_S_CTR (129.425) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>London/Gatwick (EGKK), Farnborough (EGLF)</strong><br>
+                        LTC_SW_CTR (133.175) &#8594; LTC_S_CTR (134.125) &#8594; LTC_CTR (135.800) &#8594; LON_S_CTR (129.425) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>Southampton (EGHI), Bournemouth (EGHH)</strong><br>
+                        LON_S_CTR (129.425) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>Bristol (EGGD), Cardiff (EGFF), Exeter (EGTE), Gloucester (EGBJ), Newquay (EGHQ), Channel Islands (EGJJ/JB/JA)</strong><br>
+                        LON_W_CTR (126.075) &#8594; LON_CTR (127.825)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>Edinburgh (EGPH), Glasgow (EGPF), Prestwick (EGPK)</strong><br>
+                        STC_CTR (126.300) &#8594; SCO_D_CTR (135.850) &#8594; SCO_WD_CTR (133.200) &#8594; SCO_S_CTR (134.775) &#8594; SCO_CTR (135.525)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>Belfast/Aldergrove (EGAA), Belfast/City (EGAC)</strong><br>
+                        STC_A_CTR (123.775) &#8594; SCO_R_CTR (129.100) &#8594; SCO_W_CTR (132.725) &#8594; SCO_WD_CTR (133.200) &#8594; SCO_CTR (135.525)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>Aberdeen/Dyce (EGPD), Dundee (EGPN)</strong><br>
+                        SCO_S_CTR (134.775) &#8594; SCO_E_CTR (121.325) &#8594; SCO_CTR (135.525)
+                    </p>
+                    <p style="margin-left: 40px">
+                        <strong>Inverness (EGPE), Stornoway (EGPO), Kirkwall (EGPA), Sumburgh (EGPB), Wick (EGPC)</strong><br>
+                        SCO_N_CTR (129.225) &#8594; SCO_E_CTR (121.325) &#8594; SCO_CTR (135.525)
                     </p>
 
-                    <table class="table table-borders">
-                        <tbody class="text-center">
-                            
-                            <tr>
-                                <td colspan="8">
-                                    <p>
-                                        <strong>London (EGTT) FIR</strong>
-                                    </p>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>Airfields</strong>
-                                    </p>
-                                </td>
-                                
-                                <td class="vertical-center" colspan="7">
-                                    <p>
-                                        <i class="fa fa-arrow-left" aria-hidden="true"></i> <strong>Top-Down Priority (Left to Right)</strong>
-                                    </p>
-                                </td>
-                            </tr>   
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                <p>
-                                    Manchester (EGCC)<br>
-                                    Leeds (EGNM)<br>
-                                    Doncaster (EGCN)<br>
-                                    Humberside (EGNJ)<br>
-                                    Newcastle (EGNT)<br>
-                                    Teeside (EGNV)
-                                </p>
-                                </td>
-                                <td class="vertical-center">
-                                <p>
-                                    <strong>MAN_E_CTR</strong><br>
-                                    133.800
-                                </p>
-                                </td>
-                                <td class="vertical-center">
-                                <p>
-                                    <strong>MAN_CTR</strong><br>
-                                    118.775
-                                </p>
-                                </td>
-                                <td class="vertical-center">
-                                <p>
-                                    <strong>LON_N_CTR</strong><br>
-                                    133.700
-                                </p>
-                                </td>
-                                <td class="vertical-center">
-                                <p>
-                                    <strong>LON_CTR</strong><br>
-                                    127.825
-                                </p>
-                                </td>
-                                <td colspan="3">
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        Liverpool (EGGP)<br>
-                                        Hawarden (EGNR)<br>
-                                        Isle of Man (EGNS)<br>
-                                        Blackpool (EGNH)
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>MAN_W_CTR</strong><br>
-                                        128.050
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>MAN_CTR</strong><br>
-                                        118.775
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_N_CTR</strong><br>
-                                        133.700
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_CTR</strong><br>
-                                        127.825
-                                    </p>
-                                </td>
-                                <td colspan="3">
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        East Midlands (EGNX)<br>
-                                        Birmingham (EGBB)<br>
-                                        Coventry (EGBE)
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_C_CTR</strong><br>
-                                        127.1100
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_SC_CTR</strong><br>
-                                        132.600
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_CTR</strong><br>
-                                        127.825
-                                    </p>
-                                </td>
-                                <td colspan="4">
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        London/Stansted (EGSS)<br>
-                                        London/Luton (EGGW)
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LTC_NW_CTR</strong><br>
-                                        121.275
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LTC_N_CTR</strong><br>
-                                        119.775
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LTC_CTR</strong><br>
-                                        135.800
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_C_CTR</strong><br>
-                                        127.100
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_SC_CTR</strong><br>
-                                        132.600
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_CTR</strong><br>
-                                        127.825
-                                    </p>
-                                </td>
-                                <td> </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                    London/Heathrow (EGLL)<br>
-                                    London/City (EGLC)<br>
-                                    Southend (EGMC)<br>
-                                    Biggin Hill (EGKB)<br>
-                                    Lydd (EGMD)
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LTC_SE_CTR</strong><br>
-                                        120.525
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LTC_S_CTR</strong><br>
-                                        134.125
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LTC_CTR</strong><br>
-                                        135.800
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_D_CTR</strong><br>
-                                        134.900
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_S_CTR</strong><br>
-                                        129.425
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_SC_CTR</strong><br>
-                                        132.600
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_CTR</strong><br>
-                                        127.825
-                                    </p>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        London/Gatwick (EGKK)<br>
-                                        Farnborough (EGLF)
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LTC_SW_CTR</strong><br>
-                                        133.175
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LTC_S_CTR</strong><br>
-                                        134.125
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LTC_CTR</strong><br>
-                                        135.800
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_S_CTR</strong><br>
-                                        129.425
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_SC_CTR</strong><br>
-                                        132.600
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_CTR</strong><br>
-                                        127.825
-                                    </p>
-                                </td>
-                                <td> </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        Southampton (EGHI)<br>
-                                        Bournemouth (EGHH)
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_S_CTR</strong><br>
-                                        129.425
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_SC_CTR</strong><br>
-                                        132.600
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_CTR</strong><br>
-                                        127.825
-                                    </p>
-                                </td>
-                                <td colspan="4">
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        Bristol (EGGD)<br>
-                                        Cardiff (EGFF)<br>
-                                        Exeter (EGTE)<br>
-                                        Gloucester (EGBJ)<br>
-                                        Newquay (EGHQ)<br>
-                                        Channel Islands (JJ/JB/JA)
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_W_CTR</strong><br>
-                                        126.075
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>LON_CTR</strong><br>
-                                        127.825
-                                    </p>
-                                </td>
-                                <td colspan="5">
-                                </td>
-                            </tr>
-                            
-                        </tbody>
-                    </table>
-                    
-                    <p>
-                    </p>
-                            
-                    <table class="table table-borders">
-                        <tbody class="text-center">
-                            
-                            <tr>
-                                <td colspan="8">
-                                    <p>
-                                        <strong>Scottish (EGTT) FIR</strong>
-                                    </p>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>Airfields</strong>
-                                    </p>
-                                </td>
-                                
-                                <td class="vertical-center" colspan="5">
-                                    <p>
-                                        <i class="fa fa-arrow-left" aria-hidden="true"></i> <strong>Top-Down Priority (Left to Right)</strong>
-                                    </p>
-                                </td>
-                            </tr>   
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        Edinburgh (EGPH)<br>
-                                        Glasgow (EGPF)<br>
-                                        Prestwick (EGPK)
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>STC_CTR</strong><br>
-                                        126.300
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>SCO_D_CTR</strong><br>
-                                        135.850
-                                    </p>
-                                </td>
-                                <td class="vertical-center"
-                                    <p>
-                                        <strong>SCO_WD_CTR</strong><br>
-                                        133.200
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>SCO_S_CTR</strong><br>
-                                        134.775
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>SCO_CTR</strong><br>
-                                        135.525
-                                    </p>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        Belfast/Aldergrove (EGAA)<br>
-                                        Belfast/City (EGAC)
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>STC_A_CTR</strong><br>
-                                        123.775
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>SCO_R_CTR</strong><br>
-                                        129.100
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>SCO_W_CTR</strong><br>
-                                        132.725
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>SCO_WD_CTR</strong><br>
-                                        133.200
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>SCO_CTR</strong><br>
-                                        135.525
-                                    </p>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="vertical-center">
-                                    <p>
-                                        Aberdeen/Dyce (EGPD)<br>
-                                        Inverness (EGPE)
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>SCO_S_CTR</strong><br>
-                                        134.775
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>SCO_E_CTR</strong><br>
-                                        121.325
-                                    </p>
-                                </td>
-                                <td class="vertical-center">
-                                    <p>
-                                        <strong>SCO_CTR</strong><br>
-                                        135.525
-                                    </p>
-                                </td>
-                                <td colspan="2">
-                                </td>
-                            </tr>
-                            
-                            </tbody>
-                        </table>
-                    
                 </div>
             </div>
         </div>
@@ -576,231 +174,90 @@
 
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
-                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-london">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-arriving-transiting">
                     <div class="panel-heading">
-                        <i class="fa fa-map-o" aria-hidden="true"></i> &thinsp; London (EGTT) FIR 
+                        <i class="fa fa-map-o" aria-hidden="true"></i> &thinsp; I am <strong>arriving</strong> at a UK airfield… / I am <strong>transiting</strong> through UK airspace… 
                         <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
-                <div id="sectors-london" class="panel-collapse collapse panel-body">
+                <div id="sectors-arriving-transiting" class="panel-collapse collapse panel-body">
                     
                     <p>
-                    The London airspace is split into sectors that may seem daunting at first, but are easy to understand if you
-                    take a few minutes to digest the information below. The main London sectors (North, South, Central &amp; West) 
-                    are shown in the diagram below. These sectors are able to be split further during high traffic situations.
+                        Our controllers will always send you a contact me if you are entering their airspace. However, if you’d like to pre-empt their call, please use the diagrams below for an idea of where each sector covers.
+                    </p>
+                    
+                    <p>
+                        You are encouraged to look-up and plan for descent in accordance with your expected STAR. If you need to descend before you enter an online controller’s airspace, then please do.
+                    </p>
+                    
+                    <h3>
+                        London Main Sectors
+                    </h3>
+                    
+                    <p>
+                        The main London sectors (North, South, Central & West) are shown below. Sometimes these sectors are bandboxed using the LON_SC_CTR or LON_CTR callsigns.
                     </p>
 
                     <img class="img-responsive center-block" src="/images/egttsectors-lon.png">
                     
                     <p>
-                    The diagram below illustrates the London Terminal Control splits that you might see on a regular basis.
+                        e.g. If LON_CTR, LON_S_CTR and LON_W_CTR are online, then the...
+                    </p>
+                    
+                    <ul>
+                        <li>
+                            <span style="color:#990000; font-weight:bold">Red (North)</span> sector will be controlled by LON_CTR;
+                        </li>
+                        <li>
+                            <span style="color:#e69138; font-weight:bold">Yellow (Central)</span> sector by LON_CTR;
+                        </li>
+                        <li>
+                            <span style="color:#0b5394; font-weight:bold">Blue (South)</span> sector by LON_S_CTR; and
+                        </li>
+                        <li>
+                            <span style="color:#38761d; font-weight:bold">Green (West)</span> sector by LON_W_CTR.
+                        </li>
+                    </ul>
+                    
+                    <h3>
+                        London TMA Split Sectors
+                    </h3>
+                    
+                    <p>
+                        We regularly split off the airspace in the London TMA area with LTC sectors, which are shown in the diagram below. There are 4 main sectors (NE, NW, SE, SW) which can be ‘bandboxed’ together using the LTC_N_CTR, LTC_S_CTR or LTC_CTR callsigns.
+                    </p>
+                    
+                    <p>
+                        The top of these sectors is generally at FL155, up to a maximum of FL185.
+                    </p>
+                    
+                    <p>
+                        It is especially important to descend in accordance with the STAR when only these sectors are online.
                     </p>
 
                     <img class="img-responsive center-block" src="/images/egttsectors-ltc.png">
                     
                     <h3>
-                        Frequencies
+                        Scottish Main Sectors
                     </h3>
-
-                    <h4>
-                        London Standard Frequencies
-                    </h4>
-
+                    
                     <p>
-                        This table highlights the frequencies you may see on a typical night, without splitting from the
-                        primary sectors.
+                        The most frequent callsign you will see for Scottish Control is SCO_CTR which bandboxes all Scottish airspace. Two main splits are shown on the diagram below.
                     </p>
-                    <p class="table-responsive">
-                    <table class="table table-borders">
-                        <tbody class="text-center">
-                        <tr>
-                            <td rowspan="4" class="vertical-center" style="color: #ffffff; background: #777777;">
-                                Bandbox<br>
-                                LON_CTR<br>
-                                (127.825)
-                            </td>
-                            <td rowspan="2" style="background: #6d4457; color: #ffffff;">
-                                South Central<br>
-                                LON_SC_CTR<br>
-                                (132.600)
-                            </td>
-                            <td style="background: #000080; color: #ffffff;">
-                                South LON_S_CTR (129.425)
-                            </td>
-                            <td rowspan="2" style="background: #6d4457; color: #ffffff;">
-                                TC Bandbox<br>
-                                LTC_CTR<br>
-                                (135.800)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background: #f09626; color: #000000;">
-                                Central LON_C_CTR (127.100)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" style="background: #800000; color: #ffffff;">
-                                North LON_N_CTR (133.700)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" style="background: #008000; color: #ffffff;">
-                                West LON_W_CTR (126.075)
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    </p>
-
-                    <h4>
-                        London Sector Split Frequencies
-                    </h4>
-
+                    
                     <p>
-                        For the cases where the 4 main sectors are split (common for events), additional frequencies
-                        (plus the coverage order) is displayed below.
+                        The STC_CTR callsign covers an area <strong>below FL255</strong> around the Scottish TMA (near the main airports, EGPH, EGPF and EGPK).
                     </p>
-
-                    <p class="table-responsive">
-                    <table class="table table-borders">
-                        <tbody class="text-center">
-                        <tr>
-                            <td rowspan="4" class="vertical-center" style="background: #000080; color: #ffffff;">
-                                South<br>
-                                LON_S<br>
-                                (129.425)
-                            </td>
-                            <td rowspan="2" style="background: #000080; color: #ffffff;">
-                                Worthing<br>
-                                LON_S<br>
-                                (129.425)
-                            </td>
-                            <td colspan="2" style="background: #000080; color: #ffffff;">
-                                Worthing LON_S (129.425)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2" style="background: #5f5ff0; color: #ffffff;">
-                                TC South<br>
-                                LTC_S<br>
-                                (134.125)
-                            </td>
-                            <td style="background: #cbe5ff; color: #000000;">
-                                TC South West LTC_SW (133.175)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2" style="background: #5f5ff0; color: #ffffff;">
-                                Dover<br>
-                                LON_D<br>
-                                (134.900)
-                            </td>
-                            <td style="background: #cbe5ff; color: #000000;">
-                                TC South East LTC_SE (120.525)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="background: #5f5ff0; color: #ffffff;">
-                                Dover LON_D (134.900)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="border: 0;">
-                                &nbsp;
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="5" class="vertical-center" style="background: #f09626; color: #000000;">
-                                Central<br>
-                                LON_C<br>
-                                (127.100)
-                            </td>
-                            <td rowspan="2" style="background: #f09626; color: #000000;">
-                                Daventry<br>
-                                LON_C<br>
-                                (127.100)
-                            </td>
-                            <td colspan="2" style="background: #f09626; color: #000000;">
-                                Daventry LON_C (127.100)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2" style="background: #fab464; color: #000000;">
-                                TC North<br>
-                                LTC_N<br>
-                                (119.775)
-                            </td>
-                            <td style="background: #faf096; color: #000000;">
-                                TC North West LTC_NW (121.275)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="3" style="background: #fab464; color: #000000;">
-                                <br>Clacton<br>
-                                LON_E<br>
-                                (118.475)
-                            </td>
-                            <td style="background: #faf096; color: #000000;">
-                                TC North East LTC_NE (118.825)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="background: #fab464; color: #000000;">
-                                TC East LTC_E (121.225)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="background: #fab464; color: #000000;">
-                                Clacton LON_E (118.475)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="border: 0;">
-                                &nbsp;
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="3" class="vertical-center" style="background: #800000; color: #ffffff;">
-                                North<br>
-                                LON_N<br>
-                                (133.700)
-                            </td>
-                            <td colspan="3" style="background: #800000; color: #ffffff;">
-                                North LON_N (133.700)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2" style="background: #963232; color: #ffffff;">
-                                Manchester<br>
-                                MAN<br>
-                                (118.775)
-                            </td>
-                            <td colspan="2" style="background: #bf7f7f; color: #000000;">
-                                Manchester West MAN_W (128.050)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="background: #bf7f7f; color: #000000;">
-                                Manchester East MAN_E (133.800)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="border: 0;">
-                                &nbsp;
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="vertical-center" style="min-height: 100px; background: #008000; color: #ffffff;">
-                                West<br>
-                                LON_W<br>
-                                (126.075)
-                            </td>
-                        </tr>
-                        <tr>
-                        </tr>
-                        </tbody>
-                    </table>
+                    
+                    <p>
+                        The STC_A_CTR callsign covers an area <strong>below FL255</strong> in the Belfast area, with responsibility for EGAA and EGAC traffic.
                     </p>
+                    
+                    <p>
+                        If Scottish airspace is split any further, it will most likely be during events when lots of ATC is online to direct you between controllers, so do not worry.
+                    </p>
+                    
+                    <img class="img-responsive center-block" src="/images/egpxsectors.png">
                     
                 </div>
             </div>
@@ -812,21 +269,83 @@
 
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
-                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-scottish">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-vfr">
                     <div class="panel-heading">
-                        <i class="fa fa-map-o" aria-hidden="true"></i> &thinsp; Scottish (EGPX) FIR
+                        <i class="fa fa-paper-plane" aria-hidden="true"></i> &thinsp; I am flying <strong>VFR</strong> within UK airspace…
                         <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
-                <div id="sectors-scottish" class="panel-collapse collapse panel-body">
+                <div id="sectors-vfr" class="panel-collapse collapse panel-body">
                     
                     <p>
-                    The diagram below illustrates the most basic of splits for Scottish (SCO_CTR) airspace. SCO_CTR covers both 
-                    areas in the absence of a split controller. Other splits are more common during events - the top-down table 
-                    above reflects these splits - do ask a controller if you are unsure.
+                        If you are departing from an airfield <strong>inside</strong> controlled airspace, then you <strong>must</strong> obtain clearance for all stages of your departure from the relevant area controller, as set out in Section 1.
                     </p>
+                    
+                    <p>
+                        If you are departing from an airfield <strong>outside</strong> of controlled airspace, then you <strong>may</strong> ask the area controller directly above that airfield whether they are able to provide an air traffic service.
+                    </p>
+                    
+                    <p>
+                        If you have departed from an airfield without speaking to ATC but wish to enter controlled airspace, you must obtain a clearance from the area controller that covers that airspace before doing so. Feel free to ask a controller whether they cover airspace if you are unsure.
+                    </p>
+                    
+                    <h3>London &amp; Scottish Information</h3>
+                    
+                    <p style="margin-left: 40px">
+                        <strong>EGTT_I_CTR</strong> (124.600) – &quot;London Information&quot;
+                    </p>
+                    
+                    <p style="margin-left: 40px">
+                        <strong>EGPX_I_CTR</strong> (119.875) – &quot;Scottish Information&quot;
+                    </p>
+                    
+                    <p>
+                        Both of these positions are able to provide a <strong>Basic Service</strong>, which is a type of UK Flight Information Service (UK FIS) (see page 71 of <a href="https://publicapps.caa.co.uk/modalapplication.aspx?appid=11&mode=detail&id=7919" target="_blank">The Skyway Code</a>), to aircraft operating outside of controlled airspace.
+                    </p>
+                    
+                    <p>
+                        They are also able to coordinate airways joining clearances for IFR departures from airfields outside of controlled airspace.
+                    </p>
+                    
+                </div>
+            </div>
+        </div>
 
-                    <img class="img-responsive center-block" src="/images/egpxsectors.png">
+    </div>
+    
+    <div class="row equal">
+
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-ukblue">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-military">
+                    <div class="panel-heading">
+                        <i class="fa fa-fighter-jet" aria-hidden="true"></i> &thinsp; I am operating a <strong>military</strong> flight within UK mainland airspace…
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
+                    </div>
+                </a>
+                <div id="sectors-military" class="panel-collapse collapse panel-body">
+                    
+                    <p>
+                        Military airfields are <strong>not</strong> covered &apos;top-down&apos; by the civilian Area Control positions outlined in Section 1.
+                    </p>
+                    
+                    <p>
+                        The same principles apply for military operations – contact local ATC if online but otherwise, the two main relevant callsigns are:
+                    </p>
+                    
+                    <p style="margin-left: 40px">
+                        <strong>EGVV_CTR</strong> (135.150) – &quot;Swanwick Mil&quot; <br>
+                        Covers <strong>EGTT FIR</strong> airspace and airports for military operations, as well as in the <strong>EGPX FIR</strong> when Swanwick Mil (North sector) is offline.
+                    </p>
+                    
+                    <p style="margin-left: 40px">
+                        <strong>EGQQ_CTR</strong> (134.300) - &quot;Swanwick Mil&quot; (North sector) <br>
+                        Covers <strong>EGPX FIR</strong> airspace and airports for military operations.
+                    </p>
+                    
+                    <p>
+                        If you are departing from a military airfield and joining the airways system as civilian air traffic does, please ensure you request airways joining clearance from the relevant civilian area sector (in Section 2) <strong>before</strong> you enter controlled airspace. If you are unsure who to obtain this from, please ask a controller.
+                    </p>
                     
                 </div>
             </div>
@@ -840,7 +359,7 @@
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-controller-info">
                     <div class="panel-heading">
-                        <i class="fa fa-info-circle" aria-hidden="true"></i> &thinsp; Information for Controllers 
+                        <i class="fa fa-info-circle" aria-hidden="true"></i> &thinsp; Controller Information
                         <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
@@ -890,7 +409,10 @@
                             MAN_CTR
                         </li>
                         <li>
-                            SCO_CTR
+                            STC_CTR
+                        </li>
+                        <li>
+                            STC_A_CTR
                         </li>
                     </ul>
                     
