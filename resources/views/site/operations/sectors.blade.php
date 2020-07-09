@@ -98,7 +98,7 @@
                     <h3>Are all airfields covered top-down?</h3>
                     
                     <p>
-                        At airfields <strong>outside</strong> of <a href="https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification." target="_blank">
+                        At airfields <strong>outside</strong> of <a href="https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification." target="_blank" rel="noopener noreferrer">
                         controlled airspace</a> you may, if you wish, depart at your own discretion. However, if you intend to join 
                         controlled airspace, it is generally advisable to request airways clearance from the controller <strong>prior</strong> to departure.
                     </p>
@@ -198,7 +198,7 @@
                         The main London sectors (North, South, Central & West) are shown below. Sometimes these sectors are bandboxed using the LON_SC_CTR or LON_CTR callsigns.
                     </p>
 
-                    <img class="img-responsive center-block" src="/images/egttsectors-lon.png">
+                    <img class="img-responsive center-block" src="/images/egttsectors-lon.png" alt="diagram of main London sectors">
                     
                     <p>
                         e.g. If LON_CTR, LON_S_CTR and LON_W_CTR are online, then the...
@@ -235,7 +235,7 @@
                         It is especially important to descend in accordance with the STAR when only these sectors are online.
                     </p>
 
-                    <img class="img-responsive center-block" src="/images/egttsectors-ltc.png">
+                    <img class="img-responsive center-block" src="/images/egttsectors-ltc.png" alt="diagram of London TMA split sectors">
                     
                     <h3>
                         Scottish Main Sectors
@@ -257,7 +257,7 @@
                         If Scottish airspace is split any further, it will most likely be during events when lots of ATC is online to direct you between controllers, so do not worry.
                     </p>
                     
-                    <img class="img-responsive center-block" src="/images/egpxsectors.png">
+                    <img class="img-responsive center-block" src="/images/egpxsectors.png" alt="diagram of main Scottish sectors">
                     
                 </div>
             </div>
@@ -300,7 +300,7 @@
                     </p>
                     
                     <p>
-                        Both of these positions are able to provide a <strong>Basic Service</strong>, which is a type of UK Flight Information Service (UK FIS) (see page 71 of <a href="https://publicapps.caa.co.uk/modalapplication.aspx?appid=11&mode=detail&id=7919" target="_blank">The Skyway Code</a>), to aircraft operating outside of controlled airspace.
+                        Both of these positions are able to provide a <strong>Basic Service</strong>, which is a type of UK Flight Information Service (UK FIS) (see page 71 of <a href="https://publicapps.caa.co.uk/modalapplication.aspx?appid=11&mode=detail&id=7919" target="_blank" rel="noopener noreferrer">The Skyway Code</a>), to aircraft operating outside of controlled airspace.
                     </p>
                     
                     <p>
