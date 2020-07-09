@@ -74,6 +74,9 @@
                             <strong>EGGP_APP</strong> - Liverpool (EGGP) and Hawarden (EGNR)
                         </li>
                         <li>
+                            <strong>EGJJ_C_APP</strong> - Jersey (EGJJ), Guernsey (EGJB) and Alderney (EGJA)
+                        </li>
+                        <li>
                             <strong>EGNT_APP</strong> - Newcastle (EGNT) and Teeside (EGNV)
                         </li>
                         <li>
