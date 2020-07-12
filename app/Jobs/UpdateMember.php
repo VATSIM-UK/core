@@ -37,13 +37,7 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
         } catch (\Exception $e) {
-            if (strpos($e->getMessage(), 'Name or service not known') !== false) {
-                // CERT unavailable. Not our fault, so will ignore.
-                return;
-            }
-            Bugsnag::notifyException($e);
-
-            return;
+            return
         }
         DB::beginTransaction();
         if (! is_string($this->data->region)) {
