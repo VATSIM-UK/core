@@ -64,7 +64,7 @@ class Flight extends AdmController
     {
         $bids = Bid::pending()->accountId(Request::input('dbid'))->get();
 
-        if (!$bids || $bids->count() == 0) {
+        if (! $bids || $bids->count() == 0) {
             return 'NONE';
         }
 
