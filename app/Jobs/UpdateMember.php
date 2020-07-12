@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
-use Bugsnag;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -37,18 +36,15 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
         } catch (\Exception $e) {
-            if (strpos($e->getMessage(), 'Name or service not known') !== false) {
-                // CERT unavailable. Not our fault, so will ignore.
-                return;
-            }
-            Bugsnag::notifyException($e);
-
             return;
         }
+
         DB::beginTransaction();
+
         if (! is_string($this->data->region)) {
             $this->data->region = '';
         }
+
         if (! is_string($this->data->division)) {
             $this->data->division = '';
         }
