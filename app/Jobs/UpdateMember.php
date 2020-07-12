@@ -37,7 +37,7 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
         } catch (\Exception $e) {
-            return
+            return;
         }
 
         DB::beginTransaction();
