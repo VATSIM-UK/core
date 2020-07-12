@@ -70,7 +70,7 @@ class UpdateMember extends Job implements ShouldQueue
             $member->cert_checked_at = Carbon::now();
             $member->is_inactive = (bool) ($this->data->rating < 0);
 
-            if ($this->data->regdate !== '0000-00-00 00:00:00') {
+            if ($this->data->regdate !== '0000-00-00 00:00:00' && $this->data->regdate !== 'None') {
                 $member->joined_at = $this->data->regdate;
             }
 
