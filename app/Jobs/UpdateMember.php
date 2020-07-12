@@ -39,10 +39,13 @@ class UpdateMember extends Job implements ShouldQueue
         } catch (\Exception $e) {
             return
         }
+
         DB::beginTransaction();
+
         if (! is_string($this->data->region)) {
             $this->data->region = '';
         }
+
         if (! is_string($this->data->division)) {
             $this->data->division = '';
         }
