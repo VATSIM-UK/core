@@ -26,14 +26,13 @@
 
                     <p>
                         The ATC Training department is structured into &quot;Training Groups&quot;, each of which deal
-                        with specific types of training at various facilities. Each Training Group has a Training Group
-                        Manager (TGM), who deals with day-to-day administrative tasks such as allocating training places
-                        and assisting members with queries. There are also a number of Training Group Instructors (TGI),
-                        who are responsible for overseeing training in their respective groups - ensuring suitable
-                        progression and maintaining standards. These members hold an I1 rating, with the exception of
-                        the TG Enroute TGI, who holds an I3. Every Training Group also has a number of mentors. The
-                        mentors provide practical mentoring sessions to students and help them progress towards their
-                        next rating.
+                        with specific types of training at various facilities. The administrative aspect of Training 
+                        Groups are handled by the team of ATC Training and Member Services staff; please always use the 
+                        <a href="https://helpdesk.vatsim.uk/">Helpdesk</a> for queries related to ATC Training. Each 
+                        Training Group has a number of Training Group Instructors (TGI), who are responsible for 
+                        overseeing training in their respective groups - ensuring suitable progression and maintaining 
+                        standards. Every Training Group also has a number of mentors. The mentors provide practical 
+                        mentoring sessions to students and help them progress towards their next rating.
                     </p>
 
                     <p>
@@ -42,19 +41,19 @@
 
                     <ul>
                         <li>
-                            TG New Controller: Responsible for the OBS to S1 training process and group seminars;
+                            TG New Controller (NC): Responsible for the OBS to S1 training process and group seminars;
                         </li>
                         <li>
-                            TG1: Responsible for S2 and S3 training at EGKK, EGBB, EGNX, EGGD, EGPF and EGPH;
+                            TG Tower (TWR): Responsible for S2 training at all training airfields;
                         </li>
                         <li>
-                            TG2: Responsible for S2 and S3 training at EGCC, EGGP, EGGW, EGSS and EGNX;
+                            TG Approach (APP): Responsible for S3 training at all training airfields;
                         </li>
                         <li>
                             TG Enroute: Responsible for C1 training on EGTT and EGPX enroute positions;
                         </li>
                         <li>
-                            TG Heathrow: Responsible for training towards validations on the UKs only designated Major
+                            TG Heathrow: Responsible for training towards validations on the UK's only designated Major
                             aerodrome, London Heathrow.
                         </li>
                     </ul>
@@ -66,7 +65,7 @@
                     </p>
 
                     <p>
-                        The department also maintains a pool of examiners. These members are experienced as controllers
+                        The department maintains a pool of examiners. These members are experienced as controllers
                         and mentors and are responsible for conducting Practical Exams and Transferring Controller
                         Validations. All exams in VATSIM UK are assigned to a particular examiner, to ensure that all
                         examiners conduct a fair amount of exams and that there are no conflicts of interest.
