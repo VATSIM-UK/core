@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
-use Bugsnag;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
