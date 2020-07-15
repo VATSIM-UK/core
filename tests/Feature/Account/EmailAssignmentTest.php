@@ -131,12 +131,12 @@ class EmailAssignmentTest extends TestCase
         $unverifiedEmailAddress = 'my-unverified-email@bar.com';
 
         $verifiedEmail = $this->user->secondaryEmails()->create([
-            'email' => $verifiedEmailAddress
+            'email' => $verifiedEmailAddress,
         ]);
         $verifiedEmail->verify();
 
         $this->user->secondaryEmails()->create([
-            'email' => $unverifiedEmailAddress
+            'email' => $unverifiedEmailAddress,
         ]);
 
         $mainEmail = $this->user->fresh()->email;
