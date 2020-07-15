@@ -127,12 +127,25 @@ class EmailAssignmentTest extends TestCase
     /** @test */
     public function testAssignmentsEmailsPassedToView()
     {
-        $email = $this->user->fresh()->email;
+        $verifiedEmailAddress = 'my-verified-email@foo.com';
+        $unverifiedEmailAddress = 'my-unverified-email@bar.com';
 
-        $this->actingAs($this->user)
+        $verifiedEmail = $this->user->secondaryEmails()->create([
+            'email' => $verifiedEmailAddress
+        ]);
+        $verifiedEmail->verify();
+
+        $this->user->secondaryEmails()->create([
+            'email' => $unverifiedEmailAddress
+        ]);
+
+        $mainEmail = $this->user->fresh()->email;
+
+        $this->actingAs($this->user->fresh())
             ->get(route('mship.manage.email.assignments'))
-            ->assertSee($email)
-            ->assertSee($this->user->verified_secondary_emails);
+            ->assertSee($mainEmail)
+            ->assertSee($verifiedEmail)
+            ->assertDontSee($unverifiedEmailAddress);
     }
 
     /** @test */
