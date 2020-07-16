@@ -7,6 +7,7 @@ use App\Repositories\Cts\BookingRepository;
 use App\Repositories\Cts\EventRepository;
 use Illuminate\Support\Facades\Cache as Cache;
 use Illuminate\Support\Facades\DB as DB;
+use Illuminate\Support\Facades\Http;
 
 class HomePageController extends \App\Http\Controllers\BaseController
 {
@@ -21,14 +22,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
 
     private function nextEvent()
     {
-        try {
-            $html = file_get_contents('https://cts.vatsim.uk/extras/next_event.php');
-
-            return $this->getHTMLByID('next', $html);
-        } catch (\HttpRequestException $e) {
-            // CTS likely unavailable.
-            return;
-        }
+        return $this->getHTMLByID('next', Http::get('https://cts.vatsim.uk/extras/next_event.php'));
     }
 
     public function getHTMLByID($id, $html)
