@@ -22,7 +22,8 @@ class HomePageController extends \App\Http\Controllers\BaseController
 
     private function nextEvent()
     {
-        return $this->getHTMLByID('next', Http::get('https://cts.vatsim.uk/extras/next_event.php'));
+        $response = Http::get('https://cts.vatsim.uk/extras/next_event.php');
+        return $response->failed() ? '' : $this->getHTMLByID('next', $response);
     }
 
     public function getHTMLByID($id, $html)
