@@ -23,7 +23,7 @@
                     <p>So what does it look like, take a look!</p>
 
                     <div class="panel-base text-right">
-                        <a href="https://helpdesk.vatsim.uk" class="btn btn-primary">Enrol Here! &gt;&gt;</a>
+                        <a href="#" class="btn btn-primary disabled">Course Currently Unavailable</a>
                     </div>
                 </div>
             </div>
