@@ -79,6 +79,13 @@
 
                     <a href="{{ route('ukcp.token.download', $newToken) }}">
                         <button class="btn btn-primary center-block">Download My Key</button>
+                    </a><br/>
+
+                    If you would like to generate a fresh key, you may do so by clicking the button below. Note: Doing
+                    this will invalidate any existing keys that you may have.<br/><br/>
+
+                    <a href="{{ route('ukcp.token.refresh')}}">
+                        <button class="btn btn-warning center-block">Refresh My Key</button>
                     </a>
 
                 </div>

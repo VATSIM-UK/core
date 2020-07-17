@@ -265,9 +265,6 @@
 
                 <ul>
                     <li>
-                        Scottish Control (SCO_CTR)
-                    </li>
-                    <li>
                         London Control (LON_W_CTR)
                     </li>
                     <li>
