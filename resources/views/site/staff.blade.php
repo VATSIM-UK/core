@@ -141,6 +141,10 @@
                                 <td>Developer</td>
                                 <td>Andy Ford</td>
                             </tr>
+                            <tr>
+                                <td>Developer</td>
+                                <td>Daniel Plumb</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
