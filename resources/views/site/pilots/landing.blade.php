@@ -14,11 +14,29 @@
     <div class="row">
 
         <div class="col-md-8 col-md-offset-2 ">
+            <div class="panel panel-uk-danger">
+                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; NOTAM
+                </div>
+                <div class="panel-body">
+                    <p>Recently VATSIM.net announced that the pilot rating system will be restructured from September 1st. The new system will more closely emulate the structure of ‘real-world’ pilot training, and will increase the consistency of training provided by all Authorised Training Organisations (ATOs) through more strictly defined course syllabi.</p>
+
+                    <p>As a result of this we are no longer accepting new students into our training system to complete the P1 (Online Pilot) course as this rating will be handled centrally by VATSIM.net. The training team is operating at maximum capacity to try and meet the deadline set out by VATSIM.net, and continue to provide our members with the opportunity to expand their knowledge of aviation.</p>
+
+                    <p>We look forward seeing you training in VATSIM UK in the future.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-8 col-md-offset-2 ">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Pilot Training
                 </div>
                 <div class="panel-body">
-                    <p>Welcome to the VATSIM UK’s Pilot Training Department.</p>
+                    <p>Welcome to VATSIM UK’s Pilot Training Department.</p>
 
                     <p>Who said learning can’t be fun! Here at the Pilot Training Department in VATSIM UK we believe
                         that the key to enjoying the network to its full potential is Pilot Training. Pilot Training
