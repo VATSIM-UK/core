@@ -57,6 +57,8 @@ class TeamSpeak
             $nonBlocking ? '&blocking=0' : ''
         );
 
+        $factory = null;
+
         try {
             $factory = TeamSpeak3::factory($connectionUrl);
         } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
