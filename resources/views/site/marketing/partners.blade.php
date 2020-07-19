@@ -22,7 +22,7 @@
                 <div class="panel-body">
                     <div class="row mt-4">
                         <div class="col-md-4">
-                            <img class="img-responsive align-middle" src="/images/partners/vraf.png">
+                            <img class="img-responsive align-middle" alt="vRAF logo" src="/images/partners/vraf.png">
                         </div>
                         <div class="col-md-8">
                             <p>Virtual Royal Air Force (vRAF)</p>
@@ -31,7 +31,7 @@
                     </div>
                     <div class="row mt-4">
                         <div class="col-md-4">
-                            <img class="img-responsive align-middle" src="/images/partners/bavirtual.png">
+                            <img class="img-responsive align-middle" alt="BAVirtual logo" src="/images/partners/bavirtual.png">
                         </div>
                         <div class="col-md-8">
                             <p>BAVirtual</p>
