@@ -456,14 +456,14 @@ class RemoveAllForeignKeys extends Migration
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');
 
-        Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames, $columnNames) {
+        Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames) {
             $table->foreign('permission_id')
                 ->references('id')
                 ->on($tableNames['permissions'])
                 ->onDelete('cascade');
         });
 
-        Schema::table($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames, $columnNames) {
+        Schema::table($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames) {
             $table->foreign('role_id')
                 ->references('id')
                 ->on($tableNames['roles'])
