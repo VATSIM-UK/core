@@ -34,9 +34,8 @@ class SecondaryLoginController extends BaseController
         }
 
         Auth::shouldUse('web');
-        $response = $this->login($request);
 
-        return $response;
+        return $this->login($request);
     }
 
     /**
