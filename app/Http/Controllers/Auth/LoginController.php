@@ -80,13 +80,6 @@ class LoginController extends BaseController
         return SecondaryLoginController::attemptSecondaryAuth($account);
     }
 
-    public function logout()
-    {
-        auth()->logout();
-
-        return redirect(route('site.home'));
-    }
-
     protected function completeLogin($resourceOwner, $token)
     {
         $account = Account::firstOrNew(['id' => $resourceOwner->data->cid]);
