@@ -105,6 +105,10 @@
                                 <td>Marketing Manager</td>
                                 <td>Ben Wright</td>
                             </tr>
+                            <tr>
+                                <td>Media Manager</td>
+                                <td>Thomas Greer</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
