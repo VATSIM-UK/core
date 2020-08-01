@@ -18,13 +18,28 @@ class LoginTest extends TestCase
         $this->account = factory(Account::class)->create();
     }
 
-    public function testItDirectsToLogin()
+    public function testItDirectsToVatsimSSO()
     {
+        config()->set('vatsim-connect.base', 'https://my-oauth-url.com');
+        config()->set('vatsim-connect.id', 12345);
+        config()->set('vatsim-connect.scopes', explode(',', 'my-first,my-second,my-third'));
+
         $this->assertGuest();
+
         $this->get(route('login'))
-            ->assertRedirect(); // redirects to VATSIM SSO
+            ->assertRedirect();
         $this->post(route('login'))
-            ->assertRedirect(); // redirects to VATSIM SSO
+            ->assertRedirect();
+
+        $redirectUrl = $this->get(route('login'))
+            ->headers->get('location');
+
+        $this->assertStringContainsString(config('vatsim-connect.base'), $redirectUrl);
+        $this->assertStringContainsString('state', $redirectUrl);
+        $this->assertStringContainsString('scope=' . implode('%20', config('vatsim-connect.scopes')), $redirectUrl);
+        $this->assertStringContainsString('response_type=code', $redirectUrl);
+        $this->assertStringContainsString('redirect_uri=' . urlencode(route('login.post')), $redirectUrl);
+        $this->assertStringContainsString('client_id=' . config('vatsim-connect.id'), $redirectUrl);
     }
 
     public function testItRedirectsWithoutVatsimSSOOnSecondaryLogin()
