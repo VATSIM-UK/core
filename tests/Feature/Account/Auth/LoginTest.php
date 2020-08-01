@@ -36,10 +36,10 @@ class LoginTest extends TestCase
 
         $this->assertStringContainsString(config('vatsim-connect.base'), $redirectUrl);
         $this->assertStringContainsString('state', $redirectUrl);
-        $this->assertStringContainsString('scope=' . implode('%20', config('vatsim-connect.scopes')), $redirectUrl);
+        $this->assertStringContainsString('scope='.implode('%20', config('vatsim-connect.scopes')), $redirectUrl);
         $this->assertStringContainsString('response_type=code', $redirectUrl);
-        $this->assertStringContainsString('redirect_uri=' . urlencode(route('login.post')), $redirectUrl);
-        $this->assertStringContainsString('client_id=' . config('vatsim-connect.id'), $redirectUrl);
+        $this->assertStringContainsString('redirect_uri='.urlencode(route('login.post')), $redirectUrl);
+        $this->assertStringContainsString('client_id='.config('vatsim-connect.id'), $redirectUrl);
     }
 
     public function testItRedirectsWithoutVatsimSSOOnSecondaryLogin()
