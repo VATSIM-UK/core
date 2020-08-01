@@ -86,13 +86,11 @@ class LoginController extends BaseController
         $account->name_first = $resourceOwner->data->personal->name_first;
         $account->name_last = $resourceOwner->data->personal->name_last;
         $account->email = $resourceOwner->data->personal->email;
-        // $account->experience = null; Not in return
-        // $account->joined_at = null; Not in return
         $account->last_login = Carbon::now();
         $account->last_login_ip = \Request::ip();
         $account->is_inactive = null;
         $account->updateVatsimRatings($resourceOwner->data->vatsim->rating->id, $resourceOwner->data->vatsim->pilotrating->id);
-        $account->updateDivision($resourceOwner->data->vatsim->division->id, $resourceOwner->data->vatsim->region->id); //null
+        $account->updateDivision($resourceOwner->data->vatsim->division->id, $resourceOwner->data->vatsim->region->id);
 
         if ($resourceOwner->data->oauth->token_valid) {
             $account->vatsim_access_token = $token->getToken();
