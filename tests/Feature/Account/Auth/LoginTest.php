@@ -10,13 +10,21 @@ use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
+    protected $account;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->account = factory(Account::class)->create();
+    }
+
     public function testItDirectsToLogin()
     {
         $this->assertGuest();
         $this->get(route('login'))
-            ->assertRedirect();
+            ->assertRedirect(); // redirects to VATSIM SSO
         $this->post(route('login'))
-            ->assertRedirect();
+            ->assertRedirect(); // redirects to VATSIM SSO
     }
 
     public function testItRedirectsWithoutVatsimSSOOnSecondaryLogin()
@@ -30,11 +38,10 @@ class LoginTest extends TestCase
 
     public function testItAllowsLoginWithoutSecondaryPassword()
     {
-        $user = factory(Account::class)->create();
-        $this->assertFalse($user->hasPassword());
+        $this->assertFalse($this->account->hasPassword());
 
-        Auth::guard('vatsim-sso')->login($user);
-        $response = SecondaryLoginController::attemptSecondaryAuth($user);
+        Auth::guard('vatsim-sso')->login($this->account);
+        $response = SecondaryLoginController::attemptSecondaryAuth($this->account);
 
         $this->assertTrue($response->isRedirect());
         $this->assertEquals(route('site.home'), $response->getTargetUrl());
@@ -42,12 +49,11 @@ class LoginTest extends TestCase
 
     public function testItAllowsLoginWithSecondaryPassword()
     {
-        $user = factory(Account::class)->create();
-        $user->setPassword('my-secure-password');
-        $this->assertTrue($user->hasPassword());
+        $this->account->setPassword('my-secure-password');
+        $this->assertTrue($this->account->hasPassword());
 
-        Auth::guard('vatsim-sso')->login($user);
-        $response = SecondaryLoginController::attemptSecondaryAuth($user);
+        Auth::guard('vatsim-sso')->login($this->account);
+        $response = SecondaryLoginController::attemptSecondaryAuth($this->account);
 
         $this->assertTrue($response->isRedirect());
         $this->assertEquals(route('auth-secondary'), $response->getTargetUrl());
@@ -56,11 +62,11 @@ class LoginTest extends TestCase
     public function testItRedirectsToIntendedUrl()
     {
         $intendedUrl = 'https://www.vatsim.net';
-        $user = factory(Account::class)->create();
+        $this->account = factory(Account::class)->create();
 
         Session::put('url.intended', $intendedUrl);
-        Auth::guard('vatsim-sso')->login($user);
-        $response = SecondaryLoginController::attemptSecondaryAuth($user);
+        Auth::guard('vatsim-sso')->login($this->account);
+        $response = SecondaryLoginController::attemptSecondaryAuth($this->account);
 
         $this->assertTrue($response->isRedirect());
         $this->assertNull(Session::get('url.intended'));
@@ -69,10 +75,8 @@ class LoginTest extends TestCase
 
     public function testItLogsAUserOut()
     {
-        $user = factory(Account::class)->create();
-
-        $this->actingAs($user);
-        $this->assertAuthenticatedAs($user);
+        $this->actingAs($this->account);
+        $this->assertAuthenticatedAs($this->account);
 
         $this->post(route('logout'))
             ->assertRedirect(route('site.home'));
@@ -81,10 +85,8 @@ class LoginTest extends TestCase
 
     public function testItLogsAUserOutOfTheVatsimSSOGuard()
     {
-        $user = factory(Account::class)->create();
-
-        $this->actingAs($user, 'vatsim-sso');
-        $this->assertAuthenticatedAs($user, 'vatsim-sso');
+        $this->actingAs($this->account, 'vatsim-sso');
+        $this->assertAuthenticatedAs($this->account, 'vatsim-sso');
 
         $this->post(route('logout'))
             ->assertRedirect(route('site.home'));
