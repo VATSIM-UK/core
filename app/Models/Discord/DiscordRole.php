@@ -9,6 +9,10 @@ class DiscordRole extends Model
 {
     public $timestamps = false;
 
+    protected $casts = [
+        'permission_id' => 'int'
+    ];
+
     public function role()
     {
         $this->belongsTo(Permission::class);

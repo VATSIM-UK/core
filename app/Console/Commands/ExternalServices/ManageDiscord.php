@@ -88,9 +88,9 @@ class ManageDiscord extends Command
         $discord = $this->discord;
 
         DiscordRole::all()->filter(function ($value) use ($account) {
-            return $account->hasPermissionTo((int) $value['permission_id']);
+            return $account->hasPermissionTo($value['permission_id']);
         })->each(function ($value) use ($account, $discord) {
-            $discord->grantRoleById($account, (int) $value['discord_id']);
+            $discord->grantRoleById($account, $value['discord_id']);
         });
     }
 
@@ -100,9 +100,9 @@ class ManageDiscord extends Command
         $discord = $this->discord;
 
         DiscordRole::all()->filter(function ($value) use ($account) {
-            return ! $account->hasPermissionTo((int) $value['permission_id']);
+            return ! $account->hasPermissionTo($value['permission_id']);
         })->each(function ($value) use ($account, $discord) {
-            $discord->removeRoleById($account, (int) $value['discord_id']);
+            $discord->removeRoleById($account, $value['discord_id']);
         });
     }
 }
