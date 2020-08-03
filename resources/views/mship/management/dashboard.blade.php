@@ -468,9 +468,11 @@
                             @if($_account->discord_id)
                                 Currently registered with Discord ID {{ $_account->discord_id }}. <br/>
                                 <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
-                            @else
+                            @elseif($_account->can('use-permission', 'discordbeta'))
                                 You are not yet
                                 registered.  {!! link_to_route("discord.show", "Click here to register.") !!}
+                            @else
+                                Discord is currently in beta testing and will be available soon.
                             @endif
                         </div>
                     </div>
