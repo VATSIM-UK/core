@@ -38,6 +38,7 @@ class Discord
     public function grantRoleById(Account $account, int $role): bool
     {
         $response = Http::withHeaders($this->headers)
+            ->retry(3, 20000)
             ->put("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
 
         return $this->result($response);
@@ -53,6 +54,7 @@ class Discord
     public function removeRoleById(Account $account, int $role): bool
     {
         $response = Http::withHeaders($this->headers)
+            ->retry(3, 20000)
             ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
 
         return $this->result($response);
@@ -61,6 +63,7 @@ class Discord
     public function setNickname(Account $account, string $nickname): bool
     {
         $response = Http::withHeaders($this->headers)
+            ->retry(3, 20000)
             ->patch("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}",
             [
                 'nick' => $nickname,
@@ -73,6 +76,7 @@ class Discord
     public function kick(Account $account): bool
     {
         $response = Http::withHeaders($this->headers)
+            ->retry(3, 20000)
             ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}");
 
         return $this->result($response);
@@ -81,6 +85,7 @@ class Discord
     private function findRole(string $roleName): int
     {
         $response = Http::withHeaders($this->headers)
+            ->retry(3, 20000)
             ->get("{$this->base_url}/{$this->guild_id}/roles")->json();
 
         $role_id = collect($response)
