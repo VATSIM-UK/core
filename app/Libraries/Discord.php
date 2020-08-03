@@ -88,6 +88,10 @@ class Discord
         $response = Http::withHeaders($this->headers)
             ->get("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}")->json();
 
+        if (! $response->successful()) {
+            return collect([]);
+        }
+
         return collect($response['roles']);
     }
 
