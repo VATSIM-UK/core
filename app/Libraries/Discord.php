@@ -86,13 +86,13 @@ class Discord
     public function getUserRoles(Account $account): Collection
     {
         $response = Http::withHeaders($this->headers)
-            ->get("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}")->json();
+            ->get("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}");
 
         if (! $response->successful()) {
             return collect([]);
         }
 
-        return collect($response['roles']);
+        return collect($response->json()['roles']);
     }
 
     private function findRole(string $roleName): int
