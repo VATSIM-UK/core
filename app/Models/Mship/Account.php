@@ -23,7 +23,6 @@ use App\Models\Mship\Concerns\HasStates;
 use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Note\Type;
-use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
