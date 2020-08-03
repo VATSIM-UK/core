@@ -24,7 +24,6 @@ use App\Notifications\Mship\EmailVerification;
 use App\Notifications\Mship\FeedbackReceived;
 use App\Notifications\Mship\ForgottenPasswordLink;
 use App\Notifications\Mship\S1TrainingOpportunities;
-use App\Notifications\Mship\SlackInvitation;
 use App\Notifications\Mship\WelcomeMember;
 
 /**
@@ -134,7 +133,6 @@ class TestEmails extends Command
         $testAccount->notify(new BanRepealed($testBan));
         $testAccount->notify(new EmailVerification($testEmail, $testTokenEmailVerify));
         $testAccount->notify(new FeedbackReceived($testFeedback));
-        $testAccount->notify(new SlackInvitation());
         $testAccount->notify(new WelcomeMember());
         $testAccount->notify(new ForgottenPasswordLink($testTokenSecurityReset));
         $testAccount->notify(new S1TrainingOpportunities());

@@ -164,7 +164,6 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Alawrence\Ipboard\ServiceProvider::class,
-        Vluzrmos\SlackApi\SlackApiServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -239,18 +238,6 @@ return [
          * Third Party Aliases
          */
         'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
-        'SlackApi' => Vluzrmos\SlackApi\Facades\SlackApi::class,
-        'SlackChannel' => Vluzrmos\SlackApi\Facades\SlackChannel::class,
-        'SlackChat' => Vluzrmos\SlackApi\Facades\SlackChat::class,
-        'SlackGroup' => Vluzrmos\SlackApi\Facades\SlackGroup::class,
-        'SlackFile' => Vluzrmos\SlackApi\Facades\SlackFile::class,
-        'SlackSearch' => Vluzrmos\SlackApi\Facades\SlackSearch::class,
-        'SlackInstantMessage' => Vluzrmos\SlackApi\Facades\SlackInstantMessage::class,
-        'SlackUser' => Vluzrmos\SlackApi\Facades\SlackUser::class,
-        'SlackStar' => Vluzrmos\SlackApi\Facades\SlackStar::class,
-        'SlackUserAdmin' => Vluzrmos\SlackApi\Facades\SlackUserAdmin::class,
-        'SlackRealTimeMessage' => Vluzrmos\SlackApi\Facades\SlackRealTimeMessage::class,
-        'SlackTeam' => Vluzrmos\SlackApi\Facades\SlackTeam::class,
         'HTML' => Collective\Html\HtmlFacade::class,
         'Form' => Collective\Html\FormFacade::class,
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,

@@ -43,8 +43,6 @@ class UpdateMembers extends Command
             $this->dispatch($job);
             $this->log("$member added to update queue");
         }
-
-        $this->sendSlackSuccess(sprintf('%s members have been added to the update queue.', count($members)), ['Update type:' => $this->option('type')]);
     }
 
     protected function getMembers()

@@ -1,5 +1,4 @@
 <?php
-
 // Dashboard
 Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('dashboard');
 
@@ -45,8 +44,6 @@ Route::group([
     'prefix'    => 'webhook',
     'namespace' => 'Webhook',
 ], function () {
-    Route::any('slack')->uses('Slack@anyRouter')->name('slack');
-
     Route::post('mailgun')->uses('Mailgun@event')->middleware('auth.basic.once');
     Route::post('sendgrid')->uses('SendGrid@events')->middleware('auth.basic.once');
 });
@@ -112,13 +109,6 @@ Route::group([
     Route::get('success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
     Route::get('{mshipRegistration}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
     Route::post('{mshipRegistration}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
-});
-
-Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth_full_group']], function () {
-    Route::model('slackToken', App\Models\Sys\Token::class);
-    Route::get('/new', ['as' => 'slack.new', 'uses' => 'Registration@getNew']);
-    Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);
-    Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
 });
 
 // Discord

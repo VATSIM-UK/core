@@ -67,10 +67,6 @@ class MemberStatistics extends Command
             $this->progressBar->advance();
         }
 
-        $startTimestamp = $this->getStartPeriod()->toDateString();
-        $endTimestamp = $this->getEndPeriod()->toDateString();
-        $this->sendSlackSuccess('System Statistics for '.$startTimestamp.' to '.$endTimestamp.' have been updated.');
-
         $this->progressBar->finish();
     }
 

@@ -301,37 +301,15 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fab fa-slack"></i>
                     Slack Registration
-                    <div class="pull-right">
-                        @if(!$_account->slack_id)
-                            <a href="{{ route("slack.new") }}">
-                                <i class="fa fa-plus-circle"></i>
-                            </a>
-                        @endif
-                    </div>
                 </div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-12">
-                            @if($_account->slack_id)
-                                Currently registered with Slack ID {{ $_account->slack_id }}.
-                            @else
-                                You are not yet
-                                registered.  {!! link_to_route("slack.new", "Click here to register.") !!}
-                            @endif
+                            We are no longer using Slack in VATSIM UK.<br>
+                            You can sign up for Discord, Slack's replacement, here by <a href="{{ route('discord.show') }}">clicking here</a>.
                         </div>
                     </div>
                 </div>
-                @if(!$_account->slack_id)
-                    <div class="panel-footer panel-footer-primary">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <a href="{{ route('slack.new') }}">
-                                    <span class='fa fa-info'></span> Slack Guide
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endif
             </div>
         </div>
         <div class="col-md-6">

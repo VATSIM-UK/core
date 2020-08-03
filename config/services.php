@@ -35,11 +35,6 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
-    'slack' => [
-        'token' => env('SLACK_SECRET', 'secret'),
-        'token_register' => env('SLACK_TOKEN_REGISTER', 'token'),
-    ],
-
     'teamspeak' => [
         'host' => env('TS_HOST'),
         'username' => env('TS_USER'),

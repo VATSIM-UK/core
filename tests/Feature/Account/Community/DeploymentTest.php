@@ -25,6 +25,8 @@ class DeploymentTest extends TestCase
     /** @test */
     public function testDivisionUserCanDeploy()
     {
+        $this->withoutExceptionHandling();
+
         $this->actingAs($this->divisionUser)
             ->get(route('community.membership.deploy'))
             ->assertSuccessful();

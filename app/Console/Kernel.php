@@ -62,10 +62,6 @@ class Kernel extends ConsoleKernel
             ->cron('30 */2 * * *') // every second hour
             ->runInBackground();
 
-        $schedule->command('slack:manager')
-            ->hourly()
-            ->runInBackground();
-
         // === By Day ===
 
         $schedule->command('telescope:prune')->daily();

@@ -176,9 +176,6 @@
                             <a class="nav-link" href="{{ route('site.community.teamspeak') }}">TeamSpeak</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('slack.new') }}">Slack</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('discord.show') }}">Discord</a>
                         </li>
                         <li class="nav-item">
