@@ -36,11 +36,11 @@ class ManageDiscord extends Command
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Discord $discord)
     {
         parent::__construct();
 
-        $this->discord = app()->make(Discord::class);
+        $this->discord = $discord;
     }
 
     /**
