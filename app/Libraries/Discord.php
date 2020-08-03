@@ -4,6 +4,7 @@ namespace App\Libraries;
 
 use App\Models\Mship\Account;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
 class Discord
@@ -80,6 +81,14 @@ class Discord
         }
 
         return $this->result($response);
+    }
+
+    public function getUserRoles(Account $account): Collection
+    {
+        $response = Http::withHeaders($this->headers)
+            ->get("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}")->json();
+
+        return collect($response->roles);
     }
 
     private function findRole(string $roleName): int

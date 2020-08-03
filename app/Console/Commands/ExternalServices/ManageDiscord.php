@@ -60,11 +60,11 @@ class ManageDiscord extends Command
         foreach ($discordUsers as $account) {
             $this->account = $account;
             $this->grantRoles();
-            sleep(2);
+            sleep(1);
             $this->removeRoles();
-            sleep(2);
+            sleep(1);
             $this->assignNickname();
-            sleep(2);
+            sleep(1);
         }
 
         $this->info($discordUsers->count().' user(s) updated on Discord.');
@@ -90,11 +90,15 @@ class ManageDiscord extends Command
         $account = $this->account;
         $discord = $this->discord;
 
-        DiscordRole::all()->filter(function ($value) use ($account) {
-            return $account->hasPermissionTo($value['permission_id']);
-        })->each(function ($value) use ($account, $discord) {
-            $discord->grantRoleById($account, $value['discord_id']);
-            sleep(1);
+        $currentRoles = $discord->getUserRoles($account);
+
+        DiscordRole::all()->filter(function (DiscordRole $role) use ($account) {
+            return $account->hasPermissionTo($role->permission_id);
+        })->each(function (DiscordRole $role) use ($account, $discord, $currentRoles) {
+            if (! $currentRoles->contains($role->discord_id)) {
+                $discord->grantRoleById($account, $role->discord_id);
+                sleep(1);
+            }
         });
     }
 
@@ -103,11 +107,15 @@ class ManageDiscord extends Command
         $account = $this->account;
         $discord = $this->discord;
 
-        DiscordRole::all()->filter(function ($value) use ($account) {
-            return ! $account->hasPermissionTo($value['permission_id']);
-        })->each(function ($value) use ($account, $discord) {
-            $discord->removeRoleById($account, $value['discord_id']);
-            sleep(1);
+        $currentRoles = $discord->getUserRoles($account);
+
+        DiscordRole::all()->filter(function (DiscordRole $role) use ($account) {
+            return ! $account->hasPermissionTo($role->permission_id);
+        })->each(function (DiscordRole $role) use ($account, $discord, $currentRoles) {
+            if (! $currentRoles->contains($role->discord_id)) {
+                $discord->removeRoleById($account, $role->discord_id);
+                sleep(1);
+            }
         });
     }
 }
