@@ -23,7 +23,7 @@ class SyncSubscriber
         \App\Jobs\Mship\SyncToCTS::dispatch($event->account);
         \App\Jobs\Mship\SyncToHelpdesk::dispatch($event->account);
         \App\Jobs\Mship\SyncToMoodle::dispatch($event->account);
-        Artisan::call('discord:manager --force=' . $event->account->id);
+        Artisan::call('discord:manager --force='.$event->account->id);
         // \App\Jobs\Mship\SyncToForums::dispatch($event->account); - Re-enable tests (Feat/Adm/AccountTest & Unit/Mship/Sync/AccountAltered)
 
         Log::debug($event->account->real_name.' ('.$event->account->id.') was queued to sync to external services');

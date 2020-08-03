@@ -19,6 +19,6 @@ class SetupDiscordUser implements ShouldQueue
         $event->account->discord_id = $event->discordId;
         $event->account->save();
 
-        Artisan::call('discord:manager --force=' . $event->account->id);
+        Artisan::call('discord:manager --force='.$event->account->id);
     }
 }

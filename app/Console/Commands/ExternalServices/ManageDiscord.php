@@ -52,7 +52,7 @@ class ManageDiscord extends Command
     {
         $discordUsers = $this->getUsers();
 
-        if (!$discordUsers) {
+        if (! $discordUsers) {
             $this->error('No users found.');
             exit();
         }
@@ -64,8 +64,8 @@ class ManageDiscord extends Command
             $this->assignNickname();
         }
 
-        $this->info($discordUsers->count() . ' user(s) updated on Discord.');
-        Log::debug($discordUsers->count() . ' user(s) updated on Discord.');
+        $this->info($discordUsers->count().' user(s) updated on Discord.');
+        Log::debug($discordUsers->count().' user(s) updated on Discord.');
     }
 
     protected function getUsers()
