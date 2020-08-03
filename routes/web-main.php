@@ -1,4 +1,5 @@
 <?php
+
 // Dashboard
 Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('dashboard');
 
