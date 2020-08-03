@@ -60,9 +60,7 @@ class ManageDiscord extends Command
         foreach ($discordUsers as $account) {
             $this->account = $account;
             $this->grantRoles();
-            sleep(1);
             $this->removeRoles();
-            sleep(1);
             $this->assignNickname();
             sleep(1);
         }
