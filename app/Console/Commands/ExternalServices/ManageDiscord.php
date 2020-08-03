@@ -60,9 +60,11 @@ class ManageDiscord extends Command
         foreach ($discordUsers as $account) {
             $this->account = $account;
             $this->grantRoles();
+            sleep(2);
             $this->removeRoles();
+            sleep(2);
             $this->assignNickname();
-            sleep(5);
+            sleep(2);
         }
 
         $this->info($discordUsers->count().' user(s) updated on Discord.');
@@ -92,6 +94,7 @@ class ManageDiscord extends Command
             return $account->hasPermissionTo($value['permission_id']);
         })->each(function ($value) use ($account, $discord) {
             $discord->grantRoleById($account, $value['discord_id']);
+            sleep(1);
         });
     }
 
@@ -104,6 +107,7 @@ class ManageDiscord extends Command
             return ! $account->hasPermissionTo($value['permission_id']);
         })->each(function ($value) use ($account, $discord) {
             $discord->removeRoleById($account, $value['discord_id']);
+            sleep(1);
         });
     }
 }
