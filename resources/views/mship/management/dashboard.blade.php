@@ -396,7 +396,7 @@
 
             @if(!$_account->is_banned)
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="fab fa-teamspeak"></i>
+                    <div class="panel-heading"><em class="fab fa-teamspeak"></em>
                         TeamSpeak Registrations
                         <div class="pull-right">
                             <a href="{{ route("teamspeak.new") }}">
