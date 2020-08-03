@@ -31,11 +31,6 @@ class Kernel extends ConsoleKernel
 
         // === By Minute === //
 
-        $schedule->command('discord:manager')
-            ->everyMinute()
-            ->runInBackground()
-            ->withoutOverlapping();
-
         $schedule->command('visit-transfer:cleanup')
             ->everyMinute()
             ->runInBackground()
@@ -61,6 +56,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('members:certimport')
             ->cron('30 */2 * * *') // every second hour
             ->runInBackground();
+
+        $schedule->command('discord:manager')
+            ->everySixHours()
+            ->runInBackground()
+            ->withoutOverlapping();
 
         // === By Day ===
 
