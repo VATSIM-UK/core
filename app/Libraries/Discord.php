@@ -21,7 +21,7 @@ class Discord
     {
         $this->token = config('services.discord.token');
         $this->guild_id = config('services.discord.guild_id');
-        $this->base_url = config('services.discord.base_discord_uri') . '/guilds';
+        $this->base_url = config('services.discord.base_discord_uri').'/guilds';
     }
 
     public function grantRole(Account $account, string $role): bool
@@ -33,7 +33,7 @@ class Discord
 
     public function grantRoleById(Account $account, int $role): bool
     {
-        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}", "put");
+        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}", 'put');
 
         return $this->result($response);
     }
@@ -47,14 +47,14 @@ class Discord
 
     public function removeRoleById(Account $account, int $role): bool
     {
-        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}", "delete");
+        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}", 'delete');
 
         return $this->result($response);
     }
 
     public function setNickname(Account $account, string $nickname): bool
     {
-        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}", "patch",
+        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}", 'patch',
             [
                 'nick' => $nickname,
             ]
@@ -65,7 +65,7 @@ class Discord
 
     public function kick(Account $account): bool
     {
-        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}", "delete");
+        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}", 'delete');
 
         if ($response->status() == 404) {
             return true;
@@ -83,7 +83,7 @@ class Discord
             ->pluck('id')
             ->first();
 
-        return (int)$role_id;
+        return (int) $role_id;
     }
 
     protected function result(Response $response)
@@ -95,13 +95,13 @@ class Discord
         return true;
     }
 
-    private function sendDiscordAPIRequest($url, $method = "get", $data = null)
+    private function sendDiscordAPIRequest($url, $method = 'get', $data = null)
     {
-        $request = Http::withToken($this->token, "Bot");
+        $request = Http::withToken($this->token, 'Bot');
 
         if ($data) {
             $data = [
-                'json' => $data
+                'json' => $data,
             ];
         }
 
