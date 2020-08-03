@@ -17,15 +17,11 @@ class Discord
     /** @var string */
     private $base_url;
 
-    /** @var array */
-    private $headers;
-
     public function __construct()
     {
         $this->token = config('services.discord.token');
         $this->guild_id = config('services.discord.guild_id');
         $this->base_url = config('services.discord.base_discord_uri').'/guilds';
-        $this->headers = ['Authorization' => "Bot {$this->token}"];
     }
 
     public function grantRole(Account $account, string $role): bool
@@ -37,9 +33,7 @@ class Discord
 
     public function grantRoleById(Account $account, int $role): bool
     {
-        $response = Http::withHeaders($this->headers)
-            ->retry(2, 10000)
-            ->put("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
+        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}", 'put');
 
         return $this->result($response);
     }
@@ -53,18 +47,14 @@ class Discord
 
     public function removeRoleById(Account $account, int $role): bool
     {
-        $response = Http::withHeaders($this->headers)
-            ->retry(2, 10000)
-            ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
+        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}", 'delete');
 
         return $this->result($response);
     }
 
     public function setNickname(Account $account, string $nickname): bool
     {
-        $response = Http::withHeaders($this->headers)
-            ->retry(2, 10000)
-            ->patch("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}",
+        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}", 'patch',
             [
                 'nick' => $nickname,
             ]
@@ -75,9 +65,7 @@ class Discord
 
     public function kick(Account $account): bool
     {
-        $response = Http::withHeaders($this->headers)
-            ->retry(2, 10000)
-            ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}");
+        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}", 'delete');
 
         if ($response->status() == 404) {
             return true;
@@ -88,9 +76,7 @@ class Discord
 
     private function findRole(string $roleName): int
     {
-        $response = Http::withHeaders($this->headers)
-            ->retry(2, 10000)
-            ->get("{$this->base_url}/{$this->guild_id}/roles")->json();
+        $response = $this->sendDiscordAPIRequest("{$this->base_url}/{$this->guild_id}/roles")->json();
 
         $role_id = collect($response)
             ->where('name', $roleName)
@@ -107,5 +93,35 @@ class Discord
         }
 
         return true;
+    }
+
+    private function sendDiscordAPIRequest($url, $method = 'get', $data = null)
+    {
+        $request = Http::withToken($this->token, 'Bot');
+
+        if ($data) {
+            $data = [
+                'json' => $data,
+            ];
+        }
+
+        $response = null;
+        $allowedNumRetries = 1;
+
+        for ($i = 0; $i < $allowedNumRetries + 1; $i++) {
+            $response = $request->send(strtoupper($method), $url, $data);
+
+            // Check for rate limit
+            if ($response->status() == 429) {
+                $retryAfter = $response->json()['retry_after'];
+                usleep($retryAfter + 10);
+                continue;
+            }
+
+            // No rate limit problem, lets get out of the loop
+            break;
+        }
+
+        return $response;
     }
 }
