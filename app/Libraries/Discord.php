@@ -100,9 +100,9 @@ class Discord
         $request = Http::withToken($this->token, 'Bot');
 
         if ($data) {
-            $data = [
-                'json' => $data,
-            ];
+            $data = ['json' => $data];
+        } else {
+            $data = [];
         }
 
         $response = null;
