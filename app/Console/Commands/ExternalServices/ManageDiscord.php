@@ -52,18 +52,26 @@ class ManageDiscord extends Command
     {
         $discordUsers = $this->getUsers();
 
+        if (!$discordUsers) {
+            $this->error('No users found.');
+            exit();
+        }
+
         foreach ($discordUsers as $account) {
             $this->account = $account;
             $this->grantRoles();
             $this->removeRoles();
             $this->assignNickname();
         }
+
+        $this->info($discordUsers->count() . ' user(s) updated on Discord.');
+        Log::debug($discordUsers->count() . ' user(s) updated on Discord.');
     }
 
     protected function getUsers()
     {
         if ($this->option('force')) {
-            return Account::where('id', $this->option('force'))->get();
+            return Account::where('id', $this->option('force'))->where('discord_id', '!=', null)->get();
         }
 
         return Account::where('discord_id', '!=', null)->get();
