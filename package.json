@@ -29,11 +29,11 @@
     "jvectormap": "^2.0.4",
     "laravel-mix": "^5.0",
     "less-loader": "^6.2.0",
-    "less": "^3.11.3",
+    "less": "^3.12.2",
     "lodash": "^4.17.19",
     "popper.js": "^1.16",
     "resolve-url-loader": "3.1.1",
-    "sass-loader": "^9.0.1",
+    "sass-loader": "^9.0.2",
     "sass": "^1.26.10",
     "vue": "^2.6.11",
     "vue-template-compiler": "^2.6.11"
