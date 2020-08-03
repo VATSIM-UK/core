@@ -6,6 +6,7 @@ use App\Console\Commands\Command;
 use App\Libraries\Discord;
 use App\Models\Discord\DiscordRole;
 use App\Models\Mship\Account;
+use Illuminate\Support\Facades\Log;
 
 class ManageDiscord extends Command
 {
@@ -14,7 +15,8 @@ class ManageDiscord extends Command
      *
      * @var string
      */
-    protected $signature = 'discord:manager';
+    protected $signature = 'discord:manager
+                            {--f|force= : If specified, only this CID will be updated.}';
 
     /**
      * The console command description.
@@ -48,7 +50,7 @@ class ManageDiscord extends Command
      */
     public function handle()
     {
-        $discordUsers = Account::where('discord_id', '!=', null)->get();
+        $discordUsers = $this->getUsers();
 
         foreach ($discordUsers as $account) {
             $this->account = $account;
@@ -56,6 +58,15 @@ class ManageDiscord extends Command
             $this->removeRoles();
             $this->assignNickname();
         }
+    }
+
+    protected function getUsers()
+    {
+        if ($this->option('force')) {
+            return Account::where('id', $this->option('force'))->get();
+        }
+
+        return Account::where('discord_id', '!=', null)->get();
     }
 
     protected function assignNickname()
