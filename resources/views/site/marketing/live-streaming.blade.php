@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-lg-4 col-lg-offset-2">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-record"></i> &thinsp; Live Streaming
+                <div class="panel-heading"><i class="fa fa-record-vinyl"></i> &thinsp; Live Streaming
                 </div>
                 <div class="panel-body">
                     <p>Our live streaming schedule will let you know where/when the next event is taking place. Watch in
@@ -21,7 +21,7 @@
 
         <div class="col-lg-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-calendar"></i> &thinsp; Upcoming Live Streams
+                <div class="panel-heading"><i class="fa fa-calendar"></i> &thinsp; Upcoming Live Streams
                 </div>
                 <div class="panel-body">
                     <div class="embed-responsive embed-responsive-16by9">

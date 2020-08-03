@@ -4,7 +4,7 @@
 
     <div class="col-md-12">
         <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-time"></i> &thinsp; History</div>
+            <div class="panel-heading"><i class="fa fa-clock"></i> &thinsp; History</div>
             <div class="panel-body">
                 All of your completed Flight Training Exercises are listed below.<br><br>
                 <table class="table table-bordered table-striped table-hover">

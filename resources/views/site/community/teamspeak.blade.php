@@ -8,7 +8,7 @@
 
             <div class="col-md-12">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-earphone"></i> &thinsp; TeamSpeak
+                    <div class="panel-heading"><i class="fab fa-teamspeak"></i> &thinsp; TeamSpeak
                     </div>
                     <div class="panel-body">
                         <p>
@@ -32,7 +32,7 @@
 
             <div class="col-md-6">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> House Rules
+                    <div class="panel-heading"><i class="fa fa-book"></i> House Rules
                     </div>
                     <div class="panel-body">
                         <p>
@@ -134,7 +134,7 @@
 
             <div class="col-md-6">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-map-marker"></i> Room Guide
+                    <div class="panel-heading"><i class="fa fa-door-closed"></i> Room Guide
                     </div>
                     <div class="panel-body">
                         <p>
@@ -240,7 +240,7 @@
 
     <div class="col-md-3">
         <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-question-sign"></i> &thinsp; Accessing TeamSpeak
+            <div class="panel-heading"><i class="fa fa-question"></i> &thinsp; Accessing TeamSpeak
             </div>
             <div class="panel-body">
                 <h3>

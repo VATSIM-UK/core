@@ -4,7 +4,7 @@
     <div class="row equal">
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-signal"></i> &thinsp; UK Controller Plugin
+                <div class="panel-heading"><i class="fa fa-chart-line"></i> &thinsp; UK Controller Plugin
                     Setup
                 </div>
                 <div class="panel-body">
@@ -27,7 +27,7 @@
     <div class="row equal">
         <div class="col-md-12">
             <div class="text-center" style="padding-bottom: 20px;">
-                <span class="glyphicon glyphicon-arrow-down"></span>
+                <span class="fa fa-arrow-down"></span>
             </div>
         </div>
     </div>
@@ -35,7 +35,7 @@
     <div class="row equal">
         <div class="col-md-4 col-md-offset-2">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-download"></i> &thinsp; Step One - Download
+                <div class="panel-heading"><i class="fa fa-download"></i> &thinsp; Step One - Download
                     Plugin
                 </div>
                 <div class="panel-body">
@@ -65,7 +65,7 @@
         </div>
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-download"></i> &thinsp; Step Two - Download Key
+                <div class="panel-heading"><i class="fa fa-download"></i> &thinsp; Step Two - Download Key
                 </div>
                 <div class="panel-body">
                     When loading the plugin into EuroScope for the first time, you will be asked to provide a key so
@@ -96,7 +96,7 @@
     <div class="row equal">
         <div class="col-md-12">
             <div class="text-center" style="padding-bottom: 20px;">
-                <span class="glyphicon glyphicon-arrow-down"></span>
+                <span class="fa fa-arrow-down"></span>
             </div>
         </div>
     </div>
@@ -105,7 +105,7 @@
     <div class="row equal">
         <div class="col-md-4 col-md-offset-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-cog"></i> &thinsp; Step Three - Install
+                <div class="panel-heading"><i class="fa fa-cog"></i> &thinsp; Step Three - Install
                     Plugin
                 </div>
                 <div class="panel-body">

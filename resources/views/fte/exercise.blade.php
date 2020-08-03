@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-ok-circle"></i> &thinsp; Actions</div>
+                <div class="panel-heading"><i class="fa fa-check"></i> &thinsp; Actions</div>
                 <div class="panel-body">
                     <div class="">
                         <a href="{{ route('fte.dashboard') }}" class="btn btn-primary">&lt;&lt; Dashboard</a>
@@ -32,7 +32,7 @@
             </div>
 
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Exercise Details
+                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Exercise Details
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -70,7 +70,7 @@
             </div>
 
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Resources</div>
+                <div class="panel-heading"><i class="fa fa-book"></i> &thinsp; Resources</div>
                 <div class="panel-body">
                     @forelse($flight->resources->sortBy('display_name') as $resource)
                         <p><a href="{{ $resource->asset() }}" target="_blank">{{ $resource->display_name }}</a></p>
@@ -83,7 +83,7 @@
 
         <div class="col-md-8">
             <div class="panel panel-ukblue" style="min-height: 500px;">
-                <div class="panel-heading"><i class="glyphicon glyphicon-globe"></i> &thinsp; Map
+                <div class="panel-heading"><i class="fa fa-globe"></i> &thinsp; Map
                 </div>
                 <div class="panel-body text-center">
                     <div id="map" style="width: 100%; height: 500px;"></div>
@@ -95,7 +95,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-equalizer"></i> &thinsp; Statistics</div>
+                <div class="panel-heading"><i class="fa fa-chart-line"></i> &thinsp; Statistics</div>
                 <div class="panel-body">
                     <p>Flight Training Exercises is still really new!<br>
                         Once we have enough exercises completed, we will be able to show stats like average flight time,
@@ -106,7 +106,7 @@
 
         <div class="col-md-6">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-cloud"></i> &thinsp; Weather</div>
+                <div class="panel-heading"><i class="fa fa-cloud"></i> &thinsp; Weather</div>
                 <div class="panel-body">
                     <strong>Departure Aerodrome:</strong> <span id="dep-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $flight->departure->icao }}">Click Here</a></span>
                     <br>

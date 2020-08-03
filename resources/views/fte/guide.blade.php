@@ -4,7 +4,7 @@
     <div class="row equal">
         <div class="col-md-4 col-sm-offset-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; A Guide To Flight Training
+                <div class="panel-heading"><i class="fa fa-book"></i> &thinsp; A Guide To Flight Training
                     Exercises
                 </div>
                 <div class="panel-body">
@@ -21,7 +21,7 @@
     <div class="row equal">
         <div class="col-md-12">
             <div class="text-center" style="padding-bottom: 20px;">
-                <span class="glyphicon glyphicon-arrow-down"></span>
+                <span class="fa fa-arrow-down"></span>
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@
     <div class="row equal">
         <div class="col-md-6 col-sm-offset-3">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-cog"></i> &thinsp; Configuration
+                <div class="panel-heading"><i class="fa fa-cog"></i> &thinsp; Configuration
                 </div>
                 <div class="panel-body">
                     <ol>
@@ -56,7 +56,7 @@
     <div class="row equal">
         <div class="col-md-12">
             <div class="text-center" style="padding-bottom: 20px;">
-                <span class="glyphicon glyphicon-arrow-down"></span>
+                <span class="fa fa-arrow-down"></span>
             </div>
         </div>
     </div>
@@ -64,7 +64,7 @@
     <div class="row equal">
         <div class="col-md-6 col-sm-offset-3">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-send"></i> &thinsp; Booking an Exercise
+                <div class="panel-heading"><i class="fa fa-cloud"></i> &thinsp; Booking an Exercise
                 </div>
                 <div class="panel-body">
                     <ol>
@@ -93,7 +93,7 @@
     <div class="row equal">
         <div class="col-md-12">
             <div class="text-center" style="padding-bottom: 20px;">
-                <span class="glyphicon glyphicon-arrow-down"></span>
+                <span class="fa fa-arrow-down"></span>
             </div>
         </div>
     </div>
@@ -101,7 +101,7 @@
     <div class="row equal">
         <div class="col-md-6 col-sm-offset-3">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Completing an Exercise
+                <div class="panel-heading"><i class="fa fa-plane"></i> &thinsp; Completing an Exercise
                 </div>
                 <div class="panel-body">
                     <ol>
@@ -148,7 +148,7 @@
     <div class="row equal">
         <div class="col-md-12">
             <div class="text-center" style="padding-bottom: 20px;">
-                <span class="glyphicon glyphicon-arrow-down"></span>
+                <span class="fa fa-arrow-down"></span>
             </div>
         </div>
     </div>
@@ -156,7 +156,7 @@
     <div class="row equal">
         <div class="col-md-5 col-sm-offset-1">
             <div class="panel panel-uk-success">
-                <div class="panel-heading"><i class="glyphicon glyphicon-ok"></i> &thinsp; Pass?
+                <div class="panel-heading"><i class="fa fa-check-circle"></i> &thinsp; Pass?
                 </div>
                 <div class="panel-body">
                     Congratulations!<br>
@@ -177,7 +177,7 @@
         </div>
         <div class="col-md-5">
             <div class="panel panel-uk-danger">
-                <div class="panel-heading"><i class="glyphicon glyphicon-remove"></i> &thinsp; Fail?
+                <div class="panel-heading"><i class="fa fa-question"></i> &thinsp; Fail?
                 </div>
                 <div class="panel-body">
                     Yikes!<br>

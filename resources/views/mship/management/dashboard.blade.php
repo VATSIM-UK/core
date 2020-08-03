@@ -37,7 +37,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Personal Details
+                <div class="panel-heading"><i class="fa fa-male"></i> &thinsp; Personal Details
                 </div>
                 <div class="panel-body">
                     <!-- Content Of Panel [START] -->
@@ -93,7 +93,7 @@
                 </div>
             </div>
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-lock"></i> &thinsp; Secondary Password
+                <div class="panel-heading"><i class="fa fa-lock"></i> &thinsp; Secondary Password
                 </div>
                 <div class="panel-body">
                     <!-- Content Of Panel [START] -->
@@ -396,7 +396,7 @@
 
             @if(!$_account->is_banned)
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-earphone"></i>
+                    <div class="panel-heading"><i class="fab fa-teamspeak"></i>
                         TeamSpeak Registrations
                         <div class="pull-right">
                             <a href="{{ route("teamspeak.new") }}">

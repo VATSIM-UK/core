@@ -168,7 +168,7 @@
                     @if(Auth::user()->can('use-permission', 'adm'))
                         <li class="dropdown dropdown-large">
                             <a href="{{ route("adm.index") }}" title="Admin Dashboard">
-                                <i class="fa fa-dashboard"></i>
+                                <i class="fa fa-briefcase"></i>
                             </a>
                         </li>
                     @endif
@@ -222,7 +222,7 @@
                 <ul class="nav navbar-nav navbar-right navcustom">
                     <li class="dropdown dropdown-large">
                         <a href="{{ route("login") }}" title="Login">
-                            Login &thinsp;<i class="glyphicon glyphicon-log-in"></i>
+                            Login &thinsp;<i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
                 </ul>
