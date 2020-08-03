@@ -79,6 +79,10 @@ class Discord
             ->retry(2, 10000)
             ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}");
 
+        if ($response->status() == 404) {
+            return true;
+        }
+
         return $this->result($response);
     }
 
