@@ -42,13 +42,12 @@
                                 <a href="{{ route('discord.invite') }}" style="text-decoration: none;" target="_blank">
                                     <button class="btn btn-primary center-block"><em class="fab fa-discord"></em> &thinsp; Join Discord Server</button>
                                 </a>
-                            @endif
-                            @if($_account->discord_id)
+                            @else
                                 <a href="#" style="text-decoration: none;">
                                     <button class="btn btn-primary center-block" disabled><em class="fab fa-discord"></em> &thinsp; Already Joined</button>
                                 </a>
                                 <p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
-                        @endif
+                            @endif
                         </p>
                     </div>
                 </div>
@@ -71,8 +70,7 @@
                                 <a href="{{ route('discord.create') }}" style="text-decoration: none;">
                                     <button class="btn btn-primary center-block"><em class="fab fa-discord"></em> &thinsp; Link Discord Account</button>
                                 </a>
-                            @endif
-                            @if($_account->discord_id)
+                            @else
                                 <a href="#" style="text-decoration: none;">
                                     <button class="btn btn-primary center-block" disabled><em class="fab fa-discord"></em> &thinsp; Discord Account {{ $_account->discord_id }} Linked</button>
                                 </a>
