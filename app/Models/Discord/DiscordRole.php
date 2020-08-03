@@ -3,7 +3,6 @@
 namespace App\Models\Discord;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Permission\Models\Permission;
 
 class DiscordRole extends Model
 {
