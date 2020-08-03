@@ -62,6 +62,7 @@ class ManageDiscord extends Command
             $this->grantRoles();
             $this->removeRoles();
             $this->assignNickname();
+            sleep(5);
         }
 
         $this->info($discordUsers->count().' user(s) updated on Discord.');
