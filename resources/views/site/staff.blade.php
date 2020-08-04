@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Staff
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Staff
                     </div>
                     <div class="panel-body">
                         <p>VATSIM UK is led by the Division Director and is managed at a strategic level by the Division
@@ -17,11 +17,11 @@
             </div>
             <div class="col-md-6">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Contact Us
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Contact Us
                     </div>
                     <div class="panel-body text-center">
                         <p>Need to talk to a member of staff? All our staff members can be contacted through our <strong>helpdesk</strong></p>
-                        <a href="https://helpdesk.vatsim.uk" target="_blank" class="btn btn-info">Contact Staff / Department <i class="glyphicon glyphicon-chevron-right"></i></a>
+                        <a href="https://helpdesk.vatsim.uk" target="_blank" class="btn btn-info">Contact Staff / Department <i class="fa fa-chevron-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -33,7 +33,7 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Management
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Management
                     </div>
                     <div class="panel-body">
 
@@ -56,7 +56,7 @@
             <!-- Operations -->
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Operations
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Operations
                     </div>
                     <div class="panel-body">
                         <h4 class="text-center">Operations Director (VATUK9)</h4><br/>
@@ -65,7 +65,7 @@
                 </div>
 
                     <div class="panel panel-ukblue">
-                        <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Member Services
+                        <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Member Services
                         </div>
                         <div class="panel-body">
                             <h4 class="text-center">Member Services Director (VATUK3)</h4><br/>
@@ -91,7 +91,7 @@
             <!-- Marketing -->
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Marketing
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Marketing
                     </div>
                     <div class="panel-body">
                         <h4 class="text-center">Marketing Director (VATUK4)</h4><br/>
@@ -117,7 +117,7 @@
             <!-- Web Services -->
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Web Services
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Web Services
                     </div>
                     <div class="panel-body">
                         <h4 class="text-center">Web Services Director (VATUK8)</h4><br/>
@@ -164,7 +164,7 @@
             <!-- Training -->
             <div class="col-md-8">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Training
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Training
                     </div>
                     <div class="panel-body">
                         <h4 class="text-center">Training Director (VATUK5)</h4><br/>
@@ -276,7 +276,7 @@
             <!-- Other Roles -->
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Other Roles
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Other Roles
                     </div>
                     <div class="panel-body">
                         <br/>

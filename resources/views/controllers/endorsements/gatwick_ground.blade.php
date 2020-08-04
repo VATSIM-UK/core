@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Gatwick Endorsement</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Gatwick Endorsement</div>
                 <div class="panel-body">
                     Gatwick is one of the busiest airports on the VATSIM network. Before controlling it, we want to ensure you have the knowledge you need to provide a good service to pilots and get the most from your controlling session.<br>
                     <br>
@@ -31,7 +31,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group One Controlling</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Group One Controlling</div>
                 <div class="panel-body">
                     Control a total of <strong>{{ $conditions[0]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $conditions[0]->within_months }} months.</strong>
                     <ul>
@@ -54,7 +54,7 @@
         </div>
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group Two Controlling</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Group Two Controlling</div>
                 <div class="panel-body">
                     Control a total of <strong>{{ $conditions[1]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $conditions[1]->within_months }} months.</strong>
                     <ul>
@@ -77,7 +77,7 @@
         </div>
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group Three Controlling</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Group Three Controlling</div>
                 <div class="panel-body">
                     Control a total of <strong>{{ $conditions[2]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $conditions[2]->within_months }} months.</strong>
                     <ul>
@@ -103,7 +103,7 @@
     <div class="row">
         <div class="col-md-4 col-md-offset-2">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Membership Status</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Membership Status</div>
                 <div class="panel-body">
                     @if($_account->primary_state->isDivision)
                         You are a home member of the UK and no further action is required.
@@ -115,7 +115,7 @@
         </div>
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Request Moodle Course</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Request Moodle Course</div>
                 <div class="panel-body">
                     Once you have completed the requirements above, you will be able to press the button below to request access to the Moodle course and progress to Step 2.
                     <br><br>

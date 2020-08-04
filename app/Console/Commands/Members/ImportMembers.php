@@ -57,12 +57,6 @@ class ImportMembers extends Command
                 $this->processMember($member);
             });
         }
-
-        $this->sendSlackSuccess('Members imported.', [
-            'New Members:' => $this->count_new,
-            'Member Emails Updated:' => $this->count_emails,
-            'Unchanged Members:' => $this->count_none,
-        ]);
     }
 
     protected function processMember($member)
@@ -136,8 +130,6 @@ class ImportMembers extends Command
                 if ($prevAtcRating) {
                     $member->addQualification($prevAtcRating);
                 }
-            } else {
-                $this->sendSlackError('Member\'s previous rating is unavailable.', $member->id);
             }
         }
 

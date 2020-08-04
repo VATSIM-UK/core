@@ -45,8 +45,6 @@ Route::group([
     'prefix'    => 'webhook',
     'namespace' => 'Webhook',
 ], function () {
-    Route::any('slack')->uses('Slack@anyRouter')->name('slack');
-
     Route::post('mailgun')->uses('Mailgun@event')->middleware('auth.basic.once');
     Route::post('sendgrid')->uses('SendGrid@events')->middleware('auth.basic.once');
 });
@@ -114,11 +112,18 @@ Route::group([
     Route::post('{mshipRegistration}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
 });
 
-Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth_full_group']], function () {
-    Route::model('slackToken', App\Models\Sys\Token::class);
-    Route::get('/new', ['as' => 'slack.new', 'uses' => 'Registration@getNew']);
-    Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);
-    Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
+// Discord
+Route::group([
+    'as' => 'discord.',
+    'prefix' => 'discord',
+    'namespace' => 'Discord',
+    'middleware' => 'auth_full_group',
+], function () {
+    Route::get('/')->uses('Registration@show')->name('show');
+    Route::redirect('/invite', config('services.discord.invite_url'))->name('invite');
+    Route::get('/create')->uses('Registration@create')->name('create');
+    Route::get('/store')->uses('Registration@store')->name('store');
+    Route::get('/destroy')->uses('Registration@destroy')->name('destroy');
 });
 
 // UKCP

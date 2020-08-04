@@ -3,7 +3,9 @@ $screen-sm: 802px;
 
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Dosis:200,400,500,600);
 @import "_bootstrap";
-@import "node_modules/font-awesome/scss/font-awesome";
+@import "node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@import "node_modules/@fortawesome/fontawesome-free/scss/solid";
+@import "node_modules/@fortawesome/fontawesome-free/scss/brands";
 @import "node_modules/jquery-datetimepicker/jquery.datetimepicker";
 @import "_nav";
 @import "_visit-transfer";

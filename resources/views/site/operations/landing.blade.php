@@ -15,7 +15,7 @@
 
         <div class="col-md-8 col-md-offset-2 ">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-cog"></i> &thinsp; Operations
+                <div class="panel-heading"><i class="fa fa-cog"></i> &thinsp; Operations
                 </div>
                 <div class="panel-body">
                     <p>
