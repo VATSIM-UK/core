@@ -456,7 +456,7 @@
                     Discord Registration
                     <div class="pull-right">
                         @if(!$_account->discord_id)
-                            <a href="{{ route("discord.show") }}">
+                            <a href="{{ route("discord.create") }}">
                                 <em class="fa fa-plus-circle"></em>
                             </a>
                         @endif
@@ -470,7 +470,7 @@
                                 <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
                             @elseif($_account->can('use-permission', 'discordbeta'))
                                 You are not yet
-                                registered.  {!! link_to_route("discord.show", "Click here to register.") !!}
+                                registered.  {!! link_to_route("discord.create", "Click here to register.") !!}
                             @else
                                 Discord is currently in beta testing and will be available soon.
                             @endif

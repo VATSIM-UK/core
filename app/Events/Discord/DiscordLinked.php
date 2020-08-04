@@ -16,9 +16,17 @@ class DiscordLinked extends Event
     /* @var int */
     public $discordId;
 
-    public function __construct(Account $account, int $discordId)
+    /* @var string */
+    public $discordAccessToken;
+
+    /* @var string */
+    public $discordRefreshToken;
+
+    public function __construct(Account $account, $discordUser, $token)
     {
         $this->account = $account;
-        $this->discordId = $discordId;
+        $this->discordId = $discordUser->getId();
+        $this->discordAccessToken = $token->getToken();
+        $this->discordRefreshToken = $token->getRefreshToken();
     }
 }

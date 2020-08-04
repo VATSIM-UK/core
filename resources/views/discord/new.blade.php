@@ -24,45 +24,18 @@
 
         <div class="row">
 
-            <div class="col-md-4 col-md-offset-2">
+            <div class="col-md-6 col-md-offset-3">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"> Step 1: Join our Discord Server
+                    <div class="panel-heading">
+                        <em class="fa fa-cog"></em> &thinsp; Link Your Discord Account to VATSIM UK
                     </div>
                     <div class="panel-body">
                         <p>
-                            The first step is to join our Discord server.
+                            Clicking the button below will take you to Discord.<br>
+                            There, you will need to create an account or login to an existing one.
                         </p>
                         <p>
-                            Whether you've used Discord before or not, clicking the button below will take you to a page to either sign in or register with Discord.
-                        </p>
-                        <br />
-                        <p>
-
-                            @if(!$_account->discord_id)
-                                <a href="{{ route('discord.invite') }}" style="text-decoration: none;" target="_blank">
-                                    <button class="btn btn-primary center-block"><em class="fab fa-discord"></em> &thinsp; Join Discord Server</button>
-                                </a>
-                            @else
-                                <a href="#" style="text-decoration: none;">
-                                    <button class="btn btn-primary center-block" disabled><em class="fab fa-discord"></em> &thinsp; Already Joined</button>
-                                </a>
-                                <p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
-                            @endif
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="panel panel-ukblue">
-                    <div class="panel-heading"> Step 2: Link Your Discord Account to VATSIM UK
-                    </div>
-                    <div class="panel-body">
-                        <p>
-                            The second step is to link your Discord account to your VATSIM UK account.
-                        </p>
-                        <p>
-                            This allows us to assign you the relevant permissions on our Discord server.
+                            Once logged in, you will be asked to click "Authorize" and give VATSIM UK permission to add you to our Discord server and assign you the relevant permissions.
                         </p>
                         <br />
                         <p>
@@ -78,6 +51,5 @@
                             @endif
                         </p>
                     </div>
-                </div>
             </div>
 @stop

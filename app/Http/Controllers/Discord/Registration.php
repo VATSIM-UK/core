@@ -41,7 +41,7 @@ class Registration extends BaseController
     public function create(Request $request)
     {
         $authUrl = $this->provider->getAuthorizationUrl([
-            'scope' => ['identify'],
+            'scope' => ['identify', 'guilds.join'],
         ]);
 
         return redirect()->away($authUrl);
@@ -66,7 +66,7 @@ class Registration extends BaseController
             return $this->error('This Discord account is already linked to a VATSIM UK account. Please contact Web Services.');
         }
 
-        event(new DiscordLinked($request->user(), $discordUser->getId()));
+        event(new DiscordLinked($request->user(), $discordUser, $token));
 
         return redirect()->route('mship.manage.dashboard')->withSuccess('Your Discord account has been linked and you will be able to access our Discord server shortly.');
     }
