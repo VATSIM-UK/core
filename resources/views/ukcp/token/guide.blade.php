@@ -132,8 +132,7 @@
                                 href="https://github.com/VATSIM-UK/uk-controller-plugin/blob/develop/docs/README.md">full
                             feature list</a>.</p>
 
-                    <p>Having trouble or got questions? Ask <a href="{{ route('slack.new') }}">on Slack</a> or <a
-                                href="https://community.vatsim.uk">our Forum</a>!</p>
+                    <p>Having trouble or got questions? Ask on <a href="https://community.vatsim.uk">our Forum</a>!</p>
                 </div>
             </div>
         </div>
