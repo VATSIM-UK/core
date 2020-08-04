@@ -86,8 +86,8 @@ class Discord
     public function invite(Account $account): bool
     {
         $response = Http::withHeaders($this->headers)
-            ->put("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}",[
-                'access_token' => $account->discord_access_token
+            ->put("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}", [
+                'access_token' => $account->discord_access_token,
             ]);
 
         return $this->result($response);
