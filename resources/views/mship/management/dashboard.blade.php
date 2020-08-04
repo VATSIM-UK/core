@@ -306,7 +306,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             We are no longer using Slack in VATSIM UK.<br>
-                            You can sign up for Discord, Slack's replacement, here by <a href="{{ route('discord.show') }}">clicking here</a>.
+                            You can sign up for Discord, Slack's replacement, by <a href="{{ route('discord.show') }}">clicking here</a>.
                         </div>
                     </div>
                 </div>
