@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Artisan;
 
 class SetupDiscordUser implements ShouldQueue
 {
+    public $discord;
+
+    public function __construct(Discord $discord)
+    {
+        $this->discord = $discord;
+    }
+
     /**
      * Handle the event.
      *
@@ -22,7 +29,7 @@ class SetupDiscordUser implements ShouldQueue
         $event->account->discord_refresh_token = $event->discordRefreshToken;
         $event->account->save();
 
-        (new Discord())->invite($event->account);
+        $this->discord->invite($event->account);
 
         Artisan::call('discord:manager --force='.$event->account->id);
     }
