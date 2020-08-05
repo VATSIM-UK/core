@@ -55,11 +55,11 @@ class DiscordTest extends TestCase
         $this->assertArrayHasKey('client_id', $parameters);
 
         $expected = [
-            'scope' => 'identify',
+            'scope' => 'identify%20guilds.join',
             'response_type' => 'code',
             'approval_prompt' => 'auto',
             'redirect_uri' => urlencode(config('services.discord.redirect_uri')),
-            'client_id' => config('services.discord.client_id'),
+            'client_id' => (int) config('services.discord.client_id'),
         ];
 
         $this->assertEquals($parameters->except('state')->toArray(), $expected);

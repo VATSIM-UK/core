@@ -44,7 +44,6 @@ return [
     ],
 
     'discord' => [
-        'invite_url' => env('DISCORD_INVITE_URL', null),
         'guild_id' => env('DISCORD_GUILD_ID', null),
         'token' => env('DISCORD_TOKEN', null),
         'client_id' => env('DISCORD_CLIENT', null),
