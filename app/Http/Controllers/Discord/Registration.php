@@ -68,7 +68,7 @@ class Registration extends BaseController
 
         event(new DiscordLinked($request->user(), $discordUser, $token));
 
-        return redirect()->route('mship.manage.dashboard')->withSuccess('Your Discord account has been linked and you will be able to access our Discord server shortly.');
+        return redirect()->route('mship.manage.dashboard')->withSuccess('Your Discord account has been linked and you will be able to access our Discord server shortly, go to Discord to see!');
     }
 
     public function destroy(Request $request)
