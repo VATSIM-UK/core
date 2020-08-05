@@ -58,7 +58,7 @@ class Registration extends BaseController
             return $this->error('Something went wrong. Please try again.');
         }
 
-        if (! strstr($token->getValues()['scope'], 'identify')) {
+        if (! strstr($token->getValues()['scope'], 'identify') || ! strstr($token->getValues()['scope'], 'guilds.join') ) {
             return $this->error("We didn't get all of the permissions required, please try again.");
         }
 
