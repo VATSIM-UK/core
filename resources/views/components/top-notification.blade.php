@@ -1,5 +1,5 @@
 {{-- To disable the use of the top_notification, simply comment out or remove the contents of this file --}}
-@if(! optional(auth()->user())->discord_id)
+@if(auth()->user() && ! auth()->user()->discord_id)
     <div data-top-notification-id="vuk-notification-discord0820" data-top-notification-cookie-expiration-days="2" class="top_notification">
         <div class="container">
             <div class="row">
@@ -7,7 +7,7 @@
                     <em class="fab fa-discord"></em>
                 </div>
                 <div class="col-md-8 message">
-                    <p><strong>Discord has arrived. Join us {{Auth::user()->name}}!</strong></p>
+                    <p><strong>Discord has arrived. Join us {{ auth()->user()->name_first }}!</strong></p>
                     <p>Discord is now available to all VATSIM UK members. Registration takes less than 60 seconds. Simply hit the button to get started. <strong>Slack will be closed from Sunday 16th August</strong>.</p>
                 </div>
                 <div class="col-md-3 cta text-center">
