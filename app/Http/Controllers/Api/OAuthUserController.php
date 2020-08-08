@@ -43,7 +43,7 @@ class OAuthUserController
 
         $return['pilot_ratings_bin'] = 0;
         $return['pilot_ratings'] = [];
-        if (count($account->qualifications_pilot) < 1) {
+        if ($account->qualifications_pilot->isEmpty()) {
             $return['pilot_ratings'][] = 0;
             $return['pilot_ratings_human_short'][] = 'NA';
             $return['pilot_ratings_human_long'][] = 'None Awarded';
