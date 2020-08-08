@@ -30,7 +30,7 @@ class OAuthUserController
             $return['email'] = $ssoEmailAssigned[0]->email->email;
         }
 
-        if (count($account->qualification_atc) < 1) {
+        if ($account->qualifications_atc->isEmpty()) {
             $return['atc_rating'][] = 0;
             $return['atc_rating_human_short'][] = 'NA';
             $return['atc_rating_human_long'][] = 'None Awarded';
