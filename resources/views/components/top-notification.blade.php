@@ -1,5 +1,5 @@
 {{-- To disable the use of the top_notification, simply comment out or remove the contents of this file --}}
-@if(!Auth::user()->discord_id)
+@if(! optional(auth()->user())->discord_id)
     <div data-top-notification-id="vuk-notification-discord0820" data-top-notification-cookie-expiration-days="2" class="top_notification">
         <div class="container">
             <div class="row">
