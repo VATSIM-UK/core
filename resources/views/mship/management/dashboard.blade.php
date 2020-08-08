@@ -306,7 +306,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             We are no longer using Slack in VATSIM UK.<br>
-                            You can sign up for Discord, Slack's replacement, by <a href="{{ route('discord.show') }}">clicking here</a>.
+                            You can sign up for Discord, Slack's replacement, by <a href="{{ route('discord.show') }}">clicking here</a>.<br>
+                            <a href="https://community.vatsim.uk/news/web-services/slacks-retirement-our-transition-to-discord-r336/">Find out why we are moving from Slack to Discord</a>.
                         </div>
                     </div>
                 </div>
@@ -468,11 +469,9 @@
                             @if($_account->discord_id)
                                 Currently registered with Discord ID {{ $_account->discord_id }}. <br/>
                                 <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
-                            @elseif($_account->can('use-permission', 'discordbeta'))
+                            @else
                                 You are not yet
                                 registered.  {!! link_to_route("discord.create", "Click here to register.") !!}
-                            @else
-                                Discord is currently in beta testing and will be available soon.
                             @endif
                         </div>
                     </div>
