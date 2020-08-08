@@ -64,25 +64,24 @@ class TestEmails extends Command
     public function handle()
     {
         if (\App::environment('production')) {
-            $this->log('ERROR: this command cannot be run in production!', 'error');
+            $this->error('ERROR: this command cannot be run in production!');
 
             return;
-        } elseif (config('mail.host') !== 'mailtrap.io') {
-            $this->log('ERROR: you should be using mailtrap.io before running this command!', 'error');
+        } elseif (stripos(config('mail.host'), 'mailtrap.io') === false) {
+            $this->error('ERROR: you should be using mailtrap.io before running this command!');
 
             return;
-        } elseif (! $this->confirm(
-            'This command will make changes to the database that must be manually reversed.'.PHP_EOL
-            .' Do you wish to continue?'
+        } elseif (!$this->confirm(
+            'This command will make changes to the database that must be manually reversed.' . PHP_EOL
+            . ' Do you wish to continue?'
         )) {
             return;
         }
-
         $this->log('testAccount');
         $id = 1;
         $ids = Account::orderBy('id')->pluck('id')->toArray();
         while (true) {
-            if (! in_array($id, $ids)) {
+            if (!in_array($id, $ids)) {
                 break;
             } else {
                 $id++;
@@ -118,33 +117,48 @@ class TestEmails extends Command
         $testReference->save();
 
         $this->log('testBan');
-        $testBan = new Ban();
-        $testBan->save();
+        $testBan = factory(Ban::class)->create();
 
         $this->log('testFeedback');
-        $testFeedback = new Feedback();
+        $testFeedback = factory(Feedback::class)->create();
         $testFeedback->form_id = 1;
         $testFeedback->account_id = $testAccount->id;
         $testFeedback->save();
 
         // main
         $testAccount->notify(new BanCreated($testBan));
+        sleep(1);
         $testAccount->notify(new BanModified($testBan));
+        sleep(1);
         $testAccount->notify(new BanRepealed($testBan));
+        sleep(1);
         $testAccount->notify(new EmailVerification($testEmail, $testTokenEmailVerify));
+        sleep(1);
         $testAccount->notify(new FeedbackReceived($testFeedback));
+        sleep(1);
         $testAccount->notify(new WelcomeMember());
+        sleep(1);
         $testAccount->notify(new ForgottenPasswordLink($testTokenSecurityReset));
+        sleep(1);
         $testAccount->notify(new S1TrainingOpportunities());
+        sleep(1);
 
         // visiting/transfer
         $testAccount->notify(new ApplicationAccepted($testApplication));
+        sleep(1);
         $testAccount->notify(new ApplicationReferenceAccepted($testReference));
+        sleep(1);
         $testReference->notify(new ApplicationReferenceNoLongerNeeded($testReference));
+        sleep(1);
         $testAccount->notify(new ApplicationReferenceRejected($testReference));
+        sleep(1);
         $testReference->notify(new ApplicationReferenceRequest($testReference));
+        sleep(1);
         $testAccount->notify(new ApplicationReferenceSubmitted($testReference));
+        sleep(1);
         $testAccount->notify(new ApplicationReview($testApplication));
+        sleep(1);
         $testAccount->notify(new ApplicationStatusChanged($testApplication));
+        sleep(1);
     }
 }
