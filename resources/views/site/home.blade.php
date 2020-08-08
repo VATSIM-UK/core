@@ -92,11 +92,12 @@
 </head>
 
 <body>
-
+@if(currentUserHasAuth())
+    @include('components.top-notification')
+@endif
 <!-- UK TopNav [START] -->
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-
         <div class="navbar-left">
             <button class="navbar-toggler" type="button">&#9776;</button>
             <a class="navbar-brand" href="#">
@@ -462,7 +463,10 @@
 @endif
 
 <!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jarallax/1.10.3/jarallax.min.js" integrity="sha512-1RIeczLHpQNM864FPmyjgIOPQmljv9ixHg5J1knRhTApLpvxqA0vOTxgGF89/DpgZIAXRCn9dRiakPjyTUl9Rg==" crossorigin="anonymous"></script>
 <script src="{{ mix('js/home.js') }}"></script>
+<script src="{{ mix('js/top-notification.js') }}"></script>
+
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax.min.js"></script>
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax-video.min.js"></script>
 @include('partials/_snow')
