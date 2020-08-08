@@ -77,7 +77,7 @@ VATSIM UK provides many different ways to get to know and keep in touch with mem
 <div style="margin-left:2em; margin-bottom: 2em;"><a href="https://community.vatsim.uk" class="btn btn-primary">Visit our forum</a></div>
 
 <p>Discord - Our Discord server provides an opportunity for more instant communication with members. Come here to introduce yourself, find someone to help you with a software problem, and get the latest news</p>
-<div style="margin-left:2em; margin-bottom: 2em;"><a href="{{route('discord.show')}}" class="btn btn-primary">Register for discord</a></div>
+<div style="margin-left:2em; margin-bottom: 2em;"><a href="{{route('discord.show')}}" class="btn btn-primary">Register for Discord</a></div>
 
 
 <h2>What next?</h2>
