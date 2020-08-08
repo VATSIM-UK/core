@@ -30,7 +30,7 @@ class OAuthUserController
             $return['email'] = $ssoEmailAssigned[0]->email->email;
         }
 
-        if (count($account->qualification_atc) < 1) {
+        if ($account->qualifications_atc->isEmpty()) {
             $return['atc_rating'][] = 0;
             $return['atc_rating_human_short'][] = 'NA';
             $return['atc_rating_human_long'][] = 'None Awarded';
@@ -43,7 +43,7 @@ class OAuthUserController
 
         $return['pilot_ratings_bin'] = 0;
         $return['pilot_ratings'] = [];
-        if (count($account->qualifications_pilot) < 1) {
+        if ($account->qualifications_pilot->isEmpty()) {
             $return['pilot_ratings'][] = 0;
             $return['pilot_ratings_human_short'][] = 'NA';
             $return['pilot_ratings_human_long'][] = 'None Awarded';
