@@ -2,13 +2,13 @@
 @if(!Auth::user()->discord_id)
     <div data-top-notification-id="vuk-notification-discord0820" data-top-notification-cookie-expiration-days="2" class="top_notification">
         <div class="container">
-            <div class="row row-eq-height">
+            <div class="row">
                 <div class="col-md-1 icon text-center">
-                    <i class="fab fa-discord"></i>
+                    <em class="fab fa-discord"></em>
                 </div>
                 <div class="col-md-8 message">
-                    <p><b>Discord has arrived. Join us {{Auth::user()->name}}!</b></p>
-                    <p>Discord is now available to all VATSIM UK members. Registration takes less than 60 seconds. Simply hit the button to get started. <b>Slack will be closed from Sunday 16th August</b>.</p>
+                    <p><strong>Discord has arrived. Join us {{Auth::user()->name}}!</strong></p>
+                    <p>Discord is now available to all VATSIM UK members. Registration takes less than 60 seconds. Simply hit the button to get started. <strong>Slack will be closed from Sunday 16th August</strong>.</p>
                 </div>
                 <div class="col-md-3 cta text-center">
                     <a href="{{ route('discord.show') }}" class="button secondary">
