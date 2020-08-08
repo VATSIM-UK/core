@@ -5,7 +5,7 @@
 <h2>👋 Welcome to VATSIM United Kingdom!</h2>
 <p>
     We are glad to have you on board, and by picking VATSIM UK as your home division,
-    you are now part of one of busiest divisions on the network. Whether you are here to learn about Air Traffic Control,
+    you are now part of one of the busiest divisions on the network. Whether you are here to learn about Air Traffic Control,
     to improve your pilot skills or just to meet new people, you are sure to find something new.
 </p>
 <p>
