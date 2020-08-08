@@ -8,20 +8,21 @@
 </p>
 <hr>
 <table>
+    <caption style="display: none">Table showing member's details</caption>
     <tr>
-        <th>CID</th>
+        <th scope="row">CID</th>
         <td>{!! $account->id !!}</td>
     </tr>
     <tr>
-        <th>Full Name</th>
+        <th scope="row">Full Name</th>
         <td>{!! $account->name !!}</td>
     </tr>
     <tr>
-        <th>Primary Email</th>
+        <th scope="row">Primary Email</th>
         <td>{!! $account->email !!}</td>
     </tr>
     <tr>
-        <th>Secondary Emails</th>
+        <th scope="row">Secondary Emails</th>
         <td>
             @forelse($account->secondaryEmails as $e)
                 {!! $e->email !!}<br/>
@@ -32,19 +33,19 @@
         </td>
     </tr>
     <tr>
-        <th>Status</th>
+        <th scope="row">Status</th>
         <td>{!! $account->status_string !!}</td>
     </tr>
     <tr>
-        <th>State</th>
+        <th scope="row">State</th>
         <td>{!! $account->primary_state !!}</td>
     </tr>
     <tr>
-        <th>ATC Qualification</th>
+        <th scope="row">ATC Qualification</th>
         <td>{!! $account->qualification_atc !!}</td>
     </tr>
     <tr>
-        <th>Pilot Qualification(s)</th>
+        <th scope="row">Pilot Qualification(s)</th>
         <td>{!! $account->qualifications_pilot_string !!}</td>
     </tr>
 </table>
