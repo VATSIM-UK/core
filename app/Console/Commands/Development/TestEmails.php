@@ -72,9 +72,9 @@ class TestEmails extends Command
             $this->error('ERROR: you should be using mailtrap.io before running this command!');
 
             return;
-        } elseif (!$this->confirm(
-            'This command will make changes to the database that must be manually reversed.' . PHP_EOL
-            . ' Do you wish to continue?'
+        } elseif (! $this->confirm(
+            'This command will make changes to the database that must be manually reversed.'.PHP_EOL
+            .' Do you wish to continue?'
         )) {
             return;
         }
@@ -82,7 +82,7 @@ class TestEmails extends Command
         $id = 1;
         $ids = Account::orderBy('id')->pluck('id')->toArray();
         while (true) {
-            if (!in_array($id, $ids)) {
+            if (! in_array($id, $ids)) {
                 break;
             } else {
                 $id++;
@@ -109,12 +109,12 @@ class TestEmails extends Command
         $this->log('testApplication');
         $testApplication = factory(Application::class)->create([
             'account_id' => $testAccount->id,
-            'facility_id' => factory(Facility::class)->create()->id
+            'facility_id' => factory(Facility::class)->create()->id,
         ]);
         $this->log('testReference');
         $testReference = factory(Reference::class)->create([
             'account_id' => $testAccount->id,
-            'application_id' => $testApplication->id
+            'application_id' => $testApplication->id,
         ]);
 
         $this->log('testBan');
