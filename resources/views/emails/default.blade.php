@@ -122,8 +122,6 @@
 
         p, ul {
             margin-bottom: 10px;
-            font-weight: normal;
-            font-size:14px;
         }
 
         ul li {
