@@ -92,9 +92,7 @@
 </head>
 
 <body>
-@if(currentUserHasAuth())
-    @include('components.top-notification')
-@endif
+@include('components.top-notification')
 <!-- UK TopNav [START] -->
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
