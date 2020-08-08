@@ -8,6 +8,7 @@ use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Sys\Token;
 use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
 use App\Notifications\ApplicationAccepted;
 use App\Notifications\ApplicationReferenceAccepted;
@@ -106,15 +107,15 @@ class TestEmails extends Command
         $testTokenSecurityReset = Token::generate('mship_account_security_reset', false, $testAccount);
 
         $this->log('testApplication');
-        $testApplication = new Application();
-        $testApplication->facility_id = 1;
-        $testApplication->account_id = $testAccount->id;
-        $testApplication->save();
+        $testApplication = factory(Application::class)->create([
+            'account_id' => $testAccount->id,
+            'facility_id' => factory(Facility::class)->create()->id
+        ]);
         $this->log('testReference');
-        $testReference = new Reference();
-        $testReference->account_id = $testAccount->id;
-        $testReference->application_id = $testApplication->id;
-        $testReference->save();
+        $testReference = factory(Reference::class)->create([
+            'account_id' => $testAccount->id,
+            'application_id' => $testApplication->id
+        ]);
 
         $this->log('testBan');
         $testBan = factory(Ban::class)->create();

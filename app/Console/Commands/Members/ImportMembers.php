@@ -7,6 +7,7 @@ use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
+use App\Notifications\Mship\WelcomeMember;
 use DB;
 use Exception;
 use Illuminate\Support\Facades\Validator;
@@ -143,6 +144,9 @@ class ImportMembers extends Command
         }
 
         // anything else is processed by the Members:CertUpdate script
+
+        // Send them a welcome email
+        $member->notify(new WelcomeMember());
     }
 
     protected function updateMember($member_data)

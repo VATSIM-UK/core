@@ -6,30 +6,50 @@
     This email serves as confirmation that your central account with VATSIM UK has been created. We have received the
     following details about you:
 </p>
+<hr>
+<table>
+    <tr>
+        <th>CID</th>
+        <td>{!! $account->id !!}</td>
+    </tr>
+    <tr>
+        <th>Full Name</th>
+        <td>{!! $account->name !!}</td>
+    </tr>
+    <tr>
+        <th>Primary Email</th>
+        <td>{!! $account->email !!}</td>
+    </tr>
+    <tr>
+        <th>Secondary Emails</th>
+        <td>
+            @forelse($account->secondaryEmails as $e)
+                {!! $e->email !!}<br/>
+            @empty
 
-<p>
-    CID: {!! $account->id !!}<br/>
-    Full Name: {!! $account->name !!}<br/>
-    Primary Email: {!! $account->email !!}<br/>
-    Secondary Emails:<br/>
-    @foreach($account->secondaryEmails as $e)
-        -- {!! $e->email !!}<br/>
-    @endforeach
-    @if(count($account->secondaryEmails) < 1)
-        No secondary emails registered.<br/>
-    @endif
-</p>
+                No secondary emails registered.
+            @endforelse
+        </td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td>{!! $account->status_string !!}</td>
+    </tr>
+    <tr>
+        <th>State</th>
+        <td>{!! $account->primary_state !!}</td>
+    </tr>
+    <tr>
+        <th>ATC Qualification</th>
+        <td>{!! $account->qualification_atc !!}</td>
+    </tr>
+    <tr>
+        <th>Pilot Qualification(s)</th>
+        <td>{!! $account->qualifications_pilot_string !!}</td>
+    </tr>
+</table>
 
-<p>
-    Status: {!! $account->status_string !!}<br/>
-    State: {!! $account->primary_state !!}<br/>
-</p>
-
-<p>
-    ATC Qualification: {!! $account->qualification_atc !!}<br/>
-    Pilot Qualification(s): {!! $account->qualifications_pilot_string !!}<br/>
-</p>
-
+<hr>
 <p>
     Now that your account has been created, you can login to any of our web services and these details will be
     transferred automatically.
@@ -42,9 +62,23 @@
 
 <p>
     If any details are incorrect, or you have any concerns, please
-    contact {!! link_to('mailto:community@vatsim.uk', 'our community department') !!} who will be able to help you
+    contact {!! link_to('mailto:member-services@vatsim.uk', 'our Member Services team') !!} who will be able to help you
     further.
 </p>
+
+
+<h2>Explore the community</h2>
+VATSIM UK provides many different ways to get to know and keep in touch with members, activities in the division and more:
+
+<p>TeamSpeak - We use TeamSpeak for voice communication for things like coordination whilst controlling, mentoring sessions and general chat</p>
+<div style="margin-left:2em; margin-bottom: 2em;"><a href="{{route('site.community.teamspeak')}}" class="btn btn-primary">Register for TeamSpeak</a></div>
+
+<p>Community Forum - Our community forum is a place for text discussion; from questions to expressions of interest for events, this is the main place to go for formal help and discussion</p>
+<div style="margin-left:2em; margin-bottom: 2em;"><a href="https://community.vatsim.uk" class="btn btn-primary">Visit our forum</a></div>
+
+<p>Discord - Our Discord server provides an opportunity for more instant communication with members. Come here to introduce yourself, find someone to help you with a software problem, and get the latest news</p>
+<div style="margin-left:2em; margin-bottom: 2em;"><a href="{{route('discord.show')}}" class="btn btn-primary">Register for discord</a></div>
+
 
 <h2>What next?</h2>
 
@@ -61,12 +95,6 @@
 <p>
     For both Pilot and ATC training our online system will allow you to book mentoring (once you are enrolled as per the above links):
     {!! link_to("https://cts.vatsim.uk/", "https://cts.vatsim.uk/") !!}
-</p>
-
-<p>
-    The UK TeamSpeak Server and Forum - these are used for voice and written communications for the entire UK community. Feel free to join the community and ask questions and meet others:
-    <li> TeamSpeak - {!! link_to_route('site.community.teamspeak') !!}</li>
-    <li> Forum - {!! link_to("https://community.vatsim.uk/", "https://community.vatsim.uk/") !!}</li>
 </p>
 
 

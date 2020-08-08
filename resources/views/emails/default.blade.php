@@ -43,6 +43,33 @@
             color: #17375e;
         }
 
+        a.btn {
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 0;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.428571429;
+            border-radius: 4px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        a.btn.btn-primary {
+            color: #fff;
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
 
         /* BODY */
         table.body-wrap {
@@ -133,7 +160,7 @@
             display:block;
         }
 
-        .content table {
+        table.deviceWidth {
             width: 100%;
         }
 
@@ -162,7 +189,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table>
+                    <table class="deviceWidth">
                         <tr>
                             <td id="panels" style="padding-left: 10px;padding-right: 10px;padding-top: 10px;background: #eeeeed;" bgcolor="#eeeeed">
                                 <table class="deviceWidth" style="padding: 0 8px 0 0;" align="center" border="0" cellpadding="0" cellspacing="0">
