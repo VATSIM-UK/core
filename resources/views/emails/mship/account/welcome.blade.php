@@ -2,7 +2,7 @@
 
 @section('body')
 
-<h2>Welcome to VATSIM United Kingdom!</h2>
+<h2>👋 Welcome to VATSIM United Kingdom!</h2>
 <p>
     We are glad to have you on board, and by picking VATSIM UK as your home division,
     you are now part of one of busiest divisions on the network. Whether you are here to learn about Air Traffic Control,
@@ -14,7 +14,7 @@
 </p>
 
 
-<h2>Explore the community</h2>
+<h2>💬 Explore the community</h2>
 VATSIM UK provides many different ways to get to know and keep in touch with members, activities in the division and more:
 
 <p>TeamSpeak - We use TeamSpeak for voice communication for things like coordination whilst controlling, mentoring sessions and general chat</p>
@@ -31,7 +31,7 @@ VATSIM UK provides many different ways to get to know and keep in touch with mem
 <div style="margin-left:2em; margin-bottom: 2em;"><a href="{{route('dashboard')}}" class="btn btn-primary">Edit your details</a></div>
 
 
-<h2>Training</h2>
+<h2>✈️️ Training</h2>
 <p>
     If you're interested in flying, VATSIM UK offers multiple pilot training courses. Browse our current offering at
     {!! link_to_route('site.pilots.landing') !!}
@@ -42,7 +42,7 @@ VATSIM UK provides many different ways to get to know and keep in touch with mem
     {!! link_to_route('site.atc.newController') !!}
 </p>
 
-<h2>Getting help</h2>
+<h2>❓ Getting help</h2>
 <p>
     We recommend making use of our Discord, community forum, or TeamSpeak to get instant help from members and division staff.
 </p>
