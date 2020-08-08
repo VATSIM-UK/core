@@ -121,6 +121,7 @@ Route::group([
 ], function () {
     Route::get('/')->uses('Registration@show')->name('show');
     Route::get('/create')->uses('Registration@create')->name('create');
+    Route::get('/store')->uses('Registration@store')->name('store');
     Route::get('/destroy')->uses('Registration@destroy')->name('destroy');
 });
 
