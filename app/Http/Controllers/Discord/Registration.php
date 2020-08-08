@@ -31,10 +31,6 @@ class Registration extends BaseController
 
     public function show()
     {
-        if (! auth()->user()->can('use-permission', 'discordbeta')) {
-            return back()->with('error', 'Discord registration is in beta testing and will be available soon.');
-        }
-
         return $this->viewMake('discord.new');
     }
 
