@@ -11,9 +11,7 @@
             </div>
         </div>
     @endif
-    @if(currentUserHasAuth())
-        @include('components.top-notification')
-    @endif
+    @include('components.top-notification')
     <div class="nav_upper_container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse"
