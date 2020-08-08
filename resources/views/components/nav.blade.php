@@ -5,11 +5,14 @@
         </div>
     @endif
     @if (sys_config('notice'))
-        <div class="top_notification">
+        <div class="sys_notification">
             <div class="text">
                 {!! sys_config('notice') !!}
             </div>
         </div>
+    @endif
+    @if(currentUserHasAuth())
+        @include('components.top-notification')
     @endif
     <div class="nav_upper_container">
         <div class="navbar-header">
