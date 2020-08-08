@@ -5,12 +5,13 @@
         </div>
     @endif
     @if (sys_config('notice'))
-        <div class="top_notification">
+        <div class="sys_notification">
             <div class="text">
                 {!! sys_config('notice') !!}
             </div>
         </div>
     @endif
+    @include('components.top-notification')
     <div class="nav_upper_container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse"

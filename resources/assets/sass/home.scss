@@ -1,5 +1,6 @@
 @import "node_modules/font-awesome/scss/font-awesome";
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Dosis:200,400,500,600");
+@import "_top-notification";
 
 @media all {
   :root {
@@ -200,17 +201,17 @@
   }
   @media (min-width: 768px) {
     .container {
-      max-width: 720px;
+      max-width: 750px;
     }
   }
   @media (min-width: 1125px) {
     .container {
-      max-width: 960px;
+      max-width: 970px;
     }
   }
   @media (min-width: 1125px) {
     .container {
-      max-width: 1400px;
+      max-width: 1170px;
     }
   }
   .row {
@@ -367,6 +368,22 @@
     border-color: #278bff;
     -webkit-box-shadow: 0 0 0 0rem rgba(80, 161, 255, 0.5);
     box-shadow: 0 0 0 0rem rgba(80, 161, 255, 0.5);
+  }
+  .top_notification {
+    position: absolute !important;
+    top: 0;
+
+    @media (min-width: 768px) {
+      .row {
+        flex-wrap: nowrap;
+        -ms-flex-wrap: nowrap;
+      }
+    }
+    @media (max-width: 768px) {
+      .row {
+        display: initial;
+      }
+    }
   }
   .nav {
     display: -webkit-box;
