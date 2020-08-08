@@ -11,6 +11,7 @@ $screen-sm: 802px;
 @import "_visit-transfer";
 @import "_vuk-letters";
 @import "_padding-utils";
+@import "_top-notification";
 
 body, html {
   margin: 0 auto;
@@ -46,20 +47,20 @@ body, html {
     text-align: center;
 }
 
-.top_notification {
-    height: 40px;
-    background-color: grey;
-    position: relative;
+.sys_notification {
+  height: 40px;
+  background-color: grey;
+  position: relative;
 
-    .text {
-        margin: 0;
-        position: absolute;
-        top: 50%;
-        -ms-transform: translateY(-50%);
-        transform: translateY(-50%);
-        text-align: center;
-        width: 100%;
-    }
+  .text {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+      text-align: center;
+      width: 100%;
+  }
 }
 
 .banner {
