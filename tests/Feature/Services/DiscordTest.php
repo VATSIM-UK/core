@@ -64,33 +64,4 @@ class DiscordTest extends TestCase
 
         $this->assertEquals($parameters->except('state')->toArray(), $expected);
     }
-
-    /** @test */
-    public function testItRedirectsWhenCodeMissing()
-    {
-        $emptyString = $this->actingAs($this->user)
-            ->from(route('discord.show'))
-            ->get(route('discord.store', [
-                'code' => '',
-            ]));
-
-        $missingCode = $this->actingAs($this->user)
-            ->from(route('discord.show'))
-            ->get(route('discord.store', [
-                //
-            ]));
-
-        $nullCode = $this->actingAs($this->user)
-            ->from(route('discord.show'))
-            ->get(route('discord.store', [
-                'code' => null,
-            ]));
-
-        $emptyString->assertRedirect(route('discord.show'))
-            ->assertSessionHasErrors('code');
-        $missingCode->assertRedirect(route('discord.show'))
-            ->assertSessionHasErrors('code');
-        $nullCode->assertRedirect(route('discord.show'))
-            ->assertSessionHasErrors('code');
-    }
 }
