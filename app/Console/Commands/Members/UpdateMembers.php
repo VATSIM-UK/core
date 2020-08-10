@@ -42,8 +42,6 @@ class UpdateMembers extends Command
             $job = new UpdateMember($member);
             $this->dispatch($job);
             $this->log("$member added to update queue");
-
-
         }
     }
 
