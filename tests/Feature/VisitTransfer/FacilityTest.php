@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\VisitTransfer;
 
-use App\Http\Middleware\MustHaveCommunityGroup;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
@@ -82,7 +81,6 @@ class FacilityTest extends TestCase
 
     public function testNoOptionToApplyWhenDivisionMember()
     {
-        $this->withoutMiddleware(MustHaveCommunityGroup::class);
         $this->insertFacilities();
 
         $this->actingAs($this->divisionUser)

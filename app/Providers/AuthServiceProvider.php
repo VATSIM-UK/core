@@ -2,15 +2,12 @@
 
 namespace App\Providers;
 
-use App\Models\Community;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Smartcars;
 use App\Models\Training\WaitingList;
 use App\Models\VisitTransfer;
 use App\Nova\Qualification;
-use App\Policies\GroupPolicy;
-use App\Policies\MembershipPolicy;
 use App\Policies\Nova\AccountPolicy;
 use App\Policies\Nova\FeedbackPolicy;
 use App\Policies\Nova\QualificationPolicy;
@@ -35,8 +32,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'password' => PasswordPolicy::class,
-        Community\Membership::class => MembershipPolicy::class,
-        Community\Group::class => GroupPolicy::class,
         Smartcars\Flight::class => ExercisePolicy::class,
         Smartcars\Pirep::class => PirepPolicy::class,
         VisitTransfer\Application::class => ApplicationPolicy::class,

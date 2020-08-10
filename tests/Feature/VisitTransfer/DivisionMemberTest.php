@@ -16,8 +16,6 @@ class DivisionMemberTest extends TestCase
 
         $this->user->addState(\App\Models\Mship\State::findByCode('DIVISION'), 'EUR', 'GBR');
         $this->user = $this->user->fresh();
-        $this->user->syncWithDefaultCommunityGroup();
-        $this->user = $this->user->fresh();
 
         $this->actingAs($this->user);
     }
