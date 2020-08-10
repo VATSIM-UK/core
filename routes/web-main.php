@@ -120,7 +120,6 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/')->uses('Registration@show')->name('show');
-    Route::redirect('/invite', config('services.discord.invite_url'))->name('invite');
     Route::get('/create')->uses('Registration@create')->name('create');
     Route::get('/store')->uses('Registration@store')->name('store');
     Route::get('/destroy')->uses('Registration@destroy')->name('destroy');
