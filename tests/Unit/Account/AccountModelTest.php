@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Account;
 
-use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Notifications\Mship\EmailVerification;
 use Carbon\Carbon;
