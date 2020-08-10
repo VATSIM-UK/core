@@ -145,8 +145,9 @@ class ImportMembers extends Command
 
         // anything else is processed by the Members:CertUpdate script
 
-        // Send them a welcome email
-        $member->notify(new WelcomeMember());
+        if ($member->hasState('DIVISION') && $member->email) {
+            $member->notify(new WelcomeMember());
+        }
     }
 
     protected function updateMember($member_data)
