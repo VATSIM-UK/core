@@ -15,41 +15,44 @@
 
 
 <h2>💬 Explore the community</h2>
-VATSIM UK provides many different ways to get to know and keep in touch with members, activities in the division and more:
+<p>We have a thriving community, why not come and join us?</p>
 
-<p>TeamSpeak - We use TeamSpeak for voice communication for things like coordination whilst controlling, mentoring sessions and general chat</p>
-<div style="margin-left:2em; margin-bottom: 2em;"><a href="{{route('site.community.teamspeak')}}" class="btn btn-primary">Register for TeamSpeak</a></div>
+<p><strong>Discord</strong> - Our Discord server provides an opportunity for instant communication with members through chat. Why not come and introduce yourself?</p>
+<div style="margin-bottom: 2em;"><a href="{{route('discord.show')}}" class="btn btn-primary">Register for Discord</a></div>
 
-<p>Community Forum - Our community forum is a place for text discussion; from questions to expressions of interest for events, this is the main place to go for formal help and discussion</p>
-<div style="margin-left:2em; margin-bottom: 2em;"><a href="https://community.vatsim.uk" class="btn btn-primary">Visit our forum</a></div>
+<p><strong>TeamSpeak</strong> - We use TeamSpeak for voice communication. This includes coordination whilst controlling, one-to-one mentoring sessions, group seminars and general chat.</p>
+<div style="margin-bottom: 2em;"><a href="{{route('site.community.teamspeak')}}" class="btn btn-primary">Join us on TeamSpeak</a></div>
 
-<p>Discord - Our Discord server provides an opportunity for more instant communication with members. Come here to introduce yourself, find someone to help you with a software problem, and get the latest news</p>
-<div style="margin-left:2em; margin-bottom: 2em;"><a href="{{route('discord.show')}}" class="btn btn-primary">Register for Discord</a></div>
+<p><strong>Community Forum</strong> - Our community forum is a place for text discussion; express your interest in events, share screenshots of your latest flight and keep up to date on the latest news.</p>
+<div style="margin-bottom: 2em;"><a href="https://community.vatsim.uk" class="btn btn-primary">Take a look around our Forum</a></div>
 
-<p>Division Website - Our division website hosts all the information you need, including our policies, staff team and information on how to enrol in our training courses. It is also where you should go to configure settings such as secondary emails and passwords for your VATSIM UK account</p>
-<div style="margin-left:2em; margin-bottom: 0.5em;"><a href="{{route('discord.show')}}" class="btn btn-primary">Visit our Site</a></div>
-<div style="margin-left:2em; margin-bottom: 2em;"><a href="{{route('dashboard')}}" class="btn btn-primary">Edit your details</a></div>
+<p><strong>Division Website</strong> - Our website hosts all the information you might need whilst a member of the network. There's lot to digest, and we'll help you find what you need!</p>
+<div style="margin-bottom: 0.5em;"><a href="{{route('site.home')}}" class="btn btn-primary">Visit our website</a></div>
+<div style="margin-bottom: 2em;"><a href="{{route('dashboard')}}" class="btn btn-primary">Check your personal details</a></div>
 
 
 <h2>✈️️ Training</h2>
 <p>
     If you're interested in flying, VATSIM UK offers multiple pilot training courses. Browse our current offering at
-    {!! link_to_route('site.pilots.landing') !!}
+    {!! link_to_route('site.pilots.landing') !!}.
 </p>
 
 <p>
     If you're interested in learning about Air Traffic Control, with the goal of controlling on the VATSIM network, check out
-    {!! link_to_route('site.atc.newController') !!}
+    {!! link_to_route('site.atc.newController') !!}.
 </p>
 
 <h2>❓ Getting help</h2>
 <p>
-    We recommend making use of our Discord, community forum, or TeamSpeak to get instant help from members and division staff.
+    We recommend making use of our <a href="{{route('discord.show')}}">Discord</a>, <a href="https://community.vatsim.uk">community forum</a>, or <a href="{{route('site.community.teamspeak')}}">TeamSpeak</a> to get help from members and division staff.
 </p>
 <p>
+    You'll be in good company, although there is lots to learn, there are plenty of people ready to support you.
+</p>
+<p style="margin-bottom: 2em;">
     If you have any concerns or difficulties getting setup, {!! link_to('mailto:member-services@vatsim.uk', 'our Member Services team') !!} would be happy to help you.
 </p>
 
 
-On behalf of the entire staff team and our members, welcome to the United Kingdom.
+<p>On behalf of the entire staff team and our members, welcome to the United Kingdom.</p>
 @stop
