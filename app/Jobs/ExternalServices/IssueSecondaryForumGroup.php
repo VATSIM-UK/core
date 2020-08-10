@@ -11,11 +11,13 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class IssueSecondaryForumGroup implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 10;
     protected $cid;
     protected $forumGroup;
 
@@ -32,49 +34,53 @@ class IssueSecondaryForumGroup implements ShouldQueue
      */
     public function handle()
     {
-        $ipboard = new Ipboard();
+        Redis::throttle('issue-secondary-forum-group')->allow(15)->every(60)->then(function () {
+            $ipboard = new Ipboard();
 
-        require_once config('services.community.init_file');
-        require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
+            require_once config('services.community.init_file');
+            require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
-        $members = \IPS\Db::i()->select('member_id', 'core_pfields_content', ['field_12=?', $this->cid]);
+            $members = \IPS\Db::i()->select('member_id', 'core_pfields_content', ['field_12=?', $this->cid]);
 
-        if (count($members) != 1) {
-            Log::info('Unable to sync TG Forum Groups for'.$this->cid);
+            if (count($members) != 1) {
+                Log::info('Unable to sync TG Forum Groups for '.$this->cid);
 
-            return;
-        }
+                return;
+            }
 
-        $ipboardUsers = [];
+            $ipboardUsers = [];
 
-        foreach ($members as $member) {
-            array_push($ipboardUsers, $member);
-        }
+            foreach ($members as $member) {
+                array_push($ipboardUsers, $member);
+            }
 
-        if (empty($ipboardUsers)) {
-            Log::info('The array for '.$this->cid.'is empty');
+            if (empty($ipboardUsers)) {
+                Log::info('The array for '.$this->cid.'is empty');
 
-            return;
-        }
+                return;
+            }
 
-        $ipboardUser = $ipboard->getMemberById($ipboardUsers[0]);
+            $ipboardUser = $ipboard->getMemberById($ipboardUsers[0]);
 
-        $currentPrimaryGroup = [$ipboardUser->primaryGroup->id];
-        $currentSecondaryGroups = [];
-        foreach ($ipboardUser->secondaryGroups as $secondaryGroup) {
-            array_push($currentSecondaryGroups, $secondaryGroup->id);
-        }
+            $currentPrimaryGroup = [$ipboardUser->primaryGroup->id];
+            $currentSecondaryGroups = [];
+            foreach ($ipboardUser->secondaryGroups as $secondaryGroup) {
+                array_push($currentSecondaryGroups, $secondaryGroup->id);
+            }
 
-        // If they already have the group, don't do anything else
-        if (in_array($this->forumGroup, $currentPrimaryGroup) || in_array($this->forumGroup, $currentSecondaryGroups)) {
-            return;
-        }
+            // If they already have the group, don't do anything else
+            if (in_array($this->forumGroup, $currentPrimaryGroup) || in_array($this->forumGroup, $currentSecondaryGroups)) {
+                return;
+            }
 
-        // If they don't have the group, give it to them.
-        $newSecondaryGroups = $currentSecondaryGroups;
-        array_push($newSecondaryGroups, $this->forumGroup);
+            // If they don't have the group, give it to them.
+            $newSecondaryGroups = $currentSecondaryGroups;
+            array_push($newSecondaryGroups, $this->forumGroup);
 
-        $this->assignSecondaryGroups($ipboardUser->id, $newSecondaryGroups);
+            $this->assignSecondaryGroups($ipboardUser->id, $newSecondaryGroups);
+        }, function () {
+            return $this->release(15);
+        });
     }
 
     private function assignSecondaryGroups(int $ipboardUser, array $secondaryGroups)
