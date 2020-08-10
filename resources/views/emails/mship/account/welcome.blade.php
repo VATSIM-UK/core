@@ -47,7 +47,7 @@
     We recommend making use of our <a href="{{route('discord.show')}}">Discord</a>, <a href="https://community.vatsim.uk">community forum</a>, or <a href="{{route('site.community.teamspeak')}}">TeamSpeak</a> to get help from members and division staff.
 </p>
 <p>
-    You'll be in good company, although there is lots to learn, there are plenty of people ready to support you.
+    Although there is a lot to learn, you will be in good company, surrounded by like-minded simming enthusiasts ready to help you get started.
 </p>
 <p style="margin-bottom: 2em;">
     If you have any concerns or difficulties getting setup, {!! link_to('mailto:member-services@vatsim.uk', 'our Member Services team') !!} would be happy to help you.
