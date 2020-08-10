@@ -298,20 +298,6 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fab fa-slack"></i>
-                    Slack Registration
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            We are no longer using Slack in VATSIM UK.<br>
-                            You can sign up for Discord, Slack's replacement, by <a href="{{ route('discord.show') }}">clicking here</a>.<br>
-                            <a href="https://community.vatsim.uk/news/web-services/slacks-retirement-our-transition-to-discord-r336/">Find out why we are moving from Slack to Discord</a>.
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="col-md-6">
             <div class="panel panel-ukblue">

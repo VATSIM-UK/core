@@ -278,19 +278,6 @@ class AccountModelTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsTheCorrectAccountBasedOnSlackId()
-    {
-        $slackID = substr(strrev(uniqid()), 0, 10);
-
-        $this->user->slack_id = $slackID;
-        $this->user->save();
-
-        $slackAccount = Account::where('slack_id', $slackID)->first();
-
-        $this->assertEquals($slackAccount->id, $this->user->fresh()->id);
-    }
-
-    /** @test */
     public function itDeterminesThatPasswordIsNotSet()
     {
         $this->assertFalse($this->user->hasPassword());
