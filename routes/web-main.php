@@ -8,7 +8,7 @@ Route::get('login')->uses('Auth\LoginController@login')->name('login');
 Route::post('login')->uses('Auth\LoginController@login')->name('login.post');
 Route::get('login-secondary')->uses('Auth\LoginController@showLoginForm')->middleware('auth:vatsim-sso')->name('auth-secondary');
 Route::post('login-secondary')->uses('Auth\SecondaryLoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
-Route::post('logout')->uses('Auth\LogoutController@logout')->name('logout');
+Route::post('logout')->uses('Auth\LogoutController')->name('logout');
 
 // Password
 Route::group([

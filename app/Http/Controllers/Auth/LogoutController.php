@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LogoutController extends BaseController
 {
-    public function logout()
+    public function __invoke()
     {
         Auth::logout();
 
