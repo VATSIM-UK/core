@@ -2,10 +2,8 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Http\Controllers\Auth\SecondaryLoginController;
 use App\Models\Mship\Account;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
