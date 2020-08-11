@@ -17,14 +17,4 @@ class RemoveSlackIdColumn extends Migration
             $table->dropColumn('slack_id');
         });
     }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        //
-    }
 }
