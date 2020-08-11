@@ -4,7 +4,6 @@ namespace App\Models\Mship;
 
 use App\Events\Mship\AccountAltered;
 use App\Exceptions\Mship\InvalidCIDException;
-use App\Providers\VATSIMOAuthProvider;
 use App\Jobs\UpdateMember;
 use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
