@@ -137,18 +137,6 @@ Route::group([
     Route::get('token/{id}/download')->uses('Token@download')->name('token.download');
 });
 
-// Community
-Route::group([
-    'as'         => 'community.membership.',
-    'prefix'     => 'community/membership',
-    'namespace'  => 'Community',
-    'middleware' => 'auth_full_group',
-], function () {
-    Route::get('deploy')->uses('Membership@getDeploy')->name('deploy');
-    Route::post('deploy/{default?}')->uses('Membership@postDeploy')->name('deploy.post')
-        ->where('default', '[default|true]');
-});
-
 // Controllers
 Route::group([
     'as'         => 'controllers.',
