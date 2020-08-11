@@ -71,7 +71,7 @@
         "cobaltgrid/vatsim-stand-status": "~1.0",
         "doctrine/dbal": "~2.10",
         "guzzlehttp/guzzle": "~6.0",
-        "laravel/framework": "^7.0",
+        "laravel/framework": "7.23.2",
         "laravel/helpers": "^1.1",
         "laravel/horizon": "^4.3",
         "laravel/passport": "^8.2",
