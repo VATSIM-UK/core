@@ -24,7 +24,6 @@ use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\NetworkData\Atc;
-use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
@@ -677,8 +676,6 @@ class Application extends Model
         foreach ($this->referees as $reference) {
             $reference->cancel();
         }
-
-        $this->account->notify((new SlackInvitation())->delay(Carbon::now()->addDays(3)));
 
         event(new ApplicationAccepted($this));
     }

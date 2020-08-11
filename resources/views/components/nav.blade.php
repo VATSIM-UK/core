@@ -5,12 +5,13 @@
         </div>
     @endif
     @if (sys_config('notice'))
-        <div class="top_notification">
+        <div class="sys_notification">
             <div class="text">
                 {!! sys_config('notice') !!}
             </div>
         </div>
     @endif
+    @include('components.top-notification')
     <div class="nav_upper_container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse"
@@ -113,7 +114,7 @@
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Third-Party Services</li>
                                 <li>{!! link_to_route("site.community.teamspeak", "TeamSpeak") !!}</li>
-                                <li>{!! link_to_route("slack.new", "Slack") !!}</li>
+                                <li>{!! link_to_route("discord.show", "Discord") !!}</li>
                                 <li class="divider"></li>
                                 <li>{!! link_to_route('site.community.terms', "Terms & Conditions") !!}</li>
                             </ul>
@@ -168,7 +169,7 @@
                     @if(Auth::user()->can('use-permission', 'adm'))
                         <li class="dropdown dropdown-large">
                             <a href="{{ route("adm.index") }}" title="Admin Dashboard">
-                                <i class="fa fa-dashboard"></i>
+                                <i class="fa fa-briefcase"></i>
                             </a>
                         </li>
                     @endif
@@ -222,7 +223,7 @@
                 <ul class="nav navbar-nav navbar-right navcustom">
                     <li class="dropdown dropdown-large">
                         <a href="{{ route("login") }}" title="Login">
-                            Login &thinsp;<i class="glyphicon glyphicon-log-in"></i>
+                            Login &thinsp;<i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
                 </ul>

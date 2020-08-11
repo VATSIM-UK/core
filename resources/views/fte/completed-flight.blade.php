@@ -6,7 +6,7 @@
 
     <div class="col-md-4">
         <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-ok-circle"></i> &thinsp; Actions
+            <div class="panel-heading"><i class="fa fa-check-circle"></i> &thinsp; Actions
             </div>
             <div class="panel-body">
                 <a href="{{ route('fte.history') }}" class="btn btn-primary"><< Return to List</a>
@@ -14,7 +14,7 @@
         </div>
 
         <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Flight Details
+            <div class="panel-heading"><i class="fa fa-info-circle"></i> &thinsp; Flight Details
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -91,7 +91,7 @@
 
     <div class="col-md-8">
         <div class="panel panel-ukblue" style="min-height: 500px;">
-            <div class="panel-heading"><i class="glyphicon glyphicon-globe"></i> &thinsp; Map
+            <div class="panel-heading"><i class="fa fa-globe"></i> &thinsp; Map
             </div>
             <div class="panel-body">
                 <p><strong>LEGEND:</strong> <span style="color: #228B22;">Target</span>, <span style="color: #00008B;">Actual</span></p>

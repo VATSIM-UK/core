@@ -7,6 +7,7 @@ use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
+use App\Notifications\Mship\WelcomeMember;
 use DB;
 use Exception;
 use Illuminate\Support\Facades\Validator;
@@ -57,12 +58,6 @@ class ImportMembers extends Command
                 $this->processMember($member);
             });
         }
-
-        $this->sendSlackSuccess('Members imported.', [
-            'New Members:' => $this->count_new,
-            'Member Emails Updated:' => $this->count_emails,
-            'Unchanged Members:' => $this->count_none,
-        ]);
     }
 
     protected function processMember($member)
@@ -136,8 +131,6 @@ class ImportMembers extends Command
                 if ($prevAtcRating) {
                     $member->addQualification($prevAtcRating);
                 }
-            } else {
-                $this->sendSlackError('Member\'s previous rating is unavailable.', $member->id);
             }
         }
 
@@ -151,6 +144,10 @@ class ImportMembers extends Command
         }
 
         // anything else is processed by the Members:CertUpdate script
+
+        if ($member->hasState('DIVISION') && $member->email) {
+            $member->notify(new WelcomeMember());
+        }
     }
 
     protected function updateMember($member_data)

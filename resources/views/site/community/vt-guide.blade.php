@@ -8,7 +8,7 @@
 
             <div class="col-md-12">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-globe"></i> &thinsp; Visiting &
+                    <div class="panel-heading"><i class="fa fa-globe"></i> &thinsp; Visiting &
                         Transferring
                         Pilots & Controllers
                     </div>
@@ -62,7 +62,7 @@
 
             <div class="col-md-6">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> Visiting Pilots
+                    <div class="panel-heading"><i class="fa fa-plane"></i> Visiting Pilots
                     </div>
                     <div class="panel-body">
                         <p>
@@ -86,7 +86,7 @@
 
             <div class="col-md-6">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-headphones"></i> Visiting Controllers
+                    <div class="panel-heading"><i class="fa fa-headset"></i> Visiting Controllers
                     </div>
                     <div class="panel-body">
                         <p>
@@ -111,7 +111,7 @@
 
             <div class="col-md-6 col-md-offset-3">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-headphones"></i> Transferring Controllers
+                    <div class="panel-heading"><i class="fa fa-headset"></i> Transferring Controllers
                     </div>
                     <div class="panel-body">
 
@@ -153,7 +153,7 @@
 
     <div class="col-md-3">
         <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-time"></i> &thinsp; Visiting Groups (ATC)
+            <div class="panel-heading"><i class="fa fa-list"></i> &thinsp; Visiting Groups (ATC)
             </div>
             <div class="panel-body">
                 <p>
