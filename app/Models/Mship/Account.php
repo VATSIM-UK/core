@@ -514,35 +514,4 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     {
         return $this->name;
     }
-
-    /**
-     * Return a valid access token for the user or return null if none.
-     *
-     * @return \League\OAuth2\Client\Token\AccessToken
-     * @return null
-     */
-    public function getTokenAttribute()
-    {
-        if ($this->vatsim_access_token === null) {
-            return;
-        } else {
-            $token = new AccessToken([
-                'access_token'  => $this->vatsim_access_token,
-                'refresh_token' => $this->vatsim_refresh_token,
-                'expires'       => $this->vatsim_token_expires,
-            ]);
-
-            if ($token->hasExpired()) {
-                $token = VATSIMOAuthProvider::updateToken($token);
-            }
-
-            $this->update([
-                'vatsim_access_token'  => ($token) ? $token->getToken() : null,
-                'vatsim_refresh_token' => ($token) ? $token->getRefreshToken() : null,
-                'vatsim_token_expires' => ($token) ? $token->getExpires() : null,
-            ]);
-
-            return $token;
-        }
-    }
 }
