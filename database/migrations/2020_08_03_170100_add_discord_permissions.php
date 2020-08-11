@@ -54,7 +54,7 @@ class AddDiscordPermissions extends Migration
 
     private function createPermission(string $name, $guard = 'web')
     {
-        return Permission::create([
+        return \DB::table(config('permission.table_names.permissions'))->insert([
             'name' => $name,
             'guard_name' => $guard,
         ]);
