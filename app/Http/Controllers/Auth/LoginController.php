@@ -26,9 +26,9 @@ class LoginController extends BaseController
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(VatsimOAuthController $provider)
     {
-        $this->provider = new VatsimOAuthController();
+        $this->provider = $provider;
     }
 
     public function login(Request $request)
