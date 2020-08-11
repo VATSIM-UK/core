@@ -79,7 +79,7 @@ class LoginController extends BaseController
         return SecondaryLoginController::attemptSecondaryAuth($account);
     }
 
-    protected function completeLogin($resourceOwner, $token)
+    protected function completeLogin(object $resourceOwner, object $token)
     {
         $account = Account::firstOrNew(['id' => $resourceOwner->data->cid]);
         $account->name_first = $resourceOwner->data->personal->name_first;
