@@ -66,7 +66,6 @@ class LoginController extends BaseController
             ! $resourceOwner->data->personal->name_first ||
             ! $resourceOwner->data->personal->name_last ||
             ! $resourceOwner->data->personal->email ||
-            ! $resourceOwner->data ||
             ! $resourceOwner->data->vatsim ||
             ! $resourceOwner->data->oauth->token_valid === 'true'
         ) {
