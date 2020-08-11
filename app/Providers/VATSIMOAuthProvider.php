@@ -43,7 +43,7 @@ class VATSIMOAuthProvider extends GenericProvider
                 'refresh_token' => $token->getRefreshToken(),
             ]);
         } catch (IdentityProviderException $e) {
-            return;
+            return null;
         }
     }
 }
