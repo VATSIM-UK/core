@@ -77,7 +77,15 @@ class LoginController extends BaseController
 
         Auth::guard('vatsim-sso')->loginUsingId($account->id);
 
-        return SecondaryLoginController::attemptSecondaryAuth($account);
+        if ($account->hasPassword()) {
+            return redirect()->route('auth-secondary');
+        }
+
+        $intended = Session::pull('url.intended', route('site.home'));
+
+        Auth::login(Auth::guard('vatsim-sso')->user(), true);
+
+        return redirect($intended);
     }
 
     protected function completeLogin(object $resourceOwner, object $token)
