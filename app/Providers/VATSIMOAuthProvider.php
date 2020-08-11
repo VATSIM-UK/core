@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Providers;
 
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
 
-class VATSIMOAuthController extends GenericProvider
+class VATSIMOAuthProvider extends GenericProvider
 {
     /**
      * @var GenericProvider

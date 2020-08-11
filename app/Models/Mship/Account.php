@@ -4,7 +4,7 @@ namespace App\Models\Mship;
 
 use App\Events\Mship\AccountAltered;
 use App\Exceptions\Mship\InvalidCIDException;
-use App\Http\Controllers\VatsimOAuthController;
+use App\Providers\VATSIMOAuthProvider;
 use App\Jobs\UpdateMember;
 use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
@@ -533,7 +533,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             ]);
 
             if ($token->hasExpired()) {
-                $token = VatsimOAuthController::updateToken($token);
+                $token = VATSIMOAuthProvider::updateToken($token);
             }
 
             $this->update([

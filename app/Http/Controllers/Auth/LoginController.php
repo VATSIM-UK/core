@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
+use App\Providers\VATSIMOAuthProvider;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class LoginController extends BaseController
      *
      * @return void
      */
-    public function __construct(VatsimOAuthController $provider)
+    public function __construct(VATSIMOAuthProvider $provider)
     {
         $this->provider = $provider;
     }
