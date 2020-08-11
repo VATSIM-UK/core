@@ -3,7 +3,6 @@
 namespace App\Console\Commands\ExternalServices;
 
 use App\Console\Commands\Command;
-use App\Models\Community\Group;
 use App\Models\Mship\Account;
 use DB;
 use Exception;
@@ -40,7 +39,6 @@ class SyncCommunity extends Command
 
         require_once config('services.community.init_file');
         require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
-        require_once \IPS\ROOT_PATH.'/system/Member/Club/Club.php';
         require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
         $members = \IPS\Db::i()->select(
@@ -100,9 +98,6 @@ class SyncCommunity extends Command
             $pRatingString = $member_core->qualifications_pilot_string;
             $pBanned = $member_core->is_banned;
 
-            // Community Groups
-            $groups = $member_core->communityGroups()->notDefault()->get(['name']);
-
             // Check for changes
             $changeEmail = strcasecmp($member['email'], $email);
             $changeName = strcmp($member['name'], $member_core->name_first.' '.$member_core->name_last);
@@ -129,7 +124,6 @@ class SyncCommunity extends Command
                 $this->output->write(' // State: '.$state.($changeState ? '(changed)' : ''));
                 $this->output->write(' // ATC rating: '.$aRatingString);
                 $this->output->write(' // Pilot ratings: '.$pRatingString);
-                $this->output->write(' // Community groups: '.$groups->implode('name', ','));
             }
 
             $ips_member = \IPS\Member::load($member['member_id']);
@@ -166,48 +160,6 @@ class SyncCommunity extends Command
                 }
             } elseif ($verbose) {
                 $this->output->writeln(' // No changes required.');
-            }
-
-            // Sync Community Group
-
-            // Load & Map IPB Groups
-            $ips_clubs = \IPS\Db::i()->select('id,name', 'core_clubs', "name IN ('".Group::notDefault()->pluck('name')->implode("','")."')");
-            $club_map = [];
-
-            for ($i = 0; $i < $ips_clubs->count(); $i++) {
-                $ips_clubs->next();
-                $club = $ips_clubs->current();
-                $club_map[$club['id']] = $club['name'];
-            }
-
-            // Process core group membership.
-            foreach ($groups as $group) {
-                $ips_club_id = array_search($group->name, $club_map);
-                if ($ips_club_id !== false) {
-                    $club = \IPS\Member\Club::load($ips_club_id);
-
-                    // Only add the user if not in already
-                    if ($club->memberStatus($ips_member) === null) {
-                        $club->addMember($ips_member);
-                    }
-                }
-            }
-
-            // Process member's IPB-side Club membership.
-            foreach ($ips_member->clubs() as $ips_member_club) {
-                if (! isset($club_map[$ips_member_club])) {
-                    // This must not be a community group. Skip
-                    continue;
-                }
-
-                $name = $club_map[$ips_member_club];
-
-                if ($groups->pluck('name')->search($name) === false) {
-                    $ips_member_club = \IPS\Member\Club::load($ips_member_club);
-                    if (! $ips_member_club->isLeader($ips_member) && ! $ips_member_club->isModerator($ips_member)) {
-                        $ips_member_club->removeMember($ips_member);
-                    }
-                }
             }
         }
 

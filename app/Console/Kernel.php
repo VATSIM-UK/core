@@ -28,7 +28,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('telescope:prune')->daily();
 
         // === By Minute === //
 
@@ -58,11 +57,14 @@ class Kernel extends ConsoleKernel
             ->cron('30 */2 * * *') // every second hour
             ->runInBackground();
 
-        $schedule->command('slack:manager')
-            ->hourly()
-            ->runInBackground();
+        $schedule->command('discord:manager')
+            ->everySixHours()
+            ->runInBackground()
+            ->withoutOverlapping();
 
         // === By Day ===
+
+        $schedule->command('telescope:prune')->daily();
 
         $schedule->command('sys:statistics:daily')
             ->dailyAt('00:01');

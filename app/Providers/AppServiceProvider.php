@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Controllers\BaseController;
+use App\Libraries\Discord;
 use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use HTML;
@@ -52,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
         Telescope::ignoreMigrations();
 
         $this->app->singleton(UKCP::class);
+        $this->app->singleton(Discord::class);
     }
 
     /**

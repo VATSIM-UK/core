@@ -35,17 +35,21 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
-    'slack' => [
-        'token' => env('SLACK_SECRET', 'secret'),
-        'token_register' => env('SLACK_TOKEN_REGISTER', 'token'),
-    ],
-
     'teamspeak' => [
         'host' => env('TS_HOST'),
         'username' => env('TS_USER'),
         'password' => env('TS_PASS'),
         'port' => env('TS_PORT'),
         'query_port' => env('TS_QUERY_PORT'),
+    ],
+
+    'discord' => [
+        'guild_id' => env('DISCORD_GUILD_ID', null),
+        'token' => env('DISCORD_TOKEN', null),
+        'client_id' => env('DISCORD_CLIENT', null),
+        'client_secret' => env('DISCORD_SECRET', null),
+        'redirect_uri' => env('DISCORD_REDIRECT_URI', null),
+        'base_discord_uri' => env('DISCORD_API_BASE', 'https://discordapp.com/api/v6'),
     ],
 
     'google' => [

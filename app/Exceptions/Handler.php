@@ -2,14 +2,11 @@
 
 namespace App\Exceptions;
 
-use App;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Throwable;
-use Vluzrmos\SlackApi\Facades\SlackChat;
 
 class Handler extends ExceptionHandler
 {
@@ -78,70 +75,5 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e)
     {
         return parent::render($request, $e);
-    }
-
-    protected function reportSlackError(Exception $e)
-    {
-        $channel = '#ws_alerts';
-
-        $attachment = [
-            'fallback' => 'Exception thrown: '.get_class($e),
-            'text' => $e->getTraceAsString(),
-            'author_name' => get_class($e),
-            'color' => 'danger',
-            'fields' => [
-                [
-                    'title' => 'Exception:',
-                    'value' => (new \ReflectionClass($e))->getShortName(),
-                    'short' => true,
-                ],
-                [
-                    'title' => 'Message:',
-                    'value' => $e->getMessage(),
-                    'short' => true,
-                ],
-                [
-                    'title' => 'File:',
-                    'value' => $e->getFile(),
-                    'short' => true,
-                ],
-                [
-                    'title' => 'Line:',
-                    'value' => $e->getLine(),
-                    'short' => true,
-                ],
-                [
-                    'title' => 'Code:',
-                    'value' => $e->getCode(),
-                    'short' => true,
-                ],
-            ],
-        ];
-
-        if (! App::runningInConsole()) {
-            if (method_exists('Auth', 'check') && Auth::check()) {
-                $attachment['fields'][] = [
-                    'title' => 'Member:',
-                    'value' => sprintf(
-                        '%d - %s %s',
-                        Auth::user()->id,
-                        Auth::user()->name_first,
-                        Auth::user()->name_last
-                    ),
-                    'short' => true,
-                ];
-            }
-
-            $attachment['fields'][] = [
-                'title' => 'Request path:',
-                'value' => Request::url(),
-                'short' => true,
-            ];
-        }
-
-        try {
-            SlackChat::message($channel, '', ['attachments' => $attachment, 'username' => 'Error Handling']);
-        } catch (Exception $e) {
-        }
     }
 }

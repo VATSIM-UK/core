@@ -43,6 +43,33 @@
             color: #17375e;
         }
 
+        a.btn {
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 0;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.428571429;
+            border-radius: 4px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        a.btn.btn-primary {
+            color: #fff;
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
 
         /* BODY */
         table.body-wrap {
@@ -95,8 +122,6 @@
 
         p, ul {
             margin-bottom: 10px;
-            font-weight: normal;
-            font-size:14px;
         }
 
         ul li {
@@ -133,7 +158,7 @@
             display:block;
         }
 
-        .content table {
+        table.deviceWidth {
             width: 100%;
         }
 
@@ -154,7 +179,7 @@
                         <tbody>
                             <tr>
                                 <td style="padding: 20px 15px 0 15px; background-color: rgb(23, 55, 94);" bgcolor="#17375e">
-                                    <a href="{{ \URL::to('/') }}"><img class="logo" width="200" style="border-radius: 0px; display: block;" alt="" src="{!! asset('images/vatsim_uk_logo.png') !!}" unselectable="on" border="0"></a>
+                                <a href="{{ route('site.home') }}"><img class="logo" width="200" style="border-radius: 0px; display: block;" alt="" src="{{ secure_asset('images/vatsim_uk_logo.png') }}" unselectable="on" border="0"></a>
                                 </td>
                             </tr>
                             <tr>
@@ -162,7 +187,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table>
+                    <table class="deviceWidth">
                         <tr>
                             <td id="panels" style="padding-left: 10px;padding-right: 10px;padding-top: 10px;background: #eeeeed;" bgcolor="#eeeeed">
                                 <table class="deviceWidth" style="padding: 0 8px 0 0;" align="center" border="0" cellpadding="0" cellspacing="0">
@@ -220,12 +245,12 @@
                                                             <tr>
                                                                 <td class="center" style="text-align: left; color: rgb(241, 241, 241); line-height: 22px; padding-top: 5px; font-family: &quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif; font-size: 11px; font-weight: normal; vertical-align: top;" valign="top">
                                                                     <a href="https://twitter.com/vatsimuk" style="text-decoration: none;">
-                                                                        <img title="Twitter" alt="Twitter" src="{!! asset('images/twitter.png') !!}" unselectable="on" border="0" width="50">
+                                                                        <img title="Twitter" alt="Twitter" src="{{ secure_asset('images/twitter.png') }}" unselectable="on" border="0" width="50">
                                                                     </a>
-                                                                    <a href="https://vatsim.uk"><img title="VATSIM UK Website" alt="VATSIM UK Website" src="{!! asset('images/earth.png') !!}" unselectable="on" border="0" width="33"></a>
+                                                                <a href="{{ route('site.home') }}"><img title="VATSIM UK Website" alt="VATSIM UK Website" src="{{ secure_asset('images/earth.png') }}" unselectable="on" border="0" width="33"></a>
                                                                 </td>
                                                                 <td class="center" style="color: rgb(153, 153, 153); padding: 10px; font-family: &quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif; font-size: 11px;text-align: right;" valign="top">
-                                                                    <a href="{{ \URL::to('/') }}"><img class="logo" width="200" style="float:right;border-radius: 0px; display: block;" alt="" src="{!! asset('images/vatsim_uk_logo.png') !!}" unselectable="on" border="0"></a>
+                                                                <a href="{{ route('site.home') }}"><img class="logo" width="200" style="float:right;border-radius: 0px; display: block;" alt="" src="{{ secure_asset('images/vatsim_uk_logo.png') }}" unselectable="on" border="0"></a>
                                                                 </td>
                                                             </tr>
                                                         </tbody>

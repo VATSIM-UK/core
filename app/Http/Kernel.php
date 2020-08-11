@@ -55,7 +55,6 @@ class Kernel extends HttpKernel
             'mandatorypasswords',
             'denyifbanned',
             'user.must.read.notifications',
-            'must.have.community.group',
             'redirecttointended',
         ],
     ];
@@ -80,7 +79,6 @@ class Kernel extends HttpKernel
         // custom
         'admin'                        => Middleware\CheckAdminPermissions::class,
         'user.must.read.notifications' => Middleware\UserMustReadNotifications::class,
-        'must.have.community.group'    => Middleware\MustHaveCommunityGroup::class,
         'api.tracking'                 => \App\Http\Middleware\ApiTracking::class,
         'denyifbanned'                 => Middleware\DenyIfBanned::class,
         'mandatorypasswords'           => Middleware\MandatoryPasswords::class,

@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Exceptions\Community;
+namespace App\Exceptions\Discord;
 
 use App\Models\Mship\Account;
 
-class MustBeADivisionMemberException extends \Exception
+class InvalidDiscordRemovalException extends \Exception
 {
     private $account;
 
     public function __construct(Account $account)
     {
         $this->account = $account;
-
-        $this->message = 'It is not possible to join a UK Community Group unless you are a UK member.';
+        $this->message = 'There was an error removing '.$account->name.' from Discord.';
     }
 
     public function __toString()

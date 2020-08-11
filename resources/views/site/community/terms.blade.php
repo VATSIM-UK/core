@@ -6,7 +6,7 @@
 
         <div class="col-md-12">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-alert"></i> &thinsp; Terms & Conditions
+                <div class="panel-heading"><i class="fa fa-exclamation"></i> &thinsp; Terms & Conditions
                 </div>
                 <div class="panel-body">
 

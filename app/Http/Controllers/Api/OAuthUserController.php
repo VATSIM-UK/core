@@ -30,14 +30,20 @@ class OAuthUserController
             $return['email'] = $ssoEmailAssigned[0]->email->email;
         }
 
-        $return['atc_rating'] = $account->qualification_atc->vatsim;
-        $return['atc_rating_human_short'] = $account->qualification_atc->name_small;
-        $return['atc_rating_human_long'] = $account->qualification_atc->name_long;
-        $return['atc_rating_date'] = $account->qualification_atc->pivot->created_at->toDateTimeString();
+        if ($account->qualifications_atc->isEmpty()) {
+            $return['atc_rating'][] = 0;
+            $return['atc_rating_human_short'][] = 'NA';
+            $return['atc_rating_human_long'][] = 'None Awarded';
+        } else {
+            $return['atc_rating'] = $account->qualification_atc->vatsim;
+            $return['atc_rating_human_short'] = $account->qualification_atc->name_small;
+            $return['atc_rating_human_long'] = $account->qualification_atc->name_long;
+            $return['atc_rating_date'] = $account->qualification_atc->pivot->created_at->toDateTimeString();
+        }
 
         $return['pilot_ratings_bin'] = 0;
         $return['pilot_ratings'] = [];
-        if (count($account->qualifications_pilot) < 1) {
+        if ($account->qualifications_pilot->isEmpty()) {
             $return['pilot_ratings'][] = 0;
             $return['pilot_ratings_human_short'][] = 'NA';
             $return['pilot_ratings_human_long'][] = 'None Awarded';

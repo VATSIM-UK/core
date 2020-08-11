@@ -37,7 +37,7 @@
                                 <label for="finish_time">Finish Time:</label>
                                 <div class="input-group bootstrap-timepicker timepicker">
                                     <input id="finish_time" name="finish_time" type="text" class="form-control input-small">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                    <span class="input-group-addon"><i class="fa fa-clock"></i></span>
                                 </div>
                             </div>
                         </div>
