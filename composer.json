@@ -94,7 +94,7 @@
         "spatie/laravel-cookie-consent": "^2.4",
         "spatie/laravel-permission": "^3.0",
         "symfony/translation": "^5.0",
-        "vatsim/sso": "3.*",
+        "vatsim/sso": "3.0",
         "vatsim/xml": "dev-master",
         "vluzrmos/slack-api": "dev-master",
         "watson/rememberable": "^4.0",
