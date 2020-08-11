@@ -4,7 +4,6 @@ namespace App\Models\Mship;
 
 use App\Events\Mship\AccountAltered;
 use App\Exceptions\Mship\InvalidCIDException;
-use App\Providers\VATSIMOAuthProvider;
 use App\Jobs\UpdateMember;
 use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
@@ -35,7 +34,6 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use League\OAuth2\Client\Token\AccessToken;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
