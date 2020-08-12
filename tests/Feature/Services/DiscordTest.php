@@ -10,8 +10,6 @@ class DiscordTest extends TestCase
     /** @test */
     public function testItShowsRegistrationPage()
     {
-        $this->markTestSkipped('Discord is closed to users during beta testing.');
-
         $this->actingAs($this->user)
             ->get(route('discord.show'))
             ->assertSee('Discord Registration')

@@ -120,7 +120,6 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/')->uses('Registration@show')->name('show');
-    Route::redirect('/invite', config('services.discord.invite_url'))->name('invite');
     Route::get('/create')->uses('Registration@create')->name('create');
     Route::get('/store')->uses('Registration@store')->name('store');
     Route::get('/destroy')->uses('Registration@destroy')->name('destroy');
@@ -136,18 +135,6 @@ Route::group([
     Route::get('/')->uses('Token@show')->name('guide');
     Route::get('/token/refresh')->uses('Token@refresh')->name('token.refresh');
     Route::get('token/{id}/download')->uses('Token@download')->name('token.download');
-});
-
-// Community
-Route::group([
-    'as'         => 'community.membership.',
-    'prefix'     => 'community/membership',
-    'namespace'  => 'Community',
-    'middleware' => 'auth_full_group',
-], function () {
-    Route::get('deploy')->uses('Membership@getDeploy')->name('deploy');
-    Route::post('deploy/{default?}')->uses('Membership@postDeploy')->name('deploy.post')
-        ->where('default', '[default|true]');
 });
 
 // Controllers
