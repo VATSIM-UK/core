@@ -16,7 +16,7 @@ class CreateAddStudentAdminPermission extends Migration
 
     private function createPermission(string $name, $guard = 'web')
     {
-        return \Spatie\Permission\Models\Permission::create([
+        return \DB::table(config('permission.table_names.permissions'))->insert([
             'name' => $name,
             'guard_name' => $guard,
         ]);
