@@ -2,8 +2,8 @@
 
 namespace App\Jobs\ExternalServices;
 
-use App\Jobs\Middleware\RateLimited;
 use Alawrence\Ipboard\Ipboard;
+use App\Jobs\Middleware\RateLimited;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
@@ -12,7 +12,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
 
 class IssueSecondaryForumGroup implements ShouldQueue
 {
@@ -79,7 +78,6 @@ class IssueSecondaryForumGroup implements ShouldQueue
 
         $this->assignSecondaryGroups($ipboardUser->id, $newSecondaryGroups);
     }
-
 
     /**
      * Get the middleware the job should pass through.

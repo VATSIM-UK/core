@@ -20,9 +20,9 @@ class RateLimited
 
     public function __construct(string $key = null, ?int $allow = 10, ?int $every = 60, ?int $retryAfter = 10)
     {
-        $this->key        = $key ?? 'rate_limited_queue_job';
-        $this->allow      = $allow ?? 10;
-        $this->every      = $every ?? 60;
+        $this->key = $key ?? 'rate_limited_queue_job';
+        $this->allow = $allow ?? 10;
+        $this->every = $every ?? 60;
         $this->retryAfter = $retryAfter ?? 10;
     }
 
