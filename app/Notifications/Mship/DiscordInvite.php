@@ -40,8 +40,8 @@ class DiscordInvite extends Notification implements ShouldQueue
                 ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
                 ->subject("$notifiable->name_first! Join us on Discord?")
                 ->view('emails.mship.discord_invite', [
-                        'recipient' => $notifiable,
-                        'discordCount' => $discordCount
+                    'recipient' => $notifiable,
+                    'discordCount' => $discordCount,
                 ]);
     }
 
