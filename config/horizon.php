@@ -172,8 +172,9 @@ return [
             'supervisor-1' => [
                 'connection' => 'redis',
                 'queue' => ['notifications', 'default'],
-                'balance' => 'simple',
-                'processes' => 1,
+                'balance' => 'auto',
+                'min-processes' => 1,
+                'max-processes' => 5,
                 'tries' => 3,
             ],
         ],
