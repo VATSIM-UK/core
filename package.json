@@ -30,7 +30,7 @@
     "laravel-mix": "^5.0",
     "less-loader": "^6.2.0",
     "less": "^3.12.2",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.20",
     "popper.js": "^1.16",
     "resolve-url-loader": "3.1.1",
     "sass-loader": "^9.0.3",
