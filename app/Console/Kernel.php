@@ -95,7 +95,7 @@ class Kernel extends ConsoleKernel
 
         // === By Month === //
         $schedule->command('members:certupdate', ['--type=monthly', 5000])
-            ->cron('0 0 1,14,28 * *') // At 00:00 on the 1st, 14th and 30th of every month
+            ->cron('0 0 1,14,28 * *') // At 00:00 on the 1st, 14th and 28th of every month
             ->runInBackground();
 
         $schedule->command('members:certupdate', ['--type=all', 5000])
