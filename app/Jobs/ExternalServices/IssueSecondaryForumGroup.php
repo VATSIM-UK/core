@@ -3,6 +3,7 @@
 namespace App\Jobs\ExternalServices;
 
 use Alawrence\Ipboard\Ipboard;
+use App\Jobs\Middleware\RateLimited;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
@@ -16,6 +17,7 @@ class IssueSecondaryForumGroup implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 10;
     protected $cid;
     protected $forumGroup;
 
@@ -40,7 +42,7 @@ class IssueSecondaryForumGroup implements ShouldQueue
         $members = \IPS\Db::i()->select('member_id', 'core_pfields_content', ['field_12=?', $this->cid]);
 
         if (count($members) != 1) {
-            Log::info('Unable to sync TG Forum Groups for'.$this->cid);
+            Log::info('Unable to sync TG Forum Groups for '.$this->cid);
 
             return;
         }
@@ -75,6 +77,16 @@ class IssueSecondaryForumGroup implements ShouldQueue
         array_push($newSecondaryGroups, $this->forumGroup);
 
         $this->assignSecondaryGroups($ipboardUser->id, $newSecondaryGroups);
+    }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array
+     */
+    public function middleware()
+    {
+        return [new RateLimited('issue-secondary-forum-group')];
     }
 
     private function assignSecondaryGroups(int $ipboardUser, array $secondaryGroups)
