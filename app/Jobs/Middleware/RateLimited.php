@@ -3,6 +3,7 @@
 namespace App\Jobs\Middleware;
 
 use Illuminate\Support\Facades\Redis;
+use Predis\Connection\ConnectionException;
 
 class RateLimited
 {
@@ -28,17 +29,22 @@ class RateLimited
 
     public function handle($job, $next)
     {
-        Redis::throttle($this->key)
-             ->allow($this->allow)
-             ->every($this->every)
-             ->then(function () use ($job, $next) {
-                 // Lock obtained...
+        try {
+            Redis::throttle($this->key)
+                ->allow($this->allow)
+                ->every($this->every)
+                ->then(function () use ($job, $next) {
+                    // Lock obtained...
 
-                 $next($job);
-             }, function () use ($job) {
-                 // Could not obtain lock...
+                    $next($job);
+                }, function () use ($job) {
+                    // Could not obtain lock...
 
-                 $job->release($this->retryAfter);
-             });
+                    $job->release($this->retryAfter);
+                });
+        } catch (ConnectionException $exception) {
+            // Redis probably not installed. We will send the job anyway
+            $next($job);
+        }
     }
 }
