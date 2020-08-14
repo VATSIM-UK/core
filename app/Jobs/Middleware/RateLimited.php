@@ -42,10 +42,9 @@ class RateLimited
 
                     $job->release($this->retryAfter);
                 });
-        }catch (ConnectionException $exception){
+        } catch (ConnectionException $exception) {
             // Redis probably not installed. We will send the job anyway
             $next($job);
         }
-
     }
 }
