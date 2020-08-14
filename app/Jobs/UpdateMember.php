@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Middleware\RateLimited;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
 use Carbon\Carbon;
@@ -154,5 +155,10 @@ class UpdateMember extends Job implements ShouldQueue
         }
 
         return $member;
+    }
+
+    public function middleware()
+    {
+        return [new RateLimited('update_member_job', 60, 60)];
     }
 }
