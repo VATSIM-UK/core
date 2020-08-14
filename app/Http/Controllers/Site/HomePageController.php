@@ -48,6 +48,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
                 ->where('inactive', '=', 0)
                 ->whereNull('mship_account.deleted_at')
                 ->where('state_id', '=', State::findByCode('DIVISION')->id)
+                ->whereNull('mship_account_state.end_at')
                 ->count();
 
             return $stat;
