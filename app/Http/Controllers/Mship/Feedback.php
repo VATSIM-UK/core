@@ -181,7 +181,7 @@ class Feedback extends \App\Http\Controllers\BaseController
 
             $this->returnList->push(collect([
                 'cid' => $user->id,
-                'name' => $user->real_name,
+                'name' => e($user->real_name),
                 'status' => $user->state,
             ]));
 
