@@ -14,6 +14,7 @@ class SyncToMoodle implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $account;
+    public $queue = 'user_sync';
 
     public function __construct(Account $account)
     {

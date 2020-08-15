@@ -19,6 +19,22 @@ class UpdateMember extends Job implements ShouldQueue
     protected $accountID;
     protected $data;
 
+    public $queue = 'user_sync';
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 10;
+
+    /**
+     * The maximum number of exceptions to allow before failing.
+     *
+     * @var int
+     */
+    public $maxExceptions = 1;
+
     /**
      * Create a new job instance.
      */
