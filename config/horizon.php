@@ -171,7 +171,7 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['notifications', 'default'],
+                'queue' => ['notifications', 'default', 'user_sync'],
                 'balance' => 'auto',
                 'min-processes' => 1,
                 'max-processes' => 5,
@@ -182,7 +182,7 @@ return [
         'local' => [
             '1' => [
                 'connection' => 'redis',
-                'queue' => ['notifications', 'default'],
+                'queue' => ['notifications', 'default', 'user_sync'],
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 3,
