@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class SyncToForums extends Job implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, SerializesModels;
 
     private $account;
     public $queue = 'user_sync';
