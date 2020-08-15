@@ -39,8 +39,7 @@ class UpdateMembers extends Command
         $members = $this->getMembers();
 
         foreach ($members as $member) {
-            $job = new UpdateMember($member);
-            $this->dispatch($job);
+            UpdateMember::dispatch($member)->onQueue('user_sync');
             $this->log("$member added to update queue");
         }
     }
