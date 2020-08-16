@@ -176,6 +176,6 @@ class UpdateMember extends Job implements ShouldQueue
 
     public function middleware()
     {
-        return [new RateLimited('update_member_job', 100, 60)];
+        return [new RateLimited('update_member_job', 1000, 60, 60)];
     }
 }
