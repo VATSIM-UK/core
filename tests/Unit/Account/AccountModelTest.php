@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Account;
 
-use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Notifications\Mship\EmailVerification;
 use Carbon\Carbon;
@@ -275,19 +274,6 @@ class AccountModelTest extends TestCase
         $this->user->fresh()->addQualification($qualification);
 
         $this->assertNotEquals($originalUpdatedAt, $this->user->fresh()->updated_at);
-    }
-
-    /** @test */
-    public function itReturnsTheCorrectAccountBasedOnSlackId()
-    {
-        $slackID = substr(strrev(uniqid()), 0, 10);
-
-        $this->user->slack_id = $slackID;
-        $this->user->save();
-
-        $slackAccount = Account::where('slack_id', $slackID)->first();
-
-        $this->assertEquals($slackAccount->id, $this->user->fresh()->id);
     }
 
     /** @test */

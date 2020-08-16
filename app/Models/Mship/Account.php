@@ -39,7 +39,6 @@ use Watson\Rememberable\Rememberable;
  * App\Models\Mship\Account.
  *
  * @property int $id
- * @property string|null $slack_id
  * @property int|null $discord_id
  * @property int|null $discord_access_token
  * @property int|null $discord_refresh_token
@@ -152,7 +151,6 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account wherePasswordExpiresAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account wherePasswordSetAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereSlackId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withoutTrashed()

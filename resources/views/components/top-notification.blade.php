@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-md-8 message">
                     <p><strong>Discord has arrived. Join us {{ auth()->user()->name_first }}!</strong></p>
-                    <p>Discord is now available to all VATSIM UK members. Registration takes less than 60 seconds. Simply hit the button to get started. <strong>Slack will be closed from Sunday 16th August</strong>.</p>
+                    <p>Discord is now available to all VATSIM UK members. Registration takes less than 60 seconds. Simply hit the button to get started.</p>
                 </div>
                 <div class="col-md-3 cta text-center">
                     <a href="{{ route('discord.show') }}" class="button secondary">
