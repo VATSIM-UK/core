@@ -88,7 +88,7 @@ class Qualification extends Model
 
         // A P0 will not be picked up in the bitmap
         if ($network == 0) {
-            $ratingsOutput[] = self::ofType('pilot')->networkValue($network)->first();
+            $ratingsOutput[] .= self::ofType('pilot')->networkValue($network)->first();
         }
 
         // Let's check each bitmask....
@@ -97,7 +97,7 @@ class Qualification extends Model
             if (($pow & $network) == $pow) {
                 $ro = self::ofType('pilot')->networkValue($pow)->first();
                 if ($ro) {
-                    $ratingsOutput[] = $ro;
+                    $ratingsOutput[] .= $ro;
                 }
             }
         }
