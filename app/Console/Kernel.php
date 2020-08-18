@@ -51,6 +51,11 @@ class Kernel extends ConsoleKernel
             ->runInBackground()
             ->withoutOverlapping();
 
+        $schedule->command('horizon:snapshot')
+            ->everyFiveMinutes()
+            ->runInBackground()
+            ->withoutOverlapping();
+
         // === By Hour === //
 
         $schedule->command('members:certupdate', ['--type=hourly'])
