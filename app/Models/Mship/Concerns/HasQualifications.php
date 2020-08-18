@@ -146,11 +146,11 @@ trait HasQualifications
     {
         $rating = $this->qualifications->filter(function ($qual) {
             return $qual->type == 'pilot';
-        })->sortByDesc(function ($qualification, $key) {
+        })->sortByDesc(function ($qualification) {
             return $qualification->pivot->created_at;
         })->first();
 
-        return $rating->code;
+        return optional($rating)->code || 'None';
     }
 
     public function getQualificationsPilotTrainingAttribute()
