@@ -150,7 +150,7 @@ trait HasQualifications
             return $qualification->pivot->created_at;
         })->first();
 
-        return $rating->code;
+        return optional($rating)->code;
     }
 
     public function getQualificationsPilotTrainingAttribute()
