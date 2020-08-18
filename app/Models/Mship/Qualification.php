@@ -86,6 +86,11 @@ class Qualification extends Model
     {
         $ratingsOutput = [];
 
+        // A P0 will not be picked up in the bitmap
+        if ($network == 0) {
+            $ratingsOutput[] = self::ofType('pilot')->networkValue($network)->first();
+        }
+
         // Let's check each bitmask....
         for ($i = 0; $i <= 8; $i++) {
             $pow = pow(2, $i);

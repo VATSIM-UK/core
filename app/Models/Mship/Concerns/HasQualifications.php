@@ -144,15 +144,13 @@ trait HasQualifications
 
     public function getQualificationsPilotStringAttribute()
     {
-        $output = '';
-        foreach ($this->qualifications_pilot as $p) {
-            $output .= $p->code.', ';
-        }
-        if ($output == '') {
-            $output = 'None';
-        }
+        $rating = $this->qualifications->filter(function ($qual) {
+            return $qual->type == 'pilot';
+        })->sortByDesc(function ($qualification, $key) {
+            return $qualification->pivot->created_at;
+        })->first();
 
-        return rtrim($output, ', ');
+        return $rating->code;
     }
 
     public function getQualificationsPilotTrainingAttribute()

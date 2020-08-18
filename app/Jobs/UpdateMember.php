@@ -2,16 +2,16 @@
 
 namespace App\Jobs;
 
-use DB;
-use VatsimXML;
-use Carbon\Carbon;
-use App\Models\Mship\Account;
 use App\Jobs\Middleware\RateLimited;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification as QualificationData;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Models\Mship\Qualification as QualificationData;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use VatsimXML;
 
 class UpdateMember extends Job implements ShouldQueue
 {
@@ -24,16 +24,16 @@ class UpdateMember extends Job implements ShouldQueue
 
     /**
      * The number of times the job may be attempted.
-    *
-    * @var int
-    */
+     *
+     * @var int
+     */
     public $tries = 10;
 
     /**
      * The maximum number of exceptions to allow before failing.
-    *
-    * @var int
-    */
+     *
+     * @var int
+     */
     public $maxExceptions = 1;
 
     /**
