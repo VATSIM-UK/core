@@ -88,6 +88,7 @@ return [
 
     'waits' => [
         'redis:default' => 900,
+        'redis:user_sync' => 21600,
     ],
 
     /*
