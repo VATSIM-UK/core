@@ -87,10 +87,12 @@ trait HasQualifications
             }
         }
 
-        $pilotRatings = Qualification::parseVatsimPilotQualifications($pilotRating);
-        foreach ($pilotRatings as $pr) {
-            if (! $this->hasQualification($pr)) {
-                $this->addQualification($pr);
+        if ($pilotRating >= 0) {
+            $pilotRatings = Qualification::parseVatsimPilotQualifications($pilotRating);
+            foreach ($pilotRatings as $pr) {
+                if (! $this->hasQualification($pr)) {
+                    $this->addQualification($pr);
+                }
             }
         }
     }
