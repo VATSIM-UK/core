@@ -87,7 +87,7 @@ trait HasQualifications
             }
         }
 
-        $pilotRatings = Qualification::parseVatsimPilotQualifications($this->data->pilotrating);
+        $pilotRatings = Qualification::parseVatsimPilotQualifications($pilotRating);
         foreach ($pilotRatings as $pr) {
             if (! $this->hasQualification($pr)) {
                 $this->addQualification($pr);
