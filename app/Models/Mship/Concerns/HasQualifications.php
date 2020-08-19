@@ -87,17 +87,11 @@ trait HasQualifications
             }
         }
 
-        for ($i = 1; $i <= 256; $i *= 2) {
-            if ($i & $pilotRating) {
-                $qualifications[] = Qualification::ofType('pilot')->networkValue($i)->first();
+        $pilotRatings = Qualification::parseVatsimPilotQualifications($this->data->pilotrating);
+        foreach ($pilotRatings as $pr) {
+            if (! $this->hasQualification($pr)) {
+                $this->addQualification($pr);
             }
-        }
-
-        $ids = collect($qualifications)->pluck('id');
-
-        if (! empty($ids)) {
-            $this->qualifications()->syncWithoutDetaching($ids);
-            event(new AccountAltered($this));
         }
     }
 
