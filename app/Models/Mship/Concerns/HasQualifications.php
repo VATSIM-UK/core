@@ -65,20 +65,18 @@ trait HasQualifications
      */
     public function updateVatsimRatings(int $atcRating, int $pilotRating)
     {
-        $qualifications = [];
-
         if ($atcRating === 0) {
             $this->addNetworkBan('Network ban discovered via Cert login.');
         } elseif ($atcRating > 0) {
             $this->removeNetworkBan();
-            $qualifications[] = Qualification::parseVatsimATCQualification($atcRating);
+            $this->addQualification(Qualification::parseVatsimATCQualification($atcRating));
         }
 
         if ($atcRating >= 8) {
             try {
                 $info = VatsimXML::getData($this->id, 'idstatusprat');
                 if (isset($info->PreviousRatingInt) && $info->PreviousRatingInt > 0) {
-                    $qualifications[] = Qualification::parseVatsimATCQualification($info->PreviousRatingInt);
+                    $this->addQualification(Qualification::parseVatsimATCQualification($info->PreviousRatingInt));
                 }
             } catch (Exception $e) {
                 if (strpos($e->getMessage(), 'Name or service not known') === false) {
