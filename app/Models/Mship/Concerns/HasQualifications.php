@@ -136,15 +136,18 @@ trait HasQualifications
         });
     }
 
-    public function getQualificationsPilotStringAttribute()
+    public function getQualificationPilotAttribute()
     {
-        $rating = $this->qualifications->filter(function ($qual) {
+        return $this->qualifications->filter(function ($qual) {
             return $qual->type == 'pilot';
         })->sortByDesc(function ($qualification) {
             return $qualification->pivot->created_at;
         })->first();
+    }
 
-        return optional($rating)->code ?? 'None';
+    public function getQualificationsPilotStringAttribute()
+    {
+        return optional($this->qualification_pilot)->code ?? 'None';
     }
 
     public function getQualificationsPilotTrainingAttribute()
