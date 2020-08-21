@@ -43,7 +43,7 @@ trait HasQualifications
      *
      * @param Qualification $qualification
      *
-     * @return bool
+     * @return self
      */
     public function addQualification(Qualification $qualification)
     {
