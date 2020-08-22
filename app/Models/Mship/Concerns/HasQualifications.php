@@ -101,7 +101,7 @@ trait HasQualifications
     {
         $this->load('qualifications');
 
-        return $this->qualifications_pilot
+        return $this->qualification_pilot
             ->merge($this->qualifications_atc_training)
             ->merge($this->qualifications_pilot_training)
             ->merge($this->qualifications_admin)
