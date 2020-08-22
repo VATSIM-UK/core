@@ -99,11 +99,11 @@ trait HasQualifications
     {
         $this->load('qualifications');
 
-        return $this->qualification_pilot
-            ->merge($this->qualifications_atc_training)
+        return $this->qualifications_atc_training
             ->merge($this->qualifications_pilot_training)
             ->merge($this->qualifications_admin)
-            ->push($this->qualification_atc);
+            ->push($this->qualification_atc)
+            ->push($this->qualification_pilot);
     }
 
     public function getQualificationAtcAttribute()
