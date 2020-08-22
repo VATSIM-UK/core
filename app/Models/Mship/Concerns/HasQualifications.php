@@ -131,6 +131,15 @@ trait HasQualifications
         });
     }
 
+    public function getQualificationPilotAttribute()
+    {
+        return $this->qualifications->filter(function ($qual) {
+            return $qual->type == 'pilot';
+        })->sortByDesc(function ($qualification, $key) {
+            return $qualification->pivot->created_at;
+        })->first();
+    }
+
     public function getQualificationsPilotAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
