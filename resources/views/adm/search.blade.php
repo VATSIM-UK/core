@@ -34,7 +34,7 @@
                                 <td>{{ $m->name }}</td>
                                 <td>{{ $_account->can('use-permission', "adm/mship/account/email/view") ? $m->email : "[ No Permission ]" }}</td>
                                 <td>{{ $m->qualification_atc }}</td>
-                                <td>{{ $m->qualification_pilot }}</td>
+                                <td>{{ $m->qualifications_pilot_string }}</td>
                                 <td>{{ $m->primary_state->name }}</td>
                                 <td>{!! $m->status_string == "Active" ? '<span class="label label-success">Active</span>' : '<span class="label label-danger">'.$m->status_string.'</span>' !!}</td>
                             </tr>

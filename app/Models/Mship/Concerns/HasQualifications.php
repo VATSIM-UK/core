@@ -43,7 +43,7 @@ trait HasQualifications
      *
      * @param Qualification $qualification
      *
-     * @return bool
+     * @return self
      */
     public function addQualification(Qualification $qualification)
     {
@@ -65,20 +65,18 @@ trait HasQualifications
      */
     public function updateVatsimRatings(int $atcRating, int $pilotRating)
     {
-        $qualifications = [];
-
         if ($atcRating === 0) {
             $this->addNetworkBan('Network ban discovered via Cert login.');
         } elseif ($atcRating > 0) {
             $this->removeNetworkBan();
-            $qualifications[] = Qualification::parseVatsimATCQualification($atcRating);
+            $this->addQualification(Qualification::parseVatsimATCQualification($atcRating));
         }
 
         if ($atcRating >= 8) {
             try {
                 $info = VatsimXML::getData($this->id, 'idstatusprat');
                 if (isset($info->PreviousRatingInt) && $info->PreviousRatingInt > 0) {
-                    $qualifications[] = Qualification::parseVatsimATCQualification($info->PreviousRatingInt);
+                    $this->addQualification(Qualification::parseVatsimATCQualification($info->PreviousRatingInt));
                 }
             } catch (Exception $e) {
                 if (strpos($e->getMessage(), 'Name or service not known') === false) {
@@ -101,7 +99,7 @@ trait HasQualifications
     {
         $this->load('qualifications');
 
-        return $this->qualifications_pilot
+        return $this->qualification_pilot
             ->merge($this->qualifications_atc_training)
             ->merge($this->qualifications_pilot_training)
             ->merge($this->qualifications_admin)
@@ -138,15 +136,18 @@ trait HasQualifications
         });
     }
 
-    public function getQualificationsPilotStringAttribute()
+    public function getQualificationPilotAttribute()
     {
-        $rating = $this->qualifications->filter(function ($qual) {
+        return $this->qualifications->filter(function ($qual) {
             return $qual->type == 'pilot';
         })->sortByDesc(function ($qualification) {
             return $qualification->pivot->created_at;
         })->first();
+    }
 
-        return optional($rating)->code ?? 'None';
+    public function getQualificationsPilotStringAttribute()
+    {
+        return optional($this->qualification_pilot)->code ?? 'None';
     }
 
     public function getQualificationsPilotTrainingAttribute()
