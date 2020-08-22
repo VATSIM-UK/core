@@ -325,16 +325,17 @@ class TeamSpeak
         $currentGroups = explode(',', $client['client_servergroups']);
         $serverGroups = ServerGroup::all();
         $memberQualifications = $member->active_qualifications;
+
         foreach ($serverGroups as $group) {
-            $qualified = (! is_null($group->qualification) && $memberQualifications->contains('id', $group->qualification->id))
-                || (! is_null($group->permission) && $member->hasPermissionTo($group->permission));
-            if (! in_array($group->dbid, $currentGroups) && $qualified) {
+            $memberHasRequiredQualification = $group->qualification ? $memberQualifications->contains('id', $group->qualification->id) : false;
+            $memberHasGroupPermission = $group->permission ? $member->hasPermissionTo($group->permission) : false;
+
+            $qualifiesForGroup = $memberHasRequiredQualification || $memberHasGroupPermission;
+            $alreadyInGroup = in_array($group->dbid, $currentGroups);
+
+            if ($qualifiesForGroup && ! $alreadyInGroup) {
                 $client->addServerGroup($group->dbid);
-            } elseif (! in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && $member->qualifications_pilot->isEmpty()) {
-                $client->addServerGroup($group->dbid);
-            } elseif (in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && ! $member->qualifications_pilot->isEmpty()) {
-                $client->remServerGroup($group->dbid);
-            } elseif (in_array($group->dbid, $currentGroups) && ! starts_with($group->name, 'P0') && ! $qualified && ! $group->default) {
+            } elseif (! $group->default && $alreadyInGroup && ! $qualifiesForGroup) {
                 $client->remServerGroup($group->dbid);
             }
         }
