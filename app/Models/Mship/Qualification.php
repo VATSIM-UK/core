@@ -63,11 +63,11 @@ class Qualification extends Model
             ->withTimestamps();
     }
 
-    public static function parseVatsimATCQualification($network)
+    public static function parseVatsimATCQualification($network): ?self
     {
         $network = (int) $network;
         if ($network < 1) {
-            return;
+            return null;
         } elseif ($network >= 8 and $network <= 10) {
             $type = 'training_atc';
         } elseif ($network >= 11) {
@@ -77,9 +77,7 @@ class Qualification extends Model
         }
 
         // Sort out the atc ratings
-        $netQ = self::ofType($type)->networkValue($network)->first();
-
-        return $netQ;
+        return self::ofType($type)->networkValue($network)->first();
     }
 
     public static function parseVatsimPilotQualifications($network)
