@@ -11,6 +11,6 @@ class LogoutController extends BaseController
     {
         Auth::logout();
 
-        return redirect(route('site.home'));
+        return redirect()->route('site.home');
     }
 }
