@@ -63,11 +63,11 @@ class Qualification extends Model
             ->withTimestamps();
     }
 
-    public static function parseVatsimATCQualification($network)
+    public static function parseVatsimATCQualification($network): ?self
     {
         $network = (int) $network;
         if ($network < 1) {
-            return;
+            return null;
         } elseif ($network >= 8 and $network <= 10) {
             $type = 'training_atc';
         } elseif ($network >= 11) {
@@ -77,14 +77,17 @@ class Qualification extends Model
         }
 
         // Sort out the atc ratings
-        $netQ = self::ofType($type)->networkValue($network)->first();
-
-        return $netQ;
+        return self::ofType($type)->networkValue($network)->first();
     }
 
     public static function parseVatsimPilotQualifications($network)
     {
         $ratingsOutput = [];
+
+        // A P0 will not be picked up in the bitmap
+        if ($network >= 0) {
+            array_push($ratingsOutput, self::ofType('pilot')->networkValue(0)->first());
+        }
 
         // Let's check each bitmask....
         for ($i = 0; $i <= 8; $i++) {
@@ -92,7 +95,7 @@ class Qualification extends Model
             if (($pow & $network) == $pow) {
                 $ro = self::ofType('pilot')->networkValue($pow)->first();
                 if ($ro) {
-                    $ratingsOutput[] = $ro;
+                    array_push($ratingsOutput, $ro);
                 }
             }
         }

@@ -8,16 +8,33 @@ use App\Models\Mship\Qualification as QualificationData;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use VatsimXML;
 
 class UpdateMember extends Job implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
+    use Dispatchable, InteractsWithQueue, SerializesModels;
 
     protected $accountID;
     protected $data;
+
+    public $queue = 'user_sync';
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 10;
+
+    /**
+     * The maximum number of exceptions to allow before failing.
+     *
+     * @var int
+     */
+    public $maxExceptions = 1;
 
     /**
      * Create a new job instance.
@@ -159,6 +176,6 @@ class UpdateMember extends Job implements ShouldQueue
 
     public function middleware()
     {
-        return [new RateLimited('update_member_job', 100, 60)];
+        return [new RateLimited('update_member_job', 1000, 60, 60)];
     }
 }

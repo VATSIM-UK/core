@@ -272,7 +272,7 @@
                                             (M)
                                         @endif
                                     </b><br/>
-                                    {{ $booking['member']['name'] }}
+                                    {{ e($booking['member']['name']) }}
                                     @if($booking['member']['id'])
                                         ({{ $booking['member']['id'] }})
                                     @endif

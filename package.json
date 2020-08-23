@@ -19,7 +19,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
     "admin-lte": "2.4.18",
-    "axios": "^0.19",
+    "axios": "^0.20",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.7",
     "bootstrap-tour": "^0.12.0",
@@ -35,8 +35,8 @@
     "resolve-url-loader": "3.1.1",
     "sass-loader": "^9.0.3",
     "sass": "^1.26.10",
-    "vue": "^2.6.11",
-    "vue-template-compiler": "^2.6.11"
+    "vue": "^2.6.12",
+    "vue-template-compiler": "^2.6.12"
   },
   "release": {
     "repositoryUrl": "https://github.com/VATSIM-UK/core",
