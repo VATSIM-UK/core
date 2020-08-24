@@ -49,7 +49,7 @@
                         <li class="col-sm-12">
                             <ul>
                                 <li>{!! link_to_route("site.pilots.landing", "Welcome") !!}</li>
-                                <li>{!! link_to_route("site.pilots.ratings", "Ratings (P1 - P5)") !!}</li>
+                                <li>{!! link_to_route("site.pilots.ratings", "Ratings") !!}</li>
                                 <li>{!! link_to_route("site.pilots.mentor", "Becoming a Mentor") !!}</li>
                                 <li>{!! link_to_route("site.pilots.oceanic", "Oceanic Procedures") !!}</li>
                                 <li class="divider"></li>

@@ -5,152 +5,133 @@
 
     <div class="row">
 
-        <div class="col-md-5 col-md-offset-1 ">
+    <div class="col-md-8 col-md-offset-2 ">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; P1 (Online Pilot) Rating
+                <div class="panel-heading"><i class="fa fa-plane"></i> &thinsp; P1 (Online Pilot) Rating
                 </div>
                 <div class="panel-body">
-                    <p>The Online Pilot (P1) training is ideal for new members just getting started on the network
-                        teaching
-                        them how to operate their aircraft on the network. It is also the perfect opportunity for the
-                        more
-                        experienced pilot to learn something new which may make the VATSIM experience that little bit
-                        more
-                        enjoyable. We focus on the fundamentals of flying on the network to ensure that the skies are
-                        filled
-                        with competent, confident and professional pilots.</p>
+                <p>Welcome to the P1 Private Pilots License course for fixed wing aircraft!  The successful completion of this course will result in the issue of the VATSIM P1 PPL(A) pilot rating.<br><br>
+                    Throughout the course you will learn the fundamental theory and practical skills associated with operating a light aircraft. The course focuses on ‘stick and rudder’ skills backed up with the relevant theory with the aim of providing you with the how and the why!<br><br>
+                    The course is split into 3 sections: <strong>Theory Phase</strong>, <strong>Practical Phase</strong>, and a <strong>License Skills Test (LST)</strong>.</p>
 
-                    <p>So what does it look like, take a look!</p>
+                    <br>
 
-                    <div class="panel-base text-right">
-                        <a href="#" class="btn btn-primary disabled">Course Currently Unavailable</a>
-                    </div>
+                    <ol>
+                        <li>
+                            <strong>Theory Phase</strong><br>
+                            After the completion of each topic, you will be required to complete a quiz containing a number of questions for you to answer. The purpose of each quiz is to help you gauge your knowledge of the section that you have studied so that you can target areas for improvement.<br><br>
+                            After you have completed all of the sections in a module you will sit an exam. This exam is graded and has a pass mark of 75%.<br><br>
+                            Each module can be completed in any order and does not have to be completed in the order.<br><br>
+                            After you have passed all 3 ‘end of module’ theory exams, submit a ticket <a href="https://helpdesk.vatsim.uk/open.php" rel="external nofollow">here</a> indicating that you have completed the P1 PPL(A) theory phase. This will allow us to make you ‘eligible’ for a training place.<br><br>
+                            Once you have reached the top of our waiting list and have indicated to us that you have passed all 3 ‘end of module’ theory exams, we will issue you a training place when one becomes available.<br><br>
+                        </li>
+                        <li>
+                            <strong>Practical Phase</strong><br>
+                            During the practical phase you will complete 22 practical lessons. These lessons are either one-to-one mentoring sessions or online video lessons.<br><br>
+                            One-to-one mentoring sessions take place on the VATSIM UK TeamSpeak server which can be booked via the <a href="https://cts.vatsim.uk" rel="external nofollow">CTS</a>.<br><br>
+                            Online video lessons are marked in brackets with (Online) next to the lesson title. These lessons require you to read the associate briefing, watch the online video lesson, and then practise the contents of the lesson yourself. You are required to log onto the network with a pilot training callsign G-PTDA, G-PTDB... and log the flight on our <a href="{{ route('fte.guide') }}" rel="external nofollow">smartCARS</a>. The lesson can be booked via our exercises page <a href="{{ route('fte.exercises') }}" rel="external nofollow">here</a>. Once you have completed the flight, simply submit the PIREP on the smartACARS client and your flight will be logged.<br><br>
+                            The next lesson will come available when you have completed the previous lesson. One-to-one mentoring sessions will be marked as completed by your mentor, and online video lessons will be automatically marked as complete when you have read the briefing and watched the video for that lesson. Your lesson will be marked as completed even if you haven’t completed the flight on the network using our smartCARS client, but a mentor will check at the start of your next one-to-one lesson that all online lessons and associated PIREPs have been filed.<br><br>
+                        </li>
+                        <li>
+                            <strong>License Skills Test</strong><br>
+                            Once you have completed the practical phase of the course you will complete a practical exam with an examiner. The details of the exam can be found in the Pilot Training Handbook.
+                        </li>
+                    </ol>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-5">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; P2 (Flight Fundamentals)
-                    Rating
-                </div>
-                <div class="panel-body">
-                    <p>The Flight Fundamentals (P2) course is an intermediate pilot rating which aims
-                        to teach pilots the ‘principles of flight’. Our courses allow you to fly the most popular
-                        training
-                        aircraft around the world including the C152, C172, and P28A. Over the period of the course, you
-                        will be based at Liverpool John Lennon International Airport (EGGP) where you will complete an
-                        array
-                        of general handling exercises topped off with some circuits and those dreaded emergencies.</p>
-
-                    <p>So what does it look like, take a look!</p>
-
-                    <div class="panel-base text-right">
-                        <a href="https://helpdesk.vatsim.uk" class="btn btn-primary">Enrol Here! &gt;&gt;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
+        <div class="row">
 
-    <div class="row">
-
-        <div class="col-md-5 col-md-offset-1 ">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; P3 (VFR Pilot) Rating
-                </div>
-                <div class="panel-body">
-                    <p>The VFR Pilot (P3) Course is a ‘follow-on’ rating from the P2 rating, where you will be taught
-                        how
-                        to navigate using standard visual navigation methods and plan your flight from start to end! The
-                        course is based out of London Biggin Hill Airport (EGKB) situated in some of the busiest
-                        airspaces
-                        in the world, the perfect place to test your navigation skills!</p>
-
-                    <p>For our P3 course, you will return to the left-hand seat of our training aircraft including the
-                        C152, C172, and P28A.</p>
-
-                    <p>So what does it look like, take a look!</p>
-
-                    <div class="text-center">
-                        <iframe allow="autoplay; encrypted-media" allowfullscreen="true" frameborder="0" height="270" kwframeid="2" src="https://www.youtube.com/embed/xEb9CV7iFtI?feature=oembed" width="480"></iframe>
-                    </div>
-
-                    <br />
-
-                    <div class="panel-base text-right">
-                        <a href="https://helpdesk.vatsim.uk" class="btn btn-primary">Enrol Here! &gt;&gt;</a>
-                    </div>
-                </div>
-            </div>
+<div class="col-md-8 col-md-offset-2 ">
+    <div class="panel panel-ukblue">
+        <div class="panel-heading"><i class="fa fa-plane"></i> &thinsp; How To Enrol
         </div>
-
-        <div class="col-md-5">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; P4 (IFR Fundamentals)
-                    Rating
-                </div>
-                <div class="panel-body">
-                    <p>The IFR Pilot (P4) course is the first of 2 dedicated IFR pilot ratings. In this course you will
-                        learn how to operate your selected aircraft under IFR rules, flying a SID, joining the airways,
-                        following a STAR back down to earth and finally, fly a fully managed procedural ILS approach.
-                        This
-                        course allows you to fly any suitably equipped aircraft that has an FMS and coupled autopilot,
-                        for
-                        example, the A320 or B738. For this one, you will be based at East Midlands International
-                        Airport
-                        (EGNX) one of the UK’s most popular airports for commercial aircraft ‘base training’.</p>
-
-                    <p>So what does it look like, take a look!</p>
-
-                    <div class="text-center">
-                        <iframe allow="autoplay; encrypted-media" allowfullscreen="true" frameborder="0" height="270" kwframeid="2" src="https://www.youtube.com/embed/65zw55E3Hlg?feature=oembed" width="480"></iframe>
-                    </div>
-
-                    <br />
-
-                    <div class="panel-base text-right">
-                        <a href="https://helpdesk.vatsim.uk" class="btn btn-primary">Enrol Here! &gt;&gt;</a>
-                    </div>
-                </div>
-            </div>
+        <div class="panel-body">
+            @if(Auth::user() && $_account->primary_state->code == 'DIVISION')
+                <strong>{{ $_account->name_first }}</strong>, <strong>you are</strong> a Division member, so you can get started straight away!<br />
+                You can find details on how to sign up for training in the UK below.
+            @elseif(Auth::user())
+                <strong>{{ $_account->name_first }}</strong>, <strong>you're not</strong> currently a Division member!<br />
+                You can find details on how to sign up for training in the UK below.
+            @else
+                You will need to be a member of VATSIM to sign up to our training courses.<br />
+                Already a member? {!! HTML::link(route('login'), "Click here to login") !!} and find out which route is the most applicable to you.
+            @endif
         </div>
-
     </div>
+</div>
 
+</div>
+        <div class="row">
 
-    <div class="row">
-
-        <div class="col-md-5 col-md-offset-1">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; P5 (Advanced IFR Pilot)
-                    Rating
-                </div>
-                <div class="panel-body">
-                    <p>The Advanced IFR Pilot rating (P5) is designed to test the pilot’s general ability to operate a
-                    light aircraft (SEP/MEP) under Instrument Flight Rules whilst adhering to the protocol and
-                    procedures associated with flying under IFR in an unmanaged flight condition. The P5 rating must be
-                    flown in a single or twin-engine propeller-driven aircraft, weighing under 5700kg. Fancy a
-                    challenge? This is definitely the course for it! This course is only available to those who already
-                        have a P1 and P4 rating.</p>
-
-                    <p>So what does it look like, take a look!</p>
-
-                    <div class="text-center">
-                        <iframe allow="autoplay; encrypted-media" allowfullscreen="true" frameborder="0" height="270" kwframeid="2" src="https://www.youtube.com/embed/bGwKQxCuS4U?feature=oembed" width="480"></iframe>
+            <div class="col-md-4 col-md-offset-2" @if(Auth::user() && $_account->primary_state->code !== 'DIVISION')style="opacity: 0.3"@endif>
+                <div class="panel panel-uk-success">
+                    <div class="panel-heading"><i class="fa fa-check"></i> &thinsp; I am a member of the
+                        UK division
                     </div>
-
-                    <br />
-
-                    <div class="panel-base text-right">
-                        <a href="https://helpdesk.vatsim.uk" class="btn btn-primary py-8">Enrol Here! &gt;&gt;</a>
+                    <div class="panel-body">
+                        <ol>
+                            <li>
+                                Express your interest <a href="https://helpdesk.vatsim.uk/open.php" rel="external nofollow">here</a> - you will then be added to the waiting list.
+                            </li>
+                            <li>
+                                Sign up to the P1 PPL(A) moodle course <a href="https://moodle.vatsim.uk/course/view.php?id=51" rel="external nofollow">here</a>.
+                            </li>
+                            <li>
+                                Complete Theory Modules one, two and three.
+                            </li>
+                            <li>
+                                Notify us <a href="https://helpdesk.vatsim.uk/open.php" rel="external nofollow">here</a> that you have completed the Theory Phase of the P1 PPL(A) moodle course.
+                            </li>
+                            <li>
+                                Sit tight! We will be in touch when a training place becomes available.
+                            </li>
+                        </ol>
                     </div>
                 </div>
             </div>
-        </div>
 
-    </div>
-
+            <div class="col-md-4" @if(Auth::user() && $_account->primary_state->code == 'DIVISION')style="opacity: 0.3"@endif>
+                <div class="panel panel-uk-danger">
+                    <div class="panel-heading"><i class="fa fa-times"></i> &thinsp; I am not a member
+                        of the UK divison
+                    </div>
+                    <div class="panel-body">
+                        <ol>
+                            <li text="">
+                                <a href="{{ route('visiting.landing') }}" rel="">Apply to visit as a
+                                    Pilot</a>
+                            </li>
+                            <li text="">
+                                When your V/T application has been processed you will be contacted by the Pilot Training
+                                Team using our HelpDesk.
+                            </li>
+                            <li>
+                                You will either be added to the waiting list or you will be informed that your mentoring
+                                permissions have been assigned.
+                            </li>
+                            <li>
+                                Once your mentoring permissions have been assigned navigate to our <a
+                                        href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
+                                    (CTS</a>).
+                            </li>
+                            <li>
+                                Sign into the CTS using our SSO.
+                            </li>
+                            <li>
+                                Select the Students Drop down menu and navigate to <strong>Sessions &gt; Managment</strong>
+                            </li>
+                            <li>
+                                Add a session request using the <strong>&#39;Request Session&#39;</strong> drop down box,
+                                <em>e.g P1_PPL(A) for the P1 Course</em>
+                            </li>
+                            <li>
+                                Add availability to the system and ensure this is kept up to date.
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
 @stop
