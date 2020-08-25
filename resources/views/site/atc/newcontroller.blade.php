@@ -178,7 +178,7 @@
 					</p>
 
                     <p>
-                        Further information on our training programmes is available in the <a href="https://community.vatsim.uk/files/downloads/file/230-atc-training-handbook/" target="_blank">ATC Training Handbook</a>.
+                        Further information on our training programmes is available in the <a href="https://community.vatsim.uk/files/downloads/file/230-atc-training-handbook/" target="_blank" rel="noopener noreferrer">ATC Training Handbook</a>.
                     </p>
 
 					<p>
