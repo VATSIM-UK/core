@@ -83,6 +83,14 @@
                                     <td>Member Services Assistant</td>
                                     <td>Matthew Wilson</td>
                                 </tr>
+                                <tr>
+                                    <td>Member Services Assistant</td>
+                                    <td>James Thomas</td>
+                                </tr>
+                                <tr>
+                                    <td>Member Services Assistant</td>
+                                    <td>Luke Peters</td>
+                                </tr>
                             </table>
                         </div>
                     </div>
