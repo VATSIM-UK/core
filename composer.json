@@ -55,10 +55,6 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/VATSIM-UK/laravel-slack-api/"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/VATSIM-UK/VatsimSSO"
         },
         {
@@ -99,9 +95,9 @@
         "symfony/translation": "^5.0",
         "vatsim/sso": "dev-develop#7579e9f492d84f04bfd30df41f0073b3d7a01527",
         "vatsim/xml": "dev-master",
-        "vluzrmos/slack-api": "dev-master",
         "watson/rememberable": "^4.0",
-        "wikimedia/composer-merge-plugin": "^1.4"
+        "wikimedia/composer-merge-plugin": "^1.4",
+        "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {
         "ext-json": "*",

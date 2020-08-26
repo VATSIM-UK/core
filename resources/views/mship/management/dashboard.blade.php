@@ -37,7 +37,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Personal Details
+                <div class="panel-heading"><i class="fa fa-male"></i> &thinsp; Personal Details
                 </div>
                 <div class="panel-body">
                     <!-- Content Of Panel [START] -->
@@ -93,7 +93,7 @@
                 </div>
             </div>
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-lock"></i> &thinsp; Secondary Password
+                <div class="panel-heading"><i class="fa fa-lock"></i> &thinsp; Secondary Password
                 </div>
                 <div class="panel-body">
                     <!-- Content Of Panel [START] -->
@@ -141,92 +141,6 @@
                     <!-- Content Of Panel [END] -->
                 </div>
             </div>
-            @if($_account->hasState("DIVISION") || $_account->hasState("TRANSFERRING"))
-                <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="fa fa-cogs"></i>
-                        Community Groups
-                        @if($_account->can('deploy', new \App\Models\Community\Membership()))
-                            <div class="pull-right">
-                                <a href="{{ route("community.membership.deploy") }}">
-                                    <i class="fa fa-plus-circle"></i>
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-7">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p style="text-align: center;">
-                                            <b>CURRENT MEMBERSHIP(S)</b>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <table class="table">
-                                            @forelse($_account->communityGroups as $cg)
-                                                <tr>
-                                                    <th>{{ $cg->name }}</th>
-                                                    <td>{{ HTML::fuzzyDate($cg->pivot->created_at) }}</td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <th colspan="2">
-                                                        You are not part of any community groups.
-                                                    </th>
-                                                </tr>
-                                                <tr>
-                                                    <th colspan="2">
-                                                        {!! link_to_route("community.membership.deploy", "Why not join one now?") !!}
-                                                    </th>
-                                                </tr>
-                                            @endforelse
-                                            @if($_account->communityGroups->count() == 1)
-                                                <tr>
-                                                    <th colspan="2">
-                                                        You are not part of any <em>region</em>-based groups.
-                                                    </th>
-                                                </tr>
-                                                <tr>
-                                                    <th colspan="2">
-                                                        {!! link_to_route("community.membership.deploy", "Why not join one now?") !!}
-                                                    </th>
-                                                </tr>
-                                            @endif
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p style="text-align: center;">
-                                            <b>TOTAL POINTS</b>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <table class="table">
-                                            <tr>
-                                                <th>Weekly</th>
-                                                <td>0</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Monthly</th>
-                                                <td>0</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Yearly</th>
-                                                <td>0</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            @endif
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications
                 </div>
@@ -297,41 +211,6 @@
 
                     </div>
                 </div>
-            </div>
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-slack"></i>
-                    Slack Registration
-                    <div class="pull-right">
-                        @if(!$_account->slack_id)
-                            <a href="{{ route("slack.new") }}">
-                                <i class="fa fa-plus-circle"></i>
-                            </a>
-                        @endif
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            @if($_account->slack_id)
-                                Currently registered with Slack ID {{ $_account->slack_id }}.
-                            @else
-                                You are not yet
-                                registered.  {!! link_to_route("slack.new", "Click here to register.") !!}
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                @if(!$_account->slack_id)
-                    <div class="panel-footer panel-footer-primary">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <a href="{{ route('slack.new') }}">
-                                    <span class='fa fa-info'></span> Slack Guide
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endif
             </div>
         </div>
         <div class="col-md-6">
@@ -418,7 +297,7 @@
 
             @if(!$_account->is_banned)
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-earphone"></i>
+                    <div class="panel-heading"><em class="fab fa-teamspeak"></em>
                         TeamSpeak Registrations
                         <div class="pull-right">
                             <a href="{{ route("teamspeak.new") }}">
@@ -473,6 +352,40 @@
                     </div>
                 </div>
             @endif
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><em class="fab fa-discord"></em>
+                    Discord Registration
+                    <div class="pull-right">
+                        @if(!$_account->discord_id)
+                            <a href="{{ route("discord.create") }}">
+                                <em class="fa fa-plus-circle"></em>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            @if($_account->discord_id)
+                                Currently registered with Discord ID {{ $_account->discord_id }}. <br/>
+                                <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
+                            @else
+                                You are not yet
+                                registered.  {!! link_to_route("discord.create", "Click here to register.") !!}
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer panel-footer-primary">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a href="{{ route('discord.show') }}">
+                                <span class='fa fa-info'></span> Discord Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-signal"></i>

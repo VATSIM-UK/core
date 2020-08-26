@@ -3,12 +3,15 @@ $screen-sm: 802px;
 
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Dosis:200,400,500,600);
 @import "_bootstrap";
-@import "node_modules/font-awesome/scss/font-awesome";
+@import "node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@import "node_modules/@fortawesome/fontawesome-free/scss/solid";
+@import "node_modules/@fortawesome/fontawesome-free/scss/brands";
 @import "node_modules/jquery-datetimepicker/jquery.datetimepicker";
 @import "_nav";
 @import "_visit-transfer";
 @import "_vuk-letters";
 @import "_padding-utils";
+@import "_top-notification";
 
 body, html {
   margin: 0 auto;
@@ -44,20 +47,20 @@ body, html {
     text-align: center;
 }
 
-.top_notification {
-    height: 40px;
-    background-color: grey;
-    position: relative;
+.sys_notification {
+  height: 40px;
+  background-color: grey;
+  position: relative;
 
-    .text {
-        margin: 0;
-        position: absolute;
-        top: 50%;
-        -ms-transform: translateY(-50%);
-        transform: translateY(-50%);
-        text-align: center;
-        width: 100%;
-    }
+  .text {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+      text-align: center;
+      width: 100%;
+  }
 }
 
 .banner {

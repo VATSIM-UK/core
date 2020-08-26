@@ -11,7 +11,6 @@
 </p>
 
 <p>
-    You may view the feedback by logging on to Core Administration, or by clicking here:</br>
-    {!! link_to_route('adm.mship.feedback.view', route('adm.mship.feedback.view', [$feedback->id]), [$feedback->id]) !!}
+    You may view the feedback by logging into Nova
 </p>
 @stop

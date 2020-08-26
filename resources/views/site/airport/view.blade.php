@@ -175,7 +175,7 @@
                                        aria-expanded="false" aria-controls="departureProcedures">
                                         <div class="panel-heading" role="tab"
                                              style="background-image:url({{asset('images/slice_departure.jpg')}});">
-                                            <h4 class="panel-title"><span class="glyphicon glyphicon-plus"></span> Departure Procedures</h4>
+                                            <h4 class="panel-title"><span class="fa fa-plane-departure"></span> Departure Procedures</h4>
                                         </div>
                                     </a>
                                     <div id="departureProcedures" class="panel-collapse collapse" role="tabpanel">
@@ -193,7 +193,7 @@
                                        aria-controls="arrivalProcedures">
                                         <div class="panel-heading" role="tab"
                                              style="background-image:url({{asset('images/slice_arrival.jpg')}});">
-                                            <h4 class="panel-title"><span class="glyphicon glyphicon-plus"></span> Arrival Procedures</h4>
+                                            <h4 class="panel-title"><span class="fa fa-plane-arrival"></span> Arrival Procedures</h4>
                                         </div>
                                     </a>
                                     <div id="arrivalProcedures" class="panel-collapse collapse" role="tabpanel">
@@ -211,7 +211,7 @@
                                        aria-controls="vfrProcedures">
                                         <div class="panel-heading" role="tab"
                                              style="background-image:url({{asset('images/slice_vfr.jpg')}});">
-                                            <h4 class="panel-title"><span class="glyphicon glyphicon-plus"></span> VFR Procedures</h4>
+                                            <h4 class="panel-title"><span class="fa fa-cloud"></span> VFR Procedures</h4>
                                         </div>
                                     </a>
                                     <div id="vfrProcedures" class="panel-collapse collapse" role="tabpanel">

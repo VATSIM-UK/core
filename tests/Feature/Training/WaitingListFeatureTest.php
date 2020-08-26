@@ -92,7 +92,7 @@ class WaitingListFeatureTest extends TestCase
 
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
 
-        Event::fakeFor(function () use ($waitingListAccount, $account) {
+        Event::fakeFor(function () use ($waitingListAccount) {
             $this->actingAs($this->privacc)
                 ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create",
                     ['notes' => 'This is a note'])

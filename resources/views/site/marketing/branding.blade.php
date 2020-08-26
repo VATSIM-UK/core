@@ -8,7 +8,7 @@
 
             <div class="col-md-12">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-pencil"></i> &thinsp; Branding Guidelines
+                    <div class="panel-heading"><i class="fa fa-pencil"></i> &thinsp; Branding Guidelines
                     </div>
                     <div class="panel-body">
 
@@ -139,7 +139,7 @@
 
     <div class="col-md-3">
         <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-briefcase"></i> &thinsp; Branding Bank
+            <div class="panel-heading"><i class="fa fa-briefcase"></i> &thinsp; Branding Bank
             </div>
             <div class="panel-body">
 
@@ -169,7 +169,7 @@
                                                      rel="external nofollow" target="_blank">Download</a>
                     </li>
                     <li>
-                        All other content should use DIN Alternate Regular - <a href="http://fontsgeek.com/fonts/DIN-Alternate-Regular" 
+                        All other content should use DIN Alternate Regular - <a href="http://fontsgeek.com/fonts/DIN-Alternate-Regular"
                                                                                 rel="external nofollow" target="_blank">Download</a>
                     </li>
                 </ul>

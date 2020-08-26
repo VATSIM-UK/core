@@ -8,7 +8,6 @@ use App\Jobs\UpdateMember;
 use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasBans;
-use App\Models\Mship\Concerns\HasCommunityGroups;
 use App\Models\Mship\Concerns\HasCTSAccount;
 use App\Models\Mship\Concerns\HasEmails;
 use App\Models\Mship\Concerns\HasForumAccount;
@@ -23,8 +22,6 @@ use App\Models\Mship\Concerns\HasStates;
 use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Note\Type;
-use App\Notifications\Mship\SlackInvitation;
-use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -42,7 +39,9 @@ use Watson\Rememberable\Rememberable;
  * App\Models\Mship\Account.
  *
  * @property int $id
- * @property string|null $slack_id
+ * @property int|null $discord_id
+ * @property int|null $discord_access_token
+ * @property int|null $discord_refresh_token
  * @property string $name_first
  * @property string $name_last
  * @property string|null $nickname
@@ -68,7 +67,6 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bans
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bansAsInstigator
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Community\Group[] $communityGroups
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Feedback[] $feedback
  * @property-read mixed $active_qualifications
@@ -153,7 +151,6 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account wherePasswordExpiresAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account wherePasswordSetAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereSlackId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withoutTrashed()
@@ -162,7 +159,7 @@ use Watson\Rememberable\Rememberable;
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
-        HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount, HasForumAccount, HasCTSAccount,
+        HasNetworkData, HasMoodleAccount, HasHelpdeskAccount, HasForumAccount, HasCTSAccount,
         HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword,
         HasNotifications, HasEmails, HasRoles, HasNovaPermissions;
     use HasApiTokens {
@@ -204,7 +201,10 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     ];
     protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
-    protected $casts = ['inactive' => 'boolean'];
+    protected $casts = [
+        'inactive' => 'boolean',
+        'discord_id' => 'int',
+    ];
 
     protected static function boot()
     {
@@ -229,9 +229,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         // Add to default role
         $defaultRole = Role::where('default', 1)->limit(1)->get();
         $model->assignRole($defaultRole);
-
-        // Queue the slack email
-        $model->notify((new SlackInvitation())->delay(Carbon::now()->addDays(7)));
     }
 
     /**

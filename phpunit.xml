@@ -32,10 +32,6 @@
     <env name="SESSION_DRIVER" value="array"/>
     <env name="QUEUE_DRIVER" value="sync"/>
     <env name="MAIL_DRIVER" value="log"/>
-    <env name="SLACK_SECRET" value="testing"/>
-    <env name="SLACK_BOT_TOKEN" value="testing"/>
-    <env name="SLACK_TOKEN_REGISTER" value="testing"/>
-    <env name="SLACK_ENDPOINT" value="testing"/>
     <ini name="memory_limit" value="-1"/>
 </php>
 </phpunit>

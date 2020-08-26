@@ -4,7 +4,7 @@
     <div class="row equal">
         <div class="col-md-3">
             <div class="panel panel-ukblue" id="gettingStarted">
-                <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Getting Started
+                <div class="panel-heading"><i class="fa fa-book"></i> &thinsp; Getting Started
                 </div>
                 <div class="panel-body text-center">
                     <a href="{{route("fte.guide")}}" style="text-decoration: none;">
@@ -17,7 +17,7 @@
         </div>
         <div class="col-md-6">
             <div class="panel panel-ukblue" id="welcomeBox">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Flight Training Exercises
+                <div class="panel-heading"><i class="fa fa-plane-departure"></i> &thinsp; Flight Training Exercises
                 </div>
                 <div class="panel-body">
                         Fancy something different? VATSIM UK is proud to announce the launch of Flight Training Exercises –
@@ -34,7 +34,7 @@
         </div>
         <div class="col-md-3">
             <div class="panel panel-ukblue" id="flightHistory">
-                <div class="panel-heading"><i class="glyphicon glyphicon-time"></i> &thinsp; Past Flights
+                <div class="panel-heading"><i class="fa fa-clock"></i> &thinsp; Past Flights
                 </div>
                 <div class="panel-body text-center">
                     <a href="{{route("fte.history")}}" style="text-decoration: none;">
@@ -51,7 +51,7 @@
         @foreach($exercises as $exercise)
             <div class="col-md-{{ 12 / $exercises->count() }}">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Featured - {{ $exercise->name }}</div>
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Featured - {{ $exercise->name }}</div>
                     <div class="panel-body">
                         @if($exercise->image)
                             <div class="text-center">

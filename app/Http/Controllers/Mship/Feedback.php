@@ -160,7 +160,7 @@ class Feedback extends \App\Http\Controllers\BaseController
 
     public function getUserSearch($name, Request $request)
     {
-        $matches = Account::whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE '%".$name."%'")
+        $matches = Account::whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE \"%".$name.'%"')
             ->where('id', '!=', \Auth::user()->id)
             ->limit(5)
             ->with(['states'])
@@ -181,7 +181,7 @@ class Feedback extends \App\Http\Controllers\BaseController
 
             $this->returnList->push(collect([
                 'cid' => $user->id,
-                'name' => $user->real_name,
+                'name' => e($user->real_name),
                 'status' => $user->state,
             ]));
 

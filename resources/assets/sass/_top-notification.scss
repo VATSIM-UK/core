@@ -1,0 +1,64 @@
+$consilio-manual-black: #121212;
+$discord-brand-blurple: #7289DA;
+
+.top_notification {
+    display: none;
+    position: relative;
+    z-index: 1500;
+    background-color: $consilio-manual-black;
+    width: 100%;
+    padding: 1em 0;
+    font-size: 1em;
+    color: rgba(255, 255, 255, 0.87);
+
+    // Center align main body of text when viewing
+    // on smaller devices
+    @media (max-width: 992px) {
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 3em;
+    }
+
+    .button {
+      display: inline-block;
+      width: max-content;
+      padding: 1em 2em;
+      text-align: center;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      outline: none;
+      line-height: 1em;
+      height: auto;
+      margin: 0.5em 0;
+
+      &.secondary {
+        color: $discord-brand-blurple;
+        border: 1.5px solid $discord-brand-blurple;
+
+        &:hover {
+          background-color: $discord-brand-blurple;
+          color: white;
+        }
+      }
+
+      &.tertiary {
+        color: $discord-brand-blurple;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      &:active {
+        font-size: 98%;
+      }
+    }
+}

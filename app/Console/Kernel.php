@@ -28,7 +28,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('telescope:prune')->daily();
 
         // === By Minute === //
 
@@ -52,17 +51,29 @@ class Kernel extends ConsoleKernel
             ->runInBackground()
             ->withoutOverlapping();
 
+        $schedule->command('horizon:snapshot')
+            ->everyFiveMinutes()
+            ->runInBackground()
+            ->withoutOverlapping();
+
         // === By Hour === //
+
+        $schedule->command('members:certupdate', ['--type=hourly'])
+            ->hourly()
+            ->runInBackground();
 
         $schedule->command('members:certimport')
             ->cron('30 */2 * * *') // every second hour
             ->runInBackground();
 
-        $schedule->command('slack:manager')
-            ->hourly()
-            ->runInBackground();
+        $schedule->command('discord:manager')
+            ->everySixHours()
+            ->runInBackground()
+            ->withoutOverlapping();
 
         // === By Day ===
+
+        $schedule->command('telescope:prune')->daily();
 
         $schedule->command('sys:statistics:daily')
             ->dailyAt('00:01');
@@ -89,11 +100,11 @@ class Kernel extends ConsoleKernel
 
         // === By Month === //
         $schedule->command('members:certupdate', ['--type=monthly', 5000])
-            ->monthlyOn(1, '01:45')
+            ->cron('0 0 1,10,20 * *') // At 00:00 on the 1st, 10th and 20th of every month
             ->runInBackground();
 
-        $schedule->command('members:certupdate', ['--type=all', 1000])
-            ->monthlyOn(1, '01:45')
+        $schedule->command('members:certupdate', ['--type=all', 5000])
+            ->monthlyOn(2, '01:45')
             ->runInBackground();
     }
 

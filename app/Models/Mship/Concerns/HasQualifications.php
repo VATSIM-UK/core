@@ -43,7 +43,7 @@ trait HasQualifications
      *
      * @param Qualification $qualification
      *
-     * @return bool
+     * @return self
      */
     public function addQualification(Qualification $qualification)
     {
@@ -65,20 +65,18 @@ trait HasQualifications
      */
     public function updateVatsimRatings(int $atcRating, int $pilotRating)
     {
-        $qualifications = [];
-
         if ($atcRating === 0) {
             $this->addNetworkBan('Network ban discovered via Cert login.');
         } elseif ($atcRating > 0) {
             $this->removeNetworkBan();
-            $qualifications[] = Qualification::parseVatsimATCQualification($atcRating);
+            $this->addQualification(Qualification::parseVatsimATCQualification($atcRating));
         }
 
         if ($atcRating >= 8) {
             try {
                 $info = VatsimXML::getData($this->id, 'idstatusprat');
                 if (isset($info->PreviousRatingInt) && $info->PreviousRatingInt > 0) {
-                    $qualifications[] = Qualification::parseVatsimATCQualification($info->PreviousRatingInt);
+                    $this->addQualification(Qualification::parseVatsimATCQualification($info->PreviousRatingInt));
                 }
             } catch (Exception $e) {
                 if (strpos($e->getMessage(), 'Name or service not known') === false) {
@@ -87,17 +85,13 @@ trait HasQualifications
             }
         }
 
-        for ($i = 1; $i <= 256; $i *= 2) {
-            if ($i & $pilotRating) {
-                $qualifications[] = Qualification::ofType('pilot')->networkValue($i)->first();
+        if ($pilotRating >= 0) {
+            $pilotRatings = Qualification::parseVatsimPilotQualifications($pilotRating);
+            foreach ($pilotRatings as $pr) {
+                if (! $this->hasQualification($pr)) {
+                    $this->addQualification($pr);
+                }
             }
-        }
-
-        $ids = collect($qualifications)->pluck('id');
-
-        if (! empty($ids)) {
-            $this->qualifications()->syncWithoutDetaching($ids);
-            event(new AccountAltered($this));
         }
     }
 
@@ -105,11 +99,11 @@ trait HasQualifications
     {
         $this->load('qualifications');
 
-        return $this->qualifications_pilot
-            ->merge($this->qualifications_atc_training)
+        return $this->qualifications_atc_training
             ->merge($this->qualifications_pilot_training)
             ->merge($this->qualifications_admin)
-            ->push($this->qualification_atc);
+            ->push($this->qualification_atc)
+            ->push($this->qualification_pilot);
     }
 
     public function getQualificationAtcAttribute()
@@ -142,17 +136,18 @@ trait HasQualifications
         });
     }
 
+    public function getQualificationPilotAttribute()
+    {
+        return $this->qualifications->filter(function ($qual) {
+            return $qual->type == 'pilot';
+        })->sortByDesc(function ($qualification) {
+            return $qualification->pivot->created_at;
+        })->first();
+    }
+
     public function getQualificationsPilotStringAttribute()
     {
-        $output = '';
-        foreach ($this->qualifications_pilot as $p) {
-            $output .= $p->code.', ';
-        }
-        if ($output == '') {
-            $output = 'None';
-        }
-
-        return rtrim($output, ', ');
+        return optional($this->qualification_pilot)->code ?? 'None';
     }
 
     public function getQualificationsPilotTrainingAttribute()

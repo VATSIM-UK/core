@@ -6,7 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Libraries\UKCP as UKCPLibrary;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use League\Flysystem\FileNotFoundException;
 
 class Token extends BaseController
 {
