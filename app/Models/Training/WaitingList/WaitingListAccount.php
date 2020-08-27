@@ -111,6 +111,9 @@ class WaitingListAccount extends Pivot
 
     public function atcHourCheck()
     {
+        if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT) {
+            return true;
+        }
         $hourCheckKey = "{$this->cacheKey()}:atcHourCheck";
 
         if ((bool) Cache::has($hourCheckKey)) {
