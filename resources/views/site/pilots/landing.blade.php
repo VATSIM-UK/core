@@ -98,7 +98,7 @@
                 <div class="panel-body">
                     <ol>
                         <li>
-                            <a href="https://www.vatsim.uk/visit-transfer" target="_blank" rel="noreferrer noopener">Apply to visit as a Pilot</a>
+                            <a href="{{ route('visiting.landing') }}" rel="noreferrer noopener">Apply to visit as a Pilot</a>
                         </li>
                         <li>
                             When your V/T application has been accepted you will be added to the waiting list.
