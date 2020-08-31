@@ -71,34 +71,19 @@
                 <div class="panel-body">
                     <ol>
                         <li>
-                            Send us a ticket using&nbsp;our <strong>Helpdesk</strong> <a
-                                    href="https://helpdesk.vatsim.uk/" rel="external nofollow">here</a>, letting us know
-                            what course you would like to enrol on.
+                            Express your interest <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noopener noreferrer">here</a> - you will then be added to the waiting list.
                         </li>
                         <li>
-                            You will receive&nbsp;a response within <strong>72 hours</strong>.
+                            Sign up to the P1 PPL(A) moodle course <a href="https://moodle.vatsim.uk/course/view.php?id=51" target="_blank" rel="noopener noreferrer">here</a>.
                         </li>
                         <li>
-                            You will either be added to the waiting list or you will be informed that your mentoring
-                            permissions have been assigned.
+                            Complete Theory Modules one, two and three.
                         </li>
                         <li>
-                            Once your mentoring permissions have been assigned navigate to our <a
-                                    href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
-                                (CTS</a>).
+                            Notify us <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noopener noreferrer">here</a> that you have completed the Theory Phase of the P1 PPL(A) moodle course.
                         </li>
                         <li>
-                            Sign into the CTS using our SSO.
-                        </li>
-                        <li>
-                            Select the Students Drop down menu and navigate to <strong>Sessions &gt; Managment</strong>
-                        </li>
-                        <li>
-                            Add a session request using the <strong>&#39;Request Session&#39;</strong> drop down box,
-                            <em>e.g P1_PPL(A) for the P1 Course</em>
-                        </li>
-                        <li>
-                            Add availability to the system and&nbsp;ensure this is kept up to date.
+                            Sit tight! We will be in touch when a training place becomes available.
                         </li>
                     </ol>
                 </div>
@@ -112,35 +97,23 @@
                 </div>
                 <div class="panel-body">
                     <ol>
-                        <li text="">
-                            <a href="{{ route('visiting.landing') }}" rel="">Apply to visit as a
-                                Pilot</a>
-                        </li>
-                        <li text="">
-                            When your V/T application has been processed you will be contacted by the Pilot Training
-                            Team using our HelpDesk.
+                        <li>
+                            <a href="https://www.vatsim.uk/visit-transfer" target="_blank" rel="noreferrer noopener">Apply to visit as a Pilot</a>
                         </li>
                         <li>
-                            You will either be added to the waiting list or you will be informed that your mentoring
-                            permissions have been assigned.
+                            When your V/T application has been accepted you will be added to the waiting list.
                         </li>
                         <li>
-                            Once your mentoring permissions have been assigned navigate to our <a
-                                    href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
-                                (CTS</a>).
+                            Sign up to the P1 PPL(A) moodle course <a href="https://moodle.vatsim.uk/course/view.php?id=51" target="_blank" rel="noopener noreferrer">here</a>.
                         </li>
                         <li>
-                            Sign into the CTS using our SSO.
+                            Complete Theory Modules one, two and three.
                         </li>
                         <li>
-                            Select the Students Drop down menu and navigate to <strong>Sessions &gt; Managment</strong>
+                            Notify us <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noreferrer noopener">here</a> that you have completed the Theory Phase of the P1 PPL(A) moodle course.
                         </li>
                         <li>
-                            Add a session request using the <strong>&#39;Request Session&#39;</strong> drop down box,
-                            <em>e.g P1_PPL(A) for the P1 Course</em>
-                        </li>
-                        <li>
-                            Add availability to the system and ensure this is kept up to date.
+                            Sit tight! We will be in touch when a training place becomes available.
                         </li>
                     </ol>
                 </div>
