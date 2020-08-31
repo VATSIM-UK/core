@@ -16,7 +16,6 @@ Route::group([
     ], function () {
         Route::get('/')->uses('ATCPagesController@viewLanding')->name('landing');
         Route::get('/new-controller')->uses('ATCPagesController@viewNewController')->name('newController');
-        Route::get('/progression-guide')->uses('ATCPagesController@viewProgressionGuide')->name('progression');
         Route::get('/endorsements')->uses('ATCPagesController@viewEndorsements')->name('endorsements');
         Route::get('/becoming-a-mentor')->uses('ATCPagesController@viewBecomingAMentor')->name('mentor');
         Route::get('/bookings')->uses('ATCPagesController@viewBookings')->name('bookings');
