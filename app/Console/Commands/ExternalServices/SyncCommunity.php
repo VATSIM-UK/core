@@ -100,7 +100,7 @@ class SyncCommunity extends Command
 
             // Check for changes
             $changeEmail = strcasecmp($member['email'], $email);
-            $changeName = strcmp($member['name'], $member_core->name_first.' '.$member_core->name_last);
+            $changeName = strcmp($member['name'], $member_core->name);
             $changeState = strcasecmp($member['member_title'], $state);
             $changeCID = strcmp($member['field_12'], $member_core->id);
             $changeARating = strcmp($member['field_13'], $aRatingString);
@@ -120,7 +120,7 @@ class SyncCommunity extends Command
             if ($verbose) {
                 $this->output->write(' // ID: '.$member_core->id);
                 $this->output->write(' // Email ('.($emailLocal ? 'local' : 'latest').'):'.$email.($changeEmail ? '(changed)' : ''));
-                $this->output->write(' // Display: '.$member_core->name_first.' '.$member_core->name_last.($changeName ? '(changed)' : ''));
+                $this->output->write(' // Display: '.$member_core->name.($changeName ? '(changed)' : ''));
                 $this->output->write(' // State: '.$state.($changeState ? '(changed)' : ''));
                 $this->output->write(' // ATC rating: '.$aRatingString);
                 $this->output->write(' // Pilot ratings: '.$pRatingString);
@@ -131,7 +131,7 @@ class SyncCommunity extends Command
             if ($changesPending) {
                 try {
                     // ActiveRecord / Member fields
-                    $ips_member->name = $member_core->name_first.' '.$member_core->name_last;
+                    $ips_member->name = $member_core->name;
                     $ips_member->email = $email;
                     $ips_member->member_title = $state;
                     // Check/set bans
