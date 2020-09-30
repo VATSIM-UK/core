@@ -56,7 +56,7 @@
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-departing-ifr">
                     <div class="panel-heading">
-                        <i class="fa fa-plane" aria-hidden="true"></i> &thinsp; I am <strong>departing IFR</strong> from a UK airfield...
+                        <i class="fa fa-plane-departure" aria-hidden="true"></i> &thinsp; I am <strong>departing IFR</strong> from a UK airfield...
                         <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
@@ -182,7 +182,7 @@
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-arriving-transiting">
                     <div class="panel-heading">
-                        <i class="fa fa-map-o" aria-hidden="true"></i> &thinsp; I am <strong>arriving</strong> at a UK airfield… / I am <strong>transiting</strong> through UK airspace…
+                        <i class="fa fa-plane-arrival" aria-hidden="true"></i> &thinsp; I am <strong>arriving</strong> at a UK airfield… / <i class="fa fa-plane" aria-hidden="true"></i> I am <strong>transiting</strong> through UK airspace…
                         <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
@@ -277,7 +277,7 @@
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-vfr">
                     <div class="panel-heading">
-                        <i class="fa fa-paper-plane" aria-hidden="true"></i> &thinsp; I am flying <strong>VFR</strong> within UK airspace…
+                        <i class="fa fa-binoculars" aria-hidden="true"></i> &thinsp; I am flying <strong>VFR</strong> within UK airspace…
                         <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
