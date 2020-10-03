@@ -107,7 +107,8 @@ class AirportController extends Controller
         $this->authorize('use-permission', 'adm/smartcars/airports/update');
 
         $rules = $this->rules();
-        $rules['icao'] .= ",{$airport->icao}";
+        $rules['icao'] .= ",{$airport->id}";
+//        dd($rules);
         $this->validate($request, $rules);
 
         $airport->fill(array_filter($request->all()))->save();
