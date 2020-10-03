@@ -108,7 +108,6 @@ class AirportController extends Controller
 
         $rules = $this->rules();
         $rules['icao'] .= ",{$airport->id}";
-//        dd($rules);
         $this->validate($request, $rules);
 
         $airport->fill(array_filter($request->all()))->save();
