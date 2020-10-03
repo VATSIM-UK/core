@@ -16,7 +16,6 @@ class AirportController extends Controller
     protected function rules()
     {
         return [
-            'icao' => 'required|string|max:4|unique:smartcars_airport,icao',
             'name' => 'required|string|max:100',
             'country' => 'required|string|max:50',
             'latitude' => 'required|numeric|min:-90|max:90',
@@ -73,7 +72,12 @@ class AirportController extends Controller
     {
         $this->authorize('use-permission', 'adm/smartcars/airports/create');
 
-        $this->validate($request, $this->rules());
+        $this->validate($request, array_merge(
+            $this->rules(),
+            [
+                'icao' => 'required|string|max:4|unique:smartcars_airport,icao',
+            ]
+        ));
 
         Airport::create(array_filter($request->all()));
 
