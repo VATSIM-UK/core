@@ -83,11 +83,6 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Mship\Account::class,
         ],
-
-        'basic' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\BasicUser::class,
-        ],
     ],
 
     /*

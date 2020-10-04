@@ -36,11 +36,6 @@ class Kernel extends ConsoleKernel
             ->runInBackground()
             ->withoutOverlapping();
 
-        $schedule->command('visittransfer:statistics:daily')
-            ->everyMinute()
-            ->runInBackground()
-            ->withoutOverlapping();
-
         $schedule->command('teaman:runner', ['-v'])
             ->everyMinute()
             ->runInBackground()
@@ -74,9 +69,6 @@ class Kernel extends ConsoleKernel
         // === By Day ===
 
         $schedule->command('telescope:prune')->daily();
-
-        $schedule->command('sys:statistics:daily')
-            ->dailyAt('00:01');
 
         $schedule->command('sync:community')
             ->dailyAt('00:01');
