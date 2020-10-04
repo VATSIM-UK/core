@@ -89,4 +89,3 @@ $factory->define(\App\Models\Mship\Permission::class, function (Faker\Generator 
         'display_name' => $faker->text($maxNbChars = 30),
     ];
 });
-
