@@ -53,12 +53,6 @@ return [
             'driver' => 'passport',
             'provider' => 'accounts',
         ],
-
-        // requests authenticated through HTTP auth
-        'basic' => [
-            'driver' => 'session',
-            'provider' => 'basic',
-        ],
     ],
 
     /*
