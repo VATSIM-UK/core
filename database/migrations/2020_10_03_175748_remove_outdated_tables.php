@@ -42,6 +42,6 @@ class RemoveOutdatedTables extends Migration
      */
     public function down()
     {
-        throw new Exception('Unable to role back the remote outdated tables migration');
+        throw new Exception('Unable to role back the remove outdated tables migration');
     }
 }
