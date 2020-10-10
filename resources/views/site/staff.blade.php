@@ -287,13 +287,8 @@
                     <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Other Roles
                     </div>
                     <div class="panel-body">
-                        <br/>
                         <table class="table">
                             <tbody>
-                                <tr>
-                                    <td>Division Conflict Resolution Manager</td>
-                                    <td>Phillip Speer</td>
-                                </tr>
                                 <tr>
                                     <td>Data Protection Officer</td>
                                     <td>Chris Pawley</td>
