@@ -49,7 +49,7 @@
 						OBS -> S1 Training Process
 					</h2>
 
-					<img src="https://docs.google.com/drawings/d/e/2PACX-1vQi65mMjaXFg2qifoO5n7xt3Ryy7l_zJ6Ws4abuoFurrdrSLX2p68K-mR89hq-LUM1M0sVL69Bia3WJ/pub?w=958&amp;h=726">
+					<img src="https://docs.google.com/drawings/d/e/2PACX-1vQi65mMjaXFg2qifoO5n7xt3Ryy7l_zJ6Ws4abuoFurrdrSLX2p68K-mR89hq-LUM1M0sVL69Bia3WJ/pub?w=958&amp;h=726" class="img-responsive">
 
                     <h3>
 						OBS_PT1 Group Session
