@@ -17,7 +17,7 @@
     "heroku-postbuild": "yarn run prod && yarn run build-waiting-lists-manager-prod"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.0",
+    "@fortawesome/fontawesome-free": "^5.15.1",
     "admin-lte": "2.4.18",
     "axios": "^0.20",
     "bootstrap": "^3.3.7",
@@ -28,13 +28,13 @@
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
     "laravel-mix": "^5.0",
-    "less-loader": "^7.0.1",
+    "less-loader": "^7.0.2",
     "less": "^3.12.2",
     "lodash": "^4.17.20",
     "popper.js": "^1.16",
     "resolve-url-loader": "3.1.1",
+    "sass": "^1.27.0",
     "sass-loader": "^10.0.3",
-    "sass": "^1.26.11",
     "vue": "^2.6.12",
     "vue-template-compiler": "^2.6.12"
   },
