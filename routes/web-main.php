@@ -39,16 +39,6 @@ Route::group([
     });
 });
 
-// Webhooks
-Route::group([
-    'as'        => 'webhook.',
-    'prefix'    => 'webhook',
-    'namespace' => 'Webhook',
-], function () {
-    Route::post('mailgun')->uses('Mailgun@event')->middleware('auth.basic.once');
-    Route::post('sendgrid')->uses('SendGrid@events')->middleware('auth.basic.once');
-});
-
 // Members
 Route::group([
     'prefix'     => 'mship',
@@ -92,10 +82,6 @@ Route::group([
 
         Route::get('notification/list')->uses('Notification@getList')->name('notification.list');
         Route::post('notification/acknowledge/{sysNotification}')->uses('Notification@postAcknowledge')->name('notification.acknowledge');
-
-        // Route::get('/email')->uses('Email@getEmail')->name('mship.email');
-        // Route::post('/email')->uses('Email@postEmail')->name('mship.email.post');
-        // Route::get('/email/recipient-search')->uses('Email@getRecipientSearch')->name('mship.email.recipient-search');
     });
 });
 

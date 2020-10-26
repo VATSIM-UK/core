@@ -4,13 +4,6 @@
             You are in a <b>NON-PRODUCTION</b> environment
         </div>
     @endif
-    @if (sys_config('notice'))
-        <div class="sys_notification">
-            <div class="text">
-                {!! sys_config('notice') !!}
-            </div>
-        </div>
-    @endif
     @include('components.top-notification')
     <div class="nav_upper_container">
         <div class="navbar-header">
