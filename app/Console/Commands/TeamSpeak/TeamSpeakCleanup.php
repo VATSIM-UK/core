@@ -64,8 +64,6 @@ class TeamSpeakCleanup extends Command
             $registration->delete($this->tscon);
             $this->log("Old registration deleted: {$registration->id}");
         }
-
-        $this->sendSlackSuccess();
     }
 
     /**

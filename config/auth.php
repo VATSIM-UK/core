@@ -53,12 +53,6 @@ return [
             'driver' => 'passport',
             'provider' => 'accounts',
         ],
-
-        // requests authenticated through HTTP auth
-        'basic' => [
-            'driver' => 'session',
-            'provider' => 'basic',
-        ],
     ],
 
     /*
@@ -82,11 +76,6 @@ return [
         'accounts' => [
             'driver' => 'eloquent',
             'model' => App\Models\Mship\Account::class,
-        ],
-
-        'basic' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\BasicUser::class,
         ],
     ],
 

@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\Discord\DiscordLinked;
+use App\Events\Discord\DiscordUnlinked;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\Smartcars\BidCompleted;
+use App\Listeners\Discord\RemoveDiscordUser;
+use App\Listeners\Discord\SetupDiscordUser;
 use App\Listeners\NetworkData\FlushEndorsementCache;
 use App\Listeners\Smartcars\EvaluateFlightCriteria;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -92,6 +96,14 @@ class EventServiceProvider extends ServiceProvider
 
         BidCompleted::class => [
             EvaluateFlightCriteria::class,
+        ],
+
+        DiscordLinked::class => [
+            SetupDiscordUser::class,
+        ],
+
+        DiscordUnlinked::class => [
+            RemoveDiscordUser::class,
         ],
     ];
 

@@ -19,12 +19,6 @@ class ATCPagesTest extends TestCase
     }
 
     /** @test */
-    public function testItLoadsTheProgressionGuidePage()
-    {
-        $this->get(route('site.atc.progression'))->assertOk();
-    }
-
-    /** @test */
     public function testItLoadsTheEndorsementsPage()
     {
         $this->get(route('site.atc.endorsements'))->assertOk();

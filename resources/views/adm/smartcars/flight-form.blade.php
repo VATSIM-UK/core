@@ -40,7 +40,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="panel panel-ukblue" style="min-height: 500px;">
-                <div class="panel-heading"><i class="glyphicon glyphicon-globe"></i> &thinsp; Map
+                <div class="panel-heading"><i class="fa fa-globe"></i> &thinsp; Map
                 </div>
                 <div class="panel-body">
                     <p><strong>LEGEND:</strong> <span style="color: #228B22;">Target</span>, <span style="color: #00008B;">Actual</span></p>

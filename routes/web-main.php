@@ -39,18 +39,6 @@ Route::group([
     });
 });
 
-// Webhooks
-Route::group([
-    'as'        => 'webhook.',
-    'prefix'    => 'webhook',
-    'namespace' => 'Webhook',
-], function () {
-    Route::any('slack')->uses('Slack@anyRouter')->name('slack');
-
-    Route::post('mailgun')->uses('Mailgun@event')->middleware('auth.basic.once');
-    Route::post('sendgrid')->uses('SendGrid@events')->middleware('auth.basic.once');
-});
-
 // Members
 Route::group([
     'prefix'     => 'mship',
@@ -94,10 +82,6 @@ Route::group([
 
         Route::get('notification/list')->uses('Notification@getList')->name('notification.list');
         Route::post('notification/acknowledge/{sysNotification}')->uses('Notification@postAcknowledge')->name('notification.acknowledge');
-
-        // Route::get('/email')->uses('Email@getEmail')->name('mship.email');
-        // Route::post('/email')->uses('Email@postEmail')->name('mship.email.post');
-        // Route::get('/email/recipient-search')->uses('Email@getRecipientSearch')->name('mship.email.recipient-search');
     });
 });
 
@@ -114,11 +98,17 @@ Route::group([
     Route::post('{mshipRegistration}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
 });
 
-Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth_full_group']], function () {
-    Route::model('slackToken', App\Models\Sys\Token::class);
-    Route::get('/new', ['as' => 'slack.new', 'uses' => 'Registration@getNew']);
-    Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);
-    Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
+// Discord
+Route::group([
+    'as' => 'discord.',
+    'prefix' => 'discord',
+    'namespace' => 'Discord',
+    'middleware' => 'auth_full_group',
+], function () {
+    Route::get('/')->uses('Registration@show')->name('show');
+    Route::get('/create')->uses('Registration@create')->name('create');
+    Route::get('/store')->uses('Registration@store')->name('store');
+    Route::get('/destroy')->uses('Registration@destroy')->name('destroy');
 });
 
 // UKCP
@@ -131,18 +121,6 @@ Route::group([
     Route::get('/')->uses('Token@show')->name('guide');
     Route::get('/token/refresh')->uses('Token@refresh')->name('token.refresh');
     Route::get('token/{id}/download')->uses('Token@download')->name('token.download');
-});
-
-// Community
-Route::group([
-    'as'         => 'community.membership.',
-    'prefix'     => 'community/membership',
-    'namespace'  => 'Community',
-    'middleware' => 'auth_full_group',
-], function () {
-    Route::get('deploy')->uses('Membership@getDeploy')->name('deploy');
-    Route::post('deploy/{default?}')->uses('Membership@postDeploy')->name('deploy.post')
-        ->where('default', '[default|true]');
 });
 
 // Controllers

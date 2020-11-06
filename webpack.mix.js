@@ -29,9 +29,10 @@ mix.js('resources/assets/js/app.js', 'public/js/app-all.js');
 
 // homepage
 mix.sass('resources/assets/sass/home.scss', 'public/css/home.css');
-mix.babel(['resources/assets/js/home.js'], 'public/js/home.js');
+mix.babel('resources/assets/js/home.js', 'public/js/home.js');
 
 mix.js('resources/assets/js/snow.js', 'public/js/snow.js');
+mix.js('resources/assets/js/top-notification.js', 'public/js/top-notification.js');
 
 // general
 mix.version();

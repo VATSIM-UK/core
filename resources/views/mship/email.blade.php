@@ -122,16 +122,16 @@
 
                 // add the rows to the table
                 if (res.match === 'exact') {
-                    status = '<span class="glyphicon glyphicon-ok"></span>';
+                    status = '<span class="fa fa-check-circle"></span>';
                     action = getChooseButton(res.data.id, res.data.name);
                     $('#results table tbody').append(makeRecipientRow(res.data.id, res.data.name, status, action));
                 } else if (res.match === 'partial') {
                     $.each(res.data, function (index, item) {
                         if (item.valid) {
-                            status = '<span class="glyphicon glyphicon-ok"></span>';
+                            status = '<span class="fa fa-circle"></span>';
                             action = getChooseButton(item.id, item.name);
                         } else {
-                            status = '<span class="glyphicon glyphicon-remove"></span>';
+                            status = '<span class="fa fa-remove"></span>';
                             action = item.error;
                         }
                         $('#results table tbody').append(makeRecipientRow(item.id, item.name, status, action));

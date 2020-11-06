@@ -5,7 +5,7 @@
 
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plus"></i> &thinsp; Join Us
+                <div class="panel-heading"><i class="fa fa-plus"></i> &thinsp; Join Us
                 </div>
                 <div class="panel-body">
                     <p>
@@ -45,7 +45,7 @@
 
         <div class="col-md-4 col-md-offset-1">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-headphones"></i> &thinsp; Becoming a
+                <div class="panel-heading"><i class="fa fa-headset"></i> &thinsp; Becoming a
                     Controller
                 </div>
                 <div class="panel-body">
@@ -80,7 +80,7 @@
 
         <div class="col-md-4 col-md-offset-2">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Becoming a Pilot
+                <div class="panel-heading"><i class="fa fa-plane"></i> &thinsp; Becoming a Pilot
                 </div>
                 <div class="panel-body">
                     <h4>Step 1</h4>

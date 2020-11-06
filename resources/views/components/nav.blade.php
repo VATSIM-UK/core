@@ -4,13 +4,7 @@
             You are in a <b>NON-PRODUCTION</b> environment
         </div>
     @endif
-    @if (sys_config('notice'))
-        <div class="top_notification">
-            <div class="text">
-                {!! sys_config('notice') !!}
-            </div>
-        </div>
-    @endif
+    @include('components.top-notification')
     <div class="nav_upper_container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse"
@@ -48,7 +42,7 @@
                         <li class="col-sm-12">
                             <ul>
                                 <li>{!! link_to_route("site.pilots.landing", "Welcome") !!}</li>
-                                <li>{!! link_to_route("site.pilots.ratings", "Ratings (P1 - P5)") !!}</li>
+                                <li>{!! link_to_route("site.pilots.ratings", "Ratings") !!}</li>
                                 <li>{!! link_to_route("site.pilots.mentor", "Becoming a Mentor") !!}</li>
                                 <li>{!! link_to_route("site.pilots.oceanic", "Oceanic Procedures") !!}</li>
                                 <li class="divider"></li>
@@ -69,7 +63,6 @@
                             <ul>
                                 <li>{!! link_to_route("site.atc.landing", "Welcome") !!}</li>
                                 <li>{!! link_to_route("site.atc.newController", "New Controller (OBS)") !!}</li>
-                                <li>{!! link_to_route("site.atc.progression", "Progression Guide (S1-C3)") !!}</li>
                                 <li>{!! link_to_route("site.atc.endorsements", "Endorsements") !!}</li>
                                 <li>{!! link_to_route("site.atc.mentor", "Becoming a Mentor") !!}</li>
                                 <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>
@@ -113,7 +106,7 @@
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Third-Party Services</li>
                                 <li>{!! link_to_route("site.community.teamspeak", "TeamSpeak") !!}</li>
-                                <li>{!! link_to_route("slack.new", "Slack") !!}</li>
+                                <li>{!! link_to_route("discord.show", "Discord") !!}</li>
                                 <li class="divider"></li>
                                 <li>{!! link_to_route('site.community.terms', "Terms & Conditions") !!}</li>
                             </ul>
@@ -168,7 +161,7 @@
                     @if(Auth::user()->can('use-permission', 'adm'))
                         <li class="dropdown dropdown-large">
                             <a href="{{ route("adm.index") }}" title="Admin Dashboard">
-                                <i class="fa fa-dashboard"></i>
+                                <i class="fa fa-briefcase"></i>
                             </a>
                         </li>
                     @endif
@@ -222,7 +215,7 @@
                 <ul class="nav navbar-nav navbar-right navcustom">
                     <li class="dropdown dropdown-large">
                         <a href="{{ route("login") }}" title="Login">
-                            Login &thinsp;<i class="glyphicon glyphicon-log-in"></i>
+                            Login &thinsp;<i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
                 </ul>
