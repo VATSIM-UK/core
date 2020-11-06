@@ -1,8 +1,9 @@
 name: Deploy
 
 on:
-  release:
-    types: [released]
+  push:
+    branches:
+      - 'master'
   repository_dispatch:
     types: [manual-trigger]
 
@@ -16,21 +17,21 @@ jobs:
         with:
           ref: ${{ github.event.client_payload.ref }}
       
-      - name: Extract tag
+      - name: Extract short commit hash
         run: |
-          echo "::set-env name=VERSION::$(git tag --sort=committerdate | tail -1)"
+          echo "::set-env name=VERSION::$(echo ${GITHUB_SHA} | cut -c1-8)"
 
       #
-      # SLACK NOTIFICATION JOB START
+      # DISCORD NOTIFICATION JOB START
       #
-      - name: Slack Notification Start
-        uses: rtCamp/action-slack-notify@v2.0.2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
-          SLACK_MESSAGE: ${{ format('*START* - deployment of version *{0}* to Production *{1}* :rocket:', env.VERSION, env.APP_URL)}}
-          SLACK_USERNAME: Github Actions
-          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-          SLACK_COLOR: warning
+      - name: Discord Notification (Start)
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+            severity: warn
+            description: ${{ format(Starting Deployment of **{0}**, env.GITHUB_REPOSITORY) }}
+            details: ${{ format(':rocket: Starting Deployment of commit `{0}` by :technologist: *{1}* to **Production** ({2}) :rocket:', env.COMMIT, env.GITHUB_ACTOR, env.APP_URL) }}
+            footer: ${{ format('{0}/{1}/actions/runs/{2}', env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, env.GITHUB_RUN_ID) }}
+            webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 
       #
       # GITHUB DEPLOYMENT JOB START
@@ -141,13 +142,18 @@ jobs:
           TS_PASS: ${{ secrets.TS_PASS }}
           TS_PORT: ${{ secrets.TS_PORT }}
           TS_QUERY_PORT: ${{ secrets.TS_QUERY_PORT }}
-          MAIL_DRIVER: mailgun
           MAIL_FROM_ADDRESS: no-reply@vatsim.uk
           MAIL_FROM_NAME: "VATSIM UK"
-          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
-          MAILGUN_SECRET: ${{ secrets.MAILGUN_SECRET }}
-          SLACK_SECRET: ${{ secrets.SLACK_SECRET }}
-          SLACK_TOKEN_REGISTER: ${{ secrets.SLACK_TOKEN_REGISTER }}
+          MAIL_HOST: ${{ secrets.MAIL_HOST }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASS: ${{ secrets.MAIL_PASS }}
+          DISCORD_INVITE_URL: ${{ secrets.DISCORD_INVITE_URL }}
+          DISCORD_CLIENT: ${{ secrets.DISCORD_CLIENT }}
+          DISCORD_SECRET: ${{ secrets.DISCORD_SECRET }}
+          DISCORD_REDIRECT_URI: ${{ secrets.DISCORD_REDIRECT_URI }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           VATSIM_CERT_AT_USER: ${{ secrets.VATSIM_CERT_AT_USER }}
           VATSIM_CERT_AT_PASS: ${{ secrets.VATSIM_CERT_AT_PASS }}
           VATSIM_CERT_AT_DIV: ${{ secrets.VATSIM_CERT_AT_DIV }}
@@ -162,6 +168,7 @@ jobs:
           UKCP_URL: https://ukcp.vatsim.uk
           UKCP_KEY: ${{ secrets.UKCP_KEY }}
           CHARTFOX_PUBLIC_TOKEN: ${{ secrets.CHARTFOX_PUBLIC_TOKEN }}
+
         run: |
           env | while IFS='=' read key value; do
               sed -i "s@\(^$key=\)\(.*\)@\1${value}@" .env
@@ -310,26 +317,26 @@ jobs:
           target_url: https://core.ndavies.io
           state: "success"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
-
-      #
-      # SLACK NOTIFICATIONS JOB END
-      #
-      - name: Slack Notification (Failed)
-        if: failure()
-        uses: rtCamp/action-slack-notify@v2.0.2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
-          SLACK_MESSAGE: ${{ format('*FAILED* - deployment of version *{0}* to Production *{1}* :fire:', env.VERSION, env.APP_URL)}}
-          SLACK_USERNAME: Github Actions
-          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-          SLACK_COLOR: danger
       
-      - name: Slack Notification (Success)
+      #
+      # DISCORD NOTIFICATIONS JOB END
+      #
+      - name: Discord Notification (Failed)
+        if: failure()
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+            severity: error
+            description: ${{ format(Deployment **FAILED** of **{0}**, env.GITHUB_REPOSITORY) }}
+            details: ${{ format(':fire: Deployment **FAILED** for commit `{0}` by :technologist: *{1}* to **Production** ({2}) :rocket:', env.COMMIT, env.GITHUB_ACTOR, env.APP_URL) }}
+            footer: ${{ format('{0}/{1}/actions/runs/{2}', env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, env.GITHUB_RUN_ID) }}
+            webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
+
+      - name: Discord Notification (Success)
         if: success()
-        uses: rtCamp/action-slack-notify@v2.0.2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
-          SLACK_MESSAGE: ${{ format('*SUCCESS* - deployment of version *{0}* to Production *{1}* :white_check_mark:', env.VERSION, env.APP_URL)}}
-          SLACK_USERNAME: Github Actions
-          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-          SLACK_COLOR: good
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+            severity: info
+            description: ${{ format(Deployment **SUCCEEDED** of **{0}**, env.GITHUB_REPOSITORY) }}
+            details: ${{ format(':white_check_mark: Deployment **SUCCEEDED** for commit `{0}` by :technologist: *{1}* to **Production** ({2}) :rocket:', env.COMMIT, env.GITHUB_ACTOR, env.APP_URL) }}
+            footer: ${{ format('{0}/{1}/actions/runs/{2}', env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, env.GITHUB_RUN_ID) }}
+            webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
