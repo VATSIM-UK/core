@@ -31,13 +31,13 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: pcov
-      
           tools: composer:v1
+
       - name: Setup Yarn
         uses: actions/setup-node@v1
         with:
           node-version: '12'
-        
+
       # Authenticate Nova
       - name: Authenticate Nova Installation
         env:
@@ -45,7 +45,7 @@ jobs:
           NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
         run: |
           composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_PASSWORD}
-      
+
       # Start MySQL and Create Databases
       - name: Create Databases
         run: |
@@ -114,7 +114,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      
+
       # Install
       - name: Install Core Assets
         run: yarn
@@ -174,7 +174,7 @@ jobs:
       # Start Application
       - name: Serve Application
         run: php artisan serve -q &
-      
+
       #
       # RUN TESTING SUITE
       #
