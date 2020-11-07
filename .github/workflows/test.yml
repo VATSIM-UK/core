@@ -190,11 +190,11 @@ jobs:
   trigger-release:
     name: Trigger Release
     needs: test
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       #
-      # RELEASE (master only)
+      # RELEASE (main only)
       #
       - name: Trigger release workflow
         uses: peter-evans/repository-dispatch@v1

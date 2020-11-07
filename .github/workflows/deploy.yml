@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
   repository_dispatch:
     types: [manual-trigger]
 
@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.client_payload.ref }}
-      
+
       - name: Extract short commit hash
         run: |
           echo "::set-env name=VERSION::$(echo ${GITHUB_SHA} | cut -c1-8)"
@@ -47,7 +47,7 @@ jobs:
 
       #
       # DEPLOYMENT PARAMETERS
-      # 
+      #
       - name: Set additional deployment variables
         uses: allenevans/set-env@v1.0.0
         with:
@@ -61,12 +61,12 @@ jobs:
       #
       # BUILD DEPENDENCIES SETUP
       #
-      
+
       - name: Setup Yarn
         uses: actions/setup-node@v1
         with:
           node-version: '12'
-      
+
       #
       # YARN BUILD
       # Install node_modules and run webpack
@@ -85,7 +85,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      
+
       # Install node_modules
       - name: Install Core assets
         run: yarn
@@ -99,7 +99,7 @@ jobs:
 
       - name: Compile Waiting Lists Manager assets
         run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
-      
+
       #
       # CONFIGURATION FILES
       # Create any configuration files, interpolating secrets
@@ -112,10 +112,10 @@ jobs:
           cp auth.json.example auth.json
           sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
           sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
-      
+
       - name: Create .env from example configuration
         run: cp .env.example .env
-      
+
       - name: Populate .env
         env:
           APP_ENV: production
@@ -173,7 +173,7 @@ jobs:
           env | while IFS='=' read key value; do
               sed -i "s@\(^$key=\)\(.*\)@\1${value}@" .env
           done
-      
+
       #
       # DEPLOYMENT
       # Prepare remote environment and deploy application
@@ -188,7 +188,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           source: "."
           target: ${{ env.RELEASE_DIRECTORY }}
-      
+
       #
       # REMOTE POST-DEPLOYMENT ACTIONS
       # Conduct server-side post-deployment tasks and make application version live.
@@ -209,7 +209,7 @@ jobs:
 
             # Install Waiting List Dependencies
             $PHP_PATH /usr/local/bin/composer install --working-dir="$RELEASE_DIRECTORY/nova-components/WaitingListsManager" --no-dev
-            
+
             # Install Nova
             $PHP_PATH artisan nova:install
           envs: RELEASE_DIRECTORY,PHP_PATH
@@ -264,15 +264,15 @@ jobs:
             $PHP_PATH artisan up
 
             # This will interpolate the values as --revision="vx.y.z" and --repository="vatsim-uk/core"
-            echo artisan bugsnag:deploy --branch="master" --revision="$VERSION" --repository="$GITHUB_REPOSITORY"
+            echo artisan bugsnag:deploy --branch="main" --revision="$VERSION" --repository="$GITHUB_REPOSITORY"
             sudo systemctl start core-horizon
             sudo systemctl start teamspeak-daemon
           envs: RELEASE_DIRECTORY,PHP_PATH,VERSION,GITHUB_REPOSITORY
-      
+
       #
       # HOUSEKEEPING
       # Perform post-deployment housekeeping actions (release history)
-      #    
+      #
       - name: Housekeeping
         uses: appleboy/ssh-action@master
         with:
@@ -296,7 +296,7 @@ jobs:
               done
             fi
           envs: APPLICATION_ROOT,VERSIONS_TO_KEEP
-      
+
       #
       # GITHUB DEPLOYMENT JOB END
       #
@@ -317,7 +317,7 @@ jobs:
           target_url: https://core.ndavies.io
           state: "success"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
-      
+
       #
       # DISCORD NOTIFICATIONS JOB END
       #

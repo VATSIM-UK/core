@@ -40,7 +40,7 @@
   },
   "release": {
     "repositoryUrl": "https://github.com/VATSIM-UK/core",
-    "branch": "master",
+    "branch": "main",
     "plugins": [
       "@semantic-release/npm",
       "@semantic-release/commit-analyzer",
