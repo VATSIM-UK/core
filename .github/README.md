@@ -1,9 +1,6 @@
 [master_deploy_status]: https://github.com/VATSIM-UK/core/workflows/Deploy/badge.svg?branch=master
 [master_test_status]: https://github.com/VATSIM-UK/core/workflows/Test/badge.svg?branch=master
 [master_codecov_status]: https://codecov.io/gh/VATSIM-UK/core/branch/master/graphs/badge.svg
-[production_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/93858.png
-[beta_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/135269.png
-[alpha_status]: https://vatsim-uk.deploybot.com/badge/77558059841720/140917.png
 
 <p align="center">
     <a href="https://www.vatsim.uk"><img src="https://www.vatsim.uk/images/branding/vatsimuk_blackblue.png" width="250px" /></a>
@@ -26,5 +23,3 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 |     Env    |              URL              |        Status        |
 |------------|-------------------------------|----------------------|
 | Production | https://www.vatsim.uk         | ![master_deploy_status] |
-| Beta       | https://beta.vatsim.uk        | N/A                  |
-| Alpha      | https://alpha.vatsim.uk       | N/A                  |
