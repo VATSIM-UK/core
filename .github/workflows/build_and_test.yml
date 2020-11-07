@@ -28,6 +28,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: pcov
+          tools: composer:v1
 
       - name: Write Nova Secrets
         run: |
