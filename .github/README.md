@@ -1,4 +1,5 @@
-[master_test_status]: https://github.com/VATSIM-UK/core/workflows/Build%20&%20Test/badge.svg?event=push
+[master_deploy_status]: https://github.com/VATSIM-UK/core/workflows/Deploy/badge.svg?branch=master
+[master_test_status]: https://github.com/VATSIM-UK/core/workflows/Test/badge.svg?branch=master
 [master_codecov_status]: https://codecov.io/gh/VATSIM-UK/core/branch/master/graphs/badge.svg
 
 <p align="center">
@@ -13,5 +14,12 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 
 |      Check      |                            Provider                           |              Status             |
 |-----------------|---------------------------------------------------------------|---------------------------------|
-| Tests           | [GitHub](https://github.com/VATSIM-UK/core/actions?query=workflow%3A%22Build+%26+Test%22+branch%3Amaster)  | ![master_test_status]  |
-| Coverage        | [CodeCov](https://codecov.io/gh/VATSIM-UK/core/branch/master) | ![master_codecov_status]        |
+| Deployment      | [GitHub Actions](https://github.com/VATSIM-UK/core/actions?query=workflow%3ADeploy+branch%3Amaster) | ![master_deploy_status] |
+| Tests           | [GitHub Actions](https://github.com/VATSIM-UK/core/actions?query=workflow%3A%22Build+%26+Test%22+branch%3Amaster) | ![master_test_status] |
+| Coverage        | [CodeCov](https://codecov.io/gh/VATSIM-UK/core/branch/master) | ![master_codecov_status] |
+
+# Environments
+
+|     Env    |              URL              |        Status        |
+|------------|-------------------------------|----------------------|
+| Production | https://www.vatsim.uk         | ![master_deploy_status] |
