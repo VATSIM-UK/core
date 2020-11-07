@@ -32,6 +32,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: pcov
       
+          tools: composer:v1
       - name: Setup Yarn
         uses: actions/setup-node@v1
         with:
