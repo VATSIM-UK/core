@@ -4431,9 +4431,9 @@ labeled-stream-splicer@^2.0.0:
     stream-splicer "^2.0.0"
 
 laravel-mix@^5.0:
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/laravel-mix/-/laravel-mix-5.0.7.tgz#1ae6cab68460402f68e2d78c10813e86b96df10d"
-  integrity sha512-TL5txnQkzcwM8DYckgzjISSPGyZN6znFYb4NgtTSi9aIvfzOIEC6p0eYM6wDa/BkEKv290Ru6HWmH6Q2XApogQ==
+  version "5.0.9"
+  resolved "https://registry.yarnpkg.com/laravel-mix/-/laravel-mix-5.0.9.tgz#eb77586ac64b54852cb8d6da60fdee127937a25a"
+  integrity sha512-1WCJiHimTRW3KlxcabRTco0q+bo4uKPaFTkc6cJ/bLEq4JT1aPkojoauUK7+PyiIlDJncw0Nt2MtDrv5C6j5IQ==
   dependencies:
     "@babel/core" "^7.2.0"
     "@babel/plugin-proposal-object-rest-spread" "^7.2.0"
@@ -6373,10 +6373,10 @@ sass-loader@^10.0.4:
     schema-utils "^3.0.0"
     semver "^7.3.2"
 
-sass@^1.27.0:
-  version "1.27.0"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.27.0.tgz#0657ff674206b95ec20dc638a93e179c78f6ada2"
-  integrity sha512-0gcrER56OkzotK/GGwgg4fPrKuiFlPNitO7eUJ18Bs+/NBlofJfMxmxqpqJxjae9vu0Wq8TZzrSyxZal00WDig==
+sass@^1.29.0:
+  version "1.29.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.29.0.tgz#ec4e1842c146d8ea9258c28c141b8c2b7c6ab7f1"
+  integrity sha512-ZpwAUFgnvAUCdkjwPREny+17BpUj8nh5Yr6zKPGtLNTLrmtoRYIjm7njP24COhjJldjwW1dcv52Lpf4tNZVVRA==
   dependencies:
     chokidar ">=2.0.0 <4.0.0"
 
