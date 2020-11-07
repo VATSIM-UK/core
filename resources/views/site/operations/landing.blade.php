@@ -28,7 +28,7 @@
                     <p>
                         Each AIRAC cycle (which occurs every 28 days), we release updates to the UK Sector File, UK
                         Controller Pack and many items of documentation or parts of the website. In addition to this, we
-                        negotiate new cross-border procedures via Letters of Agreements (LoAs), propose and impliment
+                        negotiate new cross-border procedures via Letters of Agreements (LoAs), propose and implement
                         changes to ATC procedures domestically as well as support the other departments in the division
                         in executing their jobs.
                     </p>
