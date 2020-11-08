@@ -245,8 +245,8 @@ jobs:
             rm -rf $RELEASE_DIRECTORY/storage
             ln -s $SHARED_DIRECTORY/storage $RELEASE_DIRECTORY/storage
 
-            # Update Permissions on Release Directory
-            chmod -R u+rwX,g+rwX,o-rwx $RELEASE_DIRECTORY
+            # Update Permissions on Application Directory
+            chmod -R u+rwX,g+rwX,o-rwx $APPLICATION_ROOT
 
             # Update the current link to point to this release
             ln -sfn $RELEASE_DIRECTORY $APPLICATION_ROOT/current
