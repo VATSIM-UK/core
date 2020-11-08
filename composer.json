@@ -86,7 +86,7 @@
         "league/csv": "^8.0",
         "maatwebsite/excel": "~3.1.17",
         "malahierba-lab/public-id": "dev-master",
-        "planetteamspeak/ts3-php-framework": "1.1.33",
+        "planetteamspeak/ts3-php-framework": "dev-master#9e987b61b8e559b4219d30b140b8edbeb94edece",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~4.0",
         "skymeyer/vatsimphp": "^2.0",
