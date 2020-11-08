@@ -201,18 +201,3 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           event-type: release-trigger
-
-  trigger-deploy:
-    name: Trigger Deployment
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      #
-      # DEPLOY (main only)
-      #
-      - name: Trigger Deployment workflow
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.PAT }}
-          event-type: deploy-trigger
