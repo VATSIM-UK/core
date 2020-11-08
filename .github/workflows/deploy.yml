@@ -48,7 +48,8 @@ jobs:
         with:
             severity: warn
             description: ${{ format('Starting Deployment of **{0}**', github.repository) }}
-            details: ${{ format('%3Arocket%3A Starting Deployment of commit `{0}` by %3Atechnologist%3A *{1}* to **Production** ({2}) %3Arocket%3A', env.COMMIT, github.actor, env.APP_URL) }}
+            details: >
+              ${{ format(':rocket: Starting Deployment of commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, github.actor, env.APP_URL) }}
             footer: ${{ format('https://{0}/actions/runs/{1}', github.repository, github.run_id) }}
             webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 

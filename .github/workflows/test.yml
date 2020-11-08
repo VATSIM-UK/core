@@ -1,13 +1,14 @@
 name: Test
 
 on:
-  push:
-    branches:
-      - '*'
-      - '**'
-    tags-ignore:
-      - v*
   pull_request:
+  # push:
+  #   branches:
+  #     - '*'
+  #     - '**'
+  #   tags-ignore:
+  #     - v*
+  # pull_request:
 
 jobs:
   test:
