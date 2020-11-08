@@ -112,67 +112,72 @@ jobs:
           cp auth.json.example auth.json
           sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
           sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
-
-      - name: Create .env from example configuration
-        run: cp .env.example .env
-
-      - name: Populate .env
+      
+      - name: Create .env from Secrets value
         env:
-          APP_ENV: production
-          APP_DEBUG: false
-          APP_DEBUGBAR: false
-          APP_KEY: ${{ secrets.APP_KEY }}
-          APP_URL: ${{ env.APP_URL }}
-          BUGSNAG_APP_VERSION: ${{ env.VERSION }}
-          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          SESSION_DOMAIN: .vatsim.uk
-          DB_MYSQL_HOST: ${{ secrets.DB_MYSQL_HOST }}
-          DB_MYSQL_PORT: ${{ secrets.DB_MYSQL_PORT }}
-          DB_MYSQL_USER: ${{ secrets.DB_MYSQL_USER }}
-          DB_MYSQL_PASS: ${{ secrets.DB_MYSQL_PASS }}
-          DB_MYSQL_NAME: ${{ secrets.DB_MYSQL_NAME }}
-          COMMUNITY_DATABASE: ${{ secrets.COMMUNITY_DATABASE }}
-          CTS_DATABASE: ${{ secrets.CTS_DATABASE }}
-          HELPDESK_DATABASE: ${{ secrets.HELPDESK_DATABASE }}
-          MOODLE_DATABASE: ${{ secrets.MOODLE_DATABASE }}
-          TS_HOST: ${{ secrets.TS_HOST }}
-          TS_USER: ${{ secrets.TS_USER }}
-          TS_PASS: ${{ secrets.TS_PASS }}
-          TS_PORT: ${{ secrets.TS_PORT }}
-          TS_QUERY_PORT: ${{ secrets.TS_QUERY_PORT }}
-          MAIL_FROM_ADDRESS: no-reply@vatsim.uk
-          MAIL_FROM_NAME: "VATSIM UK"
-          MAIL_HOST: ${{ secrets.MAIL_HOST }}
-          MAIL_PORT: ${{ secrets.MAIL_PORT }}
-          MAIL_USER: ${{ secrets.MAIL_USER }}
-          MAIL_PASS: ${{ secrets.MAIL_PASS }}
-          DISCORD_INVITE_URL: ${{ secrets.DISCORD_INVITE_URL }}
-          DISCORD_CLIENT: ${{ secrets.DISCORD_CLIENT }}
-          DISCORD_SECRET: ${{ secrets.DISCORD_SECRET }}
-          DISCORD_REDIRECT_URI: ${{ secrets.DISCORD_REDIRECT_URI }}
-          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-          VATSIM_CERT_AT_USER: ${{ secrets.VATSIM_CERT_AT_USER }}
-          VATSIM_CERT_AT_PASS: ${{ secrets.VATSIM_CERT_AT_PASS }}
-          VATSIM_CERT_AT_DIV: ${{ secrets.VATSIM_CERT_AT_DIV }}
-          SSO_CERT: ${{ secrets.SSO_CERT }}
-          SSO_KEY: ${{ secrets.SSO_KEY }}
-          SSO_SECRET: ${{ secrets.SSO_SECRET }}
-          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
-          COMMUNITY_INIT_FILE: ${{ secrets.COMMUNITY_INIT_FILE }}
-          IPBOARD_API_URL: https://community.vatsim.uk/api
-          IPBOARD_API_KEY: ${{ secrets.IPBOARD_API_KEY }}
-          IPBOARD_API_REFERENCE_NAME: ${{ secrets.IPBOARD_API_REFERENCE_NAME }}
-          UKCP_URL: https://ukcp.vatsim.uk
-          UKCP_KEY: ${{ secrets.UKCP_KEY }}
-          CHARTFOX_PUBLIC_TOKEN: ${{ secrets.CHARTFOX_PUBLIC_TOKEN }}
+          ENV_FILE_CONTENTS: ${{ secrets.ENV_FILE_CONTENTS }}
+        run: 'echo "$ENV_FILE_CONTENTS" > .env'
 
-        run: |
-          env | while IFS='=' read key value; do
-              sed -i "s@\(^$key=\)\(.*\)@\1${value}@" .env
-          done
+      # - name: Create .env from example configuration
+      #   run: cp .env.example .env
+
+      # - name: Populate .env
+      #   env:
+      #     APP_ENV: production
+      #     APP_DEBUG: false
+      #     APP_DEBUGBAR: false
+      #     APP_KEY: ${{ secrets.APP_KEY }}
+      #     APP_URL: ${{ env.APP_URL }}
+      #     BUGSNAG_APP_VERSION: ${{ env.VERSION }}
+      #     BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
+      #     REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      #     REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+      #     SESSION_DOMAIN: .vatsim.uk
+      #     DB_MYSQL_HOST: ${{ secrets.DB_MYSQL_HOST }}
+      #     DB_MYSQL_PORT: ${{ secrets.DB_MYSQL_PORT }}
+      #     DB_MYSQL_USER: ${{ secrets.DB_MYSQL_USER }}
+      #     DB_MYSQL_PASS: ${{ secrets.DB_MYSQL_PASS }}
+      #     DB_MYSQL_NAME: ${{ secrets.DB_MYSQL_NAME }}
+      #     COMMUNITY_DATABASE: ${{ secrets.COMMUNITY_DATABASE }}
+      #     CTS_DATABASE: ${{ secrets.CTS_DATABASE }}
+      #     HELPDESK_DATABASE: ${{ secrets.HELPDESK_DATABASE }}
+      #     MOODLE_DATABASE: ${{ secrets.MOODLE_DATABASE }}
+      #     TS_HOST: ${{ secrets.TS_HOST }}
+      #     TS_USER: ${{ secrets.TS_USER }}
+      #     TS_PASS: ${{ secrets.TS_PASS }}
+      #     TS_PORT: ${{ secrets.TS_PORT }}
+      #     TS_QUERY_PORT: ${{ secrets.TS_QUERY_PORT }}
+      #     MAIL_FROM_ADDRESS: no-reply@vatsim.uk
+      #     MAIL_FROM_NAME: "VATSIM UK"
+      #     MAIL_HOST: ${{ secrets.MAIL_HOST }}
+      #     MAIL_PORT: ${{ secrets.MAIL_PORT }}
+      #     MAIL_USER: ${{ secrets.MAIL_USER }}
+      #     MAIL_PASS: ${{ secrets.MAIL_PASS }}
+      #     DISCORD_INVITE_URL: ${{ secrets.DISCORD_INVITE_URL }}
+      #     DISCORD_CLIENT: ${{ secrets.DISCORD_CLIENT }}
+      #     DISCORD_SECRET: ${{ secrets.DISCORD_SECRET }}
+      #     DISCORD_REDIRECT_URI: ${{ secrets.DISCORD_REDIRECT_URI }}
+      #     DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+      #     DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+      #     VATSIM_CERT_AT_USER: ${{ secrets.VATSIM_CERT_AT_USER }}
+      #     VATSIM_CERT_AT_PASS: ${{ secrets.VATSIM_CERT_AT_PASS }}
+      #     VATSIM_CERT_AT_DIV: ${{ secrets.VATSIM_CERT_AT_DIV }}
+      #     SSO_CERT: ${{ secrets.SSO_CERT }}
+      #     SSO_KEY: ${{ secrets.SSO_KEY }}
+      #     SSO_SECRET: ${{ secrets.SSO_SECRET }}
+      #     MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+      #     COMMUNITY_INIT_FILE: ${{ secrets.COMMUNITY_INIT_FILE }}
+      #     IPBOARD_API_URL: https://community.vatsim.uk/api
+      #     IPBOARD_API_KEY: ${{ secrets.IPBOARD_API_KEY }}
+      #     IPBOARD_API_REFERENCE_NAME: ${{ secrets.IPBOARD_API_REFERENCE_NAME }}
+      #     UKCP_URL: https://ukcp.vatsim.uk
+      #     UKCP_KEY: ${{ secrets.UKCP_KEY }}
+      #     CHARTFOX_PUBLIC_TOKEN: ${{ secrets.CHARTFOX_PUBLIC_TOKEN }}
+
+      #   run: |
+      #     env | while IFS='=' read key value; do
+      #         sed -i "s@\(^$key=\)\(.*\)@\1${value}@" .env
+      #     done
 
       #
       # DEPLOYMENT
@@ -305,7 +310,7 @@ jobs:
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: ${{ github.token }}
-          target_url: https://core.ndavies.io
+          target_url: https://www.vatsim.uk
           state: "failed"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
 
@@ -314,7 +319,7 @@ jobs:
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: ${{ github.token }}
-          target_url: https://core.ndavies.io
+          target_url: https://www.vatsim.uk
           state: "success"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
 
