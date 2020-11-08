@@ -21,7 +21,7 @@ jobs:
 
       - name: Extract short commit hash
         run: |
-          echo "::set-env name=VERSION::$(echo ${GITHUB_SHA} | cut -c1-8)"
+          echo "::set-env name=COMMIT::$(echo ${GITHUB_SHA} | cut -c1-7)"
 
       - name: Extract tag
         run: |
@@ -59,7 +59,7 @@ jobs:
         with:
           APP_URL: https://www.vatsim.uk
           APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
-          RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.VERSION }}
+          RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.COMMIT }}
           SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
           PHP_PATH: /bin/php74
           VERSIONS_TO_KEEP: 5
@@ -320,7 +320,7 @@ jobs:
         with:
           token: ${{ github.token }}
           target_url: https://www.vatsim.uk
-          state: "failed"
+          state: "failure"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
 
       - name: Update Deployment Status (Success)
