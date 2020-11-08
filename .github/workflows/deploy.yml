@@ -16,6 +16,7 @@ jobs:
       - name: Checkout Codes
         uses: actions/checkout@v2
         with:
+          fetch-depth: 20
           ref: ${{ github.event.client_payload.ref }}
 
       - name: Extract short commit hash
