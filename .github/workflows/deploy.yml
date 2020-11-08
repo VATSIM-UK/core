@@ -345,9 +345,10 @@ jobs:
         uses: rjstone/discord-webhook-notify@v1
         with:
             severity: error
-            description: ${{ format('Deployment **FAILED** of **{0}**', env.GITHUB_REPOSITORY) }}
-            details: ${{ format('`:fire:` Deployment **FAILED** for commit `{0}` by `:technologist:` *{1}* to **Production** ({2}) `:rocket:`', env.COMMIT, env.GITHUB_ACTOR, env.APP_URL) }}
-            footer: ${{ format('{0}/{1}/actions/runs/{2}', env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, env.GITHUB_RUN_ID) }}
+            description: ${{ format('Deployment **FAILED** of **{0}**', github.repository) }}
+            details: >
+              ${{ format(':fire: Deployment **FAILED** for commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, github.actor, env.APP_URL) }}
+            footer: ${{ format('https://github.com/{1}/actions/runs/{2}', github.repository, github.run_id) }}
             webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 
       - name: Discord Notification (Success)
@@ -355,7 +356,8 @@ jobs:
         uses: rjstone/discord-webhook-notify@v1
         with:
             severity: info
-            description: ${{ format('Deployment **SUCCEEDED** of **{0}**', env.GITHUB_REPOSITORY) }}
-            details: ${{ format('`:white_check_mark:` Deployment **SUCCEEDED** for commit `{0}` by `:technologist:` *{1}* to **Production** ({2}) `:rocket:`', env.COMMIT, env.GITHUB_ACTOR, env.APP_URL) }}
-            footer: ${{ format('{0}/{1}/actions/runs/{2}', env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, env.GITHUB_RUN_ID) }}
+            description: ${{ format('Deployment **SUCCEEDED** of **{0}**', github.repository) }}
+            details: >
+              ${{ format(':white_check_mark: Deployment **SUCCEEDED** for commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, gitub.actor, env.APP_URL) }}
+            footer: ${{ format('https://github.com/{0}/actions/runs/{1}', github.repository, github.run_id) }}
             webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
