@@ -246,8 +246,7 @@ jobs:
             ln -s $SHARED_DIRECTORY/storage $RELEASE_DIRECTORY/storage
 
             # Update Permissions on Release Directory
-            chmod 750 $(find $RELEASE_DIRECTORY -type d)
-            chmod 640 $(find $RELEASE_DIRECTORY -type f)
+            chmod -R u+rwX,g+rwX,o-rwx $RELEASE_DIRECTORY
 
             # Update the current link to point to this release
             ln -sfn $RELEASE_DIRECTORY $APPLICATION_ROOT/current
