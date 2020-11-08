@@ -28,15 +28,28 @@ jobs:
           echo "::set-env name=TAG::$(git describe --tags --abbrev=0)"
 
       #
+      # DEPLOYMENT PARAMETERS
+      #
+      - name: Set additional deployment variables
+        uses: allenevans/set-env@v1.0.0
+        with:
+          APP_URL: https://www.vatsim.uk
+          APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
+          RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.COMMIT }}
+          SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
+          PHP_PATH: /bin/php74
+          VERSIONS_TO_KEEP: 5
+
+      #
       # DISCORD NOTIFICATION JOB START
       #
       - name: Discord Notification (Start)
         uses: rjstone/discord-webhook-notify@v1
         with:
             severity: warn
-            description: ${{ format('Starting Deployment of **{0}**', env.GITHUB_REPOSITORY) }}
-            details: ${{ format('`:rocket:` Starting Deployment of commit `{0}` by `:technologist:` *{1}* to **Production** ({2}) `:rocket:`', env.COMMIT, env.GITHUB_ACTOR, env.APP_URL) }}
-            footer: ${{ format('{0}/{1}/actions/runs/{2}', env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, env.GITHUB_RUN_ID) }}
+            description: ${{ format('Starting Deployment of **{0}**', github.repository) }}
+            details: ${{ format('::rocket:: Starting Deployment of commit `{0}` by ::technologist:: *{1}* to **Production** ({2}) ::rocket::', env.COMMIT, github.actor, env.APP_URL) }}
+            footer: ${{ format('https://{1}/actions/runs/{2}', , github.repository, github.run_id) }}
             webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 
       #
@@ -50,19 +63,6 @@ jobs:
           target_url: https://www.vatsim.uk
           environment: production
           ref: ${{ github.event.client_payload.ref }}
-
-      #
-      # DEPLOYMENT PARAMETERS
-      #
-      - name: Set additional deployment variables
-        uses: allenevans/set-env@v1.0.0
-        with:
-          APP_URL: https://www.vatsim.uk
-          APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
-          RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.COMMIT }}
-          SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
-          PHP_PATH: /bin/php74
-          VERSIONS_TO_KEEP: 5
 
       #
       # BUILD DEPENDENCIES SETUP
