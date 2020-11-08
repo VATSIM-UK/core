@@ -24,7 +24,7 @@ jobs:
 
       - name: Extract tag
         run: |
-          echo "::set-env name=TAG::$(git tag --sort=committerdate | tail -1)"
+          echo "::set-env name=TAG::$(git describe --tags --abbrev=0)"
 
       #
       # DISCORD NOTIFICATION JOB START
@@ -124,7 +124,7 @@ jobs:
         run: 'echo "$ENV_FILE_CONTENTS" > .env'
 
       - name: Update BUGSNAG_APP_VERSION
-        run: sed -i "s/^BUGSNAG_APP_VERSION.*$/BUGSNAG_APP_VERSION=${TAG}/" .env
+        run: 'sed -i "s/^BUGSNAG_APP_VERSION.*$/BUGSNAG_APP_VERSION=$TAG/" .env'
 
       # - name: Create .env from example configuration
       #   run: cp .env.example .env
