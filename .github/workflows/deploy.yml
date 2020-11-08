@@ -29,7 +29,7 @@ jobs:
         with:
             severity: warn
             description: ${{ format(Starting Deployment of **{0}**, env.GITHUB_REPOSITORY) }}
-            details: ${{ format(':rocket: Starting Deployment of commit `{0}` by :technologist: *{1}* to **Production** ({2}) :rocket:', env.COMMIT, env.GITHUB_ACTOR, env.APP_URL) }}
+            details: ${{ format('`:rocket:` Starting Deployment of commit `{0}` by `:technologist:` *{1}* to **Production** ({2}) `:rocket:`', env.COMMIT, env.GITHUB_ACTOR, env.APP_URL) }}
             footer: ${{ format('{0}/{1}/actions/runs/{2}', env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, env.GITHUB_RUN_ID) }}
             webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 
