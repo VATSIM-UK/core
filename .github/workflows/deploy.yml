@@ -358,6 +358,6 @@ jobs:
             severity: info
             description: ${{ format('Deployment **SUCCEEDED** of **{0}**', github.repository) }}
             details: >
-              ${{ format(':white_check_mark: Deployment **SUCCEEDED** for commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, gitub.actor, env.APP_URL) }}
+              ${{ format(':white_check_mark: Deployment **SUCCEEDED** for commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, github.actor, env.APP_URL) }}
             footer: ${{ format('https://github.com/{0}/actions/runs/{1}', github.repository, github.run_id) }}
             webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
