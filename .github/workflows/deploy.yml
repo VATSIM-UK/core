@@ -60,7 +60,7 @@ jobs:
           APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
           RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.VERSION }}
           SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
-          PHP_PATH: /bin/php73
+          PHP_PATH: /bin/php74
           VERSIONS_TO_KEEP: 5
 
       #
