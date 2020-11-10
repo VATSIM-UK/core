@@ -108,7 +108,7 @@ class ImportMembers extends Command
         $member->is_inactive = (bool) ($member_data['rating_atc'] < 0);
         $member->save();
 
-        $member->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
+        $member->addState(State::findByCode('DIVISION'), 'EMEA', 'GBR');
 
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
@@ -158,7 +158,7 @@ class ImportMembers extends Command
         $member->email = $member_data['email'];
         $member->save();
 
-        $member->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
+        $member->addState(State::findByCode('DIVISION'), 'EMEA', 'GBR');
     }
 
     protected function getMemberIdAndEmail()

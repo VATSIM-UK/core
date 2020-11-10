@@ -17,9 +17,22 @@ class IssueSecondaryForumGroup implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 10;
     protected $cid;
     protected $forumGroup;
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 3;
+
+    /**
+     * The maximum number of exceptions to allow before failing.
+     *
+     * @var int
+     */
+    public $maxExceptions = 3;
 
     public function __construct(int $cid, int $forumGroup)
     {

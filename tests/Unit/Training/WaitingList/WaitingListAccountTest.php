@@ -4,6 +4,7 @@ namespace Tests\Unit\Training\WaitingList;
 
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
+use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListStatus;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -310,5 +311,16 @@ class WaitingListAccountTest extends TestCase
             'list_id' => $this->waitingList->id,
             'created_at' => $date,
         ]);
+    }
+
+    /** @test */
+    public function itShouldPassHourCheckIfPilotWaitingList()
+    {
+        $pilotList = factory(WaitingList::class)->create(['department' => 'pilot']);
+        $account = factory(Account::class)->create();
+
+        $pilotList->addToWaitingList($account, $this->privacc);
+
+        $this->assertTrue($pilotList->accounts()->find($account)->pivot->atcHourCheck());
     }
 }

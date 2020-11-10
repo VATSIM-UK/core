@@ -22,12 +22,14 @@ class HomePageController extends \App\Http\Controllers\BaseController
 
     private function nextEvent()
     {
-        $response = Http::get('https://cts.vatsim.uk/extras/next_event.php');
+        return Cache::remember('home.nextEvent', now()->addDay(), function () {
+            $response = Http::get('https://cts.vatsim.uk/extras/next_event.php');
 
-        return $response->failed() ? '' : $this->getHTMLByID('next', $response);
+            return $response->failed() ? '' : $this->getHTMLByID('next', $response);
+        });
     }
 
-    public function getHTMLByID($id, $html)
+    private function getHTMLByID($id, $html)
     {
         $dom = new \DOMDocument;
         libxml_use_internal_errors(true);
@@ -42,7 +44,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
 
     private function stats()
     {
-        $divisionMembers = Cache::remember('home.mship.stats', 1440 * 60, function () {
+        return Cache::remember('home.mship.stats', now()->addDay(), function () {
             $stat['members_division'] = DB::table('mship_account_state')
                 ->leftJoin('mship_account', 'mship_account_state.account_id', '=', 'mship_account.id')
                 ->where('inactive', '=', 0)
@@ -53,21 +55,23 @@ class HomePageController extends \App\Http\Controllers\BaseController
 
             return $stat;
         });
-
-        return $divisionMembers;
     }
 
     private function todaysLiveAtcBookings()
     {
-        $bookings = new BookingRepository();
+        return Cache::remember('home.mship.atc.bookings', now()->addMinutes(30), function () {
+            $bookings = new BookingRepository();
 
-        return $bookings->getTodaysLiveAtcBookingsWithoutEvents();
+            return $bookings->getTodaysLiveAtcBookingsWithoutEvents();
+        });
     }
 
     private function todaysEvents()
     {
-        $bookings = new EventRepository();
+        return Cache::remember('home.mship.events', now()->addHour(), function () {
+            $bookings = new EventRepository();
 
-        return $bookings->getTodaysEvents();
+            return $bookings->getTodaysEvents();
+        });
     }
 }

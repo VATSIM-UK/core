@@ -175,7 +175,7 @@ return [
                 'queue' => ['notifications', 'default', 'user_sync'],
                 'balance' => 'auto',
                 'min-processes' => 1,
-                'max-processes' => 5,
+                'max-processes' => 2,
                 'tries' => 3,
             ],
         ],

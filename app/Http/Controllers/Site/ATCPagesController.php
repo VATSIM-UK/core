@@ -26,14 +26,6 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
         return $this->viewMake('site.atc.newcontroller');
     }
 
-    public function viewProgressionGuide()
-    {
-        $this->setTitle('ATC Progression Guide');
-        $this->addBreadcrumb('Progression Guide', route('site.atc.progression'));
-
-        return $this->viewMake('site.atc.progression');
-    }
-
     public function viewEndorsements()
     {
         $this->setTitle('ATC Endorsements');

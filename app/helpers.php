@@ -218,17 +218,6 @@ function maskEmail($email)
     return "{$delimited[0]}@{$delimited[1]}";
 }
 
-function sys_config($key)
-{
-    $cacheKey = 'sys_config_'.$key;
-
-    if (! cache($cacheKey)) {
-        cache([$cacheKey => optional(\App\Models\Sys\Config::find($key))->value('value')], now()->addMinutes(10));
-    }
-
-    return cache($cacheKey);
-}
-
 function handleService(\App\Services\BaseService $service)
 {
     return $service->handle();

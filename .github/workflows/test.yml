@@ -1,4 +1,4 @@
-name: Build & Test
+name: Test
 
 on:
   push:
@@ -10,53 +10,64 @@ on:
   pull_request:
 
 jobs:
-  laravel-tests:
-    name: Run
+  test:
+    name: PHP
+    runs-on: ubuntu-latest
     env:
       NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
       NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.3', '7.4']
+        php: ['7.4']
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      #
+      # ENVIRONMENT DEPENDENCIES SETUP
+      #
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           coverage: pcov
+          tools: composer:v1
 
-      - name: Write Nova Secrets
-        run: |
-          cp auth.json.example auth.json
-          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
-          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
-
-      - name: Create Environment File
-        run: touch .env
-      - name: Set Environment Variables
-        uses: allenevans/set-env@v1.1.0
+      - name: Setup Yarn
+        uses: actions/setup-node@v1
         with:
-          APP_ENV: testing
-          APP_KEY: base64:wx/g4ayECKlSzOYSguRFoCrsd+KSbAyEiy0J8zWxxyU=
-          APP_URL: 127.0.0.1
-          DB_MYSQL_HOST: localhost
-          DB_MYSQL_PORT: 3306
-          DB_MYSQL_USER: root
-          DB_MYSQL_PASS: root
-          DB_MYSQL_NAME: core
-          CTS_DATABASE: cts
+          node-version: '12'
 
+      # Authenticate Nova
+      - name: Authenticate Nova Installation
+        env:
+          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
+        run: |
+          composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_PASSWORD}
+
+      # Start MySQL and Create Databases
+      - name: Create Databases
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
+
+      #
+      # COMPOSER DEPENDENICES
+      #
+
+      # Add Github Auth to Composer
       - name: Add Composer GitHub Token
         run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
 
+      # Restore Caches
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
+
       - name: Restore Composer Cache
         uses: actions/cache@v1
         with:
@@ -64,16 +75,19 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
+
       - name: Restore Vendor From Cache
         uses: actions/cache@v1
         with:
           path: vendor
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
 
+      # Remove Nova from Composer when Secrets aren't available
       - name: Remove Nova From Composer
         if: ${{ env.NOVA_USERNAME == 0 || env.NOVA_PASSWORD == 0 }}
         run: sed -i 's/"composer-nova.json"//g' composer.json && composer update
 
+      # Install
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
@@ -83,29 +97,15 @@ jobs:
           php artisan nova:install
           cd nova-components/WaitingListsManager && composer install && cd ../../
 
-      - name: Publish Horizon
-        run: php artisan horizon:publish
+      #
+      # YARN DEPENDENCIES
+      #
 
-      - name: Publish Telescope
-        run: php artisan telescope:publish
-
-      - name: Create Databases
-        run: |
-          sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
-          mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
-          mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
-      - name: Migrate Database
-        run: php artisan migrate
-
-      - name: Setup Yarn
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12'
-
+      # Restore Caches
       - name: Get Yarn Cache Directory
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
+
       - name: Restore Yarn Cache
         uses: actions/cache@v1
         id: yarn-cache
@@ -115,26 +115,89 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      # Install
       - name: Install Core Assets
         run: yarn
+
       - name: Compile Core Assets
         run: yarn run prod
 
       - name: Install Waiting Lists Manager Assets
         run: cd nova-components/WaitingListsManager && yarn && cd ../../
+
       - name: Compile Waiting Lists Manager Assets
         run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
 
+      #
+      # APPLICATION SETUP
+      #
+
+      # Environment Configuration
+      - name: Create empty Environment File
+        run: touch .env
+
+      - name: Set Environment Variables
+        uses: allenevans/set-env@v1.1.0
+        with:
+          APP_ENV: testing
+          APP_KEY: base64:wx/g4ayECKlSzOYSguRFoCrsd+KSbAyEiy0J8zWxxyU=
+          APP_URL: 127.0.0.1
+          CACHE_DRIVER: array
+          DB_MYSQL_HOST: localhost
+          DB_MYSQL_PORT: 3306
+          DB_MYSQL_USER: root
+          DB_MYSQL_PASS: root
+          DB_MYSQL_NAME: core
+          CTS_DATABASE: cts
+          VATSIM_OAUTH_CLIENT: 1
+          VATSIM_OAUTH_SECRET: secret
+          VATSIM_OAUTH_SCOPES: full_name,email,vatsim_details,country
+
+      # Publish Packages
+      - name: Publish Horizon
+        run: php artisan horizon:publish
+
+      - name: Publish Telescope
+        run: php artisan telescope:publish
+
+      # Run Database Migration
+      - name: Migrate Database
+        run: php artisan migrate
+
+      # Cache Setup
       - name: Cache Routes
         run: php artisan route:cache
+
       - name: Cache Config
         run: php artisan config:cache
 
+      # Start Application
       - name: Serve Application
         run: php artisan serve -q &
 
+      #
+      # RUN TESTING SUITE
+      #
+
+      # Run Tests
       - name: Execute PHPUnit Tests With Coverage
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
-      - name: Upload Code Coverage Report
+      # Run Coverage Suite
+      - name: Upload Code Coverage
         run: bash <(curl -s https://codecov.io/bash)
+
+  trigger-release:
+    name: Trigger Release
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      #
+      # RELEASE (main only)
+      #
+      - name: Trigger release workflow
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT }}
+          event-type: release-trigger

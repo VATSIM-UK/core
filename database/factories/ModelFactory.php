@@ -89,16 +89,3 @@ $factory->define(\App\Models\Mship\Permission::class, function (Faker\Generator 
         'display_name' => $faker->text($maxNbChars = 30),
     ];
 });
-
-$factory->define(App\Models\Messages\Thread::class, function (Faker\Generator $faker) {
-    return [
-        'subject' => $faker->text($maxNbChars = 255),
-    ];
-});
-
-$factory->define(App\Models\Messages\Thread\Post::class, function (Faker\Generator $faker) {
-    return [
-        'account_id' => factory(App\Models\Mship\Account::class)->create()->id,
-        'content' => $faker->text($maxNbChars = 255),
-    ];
-});

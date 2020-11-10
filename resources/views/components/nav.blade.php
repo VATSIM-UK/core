@@ -4,13 +4,6 @@
             You are in a <b>NON-PRODUCTION</b> environment
         </div>
     @endif
-    @if (sys_config('notice'))
-        <div class="sys_notification">
-            <div class="text">
-                {!! sys_config('notice') !!}
-            </div>
-        </div>
-    @endif
     @include('components.top-notification')
     <div class="nav_upper_container">
         <div class="navbar-header">
@@ -49,7 +42,7 @@
                         <li class="col-sm-12">
                             <ul>
                                 <li>{!! link_to_route("site.pilots.landing", "Welcome") !!}</li>
-                                <li>{!! link_to_route("site.pilots.ratings", "Ratings (P1 - P5)") !!}</li>
+                                <li>{!! link_to_route("site.pilots.ratings", "Ratings") !!}</li>
                                 <li>{!! link_to_route("site.pilots.mentor", "Becoming a Mentor") !!}</li>
                                 <li>{!! link_to_route("site.pilots.oceanic", "Oceanic Procedures") !!}</li>
                                 <li class="divider"></li>
@@ -70,7 +63,6 @@
                             <ul>
                                 <li>{!! link_to_route("site.atc.landing", "Welcome") !!}</li>
                                 <li>{!! link_to_route("site.atc.newController", "New Controller (OBS)") !!}</li>
-                                <li>{!! link_to_route("site.atc.progression", "Progression Guide (S1-C3)") !!}</li>
                                 <li>{!! link_to_route("site.atc.endorsements", "Endorsements") !!}</li>
                                 <li>{!! link_to_route("site.atc.mentor", "Becoming a Mentor") !!}</li>
                                 <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>

@@ -83,6 +83,14 @@
                                     <td>Member Services Assistant</td>
                                     <td>Matthew Wilson</td>
                                 </tr>
+                                <tr>
+                                    <td>Member Services Assistant</td>
+                                    <td>James Thomas</td>
+                                </tr>
+                                <tr>
+                                    <td>Member Services Assistant</td>
+                                    <td>Luke Peters</td>
+                                </tr>
                             </table>
                         </div>
                     </div>
@@ -260,7 +268,7 @@
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
-                                    <td>Vacant</td>
+                                    <td>Darren Hill</td>
                                 </tr>
                                 <tr>
                                     <td>IFR Flight Instructor</td>
@@ -279,13 +287,8 @@
                     <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Other Roles
                     </div>
                     <div class="panel-body">
-                        <br/>
                         <table class="table">
                             <tbody>
-                                <tr>
-                                    <td>Division Conflict Resolution Manager</td>
-                                    <td>Phillip Speer</td>
-                                </tr>
                                 <tr>
                                     <td>Data Protection Officer</td>
                                     <td>Chris Pawley</td>

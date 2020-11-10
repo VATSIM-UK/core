@@ -105,8 +105,6 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Support\Collection $verified_secondary_emails
  * @property-read mixed $visit_transfer_current
  * @property-read mixed $visit_transfer_referee_pending
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread\Post[] $messagePosts
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[] $messageThreads
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Atc[] $networkDataAtc
  * @property-read \App\Models\NetworkData\Atc $networkDataAtcCurrent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Pilot[] $networkDataPilot
@@ -258,17 +256,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
             return $account;
         }
-    }
-
-    public function messageThreads()
-    {
-        return $this->belongsToMany(\App\Models\Messages\Thread::class, 'messages_thread_participant', 'thread_id')
-            ->withPivot('display_as', 'read_at', 'status')->withTimestamps();
-    }
-
-    public function messagePosts()
-    {
-        return $this->hasMany(\App\Models\Messages\Thread\Post::class, 'account_id');
     }
 
     public function bansAsInstigator()
