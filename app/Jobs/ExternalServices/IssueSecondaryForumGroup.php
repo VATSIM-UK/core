@@ -34,7 +34,6 @@ class IssueSecondaryForumGroup implements ShouldQueue
      */
     public $maxExceptions = 3;
 
-
     public function __construct(int $cid, int $forumGroup)
     {
         $this->cid = $cid;
