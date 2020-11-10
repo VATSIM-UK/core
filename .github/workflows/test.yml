@@ -149,9 +149,6 @@ jobs:
           DB_MYSQL_PASS: root
           DB_MYSQL_NAME: core
           CTS_DATABASE: cts
-          VATSIM_OAUTH_CLIENT: 1
-          VATSIM_OAUTH_SECRET: secret
-          VATSIM_OAUTH_SCOPES: full_name,email,vatsim_details,country
 
       # Publish Packages
       - name: Publish Horizon
