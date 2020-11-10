@@ -61,11 +61,6 @@ class Kernel extends ConsoleKernel
             ->cron('30 */2 * * *') // every second hour
             ->runInBackground();
 
-        $schedule->command('discord:manager')
-            ->everySixHours()
-            ->runInBackground()
-            ->withoutOverlapping();
-
         // === By Day ===
 
         $schedule->command('telescope:prune')->daily();
@@ -79,6 +74,10 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('sync:tg-forum-groups')
             ->dailyAt('04:00');
+
+        $schedule->command('discord:manager')
+            ->dailyAt('06:00')
+            ->runInBackground();
 
         $schedule->command('members:certimport', ['--full'])
             ->twiceDaily(2, 14)
