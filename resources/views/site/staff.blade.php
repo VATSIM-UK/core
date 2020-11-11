@@ -60,7 +60,21 @@
                     </div>
                     <div class="panel-body">
                         <h4 class="text-center">Operations Director (VATUK9)</h4><br/>
-                        <p class="text-center">Vacant</p>
+                        <img src="{{ $teamPhotos[7072] }}"
+                             width=50px
+                             class="img-responsive center-block profile-picture"/>
+                        <p class="text-center">Jack Edwards</p>
+                        <h4 class="text-center">Operations Team</h4>
+                        <table class="table">
+                            <tr>
+                                <td>Enroute Operations Coordinator</td>
+                                <td>Harry Sugden</td>
+                            </tr>
+                            <tr>
+                                <td>Aerodrome Operations Coordinator</td>
+                                <td>Vacant</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
 
