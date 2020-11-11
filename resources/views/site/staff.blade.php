@@ -74,6 +74,10 @@
                                 <td>Aerodrome Operations Coordinator</td>
                                 <td>Vacant</td>
                             </tr>
+                            <tr>
+                                <td>Sector File Coordinator</td>
+                                <td>Vacant</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
