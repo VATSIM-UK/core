@@ -100,7 +100,7 @@ class OAuthUserController
 
         $return['is_inactive'] = (bool) ($account->is_inactive);
         $return['experience'] = $account->experience;
-        $return['reg_date'] = $account->joined_at->toDateTimeString();
+        $return['reg_date'] = $account->joined_at ? $account->joined_at->toDateTimeString() : $account->created_at;
         $return['impersonation'] = Session::get('auth_override', false);
 
         return Response::json(['status' => 'success', 'data' => $return]);
