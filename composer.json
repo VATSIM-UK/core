@@ -63,8 +63,8 @@
         }
     ],
     "require": {
-        "alawrence/laravel-ipboard": "dev-master",
         "php": ">=7.4",
+        "alawrence/laravel-ipboard": "dev-main",
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^2.7",
         "bugsnag/bugsnag-laravel": "^2.4",
@@ -82,7 +82,7 @@
         "league/csv": "^8.0",
         "league/oauth2-client": "^2.4",
         "maatwebsite/excel": "~3.1.17",
-        "malahierba-lab/public-id": "dev-master",
+        "malahierba-lab/public-id": "dev-main",
         "planetteamspeak/ts3-php-framework": "dev-master#9e987b61b8e559b4219d30b140b8edbeb94edece",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~4.0",
@@ -91,7 +91,7 @@
         "spatie/laravel-permission": "^3.0",
         "symfony/translation": "^5.0",
         "vatsim/sso": "3.0",
-        "vatsim/xml": "dev-master",
+        "vatsim/xml": "dev-main",
         "watson/rememberable": "^4.0",
         "wikimedia/composer-merge-plugin": "^1.4",
         "wohali/oauth2-discord-new": "^1.0"
