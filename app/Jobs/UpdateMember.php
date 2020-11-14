@@ -51,9 +51,13 @@ class UpdateMember extends Job implements ShouldQueue
      */
     public function handle()
     {
+        $member = Account::firstOrNew([(new Account)->getKeyName() => $this->accountID]);
+
         try {
             $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
         } catch (\Exception $e) {
+            $member->cert_checked_at = Carbon::now();
+
             return;
         }
 
@@ -66,8 +70,6 @@ class UpdateMember extends Job implements ShouldQueue
         if (! is_string($this->data->division)) {
             $this->data->division = '';
         }
-
-        $member = Account::firstOrNew([(new Account)->getKeyName() => $this->accountID]);
 
         // if member no longer exists, delete
         // else process update
