@@ -235,6 +235,10 @@
                                     <td>Fergus Walsh</td>
                                 </tr>
                                 <tr>
+                                    <td>TG Instructor (New Controller)</td>
+                                    <td>Kye Taylor</td>
+                                </tr>
+                                <tr>
                                     <td>TG Instructor (TWR)</td>
                                     <td>George Peppard</td>
                                 </tr>
@@ -248,23 +252,19 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (APP)</td>
-                                    <td>Oliver Gates</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Instructor (APP)</td>
                                     <td>Charlie Watson</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (APP)</td>
-                                    <td>Jack Edwards</td>
+                                    <td>William Jennings</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (APP)</td>
+                                    <td>Thomas Greer</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
                                     <td>Nathaniel Leff</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Instructor (Enroute)</td>
-                                    <td>Sebastian Rekdal</td>
                                 </tr>
                             </table>
                             </div>
