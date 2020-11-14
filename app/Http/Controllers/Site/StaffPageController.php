@@ -28,6 +28,7 @@ class StaffPageController extends \App\Http\Controllers\BaseController
                 6286 => null,
                 6738 => null,
                 7404 => null,
+                7072 => null,
             ]
         );
 
