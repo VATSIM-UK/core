@@ -192,9 +192,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'password_expires_at',
     ];
     protected $attributes = [
-        'name_first' => '',
-        'name_last' => '',
-        'inactive' => false,
+        'name_first'    => '',
+        'name_last'     => '',
+        'inactive'      => false,
         'last_login_ip' => '0.0.0.0',
     ];
     protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
@@ -468,9 +468,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function getSessionTimeoutAttribute()
     {
         $timeout = $this->roles()
-                        ->orderBy('session_timeout', 'DESC')
-                        ->first()
-                        ->session_timeout;
+            ->orderBy('session_timeout', 'DESC')
+            ->first()
+            ->session_timeout;
 
         return $timeout === null ? 0 : $timeout;
     }

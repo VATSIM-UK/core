@@ -203,7 +203,7 @@
                     <a class="nav-link" href="https://helpdesk.vatsim.uk">Contact Us</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('login') }}" class="nav-link">
+                    <a href="{{ route('dashboard') }}" class="nav-link">
                         <i class="fas fa-user text-white d-mobile-none"></i>
                         <span class="d-tablet-none">Login</span>
                     </a>

@@ -28,8 +28,6 @@ class Management extends \App\Http\Controllers\BaseController
     {
         if (Auth::check()) {
             return redirect()->intended(route('mship.manage.dashboard'));
-        } elseif (Auth::guard('vatsim-sso')->check()) {
-            return redirect()->route('login');
         }
 
         return $this->viewMake('mship.management.landing');
