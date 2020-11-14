@@ -70,7 +70,6 @@ trait TracksChanges
         $attributes = $this->originalTracked;
 
         foreach ($this->trackableFromArray($attributes) as $key => $value) {
-
             if ($this->isTrackable($key) && $value != $this->$key) {
                 $dataChange = new \App\Models\Sys\Data\Change();
                 $dataChange->data_key = $key;
