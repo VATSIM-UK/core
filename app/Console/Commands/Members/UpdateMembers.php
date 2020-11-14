@@ -18,7 +18,7 @@ class UpdateMembers extends Command
      * @var string
      */
     protected $signature = 'Members:CertUpdate
-                        {max_members=5000}
+                        {max_members=1000}
                         {--f|force= : If specified, only this CID will be checked.}';
 
     /**
