@@ -13,13 +13,13 @@ class AddUuidToFailedJobsTable extends Migration
      */
     public function up()
     {
-        Schema::table('failed_jobs', function (Blueprint $table) {
+        Schema::table('jobs_failed', function (Blueprint $table) {
             $table->string('uuid')->after('id')->nullable()->unique();
         });
 
         // Generate uuid for existing rows
-        DB::table('failed_jobs')->whereNull('uuid')->cursor()->each(function ($job) {
-            DB::table('failed_jobs')
+        DB::table('jobs_failed')->whereNull('uuid')->cursor()->each(function ($job) {
+            DB::table('jobs_failed')
                 ->where('id', $job->id)
                 ->update(['uuid' => (string) Illuminate\Support\Str::uuid()]);
         });
