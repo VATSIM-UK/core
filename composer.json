@@ -63,8 +63,8 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
         "alawrence/laravel-ipboard": "dev-master",
+        "php": ">=7.4",
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^2.7",
         "bugsnag/bugsnag-laravel": "^2.4",
@@ -158,7 +158,7 @@
     },
     "config": {
         "platform": {
-            "php": "7.3"
+            "php": "7.4"
         },
         "preferred-install": "dist",
         "sort-packages": true
