@@ -407,7 +407,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function getFullyDefinedAttribute()
     {
         return $this->name_first && $this->name_last && $this->email && $this->qualifications_atc;
-
     }
 
     private function allowedNames($includeATC = false, $withNumberWildcard = false)
