@@ -137,7 +137,7 @@ jobs:
         run: touch .env
 
       - name: Set Environment Variables
-        uses: allenevans/set-env@v1.1.0
+        uses: allenevans/set-env@v2.0.0
         with:
           APP_ENV: testing
           APP_KEY: base64:wx/g4ayECKlSzOYSguRFoCrsd+KSbAyEiy0J8zWxxyU=
