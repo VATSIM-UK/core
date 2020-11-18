@@ -62,12 +62,10 @@ class Registration extends Model
             }
 
             if ($this->confirmation) {
-
                 try {
                     $tscon->privilegeKeyDelete($this->confirmation->privilege_key);
                 } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
-                    if($e->getMessage() === 'ok')
-                    {
+                    if ($e->getMessage() === 'ok') {
                         $this->confirmation->delete();
                     }
                 }
