@@ -22,10 +22,14 @@ jobs:
       - name: Extract short commit hash
         run: |
           echo "::set-env name=COMMIT::$(echo ${GITHUB_SHA} | cut -c1-7)"
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       - name: Extract tag
         run: |
           echo "::set-env name=TAG::$(git describe --tags --abbrev=0)"
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       #
       # DEPLOYMENT PARAMETERS
