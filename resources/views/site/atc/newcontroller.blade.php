@@ -88,7 +88,7 @@
 					</i></p>
 
 					<p>
-						At the end of the Introduction to ATC group session, we’ll assign you one of two training aerodromes: Edinburgh or Manchester. This will be where you complete your initial training, but you will not be limited to it once you have been awarded your rating. We will ensure that you are enrolled on both the ‘S1 Aerodrome Control’ (generic) Moodle course and the aerodrome specific Moodle course for your allocated training aerodrome.
+						At the end of the Introduction to ATC group session, we’ll assign you one of four training aerodromes: East Midlands, Edinburgh, Manchester or Stansted. This will be where you complete your initial training, but you will not be limited to it once you have been awarded your rating. We will ensure that you are enrolled on both the ‘S1 Aerodrome Control’ (generic) Moodle course and the aerodrome specific Moodle course for your allocated training aerodrome.
 					</p>
 
 					<p>
