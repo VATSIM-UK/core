@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Deployment\HerokuPostDeploy;
+use Bugsnag\BugsnagLaravel\Commands\DeployCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,8 +18,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         // third-party
-        \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,
-        \App\Console\Commands\Deployment\HerokuPostDeploy::class,
+        DeployCommand::class,
+        HerokuPostDeploy::class,
     ];
 
     /**
