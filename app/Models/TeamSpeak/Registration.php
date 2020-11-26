@@ -7,6 +7,7 @@ use App\Models\Model;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use TeamSpeak3;
+use TeamSpeak3_Adapter_ServerQuery_Exception;
 
 /**
  * App\Models\TeamSpeak\Registration.
@@ -59,8 +60,16 @@ class Registration extends Model
             if ($tscon == null) {
                 $tscon = TeamSpeak::run('VATSIM UK Registrations');
             }
+
             if ($this->confirmation) {
-                $tscon->privilegeKeyDelete($this->confirmation->privilege_key);
+                try {
+                    $tscon->privilegeKeyDelete($this->confirmation->privilege_key);
+                } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+                    if ($e->getMessage() === 'ok') {
+                        $this->confirmation->delete();
+                    }
+                }
+
                 $this->confirmation->delete();
             }
 

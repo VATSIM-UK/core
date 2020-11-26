@@ -18,16 +18,20 @@ jobs:
       - name: Extract short commit hash
         run: |
           echo "::set-env name=COMMIT::$(echo ${GITHUB_SHA} | cut -c1-7)"
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       - name: Extract tag
         run: |
           echo "::set-env name=TAG::$(git describe --tags --abbrev=0)"
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       #
       # DEPLOYMENT PARAMETERS
       #
       - name: Set additional deployment variables
-        uses: allenevans/set-env@v1.0.0
+        uses: allenevans/set-env@v2.0.0
         with:
           APP_URL: https://www.vatsim.uk
           APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}

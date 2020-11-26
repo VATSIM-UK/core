@@ -51,40 +51,5 @@ use Illuminate\Support\Facades\DB;
                 'field_14' => $this->qualifications_pilot_string, // Pilot Ratings
             ];
             \IPS\Db::i()->update('core_pfields_content', $update, ['member_id=?', $ipsAccount->member_id]);
-
-            // Set clubs
-            $groups = $this->communityGroups()->notDefault()->get(['name']);
-            $ipsClubs = \IPS\Db::i()->select('id,name', 'core_clubs');
-            $clubMap = [];
-            for ($i = 0; $i < $ipsClubs->count(); $i++) {
-                $ipsClubs->next();
-                $club = $ipsClubs->current();
-                $clubMap[$club['id']] = $club['name'];
-            }
-
-            // Proccess core group membership.
-            foreach ($groups as $group) {
-                $ipsClubId = array_search($group->name, $clubMap);
-                if ($ipsClubId !== false) {
-                    $club = \IPS\Member\Club::load($ipsClubId);
-
-                    // Only add the user if not in already
-                    if ($club->memberStatus($ipsAccount) === null) {
-                        $club->addMember($ipsAccount);
-                    }
-                }
-            }
-
-            // Proccess member's IPB-side Club membership.
-            foreach ($ipsAccount->clubs() as $ipsMemberClub) {
-                $name = $clubMap[$ipsMemberClub];
-
-                if ($groups->pluck('name')->search($name) === false) {
-                    $ipsMemberClub = \IPS\Member\Club::load($ipsMemberClub);
-                    if (! $ipsMemberClub->isLeader($ipsAccount) && ! $ipsMemberClub->isModerator($ipsAccount)) {
-                        $ipsMemberClub->removeMember($ipsAccount);
-                    }
-                }
-            }
         }
     }
