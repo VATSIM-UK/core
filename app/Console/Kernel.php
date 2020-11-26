@@ -17,7 +17,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        // third-party
         DeployCommand::class,
         HerokuPostDeploy::class,
     ];
