@@ -29,7 +29,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
         // === By Minute === //
 
         $schedule->command('visit-transfer:cleanup')
@@ -62,7 +61,7 @@ class Kernel extends ConsoleKernel
             ->cron('30 */2 * * *') // every second hour
             ->runInBackground();
 
-        // === By Day ===
+        // === By Day === //
 
         $schedule->command('telescope:prune')->daily();
 
