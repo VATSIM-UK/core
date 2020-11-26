@@ -69,9 +69,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('sync:community')
             ->dailyAt('00:01');
 
-        $schedule->command('sync:tg-forum-groups')
-            ->dailyAt('04:00');
-
         $schedule->command('discord:manager')
             ->dailyAt('06:00')
             ->runInBackground();
