@@ -63,7 +63,8 @@ class Kernel extends ConsoleKernel
 
         // === By Day === //
 
-        $schedule->command('telescope:prune')->daily();
+        $schedule->command('telescope:prune')
+            ->daily();
 
         $schedule->command('sync:community')
             ->dailyAt('00:01');
