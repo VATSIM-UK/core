@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Deployment\HerokuPostDeploy;
+use Bugsnag\BugsnagLaravel\Commands\DeployCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,9 +17,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        // third-party
-        \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,
-        \App\Console\Commands\Deployment\HerokuPostDeploy::class,
+        DeployCommand::class,
+        HerokuPostDeploy::class,
     ];
 
     /**
@@ -28,7 +29,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
         // === By Minute === //
 
         $schedule->command('visit-transfer:cleanup')
@@ -61,15 +61,13 @@ class Kernel extends ConsoleKernel
             ->cron('30 */2 * * *') // every second hour
             ->runInBackground();
 
-        // === By Day ===
+        // === By Day === //
 
-        $schedule->command('telescope:prune')->daily();
+        $schedule->command('telescope:prune')
+            ->daily();
 
         $schedule->command('sync:community')
             ->dailyAt('00:01');
-
-        $schedule->command('sync:tg-forum-groups')
-            ->dailyAt('04:00');
 
         $schedule->command('discord:manager')
             ->dailyAt('06:00')
