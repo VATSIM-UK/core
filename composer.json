@@ -90,6 +90,7 @@
         "spatie/laravel-cookie-consent": "^2.4",
         "spatie/laravel-permission": "^3.0",
         "symfony/translation": "^5.0",
+        "titasgailius/search-relations": "^1.0",
         "vatsim/sso": "3.0",
         "vatsim/xml": "dev-main",
         "watson/rememberable": "^5.0",
