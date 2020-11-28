@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b57a4f6f44f5c3ef8f9c16bbd17cc993",
+    "content-hash": "8fcfe65e3945c2ca07bede62bf23548e",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -8763,42 +8763,6 @@
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
             "time": "2020-07-13T06:12:54+00:00"
-        },
-        {
-            "name": "titasgailius/search-relations",
-            "version": "1.0.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TitasGailius/nova-search-relations.git",
-                "reference": "ac999c8d3230573fe5bb81f50cbabfaa62da26c0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TitasGailius/nova-search-relations/zipball/ac999c8d3230573fe5bb81f50cbabfaa62da26c0",
-                "reference": "ac999c8d3230573fe5bb81f50cbabfaa62da26c0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Titasgailius\\SearchRelations\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "A Laravel Nova tool.",
-            "keywords": [
-                "laravel",
-                "nova",
-                "relations",
-                "search"
-            ],
-            "time": "2020-10-09T09:25:10+00:00"
         },
         {
             "name": "vatsim/sso",
