@@ -13,7 +13,7 @@ use Titasgailius\SearchRelations\SearchesRelations;
 abstract class Resource extends NovaResource
 {
     use SearchesRelations;
-    
+
     /**
      * Build an "index" query for the given resource.
      *
