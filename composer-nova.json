@@ -13,6 +13,7 @@
         "benjaminhirsch/nova-slug-field": "^1.2",
         "laravel/nova": "^3.15",
         "sixlive/nova-text-copy-field": "^1.5",
+        "titasgailius/search-relations": "^1.0",
         "vatsimuk/waiting-lists-manager": "@dev",
         "vyuldashev/nova-permission": "^2.4"
     }

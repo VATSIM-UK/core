@@ -38,6 +38,15 @@ class Feedback extends Resource
         'id',
     ];
 
+    /**
+     * The relationship columns that should be searched.
+     *
+     * @var array
+     */
+    public static $searchRelations = [
+        'account' => ['id', 'name_first', 'name_last'],
+    ];
+
     public static $with = ['answers', 'account', 'submitter'];
 
     /**
