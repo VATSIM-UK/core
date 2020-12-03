@@ -268,6 +268,9 @@
                         London Control (LON_W_CTR)
                     </li>
                     <li>
+                        Scottish Control (SCO_CTR)
+                    </li>
+                    <li>
                         VG1/2/3/4 facilities
                     </li>
                 </ul>
