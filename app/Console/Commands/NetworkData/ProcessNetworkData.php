@@ -2,21 +2,21 @@
 
 namespace App\Console\Commands\NetworkData;
 
-use App\Console\Commands\Command;
-use App\Events\NetworkData\NetworkDataDownloaded;
-use App\Events\NetworkData\NetworkDataParsed;
-use App\Exceptions\Mship\InvalidCIDException;
-use App\Models\Airport;
-use App\Models\Mship\Account;
-use App\Models\Mship\Qualification;
-use App\Models\NetworkData\Atc;
-use App\Models\NetworkData\Pilot;
+use DB;
 use Cache;
 use Carbon\Carbon;
-use DB;
+use App\Models\Airport;
+use App\Models\Mship\Account;
+use App\Models\NetworkData\Atc;
+use App\Console\Commands\Command;
+use App\Models\NetworkData\Pilot;
+use App\Models\Mship\Qualification;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Collection;
+use App\Events\NetworkData\NetworkDataParsed;
+use App\Exceptions\Mship\InvalidCIDException;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Vatsimphp\VatsimData;
+use App\Events\NetworkData\NetworkDataDownloaded;
 
 class ProcessNetworkData extends Command
 {
@@ -36,8 +36,8 @@ class ProcessNetworkData extends Command
      */
     protected $description = 'Download and parse the VATSIM data feed file.';
 
-    private $vatsimPHP = null;
     private $lastUpdatedAt = null;
+    private $networkData = null;
 
     /**
      * Create a new command instance.
@@ -46,8 +46,7 @@ class ProcessNetworkData extends Command
     {
         parent::__construct();
 
-        $this->vatsimPHP = new VatsimData();
-        $this->vatsimPHP->setConfig('forceDataRefresh', true);
+        $this->networkData = Http::get(config('vatsim-data-feed.base'));
     }
 
     /**
@@ -55,13 +54,11 @@ class ProcessNetworkData extends Command
      */
     public function handle()
     {
-        $this->vatsimPHP->loadData();
         $this->setLastUpdatedTimestamp();
         event(new NetworkDataDownloaded());
         $this->processATC();
         $this->processPilots();
         event(new NetworkDataParsed());
-        //Atc::flushCache();
     }
 
     /**
@@ -69,8 +66,8 @@ class ProcessNetworkData extends Command
      */
     private function setLastUpdatedTimestamp()
     {
-        $generalInfo = $this->vatsimPHP->getGeneralInfo()->toArray();
-        $this->lastUpdatedAt = Carbon::createFromTimestampUTC($generalInfo['update']);
+        $generalInfo = $this->networkData->json('general');
+        $this->lastUpdatedAt = Carbon::create($generalInfo['update_timestamp']);
     }
 
     /**
@@ -80,8 +77,8 @@ class ProcessNetworkData extends Command
     {
         $awaitingUpdate = Atc::online()->get()->keyBy('id');
 
-        foreach ($this->vatsimPHP->getControllers() as $controllerData) {
-            if ($controllerData['facilitytype'] < 1 || substr($controllerData['callsign'], -4) == '_OBS') {
+        foreach ($this->networkData->json('controllers') as $controllerData) {
+            if ($controllerData['facility'] < 1 || substr($controllerData['callsign'], -4) == '_OBS') {
                 // ignore observers
                 continue;
             } elseif (substr($controllerData['callsign'], -4) == '_SUP') {
@@ -117,8 +114,8 @@ class ProcessNetworkData extends Command
                     'callsign'         => $controllerData['callsign'],
                     'frequency'        => $controllerData['frequency'],
                     'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
-                    'facility_type'    => $controllerData['facilitytype'],
-                    'connected_at'     => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
+                    'facility_type'    => $controllerData['facility'],
+                    'connected_at'     => Carbon::create($controllerData['logon_time']),
                     'disconnected_at'  => null,
                     'deleted_at'       => null,
                 ],
@@ -154,8 +151,8 @@ class ProcessNetworkData extends Command
     {
         $awaitingUpdate = Pilot::online()->get()->keyBy('id');
 
-        foreach ($this->vatsimPHP->getPilots() as $pilotData) {
-            if (empty($pilotData['planned_revision'])) {
+        foreach ($this->networkData->json('pilots') as $pilotData) {
+            if (empty($pilotData['flight_plan'])) {
                 // ignore flights with no flightplan
                 continue;
             }
@@ -178,20 +175,20 @@ class ProcessNetworkData extends Command
             $flight = Pilot::firstOrNew([
                 'account_id'        => $account->id,
                 'callsign'          => $pilotData['callsign'],
-                'flight_type'       => $pilotData['planned_flighttype'],
-                'departure_airport' => $pilotData['planned_depairport'],
-                'arrival_airport'   => $pilotData['planned_destairport'],
-                'connected_at'      => Carbon::createFromFormat('YmdHis', $pilotData['time_logon']),
+                'flight_type'       => $pilotData['flight_plan']['flight_rules'],
+                'departure_airport' => $pilotData['flight_plan']['departure'],
+                'arrival_airport'   => $pilotData['flight_plan']['arrival'],
+                'connected_at'      => Carbon::create($pilotData['logon_time']),
                 'disconnected_at'   => null,
             ]);
 
             $flight->fill([
-                'alternative_airport' => $pilotData['planned_altairport'],
-                'aircraft'            => $pilotData['planned_aircraft'],
-                'cruise_altitude'     => $pilotData['planned_altitude'],
-                'cruise_tas'          => $pilotData['planned_tascruise'],
-                'route'               => $pilotData['planned_route'],
-                'remarks'             => $pilotData['planned_remarks'],
+                'alternative_airport' => $pilotData['flight_plan']['alternate'],
+                'aircraft'            => $pilotData['flight_plan']['aircraft'],
+                'cruise_altitude'     => $pilotData['flight_plan']['altitude'],
+                'cruise_tas'          => $pilotData['flight_plan']['cruise_tas'],
+                'route'               => $pilotData['flight_plan']['route'],
+                'remarks'             => $pilotData['flight_plan']['remarks'],
             ]);
 
             if ($pilotData['latitude'] > 90 || $pilotData['latitude'] < -90) {
