@@ -2,21 +2,21 @@
 
 namespace App\Console\Commands\NetworkData;
 
-use DB;
-use Cache;
-use Carbon\Carbon;
-use App\Models\Airport;
-use App\Models\Mship\Account;
-use App\Models\NetworkData\Atc;
 use App\Console\Commands\Command;
-use App\Models\NetworkData\Pilot;
-use App\Models\Mship\Qualification;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Database\Eloquent\Collection;
+use App\Events\NetworkData\NetworkDataDownloaded;
 use App\Events\NetworkData\NetworkDataParsed;
 use App\Exceptions\Mship\InvalidCIDException;
+use App\Models\Airport;
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
+use App\Models\NetworkData\Atc;
+use App\Models\NetworkData\Pilot;
+use Cache;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use App\Events\NetworkData\NetworkDataDownloaded;
+use Illuminate\Support\Facades\Http;
 
 class ProcessNetworkData extends Command
 {
