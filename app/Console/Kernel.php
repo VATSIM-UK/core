@@ -37,7 +37,6 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('teaman:runner', ['-v'])
             ->everyMinute()
-            ->runInBackground()
             ->withoutOverlapping();
 
         $schedule->command('networkdata:download')
