@@ -55,10 +55,12 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('members:certupdate')
             ->hourly()
+            ->graceTimeInMinutes(15)
             ->runInBackground();
 
         $schedule->command('members:certimport')
             ->cron('30 */2 * * *') // every second hour
+            ->graceTimeInMinutes(15)
             ->runInBackground();
 
         // === By Day === //
@@ -67,14 +69,23 @@ class Kernel extends ConsoleKernel
             ->daily();
 
         $schedule->command('sync:community')
-            ->dailyAt('00:01');
+            ->dailyAt('00:01')
+            ->graceTimeInMinutes(30);
 
         $schedule->command('discord:manager')
             ->dailyAt('06:00')
-            ->runInBackground();
+            ->runInBackground()
+            ->graceTimeInMinutes(30);
+
+        $schedule->command('schedule-monitor:sync')
+            ->dailyAt('07:00');
+
+        $schedule->command('schedule-monitor:clean')
+            ->dailyAt('08:00');
 
         $schedule->command('members:certimport', ['--full'])
             ->twiceDaily(2, 14)
+            ->graceTimeInMinutes(30)
             ->runInBackground();
     }
 
