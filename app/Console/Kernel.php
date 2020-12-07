@@ -33,7 +33,6 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('visit-transfer:cleanup')
             ->everyMinute()
-            ->runInBackground()
             ->withoutOverlapping();
 
         $schedule->command('teaman:runner', ['-v'])
@@ -43,25 +42,21 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('networkdata:download')
             ->cron('*/2 * * * *') // every second minute
-            ->runInBackground()
             ->withoutOverlapping();
 
         $schedule->command('horizon:snapshot')
             ->everyFiveMinutes()
-            ->runInBackground()
             ->withoutOverlapping();
 
         // === By Hour === //
 
         $schedule->command('members:certupdate')
             ->hourly()
-            ->graceTimeInMinutes(15)
-            ->runInBackground();
+            ->graceTimeInMinutes(15);
 
         $schedule->command('members:certimport')
             ->cron('30 */2 * * *') // every second hour
-            ->graceTimeInMinutes(15)
-            ->runInBackground();
+            ->graceTimeInMinutes(15);
 
         // === By Day === //
 
@@ -74,7 +69,6 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('discord:manager')
             ->dailyAt('06:00')
-            ->runInBackground()
             ->graceTimeInMinutes(30);
 
         $schedule->command('schedule-monitor:sync')
@@ -85,8 +79,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('members:certimport', ['--full'])
             ->twiceDaily(2, 14)
-            ->graceTimeInMinutes(30)
-            ->runInBackground();
+            ->graceTimeInMinutes(30);
     }
 
     /**
