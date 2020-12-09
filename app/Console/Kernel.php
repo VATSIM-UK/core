@@ -33,33 +33,29 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('visit-transfer:cleanup')
             ->everyMinute()
-            ->runInBackground()
             ->withoutOverlapping();
 
         $schedule->command('teaman:runner', ['-v'])
             ->everyMinute()
-            ->runInBackground()
             ->withoutOverlapping();
 
         $schedule->command('networkdata:download')
             ->cron('*/2 * * * *') // every second minute
-            ->runInBackground()
             ->withoutOverlapping();
 
         $schedule->command('horizon:snapshot')
             ->everyFiveMinutes()
-            ->runInBackground()
             ->withoutOverlapping();
 
         // === By Hour === //
 
         $schedule->command('members:certupdate')
             ->hourly()
-            ->runInBackground();
+            ->graceTimeInMinutes(15);
 
         $schedule->command('members:certimport')
             ->cron('30 */2 * * *') // every second hour
-            ->runInBackground();
+            ->graceTimeInMinutes(15);
 
         // === By Day === //
 
@@ -67,15 +63,22 @@ class Kernel extends ConsoleKernel
             ->daily();
 
         $schedule->command('sync:community')
-            ->dailyAt('00:01');
+            ->dailyAt('00:01')
+            ->graceTimeInMinutes(30);
 
         $schedule->command('discord:manager')
             ->dailyAt('06:00')
-            ->runInBackground();
+            ->graceTimeInMinutes(30);
+
+        $schedule->command('schedule-monitor:sync')
+            ->dailyAt('07:00');
+
+        $schedule->command('schedule-monitor:clean')
+            ->dailyAt('08:00');
 
         $schedule->command('members:certimport', ['--full'])
             ->twiceDaily(2, 14)
-            ->runInBackground();
+            ->graceTimeInMinutes(30);
     }
 
     /**

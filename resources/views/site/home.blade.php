@@ -365,11 +365,9 @@
 
         <p class="text-right text-light">Chris Pawley <br/> VATSIM UK Division Director</p>
 
-    </div>
     <!-- UK Welcome [END] -->
 
     <!-- Upcoming Event [START] -->
-    <div class="container">
 
         <h1 class="text-primary">Next Event</h1><br>
 
@@ -388,6 +386,7 @@
 <!-- UK User Welcome [START] -->
 <section class="section py-7 text-white bg-img-bottom" style="background-image: url(images/cockpit.jpg)"
          data-overlay="9">
+<div class="overlay opacity-55" style="background-color: #17375E"></div>
     <div class="container text-center">
 
         <div class="row">

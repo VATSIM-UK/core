@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "046749329fd9400dbfd694914df412bf",
+    "content-hash": "c86889c35b6e589fa2fa3cc400e30d3e",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -3549,6 +3549,49 @@
             "time": "2020-12-03T21:32:29+00:00"
         },
         {
+            "name": "lorisleiva/cron-translator",
+            "version": "v0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lorisleiva/cron-translator.git",
+                "reference": "784a6f6255a4b5f45da5d89dc6ec631a14d7b011"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lorisleiva/cron-translator/zipball/784a6f6255a4b5f45da5d89dc6ec631a14d7b011",
+                "reference": "784a6f6255a4b5f45da5d89dc6ec631a14d7b011",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lorisleiva\\CronTranslator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Loris LEIVA",
+                    "email": "loris.leiva@gmail.com",
+                    "homepage": "https://lorisleiva.com"
+                }
+            ],
+            "description": "Makes CRON expressions human-readable",
+            "homepage": "https://github.com/lorisleiva/cron-translator",
+            "keywords": [
+                "cron",
+                "expression",
+                "human"
+            ],
+            "time": "2020-03-01T14:44:47+00:00"
+        },
+        {
             "name": "maatwebsite/excel",
             "version": "3.1.26",
             "source": {
@@ -4375,6 +4418,58 @@
                 }
             ],
             "time": "2020-11-14T17:35:34+00:00"
+        },
+        {
+            "name": "ohdearapp/ohdear-php-sdk",
+            "version": "3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ohdearapp/ohdear-php-sdk.git",
+                "reference": "6d8eed7ce34e12067c13d392bffd3ecf71b2f026"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/6d8eed7ce34e12067c13d392bffd3ecf71b2f026",
+                "reference": "6d8eed7ce34e12067c13d392bffd3ecf71b2f026",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.3|^7.0",
+                "nesbot/carbon": "^2.35.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0",
+                "psalm/plugin-laravel": "^1.2",
+                "vlucas/phpdotenv": "^4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OhDear\\PhpSdk\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "support@ohdear.app",
+                    "homepage": "https://ohdear.app",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An SDK to easily work with the Oh Dear API",
+            "homepage": "https://github.com/ohdearapp/ohdear-php-sdk",
+            "keywords": [
+                "api",
+                "monitoring",
+                "oh dear",
+                "sdk"
+            ],
+            "time": "2020-11-30T19:06:34+00:00"
         },
         {
             "name": "opis/closure",
@@ -6226,6 +6321,78 @@
                 }
             ],
             "time": "2020-11-09T14:08:36+00:00"
+        },
+        {
+            "name": "spatie/laravel-schedule-monitor",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-schedule-monitor.git",
+                "reference": "e4611b34dd1452d0d241f8a9c83c42564d2d45cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-schedule-monitor/zipball/e4611b34dd1452d0d241f8a9c83c42564d2d45cc",
+                "reference": "e4611b34dd1452d0d241f8a9c83c42564d2d45cc",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/bus": "^8.0",
+                "lorisleiva/cron-translator": "^0.1.1",
+                "nesbot/carbon": "^2.41.3",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "laravel/legacy-factories": "^1.0.4",
+                "mockery/mockery": "^1.4",
+                "ohdearapp/ohdear-php-sdk": "^3.0",
+                "orchestra/testbench": "^6.0",
+                "phpunit/phpunit": "^9.3",
+                "spatie/phpunit-snapshot-assertions": "^4.2",
+                "spatie/test-time": "^1.2",
+                "vimeo/psalm": "^4.0"
+            },
+            "suggest": {
+                "ohdearapp/ohdear-php-sdk": "Needed to sync your schedule with Oh Dear"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\ScheduleMonitor\\ScheduleMonitorServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\ScheduleMonitor\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Monitor scheduled tasks in a Laravel app",
+            "homepage": "https://github.com/spatie/laravel-schedule-monitor",
+            "keywords": [
+                "laravel-schedule-monitor",
+                "spatie"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-12-04T08:02:17+00:00"
         },
         {
             "name": "spatie/once",
