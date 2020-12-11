@@ -54,6 +54,8 @@ class ProcessNetworkData extends Command
      */
     public function handle()
     {
+        $this->info('Getting network data from VATSIM.');
+
         if ($this->networkData->failed() || !$this->networkData->json()) {
             $this->error('VATSIM feed unavailable.');
             exit();
@@ -64,6 +66,8 @@ class ProcessNetworkData extends Command
         $this->processATC();
         $this->processPilots();
         event(new NetworkDataParsed());
+
+        $this->info('Network data updated.');
     }
 
     /**
@@ -73,6 +77,7 @@ class ProcessNetworkData extends Command
     {
         $generalInfo = $this->networkData->json('general');
         $this->lastUpdatedAt = Carbon::create($generalInfo['update_timestamp']);
+        $this->info('Network data obtained.');
     }
 
     /**
@@ -80,10 +85,18 @@ class ProcessNetworkData extends Command
      */
     private function processATC()
     {
+        $this->info('Processing ATC connections...');
+
+        $controllers = $this->networkData->json('controllers');
+
+        $progressBar = $this->output->createProgressBar(count($controllers));
+
         $awaitingUpdate = Atc::online()->get()->keyBy('id');
 
         foreach ($this->networkData->json('controllers') as $controllerData) {
             if ($controllerData['facility'] < 1 || substr($controllerData['callsign'], -4) == '_OBS') {
+        $progressBar->start();
+
                 // ignore observers
                 continue;
             } elseif (substr($controllerData['callsign'], -4) == '_SUP') {
@@ -132,9 +145,14 @@ class ProcessNetworkData extends Command
             $awaitingUpdate->forget([$atc->id]);
 
             DB::commit();
+
+            $progressBar->advance();
         }
 
         $this->endExpiredAtcSessions($awaitingUpdate);
+        $progressBar->finish();
+        $this->newLine();
+
     }
 
     /**
@@ -144,9 +162,18 @@ class ProcessNetworkData extends Command
      */
     private function endExpiredAtcSessions($expiringAtc)
     {
-        $expiringAtc->each(function (Atc $session) {
+        $this->info('Ending expired ATC sessions.');
+
+        $progressBar = $this->output->createProgressBar(count($expiringAtc));
+        $progressBar->start();
+
+        $expiringAtc->each(function (Atc $session) use ($progressBar) {
             $session->disconnectAt($this->lastUpdatedAt);
+            $progressBar->advance();
         });
+
+        $progressBar->finish();
+        $this->newLine();
     }
 
     /**
@@ -154,10 +181,18 @@ class ProcessNetworkData extends Command
      */
     private function processPilots()
     {
+        $this->info('Processing Pilot connections...');
+
+        $pilots = $this->networkData->json('pilots');
+
+        $progressBar = $this->output->createProgressBar(count($pilots));
+
         $awaitingUpdate = Pilot::online()->get()->keyBy('id');
 
         foreach ($this->networkData->json('pilots') as $pilotData) {
             if (empty($pilotData['flight_plan'])) {
+        $progressBar->start();
+
                 // ignore flights with no flightplan
                 continue;
             }
@@ -249,9 +284,14 @@ class ProcessNetworkData extends Command
             $awaitingUpdate->forget([$flight->id]);
 
             DB::commit();
+
+            $progressBar->advance();
         }
 
         $this->endExpiredPilotSessions($awaitingUpdate);
+        $progressBar->finish();
+        $this->newLine();
+
     }
 
     /**
@@ -262,9 +302,19 @@ class ProcessNetworkData extends Command
     private function endExpiredPilotSessions($expiringPilots)
     {
         $expiringPilots->each(function (Pilot $session) {
+        $this->info('Ending expired pilot sessions.');
+
+        $progressBar = $this->output->createProgressBar(count($expiringPilots));
+        $progressBar->start();
+
+        $expiringPilots->each(function (Pilot $session) use ($progressBar) {
             $session->disconnected_at = $this->lastUpdatedAt;
             $session->save();
+            $progressBar->advance();
         });
+
+        $progressBar->finish();
+        $this->newLine();
     }
 
     /**
