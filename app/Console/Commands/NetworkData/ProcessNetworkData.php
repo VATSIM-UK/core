@@ -56,7 +56,7 @@ class ProcessNetworkData extends Command
     {
         $this->info('Getting network data from VATSIM.');
 
-        if ($this->networkData->failed() || !$this->networkData->json()) {
+        if ($this->networkData->failed() || ! $this->networkData->json()) {
             $this->error('VATSIM feed unavailable.');
             exit();
         }
@@ -152,7 +152,7 @@ class ProcessNetworkData extends Command
         $progressBar->finish();
         $this->newLine();
 
-        if($awaitingUpdate->isNotEmpty()) {
+        if ($awaitingUpdate->isNotEmpty()) {
             $this->endExpiredAtcSessions($awaitingUpdate);
         }
     }
@@ -293,7 +293,7 @@ class ProcessNetworkData extends Command
         $progressBar->finish();
         $this->newLine();
 
-        if($awaitingUpdate->isNotEmpty()) {
+        if ($awaitingUpdate->isNotEmpty()) {
             $this->endExpiredPilotSessions($awaitingUpdate);
         }
     }
