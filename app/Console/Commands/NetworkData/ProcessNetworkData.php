@@ -149,10 +149,12 @@ class ProcessNetworkData extends Command
             $progressBar->advance();
         }
 
-        $this->endExpiredAtcSessions($awaitingUpdate);
         $progressBar->finish();
         $this->newLine();
 
+        if($awaitingUpdate->isNotEmpty()) {
+            $this->endExpiredAtcSessions($awaitingUpdate);
+        }
     }
 
     /**
@@ -288,10 +290,12 @@ class ProcessNetworkData extends Command
             $progressBar->advance();
         }
 
-        $this->endExpiredPilotSessions($awaitingUpdate);
         $progressBar->finish();
         $this->newLine();
 
+        if($awaitingUpdate->isNotEmpty()) {
+            $this->endExpiredPilotSessions($awaitingUpdate);
+        }
     }
 
     /**
