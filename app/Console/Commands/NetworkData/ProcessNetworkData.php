@@ -54,6 +54,11 @@ class ProcessNetworkData extends Command
      */
     public function handle()
     {
+        if ($this->networkData->failed() || !$this->networkData->json()) {
+            $this->error('VATSIM feed unavailable.');
+            exit();
+        }
+
         $this->setLastUpdatedTimestamp();
         event(new NetworkDataDownloaded());
         $this->processATC();
