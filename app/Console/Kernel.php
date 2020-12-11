@@ -41,6 +41,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('networkdata:download')
             ->cron('*/2 * * * *') // every second minute
+            ->graceTimeInMinutes(10)
             ->withoutOverlapping();
 
         $schedule->command('horizon:snapshot')
@@ -66,9 +67,9 @@ class Kernel extends ConsoleKernel
             ->dailyAt('00:01')
             ->graceTimeInMinutes(30);
 
-        $schedule->command('discord:manager')
-            ->dailyAt('06:00')
-            ->graceTimeInMinutes(30);
+        // $schedule->command('discord:manager')
+        //     ->dailyAt('06:00')
+        //     ->graceTimeInMinutes(30);
 
         $schedule->command('schedule-monitor:sync')
             ->dailyAt('07:00');
