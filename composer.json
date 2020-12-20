@@ -60,6 +60,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/VATSIM-UK/public-id"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/CalumTowers/vatsim-stand-status"
         }
     ],
     "require": {
@@ -68,7 +72,7 @@
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^2.7",
         "bugsnag/bugsnag-laravel": "^2.4",
-        "cobaltgrid/vatsim-stand-status": "~1.0",
+        "cobaltgrid/vatsim-stand-status": "dev-master",
         "doctrine/dbal": "~2.10",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
