@@ -687,16 +687,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/CalumTowers/vatsim-stand-status.git",
-                "reference": "c09ab1c1fbc00876a09c0017f2329611194fa13c"
+                "reference": "3b3d7223072d2c1eec497e502a3856b62e86f2ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CalumTowers/vatsim-stand-status/zipball/c09ab1c1fbc00876a09c0017f2329611194fa13c",
-                "reference": "c09ab1c1fbc00876a09c0017f2329611194fa13c",
+                "url": "https://api.github.com/repos/CalumTowers/vatsim-stand-status/zipball/3b3d7223072d2c1eec497e502a3856b62e86f2ee",
+                "reference": "3b3d7223072d2c1eec497e502a3856b62e86f2ee",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^7.0",
+                "guzzlehttp/guzzle": "^6.5|^7.0",
                 "php": ">=7.2",
                 "skymeyer/vatsimphp": "^2.0"
             },
@@ -737,7 +737,7 @@
             "support": {
                 "source": "https://github.com/CalumTowers/vatsim-stand-status/tree/master"
             },
-            "time": "2020-12-20T15:53:12+00:00"
+            "time": "2020-12-20T16:20:02+00:00"
         },
         {
             "name": "composer/ca-bundle",
