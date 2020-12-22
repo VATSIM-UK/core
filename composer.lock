@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "21c01e0f7954b945c9e3a11d37a78dc9",
+    "content-hash": "13cfe75456af74847c9a03d007ae3882",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -683,16 +683,16 @@
         },
         {
             "name": "cobaltgrid/vatsim-stand-status",
-            "version": "dev-master",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/CalumTowers/vatsim-stand-status.git",
-                "reference": "3b3d7223072d2c1eec497e502a3856b62e86f2ee"
+                "url": "https://github.com/atoff/vatsim-stand-status.git",
+                "reference": "eefa289ef5aedb50efdb30d032bae7f278e6a2d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CalumTowers/vatsim-stand-status/zipball/3b3d7223072d2c1eec497e502a3856b62e86f2ee",
-                "reference": "3b3d7223072d2c1eec497e502a3856b62e86f2ee",
+                "url": "https://api.github.com/repos/atoff/vatsim-stand-status/zipball/eefa289ef5aedb50efdb30d032bae7f278e6a2d7",
+                "reference": "eefa289ef5aedb50efdb30d032bae7f278e6a2d7",
                 "shasum": ""
             },
             "require": {
@@ -711,11 +711,7 @@
                     "CobaltGrid\\VatsimStandStatus\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Tests\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-3.0-or-later"
             ],
@@ -734,10 +730,7 @@
                 "stands",
                 "vatsim"
             ],
-            "support": {
-                "source": "https://github.com/CalumTowers/vatsim-stand-status/tree/master"
-            },
-            "time": "2020-12-20T16:20:02+00:00"
+            "time": "2020-12-20T16:53:48+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -12236,7 +12229,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "alawrence/laravel-ipboard": 20,
-        "cobaltgrid/vatsim-stand-status": 20,
         "malahierba-lab/public-id": 20,
         "planetteamspeak/ts3-php-framework": 20,
         "vatsim/xml": 20,
