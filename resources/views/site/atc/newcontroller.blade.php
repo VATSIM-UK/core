@@ -206,7 +206,7 @@
                     </p>
 
                     <p>
-                        Depending on demand, your training will take place at either Manchester or Edinburgh.&nbsp;
+                        Depending on demand, your training will take place at one of four training aerodromes: East Midlands, Edinburgh, Manchester or Stansted.&nbsp;
                     </p>
 
                     <p>
