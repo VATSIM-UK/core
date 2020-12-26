@@ -71,12 +71,13 @@ class EvaluateFlightCriteria implements ShouldQueue
             return;
         }
 
-        if (! $this->onNetwork($pirep, $posreps)) {
-            $pirep->markFailed('Failed: You were not connected to the VATSIM network.');
-            $pirep->save();
+        // Check disabled whilst pilot data is not recorded.
+        // if (! $this->onNetwork($pirep, $posreps)) {
+        //     $pirep->markFailed('Failed: You were not connected to the VATSIM network.');
+        //     $pirep->save();
 
-            return;
-        }
+        //     return;
+        // }
 
         $pirep->markPassed('Success: Flight passed all required checks');
         $pirep->save();
