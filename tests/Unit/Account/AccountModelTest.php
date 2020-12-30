@@ -491,6 +491,9 @@ class AccountModelTest extends TestCase
     {
         $this->assertEmpty($this->user->qualifications_atc);
         $this->assertFalse($this->user->fully_defined);
+
+        $this->user->updateVatsimRatings(1,1);
+        $this->assertTrue($this->user->fresh()->fully_defined);
     }
 
     /** @test */
