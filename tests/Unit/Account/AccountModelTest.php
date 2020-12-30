@@ -22,7 +22,7 @@ class AccountModelTest extends TestCase
             'name_last' => 'Doe',
             'email' => 'i_sleep@gmail.com',
         ]);
-        $this->user->updateVatsimRatings(1,1);
+        $this->user->updateVatsimRatings(1, 1);
         $this->user = $this->user->fresh();
     }
 
