@@ -46,7 +46,7 @@ abstract class TestCase extends BaseTestCase
         $this->createPrivaccUser();
 
         // Create generic user
-        $this->user = factory(Account::class, 'withQualification')->create();
+        $this->user = factory(Account::class)->states('withQualification')->create();
     }
 
     protected function createPrivaccUser()
