@@ -22,6 +22,8 @@ class AccountModelTest extends TestCase
             'name_last' => 'Doe',
             'email' => 'i_sleep@gmail.com',
         ]);
+        $this->user->updateVatsimRatings(1,1);
+        $this->user = $this->user->fresh();
     }
 
     /** @test */
@@ -489,7 +491,7 @@ class AccountModelTest extends TestCase
     /** @test */
     public function itCorrectlyReportsFullyDefinedWithNoATCQualification()
     {
-        $this->assertEmpty($this->user->qualifications_atc);
+        $this->user->qualifications()->sync([]);
         $this->assertFalse($this->user->fully_defined);
 
         $this->user->updateVatsimRatings(1,1);
