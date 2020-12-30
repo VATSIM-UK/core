@@ -490,7 +490,7 @@ class AccountModelTest extends TestCase
     public function itCorrectlyReportsFullyDefinedWithNoATCQualification()
     {
         $this->user->qualifications()->sync([]);
-        $this->assertFalse($this->user->fully_defined);
+        $this->assertFalse($this->user->fresh()->fully_defined);
 
         $this->user->updateVatsimRatings(1, 1);
         $this->assertTrue($this->user->fresh()->fully_defined);

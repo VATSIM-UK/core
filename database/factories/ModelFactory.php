@@ -43,7 +43,6 @@ $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generato
 
     return [
         'code' => $code,
-        'type' => 'atc',
         'name_small' => $faker->word,
         'name_long' => $faker->word,
         'name_grp' => $faker->word,

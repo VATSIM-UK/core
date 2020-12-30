@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\VisitTransfer;
 
+use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
@@ -71,6 +72,7 @@ class ApplicationTest extends TestCase
     {
         Mail::fake();
 
+        $this->user = factory(Account::class)->create();
         $qual = Qualification::code('S2')->first();
         $this->user->addQualification($qual)->save();
 
@@ -134,6 +136,7 @@ class ApplicationTest extends TestCase
     /** @test */
     public function itCorrectlyReports90DayCheck()
     {
+        $this->user = factory(Account::class)->create();
         $qual = Qualification::code('S2')->first();
         $this->user->addQualification($qual);
         $this->user->save();
