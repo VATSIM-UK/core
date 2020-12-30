@@ -494,7 +494,7 @@ class AccountModelTest extends TestCase
         $this->user->qualifications()->sync([]);
         $this->assertFalse($this->user->fully_defined);
 
-        $this->user->updateVatsimRatings(1,1);
+        $this->user->updateVatsimRatings(1, 1);
         $this->assertTrue($this->user->fresh()->fully_defined);
     }
 
