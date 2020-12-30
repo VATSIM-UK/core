@@ -82,7 +82,7 @@ trait HasQualifications
                 if (strpos($e->getMessage(), 'Name or service not known') === false) {
                     Bugsnag::notifyException($e);
                 }
-                if (!$this->qualification_atc) {
+                if (! $this->qualification_atc) {
                     // If the above failed, and they don't have an ATC qualification, we will give them observer for now
                     $this->addQualification(Qualification::parseVatsimATCQualification(1));
                 }
