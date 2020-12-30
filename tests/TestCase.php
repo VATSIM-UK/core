@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Spatie\Permission\Models\Role;
@@ -46,7 +47,7 @@ abstract class TestCase extends BaseTestCase
         $this->createPrivaccUser();
 
         // Create generic user
-        $this->user = factory(Account::class)->create();
+        $this->user = factory(Account::class, 'withQualification')->create();
     }
 
     protected function createPrivaccUser()
