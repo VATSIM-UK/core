@@ -4,7 +4,6 @@ namespace Tests;
 
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Mship\Account;
-use App\Models\Mship\Qualification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Spatie\Permission\Models\Role;
