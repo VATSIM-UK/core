@@ -487,6 +487,13 @@ class AccountModelTest extends TestCase
     }
 
     /** @test */
+    public function itCorrectlyReportsFullyDefinedWithNoATCQualification()
+    {
+        $this->assertEmpty($this->user->qualifications_atc);
+        $this->assertFalse($this->user->fully_defined);
+    }
+
+    /** @test */
     public function itSetsAndReturnsAUsersActiveStatus()
     {
         $this->assertFalse($this->user->is_inactive);
