@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\VisitTransfer;
 
+use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
@@ -24,9 +25,10 @@ class ApplicationCleanUpTest extends TestCase
         Mail::fake();
 
         // Make user an S2
-        $qualifiction = Qualification::code('S2')->first();
-        $this->user->addQualification($qualifiction);
-        $this->user->qualifications()->updateExistingPivot($qualifiction->id, ['created_at' => new Carbon('100 days ago')]);
+        $this->user = factory(Account::class)->create();
+        $qualification = Qualification::code('S2')->first();
+        $this->user->addQualification($qualification);
+        $this->user->qualifications()->updateExistingPivot($qualification->id, ['created_at' => new Carbon('100 days ago')]);
         $this->user->save();
 
         // Create facility & application
@@ -44,7 +46,7 @@ class ApplicationCleanUpTest extends TestCase
         $end = new Carbon('20 hours ago');
         factory(Atc::class)->states('offline')->create([
             'account_id' => $this->user->id,
-            'qualification_id' => $qualifiction->id,
+            'qualification_id' => $qualification->id,
             'connected_at' => $start,
             'disconnected_at' => $end,
             'minutes_online' => $start->diffInMinutes($end),
