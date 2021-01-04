@@ -72,11 +72,12 @@
                             </tr>
                             <tr>
                                 <td>Aerodrome Operations Coordinator</td>
-                                <td>Vacant</td>
+                                <td>Chad Byworth</td>
                             </tr>
                             <tr>
-                                <td>Sector File Coordinator</td>
-                                <td>Vacant</td>
+                                <td>Sector File Coordinators</td>
+                                <td>Luke Brown<br>
+								Thomas Mills</td>
                             </tr>
                         </table>
                     </div>
