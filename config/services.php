@@ -95,6 +95,7 @@ return [
 
     'moodle' => [
         'database' => env('MOODLE_DATABASE'),
+        'oauth_issuer_id' => env('MOODLE_OAUTH_ISSUER_ID'),
     ],
 
 ];
