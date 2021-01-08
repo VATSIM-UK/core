@@ -60,12 +60,12 @@ trait HasMoodleAccount
             'lastname' => $this->name_last,
             'email' => $this->getMoodleEmail(),
         ]);
-        
+
         $this->checkAndAddOAuthLink($accountID);
     }
-    
+
     /**
-     * Ensures the Moodle Account has a valid OAuth link to Core SSO
+     * Ensures the Moodle Account has a valid OAuth link to Core SSO.
      *
      * @param int $moodleAccountID
      */
@@ -77,8 +77,8 @@ trait HasMoodleAccount
         ->where('issuerid', config('services.moodle.oauth_issuer_id'))
         ->where('userid', $moodleAccountID)
         ->first();
-        
-        if (!$linkedLogin) {
+
+        if (! $linkedLogin) {
             DB::table(config('services.moodle.database').'.mdl_auth_oauth2_linked_login')->insert([
                 'timecreated' => time(),
                 'timemodified' => time(),
@@ -88,7 +88,7 @@ trait HasMoodleAccount
                 'username' => $this->id,
                 'email' => $this->getMoodleEmail(),
                 'confirmtoken' => '',
-                'confirmtokenexpires' => 0
+                'confirmtokenexpires' => 0,
             ]);
         }
     }
@@ -125,8 +125,8 @@ trait HasMoodleAccount
             DB::table(config('services.moodle.database').'.mdl_user')->where('username', (string) $this->id)->update($new);
         } else {
             // do nothing - account is up to date
-        }        
-        
+        }
+
         $this->checkAndAddOAuthLink($moodleAccount->id);
     }
 
