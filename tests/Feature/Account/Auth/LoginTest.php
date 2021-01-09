@@ -44,9 +44,9 @@ class LoginTest extends TestCase
     {
         $this->assertFalse(Auth::guard('vatsim-sso')->check());
         $this->post(route('auth-secondary'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('dashboard'));
         $this->get(route('auth-secondary'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('dashboard'));
     }
 
     public function testItLogsAUserOut()
