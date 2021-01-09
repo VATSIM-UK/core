@@ -47,7 +47,7 @@ class InactivityMiddlewareTest extends TestCase
 
         $this->actingAs($this->user)
             ->get(route('mship.manage.dashboard'))
-            ->assertRedirect('/login');
+            ->assertRedirect('/dashboard');
     }
 
     /** @test */
