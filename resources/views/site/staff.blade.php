@@ -75,9 +75,12 @@
                                 <td>Chad Byworth</td>
                             </tr>
                             <tr>
-                                <td>Sector File Coordinators</td>
-                                <td>Luke Brown<br>
-								Thomas Mills</td>
+                                <td>Sector File Coordinator</td>
+                                <td>Luke Brown</td>
+                            </tr>
+                            <tr>
+                                <td>Sector File Coordinator</td>
+                                <td>Thomas Mills</td>
                             </tr>
                         </table>
                     </div>
