@@ -25,7 +25,7 @@ class FTEWebInterfaceTest extends TestCase
     public function testItRedirectsFromDashboardAsGuest()
     {
         $this->get(route('fte.dashboard'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */
@@ -56,7 +56,7 @@ class FTEWebInterfaceTest extends TestCase
     public function testItRedirectsFromGuideAsGuest()
     {
         $this->get(route('fte.guide'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */
@@ -71,7 +71,7 @@ class FTEWebInterfaceTest extends TestCase
     public function testItRedirectsFromExerciseIndexAsGuest()
     {
         $this->get(route('fte.exercises'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */
@@ -86,7 +86,7 @@ class FTEWebInterfaceTest extends TestCase
     public function testItRedirectsFromExerciseAsGuest()
     {
         $this->get(route('fte.exercises', $this->exercise))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */
@@ -101,7 +101,7 @@ class FTEWebInterfaceTest extends TestCase
     public function testItRedirectsFromHistoryAsGuest()
     {
         $this->get(route('fte.history'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */
@@ -116,7 +116,7 @@ class FTEWebInterfaceTest extends TestCase
     public function testItRedirectsFromPirepAsGuest()
     {
         $this->get(route('fte.history', $this->pirep->id))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */

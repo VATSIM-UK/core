@@ -14,7 +14,7 @@ class AdminMiddlewareTest extends TestCase
     public function testAGuestCannotAccessAdmEndpoints()
     {
         $this->get(route('adm.index'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */
@@ -46,7 +46,7 @@ class AdminMiddlewareTest extends TestCase
     public function testTelescopeIsNotAvailableToGuests()
     {
         $this->get(config('telescope.path'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */
@@ -76,7 +76,7 @@ class AdminMiddlewareTest extends TestCase
     public function testHorizonIsNotAvailableToGuests()
     {
         $this->get(config('horizon.path'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */

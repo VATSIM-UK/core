@@ -44,10 +44,9 @@ class InactivityMiddlewareTest extends TestCase
             ->assertSuccessful();
 
         Carbon::setTestNow(Carbon::now()->addMinutes($this->role->session_timeout));
-
         $this->actingAs($this->user)
             ->get(route('mship.manage.dashboard'))
-            ->assertRedirect('/login');
+            ->assertRedirect('/dashboard');
     }
 
     /** @test */

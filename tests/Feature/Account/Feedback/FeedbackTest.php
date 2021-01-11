@@ -23,7 +23,7 @@ class FeedbackTest extends TestCase
     public function testItRedirectsFromFeedbackFormSelectorAsGuest()
     {
         $this->get(route('mship.feedback.new'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */
@@ -38,7 +38,7 @@ class FeedbackTest extends TestCase
     public function testItRedirectsFromFeedbackFormAsGuest()
     {
         $this->get(route('mship.feedback.new.form', $this->form->slug))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('landing'));
     }
 
     /** @test */

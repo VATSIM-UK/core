@@ -203,7 +203,7 @@
                     <a class="nav-link" href="https://helpdesk.vatsim.uk">Contact Us</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link">
+                    <a href="{{ route('landing') }}" class="nav-link">
                         <i class="fas fa-user text-white d-mobile-none"></i>
                         <span class="d-tablet-none">Login</span>
                     </a>
@@ -320,14 +320,14 @@
                     <p class="lead mt-5 my-0">Did you know you're one of {{ $stats['members_division'] }} members of
                         VATSIM UK?</p>
                     <hr class="w-10 my-7">
-                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('dashboard') }}">Enter</a>
+                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('landing') }}">Enter</a>
                 @elseif(currentUserHasAuth())
                     <h1>Welcome to VATSIM UK, {{ $_account->name_first }}!</h1>
                     <p class="lead mt-5 my-0"> Have you considered visiting or transferring to the UK?</p>
                     <p class="lead"><a href="{{ route('visiting.landing') }}" class="text-white">Click here to learn
                             more!</a></p>
                     <hr class="w-10 my-7">
-                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('dashboard') }}">Enter</a>
+                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('landing') }}">Enter</a>
                 @else
                     <h1>Welcome to VATSIM UK!</h1>
                     <p class="lead mt-5"> We pride ourselves in providing regular and high quality air traffic control

@@ -28,7 +28,7 @@
 
 <p><strong>Division Website</strong> - Our website hosts all the information you might need whilst a member of the network. There's lot to digest, and we'll help you find what you need!</p>
 <div style="margin-bottom: 0.5em;"><a href="{{route('site.home')}}" class="btn btn-primary">Visit our website</a></div>
-<div style="margin-bottom: 2em;"><a href="{{route('dashboard')}}" class="btn btn-primary">Check your personal details</a></div>
+<div style="margin-bottom: 2em;"><a href="{{route('mship.manage.dashboard')}}" class="btn btn-primary">Check your personal details</a></div>
 
 
 <h2>✈️️ Training</h2>

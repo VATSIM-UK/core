@@ -66,7 +66,7 @@ class NotificationTest extends TestCase
             ->assertDontSee('You currently have unread notifications');
 
         $this->followingRedirects()->actingAs($this->user, 'web')
-            ->get(route('dashboard'))
+            ->get(route('mship.manage.dashboard'))
             ->assertSee('You currently have unread notifications');
     }
 }

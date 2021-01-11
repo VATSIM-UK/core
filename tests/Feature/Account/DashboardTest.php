@@ -15,7 +15,7 @@ class DashboardTest extends TestCase
         Notification::query()->delete();
 
         $this->actingAs($this->user)
-            ->get(route('dashboard'))
+            ->get(route('landing'))
             ->assertRedirect(route('mship.manage.dashboard'));
     }
 }
