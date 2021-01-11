@@ -14,7 +14,7 @@ class SecondaryLoginController extends BaseController
     public function loginSecondary(Request $request)
     {
         if (! Auth::guard('vatsim-sso')->check()) {
-            return redirect()->route('dashboard')
+            return redirect()->route('landing')
                 ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }
 

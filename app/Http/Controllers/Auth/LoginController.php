@@ -43,7 +43,7 @@ class LoginController extends BaseController
         }
 
         if ($request->input('state') !== session()->pull('vatsimauthstate')) {
-            return redirect()->route('dashboard')->withError('Something went wrong, please try again.');
+            return redirect()->route('landing')->withError('Something went wrong, please try again.');
         }
 
         return $this->verifyLogin($request);
@@ -56,7 +56,7 @@ class LoginController extends BaseController
                 'code' => $request->input('code'),
             ]);
         } catch (IdentityProviderException $e) {
-            return redirect()->route('dashboard')->withError('Something went wrong, please try again.');
+            return redirect()->route('landing')->withError('Something went wrong, please try again.');
         }
 
         $resourceOwner = json_decode(json_encode($this->provider->getResourceOwner($accessToken)->toArray()));
@@ -71,7 +71,7 @@ class LoginController extends BaseController
             ! $resourceOwner->data->vatsim ||
             ! $resourceOwner->data->oauth->token_valid === 'true'
         ) {
-            return redirect()->route('dashboard')->withError('You cannot use our services unless you provide the relevant permissions upon login. Please try again.');
+            return redirect()->route('landing')->withError('You cannot use our services unless you provide the relevant permissions upon login. Please try again.');
         }
 
         $account = $this->completeLogin($resourceOwner, $accessToken);
