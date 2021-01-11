@@ -487,6 +487,16 @@ class AccountModelTest extends TestCase
     }
 
     /** @test */
+    public function itCorrectlyReportsFullyDefinedWithNoATCQualification()
+    {
+        $this->user->qualifications()->sync([]);
+        $this->assertFalse($this->user->fresh()->fully_defined);
+
+        $this->user->updateVatsimRatings(1, 1);
+        $this->assertTrue($this->user->fresh()->fully_defined);
+    }
+
+    /** @test */
     public function itSetsAndReturnsAUsersActiveStatus()
     {
         $this->assertFalse($this->user->is_inactive);

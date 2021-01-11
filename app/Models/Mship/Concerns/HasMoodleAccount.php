@@ -16,7 +16,7 @@ trait HasMoodleAccount
         }
         $moodleAccount = DB::table(config('services.moodle.database').'.mdl_user')
             ->where('username', $this->id)
-            ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber'])
+            ->get(['id', 'username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber'])
             ->first();
         $this->syncToMoodle($moodleAccount);
     }
@@ -48,8 +48,8 @@ trait HasMoodleAccount
      */
     protected function createMoodleAccount()
     {
-        DB::table(config('services.moodle.database').'.mdl_user')->insert([
-            'auth' => 'vatsim',
+        $accountID = DB::table(config('services.moodle.database').'.mdl_user')->insertGetId([
+            'auth' => 'oauth2',
             'deleted' => 0,
             'confirmed' => 1,
             'policyagreed' => 1,
@@ -59,8 +59,38 @@ trait HasMoodleAccount
             'firstname' => $this->name_first,
             'lastname' => $this->name_last,
             'email' => $this->getMoodleEmail(),
-            'vatuk_cron' => 1,
         ]);
+
+        $this->checkAndAddOAuthLink($accountID);
+    }
+
+    /**
+     * Ensures the Moodle Account has a valid OAuth link to Core SSO.
+     *
+     * @param int $moodleAccountID
+     */
+    protected function checkAndAddOAuthLink($moodleAccountID)
+    {
+        // Ensure has SSO link
+        $linkedLogin = DB::table(config('services.moodle.database').'.mdl_auth_oauth2_linked_login')
+        ->where('username', $this->id)
+        ->where('issuerid', config('services.moodle.oauth_issuer_id'))
+        ->where('userid', $moodleAccountID)
+        ->first();
+
+        if (! $linkedLogin) {
+            DB::table(config('services.moodle.database').'.mdl_auth_oauth2_linked_login')->insert([
+                'timecreated' => time(),
+                'timemodified' => time(),
+                'usermodified' => 0,
+                'userid' => $moodleAccountID,
+                'issuerid' => config('services.moodle.oauth_issuer_id'),
+                'username' => $this->id,
+                'email' => $this->getMoodleEmail(),
+                'confirmtoken' => '',
+                'confirmtokenexpires' => 0,
+            ]);
+        }
     }
 
     /**
@@ -79,17 +109,15 @@ trait HasMoodleAccount
             'lastname' => $moodleAccount->lastname,
             'email' => $moodleAccount->email,
             'idnumber' => $moodleAccount->idnumber,
-            'vatuk_cron' => 1,
         ];
 
         $new = [
-            'auth' => $allowLogin ? 'vatsim' : 'nologin',
+            'auth' => $allowLogin ? 'oauth2' : 'nologin',
             'deleted' => $allowLogin ? 0 : 1,
             'firstname' => $this->name_first,
             'lastname' => $this->name_last,
             'email' => $this->getMoodleEmail(),
             'idnumber' => (string) $this->id,
-            'vatuk_cron' => 1,
         ];
 
         $dirty = array_keys(array_diff_assoc($old, $new));
@@ -98,6 +126,8 @@ trait HasMoodleAccount
         } else {
             // do nothing - account is up to date
         }
+
+        $this->checkAndAddOAuthLink($moodleAccount->id);
     }
 
     /**
