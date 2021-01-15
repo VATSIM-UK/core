@@ -38,7 +38,7 @@ class Application extends BaseController
             return Redirect::route('visiting.application.facility', [$application->public_id])->withSuccess('Application started! Please complete all sections to submit your application.');
         }
 
-        $this->setTitle("Start Visit/Transfer Application");
+        $this->setTitle('Start Visit/Transfer Application');
 
         return $this->viewMake('visit-transfer.site.application.terms')
             ->with('applicationType', $applicationType)
@@ -94,7 +94,7 @@ class Application extends BaseController
     {
         $this->authorize('select-facility', $this->getCurrentOpenApplicationForUser());
 
-        $this->setTitle("Facility - Visit/Transfer Application");
+        $this->setTitle('Facility - Visit/Transfer Application');
 
         return $this->viewMake('visit-transfer.site.application.facility')
             ->with('application', $this->getCurrentOpenApplicationForUser())
@@ -145,7 +145,7 @@ class Application extends BaseController
 
         $application->load('facility');
 
-        $this->setTitle("Statement - Visit/Transfer Application");
+        $this->setTitle('Statement - Visit/Transfer Application');
 
         return $this->viewMake('visit-transfer.site.application.statement')
             ->with('application', $application);
@@ -168,7 +168,7 @@ class Application extends BaseController
 
         $application->load('referees.account');
 
-        $this->setTitle("Referees - Visit/Transfer Application");
+        $this->setTitle('Referees - Visit/Transfer Application');
 
         return $this->viewMake('visit-transfer.site.application.referees')
             ->with('application', $application);
@@ -225,7 +225,7 @@ class Application extends BaseController
     {
         $this->authorize('submit-application', $application);
 
-        $this->setTitle("Submit - Visit/Transfer Application");
+        $this->setTitle('Submit - Visit/Transfer Application');
 
         return $this->viewMake('visit-transfer.site.application.submission')
             ->with('application', $application);
@@ -246,7 +246,7 @@ class Application extends BaseController
     {
         $this->authorize('withdraw-application', $application);
 
-        $this->setTitle("Withdraw - Visit/Transfer Application");
+        $this->setTitle('Withdraw - Visit/Transfer Application');
 
         return $this->viewMake('visit-transfer.site.application.withdraw')
             ->with('application', $application);

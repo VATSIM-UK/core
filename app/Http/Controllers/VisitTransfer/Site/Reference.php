@@ -18,7 +18,7 @@ class Reference extends BaseController
 
         $this->authorize('complete', $reference);
 
-        $this->setTitle("Complete Reference");
+        $this->setTitle('Complete Reference');
 
         return $this->viewMake('visit-transfer.site.reference.complete')
             ->with('token', $token)
