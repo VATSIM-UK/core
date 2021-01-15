@@ -19,7 +19,7 @@ class Dashboard extends BaseController
             return $ref->is_requested;
         });
 
-        $this->setTitle("Visiting and Transfer Dashboard");
+        $this->setTitle('Visiting and Transfer Dashboard');
 
         return $this->viewMake('visit-transfer.site.dashboard')
             ->with('allApplications', $allApplications)
