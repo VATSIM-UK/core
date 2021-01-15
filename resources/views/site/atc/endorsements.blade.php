@@ -71,8 +71,8 @@
                 </a>
                 <div id="endorsement-gatwickgnd" class="panel-collapse collapse panel-body">
                     <h3>Background</h3>
-                    After Heathrow, London Gatwick (EGKK) is by far the busiest airfield in VATSIM UK, boasting close to
-                    50,000 movements every year. Controlling at London Gatwick is restricted by the ATC Training
+                    After Heathrow, London Gatwick (EGKK) is by far the busiest airfield in VATSIM UK, boasting over
+                    65,000 movements every year. Controlling at London Gatwick is restricted by the ATC Training
                     Department to S2 rated members or S1s that hold a special endorsement. This restriction for S1s is
                     in place to allow members to gain experience in quieter environments and practice their new-found
                     skills before tackling the workload at Gatwick.
