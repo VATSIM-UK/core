@@ -31,6 +31,8 @@ class ManageDiscord extends Command
     /** @var Account */
     protected $account;
 
+    private $suspendedRoleId;
+
     /**
      * Create a new command instance.
      *
@@ -41,6 +43,8 @@ class ManageDiscord extends Command
         parent::__construct();
 
         $this->discord = $discord;
+
+        $this->suspendedRoleId = config('services.discord.suspended_member_role_id');
     }
 
     /**
@@ -83,12 +87,16 @@ class ManageDiscord extends Command
         $this->discord->setNickname($this->account, $this->account->name);
     }
 
-    protected function grantRoles()
+    public function grantRoles()
     {
         $account = $this->account;
         $discord = $this->discord;
 
         $currentRoles = $discord->getUserRoles($account);
+
+        if ($account->isBanned && !$currentRoles->contains($this->suspendedRoleId)) {
+            $discord->grantRoleById($account, $this->suspendedRoleId);
+        }
 
         DiscordRole::all()->filter(function (DiscordRole $role) use ($account) {
             return $account->hasPermissionTo($role->permission_id);
@@ -100,12 +108,16 @@ class ManageDiscord extends Command
         });
     }
 
-    protected function removeRoles()
+    public function removeRoles()
     {
         $account = $this->account;
         $discord = $this->discord;
 
         $currentRoles = $discord->getUserRoles($account);
+
+        if (!$account->isBanned && $currentRoles->contains($this->suspendedRoleId)) {
+            $discord->removeRoleById($account, $this->suspendedRoleId);
+        }
 
         DiscordRole::all()->filter(function (DiscordRole $role) use ($account) {
             return ! $account->hasPermissionTo($role->permission_id);
