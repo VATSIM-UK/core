@@ -134,7 +134,7 @@ class ManageDiscord extends Command
         $currentRoles = $this->discord->getUserRoles($account);
 
         // remove the roles which are currently applied to the user.
-        $currentRoles->each(function(int $role) use ($account) {
+        $currentRoles->each(function (int $role) use ($account) {
             $this->discord->removeRoleById($account, $role);
             sleep(1); // avoid spamming the Discord API.
         });

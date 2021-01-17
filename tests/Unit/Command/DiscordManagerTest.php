@@ -5,7 +5,6 @@ namespace Tests\Unit\Command;
 use App\Console\Commands\ExternalServices\ManageDiscord;
 use App\Libraries\Discord;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Ban;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
@@ -34,10 +33,10 @@ class DiscordManagerTest extends TestCase
     {
         $roles = collect([
             392039,
-            348344
+            348344,
         ]);
 
-        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) use($roles) {
+        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) use ($roles) {
             // collection represents random set of roles which need to be removed from a suspended user.
             $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn($roles);
             $mock->shouldReceive('grantRoleById')->with($this->account, $this->mockRoleId)->once();
@@ -53,7 +52,7 @@ class DiscordManagerTest extends TestCase
     {
         $roles = collect([$this->mockRoleId]);
 
-        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) use($roles) {
+        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) use ($roles) {
             // collection represents random set of roles which need to be removed from a suspended user.
             $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn($roles);
             $mock->shouldReceive('removeRoleById')->with($this->account, $this->mockRoleId)->once();
