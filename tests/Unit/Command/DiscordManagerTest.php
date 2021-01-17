@@ -26,7 +26,7 @@ class DiscordManagerTest extends TestCase
 
         Config::set('services.discord.suspended_member_role_id', $this->mockRoleId);
 
-        // discord is is not relevant; just that it is registered for completeness.
+        // Discord id is not relevant; just that it is registered for completeness.
         $this->account = factory(Account::class)->create(['discord_id' => 1232]);
     }
 
