@@ -8,7 +8,6 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Account\Ban;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Config;
-use ReflectionClass;
 use Tests\TestCase;
 
 class DiscordManagerTest extends TestCase
@@ -31,90 +30,36 @@ class DiscordManagerTest extends TestCase
     }
 
     /** @test */
-    public function itShouldCallGrantRoleWhenAccountBanned()
+    public function itRemovesExistingRolesAndAddSuspendedRole()
     {
-        factory(Ban::class)->create(['account_id' => $this->account->id]);
+        $roles = collect([
+            392039,
+            348344
+        ]);
 
-        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) {
-            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn(collect([]));
+        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) use($roles) {
+            // collection represents random set of roles which need to be removed from a suspended user.
+            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn($roles);
             $mock->shouldReceive('grantRoleById')->with($this->account, $this->mockRoleId)->once();
+            $mock->shouldReceive('removeRoleById')->times($roles->count());
         });
 
         $command = new ManageDiscord($mockDiscordLibrary);
-        $this->setPrivatePropertyInObject($command, 'account', $this->account);
-        $command->grantRoles();
+        $command->processSuspendedMember($this->account);
     }
 
     /** @test */
-    public function itShouldNotAddRoleWhenNotBanned()
+    public function itShouldRemoveBannedUserRoleWhenRemoveRolesInvoked()
     {
-        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) {
-            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn(collect([]));
-            $mock->shouldNotReceive('grantRoleById');
-        });
+        $roles = collect([$this->mockRoleId]);
 
-        $command = new ManageDiscord($mockDiscordLibrary);
-        $this->setPrivatePropertyInObject($command, 'account', $this->account);
-        $command->grantRoles();
-    }
-
-    /** @test */
-    public function itShouldNotAddRoleWhenStillBannedButRoleAlreadyExists()
-    {
-        factory(Ban::class)->create(['account_id' => $this->account->id]);
-
-        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) {
-            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn(collect([$this->mockRoleId]));
-            $mock->shouldNotReceive('grantRoleById');
-        });
-
-        $command = new ManageDiscord($mockDiscordLibrary);
-        $this->setPrivatePropertyInObject($command, 'account', $this->account);
-        $command->grantRoles();
-    }
-
-    /** @test */
-    public function itShouldRemoveRoleWhenUserIsNoLongerBanned()
-    {
-        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) {
-            // ensure the user has already been assigned the banned role.
-            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn(collect([$this->mockRoleId]));
+        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) use($roles) {
+            // collection represents random set of roles which need to be removed from a suspended user.
+            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn($roles);
             $mock->shouldReceive('removeRoleById')->with($this->account, $this->mockRoleId)->once();
         });
 
         $command = new ManageDiscord($mockDiscordLibrary);
-        $this->setPrivatePropertyInObject($command, 'account', $this->account);
-        $command->removeRoles();
-    }
-
-    /** @test */
-    public function itShouldNotRemoveRoleWhenUserIsBannedAndHasRole()
-    {
-        factory(Ban::class)->create(['account_id' => $this->account->id]);
-        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) {
-            // ensure the user has already been assigned the banned role.
-            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn(collect([$this->mockRoleId]));
-            $mock->shouldNotReceive('removeRoleById');
-        });
-
-        $command = new ManageDiscord($mockDiscordLibrary);
-        $this->setPrivatePropertyInObject($command, 'account', $this->account);
-        $command->removeRoles();
-    }
-
-    /**
-     * Reflect a private property of a mock instance.
-     *
-     * @param $object
-     * @param $propertyKey
-     * @param $value
-     * @return void
-     */
-    private function setPrivatePropertyInObject($object, $propertyKey, $value)
-    {
-        $reflection = new ReflectionClass($object);
-        $propertyReflected = $reflection->getProperty($propertyKey);
-        $propertyReflected->setAccessible(true);
-        $propertyReflected->setValue($object, $value);
+        $command->removeRoles($this->account);
     }
 }
