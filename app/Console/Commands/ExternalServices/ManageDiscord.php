@@ -94,7 +94,7 @@ class ManageDiscord extends Command
 
         $currentRoles = $discord->getUserRoles($account);
 
-        if ($account->isBanned && !$currentRoles->contains($this->suspendedRoleId)) {
+        if ($account->isBanned && ! $currentRoles->contains($this->suspendedRoleId)) {
             $discord->grantRoleById($account, $this->suspendedRoleId);
         }
 
@@ -115,7 +115,7 @@ class ManageDiscord extends Command
 
         $currentRoles = $discord->getUserRoles($account);
 
-        if (!$account->isBanned && $currentRoles->contains($this->suspendedRoleId)) {
+        if (! $account->isBanned && $currentRoles->contains($this->suspendedRoleId)) {
             $discord->removeRoleById($account, $this->suspendedRoleId);
         }
 

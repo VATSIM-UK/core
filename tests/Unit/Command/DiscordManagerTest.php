@@ -2,15 +2,14 @@
 
 namespace Tests\Unit\Command;
 
-use Tests\TestCase;
-use ReflectionClass;
+use App\Console\Commands\ExternalServices\ManageDiscord;
 use App\Libraries\Discord;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Ban;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Console\Commands\ExternalServices\ManageDiscord;
+use Illuminate\Support\Facades\Config;
+use ReflectionClass;
+use Tests\TestCase;
 
 class DiscordManagerTest extends TestCase
 {
@@ -19,7 +18,7 @@ class DiscordManagerTest extends TestCase
     private $mockRoleId;
     private $account;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -30,6 +29,7 @@ class DiscordManagerTest extends TestCase
         // discord is is not relevant; just that it is registered for completeness.
         $this->account = factory(Account::class)->create(['discord_id' => 1232]);
     }
+
     /** @test */
     public function itShouldCallGrantRoleWhenAccountBanned()
     {
