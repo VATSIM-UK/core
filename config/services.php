@@ -50,6 +50,7 @@ return [
         'client_secret' => env('DISCORD_SECRET', null),
         'redirect_uri' => env('DISCORD_REDIRECT_URI', null),
         'base_discord_uri' => env('DISCORD_API_BASE', 'https://discordapp.com/api/v6'),
+        'suspended_member_role_id' => env('DISCORD_SUSPENDED_MEMBER_ROLE_ID', null),
     ],
 
     'google' => [
