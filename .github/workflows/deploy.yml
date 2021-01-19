@@ -290,7 +290,7 @@ jobs:
             description: ${{ format('Deployment **FAILED** of **{0}**', github.repository) }}
             details: >
               ${{ format(':fire: Deployment **FAILED** for commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, github.actor, env.APP_URL) }}
-            footer: ${{ format('https://github.com/{1}/actions/runs/{2}', github.repository, github.run_id) }}
+            footer: ${{ format('https://github.com/{0}/actions/runs/{1}', github.repository, github.run_id) }}
             webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 
       - name: Discord Notification (Success)
