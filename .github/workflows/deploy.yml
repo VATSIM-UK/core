@@ -128,6 +128,10 @@ jobs:
       - name: Update BUGSNAG_APP_VERSION
         run: 'sed -i "s/^BUGSNAG_APP_VERSION.*$/BUGSNAG_APP_VERSION=$TAG/" .env'
 
+      # Not required for deployment
+      - name: Remove node_modules
+        run: 'rm -rf node_modules'
+
       #
       # DEPLOYMENT
       # Prepare remote environment and deploy application
