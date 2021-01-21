@@ -263,6 +263,41 @@ class AccountModelTest extends TestCase
     }
 
     /** @test */
+    public function itCorrectlyReportsQualifications()
+    {
+        Carbon::setTestNow(Carbon::now()); // Check this works even when the timestamps are the same
+
+        $mockS1Qual = factory(Qualification::class)->state('atc')->create([
+            'vatsim' => 1
+        ]);
+        $mockS2Qual = factory(Qualification::class)->state('atc')->create([
+            'vatsim' => 2
+        ]);
+        $mockP1Qual = factory(Qualification::class)->state('pilot')->create([
+            'vatsim' => 3
+        ]);
+        $mockP2Qual = factory(Qualification::class)->state('pilot')->create([
+            'vatsim' => 4
+        ]);
+
+        $this->user->qualifications()->sync([$mockS1Qual->id, $mockS2Qual->id, $mockP1Qual->id, $mockP2Qual->id]);
+        $this->user = $this->user->fresh();
+
+        $this->assertEquals($this->user->qualification_atc->id, $mockS2Qual->id);
+        $this->assertEquals($this->user->qualification_pilot->id, $mockP2Qual->id);
+        $this->assertEqualsCanonicalizing([$mockP1Qual->id, $mockP2Qual->id], $this->user->qualifications_pilot->map(function ($qual) {
+            return $qual->id;
+        })->all());
+        $this->assertEqualsCanonicalizing([$mockS2Qual->id, $mockP2Qual->id], $this->user->active_qualifications->map(function ($qual) {
+            return $qual->id;
+        })->all());
+
+
+        Carbon::setTestNow();
+
+    }
+
+    /** @test */
     public function itTouchesAccountUpdatedAtWhenAddingAQualification()
     {
         $originalUpdatedAt = $this->user->updated_at;
