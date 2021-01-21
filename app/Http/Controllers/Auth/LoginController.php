@@ -36,7 +36,9 @@ class LoginController extends BaseController
     public function login(Request $request)
     {
         if (! $request->has('code') || ! $request->has('state')) {
-            $authorizationUrl = $this->provider->getAuthorizationUrl();
+            $authorizationUrl = $this->provider->getAuthorizationUrl([
+                "required_scopes" => join(' ', config('vatsim-connect.scopes'))
+            ]);
             $request->session()->put('vatsimauthstate', $this->provider->getState());
 
             return redirect()->away($authorizationUrl);
