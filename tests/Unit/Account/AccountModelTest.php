@@ -268,16 +268,16 @@ class AccountModelTest extends TestCase
         Carbon::setTestNow(Carbon::now()); // Check this works even when the timestamps are the same
 
         $mockS1Qual = factory(Qualification::class)->state('atc')->create([
-            'vatsim' => 1
+            'vatsim' => 1,
         ]);
         $mockS2Qual = factory(Qualification::class)->state('atc')->create([
-            'vatsim' => 2
+            'vatsim' => 2,
         ]);
         $mockP1Qual = factory(Qualification::class)->state('pilot')->create([
-            'vatsim' => 3
+            'vatsim' => 3,
         ]);
         $mockP2Qual = factory(Qualification::class)->state('pilot')->create([
-            'vatsim' => 4
+            'vatsim' => 4,
         ]);
 
         $this->user->qualifications()->sync([$mockS1Qual->id, $mockS2Qual->id, $mockP1Qual->id, $mockP2Qual->id]);
@@ -292,9 +292,7 @@ class AccountModelTest extends TestCase
             return $qual->id;
         })->all());
 
-
         Carbon::setTestNow();
-
     }
 
     /** @test */
