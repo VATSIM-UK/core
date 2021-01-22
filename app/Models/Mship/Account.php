@@ -34,6 +34,8 @@ use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
+use Illuminate\Support\Facades\Cache;
+use RestCord\DiscordClient;
 
 /**
  * App\Models\Mship\Account.
@@ -458,6 +460,20 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         return ! $this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
             return preg_match('/^'.$item.'$/i', $displayName) == 1;
         })->isEmpty();
+    }
+
+    /**
+     * Returns the Discord user associated with this account if the user has linked it.
+     *
+     * @return RestCord/Model/User/User The Discord user
+     */
+    public function getDiscordUserAttribute()
+    {
+        if (!$this->discord_id) return null;
+        return Cache::remember($this->id . '.discord.userdata', 84600, function () {
+            $client = new DiscordClient(['token' => config('services.discord.token')]);
+            return $client->user->getUser(['user.id' => $this->discord_id]);
+        });
     }
 
     /**
