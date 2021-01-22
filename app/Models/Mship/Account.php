@@ -30,7 +30,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
-+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Passport\HasApiTokens;
 use RestCord\DiscordClient;
 use Spatie\Permission\Models\Role;
