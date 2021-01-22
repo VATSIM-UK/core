@@ -30,12 +30,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
++use Illuminate\Support\Facades\Cache;
 use Laravel\Passport\HasApiTokens;
+use RestCord\DiscordClient;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
-use Illuminate\Support\Facades\Cache;
-use RestCord\DiscordClient;
 
 /**
  * App\Models\Mship\Account.
@@ -469,8 +469,11 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getDiscordUserAttribute()
     {
-        if (!$this->discord_id) return null;
-        return Cache::remember($this->id . '.discord.userdata', 84600, function () {
+        if (! $this->discord_id) {
+            return null;
+        }
+
+        return Cache::remember($this->id.'.discord.userdata', 84600, function () {
             $client = new DiscordClient(['token' => config('services.discord.token')]);
             return $client->user->getUser(['user.id' => $this->discord_id]);
         });
