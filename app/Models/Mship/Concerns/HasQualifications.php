@@ -111,7 +111,7 @@ trait HasQualifications
         return $this->qualifications->filter(function ($qual) {
             return $qual->type == 'atc';
         })->sortByDesc(function ($qualification, $key) {
-            return $qualification->pivot->created_at;
+            return $qualification->vatsim;
         })->first();
     }
 
@@ -141,7 +141,7 @@ trait HasQualifications
         return $this->qualifications->filter(function ($qual) {
             return $qual->type == 'pilot';
         })->sortByDesc(function ($qualification) {
-            return $qualification->pivot->created_at;
+            return $qualification->vatsim;
         })->first();
     }
 
