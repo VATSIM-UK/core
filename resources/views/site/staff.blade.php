@@ -232,10 +232,6 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (New Controller)</td>
-                                    <td>Ben Cook</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Instructor (New Controller)</td>
                                     <td>Fergus Walsh</td>
                                 </tr>
                                 <tr>
@@ -278,7 +274,7 @@
                             <table class="table">
                                 <tr>
                                     <td>General Manager</td>
-                                    <td>Vacant</td>
+                                    <td>Darren Hill</td>
                                 </tr>
                                 <tr>
                                     <td>Initial Flight Instructor</td>
@@ -286,7 +282,7 @@
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
-                                    <td>Darren Hill</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
                                     <td>IFR Flight Instructor</td>
