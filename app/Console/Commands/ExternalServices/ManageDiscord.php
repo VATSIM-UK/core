@@ -133,6 +133,10 @@ class ManageDiscord extends Command
         Log::info("Account {$account->id} detected as suspended. Removing Discord roles.");
         $currentRoles = $this->discord->getUserRoles($account);
 
+        if ($currentRoles->contains($this->suspendedRoleId)) {
+            return;
+        }
+
         // remove the roles which are currently applied to the user.
         $currentRoles->each(function (int $role) use ($account) {
             $this->discord->removeRoleById($account, $role);
