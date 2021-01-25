@@ -255,7 +255,7 @@
         </div>
         <hr>
     @endif
-    <div class="row">
+    {{-- <div class="row">
         @if($airport->navaids->merge($airport->runways)->count() > 0)
             <div class="col-md-6">
                 @if($airport->navaids->count() > 0)
@@ -395,7 +395,7 @@
             </div>
         @endif
     </div>
-    <hr>
+    <hr>--}}
     <div class="row">
         <div class="@if($stands) col-md-3 @else col-md-6 @endif">
             <div class="panel panel-ukblue">
