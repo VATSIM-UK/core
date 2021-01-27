@@ -127,7 +127,7 @@ class Discord
 
     public function getUserInformation(Account $account)
     {
-        if (! $this->discord_id) {
+        if (! $account->discord_id) {
             return null;
         }
 
