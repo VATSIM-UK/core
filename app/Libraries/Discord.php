@@ -5,7 +5,9 @@ namespace App\Libraries;
 use App\Models\Mship\Account;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use RestCord\DiscordClient;
 
 class Discord
 {
@@ -21,12 +23,17 @@ class Discord
     /** @var array */
     private $headers;
 
+    /** @var DiscordClient */
+    private $client;
+
+
     public function __construct()
     {
         $this->token = config('services.discord.token');
         $this->guild_id = config('services.discord.guild_id');
         $this->base_url = config('services.discord.base_discord_uri').'/guilds';
         $this->headers = ['Authorization' => "Bot {$this->token}"];
+        $this->client = new DiscordClient(['token' => $this->token]);
     }
 
     public function grantRole(Account $account, string $role): bool
@@ -116,6 +123,17 @@ class Discord
             ->first();
 
         return (int) $role_id;
+    }
+
+    public function getUserInformation(Account $account)
+    {
+        if (! $this->discord_id) {
+            return null;
+        }
+
+        return Cache::remember($account->id.'.discord.userdata', 84600, function () use ($account) {
+            return $this->client->user->getUser(['user.id' => $account->discord_id]);
+        });
     }
 
     protected function result(Response $response)

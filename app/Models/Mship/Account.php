@@ -5,6 +5,7 @@ namespace App\Models\Mship;
 use App\Events\Mship\AccountAltered;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Jobs\UpdateMember;
+use App\Libraries\Discord;
 use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasBans;
@@ -32,7 +33,6 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Passport\HasApiTokens;
-use RestCord\DiscordClient;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
@@ -469,14 +469,8 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getDiscordUserAttribute()
     {
-        if (! $this->discord_id) {
-            return null;
-        }
-
-        return Cache::remember($this->id.'.discord.userdata', 84600, function () {
-            $client = new DiscordClient(['token' => config('services.discord.token')]);
-            return $client->user->getUser(['user.id' => $this->discord_id]);
-        });
+        $discord = app()->make(Discord::class);
+        return $discord->getUserInformation($this);
     }
 
     /**
