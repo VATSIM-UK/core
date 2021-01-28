@@ -278,7 +278,7 @@
                                 </tr>
                                 <tr>
                                     <td>Initial Flight Instructor</td>
-                                    <td>Matthew Wilson</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
