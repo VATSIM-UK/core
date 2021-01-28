@@ -61,4 +61,17 @@ class DiscordManagerTest extends TestCase
         $command = new ManageDiscord($mockDiscordLibrary);
         $command->removeRoles($this->account);
     }
+
+    /** @test */
+    public function itShouldDoNothingIfAlreadyContainsSuspendedRole()
+    {
+        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) {
+            // collection represents random set of roles which need to be removed from a suspended user.
+            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn(collect([$this->mockRoleId]));
+            $mock->shouldNotReceive('removeRoleById');
+        });
+
+        $command = new ManageDiscord($mockDiscordLibrary);
+        $command->processSuspendedMember($this->account);
+    }
 }
