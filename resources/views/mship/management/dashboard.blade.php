@@ -93,86 +93,6 @@
                 </div>
             </div>
             <div class="panel panel-ukblue">
-                <div class="panel-heading">
-                    <i class="fa fa-envelope"></i>&thinsp;
-                    Email Addresses
-                    <div class="pull-right">
-                        <a href="{{ route("mship.manage.email.add") }}">
-                            <i class="fa fa-plus-circle"></i>
-                        </a>
-                        &thinsp;
-                        <a href="{{ route("mship.manage.email.assignments") }}">
-                            <i class="fa fa-cogs"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <!-- Content Of Panel [START] -->
-                    <!-- Top Row [START] -->
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <b>PRIMARY EMAIL:</b>
-                            <br/>
-                            {{ $_account->email }}
-                        </div>
-
-                        <div class="col-xs-2">
-                            <b>STATUS:</b>
-                            <br/>
-                            Verified
-                        </div>
-                        <div class="col-xs-4 hidden-xs hidden-sm">
-                            <br/>
-                        </div>
-                        <div class="col-xs-2">
-                            <br>
-                            <button type="button" class="btn btn-xs btn-warning" data-toggle="modal"
-                                    data-target="#primaryEmailChangeModal">
-                                Change
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Top Row [END] -->
-                    <br/>
-                    @forelse($_account->secondaryEmails as $email)
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <b>SECONDARY EMAIL:</b>
-                                <br/>
-                                {{ $email->email }}
-                            </div>
-                            <div class="col-xs-2">
-                                <b>STATUS:</b>
-                                <br/>
-                                @if($email->verified_at == null)
-                                    Unverified
-                                @else
-                                    Verified
-                                @endif
-                            </div>
-                            <div class="col-xs-4 hidden-xs hidden-sm">
-                                <b>ADDED:</b>
-                                <br/>
-                                <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                   title="{{ $email->created_at }}">
-                                    <em>on {{ $email->created_at }}</em>
-                                </a>
-                            </div>
-                            <div class="col-xs-2">
-                                <br>
-                                <a href="{{ route('mship.manage.email.delete', ['email' => $email->id]) }}"
-                                   class="btn btn-xs btn-danger">
-                                    Delete
-                                </a>
-                            </div>
-                        </div>
-                        <br/>
-                    @empty
-                        You have no secondary email addresses.
-                    @endforelse
-                </div>
-            </div>
-            <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-lock"></i> &thinsp; Secondary Password
                 </div>
                 <div class="panel-body">
@@ -294,6 +214,87 @@
             </div>
         </div>
         <div class="col-md-6">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading">
+                    <i class="fa fa-envelope"></i>&thinsp;
+                    Email Addresses
+                    <div class="pull-right">
+                        <a href="{{ route("mship.manage.email.add") }}">
+                            <i class="fa fa-plus-circle"></i>
+                        </a>
+                        &thinsp;
+                        <a href="{{ route("mship.manage.email.assignments") }}">
+                            <i class="fa fa-cogs"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <!-- Content Of Panel [START] -->
+                    <!-- Top Row [START] -->
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <b>PRIMARY EMAIL:</b>
+                            <br/>
+                            {{ $_account->email }}
+                        </div>
+
+                        <div class="col-xs-2">
+                            <b>STATUS:</b>
+                            <br/>
+                            Verified
+                        </div>
+                        <div class="col-xs-4 hidden-xs hidden-sm">
+                            <br/>
+                        </div>
+                        <div class="col-xs-2">
+                            <br>
+                            <button type="button" class="btn btn-xs btn-warning" data-toggle="modal"
+                                    data-target="#primaryEmailChangeModal">
+                                Change
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Top Row [END] -->
+                    <br/>
+                    @forelse($_account->secondaryEmails as $email)
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <b>SECONDARY EMAIL:</b>
+                                <br/>
+                                {{ $email->email }}
+                            </div>
+                            <div class="col-xs-2">
+                                <b>STATUS:</b>
+                                <br/>
+                                @if($email->verified_at == null)
+                                    Unverified
+                                @else
+                                    Verified
+                                @endif
+                            </div>
+                            <div class="col-xs-4 hidden-xs hidden-sm">
+                                <b>ADDED:</b>
+                                <br/>
+                                <a class="tooltip_displays" href="#" data-toggle="tooltip"
+                                   title="{{ $email->created_at }}">
+                                    <em>on {{ $email->created_at }}</em>
+                                </a>
+                            </div>
+                            <div class="col-xs-2">
+                                <br>
+                                <a href="{{ route('mship.manage.email.delete', ['email' => $email->id]) }}"
+                                   class="btn btn-xs btn-danger">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                        <br/>
+                    @empty
+                        You have no secondary email addresses.
+                    @endforelse
+                </div>
+            </div>
+
             @if(!$_account->is_banned)
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><em class="fab fa-teamspeak"></em>
