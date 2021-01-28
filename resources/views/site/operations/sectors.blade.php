@@ -68,7 +68,7 @@
 
                     <ul>
                         <li>
-                            <strong>EGAA_R_APP</strong> - Belfast/Aldergrove (EGAA) and Belfast/City (EGAC)
+                            <strong>EGAA_APP</strong> - Belfast/Aldergrove (EGAA) and Belfast/City (EGAC)
                         </li>
                         <li>
                             <strong>EGGP_APP</strong> - Liverpool (EGGP) and Hawarden (EGNR)
@@ -77,7 +77,7 @@
                             <strong>EGJJ_C_APP</strong> - Jersey (EGJJ), Guernsey (EGJB) and Alderney (EGJA)
                         </li>
                         <li>
-                            <strong>EGNO_R_APP</strong> - Blackpool (EGNH) and Warton (EGNO)
+                            <strong>EGNO_APP</strong> - Blackpool (EGNH) and Warton (EGNO)
                         </li>
                         <li>
                             <strong>EGNT_APP</strong> - Newcastle (EGNT) and Teesside (EGNV)
