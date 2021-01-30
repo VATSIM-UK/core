@@ -84,40 +84,9 @@
                             </tr>
                         </table>
                     </div>
-                </div>
-
-                    <div class="panel panel-ukblue">
-                        <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Member Services
-                        </div>
-                        <div class="panel-body">
-                            <h4 class="text-center">Member Services Director (VATUK3)</h4><br/>
-                            <img src="{{ $teamPhotos[7404] }}"
-                                 width=50px
-                                 class="img-responsive center-block profile-picture"/>
-                            <p class="text-center">Tom Earl</p>
-                            <h4 class="text-center">Member Services Team</h4>
-                            <table class="table">
-                                <tr>
-                                    <td>Member Services Assistant</td>
-                                    <td>Adam Meade</td>
-                                </tr>
-                                <tr>
-                                    <td>Member Services Assistant</td>
-                                    <td>Matthew Wilson</td>
-                                </tr>
-                                <tr>
-                                    <td>Member Services Assistant</td>
-                                    <td>James Thomas</td>
-                                </tr>
-                                <tr>
-                                    <td>Member Services Assistant</td>
-                                    <td>Luke Peters</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
+                </div>        
+            </div>
+            <!-- End Operations -->
             <!-- Marketing -->
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
@@ -143,7 +112,7 @@
                     </div>
                 </div>
             </div>
-
+            <!-- End Marketing -->
             <!-- Web Services -->
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
@@ -179,14 +148,64 @@
                     </div>
                 </div>
             </div>
-
-
+            <!-- End Web Services -->
         </div>
         <!-- End Row One -->
     </div>
     <div class="container">
-                <!-- Row Two -->
+        <!-- Row Two -->
         <div class="row">
+            <!-- 1 Column for Two -->
+            <div class="col-md-4">
+                <!-- Member Services -->
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Member Services
+                    </div>
+                    <div class="panel-body">
+                        <h4 class="text-center">Member Services Director (VATUK3)</h4><br/>
+                        <img src="{{ $teamPhotos[7404] }}"
+                             width=50px
+                             class="img-responsive center-block profile-picture"/>
+                        <p class="text-center">Tom Earl</p>
+                        <h4 class="text-center">Member Services Team</h4>
+                        <table class="table">
+                            <tr>
+                                <td>Member Services Assistant</td>
+                                <td>Adam Meade</td>
+                            </tr>
+                            <tr>
+                                <td>Member Services Assistant</td>
+                                <td>Matthew Wilson</td>
+                            </tr>
+                            <tr>
+                                <td>Member Services Assistant</td>
+                                <td>James Thomas</td>
+                            </tr>
+                            <tr>
+                                <td>Member Services Assistant</td>
+                                <td>Luke Peters</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- Other Roles -->
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Other Roles
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Data Protection Officer</td>
+                                    <td>Chris Pawley</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- End Other Roles -->
+            </div>
+            <!-- End 1 Column for Two -->
             <!-- Training -->
             <div class="col-md-8">
                 <div class="panel panel-ukblue">
@@ -278,7 +297,7 @@
                                 </tr>
                                 <tr>
                                     <td>Initial Flight Instructor</td>
-                                    <td>Matthew Wilson</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
@@ -289,32 +308,13 @@
                                     <td>Freddie Charlesworth</td>
                                 </tr>
                              </table>
-
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Other Roles -->
-            <div class="col-md-4">
-                <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Other Roles
-                    </div>
-                    <div class="panel-body">
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <td>Data Protection Officer</td>
-                                    <td>Chris Pawley</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            <!-- End Training -->
         </div>
     </div>
-
-        <!-- End Row Two -->
+    <!-- End Row Two -->
     </div>
 @stop
