@@ -95,8 +95,7 @@
         "vatsim/xml": "dev-main",
         "watson/rememberable": "^5.0",
         "wikimedia/composer-merge-plugin": "^1.4",
-        "wohali/oauth2-discord-new": "^1.0",
-        "restcord/restcord": "dev-develop"
+        "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {
         "ext-json": "*",

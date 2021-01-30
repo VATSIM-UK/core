@@ -7,7 +7,6 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use RestCord\DiscordClient;
 
 class Discord
 {
@@ -20,20 +19,19 @@ class Discord
     /** @var string */
     private $base_url;
 
+    /** @var string */
+    private $base_user_url;
+
     /** @var array */
     private $headers;
-
-    /** @var DiscordClient */
-    private $client;
-
 
     public function __construct()
     {
         $this->token = config('services.discord.token');
         $this->guild_id = config('services.discord.guild_id');
         $this->base_url = config('services.discord.base_discord_uri').'/guilds';
+        $this->base_user_url = config('services.discord.base_discord_uri').'/users';
         $this->headers = ['Authorization' => "Bot {$this->token}"];
-        $this->client = new DiscordClient(['token' => $this->token]);
     }
 
     public function grantRole(Account $account, string $role): bool
@@ -132,7 +130,8 @@ class Discord
         }
 
         return Cache::remember($account->id.'.discord.userdata', 84600, function () use ($account) {
-            return $this->client->user->getUser(['user.id' => $account->discord_id]);
+            return Http::withHeaders($this->headers)
+            ->get("{$this->base_user_url}/{$account->discord_id}")->json();
         });
     }
 
