@@ -227,7 +227,7 @@
                                 </tr>
                                 <tr>
                                     <td>Division Instructor</td>
-                                    <td>Phillip Speer</td>
+                                    <td>Jack Edwards</td>
                                 </tr>
                                 <tr>
                                     <td>Division Instructor</td>
