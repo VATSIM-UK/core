@@ -18,8 +18,7 @@ class UpdateActiveDivisionMembers extends Command
      *
      * @var string
      */
-    protected $signature = 'DivMembers:CertUpdate
-                        {max_members=5000}';
+    protected $signature = 'DivMembers:CertUpdate';
 
     /**
      * The console command description.
@@ -58,7 +57,6 @@ class UpdateActiveDivisionMembers extends Command
             ->whereNull('mship_account_state.end_at');
 
         return $members->orderBy('mship_account.cert_checked_at', 'ASC')
-            ->limit($this->argument('max_members'))
             ->pluck('id');
     }
 }
