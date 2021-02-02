@@ -469,8 +469,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getDiscordUserAttribute()
     {
-        $discord = app()->make(Discord::class);
-        return $discord->getUserInformation($this);
+        return app()->make(Discord::class)->getUserInformation($this);
     }
 
     /**
