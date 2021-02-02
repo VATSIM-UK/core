@@ -7,7 +7,6 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Carbon\Carbon;
 
 class Discord
 {
@@ -129,7 +128,7 @@ class Discord
             return null;
         }
 
-        return Cache::remember($account->id.'.discord.userdata', Carbon::now()->addHours(12), function () use ($account) {
+        return Cache::remember($account->id.'.discord.userdata', now()->addHours(12), function () use ($account) {
             return Http::withHeaders($this->headers)
             ->get("{$this->base_url}/users/{$account->discord_id}")->json();
         });
