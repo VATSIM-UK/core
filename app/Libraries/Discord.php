@@ -19,9 +19,6 @@ class Discord
     /** @var string */
     private $base_url;
 
-    /** @var string */
-    private $base_user_url;
-
     /** @var array */
     private $headers;
 
