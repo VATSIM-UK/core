@@ -105,7 +105,7 @@ class ProcessNetworkData extends Command
             } elseif (substr($controller['callsign'], -5) == '_ATIS') {
                 // ignore ATIS connections
                 continue;
-            } elseif ($controller['frequency'] < 118 || $controller['frequency'] > 136) {
+            } elseif ($controller['frequency'] < 118 || $controller['frequency'] > 137) {
                 // ignore out-of-range frequencies
                 continue;
             }

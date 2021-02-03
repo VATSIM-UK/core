@@ -57,6 +57,6 @@ class UpdateActiveDivisionMembers extends Command
             ->whereNull('mship_account_state.end_at');
 
         return $members->orderBy('mship_account.cert_checked_at', 'ASC')
-            ->pluck('id');
+            ->pluck('mship_account.id');
     }
 }
