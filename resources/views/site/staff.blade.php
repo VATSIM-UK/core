@@ -163,10 +163,10 @@
                     </div>
                     <div class="panel-body">
                         <h4 class="text-center">Member Services Director (VATUK3)</h4><br/>
-                        <img src="{{ $teamPhotos[7404] }}"
+                        <img src="{{ $teamPhotos[4111] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Tom Earl</p>
+                        <p class="text-center">Harry Downton</p>
                         <h4 class="text-center">Member Services Team</h4>
                         <table class="table">
                             <tr>
@@ -227,7 +227,7 @@
                                 </tr>
                                 <tr>
                                     <td>Division Instructor</td>
-                                    <td>Phillip Speer</td>
+                                    <td>Jack Edwards</td>
                                 </tr>
                                 <tr>
                                     <td>Division Instructor</td>
