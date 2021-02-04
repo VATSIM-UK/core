@@ -9,6 +9,7 @@ Route::group([
     Route::get('/staff')->uses('StaffPageController')->name('staff');
     Route::get('/airports')->uses('AirportController@index')->name('airports');
     Route::get('/airports/{ukAirportByICAO}')->uses('AirportController@show')->name('airport.view');
+    Route::get('/VATSIM_UK_Sector_Provider.txt')->uses('EuroScopeSectorProvider');
 
     Route::group([
         'as' => 'atc.',
