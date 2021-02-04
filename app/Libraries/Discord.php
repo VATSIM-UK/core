@@ -5,6 +5,7 @@ namespace App\Libraries;
 use App\Models\Mship\Account;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class Discord
@@ -25,7 +26,7 @@ class Discord
     {
         $this->token = config('services.discord.token');
         $this->guild_id = config('services.discord.guild_id');
-        $this->base_url = config('services.discord.base_discord_uri').'/guilds';
+        $this->base_url = config('services.discord.base_discord_uri');
         $this->headers = ['Authorization' => "Bot {$this->token}"];
     }
 
@@ -39,7 +40,7 @@ class Discord
     public function grantRoleById(Account $account, int $role): bool
     {
         $response = Http::withHeaders($this->headers)
-            ->put("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
+            ->put("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
 
         return $this->result($response);
     }
@@ -54,7 +55,7 @@ class Discord
     public function removeRoleById(Account $account, int $role): bool
     {
         $response = Http::withHeaders($this->headers)
-            ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
+            ->delete("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
 
         return $this->result($response);
     }
@@ -62,7 +63,7 @@ class Discord
     public function setNickname(Account $account, string $nickname): bool
     {
         $response = Http::withHeaders($this->headers)
-            ->patch("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}",
+            ->patch("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}",
             [
                 'nick' => $nickname,
             ]
@@ -74,7 +75,7 @@ class Discord
     public function kick(Account $account): bool
     {
         $response = Http::withHeaders($this->headers)
-            ->delete("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}");
+            ->delete("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}");
 
         if ($response->status() == 404) {
             return true;
@@ -86,7 +87,7 @@ class Discord
     public function invite(Account $account): bool
     {
         $response = Http::withHeaders($this->headers)
-            ->put("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}", [
+            ->put("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}", [
                 'access_token' => $account->discord_access_token,
             ]);
 
@@ -96,7 +97,7 @@ class Discord
     public function getUserRoles(Account $account): Collection
     {
         $response = Http::withHeaders($this->headers)
-            ->get("{$this->base_url}/{$this->guild_id}/members/{$account->discord_id}");
+            ->get("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}");
 
         if (! $response->successful()) {
             return collect([]);
@@ -108,7 +109,7 @@ class Discord
     private function findRole(string $roleName): int
     {
         $response = Http::withHeaders($this->headers)
-            ->get("{$this->base_url}/{$this->guild_id}/roles")->json();
+            ->get("{$this->base_url}/guilds/{$this->guild_id}/roles")->json();
 
         $role_id = collect($response)
             ->where('name', $roleName)
@@ -116,6 +117,18 @@ class Discord
             ->first();
 
         return (int) $role_id;
+    }
+
+    public function getUserInformation(Account $account)
+    {
+        if (! $account->discord_id) {
+            return null;
+        }
+
+        return Cache::remember($account->id.'.discord.userdata', now()->addHours(12), function () use ($account) {
+            return Http::withHeaders($this->headers)
+            ->get("{$this->base_url}/users/{$account->discord_id}")->json();
+        });
     }
 
     protected function result(Response $response)

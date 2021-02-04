@@ -45,7 +45,9 @@
                                 </a>
                             @else
                                 <a href="#" style="text-decoration: none;">
-                                    <button class="btn btn-primary center-block" disabled><em class="fab fa-discord"></em> &thinsp; Discord Account {{ $_account->discord_id }} Linked</button>
+                                <button class="btn btn-primary center-block" disabled><em class="fab fa-discord"></em>
+                                        Currently registered with Discord ID {{ $_account->discord_user ? $_account->discord_user['username'].'#'.$_account->discord_user['discriminator'] : $_account->discord_id }}.
+                                    </button>
                                 </a>
                                 <p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
                             @endif

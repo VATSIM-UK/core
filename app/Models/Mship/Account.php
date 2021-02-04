@@ -5,6 +5,7 @@ namespace App\Models\Mship;
 use App\Events\Mship\AccountAltered;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Jobs\UpdateMember;
+use App\Libraries\Discord;
 use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasBans;
@@ -458,6 +459,16 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         return ! $this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
             return preg_match('/^'.$item.'$/i', $displayName) == 1;
         })->isEmpty();
+    }
+
+    /**
+     * Returns the Discord user associated with this account if the user has linked it.
+     *
+     * @return RestCord/Model/User/User The Discord user
+     */
+    public function getDiscordUserAttribute()
+    {
+        return app()->make(Discord::class)->getUserInformation($this);
     }
 
     /**
