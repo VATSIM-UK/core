@@ -243,10 +243,6 @@
                                 </tr>
                                 <tr>
                                     <td>Division Instructor</td>
-                                    <td>Jamie Paine</td>
-                                </tr>
-                                <tr>
-                                    <td>Division Instructor</td>
                                     <td>Lee Roberts</td>
                                 </tr>
                                 <tr>
