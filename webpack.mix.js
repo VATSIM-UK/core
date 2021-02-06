@@ -11,15 +11,6 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.webpackConfig({
-    resolve: {
-        modules: [
-            'node_modules',
-            path.resolve(__dirname, 'resources/assets/js')
-        ]
-    }
-});
-
 // admin (AdminLTE)
 mix.less('resources/assets/less/admin.less', 'public/css/admin-all.css');
 
