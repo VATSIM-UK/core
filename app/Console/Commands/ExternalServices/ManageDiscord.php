@@ -28,8 +28,7 @@ class ManageDiscord extends Command
     /** @var Discord */
     protected $discord;
 
-    /** @var Account */
-    protected $account;
+    private $suspendedRoleId;
 
     /**
      * Create a new command instance.
@@ -41,6 +40,8 @@ class ManageDiscord extends Command
         parent::__construct();
 
         $this->discord = $discord;
+
+        $this->suspendedRoleId = config('services.discord.suspended_member_role_id');
     }
 
     /**
@@ -58,10 +59,13 @@ class ManageDiscord extends Command
         }
 
         foreach ($discordUsers as $account) {
-            $this->account = $account;
-            $this->grantRoles();
-            $this->removeRoles();
-            $this->assignNickname();
+            if ($account->isBanned) {
+                $this->processSuspendedMember($account);
+            } else {
+                $this->grantRoles($account);
+                $this->removeRoles($account);
+            }
+            $this->assignNickname($account);
             sleep(1);
         }
 
@@ -78,42 +82,68 @@ class ManageDiscord extends Command
         return Account::where('discord_id', '!=', null)->get();
     }
 
-    protected function assignNickname()
+    protected function assignNickname(Account $account)
     {
-        $this->discord->setNickname($this->account, $this->account->name);
+        $this->discord->setNickname($account, $account->name);
     }
 
-    protected function grantRoles()
+    public function grantRoles(Account $account): void
     {
-        $account = $this->account;
-        $discord = $this->discord;
-
-        $currentRoles = $discord->getUserRoles($account);
+        $currentRoles = $this->discord->getUserRoles($account);
 
         DiscordRole::all()->filter(function (DiscordRole $role) use ($account) {
             return $account->hasPermissionTo($role->permission_id);
-        })->each(function (DiscordRole $role) use ($account, $discord, $currentRoles) {
+        })->each(function (DiscordRole $role) use ($account, $currentRoles) {
             if (! $currentRoles->contains($role->discord_id)) {
-                $discord->grantRoleById($account, $role->discord_id);
+                $this->discord->grantRoleById($account, $role->discord_id);
                 sleep(1);
             }
         });
     }
 
-    protected function removeRoles()
+    public function removeRoles(Account $account): void
     {
-        $account = $this->account;
-        $discord = $this->discord;
+        $currentRoles = $this->discord->getUserRoles($account);
 
-        $currentRoles = $discord->getUserRoles($account);
+        if ($currentRoles->contains($this->suspendedRoleId)) {
+            $this->discord->removeRoleById($account, $this->suspendedRoleId);
+        }
 
         DiscordRole::all()->filter(function (DiscordRole $role) use ($account) {
             return ! $account->hasPermissionTo($role->permission_id);
-        })->each(function (DiscordRole $role) use ($account, $discord, $currentRoles) {
+        })->each(function (DiscordRole $role) use ($account, $currentRoles) {
             if ($currentRoles->contains($role->discord_id)) {
-                $discord->removeRoleById($account, $role->discord_id);
+                $this->discord->removeRoleById($account, $role->discord_id);
                 sleep(1);
             }
         });
+    }
+
+    /**
+     * Process the relevant actions for a suspended user.
+     *
+     * All roles are removed and a suspended role added onto the
+     * Account.
+     *
+     * @param Account $account
+     * @return void
+     */
+    public function processSuspendedMember(Account $account): void
+    {
+        Log::info("Account {$account->id} detected as suspended. Removing Discord roles.");
+        $currentRoles = $this->discord->getUserRoles($account);
+
+        if ($currentRoles->contains($this->suspendedRoleId)) {
+            return;
+        }
+
+        // remove the roles which are currently applied to the user.
+        $currentRoles->each(function (int $role) use ($account) {
+            $this->discord->removeRoleById($account, $role);
+            sleep(1); // avoid spamming the Discord API.
+        });
+
+        $this->discord->grantRoleById($account, $this->suspendedRoleId);
+        Log::info("Account {$account->id} granted the suspended role.");
     }
 }
