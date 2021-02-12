@@ -60,7 +60,7 @@ jobs:
       # COMPOSER DEPENDENICES
       #
 
-      # Add Github Auth to Composer
+      # Add GitHub Auth to Composer
       - name: Add Composer GitHub Token
         run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
 
@@ -84,14 +84,14 @@ jobs:
           path: vendor
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
 
-      # Remove Nova from Composer when Secrets aren't available
+      # Remove Nova from Composer when secrets aren't available
       - name: Remove Nova From Composer
         if: ${{ env.NOVA_USERNAME == 0 || env.NOVA_PASSWORD == 0 }}
         run: sed -i 's/"composer-nova.json"//g' composer.json && composer update
 
       # Install
       - name: Install Composer Dependencies
-        run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
+        run: composer install --prefer-dist --no-interaction --optimize-autoloader
 
       - name: Install Nova & Waiting Lists
         if: ${{ env.NOVA_USERNAME != 0 && env.NOVA_PASSWORD != 0 }}
