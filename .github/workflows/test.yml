@@ -18,8 +18,7 @@ jobs:
       NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
     strategy:
       matrix:
-        php: ['7.4']
-        composer: ['v1', 'v2']
+        php: [7.4, 8.0]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -32,7 +31,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: pcov
-          tools: composer:${{ matrix.composer }}
+          tools: composer:v2
 
       - name: Setup Yarn
         uses: actions/setup-node@v1
