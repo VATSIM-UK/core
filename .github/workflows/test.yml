@@ -18,9 +18,17 @@ jobs:
       NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
     strategy:
       fail-fast: false
+      continue-on-error: ${{ matrix.experimental }}
       matrix:
         php: ['7.4', '8.0']
-        composer: ['v1', 'v2']
+        composer: ['v1']
+        include:
+          - php: 7.4
+            composer: 'v2'
+            experimental: true
+          - php: 8.0
+            composer: 'v2'
+            experimental: true
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
