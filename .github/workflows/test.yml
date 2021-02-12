@@ -19,6 +19,7 @@ jobs:
     strategy:
       matrix:
         php: ['7.4']
+        composer: ['v1', 'v2']
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -31,7 +32,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: pcov
-          tools: composer:v1
+          tools: composer:${{ matrix.composer }}
 
       - name: Setup Yarn
         uses: actions/setup-node@v1

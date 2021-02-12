@@ -94,14 +94,14 @@
         "vatsim/sso": "3.0",
         "vatsim/xml": "dev-main",
         "watson/rememberable": "^5.0",
-        "wikimedia/composer-merge-plugin": "^1.4",
+        "wikimedia/composer-merge-plugin": "dev-master",
         "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {
         "ext-json": "*",
         "codedungeon/phpunit-result-printer": "^0.29.3",
         "facade/ignition": "^2.3.6",
-        "fzaninotto/faker": "~1.8",
+        "fakerphp/faker": "^1.13",
         "laracasts/generators": "^1.1",
         "laravel/homestead": "^10.0.2",
         "laravel/legacy-factories": "^1.1",
