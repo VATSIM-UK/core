@@ -13,12 +13,12 @@ jobs:
   test:
     name: PHP
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
     env:
       NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
       NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
     strategy:
       fail-fast: false
-      continue-on-error: ${{ matrix.experimental }}
       matrix:
         php: ['7.4', '8.0']
         composer: ['v1']
