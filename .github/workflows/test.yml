@@ -22,6 +22,7 @@ jobs:
       matrix:
         php: ['7.4', '8.0']
         composer: ['v1']
+        experimental: [false]
         include:
           - php: 7.4
             composer: 'v2'
