@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Account\Auth;
 
 use App\Models\Mship\Account;
 use Illuminate\Support\Facades\Auth;

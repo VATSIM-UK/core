@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Account\Notifictions;
+namespace Tests\Unit\Account\Notifications;
 
 use App\Models\Sys\Notification;
 use Carbon\Carbon;
