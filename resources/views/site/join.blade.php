@@ -50,7 +50,7 @@
                 </div>
                 <div class="panel-body">
                     <h4>Step 1</h4>
-                    <p>Visit <a href="http://vatsim.net/">VATSIM.net</a> and register for your ID and password. This is a very quick process and is
+                    <p>Visit <a href="https://www.vatsim.net/join">VATSIM.net</a> and register for your ID and password. This is a very quick process and is
                         completely FREE. Ensure you choose Europe as your region and the UK as your division.</p>
 
                     <p>If you are already a member of VATSIM, visit VATSIM Member Services and use the <a
@@ -84,30 +84,28 @@
                 </div>
                 <div class="panel-body">
                     <h4>Step 1</h4>
-                    <p>Visit <a href="http://vatsim.net/">VATSIM.net</a> and register for your ID and password. This is a very quick process and is
+                    <p>Visit <a href="https://www.vatsim.net/join">VATSIM.net</a> and register for your ID and password. This is a very quick process and is
                         completely FREE. Feel free to use Europe as your region and the UK as your division,
                         although you
                         can fly wherever you want on VATSIM, regardless of which country you choose to join.</p>
 
                     <h4>Step 2</h4>
-                    <p>Download a recommended pilot client. These are the free pieces of software you will use to
+                    <p>Download an <a href="https://my.vatsim.net/learn/vatsim-basics/section/5">approved pilot client</a>. These are the free pieces of software you will use to
                         connect
-                        your flight simulator to VATSIM. If installing FSInn, you are strongly recommended to visit
-                        <a href="http://forums.vatsim.net/viewtopic.php?f=43&t=20466">this
-                            page</a> for instructions on how to achieve best results.</p>
+                        your flight simulator to VATSIM.</p>
 
                     <h4>Step 3</h4>
-                    <p>Visit the <a href="http://www.vatsim.net/pilots/quickstart/">Quick Start Guide</a> and <a href="http://www.vatsim.net/prc/">Pilot Resource Center</a> to get started as a pilot on the
+                    <p>Visit the <a href="https://www.vatsim.net/pilots/getting-started">Getting Started Guide</a> to get started as a pilot on the
                         network. For
-                        flying in the UK, our own <a href="#">Pilot Information Center</a> contains some great information and
+                        flying in the UK, our own <a href="{{ route('site.airports') }}">airport pages</a> contain some great information and
                         resources.</p>
 
                     <h4>Step 4</h4>
-                    <p>Consider joining a <a href="http://ptd.vatsim.net/">Pilot Training Program</a> to enhance your pilot skills or join a
+                    <p>Consider reviewing the <a href="https://my.vatsim.net/pilots/train">Pilot Training</a> are of the VATSIM.net Education Hub to enhance your pilot skills or join a
                         distinguished
-                        virtual airline like BA Virtual. If you prefer GA flying, you might like to consider
+                        virtual airline like <a href="https://bavirtual.co.uk/">BAVirtual</a>. If you prefer GA flying, you might like to consider
                         visiting the
-                        <a href="http://www.cixvfrclub.org.uk/">CIX VFR Club</a>.</p>
+                        <a href="https://www.cixvfrclub.org.uk/">CIX VFR Club</a>.</p>
 
                     <h4>Step 5</h4>
                     <p>Get online and fly!</p>
