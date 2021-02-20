@@ -168,8 +168,6 @@ jobs:
             # Install Waiting List Dependencies
             $PHP_PATH /usr/local/bin/composer install --working-dir="$RELEASE_DIRECTORY/nova-components/WaitingListsManager" --no-dev
 
-
-
             # Install Nova
             $PHP_PATH artisan nova:install
           envs: RELEASE_DIRECTORY,PHP_PATH
