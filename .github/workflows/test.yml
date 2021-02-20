@@ -20,9 +20,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4', '8.0']
+        php: ['7.4']
+        composer: ['v1']
         experimental: [false]
         include:
+          - php: '7.4'
+            composer: 'v2'
+            experimental: true
           - php: '8.0'
             composer: 'v2'
             experimental: true
