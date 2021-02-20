@@ -123,11 +123,11 @@
 
                     <p style="margin-left: 40px">
                         <strong>Manchester (EGCC), Leeds (EGNM), Doncaster (EGCN), Humberside (EGNJ), Newcastle (EGNT), Teesside (EGNV)</strong><br>
-                        MAN_E_CTR (133.800) &#8594; MAN_CTR (118.775) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
+                        MAN_E_CTR (133.800) &#8594; MAN_CTR (133.200) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Liverpool (EGGP), Hawarden (EGNR), Isle of Man (EGNS), Blackpool (EGNH)</strong><br>
-                        MAN_W_CTR (128.050) &#8594; MAN_CTR (118.775) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
+                        MAN_W_CTR (128.050) &#8594; MAN_CTR (133.200) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>East Midlands (EGNX), Birmingham (EGBB), Coventry (EGBE)</strong><br>
@@ -155,11 +155,11 @@
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Edinburgh (EGPH), Glasgow (EGPF), Prestwick (EGPK)</strong><br>
-                        STC_CTR (126.300) &#8594; SCO_D_CTR (135.850) &#8594; SCO_WD_CTR (133.200) &#8594; SCO_S_CTR (134.775) &#8594; SCO_CTR (135.525)
+                        STC_CTR (126.300) &#8594; SCO_D_CTR (135.850) &#8594; SCO_WD_CTR (133.875) &#8594; SCO_S_CTR (134.775) &#8594; SCO_CTR (135.525)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Belfast/Aldergrove (EGAA), Belfast/City (EGAC)</strong><br>
-                        STC_A_CTR (123.775) &#8594; SCO_R_CTR (129.100) &#8594; SCO_W_CTR (132.725) &#8594; SCO_WD_CTR (133.200) &#8594; SCO_CTR (135.525)
+                        STC_A_CTR (123.775) &#8594; SCO_R_CTR (129.100) &#8594; SCO_W_CTR (132.725) &#8594; SCO_WD_CTR (133.875) &#8594; SCO_CTR (135.525)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Aberdeen/Dyce (EGPD), Dundee (EGPN)</strong><br>
