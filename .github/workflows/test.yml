@@ -97,7 +97,10 @@ jobs:
 
       # Install
       - name: Install Composer Dependencies
-        run: composer install --prefer-dist --no-interaction --optimize-autoloader
+        run: |
+           composer install --no-interaction --no-progress --no-suggest --no-scripts
+           php artisan package:discover
+
 
       - name: Install Nova & Waiting Lists
         if: ${{ env.NOVA_USERNAME != 0 && env.NOVA_PASSWORD != 0 }}
