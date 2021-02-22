@@ -162,7 +162,8 @@ jobs:
             cd $RELEASE_DIRECTORY
 
             # Install application dependencies
-            $PHP_PATH /usr/local/bin/composer install --optimize-autoloader --no-dev
+            $PHP_PATH /usr/local/bin/composer install --no-interaction --no-progress --no-suggest --no-scripts --no-dev
+            $PHP_PATH artisan package:discover
 
             # Install Waiting List Dependencies
             $PHP_PATH /usr/local/bin/composer install --working-dir="$RELEASE_DIRECTORY/nova-components/WaitingListsManager" --no-dev

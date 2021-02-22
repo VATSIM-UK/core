@@ -1,4 +1,4 @@
-name: Test
+name: Tests
 
 on:
   push:
@@ -11,14 +11,18 @@ on:
 
 jobs:
   test:
-    name: PHP
+    name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }}
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
     env:
       NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
       NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
     strategy:
+      fail-fast: false
       matrix:
         php: ['7.4']
+        composer: ['v1', 'v2']
+        experimental: [false]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -31,7 +35,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: pcov
-          tools: composer:v1
+          tools: composer:${{ matrix.composer }}
 
       - name: Setup Yarn
         uses: actions/setup-node@v1
@@ -59,7 +63,7 @@ jobs:
       # COMPOSER DEPENDENICES
       #
 
-      # Add Github Auth to Composer
+      # Add GitHub Auth to Composer
       - name: Add Composer GitHub Token
         run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
 
@@ -83,14 +87,17 @@ jobs:
           path: vendor
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
 
-      # Remove Nova from Composer when Secrets aren't available
+      # Remove Nova from Composer when secrets aren't available
       - name: Remove Nova From Composer
         if: ${{ env.NOVA_USERNAME == 0 || env.NOVA_PASSWORD == 0 }}
         run: sed -i 's/"composer-nova.json"//g' composer.json && composer update
 
       # Install
       - name: Install Composer Dependencies
-        run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
+        run: |
+           composer install --no-interaction --no-progress --no-suggest --no-scripts
+           php artisan package:discover
+
 
       - name: Install Nova & Waiting Lists
         if: ${{ env.NOVA_USERNAME != 0 && env.NOVA_PASSWORD != 0 }}
