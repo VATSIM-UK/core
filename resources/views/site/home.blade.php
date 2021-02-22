@@ -438,27 +438,6 @@
     </div>
 </section>
 
-@if(App::environment('production'))
-    <script type="text/javascript">
-        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-        (function () {
-            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-            s1.async = true;
-            s1.src = 'https://embed.tawk.to/57bb3bfca767d83b45e79605/1aqq3gev7';
-            s1.charset = 'UTF-8';
-            s1.setAttribute('crossorigin', '*');
-            s0.parentNode.insertBefore(s1, s0);
-        })();
-
-        @if(Auth::check())
-            Tawk_API.visitor = {
-            name: "{{ Auth::user()->name }} ({{ Auth::user()->id }})",
-            email: "{{ Auth::user()->email }}"
-        };
-        @endif
-    </script>
-@endif
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jarallax/1.10.3/jarallax.min.js" integrity="sha512-1RIeczLHpQNM864FPmyjgIOPQmljv9ixHg5J1knRhTApLpvxqA0vOTxgGF89/DpgZIAXRCn9dRiakPjyTUl9Rg==" crossorigin="anonymous"></script>
 <script src="{{ mix('js/home.js') }}"></script>
