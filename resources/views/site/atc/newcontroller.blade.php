@@ -154,6 +154,9 @@
 								Bristol
 							</li>
 							<li>
+								East Midlands
+							</li>
+							<li>
 								Edinburgh
 							</li>
 							<li>
