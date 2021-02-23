@@ -24,7 +24,7 @@
                     </h2>
                     
                     <p>
-                        There are two prerequisites for ATC mentors in the UK:
+                        There are three prerequisites for ATC mentors in the UK:
                     </p>
 
                     <ol>
@@ -33,8 +33,10 @@
                             mentoring and, if applicable, any additional validations (for example, Heathrow)
                         </li>
                         <li>
-                            You must have spent sufficient time consolidating your knowledge at a given level, before
-                            being able to mentor there
+                            You must have spent sufficient time consolidating your knowledge at a given level (at the discretion of TG Instructors), prior to being permitted to mentor.
+                        </li>
+                        <li>
+                            You must be in good standing with the division.
                         </li>
                     </ol>
                     
@@ -53,12 +55,12 @@
                     
                     <p>
                         Your first mentoring session(s) at a particular level will be conducted in collaboration with a
-                        VATSIM UK Instructor. This is not a formal exam, it is simply a chance for an instructor to observe
-                        the mentor conducting a session, in order to help the mentor develop effective and efficient
-                        teaching style and methods. This provides mentors an opportunity to be guided as they begin
-                        teaching. Mentors returning after a significant period away from the network may be asked, at the
-                        discretion of the ATC Training Department, to have a supervised session on their return, to ensure
-                        that they are comfortable with any changes that have happened in the meantime.
+                        VATSIM UK Instructor in the form of an 'Over the Shoulder' (OTS) session. This is not a formal exam, 
+                        it is simply a chance for an instructor to observe the mentor conducting a session, in order to help the 
+                        mentor develop effective and efficient teaching style and methods. This provides mentors an opportunity 
+                        to be guided as they begin teaching. Mentors returning after a significant period away from the 
+                        network may be asked, at the discretion of the ATC Training Department, to have a supervised 
+                        session on their return, to ensure that they are comfortable with any changes that have happened in the meantime.
                     </p>
 
                     <h2>
