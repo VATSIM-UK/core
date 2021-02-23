@@ -48,7 +48,20 @@
                         mentors with an S1 rating are those that have spent a considerable time controlling and are often
                         working towards their S2 rating.
                     </p>
+                    
+                    <h2>
+                        Mentoring at Student 1
+                    </h2>
 
+                    <p>
+                        Due to the restrictions of the S1 Rating on the VATSIM network including lack of formal competencies,
+                        S1s are unable to mentor their equivalent rating of OBS to S1 Mentoring. However, the Gatwick Endorsement,
+                        an endorsement which encourages S1s to further consolidate their knowledge by learning a busier aerodrome 
+                        is an entry into the VATSIM UK mentoring system, and encourages S1s to give a helping hand by passing on
+                        their knowledge on the Gatwick aerodrome to others, and is a great way to get used to mentoring other 
+                        students
+                    </p>
+                    
                     <h2>
                         Mentor Training
                     </h2>
