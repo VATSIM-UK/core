@@ -20,9 +20,9 @@
                     When you have passed the quiz at the end of the Moodle course, you will be prompted to submit another ticket to ATC TRAINING.<br>
                     <br>
                     <h4>Step Three</h4>
-                    Your training now moves onto the live network. One of our S1 mentors will take you onto EGKK_GND for a 1h30 session, and offer you hints and tips as you control, answering any questions you may have.
-                    This is not a test, and you will not pass or fail, rather it is an opportunity for you to practically apply the skills and knowledge which you have learned through completing the Moodle course.<br>
-                    Once you have completed the session, your mentor will submit a request for you to be added to the special endorsement list. Once this has been processed, you will be able to control EGKK_DEL and EGKK_GND on the live network.
+                    One of our Gatwick mentors will take you onto the live network, on either EGKK_GND or EGKK_DEL, and offer you hints and tips as you control You will also have the chance to ask any questions that you have.<br>
+                    This is not a test and you will not pass or fail, rather it is an opportunity for you to practically apply the skills and knowledge which you have learned through completing the Moodle course.<br>
+                    You will do this until the mentor deems you ready for the Gatwick ground endorsement. Once granted the endorsement, you will be able to control EGKK_GND and EGKK_DEL on the live network without supervision.
                 </div>
             </div>
         </div>
