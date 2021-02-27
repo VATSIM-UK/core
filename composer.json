@@ -99,7 +99,7 @@
     },
     "require-dev": {
         "ext-json": "*",
-        "codedungeon/phpunit-result-printer": "^0.29.3",
+        "codedungeon/phpunit-result-printer": "^0.30.1",
         "facade/ignition": "^2.3.6",
         "fakerphp/faker": "^1.13",
         "laracasts/generators": "^1.1",
