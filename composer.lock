@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b6f0279abdbd572dfc60dbab764cc798",
+    "content-hash": "ab0a8698d1f4188aa30f2a4266c80e47",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -10093,16 +10093,16 @@
         },
         {
             "name": "wikimedia/composer-merge-plugin",
-            "version": "dev-master",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wikimedia/composer-merge-plugin.git",
-                "reference": "a674d4bcd55c9fd72f2149d564b875fb8768ca00"
+                "reference": "8ca2ed8ab97c8ebce6b39d9943e9909bb4f18912"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wikimedia/composer-merge-plugin/zipball/a674d4bcd55c9fd72f2149d564b875fb8768ca00",
-                "reference": "a674d4bcd55c9fd72f2149d564b875fb8768ca00",
+                "url": "https://api.github.com/repos/wikimedia/composer-merge-plugin/zipball/8ca2ed8ab97c8ebce6b39d9943e9909bb4f18912",
+                "reference": "8ca2ed8ab97c8ebce6b39d9943e9909bb4f18912",
                 "shasum": ""
             },
             "require": {
@@ -10115,17 +10115,16 @@
                 "phpunit/phpunit": "^8.5||^9.0",
                 "squizlabs/php_codesniffer": "~3.5.4"
             },
-            "default-branch": true,
             "type": "composer-plugin",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5.x-dev"
+                    "dev-master": "2.x-dev"
                 },
-                "class": "Wikimedia\\Composer\\MergePlugin"
+                "class": "Wikimedia\\Composer\\Merge\\V2\\MergePlugin"
             },
             "autoload": {
                 "psr-4": {
-                    "Wikimedia\\Composer\\": "src/"
+                    "Wikimedia\\Composer\\Merge\\V2\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -10141,9 +10140,9 @@
             "description": "Composer plugin to merge multiple composer.json files",
             "support": {
                 "issues": "https://github.com/wikimedia/composer-merge-plugin/issues",
-                "source": "https://github.com/wikimedia/composer-merge-plugin/tree/master"
+                "source": "https://github.com/wikimedia/composer-merge-plugin/tree/v2.0.1"
             },
-            "time": "2021-02-12T04:24:48+00:00"
+            "time": "2021-02-24T05:28:06+00:00"
         },
         {
             "name": "wohali/oauth2-discord-new",
@@ -13030,21 +13029,13 @@
             "time": "2021-02-05T01:02:45+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "wikimedia/composer-merge-plugin",
-            "version": "9999999-dev",
-            "alias": "1.5.0",
-            "alias_normalized": "1.5.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "alawrence/laravel-ipboard": 20,
         "malahierba-lab/public-id": 20,
         "planetteamspeak/ts3-php-framework": 20,
         "vatsim/xml": 20,
-        "wikimedia/composer-merge-plugin": 20,
         "vatsimuk/waiting-lists-manager": 20
     },
     "prefer-stable": false,

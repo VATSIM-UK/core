@@ -94,7 +94,7 @@
         "vatsim/sso": "3.0",
         "vatsim/xml": "dev-main",
         "watson/rememberable": "^5.0",
-        "wikimedia/composer-merge-plugin": "dev-master as 1.5.0",
+        "wikimedia/composer-merge-plugin": "^2.0.1",
         "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {
