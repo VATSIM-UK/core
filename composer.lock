@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b7d6d69cfaf817425a3658aa9a896d2",
+    "content-hash": "34b3f22f48b79b8479f74bd7cc243342",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -277,6 +277,59 @@
             "time": "2018-12-13T10:34:14+00:00"
         },
         {
+            "name": "benjaminhirsch/nova-slug-field",
+            "version": "1.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tomhatzer/nova-slug-field.git",
+                "reference": "d602e3033ed9c0ba2928a8ce1a7e8c7a9188c048"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tomhatzer/nova-slug-field/zipball/d602e3033ed9c0ba2928a8ce1a7e8c7a9188c048",
+                "reference": "d602e3033ed9c0ba2928a8ce1a7e8c7a9188c048",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Benjaminhirsch\\NovaSlugField\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Benjaminhirsch\\NovaSlugField\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Hirsch",
+                    "email": "mail@benjaminhirsch.net",
+                    "homepage": "https://www.benjaminhirsch.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel Nova field to generate a slugs.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/benjaminhirsch/nova-slug-field/issues",
+                "source": "https://github.com/tomhatzer/nova-slug-field/tree/1.2.6"
+            },
+            "time": "2020-09-23T17:10:16+00:00"
+        },
+        {
             "name": "bonroyage/oauth",
             "version": "1.0.8",
             "source": {
@@ -367,6 +420,63 @@
                 }
             ],
             "time": "2021-01-20T22:51:39+00:00"
+        },
+        {
+            "name": "brick/money",
+            "version": "0.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brick/money.git",
+                "reference": "c6f2883c8a759bf7f77c79aaa6004af6d6c0afaf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brick/money/zipball/c6f2883c8a759bf7f77c79aaa6004af6d6c0afaf",
+                "reference": "c6f2883c8a759bf7f77c79aaa6004af6d6c0afaf",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "~0.7.3 || ~0.8.0 || ~0.9.0",
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "brick/varexporter": "~0.2.1",
+                "ext-dom": "*",
+                "ext-pdo": "*",
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpunit/phpunit": "^7.5.15 || ^8.0 || ^9.0",
+                "vimeo/psalm": "4.3.2"
+            },
+            "suggest": {
+                "ext-intl": "Required to format Money objects"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Money\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Money and currency library",
+            "keywords": [
+                "brick",
+                "currency",
+                "money"
+            ],
+            "support": {
+                "issues": "https://github.com/brick/money/issues",
+                "source": "https://github.com/brick/money/tree/0.5.1"
+            },
+            "funding": [
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/brick/money",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-02-10T14:14:29+00:00"
         },
         {
             "name": "bugsnag/bugsnag",
@@ -556,6 +666,65 @@
                 "source": "https://github.com/bugsnag/bugsnag-psr-logger/tree/master"
             },
             "time": "2020-02-26T22:02:20+00:00"
+        },
+        {
+            "name": "cakephp/chronos",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cakephp/chronos.git",
+                "reference": "5929b743aec34b3a2f74c70c383706f7f12e2725"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cakephp/chronos/zipball/5929b743aec34b3a2f74c70c383706f7f12e2725",
+                "reference": "5929b743aec34b3a2f74c70c383706f7f12e2725",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "cakephp/cakephp-codesniffer": "^4.0",
+                "phpunit/phpunit": "^8.0 || ^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cake\\Chronos\\": "src/"
+                },
+                "files": [
+                    "src/carbon_compat.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brian Nesbitt",
+                    "email": "brian@nesbot.com",
+                    "homepage": "http://nesbot.com"
+                },
+                {
+                    "name": "The CakePHP Team",
+                    "homepage": "http://cakephp.org"
+                }
+            ],
+            "description": "A simple API extension for DateTime.",
+            "homepage": "http://cakephp.org",
+            "keywords": [
+                "date",
+                "datetime",
+                "time"
+            ],
+            "support": {
+                "irc": "irc://irc.freenode.org/cakephp",
+                "issues": "https://github.com/cakephp/chronos/issues",
+                "source": "https://github.com/cakephp/chronos"
+            },
+            "time": "2021-02-06T03:37:44+00:00"
         },
         {
             "name": "cobaltgrid/vatsim-stand-status",
@@ -2560,6 +2729,100 @@
             "time": "2021-02-16T15:52:59+00:00"
         },
         {
+            "name": "laravel/nova",
+            "version": "3.22.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:laravel/nova.git",
+                "reference": "41465f17785d04d946172f530bf01666e16dab0b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-41465f17785d04d946172f530bf01666e16dab0b-zip-106723.zip",
+                "reference": "41465f17785d04d946172f530bf01666e16dab0b",
+                "shasum": "c521d11f45775d61b2b405b1cad8cd7aaabc9b4b"
+            },
+            "require": {
+                "brick/money": "^0.5.0",
+                "cakephp/chronos": "^1.0|^2.0",
+                "doctrine/dbal": "^2.9",
+                "illuminate/support": "^7.0|^8.0",
+                "laravel/ui": "^2.0|^3.0",
+                "moontoast/math": "^1.1",
+                "php": "^7.2.5|^8.0",
+                "spatie/once": "^1.1|^2.0|^3.0",
+                "symfony/console": "^5.0",
+                "symfony/finder": "^5.0",
+                "symfony/intl": "^5.0",
+                "symfony/process": "^5.0"
+            },
+            "require-dev": {
+                "laravel/legacy-factories": "^1.0",
+                "laravel/nova-dusk-suite": "8.x-dev",
+                "mockery/mockery": "^1.3.3|^1.4.2",
+                "orchestra/testbench-dusk": "^6.5",
+                "phpunit/phpunit": "^8.4",
+                "predis/predis": "^1.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Nova\\NovaCoreServiceProvider"
+                    ],
+                    "aliases": {
+                        "Nova": "Laravel\\Nova\\Nova"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Nova\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Laravel\\Nova\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "dusk:prepare": [
+                    "./vendor/bin/dusk-updater detect --auto-update",
+                    "@php -r \"file_exists('phpunit.dusk.xml') || copy('phpunit.dusk.xml.dist', 'phpunit.dusk.xml'); \"",
+                    "@php -r \"if (file_exists('.env.dusk')) { copy('.env.dusk', 'vendor/laravel/nova-dusk-suite/.env'); } else { copy('.env.dusk.example', 'vendor/laravel/nova-dusk-suite/.env'); }\""
+                ],
+                "dusk:assets": [
+                    "yarn install",
+                    "yarn run prod",
+                    "./vendor/bin/testbench-dusk nova:publish"
+                ],
+                "dusk:test": [
+                    "./vendor/bin/phpunit -c phpunit.dusk.xml"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "A wonderful administration interface for Laravel.",
+            "keywords": [
+                "admin",
+                "laravel"
+            ],
+            "support": {
+                "source": "https://github.com/laravel/nova/tree/v3.22.0"
+            },
+            "time": "2021-02-17T00:16:53+00:00"
+        },
+        {
             "name": "laravel/passport",
             "version": "v10.1.1",
             "source": {
@@ -4139,6 +4402,61 @@
             "time": "2020-12-14T13:15:25+00:00"
         },
         {
+            "name": "moontoast/math",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/moontoast-math.git",
+                "reference": "5f47d34c87767dbcc08b30377a9827df71de91fa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/moontoast-math/zipball/5f47d34c87767dbcc08b30377a9827df71de91fa",
+                "reference": "5f47d34c87767dbcc08b30377a9827df71de91fa",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "phpseclib/bcmath_compat": ">=1.0.3"
+            },
+            "require-dev": {
+                "jakub-onderka/php-parallel-lint": "^0.9.0",
+                "phpunit/phpunit": "^4.8 || ^5.5 || ^6.5 || ^7.0",
+                "satooshi/php-coveralls": "^0.6.1",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Moontoast\\Math\\": "src/Moontoast/Math",
+                    "Moontoast\\Math\\Exception\\": "src/Moontoast/Math/Exception"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Ramsey",
+                    "email": "ben@benramsey.com",
+                    "homepage": "https://benramsey.com"
+                }
+            ],
+            "description": "A mathematics library, providing functionality for large numbers",
+            "homepage": "https://github.com/ramsey/moontoast-math",
+            "keywords": [
+                "bcmath",
+                "math"
+            ],
+            "support": {
+                "issues": "https://github.com/ramsey/moontoast-math/issues",
+                "source": "https://github.com/ramsey/moontoast-math"
+            },
+            "abandoned": "brick/math",
+            "time": "2020-01-05T04:49:34+00:00"
+        },
+        {
             "name": "myclabs/php-enum",
             "version": "1.8.0",
             "source": {
@@ -5073,6 +5391,68 @@
                 }
             ],
             "time": "2020-07-20T17:29:33+00:00"
+        },
+        {
+            "name": "phpseclib/bcmath_compat",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpseclib/bcmath_compat.git",
+                "reference": "fd896dfceffc13d8cf45d2ee3470777a70026f3c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpseclib/bcmath_compat/zipball/fd896dfceffc13d8cf45d2ee3470777a70026f3c",
+                "reference": "fd896dfceffc13d8cf45d2ee3470777a70026f3c",
+                "shasum": ""
+            },
+            "require": {
+                "phpseclib/phpseclib": "^3.0"
+            },
+            "provide": {
+                "ext-bcmath": "8.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35|^5.7|^6.0|^9.4",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "suggest": {
+                "ext-gmp": "Will enable faster math operations"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/bcmath.php"
+                ],
+                "psr-4": {
+                    "bcmath_compat\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jim Wigginton",
+                    "email": "terrafrost@php.net",
+                    "homepage": "http://phpseclib.sourceforge.net"
+                }
+            ],
+            "description": "PHP 5.x/7.x polyfill for bcmath extension",
+            "keywords": [
+                "BigInteger",
+                "bcmath",
+                "bigdecimal",
+                "math",
+                "polyfill"
+            ],
+            "support": {
+                "email": "terrafrost@php.net",
+                "issues": "https://github.com/phpseclib/bcmath_compat/issues",
+                "source": "https://github.com/phpseclib/bcmath_compat"
+            },
+            "time": "2020-12-22T16:38:51+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -6090,6 +6470,132 @@
             "time": "2020-05-12T15:16:56+00:00"
         },
         {
+            "name": "scoutapp/scout-apm-laravel",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/scoutapp/scout-apm-laravel.git",
+                "reference": "a22c79f9b7abd450fae632292df746b4fb8d0c21"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/scoutapp/scout-apm-laravel/zipball/a22c79f9b7abd450fae632292df746b4fb8d0c21",
+                "reference": "a22c79f9b7abd450fae632292df746b4fb8d0c21",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^5.5.0|^6.0|^7.0|^8.0",
+                "illuminate/http": "^5.5.0|^6.0|^7.0|^8.0",
+                "illuminate/routing": "^5.5.0|^6.0|^7.0|^8.0",
+                "illuminate/support": "^5.5.0|^6.0|^7.0|^8.0",
+                "illuminate/view": "^5.5.0|^6.0|^7.0|^8.0",
+                "scoutapp/scout-apm-php": "^6.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Scout Application Performance Monitoring Agent - https://scoutapm.com",
+            "homepage": "https://scoutapm.com/",
+            "keywords": [
+                "apm",
+                "development",
+                "laravel",
+                "monitoring",
+                "performance"
+            ],
+            "support": {
+                "issues": "https://github.com/scoutapp/scout-apm-laravel/issues",
+                "source": "https://github.com/scoutapp/scout-apm-laravel/tree/v2.0.0"
+            },
+            "time": "2021-02-23T11:16:35+00:00"
+        },
+        {
+            "name": "scoutapp/scout-apm-php",
+            "version": "v6.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/scoutapp/scout-apm-php.git",
+                "reference": "b0439f2122b77e0ada158b42e1ff439bf799d082"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/scoutapp/scout-apm-php/zipball/b0439f2122b77e0ada158b42e1ff439bf799d082",
+                "reference": "b0439f2122b77e0ada158b42e1ff439bf799d082",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "ext-sockets": "*",
+                "ext-zlib": "*",
+                "php": "7.1.*|7.2.*|7.3.*|7.4.*|8.0.*",
+                "psr/log": "^1.0",
+                "psr/simple-cache": "^1.0",
+                "ralouphie/getallheaders": "^2.0.5|^3.0",
+                "ramsey/uuid": "^3.0|^4.0",
+                "webmozart/assert": "^1.0"
+            },
+            "require-dev": {
+                "composer-plugin-api": "^2.0",
+                "doctrine/coding-standard": "^8.2",
+                "laravel/framework": "^5.5.0|^6.0|^7.0|^8.0",
+                "monolog/monolog": "^1.26|^2.2.0",
+                "phpunit/phpunit": "^7.5.20|^8.5.14|^9.5.2",
+                "psalm/plugin-phpunit": "^0.15.1",
+                "psr/log": "^1.1",
+                "roave/doctrine-simplecache": "^2.2",
+                "symfony/config": "^4.0 || ^5.0",
+                "symfony/dependency-injection": "^4.0 || ^5.0",
+                "symfony/event-dispatcher": "^4.0 || ^5.0",
+                "symfony/http-kernel": "^4.0 || ^5.0",
+                "symfony/orm-pack": "^2.0",
+                "symfony/twig-pack": "^1.0",
+                "vimeo/psalm": "^4.4.1"
+            },
+            "suggest": {
+                "composer-runtime-api": "Composer v2 is required for seeing version information in metadata",
+                "ext-scoutapm": "Recommended for additional recording capability of IO-bound PHP internal functions"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Scoutapm\\Laravel\\Providers\\ScoutApmServiceProvider"
+                    ],
+                    "aliases": {
+                        "ScoutApm": "Scoutapm\\Laravel\\Facades\\ScoutApm"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Scoutapm\\": "src/"
+                },
+                "files": [
+                    "./src/ScoutApmBundle/symfony-version-compatibility.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Scout Application Performance Monitoring Agent - https://scoutapm.com",
+            "homepage": "https://scoutapm.com/",
+            "keywords": [
+                "apm",
+                "development",
+                "monitoring",
+                "performance"
+            ],
+            "support": {
+                "issues": "https://github.com/scoutapp/scout-apm-php/issues",
+                "source": "https://github.com/scoutapp/scout-apm-php/tree/v6.0.0"
+            },
+            "time": "2021-02-23T10:52:54+00:00"
+        },
+        {
             "name": "seld/jsonlint",
             "version": "1.8.3",
             "source": {
@@ -6199,6 +6705,61 @@
                 "source": "https://github.com/Seldaek/phar-utils/tree/master"
             },
             "time": "2020-07-07T18:42:57+00:00"
+        },
+        {
+            "name": "sixlive/nova-text-copy-field",
+            "version": "v1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sixlive/nova-text-copy-field.git",
+                "reference": "1de83cf4aa3599f12308835d6a6baca4fdd53f5b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sixlive/nova-text-copy-field/zipball/1de83cf4aa3599f12308835d6a6baca4fdd53f5b",
+                "reference": "1de83cf4aa3599f12308835d6a6baca4fdd53f5b",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "*",
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Sixlive\\TextCopy\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sixlive\\TextCopy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "TJ Miller",
+                    "email": "oss@tjmiller.co",
+                    "homepage": "https://www.tjmiller.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel Nova text field with click to copy support",
+            "homepage": "https://github.com/sixlive/nova-text-copy-field",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/sixlive/nova-text-copy-field/issues",
+                "source": "https://github.com/sixlive/nova-text-copy-field/tree/master"
+            },
+            "time": "2019-03-03T19:28:38+00:00"
         },
         {
             "name": "skymeyer/vatsimphp",
@@ -6488,6 +7049,68 @@
                 }
             ],
             "time": "2021-01-15T12:05:52+00:00"
+        },
+        {
+            "name": "spatie/once",
+            "version": "2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/once.git",
+                "reference": "e6c13ae474a7d4b30975ef6a502a593874ac12d2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/once/zipball/e6c13ae474a7d4b30975ef6a502a593874ac12d2",
+                "reference": "e6c13ae474a7d4b30975ef6a502a593874ac12d2",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Once\\": "src"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A magic memoization function",
+            "homepage": "https://github.com/spatie/once",
+            "keywords": [
+                "cache",
+                "callable",
+                "memozation",
+                "once",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/once/issues",
+                "source": "https://github.com/spatie/once/tree/2.2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                }
+            ],
+            "time": "2020-10-29T18:22:10+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -7483,6 +8106,94 @@
             "time": "2021-02-03T04:51:58+00:00"
         },
         {
+            "name": "symfony/intl",
+            "version": "v5.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/intl.git",
+                "reference": "930f17689729cc47d2ce18be21ed403bcbeeb6a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/intl/zipball/930f17689729cc47d2ce18be21ed403bcbeeb6a9",
+                "reference": "930f17689729cc47d2ce18be21ed403bcbeeb6a9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/polyfill-intl-icu": "~1.0",
+                "symfony/polyfill-php80": "^1.15"
+            },
+            "require-dev": {
+                "symfony/filesystem": "^4.4|^5.0"
+            },
+            "suggest": {
+                "ext-intl": "to use the component with locales other than \"en\""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Intl\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ],
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                },
+                {
+                    "name": "Eriksen Costa",
+                    "email": "eriksen.costa@infranology.com.br"
+                },
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides a PHP replacement layer for the C intl extension that includes additional data from the ICU library",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "i18n",
+                "icu",
+                "internationalization",
+                "intl",
+                "l10n",
+                "localization"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/intl/tree/v5.2.3"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-01-27T10:01:46+00:00"
+        },
+        {
             "name": "symfony/mime",
             "version": "v5.2.3",
             "source": {
@@ -7787,6 +8498,93 @@
             ],
             "support": {
                 "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.22.1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-01-22T09:19:47+00:00"
+        },
+        {
+            "name": "symfony/polyfill-intl-icu",
+            "version": "v1.22.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-intl-icu.git",
+                "reference": "af1842919c7e7364aaaa2798b29839e3ba168588"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-icu/zipball/af1842919c7e7364aaaa2798b29839e3ba168588",
+                "reference": "af1842919c7e7364aaaa2798b29839e3ba168588",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "suggest": {
+                "ext-intl": "For best performance and support of other locales than \"en\""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.22-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Icu\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ],
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for intl's ICU-related data and classes",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "icu",
+                "intl",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-intl-icu/tree/v1.22.1"
             },
             "funding": [
                 {
@@ -9008,6 +9806,46 @@
             "time": "2020-07-13T06:12:54+00:00"
         },
         {
+            "name": "titasgailius/search-relations",
+            "version": "1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TitasGailius/nova-search-relations.git",
+                "reference": "ac999c8d3230573fe5bb81f50cbabfaa62da26c0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TitasGailius/nova-search-relations/zipball/ac999c8d3230573fe5bb81f50cbabfaa62da26c0",
+                "reference": "ac999c8d3230573fe5bb81f50cbabfaa62da26c0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Titasgailius\\SearchRelations\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova tool.",
+            "keywords": [
+                "laravel",
+                "nova",
+                "relations",
+                "search"
+            ],
+            "support": {
+                "issues": "https://github.com/TitasGailius/nova-search-relations/issues",
+                "source": "https://github.com/TitasGailius/nova-search-relations/tree/1.0.6"
+            },
+            "time": "2020-10-09T09:25:10+00:00"
+        },
+        {
             "name": "vatsim/sso",
             "version": "3.0",
             "source": {
@@ -9106,6 +9944,42 @@
                 "source": "https://github.com/VATSIM-UK/VatsimXML/tree/2.3.1"
             },
             "time": "2019-12-22T22:01:45+00:00"
+        },
+        {
+            "name": "vatsimuk/waiting-lists-manager",
+            "version": "dev-scout-apm",
+            "dist": {
+                "type": "path",
+                "url": "nova-components/WaitingListsManager",
+                "reference": "fa97ee4a3420f4d1bff4c13d5630c148c42919f0"
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Vatsimuk\\WaitingListsManager\\ToolServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Vatsimuk\\WaitingListsManager\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova resource tool.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "vlucas/phpdotenv",
@@ -9260,6 +10134,56 @@
                 }
             ],
             "time": "2020-11-12T00:07:28+00:00"
+        },
+        {
+            "name": "vyuldashev/nova-permission",
+            "version": "v2.11.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vyuldashev/nova-permission.git",
+                "reference": "6004bef5a535d1de07cb60d20ee79d2c42a07781"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vyuldashev/nova-permission/zipball/6004bef5a535d1de07cb60d20ee79d2c42a07781",
+                "reference": "6004bef5a535d1de07cb60d20ee79d2c42a07781",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2|^8.0",
+                "spatie/laravel-permission": "^3.0|^4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Vyuldashev\\NovaPermission\\ToolServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Vyuldashev\\NovaPermission\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova tool for Spatie's Permission library.",
+            "keywords": [
+                "laravel",
+                "nova",
+                "spatie-permission"
+            ],
+            "support": {
+                "issues": "https://github.com/vyuldashev/nova-permission/issues",
+                "source": "https://github.com/vyuldashev/nova-permission/tree/v2.11.1"
+            },
+            "time": "2021-02-14T02:21:41+00:00"
         },
         {
             "name": "watson/rememberable",
@@ -12313,7 +13237,8 @@
         "alawrence/laravel-ipboard": 20,
         "malahierba-lab/public-id": 20,
         "planetteamspeak/ts3-php-framework": 20,
-        "vatsim/xml": 20
+        "vatsim/xml": 20,
+        "vatsimuk/waiting-lists-manager": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
