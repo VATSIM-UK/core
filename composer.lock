@@ -5770,16 +5770,16 @@
         },
         {
             "name": "pusher/pusher-php-server",
-            "version": "v4.1.5",
+            "version": "v5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pusher/pusher-http-php.git",
-                "reference": "251f22602320c1b1aff84798fe74f3f7ee0504a9"
+                "reference": "6cad1269f1f5261969848b72829f4f30736f3d90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/251f22602320c1b1aff84798fe74f3f7ee0504a9",
-                "reference": "251f22602320c1b1aff84798fe74f3f7ee0504a9",
+                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/6cad1269f1f5261969848b72829f4f30736f3d90",
+                "reference": "6cad1269f1f5261969848b72829f4f30736f3d90",
                 "shasum": ""
             },
             "require": {
@@ -5794,7 +5794,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.4-dev"
+                    "dev-master": "5.0-dev"
                 }
             },
             "autoload": {
@@ -5822,9 +5822,9 @@
             ],
             "support": {
                 "issues": "https://github.com/pusher/pusher-http-php/issues",
-                "source": "https://github.com/pusher/pusher-http-php/tree/v4.1.5"
+                "source": "https://github.com/pusher/pusher-http-php/tree/v5.0.1"
             },
-            "time": "2020-12-09T09:38:19+00:00"
+            "time": "2021-02-22T19:30:51+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
