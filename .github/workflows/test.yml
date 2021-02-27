@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         php: ['7.4']
-        composer: ['v1', 'v2']
+        composer: ['v2']
         experimental: [false]
     steps:
       - name: Checkout Code
