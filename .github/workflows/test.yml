@@ -95,7 +95,7 @@ jobs:
       # Install
       - name: Install Composer Dependencies
         run: |
-           composer install --no-interaction --no-progress --no-suggest --no-scripts
+           composer install --no-interaction --no-progress --no-scripts
            php artisan package:discover
 
 
