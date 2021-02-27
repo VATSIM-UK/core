@@ -86,7 +86,7 @@
         "ohdearapp/ohdear-php-sdk": "^3.0",
         "planetteamspeak/ts3-php-framework": "dev-master#9e987b61b8e559b4219d30b140b8edbeb94edece",
         "predis/predis": "^1.1",
-        "pusher/pusher-php-server": "~4.0",
+        "pusher/pusher-php-server": "~5.0",
         "spatie/laravel-cookie-consent": "^2.4",
         "spatie/laravel-permission": "^3.0",
         "spatie/laravel-schedule-monitor": "^2.1",
@@ -99,7 +99,7 @@
     },
     "require-dev": {
         "ext-json": "*",
-        "codedungeon/phpunit-result-printer": "^0.29.3",
+        "codedungeon/phpunit-result-printer": "^0.30.1",
         "facade/ignition": "^2.3.6",
         "fakerphp/faker": "^1.13",
         "laracasts/generators": "^1.1",
