@@ -287,11 +287,15 @@
                         VATSIM UK?</p>
                     <hr class="w-10 my-7">
                     <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('dashboard') }}">Enter</a>
+                    <br/>
+                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('site.operations.sectors') }}">View our enroute sectors</a>
                 @elseif(currentUserHasAuth())
                     <h1>Welcome to VATSIM UK, {{ $_account->name_first }}!</h1>
                     <p class="lead mt-5 my-0"> Have you considered visiting or transferring to the UK?</p>
                     <p class="lead"><a href="{{ route('visiting.landing') }}" class="text-white">Click here to learn
                             more!</a></p>
+                    <br/>
+                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('site.operations.sectors') }}">View our enroute sectors</a>
                     <hr class="w-10 my-7">
                     <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('dashboard') }}">Enter</a>
                 @else
@@ -300,6 +304,8 @@
                         for our pilots.</p>
                     <hr class="w-10 my-7">
                     <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('site.join') }}">Join Us!</a>
+                    <br/>
+                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('site.operations.sectors') }}">View our enroute sectors</a>
                 @endif
             </div>
 
