@@ -5765,16 +5765,16 @@
         },
         {
             "name": "pusher/pusher-php-server",
-            "version": "v5.0.1",
+            "version": "5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pusher/pusher-http-php.git",
-                "reference": "6cad1269f1f5261969848b72829f4f30736f3d90"
+                "reference": "933971d7b74395de96f2e7b89d38e157113d68df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/6cad1269f1f5261969848b72829f4f30736f3d90",
-                "reference": "6cad1269f1f5261969848b72829f4f30736f3d90",
+                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/933971d7b74395de96f2e7b89d38e157113d68df",
+                "reference": "933971d7b74395de96f2e7b89d38e157113d68df",
                 "shasum": ""
             },
             "require": {
@@ -5817,9 +5817,9 @@
             ],
             "support": {
                 "issues": "https://github.com/pusher/pusher-http-php/issues",
-                "source": "https://github.com/pusher/pusher-http-php/tree/v5.0.1"
+                "source": "https://github.com/pusher/pusher-http-php/tree/5.0.2"
             },
-            "time": "2021-02-22T19:30:51+00:00"
+            "time": "2021-03-11T09:42:34+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
