@@ -242,6 +242,7 @@
                         <li>Haverfordwest (EGFE)</li>
                         <li>Kemble (EGBP)</li>
                         <li>Manchester Barton (EGCB)</li>
+                        <li>Netherthorpe (EGNF)</li>
                         <li>Newtownards (EGAD)</li>
                         <li>Old Sarum (EGLS)</li>
                         <li>Rochester (EGTO)</li>
