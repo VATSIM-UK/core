@@ -3607,23 +3607,23 @@
         },
         {
             "name": "maatwebsite/excel",
-            "version": "3.1.27",
+            "version": "3.1.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maatwebsite/Laravel-Excel.git",
-                "reference": "584d65427eae4de0ba072297c8fac9b0d63dbc37"
+                "reference": "71f27435091a78906276d00133f287ed67dd390e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maatwebsite/Laravel-Excel/zipball/584d65427eae4de0ba072297c8fac9b0d63dbc37",
-                "reference": "584d65427eae4de0ba072297c8fac9b0d63dbc37",
+                "url": "https://api.github.com/repos/Maatwebsite/Laravel-Excel/zipball/71f27435091a78906276d00133f287ed67dd390e",
+                "reference": "71f27435091a78906276d00133f287ed67dd390e",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "illuminate/support": "5.8.*|^6.0|^7.0|^8.0",
                 "php": "^7.0|^8.0",
-                "phpoffice/phpspreadsheet": "^1.16"
+                "phpoffice/phpspreadsheet": "1.16.*"
             },
             "require-dev": {
                 "orchestra/testbench": "^6.0",
@@ -3669,7 +3669,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Maatwebsite/Laravel-Excel/issues",
-                "source": "https://github.com/Maatwebsite/Laravel-Excel/tree/3.1.27"
+                "source": "https://github.com/Maatwebsite/Laravel-Excel/tree/3.1.28"
             },
             "funding": [
                 {
@@ -3681,7 +3681,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-02-22T16:58:19+00:00"
+            "time": "2021-03-10T16:36:04+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
