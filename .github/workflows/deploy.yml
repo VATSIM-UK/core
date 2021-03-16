@@ -209,7 +209,6 @@ jobs:
             cd $RELEASE_DIRECTORY
 
             # Stop Application / Services
-            sudo systemctl stop teamspeak-daemon
             $PHP_PATH artisan down
             sudo systemctl stop core-horizon
 
@@ -228,7 +227,6 @@ jobs:
             # This will interpolate the values as --revision="vx.y.z" and --repository="vatsim-uk/core"
             echo artisan bugsnag:deploy --branch="main" --revision="$TAG" --repository="$GITHUB_REPOSITORY"
             sudo systemctl start core-horizon
-            sudo systemctl start teamspeak-daemon
           envs: RELEASE_DIRECTORY,PHP_PATH,TAG,GITHUB_REPOSITORY
 
       #
