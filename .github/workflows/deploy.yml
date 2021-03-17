@@ -6,6 +6,8 @@ on:
 
 jobs:
   deploy:
+    # Wait for ~3 builds (3m each - see Turnstyle action below) + current build (3m) before timeout.
+    timeout-minutes: 12
     name: Deploy
     runs-on: ubuntu-latest
     steps:
@@ -14,6 +16,11 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.client_payload.ref }}
+
+      - name: Wait for current executions to complete (Turnstyle)
+        uses: softprops/turnstyle@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract short commit hash
         run: |
