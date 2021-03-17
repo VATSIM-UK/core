@@ -190,7 +190,6 @@ jobs:
             ln -s $SHARED_DIRECTORY/storage $RELEASE_DIRECTORY/storage
 
             # Update Permissions on Application Directories
-            chmod -R u+rwX,g+rwX,o-rwx $SHARED_DIRECTORY
             chmod -R u+rwX,g+rwX,o-rwx $RELEASE_DIRECTORY
 
             # Update the current link to point to this release
