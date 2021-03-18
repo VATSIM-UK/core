@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Adm\Mship\Account;
 
-use App\Events\Mship\AccountAltered;
 use App\Http\Controllers\Adm\AdmController;
 use App\Jobs\UpdateMember;
-use App\Listeners\Mship\SyncSubscriber;
 use App\Models\Contact;
 use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Note\Type as NoteTypeData;
