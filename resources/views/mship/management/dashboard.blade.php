@@ -43,27 +43,21 @@
                     <!-- Content Of Panel [START] -->
                     <!-- Top Row [START] -->
                     <div class="row">
-                        <div class="col-xs-4">
+                        <div class="col-xs-4 pb-1">
                             <b>CID:</b>
                             {{ $_account->id }}
                         </div>
-                        <div class="col-xs-4">
+                        <div class="col-xs-4 pb-1">
                             <b>FULL NAME:</b>
                             {{ $_account->name}}
                         </div>
                         @if(false)
-                            <div class="col-xs-4">
+                            <div class="col-xs-4 pb-1">
                                 <b>NICKNAME:</b>
                                 {{ $_account->name }}
                             </div>
                         @endif
-                    </div>
-                    <!-- Top Row [END] -->
-                    <br/>
-                    <!-- Second Row [START] -->
-                    <div class="row">
-
-                        <div class="col-xs-4">
+                        <div class="col-xs-4 pb-1">
                             <b>STATUS: </b>
                             {{ $_account->status_string }} {{ !is_null($_account->primary_state) ? $_account->primary_state->name : 'unknown state' }}
                             Member
@@ -87,9 +81,23 @@
                                onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Disable' : 'Enable' }}</a>
                             {!! Form::close() !!}
                         </div>
+                        @if($_account->cert_checked_at)
+                            <div class="col-xs-4">
+                                <b>LAST UPDATE FROM VATSIM.NET:</b>
+                                {{$_account->cert_checked_at->diffForHumans()}}
+                            </div>
+                        @endif
                     </div>
-                    <!-- Second Row [END] -->
-                    <!-- Content Of Panel [END] -->
+                    <!-- Top Row [END] -->
+                </div>
+                <div class="panel-footer panel-footer-primary">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a href="{{ route('mship.manage.cert.update') }}">
+                                <span class='fa fa-info'></span> Details look incorrect? Click here to request an update from VATSIM.net
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="panel panel-ukblue">
@@ -366,8 +374,10 @@
                     <div class="row">
                         <div class="col-xs-12">
                             @if($_account->discord_id)
-                            Currently registered with Discord ID {{ $_account->discord_user ? $_account->discord_user['username'].'#'.$_account->discord_user['discriminator'] : $_account->discord_id }}. <br/>
-                            <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
+                                Currently registered with Discord
+                                ID {{ $_account->discord_user ? $_account->discord_user['username'].'#'.$_account->discord_user['discriminator'] : $_account->discord_id }}
+                                . <br/>
+                                <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
                             @else
                                 You are not yet
                                 registered.  {!! link_to_route("discord.create", "Click here to register.") !!}
@@ -408,7 +418,8 @@
                             <div class="row">
                                 @forelse($pluginKeys as $key)
                                     <div class="col-xs-6 row-text-contain" style="padding-bottom: 20px;">
-                                        [ <strong>Registration {{\App\Libraries\UKCP::getKeyForToken($key)}}</strong> ]<br/>
+                                        [ <strong>Registration {{\App\Libraries\UKCP::getKeyForToken($key)}}</strong>
+                                        ]<br/>
                                         <strong>CREATED</strong>:
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
                                            title="{{ $key->created_at }}">
@@ -426,7 +437,8 @@
                                 @empty
                                     <p>
                                         No keys found.</br>
-                                        <a class="btn btn-sm btn-info" href="{{ route('ukcp.token.refresh') }}">Create UKCP Token</a>
+                                        <a class="btn btn-sm btn-info" href="{{ route('ukcp.token.refresh') }}">Create
+                                            UKCP Token</a>
                                     </p>
                                 @endforelse
                             </div>

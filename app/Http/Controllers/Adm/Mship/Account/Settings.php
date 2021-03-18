@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Adm\Mship\Account;
 
 use App\Events\Mship\AccountAltered;
 use App\Http\Controllers\Adm\AdmController;
+use App\Jobs\UpdateMember;
 use App\Listeners\Mship\SyncSubscriber;
 use App\Models\Contact;
 use App\Models\Mship\Account as AccountData;
@@ -80,9 +81,9 @@ class Settings extends AdmController
                 ->withError('This user does not exist');
         }
 
-        (new SyncSubscriber())->syncToAllServices(new AccountAltered($mshipAccount));
+        UpdateMember::dispatch($mshipAccount->id);
 
         return Redirect::back()
-            ->withSuccess('User queued to sync to external services!');
+            ->withSuccess('User queued to refresh central membership details & sync to external services!');
     }
 }

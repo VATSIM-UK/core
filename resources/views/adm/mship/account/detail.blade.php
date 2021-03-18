@@ -34,7 +34,7 @@
                                     @can('use-permission', "adm/mship/account/*/impersonate")
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalImpersonate">Impersonate</button>
                                     @endcan
-                                        <a href="{{route('adm.mship.account.sync', $account->id)}}" class="btn btn-warning">Sync To Services</a>
+                                        <a href="{{route('adm.mship.account.sync', $account->id)}}" class="btn btn-warning">Request Central Update</a>
                                     </div>
                             </div>
                         </div>
