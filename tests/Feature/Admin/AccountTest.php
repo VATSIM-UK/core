@@ -2,15 +2,13 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Jobs\Mship\SyncToCTS;
-use App\Jobs\Mship\SyncToHelpdesk;
-use App\Jobs\Mship\SyncToMoodle;
+use Tests\TestCase;
+use App\Jobs\UpdateMember;
 use App\Models\Mship\Account\Ban;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Queue;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AccountTest extends TestCase
 {
@@ -58,10 +56,7 @@ class AccountTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('success', 'User queued to refresh central membership details & sync to external services!');
 
-        Queue::assertPushed(SyncToCTS::class);
-        Queue::assertPushed(SyncToMoodle::class);
-        Queue::assertPushed(SyncToHelpdesk::class);
-        //Queue::assertPushed(SyncToForums::class);
+        Queue::assertPushed(UpdateMember::class);
     }
 
     /** @test */
