@@ -173,9 +173,6 @@ jobs:
 
             # Install Waiting List Dependencies
             $PHP_PATH /usr/local/bin/composer install --working-dir="$RELEASE_DIRECTORY/nova-components/WaitingListsManager" --no-dev
-
-            # Install Nova
-            $PHP_PATH artisan nova:install
           envs: RELEASE_DIRECTORY,PHP_PATH
 
       - name: (Remote) Update symbolic links
@@ -217,21 +214,28 @@ jobs:
             $PHP_PATH artisan down
             sudo systemctl stop core-horizon
 
-            # Deployment Tasks
+            # Migrate Database
             $PHP_PATH artisan migrate --step --force -n
-            $PHP_PATH artisan route:cache
-            $PHP_PATH artisan view:clear
-            $PHP_PATH artisan storage:link
+
+            # Publish Assets
             $PHP_PATH artisan telescope:publish
             $PHP_PATH artisan horizon:publish
-            mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true
+            $PHP_PATH artisan nova:publish
+
+            # Link Storage
+            $PHP_PATH artisan storage:link
 
             # Start Applications / Services
             $PHP_PATH artisan up
+            sudo systemctl start core-horizon
+
+            # Cache & Logs
+            $PHP_PATH artisan route:cache
+            $PHP_PATH artisan view:cache
+            mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true
 
             # This will interpolate the values as --revision="vx.y.z" and --repository="vatsim-uk/core"
             echo artisan bugsnag:deploy --branch="main" --revision="$TAG" --repository="$GITHUB_REPOSITORY"
-            sudo systemctl start core-horizon
           envs: RELEASE_DIRECTORY,PHP_PATH,TAG,GITHUB_REPOSITORY
 
       #
