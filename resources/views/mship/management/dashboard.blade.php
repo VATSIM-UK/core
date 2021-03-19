@@ -87,9 +87,9 @@
 
                         <div class="col-xs-4">
                             {!! Form::open(['route' => 'mship.auth.invisibility', 'id' => 'invisibility-form']) !!}
-                            <strong>INVISIBILITY:</strong>
+                            <strong title="Enabling this feature will show you as online on our services">SHOW AS ONLINE:</strong>
                             <a href="{{ route('mship.auth.invisibility') }}"
-                               onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Disable' : 'Enable' }}</a>
+                               onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Enable' : 'Disable' }}</a>
                             {!! Form::close() !!}
                         </div>
                     </div>
