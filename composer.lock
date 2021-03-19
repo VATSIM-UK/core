@@ -2260,16 +2260,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v8.32.1",
+            "version": "v8.33.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "7c37b64f8153c16b6406f5c28cf37828ebbe8846"
+                "reference": "354c57b8cb457549114074c500944455a288d6cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/7c37b64f8153c16b6406f5c28cf37828ebbe8846",
-                "reference": "7c37b64f8153c16b6406f5c28cf37828ebbe8846",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/354c57b8cb457549114074c500944455a288d6cc",
+                "reference": "354c57b8cb457549114074c500944455a288d6cc",
                 "shasum": ""
             },
             "require": {
@@ -2424,7 +2424,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-03-09T15:37:45+00:00"
+            "time": "2021-03-16T19:42:32+00:00"
         },
         {
             "name": "laravel/helpers",
@@ -2484,16 +2484,16 @@
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.7.1",
+            "version": "v5.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "20b6862a069af48a50e963256d325407e7a93a85"
+                "reference": "c5863ba7ecd6ca53f1dc9eaf40ba59be38bf385a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/20b6862a069af48a50e963256d325407e7a93a85",
-                "reference": "20b6862a069af48a50e963256d325407e7a93a85",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/c5863ba7ecd6ca53f1dc9eaf40ba59be38bf385a",
+                "reference": "c5863ba7ecd6ca53f1dc9eaf40ba59be38bf385a",
                 "shasum": ""
             },
             "require": {
@@ -2555,9 +2555,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.7.1"
+                "source": "https://github.com/laravel/horizon/tree/v5.7.2"
             },
-            "time": "2021-03-09T16:40:46+00:00"
+            "time": "2021-03-16T16:18:27+00:00"
         },
         {
             "name": "laravel/passport",
