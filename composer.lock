@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "65fd8f350e88df55cee31ee6fadee532",
+    "content-hash": "535fe412999590b0959e298647701770",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -1999,16 +1999,16 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.4.0",
+            "version": "1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "60d379c243457e073cff02bc323a2a86cb355631"
+                "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/60d379c243457e073cff02bc323a2a86cb355631",
-                "reference": "60d379c243457e073cff02bc323a2a86cb355631",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/8e7d04f1f6450fef59366c399cfad4b9383aa30d",
+                "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d",
                 "shasum": ""
             },
             "require": {
@@ -2048,9 +2048,9 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/1.4.0"
+                "source": "https://github.com/guzzle/promises/tree/1.4.1"
             },
-            "time": "2020-09-30T07:37:28+00:00"
+            "time": "2021-03-07T09:25:29+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -5765,25 +5765,27 @@
         },
         {
             "name": "pusher/pusher-php-server",
-            "version": "5.0.2",
+            "version": "6.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pusher/pusher-http-php.git",
-                "reference": "933971d7b74395de96f2e7b89d38e157113d68df"
+                "reference": "e402b838ea316ed0d80d894cb5ac8b41410809d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/933971d7b74395de96f2e7b89d38e157113d68df",
-                "reference": "933971d7b74395de96f2e7b89d38e157113d68df",
+                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/e402b838ea316ed0d80d894cb5ac8b41410809d0",
+                "reference": "e402b838ea316ed0d80d894cb5ac8b41410809d0",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
+                "guzzlehttp/guzzle": "^7.2",
                 "paragonie/sodium_compat": "^1.6",
-                "php": "^7.1|^8.0",
+                "php": "^7.2.5|^8.0",
                 "psr/log": "^1.0"
             },
             "require-dev": {
+                "overtrue/phplint": "^2.3",
                 "phpunit/phpunit": "^7.2|^8.5|^9.3"
             },
             "type": "library",
@@ -5817,9 +5819,9 @@
             ],
             "support": {
                 "issues": "https://github.com/pusher/pusher-http-php/issues",
-                "source": "https://github.com/pusher/pusher-http-php/tree/5.0.2"
+                "source": "https://github.com/pusher/pusher-http-php/tree/6.0.1"
             },
-            "time": "2021-03-11T09:42:34+00:00"
+            "time": "2021-03-17T16:58:33+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
