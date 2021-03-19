@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Jobs\UpdateMember;
 use App\Libraries\UKCP as UKCPLibrary;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Token as SystemToken;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 use Laravel\Passport\Client as OAuthClient;
 use Redirect;
@@ -258,5 +260,17 @@ class Management extends \App\Http\Controllers\BaseController
                 'Your new email address ('.$token->related->email.') has been verified!'
             );
         }
+    }
+
+    public function requestCertCheck()
+    {
+        $ranRecently = ! Cache::add('USER_REQUEST_CERTCHECK_'.Auth::user()->id, '1', 1 * 60 * 60 * 1000); // 1 hour
+        if ($ranRecently) {
+            return redirect()->route('mship.manage.dashboard')->withError('You requested an update with the central VATSIM database recently. Try again later.');
+        }
+
+        UpdateMember::dispatch(Auth::user()->id);
+
+        return redirect()->route('mship.manage.dashboard')->withSuccess('Account update requested. This may take up to 5 minutes to complete.');
     }
 }

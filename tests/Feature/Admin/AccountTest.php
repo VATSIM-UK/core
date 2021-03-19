@@ -56,7 +56,7 @@ class AccountTest extends TestCase
         $this->actingAs($this->privacc)
             ->get(route('adm.mship.account.sync', $this->user->id))
             ->assertRedirect()
-            ->assertSessionHas('success', 'User queued to sync to external services!');
+            ->assertSessionHas('success', 'User queued to refresh central membership details & sync to external services!');
 
         Queue::assertPushed(SyncToCTS::class);
         Queue::assertPushed(SyncToMoodle::class);

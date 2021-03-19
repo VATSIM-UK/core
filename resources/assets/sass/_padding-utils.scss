@@ -9,6 +9,13 @@ $spacers: (
 ) !default;
 
 @each $index, $currentSpacer in $spacers {
+    .m-#{$index} {
+        margin: $currentSpacer;
+    }
+    .mx-#{$index} {
+        margin-left: $currentSpacer;
+        margin-right: $currentSpacer;
+    }
     .mt-#{$index} {
         margin-top: $currentSpacer;
     }
@@ -32,5 +39,8 @@ $spacers: (
     }
     .pb-#{$index} {
         padding-bottom: $currentSpacer;
+    }
+    .p-#{$index} {
+        padding: $currentSpacer;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\Mship\AccountAltered;
 use App\Jobs\Middleware\RateLimited;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
@@ -56,8 +57,6 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
         } catch (\Exception $e) {
-            $member->cert_checked_at = Carbon::now();
-
             return;
         }
 
@@ -103,6 +102,8 @@ class UpdateMember extends Job implements ShouldQueue
             $member = $this->processRating($member);
 
             $member->save();
+
+            event(new AccountAltered($member));
         }
 
         DB::commit();

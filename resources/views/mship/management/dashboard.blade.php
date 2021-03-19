@@ -18,12 +18,12 @@
                     </div>
                     <div class="panel panel-ukblue border-black-thin">
                         <div class="panel-heading">
-                            <i>https://cert.vatsim.net/vatsimnet/newmail.php</i>
+                            <i>https://my.vatsim.net/user/email</i>
                         </div>
                         <div class="panel-body">
                             <div class="embed-responsive embed-responsive-16by9">
                                 <iframe class="embed-responsive-item"
-                                        src="https://cert.vatsim.net/vatsimnet/newmail.php"></iframe>
+                                        src="https://my.vatsim.net/user/email"></iframe>
                             </div>
                         </div>
                     </div>
@@ -38,32 +38,37 @@
         <div class="col-md-6">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-male"></i> &thinsp; Personal Details
+
+                    <div class="pull-right">
+                        <a
+                        class="tooltip_displays"
+                        href="{{ route('mship.manage.cert.update') }}"
+                        data-toggle="tooltip"
+                        title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} "
+                        >
+                            <i class="fa fa-sync"></i>
+                        </a>
+                    </div>
                 </div>
                 <div class="panel-body">
                     <!-- Content Of Panel [START] -->
                     <!-- Top Row [START] -->
                     <div class="row">
-                        <div class="col-xs-4">
+                        <div class="col-xs-4 pb-1">
                             <b>CID:</b>
                             {{ $_account->id }}
                         </div>
-                        <div class="col-xs-4">
+                        <div class="col-xs-4 pb-1">
                             <b>FULL NAME:</b>
                             {{ $_account->name}}
                         </div>
                         @if(false)
-                            <div class="col-xs-4">
+                            <div class="col-xs-4 pb-1">
                                 <b>NICKNAME:</b>
                                 {{ $_account->name }}
                             </div>
                         @endif
-                    </div>
-                    <!-- Top Row [END] -->
-                    <br/>
-                    <!-- Second Row [START] -->
-                    <div class="row">
-
-                        <div class="col-xs-4">
+                        <div class="col-xs-4 pb-1">
                             <b>STATUS: </b>
                             {{ $_account->status_string }} {{ !is_null($_account->primary_state) ? $_account->primary_state->name : 'unknown state' }}
                             Member
@@ -88,8 +93,16 @@
                             {!! Form::close() !!}
                         </div>
                     </div>
-                    <!-- Second Row [END] -->
-                    <!-- Content Of Panel [END] -->
+                    <!-- Top Row [END] -->
+                </div>
+                <div class="panel-footer panel-footer-primary">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a href="{{ route('mship.manage.cert.update') }}">
+                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net.
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="panel panel-ukblue">
@@ -223,6 +236,17 @@
             </div>
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications
+
+                    <div class="pull-right">
+                        <a
+                        class="tooltip_displays"
+                        href="{{ route('mship.manage.cert.update') }}"
+                        data-toggle="tooltip"
+                        title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} "
+                        >
+                            <i class="fa fa-sync"></i>
+                        </a>
+                    </div>
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -289,6 +313,16 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+
+                <div class="panel-footer panel-footer-primary">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a href="{{ route('mship.manage.cert.update') }}">
+                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net.
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -366,8 +400,10 @@
                     <div class="row">
                         <div class="col-xs-12">
                             @if($_account->discord_id)
-                            Currently registered with Discord ID {{ $_account->discord_user ? $_account->discord_user['username'].'#'.$_account->discord_user['discriminator'] : $_account->discord_id }}. <br/>
-                            <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
+                                Currently registered with Discord
+                                ID {{ $_account->discord_user ? $_account->discord_user['username'].'#'.$_account->discord_user['discriminator'] : $_account->discord_id }}
+                                . <br/>
+                                <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
                             @else
                                 You are not yet
                                 registered.  {!! link_to_route("discord.create", "Click here to register.") !!}
@@ -408,7 +444,8 @@
                             <div class="row">
                                 @forelse($pluginKeys as $key)
                                     <div class="col-xs-6 row-text-contain" style="padding-bottom: 20px;">
-                                        [ <strong>Registration {{\App\Libraries\UKCP::getKeyForToken($key)}}</strong> ]<br/>
+                                        [ <strong>Registration {{\App\Libraries\UKCP::getKeyForToken($key)}}</strong>
+                                        ]<br/>
                                         <strong>CREATED</strong>:
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
                                            title="{{ $key->created_at }}">
@@ -426,7 +463,8 @@
                                 @empty
                                     <p>
                                         No keys found.</br>
-                                        <a class="btn btn-sm btn-info" href="{{ route('ukcp.token.refresh') }}">Create UKCP Token</a>
+                                        <a class="btn btn-sm btn-info" href="{{ route('ukcp.token.refresh') }}">Create
+                                            UKCP Token</a>
                                     </p>
                                 @endforelse
                             </div>
