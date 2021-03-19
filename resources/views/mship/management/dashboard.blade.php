@@ -18,12 +18,12 @@
                     </div>
                     <div class="panel panel-ukblue border-black-thin">
                         <div class="panel-heading">
-                            <i>https://cert.vatsim.net/vatsimnet/newmail.php</i>
+                            <i>https://my.vatsim.net/user/email</i>
                         </div>
                         <div class="panel-body">
                             <div class="embed-responsive embed-responsive-16by9">
                                 <iframe class="embed-responsive-item"
-                                        src="https://cert.vatsim.net/vatsimnet/newmail.php"></iframe>
+                                        src="https://my.vatsim.net/user/email"></iframe>
                             </div>
                         </div>
                     </div>
@@ -38,6 +38,17 @@
         <div class="col-md-6">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-male"></i> &thinsp; Personal Details
+
+                    <div class="pull-right">
+                        <a
+                        class="tooltip_displays"
+                        href="{{ route('mship.manage.cert.update') }}"
+                        data-toggle="tooltip"
+                        title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} "
+                        >
+                            <i class="fa fa-sync"></i>
+                        </a>
+                    </div>
                 </div>
                 <div class="panel-body">
                     <!-- Content Of Panel [START] -->
@@ -81,12 +92,6 @@
                                onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Disable' : 'Enable' }}</a>
                             {!! Form::close() !!}
                         </div>
-                        @if($_account->cert_checked_at)
-                            <div class="col-xs-4">
-                                <b>LAST UPDATE FROM VATSIM.NET:</b>
-                                {{$_account->cert_checked_at->diffForHumans()}}
-                            </div>
-                        @endif
                     </div>
                     <!-- Top Row [END] -->
                 </div>
@@ -94,7 +99,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <a href="{{ route('mship.manage.cert.update') }}">
-                                <span class='fa fa-info'></span> Details look incorrect? Click here to request an update from VATSIM.net
+                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net
                             </a>
                         </div>
                     </div>
@@ -231,6 +236,17 @@
             </div>
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications
+
+                    <div class="pull-right">
+                        <a
+                        class="tooltip_displays"
+                        href="{{ route('mship.manage.cert.update') }}"
+                        data-toggle="tooltip"
+                        title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} "
+                        >
+                            <i class="fa fa-sync"></i>
+                        </a>
+                    </div>
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -297,6 +313,16 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+
+                <div class="panel-footer panel-footer-primary">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a href="{{ route('mship.manage.cert.update') }}">
+                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
