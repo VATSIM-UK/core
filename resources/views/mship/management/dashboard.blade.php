@@ -99,7 +99,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <a href="{{ route('mship.manage.cert.update') }}">
-                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net
+                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net.
                             </a>
                         </div>
                     </div>
@@ -320,7 +320,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <a href="{{ route('mship.manage.cert.update') }}">
-                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net
+                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net.
                             </a>
                         </div>
                     </div>
