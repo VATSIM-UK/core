@@ -87,15 +87,10 @@ jobs:
           path: vendor
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
 
-      # Remove Nova from Composer when secrets aren't available
-      - name: Remove Nova From Composer
-        if: ${{ env.NOVA_USERNAME == 0 || env.NOVA_PASSWORD == 0 }}
-        run: sed -i 's/"composer-nova.json"//g' composer.json && composer update
-
       # Install
       - name: Install Composer Dependencies
         run: |
-           composer update --no-interaction
+           composer install --no-interaction
            php artisan package:discover
 
 
