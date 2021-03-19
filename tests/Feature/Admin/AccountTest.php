@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Admin;
 
-use Tests\TestCase;
 use App\Jobs\UpdateMember;
 use App\Models\Mship\Account\Ban;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Queue;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class AccountTest extends TestCase
 {
