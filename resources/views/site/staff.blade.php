@@ -84,7 +84,7 @@
                             </tr>
                         </table>
                     </div>
-                </div>        
+                </div>
             </div>
             <!-- End Operations -->
             <!-- Marketing -->
@@ -267,7 +267,7 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (APP)</td>
-                                    <td>Charlie Watson</td>
+                                    <td>Kieron Crean</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (APP)</td>
