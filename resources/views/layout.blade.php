@@ -25,7 +25,6 @@
         };
         @endif
     </script>
-    <script src="https://slug.vatsim.uk/script.js" data-site="NJOVAIYV" data-included-domains="vatsim.uk,www.vatsim.uk" defer></script>
 
     <!-- CSS -->
     <link media="all" type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Yellowtail">
