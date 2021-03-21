@@ -94,7 +94,6 @@ jobs:
            php artisan package:discover
 
       - name: Install Nova & Waiting Lists
-        if: ${{ env.NOVA_USERNAME != 0 && env.NOVA_PASSWORD != 0 }}
         run: |
           php artisan nova:install
           cd nova-components/WaitingListsManager && composer install && cd ../../
