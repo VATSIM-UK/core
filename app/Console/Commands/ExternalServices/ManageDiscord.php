@@ -31,6 +31,9 @@ class ManageDiscord extends Command
     /** @var int */
     private $suspendedRoleId;
 
+    /** @var mixed */
+    private $currentRoles;
+
     /**
      * Create a new command instance.
      *
@@ -41,6 +44,8 @@ class ManageDiscord extends Command
         parent::__construct();
 
         $this->discord = $discord;
+
+        $this->currentRoles = collect();
 
         $this->suspendedRoleId = config('services.discord.suspended_member_role_id');
     }
@@ -64,6 +69,8 @@ class ManageDiscord extends Command
 
         foreach ($discordUsers as $account) {
             $currentAccount = Account::find($account);
+
+            $this->currentRoles = $this->discord->getUserRoles($currentAccount);
 
             if ($currentAccount->isBanned) {
                 $this->processSuspendedMember($currentAccount);
@@ -97,7 +104,7 @@ class ManageDiscord extends Command
 
     public function grantRoles(Account $account): void
     {
-        $currentRoles = $this->discord->getUserRoles($account);
+        $currentRoles = $this->currentRoles;
 
         DiscordRole::all()->filter(function (DiscordRole $role) use ($account) {
             return $account->hasPermissionTo($role->permission_id);
@@ -111,7 +118,7 @@ class ManageDiscord extends Command
 
     public function removeRoles(Account $account): void
     {
-        $currentRoles = $this->discord->getUserRoles($account);
+        $currentRoles = $this->currentRoles;
 
         if ($currentRoles->contains($this->suspendedRoleId)) {
             $this->discord->removeRoleById($account, $this->suspendedRoleId);
@@ -129,7 +136,7 @@ class ManageDiscord extends Command
 
     public function processSuspendedMember(Account $account): void
     {
-        $currentRoles = $this->discord->getUserRoles($account);
+        $currentRoles = $this->currentRoles;
 
         if ($currentRoles->contains($this->suspendedRoleId)) {
             return;
