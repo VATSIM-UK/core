@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b0fe18fcf292d2d83d61e89d58b9273a",
+    "content-hash": "2408a0fe8727e1712cdd5d1d794f399f",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -6469,132 +6469,6 @@
                 "source": "https://github.com/reactphp/promise/tree/v2.8.0"
             },
             "time": "2020-05-12T15:16:56+00:00"
-        },
-        {
-            "name": "scoutapp/scout-apm-laravel",
-            "version": "v2.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/scoutapp/scout-apm-laravel.git",
-                "reference": "a22c79f9b7abd450fae632292df746b4fb8d0c21"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/scoutapp/scout-apm-laravel/zipball/a22c79f9b7abd450fae632292df746b4fb8d0c21",
-                "reference": "a22c79f9b7abd450fae632292df746b4fb8d0c21",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/contracts": "^5.5.0|^6.0|^7.0|^8.0",
-                "illuminate/http": "^5.5.0|^6.0|^7.0|^8.0",
-                "illuminate/routing": "^5.5.0|^6.0|^7.0|^8.0",
-                "illuminate/support": "^5.5.0|^6.0|^7.0|^8.0",
-                "illuminate/view": "^5.5.0|^6.0|^7.0|^8.0",
-                "scoutapp/scout-apm-php": "^6.0"
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Scout Application Performance Monitoring Agent - https://scoutapm.com",
-            "homepage": "https://scoutapm.com/",
-            "keywords": [
-                "apm",
-                "development",
-                "laravel",
-                "monitoring",
-                "performance"
-            ],
-            "support": {
-                "issues": "https://github.com/scoutapp/scout-apm-laravel/issues",
-                "source": "https://github.com/scoutapp/scout-apm-laravel/tree/v2.0.0"
-            },
-            "time": "2021-02-23T11:16:35+00:00"
-        },
-        {
-            "name": "scoutapp/scout-apm-php",
-            "version": "v6.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/scoutapp/scout-apm-php.git",
-                "reference": "fea110281ddbe6e46218217b8f2b12ab67897aa1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/scoutapp/scout-apm-php/zipball/fea110281ddbe6e46218217b8f2b12ab67897aa1",
-                "reference": "fea110281ddbe6e46218217b8f2b12ab67897aa1",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-openssl": "*",
-                "ext-sockets": "*",
-                "ext-zlib": "*",
-                "php": "7.1.*|7.2.*|7.3.*|7.4.*|8.0.*",
-                "psr/log": "^1.0",
-                "psr/simple-cache": "^1.0",
-                "ralouphie/getallheaders": "^2.0.5|^3.0",
-                "ramsey/uuid": "^3.0|^4.0",
-                "webmozart/assert": "^1.0"
-            },
-            "require-dev": {
-                "composer-plugin-api": "^2.0",
-                "doctrine/coding-standard": "^8.2",
-                "laravel/framework": "^5.5.0|^6.0|^7.0|^8.0",
-                "monolog/monolog": "^1.26|^2.2.0",
-                "phpunit/phpunit": "^7.5.20|^8.5.14|^9.5.2",
-                "psalm/plugin-phpunit": "^0.15.1",
-                "psr/log": "^1.1",
-                "roave/doctrine-simplecache": "^2.2",
-                "symfony/config": "^4.0 || ^5.0",
-                "symfony/dependency-injection": "^4.0 || ^5.0",
-                "symfony/event-dispatcher": "^4.0 || ^5.0",
-                "symfony/http-kernel": "^4.0 || ^5.0",
-                "symfony/orm-pack": "^2.0",
-                "symfony/twig-pack": "^1.0",
-                "vimeo/psalm": "^4.6.4"
-            },
-            "suggest": {
-                "composer-runtime-api": "Composer v2 is required for seeing version information in metadata",
-                "ext-scoutapm": "Recommended for additional recording capability of IO-bound PHP internal functions"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Scoutapm\\Laravel\\Providers\\ScoutApmServiceProvider"
-                    ],
-                    "aliases": {
-                        "ScoutApm": "Scoutapm\\Laravel\\Facades\\ScoutApm"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Scoutapm\\": "src/"
-                },
-                "files": [
-                    "./src/ScoutApmBundle/symfony-version-compatibility.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Scout Application Performance Monitoring Agent - https://scoutapm.com",
-            "homepage": "https://scoutapm.com/",
-            "keywords": [
-                "apm",
-                "development",
-                "monitoring",
-                "performance"
-            ],
-            "support": {
-                "issues": "https://github.com/scoutapp/scout-apm-php/issues",
-                "source": "https://github.com/scoutapp/scout-apm-php/tree/v6.0.1"
-            },
-            "time": "2021-03-19T10:57:31+00:00"
         },
         {
             "name": "seld/jsonlint",
