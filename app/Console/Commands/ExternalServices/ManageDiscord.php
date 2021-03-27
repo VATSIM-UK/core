@@ -28,6 +28,7 @@ class ManageDiscord extends Command
     /** @var Discord */
     protected $discord;
 
+    /** @var int */
     private $suspendedRoleId;
 
     /**
@@ -53,38 +54,45 @@ class ManageDiscord extends Command
     {
         $discordUsers = $this->getUsers();
 
+        $progressBar = $this->output->createProgressBar(count($discordUsers));
+        $progressBar->start();
+
         if (! $discordUsers) {
             $this->error('No users found.');
             exit();
         }
 
         foreach ($discordUsers as $account) {
-            if ($account->isBanned) {
-                $this->processSuspendedMember($account);
+            $currentAccount = Account::find($account);
+
+            if ($currentAccount->isBanned) {
+                $this->processSuspendedMember($currentAccount);
             } else {
-                $this->grantRoles($account);
-                $this->removeRoles($account);
+                $this->grantRoles($currentAccount);
+                $this->removeRoles($currentAccount);
             }
-            $this->assignNickname($account);
-            sleep(1);
+
+            $this->assignNickname($currentAccount);
+
+            $progressBar->advance();
         }
 
-        $this->info($discordUsers->count().' user(s) updated on Discord.');
-        Log::debug($discordUsers->count().' user(s) updated on Discord.');
+        $progressBar->finish();
     }
 
     protected function getUsers()
     {
         if ($this->option('force')) {
-            return Account::where('id', $this->option('force'))->where('discord_id', '!=', null)->get();
+            return Account::where('id', $this->option('force'))->where('discord_id', '!=', null)->get()->pluck('id');
         }
 
-        return Account::where('discord_id', '!=', null)->get();
+        return Account::where('discord_id', '!=', null)->get()->pluck('id');
     }
 
     protected function assignNickname(Account $account)
     {
         $this->discord->setNickname($account, $account->name);
+        usleep(25000);
     }
 
     public function grantRoles(Account $account): void
@@ -96,7 +104,7 @@ class ManageDiscord extends Command
         })->each(function (DiscordRole $role) use ($account, $currentRoles) {
             if (! $currentRoles->contains($role->discord_id)) {
                 $this->discord->grantRoleById($account, $role->discord_id);
-                sleep(1);
+                usleep(25000);
             }
         });
     }
@@ -114,36 +122,24 @@ class ManageDiscord extends Command
         })->each(function (DiscordRole $role) use ($account, $currentRoles) {
             if ($currentRoles->contains($role->discord_id)) {
                 $this->discord->removeRoleById($account, $role->discord_id);
-                sleep(1);
+                usleep(25000);
             }
         });
     }
 
-    /**
-     * Process the relevant actions for a suspended user.
-     *
-     * All roles are removed and a suspended role added onto the
-     * Account.
-     *
-     * @param Account $account
-     * @return void
-     */
     public function processSuspendedMember(Account $account): void
     {
-        Log::info("Account {$account->id} detected as suspended. Removing Discord roles.");
         $currentRoles = $this->discord->getUserRoles($account);
 
         if ($currentRoles->contains($this->suspendedRoleId)) {
             return;
         }
 
-        // remove the roles which are currently applied to the user.
         $currentRoles->each(function (int $role) use ($account) {
             $this->discord->removeRoleById($account, $role);
-            sleep(1); // avoid spamming the Discord API.
+            usleep(25000);
         });
 
         $this->discord->grantRoleById($account, $this->suspendedRoleId);
-        Log::info("Account {$account->id} granted the suspended role.");
     }
 }
