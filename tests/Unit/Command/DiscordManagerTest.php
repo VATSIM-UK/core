@@ -52,7 +52,7 @@ class DiscordManagerTest extends TestCase
     {
         $roles = collect([$this->mockRoleId]);
 
-        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) use ($roles) {
+        $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) {
             // collection represents random set of roles which need to be removed from a suspended user.
             $mock->shouldReceive('removeRoleById')->with($this->account, $this->mockRoleId)->once();
         });
