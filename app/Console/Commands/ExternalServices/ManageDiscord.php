@@ -31,7 +31,7 @@ class ManageDiscord extends Command
     private $suspendedRoleId;
 
     /** @var mixed */
-    private $currentRoles;
+    public $currentRoles;
 
     /**
      * Create a new command instance.

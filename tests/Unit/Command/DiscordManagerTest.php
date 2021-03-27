@@ -38,12 +38,12 @@ class DiscordManagerTest extends TestCase
 
         $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) use ($roles) {
             // collection represents random set of roles which need to be removed from a suspended user.
-            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn($roles);
             $mock->shouldReceive('grantRoleById')->with($this->account, $this->mockRoleId)->once();
             $mock->shouldReceive('removeRoleById')->times($roles->count());
         });
 
         $command = new ManageDiscord($mockDiscordLibrary);
+        $command->currentRoles = $roles;
         $command->processSuspendedMember($this->account);
     }
 
@@ -54,11 +54,11 @@ class DiscordManagerTest extends TestCase
 
         $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) use ($roles) {
             // collection represents random set of roles which need to be removed from a suspended user.
-            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn($roles);
             $mock->shouldReceive('removeRoleById')->with($this->account, $this->mockRoleId)->once();
         });
 
         $command = new ManageDiscord($mockDiscordLibrary);
+        $command->currentRoles = $roles;
         $command->removeRoles($this->account);
     }
 
@@ -67,11 +67,11 @@ class DiscordManagerTest extends TestCase
     {
         $mockDiscordLibrary = $this->mock(Discord::class, function ($mock) {
             // collection represents random set of roles which need to be removed from a suspended user.
-            $mock->shouldReceive('getUserRoles')->with($this->account)->once()->andReturn(collect([$this->mockRoleId]));
             $mock->shouldNotReceive('removeRoleById');
         });
 
         $command = new ManageDiscord($mockDiscordLibrary);
+        $command->currentRoles = collect([$this->mockRoleId]);
         $command->processSuspendedMember($this->account);
     }
 }
