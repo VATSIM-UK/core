@@ -6,13 +6,13 @@ use App\Libraries\Discord;
 use App\Models\Discord\DiscordRole;
 
 /**
-* Trait HasDiscordAccount.
-*/
+ * Trait HasDiscordAccount.
+ */
 trait HasDiscordAccount
 {
     /**
-    * Sync the current account to Discord.
-    */
+     * Sync the current account to Discord.
+     */
     public function syncToDiscord()
     {
         $discord = (new Discord);

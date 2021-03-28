@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands\ExternalServices;
 
-use App\Models\Mship\Account;
 use App\Console\Commands\Command;
 use App\Jobs\Mship\SyncToDiscord;
+use App\Models\Mship\Account;
 
 class ManageDiscord extends Command
 {

@@ -3,12 +3,12 @@
 namespace App\Jobs\Mship;
 
 use App\Jobs\Job;
-use App\Models\Mship\Account;
 use App\Jobs\Middleware\RateLimited;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Models\Mship\Account;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class SyncToDiscord extends Job implements ShouldQueue
 {

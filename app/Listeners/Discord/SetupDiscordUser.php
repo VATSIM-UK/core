@@ -2,9 +2,9 @@
 
 namespace App\Listeners\Discord;
 
-use App\Libraries\Discord;
-use App\Jobs\Mship\SyncToDiscord;
 use App\Events\Discord\DiscordLinked;
+use App\Jobs\Mship\SyncToDiscord;
+use App\Libraries\Discord;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SetupDiscordUser implements ShouldQueue
