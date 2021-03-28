@@ -29,6 +29,6 @@ class SyncToDiscord extends Job implements ShouldQueue
 
     public function middleware()
     {
-        return [new RateLimited('discord_api_call', 15, 20)];
+        return [new RateLimited('discord_api_call', 3, 10)];
     }
 }
