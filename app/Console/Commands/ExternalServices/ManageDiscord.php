@@ -67,18 +67,16 @@ class ManageDiscord extends Command
         }
 
         foreach ($discordUsers as $account) {
-            $currentAccount = Account::find($account);
+            $this->currentRoles = $this->discord->getUserRoles($account);
 
-            $this->currentRoles = $this->discord->getUserRoles($currentAccount);
-
-            if ($currentAccount->isBanned) {
-                $this->processSuspendedMember($currentAccount);
+            if ($account->isBanned) {
+                $this->processSuspendedMember($account);
             } else {
-                $this->grantRoles($currentAccount);
-                $this->removeRoles($currentAccount);
+                $this->grantRoles($account);
+                $this->removeRoles($account);
             }
 
-            $this->assignNickname($currentAccount);
+            $this->assignNickname($account);
 
             $progressBar->advance();
         }
@@ -89,10 +87,10 @@ class ManageDiscord extends Command
     protected function getUsers()
     {
         if ($this->option('force')) {
-            return Account::where('id', $this->option('force'))->where('discord_id', '!=', null)->get()->pluck('id');
+            return Account::whereNotNull('discord_id')->where('id', $this->option('force'))->lazy();
         }
 
-        return Account::where('discord_id', '!=', null)->get()->pluck('id');
+        return Account::whereNotNull('discord_id')->lazy();
     }
 
     protected function assignNickname(Account $account)
