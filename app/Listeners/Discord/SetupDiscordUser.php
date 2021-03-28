@@ -3,9 +3,9 @@
 namespace App\Listeners\Discord;
 
 use App\Events\Discord\DiscordLinked;
+use App\Jobs\Mship\SyncToDiscord;
 use App\Libraries\Discord;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Artisan;
 
 class SetupDiscordUser implements ShouldQueue
 {
@@ -31,6 +31,6 @@ class SetupDiscordUser implements ShouldQueue
 
         $this->discord->invite($event->account);
 
-        Artisan::call('discord:manager --force='.$event->account->id);
+        SyncToDiscord::dispatch($event->account)->onQueue('default');
     }
 }

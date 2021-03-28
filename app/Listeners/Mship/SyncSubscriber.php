@@ -2,7 +2,6 @@
 
 namespace App\Listeners\Mship;
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -23,7 +22,11 @@ class SyncSubscriber
         \App\Jobs\Mship\SyncToCTS::dispatch($event->account);
         \App\Jobs\Mship\SyncToHelpdesk::dispatch($event->account);
         \App\Jobs\Mship\SyncToMoodle::dispatch($event->account);
-        Artisan::call('discord:manager --force='.$event->account->id);
+
+        if ($event->account->discord_id) {
+            \App\Jobs\Mship\SyncToDiscord::dispatch($event->account);
+        }
+
         // \App\Jobs\Mship\SyncToForums::dispatch($event->account); - Re-enable tests (Feat/Adm/AccountTest & Unit/Mship/Sync/AccountAltered)
 
         Log::debug($event->account->real_name.' ('.$event->account->id.') was queued to sync to external services');
@@ -37,8 +40,8 @@ class SyncSubscriber
     public function subscribe($events)
     {
         $events->listen(
-                \App\Events\Mship\AccountAltered::class,
-                '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
+            \App\Events\Mship\AccountAltered::class,
+            '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
         );
     }
 }

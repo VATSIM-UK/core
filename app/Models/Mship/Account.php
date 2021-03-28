@@ -10,6 +10,7 @@ use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasBans;
 use App\Models\Mship\Concerns\HasCTSAccount;
+use App\Models\Mship\Concerns\HasDiscordAccount;
 use App\Models\Mship\Concerns\HasEmails;
 use App\Models\Mship\Concerns\HasForumAccount;
 use App\Models\Mship\Concerns\HasHelpdeskAccount;
@@ -160,7 +161,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
         HasNetworkData, HasMoodleAccount, HasHelpdeskAccount, HasForumAccount, HasCTSAccount,
         HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword,
-        HasNotifications, HasEmails, HasRoles, HasNovaPermissions;
+        HasNotifications, HasEmails, HasRoles, HasNovaPermissions, HasDiscordAccount;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
