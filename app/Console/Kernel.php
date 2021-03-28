@@ -68,8 +68,7 @@ class Kernel extends ConsoleKernel
             ->graceTimeInMinutes(30);
 
         $schedule->command('discord:manager')
-            ->dailyAt('03:00')
-            ->graceTimeInMinutes(90);
+            ->dailyAt('03:00');
 
         $schedule->command('DivMembers:CertUpdate')
             ->dailyAt('05:00');
