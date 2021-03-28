@@ -2,6 +2,7 @@
 
 namespace App\Libraries;
 
+use App\Exceptions\Discord\GenericDiscordException;
 use App\Models\Mship\Account;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
@@ -134,7 +135,7 @@ class Discord
     protected function result(Response $response)
     {
         if ($response->status() > 300) {
-            return false;
+            throw new GenericDiscordException($response);
         }
 
         return true;
