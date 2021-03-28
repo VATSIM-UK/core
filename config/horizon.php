@@ -177,7 +177,7 @@ return [
                 'balance' => 'auto',
                 'min-processes' => 1,
                 'max-processes' => 2,
-                'tries' => 3,
+                'tries' => 10,
             ],
         ],
 
@@ -187,7 +187,7 @@ return [
                 'queue' => ['notifications', 'default', 'user_sync', 'discord'],
                 'balance' => 'simple',
                 'processes' => 1,
-                'tries' => 3,
+                'tries' => 10,
             ],
         ],
     ],
