@@ -2,6 +2,8 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Events\Discord\DiscordUnlinked;
+use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Libraries\Discord;
 use App\Models\Discord\DiscordRole;
 
@@ -19,9 +21,13 @@ trait HasDiscordAccount
 
         $suspendedRoleId = config('services.discord.suspended_member_role_id');
 
-        $currentRoles = $discord->getUserRoles($this);
+        try {
+            $discord->setNickname($this, $this->name);
+        } catch (DiscordUserNotFoundException $e) {
+            return event(new DiscordUnlinked($this));
+        }
 
-        $discord->setNickname($this, $this->name);
+        $currentRoles = $discord->getUserRoles($this);
 
         if ($this->isBanned) {
             if ($currentRoles->contains($this->suspendedRoleId)) {

@@ -134,6 +134,10 @@ class Discord
 
     protected function result(Response $response)
     {
+        if ($response->status() == 404 && $response->json()['message'] == 'Unknown Member') {
+            throw new DiscordUserNotFoundException($response);
+        }
+
         if ($response->status() > 300) {
             throw new GenericDiscordException($response);
         }
