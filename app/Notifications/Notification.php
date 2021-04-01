@@ -14,6 +14,6 @@ abstract class Notification extends BaseNotification
      */
     public function __construct()
     {
-        $this->onQueue('notifications');
+        $this->onQueue('high');
     }
 }

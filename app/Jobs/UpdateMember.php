@@ -21,8 +21,6 @@ class UpdateMember extends Job implements ShouldQueue
     protected $accountID;
     protected $data;
 
-    public $queue = 'user_sync';
-
     /**
      * The number of times the job may be attempted.
      *

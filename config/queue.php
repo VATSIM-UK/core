@@ -62,6 +62,7 @@ return [
             'connection' => env('QUEUE_CONNECTION', 'default'),
             'queue' => 'default',
             'retry_after' => 90,
+            'block_for' => 5,
         ],
 
     ],

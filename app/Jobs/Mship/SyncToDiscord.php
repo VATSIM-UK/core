@@ -15,7 +15,6 @@ class SyncToDiscord extends Job implements ShouldQueue
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
     private $account;
-    public $queue = 'discord';
 
     public function __construct(Account $account)
     {

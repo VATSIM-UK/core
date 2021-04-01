@@ -14,7 +14,6 @@ class SyncToCTS extends Job implements ShouldQueue
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
     private $account;
-    public $queue = 'user_sync';
 
     public function __construct(Account $account)
     {
