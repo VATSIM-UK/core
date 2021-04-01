@@ -2,8 +2,8 @@
 
 namespace App\Libraries;
 
-use App\Exceptions\Discord\GenericDiscordException;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
+use App\Exceptions\Discord\GenericDiscordException;
 use App\Models\Mship\Account;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
