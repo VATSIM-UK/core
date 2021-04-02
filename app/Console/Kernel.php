@@ -67,8 +67,8 @@ class Kernel extends ConsoleKernel
             ->dailyAt('00:01')
             ->graceTimeInMinutes(30);
 
-        $schedule->command('DivMembers:CertUpdate')
-            ->dailyAt('05:00');
+        // $schedule->command('DivMembers:CertUpdate')
+        //    ->dailyAt('05:00');
 
         $schedule->command('schedule-monitor:sync')
             ->dailyAt('07:00');
