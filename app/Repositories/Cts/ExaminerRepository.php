@@ -23,7 +23,7 @@ class ExaminerRepository
     public function getPilotExaminers()
     {
         $examiners = ExaminerSettings::with(['member'])
-                                    ->orWhere('P1', '=', 1)
+                                    ->where('P1', '=', 1)
                                     ->orWhere('P2', '=', 1)
                                     ->orWhere('P3', '=', 1)
                                     ->orWhere('P4', '=', 1)
