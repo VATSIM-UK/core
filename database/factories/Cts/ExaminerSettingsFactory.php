@@ -26,6 +26,6 @@ $factory->define(App\Models\Cts\ExaminerSettings::class, function (Faker $faker)
         'P4train' => rand(0, 1),
         'P5train' => rand(0, 1),
         'lastUpdated' => Carbon::createFromFormat('Y-m-d H:i:s', now())->toDateTimeString(),
-        'updatedBy' => 1111111
+        'updatedBy' => 1111111,
     ];
 });

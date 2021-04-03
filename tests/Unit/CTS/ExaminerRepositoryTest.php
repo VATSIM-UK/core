@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\CTS;
 
-use Tests\TestCase;
 use App\Models\Cts\ExaminerSettings;
 use App\Repositories\Cts\ExaminerRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class ExaminerRepositoryTest extends TestCase
 {
