@@ -70,9 +70,6 @@ class Kernel extends ConsoleKernel
         // $schedule->command('DivMembers:CertUpdate')
         //    ->dailyAt('05:00');
 
-        $schedule->command('schedule-monitor:sync')
-            ->dailyAt('07:00');
-
         $schedule->command('schedule-monitor:clean')
             ->dailyAt('08:00');
 

@@ -232,6 +232,7 @@ jobs:
             # Cache & Logs
             $PHP_PATH artisan route:cache
             $PHP_PATH artisan view:cache
+            $PHP_PATH artisan schedule-monitor:sync
             mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true
 
             # This will interpolate the values as --revision="vx.y.z" and --repository="vatsim-uk/core"
