@@ -39,9 +39,11 @@ class RoleSyncTest extends TestCase
     public function itTriggersEvent()
     {
         Event::fake();
-        event(new RoleAssigned($this->user, $this->role));
-        event(new RoleRemoved($this->user, $this->role));
+
+        $this->user->assignRole($this->role);
         Event::assertDispatched(RoleAssigned::class);
+
+        $this->user->removeRole($this->role);
         Event::assertDispatched(RoleRemoved::class);
     }
 
