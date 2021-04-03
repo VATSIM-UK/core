@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands\Members;
 
-use App\Models\Mship\Account;
 use App\Console\Commands\Command;
+use App\Models\Mship\Account;
 use App\Repositories\Cts\MembershipRepository;
-use Spatie\Permission\Models\Role;
 use App\Repositories\Cts\MentorRepository;
+use Spatie\Permission\Models\Role;
 
 class SyncCtsRoles extends Command
 {
