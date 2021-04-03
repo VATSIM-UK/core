@@ -42,7 +42,7 @@ class SyncCtsRoles extends Command
         $this->syncMentorsByCallsign('OBS', 32); // OBS Mentors
         $this->syncMentorsByCallsign('EGKK_GND', 53); // Gatwick Mentors
 
-        $this->syncPilotStudents(63); // Pilot Students
+        $this->syncPilotStudents(55); // Pilot Students
 
         $this->syncAtcExaminers(31);
         $this->syncPilotExaminers(40);
