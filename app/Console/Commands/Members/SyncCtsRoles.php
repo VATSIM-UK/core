@@ -85,12 +85,12 @@ class SyncCtsRoles extends Command
 
     private function syncRoles(Collection $hasRole, Collection $shouldHaveRole, $roleId): void
     {
-        // Users that have the role, but are not mentors
+        // Users that have the role, but should not have the role
         $removeRole = $hasRole->filter(function ($value) use ($shouldHaveRole) {
             return ! $shouldHaveRole->contains($value);
         })->all();
 
-        // Users that are mentors, but do not have the role
+        // Users that should have the role, but do not have the role
         $assignRole = $shouldHaveRole->filter(function ($value) use ($hasRole) {
             return ! $hasRole->contains($value);
         })->all();
