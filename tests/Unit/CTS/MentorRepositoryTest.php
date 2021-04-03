@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\CTS;
 
-use Tests\TestCase;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Repositories\Cts\MentorRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class MentorRepositoryTest extends TestCase
 {
@@ -30,7 +30,7 @@ class MentorRepositoryTest extends TestCase
 
         $positionValidation = factory(PositionValidation::class)->create([
             'status' => 5,
-            'position_id' => $position->id
+            'position_id' => $position->id,
         ]);
 
         $mentors = $this->subjectUnderTest->getMentorsWithin(15);
@@ -45,7 +45,7 @@ class MentorRepositoryTest extends TestCase
 
         factory(PositionValidation::class)->create([
             'status' => 5,
-            'position_id' => $position->id
+            'position_id' => $position->id,
         ]);
 
         $mentors = $this->subjectUnderTest->getMentorsWithin(10);
@@ -64,13 +64,13 @@ class MentorRepositoryTest extends TestCase
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
             'status' => 5,
-            'position_id' => $positionOne->id
+            'position_id' => $positionOne->id,
         ]);
 
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
             'status' => 5,
-            'position_id' => $positionTwo->id
+            'position_id' => $positionTwo->id,
         ]);
 
         $rts = $this->subjectUnderTest->getMentorsWithin(15);
@@ -102,7 +102,7 @@ class MentorRepositoryTest extends TestCase
 
         $positionValidation = factory(PositionValidation::class)->create([
             'status' => 5,
-            'position_id' => $position->id
+            'position_id' => $position->id,
         ]);
 
         $mentors = $this->subjectUnderTest->getMentorsFor('EGKK');
@@ -117,7 +117,7 @@ class MentorRepositoryTest extends TestCase
 
         $positionValidation = factory(PositionValidation::class)->create([
             'status' => 5,
-            'position_id' => $position->id
+            'position_id' => $position->id,
         ]);
 
         $mentors = $this->subjectUnderTest->getMentorsFor('EGKK_GND');
@@ -132,7 +132,7 @@ class MentorRepositoryTest extends TestCase
 
         factory(PositionValidation::class)->create([
             'status' => 5,
-            'position_id' => $position->id
+            'position_id' => $position->id,
         ]);
 
         $mentors = $this->subjectUnderTest->getMentorsFor('EGCC_GND');
@@ -151,13 +151,13 @@ class MentorRepositoryTest extends TestCase
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
             'status' => 5,
-            'position_id' => $positionOne->id
+            'position_id' => $positionOne->id,
         ]);
 
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
             'status' => 5,
-            'position_id' => $positionTwo->id
+            'position_id' => $positionTwo->id,
         ]);
 
         $airport = $this->subjectUnderTest->getMentorsFor('EGKK');
