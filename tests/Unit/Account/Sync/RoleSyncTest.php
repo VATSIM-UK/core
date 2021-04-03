@@ -5,6 +5,7 @@ namespace Tests\Unit\Account\Sync;
 use Tests\TestCase;
 use App\Jobs\Mship\SyncToCTS;
 use App\Jobs\Mship\SyncToMoodle;
+use App\Jobs\Mship\SyncToDiscord;
 use App\Jobs\Mship\SyncToHelpdesk;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Cache;
@@ -25,6 +26,9 @@ class RoleSyncTest extends TestCase
         parent::setUp();
 
         $this->role = factory(Role::class)->create();
+
+        // Disable Discord connection
+        config(['services.discord' => []]);
 
         Cache::flush(); // Remove time lockout cache
     }
@@ -49,6 +53,7 @@ class RoleSyncTest extends TestCase
         Queue::assertPushed(SyncToCTS::class, 1);
         Queue::assertPushed(SyncToMoodle::class, 1);
         Queue::assertPushed(SyncToHelpdesk::class, 1);
+        Queue::assertPushed(SyncToDiscord::class, 1);
         //Queue::assertPushed(SyncToForums::class, 1);
     }
 
@@ -62,6 +67,7 @@ class RoleSyncTest extends TestCase
         Queue::assertPushed(SyncToCTS::class, 1);
         Queue::assertPushed(SyncToMoodle::class, 1);
         Queue::assertPushed(SyncToHelpdesk::class, 1);
+        Queue::assertPushed(SyncToDiscord::class, 1);
         //Queue::assertPushed(SyncToForums::class, 1);
     }
 }
