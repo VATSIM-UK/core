@@ -42,6 +42,8 @@ class MentorRepository
 
     private function format(Collection $data)
     {
-        return $data->pluck('cid');
+        return $data->pluck('cid')->transform(function ($item) {
+            return (string) $item;
+        })->sort()->values();
     }
 }
