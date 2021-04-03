@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Repositories\Cts\ExaminerRepository;
 use App\Repositories\Cts\MembershipRepository;
 use App\Repositories\Cts\MentorRepository;
+use App\Repositories\Cts\StudentRepository;
 use Spatie\Permission\Models\Role;
 
 class SyncCtsRoles extends Command
@@ -41,7 +42,7 @@ class SyncCtsRoles extends Command
         $this->syncMentorsByCallsign('OBS', 32); // OBS Mentors
         $this->syncMentorsByCallsign('EGKK_GND', 53); // Gatwick Mentors
 
-        $this->syncRtsMembers(13, 63); // Pilot TG Members
+        $this->syncPilotStudents(); // Pilot TG Members ????
 
         $this->syncAtcExaminers(31);
         $this->syncPilotExaminers(40);
@@ -85,31 +86,6 @@ class SyncCtsRoles extends Command
 
         // Users that are mentors, but do not have the role
         $assignRole = $mentors->filter(function ($value) use ($role) {
-            return ! $role->contains($value);
-        })->all();
-
-        foreach ($assignRole as $account) {
-            Account::find($account)->assignRole($roleId);
-        }
-
-        foreach ($removeRole as $account) {
-            Account::find($account)->removeRole($roleId);
-        }
-    }
-
-    private function syncRtsMembers($rtsId, $roleId)
-    {
-        $members = (new MembershipRepository)->getMembersOf($rtsId)->pluck('cid');
-
-        $role = Role::findById($roleId)->users()->pluck('id');
-
-        // Users that have the role, but are not members
-        $removeRole = $role->filter(function ($value) use ($members) {
-            return ! $members->contains($value);
-        })->all();
-
-        // Users that are members, but do not have the role
-        $assignRole = $members->filter(function ($value) use ($role) {
             return ! $role->contains($value);
         })->all();
 
@@ -169,6 +145,31 @@ class SyncCtsRoles extends Command
 
         foreach ($removeRole as $account) {
             Account::find($account)->removeRole($roleId);
+        }
+    }
+
+    private function syncPilotStudents()
+    {
+        $students = (new StudentRepository)->getStudentsWithin(13);
+
+        $role = Role::findById(63)->users()->pluck('id');
+
+        // Users that have the role, but are not members
+        $removeRole = $role->filter(function ($value) use ($students) {
+            return ! $students->contains($value);
+        })->all();
+
+        // Users that are members, but do not have the role
+        $assignRole = $students->filter(function ($value) use ($role) {
+            return ! $role->contains($value);
+        })->all();
+
+        foreach ($assignRole as $account) {
+            Account::find($account)->assignRole(63);
+        }
+
+        foreach ($removeRole as $account) {
+            Account::find($account)->removeRole(63);
         }
     }
 }
