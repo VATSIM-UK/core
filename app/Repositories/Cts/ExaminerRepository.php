@@ -15,7 +15,9 @@ class ExaminerRepository
                                     ->orWhere('S3', '=', 1)
                                     ->get();
 
-        return $examiners->map(function ($examiner) {
+        return $examiners->reject(function ($examiner) {
+            return ! (bool) $examiner->member->examiner;
+        })->map(function ($examiner) {
             return $examiner->member->cid;
         })->sort()->values();
     }
@@ -30,7 +32,9 @@ class ExaminerRepository
                                     ->orWhere('P5', '=', 1)
                                     ->get();
 
-        return $examiners->map(function ($examiner) {
+        return $examiners->reject(function ($examiner) {
+            return ! (bool) $examiner->member->examiner;
+        })->map(function ($examiner) {
             return $examiner->member->cid;
         })->sort()->values();
     }

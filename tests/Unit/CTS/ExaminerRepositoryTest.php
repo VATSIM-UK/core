@@ -3,6 +3,7 @@
 namespace Tests\Unit\CTS;
 
 use App\Models\Cts\ExaminerSettings;
+use App\Models\Cts\Member;
 use App\Repositories\Cts\ExaminerRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -43,5 +44,21 @@ class ExaminerRepositoryTest extends TestCase
         $examiners = $this->subjectUnderTest->getPilotExaminers();
 
         $this->assertEquals($examiners->first(), $examiner->member->cid);
+    }
+
+    /** @test */
+    public function itDoesNotReturnAnExaminerIfNotSetAsExaminerOnMembersTable()
+    {
+        factory(ExaminerSettings::class)->create([
+            'memberID' => factory(Member::class)->create(['examiner' => 0]),
+            'S1' => 1,
+            'P1' => 1,
+        ]);
+
+        $atcExaminers = $this->subjectUnderTest->getAtcExaminers();
+        $pilotExaminers = $this->subjectUnderTest->getPilotExaminers();
+
+        $this->assertNull($atcExaminers->first());
+        $this->assertNull($pilotExaminers->first());
     }
 }
