@@ -5,7 +5,6 @@ namespace App\Console\Commands\Members;
 use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use App\Repositories\Cts\ExaminerRepository;
-use App\Repositories\Cts\MembershipRepository;
 use App\Repositories\Cts\MentorRepository;
 use App\Repositories\Cts\StudentRepository;
 use Spatie\Permission\Models\Role;
