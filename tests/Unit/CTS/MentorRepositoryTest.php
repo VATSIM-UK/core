@@ -87,7 +87,7 @@ class MentorRepositoryTest extends TestCase
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
             'status' => 5,
-            'position_id' => $position->id
+            'position_id' => $position->id,
         ]);
 
         $return = $this->subjectUnderTest->getMentorsWithin(15);
@@ -176,7 +176,7 @@ class MentorRepositoryTest extends TestCase
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
             'status' => 5,
-            'position_id' => $position->id
+            'position_id' => $position->id,
         ]);
 
         $return = $this->subjectUnderTest->getMentorsFor('EGKK');
