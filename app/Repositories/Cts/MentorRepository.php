@@ -21,7 +21,7 @@ class MentorRepository
             $mentors->push($positions->member);
         }
 
-        return $mentors->unique();
+        return $this->format($mentors->unique());
     }
 
     public function getMentorsFor(string $string): Collection
@@ -37,6 +37,11 @@ class MentorRepository
             $mentors->push($positions->member);
         }
 
-        return $mentors->unique();
+        return $this->format($mentors->unique());
+    }
+
+    private function format(Collection $data)
+    {
+        return $data->pluck('cid');
     }
 }

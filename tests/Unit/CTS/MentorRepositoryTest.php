@@ -35,7 +35,7 @@ class MentorRepositoryTest extends TestCase
 
         $mentors = $this->subjectUnderTest->getMentorsWithin(15);
 
-        $this->assertEquals($mentors->first(), $positionValidation->member);
+        $this->assertEquals($mentors->first(), $positionValidation->member->cid);
     }
 
     /** @test */
@@ -79,6 +79,23 @@ class MentorRepositoryTest extends TestCase
     }
 
     /** @test */
+    public function itFormatsTheReturnDataForAnRtsCorrectly()
+    {
+        $member = factory(Member::class)->create();
+        $position = factory(Position::class)->create(['rts_id' => 15]);
+
+        factory(PositionValidation::class)->create([
+            'member_id' => $member->id,
+            'status' => 5,
+            'position_id' => $position->id
+        ]);
+
+        $return = $this->subjectUnderTest->getMentorsWithin(15);
+
+        $this->assertEquals($return, collect($member->cid));
+    }
+
+    /** @test */
     public function itCanReturnAListOfMentorsOfAnAirport()
     {
         $position = factory(Position::class)->create(['callsign' => 'EGKK_GND']);
@@ -90,7 +107,7 @@ class MentorRepositoryTest extends TestCase
 
         $mentors = $this->subjectUnderTest->getMentorsFor('EGKK');
 
-        $this->assertEquals($mentors->first(), $positionValidation->member);
+        $this->assertEquals($mentors->first(), $positionValidation->member->cid);
     }
 
     /** @test */
@@ -105,7 +122,7 @@ class MentorRepositoryTest extends TestCase
 
         $mentors = $this->subjectUnderTest->getMentorsFor('EGKK_GND');
 
-        $this->assertEquals($mentors->first(), $positionValidation->member);
+        $this->assertEquals($mentors->first(), $positionValidation->member->cid);
     }
 
     /** @test */
@@ -148,5 +165,22 @@ class MentorRepositoryTest extends TestCase
 
         $this->assertCount(1, $airport);
         $this->assertCount(1, $position);
+    }
+
+    /** @test */
+    public function itFormatsTheReturnDataForAirportOrPositionSearchesCorrectly()
+    {
+        $member = factory(Member::class)->create();
+        $position = factory(Position::class)->create(['callsign' => 'EGKK_APP']);
+
+        factory(PositionValidation::class)->create([
+            'member_id' => $member->id,
+            'status' => 5,
+            'position_id' => $position->id
+        ]);
+
+        $return = $this->subjectUnderTest->getMentorsFor('EGKK');
+
+        $this->assertEquals($return, collect($member->cid));
     }
 }
