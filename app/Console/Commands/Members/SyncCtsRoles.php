@@ -4,6 +4,7 @@ namespace App\Console\Commands\Members;
 
 use App\Console\Commands\Command;
 use App\Models\Mship\Account;
+use App\Repositories\Cts\ExaminerRepository;
 use App\Repositories\Cts\MembershipRepository;
 use App\Repositories\Cts\MentorRepository;
 use Spatie\Permission\Models\Role;
@@ -41,6 +42,9 @@ class SyncCtsRoles extends Command
         $this->syncMentorsByCallsign('EGKK_GND', 53); // Gatwick Mentors
 
         $this->syncRtsMembers(13, 63); // Pilot TG Members
+
+        $this->syncAtcExaminers(31);
+        $this->syncPilotExaminers(40);
     }
 
     private function syncMentorsByRts($rtsId, $roleId)
@@ -106,6 +110,56 @@ class SyncCtsRoles extends Command
 
         // Users that are members, but do not have the role
         $assignRole = $members->filter(function ($value) use ($role) {
+            return ! $role->contains($value);
+        })->all();
+
+        foreach ($assignRole as $account) {
+            Account::find($account)->assignRole($roleId);
+        }
+
+        foreach ($removeRole as $account) {
+            Account::find($account)->removeRole($roleId);
+        }
+    }
+
+    private function syncAtcExaminers($roleId)
+    {
+        $examiners = (new ExaminerRepository)->getAtcExaminers();
+
+        $role = Role::findById($roleId)->users()->pluck('id');
+
+        // Users that have the role, but are not examiners
+        $removeRole = $role->filter(function ($value) use ($examiners) {
+            return ! $examiners->contains($value);
+        })->all();
+
+        // Users that are examiners, but do not have the role
+        $assignRole = $examiners->filter(function ($value) use ($role) {
+            return ! $role->contains($value);
+        })->all();
+
+        foreach ($assignRole as $account) {
+            Account::find($account)->assignRole($roleId);
+        }
+
+        foreach ($removeRole as $account) {
+            Account::find($account)->removeRole($roleId);
+        }
+    }
+
+    private function syncPilotExaminers($roleId)
+    {
+        $examiners = (new ExaminerRepository)->getPilotExaminers();
+
+        $role = Role::findById($roleId)->users()->pluck('id');
+
+        // Users that have the role, but are not examiners
+        $removeRole = $role->filter(function ($value) use ($examiners) {
+            return ! $examiners->contains($value);
+        })->all();
+
+        // Users that are examiners, but do not have the role
+        $assignRole = $examiners->filter(function ($value) use ($role) {
             return ! $role->contains($value);
         })->all();
 

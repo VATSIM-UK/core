@@ -166,6 +166,34 @@ class MockCtsDatabase
                 KEY `status` (`status`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `examinerSettings` (
+                `id` int NOT NULL AUTO_INCREMENT,
+                `memberID` int NOT NULL,
+                `OBS` tinyint(1) NOT NULL DEFAULT '0',
+                `S1` int NOT NULL DEFAULT '0',
+                `S2` int NOT NULL DEFAULT '0',
+                `S3` int NOT NULL DEFAULT '0',
+                `P1` tinyint(1) NOT NULL DEFAULT '0',
+                `P2` tinyint(1) NOT NULL,
+                `P3` tinyint NOT NULL DEFAULT '0',
+                `P4` tinyint(1) NOT NULL DEFAULT '0',
+                `P5` tinyint(1) NOT NULL DEFAULT '0',
+                `OBStrain` enum('0','1') DEFAULT NULL,
+                `S1train` enum('0','1') NOT NULL,
+                `S2train` enum('0','1') NOT NULL,
+                `S3train` enum('0','1') NOT NULL,
+                `P1train` enum('0','1') NOT NULL,
+                `P2train` enum('0','1') NOT NULL,
+                `P3train` enum('0','1') NOT NULL DEFAULT '0',
+                `P4train` enum('0','1') NOT NULL DEFAULT '0',
+                `P5train` enum('0','1') NOT NULL DEFAULT '0',
+                `lastUpdated` datetime NOT NULL,
+                `updatedBy` int NOT NULL,
+                PRIMARY KEY (`id`)
+              );"
+        );
     }
 
     public static function destroy()
@@ -200,6 +228,10 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `position_validations`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `examinerSettings`;'
         );
     }
 }
