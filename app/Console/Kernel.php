@@ -54,6 +54,10 @@ class Kernel extends ConsoleKernel
             ->hourly()
             ->graceTimeInMinutes(15);
 
+        $schedule->command('sync:cts-roles')
+            ->hourlyAt(15)
+            ->graceTimeInMinutes(15);
+
         $schedule->command('members:certimport')
             ->cron('30 */2 * * *') // every second hour
             ->graceTimeInMinutes(15);
