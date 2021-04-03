@@ -2,16 +2,16 @@
 
 namespace Tests\Unit\Account\Sync;
 
-use Tests\TestCase;
+use App\Events\Mship\AccountAltered;
 use App\Jobs\Mship\SyncToCTS;
-use App\Jobs\Mship\SyncToMoodle;
 use App\Jobs\Mship\SyncToDiscord;
 use App\Jobs\Mship\SyncToHelpdesk;
-use App\Events\Mship\AccountAltered;
+use App\Jobs\Mship\SyncToMoodle;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class AccountAlteredEventTest extends TestCase
 {

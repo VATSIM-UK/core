@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Account\Relationships;
 
-use Tests\TestCase;
-use App\Models\Mship\Account;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Event;
-use App\Events\Mship\Roles\RoleRemoved;
 use App\Events\Mship\Roles\RoleAssigned;
-use Spatie\Permission\Models\Permission;
+use App\Events\Mship\Roles\RoleRemoved;
+use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class RoleTest extends TestCase
 {

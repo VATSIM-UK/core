@@ -4,8 +4,8 @@ namespace App\Events\Mship\Roles;
 
 use App\Events\Event;
 use App\Models\Mship\Account;
-use Spatie\Permission\Models\Role;
 use Illuminate\Queue\SerializesModels;
+use Spatie\Permission\Models\Role;
 
 class RoleAssigned extends Event
 {

@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Events\Mship\Roles\RoleRemoved;
 use App\Events\Mship\Roles\RoleAssigned;
+use App\Events\Mship\Roles\RoleRemoved;
 use Spatie\Permission\Traits\HasRoles as OriginalHasRoles;
 
 /**
