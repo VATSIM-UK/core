@@ -46,6 +46,7 @@ trait HasDiscordAccount
             })->each(function (DiscordRole $role) use ($currentRoles, $discord) {
                 if (! $currentRoles->contains($role->discord_id)) {
                     $discord->grantRoleById($this, $role->discord_id);
+                    usleep(500000);
                 }
             });
 
@@ -59,8 +60,11 @@ trait HasDiscordAccount
             })->each(function (DiscordRole $role) use ($currentRoles, $discord) {
                 if ($currentRoles->contains($role->discord_id)) {
                     $discord->removeRoleById($this, $role->discord_id);
+                    usleep(500000);
                 }
             });
         }
+
+        usleep(500000);
     }
 }
