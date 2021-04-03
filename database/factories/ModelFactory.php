@@ -9,7 +9,6 @@ $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $fak
         'name_last' => $faker->lastName,
         'email' => $faker->email,
         'is_invisible' => 0,
-        'discord_id' => rand(10000000, 99999999),
     ];
 });
 
