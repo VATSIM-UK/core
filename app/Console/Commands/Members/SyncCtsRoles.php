@@ -104,7 +104,7 @@ class SyncCtsRoles extends Command
         }
     }
 
-    private function getAccountsWithRoleId(int $roleId): array
+    private function getAccountsWithRoleId(int $roleId): Collection
     {
         return Role::findById($roleId)->users()->pluck('id');
     }
