@@ -99,12 +99,12 @@ class SyncCtsRoles extends Command
 
         $role = Role::findById($roleId)->users()->pluck('id');
 
-        // Users that have the role, but are not mentors
+        // Users that have the role, but are not members
         $removeRole = $role->filter(function ($value) use ($members) {
             return ! $members->contains($value);
         })->all();
 
-        // Users that are mentors, but do not have the role
+        // Users that are members, but do not have the role
         $assignRole = $members->filter(function ($value) use ($role) {
             return ! $role->contains($value);
         })->all();
