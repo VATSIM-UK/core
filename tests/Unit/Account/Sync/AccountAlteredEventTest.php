@@ -40,7 +40,6 @@ class AccountAlteredEventTest extends TestCase
     /** @test */
     public function itTriggersJobs()
     {
-        $this->withoutExceptionHandling();
         Queue::fake();
         event(new AccountAltered($this->user));
 
