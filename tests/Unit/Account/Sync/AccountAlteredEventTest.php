@@ -22,7 +22,7 @@ class AccountAlteredEventTest extends TestCase
         parent::setUp();
 
         // Disable Discord connection
-        config(['services.discord' => []]);
+        config(['services.discord.token' => null]);
 
         Cache::flush(); // Remove time lockout cache
     }

@@ -17,7 +17,7 @@ trait HasDiscordAccount
      */
     public function syncToDiscord()
     {
-        if (! config('services.discord')) {
+        if (! config('services.discord.token')) {
             return;
         }
 

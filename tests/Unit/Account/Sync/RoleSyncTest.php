@@ -28,7 +28,7 @@ class RoleSyncTest extends TestCase
         $this->role = factory(Role::class)->create();
 
         // Disable Discord connection
-        config(['services.discord' => []]);
+        config(['services.discord.token' => null]);
 
         Cache::flush(); // Remove time lockout cache
     }
