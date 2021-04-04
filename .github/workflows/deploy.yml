@@ -211,15 +211,13 @@ jobs:
             cd $RELEASE_DIRECTORY
 
             # Stop Application / Services
-            $PHP_PATH artisan down
             sudo systemctl stop core-horizon
+            $PHP_PATH artisan down
 
             # Migrate Database
             $PHP_PATH artisan migrate --step --force -n
 
-            # Publish Assets
-            $PHP_PATH artisan telescope:publish
-            $PHP_PATH artisan horizon:publish
+            # Publish Public Assets
             $PHP_PATH artisan nova:publish
 
             # Link Storage
@@ -229,9 +227,14 @@ jobs:
             $PHP_PATH artisan up
             sudo systemctl start core-horizon
 
+            # Publish Hidden Assets
+            $PHP_PATH artisan telescope:publish
+            $PHP_PATH artisan horizon:publish
+
             # Cache & Logs
             $PHP_PATH artisan route:cache
             $PHP_PATH artisan view:cache
+            $PHP_PATH artisan schedule-monitor:sync
             mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true
 
             # This will interpolate the values as --revision="vx.y.z" and --repository="vatsim-uk/core"

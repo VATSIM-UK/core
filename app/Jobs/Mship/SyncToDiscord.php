@@ -3,7 +3,6 @@
 namespace App\Jobs\Mship;
 
 use App\Jobs\Job;
-use App\Jobs\Middleware\RateLimited;
 use App\Models\Mship\Account;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -24,10 +23,5 @@ class SyncToDiscord extends Job implements ShouldQueue
     public function handle()
     {
         $this->account->syncToDiscord();
-    }
-
-    public function middleware()
-    {
-        return [new RateLimited('discord_api_call', 3, 10)];
     }
 }

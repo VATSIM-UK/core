@@ -31,16 +31,12 @@ class Kernel extends ConsoleKernel
     {
         // === By Minute === //
 
-        $schedule->command('visit-transfer:cleanup')
-            ->everyMinute()
-            ->withoutOverlapping();
-
         $schedule->command('teaman:runner', ['-v'])
             ->everyMinute()
             ->withoutOverlapping();
 
         $schedule->command('networkdata:download')
-            ->cron('*/2 * * * *') // every second minute
+            ->everyTwoMinutes()
             ->graceTimeInMinutes(10)
             ->withoutOverlapping();
 
@@ -48,36 +44,36 @@ class Kernel extends ConsoleKernel
             ->everyFiveMinutes()
             ->withoutOverlapping();
 
+        $schedule->command('visit-transfer:cleanup')
+            ->everyTenMinutes();
+
         // === By Hour === //
 
         $schedule->command('members:certupdate')
-            ->hourly()
+            ->hourlyAt(30)
             ->graceTimeInMinutes(15);
 
         $schedule->command('members:certimport')
-            ->cron('30 */2 * * *') // every second hour
+            ->everyTwoHours()
             ->graceTimeInMinutes(15);
 
         // === By Day === //
 
-        $schedule->command('telescope:prune')
-            ->daily();
-
         $schedule->command('sync:community')
-            ->dailyAt('00:01')
+            ->dailyAt('02:30')
             ->graceTimeInMinutes(30);
+
+        $schedule->command('telescope:prune')
+            ->dailyAt('03:30');
 
         // $schedule->command('DivMembers:CertUpdate')
         //    ->dailyAt('05:00');
-
-        $schedule->command('schedule-monitor:sync')
-            ->dailyAt('07:00');
 
         $schedule->command('schedule-monitor:clean')
             ->dailyAt('08:00');
 
         $schedule->command('members:certimport', ['--full'])
-            ->twiceDaily(2, 14)
+            ->twiceDaily(4, 15)
             ->graceTimeInMinutes(30);
     }
 
