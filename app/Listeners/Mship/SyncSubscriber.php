@@ -2,7 +2,15 @@
 
 namespace App\Listeners\Mship;
 
+use App\Jobs\Mship\SyncToCTS;
+use App\Jobs\Mship\SyncToForums;
+use App\Jobs\Mship\SyncToMoodle;
+use App\Jobs\Mship\SyncToDiscord;
+use App\Jobs\Mship\SyncToHelpdesk;
 use Illuminate\Support\Facades\Log;
+use App\Events\Mship\AccountAltered;
+use App\Events\Mship\Roles\RoleRemoved;
+use App\Events\Mship\Roles\RoleAssigned;
 
 class SyncSubscriber
 {
@@ -11,20 +19,16 @@ class SyncSubscriber
      */
     public function syncToAllServices($event)
     {
-        if (! $event->account->fully_defined) {
-            // Prevent unnecessary executions
-            return;
+        if ($event->account->fully_defined) {
+            SyncToCTS::dispatch($event->account);
+            SyncToHelpdesk::dispatch($event->account);
+            SyncToMoodle::dispatch($event->account);
+            // SyncToForums::dispatch($event->account); - Re-enable tests (Feat/Adm/AccountTest & Unit/Mship/Sync/AccountAltered)
         }
-
-        \App\Jobs\Mship\SyncToCTS::dispatch($event->account);
-        \App\Jobs\Mship\SyncToHelpdesk::dispatch($event->account);
-        \App\Jobs\Mship\SyncToMoodle::dispatch($event->account);
 
         if ($event->account->discord_id) {
-            \App\Jobs\Mship\SyncToDiscord::dispatch($event->account);
+            SyncToDiscord::dispatch($event->account);
         }
-
-        // \App\Jobs\Mship\SyncToForums::dispatch($event->account); - Re-enable tests (Feat/Adm/AccountTest & Unit/Mship/Sync/AccountAltered)
 
         Log::debug($event->account->real_name.' ('.$event->account->id.') was queued to sync to external services');
     }
@@ -37,17 +41,17 @@ class SyncSubscriber
     public function subscribe($events)
     {
         $events->listen(
-            \App\Events\Mship\AccountAltered::class,
+            AccountAltered::class,
             '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
         );
 
         $events->listen(
-            \App\Events\Mship\Roles\RoleAssigned::class,
+            RoleAssigned::class,
             '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
         );
 
         $events->listen(
-            \App\Events\Mship\Roles\RoleRemoved::class,
+            RoleRemoved::class,
             '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
         );
     }
