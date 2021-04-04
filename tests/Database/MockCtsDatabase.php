@@ -138,6 +138,62 @@ class MockCtsDatabase
                   PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `positions` (
+                `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+                `rts_id` smallint unsigned NOT NULL DEFAULT '0',
+                `callsign` varchar(20) NOT NULL DEFAULT '',
+                `rating` tinyint unsigned NOT NULL DEFAULT '0',
+                `auto_rating` tinyint(1) NOT NULL DEFAULT '0',
+                `vis_roster` tinyint(1) NOT NULL DEFAULT '1',
+                `anon_requests` tinyint(1) DEFAULT '0',
+                `prog_sheet_id` smallint unsigned DEFAULT '0',
+                `prog_sheet_assign_by` int unsigned DEFAULT '0',
+                PRIMARY KEY (`id`)
+          ) ENGINE=InnoDB AUTO_INCREMENT=684 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `position_validations` (
+                `member_id` int NOT NULL DEFAULT '0',
+                `position_id` smallint NOT NULL DEFAULT '0',
+                `status` smallint NOT NULL DEFAULT '0',
+                `changed_by` int NOT NULL DEFAULT '0',
+                `date_changed` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                PRIMARY KEY (`member_id`,`position_id`),
+                KEY `position_id` (`position_id`),
+                KEY `status` (`status`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `examinerSettings` (
+                `id` int NOT NULL AUTO_INCREMENT,
+                `memberID` int NOT NULL,
+                `OBS` tinyint(1) NOT NULL DEFAULT '0',
+                `S1` int NOT NULL DEFAULT '0',
+                `S2` int NOT NULL DEFAULT '0',
+                `S3` int NOT NULL DEFAULT '0',
+                `P1` tinyint(1) NOT NULL DEFAULT '0',
+                `P2` tinyint(1) NOT NULL,
+                `P3` tinyint NOT NULL DEFAULT '0',
+                `P4` tinyint(1) NOT NULL DEFAULT '0',
+                `P5` tinyint(1) NOT NULL DEFAULT '0',
+                `OBStrain` enum('0','1') DEFAULT NULL,
+                `S1train` enum('0','1') NOT NULL,
+                `S2train` enum('0','1') NOT NULL,
+                `S3train` enum('0','1') NOT NULL,
+                `P1train` enum('0','1') NOT NULL,
+                `P2train` enum('0','1') NOT NULL,
+                `P3train` enum('0','1') NOT NULL DEFAULT '0',
+                `P4train` enum('0','1') NOT NULL DEFAULT '0',
+                `P5train` enum('0','1') NOT NULL DEFAULT '0',
+                `lastUpdated` datetime NOT NULL,
+                `updatedBy` int NOT NULL,
+                PRIMARY KEY (`id`)
+              );"
+        );
     }
 
     public static function destroy()
@@ -164,6 +220,18 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `validations_p`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `positions`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `position_validations`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `examinerSettings`;'
         );
     }
 }
