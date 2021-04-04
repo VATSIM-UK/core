@@ -11,11 +11,9 @@ class RoleAssigned extends Event
 {
     use SerializesModels;
 
-    /* @var Account */
-    public $account;
+    public Account $account;
 
-    /* @var Role */
-    public $role;
+    public Role $role;
 
     public function __construct(Account $account, Role $role)
     {
