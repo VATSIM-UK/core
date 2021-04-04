@@ -51,21 +51,6 @@ class AccountAlteredEventTest extends TestCase
     }
 
     /** @test */
-    public function itTriggersJobsOnlyOnce()
-    {
-        Queue::fake();
-
-        event(new AccountAltered($this->user));
-        event(new AccountAltered($this->user));
-
-        Queue::assertPushed(SyncToCTS::class, 1);
-        Queue::assertPushed(SyncToMoodle::class, 1);
-        Queue::assertPushed(SyncToHelpdesk::class, 1);
-        Queue::assertPushed(SyncToDiscord::class, 1);
-        //Queue::assertPushed(SyncToForums::class, 1);
-    }
-
-    /** @test */
     public function itWontTriggerWithSemiDefinedAccounts()
     {
         Queue::fake();
@@ -77,7 +62,18 @@ class AccountAlteredEventTest extends TestCase
         Queue::assertNotPushed(SyncToCTS::class);
         Queue::assertNotPushed(SyncToMoodle::class);
         Queue::assertNotPushed(SyncToHelpdesk::class);
-        Queue::assertNotPushed(SyncToDiscord::class);
         //Queue::assertNotPushed(SyncToForums::class);
+    }
+
+    /** @test */
+    public function itWontTriggerDiscordWithoutADiscordId()
+    {
+        Queue::fake();
+
+        $this->user->discord_id = null;
+        Cache::flush(); // Remove time lockout cache
+        event(new AccountAltered($this->user));
+
+        Queue::assertNotPushed(SyncToDiscord::class);
     }
 }
