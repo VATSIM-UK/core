@@ -2,15 +2,15 @@
 
 namespace App\Listeners\Mship;
 
-use App\Jobs\Mship\SyncToCTS;
-use App\Jobs\Mship\SyncToForums;
-use App\Jobs\Mship\SyncToMoodle;
-use App\Jobs\Mship\SyncToDiscord;
-use App\Jobs\Mship\SyncToHelpdesk;
-use Illuminate\Support\Facades\Log;
 use App\Events\Mship\AccountAltered;
-use App\Events\Mship\Roles\RoleRemoved;
 use App\Events\Mship\Roles\RoleAssigned;
+use App\Events\Mship\Roles\RoleRemoved;
+use App\Jobs\Mship\SyncToCTS;
+use App\Jobs\Mship\SyncToDiscord;
+use App\Jobs\Mship\SyncToForums;
+use App\Jobs\Mship\SyncToHelpdesk;
+use App\Jobs\Mship\SyncToMoodle;
+use Illuminate\Support\Facades\Log;
 
 class SyncSubscriber
 {
