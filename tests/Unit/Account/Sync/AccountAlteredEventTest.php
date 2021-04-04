@@ -50,6 +50,20 @@ class AccountAlteredEventTest extends TestCase
         //Queue::assertPushed(SyncToForums::class);
     }
 
+    public function itTriggersJobsOnlyOnce()
+    {
+        Queue::fake();
+
+        event(new AccountAltered($this->user));
+        event(new AccountAltered($this->user));
+
+        Queue::assertPushed(SyncToCTS::class, 1);
+        Queue::assertPushed(SyncToMoodle::class, 1);
+        Queue::assertPushed(SyncToHelpdesk::class, 1);
+        Queue::assertPushed(SyncToDiscord::class, 1);
+        //Queue::assertPushed(SyncToForums::class, 1);
+    }
+
     /** @test */
     public function itWontTriggerWithSemiDefinedAccounts()
     {
