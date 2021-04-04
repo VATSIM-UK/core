@@ -149,7 +149,7 @@ jobs:
       # REMOTE POST-DEPLOYMENT ACTIONS
       # Conduct server-side post-deployment tasks and make application version live.
       #
-      - name: (Remote) Install composer dependencies
+      - name: (Remote) Setup .env & install composer dependencies
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
