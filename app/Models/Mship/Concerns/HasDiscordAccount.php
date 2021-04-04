@@ -17,6 +17,10 @@ trait HasDiscordAccount
      */
     public function syncToDiscord()
     {
+        if (! config('services.discord.token')) {
+            return;
+        }
+
         $discord = (new Discord);
 
         $suspendedRoleId = config('services.discord.suspended_member_role_id');

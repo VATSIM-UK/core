@@ -4,6 +4,7 @@ namespace Tests\Unit\Account\Sync;
 
 use App\Events\Mship\AccountAltered;
 use App\Jobs\Mship\SyncToCTS;
+use App\Jobs\Mship\SyncToDiscord;
 use App\Jobs\Mship\SyncToHelpdesk;
 use App\Jobs\Mship\SyncToMoodle;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -19,6 +20,11 @@ class AccountAlteredEventTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Disable Discord connection
+        config(['services.discord.token' => null]);
+        $this->user->discord_id = 1234;
+        $this->user->save();
 
         Cache::flush(); // Remove time lockout cache
     }
@@ -40,6 +46,7 @@ class AccountAlteredEventTest extends TestCase
         Queue::assertPushed(SyncToCTS::class);
         Queue::assertPushed(SyncToMoodle::class);
         Queue::assertPushed(SyncToHelpdesk::class);
+        Queue::assertPushed(SyncToDiscord::class);
         //Queue::assertPushed(SyncToForums::class);
     }
 
@@ -54,6 +61,7 @@ class AccountAlteredEventTest extends TestCase
         Queue::assertPushed(SyncToCTS::class, 1);
         Queue::assertPushed(SyncToMoodle::class, 1);
         Queue::assertPushed(SyncToHelpdesk::class, 1);
+        Queue::assertPushed(SyncToDiscord::class, 1);
         //Queue::assertPushed(SyncToForums::class, 1);
     }
 
@@ -69,6 +77,7 @@ class AccountAlteredEventTest extends TestCase
         Queue::assertNotPushed(SyncToCTS::class);
         Queue::assertNotPushed(SyncToMoodle::class);
         Queue::assertNotPushed(SyncToHelpdesk::class);
+        Queue::assertNotPushed(SyncToDiscord::class);
         //Queue::assertNotPushed(SyncToForums::class);
     }
 }
