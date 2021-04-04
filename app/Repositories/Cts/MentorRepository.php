@@ -13,7 +13,7 @@ class MentorRepository
         $positionValidations = PositionValidation::with(['member', 'position'])
         ->whereHas('position', function (Builder $query) use ($rtsId) {
             $query->where('rts_id', '=', $rtsId);
-        })->where('status', '=', 5)->get();
+        })->mentors()->get();
 
         $mentors = collect();
 
@@ -29,7 +29,7 @@ class MentorRepository
         $positionValidations = PositionValidation::with(['member', 'position'])
         ->whereHas('position', function (Builder $query) use ($string) {
             $query->where('callsign', 'like', "{$string}%");
-        })->where('status', '=', 5)->get();
+        })->mentors()->get();
 
         $mentors = collect();
 

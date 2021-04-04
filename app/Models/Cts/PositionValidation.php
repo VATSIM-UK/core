@@ -20,4 +20,9 @@ class PositionValidation extends Model
     {
         return $this->belongsTo(Member::class, 'member_id', 'id');
     }
+
+    public function scopeMentors($query)
+    {
+        return $query->where('status', '=', 5);
+    }
 }
