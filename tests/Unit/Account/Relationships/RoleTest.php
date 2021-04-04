@@ -2,7 +2,11 @@
 
 namespace Tests\Unit\Account\Relationships;
 
+use App\Events\Mship\Roles\RoleAssigned;
+use App\Events\Mship\Roles\RoleRemoved;
+use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -82,5 +86,22 @@ class RoleTest extends TestCase
 
         $this->assertTrue($role->fresh()->hasPermissionTo($permissionA));
         $this->assertFalse($role->fresh()->hasPermissionTo($permissionB));
+    }
+
+    /** @test */
+    public function itFiresEventsWhenARoleIsAssignedAndRemoved()
+    {
+        Event::fake();
+
+        $role = factory(Role::class)->create();
+        $account = factory(Account::class)->create();
+
+        $account->assignRole($role);
+
+        Event::assertDispatched(RoleAssigned::class);
+
+        $account->removeRole($role);
+
+        Event::assertDispatched(RoleRemoved::class);
     }
 }

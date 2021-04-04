@@ -20,6 +20,7 @@ use App\Models\Mship\Concerns\HasNotifications;
 use App\Models\Mship\Concerns\HasNovaPermissions;
 use App\Models\Mship\Concerns\HasPassword;
 use App\Models\Mship\Concerns\HasQualifications;
+use App\Models\Mship\Concerns\HasRoles;
 use App\Models\Mship\Concerns\HasStates;
 use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
@@ -34,7 +35,6 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
 
 /**

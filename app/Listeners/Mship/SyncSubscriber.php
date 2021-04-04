@@ -43,5 +43,15 @@ class SyncSubscriber
             \App\Events\Mship\AccountAltered::class,
             '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
         );
+
+        $events->listen(
+            \App\Events\Mship\Roles\RoleAssigned::class,
+            '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
+        );
+
+        $events->listen(
+            \App\Events\Mship\Roles\RoleRemoved::class,
+            '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
+        );
     }
 }
