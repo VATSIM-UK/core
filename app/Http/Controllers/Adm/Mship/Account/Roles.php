@@ -27,8 +27,7 @@ class Roles extends AdmController
         }
 
         // Let's remove!
-        $mshipAccount->roles()
-            ->detach($role);
+        $mshipAccount->removeRole($role);
 
         return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'roles'])
             ->withSuccess($role->name.' role detached successfully. This user lost '.count($role->permissions).' permissions.');
@@ -50,8 +49,7 @@ class Roles extends AdmController
 
         // Let's add!
         if (! $mshipAccount->roles->contains($role->id)) {
-            $mshipAccount->roles()
-                ->attach($role);
+            $mshipAccount->assignRole($role);
         }
 
         return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'roles'])
