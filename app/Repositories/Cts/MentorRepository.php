@@ -24,11 +24,11 @@ class MentorRepository
         return $this->format($mentors->unique());
     }
 
-    public function getMentorsFor(string $string): Collection
+    public function getMentorsFor(string $search): Collection
     {
         $positionValidations = PositionValidation::with(['member', 'position'])
-        ->whereHas('position', function (Builder $query) use ($string) {
-            $query->where('callsign', 'like', "{$string}%");
+        ->whereHas('position', function (Builder $query) use ($search) {
+            $query->where('callsign', 'like', "{$search}%");
         })->mentors()->get();
 
         $mentors = collect();
