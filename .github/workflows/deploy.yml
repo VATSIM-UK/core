@@ -127,11 +127,6 @@ jobs:
           sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
           sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
 
-      - name: Create .env from Secrets value
-        env:
-          ENV_FILE_CONTENTS: ${{ secrets.ENV_FILE_CONTENTS }}
-        run: 'echo "$ENV_FILE_CONTENTS" > .env'
-
       - name: Update BUGSNAG_APP_VERSION
         run: 'sed -i "s/^BUGSNAG_APP_VERSION.*$/BUGSNAG_APP_VERSION=$TAG/" .env'
 
@@ -167,6 +162,9 @@ jobs:
           script: |
             # Ensure we're working from the current release
             cd $RELEASE_DIRECTORY
+
+            # Symlink .env from root directory
+            ln -s $APPLICATION_ROOT/.env .env
 
             # Install application dependencies
             $PHP_PATH /usr/local/bin/composer install --no-interaction --no-dev
