@@ -6,6 +6,7 @@ use App\Events\Mship\Roles\RoleAssigned;
 use App\Events\Mship\Roles\RoleRemoved;
 use App\Jobs\Mship\SyncToCTS;
 use App\Jobs\Mship\SyncToDiscord;
+use App\Jobs\Mship\SyncToForums;
 use App\Jobs\Mship\SyncToHelpdesk;
 use App\Jobs\Mship\SyncToMoodle;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -58,7 +59,7 @@ class RoleSyncTest extends TestCase
         Queue::assertPushed(SyncToMoodle::class, 1);
         Queue::assertPushed(SyncToHelpdesk::class, 1);
         Queue::assertPushed(SyncToDiscord::class, 1);
-        //Queue::assertPushed(SyncToForums::class, 1);
+        Queue::assertPushed(SyncToForums::class, 1);
     }
 
     /** @test */
@@ -72,6 +73,6 @@ class RoleSyncTest extends TestCase
         Queue::assertPushed(SyncToMoodle::class, 1);
         Queue::assertPushed(SyncToHelpdesk::class, 1);
         Queue::assertPushed(SyncToDiscord::class, 1);
-        //Queue::assertPushed(SyncToForums::class, 1);
+        Queue::assertPushed(SyncToForums::class, 1);
     }
 }
