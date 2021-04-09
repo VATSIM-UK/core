@@ -63,10 +63,6 @@ class Kernel extends ConsoleKernel
 
         // === By Day === //
 
-        $schedule->command('sync:community')
-            ->dailyAt('02:30')
-            ->graceTimeInMinutes(30);
-
         $schedule->command('telescope:prune')
             ->dailyAt('03:30');
 
