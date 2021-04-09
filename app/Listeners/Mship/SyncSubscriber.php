@@ -31,7 +31,7 @@ class SyncSubscriber
             SyncToCTS::dispatch($event->account);
             SyncToHelpdesk::dispatch($event->account);
             SyncToMoodle::dispatch($event->account);
-            SyncToForums::dispatch($event->account);
+            // SyncToForums::dispatch($event->account); - Re-enable tests (Feat/Adm/AccountTest & Unit/Mship/Sync/AccountAltered)
         }
 
         if ($event->account->discord_id) {
