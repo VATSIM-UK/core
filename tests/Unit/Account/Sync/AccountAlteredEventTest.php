@@ -47,7 +47,7 @@ class AccountAlteredEventTest extends TestCase
         Queue::assertPushed(SyncToMoodle::class);
         Queue::assertPushed(SyncToHelpdesk::class);
         Queue::assertPushed(SyncToDiscord::class);
-        //Queue::assertPushed(SyncToForums::class);
+        Queue::assertPushed(SyncToForums::class);
     }
 
     public function itTriggersJobsOnlyOnce()
@@ -61,7 +61,7 @@ class AccountAlteredEventTest extends TestCase
         Queue::assertPushed(SyncToMoodle::class, 1);
         Queue::assertPushed(SyncToHelpdesk::class, 1);
         Queue::assertPushed(SyncToDiscord::class, 1);
-        //Queue::assertPushed(SyncToForums::class, 1);
+        Queue::assertPushed(SyncToForums::class, 1);
     }
 
     /** @test */
@@ -76,7 +76,7 @@ class AccountAlteredEventTest extends TestCase
         Queue::assertNotPushed(SyncToCTS::class);
         Queue::assertNotPushed(SyncToMoodle::class);
         Queue::assertNotPushed(SyncToHelpdesk::class);
-        //Queue::assertNotPushed(SyncToForums::class);
+        Queue::assertNotPushed(SyncToForums::class);
     }
 
     /** @test */

@@ -58,7 +58,7 @@ class RoleSyncTest extends TestCase
         Queue::assertPushed(SyncToMoodle::class, 1);
         Queue::assertPushed(SyncToHelpdesk::class, 1);
         Queue::assertPushed(SyncToDiscord::class, 1);
-        //Queue::assertPushed(SyncToForums::class, 1);
+        Queue::assertPushed(SyncToForums::class, 1);
     }
 
     /** @test */
@@ -72,6 +72,6 @@ class RoleSyncTest extends TestCase
         Queue::assertPushed(SyncToMoodle::class, 1);
         Queue::assertPushed(SyncToHelpdesk::class, 1);
         Queue::assertPushed(SyncToDiscord::class, 1);
-        //Queue::assertPushed(SyncToForums::class, 1);
+        Queue::assertPushed(SyncToForums::class, 1);
     }
 }

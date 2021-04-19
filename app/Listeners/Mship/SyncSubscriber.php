@@ -20,7 +20,7 @@ class SyncSubscriber
      */
     public function syncToAllServices($event)
     {
-        $ranRecently = ! Cache::add('SYNCSUB_'.$event->account->id, '1', now()->addMinutes(10));
+        $ranRecently = !Cache::add('SYNCSUB_' . $event->account->id, '1', now()->addMinutes(10));
 
         if ($ranRecently) {
             // Prevent unnecessary executions
@@ -31,14 +31,14 @@ class SyncSubscriber
             SyncToCTS::dispatch($event->account);
             SyncToHelpdesk::dispatch($event->account);
             SyncToMoodle::dispatch($event->account);
-            // SyncToForums::dispatch($event->account); - Re-enable tests (Feat/Adm/AccountTest & Unit/Mship/Sync/AccountAltered)
+            SyncToForums::dispatch($event->account);
         }
 
         if ($event->account->discord_id) {
             SyncToDiscord::dispatch($event->account);
         }
 
-        Log::debug($event->account->real_name.' ('.$event->account->id.') was queued to sync to external services');
+        Log::debug($event->account->real_name . ' (' . $event->account->id . ') was queued to sync to external services');
     }
 
     /**
