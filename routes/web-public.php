@@ -53,7 +53,6 @@ Route::group([
         'as' => 'marketing.',
         'prefix' => 'marketing',
     ], function () {
-        Route::get('/live-streaming')->uses('MarketingPagesController@viewLiveStreaming')->name('live-streaming');
         Route::get('/branding')->uses('MarketingPagesController@viewBranding')->name('branding');
     });
 });
