@@ -20,7 +20,7 @@ class SyncSubscriber
      */
     public function syncToAllServices($event)
     {
-        $ranRecently = !Cache::add('SYNCSUB_' . $event->account->id, '1', now()->addMinutes(10));
+        $ranRecently = ! Cache::add('SYNCSUB_'.$event->account->id, '1', now()->addMinutes(10));
 
         if ($ranRecently) {
             // Prevent unnecessary executions
@@ -38,7 +38,7 @@ class SyncSubscriber
             SyncToDiscord::dispatch($event->account);
         }
 
-        Log::debug($event->account->real_name . ' (' . $event->account->id . ') was queued to sync to external services');
+        Log::debug($event->account->real_name.' ('.$event->account->id.') was queued to sync to external services');
     }
 
     /**
