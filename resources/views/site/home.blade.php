@@ -192,9 +192,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.marketing.live-streaming') }}">Live Streams</a>
-                        </li>
                     </ul>
                 </li>
                 <li class="nav-item">
