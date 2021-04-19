@@ -71,7 +71,7 @@ class AccountModelTest extends TestCase
             'nickname' => 'Delboy',
         ]);
 
-        $fullNickname = 'Delboy '.$this->user->name_last;
+        $fullNickname = 'Delboy ' . $this->user->name_last;
         $this->assertTrue($this->user->isValidDisplayName($fullNickname));
     }
 
@@ -109,7 +109,7 @@ class AccountModelTest extends TestCase
             'nickname' => 'Delboy',
         ]);
 
-        $fullNickname = 'Rodney '.$this->user->name_last;
+        $fullNickname = 'Rodney ' . $this->user->name_last;
         $this->assertFalse($this->user->isValidDisplayName($fullNickname));
         $this->assertFalse($this->user->isValidDisplayName('DeLbOy TrOttEr'));
         $this->assertTrue($this->user->isValidDisplayName('Delboy Trotter'));
@@ -268,19 +268,19 @@ class AccountModelTest extends TestCase
         Carbon::setTestNow(Carbon::now()); // Check this works even when the timestamps are the same
 
         $mockS1Qual = factory(Qualification::class)->state('atc')->create([
-            'code' => 'S11',
+            'code' => 'AS11',
             'vatsim' => 1,
         ]);
         $mockS2Qual = factory(Qualification::class)->state('atc')->create([
-            'code' => 'S22',
+            'code' => 'AS22',
             'vatsim' => 2,
         ]);
         $mockP1Qual = factory(Qualification::class)->state('pilot')->create([
-            'code' => 'P11',
+            'code' => 'AP11',
             'vatsim' => 3,
         ]);
         $mockP2Qual = factory(Qualification::class)->state('pilot')->create([
-            'code' => 'P22',
+            'code' => 'AP22',
             'vatsim' => 4,
         ]);
 
