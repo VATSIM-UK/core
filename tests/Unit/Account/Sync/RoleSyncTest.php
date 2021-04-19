@@ -8,6 +8,7 @@ use App\Jobs\Mship\SyncToCTS;
 use App\Jobs\Mship\SyncToDiscord;
 use App\Jobs\Mship\SyncToHelpdesk;
 use App\Jobs\Mship\SyncToMoodle;
+use App\Jobs\Mship\SyncToForums;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
