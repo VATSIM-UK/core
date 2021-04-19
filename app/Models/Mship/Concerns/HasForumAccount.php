@@ -4,52 +4,50 @@ namespace App\Models\Mship\Concerns;
 
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Trait HasForumAccount.
+ */
+trait HasForumAccount
+{
     /**
-     * Trait HasForumAccount.
+     * Sync the current account to the Forum.
      */
-    trait HasForumAccount
+    public function syncToForum()
     {
-        /**
-         * Sync the current account to the Forum.
-         */
-        public function syncToForum()
-        {
-            // Check forum enabled
-            $communityClient = DB::table('oauth_clients')->where('name', 'Community')->first();
+        // Check forum enabled
+        $communityClient = DB::table('oauth_clients')->where('name', 'Community')->first();
+        $communityDb = config('services.community.database');
 
-            if (! config('services.community.init_file') || ! config('services.community.database') || ! $communityClient) {
-                return;
-            }
+        if (!$communityDb || !$communityClient) {
+            return;
+        }
 
-            require_once config('services.community.init_file');
-            require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
-            require_once \IPS\ROOT_PATH.'/system/Member/Club/Club.php';
-            require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
+        $ipsAccount = DB::table("{$communityDb}.ibf_core_members")
+            ->join("{$communityDb}.ibf_core_login_links", 'ibf_core_login_links.token_member', '=', 'ibf_core_members.member_id')
+            ->where('ibf_core_login_links.token_identifier', $this->id)
+            ->first();
 
-            $ipsAccount = \IPS\Db::i()->select(
-                'member_id, field_12',
-                'core_pfields_content', ['field_12=?', $this->id]);
+        if (!$ipsAccount) {
+            // No user. Abort;
+            return;
+        }
 
-            if (count($ipsAccount) == 0) {
-                // No user. Abort;
-                return;
-            }
+        // Set data
+        DB::table("{$communityDb}.ibf_core_members")
+            ->where('member_id', $ipsAccount->member_id)
+            ->update([
+                'name' => $this->real_name,
+                'email' => $this->getEmailForService($communityClient->id),
+                'member_title' => $this->primary_state->name,
+                'temp_ban' => ($this->is_banned) ? -1 : 0,
+            ]);
 
-            $ipsAccount = \IPS\Member::load($ipsAccount->first()->member_id);
-
-            // Set data
-            $ipsAccount->name = $this->real_name;
-            $ipsAccount->email = $this->getEmailForService($communityClient->id);
-            $ipsAccount->member_title = $this->primary_state->name;
-            $ipsAccount->temp_ban = ($this->is_banned) ? -1 : 0;
-            $ipsAccount->save();
-
-            // Set profile data
-            $update = [
+        DB::table("{$communityDb}.ibf_core_pfields_content")
+            ->where('member_id', $ipsAccount->member_id)
+            ->update([
                 'field_12' => $this->id, // VATSIM CID
                 'field_13' => $this->qualification_atc->name_long, // Controller Rating
                 'field_14' => $this->qualifications_pilot_string, // Pilot Ratings
-            ];
-            \IPS\Db::i()->update('core_pfields_content', $update, ['member_id=?', $ipsAccount->member_id]);
-        }
+            ]);
     }
+}
