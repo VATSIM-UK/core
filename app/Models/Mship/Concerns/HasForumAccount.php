@@ -18,7 +18,7 @@ trait HasForumAccount
         $communityClient = DB::table('oauth_clients')->where('name', 'Community')->first();
         $communityDb = config('services.community.database');
 
-        if (!$communityDb || !$communityClient) {
+        if (! $communityDb || ! $communityClient) {
             return;
         }
 
@@ -27,7 +27,7 @@ trait HasForumAccount
             ->where('ibf_core_login_links.token_identifier', $this->id)
             ->first();
 
-        if (!$ipsAccount) {
+        if (! $ipsAccount) {
             // No user. Abort;
             return;
         }
