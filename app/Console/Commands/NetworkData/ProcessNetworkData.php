@@ -40,20 +40,11 @@ class ProcessNetworkData extends Command
     private $networkData = null;
 
     /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->networkData = Http::get(config('vatsim-data-feed.base'));
-    }
-
-    /**
      * Executes all necessary console commands.
      */
     public function handle()
     {
+        $this->networkData = Http::get(config('vatsim-data-feed.base'));
         $this->info('Getting network data from VATSIM.');
 
         if ($this->networkData->failed() || ! $this->networkData->json()) {

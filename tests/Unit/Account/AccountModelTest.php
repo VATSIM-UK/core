@@ -268,19 +268,19 @@ class AccountModelTest extends TestCase
         Carbon::setTestNow(Carbon::now()); // Check this works even when the timestamps are the same
 
         $mockS1Qual = factory(Qualification::class)->state('atc')->create([
-            'code' => 'S11',
+            'code' => 'AS1',
             'vatsim' => 1,
         ]);
         $mockS2Qual = factory(Qualification::class)->state('atc')->create([
-            'code' => 'S22',
+            'code' => 'AS2',
             'vatsim' => 2,
         ]);
         $mockP1Qual = factory(Qualification::class)->state('pilot')->create([
-            'code' => 'P11',
+            'code' => 'AP1',
             'vatsim' => 3,
         ]);
         $mockP2Qual = factory(Qualification::class)->state('pilot')->create([
-            'code' => 'P22',
+            'code' => 'AP2',
             'vatsim' => 4,
         ]);
 
