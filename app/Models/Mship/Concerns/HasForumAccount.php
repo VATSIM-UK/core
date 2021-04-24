@@ -36,7 +36,7 @@ trait HasForumAccount
         DB::table("{$communityDb}.ibf_core_members")
             ->where('member_id', $ipsAccount->member_id)
             ->update([
-                'name' => $this->real_name,
+                'name' => $this->name,
                 'email' => $this->getEmailForService($communityClient->id),
                 'member_title' => $this->primary_state->name,
                 'temp_ban' => ($this->is_banned) ? -1 : 0,
