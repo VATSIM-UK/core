@@ -18,12 +18,4 @@ class MarketingPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.marketing.branding');
     }
-
-    public function viewLiveStreaming()
-    {
-        $this->setTitle('Live Streaming');
-        $this->addBreadcrumb('Live Streaming', route('site.marketing.live-streaming'));
-
-        return $this->viewMake('site.marketing.live-streaming');
-    }
 }
