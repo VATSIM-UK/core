@@ -254,7 +254,7 @@ jobs:
         with:
           environment: production
           version: $TAG
-        envs: TAG
+          envs: TAG
 
       #
       # HOUSEKEEPING
