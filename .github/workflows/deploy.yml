@@ -254,8 +254,7 @@ jobs:
           SENTRY_PROJECT: core
         with:
           environment: production
-          version: $TAG
-          envs: TAG
+          version: ${{ TAG }}
 
       #
       # HOUSEKEEPING
