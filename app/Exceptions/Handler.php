@@ -50,13 +50,6 @@ class Handler extends ExceptionHandler
     public function report(Throwable $e)
     {
         if (! $this->shouldntReport($e)) {
-            if (extension_loaded('newrelic')) {
-                try {
-                    newrelic_notice_error(null, $e);
-                } catch (Exception $e) {
-                }
-            }
-
             if (class_exists('Log')) {
                 Log::info(Request::fullUrl());
             }
