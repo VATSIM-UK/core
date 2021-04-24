@@ -1,8 +1,9 @@
 name: Deploy
 
 on:
-  repository_dispatch:
-    types: [manual-trigger, deploy-trigger]
+  push:
+    branches:
+      - 'main'
 
 jobs:
   deploy:
