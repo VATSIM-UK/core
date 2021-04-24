@@ -242,6 +242,21 @@ jobs:
           envs: RELEASE_DIRECTORY,PHP_PATH,TAG,GITHUB_REPOSITORY
 
       #
+      # SENTRY
+      # Create a Sentry release
+      #
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: vatsim-uk
+          SENTRY_PROJECT: core
+        with:
+          environment: production
+          version: $TAG
+        envs: TAG
+
+      #
       # HOUSEKEEPING
       # Perform post-deployment housekeeping actions (release history)
       #
