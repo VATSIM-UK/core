@@ -253,7 +253,7 @@ jobs:
           SENTRY_PROJECT: core
         with:
           environment: production
-          version: ${{ env.TAG }}
+          version: ${{ github.sha }}
 
       #
       # HOUSEKEEPING
