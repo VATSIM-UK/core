@@ -34,7 +34,7 @@ trait HasDiscordAccount
         $currentRoles = $discord->getUserRoles($this);
 
         if ($this->isBanned) {
-            if ($currentRoles->contains($this->suspendedRoleId)) {
+            if ($currentRoles->contains($suspendedRoleId)) {
                 return;
             }
 
@@ -43,7 +43,7 @@ trait HasDiscordAccount
                 sleep(1);
             });
 
-            $discord->grantRoleById($this, $this->suspendedRoleId);
+            $discord->grantRoleById($this, $suspendedRoleId);
         } else {
             // Grant Roles
             DiscordRole::lazy()->filter(function (DiscordRole $role) {
