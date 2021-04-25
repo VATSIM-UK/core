@@ -256,6 +256,20 @@ jobs:
           version: ${{ github.sha }}
 
       #
+      # SENTRY
+      # Create a Sentry release for JS
+      #
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: vatsim-uk
+          SENTRY_PROJECT: core-js
+        with:
+          environment: production
+          version: ${{ github.sha }}
+
+      #
       # HOUSEKEEPING
       # Perform post-deployment housekeeping actions (release history)
       #

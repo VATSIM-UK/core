@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
+    "@sentry/browser": "^6.3.1",
+    "@sentry/tracing": "^6.3.1",
     "admin-lte": "2.4.18",
     "axios": "^0.21",
     "bootstrap": "^3.3.7",
@@ -27,9 +29,9 @@
     "jquery": "^3.6.0",
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
-    "less-loader": "^8.1.1",
     "laravel-mix": "^6.0.18",
     "less": "^4.1.1",
+    "less-loader": "^8.1.1",
     "lodash": "^4.17.21",
     "popper.js": "^1.16",
     "postcss": "^8.2",
@@ -41,7 +43,9 @@
   },
   "release": {
     "repositoryUrl": "https://github.com/VATSIM-UK/core",
-    "branches": ["main"],
+    "branches": [
+      "main"
+    ],
     "plugins": [
       "@semantic-release/npm",
       "@semantic-release/commit-analyzer",

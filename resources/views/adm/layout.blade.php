@@ -80,6 +80,8 @@
 
 </div>
 
+
+<script src="{{ mix('js/sentry.js') }}"></script>
 @include('adm.layout.scripts')
 
 </body>
