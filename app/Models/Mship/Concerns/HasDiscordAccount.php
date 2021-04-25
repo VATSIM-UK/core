@@ -2,11 +2,11 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Libraries\Discord;
-use Illuminate\Support\Str;
-use App\Models\Discord\DiscordRole;
 use App\Events\Discord\DiscordUnlinked;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
+use App\Libraries\Discord;
+use App\Models\Discord\DiscordRole;
+use Illuminate\Support\Str;
 
 /**
  * Trait HasDiscordAccount.
