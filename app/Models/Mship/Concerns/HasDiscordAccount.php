@@ -2,16 +2,26 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Libraries\Discord;
+use Illuminate\Support\Str;
+use App\Models\Discord\DiscordRole;
 use App\Events\Discord\DiscordUnlinked;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
-use App\Libraries\Discord;
-use App\Models\Discord\DiscordRole;
 
 /**
  * Trait HasDiscordAccount.
  */
 trait HasDiscordAccount
 {
+    public function getDiscordNameAttribute()
+    {
+        if (Str::length($this->name) >= 32) {
+            return $this->firstName.' '.substr($this->name_last, 0, 1);
+        }
+
+        return $this->name;
+    }
+
     /**
      * Sync the current account to Discord.
      */
@@ -26,7 +36,7 @@ trait HasDiscordAccount
         $suspendedRoleId = config('services.discord.suspended_member_role_id');
 
         try {
-            $discord->setNickname($this, $this->name);
+            $discord->setNickname($this, $this->discordName);
         } catch (DiscordUserNotFoundException $e) {
             return event(new DiscordUnlinked($this));
         }
