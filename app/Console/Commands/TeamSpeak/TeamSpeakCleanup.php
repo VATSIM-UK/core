@@ -5,7 +5,6 @@ namespace App\Console\Commands\TeamSpeak;
 use App\Console\Commands\Command;
 use App\Libraries\TeamSpeak;
 use App\Models\TeamSpeak\Registration;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Carbon\Carbon;
 use Exception;
 
@@ -88,7 +87,6 @@ class TeamSpeakCleanup extends Command
                 $this->log($e->getMessage());
                 $message = "Deletion failed: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}";
                 $this->log($message);
-                Bugsnag::notifyException($e);
 
                 return 0;
             }
