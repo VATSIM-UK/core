@@ -16,7 +16,7 @@ trait HasDiscordAccount
     public function getDiscordNameAttribute()
     {
         if (Str::length($this->name) >= 32) {
-            return $this->firstName.' '.substr($this->name_last, 0, 1);
+            return $this->name_preferred.' '.substr($this->name_last, 0, 1);
         }
 
         return $this->name;

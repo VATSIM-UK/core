@@ -387,7 +387,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getNameAttribute()
     {
-        return $this->firstName.' '.$this->name_last;
+        return $this->name_preferred.' '.$this->name_last;
     }
 
     /**
@@ -397,7 +397,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      *
      * @return mixed|string
      */
-    public function getFirstNameAttribute()
+    public function getNamePreferredAttribute()
     {
         return $this->nickname ? $this->nickname : $this->name_first;
     }
