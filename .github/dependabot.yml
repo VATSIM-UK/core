@@ -8,7 +8,6 @@ updates:
     time: "18:00"
   open-pull-requests-limit: 99
   labels:
-  - ""
   ignore:
   - dependency-name: postcss
     versions:
@@ -30,7 +29,6 @@ updates:
     time: "18:00"
   open-pull-requests-limit: 99
   labels:
-  - ""
   ignore:
   - dependency-name: league/csv
     versions:
@@ -68,7 +66,6 @@ updates:
     time: "18:00"
   open-pull-requests-limit: 99
   labels:
-  - ""
 - package-ecosystem: npm
   directory: "/nova-components/WaitingListsManager"
   schedule:
@@ -77,4 +74,3 @@ updates:
     time: "18:00"
   open-pull-requests-limit: 99
   labels:
-  - ""
