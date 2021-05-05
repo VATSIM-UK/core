@@ -37,8 +37,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('networkdata:download')
             ->everyTwoMinutes()
-            ->graceTimeInMinutes(10)
-            ->withoutOverlapping();
+            ->graceTimeInMinutes(10);
 
         $schedule->command('horizon:snapshot')
             ->everyFiveMinutes()
