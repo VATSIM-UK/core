@@ -50,7 +50,8 @@ class EmailVerification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $mailable = new class($notifiable, $this->token) extends \Illuminate\Mail\Mailable {
+        $mailable = new class($notifiable, $this->token) extends \Illuminate\Mail\Mailable
+        {
             use Queueable, SerializesModels;
 
             private $account;
