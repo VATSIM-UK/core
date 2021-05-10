@@ -6,6 +6,7 @@ use App\Models\Mship\Account;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Psr\Http\Message\ResponseInterface;
 
@@ -36,6 +37,8 @@ class UKCP
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
+            Log::warning("UKCP Client Error {$e->getMessage()} when creating account {$account->id}");
+
             return;
         }
 
@@ -73,6 +76,8 @@ class UKCP
                 ]]);
                 $result = $response->getBody()->getContents();
             } catch (ClientException $e) {
+                Log::warning("UKCP Client Error {$e->getMessage()} failed to create UKCP Token for {$account->id}");
+
                 return;
             }
         }
@@ -95,6 +100,8 @@ class UKCP
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
+            Log::warning("UKCP Client Exception $e when getting user account {$account->id}");
+
             return false;
         }
 
@@ -111,6 +118,8 @@ class UKCP
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
+            Log::warning("UKCP Client Exception {$e->getMessage()} when getting user account {$account->id}");
+
             return;
         }
 
