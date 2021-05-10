@@ -2,13 +2,13 @@
 
 namespace App\Libraries;
 
-use GuzzleHttp\Client;
 use App\Models\Mship\Account;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Exception\ClientException;
 
 class UKCP
 {
@@ -38,6 +38,7 @@ class UKCP
             ]]);
         } catch (ClientException $e) {
             Log::warning("UKCP Client Error $e when creating account {$account->id}");
+
             return;
         }
 
@@ -76,6 +77,7 @@ class UKCP
                 $result = $response->getBody()->getContents();
             } catch (ClientException $e) {
                 Log::warning("Failed to create UKCP Token for {$account->id}");
+
                 return;
             }
         }
@@ -99,6 +101,7 @@ class UKCP
             ]]);
         } catch (ClientException $e) {
             Log::warning("UKCP Client Exception $e when getting user account {$account->id}");
+
             return false;
         }
 
@@ -116,6 +119,7 @@ class UKCP
             ]]);
         } catch (ClientException $e) {
             Log::warning("UKCP Client Exception $e when getting user account {$account->id}");
+
             return;
         }
 
