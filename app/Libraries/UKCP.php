@@ -38,6 +38,7 @@ class UKCP
             ]]);
         } catch (ClientException $e) {
             Log::warning("UKCP Client Error {$e->getMessage()} when creating account {$account->id}");
+
             return;
         }
 
@@ -76,6 +77,7 @@ class UKCP
                 $result = $response->getBody()->getContents();
             } catch (ClientException $e) {
                 Log::warning("UKCP Client Error {$e->getMessage()} failed to create UKCP Token for {$account->id}");
+
                 return;
             }
         }
