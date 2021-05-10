@@ -36,7 +36,7 @@
         };
         @endif
     </script>
-    <script src="https://slug.vatsim.uk/script.js" data-site="NJOVAIYV" data-included-domains="vatsim.uk,www.vatsim.uk" defer></script>
+    <script src="https://slug.vatsim.uk/script.js" data-site="HQWHPBQX" data-included-domains="vatsim.uk,www.vatsim.uk" defer></script>
 
 </head>
 <body class="hold-transition skin-black sidebar-mini">
