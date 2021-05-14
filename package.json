@@ -27,7 +27,7 @@
     "jquery": "^3.6.0",
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
-    "less-loader": "^8.1.1",
+    "less-loader": "^9.0.0",
     "laravel-mix": "^6.0.18",
     "less": "^4.1.1",
     "lodash": "^4.17.21",
