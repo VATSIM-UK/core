@@ -6,7 +6,6 @@ use App\Models\Cts\ValidationPosition;
 use App\Repositories\Cts\ValidationPositionRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class ValidationsController
 {
