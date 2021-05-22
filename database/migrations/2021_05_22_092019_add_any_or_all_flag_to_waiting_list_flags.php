@@ -15,7 +15,7 @@ class AddAnyOrAllFlagToWaitingListFlags extends Migration
     public function up()
     {
         Schema::table('training_waiting_list', function (Blueprint $table) {
-            $table->string('flags_check')->default(WaitingList::ALL_FLAGS);
+            $table->string('flags_check')->default(WaitingList::ALL_FLAGS)->after('department');
         });
     }
 
