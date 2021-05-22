@@ -152,14 +152,13 @@ class WaitingListAccount extends Pivot
             $checked = $this->flags->every(function ($model) {
                 return $model->pivot->value;
             });
-        } else if ($this->waitingList->flags_check == WaitingList::ANY_FLAGS && $this->flags->count() > 0) {
+        } elseif ($this->waitingList->flags_check == WaitingList::ANY_FLAGS && $this->flags->count() > 0) {
             $checked = $this->flags->some(function ($model) use (&$checked) {
                 return $model->pivot->value;
             });
         } else {
             $checked = true;
         }
-
 
         return $checked;
     }

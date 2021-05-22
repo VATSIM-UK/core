@@ -78,7 +78,7 @@ class WaitingList extends Resource
 
             Select::make('Flags Check')->options([
                 'all' => 'ALL Flags',
-                'any' => 'ANY Flags'
+                'any' => 'ANY Flags',
             ])->displayUsingLabels()->rules(['required'])
             ->help('Waiting lists can be set so either a: all flags need to be met or b: any of the flags'),
 

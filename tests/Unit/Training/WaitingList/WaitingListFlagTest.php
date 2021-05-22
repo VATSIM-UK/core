@@ -2,18 +2,18 @@
 
 namespace Tests\Unit\Training\WaitingList;
 
-use Tests\TestCase;
-use App\Models\Mship\Account;
-use App\Models\Atc\Endorsement;
-use App\Models\NetworkData\Atc;
-use App\Models\Training\WaitingList;
-use App\Models\Atc\Endorsement\Condition;
-use App\Services\Training\AddToWaitingList;
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Listeners\Training\WaitingList\AssignFlags;
+use App\Models\Atc\Endorsement;
+use App\Models\Atc\Endorsement\Condition;
+use App\Models\Mship\Account;
+use App\Models\NetworkData\Atc;
+use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use App\Models\Training\WaitingList\WaitingListStatus;
+use App\Services\Training\AddToWaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class WaitingListFlagTest extends TestCase
 {
@@ -209,7 +209,7 @@ class WaitingListFlagTest extends TestCase
                 'account_id' => $account->id,
                 'minutes_online' => 721,
                 'disconnected_at' => now(),
-        ]);
+            ]);
 
         $anyCheckerWaitingList->addToWaitingList($account, $this->privacc);
 
@@ -221,8 +221,8 @@ class WaitingListFlagTest extends TestCase
         $conditionNotMet = factory(Condition::class)->create(['required_hours' => 100, 'positions' => ['EGXX_APP']]);
 
         // create the two flags with a linked endorsement. Only one should be met, but that is acceptable for an 'ANY' check.
-        $flag = factory(WaitingListFlag::class)->create(['endorsement_id' => $condition->endorsement->id, 'list_id' => null, 'default_value' => False]);
-        $unmetFlag = factory(WaitingListFlag::class)->create(['endorsement_id' => $conditionNotMet->endorsement->id, 'list_id' => null, 'default_value' => False]);
+        $flag = factory(WaitingListFlag::class)->create(['endorsement_id' => $condition->endorsement->id, 'list_id' => null, 'default_value' => false]);
+        $unmetFlag = factory(WaitingListFlag::class)->create(['endorsement_id' => $conditionNotMet->endorsement->id, 'list_id' => null, 'default_value' => false]);
 
         $anyCheckerWaitingList->addFlag($flag);
         $anyCheckerWaitingList->addFlag($unmetFlag);
