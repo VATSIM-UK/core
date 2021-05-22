@@ -147,14 +147,19 @@ class WaitingListAccount extends Pivot
     {
         $checked = true;
 
-        // iterate through each of the flags to see if they are true. If a false flag is detected, stop iterating.
-        $this->flags()->each(function ($model) use (&$checked) {
-            if (! $model->pivot->value) {
-                $checked = false;
+        if ($this->waitingList->flags_check == WaitingList::ALL_FLAGS) {
+            // iterate through each of the flags to see if they are true. If a false flag is detected, stop iterating.
+            $checked = $this->flags->every(function ($model) {
+                return $model->pivot->value;
+            });
+        } else if ($this->waitingList->flags_check == WaitingList::ANY_FLAGS && $this->flags->count() > 0) {
+            $checked = $this->flags->some(function ($model) use (&$checked) {
+                return $model->pivot->value;
+            });
+        } else {
+            $checked = true;
+        }
 
-                return false;
-            }
-        });
 
         return $checked;
     }

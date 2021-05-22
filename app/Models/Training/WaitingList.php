@@ -30,6 +30,9 @@ class WaitingList extends Model
     const ATC_DEPARTMENT = 'atc';
     const PILOT_DEPARTMENT = 'pilot';
 
+    const ALL_FLAGS = 'all';
+    const ANY_FLAGS = 'any';
+
     /**
      * A Waiting List can be managed by many Staff Members (Accounts).
      *

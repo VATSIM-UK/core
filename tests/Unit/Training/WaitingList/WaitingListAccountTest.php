@@ -2,14 +2,16 @@
 
 namespace Tests\Unit\Training\WaitingList;
 
+use Carbon\Carbon;
+use Tests\TestCase;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingList\WaitingListStatus;
-use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
-use Tests\TestCase;
+use App\Models\Atc\Endorsement\Condition;
+use App\Models\Training\WaitingList\WaitingListFlag;
+use App\Models\Training\WaitingList\WaitingListStatus;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class WaitingListAccountTest extends TestCase
 {
