@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Training\WaitingList;
 
-use App\Models\Atc\Endorsement\Condition;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
