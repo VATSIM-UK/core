@@ -65,7 +65,7 @@
             if (e.keyCode === 66) toggleActive();
         });
     </script>
-    <script src="https://slug.vatsim.uk/script.js" data-site="NJOVAIYV" data-included-domains="vatsim.uk,www.vatsim.uk" defer></script>
+    <script src="https://slug.vatsim.uk/script.js" data-site="HQWHPBQX" data-included-domains="vatsim.uk,www.vatsim.uk" defer></script>
 
     <!-- Styles -->
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/home.css') }}">

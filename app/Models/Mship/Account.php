@@ -383,17 +383,23 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     /**
      * Get the user's full name.
      *
-     * If a nickname is set, that will be used in place of name_first.
-     *
      * @return mixed|string
      */
     public function getNameAttribute()
     {
-        if ($this->nickname != null) {
-            return $this->nickname.' '.$this->name_last;
-        }
+        return $this->name_preferred.' '.$this->name_last;
+    }
 
-        return $this->real_name;
+    /**
+     * Get the user's first name.
+     *
+     * If a nickname is set, that will be used in place of name_first.
+     *
+     * @return mixed|string
+     */
+    public function getNamePreferredAttribute()
+    {
+        return $this->nickname ? $this->nickname : $this->name_first;
     }
 
     /**

@@ -21,7 +21,6 @@
     <![endif]-->
 
     @yield('styles')
-
 </head>
 <body class="hold-transition skin-black sidebar-mini">
 
