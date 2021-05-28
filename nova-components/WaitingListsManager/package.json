@@ -12,7 +12,7 @@
     "dependencies": {
         "cross-env": "^7.0.3",
         "laravel-mix": "^6.0.19",
-        "postcss": "^8.2",
+        "postcss": "^8.3",
         "vue": "^2.6.12",
         "vue-loader": "^15.9.7"
     }
