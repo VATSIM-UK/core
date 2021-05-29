@@ -9,6 +9,7 @@ $factory->define(App\Models\Training\WaitingList::class, function (Faker $faker)
         'name' => $name,
         'slug' => str_slug($name),
         'department' => 'atc',
+        'flags_check' => 'all',
     ];
 });
 
