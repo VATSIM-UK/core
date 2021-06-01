@@ -8,21 +8,6 @@
 
     <title>VATSIM United Kingdom Division</title>
 
-    <!--BugSnagScript-->
-    <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
-            data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
-            data-releasestage="{{ env('APP_ENV') }}"></script>
-    <script type="text/javascript">
-        Bugsnag.notifyReleaseStages = ["staging", "production"];
-
-        @if(Auth::check())
-            Bugsnag.user = {
-            id: {{ Auth::user()->id }},
-            name: "{{ Auth::user()->name }}",
-            email: "{{ Auth::user()->email }}"
-        };
-        @endif
-    </script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script>
         var touchsupport = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
@@ -437,6 +422,7 @@
 </section>
 
 <!-- Scripts -->
+<script src="{{ mix('js/sentry.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jarallax/1.10.3/jarallax.min.js" integrity="sha512-1RIeczLHpQNM864FPmyjgIOPQmljv9ixHg5J1knRhTApLpvxqA0vOTxgGF89/DpgZIAXRCn9dRiakPjyTUl9Rg==" crossorigin="anonymous"></script>
 <script src="{{ mix('js/home.js') }}"></script>
 <script src="{{ mix('js/top-notification.js') }}"></script>

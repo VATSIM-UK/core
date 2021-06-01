@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Http\Controllers\BaseController;
 use App\Libraries\Discord;
 use App\Libraries\UKCP;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use HTML;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
@@ -30,7 +29,6 @@ class AppServiceProvider extends ServiceProvider
             URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
         }
 
-        $this->registerBugsnagCallback();
         $this->registerHTMLComponents();
         $this->registerValidatorExtensions();
 
@@ -46,32 +44,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->alias('bugsnag.multi', \Illuminate\Contracts\Logging\Log::class);
-        $this->app->alias('bugsnag.multi', \Psr\Log\LoggerInterface::class);
-
         $this->app->register(TelescopeServiceProvider::class);
         Telescope::ignoreMigrations();
 
         $this->app->singleton(UKCP::class);
         $this->app->singleton(Discord::class);
-    }
-
-    /**
-     * Register a Bugsnag callback to avoid grouping
-     * SQL errors by the Model::save function.
-     */
-    private function registerBugsnagCallback()
-    {
-        Bugsnag::registerCallback(function ($report) {
-            $stacktrace = $report->getStacktrace();
-            $frames = $stacktrace->getFrames();
-
-            foreach ($frames as &$frame) {
-                if ($frame['file'] === 'app/Models/Model.php' && $frame['method'] === 'App\\Models\\Model::save') {
-                    $frame['inProject'] = false;
-                }
-            }
-        });
     }
 
     public function registerHTMLComponents()

@@ -21,23 +21,6 @@
     <![endif]-->
 
     @yield('styles')
-
-    {{-- BugSnag --}}
-    <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
-            data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
-            data-releasestage="{{ env('APP_ENV') }}">
-        Bugsnag.notifyReleaseStages = ["staging", "production"];
-
-        @if(Auth::check())
-            Bugsnag.user = {
-            id: {{ Auth::user()->id }},
-            name: "{{ Auth::user()->name }}",
-            email: "{{ Auth::user()->email }}"
-        };
-        @endif
-    </script>
-    <script src="https://slug.vatsim.uk/script.js" data-site="HQWHPBQX" data-included-domains="vatsim.uk,www.vatsim.uk" defer></script>
-
 </head>
 <body class="hold-transition skin-black sidebar-mini">
 
@@ -80,6 +63,8 @@
 
 </div>
 
+
+<script src="{{ mix('js/sentry.js') }}"></script>
 @include('adm.layout.scripts')
 
 </body>

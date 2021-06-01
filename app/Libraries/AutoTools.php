@@ -2,7 +2,6 @@
 
 namespace App\Libraries;
 
-use Bugsnag;
 use Cache;
 use Exception;
 use League\Csv\Reader;
@@ -38,7 +37,6 @@ class AutoTools
                     // CERT unavailable. Not our fault, so will ignore.
                     return collect();
                 }
-                Bugsnag::notifyException($e);
 
                 return collect();
             }

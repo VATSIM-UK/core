@@ -120,7 +120,6 @@ class ImportMembers extends Command
                     // CERT unavailable. Not our fault, so will ignore.
                     return;
                 }
-                Bugsnag::notifyException($e);
 
                 return;
             }
