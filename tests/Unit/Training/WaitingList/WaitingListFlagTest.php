@@ -5,6 +5,7 @@ namespace Tests\Unit\Training\WaitingList;
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Listeners\Training\WaitingList\AssignFlags;
 use App\Models\Atc\Endorsement;
+use App\Models\Atc\Endorsement\Condition;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
@@ -99,7 +100,7 @@ class WaitingListFlagTest extends TestCase
         $account = factory(Account::class)->create();
         // populate network data
         factory(Atc::class)->create(['account_id' => $account->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 61]);
-        $condition = factory(Endorsement\Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
+        $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
         $flag = factory(WaitingListFlag::class)->create(['endorsement_id' => $condition->endorsement->id, 'list_id' => $this->waitingList->id]);
 
@@ -192,6 +193,45 @@ class WaitingListFlagTest extends TestCase
 
         // creates an atc session to simulate the 12 hour requirement stipulated within the model
         $atcSession = factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
+
+        $this->assertTrue($waitingListAccount->fresh()->eligibility);
+    }
+
+    /** @test */
+    public function itShouldCheckWithOnlyOneFlagWhenAnyDefinedAsWaitingList()
+    {
+        $account = factory(Account::class)->create();
+        $anyCheckerWaitingList = factory(WaitingList::class)->create(['flags_check' => WaitingList::ANY_FLAGS]);
+
+        // create an atc session which will pass the 12 hour check hardcoded against a waiting list flags
+        factory(Atc::class)->create(
+            [
+                'account_id' => $account->id,
+                'minutes_online' => 721,
+                'disconnected_at' => now(),
+            ]);
+
+        $anyCheckerWaitingList->addToWaitingList($account, $this->privacc);
+
+        // create an ATC session and condition which pass
+        factory(Atc::class)->create(['account_id' => $account->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 61]);
+        $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
+
+        // create an endorsement condition which would not pass.
+        $conditionNotMet = factory(Condition::class)->create(['required_hours' => 100, 'positions' => ['EGXX_APP']]);
+
+        // create the two flags with a linked endorsement. Only one should be met, but that is acceptable for an 'ANY' check.
+        $flag = factory(WaitingListFlag::class)->create(['endorsement_id' => $condition->endorsement->id, 'list_id' => null, 'default_value' => false]);
+        $unmetFlag = factory(WaitingListFlag::class)->create(['endorsement_id' => $conditionNotMet->endorsement->id, 'list_id' => null, 'default_value' => false]);
+
+        $anyCheckerWaitingList->addFlag($flag);
+        $anyCheckerWaitingList->addFlag($unmetFlag);
+
+        $waitingListAccount = $anyCheckerWaitingList->fresh()->accounts->find($account->id)->pivot;
+        // find the 'active' status
+        $status = WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS);
+        // and sets an active status
+        $waitingListAccount->addStatus($status);
 
         $this->assertTrue($waitingListAccount->fresh()->eligibility);
     }
