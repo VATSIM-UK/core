@@ -159,9 +159,6 @@ jobs:
             # Symlink .env from root directory
             ln -s $APPLICATION_ROOT/.env .env
 
-            # Update BUGSNAG_APP_VERSION
-            sed -i "s/^BUGSNAG_APP_VERSION.*$/BUGSNAG_APP_VERSION=$TAG/" .env
-
             # Install application dependencies
             $PHP_PATH /usr/local/bin/composer install --no-interaction --no-dev
 
@@ -236,7 +233,7 @@ jobs:
       # SENTRY
       # Create a Sentry release for Laravel
       #
-      - name: Create Sentry release
+      - name: Create Sentry release (Laravel)
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -250,7 +247,7 @@ jobs:
       # SENTRY
       # Create a Sentry release for JS
       #
-      - name: Create Sentry release
+      - name: Create Sentry release (JS)
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
