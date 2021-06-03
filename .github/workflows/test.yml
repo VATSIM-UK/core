@@ -20,7 +20,7 @@ jobs:
     env:
       NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
       NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
-    strategy:s
+    strategy:
       fail-fast: false
       matrix:
         php: ['7.4']
