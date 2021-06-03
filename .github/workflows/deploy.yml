@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: core-deploy
-      cancel-in-progress: true
+      cancel-in-progress: false
     steps:
       - name: Checkout Codes
         uses: actions/checkout@v2
