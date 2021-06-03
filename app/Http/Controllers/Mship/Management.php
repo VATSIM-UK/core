@@ -264,7 +264,7 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function requestCertCheck()
     {
-        $ranRecently = ! Cache::add('USER_REQUEST_CERTCHECK_'.Auth::user()->id, '1', 1 * 60 * 60 * 1000); // 1 hour
+        $ranRecently = ! Cache::add('USER_REQUEST_CERTCHECK_'.Auth::user()->id, '1', now()->addHour());
         if ($ranRecently) {
             return redirect()->route('mship.manage.dashboard')->withError('You requested an update with the central VATSIM database recently. Try again later.');
         }

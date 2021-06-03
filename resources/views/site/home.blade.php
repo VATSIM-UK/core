@@ -8,21 +8,6 @@
 
     <title>VATSIM United Kingdom Division</title>
 
-    <!--BugSnagScript-->
-    <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
-            data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
-            data-releasestage="{{ env('APP_ENV') }}"></script>
-    <script type="text/javascript">
-        Bugsnag.notifyReleaseStages = ["staging", "production"];
-
-        @if(Auth::check())
-            Bugsnag.user = {
-            id: {{ Auth::user()->id }},
-            name: "{{ Auth::user()->name }}",
-            email: "{{ Auth::user()->email }}"
-        };
-        @endif
-    </script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script>
         var touchsupport = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
@@ -80,7 +65,7 @@
             if (e.keyCode === 66) toggleActive();
         });
     </script>
-    <script src="https://slug.vatsim.uk/script.js" data-site="NJOVAIYV" data-included-domains="vatsim.uk,www.vatsim.uk" defer></script>
+    <script src="https://slug.vatsim.uk/script.js" data-site="HQWHPBQX" data-included-domains="vatsim.uk,www.vatsim.uk" defer></script>
 
     <!-- Styles -->
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/home.css') }}">
@@ -191,9 +176,6 @@
                     <ul class="nav">
                         <li class="nav-item">
                             <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.marketing.live-streaming') }}">Live Streams</a>
                         </li>
                     </ul>
                 </li>
@@ -440,6 +422,7 @@
 </section>
 
 <!-- Scripts -->
+<script src="{{ mix('js/sentry.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jarallax/1.10.3/jarallax.min.js" integrity="sha512-1RIeczLHpQNM864FPmyjgIOPQmljv9ixHg5J1knRhTApLpvxqA0vOTxgGF89/DpgZIAXRCn9dRiakPjyTUl9Rg==" crossorigin="anonymous"></script>
 <script src="{{ mix('js/home.js') }}"></script>
 <script src="{{ mix('js/top-notification.js') }}"></script>

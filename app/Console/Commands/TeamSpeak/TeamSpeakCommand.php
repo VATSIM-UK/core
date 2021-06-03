@@ -8,7 +8,6 @@ use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
 use App\Libraries\TeamSpeak;
 use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Registration;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -101,7 +100,5 @@ abstract class TeamSpeakCommand extends Command
             .$e->getTraceAsString()
             .PHP_EOL.'Error message: '.$e->getMessage().PHP_EOL;
         self::$command->log($message);
-
-        Bugsnag::notifyException($e);
     }
 }

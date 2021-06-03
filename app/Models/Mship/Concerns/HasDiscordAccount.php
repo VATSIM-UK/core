@@ -6,12 +6,22 @@ use App\Events\Discord\DiscordUnlinked;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Libraries\Discord;
 use App\Models\Discord\DiscordRole;
+use Illuminate\Support\Str;
 
 /**
  * Trait HasDiscordAccount.
  */
 trait HasDiscordAccount
 {
+    public function getDiscordNameAttribute()
+    {
+        if (Str::length($this->name) >= 32) {
+            return $this->name_preferred.' '.substr($this->name_last, 0, 1);
+        }
+
+        return $this->name;
+    }
+
     /**
      * Sync the current account to Discord.
      */
@@ -26,7 +36,7 @@ trait HasDiscordAccount
         $suspendedRoleId = config('services.discord.suspended_member_role_id');
 
         try {
-            $discord->setNickname($this, $this->name);
+            $discord->setNickname($this, $this->discordName);
         } catch (DiscordUserNotFoundException $e) {
             return event(new DiscordUnlinked($this));
         }
@@ -34,7 +44,7 @@ trait HasDiscordAccount
         $currentRoles = $discord->getUserRoles($this);
 
         if ($this->isBanned) {
-            if ($currentRoles->contains($this->suspendedRoleId)) {
+            if ($currentRoles->contains($suspendedRoleId)) {
                 return;
             }
 
@@ -43,7 +53,7 @@ trait HasDiscordAccount
                 sleep(1);
             });
 
-            $discord->grantRoleById($this, $this->suspendedRoleId);
+            $discord->grantRoleById($this, $suspendedRoleId);
         } else {
             // Grant Roles
             DiscordRole::lazy()->filter(function (DiscordRole $role) {

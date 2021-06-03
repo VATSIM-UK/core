@@ -6,7 +6,6 @@ use App\Events\Mship\AccountAltered;
 use App\Events\Mship\Qualifications\QualificationAdded;
 use App\Models\Mship\AccountQualification;
 use App\Models\Mship\Qualification;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Exception;
 use VatsimXML;
 
@@ -80,7 +79,7 @@ trait HasQualifications
                 }
             } catch (Exception $e) {
                 if (strpos($e->getMessage(), 'Name or service not known') === false) {
-                    Bugsnag::notifyException($e);
+                    //
                 }
             }
         }

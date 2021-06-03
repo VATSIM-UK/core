@@ -3,7 +3,6 @@
 namespace App\Console;
 
 use App\Console\Commands\Deployment\HerokuPostDeploy;
-use Bugsnag\BugsnagLaravel\Commands\DeployCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -17,7 +16,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        DeployCommand::class,
         HerokuPostDeploy::class,
     ];
 
@@ -37,8 +35,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('networkdata:download')
             ->everyTwoMinutes()
-            ->graceTimeInMinutes(10)
-            ->withoutOverlapping();
+            ->withoutOverlapping(5)
+            ->graceTimeInMinutes(10);
 
         $schedule->command('horizon:snapshot')
             ->everyFiveMinutes()
@@ -62,10 +60,6 @@ class Kernel extends ConsoleKernel
             ->graceTimeInMinutes(15);
 
         // === By Day === //
-
-        $schedule->command('sync:community')
-            ->dailyAt('02:30')
-            ->graceTimeInMinutes(30);
 
         $schedule->command('telescope:prune')
             ->dailyAt('03:30');
