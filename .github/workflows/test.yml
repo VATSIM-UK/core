@@ -13,6 +13,9 @@ jobs:
   test:
     name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }}
     runs-on: ubuntu-latest
+    concurrency:
+      group: core-test-${{ github.ref }}
+      cancel-in-progress: true
     continue-on-error: ${{ matrix.experimental }}
     env:
       NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
