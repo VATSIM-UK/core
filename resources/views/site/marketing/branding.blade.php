@@ -169,7 +169,7 @@
                                                      rel="external nofollow" target="_blank">Download</a>
                     </li>
                     <li>
-                        All other content should use DIN Alternate Regular - <a href="http://fontsgeek.com/fonts/DIN-Alternate-Regular"
+                        All other content should use DIN 1451 Mittelschrift - <a href="https://www.1001fonts.com/alte-din-1451-mittelschrift-font.html"
                                                                                 rel="external nofollow" target="_blank">Download</a>
                     </li>
                 </ul>
