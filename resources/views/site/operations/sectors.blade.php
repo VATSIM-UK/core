@@ -378,19 +378,19 @@
 
                     <ul>
                         <li>
-                            LON_S_CTR
-                        </li>
-                        <li>
-                            LON_C_CTR
-                        </li>
-                        <li>
-                            LON_W_CTR
-                        </li>
+                            SCO_CTR
+                        </li>                    
                         <li>
                             LON_N_CTR
                         </li>
                         <li>
-                            SCO_CTR
+                            LON_C_CTR
+                        </li>                        
+                        <li>
+                            LON_S_CTR
+                        </li>
+                        <li>
+                            LON_W_CTR
                         </li>
                     </ul>
 
@@ -400,22 +400,19 @@
 
                     <ul>
                         <li>
-                            LON_D_CTR
+                            LON_NW_CTR
+                        </li>
+                        <li>
+                            LON_NE_CTR
                         </li>
                         <li>
                             LON_M_CTR
                         </li>
                         <li>
                             LON_E_CTR
-                        </li>
+                        </li>                        
                         <li>
-                            LTC_S_CTR
-                        </li>
-                        <li>
-                            LTC_N_CTR
-                        </li>
-                        <li>
-                            MAN_CTR
+                            LON_D_CTR
                         </li>
                         <li>
                             STC_CTR
@@ -423,17 +420,34 @@
                         <li>
                             STC_A_CTR
                         </li>
+                        <li>
+                            MAN_W_CTR
+                        </li>
+                        <li>
+                            MAN_NE_CTR
+                        </li>
+                        <li>
+                            MAN_SE_CTR
+                        </li>                          
+                        <li>
+                            LTC_N_CTR
+                        </li>
+                        <li>
+                            LTC_S_CTR
+                        </li>                      
                     </ul>
 
                     <p>
                         Members may open either a single Primary or Secondary sector, or a valid combination of
-                        Primary (e.g. LON_SC_CTR) or Secondary (e.g. LTC_CTR) sectors.<br>
+                        Primary (e.g. LON_SC_CTR) or Secondary (e.g. LTC_CTR, MAN_CTR) sectors.<br>
                     </p>
 
                     <p>
                         Further splits require the remaining portion of the Primary or Secondary sector to be
                         staffed too - e.g. opening LTC_NE_CTR requires LTC_NW_CTR (as the remaining portion of
-                        LTC_N_CTR) to be online.
+                        LTC_N_CTR) to be online. Splits not defined in the London or Scottish FIR (EGTT) vMATS 
+                        Part II require specific approval from the Operations Department in the form of a 
+                        Temporary Instruction or Procedure Change.
                     </p>
 
                 </div>
