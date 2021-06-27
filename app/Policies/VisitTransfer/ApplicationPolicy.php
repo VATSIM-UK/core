@@ -168,7 +168,7 @@ class ApplicationPolicy
 
     public function reject(Account $user, Application $application)
     {
-        if (!$application->can_reject) {
+        if (! $application->can_reject) {
             return false;
         }
 
