@@ -168,11 +168,7 @@ class ApplicationPolicy
 
     public function reject(Account $user, Application $application)
     {
-        if (!$application->can_reject) {
-            return false;
-        }
-
-        return true;
+        return $application->can_reject;
     }
 
     public function complete(Account $user, Application $application)
