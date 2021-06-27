@@ -202,7 +202,7 @@ class Application extends Model
         self::STATUS_CANCELLED,
         self::STATUS_COMPLETED,
         self::STATUS_REJECTED,
-        self::STATUS_WITHDRAWN
+        self::STATUS_WITHDRAWN,
     ];
 
     public function __construct(array $attributes = [])
@@ -334,7 +334,7 @@ class Application extends Model
 
     public function getCanRejectAttribute()
     {
-        return !$this->isStatusIn(self::$APPLICATION_CANT_BE_REJECTED);
+        return ! $this->isStatusIn(self::$APPLICATION_CANT_BE_REJECTED);
     }
 
     public function getIsNotEditableAttribute()
