@@ -198,6 +198,13 @@ class Application extends Model
         self::STATUS_SUBMITTED,
     ];
 
+    public static $APPLICATION_CANT_BE_REJECTED = [
+        self::STATUS_CANCELLED,
+        self::STATUS_COMPLETED,
+        self::STATUS_REJECTED,
+        self::STATUS_WITHDRAWN
+    ];
+
     public function __construct(array $attributes = [])
     {
         $attributes['expires_at'] = \Carbon\Carbon::now()->addHour();
@@ -323,6 +330,11 @@ class Application extends Model
     public function getIsEditableAttribute()
     {
         return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_EDITABLE);
+    }
+
+    public function getCanRejectAttribute()
+    {
+        return !$this->isStatusIn(self::$APPLICATION_CANT_BE_REJECTED);
     }
 
     public function getIsNotEditableAttribute()

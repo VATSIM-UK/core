@@ -168,7 +168,7 @@ class ApplicationPolicy
 
     public function reject(Account $user, Application $application)
     {
-        if ($application->is_editable || $application->is_closed) {
+        if (!$application->can_reject) {
             return false;
         }
 
