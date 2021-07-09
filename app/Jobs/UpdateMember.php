@@ -133,13 +133,17 @@ class UpdateMember extends Job implements ShouldQueue
     {
         // if they have an extra rating, log their previous rating
         if ($this->data->rating >= 8) {
-            $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
-            if (isset($_prevRat->PreviousRatingInt)) {
-                $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
-                if (! is_null($prevAtcRating) && ! $member->hasQualification($prevAtcRating)) {
-                    $member->addQualification($prevAtcRating);
-                }
-            }
+            // This user has an admin rating but there is currently no support
+            // for fetching their real rating via the VATSIM API. For
+            // reference, the old AT code is below.
+
+            // $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+            // if (isset($_prevRat->PreviousRatingInt)) {
+            //     $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+            //     if (! is_null($prevAtcRating) && ! $member->hasQualification($prevAtcRating)) {
+            //         $member->addQualification($prevAtcRating);
+            //     }
+            // }
         } else {
             // remove any extra ratings
             foreach ($member->qualifications_atc_training as $qual) {
