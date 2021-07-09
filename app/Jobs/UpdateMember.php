@@ -52,8 +52,28 @@ class UpdateMember extends Job implements ShouldQueue
     {
         $member = Account::firstOrNew([(new Account)->getKeyName() => $this->accountID]);
 
+        $token = 'Token ' . config('vatsim-api.key');
+        $url = config('vatsim-api.base') . "ratings/{$this->accountID}";
+
         try {
-            $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
+            $response = Http::withHeaders([
+                'Authorization' => $token
+            ])->get($url)->json();
+
+            $this->data = (object) [
+                "name_last" => $response['name_last'],
+                "name_first" => $response['name_first'],
+                "email" => $response['email'],
+                "rating" => (string) $response['rating'],
+                "regdate" => Carbon::parse($response['reg_date'])->toDateTimeString(),
+                "pilotrating" => (string) $response['pilotrating'],
+                "country" => $response['country'],
+                "region" => $response['region'],
+                "division" => $response['division'],
+                "atctime" => (string) 0,
+                "pilottime" => (string) 0,
+                "cid" => $response['id'],
+            ];
         } catch (\Exception $e) {
             return;
         }
