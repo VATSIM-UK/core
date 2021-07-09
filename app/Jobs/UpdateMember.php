@@ -2,17 +2,18 @@
 
 namespace App\Jobs;
 
+use DB;
+use VatsimXML;
+use Carbon\Carbon;
+use App\Models\Mship\Account;
 use App\Events\Mship\AccountAltered;
 use App\Jobs\Middleware\RateLimited;
-use App\Models\Mship\Account;
-use App\Models\Mship\Qualification as QualificationData;
-use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use VatsimXML;
+use App\Models\Mship\Qualification as QualificationData;
 
 class UpdateMember extends Job implements ShouldQueue
 {
