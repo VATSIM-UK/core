@@ -2,17 +2,16 @@
 
 namespace App\Console\Commands\Members;
 
+use App\Console\Commands\Command;
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
+use App\Notifications\Mship\WelcomeMember;
 use DB;
 use Exception;
-use App\Models\Mship\State;
-use App\Libraries\AutoTools;
-use App\Models\Mship\Account;
 use Illuminate\Support\Carbon;
-use App\Console\Commands\Command;
-use App\Models\Mship\Qualification;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
-use App\Notifications\Mship\WelcomeMember;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
@@ -59,11 +58,11 @@ class ImportMembers extends Command
 
     protected function getMembers()
     {
-        $token = 'Token ' . config('vatsim-api.key');
-        $url = config('vatsim-api.base') . "divisions/GBR/members";
+        $token = 'Token '.config('vatsim-api.key');
+        $url = config('vatsim-api.base').'divisions/GBR/members';
 
         $response = Http::withHeaders([
-            'Authorization' => $token
+            'Authorization' => $token,
         ])->get($url)->json();
 
         // need to iterate through pages here
