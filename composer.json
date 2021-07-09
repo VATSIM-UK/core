@@ -115,11 +115,12 @@
         "codedungeon/phpunit-result-printer": "^0.30.1",
         "facade/ignition": "^2.3.6",
         "fakerphp/faker": "^1.13",
-        "laravel/homestead": "^12.1.0",
         "laracasts/generators": "^2.0",
+        "laravel/homestead": "^12.1.0",
         "laravel/legacy-factories": "^1.1",
         "mockery/mockery": "1.4.*",
         "phpunit/phpunit": "^9.4",
+        "spatie/laravel-ray": "^1.23",
         "symfony/css-selector": "^4.0",
         "symfony/dom-crawler": "^5.0",
         "timacdonald/log-fake": "^1.2"
