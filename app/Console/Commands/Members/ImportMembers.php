@@ -2,15 +2,17 @@
 
 namespace App\Console\Commands\Members;
 
-use App\Console\Commands\Command;
-use App\Libraries\AutoTools;
-use App\Models\Mship\Account;
-use App\Models\Mship\Qualification;
-use App\Models\Mship\State;
-use App\Notifications\Mship\WelcomeMember;
 use DB;
 use Exception;
+use App\Models\Mship\State;
+use App\Libraries\AutoTools;
+use App\Models\Mship\Account;
+use Illuminate\Support\Carbon;
+use App\Console\Commands\Command;
+use App\Models\Mship\Qualification;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use App\Notifications\Mship\WelcomeMember;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
@@ -29,7 +31,7 @@ class ImportMembers extends Command
      *
      * @var string
      */
-    protected $description = 'Import/update member emails from CERT AutoTools';
+    protected $description = 'Import/update member emails from VATSIM API';
 
     protected $count_new = 0;
     protected $count_emails = 0;
@@ -46,17 +48,48 @@ class ImportMembers extends Command
     {
         $this->member_list = $this->getMemberIdAndEmail();
 
-        $this->log('Member list and email list obtained.');
-
-        $members = AutoTools::getDivisionData(! $this->option('full'));
-
-        foreach ($members as $member) {
+        foreach ($this->getMembers() as $member) {
             $this->log("Processing {$member['cid']} {$member['name_first']} {$member['name_last']}: ", null, false);
 
             DB::transaction(function () use ($member) {
                 $this->processMember($member);
             });
         }
+    }
+
+    protected function getMembers()
+    {
+        $token = 'Token ' . config('vatsim-api.key');
+        $url = config('vatsim-api.base') . "divisions/GBR/members";
+
+        $response = Http::withHeaders([
+            'Authorization' => $token
+        ])->get($url)->json();
+
+        // need to iterate through pages here
+
+        $memberCollection = collect();
+
+        foreach ($response['results'] as $result) {
+            $memberCollection->push([
+                'cid' => $result['id'],
+                'rating_atc' => $result['rating'],
+                'rating_pilot' => $result['pilotrating'],
+                'name_first' => $result['name_first'],
+                'name_last' => $result['name_last'],
+                'email' => $result['email'],
+                'age_band' => $result['age'],
+                'city' => $result['countystate'],
+                'country' => $result['country'],
+                'experience' => '',
+                'unknown' => '',
+                'reg_date' => Carbon::parse($result['reg_date'])->toDateTimeString(),
+                'region' => $result['region'],
+                'division' => $result['division'],
+            ]);
+        }
+
+        return $memberCollection;
     }
 
     protected function processMember($member)
