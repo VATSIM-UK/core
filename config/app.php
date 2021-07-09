@@ -238,7 +238,6 @@ return [
         'HTML' => Collective\Html\HtmlFacade::class,
         'Form' => Collective\Html\FormFacade::class,
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
-        'VatsimXML' => Vatsim\Xml\Facades\XML::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'IPBoard' => Alawrence\Ipboard\Facades\Ipboard::class,
     ],
