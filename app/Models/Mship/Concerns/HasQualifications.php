@@ -7,7 +7,6 @@ use App\Events\Mship\Qualifications\QualificationAdded;
 use App\Models\Mship\AccountQualification;
 use App\Models\Mship\Qualification;
 use Exception;
-use VatsimXML;
 
 trait HasQualifications
 {
@@ -71,17 +70,23 @@ trait HasQualifications
             $this->addQualification(Qualification::parseVatsimATCQualification($atcRating));
         }
 
+
+
         if ($atcRating >= 8) {
-            try {
-                $info = VatsimXML::getData($this->id, 'idstatusprat');
-                if (isset($info->PreviousRatingInt) && $info->PreviousRatingInt > 0) {
-                    $this->addQualification(Qualification::parseVatsimATCQualification($info->PreviousRatingInt));
-                }
-            } catch (Exception $e) {
-                if (strpos($e->getMessage(), 'Name or service not known') === false) {
-                    //
-                }
-            }
+            // This user has an admin rating but there is currently no support
+            // for fetching their real rating via the VATSIM API. For
+            // reference, the old AT code is below.
+
+            //     try {
+            //         $info = VatsimXML::getData($this->id, 'idstatusprat');
+            //         if (isset($info->PreviousRatingInt) && $info->PreviousRatingInt > 0) {
+            //             $this->addQualification(Qualification::parseVatsimATCQualification($info->PreviousRatingInt));
+            //         }
+            //     } catch (Exception $e) {
+            //         if (strpos($e->getMessage(), 'Name or service not known') === false) {
+            //             //
+            //         }
+            //     }
         }
 
         if ($pilotRating >= 0) {

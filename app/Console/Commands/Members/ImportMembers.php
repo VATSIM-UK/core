@@ -11,7 +11,6 @@ use App\Notifications\Mship\WelcomeMember;
 use DB;
 use Exception;
 use Illuminate\Support\Facades\Validator;
-use VatsimXML;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
@@ -113,24 +112,28 @@ class ImportMembers extends Command
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
         if ($member_data['rating_atc'] >= 8) {
-            try {
-                $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
-            } catch (Exception $e) {
-                if (strpos($e->getMessage(), 'Name or service not known') !== false) {
-                    // CERT unavailable. Not our fault, so will ignore.
-                    return;
-                }
+            // This user has an admin rating but there is currently no support
+            // for fetching their real rating via the VATSIM API. For
+            // reference, the old AT code is below.
 
-                return;
-            }
+            // try {
+            //     $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+            // } catch (Exception $e) {
+            //     if (strpos($e->getMessage(), 'Name or service not known') !== false) {
+            //         // CERT unavailable. Not our fault, so will ignore.
+            //         return;
+            //     }
 
-            if (isset($_prevRat->PreviousRatingInt)) {
-                $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+            //     return;
+            // }
 
-                if ($prevAtcRating) {
-                    $member->addQualification($prevAtcRating);
-                }
-            }
+            // if (isset($_prevRat->PreviousRatingInt)) {
+            //     $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+
+            //     if ($prevAtcRating) {
+            //         $member->addQualification($prevAtcRating);
+            //     }
+            // }
         }
 
         // if they're a division member, or their current rating isn't instructor, log their 'main' rating
