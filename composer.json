@@ -51,10 +51,6 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/VATSIM-UK/VatsimXML"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/VATSIM-UK/laravel-ipboard"
         },
         {
