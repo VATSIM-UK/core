@@ -70,8 +70,6 @@ trait HasQualifications
             $this->addQualification(Qualification::parseVatsimATCQualification($atcRating));
         }
 
-
-
         if ($atcRating >= 8) {
             // This user has an admin rating but there is currently no support
             // for fetching their real rating via the VATSIM API. For
