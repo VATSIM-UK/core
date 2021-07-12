@@ -47,7 +47,7 @@ use Illuminate\Support\Facades\DB;
             // if no CTS account exists, lets sync to create a new one, and not update anything this time round.
             if (! $ctsAccount) {
                 // for a division member, use the join timestamp of them joining, else use an empty timestamp.
-                // this is how CTS in its wisdom puts this column on visiting controllers.
+                // this is how CTS puts this column on visiting controllers.
                 $is_visitor = $this->primary_permanent_state->code != 'DIVISION';
                 $joined_div = ! $is_visitor
                     ? $this->primary_permanent_state->pivot->start_at
