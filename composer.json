@@ -100,7 +100,6 @@
         "symfony/translation": "^5.0",
         "titasgailius/search-relations": "^1.0",
         "vatsim/sso": "3.0",
-        "vatsim/xml": "dev-main",
         "vatsimuk/waiting-lists-manager": "@dev",
         "vyuldashev/nova-permission": "^2.4",
         "watson/rememberable": "^5.0",

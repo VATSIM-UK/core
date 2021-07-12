@@ -158,7 +158,6 @@ return [
         Laravel\Tinker\TinkerServiceProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,
-        Vatsim\Xml\XmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Alawrence\Ipboard\ServiceProvider::class,

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "80c2a18ac08ace173daee5423ca4a47f",
+    "content-hash": "598e062e76e88602195e1d977be567b0",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -10583,54 +10583,6 @@
             "time": "2017-02-22T13:24:17+00:00"
         },
         {
-            "name": "vatsim/xml",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/VATSIM-UK/VatsimXML.git",
-                "reference": "9de09a99ded54c5a2734e11eff5415f8dc44df9e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/VATSIM-UK/VatsimXML/zipball/9de09a99ded54c5a2734e11eff5415f8dc44df9e",
-                "reference": "9de09a99ded54c5a2734e11eff5415f8dc44df9e",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": ">5.0.0",
-                "php": ">=5.5.9"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Vatsim\\Xml\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anthony Lawrence",
-                    "email": "freelancer@anthonylawrence.me.uk"
-                }
-            ],
-            "description": "A simple laravel package for retrieving data from public VATSIM XML Feeds.",
-            "keywords": [
-                "feeds",
-                "laravel",
-                "vatsim",
-                "xml"
-            ],
-            "support": {
-                "issues": "https://github.com/A-Lawrence/VatsimXML/issues",
-                "wiki": "https://github.com/A-Lawrence/VatsimXML/wiki",
-                "source": "https://github.com/VATSIM-UK/VatsimXML/tree/2.3.1"
-            },
-            "time": "2019-12-22T22:01:45+00:00"
-        },
-        {
             "name": "vatsimuk/waiting-lists-manager",
             "version": "dev-remove-composer-merge",
             "dist": {
@@ -14404,7 +14356,6 @@
         "alawrence/laravel-ipboard": 20,
         "malahierba-lab/public-id": 20,
         "planetteamspeak/ts3-php-framework": 20,
-        "vatsim/xml": 20,
         "vatsimuk/waiting-lists-manager": 20
     },
     "prefer-stable": false,
