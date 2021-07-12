@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
          * See CTS codebase (cts/scripts/member.php) for implementation details on Ids which don't equate
          * to the CID of a user.
          */
-        public function generateCTSInternalID(int $cid) : int // NOSONAR
+        public function generateCTSInternalID(int $cid): int // NOSONAR
         {
             if ($cid < 800000) {
                 return $cid + 2000000;
@@ -49,9 +49,9 @@ use Illuminate\Support\Facades\DB;
                 // for a division member, use the join timestamp of them joining, else use an empty timestamp.
                 // this is how CTS in its wisdom puts this column on visiting controllers.
                 $is_visitor = $this->primary_permanent_state->code != 'DIVISION';
-                $joined_div = !$is_visitor
+                $joined_div = ! $is_visitor
                     ? $this->primary_permanent_state->pivot->start_at
-                    : gmdate("Y-m-d H:i:s");
+                    : gmdate('Y-m-d H:i:s');
 
                 $newMember = [
                     'old_rts_id' => 0,
