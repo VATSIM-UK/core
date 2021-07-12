@@ -2,8 +2,6 @@
 
 namespace App\Listeners\VisitTransfer;
 
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\VisitTransfer\ApplicationAccepted;
 
 class SyncVisitingControllerToCts
