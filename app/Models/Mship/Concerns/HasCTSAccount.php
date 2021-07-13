@@ -44,6 +44,9 @@ use Illuminate\Support\Facades\DB;
 
             $ctsAccount = DB::table("{$ctsDatabase}.members")->where('cid', $this->id)->first();
 
+            // if user has nickname, prefer that name; else use full qualified name.
+            $name = $this->nickname ?: $this->real_name;
+
             // if no CTS account exists, lets sync to create a new one, and not update anything this time round.
             if (! $ctsAccount) {
                 // for a division member, use the join timestamp of them joining, else use an empty timestamp.
@@ -57,7 +60,7 @@ use Illuminate\Support\Facades\DB;
                     'old_rts_id' => 0,
                     'id' => $this->generateCTSInternalID($this->id),
                     'cid' => $this->id,
-                    'name' => $this->real_name,
+                    'name' => $name,
                     'email' => $this->getEmailForService($ssoAccountId),
                     'rating' => ($this->network_banned || $this->inactive) ? 0 : $this->qualification_atc->vatsim,
                     'prating' => $this->qualifications_pilot->sum('vatsim'),
@@ -75,7 +78,7 @@ use Illuminate\Support\Facades\DB;
             }
 
             $data = [
-                'name' => $this->real_name,
+                'name' => $name,
                 'email' => $this->getEmailForService($ssoAccountId),
                 'rating' => ($this->network_banned || $this->inactive) ? 0 : $this->qualification_atc->vatsim,
                 'prating' => $this->qualifications_pilot->sum('vatsim'),
