@@ -122,12 +122,20 @@
                     </p>
 
                     <p style="margin-left: 40px">
-                        <strong>Manchester (EGCC), Leeds (EGNM), Doncaster (EGCN), Humberside (EGNJ), Newcastle (EGNT), Teesside (EGNV)</strong><br>
-                        MAN_E_CTR (133.800) &#8594; MAN_CTR (133.200) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
+                        <strong>Manchester (EGCC)</strong><br>
+                        MAN_SE_CTR (134.425) &#8594; MAN_E_CTR (133.800) &#8594; MAN_CTR (133.200) &#8594; LON_N_CTR (133.700) &#8594; LON_NW_CTR (135.575) &#8594; LON_CTR (127.825)
+                    </p>
+					<p style="margin-left: 40px">
+                        <strong>Leeds (EGNM), Doncaster (EGCN), Humberside (EGNJ), Newcastle (EGNT), Teesside (EGNV)</strong><br>
+                        MAN_NE_CTR (135.700) &#8594; MAN_E_CTR (133.800) &#8594; MAN_CTR (133.200) &#8594; LON_NE_CTR (128.125) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Liverpool (EGGP), Hawarden (EGNR), Isle of Man (EGNS), Blackpool (EGNH)</strong><br>
-                        MAN_W_CTR (128.050) &#8594; MAN_CTR (133.200) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
+                        MAN_W_CTR (128.050) &#8594; MAN_CTR (133.200) &#8594; LON_NW_CTR (135.575) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
+                    </p>
+					<p style="margin-left: 40px">
+                        <strong>Norwich (EGSH)</strong><br>
+                        LON_NE_CTR (128.125) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>East Midlands (EGNX), Birmingham (EGBB), Coventry (EGBE)</strong><br>
