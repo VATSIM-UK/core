@@ -44,11 +44,12 @@ use Illuminate\Support\Facades\DB;
 
             $ctsAccount = DB::table("{$ctsDatabase}.members")->where('cid', $this->id)->first();
 
-            // if user has nickname, prefer that name; else use full qualified name.
-            $name = $this->nickname ?: $this->real_name;
+            $shouldBeSynced = $this->states->some(function ($state) {
+                return collect(['DIVISION', 'VISITING', 'TRANSFERRING'])->contains($state->code);
+            });
 
             // if no CTS account exists, lets sync to create a new one, and not update anything this time round.
-            if (! $ctsAccount) {
+            if (! $ctsAccount && $shouldBeSynced) {
                 // for a division member, use the join timestamp of them joining, else use an empty timestamp.
                 // this is how CTS puts this column on visiting controllers.
                 $is_visitor = $this->primary_permanent_state->code != 'DIVISION';
@@ -60,10 +61,11 @@ use Illuminate\Support\Facades\DB;
                     'old_rts_id' => 0,
                     'id' => $this->generateCTSInternalID($this->id),
                     'cid' => $this->id,
-                    'name' => $name,
+                    'name' => $this->full_name, // full_name respects any nicknames which have been set.
                     'email' => $this->getEmailForService($ssoAccountId),
                     'rating' => ($this->network_banned || $this->inactive) ? 0 : $this->qualification_atc->vatsim,
                     'prating' => $this->qualifications_pilot->sum('vatsim'),
+                    'joined' => $this->joined_at,
                     'joined_div' => $joined_div,
                     'visiting' => $is_visitor,
                     'last_cert_check' => $this->cert_checked_at,
@@ -78,7 +80,7 @@ use Illuminate\Support\Facades\DB;
             }
 
             $data = [
-                'name' => $name,
+                'name' => $this->full_name,
                 'email' => $this->getEmailForService($ssoAccountId),
                 'rating' => ($this->network_banned || $this->inactive) ? 0 : $this->qualification_atc->vatsim,
                 'prating' => $this->qualifications_pilot->sum('vatsim'),
