@@ -50,27 +50,16 @@ class ImportMembers extends Command
         foreach ($this->getMembers() as $member) {
             $this->log("Processing {$member['cid']} {$member['name_first']} {$member['name_last']}: ", null, false);
 
-            DB::transaction(function () use ($member) {
-                $this->processMember($member);
-            });
+            // DB::transaction(function () use ($member) {
+            //     $this->processMember($member);
+            // });
         }
     }
 
     protected function getMembers()
     {
-        $token = 'Token '.config('vatsim-api.key');
-        $url = config('vatsim-api.base').'divisions/GBR/members';
-
-        $response = Http::withHeaders([
-            'Authorization' => $token,
-        ])->get($url)->json();
-
-        // need to iterate through pages here
-
-        $memberCollection = collect();
-
-        foreach ($response['results'] as $result) {
-            $memberCollection->push([
+        $processResult = function(array $result) {
+            return [
                 'cid' => $result['id'],
                 'rating_atc' => $result['rating'],
                 'rating_pilot' => $result['pilotrating'],
@@ -85,7 +74,27 @@ class ImportMembers extends Command
                 'reg_date' => Carbon::parse($result['reg_date'])->toDateTimeString(),
                 'region' => $result['region'],
                 'division' => $result['division'],
-            ]);
+            ];
+        };
+
+        // TODO: possibly add some OhDear functionality if this request fails?
+        $response = Http::vatsimAPIRequest('divisions/GBR/members');
+
+        $memberCollection = collect();
+
+        // process the first page of results.
+        foreach ($response['results'] as $result) {
+            $memberCollection->push($processResult($result));
+        }
+
+        // process any paginated results from the API.
+        while ($response['next'] != null) {
+            // TODO: convert this method to use named arguments once on PHP 8.
+            $response = Http::vatsimAPIRequest($response['next'], false);
+
+            foreach ($response['results'] as $result) {
+                $memberCollection->push($processResult($result));
+            }
         }
 
         return $memberCollection;
