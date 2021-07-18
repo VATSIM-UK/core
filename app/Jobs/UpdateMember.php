@@ -12,7 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use VatsimXML;
+use Illuminate\Support\Facades\Http;
 
 class UpdateMember extends Job implements ShouldQueue
 {
@@ -52,8 +52,28 @@ class UpdateMember extends Job implements ShouldQueue
     {
         $member = Account::firstOrNew([(new Account)->getKeyName() => $this->accountID]);
 
+        $token = 'Token '.config('vatsim-api.key');
+        $url = config('vatsim-api.base')."ratings/{$this->accountID}";
+
         try {
-            $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
+            $response = Http::withHeaders([
+                'Authorization' => $token,
+            ])->get($url)->json();
+
+            $this->data = (object) [
+                'name_last' => $response['name_last'],
+                'name_first' => $response['name_first'],
+                'email' => $response['email'],
+                'rating' => (string) $response['rating'],
+                'regdate' => Carbon::parse($response['reg_date'])->toDateTimeString(),
+                'pilotrating' => (string) $response['pilotrating'],
+                'country' => $response['country'],
+                'region' => $response['region'],
+                'division' => $response['division'],
+                'atctime' => (string) 0,
+                'pilottime' => (string) 0,
+                'cid' => $response['id'],
+            ];
         } catch (\Exception $e) {
             return;
         }
@@ -133,13 +153,17 @@ class UpdateMember extends Job implements ShouldQueue
     {
         // if they have an extra rating, log their previous rating
         if ($this->data->rating >= 8) {
-            $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
-            if (isset($_prevRat->PreviousRatingInt)) {
-                $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
-                if (! is_null($prevAtcRating) && ! $member->hasQualification($prevAtcRating)) {
-                    $member->addQualification($prevAtcRating);
-                }
-            }
+            // This user has an admin rating but there is currently no support
+            // for fetching their real rating via the VATSIM API. For
+            // reference, the old AT code is below.
+
+            // $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+            // if (isset($_prevRat->PreviousRatingInt)) {
+            //     $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+            //     if (! is_null($prevAtcRating) && ! $member->hasQualification($prevAtcRating)) {
+            //         $member->addQualification($prevAtcRating);
+            //     }
+            // }
         } else {
             // remove any extra ratings
             foreach ($member->qualifications_atc_training as $qual) {
