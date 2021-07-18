@@ -2,18 +2,18 @@
 
 namespace App\Providers;
 
-use HTML;
-use App\Libraries\UKCP;
-use App\Libraries\Discord;
-use Laravel\Telescope\Telescope;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\ServiceProvider;
 use App\Http\Controllers\BaseController;
+use App\Libraries\Discord;
+use App\Libraries\UKCP;
+use HTML;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
+use Laravel\Telescope\Telescope;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -117,7 +117,8 @@ class AppServiceProvider extends ServiceProvider
         */
         Http::macro('vatsimAPIRequest', function ($path, $includeBase = true, $method = 'get') {
             $apiToken = config('vatsim-api.key');
-            $url = $includeBase ? config('vatsim-api.base') . $path : $path;
+            $url = $includeBase ? config('vatsim-api.base').$path : $path;
+
             return Http::withHeaders([
                 'Authorization' => "Token {$apiToken}",
             ])->$method($url)->json();

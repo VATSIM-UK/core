@@ -58,7 +58,7 @@ class ImportMembers extends Command
 
     protected function getMembers()
     {
-        $processResult = function(array $result) {
+        $processResult = function (array $result) {
             return [
                 'cid' => $result['id'],
                 'rating_atc' => $result['rating'],
