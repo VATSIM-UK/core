@@ -59,6 +59,7 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\VisitTransfer\ApplicationAccepted::class => [
             \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
             \App\Listeners\VisitTransfer\NotifyTrainingDepartmentOfAcceptedApplication::class,
+            \App\Listeners\VisitTransfer\SyncVisitingControllerToCts::class,
         ],
 
         \App\Events\VisitTransfer\ApplicationCompleted::class => [
