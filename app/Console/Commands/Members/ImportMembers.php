@@ -78,7 +78,8 @@ class ImportMembers extends Command
         };
 
         // TODO: possibly add some OhDear functionality if this request fails?
-        $response = Http::vatsimAPIRequest('divisions/GBR/members');
+        $url = config('vatsim-api.base') . 'divisions/GBR/members';
+        $response = Http::withToken(config('vatsim-api.key'))->get($url)->json();
 
         $memberCollection = collect();
 
@@ -89,8 +90,7 @@ class ImportMembers extends Command
 
         // process any paginated results from the API.
         while ($response['next'] != null) {
-            // TODO: convert this method to use named arguments once on PHP 8.
-            $response = Http::vatsimAPIRequest($response['next'], false);
+            $response = Http::withToken(config('vatsim-api.key'))->get($response['next'])->json();
 
             foreach ($response['results'] as $result) {
                 $memberCollection->push($processResult($result));

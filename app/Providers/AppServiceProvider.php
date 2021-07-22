@@ -104,24 +104,5 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('password', function ($attribute, $value, $parameters, $validator) {
             return \Auth::user()->verifyPassword($value);
         });
-
-        /*
-            Helper macro to configure an API request to the VATSIM API
-
-            $path: path after the last slash in the configured API URL
-            $includeBase: whether or not the base path should be used when constructing the URL
-            $method: type of HTTP request to make. Defaults to GET.
-
-            TODO: Open up possibility of sending post request with body.
-            TODO: When using PHP8, named_arguments would make this much nicer to use from a developer perspective.
-        */
-        Http::macro('vatsimAPIRequest', function ($path, $includeBase = true, $method = 'get') {
-            $apiToken = config('vatsim-api.key');
-            $url = $includeBase ? config('vatsim-api.base').$path : $path;
-
-            return Http::withHeaders([
-                'Authorization' => "Token {$apiToken}",
-            ])->$method($url)->json();
-        });
     }
 }
