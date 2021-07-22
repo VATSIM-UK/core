@@ -78,7 +78,7 @@ class ImportMembers extends Command
         };
 
         // TODO: possibly add some OhDear functionality if this request fails?
-        $url = config('vatsim-api.base') . 'divisions/GBR/members';
+        $url = config('vatsim-api.base').'divisions/GBR/members';
         $response = Http::withToken(config('vatsim-api.key'))->get($url)->json();
 
         $memberCollection = collect();

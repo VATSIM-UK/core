@@ -7,7 +7,6 @@ use App\Libraries\Discord;
 use App\Libraries\UKCP;
 use HTML;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
