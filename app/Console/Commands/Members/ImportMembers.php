@@ -78,8 +78,11 @@ class ImportMembers extends Command
         };
 
         // TODO: possibly add some OhDear functionality if this request fails?
-        $url = config('vatsim-api.base').'divisions/GBR/members';
-        $response = Http::withToken(config('vatsim-api.key'))->get($url)->json();
+        $url = config('vatsim-api.base') . 'divisions/GBR/members';
+        $apiToken = config('vatsim-api.key');
+        $response = Http::withHeaders([
+            'Authorization' => "Token {$apiToken}",
+        ])->get($url)->json();
 
         $memberCollection = collect();
 
@@ -90,7 +93,9 @@ class ImportMembers extends Command
 
         // process any paginated results from the API.
         while ($response['next'] != null) {
-            $response = Http::withToken(config('vatsim-api.key'))->get($response['next'])->json();
+            $response = Http::withHeaders([
+                'Authorization' => "Token {$apiToken}",
+            ])->get($response['next'])->json();
 
             foreach ($response['results'] as $result) {
                 $memberCollection->push($processResult($result));
