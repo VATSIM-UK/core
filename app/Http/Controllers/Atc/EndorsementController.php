@@ -29,14 +29,14 @@ class EndorsementController extends BaseController
 
     public function getAreaIndex()
     {
-        $endorsements = Endorsement::whereIn('name', ['LON_S_CTR', 'LON_C_CTR', 'LON_N_CTR','SCO_CTR'])->get();
+        $endorsements = Endorsement::whereIn('name', ['LON_S_CTR', 'LON_C_CTR', 'LON_N_CTR', 'SCO_CTR'])->get();
 
         if ($endorsements->count() < 1) {
             return Redirect::route('mship.manage.dashboard')
                 ->withError('Endorsements improperly configured');
         }
 
-        if (!$this->account->qualificationAtc->isS3) {
+        if (! $this->account->qualificationAtc->isS3) {
             return Redirect::route('mship.manage.dashboard')
                 ->withError('Only S3 rated controllers can see their C1 Training Place eligibility.');
         }
@@ -50,13 +50,13 @@ class EndorsementController extends BaseController
                     'required_hours' => $condition->required_hours,
                     'within_months' => $condition->within_months,
                     'progress' => round($condition->progressForUser($this->account)->sum(), 1),
-                    'complete' => $condition->isMetForUser($this->account)
+                    'complete' => $condition->isMetForUser($this->account),
                 ];
             });
 
             return [
                 'name' => $endorsement->name,
-                'conditions' => $conditions
+                'conditions' => $conditions,
             ];
         });
 

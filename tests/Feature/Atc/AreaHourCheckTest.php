@@ -2,12 +2,11 @@
 
 namespace Tests\Feature\Atc;
 
-use Tests\TestCase;
-use App\Models\Mship\Account;
 use App\Models\Atc\Endorsement;
+use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class AreaHourCheckTest extends TestCase
 {
