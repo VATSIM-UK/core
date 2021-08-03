@@ -3,15 +3,15 @@
 namespace App\Console\Commands\Members;
 
 use App\Console\Commands\Command;
-use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Notifications\Mship\WelcomeMember;
 use DB;
 use Exception;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
-use VatsimXML;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
@@ -30,7 +30,7 @@ class ImportMembers extends Command
      *
      * @var string
      */
-    protected $description = 'Import/update member emails from CERT AutoTools';
+    protected $description = 'Import/update member emails from VATSIM API';
 
     protected $count_new = 0;
     protected $count_emails = 0;
@@ -47,17 +47,62 @@ class ImportMembers extends Command
     {
         $this->member_list = $this->getMemberIdAndEmail();
 
-        $this->log('Member list and email list obtained.');
-
-        $members = AutoTools::getDivisionData(! $this->option('full'));
-
-        foreach ($members as $member) {
+        foreach ($this->getMembers() as $member) {
             $this->log("Processing {$member['cid']} {$member['name_first']} {$member['name_last']}: ", null, false);
 
-            DB::transaction(function () use ($member) {
-                $this->processMember($member);
-            });
+            // DB::transaction(function () use ($member) {
+            //     $this->processMember($member);
+            // });
         }
+    }
+
+    protected function getMembers()
+    {
+        $processResult = function (array $result) {
+            return [
+                'cid' => $result['id'],
+                'rating_atc' => $result['rating'],
+                'rating_pilot' => $result['pilotrating'],
+                'name_first' => $result['name_first'],
+                'name_last' => $result['name_last'],
+                'email' => $result['email'],
+                'age_band' => $result['age'],
+                'city' => $result['countystate'],
+                'country' => $result['country'],
+                'experience' => '',
+                'unknown' => '',
+                'reg_date' => Carbon::parse($result['reg_date'])->toDateTimeString(),
+                'region' => $result['region'],
+                'division' => $result['division'],
+            ];
+        };
+
+        // TODO: possibly add some OhDear functionality if this request fails?
+        $url = config('vatsim-api.base').'divisions/GBR/members';
+        $apiToken = config('vatsim-api.key');
+        $response = Http::withHeaders([
+            'Authorization' => "Token {$apiToken}",
+        ])->get($url)->json();
+
+        $memberCollection = collect();
+
+        // process the first page of results.
+        foreach ($response['results'] as $result) {
+            $memberCollection->push($processResult($result));
+        }
+
+        // process any paginated results from the API.
+        while ($response['next'] != null) {
+            $response = Http::withHeaders([
+                'Authorization' => "Token {$apiToken}",
+            ])->get($response['next'])->json();
+
+            foreach ($response['results'] as $result) {
+                $memberCollection->push($processResult($result));
+            }
+        }
+
+        return $memberCollection;
     }
 
     protected function processMember($member)
@@ -113,24 +158,28 @@ class ImportMembers extends Command
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
         if ($member_data['rating_atc'] >= 8) {
-            try {
-                $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
-            } catch (Exception $e) {
-                if (strpos($e->getMessage(), 'Name or service not known') !== false) {
-                    // CERT unavailable. Not our fault, so will ignore.
-                    return;
-                }
+            // This user has an admin rating but there is currently no support
+            // for fetching their real rating via the VATSIM API. For
+            // reference, the old AT code is below.
 
-                return;
-            }
+            // try {
+            //     $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+            // } catch (Exception $e) {
+            //     if (strpos($e->getMessage(), 'Name or service not known') !== false) {
+            //         // CERT unavailable. Not our fault, so will ignore.
+            //         return;
+            //     }
 
-            if (isset($_prevRat->PreviousRatingInt)) {
-                $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+            //     return;
+            // }
 
-                if ($prevAtcRating) {
-                    $member->addQualification($prevAtcRating);
-                }
-            }
+            // if (isset($_prevRat->PreviousRatingInt)) {
+            //     $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+
+            //     if ($prevAtcRating) {
+            //         $member->addQualification($prevAtcRating);
+            //     }
+            // }
         }
 
         // if they're a division member, or their current rating isn't instructor, log their 'main' rating

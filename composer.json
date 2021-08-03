@@ -51,10 +51,6 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/VATSIM-UK/VatsimXML"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/VATSIM-UK/laravel-ipboard"
         },
         {
@@ -104,7 +100,6 @@
         "symfony/translation": "^5.0",
         "titasgailius/search-relations": "^1.0",
         "vatsim/sso": "3.0",
-        "vatsim/xml": "dev-main",
         "vatsimuk/waiting-lists-manager": "@dev",
         "vyuldashev/nova-permission": "^2.4",
         "watson/rememberable": "^5.0",
@@ -115,11 +110,12 @@
         "codedungeon/phpunit-result-printer": "^0.30.1",
         "facade/ignition": "^2.3.6",
         "fakerphp/faker": "^1.13",
-        "laravel/homestead": "^12.1.0",
         "laracasts/generators": "^2.0",
+        "laravel/homestead": "^12.1.0",
         "laravel/legacy-factories": "^1.1",
         "mockery/mockery": "1.4.*",
         "phpunit/phpunit": "^9.4",
+        "spatie/laravel-ray": "^1.23",
         "symfony/css-selector": "^4.0",
         "symfony/dom-crawler": "^5.0",
         "timacdonald/log-fake": "^1.2"
