@@ -16,7 +16,7 @@ class Condition extends Model
         'required_hours',
         'type',
         'within_months',
-        'qualification_id'
+        'qualification_id',
     ];
 
     protected $casts = [
