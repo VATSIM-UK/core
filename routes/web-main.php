@@ -131,6 +131,7 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('endorsements/gatwick')->uses('EndorsementController@getGatwickGroundIndex')->name('endorsements.gatwick_ground');
+    Route::get('hour-check/area')->uses('EndorsementController@getAreaIndex')->name('hour_check.area');
 });
 
 // Network data
