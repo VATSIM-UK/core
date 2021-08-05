@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Endorsements;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Atc\Endorsement;
-use App\Models\NetworkData\Atc;
-use App\Models\Mship\Qualification;
 use App\Models\Atc\Endorsement\Condition;
+use App\Models\Mship\Qualification;
+use App\Models\NetworkData\Atc;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class ConditionModelTest extends TestCase
 {
@@ -200,7 +200,7 @@ class ConditionModelTest extends TestCase
             'minutes_online' => 4 * 60, // 4 hours
             'connected_at' => Carbon::now()->subMonths(1),
             'disconnected_at' => Carbon::now()->subMonths(1),
-            'qualification_id' => Qualification::code('S2')->get()->first()->id
+            'qualification_id' => Qualification::code('S2')->get()->first()->id,
         ]);
 
         $this->assertFalse($condition->fresh()->isMetForUser($this->user));
