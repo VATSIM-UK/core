@@ -267,7 +267,7 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TWR)</td>
-                                    <td>James Yuen</td>
+                                    <td>Vacant</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TWR)</td>
@@ -284,6 +284,10 @@
                                 <tr>
                                     <td>TG Instructor (APP)</td>
                                     <td>Thomas Greer</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (ENR)</td>
+                                    <td>Charlie Watson</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
