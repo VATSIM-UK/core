@@ -55,7 +55,7 @@ use Illuminate\Support\Facades\DB;
                 $is_visitor = $this->primary_permanent_state->code != 'DIVISION';
                 $joined_div = ! $is_visitor
                     ? $this->primary_permanent_state->pivot->start_at
-                    : gmdate('Y-m-d H:i:s');
+                    : null;
 
                 $newMember = [
                     'old_rts_id' => 0,
