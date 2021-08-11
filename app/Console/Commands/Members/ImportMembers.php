@@ -51,7 +51,7 @@ class ImportMembers extends Command
             $this->log("Processing {$member['cid']} {$member['name_first']} {$member['name_last']}: ", null, false);
 
             DB::transaction(function () use ($member) {
-                 $this->processMember($member);
+                $this->processMember($member);
             });
         }
     }
