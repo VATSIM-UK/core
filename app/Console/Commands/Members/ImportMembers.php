@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands\Members;
 
-use App\Models\Mship\Account;
-use Illuminate\Support\Carbon;
 use App\Console\Commands\Command;
+use App\Models\Mship\Account;
+use App\Notifications\Mship\WelcomeMember;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
-use App\Notifications\Mship\WelcomeMember;
-use Illuminate\Support\Collection;
 
 class ImportMembers extends Command
 {
@@ -65,7 +65,7 @@ class ImportMembers extends Command
 
         $response = Http::withHeaders([
             'Authorization' => "Token {$this->apiToken}",
-        ])->get(config('vatsim-api.base') . 'divisions/GBR/members');
+        ])->get(config('vatsim-api.base').'divisions/GBR/members');
 
         // Process first page of results
         foreach ($response->collect()->get('results') as $result) {
@@ -95,7 +95,7 @@ class ImportMembers extends Command
                 'name_last' => $member['name_last'],
                 'email' => $member['email'],
                 'joined_at' => Carbon::create($member['reg_date']),
-                'inactive' => (int) $member['rating'] < 0
+                'inactive' => (int) $member['rating'] < 0,
             ]
         );
 

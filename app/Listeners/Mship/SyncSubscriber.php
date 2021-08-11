@@ -11,7 +11,6 @@ use App\Jobs\Mship\SyncToForums;
 use App\Jobs\Mship\SyncToHelpdesk;
 use App\Jobs\Mship\SyncToMoodle;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class SyncSubscriber
 {
