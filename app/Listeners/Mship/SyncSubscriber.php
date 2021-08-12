@@ -11,7 +11,6 @@ use App\Jobs\Mship\SyncToForums;
 use App\Jobs\Mship\SyncToHelpdesk;
 use App\Jobs\Mship\SyncToMoodle;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class SyncSubscriber
 {
@@ -37,8 +36,6 @@ class SyncSubscriber
         if ($event->account->discord_id) {
             SyncToDiscord::dispatch($event->account);
         }
-
-        Log::debug($event->account->real_name.' ('.$event->account->id.') was queued to sync to external services');
     }
 
     /**
