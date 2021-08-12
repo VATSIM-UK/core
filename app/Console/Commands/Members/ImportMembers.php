@@ -60,7 +60,7 @@ class ImportMembers extends Command
 
         $response = Http::withHeaders([
             'Authorization' => "Token {$this->apiToken}",
-        ])->get(config('vatsim-api.base').'divisions/GBR/members');
+        ])->get(config('vatsim-api.base').'divisions/GBR/members/?paginated');
 
         // Process first page of results
         foreach ($response->collect()->get('results') as $result) {
