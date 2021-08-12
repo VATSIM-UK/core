@@ -63,6 +63,28 @@ jobs:
           mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
 
       #
+      # ENV SETUP
+      #
+
+      # Environment Configuration
+      - name: Create empty Environment File
+        run: touch .env
+
+      - name: Set Environment Variables
+        uses: allenevans/set-env@v2.0.0
+        with:
+          APP_ENV: testing
+          APP_KEY: base64:wx/g4ayECKlSzOYSguRFoCrsd+KSbAyEiy0J8zWxxyU=
+          APP_URL: 127.0.0.1
+          CACHE_DRIVER: array
+          DB_MYSQL_HOST: localhost
+          DB_MYSQL_PORT: 3306
+          DB_MYSQL_USER: root
+          DB_MYSQL_PASS: root
+          DB_MYSQL_NAME: core
+          CTS_DATABASE: cts
+
+      #
       # COMPOSER DEPENDENICES
       #
 
@@ -135,24 +157,6 @@ jobs:
       #
       # APPLICATION SETUP
       #
-
-      # Environment Configuration
-      - name: Create empty Environment File
-        run: touch .env
-
-      - name: Set Environment Variables
-        uses: allenevans/set-env@v2.0.0
-        with:
-          APP_ENV: testing
-          APP_KEY: base64:wx/g4ayECKlSzOYSguRFoCrsd+KSbAyEiy0J8zWxxyU=
-          APP_URL: 127.0.0.1
-          CACHE_DRIVER: array
-          DB_MYSQL_HOST: localhost
-          DB_MYSQL_PORT: 3306
-          DB_MYSQL_USER: root
-          DB_MYSQL_PASS: root
-          DB_MYSQL_NAME: core
-          CTS_DATABASE: cts
 
       # Publish Packages
       - name: Publish Horizon
