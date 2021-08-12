@@ -26,17 +26,12 @@ class ImportMembers extends Command
     protected int $countUpdated = 0;
     protected int $countSkipped = 0;
 
-    public function __construct()
+    public function handle()
     {
         $this->apiToken = config('vatsim-api.key');
         $this->existingMembers = DB::table('mship_account')->pluck('id');
         $this->importedMembers = collect();
 
-        parent::__construct();
-    }
-
-    public function handle()
-    {
         $this->getMembers();
 
         $this->info('Processing members...');
