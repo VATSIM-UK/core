@@ -89,6 +89,7 @@ class ImportMembers extends Command
                 'email' => $member['email'],
                 'joined_at' => Carbon::create($member['reg_date']),
                 'inactive' => (int) $member['rating'] < 0,
+                'cert_checked_at' => now()
             ]
         );
 

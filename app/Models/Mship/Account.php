@@ -193,6 +193,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'password_set_at',
         'password_expires_at',
         'joined_at',
+        'cert_checked_at',
     ];
     protected $attributes = [
         'name_first'    => '',
