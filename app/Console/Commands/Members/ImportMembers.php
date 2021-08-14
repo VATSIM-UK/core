@@ -36,7 +36,7 @@ class ImportMembers extends Command
         $response = $this->apiRequest->get(config('vatsim-api.base').'divisions/GBR/members/?paginated');
 
         $this->info("Total of {$response->collect()->get('count')} members to process.");
-        $this->totalPages = round($response->collect()->get('count') / 1000, 0, PHP_ROUND_HALF_UP);
+        $this->totalPages = round($response->collect()->get('count') / 1000, 0, PHP_ROUND_HALF_UP) + 1;
 
         $this->info("Processing page {$this->currentPage} of {$this->totalPages}...");
         $this->withProgressBar($response->collect()->get('results'), function ($member) {
