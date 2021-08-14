@@ -92,6 +92,8 @@ class ImportMembers extends Command
             ]
         );
 
+
+        $this->importedMembers->pull($member['id']);
         $account->wasRecentlyCreated ?? $account->notify(new WelcomeMember());
         $account->wasRecentlyCreated ? $this->countNewlyCreated++ : $this->countUpdated++;
     }
