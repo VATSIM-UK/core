@@ -43,6 +43,8 @@ class ImportMembers extends Command
                 'name_last' => 'required|string',
                 'email' => 'required|email',
                 'reg_date' => 'required|date',
+                'region' => 'required|string',
+                'division' => 'required|string',
             ]);
 
             $validator->fails() ? $this->countSkipped++ : $this->processMember($member);
@@ -95,8 +97,10 @@ class ImportMembers extends Command
         );
 
         $account->updateVatsimRatings($member['rating'], $member['pilotrating']);
+        $account->updateDivision($member['division'], $member['region']);
 
         $this->importedMembers->pull($member['id']);
+
         $account->wasRecentlyCreated ?? $account->notify(new WelcomeMember());
         $account->wasRecentlyCreated ? $this->countNewlyCreated++ : $this->countUpdated++;
     }
