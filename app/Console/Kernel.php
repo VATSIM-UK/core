@@ -55,17 +55,14 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(15)
             ->graceTimeInMinutes(15);
 
-        $schedule->command('members:certimport')
-           ->everyTwoHours()
-           ->graceTimeInMinutes(15);
-
         // === By Day === //
 
         $schedule->command('telescope:prune')
             ->dailyAt('03:30');
 
-        // $schedule->command('DivMembers:CertUpdate')
-        //    ->dailyAt('05:00');
+        $schedule->command('members:certimport')
+        ->dailyAt('05:30')
+        ->graceTimeInMinutes(25);
 
         $schedule->command('schedule-monitor:clean')
             ->dailyAt('08:00');
