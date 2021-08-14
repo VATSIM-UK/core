@@ -79,6 +79,8 @@ class ImportMembers extends Command
             }
         }
 
+        $this->importedMembers = $this->importedMembers->keyBy('id');
+
         $this->info("{$this->importedMembers->count()} members obtained from VATSIM API.");
     }
 
