@@ -5,9 +5,8 @@ namespace App\Console\Commands\Members;
 use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use App\Notifications\Mship\WelcomeMember;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,70 +17,68 @@ class ImportMembers extends Command
     protected $description = 'Import VATSIM UK members from the VATSIM API.';
 
     protected string $apiToken;
-
-    protected Collection $existingMembers;
-    protected Collection $importedMembers;
+    protected PendingRequest $apiRequest;
 
     protected int $countNewlyCreated = 0;
     protected int $countUpdated = 0;
     protected int $countSkipped = 0;
 
+    protected int $currentPage = 1;
+    protected int $totalPages = 0;
+
     public function handle()
     {
         $this->apiToken = config('vatsim-api.key');
-        $this->existingMembers = DB::table('mship_account')->pluck('id');
-        $this->importedMembers = collect();
+        $this->apiRequest = Http::withHeaders([
+            'Authorization' => "Token {$this->apiToken}",
+        ]);
 
-        $this->getMembers();
+        $response = $this->apiRequest->get(config('vatsim-api.base').'divisions/GBR/members/?paginated');
 
-        $this->info('Processing members...');
+        $this->info("Total of {$response->collect()->get('count')} members to process.");
+        $this->totalPages = round($response->collect()->get('count') / 1000, 0, PHP_ROUND_HALF_UP) + 1;
 
-        $this->withProgressBar($this->importedMembers, function ($member) {
-            $validator = Validator::make($member, [
-                'id' => 'required|integer',
-                'rating' => 'required|integer',
-                'name_first' => 'required|string',
-                'name_last' => 'required|string',
-                'email' => 'required|email',
-                'reg_date' => 'required|date',
-            ]);
-
-            $validator->fails() ? $this->countSkipped++ : $this->processMember($member);
+        $this->info("Processing page {$this->currentPage} of {$this->totalPages}...");
+        $this->withProgressBar($response->collect()->get('results'), function ($member) {
+            $this->process($member);
         });
 
         $this->newLine();
 
+        // Process paginated results
+        while ($response->successful() && $response->collect()->get('next') != null) {
+            $this->currentPage++;
+            $this->info("Processing page {$this->currentPage} of {$this->totalPages}...");
+
+            $response = $this->apiRequest->get($response->collect()->get('next'));
+
+            $this->withProgressBar($response->collect()->get('results'), function ($member) {
+                $this->process($member);
+            });
+            $this->newLine();
+        }
+
         $this->info("Successfully created {$this->countNewlyCreated} new, updated {$this->countUpdated} and skipped {$this->countSkipped} members.");
     }
 
-    protected function getMembers()
+    protected function process(array $member)
     {
-        $this->info('Fetching members from VATSIM API...');
+        $validator = Validator::make($member, [
+            'id' => 'required|integer',
+            'rating' => 'required|integer',
+            'pilotrating' => 'required|int',
+            'name_first' => 'required|string',
+            'name_last' => 'required|string',
+            'email' => 'required|email',
+            'reg_date' => 'required|date',
+            'region' => 'required|string',
+            'division' => 'required|string',
+        ]);
 
-        $response = Http::withHeaders([
-            'Authorization' => "Token {$this->apiToken}",
-        ])->get(config('vatsim-api.base').'divisions/GBR/members/?paginated');
-
-        // Process first page of results
-        foreach ($response->collect()->get('results') as $result) {
-            $this->importedMembers->push($result);
-        }
-
-        // Process paginated results
-        while ($response->successful() && $response->collect()->get('next') != null) {
-            $response = Http::withHeaders([
-                'Authorization' => "Token {$this->apiToken}",
-            ])->get($response->collect()->get('next'));
-
-            foreach ($response->collect()->get('results') as $result) {
-                $this->importedMembers->push($result);
-            }
-        }
-
-        $this->info("{$this->importedMembers->count()} members obtained from VATSIM API.");
+        return $validator->fails() ? $this->countSkipped++ : $this->update($member);
     }
 
-    protected function processMember(array $member)
+    protected function update(array $member)
     {
         $account = Account::updateOrCreate(
             ['id' => $member['id']],
@@ -91,8 +88,12 @@ class ImportMembers extends Command
                 'email' => $member['email'],
                 'joined_at' => Carbon::create($member['reg_date']),
                 'inactive' => (int) $member['rating'] < 0,
+                'cert_checked_at' => now(),
             ]
         );
+
+        $account->updateVatsimRatings($member['rating'], $member['pilotrating']);
+        $account->updateDivision($member['division'], $member['region']);
 
         $account->wasRecentlyCreated ?? $account->notify(new WelcomeMember());
         $account->wasRecentlyCreated ? $this->countNewlyCreated++ : $this->countUpdated++;
