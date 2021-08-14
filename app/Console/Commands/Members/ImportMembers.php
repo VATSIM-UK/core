@@ -23,9 +23,6 @@ class ImportMembers extends Command
     protected int $countUpdated = 0;
     protected int $countSkipped = 0;
 
-    protected int $currentPage = 1;
-    protected int $totalPages = 0;
-
     public function handle()
     {
         $this->apiToken = config('vatsim-api.key');
@@ -34,28 +31,20 @@ class ImportMembers extends Command
         ]);
 
         $response = $this->apiRequest->get(config('vatsim-api.base').'divisions/GBR/members/?paginated');
-
         $this->info("Total of {$response->collect()->get('count')} members to process.");
-        $this->totalPages = round($response->collect()->get('count') / 1000, 0, PHP_ROUND_HALF_UP) + 1;
 
-        $this->info("Processing page {$this->currentPage} of {$this->totalPages}...");
-        $this->withProgressBar($response->collect()->get('results'), function ($member) {
+
+        collect($response->collect()->get('results'))->each(function ($member) {
             $this->process($member);
         });
 
-        $this->newLine();
-
         // Process paginated results
         while ($response->successful() && $response->collect()->get('next') != null) {
-            $this->currentPage++;
-            $this->info("Processing page {$this->currentPage} of {$this->totalPages}...");
-
             $response = $this->apiRequest->get($response->collect()->get('next'));
 
-            $this->withProgressBar($response->collect()->get('results'), function ($member) {
+            collect($response->collect()->get('results'))->each(function ($member) {
                 $this->process($member);
             });
-            $this->newLine();
         }
 
         $this->info("Successfully created {$this->countNewlyCreated} new, updated {$this->countUpdated} and skipped {$this->countSkipped} members.");
