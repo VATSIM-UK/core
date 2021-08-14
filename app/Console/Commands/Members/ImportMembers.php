@@ -19,7 +19,6 @@ class ImportMembers extends Command
 
     protected string $apiToken;
 
-    protected Collection $existingMembers;
     protected Collection $importedMembers;
 
     protected int $countNewlyCreated = 0;
@@ -29,7 +28,6 @@ class ImportMembers extends Command
     public function handle()
     {
         $this->apiToken = config('vatsim-api.key');
-        $this->existingMembers = DB::table('mship_account')->pluck('id');
         $this->importedMembers = collect();
 
         $this->getMembers();
