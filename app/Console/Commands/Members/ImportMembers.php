@@ -38,6 +38,7 @@ class ImportMembers extends Command
             $validator = Validator::make($member, [
                 'id' => 'required|integer',
                 'rating' => 'required|integer',
+                'pilotrating' => 'required|int',
                 'name_first' => 'required|string',
                 'name_last' => 'required|string',
                 'email' => 'required|email',
@@ -93,6 +94,7 @@ class ImportMembers extends Command
             ]
         );
 
+        $account->updateVatsimRatings($member['rating'], $member['pilotrating']);
 
         $this->importedMembers->pull($member['id']);
         $account->wasRecentlyCreated ?? $account->notify(new WelcomeMember());
