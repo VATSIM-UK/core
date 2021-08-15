@@ -5,7 +5,6 @@ namespace App\Console\Commands\Members;
 use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use App\Notifications\Mship\WelcomeMember;
-use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -16,34 +15,32 @@ class ImportMembers extends Command
 
     protected $description = 'Import VATSIM UK members from the VATSIM API.';
 
-    protected string $apiToken;
-    protected PendingRequest $apiRequest;
-
     protected int $countNewlyCreated = 0;
     protected int $countUpdated = 0;
     protected int $countSkipped = 0;
 
     public function handle()
     {
-        $this->apiToken = config('vatsim-api.key');
-        $this->apiRequest = Http::withHeaders([
-            'Authorization' => "Token {$this->apiToken}",
-        ]);
+        $apiToken = config('vatsim-api.key');
 
-        $response = $this->apiRequest->get(config('vatsim-api.base').'divisions/GBR/members/?paginated');
+        $response = Http::withHeaders([
+            'Authorization' => "Token {$apiToken}",
+        ])->get(config('vatsim-api.base').'divisions/GBR/members/?paginated');
         $this->info("Total of {$response->collect()->get('count')} members to process.");
 
-        collect($response->collect()->get('results'))->each(function ($member) {
+        foreach($response->collect()->get('results') as $member) {
             $this->process($member);
-        });
+        }
 
         // Process paginated results
         while ($response->successful() && $response->collect()->get('next') != null) {
-            $response = $this->apiRequest->get($response->collect()->get('next'));
+            $response = Http::withHeaders([
+                'Authorization' => "Token {$apiToken}",
+            ])->get($response->collect()->get('next'));
 
-            collect($response->collect()->get('results'))->each(function ($member) {
+            foreach($response->collect()->get('results') as $member) {
                 $this->process($member);
-            });
+            }
         }
 
         $this->info("Successfully created {$this->countNewlyCreated} new, updated {$this->countUpdated} and skipped {$this->countSkipped} members.");

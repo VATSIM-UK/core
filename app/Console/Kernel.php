@@ -61,8 +61,8 @@ class Kernel extends ConsoleKernel
             ->dailyAt('03:30');
 
         $schedule->command('members:certimport')
-        ->dailyAt('05:30')
-        ->graceTimeInMinutes(25);
+            ->dailyAt('05:30')
+            ->graceTimeInMinutes(25);
 
         $schedule->command('schedule-monitor:clean')
             ->dailyAt('08:00');
