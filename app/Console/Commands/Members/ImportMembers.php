@@ -28,7 +28,7 @@ class ImportMembers extends Command
         ])->get(config('vatsim-api.base').'divisions/GBR/members/?paginated');
         $this->info("Total of {$response->collect()->get('count')} members to process.");
 
-        foreach($response->collect()->get('results') as $member) {
+        foreach ($response->collect()->get('results') as $member) {
             $this->process($member);
         }
 
@@ -38,7 +38,7 @@ class ImportMembers extends Command
                 'Authorization' => "Token {$apiToken}",
             ])->get($response->collect()->get('next'));
 
-            foreach($response->collect()->get('results') as $member) {
+            foreach ($response->collect()->get('results') as $member) {
                 $this->process($member);
             }
         }
