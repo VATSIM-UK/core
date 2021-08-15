@@ -48,7 +48,7 @@ class Kernel extends ConsoleKernel
         // === By Hour === //
 
         $schedule->command('members:certupdate')
-            ->hourlyAt(30)
+            ->hourlyAt(10)
             ->graceTimeInMinutes(15);
 
         $schedule->command('sync:cts-roles')
