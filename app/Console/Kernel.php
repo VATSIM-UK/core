@@ -60,6 +60,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune')
             ->dailyAt('03:30');
 
+        $schedule->command('sync:tg-forum-groups')
+            ->dailyAt('04:30');
+
         // $schedule->command('members:certimport')
         //     ->dailyAt('05:30')
         //     ->graceTimeInMinutes(25);
