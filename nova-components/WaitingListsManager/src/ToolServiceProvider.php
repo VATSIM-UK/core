@@ -2,15 +2,15 @@
 
 namespace Vatsimuk\WaitingListsManager;
 
-use Laravel\Nova\Nova;
-use App\Models\Training\WaitingList;
-use Laravel\Nova\Events\ServingNova;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Models\Training\TrainingPlace\TrainingPosition;
+use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListAccountFlag;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+use Laravel\Nova\Events\ServingNova;
+use Laravel\Nova\Nova;
 
 class ToolServiceProvider extends ServiceProvider
 {

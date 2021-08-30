@@ -2,13 +2,13 @@
 
 namespace App\Services\Training;
 
+use App\Events\Training\TrainingPlaceOffered;
+use App\Models\Mship\Account;
+use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
+use App\Models\Training\TrainingPlace\TrainingPosition;
+use App\Services\BaseService;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
-use App\Models\Mship\Account;
-use App\Services\BaseService;
-use App\Events\Training\TrainingPlaceOffered;
-use App\Models\Training\TrainingPlace\TrainingPosition;
-use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 
 class OfferTrainingPlace implements BaseService
 {
@@ -32,7 +32,7 @@ class OfferTrainingPlace implements BaseService
             'offer_id' => Uuid::uuid4(),
             'offered_by' => $this->offeringAccount->id,
             'expires_at' => Carbon::now()->addHours($this->expiryHours),
-            'training_position_id' => $this->trainingPosition->id
+            'training_position_id' => $this->trainingPosition->id,
         ]);
 
         event(new TrainingPlaceOffered($offer));
