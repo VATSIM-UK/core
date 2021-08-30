@@ -2,14 +2,15 @@
 
 namespace Vatsimuk\WaitingListsManager;
 
+use Laravel\Nova\Nova;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingList\WaitingListAccount;
-use App\Models\Training\WaitingList\WaitingListAccountFlag;
-use Illuminate\Routing\Middleware\SubstituteBindings;
+use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Nova\Events\ServingNova;
-use Laravel\Nova\Nova;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use App\Models\Training\TrainingPlace\TrainingPosition;
+use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Models\Training\WaitingList\WaitingListAccountFlag;
 
 class ToolServiceProvider extends ServiceProvider
 {
@@ -40,6 +41,7 @@ class ToolServiceProvider extends ServiceProvider
         Route::model('waitingList', WaitingList::class);
         Route::model('waitingListAccount', WaitingListAccount::class);
         Route::model('waitingListAccountFlag', WaitingListAccountFlag::class);
+        Route::model('trainingPosition', TrainingPosition::class);
 
         if ($this->app->routesAreCached()) {
             return;

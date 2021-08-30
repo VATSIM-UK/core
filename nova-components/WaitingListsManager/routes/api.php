@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('/waitingLists/{waitingList}/available-places', 'Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController@getAvailablePlaces');
+
 Route::get('/accounts/{waitingList}', 'Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController@index');
 Route::post('/accounts/{waitingList}/remove', 'Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController@destroy');
 Route::post('/accounts/{waitingList}/promote', 'Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController@promote');
@@ -13,3 +15,7 @@ Route::patch('/accounts/{waitingList}/active', 'Vatsimuk\WaitingListsManager\Htt
 Route::patch('/notes/{waitingListAccount}/create', 'Vatsimuk\WaitingListsManager\Http\WaitingListNoteController@create');
 
 Route::patch('/flag/{waitingListAccountFlag}/toggle', 'Vatsimuk\WaitingListsManager\Http\WaitingListFlagController@toggle');
+
+Route::post('/waitingLists/{waitingList}/position/{trainingPosition}/offer',
+    'Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController@offerTrainingPlace'
+);

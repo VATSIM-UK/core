@@ -17,6 +17,7 @@
                     <th class="text-left" v-if="showHourChecker">Hour Check</th>
                     <th>Status Change</th>
                     <th>Flags</th>
+                    <th v-if="eligibleList">Training Place</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -61,6 +62,9 @@
                             @changeFlag="changeFlag"
                         ></flag-indicator>
                     </td>
+                    <td v-if="eligibleList">
+                        <button class="btn btn-sm btn-outline" @click="offerPlace(account.id)">Offer Training</button>
+                    </td>
                     <td>
                         <div class="flex justify-around">
                             <button class="cursor-pointer text-70 hover:text-primary mr-3"
@@ -81,7 +85,7 @@
     export default {
         name: "Bucket",
 
-        props: ['accounts', 'title', 'type'],
+        props: ['accounts', 'title', 'type', 'eligibleList'],
 
         data() {
             return {
@@ -100,6 +104,10 @@
 
             activeAccount(account) {
                 this.$emit('activeAccount', { account: account })
+            },
+
+            offerPlace(account) {
+                this.$emit('offerPlace', { account: account })
             },
 
             changeNote(account) {

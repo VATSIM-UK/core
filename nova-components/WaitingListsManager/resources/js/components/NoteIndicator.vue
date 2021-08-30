@@ -21,7 +21,6 @@
 
         methods: {
             changeNote(account) {
-                console.log('changed')
                 this.$emit('changeNote', { account: account })
             }
         }
