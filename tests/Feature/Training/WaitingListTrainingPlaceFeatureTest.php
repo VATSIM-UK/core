@@ -2,16 +2,16 @@
 
 namespace Tests\Feature\Training;
 
-use Tests\TestCase;
+use App\Events\Training\TrainingPlaceOffered;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
+use App\Models\Training\TrainingPlace\TrainingPosition;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\WaitingListStatus;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
-use App\Events\Training\TrainingPlaceOffered;
-use App\Models\Training\WaitingList\WaitingListStatus;
-use App\Models\Training\TrainingPlace\TrainingPosition;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class WaitingListTrainingPlaceFeatureTest extends TestCase
 {
@@ -20,7 +20,7 @@ class WaitingListTrainingPlaceFeatureTest extends TestCase
     private $waitingList;
     private $account;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -53,7 +53,7 @@ class WaitingListTrainingPlaceFeatureTest extends TestCase
         // create valid network data to pass ATC hour check
         factory(Atc::class)->create(['minutes_online' => 721, 'account_id' => $this->account->id, 'disconnected_at' => now()]);
 
-        Event::fakeFor(function() use ($trainingPosition) {
+        Event::fakeFor(function () use ($trainingPosition) {
             $this->actingAs($this->privacc)
                 ->post("nova-vendor/waiting-lists-manager/waitingLists/{$this->waitingList->id}/position/{$trainingPosition->id}/offer",
                     [
@@ -81,7 +81,7 @@ class WaitingListTrainingPlaceFeatureTest extends TestCase
 
         $this->waitingList->addToWaitingList($differentAccountWithoutHours, $this->privacc);
 
-        Event::fakeFor(function() use ($trainingPosition) {
+        Event::fakeFor(function () use ($trainingPosition) {
             $this->actingAs($this->privacc)
             ->post("nova-vendor/waiting-lists-manager/waitingLists/{$this->waitingList->id}/position/{$trainingPosition->id}/offer",
                 [
@@ -101,7 +101,7 @@ class WaitingListTrainingPlaceFeatureTest extends TestCase
 
         $this->actingAs($this->privacc)
             ->post("nova-vendor/waiting-lists-manager/waitingLists/{$this->waitingList->id}/position/{$trainingPosition->id}/offer", [
-                'account_id' => 0
+                'account_id' => 0,
             ])
             ->assertStatus(400);
     }

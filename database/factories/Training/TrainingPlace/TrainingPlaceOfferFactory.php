@@ -2,11 +2,11 @@
 
 namespace Database\Factories\Training\TrainingPlace;
 
-use Carbon\Carbon;
-use Ramsey\Uuid\Uuid;
 use App\Models\Mship\Account;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Ramsey\Uuid\Uuid;
 
 class TrainingPlaceOfferFactory extends Factory
 {

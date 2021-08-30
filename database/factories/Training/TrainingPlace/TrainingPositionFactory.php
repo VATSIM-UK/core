@@ -2,11 +2,11 @@
 
 namespace Database\Factories\Training\TrainingPlace;
 
-use App\Models\Station;
 use App\Models\Cts\Position;
+use App\Models\Station;
+use App\Models\Training\TrainingPlace\TrainingPosition;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Training\TrainingPlace\TrainingPosition;
 
 class TrainingPositionFactory extends Factory
 {
@@ -28,7 +28,7 @@ class TrainingPositionFactory extends Factory
             'station_id' => factory(Station::class)->create()->id,
             'cts_position_id' => factory(Position::class)->create()->id,
             'waiting_list_id' => factory(WaitingList::class)->create()->id,
-            'places' => 1
+            'places' => 1,
         ];
     }
 }

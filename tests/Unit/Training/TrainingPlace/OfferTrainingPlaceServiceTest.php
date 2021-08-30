@@ -2,18 +2,18 @@
 
 namespace Tests\Unit\Training\TrainingPlace;
 
-use Tests\TestCase;
 use App\Models\Mship\Account;
-use Illuminate\Support\Facades\Notification;
-use App\Services\Training\OfferTrainingPlace;
 use App\Models\Training\TrainingPlace\TrainingPosition;
+use App\Services\Training\OfferTrainingPlace;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class OfferTrainingPlaceServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -34,7 +34,7 @@ class OfferTrainingPlaceServiceTest extends TestCase
 
         $this->assertDatabaseHas('training_place_offers', [
             'account_id' => $this->user->id,
-            'offered_by' => $offeringAccount->id
+            'offered_by' => $offeringAccount->id,
         ]);
     }
 

@@ -3,11 +3,10 @@
 namespace App\Models\Training\TrainingPlace;
 
 use App\Models\Mship\Account;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Training\TrainingPlace\TrainingPosition;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TrainingPlaceOffer extends Model
 {
@@ -24,12 +23,12 @@ class TrainingPlaceOffer extends Model
         'training_position_id',
     ];
 
-    public function account() : BelongsTo
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
     }
 
-    public function trainingPosition() : BelongsTo
+    public function trainingPosition(): BelongsTo
     {
         return $this->belongsTo(TrainingPosition::class);
     }

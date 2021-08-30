@@ -2,18 +2,16 @@
 
 namespace Tests\Feature\Training;
 
-use Tests\TestCase;
+use App\Events\Training\AccountChangedStatusInWaitingList;
+use App\Events\Training\AccountNoteChanged;
 use App\Models\Mship\Account;
-use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\WaitingListFlag;
+use App\Services\Training\AddToWaitingList;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
-use App\Events\Training\AccountNoteChanged;
-use App\Services\Training\AddToWaitingList;
-use App\Events\Training\TrainingPlaceOffered;
-use App\Models\Training\WaitingList\WaitingListFlag;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Events\Training\AccountChangedStatusInWaitingList;
+use Tests\TestCase;
 
 class WaitingListFeatureTest extends TestCase
 {
