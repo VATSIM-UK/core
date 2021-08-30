@@ -81,7 +81,7 @@ class WaitingListsManagerController extends Controller
     {
         try {
             $account = Account::findOrFail($request->get('account_id'));
-        } catch (ModelNotFoundException) {
+        } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Account not found'], 400);
         }
 
