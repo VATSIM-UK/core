@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+// TODO: Flesh out notification
 class TrainingPlaceOffer extends Notification
 {
     use Queueable;
