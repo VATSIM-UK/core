@@ -4,6 +4,7 @@ namespace Tests\Feature\Training\TrainingPlace;
 
 use Tests\TestCase;
 
+// TODO
 class TrainingPlaceOfferUserTest extends TestCase
 {
     /**
