@@ -34,6 +34,7 @@ use Carbon\Carbon;
  * @property-read mixed $type_string
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
  * @property-read \App\Models\Mship\Ban\Reason|null $reason
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isActive()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isHistoric()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isLocal()

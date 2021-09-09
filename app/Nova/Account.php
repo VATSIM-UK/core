@@ -27,7 +27,7 @@ class Account extends Resource
     /**
      * Removes Account from navigation bar.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return bool
      */
     public static function availableForNavigation(Request $request)
@@ -74,7 +74,7 @@ class Account extends Resource
     /**
      * Global disable of account creation as data comes from core.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return bool
      */
     public static function authorizedToCreate(Request $request)
@@ -87,8 +87,8 @@ class Account extends Resource
      *
      * @SEMI-TEMPORARY
      *
-     * @param NovaRequest $request
-     * @param \Illuminate\Database\Eloquent\Model|string $model
+     * @param  NovaRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Model|string  $model
      * @return bool
      */
     public function authorizedToAttachAny(NovaRequest $request, $model)
@@ -99,7 +99,7 @@ class Account extends Resource
     /**
      * Globally disable the ability to delete an account.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return bool
      */
     public function authorizedToDelete(Request $request)

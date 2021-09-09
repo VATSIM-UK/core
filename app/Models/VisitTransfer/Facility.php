@@ -32,6 +32,7 @@ use Malahierba\PublicId\PublicId;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Facility\Email[] $emails
  * @property-read string $public_id
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility atc()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility canTransfer()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility canVisit()

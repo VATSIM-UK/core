@@ -26,6 +26,7 @@ use TeamSpeak3_Adapter_ServerQuery_Exception;
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\TeamSpeak\Confirmation $confirmation
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ *
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration onlyTrashed()
  * @method static bool|null restore()

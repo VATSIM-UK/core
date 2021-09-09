@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Airport $airport
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Procedure[] $procedures
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereAirportId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereHeading($value)

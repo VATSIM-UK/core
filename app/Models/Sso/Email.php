@@ -16,6 +16,7 @@ use App\Models\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Account\Email|null $email
  * @property-read \Laravel\Passport\Client $ssoAccount
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereAccountEmailId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereId($value)
