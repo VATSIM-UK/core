@@ -19,7 +19,7 @@ class SyncBanToForum
     /**
      * Handle the event.
      *
-     * @param  BanUpdated $event
+     * @param  BanUpdated  $event
      * @return void
      */
     public function handle(BanUpdated $event)

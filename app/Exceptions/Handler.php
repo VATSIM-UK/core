@@ -45,6 +45,7 @@ class Handler extends ExceptionHandler
      *
      * @param  Throwable  $e
      * @return void
+     *
      * @throws Throwable $exception
      */
     public function report(Throwable $e)
@@ -72,8 +73,8 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  Throwable $e
+     * @param  \Illuminate\Http\Request  $request
+     * @param  Throwable  $e
      * @return \Illuminate\Http\Response
      */
     public function render($request, Throwable $e)

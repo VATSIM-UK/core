@@ -16,8 +16,8 @@ class TrackInactivity
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -53,7 +53,7 @@ class TrackInactivity
      *
      * Method used from Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
     protected function shouldPassThrough($request)

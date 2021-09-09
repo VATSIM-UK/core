@@ -40,7 +40,7 @@ class FeedbackResponse extends Resource
      * Order responses as they appear on the form.
      *
      * @param $query
-     * @param array $orderings
+     * @param  array  $orderings
      * @return mixed
      */
     protected static function applyOrderings($query, array $orderings)
@@ -71,7 +71,7 @@ class FeedbackResponse extends Resource
     /**
      * Remove from navigation as only a background resource.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return bool
      */
     public static function availableForNavigation(Request $request)

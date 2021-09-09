@@ -32,7 +32,7 @@ class BanReason extends Resource
     /**
      * Removes BanReason from navigation bar.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return bool
      */
     public static function availableForNavigation(Request $request)

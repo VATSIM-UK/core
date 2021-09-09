@@ -22,9 +22,9 @@ class AccountRemovedFromWaitingList
     /**
      * Create a new event instance.
      *
-     * @param Account $account
-     * @param WaitingList $waitingList
-     * @param Account $staffAccount
+     * @param  Account  $account
+     * @param  WaitingList  $waitingList
+     * @param  Account  $staffAccount
      */
     public function __construct(Account $account, WaitingList $waitingList, Account $staffAccount)
     {

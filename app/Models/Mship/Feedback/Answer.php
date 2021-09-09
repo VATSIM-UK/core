@@ -14,6 +14,7 @@ use App\Models\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Feedback\Feedback $feedback
  * @property-read \App\Models\Mship\Feedback\Question $question
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer notPermanent()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer whereFeedbackId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer whereId($value)
