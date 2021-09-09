@@ -19,10 +19,10 @@ class BanAccount implements BaseService
     /**
      * BanAccount Service constructor.
      *
-     * @param Account $account
-     * @param Reason $reason
-     * @param Authenticatable $banner
-     * @param array $data
+     * @param  Account  $account
+     * @param  Reason  $reason
+     * @param  Authenticatable  $banner
+     * @param  array  $data
      */
     public function __construct(Account $account, Reason $reason, Authenticatable $banner, array $data)
     {

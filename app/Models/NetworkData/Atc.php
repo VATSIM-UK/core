@@ -34,6 +34,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read string $public_id
  * @property-read mixed $type
  * @property-read \App\Models\Mship\Qualification $qualification
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc forAccountId($id)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc forQualificationId($id)
  * @method static bool|null forceDelete()

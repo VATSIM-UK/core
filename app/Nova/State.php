@@ -47,7 +47,7 @@ class State extends Resource
     /**
      * Globally disable the ability to edit a State.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return bool
      */
     public function authorizeToUpdate(Request $request)
@@ -58,7 +58,7 @@ class State extends Resource
     /**
      * Globally disable the ability to edit an attached State.
      *
-     * @param NovaRequest $request
+     * @param  NovaRequest  $request
      * @return bool
      */
     public function authorizedToUpdateForSerialization(NovaRequest $request)
@@ -69,7 +69,7 @@ class State extends Resource
     /**
      * Globally disable the ability to detach on the pivot.
      *
-     * @param NovaRequest $request
+     * @param  NovaRequest  $request
      * @return bool
      */
     public function authorizedToDeleteForSerialization(NovaRequest $request)

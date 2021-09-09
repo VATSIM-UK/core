@@ -39,8 +39,9 @@ trait HasStates
     /**
      * Check whether the user has the given state presently.
      *
-     * @param string|State $search The given state to check if the account has.
+     * @param  string|State  $search  The given state to check if the account has.
      * @return bool
+     *
      * @throws InvalidStateException
      */
     public function hasState($search)
@@ -59,8 +60,8 @@ trait HasStates
     /**
      * Update the member's region and division.
      *
-     * @param string $division Division code as reported by VATSIM.
-     * @param string $region Region code as reported by VATSIM.
+     * @param  string  $division  Division code as reported by VATSIM.
+     * @param  string  $region  Region code as reported by VATSIM.
      */
     public function updateDivision($division, $region)
     {
@@ -111,11 +112,11 @@ trait HasStates
     /**
      * Set the account's current state to the given value.
      *
-     * @param State $state The state to set.
-     * @param string|null $region Member's region
-     * @param string|null $division Member's division
-     *
+     * @param  State  $state  The state to set.
+     * @param  string|null  $region  Member's region
+     * @param  string|null  $division  Member's division
      * @return mixed
+     *
      * @throws \App\Exceptions\Mship\InvalidStateException
      */
     public function addState(State $state, $region = null, $division = null)

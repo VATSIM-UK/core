@@ -31,7 +31,7 @@ class WaitingListStatus extends Model
     /**
      * Get the default state.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeDefault($query)

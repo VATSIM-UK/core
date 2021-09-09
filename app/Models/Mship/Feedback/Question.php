@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Feedback\Form $form
  * @property-read \App\Models\Mship\Feedback\Question\Type $type
+ *
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question notActioned()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question notPermanent()

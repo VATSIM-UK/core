@@ -53,8 +53,8 @@ class BaseController extends \Illuminate\Routing\Controller
     /**
      * Authorize a given action for the current user.
      *
-     * @param  mixed $ability
-     * @param  mixed|array $arguments
+     * @param  mixed  $ability
+     * @param  mixed|array  $arguments
      * @return \Illuminate\Auth\Access\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -168,10 +168,10 @@ class BaseController extends \Illuminate\Routing\Controller
     /**
      * Add a new element to the breadcrumb to be shown on this page.
      *
-     * @param string $name The text to display on the page.
-     * @param        $uri  The URI the text should link to.
-     * @param bool   $linkToPrevious Set to TRUE if the breadcrumb is a parent of the previous one.
-     * @param bool   $first Set to TRUE if the breadcrumb should be first.
+     * @param  string  $name  The text to display on the page.
+     * @param  $uri  The URI the text should link to.
+     * @param  bool  $linkToPrevious  Set to TRUE if the breadcrumb is a parent of the previous one.
+     * @param  bool  $first  Set to TRUE if the breadcrumb should be first.
      */
     protected function addBreadcrumb(string $name, $uri = null, $linkToPrevious = false, $first = false)
     {

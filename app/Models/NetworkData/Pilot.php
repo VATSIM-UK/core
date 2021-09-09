@@ -36,6 +36,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $human_duration
  * @property-read \App\Models\Mship\Qualification $qualification
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot offline()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot online()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereAccountId($value)

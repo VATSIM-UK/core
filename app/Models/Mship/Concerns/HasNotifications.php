@@ -23,7 +23,7 @@ trait HasNotifications
     }
 
     /**
-     * @param Notification $notification
+     * @param  Notification  $notification
      * @return bool
      */
     public function hasReadNotification(SysNotification $notification)
