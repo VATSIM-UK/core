@@ -13,7 +13,7 @@ abstract class BasePolicy
     /**
      * Grants all permissions to a "SUPERMAN" user.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @param $policy
      * @return bool
      */

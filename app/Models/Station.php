@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport[] $airports
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereCallsign($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereFrequency($value)

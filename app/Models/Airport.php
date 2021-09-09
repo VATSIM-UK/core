@@ -17,12 +17,14 @@ use App\Models\NetworkData\Pilot;
  * @property float|null $longitude
  * @property int|null $elevation
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereElevation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereIdent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereLatitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereLongitude($value)
  * @mixin \Eloquent
+ *
  * @property string|null $icao
  * @property string|null $iata
  * @property string|null $name
@@ -41,6 +43,7 @@ use App\Models\NetworkData\Pilot;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Procedure[] $procedures
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Runway[] $runways
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Station[] $stations
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport iCAO($icao)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport uK()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereArrivalProcedures($value)

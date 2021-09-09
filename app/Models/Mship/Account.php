@@ -79,6 +79,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read mixed $is_banned
  * @property mixed $is_inactive
  * @propernty-read mixed $is_network_banned
+ *
  * @property-read bool $is_on_network
  * @property-read mixed $is_system_banned
  * @property-read bool $mandatory_password
@@ -127,6 +128,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $visitTransferApplications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $visitTransferReferee
+ *
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account onlyTrashed()
  * @method static bool|null restore()
@@ -222,9 +224,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     /**
-     * @param Account $model
-     * @param null $extra
-     * @param null $data
+     * @param  Account  $model
+     * @param  null  $extra
+     * @param  null  $data
      */
     public static function eventCreated($model, $extra = null, $data = null)
     {
@@ -238,6 +240,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      *
      * @param $accountId
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|bool|static[]
+     *
      * @throws InvalidCIDException
      */
     public static function findOrRetrieve($accountId)
@@ -355,7 +358,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     /**
      * Set the name_first attribute with correct formatting.
      *
-     * @param string $value The first name to format and store.
+     * @param  string  $value  The first name to format and store.
      */
     public function setNameFirstAttribute($value)
     {
@@ -365,7 +368,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     /**
      * Set the name_last attribute with correct formatting.
      *
-     * @param string $value The last name to format and store.
+     * @param  string  $value  The last name to format and store.
      */
     public function setNameLastAttribute($value)
     {
@@ -445,8 +448,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     /**
      * Determine if the given name, matches either the user's nickname or real name.
      *
-     * @param string $displayName The display name to verify.
-     *
+     * @param  string  $displayName  The display name to verify.
      * @return bool
      */
     public function isValidDisplayName($displayName)

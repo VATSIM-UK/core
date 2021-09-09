@@ -36,7 +36,7 @@ class Airport extends Resource
     /**
      * Removes Airport from navigation bar.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return bool
      */
     public static function availableForNavigation(Request $request)

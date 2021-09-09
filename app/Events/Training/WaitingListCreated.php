@@ -16,7 +16,7 @@ class WaitingListCreated
     /**
      * Create a new event instance.
      *
-     * @param WaitingList $waitingList
+     * @param  WaitingList  $waitingList
      */
     public function __construct(WaitingList $waitingList)
     {

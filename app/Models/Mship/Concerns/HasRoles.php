@@ -18,7 +18,7 @@ trait HasRoles
     }
 
     /**
-     * @param mixed ...$roles
+     * @param  mixed  ...$roles
      * @return $this
      */
     public function assignRole(...$roles)

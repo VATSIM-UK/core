@@ -26,7 +26,7 @@ class SecondaryLoginController extends BaseController
     /**
      * Validate the user login request.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
     protected function validateLogin(Request $request)
@@ -39,7 +39,7 @@ class SecondaryLoginController extends BaseController
     /**
      * Get the needed authorization credentials from the request.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     protected function credentials(Request $request)

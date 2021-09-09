@@ -11,7 +11,7 @@ class EvaluateFlightCriteria implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param BidCompleted $event
+     * @param  BidCompleted  $event
      * @return void
      */
     public function handle(BidCompleted $event)
