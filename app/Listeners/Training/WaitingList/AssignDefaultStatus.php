@@ -20,7 +20,7 @@ class AssignDefaultStatus
     /**
      * Handle the event.
      *
-     * @param  AccountAddedToWaitingList $event
+     * @param  AccountAddedToWaitingList  $event
      * @return void
      */
     public function handle(AccountAddedToWaitingList $event)

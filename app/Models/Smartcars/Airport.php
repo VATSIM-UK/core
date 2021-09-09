@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $longitude
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Airport icao($icao)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Airport whereCountry($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Airport whereCreatedAt($value)

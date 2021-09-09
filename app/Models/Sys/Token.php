@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read mixed $is_expired
  * @property-read mixed $is_used
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $related
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token expired()
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token hasCode($code)

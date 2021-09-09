@@ -30,7 +30,7 @@ class Ban extends Resource
     /**
      * Removes Ban from navigation bar.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return bool
      */
     public static function availableForNavigation(Request $request)
@@ -50,7 +50,7 @@ class Ban extends Resource
     /**
      * Bans are processed using an action and thus the form for creating is not required.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return bool
      */
     public static function authorizedToCreate(Request $request)

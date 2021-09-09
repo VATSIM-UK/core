@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $max_altitude
  * @property int|null $min_groundspeed
  * @property int|null $max_groundspeed
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereFlightId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxAltitude($value)
@@ -66,8 +67,8 @@ class FlightCriterion extends Model
      *
      * Based on https://github.com/substack/point-in-polygon/blob/master/index.js
      *
-     * @param float $latitude The latitude of the point (vertical, y)
-     * @param float $longitude The longitude of the point (horizontal, x)
+     * @param  float  $latitude  The latitude of the point (vertical, y)
+     * @param  float  $longitude  The longitude of the point (horizontal, x)
      * @return bool
      */
     public function hasPoint($latitude, $longitude)

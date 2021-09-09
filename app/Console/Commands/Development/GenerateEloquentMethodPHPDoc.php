@@ -77,7 +77,7 @@ class GenerateEloquentMethodPHPDoc extends Command
     /**
      * Naively check if a given method is a magic method.
      *
-     * @param ReflectionMethod $method
+     * @param  ReflectionMethod  $method
      * @return bool true if method name stars with __, else false
      */
     protected function isMagicMethod($method)
@@ -88,7 +88,7 @@ class GenerateEloquentMethodPHPDoc extends Command
     /**
      * Check if a given method is a method in the main Eloquent model.
      *
-     * @param ReflectionMethod $method
+     * @param  ReflectionMethod  $method
      * @return bool
      */
     protected function isModelMethod($method)
@@ -99,8 +99,8 @@ class GenerateEloquentMethodPHPDoc extends Command
     /**
      * Retrieves the parameters and return type for a given method.
      *
-     * @param ReflectionMethod $method
-     * @param Tag[]|Tag\ParamTag[]|Tag\ReturnTag[] $tags
+     * @param  ReflectionMethod  $method
+     * @param  Tag[]|Tag\ParamTag[]|Tag\ReturnTag[]  $tags
      * @return \stdClass
      */
     protected function getMethodDefinition($method, $tags)
@@ -123,8 +123,8 @@ class GenerateEloquentMethodPHPDoc extends Command
     /**
      * Get the parameter type, name, and default value.
      *
-     * @param ReflectionMethod $method
-     * @param Tag\ParamTag $tag
+     * @param  ReflectionMethod  $method
+     * @param  Tag\ParamTag  $tag
      * @return string
      */
     protected function getParameterDefinition($method, $tag)
@@ -139,8 +139,8 @@ class GenerateEloquentMethodPHPDoc extends Command
     /**
      * Get the default value of a parameter;.
      *
-     * @param ReflectionMethod $method
-     * @param Tag\ParamTag $tag
+     * @param  ReflectionMethod  $method
+     * @param  Tag\ParamTag  $tag
      * @return string
      */
     protected function getParameterDefault($method, $tag)
@@ -164,7 +164,7 @@ class GenerateEloquentMethodPHPDoc extends Command
     /**
      * Get the return type from the given return tag.
      *
-     * @param Tag\ReturnTag $tag
+     * @param  Tag\ReturnTag  $tag
      * @return string
      */
     protected function getReturnDefinition($tag)

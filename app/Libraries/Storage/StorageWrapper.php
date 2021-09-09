@@ -12,7 +12,7 @@ abstract class StorageWrapper
     /**
      * Store an image on the disk.
      *
-     * @param CoreUploadedFile $image
+     * @param  CoreUploadedFile  $image
      * @return false|string
      */
     public function store(CoreUploadedFile $image)

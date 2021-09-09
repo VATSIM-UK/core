@@ -24,7 +24,7 @@ trait HasMoodleAccount
     /**
      * Sync the current account to Moodle.
      *
-     * @param mixed $moodleAccount Related Moodle account, false if doesn't exist
+     * @param  mixed  $moodleAccount  Related Moodle account, false if doesn't exist
      */
     public function syncToMoodle($moodleAccount)
     {
@@ -44,7 +44,7 @@ trait HasMoodleAccount
     /**
      * Create a new account for the user in Moodle.
      *
-     * @param string $email
+     * @param  string  $email
      */
     protected function createMoodleAccount()
     {
@@ -67,7 +67,7 @@ trait HasMoodleAccount
     /**
      * Ensures the Moodle Account has a valid OAuth link to Core SSO.
      *
-     * @param int $moodleAccountID
+     * @param  int  $moodleAccountID
      */
     protected function checkAndAddOAuthLink($moodleAccountID)
     {
@@ -96,9 +96,9 @@ trait HasMoodleAccount
     /**
      * Update the user's existing Moodle account.
      *
-     * @param string $email
-     * @param bool $allowLogin
-     * @param mixed $moodleAccount
+     * @param  string  $email
+     * @param  bool  $allowLogin
+     * @param  mixed  $moodleAccount
      */
     protected function updateMoodleAccount($allowLogin, $moodleAccount)
     {

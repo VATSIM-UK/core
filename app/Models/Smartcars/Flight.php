@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\FlightCriterion[] $criteria
  * @property-read \App\Models\Smartcars\Airport $departure
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\FlightResource[] $resources
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight enabled()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight featured()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight icao($icao)
