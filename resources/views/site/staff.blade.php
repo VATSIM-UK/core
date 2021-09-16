@@ -101,7 +101,7 @@
                         <h4 class="text-center">Marketing Team</h4>
                         <table class="table">
                             <tr>
-                                <td>Marketing Manager</td>
+                                <td>Marketing General Manager</td>
                                 <td>Ben Wright</td>
                             </tr>
                             <tr>
