@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "@sentry/browser": "^6.10.0",
+    "@sentry/browser": "^6.12.0",
     "@sentry/tracing": "^6.12.0",
     "admin-lte": "2.4.18",
     "axios": "^0.21",
@@ -29,7 +29,7 @@
     "jquery": "^3.6.0",
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
-    "laravel-mix": "^6.0.28",
+    "laravel-mix": "^6.0.29",
     "less": "^4.1.1",
     "less-loader": "^10.0.1",
     "lodash": "^4.17.21",
@@ -37,7 +37,7 @@
     "postcss": "^8.3",
     "resolve-url-loader": "4.0.0",
     "sass-loader": "^12.1.0",
-    "sass": "^1.38.1",
+    "sass": "^1.39.0",
     "vue": "^2.6.14",
     "vue-template-compiler": "^2.6.14"
   },
