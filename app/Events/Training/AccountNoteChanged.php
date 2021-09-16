@@ -22,7 +22,7 @@ class AccountNoteChanged implements ShouldQueue
     /**
      * Create a new event instance.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @param $oldNoteContent
      * @param $newNoteContent
      */

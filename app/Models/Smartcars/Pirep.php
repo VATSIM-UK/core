@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read Bid $bid
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep belongsTo($cid)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereAircraftId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereBidId($value)

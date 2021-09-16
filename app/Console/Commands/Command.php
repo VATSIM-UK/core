@@ -12,9 +12,9 @@ abstract class Command extends BaseCommand
      * Log a string to STDOUT.
      * If STDOUT is piped/redirected, styling is removed.
      *
-     * @param string $message The string to output.
-     * @param null $style The styling to output.
-     * @param bool $newline If a new line should be returned at the end.
+     * @param  string  $message  The string to output.
+     * @param  null  $style  The styling to output.
+     * @param  bool  $newline  If a new line should be returned at the end.
      */
     protected function log($message, $style = null, $newline = true)
     {

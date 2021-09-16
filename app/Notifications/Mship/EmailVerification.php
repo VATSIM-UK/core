@@ -20,8 +20,8 @@ class EmailVerification extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param Email $email
-     * @param Token $token
+     * @param  Email  $email
+     * @param  Token  $token
      */
     public function __construct(Email $email, Token $token)
     {
@@ -34,7 +34,7 @@ class EmailVerification extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -45,7 +45,7 @@ class EmailVerification extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return \Illuminate\Mail\Mailable
      */
     public function toMail($notifiable)
@@ -60,8 +60,8 @@ class EmailVerification extends Notification implements ShouldQueue
             /**
              * Create a new message instance.
              *
-             * @param Account $account
-             * @param Token $token
+             * @param  Account  $account
+             * @param  Token  $token
              */
             public function __construct(Account $account, Token $token)
             {
@@ -95,7 +95,7 @@ class EmailVerification extends Notification implements ShouldQueue
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function toArray($notifiable)

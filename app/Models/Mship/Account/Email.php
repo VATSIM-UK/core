@@ -23,6 +23,7 @@ use Carbon\Carbon;
  * @property-read mixed $is_verified
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email emailMatches($email)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email verified()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email whereAccountId($value)
@@ -116,7 +117,7 @@ class Email extends Model
      *
      * If the email isn't verified, a verification email will be dispatched.
      *
-     * @param array $options Additional options to use when saving this Email.
+     * @param  array  $options  Additional options to use when saving this Email.
      * @return bool
      */
     public function save(array $options = [])

@@ -85,6 +85,7 @@ use Malahierba\PublicId\PublicId;
  * @property-read mixed $type_string
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $referees
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application closed()
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application notStatus($status)
@@ -196,6 +197,13 @@ class Application extends Model
     public static $APPLICATION_IS_CONSIDERED_WITHDRAWABLE = [
         self::STATUS_IN_PROGRESS,
         self::STATUS_SUBMITTED,
+    ];
+
+    public static $APPLICATION_CANT_BE_REJECTED = [
+        self::STATUS_CANCELLED,
+        self::STATUS_COMPLETED,
+        self::STATUS_REJECTED,
+        self::STATUS_WITHDRAWN,
     ];
 
     public function __construct(array $attributes = [])
@@ -323,6 +331,11 @@ class Application extends Model
     public function getIsEditableAttribute()
     {
         return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_EDITABLE);
+    }
+
+    public function getCanRejectAttribute()
+    {
+        return ! $this->isStatusIn(self::$APPLICATION_CANT_BE_REJECTED);
     }
 
     public function getIsNotEditableAttribute()

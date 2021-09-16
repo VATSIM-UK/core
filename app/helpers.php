@@ -6,7 +6,7 @@
  * least that number of uppercase characters.
  *
  * @param $string
- * @param int $count
+ * @param  int  $count
  * @return bool
  */
 function str_has_upper($string, $count = 1)
@@ -20,7 +20,7 @@ function str_has_upper($string, $count = 1)
  * least that number of lowercase characters.
  *
  * @param $string
- * @param int $count
+ * @param  int  $count
  * @return bool
  */
 function str_has_lower($string, $count = 1)
@@ -34,7 +34,7 @@ function str_has_lower($string, $count = 1)
  * least that number of numeric characters.
  *
  * @param $string
- * @param int $count
+ * @param  int  $count
  * @return bool
  */
 function str_has_numeric($string, $count = 1)

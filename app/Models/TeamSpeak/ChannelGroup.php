@@ -18,6 +18,7 @@ use App\Scopes\TeamSpeak\GroupScope;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Permission|null $permission
  * @property-read \App\Models\Mship\Qualification|null $qualification
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereDbid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereDefault($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereId($value)

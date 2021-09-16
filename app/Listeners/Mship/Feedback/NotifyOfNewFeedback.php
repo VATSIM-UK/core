@@ -20,7 +20,7 @@ class NotifyOfNewFeedback
     /**
      * Handle the event.
      *
-     * @param  NewFeedbackEvent $event
+     * @param  NewFeedbackEvent  $event
      * @return void
      */
     public function handle(NewFeedbackEvent $event)

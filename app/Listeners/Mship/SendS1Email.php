@@ -21,7 +21,7 @@ class SendS1Email
     /**
      * Handle the event.
      *
-     * @param  NewFeedbackEvent $event
+     * @param  NewFeedbackEvent  $event
      * @return void
      */
     public function handle(QualificationAdded $event)

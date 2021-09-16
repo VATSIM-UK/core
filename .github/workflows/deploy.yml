@@ -280,7 +280,7 @@ jobs:
               for i in $(seq 0 `expr $number_of_releases - $VERSIONS_TO_KEEP - 1`);
               do
                 echo "Removing: ${releases[$i]}"
-                rm -rf $APPLICATION_ROOT/releases/${releases[$i]}
+                # rm -rf $APPLICATION_ROOT/releases/${releases[$i]}
               done
             fi
           envs: APPLICATION_ROOT,VERSIONS_TO_KEEP

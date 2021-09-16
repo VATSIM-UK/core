@@ -86,6 +86,11 @@ class Condition extends Model
         if ($this->within_months) {
             $sessions = $sessions->whereBetween('connected_at', [Carbon::now()->subMonths($this->within_months), Carbon::now()]);
         }
+
+        if ($this->required_qualification) {
+            $sessions = $sessions->where('qualification_id', $this->required_qualification);
+        }
+
         $sessions = $sessions->get(['minutes_online', 'callsign']);
 
         // Map into groups of positions

@@ -40,8 +40,8 @@ class TeamSpeak
     /**
      * Connect to the TeamSpeak server.
      *
-     * @param string $nickname
-     * @param bool $nonBlocking
+     * @param  string  $nickname
+     * @param  bool  $nonBlocking
      * @return \TeamSpeak3_Node_Server
      */
     public static function run($nickname = 'VATSIM UK TeamSpeak Bot', $nonBlocking = false)
@@ -75,8 +75,9 @@ class TeamSpeak
     /**
      * Check the client's registration.
      *
-     * @param TeamSpeak3_Node_Client $client
+     * @param  TeamSpeak3_Node_Client  $client
      * @return Account
+     *
      * @throws RegistrationNotFoundException
      * @throws TeamSpeak3_Adapter_ServerQuery_Exception
      */
@@ -112,8 +113,9 @@ class TeamSpeak
     /**
      * Obtain the clients new registration, if they have one.
      *
-     * @param TeamSpeak3_Node_Client $client
+     * @param  TeamSpeak3_Node_Client  $client
      * @return null|Registration
+     *
      * @throws TeamSpeak3_Adapter_ServerQuery_Exception
      */
     public static function getNewRegistration(TeamSpeak3_Node_Client $client)
@@ -142,7 +144,7 @@ class TeamSpeak
     /**
      * Obtain the client's active registration.
      *
-     * @param TeamSpeak3_Node_Client $client
+     * @param  TeamSpeak3_Node_Client  $client
      * @return null|Registration
      */
     public static function getActiveRegistration(TeamSpeak3_Node_Client $client)
@@ -157,8 +159,8 @@ class TeamSpeak
     /**
      * Finalise a client's new registration.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Registration $registration
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Registration  $registration
      */
     protected static function completeNewRegistration(TeamSpeak3_Node_Client $client, Registration $registration)
     {
@@ -176,8 +178,8 @@ class TeamSpeak
     /**
      * Update the clients login info.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Registration $registration
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Registration  $registration
      */
     protected static function updateClientLoginInfo(TeamSpeak3_Node_Client $client, Registration $registration)
     {
@@ -190,8 +192,8 @@ class TeamSpeak
     /**
      * Check a client's description is correct.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
      * @return TeamSpeak3_Node_Client
      */
     public static function checkClientDescription(TeamSpeak3_Node_Client $client, Account $member)
@@ -215,8 +217,8 @@ class TeamSpeak
     /**
      * Check a member is in good standing with the network and division.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
      */
     public static function checkMemberStanding(TeamSpeak3_Node_Client $client, Account $member)
     {
@@ -236,8 +238,9 @@ class TeamSpeak
     /**
      * Check a member has accepted any necessary notifications.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
+     *
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function checkMemberMandatoryNotifications(TeamSpeak3_Node_Client $client, Account $member)
@@ -269,8 +272,9 @@ class TeamSpeak
     /**
      * Check the client's nickname is correct.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
+     *
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function checkClientNickname(TeamSpeak3_Node_Client $client, Account $member)
@@ -317,8 +321,8 @@ class TeamSpeak
     /**
      * Check the client is in the appropriate server groups.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
      */
     public static function checkClientServerGroups(TeamSpeak3_Node_Client $client, Account $member)
     {
@@ -344,8 +348,9 @@ class TeamSpeak
     /**
      * Check the client is in the appropriate channel groups.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
+     *
      * @throws \TeamSpeak3_Adapter_ServerQuery_Exception
      */
     public static function checkClientChannelGroups(TeamSpeak3_Node_Client $client, Account $member)
@@ -381,8 +386,9 @@ class TeamSpeak
     /**
      * Check the client's (allowed) idle time.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
+     *
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function checkClientIdleTime(TeamSpeak3_Node_Client $client, Account $member)
@@ -415,7 +421,7 @@ class TeamSpeak
     /**
      * Checks whether the client should be protected from being modified/disturbed.
      *
-     * @param TeamSpeak3_Node_Client $client
+     * @param  TeamSpeak3_Node_Client  $client
      * @return bool
      */
     public static function clientIsProtected(TeamSpeak3_Node_Client $client)
@@ -443,8 +449,8 @@ class TeamSpeak
     /**
      * Messages the client.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param string $message
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  string  $message
      */
     public static function messageClient(TeamSpeak3_Node_Client $client, $message)
     {
@@ -454,8 +460,8 @@ class TeamSpeak
     /**
      * Pokes the client.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param string $message
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  string  $message
      */
     public static function pokeClient(TeamSpeak3_Node_Client $client, $message)
     {
@@ -465,8 +471,8 @@ class TeamSpeak
     /**
      * Kicks the client.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param string $reason
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  string  $reason
      */
     public static function kickClient(TeamSpeak3_Node_Client $client, $reason)
     {
@@ -476,9 +482,9 @@ class TeamSpeak
     /**
      * Bans the client.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param string $reason
-     * @param int $duration Duration in seconds.
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  string  $reason
+     * @param  int  $duration  Duration in seconds.
      */
     public static function banClient(TeamSpeak3_Node_Client $client, $reason, $duration)
     {
@@ -489,8 +495,9 @@ class TeamSpeak
     /**
      * Removes the client from the server and deletes them from the database.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param string $reason
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  string  $reason
+     *
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function deactivateClient(TeamSpeak3_Node_Client $client, $reason)

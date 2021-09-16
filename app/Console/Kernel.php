@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
+     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
@@ -48,15 +48,11 @@ class Kernel extends ConsoleKernel
         // === By Hour === //
 
         $schedule->command('members:certupdate')
-            ->hourlyAt(30)
+            ->hourlyAt(10)
             ->graceTimeInMinutes(15);
 
         $schedule->command('sync:cts-roles')
             ->hourlyAt(15)
-            ->graceTimeInMinutes(15);
-
-        $schedule->command('members:certimport')
-            ->everyTwoHours()
             ->graceTimeInMinutes(15);
 
         // === By Day === //
@@ -64,15 +60,15 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune')
             ->dailyAt('03:30');
 
-        // $schedule->command('DivMembers:CertUpdate')
-        //    ->dailyAt('05:00');
+        $schedule->command('sync:tg-forum-groups')
+            ->dailyAt('04:30');
+
+        // $schedule->command('members:certimport')
+        //     ->dailyAt('05:30')
+        //     ->graceTimeInMinutes(25);
 
         $schedule->command('schedule-monitor:clean')
             ->dailyAt('08:00');
-
-        $schedule->command('members:certimport', ['--full'])
-            ->twiceDaily(4, 15)
-            ->graceTimeInMinutes(30);
     }
 
     /**
