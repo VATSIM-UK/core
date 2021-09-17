@@ -167,10 +167,10 @@
                     </div>
                     <div class="panel-body">
                         <h4 class="text-center">Member Services Director (VATUK3)</h4><br/>
-                        <img src="{{ $teamPhotos[4111] }}"
+                        <img src="{{ $teamPhotos[6298] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Harry Downton</p>
+                        <p class="text-center">Lee Roberts</p>
                         <h4 class="text-center">Member Services Team</h4>
                         <table class="table">
                             <tr>
@@ -179,7 +179,7 @@
                             </tr>
                             <tr>
                                 <td>Member Services Assistant</td>
-                                <td>Matthew Wilson</td>
+                                <td>Dale Stainrod</td>
                             </tr>
                             <tr>
                                 <td>Member Services Assistant</td>
@@ -187,7 +187,7 @@
                             </tr>
                             <tr>
                                 <td>Member Services Assistant</td>
-                                <td>Luke Peters</td>
+                                <td>Matthew Wilson</td>
                             </tr>
                         </table>
                     </div>
