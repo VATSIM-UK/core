@@ -267,7 +267,7 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TWR)</td>
-                                    <td>Vacant</td>
+                                    <td>Matthew Dean</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TWR)</td>
