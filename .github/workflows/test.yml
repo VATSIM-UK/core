@@ -186,7 +186,9 @@ jobs:
 
       # Run Coverage Suite
       - name: Upload Code Coverage
-        run: bash <(curl -s https://codecov.io/bash)
+        uses: codecov/codecov-action@v2
+        with: 
+          fail_ci_if_error: true
 
   trigger-release:
     name: Trigger Release
