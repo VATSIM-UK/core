@@ -28,7 +28,7 @@
                     </p>
 
                     <p>
-                        <a href="https://community.vatsim.uk/downloads/" rel="">Download the Oceanic
+                        <a href="https://community.vatsim.uk/files/downloads/file/261-notam-implementation-of-ads-b-over-the-ocean/" rel="">Download the Oceanic
                             procedures document</a> for further information.
                     </p>
                 </div>
