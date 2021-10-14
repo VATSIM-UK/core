@@ -968,15 +968,15 @@
     "@sentry/types" "6.13.3"
     tslib "^1.9.3"
 
-"@sentry/tracing@^6.12.0":
-  version "6.12.0"
-  resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-6.12.0.tgz#a05c8985ee7fed7310b029b147d8f9f14f2a2e67"
-  integrity sha512-u10QHNknPBzbWSUUNMkvuH53sQd5NaBo6YdNPj4p5b7sE7445Sh0PwBpRbY3ZiUUiwyxV59fx9UQ4yVnPGxZQA==
+"@sentry/tracing@^6.13.3":
+  version "6.13.3"
+  resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-6.13.3.tgz#ca657d4afa99c50f15e638fe38405bac33e780ee"
+  integrity sha512-yyOFIhqlprPM0g4f35Icear3eZk2mwyYcGEzljJfY2iU6pJwj1lzia5PfSwiCW7jFGMmlBJNhOAIpfhlliZi8Q==
   dependencies:
-    "@sentry/hub" "6.12.0"
-    "@sentry/minimal" "6.12.0"
-    "@sentry/types" "6.12.0"
-    "@sentry/utils" "6.12.0"
+    "@sentry/hub" "6.13.3"
+    "@sentry/minimal" "6.13.3"
+    "@sentry/types" "6.13.3"
+    "@sentry/utils" "6.13.3"
     tslib "^1.9.3"
 
 "@sentry/types@6.12.0":
@@ -1516,12 +1516,12 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-axios@^0.21:
-  version "0.21.4"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
-  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
+axios@^0.22:
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.22.0.tgz#bf702c41fb50fbca4539589d839a077117b79b25"
+  integrity sha512-Z0U3uhqQeg1oNcihswf4ZD57O3NrR1+ZXhxaROaWpDmsDTx7T2HNBV2ulBtie2hwJptu8UvgnJoK+BIqdzh/1w==
   dependencies:
-    follow-redirects "^1.14.0"
+    follow-redirects "^1.14.4"
 
 babel-loader@^8.2.2:
   version "8.2.2"
@@ -2450,9 +2450,9 @@ datatables.net-bs@^1.10.19:
     jquery ">=1.7"
 
 datatables.net@>=1.10.25, datatables.net@^1.10.19:
-  version "1.11.2"
-  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.11.2.tgz#019b37cda35d22087a65f983afa4e876eb9202e3"
-  integrity sha512-Dg+Yeyky+BhXoooJqTDTGssLxkAxe73CljcjYd4630XQZKqqqy0akYk2r4RSHSJLyYCOGRZEZiUF/N39+5nqvg==
+  version "1.11.3"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.11.3.tgz#80e691036efcd62467558ee64c07dd566cb761b4"
+  integrity sha512-VMj5qEaTebpNurySkM6jy6sGpl+s6onPK8xJhYr296R/vUBnz1+id16NVqNf9z5aR076OGcpGHCuiTuy4E05oQ==
   dependencies:
     jquery ">=1.7"
 
@@ -3030,7 +3030,7 @@ flot@^0.8.3:
   resolved "https://registry.yarnpkg.com/flot/-/flot-0.8.3.tgz#6d9b93c7aa2cfb30dfa1af9c1ec4c94070b1217f"
   integrity sha512-xg2otcTJDvS+ERK+my4wxG/ASq90QURXtoM4LhacCq0jQW2jbyjdttbRNqU2cPykrpMvJ6b2uSp6SAgYAzj9tQ==
 
-follow-redirects@^1.0.0, follow-redirects@^1.14.0:
+follow-redirects@^1.0.0, follow-redirects@^1.14.4:
   version "1.14.4"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.4.tgz#838fdf48a8bbdd79e52ee51fb1c94e3ed98b9379"
   integrity sha512-zwGkiSXC1MUJG/qmeIFH2HBJx9u0V46QGUe3YR1fXG8bXQxq7fLj0RjLZQ5nubr9qNJUZrH+xUcwXEoXNpfS+g==
@@ -3993,14 +3993,14 @@ less-loader@^10.0.1:
   dependencies:
     klona "^2.0.4"
 
-less@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/less/-/less-4.1.1.tgz#15bf253a9939791dc690888c3ff424f3e6c7edba"
-  integrity sha512-w09o8tZFPThBscl5d0Ggp3RcrKIouBoQscnOMgFH3n5V3kN/CXGHNfCkRPtxJk6nKryDXaV9aHLK55RXuH4sAw==
+less@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/less/-/less-4.1.2.tgz#6099ee584999750c2624b65f80145f8674e4b4b0"
+  integrity sha512-EoQp/Et7OSOVu0aJknJOtlXZsnr8XE8KwuzTHOLeVSEx8pVWUICc8Q0VYRHgzyjX78nMEyC/oztWFbgyhtNfDA==
   dependencies:
     copy-anything "^2.0.1"
     parse-node-version "^1.0.1"
-    tslib "^1.10.0"
+    tslib "^2.3.0"
   optionalDependencies:
     errno "^0.1.1"
     graceful-fs "^4.1.2"
@@ -4309,10 +4309,10 @@ multicast-dns@^6.0.1:
     dns-packet "^1.3.1"
     thunky "^1.0.2"
 
-nanoid@^3.1.23:
-  version "3.1.25"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.25.tgz#09ca32747c0e543f0e1814b7d3793477f9c8e152"
-  integrity sha512-rdwtIXaXCLFAQbnfqDRnI6jaRHp9fTcYBjtFKE8eezcZ7LuLjhUaQGNeMXf1HmRoCH32CLz6XwX0TtxEOS/A3Q==
+nanoid@^3.1.28:
+  version "3.1.29"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.29.tgz#214fb2d7a33e1a5bef4757b779dfaeb6a4e5aeb4"
+  integrity sha512-dW2pUSGZ8ZnCFIlBIA31SV8huOGCHb6OwzVCc7A69rb/a+SgPBwfmLvK5TKQ3INPbRkcI8a/Owo0XbiTNH19wg==
 
 needle@^2.5.2:
   version "2.9.1"
@@ -4698,6 +4698,11 @@ php-date-formatter@^1.3.4:
   resolved "https://registry.yarnpkg.com/php-date-formatter/-/php-date-formatter-1.3.6.tgz#6d67359da890c742005fa89d20be3ded31cc1d2a"
   integrity sha512-/CKsZYmAwXeNh8KpD/CF9hcJDZNhdb2ICN8+qgqOt5sUu9liZIxZ1R284TNj5MtPt8RjG5X0xn6WSqL0kcKMBg==
 
+picocolors@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-0.2.1.tgz#570670f793646851d1ba135996962abad587859f"
+  integrity sha512-cMlDqaLEqfSaW8Z7N5Jw+lyIW869EzT73/F5lhtY9cLGoVxSXznfgfXMO0Z5K0o0Q2TkTXq+0KFsdnSe3jDViA==
+
 picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.2.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.0.tgz#f1f061de8f6a4bf022892e2d128234fb98302972"
@@ -5006,12 +5011,12 @@ postcss@^7.0.35:
     supports-color "^6.1.0"
 
 postcss@^8.2.15, postcss@^8.3:
-  version "8.3.6"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.3.6.tgz#2730dd76a97969f37f53b9a6096197be311cc4ea"
-  integrity sha512-wG1cc/JhRgdqB6WHEuyLTedf3KIRuD0hG6ldkFEZNCjRxiC+3i6kkWUUbiJQayP28iwG35cEmAbe98585BYV0A==
+  version "8.3.9"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.3.9.tgz#98754caa06c4ee9eb59cc48bd073bb6bd3437c31"
+  integrity sha512-f/ZFyAKh9Dnqytx5X62jgjhhzttjZS7hMsohcI7HEI5tjELX/HxCy3EFhsRxyzGvrzFF+82XPvCS8T9TFleVJw==
   dependencies:
-    colorette "^1.2.2"
-    nanoid "^3.1.23"
+    nanoid "^3.1.28"
+    picocolors "^0.2.1"
     source-map-js "^0.6.2"
 
 pretty-time@^1.1.0:
@@ -5341,10 +5346,10 @@ sass-loader@^12.1.0:
     klona "^2.0.4"
     neo-async "^2.6.2"
 
-sass@^1.41.0:
-  version "1.41.1"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.41.1.tgz#bca5bed2154192779c29f48fca9c644c60c38d98"
-  integrity sha512-vIjX7izRxw3Wsiez7SX7D+j76v7tenfO18P59nonjr/nzCkZuoHuF7I/Fo0ZRZPKr88v29ivIdE9BqGDgQD/Nw==
+sass@^1.42.1:
+  version "1.42.1"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.42.1.tgz#5ab17bebc1cb1881ad2e0c9a932c66ad64e441e2"
+  integrity sha512-/zvGoN8B7dspKc5mC6HlaygyCBRvnyzzgD5khiaCfglWztY99cYoiTUksVx11NlnemrcfH5CEaCpsUKoW0cQqg==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
 
@@ -5915,12 +5920,12 @@ toidentifier@1.0.0:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
 
-tslib@^1.10.0, tslib@^1.9.3:
+tslib@^1.9.3:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.3:
+tslib@^2.0.3, tslib@^2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
   integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
