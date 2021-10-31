@@ -51,9 +51,6 @@
                                 applications
                                 (<strong>non permanent ratings of SUP/ADM/I1/I3 are not relevant</strong>);
                             </li>
-                            <li>
-                                All applications will be processed each Sunday.
-                            </li>
                         </ul>
 
                     </div>
@@ -73,7 +70,7 @@
                         </p>
 
                         <p>
-                            VATSIM United Kingdom currently offers training for P1/ P2 / P3 / P4 / P5 ratings.&nbsp;
+                            VATSIM United Kingdom currently offers training for P1 rating.&nbsp;
                         </p>
 
                         <p>
@@ -96,8 +93,8 @@
                         </p>
 
                         <p>
-                            Visiting controllers are able to select one of the Visiting Groups (1-5) from the list
-                            (right) to visit. Visitors may also apply in a separate application for groups 6 and 7 in
+                            Visiting controllers are able to select one of the Visiting Groups from the list
+                            (right) to visit. Visitors may also apply in a separate application for the Oceanic visiting group in
                             addition to any of the other groups.
                         </p>
 
@@ -157,155 +154,40 @@
             </div>
             <div class="panel-body">
                 <p>
-                    <strong>Visiting Group 1 (VG1) - S2+</strong>
+                    <strong>Aerodrome Visiting Group (ADC VG)</strong>
                 </p>
-
-                <ul>
-                    <li>
-                        Newquay (EGHQ)
-                    </li>
-                    <li>
-                        Cardiff (EGFF)
-                    </li>
-                    <li>
-                        Jersey (EGJJ)
-                    </li>
-                    <li>
-                        Guernsey (EGJB)
-                    </li>
-                    <li>
-                        Bournemouth (EGHH)
-                    </li>
-                    <li>
-                        Southampton (EGHI)
-                    </li>
-                    <li>
-                        Exeter (EGTE)
-                    </li>
-                </ul>
 
                 <p>
-                    <strong>Visiting Group 2 (VG2) - S2+</strong>
+                    All UK TWR/GND/DEL positions with the exception of EGLL
+                    Military endorsement available on request. 
                 </p>
-
-                <ul>
-                    <li>
-                        East Midlands (EGNX)
-                    </li>
-                    <li>
-                        Cambridge (EGSC)
-                    </li>
-                    <li>
-                        Norwich (EGSH)
-                    </li>
-                    <li>
-                        London City (EGLC)
-                    </li>
-                    <li>
-                        Biggin Hill (EGKB)
-                    </li>
-                    <li>
-                        Southend-on-Sea (EGMC)
-                    </li>
-                </ul>
 
                 <p>
-                    <strong>Visiting Group 3 (VG3) - S2+</strong>
+                    <strong>Approach Visiting Group (APP VG)</strong>
                 </p>
-
-                <ul>
-                    <li>
-                        Leeds Bradford (EGNM)
-                    </li>
-                    <li>
-                        Doncaster Sheffield (EGCN)
-                    </li>
-                    <li>
-                        Humberside (EGNJ)
-                    </li>
-                    <li>
-                        Newcastle (EGNT)
-                    </li>
-                    <li>
-                        Durham Tees Valley (EGNV)
-                    </li>
-                    <li>
-                        Carlisle (EGNC)
-                    </li>
-                </ul>
 
                 <p>
-                    <strong>Visiting Group 4 (VG4) - S2+</strong>
+                    All UK TWR/GND/DEL positions with the exception of EGLL
+                    Military endorsement available on request. 
                 </p>
-
-                <ul>
-                    <li>
-                        Blackpool (EGNH)
-                    </li>
-                    <li>
-                        Isle of Man Ronaldsway (EGNS)
-                    </li>
-                    <li>
-                        Belfast Aldergrove (EGAA)
-                    </li>
-                    <li>
-                        Aberdeen (EGPD)
-                    </li>
-                    <li>
-                        Inverness (EGPE)
-                    </li>
-                    <li>
-                        Prestwick (EGPK)
-                    </li>
-                </ul>
 
                 <p>
-                    <strong>Visiting Group 5 (VG5) - C1+</strong>
+                    <strong>Enroute Visiting Group (ENR VG)</strong>
                 </p>
-
-                <ul>
-                    <li>
-                        London Control (LON_W_CTR)
-                    </li>
-                    <li>
-                        Scottish Control (SCO_CTR)
-                    </li>
-                    <li>
-                        VG1/2/3/4 facilities
-                    </li>
-                </ul>
 
                 <p>
-                    <strong>Visiting Group 6 (VG6) - S2+</strong>
+                    All UK CTR + ADC VG + APP VG positions with the exception of LON_S including splits.
+                    Military endorsement available on request. 
                 </p>
-
-                <ul>
-                    <li>
-                        All UK mainland military airfields
-                    </li>
-                    <li>
-                        Gibraltar (LXGB)
-                    </li>
-                    <li>
-                        RAF Akrotiri (LCRA)
-                    </li>
-                    <li>
-                        RAF Mount Pleasent (EGYP)
-                    </li>
-                    <li>
-                        RAF Ascension Island (FHAW)
-                    </li>
-                </ul>
 
                 <p>
-                    <strong>Visiting Group 7 (VG7) - C1+</strong>
+                    <strong>Oceanic Visiting Group (OCA VG)</strong>
                 </p>
 
-                <ul>
-                    <li>
-                        EGGX (Shanwick Oceanic)
-                    </li>
-                </ul>
+                <p>
+                    Shanwick Oceanic Positions 
+                </p>
+
             </div>
         </div>
     </div>
