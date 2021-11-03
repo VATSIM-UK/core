@@ -17,7 +17,8 @@ trait HasQualifications
             'mship_account_qualification',
             'account_id',
             'qualification_id'
-        )->using(AccountQualification::class)
+        )->orderBy('vatsim')
+            ->using(AccountQualification::class)
             ->wherePivot('deleted_at', '=', null)
             ->withTimestamps();
     }
