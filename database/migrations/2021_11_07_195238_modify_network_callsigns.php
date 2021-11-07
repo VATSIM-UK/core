@@ -14,14 +14,14 @@ class ModifyNetworkCallsigns extends Migration
     public function up()
     {
         Schema::table(
-            "networkdata_atc",
+            'networkdata_atc',
             function (Blueprint $table) {
                 $table->string('callsign', 20)->change();
             }
         );
 
         Schema::table(
-            "networkdata_pilots",
+            'networkdata_pilots',
             function (Blueprint $table) {
                 $table->string('callsign', 20)->change();
             }
@@ -36,13 +36,13 @@ class ModifyNetworkCallsigns extends Migration
     public function down()
     {
         Schema::table(
-            "networkdata_atc",
+            'networkdata_atc',
             function (Blueprint $table) {
                 $table->string('callsign', 10)->change();
             }
         );
         Schema::table(
-            "networkdata_pilots",
+            'networkdata_pilots',
             function (Blueprint $table) {
                 $table->string('callsign', 10)->change();
             }
