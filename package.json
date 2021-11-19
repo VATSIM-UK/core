@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "@sentry/browser": "^6.14.3",
+    "@sentry/browser": "^6.15.0",
     "@sentry/tracing": "^6.14.3",
     "admin-lte": "2.4.18",
     "axios": "^0.24",
