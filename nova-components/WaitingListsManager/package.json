@@ -13,7 +13,7 @@
         "@vue/compiler-sfc": "^3.2.21",
         "cross-env": "^7.0.3",
         "laravel-mix": "^6.0.34",
-        "postcss": "^8.3",
+        "postcss": "^8.4",
         "vue": "^2.6.14",
         "vue-loader": "^15.*"
     }
