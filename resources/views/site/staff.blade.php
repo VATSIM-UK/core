@@ -275,7 +275,7 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (APP)</td>
-                                    <td>Kieron Crean</td>
+                                    <td>Vince Farrow</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (APP)</td>
@@ -283,7 +283,7 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (APP)</td>
-                                    <td>Thomas Greer</td>
+                                    <td>Stuart Keaney</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (ENR)</td>
