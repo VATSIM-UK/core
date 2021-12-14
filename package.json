@@ -34,7 +34,7 @@
     "less-loader": "^10.2.0",
     "lodash": "^4.17.21",
     "popper.js": "^1.16",
-    "postcss": "^8.3",
+    "postcss": "^8.4",
     "resolve-url-loader": "4.0.0",
     "sass-loader": "^12.3.0",
     "sass": "^1.44.0",
