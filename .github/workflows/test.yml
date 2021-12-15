@@ -34,7 +34,7 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: false
           MYSQL_ROOT_PASSWORD: root
         ports:
-          - 32574:3306
+          - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
     steps:
       - name: Checkout Code
@@ -67,9 +67,9 @@ jobs:
       # Start MySQL and Create Databases
       - name: Create Databases
         run: |
-          mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -P32574 -uroot -proot
-          mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -P32574 -uroot -proot
-          mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -P32574 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
 
       #
       # COMPOSER DEPENDENICES
@@ -157,7 +157,7 @@ jobs:
           APP_URL: 127.0.0.1
           CACHE_DRIVER: array
           DB_MYSQL_HOST: localhost
-          DB_MYSQL_PORT: 32574
+          DB_MYSQL_PORT: 3306
           DB_MYSQL_USER: root
           DB_MYSQL_PASS: root
           DB_MYSQL_NAME: core
@@ -196,7 +196,7 @@ jobs:
       # Run Coverage Suite
       - name: Upload Code Coverage
         uses: codecov/codecov-action@v2
-        with: 
+        with:
           fail_ci_if_error: true
 
   trigger-release:
