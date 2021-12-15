@@ -60,10 +60,10 @@
                     </div>
                     <div class="panel-body">
                         <h4 class="text-center">Operations Director (VATUK9)</h4><br/>
-                        <img src="{{ $teamPhotos[7072] }}"
+                        <img src="{{ $teamPhotos[4078] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Jack Edwards</p>
+                        <p class="text-center">Kieran Hardern</p>
                         <h4 class="text-center">Operations Team</h4>
                         <table class="table">
                             <tr>
