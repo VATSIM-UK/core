@@ -40,7 +40,8 @@ trait HasRoles
             return array_walk($role, [$this, 'fireRoleAssignedEvent']);
         }
 
-        event(new RoleAssigned($this, $this->getStoredRole($role)));
+        // Causing issues...
+        // event(new RoleAssigned($this, $this->getStoredRole($role)));
 
         return true;
     }
