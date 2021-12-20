@@ -67,7 +67,7 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": ">=7.4|>=8.0",
         "alawrence/laravel-ipboard": "dev-main",
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^2.7",
