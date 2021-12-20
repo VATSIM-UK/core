@@ -40,7 +40,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('horizon:snapshot')
             ->everyFiveMinutes()
-            ->withoutOverlapping();
+            ->withoutOverlapping()
+            ->doNotMonitor();
 
         $schedule->command('visit-transfer:cleanup')
             ->everyTenMinutes();
@@ -58,14 +59,11 @@ class Kernel extends ConsoleKernel
         // === By Day === //
 
         $schedule->command('telescope:prune')
-            ->dailyAt('03:30');
+            ->dailyAt('03:30')
+            ->doNotMonitor();
 
         $schedule->command('sync:tg-forum-groups')
             ->dailyAt('04:30');
-
-        // $schedule->command('members:certimport')
-        //     ->dailyAt('05:30')
-        //     ->graceTimeInMinutes(25);
 
         $schedule->command('schedule-monitor:clean')
             ->dailyAt('08:00');
