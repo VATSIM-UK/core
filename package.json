@@ -37,7 +37,7 @@
     "postcss": "^8.4",
     "resolve-url-loader": "4.0.0",
     "sass-loader": "^12.4.0",
-    "sass": "^1.45.0",
+    "sass": "^1.45.1",
     "vue": "^2.6.14",
     "vue-template-compiler": "^2.6.14"
   },
