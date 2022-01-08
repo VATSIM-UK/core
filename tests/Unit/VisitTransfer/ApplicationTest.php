@@ -182,19 +182,35 @@ class ApplicationTest extends TestCase
         });
     }
 
-    /** @test */
-    public function itCanBeCancelled()
+    public function providerCancelTest()
+    {
+        // With another accepted visit application
+        return [
+            [true],
+            [false]
+        ];
+    }
+
+    /** 
+     * @test
+     * @dataProvider providerCancelTest
+     */
+    public function itCanBeCancelled($with_another_application)
     {
         Notification::fake();
         $visitingState = \App\Models\Mship\State::findByCode('VISITING');
 
         $this->user->addState($visitingState);
-        $application = factory(Application::class)->state('atc_visit')->create(['status' => Application::STATUS_ACCEPTED, 'account_id' => $this->user]);
+        $this->assertTrue($this->user->fresh()->hasState($visitingState));
 
+        $application = factory(Application::class)->state('atc_visit')->create(['status' => Application::STATUS_ACCEPTED, 'account_id' => $this->user]);
+        if ($with_another_application) {
+            factory(Application::class)->state('atc_visit')->create(['status' => Application::STATUS_ACCEPTED, 'account_id' => $this->user]);
+        }
         $application->cancel();
 
         Notification::assertSentTo($this->user, ApplicationStatusChanged::class);
-        $this->assertFalse($this->user->hasState($visitingState));
+        $this->assertEquals($with_another_application ? true : false, $this->user->fresh()->hasState($visitingState));
     }
 
     /** @test */
