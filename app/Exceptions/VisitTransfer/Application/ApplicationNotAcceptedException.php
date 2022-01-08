@@ -12,7 +12,7 @@ class ApplicationNotAcceptedException extends \Exception
     {
         $this->application = $application;
 
-        $this->message = 'This application is not been accepted so cannot be completed or cancelled.';
+        $this->message = 'This application has not been accepted so cannot be completed or cancelled.';
     }
 
     public function __toString()

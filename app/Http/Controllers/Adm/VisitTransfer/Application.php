@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Adm\VisitTransfer;
 
 use App\Http\Controllers\Adm\AdmController;
 use App\Http\Requests\VisitTransfer\ApplicationAcceptRequest;
+use App\Http\Requests\VisitTransfer\ApplicationCancelRequest;
 use App\Http\Requests\VisitTransfer\ApplicationCheckOutcomeRequest;
 use App\Http\Requests\VisitTransfer\ApplicationCompleteRequest;
 use App\Http\Requests\VisitTransfer\ApplicationRejectRequest;
@@ -123,6 +124,18 @@ class Application extends AdmController
             ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' completed.');
     }
 
+    public function postCancel(ApplicationCancelRequest $request, ApplicationModel $application)
+    {
+        try {
+            $application->cancel(Request::input('cancel_reason', null), Request::input('cancel_staff_note', null), Auth::user());
+        } catch (\Exception $e) {
+            return Redirect::back()->withError($e->getMessage());
+        }
+
+        return Redirect::back()
+            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' cancelled & candidate notified.');
+    }
+
     public function postCheckMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
     {
         try {
@@ -132,10 +145,10 @@ class Application extends AdmController
         }
 
         return Redirect::route('adm.visiting.application.view', $application->id)->withSuccess(str_replace(
-                '_',
-                ' ',
-                Request::input('check', null)
-            )." check was marked as 'MET'!");
+            '_',
+            ' ',
+            Request::input('check', null)
+        )." check was marked as 'MET'!");
     }
 
     public function postCheckNotMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
@@ -147,10 +160,10 @@ class Application extends AdmController
         }
 
         return Redirect::route('adm.visiting.application.view', $application->id)->withSuccess(str_replace(
-                '_',
-                ' ',
-                Request::input('check', null)
-            )." check was marked as 'NOT MET'!");
+            '_',
+            ' ',
+            Request::input('check', null)
+        )." check was marked as 'NOT MET'!");
     }
 
     public function postSettingToggle(ApplicationSettingToggleRequest $request, ApplicationModel $application)
