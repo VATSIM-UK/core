@@ -132,7 +132,7 @@ class Application extends AdmController
 
     public function postCancel(ApplicationCancelRequest $request, ApplicationModel $application)
     {
-        $this->authorize('complete', $application);
+        $this->authorize('cancel', $application);
 
         try {
             $application->cancel(Request::input('cancel_reason', null), Request::input('cancel_staff_note', null), Auth::user());
