@@ -7,6 +7,7 @@ use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
 use App\Notifications\ApplicationAccepted;
+use App\Notifications\ApplicationStatusChanged;
 use Carbon\Carbon;
 use Faker\Provider\Base;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -180,6 +181,23 @@ class ApplicationTest extends TestCase
             return $notification->application->id == $application->id;
         });
     }
+
+    /** @test */
+    public function itCanBeCancelled()
+    {
+        Notification::fake();
+        $visitingState = \App\Models\Mship\State::findByCode('VISITING');
+
+        $this->user->addState($visitingState);
+        $application = factory(Application::class)->state('atc_visit')->create(["status" => Application::STATUS_ACCEPTED, "account_id" => $this->user]);
+
+        $application->cancel();
+
+        Notification::assertSentTo($this->user, ApplicationStatusChanged::class);
+        $this->assertFalse($this->user->hasState($visitingState));
+    }
+
+
 
     /** @test */
     public function itReportsStatisticsCorrectly()

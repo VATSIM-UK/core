@@ -50,7 +50,7 @@ class ApplicationPolicy
 
     public function selectFacility(Account $user, Application $application)
     {
-        if (! $application->exists || ! $application->is_editable) {
+        if (!$application->exists || !$application->is_editable) {
             return false;
         }
 
@@ -59,11 +59,11 @@ class ApplicationPolicy
 
     public function addStatement(Account $user, Application $application)
     {
-        if (! $application->facility || ! $application->is_editable) {
+        if (!$application->facility || !$application->is_editable) {
             return false;
         }
 
-        if (! $application->statement_required) {
+        if (!$application->statement_required) {
             return false;
         }
 
@@ -72,7 +72,7 @@ class ApplicationPolicy
 
     public function addReferee(Account $user, Application $application)
     {
-        if (! $application->facility || ! $application->is_editable) {
+        if (!$application->facility || !$application->is_editable) {
             return false;
         }
 
@@ -91,7 +91,7 @@ class ApplicationPolicy
     {
         $reference = \Request::route('reference');
 
-        if (! $application->facility || ! $application->is_editable) {
+        if (!$application->facility || !$application->is_editable) {
             return false;
         }
 
@@ -104,7 +104,7 @@ class ApplicationPolicy
 
     public function submitApplication(Account $user, Application $application)
     {
-        if (! $application->facility || ! $application->is_editable) {
+        if (!$application->facility || !$application->is_editable) {
             return false;
         }
 
@@ -116,7 +116,7 @@ class ApplicationPolicy
             return false;
         }
 
-        if (! $application->is_in_progress) {
+        if (!$application->is_in_progress) {
             return false;
         }
 
@@ -125,7 +125,7 @@ class ApplicationPolicy
 
     public function withdrawApplication(Account $user, Application $application)
     {
-        if (! $application->is_withdrawable) {
+        if (!$application->is_withdrawable) {
             return false;
         }
 
@@ -147,19 +147,7 @@ class ApplicationPolicy
             return false;
         }
 
-        if (! $application->is_under_review) {
-            return false;
-        }
-
-        if ($application->is_pending_references) {
-            return false;
-        }
-
-        $unacceptedReferences = $application->referees->filter(function ($ref) {
-            return $ref->status == Reference::STATUS_UNDER_REVIEW;
-        })->count();
-
-        if ($unacceptedReferences > 0) {
+        if (!$application->can_accept) {
             return false;
         }
 
@@ -173,11 +161,12 @@ class ApplicationPolicy
 
     public function complete(Account $user, Application $application)
     {
-        if ($application->is_editable || $application->is_closed || $application->is_under_review) {
-            return false;
-        }
+        return $application->is_accepted;
+    }
 
-        return true;
+    public function cancel(Account $user, Application $application)
+    {
+        return $application->is_accepted;
     }
 
     public function checkOutcome(Account $user, Application $application)

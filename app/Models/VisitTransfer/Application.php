@@ -3,6 +3,7 @@
 namespace App\Models\VisitTransfer;
 
 use App\Events\VisitTransfer\ApplicationAccepted;
+use App\Events\VisitTransfer\ApplicationCancelled;
 use App\Events\VisitTransfer\ApplicationCompleted;
 use App\Events\VisitTransfer\ApplicationExpired;
 use App\Events\VisitTransfer\ApplicationRejected;
@@ -199,9 +200,15 @@ class Application extends Model
         self::STATUS_SUBMITTED,
     ];
 
+    public static $APPLICATION_CAN_BE_ACCEPTED = [
+        self::STATUS_SUBMITTED,
+        self::STATUS_UNDER_REVIEW,
+    ];
+
     public static $APPLICATION_CANT_BE_REJECTED = [
         self::STATUS_CANCELLED,
         self::STATUS_COMPLETED,
+        self::STATUS_ACCEPTED,
         self::STATUS_REJECTED,
         self::STATUS_WITHDRAWN,
     ];
@@ -333,9 +340,14 @@ class Application extends Model
         return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_EDITABLE);
     }
 
+    public function getCanAcceptAttribute()
+    {
+        return $this->isStatusIn(self::$APPLICATION_CAN_BE_ACCEPTED);
+    }
+
     public function getCanRejectAttribute()
     {
-        return ! $this->isStatusIn(self::$APPLICATION_CANT_BE_REJECTED);
+        return !$this->isStatusIn(self::$APPLICATION_CANT_BE_REJECTED);
     }
 
     public function getIsNotEditableAttribute()
@@ -393,6 +405,11 @@ class Application extends Model
         return $this->isStatusIn([self::STATUS_PENDING_CERT, self::STATUS_COMPLETED]);
     }
 
+    public function getIsCancelledAttribute()
+    {
+        return $this->isStatus(self::STATUS_CANCELLED);
+    }
+
     public function getIsLapsedAttribute()
     {
         return $this->isStatus(self::STATUS_LAPSED);
@@ -441,7 +458,7 @@ class Application extends Model
 
     public function getTrainingTeamAttribute()
     {
-        if (! $this->exists) {
+        if (!$this->exists) {
             return 'Unknown';
         }
 
@@ -455,10 +472,10 @@ class Application extends Model
     public function getTypeStringAttribute()
     {
         if ($this->is_visit) {
-            return $this->training_team.' Visit';
+            return $this->training_team . ' Visit';
         }
 
-        return $this->training_team.' Transfer';
+        return $this->training_team . ' Transfer';
     }
 
     public function getNumberReferencesRequiredRelativeAttribute()
@@ -504,7 +521,7 @@ class Application extends Model
 
     public function isStatusNotIn($stati)
     {
-        return ! $this->isStatusIn($stati);
+        return !$this->isStatusIn($stati);
     }
 
     public function setFacility(Facility $facility)
@@ -624,7 +641,7 @@ class Application extends Model
         $this->save();
 
         if ($staffReason) {
-            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was progressed to 'Under Review'.\n".$staffReason;
+            $noteContent = 'VT Application for ' . $this->type_string . ' ' . $this->facility->name . " was progressed to 'Under Review'.\n" . $staffReason;
             $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
@@ -642,7 +659,7 @@ class Application extends Model
         $this->save();
 
         if ($staffReason) {
-            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was rejected.\n".$staffReason;
+            $noteContent = 'VT Application for ' . $this->type_string . ' ' . $this->facility->name . " was rejected.\n" . $staffReason;
             $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
@@ -662,20 +679,21 @@ class Application extends Model
 
     public function accept($staffComment = null, Account $actor = null)
     {
-        $this->guardAgainstNonUnderReviewApplication();
+        $this->guardAgainstUnAcceptableApplication();
 
-        $this->status = self::STATUS_ACCEPTED;
-        $this->save();
-
-        $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was accepted.\n";
-
-        if ($staffComment) {
-            $noteContent .= $staffComment;
+        // Deal with refereneces
+        foreach ($this->referees as $reference) {
+            switch ($reference->status) {
+                case Reference::STATUS_UNDER_REVIEW:
+                    $reference->cancel();
+                    break;
+                case Reference::STATUS_REQUESTED:
+                    $reference->accept(null, $actor);
+                    break;
+            }
         }
 
-        $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
-        $this->notes()->save($note);
-        // TODO: Investigate why this is required!!!!
+        $this->changeStatus(self::STATUS_ACCEPTED, null, $staffComment, $actor);
 
         if ($this->is_visit) {
             $this->account->addState(State::findByCode('VISITING'));
@@ -685,39 +703,52 @@ class Application extends Model
             $this->account->addState(State::findByCode('TRANSFERRING'));
         }
 
-        // Cancel any outstanding references
-        foreach ($this->referees as $reference) {
-            $reference->cancel();
-        }
-
         event(new ApplicationAccepted($this));
     }
 
     public function complete($staffComment = null, Account $actor = null)
     {
         $this->guardAgainstNonAcceptedApplication();
+        $this->changeStatus(self::STATUS_COMPLETED, null, $staffComment, $actor);
+        event(new ApplicationCompleted($this));
+    }
 
-        $this->status = self::STATUS_COMPLETED;
-        //        $this->status = ($this->is_visit ? self::STATUS_COMPLETED : self::STATUS_PENDING_CERT);
-        $this->save();
+    public function cancel($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
+    {
+        $this->guardAgainstNonAcceptedApplication();
+        $this->changeStatus(self::STATUS_CANCELLED, $publicReason, $staffReason, $actor);
 
-        $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was completed.\n";
-
-        if ($staffComment) {
-            $noteContent .= $staffComment;
+        if ($this->is_visit && !$this->account->visitApplications()->statusIn([self::STATUS_COMPLETED, self::STATUS_ACCEPTED])->exists()) {
+            $this->account->removeState(State::findByCode('VISITING'));
         }
 
+        if ($this->is_transfer) {
+            $this->account->removeState(State::findByCode('TRANSFERRING'));
+        }
+
+        event(new ApplicationCancelled($this));
+    }
+
+    public function changeStatus($status, $publicReason = null, $staffReason = null, Account $actor = null)
+    {
+        // Set the status
+        $this->status = $status;
+        $this->status_note = $publicReason;
+        $this->save();
+
+        $noteContent = "VT Application for {$this->type_string} {$this->facility->name} was set to {$this->status_string}.";
+        if ($staffReason) $noteContent .= "\n" . $staffReason;
+
+        // Add a note
         $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
         $this->notes()->save($note);
-
-        event(new ApplicationCompleted($this));
     }
 
     public function setCheckOutcome($check, $outcome)
     {
         // $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
 
-        $columnName = 'check_outcome_'.$check;
+        $columnName = 'check_outcome_' . $check;
         $this->{$columnName} = (int) $outcome;
         $this->save();
     }
@@ -772,7 +803,7 @@ class Application extends Model
 
     public function check90DayQualification()
     {
-        if (! $this->submitted_at) {
+        if (!$this->submitted_at) {
             return false;
         }
 
@@ -875,9 +906,9 @@ class Application extends Model
         throw new ApplicationNotRejectableException($this);
     }
 
-    private function guardAgainstNonUnderReviewApplication()
+    private function guardAgainstUnAcceptableApplication()
     {
-        if ($this->is_under_review) {
+        if ($this->can_accept) {
             return;
         }
 
@@ -895,7 +926,7 @@ class Application extends Model
 
     private function guardAgainstDuplicateCheckOutcomeSubmission($check)
     {
-        $tableColumnName = 'check_outcome_'.$check;
+        $tableColumnName = 'check_outcome_' . $check;
         if ($this->{$tableColumnName} !== null) {
             throw new CheckOutcomeAlreadySetException($this, $check);
         }

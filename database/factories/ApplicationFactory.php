@@ -11,6 +11,7 @@ $factory->state(\App\Models\VisitTransfer\Application::class, 'atc_visit', funct
 
     return array_merge($application, [
         'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
+        'facility_id' => factory(\App\Models\VisitTransfer\Facility::class, 'atc_visit'),
         'training_team' => 'atc',
     ]);
 });
@@ -20,6 +21,7 @@ $factory->state(\App\Models\VisitTransfer\Application::class, 'atc_transfer', fu
 
     return array_merge($application, [
         'type' => \App\Models\VisitTransfer\Application::TYPE_TRANSFER,
+        'facility_id' => factory(\App\Models\VisitTransfer\Facility::class, 'atc_Transfer'),
         'training_team' => 'atc',
     ]);
 });
@@ -29,6 +31,7 @@ $factory->state(\App\Models\VisitTransfer\Application::class, 'pilot_visit', fun
 
     return array_merge($application, [
         'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
+        'facility_id' => factory(\App\Models\VisitTransfer\Facility::class, 'pilot_visit'),
         'training_team' => 'pilot',
     ]);
 });

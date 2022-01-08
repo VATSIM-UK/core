@@ -17,7 +17,7 @@ class ApplicationRejectRequest extends FormRequest
         return [
             'rejection_reason' => 'required',
             'rejection_reason_extra' => 'required_if:rejection_reason,other',
-            'rejection_staff_note' => 'string|min:20',
+            'rejection_staff_note' => 'string',
         ];
     }
 
