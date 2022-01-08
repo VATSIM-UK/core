@@ -67,7 +67,7 @@ class Application extends AdmController
 
     public function getView(ApplicationModel $application)
     {
-        $this->setSubTitle('Application #'.$application->public_id);
+        $this->setSubTitle('Application #' . $application->public_id);
 
         $unacceptedReferences = $application->referees->filter(function ($ref) {
             return $ref->status == ReferenceModel::STATUS_UNDER_REVIEW;
@@ -80,8 +80,6 @@ class Application extends AdmController
 
     public function postReject(ApplicationRejectRequest $request, ApplicationModel $application)
     {
-        $this->authorize('reject', $application);
-
         $rejectionReason = '';
 
         if (Request::input('rejection_reason') != 'other') {
@@ -89,7 +87,7 @@ class Application extends AdmController
         }
 
         if (Request::input('rejection_reason_extra', null)) {
-            $rejectionReason .= "\n".Request::input('rejection_reason_extra');
+            $rejectionReason .= "\n" . Request::input('rejection_reason_extra');
         }
 
         try {
@@ -99,13 +97,11 @@ class Application extends AdmController
         }
 
         return Redirect::back()
-            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' rejected &amp; candidate notified.');
+            ->withSuccess('Application #' . $application->public_id . ' - ' . $application->account->name . ' rejected &amp; candidate notified.');
     }
 
     public function postAccept(ApplicationAcceptRequest $request, ApplicationModel $application)
     {
-        $this->authorize('accept', $application);
-
         try {
             $application->accept(Request::input('accept_staff_note', null), Auth::user());
         } catch (\Exception $e) {
@@ -113,13 +109,11 @@ class Application extends AdmController
         }
 
         return Redirect::back()
-            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' accepted &amp; candidate notified.');
+            ->withSuccess('Application #' . $application->public_id . ' - ' . $application->account->name . ' accepted &amp; candidate notified.');
     }
 
     public function postComplete(ApplicationCompleteRequest $request, ApplicationModel $application)
     {
-        $this->authorize('complete', $application);
-
         try {
             $application->complete(Request::input('complete_staff_note', null), Auth::user());
         } catch (\Exception $e) {
@@ -127,13 +121,11 @@ class Application extends AdmController
         }
 
         return Redirect::back()
-            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' completed.');
+            ->withSuccess('Application #' . $application->public_id . ' - ' . $application->account->name . ' completed.');
     }
 
     public function postCancel(ApplicationCancelRequest $request, ApplicationModel $application)
     {
-        $this->authorize('cancel', $application);
-
         try {
             $application->cancel(Request::input('cancel_reason', null), Request::input('cancel_staff_note', null), Auth::user());
         } catch (\Exception $e) {
@@ -141,7 +133,7 @@ class Application extends AdmController
         }
 
         return Redirect::back()
-            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' cancelled & candidate notified.');
+            ->withSuccess('Application #' . $application->public_id . ' - ' . $application->account->name . ' cancelled & candidate notified.');
     }
 
     public function postCheckMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
@@ -156,7 +148,7 @@ class Application extends AdmController
             '_',
             ' ',
             Request::input('check', null)
-        )." check was marked as 'MET'!");
+        ) . " check was marked as 'MET'!");
     }
 
     public function postCheckNotMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
@@ -171,13 +163,13 @@ class Application extends AdmController
             '_',
             ' ',
             Request::input('check', null)
-        )." check was marked as 'NOT MET'!");
+        ) . " check was marked as 'NOT MET'!");
     }
 
     public function postSettingToggle(ApplicationSettingToggleRequest $request, ApplicationModel $application)
     {
         $application->settingToggle(Request::input('setting'));
 
-        return Redirect::back()->withSuccess("Setting '".Request::input('setting')."' toggled successfully!");
+        return Redirect::back()->withSuccess("Setting '" . Request::input('setting') . "' toggled successfully!");
     }
 }

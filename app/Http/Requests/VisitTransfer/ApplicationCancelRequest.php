@@ -41,6 +41,6 @@ class ApplicationCancelRequest extends FormRequest
     {
         $application = $this->route('application');
 
-        return Gate::allows('complete', $application);
+        return Gate::allows('cancel', $application);
     }
 }
