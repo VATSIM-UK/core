@@ -187,11 +187,11 @@ class ApplicationTest extends TestCase
         // With another accepted visit application
         return [
             [true],
-            [false]
+            [false],
         ];
     }
 
-    /** 
+    /**
      * @test
      * @dataProvider providerCancelTest
      */
