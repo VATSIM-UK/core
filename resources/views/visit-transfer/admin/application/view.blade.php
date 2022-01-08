@@ -343,8 +343,7 @@
                                     @if(!$application->submitted_at)
                                     Application not submitted, so this cannot be checked.
                                     @elseif($application->check_outcome_90_day)
-                                    Qualification awarded <strong class="text-danger">in excess</strong> of 90
-                                    days prior to application submission.<br />
+                                    Qualification awarded <strong class="text-danger">in excess</strong> of 90 days prior to application submission.<br />
 
                                     @can("check-outcome", $application)
                                     <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#90DayNotMet">
@@ -458,9 +457,7 @@
                                     @if(!$application->submitted_at)
                                     Application not submitted, so this cannot be checked.
                                     @elseif($application->check_outcome_50_hours)
-                                    Applicant has <strong class="text-danger">in excess</strong> of 50 hours at
-                                    their
-                                    present qualified level and has ratified their rating.<br />
+                                    Applicant has <strong class="text-danger">in excess</strong> of 50 hours at their present qualified level and has ratified their rating.<br />
 
                                     @can("check-outcome", $application)
                                     <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#50HourNotMet">
@@ -536,9 +533,7 @@
                                     @endcan
 
                                     @elseif(!$application->check_outcome_50_hours)
-                                    Applicant <strong class="text-danger">does not have in excess</strong> of 50
-                                    hours at their
-                                    present qualified level.<br />
+                                    Applicant <strong class="text-danger">does not have in excess</strong> of 50 hours at their present qualified level.<br />
 
                                     @can("check-outcome", $application)
                                     <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#50HourMet">

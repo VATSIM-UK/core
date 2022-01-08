@@ -45,9 +45,7 @@ class AdminTest extends TestCase
         $this->application->setCheckOutcome('50_hours', false);
         $this->actingAs($this->privacc, 'web')
             ->get(route('adm.visiting.application.view', $this->application->id))
-            ->assertSeeTextInOrder(['90 Day Check', 'in excess of 90
-                                            days', '50 Hour Check', 'does not have in excess of 50
-                                            hours']);
+            ->assertSeeTextInOrder(['90 Day Check', 'in excess of 90 days', '50 Hour Check', 'does not have in excess of 50 hours']);
 
         $this->application->setCheckOutcome('90_day', false);
         $this->application->setCheckOutcome('50_hours', true);
@@ -61,8 +59,8 @@ class AdminTest extends TestCase
     {
         $this->actingAs($this->privacc, 'web')
             ->get(route('adm.visiting.application.view', $this->application->id))
-            ->assertSee('Reference 1 - '.e($this->ref1->account->real_name), false)
-            ->assertSee('Reference 2 - '.e($this->ref2->account->real_name), false);
+            ->assertSee('Reference 1 - ' . e($this->ref1->account->real_name), false)
+            ->assertSee('Reference 2 - ' . e($this->ref2->account->real_name), false);
     }
 
     /** @test */
@@ -71,8 +69,8 @@ class AdminTest extends TestCase
         $this->ref1->delete();
         $this->actingAs($this->privacc, 'web')
             ->get(route('adm.visiting.application.view', $this->application->id))
-            ->assertDontSee('Reference 1 - '.e($this->ref1->account->real_name), false)
-            ->assertSee('Reference 1 - '.e($this->ref2->account->real_name), false)
+            ->assertDontSee('Reference 1 - ' . e($this->ref1->account->real_name), false)
+            ->assertSee('Reference 1 - ' . e($this->ref2->account->real_name), false)
             ->assertSee('Application has system deleted references in addition to the below:');
     }
 
