@@ -2,25 +2,14 @@
 
 namespace Tests\Unit\VisitTransfer;
 
-use App\Models\Mship\Account;
-use App\Models\Mship\Qualification;
-use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Reference;
-use App\Notifications\ApplicationAccepted;
-use Carbon\Carbon;
-use Faker\Provider\Base;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\View;
 use Tests\TestCase;
 
 class ApplicationPolicyTest extends TestCase
 {
     use DatabaseTransactions;
-
 
     public function providerApplicationState()
     {
@@ -36,8 +25,7 @@ class ApplicationPolicyTest extends TestCase
         ];
     }
 
-
-    /** 
+    /**
      * @test
      * @dataProvider providerApplicationState
      */
@@ -49,9 +37,8 @@ class ApplicationPolicyTest extends TestCase
             'check_outcome_50_hours' => $checks_met,
         ]);
 
-
-        factory(Reference::class, $num_accepted_references)->create(['application_id' => $application, "status" => Reference::STATUS_ACCEPTED]);
-        factory(Reference::class, $num_pending_references)->create(['application_id' => $application, "status" => Reference::STATUS_REQUESTED]);
+        factory(Reference::class, $num_accepted_references)->create(['application_id' => $application, 'status' => Reference::STATUS_ACCEPTED]);
+        factory(Reference::class, $num_pending_references)->create(['application_id' => $application, 'status' => Reference::STATUS_REQUESTED]);
 
         $this->assertEquals($can_accept, $this->user->can('accept', $application));
         $this->assertEquals($can_reject, $this->user->can('reject', $application));
