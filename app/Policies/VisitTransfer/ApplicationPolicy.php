@@ -4,7 +4,6 @@ namespace App\Policies\VisitTransfer;
 
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
-use App\Models\VisitTransfer\Reference;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ApplicationPolicy
@@ -50,7 +49,7 @@ class ApplicationPolicy
 
     public function selectFacility(Account $user, Application $application)
     {
-        if (!$application->exists || !$application->is_editable) {
+        if (! $application->exists || ! $application->is_editable) {
             return false;
         }
 
@@ -59,11 +58,11 @@ class ApplicationPolicy
 
     public function addStatement(Account $user, Application $application)
     {
-        if (!$application->facility || !$application->is_editable) {
+        if (! $application->facility || ! $application->is_editable) {
             return false;
         }
 
-        if (!$application->statement_required) {
+        if (! $application->statement_required) {
             return false;
         }
 
@@ -72,7 +71,7 @@ class ApplicationPolicy
 
     public function addReferee(Account $user, Application $application)
     {
-        if (!$application->facility || !$application->is_editable) {
+        if (! $application->facility || ! $application->is_editable) {
             return false;
         }
 
@@ -91,7 +90,7 @@ class ApplicationPolicy
     {
         $reference = \Request::route('reference');
 
-        if (!$application->facility || !$application->is_editable) {
+        if (! $application->facility || ! $application->is_editable) {
             return false;
         }
 
@@ -104,7 +103,7 @@ class ApplicationPolicy
 
     public function submitApplication(Account $user, Application $application)
     {
-        if (!$application->facility || !$application->is_editable) {
+        if (! $application->facility || ! $application->is_editable) {
             return false;
         }
 
@@ -116,7 +115,7 @@ class ApplicationPolicy
             return false;
         }
 
-        if (!$application->is_in_progress) {
+        if (! $application->is_in_progress) {
             return false;
         }
 
@@ -125,7 +124,7 @@ class ApplicationPolicy
 
     public function withdrawApplication(Account $user, Application $application)
     {
-        if (!$application->is_withdrawable) {
+        if (! $application->is_withdrawable) {
             return false;
         }
 
@@ -147,7 +146,7 @@ class ApplicationPolicy
             return false;
         }
 
-        if (!$application->can_accept) {
+        if (! $application->can_accept) {
             return false;
         }
 

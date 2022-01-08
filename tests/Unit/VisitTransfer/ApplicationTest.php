@@ -189,15 +189,13 @@ class ApplicationTest extends TestCase
         $visitingState = \App\Models\Mship\State::findByCode('VISITING');
 
         $this->user->addState($visitingState);
-        $application = factory(Application::class)->state('atc_visit')->create(["status" => Application::STATUS_ACCEPTED, "account_id" => $this->user]);
+        $application = factory(Application::class)->state('atc_visit')->create(['status' => Application::STATUS_ACCEPTED, 'account_id' => $this->user]);
 
         $application->cancel();
 
         Notification::assertSentTo($this->user, ApplicationStatusChanged::class);
         $this->assertFalse($this->user->hasState($visitingState));
     }
-
-
 
     /** @test */
     public function itReportsStatisticsCorrectly()
