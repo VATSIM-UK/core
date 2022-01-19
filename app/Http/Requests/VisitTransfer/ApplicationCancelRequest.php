@@ -5,7 +5,7 @@ namespace App\Http\Requests\VisitTransfer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class ApplicationCompleteRequest extends FormRequest
+class ApplicationCancelRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,7 +15,8 @@ class ApplicationCompleteRequest extends FormRequest
     public function rules()
     {
         return [
-            'complete_staff_note' => 'nullable|string|required',
+            'cancel_staff_note' => 'nullable|string|required',
+            'cancel_reason' => 'nullable|string|required',
         ];
     }
 
@@ -27,7 +28,7 @@ class ApplicationCompleteRequest extends FormRequest
     public function messages()
     {
         return [
-            'complete_staff_note.string' => 'You must only provide alphanumeric text in your staff note.',
+            'cancel_staff_note.string' => 'You must only provide alphanumeric text in your staff note.',
         ];
     }
 
@@ -40,6 +41,6 @@ class ApplicationCompleteRequest extends FormRequest
     {
         $application = $this->route('application');
 
-        return Gate::allows('complete', $application);
+        return Gate::allows('cancel', $application);
     }
 }

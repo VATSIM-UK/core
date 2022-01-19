@@ -66,6 +66,10 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
         ],
 
+        \App\Events\VisitTransfer\ApplicationCancelled::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        ],
+
         \App\Events\VisitTransfer\ApplicationWithdrawn::class => [
             \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
         ],
