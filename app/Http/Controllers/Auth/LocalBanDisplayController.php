@@ -16,12 +16,13 @@ class LocalBanDisplayController extends BaseController
      */
     public function __invoke()
     {
-        if (!Auth::user()->is_system_banned) {
+        if (! Auth::user()->is_system_banned) {
             // don't allow non-banned users to see the contents of the view.
             return redirect()->route('mship.manage.dashboard');
         }
 
         $localBan = Auth::user()->system_ban->load('reason');
+
         return $this->viewMake('errors.banned-local')->with(['ban' => $localBan]);
     }
 }

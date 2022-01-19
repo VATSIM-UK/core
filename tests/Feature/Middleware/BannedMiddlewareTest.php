@@ -5,23 +5,22 @@ namespace Tests\Feature\Middleware;
 use App\Models\Mship\Account;
 use App\Models\Mship\Ban\Reason;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class BannedMiddlewareTest extends TestCase
 {
     use DatabaseTransactions;
+
     /** @test */
     public function testNetworkBannedUserIsRedirectedToCorrectRoute()
     {
-       $account = factory(Account::class)->create();
+        $account = factory(Account::class)->create();
 
-       $account->addNetworkBan();
+        $account->addNetworkBan();
 
-       $account->refresh();
+        $account->refresh();
 
-       $this->actingAs($account)
+        $this->actingAs($account)
             ->get(route('mship.manage.dashboard'))
             ->assertRedirect(route('banned.network'));
     }
