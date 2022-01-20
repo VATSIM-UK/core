@@ -109,33 +109,41 @@ class WaitingListAccount extends Pivot
         $flag->unMark();
     }
 
-    public function atcHourCheck()
+    public function getCurrentStatusAttribute()
     {
-        if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT) {
-            return true;
-        }
-        $hourCheckKey = "{$this->cacheKey()}:atcHourCheck";
+        return $this->status()->first();
+    }
 
-        if ((bool) Cache::has($hourCheckKey)) {
-            return (bool) Cache::get($hourCheckKey);
+    public function getPositionAttribute()
+    {
+        return $this->waitingList->accountPosition($this->account);
+    }
+
+    public function recentATCMinutes()
+    {
+        $hourCheckKey = "{$this->cacheKey()}:recentAtcMins";
+
+        if (Cache::has($hourCheckKey)) {
+            return Cache::get($hourCheckKey);
         }
 
         // gather the sessions from the last 3 months in the UK (isUK scope)
         $hours = Atc::where('account_id', $this->account_id)
             ->whereDate('disconnected_at', '>=', Carbon::parse('3 months ago'))->isUk()->sum('minutes_online');
+        Cache::put($hourCheckKey, $hours, $this->cacheTtl);
+        return $hours;
+    }
 
-        // 12 hours is represented as 720 minutes
-        $minutesRequired = 720;
-        // for a user in a waiting list, they should have > 12 hours controlled within the UK.
-        if ($hours >= $minutesRequired) {
-            Cache::put($hourCheckKey, true, $this->cacheTtl);
-
+    public function atcHourCheck()
+    {
+        if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT) {
             return true;
         }
 
-        Cache::put($hourCheckKey, false, $this->cacheTtl);
+        // 12 hours is represented as 720 minutes
+        $minutesRequired = 720;
 
-        return false;
+        return $this->recentATCMinutes() > $minutesRequired;
     }
 
     public function getAtcHourCheckAttribute()
@@ -164,7 +172,7 @@ class WaitingListAccount extends Pivot
         // is the status of the account deferred
         // are all the flags true
         // and is the atc hour check true
-        return $this->atcHourCheck() && $this->allFlagsChecker() && $this->status->first()->name == 'Active';
+        return $this->atcHourCheck() && $this->allFlagsChecker() && $this->current_status->name == 'Active';
     }
 
     public function setNotesAttribute($value)

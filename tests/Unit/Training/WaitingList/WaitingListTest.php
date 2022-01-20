@@ -5,7 +5,10 @@ namespace Tests\Unit\Training\WaitingList;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
+use App\Services\Training\AddToWaitingList;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 class WaitingListTest extends TestCase
@@ -64,6 +67,61 @@ class WaitingListTest extends TestCase
 
         $this->assertDatabaseHas('training_waiting_list_account',
             ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
+    }
+
+    /** @test * */
+    public function itCanHaveEligibleAccounts()
+    {
+        $eligible_account = factory(Account::class)->create();
+        $uneligible_account = factory(Account::class)->create();
+        $this->waitingList->department = WaitingList::PILOT_DEPARTMENT;
+        $this->waitingList->save();
+        factory(WaitingList\WaitingListStatus::class)->state('default')->create();
+
+        handleService(new AddToWaitingList($this->waitingList, $eligible_account, $this->privacc));
+        handleService(new AddToWaitingList($this->waitingList, $uneligible_account, $this->privacc));
+        $flag = $this->waitingList->addFlag(factory(WaitingListFlag::class)->create(['default_value' => false]));
+
+        $this->waitingList->accounts()->first()->pivot->markFlag($flag);
+
+        $this->assertCount(1, $this->waitingList->accountsByEligibility());
+        $this->assertEquals($eligible_account->id, $this->waitingList->accountsByEligibility()->first()->id);
+
+        $this->assertCount(1, $this->waitingList->accountsByEligibility(false));
+        $this->assertEquals($uneligible_account->id, $this->waitingList->accountsByEligibility(false)->first()->id);
+    }
+
+
+    /** @test * */
+    public function itCanFindAccountPosition()
+    {
+        $accounts_added_at = [Carbon::now()->subDays(10), Carbon::now()->subDays(1), Carbon::now()->subDays(4)];
+        $accounts = [];
+        foreach ($accounts_added_at as $date) {
+            $accounts[] = factory(Account::class)->create();
+        }
+
+        $this->waitingList->department = WaitingList::PILOT_DEPARTMENT;
+        $this->waitingList->save();
+        factory(WaitingList\WaitingListStatus::class)->state('default')->create();
+        $flag = $this->waitingList->addFlag(factory(WaitingListFlag::class)->create(['default_value' => false]));
+
+        // Add an ineligible user
+        $ineligible_user = factory(Account::class)->create();
+        handleService(new AddToWaitingList($this->waitingList, $ineligible_user, $this->privacc));
+
+
+        // Add to list
+        foreach($accounts as $i => $account) {
+            handleService(new AddToWaitingList($this->waitingList, $account, $this->privacc, $accounts_added_at[$i]));
+            WaitingList\WaitingListAccount::where('account_id', $account->id)->first()->markFlag($flag);
+        }
+
+        $this->assertNull($this->waitingList->accountPosition(factory(Account::class)->create())); // A user not in the list should return null
+        $this->assertNull($this->waitingList->accountPosition($ineligible_user)); // A user not eligible should return null
+        $this->assertEquals(1, $this->waitingList->accountPosition($accounts[0])); // First user is oldest, should be number 1
+        $this->assertEquals(3, $this->waitingList->accountPosition($accounts[1])); // Second user is newest, should be number 3
+        $this->assertEquals(2, $this->waitingList->accountPosition($accounts[2]));
     }
 
     /** @test * */

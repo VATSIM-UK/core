@@ -84,6 +84,12 @@
                                 <li class="dropdown-header">Hour Checker</li>
                                 <li>{!! link_to_route("controllers.hour_check.area", "C1 Training Place") !!}</li>
                             </ul>
+                        </li><li class="col-sm-12">
+                            <ul>
+                                <li class="divider"></li>
+                                <li class="dropdown-header">Waiting Lists</li>
+                                <li>{!! link_to_route("mship.waiting-lists.index", "Waiting List Status") !!}</li>
+                            </ul>
                         </li>
                     </ul>
                 </li>

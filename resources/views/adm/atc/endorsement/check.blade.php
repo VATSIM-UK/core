@@ -42,9 +42,9 @@
                                 </td>
                                 <td>
                                     @if ($condition->isMetForUser($account))
-                                        {!! HTML::img("tick_mark_circle", "png", 35, 47) !!}
+                                        {!! HTML::img("tick_mark_circle", "png", 35) !!}
                                     @else
-                                        {!! HTML::img("cross_mark_circle", "png", 35, 47) !!}
+                                        {!! HTML::img("cross_mark_circle", "png", 35) !!}
                                     @endif
                                 </td>
                             </tr>

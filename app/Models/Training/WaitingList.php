@@ -68,6 +68,16 @@ class WaitingList extends Model
             ])->wherePivot('deleted_at', null);
     }
 
+    public function accountsByEligibility($eligible = true)
+    {
+        return $this->accounts()
+            ->orderByPivot('created_at')
+            ->get()
+            ->filter(function ($model) use ($eligible) {
+                return $model->pivot->eligibility == $eligible;
+            })->values();
+    }
+
     /**
      * One WaitingList can have many flags associated with it.
      *
@@ -79,9 +89,22 @@ class WaitingList extends Model
     }
 
     /**
+     * Get the position of an account in the eligible waiting list
+     * @param Account $account
+     * @return int|null
+     */
+    public function accountPosition(Account $account)
+    {
+        $key = $this->accountsByEligibility(true)->search(function ($accountItem) use ($account) {
+            return $accountItem->id == $account->id;
+        });
+        return ($key !== false) ? $key + 1 : null;
+    }
+
+    /**
      * Associate a flag with a waiting list.
      *
-     * @param  WaitingListFlag  $flag
+     * @param WaitingListFlag $flag
      * @return mixed
      */
     public function addFlag(WaitingListFlag $flag)
@@ -98,7 +121,7 @@ class WaitingList extends Model
     /**
      * Remove a flag from a waiting list.
      *
-     * @param  WaitingListFlag  $flag
+     * @param WaitingListFlag $flag
      * @return mixed
      */
     public function removeFlag(WaitingListFlag $flag)
@@ -109,9 +132,9 @@ class WaitingList extends Model
     /**
      * Add an Account to a waiting list.
      *
-     * @param  Account  $account
-     * @param  Account  $staffAccount
-     * @param  Carbon|null  $createdAt
+     * @param Account $account
+     * @param Account $staffAccount
+     * @param Carbon|null $createdAt
      */
     public function addToWaitingList(Account $account, Account $staffAccount, Carbon $createdAt = null)
     {
@@ -128,7 +151,7 @@ class WaitingList extends Model
     /**
      * Remove an Account from a waiting list.
      *
-     * @param  Account  $account
+     * @param Account $account
      * @return void
      */
     public function removeFromWaitingList(Account $account)
@@ -149,6 +172,6 @@ class WaitingList extends Model
 
     public function __toString()
     {
-        return (string) $this->name;
+        return (string)$this->name;
     }
 }

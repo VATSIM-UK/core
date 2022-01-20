@@ -75,6 +75,15 @@ Route::group([
         Route::get('view')->uses('Feedback\ViewFeedbackController@show')->name('view');
     });
 
+    // Waiting Lists
+    Route::group([
+        'as'     => 'waiting-lists.',
+        'prefix' => 'waiting-lists',
+    ], function () {
+        Route::get('')->uses('WaitingLists@index')->name('index');
+        Route::get('{waitingListId}')->uses('WaitingLists@view')->name('view');
+    });
+
     // Other
     Route::group([
     ], function () {
