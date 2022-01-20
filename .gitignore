@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 /public/vendor/nova
+/public/vendor/horizon
 /storage/*.key
 /vendor
 /.idea
