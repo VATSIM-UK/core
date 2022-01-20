@@ -10,6 +10,9 @@ Route::get('login-secondary')->uses('Auth\LoginController@showLoginForm')->middl
 Route::post('login-secondary')->uses('Auth\SecondaryLoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
 Route::post('logout')->uses('Auth\LogoutController')->name('logout');
 
+Route::view('banned-network', 'errors.banned-network')->name('banned.network');
+Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->name('banned.local');
+
 // Password
 Route::group([
     'as'     => 'password.',
