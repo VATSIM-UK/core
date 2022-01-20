@@ -144,7 +144,7 @@ class WaitingListAccount extends Pivot
         // 12 hours is represented as 720 minutes
         $minutesRequired = 720;
 
-        return $this->recentATCMinutes() > $minutesRequired;
+        return $this->recentATCMinutes() >= $minutesRequired;
     }
 
     public function getAtcHourCheckAttribute()
