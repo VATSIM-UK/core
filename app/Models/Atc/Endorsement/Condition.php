@@ -71,7 +71,9 @@ class Condition extends Model
             case self::TYPE_ON_SINGLE_AIRFIELD:
                 $max = 0;
                 foreach ($airfieldGroups as $hours) {
-                    if ($hours > $max) $max = $hours;
+                    if ($hours > $max) {
+                        $max = $hours;
+                    }
                 }
 
                 return $max;

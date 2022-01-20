@@ -8,7 +8,6 @@ use App\Models\Training\WaitingList\WaitingListFlag;
 use App\Services\Training\AddToWaitingList;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Mockery\MockInterface;
 use Tests\TestCase;
 
 class WaitingListTest extends TestCase
@@ -91,7 +90,6 @@ class WaitingListTest extends TestCase
         $this->assertEquals($uneligible_account->id, $this->waitingList->accountsByEligibility(false)->first()->id);
     }
 
-
     /** @test * */
     public function itCanFindAccountPosition()
     {
@@ -110,9 +108,8 @@ class WaitingListTest extends TestCase
         $ineligible_user = factory(Account::class)->create();
         handleService(new AddToWaitingList($this->waitingList, $ineligible_user, $this->privacc));
 
-
         // Add to list
-        foreach($accounts as $i => $account) {
+        foreach ($accounts as $i => $account) {
             handleService(new AddToWaitingList($this->waitingList, $account, $this->privacc, $accounts_added_at[$i]));
             WaitingList\WaitingListAccount::where('account_id', $account->id)->first()->markFlag($flag);
         }

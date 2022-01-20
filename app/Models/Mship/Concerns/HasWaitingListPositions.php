@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Models\Mship\Concerns;
-
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListAccount;

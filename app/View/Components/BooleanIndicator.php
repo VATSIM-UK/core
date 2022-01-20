@@ -13,7 +13,7 @@ class BooleanIndicator extends Component
      * Create a new component instance.
      *
      * @param $value
-     * @param bool $positive
+     * @param  bool  $positive
      */
     public function __construct($value, $positive = true)
     {

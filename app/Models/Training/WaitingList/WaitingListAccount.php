@@ -131,6 +131,7 @@ class WaitingListAccount extends Pivot
         $hours = Atc::where('account_id', $this->account_id)
             ->whereDate('disconnected_at', '>=', Carbon::parse('3 months ago'))->isUk()->sum('minutes_online');
         Cache::put($hourCheckKey, $hours, $this->cacheTtl);
+
         return $hours;
     }
 

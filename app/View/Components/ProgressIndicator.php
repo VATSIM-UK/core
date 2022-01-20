@@ -15,13 +15,13 @@ class ProgressIndicator extends Component
     /**
      * Create a new component instance.
      *
-     * @param float $value
-     * @param string $text
-     * @param string $class
-     * @param int $min
-     * @param int $max
+     * @param  float  $value
+     * @param  string  $text
+     * @param  string  $class
+     * @param  int  $min
+     * @param  int  $max
      */
-    public function __construct(float $value, $text="", $class="", $min=0, $max=100)
+    public function __construct(float $value, $text = '', $class = '', $min = 0, $max = 100)
     {
         $this->value = $value;
         $this->text = $text;
@@ -37,7 +37,7 @@ class ProgressIndicator extends Component
 
     public function cappedPercentage()
     {
-        return min(100* $this->value / $this->max, 100);
+        return min(100 * $this->value / $this->max, 100);
     }
 
     /**

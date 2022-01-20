@@ -15,9 +15,10 @@ class WaitingLists extends BaseController
                 'created_at',
             ])->where('department', WaitingList::ATC_DEPARTMENT)->get();
         $pilotWaitingLists = $request->user()->waitingLists()->where('department', WaitingList::PILOT_DEPARTMENT)->get();
+
         return view('mship.waiting-lists.index', [
-            "atcLists" => $atcWaitingLists,
-            "pilotLists" => $pilotWaitingLists,
+            'atcLists' => $atcWaitingLists,
+            'pilotLists' => $pilotWaitingLists,
         ]);
     }
 
@@ -28,9 +29,9 @@ class WaitingLists extends BaseController
         ])->firstOrFail();
 
         $automaticFlags = $list->pivot->flags->filter(function ($flag) {
-            return !!$flag->endorsement_id;
+            return (bool) $flag->endorsement_id;
         });
 
-        return view('mship.waiting-lists.view', ["list" => $list, "automaticFlags" => $automaticFlags]);
+        return view('mship.waiting-lists.view', ['list' => $list, 'automaticFlags' => $automaticFlags]);
     }
 }
