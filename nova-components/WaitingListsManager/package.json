@@ -10,7 +10,7 @@
         "prod": "yarn run production"
     },
     "dependencies": {
-        "@vue/compiler-sfc": "^3.2.21",
+        "@vue/compiler-sfc": "^3.2.29",
         "cross-env": "^7.0.3",
         "laravel-mix": "^6.0.34",
         "postcss": "^8.4",
