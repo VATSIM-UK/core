@@ -259,7 +259,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (TWR)</td>
-                                <td>Adam Farquharson</td>
+                                <td>Vacant</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
