@@ -98,7 +98,7 @@
         "spatie/laravel-permission": "^4.0",
         "spatie/laravel-schedule-monitor": "^2.1",
         "symfony/translation": "^5.0",
-        "titasgailius/search-relations": "^1.0",
+        "titasgailius/search-relations": "^2.0",
         "vatsim/sso": "3.0",
         "vatsimuk/waiting-lists-manager": "@dev",
         "vyuldashev/nova-permission": "^3.0",
