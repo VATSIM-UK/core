@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5923f2c272a7d136680ab1b207a4dbea",
+    "content-hash": "c39efc807fc3d85236472f088a3e3c12",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -11155,16 +11155,16 @@
         },
         {
             "name": "titasgailius/search-relations",
-            "version": "1.0.6",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TitasGailius/nova-search-relations.git",
-                "reference": "ac999c8d3230573fe5bb81f50cbabfaa62da26c0"
+                "reference": "46b9e83ccc91feff22b19c285b8a29bf7ca44f6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TitasGailius/nova-search-relations/zipball/ac999c8d3230573fe5bb81f50cbabfaa62da26c0",
-                "reference": "ac999c8d3230573fe5bb81f50cbabfaa62da26c0",
+                "url": "https://api.github.com/repos/TitasGailius/nova-search-relations/zipball/46b9e83ccc91feff22b19c285b8a29bf7ca44f6f",
+                "reference": "46b9e83ccc91feff22b19c285b8a29bf7ca44f6f",
                 "shasum": ""
             },
             "require": {
@@ -11189,9 +11189,9 @@
             ],
             "support": {
                 "issues": "https://github.com/TitasGailius/nova-search-relations/issues",
-                "source": "https://github.com/TitasGailius/nova-search-relations/tree/1.0.6"
+                "source": "https://github.com/TitasGailius/nova-search-relations/tree/2.0.1"
             },
-            "time": "2020-10-09T09:25:10+00:00"
+            "time": "2021-07-16T15:55:13+00:00"
         },
         {
             "name": "vatsim/sso",
