@@ -26,9 +26,10 @@ class StaffPageController extends \App\Http\Controllers\BaseController
                 4078 => null,
                 4366 => null,
                 5125 => null,
-                6286 => null,
                 6738 => null,
                 6298 => null,
+                7203 => null,
+                6887 => null,
             ]
         );
 
@@ -36,7 +37,7 @@ class StaffPageController extends \App\Http\Controllers\BaseController
 
         return $teamPhotos->map(function ($value, $key) use ($ipboard) {
             try {
-                if (! Cache::has($key)) {
+                if (!Cache::has($key)) {
                     Cache::put($key, $ipboard->getMemberById($key)->photoUrl, now()->addHours(24)->diffInMinutes() * 60);
                 }
 
