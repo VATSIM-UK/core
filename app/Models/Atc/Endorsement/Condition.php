@@ -39,10 +39,10 @@ class Condition extends Model
 
     public function getHumanDescriptionAttribute()
     {
-        $description = "<b>$this->required_hours hour".($this->required_hours > 1 ? 's </b>' : ' </b>');
+        $description = "<b>$this->required_hours hour" . ($this->required_hours > 1 ? 's </b>' : ' </b>');
 
         if ($this->within_months) {
-            $description .= "within the last <b>$this->within_months month".($this->required_hours > 1 ? 's </b>' : ' </b>');
+            $description .= "within the last <b>$this->within_months month" . ($this->required_hours > 1 ? 's </b>' : ' </b>');
         }
 
         switch ($this->type) {
@@ -66,7 +66,6 @@ class Condition extends Model
     {
         $airfieldGroups = $this->progress ? $this->progress->shuffle() : $this->progressForUser($user)->shuffle();
 
-        // Calculate whether it is met based on the type of condition required
         switch ($this->type) {
             case self::TYPE_ON_SINGLE_AIRFIELD:
                 $max = 0;

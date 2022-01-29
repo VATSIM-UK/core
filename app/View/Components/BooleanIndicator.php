@@ -7,7 +7,6 @@ use Illuminate\View\Component;
 class BooleanIndicator extends Component
 {
     public bool $value; // The value being represented
-    public bool $positive; // Whether true is regarded as positive
 
     /**
      * Create a new component instance.
@@ -15,10 +14,9 @@ class BooleanIndicator extends Component
      * @param $value
      * @param  bool  $positive
      */
-    public function __construct($value, $positive = true)
+    public function __construct($value)
     {
         $this->value = $value;
-        $this->positive = $positive;
     }
 
     /**

@@ -14,7 +14,9 @@ class WaitingLists extends BaseController
             ->withPivot([
                 'created_at',
             ])->where('department', WaitingList::ATC_DEPARTMENT)->get();
-        $pilotWaitingLists = $request->user()->waitingLists()->where('department', WaitingList::PILOT_DEPARTMENT)->get();
+        $pilotWaitingLists = $request->user()->waitingLists()->withPivot([
+            'created_at',
+        ])->where('department', WaitingList::PILOT_DEPARTMENT)->get();
 
         return view('mship.waiting-lists.index', [
             'atcLists' => $atcWaitingLists,
