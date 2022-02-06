@@ -2,9 +2,6 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingList\WaitingListAccount;
-
 trait HasNovaPermissions
 {
     public function waitingListDepartments()

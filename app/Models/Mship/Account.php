@@ -264,7 +264,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public static function findOrRetrieve($accountId)
     {
-        if (!is_numeric($accountId)) {
+        if (! is_numeric($accountId)) {
             throw new InvalidCIDException();
         }
 
@@ -275,7 +275,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
             $account = self::find($accountId);
 
-            if (!$account) {
+            if (! $account) {
                 // User doesn't exist at VATSIM.NET
                 throw new InvalidCIDException();
             }
@@ -332,7 +332,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             $noteType = Type::isDefault()->first()->getKey();
         }
 
-        if (!is_null($writer) && is_object($writer)) {
+        if (! is_null($writer) && is_object($writer)) {
             $writer = $writer->getKey();
         }
 
@@ -343,7 +343,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $note->content = $noteContent;
         $note->save();
 
-        if (!is_null($attachment)) {
+        if (! is_null($attachment)) {
             $note->attachment()->save($attachment);
         }
 
@@ -401,7 +401,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getRealNameAttribute()
     {
-        return $this->name_first . ' ' . $this->name_last;
+        return $this->name_first.' '.$this->name_last;
     }
 
     /**
@@ -411,7 +411,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getNameAttribute()
     {
-        return $this->name_preferred . ' ' . $this->name_last;
+        return $this->name_preferred.' '.$this->name_last;
     }
 
     /**
@@ -450,13 +450,13 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         }
 
         $allowedNames = collect();
-        $allowedNames->push($this->name . $wildcard);
-        $allowedNames->push($this->real_name . $wildcard);
+        $allowedNames->push($this->name.$wildcard);
+        $allowedNames->push($this->real_name.$wildcard);
 
         if ($includeATC && $this->networkDataAtcCurrent) {
             $collect = collect();
             foreach ($allowedNames as $name) {
-                $collect->push($name . " - {$this->networkDataAtcCurrent->callsign}");
+                $collect->push($name." - {$this->networkDataAtcCurrent->callsign}");
             }
             $allowedNames = $allowedNames->merge($collect);
         }
@@ -472,22 +472,22 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function isValidDisplayName($displayName)
     {
-        return !$this->allowedNames(true)->filter(function ($item, $key) use ($displayName) {
+        return ! $this->allowedNames(true)->filter(function ($item, $key) use ($displayName) {
             return strcmp($item, $displayName) == 0;
         })->isEmpty();
     }
 
     public function isPartiallyValidDisplayName($displayName)
     {
-        return !$this->allowedNames()->filter(function ($item, $key) use ($displayName) {
+        return ! $this->allowedNames()->filter(function ($item, $key) use ($displayName) {
             return strstr(strtolower($displayName), strtolower($item)) != false;
         })->isEmpty();
     }
 
     public function isDuplicateDisplayName($displayName)
     {
-        return !$this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
-            return preg_match('/^' . $item . '$/i', $displayName) == 1;
+        return ! $this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
+            return preg_match('/^'.$item.'$/i', $displayName) == 1;
         })->isEmpty();
     }
 
