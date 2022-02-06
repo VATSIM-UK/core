@@ -38,10 +38,12 @@ class WaitingListFeatureTest extends TestCase
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
         Event::fakeFor(function () use ($account) {
-            $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/defer",
+            $this->actingAs($this->privacc)->patch(
+                "nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/defer",
                 [
                     'account_id' => $account->id,
-                ])->assertSuccessful();
+                ]
+            )->assertSuccessful();
 
             Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
                 return (int) $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
@@ -57,10 +59,12 @@ class WaitingListFeatureTest extends TestCase
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
         Event::fakeFor(function () use ($account) {
-            $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/active",
+            $this->actingAs($this->privacc)->patch(
+                "nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/active",
                 [
                     'account_id' => $account->id,
-                ])->assertSuccessful();
+                ]
+            )->assertSuccessful();
 
             Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
                 return (int) $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
@@ -94,8 +98,10 @@ class WaitingListFeatureTest extends TestCase
 
         Event::fakeFor(function () use ($waitingListAccount) {
             $this->actingAs($this->privacc)
-                ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create",
-                    ['notes' => 'This is a note'])
+                ->patch(
+                    "nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create",
+                    ['notes' => 'This is a note']
+                )
                 ->assertSuccessful();
 
             Event::assertDispatched(AccountNoteChanged::class, function ($event) use ($waitingListAccount) {

@@ -24,6 +24,7 @@ use App\Models\Mship\Concerns\HasRoles;
 use App\Models\Mship\Concerns\HasStates;
 use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
+use App\Models\Mship\Concerns\HasWaitingLists;
 use App\Models\Mship\Note\Type;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -160,10 +161,28 @@ use Watson\Rememberable\Rememberable;
  */
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
-        HasNetworkData, HasMoodleAccount, HasHelpdeskAccount, HasForumAccount, HasCTSAccount,
-        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword,
-        HasNotifications, HasEmails, HasRoles, HasNovaPermissions, HasDiscordAccount;
+    use SoftDeletingTrait,
+        Rememberable,
+        Notifiable,
+        Authenticatable,
+        Authorizable,
+        HasNetworkData,
+        HasMoodleAccount,
+        HasHelpdeskAccount,
+        HasForumAccount,
+        HasCTSAccount,
+        HasVisitTransferApplications,
+        HasQualifications,
+        HasStates,
+        HasBans,
+        HasTeamSpeakRegistrations,
+        HasPassword,
+        HasNotifications,
+        HasEmails,
+        HasRoles,
+        HasNovaPermissions,
+        HasDiscordAccount,
+        HasWaitingLists;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;

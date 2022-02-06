@@ -10,11 +10,11 @@ class WaitingLists extends BaseController
 {
     public function index(Request $request)
     {
-        $atcWaitingLists = $request->user()->waitingLists()
+        $atcWaitingLists = $request->user()->currentWaitingLists()
             ->withPivot([
                 'created_at',
             ])->where('department', WaitingList::ATC_DEPARTMENT)->get();
-        $pilotWaitingLists = $request->user()->waitingLists()->withPivot([
+        $pilotWaitingLists = $request->user()->currentWaitingLists()->withPivot([
             'created_at',
         ])->where('department', WaitingList::PILOT_DEPARTMENT)->get();
 
@@ -26,7 +26,7 @@ class WaitingLists extends BaseController
 
     public function view(Request $request, $waitingListId)
     {
-        $list = $request->user()->waitingLists()->where('training_waiting_list.id', $waitingListId)->withPivot([
+        $list = $request->user()->currentWaitingLists()->where('training_waiting_list.id', $waitingListId)->withPivot([
             'created_at',
         ])->firstOrFail();
 
