@@ -31,7 +31,7 @@ class WaitingListAccountFlag extends Pivot
             return $this->flag->endorsement->conditionsMetForUser($this->waitingListAccount->account);
         }
 
-        return !is_null($this->marked_at);
+        return ! is_null($this->marked_at);
     }
 
     public function waitingListAccount()
