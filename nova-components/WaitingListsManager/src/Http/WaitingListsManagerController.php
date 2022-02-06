@@ -68,7 +68,7 @@ class WaitingListsManagerController extends Controller
     private function findWaitingListAccount(Account &$account, WaitingList &$waitingList): WaitingListAccount
     {
         return $account->currentWaitingLists()
-            ->where('id', $waitingList->id)
+            ->where('training_waiting_list.id', $waitingList->id)
             ->first()
             ->pivot;
     }
