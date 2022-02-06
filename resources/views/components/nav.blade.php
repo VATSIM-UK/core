@@ -84,13 +84,6 @@
                                 <li>{!! link_to_route("controllers.hour_check.area", "C1 Training Place") !!}</li>
                             </ul>
                         </li>
-                        <li class="col-sm-12">
-                            <ul>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Waiting Lists</li>
-                                <li>{!! link_to_route("mship.waiting-lists.index", "My Waiting Lists") !!}</li>
-                            </ul>
-                        </li>
                     </ul>
                 </li>
 
@@ -147,6 +140,9 @@
                                 <li class="dropdown-header">Network Statistics</li>
                                 <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
                                 <li>{!! link_to_route("networkdata.online", "Online Users") !!}</li>
+                                <li class="divider"></li>
+                                <li class="dropdown-header">Waiting Lists</li>
+                                <li>{!! link_to_route("mship.waiting-lists.index", "My Waiting Lists") !!}</li>
                                 <li class="divider"></li>
                                 <li>{{ HTML::link('https://cts.vatsim.uk/', 'CTS') }}</li>
                                 <li>{{ HTML::link('https://helpdesk.vatsim.uk/', 'Helpdesk') }}</li>
