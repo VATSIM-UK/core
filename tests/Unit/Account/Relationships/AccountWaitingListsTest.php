@@ -10,7 +10,8 @@ class AccountWaitingListsTests extends TestCase
 {
     use DatabaseTransactions;
 
-    private $oldWaitingList, $currentWaitingList;
+    private $oldWaitingList;
+    private $currentWaitingList;
 
     public function setUp(): void
     {
