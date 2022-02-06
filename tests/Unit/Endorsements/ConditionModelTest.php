@@ -117,7 +117,7 @@ class ConditionModelTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyReportsMetForSingleAirfield()
+    public function itCorrectlyReportsMetAndProgressForSingleAirfield()
     {
         $condition = factory(Endorsement\Condition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD]);
 
@@ -137,14 +137,16 @@ class ConditionModelTest extends TestCase
         ]);
 
         $this->assertFalse($condition->isMetForUser($this->user));
+        $this->assertEquals(5, $condition->overallProgressForUser($this->user));
 
         $session->minutes_online = 10 * 60;
         $session->save();
         $this->assertTrue($condition->fresh()->isMetForUser($this->user));
+        $this->assertEquals(10, $condition->fresh()->overallProgressForUser($this->user));
     }
 
     /** @test */
-    public function itCorrectlyReportsMetForSum()
+    public function itCorrectlyReportsMetAndProgressForSum()
     {
         $condition = factory(Endorsement\Condition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => Endorsement\Condition::TYPE_SUM_OF_AIRFIELDS]);
 
@@ -164,10 +166,12 @@ class ConditionModelTest extends TestCase
         ]);
 
         $this->assertFalse($condition->isMetForUser($this->user));
+        $this->assertEquals(9, $condition->overallProgressForUser($this->user));
 
         $session->minutes_online = 5 * 60;
         $session->save();
         $this->assertTrue($condition->fresh()->isMetForUser($this->user));
+        $this->assertEquals(10, $condition->fresh()->overallProgressForUser($this->user));
     }
 
     /** @test */

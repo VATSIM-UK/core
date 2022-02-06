@@ -216,54 +216,54 @@
                                 <tr>
                                     <td class="text-center">
                                         @if($application->facility)
-                                        {!! HTML::img("tick_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
                                         {!! HTML::img("vertical_mark", "png", 24, 32) !!}
                                         @elseif($application->training_required)
-                                        {!! HTML::img("tick_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
                                         {!! HTML::img("vertical_mark", "png", 24, 32) !!}
                                         @elseif($application->statement_required)
-                                        {!! HTML::img("tick_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
                                         {!! HTML::img("vertical_mark", "png", 24, 32) !!}
                                         @elseif($application->references_required > 0)
-                                        {!! HTML::img("tick_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
                                         {!! HTML::img("vertical_mark", "png", 24, 32) !!}
                                         @elseif($application->should_perform_checks)
-                                        {!! HTML::img("tick_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
                                         {!! HTML::img("vertical_mark", "png", 24, 32) !!}
                                         @elseif($application->will_auto_accept)
-                                        {!! HTML::img("tick_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24, 32) !!}
+                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
                                         @endif
                                     </td>
                                 </tr>
