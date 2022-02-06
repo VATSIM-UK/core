@@ -33,8 +33,6 @@ class BannedMiddlewareTest extends TestCase
 
         $account->addBan($banReason, 'Local ban', 'Ban note.');
 
-        $account->refresh();
-
         $this->actingAs($account)
             ->get(route('mship.manage.dashboard'))
             ->assertRedirect(route('banned.local'));
