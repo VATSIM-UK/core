@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Models\Mship\State as State;
+use App\Models\Mship\State;
 use App\Repositories\Cts\BookingRepository;
 use App\Repositories\Cts\EventRepository;
-use Illuminate\Support\Facades\Cache as Cache;
-use Illuminate\Support\Facades\DB as DB;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class HomePageController extends \App\Http\Controllers\BaseController

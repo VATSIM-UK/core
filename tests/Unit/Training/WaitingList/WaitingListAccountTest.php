@@ -233,7 +233,7 @@ class WaitingListAccountTest extends TestCase
 
         Cache::shouldReceive('put')
             ->once()
-            ->with("waiting-list-account:{$waitingListAccount->id}:atcHourCheck", false, $ttlDay);
+            ->with("waiting-list-account:{$waitingListAccount->id}:recentAtcMins", null, $ttlDay);
 
         $this->assertFalse($waitingListAccount->atcHourCheck());
     }
@@ -262,7 +262,7 @@ class WaitingListAccountTest extends TestCase
 
         Cache::shouldReceive('put')
             ->once()
-            ->with("waiting-list-account:{$waitingListAccount->id}:atcHourCheck", true, $ttlDay);
+            ->with("waiting-list-account:{$waitingListAccount->id}:recentAtcMins", 721, $ttlDay);
 
         $this->assertTrue($waitingListAccount->atcHourCheck());
     }
