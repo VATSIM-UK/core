@@ -68,6 +68,16 @@ class WaitingList extends Model
             ])->wherePivot('deleted_at', null);
     }
 
+    public function accountsByEligibility($eligible = true)
+    {
+        return $this->accounts()
+            ->orderByPivot('created_at')
+            ->get()
+            ->filter(function ($model) use ($eligible) {
+                return $model->pivot->eligibility == $eligible;
+            })->values();
+    }
+
     /**
      * One WaitingList can have many flags associated with it.
      *
@@ -76,6 +86,21 @@ class WaitingList extends Model
     public function flags()
     {
         return $this->hasMany(WaitingListFlag::class, 'list_id');
+    }
+
+    /**
+     * Get the position of an account in the eligible waiting list.
+     *
+     * @param  Account  $account
+     * @return int|null
+     */
+    public function accountPosition(Account $account)
+    {
+        $key = $this->accountsByEligibility(true)->search(function ($accountItem) use ($account) {
+            return $accountItem->id == $account->id;
+        });
+
+        return ($key !== false) ? $key + 1 : null;
     }
 
     /**
