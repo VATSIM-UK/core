@@ -67,8 +67,7 @@ class WaitingListsManagerController extends Controller
 
     private function findWaitingListAccount(Account &$account, WaitingList &$waitingList): WaitingListAccount
     {
-        return $account->waitingLists
-            ->where('pivot.deleted_at', '==', null)
+        return $account->currentWaitingLists()
             ->where('id', $waitingList->id)
             ->first()
             ->pivot;
