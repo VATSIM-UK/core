@@ -36,7 +36,7 @@
                     @endforeach
                     @if(count($waitingLists) == 0)
                     <tr>
-                        <td colspan="6">Your aren't in any waiting lists at the moment.</td>
+                        <td colspan="6">You aren't in any waiting lists at the moment.</td>
                     </tr>
                     @endempty
                 </tbody>
