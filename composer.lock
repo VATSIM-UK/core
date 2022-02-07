@@ -12312,23 +12312,23 @@
         },
         {
             "name": "laravel/homestead",
-            "version": "v13.1.1",
+            "version": "v13.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/homestead.git",
-                "reference": "d67ec5a2613bc51b744b1b0592e6c05f8436d893"
+                "reference": "248df11ae03152cb64a5735c4c70659051a47c29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/homestead/zipball/d67ec5a2613bc51b744b1b0592e6c05f8436d893",
-                "reference": "d67ec5a2613bc51b744b1b0592e6c05f8436d893",
+                "url": "https://api.github.com/repos/laravel/homestead/zipball/248df11ae03152cb64a5735c4c70659051a47c29",
+                "reference": "248df11ae03152cb64a5735c4c70659051a47c29",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.4 || ^8.0",
-                "symfony/console": "~5.1",
-                "symfony/process": "~5.1",
-                "symfony/yaml": "~5.1"
+                "php": "^8.0 || <8.2",
+                "symfony/console": "^5.0 || ^6.0",
+                "symfony/process": "^5.0 || ^6.0",
+                "symfony/yaml": "^5.0 || ^6.0"
             },
             "require-dev": {
                 "dms/phpunit-arraysubset-asserts": "^0.2.1",
@@ -12360,9 +12360,9 @@
             "description": "A virtual machine for web artisans.",
             "support": {
                 "issues": "https://github.com/laravel/homestead/issues",
-                "source": "https://github.com/laravel/homestead/tree/v13.1.1"
+                "source": "https://github.com/laravel/homestead/tree/v13.2.1"
             },
-            "time": "2022-01-26T20:09:28+00:00"
+            "time": "2022-02-02T19:42:25+00:00"
         },
         {
             "name": "laravel/legacy-factories",
