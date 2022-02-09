@@ -18,7 +18,7 @@ class WaitingListsTests extends TestCase
 
         $this->actingAs($this->user)
             ->get(route('mship.waiting-lists.index'))
-            ->assertSee('Your aren\'t in any waiting lists at the moment.', false)
+            ->assertSee('You aren\'t in any waiting lists at the moment.', false)
             ->assertDontSee('My List');
     }
 
