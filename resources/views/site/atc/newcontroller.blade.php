@@ -21,7 +21,7 @@
 					</p>
 
 					<p>
-					If you’re not already a member of VATSIM’s UK division, the first step is to follow the instructions on the <a href="https://www.vatsim.uk/join" rel="external nofollow">Join Us</a> page – you’ll need to ensure that your division is set to ‘United Kingdom’. If you need to make a change, this may take up to 24 hours to process. <b>If you transfer to another division, you be unable to undertake training in VATSIM UK and will lose your place on the waiting list.</b>
+					If you’re not already a member of VATSIM’s UK division, the first step is to follow the instructions on the <a href="https://www.vatsim.uk/join" rel="external nofollow">Join Us</a> page – you’ll need to ensure that your division is set to ‘United Kingdom’. If you need to make a change, this may take up to 24 hours to process. <b>You will lose your place on the waiting list if you transfer to another division, and will be unable to undertake training in VATSIM UK.</b>
 					</p>
 
                     <h2>
