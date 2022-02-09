@@ -166,10 +166,6 @@
                     <table class="table">
                         <tr>
                             <td>Member Services Assistant</td>
-                            <td>Adam Meade</td>
-                        </tr>
-                        <tr>
-                            <td>Member Services Assistant</td>
                             <td>Dale Stainrod</td>
                         </tr>
                         <tr>
@@ -246,12 +242,12 @@
                                 <td>James Taylor</td>
                             </tr>
                             <tr>
-                                <td>TG Instructor (New Controller)</td>
-                                <td>Kye Taylor</td>
+                                <td>TG Instructor (TWR)</td>
+                                <td>George Peppard</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (TWR)</td>
-                                <td>George Peppard</td>
+                                <td>Kye Taylor</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (TWR)</td>
