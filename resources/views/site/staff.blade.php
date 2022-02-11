@@ -204,7 +204,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="col-md-6">
-                        <h4 class="text-center">ATC Training Director (VATUKX)</h4><br />
+                        <h4 class="text-center">ATC Training Director (VATUK5)</h4><br />
                         <img src="{{ $teamPhotos[6887] }}" width=50px class="img-responsive center-block profile-picture" />
                         <p class="text-center">Adam Farquharson</p>
                         <h4 class="text-center">ATC Training Team</h4>
@@ -285,7 +285,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <h4 class="text-center">Pilot Training Director (VATUKX)</h4><br />
+                        <h4 class="text-center">Pilot Training Director (VATUK6)</h4><br />
                         <img src="{{ $teamPhotos[7203] }}" width=50px class="img-responsive center-block profile-picture" />
                         <p class="text-center">Darren Hill</p>
                         <h4 class="text-center">Pilot Training Team</h4>
