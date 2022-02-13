@@ -19,6 +19,7 @@ class WaitingLists extends BaseController
         ])->where('department', WaitingList::PILOT_DEPARTMENT)->get();
 
         return view('mship.waiting-lists.index', [
+            'isOBS' => $request->user()->qualification_atc->is_o_b_s,
             'atcLists' => $atcWaitingLists,
             'pilotLists' => $pilotWaitingLists,
         ]);
