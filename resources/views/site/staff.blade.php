@@ -304,7 +304,7 @@
                             </tr>
                             <tr>
                                 <td>IFR Flight Instructor</td>
-                                <td>Freddie Charlesworth</td>
+                                <td>Vacant</td>
                             </tr>
                         </table>
                     </div>
