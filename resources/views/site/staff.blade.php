@@ -210,7 +210,7 @@
                         <h4 class="text-center">ATC Training Team</h4>
                         <table class="table">
                             <tr>
-                                <td>General Manager</td>
+                                <td>ATC Training Manager</td>
                                 <td>Oliver Rhodes</td>
                             </tr>
                             <tr>
@@ -291,7 +291,7 @@
                         <h4 class="text-center">Pilot Training Team</h4>
                         <table class="table">
                             <tr>
-                                <td>General Manager</td>
+                                <td>Pilot Training Manager</td>
                                 <td>Vacant</td>
                             </tr>
                             <tr>
