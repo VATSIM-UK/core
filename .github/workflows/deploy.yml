@@ -40,7 +40,7 @@ jobs:
           APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
           RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.COMMIT }}
           SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
-          PHP_PATH: /bin/php74
+          PHP_PATH: /bin/php7.4
           VERSIONS_TO_KEEP: 5
 
       #
@@ -75,7 +75,7 @@ jobs:
       - name: Setup Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: '12'
+          node-version: '16'
 
       #
       # YARN BUILD
@@ -182,9 +182,6 @@ jobs:
 
             rm -rf $RELEASE_DIRECTORY/storage
             ln -s $SHARED_DIRECTORY/storage $RELEASE_DIRECTORY/storage
-
-            # Update Permissions on Application Directories
-            chmod -R u+rwX,g+rwX,o-rwx $RELEASE_DIRECTORY
 
             # Update the current link to point to this release
             ln -sfn $RELEASE_DIRECTORY $APPLICATION_ROOT/current
