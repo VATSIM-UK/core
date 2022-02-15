@@ -187,6 +187,10 @@
                 <p>
                     Shanwick Oceanic Positions 
                 </p>
+                
+                <p>
+                    <strong>Legacy Visiting Groups are listed in the Visiting and Trasnfering Controller Policy</strong.
+                </p>
 
             </div>
         </div>
