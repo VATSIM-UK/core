@@ -165,7 +165,7 @@
 
                 <p>
                     All UK TWR/GND/DEL positions with the exception of EGLL
-                    Military endorsement available on request. 
+                    Military Aerodrome endorsement available on request. 
                 </p>
 
                 <p>
@@ -173,8 +173,8 @@
                 </p>
 
                 <p>
-                    All UK TWR/GND/DEL positions with the exception of EGLL
-                    Military endorsement available on request. 
+                    All UK APP + ADC VG positions with the exception of EGLL
+                    Military Approach endorsement available on request. 
                 </p>
 
                 <p>
@@ -183,7 +183,7 @@
 
                 <p>
                     All UK CTR + ADC VG + APP VG positions with the exception of LON_S including splits.
-                    Military endorsement available on request. 
+                    Military Area endorsement available on request. 
                 </p>
 
                 <p>
@@ -192,6 +192,10 @@
 
                 <p>
                     Shanwick Oceanic Positions 
+                </p>
+                
+                <p>
+                    <strong>Legacy Visiting Groups are listed in the Visiting and Trasnfering Controller Policy</strong>
                 </p>
 
             </div>
