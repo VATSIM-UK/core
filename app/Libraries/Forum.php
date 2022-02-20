@@ -16,7 +16,7 @@ class Forum
     }
 
     /**
-     * Returns whether the forum integration is enabled
+     * Returns whether the forum integration is enabled.
      *
      * @return bool
      */
@@ -26,9 +26,9 @@ class Forum
     }
 
     /**
-     * Fetches the IPB (forum) database model for a given local user ID (CID)
+     * Fetches the IPB (forum) database model for a given local user ID (CID).
      *
-     * @param int $user_id
+     * @param  int  $user_id
      * @return \Illuminate\Database\Eloquent\Model|object|null
      */
     public function getIPSAccountForID($user_id)
@@ -40,7 +40,7 @@ class Forum
     }
 
     /**
-     * Returns the database name for the IPB database
+     * Returns the database name for the IPB database.
      *
      * @return string|null
      */
@@ -50,7 +50,7 @@ class Forum
     }
 
     /**
-     * Returns the local OAuth client used by the forum for authentication
+     * Returns the local OAuth client used by the forum for authentication.
      *
      * @return \Illuminate\Database\Eloquent\Model|object|null
      */
