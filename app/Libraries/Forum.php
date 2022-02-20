@@ -2,12 +2,13 @@
 
 namespace App\Libraries;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Forum
 {
-    private string $database;
-    private $oauth_client;
+    private ?string $database;
+    private ?Model $oauth_client;
 
     public function __construct()
     {
