@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Libraries\Forum;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -14,35 +15,31 @@ trait HasForumAccount
      */
     public function syncToForum()
     {
-        // Check forum enabled
-        $communityClient = DB::table('oauth_clients')->where('name', 'Community')->first();
-        $communityDb = config('services.community.database');
+        $forumService = app()->make(Forum::class);
 
-        if (! $communityDb || ! $communityClient) {
+        // Check forum enabled
+        if (!$forumService->enabled()) {
             return;
         }
 
-        $ipsAccount = DB::table("{$communityDb}.ibf_core_members")
-            ->join("{$communityDb}.ibf_core_login_links", 'ibf_core_login_links.token_member', '=', 'ibf_core_members.member_id')
-            ->where('ibf_core_login_links.token_identifier', $this->id)
-            ->first();
+        $ipsAccount = $forumService->getIPSAccountForID($this->id);
 
-        if (! $ipsAccount) {
+        if (!$ipsAccount) {
             // No user. Abort;
             return;
         }
 
         // Set data
-        DB::table("{$communityDb}.ibf_core_members")
+        DB::table("{$forumService->getDatabase()}.ibf_core_members")
             ->where('member_id', $ipsAccount->member_id)
             ->update([
                 'name' => $this->name,
-                'email' => $this->getEmailForService($communityClient->id),
+                'email' => $this->getEmailForService($forumService->getOauthClient()->id),
                 'member_title' => $this->primary_state->name,
                 'temp_ban' => ($this->is_banned) ? -1 : 0,
             ]);
 
-        DB::table("{$communityDb}.ibf_core_pfields_content")
+        DB::table("{$forumService->getDatabase()}.ibf_core_pfields_content")
             ->where('member_id', $ipsAccount->member_id)
             ->update([
                 'field_12' => $this->id, // VATSIM CID

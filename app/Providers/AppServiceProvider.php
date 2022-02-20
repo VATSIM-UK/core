@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Http\Controllers\BaseController;
 use App\Libraries\Discord;
+use App\Libraries\Forum;
 use App\Libraries\UKCP;
 use HTML;
 use Illuminate\Support\Facades\Config;
@@ -26,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         if ($this->app->runningInConsole()) {
-            URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
+            URL::forceRootUrl(env('APP_PROTOCOL', 'https') . '://' . Config::get('app.url'));
         }
 
         $this->registerHTMLComponents();
@@ -49,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(UKCP::class);
         $this->app->singleton(Discord::class);
+        $this->app->singleton(Forum::class);
     }
 
     public function registerHTMLComponents()

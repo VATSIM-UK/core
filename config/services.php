@@ -83,7 +83,6 @@ return [
 
     'community' => [
         'database' => env('COMMUNITY_DATABASE'),
-        'init_file' => env('COMMUNITY_INIT_FILE'),
     ],
 
     'cts' => [
