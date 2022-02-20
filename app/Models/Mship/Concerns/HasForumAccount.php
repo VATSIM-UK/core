@@ -18,13 +18,13 @@ trait HasForumAccount
         $forumService = app()->make(Forum::class);
 
         // Check forum enabled
-        if (!$forumService->enabled()) {
+        if (! $forumService->enabled()) {
             return;
         }
 
         $ipsAccount = $forumService->getIPSAccountForID($this->id);
 
-        if (!$ipsAccount) {
+        if (! $ipsAccount) {
             // No user. Abort;
             return;
         }

@@ -49,15 +49,17 @@ class IssueSecondaryForumGroup implements ShouldQueue
     public function handle(Forum $forumService)
     {
         // Check forum enabled
-        if (!$forumService->enabled()) {
+        if (! $forumService->enabled()) {
             Log::info('Unable to sync TG Forum Groups. Forum not enabled.');
+
             return;
         }
 
         $ipsAccount = $forumService->getIPSAccountForID($this->cid);
 
-        if (!$ipsAccount) {
+        if (! $ipsAccount) {
             Log::info("Unable to sync TG Forum Groups for {$this->cid} - does not have forum account");
+
             return;
         }
 
@@ -96,11 +98,11 @@ class IssueSecondaryForumGroup implements ShouldQueue
     {
         try {
             $client = new Client;
-            $client->post(config('ipboard.api_url') . 'core/members/' . $ipboardUser . '?key=' . config('ipboard.api_key'), ['form_params' => [
+            $client->post(config('ipboard.api_url').'core/members/'.$ipboardUser.'?key='.config('ipboard.api_key'), ['form_params' => [
                 'secondaryGroups' => $secondaryGroups,
             ]]);
         } catch (ClientException $e) {
-            Log::info('Error trying to update the secondary groups for forum user id ' . $ipboardUser);
+            Log::info('Error trying to update the secondary groups for forum user id '.$ipboardUser);
         }
     }
 }
