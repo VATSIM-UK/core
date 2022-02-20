@@ -56,6 +56,6 @@ class Forum
      */
     public function getOauthClient()
     {
-        return $this->oauth_client
+        return $this->oauth_client;
     }
 }
