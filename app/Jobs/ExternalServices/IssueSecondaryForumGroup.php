@@ -4,6 +4,7 @@ namespace App\Jobs\ExternalServices;
 
 use Alawrence\Ipboard\Ipboard;
 use App\Jobs\Middleware\RateLimited;
+use App\Libraries\Forum;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
@@ -45,34 +46,25 @@ class IssueSecondaryForumGroup implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(Forum $forumService)
     {
+        // Check forum enabled
+        if (! $forumService->enabled()) {
+            Log::info('Unable to sync TG Forum Groups. Forum not enabled.');
+
+            return;
+        }
+
+        $ipsAccount = $forumService->getIPSAccountForID($this->cid);
+
+        if (! $ipsAccount) {
+            Log::info("Unable to sync TG Forum Groups for {$this->cid} - does not have forum account");
+
+            return;
+        }
+
         $ipboard = new Ipboard();
-
-        require_once config('services.community.init_file');
-        require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
-
-        $members = \IPS\Db::i()->select('member_id', 'core_pfields_content', ['field_12=?', $this->cid]);
-
-        if (count($members) != 1) {
-            Log::info('Unable to sync TG Forum Groups for '.$this->cid);
-
-            return;
-        }
-
-        $ipboardUsers = [];
-
-        foreach ($members as $member) {
-            array_push($ipboardUsers, $member);
-        }
-
-        if (empty($ipboardUsers)) {
-            Log::info('The array for '.$this->cid.'is empty');
-
-            return;
-        }
-
-        $ipboardUser = $ipboard->getMemberById($ipboardUsers[0]);
+        $ipboardUser = $ipboard->getMemberById($ipsAccount->member_id);
 
         $currentPrimaryGroup = [$ipboardUser->primaryGroup->id];
         $currentSecondaryGroups = [];
