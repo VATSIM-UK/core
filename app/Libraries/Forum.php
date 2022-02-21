@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class Forum
 {
     private ?string $database;
-    private ?Model $oauth_client;
+    private ?mixed $oauth_client;
 
     public function __construct()
     {
@@ -30,7 +30,7 @@ class Forum
      * Fetches the IPB (forum) database model for a given local user ID (CID).
      *
      * @param  int  $user_id
-     * @return \Illuminate\Database\Eloquent\Model|object|null
+     * @return \Illuminate\Database\Eloquent\Model|object|static|null
      */
     public function getIPSAccountForID($user_id)
     {
@@ -53,7 +53,7 @@ class Forum
     /**
      * Returns the local OAuth client used by the forum for authentication.
      *
-     * @return \Illuminate\Database\Eloquent\Model|object|null
+     * @return \Illuminate\Database\Eloquent\Model|object|static|null
      */
     public function getOauthClient()
     {
