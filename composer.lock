@@ -13520,16 +13520,16 @@
         },
         {
             "name": "spatie/laravel-ray",
-            "version": "1.29.0",
+            "version": "1.29.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-ray.git",
-                "reference": "901f459fb07f677837b7e329d5c1c4cfe25fdad2"
+                "reference": "440cda76812a7770e6684d19683444c608e135e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-ray/zipball/901f459fb07f677837b7e329d5c1c4cfe25fdad2",
-                "reference": "901f459fb07f677837b7e329d5c1c4cfe25fdad2",
+                "url": "https://api.github.com/repos/spatie/laravel-ray/zipball/440cda76812a7770e6684d19683444c608e135e4",
+                "reference": "440cda76812a7770e6684d19683444c608e135e4",
                 "shasum": ""
             },
             "require": {
@@ -13538,7 +13538,6 @@
                 "illuminate/database": "^7.20|^8.19|^9.0",
                 "illuminate/queue": "^7.20|^8.19|^9.0",
                 "illuminate/support": "^7.20|^8.19|^9.0",
-                "laravel/framework": "^7.20|^8.19|^9.0",
                 "php": "^7.3|^8.0",
                 "spatie/backtrace": "^1.0",
                 "spatie/ray": "^1.33",
@@ -13547,6 +13546,7 @@
             },
             "require-dev": {
                 "guzzlehttp/guzzle": "^7.3",
+                "laravel/framework": "^7.20|^8.19|^9.0",
                 "orchestra/testbench-core": "^5.0|^6.0|^7.0",
                 "phpstan/phpstan": "^0.12.93",
                 "phpunit/phpunit": "^9.3",
@@ -13554,6 +13554,9 @@
             },
             "type": "library",
             "extra": {
+                "branch-alias": {
+                    "dev-main": "1.29.x-dev"
+                },
                 "laravel": {
                     "providers": [
                         "Spatie\\LaravelRay\\RayServiceProvider"
@@ -13585,7 +13588,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-ray/issues",
-                "source": "https://github.com/spatie/laravel-ray/tree/1.29.0"
+                "source": "https://github.com/spatie/laravel-ray/tree/1.29.3"
             },
             "funding": [
                 {
@@ -13597,7 +13600,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2022-01-13T14:15:00+00:00"
+            "time": "2022-02-15T14:52:59+00:00"
         },
         {
             "name": "spatie/macroable",
@@ -13651,16 +13654,16 @@
         },
         {
             "name": "spatie/ray",
-            "version": "1.33.1",
+            "version": "1.33.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/ray.git",
-                "reference": "88719d6b48d36947fd3b3b0ffec5cc55d62cdb64"
+                "reference": "28f6bd88e2db0fada88a7999c8ee0aad69f56192"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/ray/zipball/88719d6b48d36947fd3b3b0ffec5cc55d62cdb64",
-                "reference": "88719d6b48d36947fd3b3b0ffec5cc55d62cdb64",
+                "url": "https://api.github.com/repos/spatie/ray/zipball/28f6bd88e2db0fada88a7999c8ee0aad69f56192",
+                "reference": "28f6bd88e2db0fada88a7999c8ee0aad69f56192",
                 "shasum": ""
             },
             "require": {
@@ -13683,12 +13686,12 @@
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Spatie\\Ray\\": "src"
-                },
                 "files": [
                     "src/helpers.php"
-                ]
+                ],
+                "psr-4": {
+                    "Spatie\\Ray\\": "src"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -13710,7 +13713,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/ray/issues",
-                "source": "https://github.com/spatie/ray/tree/1.33.1"
+                "source": "https://github.com/spatie/ray/tree/1.33.2"
             },
             "funding": [
                 {
@@ -13722,7 +13725,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2022-01-17T09:26:20+00:00"
+            "time": "2022-02-02T15:16:13+00:00"
         },
         {
             "name": "symfony/dom-crawler",
