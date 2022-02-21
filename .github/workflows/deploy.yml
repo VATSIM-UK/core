@@ -187,44 +187,10 @@ jobs:
             ln -sfn $RELEASE_DIRECTORY $APPLICATION_ROOT/current
           envs: RELEASE_DIRECTORY,SHARED_DIRECTORY,APPLICATION_ROOT
 
-      - name: (Remote) Post-deployment actions
-        uses: appleboy/ssh-action@master
+      - name: Trigger Forge Deployment
+        uses: jbrooksuk/laravel-forge-action@v1.0.2
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER}}
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            # Ensure we're working from the new release
-            cd $RELEASE_DIRECTORY
-
-            # Stop Application / Services
-            sudo systemctl stop core-horizon
-            $PHP_PATH artisan down
-
-            # Migrate Database
-            $PHP_PATH artisan migrate --step --force -n
-
-            # Publish Public Assets
-            $PHP_PATH artisan nova:publish
-
-            # Link Storage
-            $PHP_PATH artisan storage:link
-
-            # Start Applications / Services
-            $PHP_PATH artisan up
-            sudo systemctl start core-horizon
-
-            # Publish Hidden Assets
-            $PHP_PATH artisan telescope:publish
-            $PHP_PATH artisan horizon:publish
-
-            # Cache & Logs
-            $PHP_PATH artisan route:cache
-            $PHP_PATH artisan view:cache
-            $PHP_PATH artisan schedule-monitor:sync
-            mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true
-          envs: RELEASE_DIRECTORY,PHP_PATH,GITHUB_REPOSITORY
+          trigger_url: ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
 
       #
       # SENTRY
