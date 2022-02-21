@@ -3000,9 +3000,9 @@ flot@^0.8.3:
   integrity sha512-xg2otcTJDvS+ERK+my4wxG/ASq90QURXtoM4LhacCq0jQW2jbyjdttbRNqU2cPykrpMvJ6b2uSp6SAgYAzj9tQ==
 
 follow-redirects@^1.0.0, follow-redirects@^1.14.7:
-  version "1.14.7"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
-  integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
+  version "1.14.8"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.8.tgz#016996fb9a11a100566398b1c6839337d7bfa8fc"
+  integrity sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==
 
 font-awesome@^4.7:
   version "4.7.0"
@@ -5313,10 +5313,10 @@ sass-loader@^12.6.0:
     klona "^2.0.4"
     neo-async "^2.6.2"
 
-sass@^1.49.7:
-  version "1.49.7"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.49.7.tgz#22a86a50552b9b11f71404dfad1b9ff44c6b0c49"
-  integrity sha512-13dml55EMIR2rS4d/RDHHP0sXMY3+30e1TKsyXaSz3iLWVoDWEoboY8WzJd5JMnxrRHffKO3wq2mpJ0jxRJiEQ==
+sass@^1.49.8:
+  version "1.49.8"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.49.8.tgz#9bbbc5d43d14862db07f1c04b786c9da9b641828"
+  integrity sha512-NoGOjvDDOU9og9oAxhRnap71QaTjjlzrvLnKecUJ3GxhaQBrV6e7gPuSPF28u1OcVAArVojPAe4ZhOXwwC4tGw==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
     immutable "^4.0.0"
