@@ -522,12 +522,12 @@
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Cake\\Chronos\\": "src/"
-                },
                 "files": [
                     "src/carbon_compat.php"
-                ]
+                ],
+                "psr-4": {
+                    "Cake\\Chronos\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2511,38 +2511,37 @@
         },
         {
             "name": "laravel/nova",
-            "version": "3.30.0",
+            "version": "3.31.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:laravel/nova.git",
-                "reference": "0a8ec5b37dc3ca29f4b79c7318c9278e5a5d2c1a"
+                "reference": "7f4781370193d23e9ffa218ae2c03fee3883821e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-0a8ec5b37dc3ca29f4b79c7318c9278e5a5d2c1a-zip-7e4351.zip",
-                "reference": "0a8ec5b37dc3ca29f4b79c7318c9278e5a5d2c1a",
-                "shasum": "e7ac64939c9b64726f89219af065d170a4d340bb"
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-7f4781370193d23e9ffa218ae2c03fee3883821e-zip-54dd0e.zip",
+                "reference": "7f4781370193d23e9ffa218ae2c03fee3883821e",
+                "shasum": "ec28a6bf339d138367029f5e24d9b0968ca87726"
             },
             "require": {
                 "brick/money": "^0.5.0",
                 "cakephp/chronos": "^1.0|^2.0",
-                "doctrine/dbal": "^2.9",
-                "illuminate/support": "^7.0|^8.0",
-                "laravel/ui": "^2.0|^3.0",
-                "moontoast/math": "^1.1",
-                "php": "^7.2.5|^8.0",
+                "doctrine/dbal": "^2.13.3|^3.1.2",
+                "illuminate/support": "^8.67|^9.0",
+                "laravel/ui": "^3.3",
+                "php": "^7.3|^8.0",
                 "spatie/once": "^1.1|^2.0|^3.0",
-                "symfony/console": "^5.0",
-                "symfony/finder": "^5.0",
-                "symfony/intl": "^5.0",
-                "symfony/process": "^5.0"
+                "symfony/console": "^5.4|^6.0",
+                "symfony/finder": "^5.4|^6.0",
+                "symfony/intl": "^5.4|^6.0",
+                "symfony/process": "^5.4|^6.0"
             },
             "require-dev": {
-                "laravel/legacy-factories": "^1.0",
-                "laravel/nova-dusk-suite": "8.x-dev",
-                "mockery/mockery": "^1.3.3|^1.4.2",
-                "orchestra/testbench-dusk": "^6.18",
-                "phpunit/phpunit": "^8.4",
+                "laravel/legacy-factories": "^1.3",
+                "laravel/nova-dusk-suite": "8.3.x-dev|9.3.x-dev",
+                "mockery/mockery": "^1.4.4",
+                "orchestra/testbench-dusk": "^6.23|^7.0",
+                "phpunit/phpunit": "^9.5.10",
                 "predis/predis": "^1.1"
             },
             "type": "library",
@@ -2576,6 +2575,11 @@
                     "@php -r \"if (file_exists('.env.dusk')) { copy('.env.dusk', 'vendor/laravel/nova-dusk-suite/.env'); } else { copy('.env.dusk.example', 'vendor/laravel/nova-dusk-suite/.env'); }\"",
                     "./vendor/bin/testbench-dusk package:discover"
                 ],
+                "dusk:dev-assets": [
+                    "yarn install",
+                    "yarn run dev",
+                    "./vendor/bin/testbench-dusk nova:publish"
+                ],
                 "dusk:assets": [
                     "yarn install",
                     "yarn run prod",
@@ -2600,9 +2604,9 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/nova/tree/v3.30.0"
+                "source": "https://github.com/laravel/nova/tree/v3.31.0"
             },
-            "time": "2021-10-19T20:42:33+00:00"
+            "time": "2022-02-08T17:30:45+00:00"
         },
         {
             "name": "laravel/passport",
@@ -4280,61 +4284,6 @@
             "time": "2021-10-01T21:08:31+00:00"
         },
         {
-            "name": "moontoast/math",
-            "version": "1.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ramsey/moontoast-math.git",
-                "reference": "5f47d34c87767dbcc08b30377a9827df71de91fa"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/moontoast-math/zipball/5f47d34c87767dbcc08b30377a9827df71de91fa",
-                "reference": "5f47d34c87767dbcc08b30377a9827df71de91fa",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "phpseclib/bcmath_compat": ">=1.0.3"
-            },
-            "require-dev": {
-                "jakub-onderka/php-parallel-lint": "^0.9.0",
-                "phpunit/phpunit": "^4.8 || ^5.5 || ^6.5 || ^7.0",
-                "satooshi/php-coveralls": "^0.6.1",
-                "squizlabs/php_codesniffer": "^2.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Moontoast\\Math\\": "src/Moontoast/Math",
-                    "Moontoast\\Math\\Exception\\": "src/Moontoast/Math/Exception"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Ben Ramsey",
-                    "email": "ben@benramsey.com",
-                    "homepage": "https://benramsey.com"
-                }
-            ],
-            "description": "A mathematics library, providing functionality for large numbers",
-            "homepage": "https://github.com/ramsey/moontoast-math",
-            "keywords": [
-                "bcmath",
-                "math"
-            ],
-            "support": {
-                "issues": "https://github.com/ramsey/moontoast-math/issues",
-                "source": "https://github.com/ramsey/moontoast-math"
-            },
-            "abandoned": "brick/math",
-            "time": "2020-01-05T04:49:34+00:00"
-        },
-        {
             "name": "myclabs/php-enum",
             "version": "1.8.3",
             "source": {
@@ -5761,68 +5710,6 @@
                 }
             ],
             "time": "2021-12-04T23:24:31+00:00"
-        },
-        {
-            "name": "phpseclib/bcmath_compat",
-            "version": "2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpseclib/bcmath_compat.git",
-                "reference": "2ffea8bfe1702b4535a7b3c2649c4301968e9a3c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/bcmath_compat/zipball/2ffea8bfe1702b4535a7b3c2649c4301968e9a3c",
-                "reference": "2ffea8bfe1702b4535a7b3c2649c4301968e9a3c",
-                "shasum": ""
-            },
-            "require": {
-                "phpseclib/phpseclib": "^3.0"
-            },
-            "provide": {
-                "ext-bcmath": "8.1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8.35|^5.7|^6.0|^9.4",
-                "squizlabs/php_codesniffer": "^3.0"
-            },
-            "suggest": {
-                "ext-gmp": "Will enable faster math operations"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "lib/bcmath.php"
-                ],
-                "psr-4": {
-                    "bcmath_compat\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jim Wigginton",
-                    "email": "terrafrost@php.net",
-                    "homepage": "http://phpseclib.sourceforge.net"
-                }
-            ],
-            "description": "PHP 5.x-8.x polyfill for bcmath extension",
-            "keywords": [
-                "BigInteger",
-                "bcmath",
-                "bigdecimal",
-                "math",
-                "polyfill"
-            ],
-            "support": {
-                "email": "terrafrost@php.net",
-                "issues": "https://github.com/phpseclib/bcmath_compat/issues",
-                "source": "https://github.com/phpseclib/bcmath_compat"
-            },
-            "time": "2021-12-16T02:35:52+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -7459,12 +7346,12 @@
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Spatie\\Once\\": "src"
-                },
                 "files": [
                     "src/functions.php"
-                ]
+                ],
+                "psr-4": {
+                    "Spatie\\Once\\": "src"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -8525,16 +8412,16 @@
         },
         {
             "name": "symfony/intl",
-            "version": "v5.4.0",
+            "version": "v5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/intl.git",
-                "reference": "01b11a038293916ad52aab9ac7bd6b4e711d1f3e"
+                "reference": "29e326276b2455bcfa4ce02abcf7689e884acdac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/intl/zipball/01b11a038293916ad52aab9ac7bd6b4e711d1f3e",
-                "reference": "01b11a038293916ad52aab9ac7bd6b4e711d1f3e",
+                "url": "https://api.github.com/repos/symfony/intl/zipball/29e326276b2455bcfa4ce02abcf7689e884acdac",
+                "reference": "29e326276b2455bcfa4ce02abcf7689e884acdac",
                 "shasum": ""
             },
             "require": {
@@ -8547,14 +8434,14 @@
             },
             "type": "library",
             "autoload": {
+                "files": [
+                    "Resources/functions.php"
+                ],
                 "psr-4": {
                     "Symfony\\Component\\Intl\\": ""
                 },
                 "classmap": [
                     "Resources/stubs"
-                ],
-                "files": [
-                    "Resources/functions.php"
                 ],
                 "exclude-from-classmap": [
                     "/Tests/"
@@ -8593,7 +8480,7 @@
                 "localization"
             ],
             "support": {
-                "source": "https://github.com/symfony/intl/tree/v5.4.0"
+                "source": "https://github.com/symfony/intl/tree/v5.4.3"
             },
             "funding": [
                 {
@@ -8609,7 +8496,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-28T15:25:38+00:00"
+            "time": "2022-01-02T09:53:40+00:00"
         },
         {
             "name": "symfony/mime",
