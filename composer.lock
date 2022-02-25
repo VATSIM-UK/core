@@ -2205,16 +2205,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v8.83.1",
+            "version": "v8.83.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "bddba117f8bce2f3c9875ca1ca375a96350d0f4d"
+                "reference": "b91b3b5b39fbbdc763746f5714e08d50a4dd7857"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/bddba117f8bce2f3c9875ca1ca375a96350d0f4d",
-                "reference": "bddba117f8bce2f3c9875ca1ca375a96350d0f4d",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/b91b3b5b39fbbdc763746f5714e08d50a4dd7857",
+                "reference": "b91b3b5b39fbbdc763746f5714e08d50a4dd7857",
                 "shasum": ""
             },
             "require": {
@@ -2374,7 +2374,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2022-02-15T15:05:20+00:00"
+            "time": "2022-02-22T15:10:17+00:00"
         },
         {
             "name": "laravel/helpers",
@@ -2610,16 +2610,16 @@
         },
         {
             "name": "laravel/passport",
-            "version": "v10.3.1",
+            "version": "v10.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/passport.git",
-                "reference": "779e34f0152f42fb76b258d814956313fa38857c"
+                "reference": "c56207e9a37c849da0164842a609a9f38747e95b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/passport/zipball/779e34f0152f42fb76b258d814956313fa38857c",
-                "reference": "779e34f0152f42fb76b258d814956313fa38857c",
+                "url": "https://api.github.com/repos/laravel/passport/zipball/c56207e9a37c849da0164842a609a9f38747e95b",
+                "reference": "c56207e9a37c849da0164842a609a9f38747e95b",
                 "shasum": ""
             },
             "require": {
@@ -2683,7 +2683,7 @@
                 "issues": "https://github.com/laravel/passport/issues",
                 "source": "https://github.com/laravel/passport"
             },
-            "time": "2022-01-25T20:06:06+00:00"
+            "time": "2022-02-15T21:44:15+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -5713,16 +5713,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "3.0.12",
+            "version": "3.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "89bfb45bd8b1abc3b37e910d57f5dbd3174f40fb"
+                "reference": "1443ab79364eea48665fa8c09ac67f37d1025f7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/89bfb45bd8b1abc3b37e910d57f5dbd3174f40fb",
-                "reference": "89bfb45bd8b1abc3b37e910d57f5dbd3174f40fb",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/1443ab79364eea48665fa8c09ac67f37d1025f7e",
+                "reference": "1443ab79364eea48665fa8c09ac67f37d1025f7e",
                 "shasum": ""
             },
             "require": {
@@ -5804,7 +5804,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.12"
+                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.13"
             },
             "funding": [
                 {
@@ -5820,7 +5820,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-28T23:46:03+00:00"
+            "time": "2022-01-30T08:50:05+00:00"
         },
         {
             "name": "planetteamspeak/ts3-php-framework",
@@ -8684,12 +8684,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Ctype\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Ctype\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -9905,12 +9905,12 @@
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\String\\": ""
-                },
                 "files": [
                     "Resources/functions.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Component\\String\\": ""
+                },
                 "exclude-from-classmap": [
                     "/Tests/"
                 ]
