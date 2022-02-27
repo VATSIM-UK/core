@@ -1748,12 +1748,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1855,12 +1855,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Promise\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\Promise\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -4723,16 +4723,16 @@
         },
         {
             "name": "ohdearapp/ohdear-php-sdk",
-            "version": "3.3.0",
+            "version": "3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ohdearapp/ohdear-php-sdk.git",
-                "reference": "9ae2ee3ec06f08218a03c65a4bb8d7d4c9178eb4"
+                "reference": "ba9e08f4c813fba85da81ce0867b9243fa6cc731"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/9ae2ee3ec06f08218a03c65a4bb8d7d4c9178eb4",
-                "reference": "9ae2ee3ec06f08218a03c65a4bb8d7d4c9178eb4",
+                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/ba9e08f4c813fba85da81ce0867b9243fa6cc731",
+                "reference": "ba9e08f4c813fba85da81ce0867b9243fa6cc731",
                 "shasum": ""
             },
             "require": {
@@ -4773,9 +4773,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ohdearapp/ohdear-php-sdk/issues",
-                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.3.0"
+                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.4.0"
             },
-            "time": "2021-11-05T16:36:44+00:00"
+            "time": "2022-02-23T18:35:07+00:00"
         },
         {
             "name": "opis/closure",
