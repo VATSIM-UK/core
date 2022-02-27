@@ -73,7 +73,7 @@
         "barryvdh/laravel-ide-helper": "^2.7",
         "benjaminhirsch/nova-slug-field": "^1.2",
         "cobaltgrid/vatsim-stand-status": "^2.1.1",
-        "doctrine/dbal": "~2.10",
+        "doctrine/dbal": "~3.3",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.24.0",
         "laravel/helpers": "^1.1",
