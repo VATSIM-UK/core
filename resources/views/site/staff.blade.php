@@ -296,7 +296,7 @@
                             </tr>
                             <tr>
                                 <td>Initial Flight Instructor</td>
-                                <td>Vacant</td>
+                                <td>Ben Carpenter</td>
                             </tr>
                             <tr>
                                 <td>VFR Flight Instructor</td>
