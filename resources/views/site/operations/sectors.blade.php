@@ -109,7 +109,7 @@
                     <p>
                         At airfields <strong>outside</strong> of <a href="https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification." target="_blank" rel="noopener noreferrer">
                         controlled airspace</a> you may, if you wish, depart at your own discretion. However, if you intend to join
-                        controlled airspace, it is generally advisable to request airways clearance from the controller <strong>prior</strong> to departure.
+                        controlled airspace, it is generally advisable to request joining clearance from the controller <strong>prior</strong> to departure.
                     </p>
 
                     <h3>
