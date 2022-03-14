@@ -109,7 +109,7 @@
                     <p>
                         At airfields <strong>outside</strong> of <a href="https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification." target="_blank" rel="noopener noreferrer">
                         controlled airspace</a> you may, if you wish, depart at your own discretion. However, if you intend to join
-                        controlled airspace, it is generally advisable to request airways clearance from the controller <strong>prior</strong> to departure.
+                        controlled airspace, it is generally advisable to request joining clearance from the controller <strong>prior</strong> to departure.
                     </p>
 
                     <h3>
@@ -145,7 +145,7 @@
                         LON_M_CTR (120.025) &#8594; LON_C_CTR (127.100) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
                     </p>
                     <p style="margin-left: 40px">
-                        <strong>London/Stansted (EGSS), London/Luton (EGGW), Cambridge (EGSC)</strong><br>
+                        <strong>London/Stansted (EGSS), Cambridge (EGSC)</strong><br>
                         LTC_NE_CTR (118.825) &#8594; LTC_N_CTR (119.775) &#8594; LTC_CTR (135.800) &#8594; LTC_E_CTR (121.225) &#8594; LON_E_CTR (118.475) &#8594; LON_C_CTR (127.100) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
                     </p>
                     <p style="margin-left: 40px">
