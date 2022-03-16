@@ -277,10 +277,6 @@
                                 <td>TG Instructor (Heathrow)</td>
                                 <td>Nathaniel Leff</td>
                             </tr>
-                            <tr>
-                                <td>TG Instructor (Heathrow)</td>
-                                <td>Fergus Walsh</td>
-                            </tr>
                         </table>
                     </div>
 
