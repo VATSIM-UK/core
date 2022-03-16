@@ -242,6 +242,10 @@
                                 <td>James Taylor</td>
                             </tr>
                             <tr>
+                                <td>TG Instructor (New Controller)</td>
+                                <td>John Batten</td>
+                            </tr>
+                            <tr>
                                 <td>TG Instructor (TWR)</td>
                                 <td>George Peppard</td>
                             </tr>
@@ -252,10 +256,6 @@
                             <tr>
                                 <td>TG Instructor (TWR)</td>
                                 <td>Matthew Dean</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (TWR)</td>
-                                <td>Vacant</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
