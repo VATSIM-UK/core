@@ -17,7 +17,7 @@
     "heroku-postbuild": "yarn run prod && yarn run build-waiting-lists-manager-prod"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@fortawesome/fontawesome-free": "^6.1.0",
     "@sentry/browser": "^6.18.2",
     "@sentry/tracing": "^6.18.2",
     "admin-lte": "2.4.18",
