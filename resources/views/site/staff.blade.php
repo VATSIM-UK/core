@@ -64,7 +64,7 @@
                     <table class="table">
                         <tr>
                             <td>Enroute Operations Coordinator</td>
-                            <td>Harry Sugden</td>
+                            <td>Harry S (1237658)</td>
                         </tr>
                         <tr>
                             <td>Aerodrome Operations Coordinator</td>
@@ -235,11 +235,11 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (New Controller)</td>
-                                <td>Reece Buckley</td>
+                                <td>James Taylor</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (New Controller)</td>
-                                <td>James Taylor</td>
+                                <td>John Batten</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (TWR)</td>
@@ -254,32 +254,20 @@
                                 <td>Matthew Dean</td>
                             </tr>
                             <tr>
-                                <td>TG Instructor (TWR)</td>
-                                <td>Vacant</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (APP)</td>
-                                <td>Vacant</td>
-                            </tr>
-                            <tr>
                                 <td>TG Instructor (APP)</td>
                                 <td>William Jennings</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
-                                <td>Vacant</td>
+                                <td>Reece Buckley</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (ENR)</td>
-                                <td>Charlie Watson</td>
+                                <td>Vacant</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
                                 <td>Nathaniel Leff</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (Heathrow)</td>
-                                <td>Fergus Walsh</td>
                             </tr>
                         </table>
                     </div>
