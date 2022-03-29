@@ -235,10 +235,6 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (New Controller)</td>
-                                <td>Reece Buckley</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (New Controller)</td>
                                 <td>James Taylor</td>
                             </tr>
                             <tr>
@@ -259,19 +255,15 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
-                                <td>Vacant</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (APP)</td>
                                 <td>William Jennings</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
-                                <td>Vacant</td>
+                                <td>Reece Buckley</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (ENR)</td>
-                                <td>Charlie Watson</td>
+                                <td>Vacant</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
