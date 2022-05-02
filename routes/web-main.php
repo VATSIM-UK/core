@@ -1,15 +1,17 @@
 <?php
 
 // Dashboard
-Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('dashboard');
+Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('landing');
 
 // Authentication
-Route::get('login')->uses('Auth\LoginController@getLogin');
-Route::post('login')->uses('Auth\LoginController@loginMain')->name('login');
+Route::get('login')->uses('Auth\LoginController@login')->name('login');
+Route::post('login')->uses('Auth\LoginController@login')->name('login.post');
 Route::get('login-secondary')->uses('Auth\LoginController@showLoginForm')->middleware('auth:vatsim-sso')->name('auth-secondary');
-Route::post('login-secondary')->uses('Auth\LoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
-Route::get('login-vatsim')->uses('Auth\LoginController@vatsimSsoReturn')->name('auth-vatsim-sso');
-Route::post('logout')->uses('Auth\LoginController@logout')->name('logout');
+Route::post('login-secondary')->uses('Auth\SecondaryLoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
+Route::post('logout')->uses('Auth\LogoutController')->name('logout');
+
+Route::view('banned-network', 'errors.banned-network')->name('banned.network');
+Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->name('banned.local');
 
 // Password
 Route::group([
@@ -39,21 +41,6 @@ Route::group([
     });
 });
 
-// Webhooks
-Route::group([
-    'as'        => 'webhook.',
-    'prefix'    => 'webhook',
-    'namespace' => 'Webhook',
-], function () {
-    Route::get('dropbox')->uses('Dropbox@getDropbox')->name('dropbox');
-    Route::post('dropbox')->uses('Dropbox@postDropbox');
-
-    Route::any('slack')->uses('Slack@anyRouter')->name('slack');
-
-    Route::post('mailgun')->uses('Mailgun@event')->middleware('auth.basic.once');
-    Route::post('sendgrid')->uses('SendGrid@events')->middleware('auth.basic.once');
-});
-
 // Members
 Route::group([
     'prefix'     => 'mship',
@@ -68,6 +55,7 @@ Route::group([
         'prefix' => 'manage',
     ], function () {
         Route::get('dashboard')->uses('Management@getDashboard')->name('dashboard');
+        Route::get('cert/update')->uses('Management@requestCertCheck')->name('cert.update');
         Route::get('email/verify/{code}')->uses('Management@getVerifyEmail')->name('email.verify');
         Route::get('email/add')->uses('Management@getEmailAdd')->name('email.add');
         Route::post('email/add')->uses('Management@postEmailAdd')->name('email.add.post');
@@ -90,6 +78,15 @@ Route::group([
         Route::get('view')->uses('Feedback\ViewFeedbackController@show')->name('view');
     });
 
+    // Waiting Lists
+    Route::group([
+        'as'     => 'waiting-lists.',
+        'prefix' => 'waiting-lists',
+    ], function () {
+        Route::get('')->uses('WaitingLists@index')->name('index');
+        Route::get('{waitingListId}')->uses('WaitingLists@view')->name('view');
+    });
+
     // Other
     Route::group([
     ], function () {
@@ -97,10 +94,6 @@ Route::group([
 
         Route::get('notification/list')->uses('Notification@getList')->name('notification.list');
         Route::post('notification/acknowledge/{sysNotification}')->uses('Notification@postAcknowledge')->name('notification.acknowledge');
-
-        // Route::get('/email')->uses('Email@getEmail')->name('mship.email');
-        // Route::post('/email')->uses('Email@postEmail')->name('mship.email.post');
-        // Route::get('/email/recipient-search')->uses('Email@getRecipientSearch')->name('mship.email.recipient-search');
     });
 });
 
@@ -117,11 +110,17 @@ Route::group([
     Route::post('{mshipRegistration}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
 });
 
-Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth_full_group']], function () {
-    Route::model('slackToken', App\Models\Sys\Token::class);
-    Route::get('/new', ['as' => 'slack.new', 'uses' => 'Registration@getNew']);
-    Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);
-    Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
+// Discord
+Route::group([
+    'as' => 'discord.',
+    'prefix' => 'discord',
+    'namespace' => 'Discord',
+    'middleware' => 'auth_full_group',
+], function () {
+    Route::get('/')->uses('Registration@show')->name('show');
+    Route::get('/create')->uses('Registration@create')->name('create');
+    Route::get('/store')->uses('Registration@store')->name('store');
+    Route::get('/destroy')->uses('Registration@destroy')->name('destroy');
 });
 
 // UKCP
@@ -132,21 +131,8 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/')->uses('Token@show')->name('guide');
-    Route::get('/token')->uses('Token@create')->name('token.create');
-    Route::get('token/{id}/destroy')->uses('Token@destroy')->name('token.destroy');
+    Route::get('/token/refresh')->uses('Token@refresh')->name('token.refresh');
     Route::get('token/{id}/download')->uses('Token@download')->name('token.download');
-});
-
-// Community
-Route::group([
-    'as'         => 'community.membership.',
-    'prefix'     => 'community/membership',
-    'namespace'  => 'Community',
-    'middleware' => 'auth_full_group',
-], function () {
-    Route::get('deploy')->uses('Membership@getDeploy')->name('deploy');
-    Route::post('deploy/{default?}')->uses('Membership@postDeploy')->name('deploy.post')
-        ->where('default', '[default|true]');
 });
 
 // Controllers
@@ -157,6 +143,7 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('endorsements/gatwick')->uses('EndorsementController@getGatwickGroundIndex')->name('endorsements.gatwick_ground');
+    Route::get('hour-check/area')->uses('EndorsementController@getAreaIndex')->name('hour_check.area');
 });
 
 // Network data

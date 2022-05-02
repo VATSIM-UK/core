@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Smartcars\Bid
+ * App\Models\Smartcars\Bid.
  *
  * @property int $id
  * @property int $flight_id
@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read \App\Models\Smartcars\Flight $flight
  * @property-read \App\Models\Smartcars\Pirep $pirep
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\Posrep[] $posreps
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid accountId($accountId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid flightId($flightId)
  * @method static bool|null forceDelete()

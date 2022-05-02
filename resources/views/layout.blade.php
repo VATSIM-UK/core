@@ -10,22 +10,6 @@
         <title>VATSIM UK | United Kingdom Division of VATSIM.net</title>
     @endif
 
-    <!--BugSnagScript-->
-    <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
-            data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
-            data-releasestage="{{ env('APP_ENV') }}"></script>
-    <script type="text/javascript">
-        Bugsnag.notifyReleaseStages = ["staging", "production"];
-
-        @if(Auth::check())
-            Bugsnag.user = {
-            id: {{ Auth::user()->id }},
-            name: "{{ Auth::user()->name }}",
-            email: "{{ Auth::user()->email }}"
-        };
-        @endif
-    </script>
-
     <!-- CSS -->
     <link media="all" type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Yellowtail">
     <link media="all" type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Josefin+Slab:600">
@@ -45,7 +29,7 @@
 <div class="container-fluid">
     <div class="header_container">
         <div id="banner" class="banner hidden-xs hidden-sm"></div>
-        
+
         <div class="breadcrumb_outer_container hidden-xs hidden-sm">
             <div class="breadcrumb_container">
                 <div class="breadcrumb_content_left">
@@ -82,50 +66,17 @@
 
 </div>
 
+<script src="{{ mix('js/sentry.js') }}"></script>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha384-rY/jv8mMhqDabXSo+UCggqKtdmBfd3qC2/KvyTDNQ6PcUJXaxK1tMepoQda4g5vB" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script src="{{ mix('js/app-all.js') }}"></script>
+<script src="{{ mix('js/top-notification.js') }}"></script>
 
-<script>
-    (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
-        a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-    ga('create', 'UA-13128412-6', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-@if(App::environment('production'))
-<script type="text/javascript">
-    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-    (function () {
-        var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-        s1.async = true;
-        s1.src = 'https://embed.tawk.to/57bb3bfca767d83b45e79605/1aqq3gev7';
-        s1.charset = 'UTF-8';
-        s1.setAttribute('crossorigin', '*');
-        s0.parentNode.insertBefore(s1, s0);
-    })();
-
-    @if(Auth::check())
-        Tawk_API.visitor = {
-        name: "{{ Auth::user()->name }} ({{ Auth::user()->id }})",
-        email: "{{ Auth::user()->email }}"
-    };
-    @endif
-</script>
+@if(Carbon\Carbon::now()->month == 12 || Carbon\Carbon::now()->dayOfYear < 10)
+    <script src="{{ mix('js/snow.js') }}"></script>
 @endif
 
 @yield('scripts')
-
+@include('partials/_snow')
 </body>
 </html>

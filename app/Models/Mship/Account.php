@@ -5,25 +5,27 @@ namespace App\Models\Mship;
 use App\Events\Mship\AccountAltered;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Jobs\UpdateMember;
+use App\Libraries\Discord;
 use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasBans;
-use App\Models\Mship\Concerns\HasCommunityGroups;
 use App\Models\Mship\Concerns\HasCTSAccount;
+use App\Models\Mship\Concerns\HasDiscordAccount;
 use App\Models\Mship\Concerns\HasEmails;
 use App\Models\Mship\Concerns\HasForumAccount;
 use App\Models\Mship\Concerns\HasHelpdeskAccount;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
 use App\Models\Mship\Concerns\HasNotifications;
+use App\Models\Mship\Concerns\HasNovaPermissions;
 use App\Models\Mship\Concerns\HasPassword;
 use App\Models\Mship\Concerns\HasQualifications;
+use App\Models\Mship\Concerns\HasRoles;
 use App\Models\Mship\Concerns\HasStates;
 use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
+use App\Models\Mship\Concerns\HasWaitingLists;
 use App\Models\Mship\Note\Type;
-use App\Notifications\Mship\SlackInvitation;
-use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -34,14 +36,15 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
 
 /**
- * App\Models\Mship\Account
+ * App\Models\Mship\Account.
  *
  * @property int $id
- * @property string|null $slack_id
+ * @property int|null $discord_id
+ * @property int|null $discord_access_token
+ * @property int|null $discord_refresh_token
  * @property string $name_first
  * @property string $name_last
  * @property string|null $nickname
@@ -67,7 +70,6 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bans
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bansAsInstigator
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Community\Group[] $communityGroups
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Feedback[] $feedback
  * @property-read mixed $active_qualifications
@@ -78,6 +80,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read mixed $is_banned
  * @property mixed $is_inactive
  * @propernty-read mixed $is_network_banned
+ *
  * @property-read bool $is_on_network
  * @property-read mixed $is_system_banned
  * @property-read bool $mandatory_password
@@ -106,8 +109,6 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Support\Collection $verified_secondary_emails
  * @property-read mixed $visit_transfer_current
  * @property-read mixed $visit_transfer_referee_pending
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread\Post[] $messagePosts
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[] $messageThreads
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Atc[] $networkDataAtc
  * @property-read \App\Models\NetworkData\Atc $networkDataAtcCurrent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Pilot[] $networkDataPilot
@@ -128,6 +129,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $visitTransferApplications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $visitTransferReferee
+ *
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account onlyTrashed()
  * @method static bool|null restore()
@@ -152,7 +154,6 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account wherePasswordExpiresAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account wherePasswordSetAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereSlackId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withoutTrashed()
@@ -160,9 +161,28 @@ use Watson\Rememberable\Rememberable;
  */
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
-        HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount, HasForumAccount, HasCTSAccount,
-        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications, HasEmails, HasRoles;
+    use SoftDeletingTrait,
+        Rememberable,
+        Notifiable,
+        Authenticatable,
+        Authorizable,
+        HasNetworkData,
+        HasMoodleAccount,
+        HasHelpdeskAccount,
+        HasForumAccount,
+        HasCTSAccount,
+        HasVisitTransferApplications,
+        HasQualifications,
+        HasStates,
+        HasBans,
+        HasTeamSpeakRegistrations,
+        HasPassword,
+        HasNotifications,
+        HasEmails,
+        HasRoles,
+        HasNovaPermissions,
+        HasDiscordAccount,
+        HasWaitingLists;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
@@ -193,21 +213,21 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'password',
         'password_set_at',
         'password_expires_at',
+        'joined_at',
+        'cert_checked_at',
     ];
     protected $attributes = [
-        'name_first' => '',
-        'name_last' => '',
-        'inactive' => false,
+        'name_first'    => '',
+        'name_last'     => '',
+        'inactive'      => false,
         'last_login_ip' => '0.0.0.0',
     ];
     protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
-    protected $casts = ['inactive' => 'boolean'];
-
-    public function routeNotificationForSlack()
-    {
-        return env('SLACK_ENDPOINT');
-    }
+    protected $casts = [
+        'inactive' => 'boolean',
+        'discord_id' => 'int',
+    ];
 
     protected static function boot()
     {
@@ -223,30 +243,28 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     /**
-     * @param Account $model
-     * @param null $extra
-     * @param null $data
+     * @param  Account  $model
+     * @param  null  $extra
+     * @param  null  $data
      */
     public static function eventCreated($model, $extra = null, $data = null)
     {
         // Add to default role
-        $defaultRole = Role::where('default', 1)->limit(1)->get();
+        $defaultRole = Role::where('default', 1)->limit(1)->first();
         $model->assignRole($defaultRole);
-
-        // Queue the slack email
-        $model->notify((new SlackInvitation())->delay(Carbon::now()->addDays(7)));
     }
 
     /**
-     * Find an account by its ID or retrieve it from Cert.
+     * Find an account by its ID or retrieve it from Cert. If false, user does not exist at VATSIM.NET.
      *
      * @param $accountId
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|bool|static[]
+     *
      * @throws InvalidCIDException
      */
     public static function findOrRetrieve($accountId)
     {
-        if (!is_numeric($accountId)) {
+        if (! is_numeric($accountId)) {
             throw new InvalidCIDException();
         }
 
@@ -257,19 +275,13 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
             $account = self::find($accountId);
 
+            if (! $account) {
+                // User doesn't exist at VATSIM.NET
+                throw new InvalidCIDException();
+            }
+
             return $account;
         }
-    }
-
-    public function messageThreads()
-    {
-        return $this->belongsToMany(\App\Models\Messages\Thread::class, 'messages_thread_participant', 'thread_id')
-            ->withPivot('display_as', 'read_at', 'status')->withTimestamps();
-    }
-
-    public function messagePosts()
-    {
-        return $this->hasMany(\App\Models\Messages\Thread\Post::class, 'account_id');
     }
 
     public function bansAsInstigator()
@@ -320,7 +332,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             $noteType = Type::isDefault()->first()->getKey();
         }
 
-        if (!is_null($writer) && is_object($writer)) {
+        if (! is_null($writer) && is_object($writer)) {
             $writer = $writer->getKey();
         }
 
@@ -331,7 +343,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $note->content = $noteContent;
         $note->save();
 
-        if (!is_null($attachment)) {
+        if (! is_null($attachment)) {
             $note->attachment()->save($attachment);
         }
 
@@ -365,7 +377,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     /**
      * Set the name_first attribute with correct formatting.
      *
-     * @param string $value The first name to format and store.
+     * @param  string  $value  The first name to format and store.
      */
     public function setNameFirstAttribute($value)
     {
@@ -375,7 +387,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     /**
      * Set the name_last attribute with correct formatting.
      *
-     * @param string $value The last name to format and store.
+     * @param  string  $value  The last name to format and store.
      */
     public function setNameLastAttribute($value)
     {
@@ -395,17 +407,23 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     /**
      * Get the user's full name.
      *
-     * If a nickname is set, that will be used in place of name_first.
-     *
      * @return mixed|string
      */
     public function getNameAttribute()
     {
-        if ($this->nickname != null) {
-            return $this->nickname.' '.$this->name_last;
-        }
+        return $this->name_preferred.' '.$this->name_last;
+    }
 
-        return $this->real_name;
+    /**
+     * Get the user's first name.
+     *
+     * If a nickname is set, that will be used in place of name_first.
+     *
+     * @return mixed|string
+     */
+    public function getNamePreferredAttribute()
+    {
+        return $this->nickname ? $this->nickname : $this->name_first;
     }
 
     /**
@@ -420,41 +438,67 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     public function getFullyDefinedAttribute()
     {
-        return $this->name_first && $this->name_last && $this->email;
+        return $this->name_first && $this->name_last && $this->email && $this->qualification_atc;
+    }
+
+    private function allowedNames($includeATC = false, $withNumberWildcard = false)
+    {
+        $wildcard = '';
+
+        if ($withNumberWildcard) {
+            $wildcard = "\d";
+        }
+
+        $allowedNames = collect();
+        $allowedNames->push($this->name.$wildcard);
+        $allowedNames->push($this->real_name.$wildcard);
+
+        if ($includeATC && $this->networkDataAtcCurrent) {
+            $collect = collect();
+            foreach ($allowedNames as $name) {
+                $collect->push($name." - {$this->networkDataAtcCurrent->callsign}");
+            }
+            $allowedNames = $allowedNames->merge($collect);
+        }
+
+        return $allowedNames;
     }
 
     /**
      * Determine if the given name, matches either the user's nickname or real name.
      *
-     * @param string $displayName The display name to verify.
-     *
+     * @param  string  $displayName  The display name to verify.
      * @return bool
      */
     public function isValidDisplayName($displayName)
     {
-        $allowedNames = collect();
-        $allowedNames->push($this->name);
-        $allowedNames->push($this->real_name);
-
-        if ($this->networkDataAtcCurrent) {
-            $allowedNames->push($this->name.' - '.$this->networkDataAtcCurrent->callsign);
-            $allowedNames->push($this->real_name.' - '.$this->networkDataAtcCurrent->callsign);
-        }
-
-        return $allowedNames->filter(function ($item, $key) use ($displayName) {
-            return strcasecmp($item, $displayName) == 0;
-        })->count() > 0;
+        return ! $this->allowedNames(true)->filter(function ($item, $key) use ($displayName) {
+            return strcmp($item, $displayName) == 0;
+        })->isEmpty();
     }
 
     public function isPartiallyValidDisplayName($displayName)
     {
-        $allowedNames = collect();
-        $allowedNames->push($this->name);
-        $allowedNames->push($this->real_name);
-
-        return $allowedNames->filter(function ($item, $key) use ($displayName) {
+        return ! $this->allowedNames()->filter(function ($item, $key) use ($displayName) {
             return strstr(strtolower($displayName), strtolower($item)) != false;
-        })->count() > 0;
+        })->isEmpty();
+    }
+
+    public function isDuplicateDisplayName($displayName)
+    {
+        return ! $this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
+            return preg_match('/^'.$item.'$/i', $displayName) == 1;
+        })->isEmpty();
+    }
+
+    /**
+     * Returns the Discord user associated with this account if the user has linked it.
+     *
+     * @return RestCord/Model/User/User The Discord user
+     */
+    public function getDiscordUserAttribute()
+    {
+        return app()->make(Discord::class)->getUserInformation($this);
     }
 
     /**
@@ -465,9 +509,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function getSessionTimeoutAttribute()
     {
         $timeout = $this->roles()
-                        ->orderBy('session_timeout', 'DESC')
-                        ->first()
-                        ->session_timeout;
+            ->orderBy('session_timeout', 'DESC')
+            ->first()
+            ->session_timeout;
 
         return $timeout === null ? 0 : $timeout;
     }

@@ -11,7 +11,7 @@ class EvaluateFlightCriteria implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param BidCompleted $event
+     * @param  BidCompleted  $event
      * @return void
      */
     public function handle(BidCompleted $event)
@@ -41,21 +41,21 @@ class EvaluateFlightCriteria implements ShouldQueue
                 }
             }
 
-            if (!$positionValid) {
+            if (! $positionValid) {
                 $pirep->markFailed("Failed: You went off track at posrep #{$posrep->id}.", $posrep->id);
                 $pirep->save();
 
                 return;
             }
 
-            if (!$altitudeValid) {
+            if (! $altitudeValid) {
                 $pirep->markFailed("Failed: You went outside of the altitude restriction at posrep #{$posrep->id}.", $posrep->id);
                 $pirep->save();
 
                 return;
             }
 
-            if (!$speedValid) {
+            if (! $speedValid) {
                 $pirep->markFailed("Failed: You went outside of the speed restriction at posrep #{$posrep->id}.", $posrep->id);
                 $pirep->save();
 
@@ -71,21 +71,32 @@ class EvaluateFlightCriteria implements ShouldQueue
             return;
         }
 
+        // Check disabled whilst pilot data is not recorded.
+        // if (! $this->onNetwork($pirep, $posreps)) {
+        //     $pirep->markFailed('Failed: You were not connected to the VATSIM network.');
+        //     $pirep->save();
+
+        //     return;
+        // }
+
+        $pirep->markPassed('Success: Flight passed all required checks');
+        $pirep->save();
+    }
+
+    protected function onNetwork($pirep, $posreps)
+    {
         $pirepTime = $this->minutes($pirep->flight_time);
 
         $networkTime = NetworkData::where('disconnected_at', '>', $posreps->first()->created_at)
             ->where('connected_at', '<', $posreps->last()->created_at)
+            ->where('account_id', '=', $posreps->first()->bid->account->id)
             ->sum('minutes_online');
 
-        if ((($networkTime / $pirepTime) * 100) < 90) {
-            $pirep->markFailed('Failed: You were not connected to the VATSIM network.', null);
-            $pirep->save();
-
-            return;
+        if ($pirepTime < 0) {
+            return false;
         }
 
-        $pirep->markPassed('Success: Flight passed all required checks');
-        $pirep->save();
+        return (($networkTime / $pirepTime) * 100) < 90;
     }
 
     protected function minutes($time)

@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * App\Models\Mship\Feedback\Feedback
+ * App\Models\Mship\Feedback\Feedback.
  *
  * @property int $id
  * @property int $form_id
@@ -28,6 +28,7 @@ use Illuminate\Notifications\Notifiable;
  * @property-read \App\Models\Mship\Feedback\Form $form
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \App\Models\Mship\Account $submitter
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback aTC()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback actioned()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback pilot()
@@ -179,5 +180,10 @@ class Feedback extends Model
     public function getOptions($options)
     {
         return json_decode($options);
+    }
+
+    public function getActionedAttribute()
+    {
+        return ! is_null($this->actioned_at);
     }
 }

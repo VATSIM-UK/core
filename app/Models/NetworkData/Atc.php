@@ -12,7 +12,7 @@ use Malahierba\PublicId\PublicId;
 use Watson\Rememberable\Rememberable;
 
 /**
- * App\Models\NetworkData\Atc
+ * App\Models\NetworkData\Atc.
  *
  * @property int $id
  * @property int $account_id
@@ -34,6 +34,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read string $public_id
  * @property-read mixed $type
  * @property-read \App\Models\Mship\Qualification $qualification
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc forAccountId($id)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc forQualificationId($id)
  * @method static bool|null forceDelete()
@@ -123,7 +124,7 @@ class Atc extends Model
         self::updated(function ($atcSession) {
             event(new AtcSessionUpdated($atcSession));
 
-            if (!$atcSession->disconnected_at) {
+            if (! $atcSession->disconnected_at) {
                 return;
             }
         });
@@ -271,7 +272,7 @@ class Atc extends Model
      */
     public function calculateTimeOnline()
     {
-        if (!$this->disconnected_at) {
+        if (! $this->disconnected_at) {
             return;
         }
 

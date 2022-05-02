@@ -11,16 +11,21 @@ class HomePageTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test * */
-    public function itLoadsTheHomepage()
+    /** @test */
+    public function testItLoadsTheHomepage()
     {
         $this->get(route('site.home'))->assertOk();
     }
 
-    /** @test * */
-    public function itShowsLiveAtcBookingsOnTheHomepage()
+    /** @test */
+    public function testItShowsLiveAtcBookingsOnTheHomepage()
     {
-        $booking = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'position' => 'EGKK_APP', 'type' => 'BK']);
+        $booking = factory(Booking::class)->create([
+            'date' => $this->knownDate->toDateString(),
+            'position' => 'EGKK_APP',
+            'type' => 'BK',
+        ]);
+
         $url = "https://cts.vatsim.uk/bookings/bookinfo.php?cb={$booking->id}";
 
         $this->get(route('site.home'))
@@ -32,10 +37,14 @@ class HomePageTest extends TestCase
             ->assertSee($booking->member->cid);
     }
 
-    /** @test * */
-    public function itDoesntShowExamCandidatesOnTheHomepage()
+    /** @test */
+    public function testItDoesntShowExamCandidatesOnTheHomepage()
     {
-        $booking = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'position' => 'EGKK_APP', 'type' => 'EX']);
+        $booking = factory(Booking::class)->create([
+            'date' => $this->knownDate->toDateString(),
+            'position' => 'EGKK_APP',
+            'type' => 'EX',
+        ]);
 
         $this->get(route('site.home'))
             ->assertDontSee(e($booking->member->name))
@@ -43,11 +52,20 @@ class HomePageTest extends TestCase
             ->assertSee('Hidden');
     }
 
-    /** @test * */
-    public function itDoesntShowPilotOrSweatboxBookingsOnTheHomepage()
+    /** @test */
+    public function testItDoesntShowPilotOrSweatboxBookingsOnTheHomepage()
     {
-        $pilot = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'position' => 'P1_VATSIM', 'type' => 'BK']);
-        $sweatbox = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'position' => 'EGKK_SBAT', 'type' => 'BK']);
+        $pilot = factory(Booking::class)->create([
+            'date' => $this->knownDate->toDateString(),
+            'position' => 'P1_VATSIM',
+            'type' => 'BK',
+        ]);
+
+        $sweatbox = factory(Booking::class)->create([
+            'date' => $this->knownDate->toDateString(),
+            'position' => 'EGKK_SBAT',
+            'type' => 'BK',
+        ]);
 
         $this->get(route('site.home'))
             ->assertDontSee($pilot->position)

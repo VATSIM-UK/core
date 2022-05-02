@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use DB;
 
 /**
- * Trait HasHelpdeskAccount
+ * Trait HasHelpdeskAccount.
  */
 trait HasHelpdeskAccount
 {
@@ -15,13 +15,13 @@ trait HasHelpdeskAccount
     /**
      * Sync the current account to Helpdesk.
      *
-     * @param mixed $helpdeskAccount
+     * @param  mixed  $helpdeskAccount
      */
     public function syncToHelpdesk()
     {
-        if (!isset(self::$sso_account_id)) {
+        if (! isset(self::$sso_account_id)) {
             $helpdeskSsoAccount = DB::table('oauth_clients')->where('name', 'Helpdesk')->first();
-            if (!$helpdeskSsoAccount) {
+            if (! $helpdeskSsoAccount) {
                 return false;
             }
             self::$sso_account_id = $helpdeskSsoAccount->id;
@@ -50,7 +50,7 @@ trait HasHelpdeskAccount
             ->where('address', $this->getHelpdeskEmail())
             ->first();
 
-        if (!$emailInUse) {
+        if (! $emailInUse) {
             $now = Carbon::now();
             $userId = DB::table(config('services.helpdesk.database').'.ost_user')
                 ->insertGetId([
@@ -77,7 +77,7 @@ trait HasHelpdeskAccount
     /**
      * Update the user's existing Helpdesk account.
      *
-     * @param mixed $helpdeskAccount
+     * @param  mixed  $helpdeskAccount
      */
     protected function updateHelpdeskAccount($helpdeskAccount)
     {
@@ -123,7 +123,7 @@ trait HasHelpdeskAccount
                 ->whereIn('user_id', DB::table(config('services.helpdesk.database').'.ost_user_account')->select('user_id'))
                 ->exists();
 
-            if (!$emailInUse) {
+            if (! $emailInUse) {
                 // delete old emails from the database
                 DB::table(config('services.helpdesk.database').'.ost_user_email')
                     ->where('user_id', $helpdeskAccount->id)->orWhere('address', $newEmail)

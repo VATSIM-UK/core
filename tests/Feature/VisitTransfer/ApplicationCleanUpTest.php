@@ -18,21 +18,22 @@ class ApplicationCleanUpTest extends TestCase
     use DatabaseTransactions;
 
     public $application;
-    public $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Mail::fake();
 
-        $qual = Qualification::code('S2')->first();
+        // Make user an S2
         $this->user = factory(Account::class)->create();
-        $this->user->addQualification($qual);
-        $this->user->qualifications()->updateExistingPivot($qual->id, ['created_at' => new Carbon('100 days ago')]);
+        $qualification = Qualification::code('S2')->first();
+        $this->user->addQualification($qualification);
+        $this->user->qualifications()->updateExistingPivot($qualification->id, ['created_at' => new Carbon('100 days ago')]);
         $this->user->save();
 
-        $facility = factory(Facility::class, 'atc_transfer')->create();
-        $this->application = factory(Application::class, 'atc_transfer')->create([
+        // Create facility & application
+        $facility = factory(Facility::class)->states('atc_transfer')->create();
+        $this->application = factory(Application::class)->states('atc_transfer')->create([
             'account_id' => $this->user->id,
             'status' => Application::STATUS_SUBMITTED,
             'should_perform_checks' => 1,
@@ -43,16 +44,16 @@ class ApplicationCleanUpTest extends TestCase
         // Add 60 hours of ATC
         $start = new Carbon('80 hours ago');
         $end = new Carbon('20 hours ago');
-        factory(Atc::class, 'offline')->create([
+        factory(Atc::class)->states('offline')->create([
             'account_id' => $this->user->id,
-            'qualification_id' => $qual->id,
+            'qualification_id' => $qualification->id,
             'connected_at' => $start,
             'disconnected_at' => $end,
             'minutes_online' => $start->diffInMinutes($end),
         ]);
     }
 
-    /** @test * */
+    /** @test */
     public function testItWillSet50HourCheckAsPassed()
     {
         $this->assertNull($this->application->check_outcome_50_hours);
@@ -60,7 +61,7 @@ class ApplicationCleanUpTest extends TestCase
         $this->assertTrue($this->application->fresh()->check_outcome_50_hours);
     }
 
-    /** @test * */
+    /** @test */
     public function testItWillSet90DayCheckAsPassed()
     {
         $this->assertNull($this->application->check_outcome_90_day);

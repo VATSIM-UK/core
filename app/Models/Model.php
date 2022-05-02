@@ -7,7 +7,7 @@ use App\Models\Concerns\TracksEvents;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
- * App\Models\Model
+ * App\Models\Model.
  */
 abstract class Model extends Eloquent
 {

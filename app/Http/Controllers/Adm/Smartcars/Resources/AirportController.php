@@ -38,6 +38,7 @@ class AirportController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index()
@@ -53,6 +54,7 @@ class AirportController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
@@ -65,8 +67,9 @@ class AirportController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
@@ -83,8 +86,9 @@ class AirportController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Smartcars\Airport $airport
+     * @param  \App\Models\Smartcars\Airport  $airport
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Airport $airport)
@@ -97,16 +101,19 @@ class AirportController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Smartcars\Airport $airport
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Smartcars\Airport  $airport
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Airport $airport)
     {
         $this->authorize('use-permission', 'adm/smartcars/airports/update');
 
-        $this->validate($request, $this->rules());
+        $rules = $this->rules();
+        $rules['icao'] .= ",{$airport->id}";
+        $this->validate($request, $rules);
 
         $airport->fill(array_filter($request->all()))->save();
 
@@ -116,8 +123,9 @@ class AirportController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Smartcars\Airport $airport
+     * @param  \App\Models\Smartcars\Airport  $airport
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Exception
      */

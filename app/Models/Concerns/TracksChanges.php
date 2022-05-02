@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 /**
  * Tracks changes to the specified attributes.
- * Adapted from Illuminate\Database\Eloquent\Concerns\GuardsAttributes
+ * Adapted from Illuminate\Database\Eloquent\Concerns\GuardsAttributes.
  */
 trait TracksChanges
 {
@@ -70,8 +70,6 @@ trait TracksChanges
         $attributes = $this->originalTracked;
 
         foreach ($this->trackableFromArray($attributes) as $key => $value) {
-            $key = $this->removeTableFromKey($key);
-
             if ($this->isTrackable($key) && $value != $this->$key) {
                 $dataChange = new \App\Models\Sys\Data\Change();
                 $dataChange->data_key = $key;
@@ -108,7 +106,7 @@ trait TracksChanges
     /**
      * Set the trackable attributes for the model.
      *
-     * @param  array $tracked
+     * @param  array  $tracked
      * @return $this
      */
     public function tracked(array $tracked)
@@ -131,7 +129,7 @@ trait TracksChanges
     /**
      * Set the untrackable attributes for the model.
      *
-     * @param  array $untracked
+     * @param  array  $untracked
      * @return $this
      */
     public function untracked(array $untracked)
@@ -154,7 +152,7 @@ trait TracksChanges
     /**
      * Determine if the given attribute is tracked.
      *
-     * @param  string $key
+     * @param  string  $key
      * @return bool
      */
     public function isTrackable($key)
@@ -178,13 +176,13 @@ trait TracksChanges
         }
 
         return empty($this->getTracked()) &&
-            !Str::startsWith($key, '_');
+            ! Str::startsWith($key, '_');
     }
 
     /**
      * Determine if the given key is untracked.
      *
-     * @param  string $key
+     * @param  string  $key
      * @return bool
      */
     public function isUntracked($key)
@@ -205,12 +203,12 @@ trait TracksChanges
     /**
      * Get the trackable attributes of a given array.
      *
-     * @param  array $attributes
+     * @param  array  $attributes
      * @return array
      */
     protected function trackableFromArray(array $attributes)
     {
-        if (count($this->getTracked()) > 0 && !static::$fullyTracked) {
+        if (count($this->getTracked()) > 0 && ! static::$fullyTracked) {
             return array_intersect_key($attributes, array_flip($this->getTracked()));
         }
 

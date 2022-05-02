@@ -71,9 +71,9 @@
                 </a>
                 <div id="endorsement-gatwickgnd" class="panel-collapse collapse panel-body">
                     <h3>Background</h3>
-                    After Heathrow, London Gatwick (EGKK) is by far the busiest airfield in VATSIM UK, boasting close to
-                    50,000 movements every year. Controlling at London Gatwick is restricted by the ATC Training
-                    Department to S2 rated members or S1's that hold a special endorsement. This restriction for S1's is
+                    After Heathrow, London Gatwick (EGKK) is by far the busiest airfield in VATSIM UK, boasting over
+                    65,000 movements every year. Controlling at London Gatwick is restricted by the ATC Training
+                    Department to S2 rated members or S1s that hold a special endorsement. This restriction for S1s is
                     in place to allow members to gain experience in quieter environments and practice their new-found
                     skills before tackling the workload at Gatwick.
 
@@ -154,7 +154,7 @@
                     <h3>Background</h3>
                     VATSIM UK offers controllers rated S2 or higher the opportunity to undertake a military endorsement,
                     through a number of self study courses. With this endorsement, controllers are permitted to open
-                    military positions both in the UK and it's overseas territories, in accordance with the letters of
+                    military positions both in the UK and its overseas territories, in accordance with the letters of
                     agreement, division policy and military manual.
 
                     <h3>Endorsements Offered</h3>
@@ -173,8 +173,8 @@
                         <li>RAF Akrotiri (LCRA);</li>
                         <li>RAF Mount Pleasant (EGYP);</li>
                         <li>RAF Ascension Island (FHAW).</li>
-                        <li>EGVV_CTR - 135.150 - Swanwick Military - Covers military activity in both EGTT and EGPX, as well as top-down control for Military airfields</li>
-                        <li>EGQQ_CTR - 134.300 - Swanwick Military - Can be split off from EGVV to cover the EGPX airspace.</li>
+                        <li>EGVV_CTR - 133.900 - Swanwick Military - Covers military activity in both EGTT and EGPX, as well as top-down control for Military airfields</li>
+                        <li>EGVV_x_CTR - Swanwick Military - Various other splits, as outlined in <a href="https://community.vatsim.uk/topic/37499-2020-12-03-swanwick-mil-sectorisation-and-frequency-change/">this procedure change post.</a></li>
                     </ul>
 
                     <h3>Prerequisites</h3>
@@ -210,12 +210,12 @@
                     VATSIM UK has a large number of pilots that enjoy a little jaunt across the country in a light
                     aircraft, enjoying the sights and freedoms of VFR. We also have a number of small aerodromes that
                     are hotspots for this activity, which is now tied in with the Pilot Training Department's Flight
-                    Training Exercises (FTE's). These smaller aerodromes do not provide a full Air Traffic Service, but
+                    Training Exercises (FTEs). These smaller aerodromes do not provide a full Air Traffic Service, but
                     instead either an Aerodrome Flight Information Service (AFIS) or Air/Ground Communications Service
                     (AGCS).
 
                     <h3>Requirements</h3>
-                    As such, we offer S1's the opportunity to become endorsed on a select number of these positions through an online self-learning (Moodle) course. This course may be enrolled on at any time by any member. The endorsement process is as follows:
+                    As such, we offer S1s the opportunity to become endorsed on a select number of these positions through an online self-learning (Moodle) course. This course may be enrolled on at any time by any member. The endorsement process is as follows:
                     <ol>
                         <li>In order to be eligible to take the Moodle exam, the member must have acquired a total of 50 hours controlling on ground and delivery positions in the UK;</li>
                         <li>Once the hour requirement is met, the member submits a ticket to the helpdesk asking to be enrolled in the Moodle exam;</li>
@@ -242,6 +242,7 @@
                         <li>Haverfordwest (EGFE)</li>
                         <li>Kemble (EGBP)</li>
                         <li>Manchester Barton (EGCB)</li>
+                        <li>Netherthorpe (EGNF)</li>
                         <li>Newtownards (EGAD)</li>
                         <li>Old Sarum (EGLS)</li>
                         <li>Rochester (EGTO)</li>

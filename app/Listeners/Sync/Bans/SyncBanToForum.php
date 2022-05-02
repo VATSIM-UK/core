@@ -19,14 +19,14 @@ class SyncBanToForum
     /**
      * Handle the event.
      *
-     * @param  BanUpdated $event
+     * @param  BanUpdated  $event
      * @return void
      */
     public function handle(BanUpdated $event)
     {
         $IPSInitFile = '/var/www/community/init.php';
 
-        if (!file_exists($IPSInitFile)) {
+        if (! file_exists($IPSInitFile)) {
             return;
         }
 

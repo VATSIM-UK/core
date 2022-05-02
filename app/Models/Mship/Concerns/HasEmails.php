@@ -27,9 +27,8 @@ trait HasEmails
     /**
      * Determine if the current account has the given email attached to it.
      *
-     * @param string $email The email to check is attached to this account.
-     * @param bool $checkPrimary Whether to also check the primary email address.
-     *
+     * @param  string  $email  The email to check is attached to this account.
+     * @param  bool  $checkPrimary  Whether to also check the primary email address.
      * @return bool
      */
     public function hasEmail($email, $checkPrimary = true)
@@ -50,8 +49,7 @@ trait HasEmails
      *
      * If the primary email exists as a secondary, it'll be deleted.
      *
-     * @param string $primaryEmail The new primary email for the account.
-     *
+     * @param  string  $primaryEmail  The new primary email for the account.
      * @return bool
      */
     public function setEmail($primaryEmail)
@@ -76,7 +74,7 @@ trait HasEmails
     }
 
     /**
-     * Retrieve an email address for a given SSO service
+     * Retrieve an email address for a given SSO service.
      *
      * @param $sso_account_id
      * @return string
@@ -91,8 +89,7 @@ trait HasEmails
     /**
      * Laravel magic setter - calls the setEmail method and instantly saves.
      *
-     * @param string $email
-     *
+     * @param  string  $email
      * @return bool
      */
     public function setEmailAttribute($email)
@@ -103,14 +100,13 @@ trait HasEmails
     /**
      * Attach a new secondary email to this user account.
      *
-     * @param string $newEmail The new email address to add to this account.
-     * @param bool $verified Set to TRUE if the email should be automatically verified.
-     *
+     * @param  string  $newEmail  The new email address to add to this account.
+     * @param  bool  $verified  Set to TRUE if the email should be automatically verified.
      * @return \Illuminate\Database\Eloquent\Model|Email|false
      */
     public function addSecondaryEmail($newEmail, $verified = false)
     {
-        if (!$this->hasEmail($newEmail)) {
+        if (! $this->hasEmail($newEmail)) {
             $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
             $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 

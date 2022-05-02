@@ -27,15 +27,21 @@
                         </li>
                         <li>
                             A controller may only make a booking if they are currently allowed to control that position
-                            and will be allowed to do so at the time booked. A member may make a maximum of 6 advance
-                            bookings up to 90 days in advance at any one time;
+                            and will be allowed to do so at the time booked;
                         </li>
                         <li>
-                            Members may not book less than 2 hours in advance unless they are currently controlling that
+                            A member may make a maximum of six advance bookings up to 90 days in advance at any one time
+                            and no more than two of these bookings may be on Gatwick Ground (EGKK_GND) or Gatwick Delivery
+                            (EGKK_DEL) in any combination.
+                        </li>
+                        <li>
+                            Members may not book less than two hours in advance unless they are currently controlling that
                             position and are booking to extend their current controlling session.
                         </li>
                         <li>
-                            Booking shall not be excessive in duration;
+                            Bookings shall not be excessive in duration (note that an excessive duration at an aerodrome
+                            that is more in demand by controllers will be different than at an aerodrome that has
+                            lower controller demand);
                         </li>
                         <li>
                             A controller must vacate a position if a member with a valid booking arrives to take over;
@@ -77,7 +83,7 @@
 
                     <ul>
                         <li>
-                            When approved by the Community Director, controllers may be allocated positions to control.
+                            When approved by the Marketing Director, controllers may be allocated positions to control.
                             Allocated controlling shall take priority over controller bookings.
                         </li>
                     </ul>
@@ -93,20 +99,26 @@
                             of:
                             <ul>
                                 <li>
-                                    Controllers wishing to bandbox two or more primary area sectors (e.g. LON_SC_CTR)
-                                    should book a single sector (e.g. LON_C_CTR) and then log on to the bandboxed
-                                    position. Other members may then log on to or book the other primary sectors without
-                                    the need for obtaining the first controller&rsquo;s preference;
+                                    Controllers wishing to bandbox two or more primary area sectors should book a
+                                    single sector and then log on to the bandboxed position. Other members may then
+                                    log on to or book the other Primary or Secondary sectors without the need for
+                                    obtaining the first controller&rsquo;s preference;
                                 </li>
                                 <li>
-                                    If a controller does choose to book a position bandboxing the primary area sectors,
-                                    other controllers may choose to log on to or book a contained primary sector without
-                                    obtaining the first controller&rsquo;s preference. This action must leave the
-                                    bandbox controller with a minimum of one primary sector to control.
+                                    If a controller does choose to book a position bandboxing the Primary area
+                                    sectors, other controllers may choose to log on to or book a contained Primary or
+                                    Secondary sector without obtaining the first controller&rsquo;s preference. This
+                                    action must leave the bandbox controller with a minimum of one Primary or Secondary
+                                    sector to control.
                                 </li>
                             </ul>
                         </li>
                     </ul>
+
+                    <p>
+                        Primary and Secondary Sectors are defined on the <a "{{ route('site.operations.sectors') }}" rel="">Area Sectors</a> page.
+                    </p>
+
                 </div>
             </div>
         </div>

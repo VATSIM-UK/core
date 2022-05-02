@@ -8,21 +8,6 @@
 
     <title>VATSIM United Kingdom Division</title>
 
-    <!--BugSnagScript-->
-    <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
-            data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
-            data-releasestage="{{ env('APP_ENV') }}"></script>
-    <script type="text/javascript">
-        Bugsnag.notifyReleaseStages = ["staging", "production"];
-
-        @if(Auth::check())
-            Bugsnag.user = {
-            id: {{ Auth::user()->id }},
-            name: "{{ Auth::user()->name }}",
-            email: "{{ Auth::user()->email }}"
-        };
-        @endif
-    </script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script>
         var touchsupport = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
@@ -80,6 +65,7 @@
             if (e.keyCode === 66) toggleActive();
         });
     </script>
+    <script src="https://slug.vatsim.uk/script.js" data-site="HQWHPBQX" data-included-domains="vatsim.uk,www.vatsim.uk" defer></script>
 
     <!-- Styles -->
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/home.css') }}">
@@ -92,11 +78,10 @@
 </head>
 
 <body>
-
+@include('components.top-notification')
 <!-- UK TopNav [START] -->
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-
         <div class="navbar-left">
             <button class="navbar-toggler" type="button">&#9776;</button>
             <a class="navbar-brand" href="#">
@@ -126,7 +111,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link"
-                               href="http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html"
+                               href="{{ route('site.airports') }}"
                                target="_blank">Charts</a>
                         </li>
                         <li class="nav-item">
@@ -173,7 +158,10 @@
                             <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.community.teamspeak') }}">TeamSpeak / Slack</a>
+                            <a class="nav-link" href="{{ route('site.community.teamspeak') }}">TeamSpeak</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('discord.show') }}">Discord</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="https://www.facebook.com/vatsimuk">Facebook</a>
@@ -189,9 +177,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.marketing.live-streaming') }}">Live Streams</a>
-                        </li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -200,7 +185,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="https://helpdesk.vatsim.uk">Contact Us</a>
                 </li>
-                <a href="{{ route('login') }}" class="nav-link text-white"><i class="fas fa-user"></i></a>
+                <li class="nav-item">
+                    <a href="{{ route('landing') }}" class="nav-link">
+                        <i class="fas fa-user text-white d-mobile-none"></i>
+                        <span class="d-tablet-none">Login</span>
+                    </a>
+                </li>
             </ul>
         </section>
 
@@ -218,28 +208,54 @@
             </div>
             <div class="data">
                 <ul>
-                    @forelse ($bookings as $booking)
+                    @foreach($events as $event)
+                        <li class='booking event-booking'>
+                            @if($event->thread)
+                                <a href="{{$event->thread}}"
+                                   target="_blank">
+                            @else
+                                <span>
+                            @endif
+                                <div class="icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div>
+                                    <b>{{$event->event}}</b>
+                                    <br/>
+                                    {{$event->from}}z - {{$event->to}}z<br/>
+                                </div>
+                            @if($event->thread)
+                                </a>
+                            @else
+                                </span>
+                            @endif
+                        </li>
+                        @if($loop->last)
+                            <hr class="mt-2 mb-2">
+                        @endif
+                    @endforeach
+                    @foreach ($bookings as $booking)
                         <li class='booking'>
-                            <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}"
+                            <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking->id }}"
                                target="_blank">
                                 <div class="icon">
-                                    @if($booking['type'] == 'EX')
+                                    @if($booking->isExam())
                                         <i class="fas fa-exclamation"></i>
-                                    @elseif($booking['type'] == 'ME')
+                                    @elseif($booking->isMentoring())
                                         <i class="fas fa-chalkboard-teacher"></i>
-                                    @elseif($booking['type'] == 'BK')
+                                    @elseif($booking->isMemberBooking())
                                         <i class="fas fa-headset"></i>
                                     @endif
                                 </div>
                                 <div>
                                     <b>{{ $booking['position'] }}
-                                        @if($booking['type'] == 'EX')
+                                        @if($booking->isExam())
                                             (E)
-                                        @elseif($booking['type'] == 'ME')
+                                        @elseif($booking->isMentoring())
                                             (M)
                                         @endif
                                     </b><br/>
-                                    {{ $booking['member']['name'] }}
+                                    {{ e($booking['member']['name']) }}
                                     @if($booking['member']['id'])
                                         ({{ $booking['member']['id'] }})
                                     @endif
@@ -248,9 +264,10 @@
                                 </div>
                             </a>
                         </li>
-                    @empty
+                    @endforeach
+                    @if($bookings->count() == 0 && $events->count() == 0)
                         <li>There are no bookings today. <i class="far fa-tired"></i></li>
-                    @endforelse
+                    @endif
                 </ul>
                 <div class="spacer"></div>
             </div>
@@ -286,14 +303,14 @@
                     <p class="lead mt-5 my-0">Did you know you're one of {{ $stats['members_division'] }} members of
                         VATSIM UK?</p>
                     <hr class="w-10 my-7">
-                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('dashboard') }}">Enter</a>
+                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('landing') }}">Enter</a>
                 @elseif(currentUserHasAuth())
                     <h1>Welcome to VATSIM UK, {{ $_account->name_first }}!</h1>
                     <p class="lead mt-5 my-0"> Have you considered visiting or transferring to the UK?</p>
                     <p class="lead"><a href="{{ route('visiting.landing') }}" class="text-white">Click here to learn
                             more!</a></p>
                     <hr class="w-10 my-7">
-                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('dashboard') }}">Enter</a>
+                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('landing') }}">Enter</a>
                 @else
                     <h1>Welcome to VATSIM UK!</h1>
                     <p class="lead mt-5"> We pride ourselves in providing regular and high quality air traffic control
@@ -315,26 +332,25 @@
         <h1 class="text-primary">Welcome!</h1><br>
 
         <p>
-            VATSIM UK provides air traffic control and a wealth of information for controlling and flying in the United
-            Kingdom on VATSIM. We pride ourselves in providing regular and high quality air traffic control for our
-            pilots. This, combined with our great community, is what makes VATSIM UK such a great place to be. Get
-            involved!
+            VATSIM UK is the community for pilots and controllers who partake in the VATSIM network within the United
+            Kingdom. We work hard in the provision of training for air traffic controllers and pilots as well as resources
+            for all members who want to fly and control in the UK. Our outstanding community is what makes VATSIM UK such
+            a great place to be. We welcome members from all around the world to get involved flying, controlling or even
+            development of software!
         </p>
 
         <p>
-            To join our great community, simply follow the easy-to-follow steps over at our Join Us page. Whether as a
-            pilot, controller or both, you will receive a warm welcome by our community and will have a great time,
-            whilst making a lot of new friends along the way.
+            To join the division, we have made an easy to follow guide at our Join Us page. Whether as a pilot, controller
+            or both, you will receive a warm welcome by our community and we hope that this will be the first step to
+            finding many new friends within the hobby.
         </p>
         <br>
 
-        <p class="text-right text-light">Simon Irvine <br/> VATSIM UK Division Director</p>
+        <p class="text-right text-light">Chris Pawley <br/> VATSIM UK Division Director</p>
 
-    </div>
     <!-- UK Welcome [END] -->
 
     <!-- Upcoming Event [START] -->
-    <div class="container">
 
         <h1 class="text-primary">Next Event</h1><br>
 
@@ -353,6 +369,7 @@
 <!-- UK User Welcome [START] -->
 <section class="section py-7 text-white bg-img-bottom" style="background-image: url(images/cockpit.jpg)"
          data-overlay="9">
+<div class="overlay opacity-55" style="background-color: #17375E"></div>
     <div class="container text-center">
 
         <div class="row">
@@ -404,49 +421,14 @@
     </div>
 </section>
 
-@if(App::environment('production'))
-<script type="text/javascript">
-    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-    (function () {
-        var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-        s1.async = true;
-        s1.src = 'https://embed.tawk.to/57bb3bfca767d83b45e79605/1aqq3gev7';
-        s1.charset = 'UTF-8';
-        s1.setAttribute('crossorigin', '*');
-        s0.parentNode.insertBefore(s1, s0);
-    })();
-
-    @if(Auth::check())
-        Tawk_API.visitor = {
-        name: "{{ Auth::user()->name }} ({{ Auth::user()->id }})",
-        email: "{{ Auth::user()->email }}"
-    };
-    @endif
-</script>
-@endif
-
 <!-- Scripts -->
-
-<script>
-    (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        i[r] = i[r] || function () {
-            (i[r].q = i[r].q || []).push(arguments)
-        }, i[r].l = 1 * new Date();
-        a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-    ga('create', 'UA-13128412-6', 'auto');
-    ga('send', 'pageview');
-
-</script>
+<script src="{{ mix('js/sentry.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jarallax/1.10.3/jarallax.min.js" integrity="sha512-1RIeczLHpQNM864FPmyjgIOPQmljv9ixHg5J1knRhTApLpvxqA0vOTxgGF89/DpgZIAXRCn9dRiakPjyTUl9Rg==" crossorigin="anonymous"></script>
 <script src="{{ mix('js/home.js') }}"></script>
+<script src="{{ mix('js/top-notification.js') }}"></script>
+
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax.min.js"></script>
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax-video.min.js"></script>
-
+@include('partials/_snow')
 </body>
 </html>

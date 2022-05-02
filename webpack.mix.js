@@ -11,14 +11,8 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.webpackConfig({
-    resolve: {
-        modules: [
-            'node_modules',
-            path.resolve(__dirname, 'resources/assets/js')
-        ]
-    }
-});
+// Sentry
+mix.js('resources/assets/js/sentry.js', 'public/js/sentry.js');
 
 // admin (AdminLTE)
 mix.less('resources/assets/less/admin.less', 'public/css/admin-all.css');
@@ -29,7 +23,10 @@ mix.js('resources/assets/js/app.js', 'public/js/app-all.js');
 
 // homepage
 mix.sass('resources/assets/sass/home.scss', 'public/css/home.css');
-mix.babel(['resources/assets/js/home.js'], 'public/js/home.js');
+mix.babel('resources/assets/js/home.js', 'public/js/home.js');
+
+mix.js('resources/assets/js/snow.js', 'public/js/snow.js');
+mix.js('resources/assets/js/top-notification.js', 'public/js/top-notification.js');
 
 // general
 mix.version();

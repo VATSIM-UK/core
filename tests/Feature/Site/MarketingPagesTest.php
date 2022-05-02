@@ -7,13 +7,7 @@ use Tests\TestCase;
 class MarketingPagesTest extends TestCase
 {
     /** @test */
-    public function itLoadsTheLiveStreamingPage()
-    {
-        $this->get(route('site.marketing.live-streaming'))->assertOk();
-    }
-
-    /** @test */
-    public function itLoadsTheBrandingPage()
+    public function testItLoadsTheBrandingPage()
     {
         $this->get(route('site.marketing.branding'))->assertOk();
     }

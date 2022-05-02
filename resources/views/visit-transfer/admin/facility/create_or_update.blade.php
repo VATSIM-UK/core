@@ -20,29 +20,29 @@
                         <div class="col-md-7">
                             <div class="form-group">
                                 {!! Form::label('name', 'Name:'),
-                                Form::text('name', Input::old("name", $facility->name), ['class' => 'form-control']) !!}
+                                Form::text('name', Request::old("name", $facility->name), ['class' => 'form-control']) !!}
                             </div>
                             <div class="form-group">
                                 {!! Form::label('open', 'Open for applications?'),
-                                Form::select("open", ["1" => "YES", "0" => "NO"], Input::old("open", $facility->open), ['class' => 'form-control']) !!}
+                                Form::select("open", ["1" => "YES", "0" => "NO"], Request::old("open", $facility->open), ['class' => 'form-control']) !!}
                             </div>
                             <div class="form-group" style="margin-bottom: 25px;">
                                 {!! Form::label('description', 'Description:'),
-                                Form::textarea('description', Input::old("description", $facility->description), ["rows" => 9, "class" => "form-control"]) !!}
+                                Form::textarea('description', Request::old("description", $facility->description), ["rows" => 9, "class" => "form-control"]) !!}
 
                                 <div class="form-group">
                                     {!! Form::label('training_team', 'Which team are they part of?'),
-                                    Form::select("training_team", ['atc' => "ATC Training", "pilot" => "Pilot Training"], Input::old("training_team", $facility->training_team), ['class' => 'form-control']) !!}
+                                    Form::select("training_team", ['atc' => "ATC Training", "pilot" => "Pilot Training"], Request::old("training_team", $facility->training_team), ['class' => 'form-control']) !!}
                                 </div>
 
                                 <div class="form-group">
                                     {!! Form::label('can_visit', 'Can people VISIT this facility?'),
-                                    Form::select("can_visit", ["1" => "YES", "0" => "NO"], Input::old("can_visit", $facility->can_visit), ['class' => 'form-control']) !!}
+                                    Form::select("can_visit", ["1" => "YES", "0" => "NO"], Request::old("can_visit", $facility->can_visit), ['class' => 'form-control']) !!}
                                 </div>
 
                                 <div class="form-group">
                                     {!! Form::label('can_transfer', 'Can people TRANSFER TO this facility?'),
-                                    Form::select("can_transfer", ["1" => "YES", "0" => "NO"], Input::old("can_transfer", $facility->can_transfer), ['class' => 'form-control']) !!}
+                                    Form::select("can_transfer", ["1" => "YES", "0" => "NO"], Request::old("can_transfer", $facility->can_transfer), ['class' => 'form-control']) !!}
                                 </div>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                                  @endif
                                     <div class="form-group">
                                         {!! Form::label('public', 'Should this facility be displayed as an option for every applicant?'),
-                                        Form::select("public", [0 => "No", 1 => "Yes"], Input::old("public", $facility->public), ['class' => 'form-control']) !!}
+                                        Form::select("public", [0 => "No", 1 => "Yes"], Request::old("public", $facility->public), ['class' => 'form-control']) !!}
                                     </div>
                                 </div>
 
@@ -82,37 +82,37 @@
 
                             <div class="form-group">
                                 {!! Form::label('training_required', 'Is training required?'),
-                                Form::select("training_required", [0 => "No", 1 => "Yes"], Input::old("training_required", $facility->training_required), ['class' => 'form-control']) !!}
+                                Form::select("training_required", [0 => "No", 1 => "Yes"], Request::old("training_required", $facility->training_required), ['class' => 'form-control']) !!}
                             </div>
 
                             <div class="form-group">
                                 {!! Form::label('training_spaces', 'How many training places are available?'),
-                                Form::select("training_spaces", [null => "Infinite", 0,1,2,3,4,5,6,7,8,9,10], Input::old("training_spaces", ($facility->training_spaces === null ? "null" : $facility->training_spaces)), ['class' => 'form-control']) !!}
+                                Form::select("training_spaces", [null => "Infinite", 0,1,2,3,4,5,6,7,8,9,10], Request::old("training_spaces", ($facility->training_spaces === null ? "null" : $facility->training_spaces)), ['class' => 'form-control']) !!}
                             </div>
 
                             <div class="form-group">
                                 {!!Form::label('stage_statement_enabled', 'Is a statement required?'),
-                                Form::select("stage_statement_enabled", [0 => "No", 1 => "Yes"], Input::old("stage_statement_enabled", $facility->stage_statement_enabled), ['class' => 'form-control']) !!}
+                                Form::select("stage_statement_enabled", [0 => "No", 1 => "Yes"], Request::old("stage_statement_enabled", $facility->stage_statement_enabled), ['class' => 'form-control']) !!}
                             </div>
 
                             <div class="form-group">
                                 {!!Form::label('stage_reference_enabled', 'Are references required?'),
-                                Form::select("stage_reference_enabled", [0 => "No", 1 => "Yes"], Input::old("stage_reference_enabled", $facility->stage_reference_enabled), ['class' => 'form-control']) !!}
+                                Form::select("stage_reference_enabled", [0 => "No", 1 => "Yes"], Request::old("stage_reference_enabled", $facility->stage_reference_enabled), ['class' => 'form-control']) !!}
                             </div>
 
                             <div class="form-group">
                                 {!! Form::label('stage_reference_quantity', 'How many references are required?'),
-                                Form::select("stage_reference_quantity", [0,1,2,3,4,5,6,7,8,9,10], Input::old("stage_reference_quantity", $facility->stage_reference_quantity), ['class' => 'form-control']) !!}
+                                Form::select("stage_reference_quantity", [0,1,2,3,4,5,6,7,8,9,10], Request::old("stage_reference_quantity", $facility->stage_reference_quantity), ['class' => 'form-control']) !!}
                             </div>
 
                             <div class="form-group">
                                 {!! Form::label('stage_checks', 'Do you want the automated checks to run?'),
-                                Form::select("stage_checks", [0 => "No", 1 => "Yes"], Input::old("stage_checks", $facility->stage_checks), ['class' => 'form-control']) !!}
+                                Form::select("stage_checks", [0 => "No", 1 => "Yes"], Request::old("stage_checks", $facility->stage_checks), ['class' => 'form-control']) !!}
                             </div>
 
                             <div class="form-group">
                                 {!! Form::label('auto_acceptance', 'Automatically accept all applicants?'),
-                                Form::select("auto_acceptance", [0 => "No", 1 => "Yes"], Input::old("auto_acceptance", $facility->auto_acceptance), ['class' => 'form-control']) !!}
+                                Form::select("auto_acceptance", [0 => "No", 1 => "Yes"], Request::old("auto_acceptance", $facility->auto_acceptance), ['class' => 'form-control']) !!}
                             </div>
                         </div>
 

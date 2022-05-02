@@ -2,13 +2,11 @@
 
 namespace App\Exceptions;
 
-use App;
-use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
-use Vluzrmos\SlackApi\Facades\SlackChat;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -45,23 +43,28 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $e
+     * @param  Throwable  $e
      * @return void
-     * @throws \Exception $exception
+     *
+     * @throws Throwable $exception
      */
-    public function report(Exception $e)
+    public function report(Throwable $e)
     {
-        if (!$this->shouldntReport($e)) {
-            if (extension_loaded('newrelic')) {
-                try {
-                    newrelic_notice_error(null, $e);
-                } catch (Exception $e) {
-                }
-            }
-
+        if (! $this->shouldntReport($e)) {
             if (class_exists('Log')) {
                 Log::info(Request::fullUrl());
             }
+        }
+
+        if (app()->bound('sentry') && $this->shouldReport($e)) {
+            \Sentry\configureScope(function (\Sentry\State\Scope $scope): void {
+                $scope->setUser([
+                    'id' => auth()->user() ? auth()->user()->id : 'Guest',
+                    'username' => auth()->user() ? auth()->user()->name : 'Guest',
+                    'email' => auth()->user() ? auth()->user()->email : 'Guest',
+                ]);
+            });
+            app('sentry')->captureException($e);
         }
 
         parent::report($e);
@@ -70,77 +73,12 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Exception $e
+     * @param  \Illuminate\Http\Request  $request
+     * @param  Throwable  $e
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
+    public function render($request, Throwable $e)
     {
         return parent::render($request, $e);
-    }
-
-    protected function reportSlackError(Exception $e)
-    {
-        $channel = '#ws_alerts';
-
-        $attachment = [
-            'fallback' => 'Exception thrown: '.get_class($e),
-            'text' => $e->getTraceAsString(),
-            'author_name' => get_class($e),
-            'color' => 'danger',
-            'fields' => [
-                [
-                    'title' => 'Exception:',
-                    'value' => (new \ReflectionClass($e))->getShortName(),
-                    'short' => true,
-                ],
-                [
-                    'title' => 'Message:',
-                    'value' => $e->getMessage(),
-                    'short' => true,
-                ],
-                [
-                    'title' => 'File:',
-                    'value' => $e->getFile(),
-                    'short' => true,
-                ],
-                [
-                    'title' => 'Line:',
-                    'value' => $e->getLine(),
-                    'short' => true,
-                ],
-                [
-                    'title' => 'Code:',
-                    'value' => $e->getCode(),
-                    'short' => true,
-                ],
-            ],
-        ];
-
-        if (!App::runningInConsole()) {
-            if (method_exists('Auth', 'check') && Auth::check()) {
-                $attachment['fields'][] = [
-                    'title' => 'Member:',
-                    'value' => sprintf(
-                        '%d - %s %s',
-                        Auth::user()->id,
-                        Auth::user()->name_first,
-                        Auth::user()->name_last
-                    ),
-                    'short' => true,
-                ];
-            }
-
-            $attachment['fields'][] = [
-                'title' => 'Request path:',
-                'value' => Request::url(),
-                'short' => true,
-            ];
-        }
-
-        try {
-            SlackChat::message($channel, '', ['attachments' => $attachment, 'username' => 'Error Handling']);
-        } catch (Exception $e) {
-        }
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models\TeamSpeak;
 use App\Models\Model;
 
 /**
- * App\Models\TeamSpeak\Channel
+ * App\Models\TeamSpeak\Channel.
  *
  * @property int $id
  * @property int|null $parent_id
@@ -14,6 +14,7 @@ use App\Models\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Channel[] $children
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\TeamSpeak\Channel|null $parent
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Channel whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Channel whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Channel whereParentId($value)
@@ -51,12 +52,12 @@ class Channel extends Model
     /**
      * Accessor for channel protection inheritance. If the database field is null, protection is inherited.
      *
-     * @param bool|null $value
+     * @param  bool|null  $value
      * @return bool
      */
     public function getProtectedAttribute($value)
     {
-        if (is_null($value) && !is_null($this->parent)) {
+        if (is_null($value) && ! is_null($this->parent)) {
             return $this->parent->protected;
         } else {
             if (is_null($value) && is_null($this->parent)) {

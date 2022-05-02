@@ -8,7 +8,6 @@ use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
 use App\Libraries\TeamSpeak;
 use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Registration;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,8 +31,8 @@ abstract class TeamSpeakCommand extends Command
      * In order to avoid self::$command being overwritten when each inherited class is constructed, the assignment
      * must be made here, when it is known that this is the command to be run.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface $input
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
+     * @param  \Symfony\Component\Console\Input\InputInterface  $input
+     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      * @return int
      */
     public function run(InputInterface $input, OutputInterface $output)
@@ -46,8 +45,8 @@ abstract class TeamSpeakCommand extends Command
     /**
      * Handling for a serverquery exception thrown by the TeamSpeak framework.
      *
-     * @param TeamSpeak3_Adapter_ServerQuery_Exception $e
-     * @param Account $account
+     * @param  TeamSpeak3_Adapter_ServerQuery_Exception  $e
+     * @param  Account  $account
      */
     protected static function handleServerQueryException(TeamSpeak3_Adapter_ServerQuery_Exception $e, Account $account = null)
     {
@@ -68,7 +67,7 @@ abstract class TeamSpeakCommand extends Command
     /**
      * Handling for all exceptions.
      *
-     * @param \Exception $e
+     * @param  \Exception  $e
      */
     protected static function handleException(Exception $e)
     {
@@ -86,7 +85,7 @@ abstract class TeamSpeakCommand extends Command
         self::$command->log($e->getTraceAsString());
 
         $member = Registration::where('dbid', self::$command->currentMember)->first();
-        if (!is_null(self::$command->currentMember) && !is_null($member)) {
+        if (! is_null(self::$command->currentMember) && ! is_null($member)) {
             $member = $member->account;
         } else {
             return;
@@ -101,7 +100,5 @@ abstract class TeamSpeakCommand extends Command
             .$e->getTraceAsString()
             .PHP_EOL.'Error message: '.$e->getMessage().PHP_EOL;
         self::$command->log($message);
-
-        Bugsnag::notifyException($e);
     }
 }

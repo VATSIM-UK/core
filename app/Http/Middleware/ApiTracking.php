@@ -9,9 +9,8 @@ class ApiTracking
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -32,7 +31,7 @@ class ApiTracking
             $apiRequest = \App\Models\Api\Request::where('api_account_id', '=', \Auth::guard('api')->user()->id)
                 ->where('method', '=', $request->method())
                 ->whereNull('response_code')
-                ->orderBy('created_at', 'DESC')->first();
+                ->orderBy('created_at', 'DESC')->firstOrFail();
 
             $apiRequest->response_code = $response->status();
             $apiRequest->response_full = $response->content();

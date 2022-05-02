@@ -32,8 +32,14 @@ class TeamSpeakManager extends TeamSpeakCommand
         try {
             $tscon = TeamSpeak::run('VATSIM UK Management Bot');
 
+            if (! $tscon) {
+                // Connection not found, abort.
+                return;
+            }
+
             // get all clients and initiate loop
             $clients = $tscon->clientList();
+
             foreach ($clients as $client) {
                 $member = TeamSpeak::checkClientRegistration($client);
                 try {
@@ -45,7 +51,7 @@ class TeamSpeakManager extends TeamSpeakCommand
                     TeamSpeak::checkMemberMandatoryNotifications($client, $member);
                     TeamSpeak::checkClientNickname($client, $member);
 
-                    if (!TeamSpeak::clientIsProtected($client)) {
+                    if (! TeamSpeak::clientIsProtected($client)) {
                         TeamSpeak::checkClientServerGroups($client, $member);
                         TeamSpeak::checkClientChannelGroups($client, $member);
                         TeamSpeak::checkClientIdleTime($client, $member);

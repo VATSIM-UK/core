@@ -6,7 +6,7 @@ use App\Models\Airport;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Airport\Navaid
+ * App\Models\Airport\Navaid.
  *
  * @property int $id
  * @property int $airport_id
@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Airport $airport
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereAirportId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereFrequency($value)
@@ -37,14 +38,14 @@ class Navaid extends Model
 {
     protected $table = 'airport_navaids';
     protected $fillable = [
-            'type',
-            'name',
-            'heading',
-            'ident',
-            'frequency',
-            'frequency_band',
-            'remarks',
-        ];
+        'type',
+        'name',
+        'heading',
+        'ident',
+        'frequency',
+        'frequency_band',
+        'remarks',
+    ];
 
     const FREQUENCY_BAND_MHZ = 1;
     const FREQUENCY_BAND_KHZ = 2;

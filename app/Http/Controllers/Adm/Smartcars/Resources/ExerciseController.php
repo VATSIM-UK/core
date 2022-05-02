@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Adm\Smartcars\Resources;
 
 use App\Http\Controllers\Adm\AdmController as Controller;
 use App\Libraries\Storage\CoreUploadedFile;
-use App\Libraries\Storage\FteStorageWrapper;
 use App\Models\Smartcars\Flight;
 use Illuminate\Http\Request;
 
@@ -51,6 +50,7 @@ class ExerciseController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index()
@@ -66,6 +66,7 @@ class ExerciseController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
@@ -78,8 +79,9 @@ class ExerciseController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
@@ -92,14 +94,12 @@ class ExerciseController extends Controller
         $exercise->fill(array_filter($request->except('image')));
         $exercise->featured = $request->input('featured') ? true : false;
         $exercise->enabled = $request->input('enabled') ? true : false;
-        
 
         if ($request->hasFile('image')) {
             $file = new CoreUploadedFile($request->file('image'));
-            (new FteStorageWrapper())->store($file);
-            $exercise->image = $file->getFullFileName();
+            $exercise->image()->store($file);
+            $exercise->image = $file->getPathFileName();
         }
-
         $exercise->save();
 
         return redirect($this->redirectPath())->with('success', 'Exercise created.');
@@ -108,8 +108,9 @@ class ExerciseController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Smartcars\Flight $exercise
+     * @param  \App\Models\Smartcars\Flight  $exercise
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Flight $exercise)
@@ -122,9 +123,10 @@ class ExerciseController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Smartcars\Flight $exercise
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Smartcars\Flight  $exercise
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Flight $exercise)
@@ -136,12 +138,13 @@ class ExerciseController extends Controller
         $exercise->fill(array_filter($request->except('image')));
         $exercise->featured = $request->input('featured') ? true : false;
         $exercise->enabled = $request->input('enabled') ? true : false;
-        $exercise->save();
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $image->storeAs('smartcars/exercises', "{$exercise->id}.{$image->extension()}", ['disk' => 'public']);
+            $file = new CoreUploadedFile($request->file('image'));
+            $exercise->image()->store($file);
+            $exercise->image = $file->getPathFileName();
         }
+        $exercise->save();
 
         return redirect($this->redirectPath())->with('success', 'Exercise updated.');
     }
@@ -149,8 +152,9 @@ class ExerciseController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Smartcars\Flight $exercise
+     * @param  \App\Models\Smartcars\Flight  $exercise
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Exception
      */
@@ -159,7 +163,7 @@ class ExerciseController extends Controller
         $this->authorize('use-permission', 'adm/smartcars/exercises/delete');
 
         if ($exercise->image) {
-            $exercise->image->delete();
+            $exercise->image = null;
         }
 
         $exercise->delete();

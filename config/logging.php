@@ -34,7 +34,11 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['single', 'training'],
+        ],
+        'training' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/training.log'),
         ],
         'single' => [
             'driver' => 'single',

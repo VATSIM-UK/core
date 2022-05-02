@@ -1,0 +1,206 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - '*'
+      - '**'
+    tags-ignore:
+      - v*
+  pull_request:
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: core-test-${{ github.ref }}
+      cancel-in-progress: true
+    continue-on-error: ${{ matrix.experimental }}
+    env:
+      NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+      NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1']
+        composer: ['v2']
+        experimental: [false]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      #
+      # ENVIRONMENT DEPENDENCIES SETUP
+      #
+      - name: Configure PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: pcov
+          tools: composer:${{ matrix.composer }}
+
+      - name: Setup Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+
+      # Authenticate Nova
+      - name: Authenticate Nova Installation
+        env:
+          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
+        run: |
+          cp auth.json.example auth.json
+          composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_PASSWORD}
+
+      # Start MySQL and Create Databases
+      - name: Create Databases
+        run: |
+          sudo systemctl start mysql.service
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
+
+      #
+      # COMPOSER DEPENDENICES
+      #
+
+      # Add GitHub Auth to Composer
+      - name: Add Composer GitHub Token
+        run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
+
+      # Restore Caches
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Restore Composer Cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Restore Vendor From Cache
+        uses: actions/cache@v1
+        with:
+          path: vendor
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
+
+      # Install
+      - name: Install Composer Dependencies
+        run: |
+           composer install --no-interaction
+           php artisan package:discover
+
+      - name: Install Nova & Waiting Lists
+        run: |
+          php artisan nova:install
+          cd nova-components/WaitingListsManager && composer install && cd ../../
+
+      #
+      # YARN DEPENDENCIES
+      #
+
+      # Restore Caches
+      - name: Get Yarn Cache Directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Restore Yarn Cache
+        uses: actions/cache@v1
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      # Install
+      - name: Install Core Assets
+        run: yarn
+
+      - name: Compile Core Assets
+        run: yarn run prod
+
+      - name: Install Waiting Lists Manager Assets
+        run: cd nova-components/WaitingListsManager && yarn && cd ../../
+
+      - name: Compile Waiting Lists Manager Assets
+        run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
+
+      #
+      # APPLICATION SETUP
+      #
+
+      # Environment Configuration
+      - name: Create empty Environment File
+        run: touch .env
+
+      - name: Set Environment Variables
+        uses: allenevans/set-env@v2.0.0
+        with:
+          APP_ENV: testing
+          APP_KEY: base64:wx/g4ayECKlSzOYSguRFoCrsd+KSbAyEiy0J8zWxxyU=
+          APP_URL: 127.0.0.1
+          CACHE_DRIVER: array
+          DB_MYSQL_HOST: localhost
+          DB_MYSQL_PORT: 3306
+          DB_MYSQL_USER: root
+          DB_MYSQL_PASS: root
+          DB_MYSQL_NAME: core
+          CTS_DATABASE: cts
+
+      # Publish Packages
+      - name: Publish Horizon
+        run: php artisan horizon:publish
+
+      - name: Publish Telescope
+        run: php artisan telescope:publish
+
+      # Run Database Migration
+      - name: Migrate Database
+        run: php artisan migrate
+
+      # Cache Setup
+      - name: Cache Routes
+        run: php artisan route:cache
+
+      - name: Cache Config
+        run: php artisan config:cache
+
+      # Start Application
+      - name: Serve Application
+        run: php artisan serve -q &
+
+      #
+      # RUN TESTING SUITE
+      #
+
+      # Run Tests
+      - name: Execute PHPUnit Tests With Coverage
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      # Run Coverage Suite
+      - name: Upload Code Coverage
+        uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: true
+
+  trigger-release:
+    name: Trigger Release
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      #
+      # RELEASE (main only)
+      #
+      - name: Trigger release workflow
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT }}
+          event-type: release-trigger

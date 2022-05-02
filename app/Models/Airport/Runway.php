@@ -6,7 +6,7 @@ use App\Models\Airport;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Airport\Runway
+ * App\Models\Airport\Runway.
  *
  * @property int $id
  * @property int $airport_id
@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Airport $airport
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Procedure[] $procedures
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereAirportId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereHeading($value)
@@ -34,12 +35,12 @@ class Runway extends Model
 {
     protected $table = 'airport_runways';
     protected $fillable = [
-            'ident',
-            'heading',
-            'width',
-            'length',
-            'surface_type',
-        ];
+        'ident',
+        'heading',
+        'width',
+        'length',
+        'surface_type',
+    ];
 
     const SURFACE_TYPE_ASPHALT = 1;
     const SURFACE_TYPE_GRASS = 2;

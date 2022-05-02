@@ -18,7 +18,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * App\Models\VisitTransfer\Reference
+ * App\Models\VisitTransfer\Reference.
  *
  * @property int $id
  * @property int $application_id
@@ -45,6 +45,7 @@ use Illuminate\Support\Facades\Cache;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \App\Models\Sys\Token $tokens
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Reference accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Reference draft()
  * @method static bool|null forceDelete()
@@ -319,42 +320,42 @@ class Reference extends Model
     /** Statistics */
     public static function statisticTotal()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_TOTAL', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_TOTAL', 60, function () {
             return self::count();
         });
     }
 
     public static function statisticRequested()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_REQUESTED', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_REQUESTED', 60, function () {
             return self::requested()->count();
         });
     }
 
     public static function statisticSubmitted()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_SUBMITTED', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_SUBMITTED', 60, function () {
             return self::submitted()->count();
         });
     }
 
     public static function statisticUnderReview()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_UNDER_REVIEW', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_UNDER_REVIEW', 60, function () {
             return self::underReview()->count();
         });
     }
 
     public static function statisticAccepted()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_ACCEPTED', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_ACCEPTED', 60, function () {
             return self::accepted()->count();
         });
     }
 
     public static function statisticRejected()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_REJECTED', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_REJECTED', 60, function () {
             return self::rejected()->count();
         });
     }
@@ -362,7 +363,7 @@ class Reference extends Model
     /** Guards */
     private function guardAgainstReSubmittingReference()
     {
-        if (!$this->is_requested) {
+        if (! $this->is_requested) {
             throw new ReferenceNotRequestedException($this);
         }
     }
@@ -378,7 +379,7 @@ class Reference extends Model
     {
         parent::boot();
 
-        static::deleting(function (Reference $reference) {
+        static::deleting(function (self $reference) {
             $reference->tokens()->delete();
             event(new ReferenceDeleted($reference));
         });

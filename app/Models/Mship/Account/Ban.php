@@ -7,7 +7,7 @@ use App\Models\Model;
 use Carbon\Carbon;
 
 /**
- * App\Models\Mship\Account\Ban
+ * App\Models\Mship\Account\Ban.
  *
  * @property int $id
  * @property int $account_id
@@ -34,6 +34,7 @@ use Carbon\Carbon;
  * @property-read mixed $type_string
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
  * @property-read \App\Models\Mship\Ban\Reason|null $reason
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isActive()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isHistoric()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isLocal()
@@ -142,12 +143,12 @@ class Ban extends Model
         $period_finish = $this->period_finish;
         $now = \Carbon\Carbon::now();
 
-        return !$period_finish || ($now->between($period_start, $period_finish) && !$this->is_repealed);
+        return ! $period_finish || ($now->between($period_start, $period_finish) && ! $this->is_repealed);
     }
 
     public function getIsExpiredAttribute()
     {
-        return !$this->is_active;
+        return ! $this->is_active;
     }
 
     public function getTypeStringAttribute()
@@ -167,7 +168,7 @@ class Ban extends Model
 
     public function getPeriodAmountStringAttribute()
     {
-        if (!$this->period_finish) {
+        if (! $this->period_finish) {
             return;
         }
 
@@ -176,7 +177,7 @@ class Ban extends Model
 
     public function getPeriodLeftAttribute()
     {
-        if (!$this->period_finish) {
+        if (! $this->period_finish) {
             return;
         }
 

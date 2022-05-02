@@ -77,7 +77,8 @@
                         @if($pilotSessions->isEmpty())
                             <tr>
                                 <th colspan="5" class="text-center">
-                                    <span style="display: flex; justify-content: center;">You have not made any connections to the network as a pilot.</span>
+                                    {{-- <span style="display: flex; justify-content: center;">You have not made any connections to the network as a pilot.</span> --}}
+                                    <span style="display: flex; justify-content: center;">VATSIM UK does not currently track connections to the network as a pilot.</span>
                                 </th>
                             </tr>
                         @else

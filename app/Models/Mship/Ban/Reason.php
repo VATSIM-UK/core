@@ -6,7 +6,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\Mship\Ban\Reason
+ * App\Models\Mship\Ban\Reason.
  *
  * @property int $id
  * @property string $name
@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bans
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $period_hours
+ *
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason onlyTrashed()
  * @method static bool|null restore()

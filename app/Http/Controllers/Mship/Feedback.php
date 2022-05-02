@@ -43,7 +43,7 @@ class Feedback extends \App\Http\Controllers\BaseController
     public function getFeedback(Form $form)
     {
         $questions = $form->questions()->orderBy('sequence')->get();
-        if (!$questions || !$form->enabled) {
+        if (! $questions || ! $form->enabled) {
             // We have no questions to display!
             return Redirect::route('mship.manage.dashboard')
                 ->withError('There was an issue loading the requested form');
@@ -105,13 +105,13 @@ class Feedback extends \App\Http\Controllers\BaseController
                 $rules[] = 'required';
             }
             if (count($rules) > 0) {
-                $ruleset[$question->slug] = implode($rules, '|');
+                $ruleset[$question->slug] = implode('|', $rules);
             }
 
             // Process errors
             foreach ($rules as $rule) {
                 $automaticRuleErrors = ['required', 'exists', 'integer'];
-                if (!array_search($rule, $automaticRuleErrors)) {
+                if (! array_search($rule, $automaticRuleErrors)) {
                     $errormessages[$question->slug.'.'.$rule] = "Looks like you answered '".$question->question."' incorrectly. Please try again.";
                 }
             }
@@ -133,7 +133,7 @@ class Feedback extends \App\Http\Controllers\BaseController
         }
 
         $account = null;
-        if (!$cidfield && !$form->targeted) {
+        if (! $cidfield && ! $form->targeted) {
             // No specific target, feedback points at submitter
             $account = Account::find(\Auth::user()->id);
         } elseif ($cidfield != null) {
@@ -160,7 +160,7 @@ class Feedback extends \App\Http\Controllers\BaseController
 
     public function getUserSearch($name, Request $request)
     {
-        $matches = Account::whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE '%".$name."%'")
+        $matches = Account::whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE \"%".$name.'%"')
             ->where('id', '!=', \Auth::user()->id)
             ->limit(5)
             ->with(['states'])
@@ -181,7 +181,7 @@ class Feedback extends \App\Http\Controllers\BaseController
 
             $this->returnList->push(collect([
                 'cid' => $user->id,
-                'name' => $user->real_name,
+                'name' => e($user->real_name),
                 'status' => $user->state,
             ]));
 

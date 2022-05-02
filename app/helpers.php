@@ -6,7 +6,7 @@
  * least that number of uppercase characters.
  *
  * @param $string
- * @param int $count
+ * @param  int  $count
  * @return bool
  */
 function str_has_upper($string, $count = 1)
@@ -20,7 +20,7 @@ function str_has_upper($string, $count = 1)
  * least that number of lowercase characters.
  *
  * @param $string
- * @param int $count
+ * @param  int  $count
  * @return bool
  */
 function str_has_lower($string, $count = 1)
@@ -34,7 +34,7 @@ function str_has_lower($string, $count = 1)
  * least that number of numeric characters.
  *
  * @param $string
- * @param int $count
+ * @param  int  $count
  * @return bool
  */
 function str_has_numeric($string, $count = 1)
@@ -113,7 +113,7 @@ function is_relative_date_string($suspectedRelativeDateString)
 
 function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute = false)
 {
-    if (!$ts1 or !$ts2) {
+    if (! $ts1 or ! $ts2) {
         return 'unknown length';
     }
 
@@ -216,4 +216,16 @@ function maskEmail($email)
     }
 
     return "{$delimited[0]}@{$delimited[1]}";
+}
+
+function handleService(\App\Services\BaseService $service)
+{
+    return $service->handle();
+}
+
+if (! function_exists('str_contains')) {
+    function str_contains($haystack, $needle)
+    {
+        return \Illuminate\Support\Str::contains($haystack, $needle);
+    }
 }

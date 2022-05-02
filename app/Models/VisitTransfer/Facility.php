@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Malahierba\PublicId\PublicId;
 
 /**
- * App\Models\VisitTransfer\Facility
+ * App\Models\VisitTransfer\Facility.
  *
  * @property int $id
  * @property string $name
@@ -32,6 +32,7 @@ use Malahierba\PublicId\PublicId;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Facility\Email[] $emails
  * @property-read string $public_id
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility atc()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility canTransfer()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility canVisit()
@@ -157,7 +158,7 @@ class Facility extends Model
         }
 
         foreach ($input_emails as $key => $email) {
-            if (!$current_emails->contains('email', $email)) {
+            if (! $current_emails->contains('email', $email)) {
                 $new_email = new Facility\Email(['email' => $email]);
                 $this->emails()->save($new_email);
             }
@@ -263,7 +264,7 @@ class Facility extends Model
             throw new DuplicateFacilityNameException($proposedName);
         }
 
-        if (!$excludeCurrent && self::where('name', 'LIKE', $proposedName)->count() > 0) {
+        if (! $excludeCurrent && self::where('name', 'LIKE', $proposedName)->count() > 0) {
             throw new DuplicateFacilityNameException($proposedName);
         }
     }

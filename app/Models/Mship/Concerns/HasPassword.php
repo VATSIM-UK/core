@@ -23,7 +23,7 @@ trait HasPassword
     /**
      * Send the password reset notification.
      *
-     * @param  string $token
+     * @param  string  $token
      * @return void
      */
     public function sendPasswordResetNotification($token)
@@ -46,7 +46,7 @@ trait HasPassword
      *
      * Will hash the password, or set it as null if required.
      *
-     * @param null|string $password The password value to set.
+     * @param  null|string  $password  The password value to set.
      */
     public function setPasswordAttribute($password)
     {
@@ -55,7 +55,7 @@ trait HasPassword
         // else password needs hashing, hash and store it
         if ($password === null) {
             $this->attributes['password'] = null;
-        } elseif (!Hash::needsRehash($password)) {
+        } elseif (! Hash::needsRehash($password)) {
             $this->attributes['password'] = $password;
         } else {
             $this->attributes['password'] = Hash::make($password);
@@ -79,7 +79,7 @@ trait HasPassword
      */
     public function hasPasswordExpired()
     {
-        if (!$this->hasPassword()) {
+        if (! $this->hasPassword()) {
             return false;
         }
 
@@ -121,8 +121,7 @@ trait HasPassword
     /**
      * Calculate the password expiry for this account.
      *
-     * @param bool $temporary Should we treat the password as temporary?
-     *
+     * @param  bool  $temporary  Should we treat the password as temporary?
      * @return null|Carbon
      */
     public function calculatePasswordExpiry($temporary = false)
@@ -139,8 +138,8 @@ trait HasPassword
     /**
      * Set the user's password.
      *
-     * @param string $password The password string.
-     * @param bool $temporary Will only be a temporary password
+     * @param  string  $password  The password string.
+     * @param  bool  $temporary  Will only be a temporary password
      * @return bool
      */
     public function setPassword($password, $temporary = false)

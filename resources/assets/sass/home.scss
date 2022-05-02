@@ -1,5 +1,6 @@
 @import "node_modules/font-awesome/scss/font-awesome";
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Dosis:200,400,500,600");
+@import "_top-notification";
 
 @media all {
   :root {
@@ -200,17 +201,17 @@
   }
   @media (min-width: 768px) {
     .container {
-      max-width: 720px;
+      max-width: 750px;
     }
   }
   @media (min-width: 1125px) {
     .container {
-      max-width: 960px;
+      max-width: 970px;
     }
   }
   @media (min-width: 1125px) {
     .container {
-      max-width: 1400px;
+      max-width: 1170px;
     }
   }
   .row {
@@ -368,6 +369,22 @@
     -webkit-box-shadow: 0 0 0 0rem rgba(80, 161, 255, 0.5);
     box-shadow: 0 0 0 0rem rgba(80, 161, 255, 0.5);
   }
+  .top_notification {
+    position: absolute !important;
+    top: 0;
+
+    @media (min-width: 768px) {
+      .row {
+        flex-wrap: nowrap;
+        -ms-flex-wrap: nowrap;
+      }
+    }
+    @media (max-width: 768px) {
+      .row {
+        display: initial;
+      }
+    }
+  }
   .nav {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -462,6 +479,9 @@
     .navbar-expand-lg .navbar-toggler {
       display: none;
     }
+    .navbar-expand-lg .d-tablet-none {
+      display: none !important;
+    }
   }
   .navbar-light .navbar-brand {
     color: rgba(0, 0, 0, 0.9);
@@ -487,11 +507,20 @@
   .mt-2 {
     margin-top: .5rem !important;
   }
+  .mt-4 {
+    margin-top: 1rem !important;
+  }
   .mt-5 {
     margin-top: 1.5rem !important;
   }
+  .mb-2 {
+    margin-bottom: .5rem !important;
+  }
   .mb-3 {
     margin-bottom: .75rem !important;
+  }
+  .mb-4 {
+    margin-bottom: 1rem !important;
   }
   .my-7 {
     margin-top: 3rem !important;
@@ -971,7 +1000,6 @@
   [data-overlay]::before {
     position: absolute;
     content: '';
-    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
@@ -1698,7 +1726,7 @@
               transition-timing-function: ease-in-out;
               padding: 0 0 0 15px;
 
-              a:link, a:visited, a:hover {
+              a:link, a:visited, a:hover, > span {
                 display: block;
                 padding: 10px 15px 10px 0;
                 width: 100%;
@@ -1708,6 +1736,10 @@
 
               &.booking:hover {
                 background-color: rgba(255, 255, 255, 0.3)
+              }
+
+              &.booking.event-booking {
+                background-color: #25ADE3;
               }
 
               div {

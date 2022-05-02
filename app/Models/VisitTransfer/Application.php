@@ -3,6 +3,7 @@
 namespace App\Models\VisitTransfer;
 
 use App\Events\VisitTransfer\ApplicationAccepted;
+use App\Events\VisitTransfer\ApplicationCancelled;
 use App\Events\VisitTransfer\ApplicationCompleted;
 use App\Events\VisitTransfer\ApplicationExpired;
 use App\Events\VisitTransfer\ApplicationRejected;
@@ -24,14 +25,13 @@ use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\NetworkData\Atc;
-use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Malahierba\PublicId\PublicId;
 
 /**
- * App\Models\VisitTransfer\Application
+ * App\Models\VisitTransfer\Application.
  *
  * @property int $id
  * @property int $type
@@ -86,6 +86,7 @@ use Malahierba\PublicId\PublicId;
  * @property-read mixed $type_string
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $referees
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application closed()
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application notStatus($status)
@@ -197,6 +198,19 @@ class Application extends Model
     public static $APPLICATION_IS_CONSIDERED_WITHDRAWABLE = [
         self::STATUS_IN_PROGRESS,
         self::STATUS_SUBMITTED,
+    ];
+
+    public static $APPLICATION_CAN_BE_ACCEPTED = [
+        self::STATUS_SUBMITTED,
+        self::STATUS_UNDER_REVIEW,
+    ];
+
+    public static $APPLICATION_CANT_BE_REJECTED = [
+        self::STATUS_CANCELLED,
+        self::STATUS_COMPLETED,
+        self::STATUS_ACCEPTED,
+        self::STATUS_REJECTED,
+        self::STATUS_WITHDRAWN,
     ];
 
     public function __construct(array $attributes = [])
@@ -326,6 +340,16 @@ class Application extends Model
         return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_EDITABLE);
     }
 
+    public function getCanAcceptAttribute()
+    {
+        return $this->isStatusIn(self::$APPLICATION_CAN_BE_ACCEPTED);
+    }
+
+    public function getCanRejectAttribute()
+    {
+        return ! $this->isStatusIn(self::$APPLICATION_CANT_BE_REJECTED);
+    }
+
     public function getIsNotEditableAttribute()
     {
         return $this->isStatusNotIn(self::$APPLICATION_IS_CONSIDERED_EDITABLE);
@@ -381,6 +405,11 @@ class Application extends Model
         return $this->isStatusIn([self::STATUS_PENDING_CERT, self::STATUS_COMPLETED]);
     }
 
+    public function getIsCancelledAttribute()
+    {
+        return $this->isStatus(self::STATUS_CANCELLED);
+    }
+
     public function getIsLapsedAttribute()
     {
         return $this->isStatus(self::STATUS_LAPSED);
@@ -429,7 +458,7 @@ class Application extends Model
 
     public function getTrainingTeamAttribute()
     {
-        if (!$this->exists) {
+        if (! $this->exists) {
             return 'Unknown';
         }
 
@@ -492,7 +521,7 @@ class Application extends Model
 
     public function isStatusNotIn($stati)
     {
-        return !$this->isStatusIn($stati);
+        return ! $this->isStatusIn($stati);
     }
 
     public function setFacility(Facility $facility)
@@ -650,20 +679,21 @@ class Application extends Model
 
     public function accept($staffComment = null, Account $actor = null)
     {
-        $this->guardAgainstNonUnderReviewApplication();
+        $this->guardAgainstUnAcceptableApplication();
 
-        $this->status = self::STATUS_ACCEPTED;
-        $this->save();
-
-        $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was accepted.\n";
-
-        if ($staffComment) {
-            $noteContent .= $staffComment;
+        // Deal with refereneces
+        foreach ($this->referees as $reference) {
+            switch ($reference->status) {
+                case Reference::STATUS_UNDER_REVIEW:
+                    $reference->cancel();
+                    break;
+                case Reference::STATUS_REQUESTED:
+                    $reference->accept(null, $actor);
+                    break;
+            }
         }
 
-        $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
-        $this->notes()->save($note);
-        // TODO: Investigate why this is required!!!!
+        $this->changeStatus(self::STATUS_ACCEPTED, null, $staffComment, $actor);
 
         if ($this->is_visit) {
             $this->account->addState(State::findByCode('VISITING'));
@@ -673,34 +703,47 @@ class Application extends Model
             $this->account->addState(State::findByCode('TRANSFERRING'));
         }
 
-        // Cancel any outstanding references
-        foreach ($this->referees as $reference) {
-            $reference->cancel();
-        }
-
-        $this->account->notify((new SlackInvitation())->delay(Carbon::now()->addDays(3)));
-
         event(new ApplicationAccepted($this));
     }
 
     public function complete($staffComment = null, Account $actor = null)
     {
         $this->guardAgainstNonAcceptedApplication();
+        $this->changeStatus(self::STATUS_COMPLETED, null, $staffComment, $actor);
+        event(new ApplicationCompleted($this));
+    }
 
-        $this->status = self::STATUS_COMPLETED;
-        //        $this->status = ($this->is_visit ? self::STATUS_COMPLETED : self::STATUS_PENDING_CERT);
-        $this->save();
+    public function cancel($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
+    {
+        $this->guardAgainstNonAcceptedApplication();
+        $this->changeStatus(self::STATUS_CANCELLED, $publicReason, $staffReason, $actor);
 
-        $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was completed.\n";
-
-        if ($staffComment) {
-            $noteContent .= $staffComment;
+        if ($this->is_visit && ! $this->account->visitApplications()->statusIn([self::STATUS_COMPLETED, self::STATUS_ACCEPTED])->exists()) {
+            $this->account->removeState(State::findByCode('VISITING'));
         }
 
+        if ($this->is_transfer) {
+            $this->account->removeState(State::findByCode('TRANSFERRING'));
+        }
+
+        event(new ApplicationCancelled($this));
+    }
+
+    public function changeStatus($status, $publicReason = null, $staffReason = null, Account $actor = null)
+    {
+        // Set the status
+        $this->status = $status;
+        $this->status_note = $publicReason;
+        $this->save();
+
+        $noteContent = "VT Application for {$this->type_string} {$this->facility->name} was set to {$this->status_string}.";
+        if ($staffReason) {
+            $noteContent .= "\n".$staffReason;
+        }
+
+        // Add a note
         $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
         $this->notes()->save($note);
-
-        event(new ApplicationCompleted($this));
     }
 
     public function setCheckOutcome($check, $outcome)
@@ -762,7 +805,7 @@ class Application extends Model
 
     public function check90DayQualification()
     {
-        if (!$this->submitted_at) {
+        if (! $this->submitted_at) {
             return false;
         }
 
@@ -783,35 +826,35 @@ class Application extends Model
     /** Statistics */
     public static function statisticTotal()
     {
-        return Cache::remember('VT_APPLICATIONS_STATISTICS_TOTAL', 1, function () {
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_TOTAL', 60, function () {
             return self::count();
         });
     }
 
     public static function statisticOpenNotInProgress()
     {
-        return Cache::remember('VT_APPLICATIONS_STATISTICS_OPEN_NOT_IN_PROGRESS', 1, function () {
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_OPEN_NOT_IN_PROGRESS', 60, function () {
             return self::statusIn(self::$APPLICATION_IS_CONSIDERED_OPEN)->where('status', '!=', self::STATUS_IN_PROGRESS)->count();
         });
     }
 
     public static function statisticUnderReview()
     {
-        return Cache::remember('VT_APPLICATIONS_STATISTICS_UNDER_REVIEW', 1, function () {
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_UNDER_REVIEW', 60, function () {
             return self::underReview()->count();
         });
     }
 
     public static function statisticAccepted()
     {
-        return Cache::remember('VT_APPLICATIONS_STATISTICS_ACCEPTED', 1, function () {
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_ACCEPTED', 60, function () {
             return self::status(self::STATUS_ACCEPTED)->count();
         });
     }
 
     public static function statisticClosed()
     {
-        return Cache::remember('VT_APPLICATIONS_STATISTICS_CLOSED', 1, function () {
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_CLOSED', 60, function () {
             return self::closed()->count();
         });
     }
@@ -865,9 +908,9 @@ class Application extends Model
         throw new ApplicationNotRejectableException($this);
     }
 
-    private function guardAgainstNonUnderReviewApplication()
+    private function guardAgainstUnAcceptableApplication()
     {
-        if ($this->is_under_review) {
+        if ($this->can_accept) {
             return;
         }
 

@@ -5,7 +5,7 @@ namespace App\Models\Smartcars;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Smartcars\Session
+ * App\Models\Smartcars\Session.
  *
  * @property int $id
  * @property string $session_id
@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Session accountId($accountId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Session sessionId($sessionId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Session whereAccountId($value)

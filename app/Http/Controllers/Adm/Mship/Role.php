@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 use Spatie\Permission\Models\Permission as PermissionData;
 use Spatie\Permission\Models\Role as RoleData;
@@ -30,13 +30,13 @@ class Role extends \App\Http\Controllers\Adm\AdmController
 
     public function postCreate()
     {
-        $data = Input::only('name', 'guard_name', 'password_mandatory', 'password_lifetime', 'session_timeout', 'default');
+        $data = Request::only('name', 'guard_name', 'password_mandatory', 'password_lifetime', 'session_timeout', 'default');
 
         $role = new RoleData($data);
         $role->save();
 
-        if (!is_null(Input::get('permissions')) && $this->account->can('use-permission', 'adm/mship/role/attach')) {
-            $role->syncPermissions(Input::get('permissions'));
+        if (! is_null(Request::input('permissions')) && $this->account->can('use-permission', 'adm/mship/role/attach')) {
+            $role->syncPermissions(Request::input('permissions'));
         }
 
         return Redirect::route('adm.mship.role.index')->withSuccess("Role '".$role->name."' has been created - don't forget to attach it to some roles!");
@@ -44,7 +44,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
 
     public function getUpdate(RoleData $role)
     {
-        if (!$role or !$role->exists) {
+        if (! $role or ! $role->exists) {
             return Redirect::route('adm.mship.role.index')->withError("Role doesn't exist!");
         }
 
@@ -58,23 +58,23 @@ class Role extends \App\Http\Controllers\Adm\AdmController
 
     public function postUpdate(RoleData $role)
     {
-        if (!$role or !$role->exists) {
+        if (! $role or ! $role->exists) {
             return Redirect::route('adm.mship.role.index')->withError("Role doesn't exist!");
         }
 
-        $data = Input::only('name', 'guard_name', 'password_mandatory', 'password_lifetime', 'session_timeout', 'default');
+        $data = Request::only('name', 'guard_name', 'password_mandatory', 'password_lifetime', 'session_timeout', 'default');
 
         $role = $role->fill($data);
         $role->save();
 
         foreach ($role->permissions as $p) {
-            if (!in_array($p->id, Input::get('permissions', []))) {
+            if (! in_array($p->id, Request::input('permissions', []))) {
                 $role->revokePermissionTo($p);
             }
         }
 
-        if (!is_null(Input::get('permissions')) && $this->account->can('use-permission', 'adm/mship/role/attach')) {
-            $role->syncPermissions(Input::get('permissions'));
+        if (! is_null(Request::input('permissions')) && $this->account->can('use-permission', 'adm/mship/role/attach')) {
+            $role->syncPermissions(Request::input('permissions'));
         }
 
         return Redirect::route('adm.mship.role.index')->withSuccess("Role '".$role->name."' has been updated - don't forget to set the permissions properly!");
@@ -82,7 +82,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
 
     public function anyDelete(RoleData $role)
     {
-        if (!$role or !$role->exists) {
+        if (! $role or ! $role->exists) {
             return Redirect::route('adm.mship.role.index')->withError("Role doesn't exist!");
         }
 

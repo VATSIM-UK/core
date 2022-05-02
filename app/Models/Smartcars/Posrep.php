@@ -5,7 +5,7 @@ namespace App\Models\Smartcars;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Smartcars\Posrep
+ * App\Models\Smartcars\Posrep.
  *
  * @property int $id
  * @property int $bid_id
@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Smartcars\Aircraft $aircraft
  * @property-read \App\Models\Smartcars\Flight $bid
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereAircraftId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereAltitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereBidId($value)
@@ -63,7 +64,7 @@ class Posrep extends Model
 
     public function bid()
     {
-        return $this->hasOne(\App\Models\Smartcars\Flight::class, 'id', 'flight_id');
+        return $this->hasOne(\App\Models\Smartcars\Bid::class, 'id', 'bid_id');
     }
 
     public function aircraft()
@@ -74,13 +75,13 @@ class Posrep extends Model
     /**
      * Determine whether a posrep is valid against the provided criteria.
      *
-     * @param FlightCriterion $criterion
+     * @param  FlightCriterion  $criterion
      * @return bool
      */
     public function positionIsValid(FlightCriterion $criterion)
     {
         // location
-        if (!$criterion->hasPoint($this->latitude, $this->longitude)) {
+        if (! $criterion->hasPoint($this->latitude, $this->longitude)) {
             return false;
         }
 

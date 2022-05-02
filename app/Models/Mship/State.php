@@ -3,7 +3,7 @@
 namespace App\Models\Mship;
 
 /**
- * App\Models\Mship\State
+ * App\Models\Mship\State.
  *
  * @property int $id
  * @property string $code
@@ -20,6 +20,7 @@ namespace App\Models\Mship;
  * @property-read mixed $is_division
  * @property-read mixed $is_permanent
  * @property-read mixed $is_temporary
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State hasCode($code)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State ofType($type)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State permanent()

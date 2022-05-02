@@ -5,7 +5,7 @@ namespace App\Models\Mship\Feedback\Question;
 use App\Models\Model;
 
 /**
- * App\Models\Mship\Feedback\Question\Type
+ * App\Models\Mship\Feedback\Question\Type.
  *
  * @property int $id
  * @property string $name
@@ -15,6 +15,7 @@ use App\Models\Model;
  * @property bool $requires_value
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Question[] $questions
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type findByName($name)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereId($value)

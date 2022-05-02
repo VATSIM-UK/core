@@ -2,15 +2,16 @@ $font-family: Calibri, Tahoma, Geneva, sans-serif;
 $screen-sm: 802px;
 
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Dosis:200,400,500,600);
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/theme";
-@import "node_modules/bootstrap-tour/build/css/bootstrap-tour.min";
-@import "node_modules/ionicons/dist/scss/ionicons";
-@import "node_modules/font-awesome/scss/font-awesome";
+@import "_bootstrap";
+@import "node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@import "node_modules/@fortawesome/fontawesome-free/scss/solid";
+@import "node_modules/@fortawesome/fontawesome-free/scss/brands";
 @import "node_modules/jquery-datetimepicker/jquery.datetimepicker";
 @import "_nav";
 @import "_visit-transfer";
 @import "_vuk-letters";
+@import "_padding-utils";
+@import "_top-notification";
 
 body, html {
   margin: 0 auto;
@@ -41,9 +42,25 @@ body, html {
 }
 
 .dev_environment_notification {
-  height:20px;
-  background-color:red;
-  text-align: center;
+    height: 20px;
+    background-color: red;
+    text-align: center;
+}
+
+.sys_notification {
+  height: 40px;
+  background-color: grey;
+  position: relative;
+
+  .text {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+      text-align: center;
+      width: 100%;
+  }
 }
 
 .banner {
@@ -219,6 +236,16 @@ body, html {
   .panel-body .row-text-contain {
     word-break: break-word;
   }
+    .panel-footer.panel-footer-primary {
+        color: white;
+        background-color: $brand-primary;
+        a {
+            color: white;
+        }
+        a:hover {
+            color: $gray-lighter;
+        }
+    }
 }
 
 .panel-uk-danger {
@@ -287,4 +314,16 @@ body, html {
   border-radius: 50px;
   height:50px;
   width: 50px;
+}
+
+.equal {
+    display: flex;
+    display: -webkit-flex;
+    flex-wrap: wrap;
+}
+
+.flex-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

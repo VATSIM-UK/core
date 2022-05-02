@@ -53,8 +53,8 @@ class BaseController extends \Illuminate\Routing\Controller
     /**
      * Authorize a given action for the current user.
      *
-     * @param  mixed $ability
-     * @param  mixed|array $arguments
+     * @param  mixed  $ability
+     * @param  mixed|array  $arguments
      * @return \Illuminate\Auth\Access\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -117,7 +117,7 @@ class BaseController extends \Illuminate\Routing\Controller
     }
 
     /**
-     * Generate CORE banner from time of day
+     * Generate CORE banner from time of day.
      */
     public static function generateBannerUrl()
     {
@@ -153,14 +153,14 @@ class BaseController extends \Illuminate\Routing\Controller
             return asset('images/banner/fallback.jpg');
         }
         $url = asset("images/banner/$time/".$images[array_rand($images)]);
-        Cache::put($key, $url, 60);
+        Cache::put($key, $url, 60 * 60);
 
         return $url;
     }
 
     protected function setupLayout()
     {
-        if (!is_null($this->layout)) {
+        if (! is_null($this->layout)) {
             $this->layout = View::make($this->layout);
         }
     }
@@ -168,10 +168,10 @@ class BaseController extends \Illuminate\Routing\Controller
     /**
      * Add a new element to the breadcrumb to be shown on this page.
      *
-     * @param string $name The text to display on the page.
-     * @param        $uri  The URI the text should link to.
-     * @param bool   $linkToPrevious Set to TRUE if the breadcrumb is a parent of the previous one.
-     * @param bool   $first Set to TRUE if the breadcrumb should be first.
+     * @param  string  $name  The text to display on the page.
+     * @param  $uri  The URI the text should link to.
+     * @param  bool  $linkToPrevious  Set to TRUE if the breadcrumb is a parent of the previous one.
+     * @param  bool  $first  Set to TRUE if the breadcrumb should be first.
      */
     protected function addBreadcrumb(string $name, $uri = null, $linkToPrevious = false, $first = false)
     {
@@ -211,7 +211,7 @@ class BaseController extends \Illuminate\Routing\Controller
         $requestClass = explode('\\', get_called_class());
 
         // Return the dirty path.
-        if (!$clean) {
+        if (! $clean) {
             return $requestClass;
         }
 

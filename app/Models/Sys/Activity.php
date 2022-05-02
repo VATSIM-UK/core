@@ -7,7 +7,7 @@ use App\Models\Model;
 use Request;
 
 /**
- * App\Models\Sys\Activity
+ * App\Models\Sys\Activity.
  *
  * @property int $id
  * @property int|null $actor_id
@@ -21,6 +21,7 @@ use Request;
  * @property-read mixed $extra_data
  * @property-read mixed $type
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereAction($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereActorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereCreatedAt($value)

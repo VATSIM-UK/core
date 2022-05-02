@@ -21,22 +21,6 @@
     <![endif]-->
 
     @yield('styles')
-
-    {{-- BugSnag --}}
-    <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
-            data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
-            data-releasestage="{{ env('APP_ENV') }}">
-        Bugsnag.notifyReleaseStages = ["staging", "production"];
-
-        @if(Auth::check())
-            Bugsnag.user = {
-            id: {{ Auth::user()->id }},
-            name: "{{ Auth::user()->name }}",
-            email: "{{ Auth::user()->email }}"
-        };
-        @endif
-    </script>
-
 </head>
 <body class="hold-transition skin-black sidebar-mini">
 
@@ -47,7 +31,7 @@
                 You are in a <b>NON-PRODUCTION</b> environment
             </div>
         @endif
-        <a href="{{ URL::route("adm.dashboard") }}" class="logo">
+        <a href="{{ URL::route("adm.index") }}" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>V</b>UK</span>
             <!-- logo for regular state and mobile devices -->
@@ -58,8 +42,6 @@
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                 <span class="sr-only">Toggle navigation</span>
             </a>
-
-            @include('adm.layout.logout')
         </nav>
 
     </header>
@@ -69,7 +51,6 @@
     </aside>
 
     <div class="content-wrapper">
-    @include('adm.layout.breadcrumb', array('breadcrumb' => $_breadcrumb, 'title' => $_pageTitle, 'subTitle' => $_pageSubTitle))
 
         <section class="content">
 
@@ -82,6 +63,8 @@
 
 </div>
 
+
+<script src="{{ mix('js/sentry.js') }}"></script>
 @include('adm.layout.scripts')
 
 </body>

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Station
+ * App\Models\Station.
  *
  * @property int $id
  * @property string $callsign
@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport[] $airports
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereCallsign($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereFrequency($value)
@@ -30,15 +31,15 @@ class Station extends Model
 {
     protected $table = 'stations';
     protected $fillable = [
-            'callsign',
-            'name',
-            'frequency',
-            'type',
-            'sub_station',
-        ];
+        'callsign',
+        'name',
+        'frequency',
+        'type',
+        'sub_station',
+    ];
     protected $casts = [
-            'sub_station' => 'boolean',
-        ];
+        'sub_station' => 'boolean',
+    ];
 
     const TYPE_ATIS = 1;
     const TYPE_DELIVERY = 2;

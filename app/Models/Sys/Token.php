@@ -6,7 +6,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Sys\Token
+ * App\Models\Sys\Token.
  *
  * @property int $token_id
  * @property int $related_id
@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read mixed $is_expired
  * @property-read mixed $is_used
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $related
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token expired()
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token hasCode($code)
@@ -125,7 +126,7 @@ class Token extends Model
 
     public function consume()
     {
-        if (!$this || $this->is_used || $this->is_expired) {
+        if (! $this || $this->is_used || $this->is_expired) {
             return false;
         }
 

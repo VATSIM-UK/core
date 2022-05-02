@@ -35,8 +35,22 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
-    'slack' => [
-        'token' => env('SLACK_SECRET'),
+    'teamspeak' => [
+        'host' => env('TS_HOST'),
+        'username' => env('TS_USER'),
+        'password' => env('TS_PASS'),
+        'port' => env('TS_PORT'),
+        'query_port' => env('TS_QUERY_PORT'),
+    ],
+
+    'discord' => [
+        'guild_id' => env('DISCORD_GUILD_ID', null),
+        'token' => env('DISCORD_TOKEN', null),
+        'client_id' => env('DISCORD_CLIENT', null),
+        'client_secret' => env('DISCORD_SECRET', null),
+        'redirect_uri' => env('DISCORD_REDIRECT_URI', null),
+        'base_discord_uri' => env('DISCORD_API_BASE', 'https://discord.com/api/v6'),
+        'suspended_member_role_id' => env('DISCORD_SUSPENDED_MEMBER_ROLE_ID', null),
     ],
 
     'google' => [
@@ -46,13 +60,19 @@ return [
     ],
 
     'ukcp' => [
-        'url' => env('UKCP_URL'),
+        'url' => env('UKCP_URL', 'https://ukcp.vatsim.uk'),
         'key' => env('UKCP_KEY'),
     ],
 
     'chartfox' => [
         'private_token' => env('CHARTFOX_PRIVATE_TOKEN'),
         'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
+    ],
+
+    'autotools' => [
+        'division' => env('VATSIM_AT_DIV'),
+        'username' => env('VATSIM_CERT_AT_USER'),
+        'password' => env('VATSIM_CERT_AT_PASS'),
     ],
 
     /*
@@ -63,7 +83,6 @@ return [
 
     'community' => [
         'database' => env('COMMUNITY_DATABASE'),
-        'init_file' => env('COMMUNITY_INIT_FILE'),
     ],
 
     'cts' => [
@@ -76,6 +95,7 @@ return [
 
     'moodle' => [
         'database' => env('MOODLE_DATABASE'),
+        'oauth_issuer_id' => env('MOODLE_OAUTH_ISSUER_ID'),
     ],
 
 ];

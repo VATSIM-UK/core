@@ -34,37 +34,50 @@ class TeamSpeak
 
     public static function enabled()
     {
-        return env('TS_HOST') && env('TS_USER')  && env('TS_PASS') && env('TS_PORT') && env('TS_QUERY_PORT');
+        return config('services.teamspeak.host') && config('services.teamspeak.username') && config('services.teamspeak.password') && config('services.teamspeak.port') && config('services.teamspeak.query_port');
     }
 
     /**
      * Connect to the TeamSpeak server.
      *
-     * @param string $nickname
-     * @param bool $nonBlocking
+     * @param  string  $nickname
+     * @param  bool  $nonBlocking
      * @return \TeamSpeak3_Node_Server
      */
     public static function run($nickname = 'VATSIM UK TeamSpeak Bot', $nonBlocking = false)
     {
         $connectionUrl = sprintf(
             'serverquery://%s:%s@%s:%s/?nickname=%s&server_port=%s%s#no_query_clients',
-            urlencode(env('TS_USER')),
-            urlencode(env('TS_PASS')),
-            env('TS_HOST'),
-            env('TS_QUERY_PORT'),
+            urlencode(config('services.teamspeak.username')),
+            urlencode(config('services.teamspeak.password')),
+            config('services.teamspeak.host'),
+            config('services.teamspeak.query_port'),
             urlencode($nickname),
-            env('TS_PORT'),
+            config('services.teamspeak.port'),
             $nonBlocking ? '&blocking=0' : ''
         );
 
-        return TeamSpeak3::factory($connectionUrl);
+        $factory = null;
+
+        try {
+            $factory = TeamSpeak3::factory($connectionUrl);
+        } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+            if (stripos($e->getMessage(), 'nickname is already in use')) {
+                // Try again in 3 seconds
+                sleep(3);
+                $factory = TeamSpeak3::factory($connectionUrl);
+            }
+        }
+
+        return $factory;
     }
 
     /**
      * Check the client's registration.
      *
-     * @param TeamSpeak3_Node_Client $client
+     * @param  TeamSpeak3_Node_Client  $client
      * @return Account
+     *
      * @throws RegistrationNotFoundException
      * @throws TeamSpeak3_Adapter_ServerQuery_Exception
      */
@@ -73,7 +86,7 @@ class TeamSpeak
         // try to find their existing registration
         $registration = self::getActiveRegistration($client);
 
-        if (!is_null($registration)) {
+        if (! is_null($registration)) {
             self::updateClientLoginInfo($client, $registration);
 
             return $registration->account;
@@ -100,8 +113,9 @@ class TeamSpeak
     /**
      * Obtain the clients new registration, if they have one.
      *
-     * @param TeamSpeak3_Node_Client $client
+     * @param  TeamSpeak3_Node_Client  $client
      * @return null|Registration
+     *
      * @throws TeamSpeak3_Adapter_ServerQuery_Exception
      */
     public static function getNewRegistration(TeamSpeak3_Node_Client $client)
@@ -130,7 +144,7 @@ class TeamSpeak
     /**
      * Obtain the client's active registration.
      *
-     * @param TeamSpeak3_Node_Client $client
+     * @param  TeamSpeak3_Node_Client  $client
      * @return null|Registration
      */
     public static function getActiveRegistration(TeamSpeak3_Node_Client $client)
@@ -145,8 +159,8 @@ class TeamSpeak
     /**
      * Finalise a client's new registration.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Registration $registration
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Registration  $registration
      */
     protected static function completeNewRegistration(TeamSpeak3_Node_Client $client, Registration $registration)
     {
@@ -164,8 +178,8 @@ class TeamSpeak
     /**
      * Update the clients login info.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Registration $registration
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Registration  $registration
      */
     protected static function updateClientLoginInfo(TeamSpeak3_Node_Client $client, Registration $registration)
     {
@@ -178,8 +192,8 @@ class TeamSpeak
     /**
      * Check a client's description is correct.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
      * @return TeamSpeak3_Node_Client
      */
     public static function checkClientDescription(TeamSpeak3_Node_Client $client, Account $member)
@@ -203,8 +217,8 @@ class TeamSpeak
     /**
      * Check a member is in good standing with the network and division.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
      */
     public static function checkMemberStanding(TeamSpeak3_Node_Client $client, Account $member)
     {
@@ -224,8 +238,9 @@ class TeamSpeak
     /**
      * Check a member has accepted any necessary notifications.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
+     *
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function checkMemberMandatoryNotifications(TeamSpeak3_Node_Client $client, Account $member)
@@ -235,12 +250,12 @@ class TeamSpeak
             $timeSincePublished = $member->unread_must_acknowledge_time_elapsed;
 
             if ($timeSincePublished < 12) {
-                if (!$recentlyNotified) {
+                if (! $recentlyNotified) {
                     self::pokeClient($client, trans('teamspeak.notification.mandatory.notify'));
                     Cache::put(
                         self::CACHE_NOTIFICATION_MANDATORY.$client['client_database_id'],
                         Carbon::now(),
-                        20
+                        20 * 60
                     );
                 }
             } else {
@@ -257,33 +272,46 @@ class TeamSpeak
     /**
      * Check the client's nickname is correct.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
+     *
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function checkClientNickname(TeamSpeak3_Node_Client $client, Account $member)
     {
-        if (!$member->isValidDisplayName($client['client_nickname'])) {
+        if (! $member->isValidDisplayName($client['client_nickname']) && ! $member->isDuplicateDisplayName($client['client_nickname'])) {
             $recentlyTold = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
             $hasGracePeriod = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
-            // if their nickname doesn't contain their name, or their grace period has ended
-            if (!$member->isPartiallyValidDisplayName($client['client_nickname']) || ($recentlyTold && !$hasGracePeriod)) {
-                self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
-                self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
-                self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
-                Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
-                Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
-                throw new ClientKickedFromServerException;
-            } elseif (!$hasGracePeriod) {
-                // set grace period to allow for possible mistakes
-                self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
-                self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke2'));
-                self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name.' - EGLL_N_TWR']));
 
-                $now = Carbon::now();
-                Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'], $now, 6);
-                Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'], $now, 3);
+            // Check to see if their name is at least partially right
+            if ($member->isPartiallyValidDisplayName($client['client_nickname'])) {
+
+                // If they have a grace period, allow it for now
+                if (! $recentlyTold) {
+                    // Give them a grace period if they haven't recently had one
+                    $now = Carbon::now();
+                    Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'], $now, 6 * 60);
+                    Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'], $now, 3 * 60);
+
+                    $recentlyTold = $hasGracePeriod = true;
+                }
+
+                if ($hasGracePeriod) {
+                    self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
+                    self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke2'));
+                    self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name.' - EGLL_N_TWR']));
+
+                    return;
+                }
             }
+
+            // Either partially valid and grace period over, or doesn't even contain their name!
+            self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
+            self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
+            self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
+            throw new ClientKickedFromServerException;
         } else {
             Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
             Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
@@ -293,24 +321,25 @@ class TeamSpeak
     /**
      * Check the client is in the appropriate server groups.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
      */
     public static function checkClientServerGroups(TeamSpeak3_Node_Client $client, Account $member)
     {
         $currentGroups = explode(',', $client['client_servergroups']);
         $serverGroups = ServerGroup::all();
         $memberQualifications = $member->active_qualifications;
+
         foreach ($serverGroups as $group) {
-            $qualified = (!is_null($group->qualification) && $memberQualifications->contains('id', $group->qualification->id))
-                || (!is_null($group->permission) && $member->hasPermissionTo($group->permission));
-            if (!in_array($group->dbid, $currentGroups) && $qualified) {
+            $memberHasRequiredQualification = $group->qualification ? $memberQualifications->contains('id', $group->qualification->id) : false;
+            $memberHasGroupPermission = $group->permission ? $member->hasPermissionTo($group->permission) : false;
+
+            $qualifiesForGroup = $memberHasRequiredQualification || $memberHasGroupPermission;
+            $alreadyInGroup = in_array($group->dbid, $currentGroups);
+
+            if ($qualifiesForGroup && ! $alreadyInGroup) {
                 $client->addServerGroup($group->dbid);
-            } elseif (!in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && $member->qualifications_pilot->isEmpty()) {
-                $client->addServerGroup($group->dbid);
-            } elseif (in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && !$member->qualifications_pilot->isEmpty()) {
-                $client->remServerGroup($group->dbid);
-            } elseif (in_array($group->dbid, $currentGroups) && !starts_with($group->name, 'P0') && !$qualified && !$group->default) {
+            } elseif (! $group->default && $alreadyInGroup && ! $qualifiesForGroup) {
                 $client->remServerGroup($group->dbid);
             }
         }
@@ -319,8 +348,9 @@ class TeamSpeak
     /**
      * Check the client is in the appropriate channel groups.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
+     *
      * @throws \TeamSpeak3_Adapter_ServerQuery_Exception
      */
     public static function checkClientChannelGroups(TeamSpeak3_Node_Client $client, Account $member)
@@ -347,7 +377,7 @@ class TeamSpeak
 
             if ($member->hasPermissionTo($permission->permission_id) && $permission->channelgroup_id != $currentGroup) {
                 $client->setChannelGroup($permission->channel_id, $permission->channelgroup_id);
-            } elseif (!$member->hasPermissionTo($permission->permission_id) && $currentGroup != null && $currentGroup != $defaultGroup->dbid) {
+            } elseif (! $member->hasPermissionTo($permission->permission_id) && $currentGroup != null && $currentGroup != $defaultGroup->dbid) {
                 $client->setChannelGroup($permission->channel_id, $defaultGroup->dbid);
             }
         }
@@ -356,15 +386,16 @@ class TeamSpeak
     /**
      * Check the client's (allowed) idle time.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param Account $member
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  Account  $member
+     *
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function checkClientIdleTime(TeamSpeak3_Node_Client $client, Account $member)
     {
         $idleTime = floor($client['client_idle_time'] / 1000 / 60); // minutes
 
-        if ($member->hasPermissionTo('teamspeak/idle/permanent')) {
+        if ($member->hasPermissionTo('teamspeak/idle/permanent') || $member->is_on_network) {
             return;
         } elseif ($member->hasPermissionTo('teamspeak/idle/temporary')) {
             $maxIdleTime = 120;
@@ -378,19 +409,19 @@ class TeamSpeak
             self::pokeClient($client, trans('teamspeak.idle.kick.poke.2'));
             self::kickClient($client, trans('teamspeak.idle.kick.reason'));
             throw new ClientKickedFromServerException;
-        } elseif ($idleTime >= $maxIdleTime - 5 && !$notified) {
+        } elseif ($idleTime >= $maxIdleTime - 5 && ! $notified) {
             self::pokeClient($client, trans('teamspeak.idle.poke', ['idleTime' => $idleTime]));
-            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 5);
-        } elseif (($maxIdleTime - 15 > 0) && ($idleTime >= $maxIdleTime - 15 && !$notified)) {
+            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 5 * 60);
+        } elseif (($maxIdleTime - 15 > 0) && ($idleTime >= $maxIdleTime - 15 && ! $notified)) {
             self::messageClient($client, trans('teamspeak.idle.message', ['idleTime' => $idleTime, 'maxIdleTime' => $maxIdleTime]));
-            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 10);
+            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 10 * 60);
         }
     }
 
     /**
      * Checks whether the client should be protected from being modified/disturbed.
      *
-     * @param TeamSpeak3_Node_Client $client
+     * @param  TeamSpeak3_Node_Client  $client
      * @return bool
      */
     public static function clientIsProtected(TeamSpeak3_Node_Client $client)
@@ -408,7 +439,7 @@ class TeamSpeak
 
         // if in a protected channel, client is protected
         $channel = Channel::find($currentChannel);
-        if (!is_null($channel)) {
+        if (! is_null($channel)) {
             return (bool) $channel->protected;
         } else {
             return false;
@@ -418,8 +449,8 @@ class TeamSpeak
     /**
      * Messages the client.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param string $message
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  string  $message
      */
     public static function messageClient(TeamSpeak3_Node_Client $client, $message)
     {
@@ -429,8 +460,8 @@ class TeamSpeak
     /**
      * Pokes the client.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param string $message
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  string  $message
      */
     public static function pokeClient(TeamSpeak3_Node_Client $client, $message)
     {
@@ -440,8 +471,8 @@ class TeamSpeak
     /**
      * Kicks the client.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param string $reason
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  string  $reason
      */
     public static function kickClient(TeamSpeak3_Node_Client $client, $reason)
     {
@@ -451,9 +482,9 @@ class TeamSpeak
     /**
      * Bans the client.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param string $reason
-     * @param int $duration Duration in seconds.
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  string  $reason
+     * @param  int  $duration  Duration in seconds.
      */
     public static function banClient(TeamSpeak3_Node_Client $client, $reason, $duration)
     {
@@ -464,8 +495,9 @@ class TeamSpeak
     /**
      * Removes the client from the server and deletes them from the database.
      *
-     * @param TeamSpeak3_Node_Client $client
-     * @param string $reason
+     * @param  TeamSpeak3_Node_Client  $client
+     * @param  string  $reason
+     *
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function deactivateClient(TeamSpeak3_Node_Client $client, $reason)

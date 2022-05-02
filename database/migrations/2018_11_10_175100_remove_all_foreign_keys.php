@@ -83,22 +83,16 @@ class RemoveAllForeignKeys extends Migration
             $table->dropForeign('oauth_refresh_tokens_access_token_id_foreign');
         });
 
-        Schema::table('oauth_personal_access_clients', function (Blueprint $table) {
-            $table->dropForeign('oauth_personal_access_clients_client_id_foreign');
-        });
-
         Schema::table('oauth_clients', function (Blueprint $table) {
             $table->dropForeign('oauth_clients_user_id_foreign');
         });
 
         Schema::table('oauth_auth_codes', function (Blueprint $table) {
             $table->dropForeign('oauth_auth_codes_user_id_foreign');
-            $table->dropForeign('oauth_auth_codes_client_id_foreign');
         });
 
         Schema::table('oauth_access_tokens', function (Blueprint $table) {
             $table->dropForeign('oauth_access_tokens_user_id_foreign');
-            $table->dropForeign('oauth_access_tokens_client_id_foreign');
         });
 
         Schema::table('networkdata_atc', function (Blueprint $table) {
@@ -108,11 +102,6 @@ class RemoveAllForeignKeys extends Migration
 
         Schema::table('networkdata_pilots', function (Blueprint $table) {
             $table->dropForeign('networkdata_pilots_account_id_foreign');
-        });
-
-        Schema::table('mship_oauth_emails', function (Blueprint $table) {
-            $table->dropForeign('mship_oauth_emails_account_email_id_foreign');
-            $table->dropForeign('mship_oauth_emails_sso_account_id_foreign');
         });
 
         Schema::table('mship_feedback_questions', function (Blueprint $table) {
@@ -336,7 +325,6 @@ class RemoveAllForeignKeys extends Migration
             $table->unsignedInteger('user_id')->change();
             $table->unsignedInteger('client_id')->change();
             $table->foreign('user_id')->references('id')->on('mship_account');
-            $table->foreign('client_id')->references('id')->on('oauth_clients')->onDelete('cascade');
         });
 
         Schema::table('oauth_auth_codes', function (Blueprint $table) {
@@ -354,7 +342,6 @@ class RemoveAllForeignKeys extends Migration
 
         Schema::table('oauth_personal_access_clients', function (Blueprint $table) {
             $table->unsignedInteger('client_id')->change();
-            $table->foreign('client_id')->references('id')->on('oauth_clients')->onDelete('cascade');
         });
 
         Schema::table('oauth_refresh_tokens', function (Blueprint $table) {
@@ -469,14 +456,14 @@ class RemoveAllForeignKeys extends Migration
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');
 
-        Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames, $columnNames) {
+        Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames) {
             $table->foreign('permission_id')
                 ->references('id')
                 ->on($tableNames['permissions'])
                 ->onDelete('cascade');
         });
 
-        Schema::table($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames, $columnNames) {
+        Schema::table($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames) {
             $table->foreign('role_id')
                 ->references('id')
                 ->on($tableNames['roles'])

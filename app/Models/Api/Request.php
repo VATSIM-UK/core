@@ -5,7 +5,7 @@ namespace App\Models\Api;
 use App\Models\Model;
 
 /**
- * App\Models\Api\Request
+ * App\Models\Api\Request.
  *
  * @property int $id
  * @property int $api_account_id
@@ -17,6 +17,7 @@ use App\Models\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereApiAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereId($value)

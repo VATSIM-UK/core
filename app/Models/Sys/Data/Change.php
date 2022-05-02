@@ -6,7 +6,7 @@ use App\Models\Concerns\OverridesUpdatedAt;
 use App\Models\Model;
 
 /**
- * App\Models\Sys\Data\Change
+ * App\Models\Sys\Data\Change.
  *
  * @property int $data_change_id
  * @property int $model_id
@@ -17,6 +17,7 @@ use App\Models\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $model
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Data\Change whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Data\Change whereDataChangeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Data\Change whereDataKey($value)

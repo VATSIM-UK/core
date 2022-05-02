@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Smartcars\Api;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Smartcars\Airport;
 use App\Models\Smartcars\Pirep as PirepData;
-use Input;
+use Illuminate\Support\Facades\Request;
 
 class Pirep extends AdmController
 {
@@ -15,11 +15,11 @@ class Pirep extends AdmController
             ->with('bid.flight.departure')
             ->with('bid.flight.arrival')
             ->with('bid.flight.aircraft')
-            ->belongsTo(Input::get('dbid'));
+            ->belongsTo(Request::input('dbid'));
 
-        $departure = Airport::findByIcao(Input::get('departureicao'));
-        if (Input::get('departureicao', null) != null) {
-            if (!$departure) {
+        $departure = Airport::findByIcao(Request::input('departureicao'));
+        if (Request::input('departureicao', null) != null) {
+            if (! $departure) {
                 return 'NONE';
             }
 
@@ -28,9 +28,9 @@ class Pirep extends AdmController
             });
         }
 
-        $arrival = Airport::findByIcao(Input::get('arrivalicao'));
-        if (Input::get('arrivalicao', null) != null) {
-            if (!$arrival) {
+        $arrival = Airport::findByIcao(Request::input('arrivalicao'));
+        if (Request::input('arrivalicao', null) != null) {
+            if (! $arrival) {
                 return 'NONE';
             }
 
@@ -61,7 +61,7 @@ class Pirep extends AdmController
 
     public function getData()
     {
-        $pirep = PirepData::find(Input::get('pirepid'));
+        $pirep = PirepData::find(Request::input('pirepid'));
 
         $return = [];
         $return['duration'] = $pirep->flight_time;

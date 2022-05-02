@@ -5,7 +5,6 @@ namespace App\Console\Commands\TeamSpeak;
 use App\Console\Commands\Command;
 use App\Libraries\TeamSpeak;
 use App\Models\TeamSpeak\Registration;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Carbon\Carbon;
 use Exception;
 
@@ -64,14 +63,12 @@ class TeamSpeakCleanup extends Command
             $registration->delete($this->tscon);
             $this->log("Old registration deleted: {$registration->id}");
         }
-
-        $this->sendSlackSuccess();
     }
 
     /**
      * Check the registration for a TeamSpeak client.
      *
-     * @param mixed $client The client being checked.
+     * @param  mixed  $client  The client being checked.
      * @return int Returns 0 if no change has been made, or 1 if the client was deleted.
      */
     protected function checkRegistration($client)
@@ -80,7 +77,7 @@ class TeamSpeakCleanup extends Command
             ->where('dbid', $client['cldbid'])
             ->exists();
 
-        if (!$isRegistered) {
+        if (! $isRegistered) {
             try {
                 $this->tscon->clientDeleteDb($client['cldbid']);
                 $this->log("No registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}");
@@ -90,7 +87,6 @@ class TeamSpeakCleanup extends Command
                 $this->log($e->getMessage());
                 $message = "Deletion failed: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}";
                 $this->log($message);
-                Bugsnag::notifyException($e);
 
                 return 0;
             }

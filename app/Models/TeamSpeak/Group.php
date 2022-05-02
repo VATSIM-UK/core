@@ -7,7 +7,7 @@ use App\Models\Mship\Qualification;
 use Spatie\Permission\Models\Permission;
 
 /**
- * App\Models\TeamSpeak\Group
+ * App\Models\TeamSpeak\Group.
  *
  * @property int $id
  * @property int $dbid
@@ -20,6 +20,7 @@ use Spatie\Permission\Models\Permission;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Permission|null $permission
  * @property-read \App\Models\Mship\Qualification|null $qualification
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Group whereDbid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Group whereDefault($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Group whereId($value)

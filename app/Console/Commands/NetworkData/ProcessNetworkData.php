@@ -16,7 +16,8 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Vatsimphp\VatsimData;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ProcessNetworkData extends Command
 {
@@ -36,32 +37,30 @@ class ProcessNetworkData extends Command
      */
     protected $description = 'Download and parse the VATSIM data feed file.';
 
-    private $vatsimPHP = null;
     private $lastUpdatedAt = null;
-
-    /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->vatsimPHP = new VatsimData();
-        $this->vatsimPHP->setConfig('forceDataRefresh', true);
-    }
+    private $networkData = null;
 
     /**
      * Executes all necessary console commands.
      */
     public function handle()
     {
-        $this->vatsimPHP->loadData();
+        $this->networkData = Http::get(config('vatsim-data-feed.base'));
+        $this->info('Getting network data from VATSIM.');
+
+        if ($this->networkData->failed() || ! $this->networkData->json()) {
+            Log::error("Unable to process VATSIM network data. Status {$this->networkData->status()}");
+
+            return;
+        }
+
         $this->setLastUpdatedTimestamp();
         event(new NetworkDataDownloaded());
         $this->processATC();
-        $this->processPilots();
+        // $this->processPilots();
         event(new NetworkDataParsed());
-        Atc::flushCache();
+
+        $this->info('Network data updated.');
     }
 
     /**
@@ -69,8 +68,9 @@ class ProcessNetworkData extends Command
      */
     private function setLastUpdatedTimestamp()
     {
-        $generalInfo = $this->vatsimPHP->getGeneralInfo()->toArray();
-        $this->lastUpdatedAt = Carbon::createFromTimestampUTC($generalInfo['update']);
+        $generalInfo = $this->networkData->json('general');
+        $this->lastUpdatedAt = Carbon::create($generalInfo['update_timestamp']);
+        $this->info('Network data obtained.');
     }
 
     /**
@@ -78,19 +78,27 @@ class ProcessNetworkData extends Command
      */
     private function processATC()
     {
+        $this->info('Processing ATC connections...');
+
+        $controllers = $this->networkData->json('controllers');
+
+        $progressBar = $this->output->createProgressBar(count($controllers));
+
         $awaitingUpdate = Atc::online()->get()->keyBy('id');
 
-        foreach ($this->vatsimPHP->getControllers() as $controllerData) {
-            if ($controllerData['facilitytype'] < 1 || substr($controllerData['callsign'], -4) == '_OBS') {
+        $progressBar->start();
+
+        foreach ($controllers as $controller) {
+            if ($controller['facility'] < 1 || substr($controller['callsign'], -4) == '_OBS') {
                 // ignore observers
                 continue;
-            } elseif (substr($controllerData['callsign'], -4) == '_SUP') {
+            } elseif (substr($controller['callsign'], -4) == '_SUP') {
                 // ignore supervisors
                 continue;
-            } elseif (substr($controllerData['callsign'], -5) == '_ATIS') {
+            } elseif (substr($controller['callsign'], -5) == '_ATIS') {
                 // ignore ATIS connections
                 continue;
-            } elseif ($controllerData['frequency'] < 118 || $controllerData['frequency'] > 136) {
+            } elseif ($controller['frequency'] < 118 || $controller['frequency'] > 137) {
                 // ignore out-of-range frequencies
                 continue;
             }
@@ -98,30 +106,31 @@ class ProcessNetworkData extends Command
             DB::beginTransaction();
 
             try {
-                $account = Account::findOrRetrieve($controllerData['cid']);
+                $account = Account::findOrRetrieve($controller['cid']);
             } catch (InvalidCIDException $e) {
-                $this->info('Invalid CID: '.$controllerData['cid'], 'vvv');
+                $this->info('Invalid CID: '.$controller['cid'], 'vvv');
                 DB::commit();
                 continue;
             }
 
-            if (!$account) {
-                $this->info('Unable to find or retrieve CID: '.$controllerData['cid'], 'vvv');
+            if (! $account) {
+                $this->info('Unable to find or retrieve CID: '.$controller['cid'], 'vvv');
                 continue;
             }
 
-            $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
+            $qualification = Qualification::parseVatsimATCQualification($controller['rating']);
             $atc = Atc::updateOrCreate(
                 [
-                    'account_id' => $account->id,
-                    'callsign' => $controllerData['callsign'],
-                    'frequency' => $controllerData['frequency'],
+                    'account_id'       => $account->id,
+                    'callsign'         => $controller['callsign'],
+                    'frequency'        => $controller['frequency'],
                     'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
-                    'facility_type' => $controllerData['facilitytype'],
-                    'connected_at' => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
-                    'disconnected_at' => null,
-                    'deleted_at' => null,
-                ], [
+                    'facility_type'    => $controller['facility'],
+                    'connected_at'     => Carbon::create($controller['logon_time']),
+                    'disconnected_at'  => null,
+                    'deleted_at'       => null,
+                ],
+                [
                     'updated_at' => Carbon::now(),
                 ]
             );
@@ -129,21 +138,37 @@ class ProcessNetworkData extends Command
             $awaitingUpdate->forget([$atc->id]);
 
             DB::commit();
+
+            $progressBar->advance();
         }
 
-        $this->endExpiredAtcSessions($awaitingUpdate);
+        $progressBar->finish();
+        $this->newLine();
+
+        if ($awaitingUpdate->isNotEmpty()) {
+            $this->endExpiredAtcSessions($awaitingUpdate);
+        }
     }
 
     /**
      * Update the disconnected_at flag for any controllers not in the latest data feed.
      *
-     * @param Collection $expiringAtc
+     * @param  Collection  $expiringAtc
      */
     private function endExpiredAtcSessions($expiringAtc)
     {
-        $expiringAtc->each(function (Atc $session) {
+        $this->info('Ending expired ATC sessions.');
+
+        $progressBar = $this->output->createProgressBar(count($expiringAtc));
+        $progressBar->start();
+
+        $expiringAtc->each(function (Atc $session) use ($progressBar) {
             $session->disconnectAt($this->lastUpdatedAt);
+            $progressBar->advance();
         });
+
+        $progressBar->finish();
+        $this->newLine();
     }
 
     /**
@@ -151,10 +176,18 @@ class ProcessNetworkData extends Command
      */
     private function processPilots()
     {
+        $this->info('Processing Pilot connections...');
+
+        $pilots = $this->networkData->json('pilots');
+
+        $progressBar = $this->output->createProgressBar(count($pilots));
+
         $awaitingUpdate = Pilot::online()->get()->keyBy('id');
 
-        foreach ($this->vatsimPHP->getPilots() as $pilotData) {
-            if (empty($pilotData['planned_revision'])) {
+        $progressBar->start();
+
+        foreach ($pilots as $pilot) {
+            if (empty($pilot['flight_plan'])) {
                 // ignore flights with no flightplan
                 continue;
             }
@@ -162,42 +195,42 @@ class ProcessNetworkData extends Command
             DB::beginTransaction();
 
             try {
-                $account = Account::findOrRetrieve($pilotData['cid']);
+                $account = Account::findOrRetrieve($pilot['cid']);
             } catch (InvalidCIDException $e) {
-                $this->info('Invalid CID: '.$pilotData['cid'], 'vvv');
+                $this->info('Invalid CID: '.$pilot['cid'], 'vvv');
                 DB::commit();
                 continue;
             }
 
-            if (!$account) {
-                $this->info('Unable to find or retrieve CID: '.$pilotData['cid'], 'vvv');
+            if (! $account) {
+                $this->info('Unable to find or retrieve CID: '.$pilot['cid'], 'vvv');
                 continue;
             }
 
             $flight = Pilot::firstOrNew([
-                'account_id' => $account->id,
-                'callsign' => $pilotData['callsign'],
-                'flight_type' => $pilotData['planned_flighttype'],
-                'departure_airport' => $pilotData['planned_depairport'],
-                'arrival_airport' => $pilotData['planned_destairport'],
-                'connected_at' => Carbon::createFromFormat('YmdHis', $pilotData['time_logon']),
-                'disconnected_at' => null,
+                'account_id'        => $account->id,
+                'callsign'          => $pilot['callsign'],
+                'flight_type'       => $pilot['flight_plan']['flight_rules'],
+                'departure_airport' => $pilot['flight_plan']['departure'],
+                'arrival_airport'   => $pilot['flight_plan']['arrival'],
+                'connected_at'      => Carbon::create($pilot['logon_time']),
+                'disconnected_at'   => null,
             ]);
 
             $flight->fill([
-                'alternative_airport' => $pilotData['planned_altairport'],
-                'aircraft' => $pilotData['planned_aircraft'],
-                'cruise_altitude' => $pilotData['planned_altitude'],
-                'cruise_tas' => $pilotData['planned_tascruise'],
-                'route' => $pilotData['planned_route'],
-                'remarks' => $pilotData['planned_remarks'],
+                'alternative_airport' => $pilot['flight_plan']['alternate'],
+                'aircraft'            => $pilot['flight_plan']['aircraft'],
+                'cruise_altitude'     => $pilot['flight_plan']['altitude'],
+                'cruise_tas'          => $pilot['flight_plan']['cruise_tas'],
+                'route'               => $pilot['flight_plan']['route'],
+                'remarks'             => $pilot['flight_plan']['remarks'],
             ]);
 
-            if ($pilotData['latitude'] > 90 || $pilotData['latitude'] < -90) {
-                $pilotData['latitude'] =  null;
+            if ($pilot['latitude'] > 90 || $pilot['latitude'] < -90) {
+                $pilot['latitude'] = null;
             }
-            if ($pilotData['longitude'] > 180 || $pilotData['longitude'] < -180) {
-                $pilotData['longitude'] =  null;
+            if ($pilot['longitude'] > 180 || $pilot['longitude'] < -180) {
+                $pilot['longitude'] = null;
             }
 
             if ($flight->exists) {
@@ -211,11 +244,11 @@ class ProcessNetworkData extends Command
                 $wasAtAlternativeAirport = $flight->isAtAirport($alternativeAirport);
 
                 // update their location
-                $flight->current_latitude = !empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
-                $flight->current_longitude = !empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
-                $flight->current_altitude = !empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
-                $flight->current_groundspeed = !empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
-                $flight->current_heading = !empty($pilotData['heading']) ? $pilotData['heading'] : null;
+                $flight->current_latitude = ! empty($pilot['latitude']) ? $pilot['latitude'] : null;
+                $flight->current_longitude = ! empty($pilot['longitude']) ? $pilot['longitude'] : null;
+                $flight->current_altitude = ! empty($pilot['altitude']) ? $pilot['altitude'] : null;
+                $flight->current_groundspeed = ! empty($pilot['groundspeed']) ? $pilot['groundspeed'] : null;
+                $flight->current_heading = ! empty($pilot['heading']) ? $pilot['heading'] : null;
 
                 // check their new location
                 $isAtDepartureAirport = $flight->isAtAirport($departureAirport);
@@ -223,22 +256,22 @@ class ProcessNetworkData extends Command
                 $isAtAlternativeAirport = $flight->isAtAirport($alternativeAirport);
 
                 // determine if they have departed or arrived at their planned airports
-                $departed = $wasAtDepartureAirport && !$isAtDepartureAirport;
+                $departed = $wasAtDepartureAirport && ! $isAtDepartureAirport;
                 if ($departed) {
                     $flight->departed_at = $this->lastUpdatedAt;
                 }
 
-                $arrivedAtMainAirport = !$wasAtArrivalAirport && $isAtArrivalAirport;
-                $arrivedAtAlternativeAirport = !$wasAtAlternativeAirport && $isAtAlternativeAirport;
+                $arrivedAtMainAirport = ! $wasAtArrivalAirport && $isAtArrivalAirport;
+                $arrivedAtAlternativeAirport = ! $wasAtAlternativeAirport && $isAtAlternativeAirport;
                 if ($arrivedAtMainAirport || $arrivedAtAlternativeAirport) {
                     $flight->arrived_at = $this->lastUpdatedAt;
                 }
             } else {
                 // pilot just connected
-                $flight->current_latitude = !empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
-                $flight->current_longitude = !empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
-                $flight->current_altitude = !empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
-                $flight->current_groundspeed = !empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
+                $flight->current_latitude = ! empty($pilot['latitude']) ? $pilot['latitude'] : null;
+                $flight->current_longitude = ! empty($pilot['longitude']) ? $pilot['longitude'] : null;
+                $flight->current_altitude = ! empty($pilot['altitude']) ? $pilot['altitude'] : null;
+                $flight->current_groundspeed = ! empty($pilot['groundspeed']) ? $pilot['groundspeed'] : null;
             }
 
             $flight->touch();
@@ -246,22 +279,38 @@ class ProcessNetworkData extends Command
             $awaitingUpdate->forget([$flight->id]);
 
             DB::commit();
+
+            $progressBar->advance();
         }
 
-        $this->endExpiredPilotSessions($awaitingUpdate);
+        $progressBar->finish();
+        $this->newLine();
+
+        if ($awaitingUpdate->isNotEmpty()) {
+            $this->endExpiredPilotSessions($awaitingUpdate);
+        }
     }
 
     /**
      * Update the disconnected_at flag for any pilots not in the latest data feed.
      *
-     * @param Collection $expiringPilots
+     * @param  Collection  $expiringPilots
      */
     private function endExpiredPilotSessions($expiringPilots)
     {
-        $expiringPilots->each(function (Pilot $session) {
+        $this->info('Ending expired pilot sessions.');
+
+        $progressBar = $this->output->createProgressBar(count($expiringPilots));
+        $progressBar->start();
+
+        $expiringPilots->each(function (Pilot $session) use ($progressBar) {
             $session->disconnected_at = $this->lastUpdatedAt;
             $session->save();
+            $progressBar->advance();
         });
+
+        $progressBar->finish();
+        $this->newLine();
     }
 
     /**
@@ -272,7 +321,7 @@ class ProcessNetworkData extends Command
      */
     private function getAirport(string $ident)
     {
-        return Cache::remember('airport_'.$ident, 720, function () use ($ident) {
+        return Cache::remember('airport_'.$ident, 720 * 60, function () use ($ident) {
             return Airport::where('icao', $ident)->first();
         });
     }

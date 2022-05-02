@@ -6,7 +6,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Mship\Note\Type
+ * App\Models\Mship\Note\Type.
  *
  * @property int $id
  * @property string $name
@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ *
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type isAvailable()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type isDefault()

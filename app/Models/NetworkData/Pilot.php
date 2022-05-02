@@ -7,7 +7,7 @@ use App\Models\Model;
 use Watson\Rememberable\Rememberable;
 
 /**
- * App\Models\NetworkData\Pilot
+ * App\Models\NetworkData\Pilot.
  *
  * @property int $id
  * @property int $account_id
@@ -36,6 +36,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $human_duration
  * @property-read \App\Models\Mship\Qualification $qualification
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot offline()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot online()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereAccountId($value)
@@ -156,7 +157,7 @@ class Pilot extends Model
     {
         $this->attributes['disconnected_at'] = $timestamp;
 
-        if (!is_null($timestamp)) {
+        if (! is_null($timestamp)) {
             $this->current_altitude = null;
             $this->current_groundspeed = null;
             $this->current_latitude = null;
@@ -173,7 +174,7 @@ class Pilot extends Model
      */
     protected function calculateTimeOnline()
     {
-        if (!is_null($this->disconnected_at)) {
+        if (! is_null($this->disconnected_at)) {
             $firstFlightplan = self::where('account_id', $this->account_id)
                 ->where('callsign', $this->callsign)
                 ->where('connected_at', $this->connected_at)

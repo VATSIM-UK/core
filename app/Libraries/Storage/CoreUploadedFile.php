@@ -15,4 +15,9 @@ class CoreUploadedFile extends UploadedFile
     {
         return sha1("{$this->getClientOriginalName()}.{$this->getClientOriginalExtension()}");
     }
+
+    public function getPathFileName()
+    {
+        return $this->getFullFileName().'.'.$this->extension();
+    }
 }

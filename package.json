@@ -6,35 +6,56 @@
   "private": true,
   "scripts": {
     "dev": "yarn run development",
-    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch-poll": "yarn run watch -- --watch-poll",
-    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "development": "mix",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000",
+    "hot": "mix watch --hot",
+    "production": "mix --production",
     "prod": "yarn run production",
-    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "heroku-postbuild": "node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    "build-waiting-lists-manager-prod": "cd nova-components/WaitingListsManager && yarn && yarn run prod",
+    "build-waiting-lists-manager": "cd nova-components/WaitingListsManager && yarn && yarn run dev",
+    "heroku-postbuild": "yarn run prod && yarn run build-waiting-lists-manager-prod"
   },
   "dependencies": {
-    "admin-lte": "2.3.11",
-    "axios": "^0.18",
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@sentry/browser": "^6.19.6",
+    "@sentry/tracing": "^6.19.6",
+    "admin-lte": "2.4.18",
+    "axios": "^0.26",
     "bootstrap": "^3.3.7",
-    "bootstrap-sass": "^3.3.7",
-    "bootstrap-tour": "^0.11.0",
-    "cross-env": "^5.2.0",
-    "font-awesome": "^4.7.0",
-    "ionicons": "^3.0.0",
-    "jquery": "^3.3.1",
+    "bootstrap-sass": "^3.4.3",
+    "bootstrap-tour": "^0.12.0",
+    "cross-env": "^7.0.3",
+    "jquery": "^3.6.0",
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
-    "laravel-mix": "^2.0",
-    "less": "^2.7.3",
-    "less-loader": "^4.1.0",
-    "lodash": "^4.17.10",
-    "popper.js": "^1.12",
-    "vue": "^2.5.7"
+    "laravel-mix": "^6.0.34",
+    "less": "^4.1.2",
+    "less-loader": "^10.2.0",
+    "lodash": "^4.17.21",
+    "popper.js": "^1.16",
+    "postcss": "^8.4",
+    "resolve-url-loader": "5.0.0",
+    "sass-loader": "^12.6.0",
+    "sass": "^1.50.0",
+    "vue": "^2.6.14",
+    "vue-template-compiler": "^2.6.14"
   },
   "release": {
     "repositoryUrl": "https://github.com/VATSIM-UK/core",
-    "branch": "master"
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/npm",
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/github",
+        {
+          "releasedLabels": false
+        }
+      ]
+    ]
   }
 }

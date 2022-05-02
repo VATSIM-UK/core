@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Adm\VisitTransfer;
 
 use App\Http\Controllers\Adm\AdmController;
 use App\Http\Requests\VisitTransfer\ApplicationAcceptRequest;
+use App\Http\Requests\VisitTransfer\ApplicationCancelRequest;
 use App\Http\Requests\VisitTransfer\ApplicationCheckOutcomeRequest;
 use App\Http\Requests\VisitTransfer\ApplicationCompleteRequest;
 use App\Http\Requests\VisitTransfer\ApplicationRejectRequest;
@@ -11,7 +12,7 @@ use App\Http\Requests\VisitTransfer\ApplicationSettingToggleRequest;
 use App\Models\VisitTransfer\Application as ApplicationModel;
 use App\Models\VisitTransfer\Reference as ReferenceModel;
 use Auth;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Redirect;
 
 class Application extends AdmController
@@ -23,10 +24,10 @@ class Application extends AdmController
 
         // Sorting and searching!
         $sortBy = in_array(
-            Input::get('sort_by'),
+            Request::input('sort_by'),
             ['id', 'account_id', 'type', 'created_at', 'updated_at']
-        ) ? Input::get('sort_by') : 'updated_at';
-        $sortDir = in_array(Input::get('sort_dir'), ['ASC', 'DESC']) ? Input::get('sort_dir') : 'DESC';
+        ) ? Request::input('sort_by') : 'updated_at';
+        $sortDir = in_array(Request::input('sort_dir'), ['ASC', 'DESC']) ? Request::input('sort_dir') : 'DESC';
 
         $applications = ApplicationModel::orderBy($sortBy, $sortDir)
             ->with('account')
@@ -81,16 +82,16 @@ class Application extends AdmController
     {
         $rejectionReason = '';
 
-        if (Input::get('rejection_reason') != 'other') {
-            $rejectionReason = Input::get('rejection_reason');
+        if (Request::input('rejection_reason') != 'other') {
+            $rejectionReason = Request::input('rejection_reason');
         }
 
-        if (Input::get('rejection_reason_extra', null)) {
-            $rejectionReason .= "\n".Input::get('rejection_reason_extra');
+        if (Request::input('rejection_reason_extra', null)) {
+            $rejectionReason .= "\n".Request::input('rejection_reason_extra');
         }
 
         try {
-            $application->reject($rejectionReason, Input::get('rejection_staff_note', null), Auth::user());
+            $application->reject($rejectionReason, Request::input('rejection_staff_note', null), Auth::user());
         } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }
@@ -102,7 +103,7 @@ class Application extends AdmController
     public function postAccept(ApplicationAcceptRequest $request, ApplicationModel $application)
     {
         try {
-            $application->accept(Input::get('accept_staff_note', null), Auth::user());
+            $application->accept(Request::input('accept_staff_note', null), Auth::user());
         } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }
@@ -114,7 +115,7 @@ class Application extends AdmController
     public function postComplete(ApplicationCompleteRequest $request, ApplicationModel $application)
     {
         try {
-            $application->complete(Input::get('complete_staff_note', null), Auth::user());
+            $application->complete(Request::input('complete_staff_note', null), Auth::user());
         } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }
@@ -123,40 +124,52 @@ class Application extends AdmController
             ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' completed.');
     }
 
+    public function postCancel(ApplicationCancelRequest $request, ApplicationModel $application)
+    {
+        try {
+            $application->cancel(Request::input('cancel_reason', null), Request::input('cancel_staff_note', null), Auth::user());
+        } catch (\Exception $e) {
+            return Redirect::back()->withError($e->getMessage());
+        }
+
+        return Redirect::back()
+            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' cancelled & candidate notified.');
+    }
+
     public function postCheckMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
     {
         try {
-            $application->setCheckOutcome(Input::get('check', null), true);
+            $application->setCheckOutcome(Request::input('check', null), true);
         } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }
 
         return Redirect::route('adm.visiting.application.view', $application->id)->withSuccess(str_replace(
-                '_',
-                ' ',
-                Input::get('check', null)
-            )." check was marked as 'MET'!");
+            '_',
+            ' ',
+            Request::input('check', null)
+        )." check was marked as 'MET'!");
     }
 
     public function postCheckNotMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
     {
         try {
-            $application->setCheckOutcome(Input::get('check', null), false);
+            $application->setCheckOutcome(Request::input('check', null), false);
         } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }
 
         return Redirect::route('adm.visiting.application.view', $application->id)->withSuccess(str_replace(
-                '_',
-                ' ',
-                Input::get('check', null)
-            )." check was marked as 'NOT MET'!");
+            '_',
+            ' ',
+            Request::input('check', null)
+        )." check was marked as 'NOT MET'!");
     }
 
     public function postSettingToggle(ApplicationSettingToggleRequest $request, ApplicationModel $application)
     {
-        $application->settingToggle(Input::get('setting'));
+        $application->settingToggle(Request::input('setting'));
 
-        return Redirect::back()->withSuccess("Setting '".Input::get('setting')."' toggled successfully!");
+        return Redirect::back()->withSuccess("Setting '".Request::input('setting')."' toggled successfully!");
     }
 }

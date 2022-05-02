@@ -42,11 +42,10 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\TrackInactivity::class,
         ],
         'api' => [
-            // native
             'throttle:60,1',
             'bindings',
-
-            // custom
+        ],
+        'api_auth' => [
             'auth:api',
             'api.tracking',
         ],
@@ -56,7 +55,6 @@ class Kernel extends HttpKernel
             'mandatorypasswords',
             'denyifbanned',
             'user.must.read.notifications',
-            'must.have.community.group',
             'redirecttointended',
         ],
     ];
@@ -70,23 +68,21 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         // native
-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'auth.basic.once' => \App\Http\Middleware\AuthenticateOnceWithBasicAuth::class,
-        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'auth'            => \App\Http\Middleware\Authenticate::class,
+        'auth.basic'      => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'bindings'        => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'can'             => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'           => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle'        => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
         // custom
-        'admin' => Middleware\CheckAdminPermissions::class,
+        'admin'                        => Middleware\CheckAdminPermissions::class,
         'user.must.read.notifications' => Middleware\UserMustReadNotifications::class,
-        'must.have.community.group' => Middleware\MustHaveCommunityGroup::class,
-        'api.tracking' => \App\Http\Middleware\ApiTracking::class,
-        'denyifbanned' => Middleware\DenyIfBanned::class,
-        'mandatorypasswords' => Middleware\MandatoryPasswords::class,
-        'redirecttointended' => Middleware\RedirectToIntended::class,
-        'auth.record-info' => RecordLoginInfo::class,
+        'api.tracking'                 => \App\Http\Middleware\ApiTracking::class,
+        'denyifbanned'                 => Middleware\DenyIfBanned::class,
+        'mandatorypasswords'           => Middleware\MandatoryPasswords::class,
+        'redirecttointended'           => Middleware\RedirectToIntended::class,
+        'auth.record-info'             => RecordLoginInfo::class,
     ];
 
     /**
@@ -99,8 +95,9 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \App\Http\Middleware\Authenticate::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \App\Http\Middleware\TrackInactivity::class,
+        \App\Http\Middleware\Authenticate::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
     ];

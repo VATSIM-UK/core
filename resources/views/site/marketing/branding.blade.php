@@ -8,7 +8,7 @@
 
             <div class="col-md-12">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-pencil"></i> &thinsp; Branding Guidelines
+                    <div class="panel-heading"><i class="fa fa-pencil"></i> &thinsp; Branding Guidelines
                     </div>
                     <div class="panel-body">
 
@@ -139,7 +139,7 @@
 
     <div class="col-md-3">
         <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-briefcase"></i> &thinsp; Branding Bank
+            <div class="panel-heading"><i class="fa fa-briefcase"></i> &thinsp; Branding Bank
             </div>
             <div class="panel-body">
 
@@ -166,10 +166,11 @@
                 <ul>
                     <li>
                         Headers use Alegre Sans - <a href="http://www.dafont.com/alegre-sans-nc.font"
-                                                     rel="external nofollow" target="_blank">Download</a>;
+                                                     rel="external nofollow" target="_blank">Download</a>
                     </li>
                     <li>
-                        All other text use Calibri (default font included with windows).
+                        All other content should use DIN 1451 Mittelschrift - <a href="https://www.1001fonts.com/alte-din-1451-mittelschrift-font.html"
+                                                                                rel="external nofollow" target="_blank">Download</a>
                     </li>
                 </ul>
 

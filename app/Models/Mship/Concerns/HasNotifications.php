@@ -23,12 +23,12 @@ trait HasNotifications
     }
 
     /**
-     * @param Notification $notification
+     * @param  Notification  $notification
      * @return bool
      */
     public function hasReadNotification(SysNotification $notification)
     {
-        return $this->readSystemNotifications()->where('sys_notification_read.notification_id', $notification->id)->first(['sys_notification_read.id']) != null;
+        return $this->readSystemNotifications()->wherePivot('notification_id', $notification->id)->exists();
     }
 
     public function getUnreadNotificationsAttribute()

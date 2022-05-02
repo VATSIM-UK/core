@@ -28,8 +28,8 @@ class UserImpersonated extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param Account $target
-     * @param Account $impersonator
+     * @param  Account  $target
+     * @param  Account  $impersonator
      * @param $reason
      */
     public function __construct(Account $target, Account $impersonator, $reason)
@@ -44,7 +44,7 @@ class UserImpersonated extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -55,7 +55,7 @@ class UserImpersonated extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
@@ -77,7 +77,7 @@ class UserImpersonated extends Notification implements ShouldQueue
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function toArray($notifiable)

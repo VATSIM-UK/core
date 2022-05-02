@@ -5,7 +5,7 @@ namespace App\Models\TeamSpeak;
 use App\Models\Model;
 
 /**
- * App\Models\TeamSpeak\Confirmation
+ * App\Models\TeamSpeak\Confirmation.
  *
  * @property int $registration_id
  * @property string $privilege_key
@@ -13,6 +13,7 @@ use App\Models\Model;
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\TeamSpeak\Registration $registration
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation wherePrivilegeKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation whereRegistrationId($value)

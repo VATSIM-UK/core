@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Arr;
+
 $coreDb = [];
 if (env('CORE_DATABASE_URL', null) !== null) {
     $split = parse_url(getenv('CORE_DATABASE_URL'));
@@ -61,26 +63,29 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_MYSQL_HOST', array_get($coreDb, 'host')),
-            'port' => env('DB_MYSQL_PORT', array_get($coreDb, 'port')),
-            'database' => env('DB_MYSQL_NAME', array_get($coreDb, 'name')),
-            'username' => env('DB_MYSQL_USER', array_get($coreDb, 'user')),
-            'password' => env('DB_MYSQL_PASS', array_get($coreDb, 'pass')),
+            'host' => env('DB_MYSQL_HOST', Arr::get($coreDb, 'host')),
+            'port' => env('DB_MYSQL_PORT', Arr::get($coreDb, 'port')),
+            'database' => env('DB_MYSQL_NAME', Arr::get($coreDb, 'name')),
+            'username' => env('DB_MYSQL_USER', Arr::get($coreDb, 'user')),
+            'password' => env('DB_MYSQL_PASS', Arr::get($coreDb, 'pass')),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset'     => env('DB_MYSQL_CHARSET', 'utf8mb4'),
             'collation'   => env('DB_MYSQL_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix'      => env('DB_MYSQL_PREFIX', ''),
             'strict'      => true,
             'engine'      => null,
+            'options'   => [
+                \PDO::ATTR_EMULATE_PREPARES => true,
+            ],
         ],
 
         'cts' => [
             'driver' => 'mysql',
-            'host' => env('DB_MYSQL_HOST', array_get($ctsDb, 'host')),
-            'port' => env('DB_MYSQL_PORT', array_get($ctsDb, 'port')),
-            'database' => env('CTS_DATABASE', array_get($ctsDb, 'name')),
-            'username' => env('DB_MYSQL_USER', array_get($ctsDb, 'user')),
-            'password' => env('DB_MYSQL_PASS', array_get($ctsDb, 'pass')),
+            'host' => env('DB_MYSQL_HOST', Arr::get($ctsDb, 'host')),
+            'port' => env('DB_MYSQL_PORT', Arr::get($ctsDb, 'port')),
+            'database' => env('CTS_DATABASE', Arr::get($ctsDb, 'name')),
+            'username' => env('DB_MYSQL_USER', Arr::get($ctsDb, 'user')),
+            'password' => env('DB_MYSQL_PASS', Arr::get($ctsDb, 'pass')),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset'     => env('DB_MYSQL_CHARSET', 'utf8mb4'),
             'collation'   => env('DB_MYSQL_COLLATION', 'utf8mb4_unicode_ci'),
@@ -141,13 +146,14 @@ return [
 
     'redis' => [
 
-        'client' => 'predis',
+        'client' => env('REDIS_CLIENT', 'predis'),
 
         'default' => [
             'host'     => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
             'port'     => env('REDIS_PORT', 6379),
             'database' => env('REDIS_DB', 0),
+            'read_write_timeout' => -1,
         ],
 
         'cache' => [
@@ -155,6 +161,23 @@ return [
             'password' => env('REDIS_PASSWORD', null),
             'port'     => env('REDIS_PORT', 6379),
             'database' => env('REDIS_CACHE_DB', 1),
+            'read_write_timeout' => -1,
+        ],
+
+        'session' => [
+            'host'     => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port'     => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_SESSION_DB', 2),
+            'read_write_timeout' => -1,
+        ],
+
+        'queue' => [
+            'host'     => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port'     => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_QUEUE_DB', 3),
+            'read_write_timeout' => -1,
         ],
 
     ],

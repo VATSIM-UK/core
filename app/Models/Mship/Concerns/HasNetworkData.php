@@ -43,7 +43,7 @@ trait HasNetworkData
      */
     public function getIsOnNetworkAttribute()
     {
-        return $this->networkDataAtcCurrent->exists;
+        return $this->networkDataAtcCurrent()->exists();
     }
 
     /*

@@ -7,7 +7,7 @@
         @endif
                 <div class="col-md-4">
                     <div class="panel panel-ukblue">
-                        <div class="panel-heading"><i class="glyphicon glyphicon-triangle-right"></i>&thinsp; {{ $exercise->name }}</div>
+                        <div class="panel-heading"><i class="fa fa-arrow-right"></i>&thinsp; {{ $exercise->name }}</div>
                         <div class="panel-body">
                             @if($exercise->image)
                                 <div class="text-center">

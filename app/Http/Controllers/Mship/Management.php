@@ -2,23 +2,34 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Libraries\UKCP;
+use App\Jobs\UpdateMember;
+use App\Libraries\UKCP as UKCPLibrary;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Token as SystemToken;
-use Auth;
-use Input;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Request;
 use Laravel\Passport\Client as OAuthClient;
 use Redirect;
 use Validator;
 
 class Management extends \App\Http\Controllers\BaseController
 {
+    /**
+     * @var UKCPLibrary
+     */
+    private $ukcp;
+
+    public function __construct(UKCPLibrary $ukcp)
+    {
+        $this->ukcp = $ukcp;
+        parent::__construct();
+    }
+
     public function getLanding()
     {
         if (Auth::check()) {
             return redirect()->intended(route('mship.manage.dashboard'));
-        } elseif (Auth::guard('vatsim-sso')->check()) {
-            return redirect()->route('login');
         }
 
         return $this->viewMake('mship.management.landing');
@@ -34,7 +45,7 @@ class Management extends \App\Http\Controllers\BaseController
             'teamspeakRegistrations'
         );
 
-        $pluginKeys = (new UKCP)->getValidTokensFor(auth()->user());
+        $pluginKeys = $this->ukcp->getValidTokensFor(auth()->user());
 
         return $this->viewMake('mship.management.dashboard')->with('pluginKeys', $pluginKeys);
     }
@@ -59,8 +70,8 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function postEmailAdd()
     {
-        $email = strtolower(Input::get('new_email'));
-        $email2 = strtolower(Input::get('new_email2'));
+        $email = strtolower(Request::input('new_email'));
+        $email2 = strtolower(Request::input('new_email2'));
 
         $validator = Validator::make(
             ['email' => $email],
@@ -78,7 +89,7 @@ class Management extends \App\Http\Controllers\BaseController
                 ->withError('Emails entered are different.  You need to enter the same email, twice.');
         }
 
-        if (!$this->account->hasEmail($email)) {
+        if (! $this->account->hasEmail($email)) {
             $this->account->addSecondaryEmail($email);
         } else {
             return Redirect::route('mship.manage.dashboard')
@@ -86,7 +97,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         return Redirect::route('mship.manage.dashboard')
-            ->withSuccess('Your new email (' . $email . ') has been added successfully! You will be sent a verification link to activate this email address.');
+            ->withSuccess('Your new email ('.$email.') has been added successfully! You will be sent a verification link to activate this email address.');
     }
 
     public function getEmailDelete(AccountEmail $email)
@@ -112,7 +123,7 @@ class Management extends \App\Http\Controllers\BaseController
         $email->delete();
 
         return Redirect::route('mship.manage.dashboard')
-            ->withSuccess('Your secondary email (' . $email->email . ') has been removed!');
+            ->withSuccess('Your secondary email ('.$email->email.') has been removed!');
     }
 
     public function getEmailAssignments()
@@ -169,7 +180,7 @@ class Management extends \App\Http\Controllers\BaseController
         // Now, let's go through and see if any that are CURRENTLY assigned have switched back to PRIMARY
         // If they have, we can just delete them!
         foreach ($userSsoEmails as $ssoEmail) {
-            if (Input::get('assign_' . $ssoEmail->sso_account_id, 'pri') == 'pri') {
+            if (Request::input('assign_'.$ssoEmail->sso_account_id, 'pri') == 'pri') {
                 $ssoEmail->delete();
             }
         }
@@ -177,16 +188,16 @@ class Management extends \App\Http\Controllers\BaseController
         // NOW, let's go through all the other systems and check if we have NONE primary assignments
         foreach ($ssoSystems as $ssosys) {
             // SKIP PRIMARY ASSIGNMENTS!
-            if (Input::get('assign_' . $ssosys->id, 'pri') == 'pri') {
+            if (Request::input('assign_'.$ssosys->id, 'pri') == 'pri') {
                 continue;
             }
 
             // We have an assignment - woohoo!
-            $assignedEmailID = Input::get('assign_' . $ssosys->id);
+            $assignedEmailID = Request::input('assign_'.$ssosys->id);
 
             // Let's do the assignment
             // The model will take care of checking if it exists or not, itself!
-            if (!$userVerifiedEmails->contains($assignedEmailID)) {
+            if (! $userVerifiedEmails->contains($assignedEmailID)) {
                 continue; // This isn't a valid EMAIL ID for this user.
             }
 
@@ -203,7 +214,7 @@ class Management extends \App\Http\Controllers\BaseController
         // Search tokens for this code!
         $token = SystemToken::where('code', '=', $code)->valid()->first();
         // Is it valid? Has it expired? Etc?
-        if (!$token) {
+        if (! $token) {
             return $this->viewMake('mship.management.email.verify')->with(
                 'error',
                 'You have provided an invalid email verification token. (ERR1)'
@@ -227,7 +238,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         // Is it valid and linked to something?!?!
-        if (!$token->related or $token->type != 'mship_account_email_verify') {
+        if (! $token->related or $token->type != 'mship_account_email_verify') {
             return $this->viewMake('mship.management.email.verify')->with(
                 'error',
                 'You have provided an invalid email verification token. (ERR4)'
@@ -242,12 +253,24 @@ class Management extends \App\Http\Controllers\BaseController
 
         // Consumed, let's send away!
         if ($this->account) {
-            return Redirect::route('mship.manage.dashboard')->withSuccess('Your new email address (' . $token->related->email . ') has been verified!');
+            return Redirect::route('mship.manage.dashboard')->withSuccess('Your new email address ('.$token->related->email.') has been verified!');
         } else {
             return $this->viewMake('mship.management.email.verify')->with(
                 'success',
-                'Your new email address (' . $token->related->email . ') has been verified!'
+                'Your new email address ('.$token->related->email.') has been verified!'
             );
         }
+    }
+
+    public function requestCertCheck()
+    {
+        $ranRecently = ! Cache::add('USER_REQUEST_CERTCHECK_'.Auth::user()->id, '1', now()->addHour());
+        if ($ranRecently) {
+            return redirect()->route('mship.manage.dashboard')->withError('You requested an update with the central VATSIM database recently. Try again later.');
+        }
+
+        UpdateMember::dispatch(Auth::user()->id);
+
+        return redirect()->route('mship.manage.dashboard')->withSuccess('Account update requested. This may take up to 5 minutes to complete.');
     }
 }

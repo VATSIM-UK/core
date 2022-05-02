@@ -56,9 +56,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
                     // Connection failed, let the loop restart and try again
                     $connectionFailures++;
                     if ($connectionFailures == 3) {
-                        throw new TeamSpeak3_Transport_Exception("TeamSpeak Daemon failed to connect 3 times.");
+                        throw new TeamSpeak3_Transport_Exception('TeamSpeak Daemon failed to connect 3 times.');
                     }
-                    $this->log('TeamSpeak connection failed: '.$e->getMessage(). '. Trying again in 15 seconds...');
+                    $this->log('TeamSpeak connection failed: '.$e->getMessage().'. Trying again in 15 seconds...');
                     sleep(15);
                 }
             }
@@ -68,8 +68,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     /**
      * Handle a client joining the server.
      *
-     * @param TeamSpeak3_Adapter_ServerQuery_Event $event
-     * @param TeamSpeak3_Node_Host $host
+     * @param  TeamSpeak3_Adapter_ServerQuery_Event  $event
+     * @param  TeamSpeak3_Node_Host  $host
+     *
      * @throws TeamSpeak3_Adapter_ServerQuery_Exception
      */
     public static function clientJoinedEvent(TeamSpeak3_Adapter_ServerQuery_Event $event, TeamSpeak3_Node_Host $host)
@@ -92,7 +93,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             TeamSpeak::checkMemberMandatoryNotifications($client, $member);
             TeamSpeak::checkClientNickname($client, $member);
 
-            if (!TeamSpeak::clientIsProtected($client)) {
+            if (! TeamSpeak::clientIsProtected($client)) {
                 TeamSpeak::checkClientServerGroups($client, $member);
                 TeamSpeak::checkClientChannelGroups($client, $member);
             }
@@ -106,8 +107,8 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     /**
      * Handle a client leaving the server.
      *
-     * @param TeamSpeak3_Adapter_ServerQuery_Event $event
-     * @param TeamSpeak3_Node_Host $host
+     * @param  TeamSpeak3_Adapter_ServerQuery_Event  $event
+     * @param  TeamSpeak3_Node_Host  $host
      */
     public static function clientLeftEvent(TeamSpeak3_Adapter_ServerQuery_Event $event, TeamSpeak3_Node_Host $host)
     {
@@ -119,8 +120,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     /**
      * Attempt to establish a connection to the TeamSpeak server.
      *
-     * @param int $attempt
+     * @param  int  $attempt
      * @return mixed|\TeamSpeak3_Adapter_Abstract
+     *
      * @throws \App\Exceptions\TeamSpeak\MaxConnectionAttemptsExceededException
      * @throws \TeamSpeak3_Adapter_ServerQuery_Exception
      * @throws \TeamSpeak3_Transport_Exception
@@ -134,9 +136,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             // register for events
             $connection->notifyRegister('server');
             TeamSpeak3_Helper_Signal::getInstance()
-                ->subscribe('notifyCliententerview', self::class . '::clientJoinedEvent');
+                ->subscribe('notifyCliententerview', self::class.'::clientJoinedEvent');
             TeamSpeak3_Helper_Signal::getInstance()
-                ->subscribe('notifyClientleftview', self::class . '::clientLeftEvent');
+                ->subscribe('notifyClientleftview', self::class.'::clientLeftEvent');
 
             return $connection;
         } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {

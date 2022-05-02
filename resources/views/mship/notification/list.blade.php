@@ -22,7 +22,7 @@
         <div class="col-md-12">
             <div class="panel panel-ukblue">
                 @if($unreadNotifications->count() > 0)
-                    <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Unread
+                    <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Unread
                         Notifications
                     </div>
 
@@ -85,7 +85,7 @@
             </div>
             <div class="panel panel-ukblue">
                 @if($readNotifications->count() > 0)
-                    <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Read Notifications
+                    <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Read Notifications
                     </div>
 
                     <div class="panel-group" id="readNotifications" role="tablist" aria-multiselectable="true">

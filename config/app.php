@@ -14,6 +14,7 @@ return [
     */
 
     'name' => 'VATSIM UK Core',
+    'heroku_name' => env('HEROKU_APP_NAME'),
 
     /*
     |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    'local' => env('APP_IS_LOCAL', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -53,6 +55,7 @@ return [
     |
     */
 
+    'protocol' => env('APP_PROTOCOL', 'https'),
     'url' => appUrl(),
 
     /*
@@ -154,14 +157,10 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
 
-        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
-        Vatsim\OAuth\OAuthServiceProvider::class,
-        Vatsim\Xml\XmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Alawrence\Ipboard\ServiceProvider::class,
-        Vluzrmos\SlackApi\SlackApiServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -170,8 +169,11 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\HorizonServiceProvider::class,
+        App\Providers\NovaServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TrainingEventServiceProvider::class,
     ],
 
     /*
@@ -227,29 +229,14 @@ return [
         /*
          * Laravel Native Aliases (Deprecated)
          */
-        'Input' => Illuminate\Support\Facades\Input::class,
         'Inspiring' => Illuminate\Foundation\Inspiring::class,
 
         /*
          * Third Party Aliases
          */
-        'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
-        'SlackApi' => Vluzrmos\SlackApi\Facades\SlackApi::class,
-        'SlackChannel' => Vluzrmos\SlackApi\Facades\SlackChannel::class,
-        'SlackChat' => Vluzrmos\SlackApi\Facades\SlackChat::class,
-        'SlackGroup' => Vluzrmos\SlackApi\Facades\SlackGroup::class,
-        'SlackFile' => Vluzrmos\SlackApi\Facades\SlackFile::class,
-        'SlackSearch' => Vluzrmos\SlackApi\Facades\SlackSearch::class,
-        'SlackInstantMessage' => Vluzrmos\SlackApi\Facades\SlackInstantMessage::class,
-        'SlackUser' => Vluzrmos\SlackApi\Facades\SlackUser::class,
-        'SlackStar' => Vluzrmos\SlackApi\Facades\SlackStar::class,
-        'SlackUserAdmin' => Vluzrmos\SlackApi\Facades\SlackUserAdmin::class,
-        'SlackRealTimeMessage' => Vluzrmos\SlackApi\Facades\SlackRealTimeMessage::class,
-        'SlackTeam' => Vluzrmos\SlackApi\Facades\SlackTeam::class,
         'HTML' => Collective\Html\HtmlFacade::class,
         'Form' => Collective\Html\FormFacade::class,
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
-        'VatsimXML' => Vatsim\Xml\Facades\XML::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'IPBoard' => Alawrence\Ipboard\Facades\Ipboard::class,
     ],

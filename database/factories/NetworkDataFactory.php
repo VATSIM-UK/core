@@ -19,7 +19,7 @@
             },
         ];
     });
-    $factory->defineAs(\App\Models\NetworkData\Atc::class, 'offline', function (Faker $faker) {
+    $factory->state(\App\Models\NetworkData\Atc::class, 'offline', function (Faker $faker) {
         $start = $faker->dateTimeBetween('6 hours ago');
         $end = $faker->dateTimeBetween($start);
 
