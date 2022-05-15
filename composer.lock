@@ -3152,16 +3152,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.3.0",
+            "version": "2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "32a49eb2b38fe5e5c417ab748a45d0beaab97955"
+                "reference": "cb36fee279f7fca01d5d9399ddd1b37e48e2eca1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/32a49eb2b38fe5e5c417ab748a45d0beaab97955",
-                "reference": "32a49eb2b38fe5e5c417ab748a45d0beaab97955",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/cb36fee279f7fca01d5d9399ddd1b37e48e2eca1",
+                "reference": "cb36fee279f7fca01d5d9399ddd1b37e48e2eca1",
                 "shasum": ""
             },
             "require": {
@@ -3254,7 +3254,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-07T22:37:05+00:00"
+            "time": "2022-05-14T15:37:39+00:00"
         },
         {
             "name": "league/config",
@@ -3987,16 +3987,16 @@
         },
         {
             "name": "maatwebsite/excel",
-            "version": "3.1.38",
+            "version": "3.1.40",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SpartnerNL/Laravel-Excel.git",
-                "reference": "dff132ce4d30b19863f4e84de1613fca99604992"
+                "reference": "8a54972e3d616c74687c3cbff15765555761885c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Excel/zipball/dff132ce4d30b19863f4e84de1613fca99604992",
-                "reference": "dff132ce4d30b19863f4e84de1613fca99604992",
+                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Excel/zipball/8a54972e3d616c74687c3cbff15765555761885c",
+                "reference": "8a54972e3d616c74687c3cbff15765555761885c",
                 "shasum": ""
             },
             "require": {
@@ -4049,7 +4049,7 @@
             ],
             "support": {
                 "issues": "https://github.com/SpartnerNL/Laravel-Excel/issues",
-                "source": "https://github.com/SpartnerNL/Laravel-Excel/tree/3.1.38"
+                "source": "https://github.com/SpartnerNL/Laravel-Excel/tree/3.1.40"
             },
             "funding": [
                 {
@@ -4061,7 +4061,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-24T16:00:29+00:00"
+            "time": "2022-05-02T13:50:01+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -5716,16 +5716,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.22.0",
+            "version": "1.23.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "3a9e29b4f386a08a151a33578e80ef1747037a48"
+                "reference": "21e4cf62699eebf007db28775f7d1554e612ed9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/3a9e29b4f386a08a151a33578e80ef1747037a48",
-                "reference": "3a9e29b4f386a08a151a33578e80ef1747037a48",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/21e4cf62699eebf007db28775f7d1554e612ed9e",
+                "reference": "21e4cf62699eebf007db28775f7d1554e612ed9e",
                 "shasum": ""
             },
             "require": {
@@ -5749,7 +5749,7 @@
                 "php": "^7.3 || ^8.0",
                 "psr/http-client": "^1.0",
                 "psr/http-factory": "^1.0",
-                "psr/simple-cache": "^1.0"
+                "psr/simple-cache": "^1.0 || ^2.0"
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "dev-master",
@@ -5814,9 +5814,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
-                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.22.0"
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.23.0"
             },
-            "time": "2022-02-18T12:57:07+00:00"
+            "time": "2022-04-24T13:53:10+00:00"
         },
         {
             "name": "phpoption/phpoption",
