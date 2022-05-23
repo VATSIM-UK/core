@@ -239,6 +239,10 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (TWR)</td>
+                                <td>Daniel Blanco</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (TWR)</td>
                                 <td>George Peppard</td>
                             </tr>
                             <tr>
@@ -246,20 +250,12 @@
                                 <td>Kye Taylor</td>
                             </tr>
                             <tr>
-                                <td>TG Instructor (TWR)</td>
-                                <td>Matthew Dean</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (APP)</td>
-                                <td>William Jennings</td>
-                            </tr>
-                            <tr>
                                 <td>TG Instructor (APP)</td>
                                 <td>Reece Buckley</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (ENR)</td>
-                                <td>Vacant</td>
+                                <td>Harry S</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
