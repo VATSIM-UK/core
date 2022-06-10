@@ -90,7 +90,7 @@
         "malahierba-lab/public-id": "dev-main",
         "ohdearapp/ohdear-php-sdk": "^3.0",
         "planetteamspeak/ts3-php-framework": "dev-master#9e987b61b8e559b4219d30b140b8edbeb94edece",
-        "predis/predis": "^1.1",
+        "predis/predis": "^2.0",
         "pusher/pusher-php-server": "~6.0",
         "sentry/sentry-laravel": "^2.4",
         "sixlive/nova-text-copy-field": "^1.5",
