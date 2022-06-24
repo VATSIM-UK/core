@@ -44,7 +44,7 @@
                         <ul>
                             <li>
                                 All Transfering/Visiting controllers are subject to the global&nbsp;<a
-                                        href="http://www.vatsim.net/documents/transfer-and-visiting-controller-policy"
+                                        href="https://vatsim.net/docs/policy/transfer-and-visiting-controller-policy/"
                                         rel="external nofollow" target="_blank">VATSIM&nbsp;Transfer &amp; Visiting
                                     Controller Policy</a>&nbsp;and <a
                                         href="https://community.vatsim.uk/files/downloads/file/25-division-policy"
