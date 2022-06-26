@@ -4898,16 +4898,16 @@
         },
         {
             "name": "ohdearapp/ohdear-php-sdk",
-            "version": "3.4.3",
+            "version": "3.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ohdearapp/ohdear-php-sdk.git",
-                "reference": "ca7567a1bedec9dd654668e1755568236b2c7b4a"
+                "reference": "e265480183d14134c59aa309b61bb3547fcbe48a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/ca7567a1bedec9dd654668e1755568236b2c7b4a",
-                "reference": "ca7567a1bedec9dd654668e1755568236b2c7b4a",
+                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/e265480183d14134c59aa309b61bb3547fcbe48a",
+                "reference": "e265480183d14134c59aa309b61bb3547fcbe48a",
                 "shasum": ""
             },
             "require": {
@@ -4948,9 +4948,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ohdearapp/ohdear-php-sdk/issues",
-                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.4.3"
+                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.4.4"
             },
-            "time": "2022-06-10T07:02:06+00:00"
+            "time": "2022-06-21T17:36:24+00:00"
         },
         {
             "name": "opis/closure",
