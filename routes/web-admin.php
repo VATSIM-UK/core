@@ -131,6 +131,7 @@ Route::group([
         Route::post('/application/{application}/accept')->where('application', "\d+")->uses('Application@postAccept')->name('application.accept.post');
         Route::post('/application/{application}/reject')->where('application', "\d+")->uses('Application@postReject')->name('application.reject.post');
         Route::post('/application/{application}/complete')->where('application', "\d+")->uses('Application@postComplete')->name('application.complete.post');
+        Route::post('/application/{application}/cancel')->where('application', "\d+")->uses('Application@postCancel')->name('application.cancel.post');
         Route::get('/application/{scope?}')->where('scope', "\w+")->uses('Application@getList')->name('application.list');
         Route::get('/hours/')->uses('VisitorStatsController@create')->name('hours.create');
         Route::get('/hours/search')->uses('VisitorStatsController@index')->name('hours.search');

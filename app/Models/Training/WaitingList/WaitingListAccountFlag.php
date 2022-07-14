@@ -36,7 +36,7 @@ class WaitingListAccountFlag extends Pivot
 
     public function waitingListAccount()
     {
-        return $this->belongsTo(WaitingListAccount::class);
+        return $this->belongsTo(WaitingListAccount::class)->withTrashed();
     }
 
     public function flag()

@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Smartcars\Aircraft $aircraft
  * @property-read \App\Models\Smartcars\Flight $bid
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereAircraftId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereAltitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereBidId($value)
@@ -74,7 +75,7 @@ class Posrep extends Model
     /**
      * Determine whether a posrep is valid against the provided criteria.
      *
-     * @param FlightCriterion $criterion
+     * @param  FlightCriterion  $criterion
      * @return bool
      */
     public function positionIsValid(FlightCriterion $criterion)

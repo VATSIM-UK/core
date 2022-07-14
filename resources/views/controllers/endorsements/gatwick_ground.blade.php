@@ -15,7 +15,7 @@
                     <br>
                     <h4>Step Two</h4>
                     You will be given access to the 'Gatwick ADC | S1 Endorsement' course. This Moodle course covers Gatwick specific procedures, radiotelephony, and local flight planning restrictions.
-                    There is a quiz at the end of the course with a pass mark of 80% - you must pass this quiz to proceed.
+                    There is a quiz at the end of the course with a pass mark of 90% - you must pass this quiz to proceed.
                     If you do not pass the quiz on your first attempt, there is a study period of seven days for you to review the Moodle course and improve your knowledge before you try again.<br>
                     When you have passed the quiz at the end of the Moodle course, you will be prompted to submit another ticket to ATC TRAINING.<br>
                     <br>

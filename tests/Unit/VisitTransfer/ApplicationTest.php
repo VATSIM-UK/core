@@ -7,6 +7,7 @@ use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
 use App\Notifications\ApplicationAccepted;
+use App\Notifications\ApplicationStatusChanged;
 use Carbon\Carbon;
 use Faker\Provider\Base;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -179,6 +180,37 @@ class ApplicationTest extends TestCase
 
             return $notification->application->id == $application->id;
         });
+    }
+
+    public function providerCancelTest()
+    {
+        // With another accepted visit application
+        return [
+            [true],
+            [false],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider providerCancelTest
+     */
+    public function itCanBeCancelled($with_another_application)
+    {
+        Notification::fake();
+        $visitingState = \App\Models\Mship\State::findByCode('VISITING');
+
+        $this->user->addState($visitingState);
+        $this->assertTrue($this->user->fresh()->hasState($visitingState));
+
+        $application = factory(Application::class)->state('atc_visit')->create(['status' => Application::STATUS_ACCEPTED, 'account_id' => $this->user]);
+        if ($with_another_application) {
+            factory(Application::class)->state('atc_visit')->create(['status' => Application::STATUS_ACCEPTED, 'account_id' => $this->user]);
+        }
+        $application->cancel();
+
+        Notification::assertSentTo($this->user, ApplicationStatusChanged::class);
+        $this->assertEquals($with_another_application ? true : false, $this->user->fresh()->hasState($visitingState));
     }
 
     /** @test */

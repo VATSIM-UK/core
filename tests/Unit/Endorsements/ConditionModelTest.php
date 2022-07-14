@@ -4,6 +4,7 @@ namespace Tests\Unit\Endorsements;
 
 use App\Models\Atc\Endorsement;
 use App\Models\Atc\Endorsement\Condition;
+use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -116,7 +117,7 @@ class ConditionModelTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyReportsMetForSingleAirfield()
+    public function itCorrectlyReportsMetAndProgressForSingleAirfield()
     {
         $condition = factory(Endorsement\Condition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD]);
 
@@ -136,14 +137,16 @@ class ConditionModelTest extends TestCase
         ]);
 
         $this->assertFalse($condition->isMetForUser($this->user));
+        $this->assertEquals(5, $condition->overallProgressForUser($this->user));
 
         $session->minutes_online = 10 * 60;
         $session->save();
         $this->assertTrue($condition->fresh()->isMetForUser($this->user));
+        $this->assertEquals(10, $condition->fresh()->overallProgressForUser($this->user));
     }
 
     /** @test */
-    public function itCorrectlyReportsMetForSum()
+    public function itCorrectlyReportsMetAndProgressForSum()
     {
         $condition = factory(Endorsement\Condition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => Endorsement\Condition::TYPE_SUM_OF_AIRFIELDS]);
 
@@ -163,9 +166,59 @@ class ConditionModelTest extends TestCase
         ]);
 
         $this->assertFalse($condition->isMetForUser($this->user));
+        $this->assertEquals(9, $condition->overallProgressForUser($this->user));
 
         $session->minutes_online = 5 * 60;
         $session->save();
+        $this->assertTrue($condition->fresh()->isMetForUser($this->user));
+        $this->assertEquals(10, $condition->fresh()->overallProgressForUser($this->user));
+    }
+
+    /** @test */
+    public function itCorrectlyChecksForQualificationWhenPresent()
+    {
+        $requiredQualification = Qualification::code('S3')->get()->first()->id;
+
+        $condition = factory(Endorsement\Condition::class)->create([
+            'positions' => ['ESSEX_APP'],
+            'required_hours' => 10,
+            'within_months' => 2,
+            'type' => Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD,
+            'required_qualification' => $requiredQualification,
+        ]);
+
+        // create a session short of the requirement at the rating required
+        factory(Atc::class)->create([
+            'account_id' => $this->user->id,
+            'callsign' => 'ESSEX_APP',
+            'minutes_online' => 9 * 60, // 9 hours
+            'connected_at' => Carbon::now()->subMonths(1),
+            'disconnected_at' => Carbon::now()->subMonths(1),
+            'qualification_id' => $requiredQualification,
+        ]);
+
+        // create a session which would meet the hours criteria, but not at the right rating
+        factory(Atc::class)->create([
+            'account_id' => $this->user->id,
+            'callsign' => 'ESSEX_APP',
+            'minutes_online' => 4 * 60, // 4 hours
+            'connected_at' => Carbon::now()->subMonths(1),
+            'disconnected_at' => Carbon::now()->subMonths(1),
+            'qualification_id' => Qualification::code('S2')->get()->first()->id,
+        ]);
+
+        $this->assertFalse($condition->fresh()->isMetForUser($this->user));
+
+        // create a session to meet requirement at the rating required
+        factory(Atc::class)->create([
+            'account_id' => $this->user->id,
+            'callsign' => 'ESSEX_APP',
+            'minutes_online' => 3 * 60, // 3 hours
+            'connected_at' => Carbon::now()->subMonths(1),
+            'disconnected_at' => Carbon::now()->subMonths(1),
+            'qualification_id' => $requiredQualification,
+        ]);
+
         $this->assertTrue($condition->fresh()->isMetForUser($this->user));
     }
 }

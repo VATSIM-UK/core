@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $max_cargo_kg
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Aircraft registration($reg)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Aircraft whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Aircraft whereCruiseAltitude($value)

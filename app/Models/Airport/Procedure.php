@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Airport $airport
  * @property-read mixed $procedure_type
  * @property-read \App\Models\Airport\Runway|null $runway
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereAirportId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereFinalAltitude($value)

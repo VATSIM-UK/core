@@ -22,6 +22,7 @@ use App\Models\Model;
  * @property-read mixed $is_s1
  * @property-read mixed $is_s2
  * @property-read mixed $is_s3
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification networkValue($networkValue)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification ofType($type)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification whereCode($value)

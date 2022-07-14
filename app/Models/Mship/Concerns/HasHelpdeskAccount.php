@@ -15,7 +15,7 @@ trait HasHelpdeskAccount
     /**
      * Sync the current account to Helpdesk.
      *
-     * @param mixed $helpdeskAccount
+     * @param  mixed  $helpdeskAccount
      */
     public function syncToHelpdesk()
     {
@@ -77,7 +77,7 @@ trait HasHelpdeskAccount
     /**
      * Update the user's existing Helpdesk account.
      *
-     * @param mixed $helpdeskAccount
+     * @param  mixed  $helpdeskAccount
      */
     protected function updateHelpdeskAccount($helpdeskAccount)
     {

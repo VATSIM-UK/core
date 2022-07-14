@@ -23,3 +23,7 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 |     Env    |              URL              |        Status        |
 |------------|-------------------------------|----------------------|
 | Production | https://www.vatsim.uk         | ![master_deploy_status] |
+
+# Tooling
+
+[![Tuple](https://img.shields.io/badge/Pairing%20with-Tuple-5A67D8)](https://tuple.app)

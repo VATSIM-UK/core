@@ -68,7 +68,7 @@ class TeamSpeakCleanup extends Command
     /**
      * Check the registration for a TeamSpeak client.
      *
-     * @param mixed $client The client being checked.
+     * @param  mixed  $client  The client being checked.
      * @return int Returns 0 if no change has been made, or 1 if the client was deleted.
      */
     protected function checkRegistration($client)

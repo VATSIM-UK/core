@@ -17,7 +17,8 @@ trait HasQualifications
             'mship_account_qualification',
             'account_id',
             'qualification_id'
-        )->using(AccountQualification::class)
+        )->orderBy('vatsim')
+            ->using(AccountQualification::class)
             ->wherePivot('deleted_at', '=', null)
             ->withTimestamps();
     }
@@ -25,8 +26,7 @@ trait HasQualifications
     /**
      * Determine if the given qualification exists on the member account.
      *
-     * @param Qualification $qualification
-     *
+     * @param  Qualification  $qualification
      * @return bool
      */
     public function hasQualification(Qualification $qualification)
@@ -39,8 +39,7 @@ trait HasQualifications
     /**
      * Add a qualification to the current member account.
      *
-     * @param Qualification $qualification
-     *
+     * @param  Qualification  $qualification
      * @return self
      */
     public function addQualification(Qualification $qualification)
@@ -58,10 +57,10 @@ trait HasQualifications
     /**
      * Add qualifications to the account, calculated from the VATSIM identifiers.
      *
-     * @param int $atcRating The VATSIM ATC rating
-     * @param int $pilotRating The VATSIM pilot rating
+     * @param  int|null  $atcRating  The VATSIM ATC rating
+     * @param  int|null  $pilotRating  The VATSIM pilot rating
      */
-    public function updateVatsimRatings(int $atcRating, int $pilotRating)
+    public function updateVatsimRatings(?int $atcRating, ?int $pilotRating)
     {
         if ($atcRating === 0) {
             $this->addNetworkBan('Network ban discovered via Cert login.');

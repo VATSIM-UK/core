@@ -15,7 +15,7 @@ class ApplicationCompleteRequest extends FormRequest
     public function rules()
     {
         return [
-            'complete_staff_note' => 'nullable|string|min:25|required',
+            'complete_staff_note' => 'nullable|string|required',
         ];
     }
 

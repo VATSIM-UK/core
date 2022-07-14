@@ -69,7 +69,7 @@ class CtsMock extends Command
               `admin_ex` tinyint(1) NOT NULL DEFAULT 0,
               `ins` int(1) NOT NULL DEFAULT 0,
               `joined` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-              `joined_div` datetime NOT NULL,
+              `joined_div` datetime DEFAULT NULL,
               `last_cert_check` datetime DEFAULT NULL,
               `verified` tinyint(1) unsigned DEFAULT 0,
               `deleted` tinyint(1) unsigned DEFAULT 0,

@@ -17,6 +17,7 @@ use DB;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ProcessNetworkData extends Command
 {
@@ -48,8 +49,9 @@ class ProcessNetworkData extends Command
         $this->info('Getting network data from VATSIM.');
 
         if ($this->networkData->failed() || ! $this->networkData->json()) {
-            $this->error('VATSIM feed unavailable.');
-            exit();
+            Log::error("Unable to process VATSIM network data. Status {$this->networkData->status()}");
+
+            return;
         }
 
         $this->setLastUpdatedTimestamp();
@@ -151,7 +153,7 @@ class ProcessNetworkData extends Command
     /**
      * Update the disconnected_at flag for any controllers not in the latest data feed.
      *
-     * @param Collection $expiringAtc
+     * @param  Collection  $expiringAtc
      */
     private function endExpiredAtcSessions($expiringAtc)
     {
@@ -292,7 +294,7 @@ class ProcessNetworkData extends Command
     /**
      * Update the disconnected_at flag for any pilots not in the latest data feed.
      *
-     * @param Collection $expiringPilots
+     * @param  Collection  $expiringPilots
      */
     private function endExpiredPilotSessions($expiringPilots)
     {

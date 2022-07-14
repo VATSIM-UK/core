@@ -33,7 +33,7 @@ class UKCP
     public function createAccountFor(Account $account)
     {
         try {
-            $result = $this->client->post(config('services.ukcp.url').'/user/'.$account->id, ['headers' => [
+            $result = $this->client->post(config('services.ukcp.url').'/api/user/'.$account->id, ['headers' => [
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
@@ -46,7 +46,7 @@ class UKCP
     }
 
     /**
-     * @param Account $account
+     * @param  Account  $account
      * @return array|Collection|mixed|ResponseInterface
      */
     public function getValidTokensFor(Account $account)
@@ -60,7 +60,7 @@ class UKCP
     }
 
     /**
-     * @param Account $account
+     * @param  Account  $account
      * @return object|null
      */
     public function createTokenFor(Account $account)
@@ -71,7 +71,7 @@ class UKCP
             $result = $this->createAccountFor($account);
         } else {
             try {
-                $response = $this->client->post(config('services.ukcp.url').'/user/'.$account->id.'/token', ['headers' => [
+                $response = $this->client->post(config('services.ukcp.url').'/api/user/'.$account->id.'/token', ['headers' => [
                     'Authorization' => 'Bearer '.$this->apiKey,
                 ]]);
                 $result = $response->getBody()->getContents();
@@ -89,14 +89,14 @@ class UKCP
     }
 
     /**
-     * @param string $tokenId
-     * @param Account $account
+     * @param  string  $tokenId
+     * @param  Account  $account
      * @return bool
      */
     public function deleteToken(string $tokenId, Account $account)
     {
         try {
-            $this->client->delete(config('services.ukcp.url').'/token/'.$tokenId, ['headers' => [
+            $this->client->delete(config('services.ukcp.url').'/api/token/'.$tokenId, ['headers' => [
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
@@ -114,7 +114,7 @@ class UKCP
     protected function getAccountFor(Account $account)
     {
         try {
-            $result = $this->client->get(config('services.ukcp.url').'/user/'.$account->id, ['headers' => [
+            $result = $this->client->get(config('services.ukcp.url').'/api/user/'.$account->id, ['headers' => [
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {

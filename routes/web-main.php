@@ -10,6 +10,9 @@ Route::get('login-secondary')->uses('Auth\LoginController@showLoginForm')->middl
 Route::post('login-secondary')->uses('Auth\SecondaryLoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
 Route::post('logout')->uses('Auth\LogoutController')->name('logout');
 
+Route::view('banned-network', 'errors.banned-network')->name('banned.network');
+Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->name('banned.local');
+
 // Password
 Route::group([
     'as'     => 'password.',
@@ -73,6 +76,15 @@ Route::group([
         Route::post('new/{form}')->uses('Feedback@postFeedback')->name('new.form.post');
         Route::get('users/search/{name}')->uses('Feedback@getUserSearch')->name('usersearch');
         Route::get('view')->uses('Feedback\ViewFeedbackController@show')->name('view');
+    });
+
+    // Waiting Lists
+    Route::group([
+        'as'     => 'waiting-lists.',
+        'prefix' => 'waiting-lists',
+    ], function () {
+        Route::get('')->uses('WaitingLists@index')->name('index');
+        Route::get('{waitingListId}')->uses('WaitingLists@view')->name('view');
     });
 
     // Other

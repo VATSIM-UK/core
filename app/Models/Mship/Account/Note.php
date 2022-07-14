@@ -21,6 +21,7 @@ use App\Models\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Note\Type $type
  * @property-read \App\Models\Mship\Account|null $writer
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereAttachmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereAttachmentType($value)

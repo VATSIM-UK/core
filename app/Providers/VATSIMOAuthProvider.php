@@ -31,7 +31,8 @@ class VATSIMOAuthProvider extends GenericProvider
 
     /**
      * Gets an (updated) user token.
-     * @param Token $token
+     *
+     * @param  Token  $token
      * @return Token
      * @return null
      */

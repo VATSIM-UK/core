@@ -4,7 +4,6 @@ namespace App\Policies\VisitTransfer;
 
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
-use App\Models\VisitTransfer\Reference;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ApplicationPolicy
@@ -147,19 +146,7 @@ class ApplicationPolicy
             return false;
         }
 
-        if (! $application->is_under_review) {
-            return false;
-        }
-
-        if ($application->is_pending_references) {
-            return false;
-        }
-
-        $unacceptedReferences = $application->referees->filter(function ($ref) {
-            return $ref->status == Reference::STATUS_UNDER_REVIEW;
-        })->count();
-
-        if ($unacceptedReferences > 0) {
+        if (! $application->can_accept) {
             return false;
         }
 
@@ -173,11 +160,12 @@ class ApplicationPolicy
 
     public function complete(Account $user, Application $application)
     {
-        if ($application->is_editable || $application->is_closed || $application->is_under_review) {
-            return false;
-        }
+        return $application->is_accepted;
+    }
 
-        return true;
+    public function cancel(Account $user, Application $application)
+    {
+        return $application->is_accepted;
     }
 
     public function checkOutcome(Account $user, Application $application)

@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4']
+        php: ['8.1']
         composer: ['v2']
         experimental: [false]
     steps:
@@ -57,7 +57,7 @@ jobs:
       # Start MySQL and Create Databases
       - name: Create Databases
         run: |
-          sudo /etc/init.d/mysql start
+          sudo systemctl start mysql.service
           mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
           mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
           mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
@@ -186,7 +186,9 @@ jobs:
 
       # Run Coverage Suite
       - name: Upload Code Coverage
-        run: bash <(curl -s https://codecov.io/bash)
+        uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: true
 
   trigger-release:
     name: Trigger Release

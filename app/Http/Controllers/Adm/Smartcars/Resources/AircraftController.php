@@ -50,6 +50,7 @@ class AircraftController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index()
@@ -65,6 +66,7 @@ class AircraftController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
@@ -77,8 +79,9 @@ class AircraftController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
@@ -95,8 +98,9 @@ class AircraftController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Smartcars\Aircraft $aircraft
+     * @param  \App\Models\Smartcars\Aircraft  $aircraft
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Aircraft $aircraft)
@@ -109,9 +113,10 @@ class AircraftController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Smartcars\Aircraft $aircraft
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Smartcars\Aircraft  $aircraft
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Aircraft $aircraft)
@@ -128,8 +133,9 @@ class AircraftController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Smartcars\Aircraft $aircraft
+     * @param  \App\Models\Smartcars\Aircraft  $aircraft
      * @return \Illuminate\Http\Response
+     *
      * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */

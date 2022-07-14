@@ -68,8 +68,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     /**
      * Handle a client joining the server.
      *
-     * @param TeamSpeak3_Adapter_ServerQuery_Event $event
-     * @param TeamSpeak3_Node_Host $host
+     * @param  TeamSpeak3_Adapter_ServerQuery_Event  $event
+     * @param  TeamSpeak3_Node_Host  $host
+     *
      * @throws TeamSpeak3_Adapter_ServerQuery_Exception
      */
     public static function clientJoinedEvent(TeamSpeak3_Adapter_ServerQuery_Event $event, TeamSpeak3_Node_Host $host)
@@ -106,8 +107,8 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     /**
      * Handle a client leaving the server.
      *
-     * @param TeamSpeak3_Adapter_ServerQuery_Event $event
-     * @param TeamSpeak3_Node_Host $host
+     * @param  TeamSpeak3_Adapter_ServerQuery_Event  $event
+     * @param  TeamSpeak3_Node_Host  $host
      */
     public static function clientLeftEvent(TeamSpeak3_Adapter_ServerQuery_Event $event, TeamSpeak3_Node_Host $host)
     {
@@ -119,8 +120,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     /**
      * Attempt to establish a connection to the TeamSpeak server.
      *
-     * @param int $attempt
+     * @param  int  $attempt
      * @return mixed|\TeamSpeak3_Adapter_Abstract
+     *
      * @throws \App\Exceptions\TeamSpeak\MaxConnectionAttemptsExceededException
      * @throws \TeamSpeak3_Adapter_ServerQuery_Exception
      * @throws \TeamSpeak3_Transport_Exception

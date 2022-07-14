@@ -59,22 +59,27 @@ class Condition extends Model
 
     public function isMetForUser(Account $user)
     {
+        return $this->overallProgressForUser($user) >= $this->required_hours;
+    }
+
+    public function overallProgressForUser(Account $user)
+    {
         $airfieldGroups = $this->progress ? $this->progress->shuffle() : $this->progressForUser($user)->shuffle();
 
-        // Calculate whether it is met based on the type of condition required
         switch ($this->type) {
             case self::TYPE_ON_SINGLE_AIRFIELD:
+                $max = 0;
                 foreach ($airfieldGroups as $hours) {
-                    if ($hours >= $this->required_hours) {
-                        return true;
+                    if ($hours > $max) {
+                        $max = $hours;
                     }
                 }
 
-                return false;
+                return $max;
             case self::TYPE_SUM_OF_AIRFIELDS:
-                return $this->required_hours <= $airfieldGroups->sum();
+                return $airfieldGroups->sum();
             default:
-                return false;
+                return 0;
         }
     }
 
@@ -86,6 +91,11 @@ class Condition extends Model
         if ($this->within_months) {
             $sessions = $sessions->whereBetween('connected_at', [Carbon::now()->subMonths($this->within_months), Carbon::now()]);
         }
+
+        if ($this->required_qualification) {
+            $sessions = $sessions->where('qualification_id', $this->required_qualification);
+        }
+
         $sessions = $sessions->get(['minutes_online', 'callsign']);
 
         // Map into groups of positions

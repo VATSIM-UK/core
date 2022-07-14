@@ -45,9 +45,7 @@ class AdminTest extends TestCase
         $this->application->setCheckOutcome('50_hours', false);
         $this->actingAs($this->privacc, 'web')
             ->get(route('adm.visiting.application.view', $this->application->id))
-            ->assertSeeTextInOrder(['90 Day Check', 'in excess of 90
-                                            days', '50 Hour Check', 'does not have in excess of 50
-                                            hours']);
+            ->assertSeeTextInOrder(['90 Day Check', 'in excess of 90 days', '50 Hour Check', 'does not have in excess of 50 hours']);
 
         $this->application->setCheckOutcome('90_day', false);
         $this->application->setCheckOutcome('50_hours', true);

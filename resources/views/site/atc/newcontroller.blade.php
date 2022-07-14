@@ -1,7 +1,10 @@
 @extends('layout')
 
 @section('content')
-
+	<div class="alert alert-danger">
+		<h3 style="margin-top: 0">Long Waiting Times - 6 months to 1 year to begin ATC Training</h3>
+		<p>Please note that there is currently a very long waiting list to begin ATC training. You should expect to wait at least 6-12 months to receive an invitation email for an Introduction to ATC group session. Thank you for your patience – our team are doing their very best to train students as quickly as possible.</p>
+	</div>
     <div class="row">
 
         <div class="col-md-9">
@@ -18,7 +21,7 @@
 					</p>
 
 					<p>
-					If you’re not already a member of VATSIM’s UK division, the first step is to follow the instructions on the <a href="https://www.vatsim.uk/join" rel="external nofollow">Join Us</a> page – you’ll need to ensure that your division is set to ‘United Kingdom’. If you need to make a change, this may take up to 24 hours to process.
+					If you’re not already a member of VATSIM’s UK division, the first step is to follow the instructions on the <a href="https://www.vatsim.uk/join" rel="external nofollow">Join Us</a> page – you’ll need to ensure that your division is set to ‘United Kingdom’. If you need to make a change, this may take up to 24 hours to process. <b>You will lose your place on the waiting list if you later transfer to another division, and will be unable to undertake training in VATSIM UK.</b>
 					</p>
 
                     <h2>

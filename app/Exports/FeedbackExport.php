@@ -25,8 +25,7 @@ class FeedbackExport implements FromCollection, WithMapping, WithHeadings, Shoul
     }
 
     /**
-     * @param mixed $row
-     *
+     * @param  mixed  $row
      * @return array
      */
     public function map($feedback): array

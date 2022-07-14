@@ -67,21 +67,14 @@ class WaitingListsManagerController extends Controller
 
     private function findWaitingListAccount(Account &$account, WaitingList &$waitingList): WaitingListAccount
     {
-        return $account->waitingLists
-            ->where('pivot.deleted_at', '==', null)
-            ->where('id', $waitingList->id)
+        return $account->currentWaitingLists()
+            ->where('training_waiting_list.id', $waitingList->id)
             ->first()
             ->pivot;
     }
 
     private function getWaitingListAccounts(WaitingList &$waitingList, bool $eligibility): AnonymousResourceCollection
     {
-        return WaitingListAccountResource::collection(
-            $waitingList->load(['accounts', 'flags'])->accounts
-                ->where('pivot.deleted_at', '==', null)
-                ->sortBy('pivot.created_at')
-                ->filter(function ($model) use ($eligibility) {
-                    return $model->pivot->eligibility == $eligibility;
-                }));
+        return WaitingListAccountResource::collection($waitingList->load(['accounts', 'flags'])->accountsByEligibility($eligibility));
     }
 }
