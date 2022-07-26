@@ -7439,12 +7439,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Spatie\\Permission\\": "src"
-                },
                 "files": [
                     "src/helpers.php"
-                ]
+                ],
+                "psr-4": {
+                    "Spatie\\Permission\\": "src"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -10726,21 +10726,21 @@
         },
         {
             "name": "vyuldashev/nova-permission",
-            "version": "v3.0.1",
+            "version": "v3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vyuldashev/nova-permission.git",
-                "reference": "6dfbc44b88206ff4362e1084177e1698d46b5aaf"
+                "reference": "2fdc75e22aa28aba398dfa2d2ee65941e646486a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vyuldashev/nova-permission/zipball/6dfbc44b88206ff4362e1084177e1698d46b5aaf",
-                "reference": "6dfbc44b88206ff4362e1084177e1698d46b5aaf",
+                "url": "https://api.github.com/repos/vyuldashev/nova-permission/zipball/2fdc75e22aa28aba398dfa2d2ee65941e646486a",
+                "reference": "2fdc75e22aa28aba398dfa2d2ee65941e646486a",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4|^8.0",
-                "spatie/laravel-permission": "^3.0|^4.0"
+                "spatie/laravel-permission": "^3.0|^4.0|^5.0"
             },
             "type": "library",
             "extra": {
@@ -10770,9 +10770,9 @@
             ],
             "support": {
                 "issues": "https://github.com/vyuldashev/nova-permission/issues",
-                "source": "https://github.com/vyuldashev/nova-permission/tree/v3.0.1"
+                "source": "https://github.com/vyuldashev/nova-permission/tree/v3.1.0"
             },
-            "time": "2021-06-21T00:52:48+00:00"
+            "time": "2022-07-19T21:35:36+00:00"
         },
         {
             "name": "watson/rememberable",
