@@ -53,7 +53,7 @@ class UpdateMember extends Job implements ShouldQueue
         $member = Account::firstOrNew([(new Account)->getKeyName() => $this->accountID]);
 
         $token = 'Token '.config('vatsim-api.key');
-        $url = config('vatsim-api.base')."ratings/{$this->accountID}";
+        $url = config('vatsim-api.base')."members/{$this->accountID}";
 
         try {
             $response = Http::withHeaders([
