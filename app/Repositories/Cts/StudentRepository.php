@@ -26,9 +26,9 @@ class StudentRepository
 
     public function getStudentsWithRequestPermissionsFor(string $callsign): Collection
     {
-        $students = PositionValidation::with(["member", "position"])
-        ->whereHas("position", function(Builder $query) use ($callsign) {
-            return $query->where("callsign", $callsign);
+        $students = PositionValidation::with(['member', 'position'])
+        ->whereHas('position', function (Builder $query) use ($callsign) {
+            return $query->where('callsign', $callsign);
         })
         ->students()
         ->get()

@@ -16,11 +16,11 @@ class AddGatwickStudentsRole extends Migration
         // Clear cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
 
-       Role::create([
-            "name" => "Gatwick Students",
-            "guard_name" => "web",
-            "created_at" => now(),
-            "updated_at" => now(),
+        Role::create([
+            'name' => 'Gatwick Students',
+            'guard_name' => 'web',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         Permission::create(['name' => 'discord/gatwick-students', 'guard_name' => 'web']);
