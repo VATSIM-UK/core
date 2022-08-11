@@ -45,6 +45,9 @@ class SyncCtsRoles extends Command
 
         $this->syncPilotStudents(55); // Pilot Students
 
+        $gatwickStudentsRoleId = Role::findByName("Gatwick Students")->id;
+        $this->syncStudentsByPosition("EGKK_GND", $gatwickStudentsRoleId);
+
         $this->syncAtcExaminers(31);
         $this->syncPilotExaminers(40);
     }
@@ -81,6 +84,13 @@ class SyncCtsRoles extends Command
     {
         $hasRole = $this->getAccountsWithRoleId($roleId);
         $shouldHaveRole = (new StudentRepository)->getStudentsWithin(13);
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncStudentsByPosition(string $callsign, int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new StudentRepository)->getStudentsWithRequestPermissionsFor($callsign);
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 

@@ -25,4 +25,9 @@ class PositionValidation extends Model
     {
         return $query->where('status', '=', 5);
     }
+
+    public function scopeStudents($query)
+    {
+        return $query->where('status', 1);
+    }
 }
