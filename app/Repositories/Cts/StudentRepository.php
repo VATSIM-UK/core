@@ -24,6 +24,21 @@ class StudentRepository
         return $this->format($students->unique());
     }
 
+    public function getStudentsWithRequestPermissionsFor(string $callsign): Collection
+    {
+        $students = PositionValidation::with(['member', 'position'])
+        ->whereHas('position', function (Builder $query) use ($callsign) {
+            return $query->where('callsign', $callsign);
+        })
+        ->students()
+        ->get()
+        ->map(function ($position) {
+            return $position->member;
+        });
+
+        return $this->format($students->unique());
+    }
+
     private function format(Collection $data)
     {
         return $data->pluck('cid')->transform(function ($item) {
