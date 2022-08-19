@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class RenameGatwickGndStudentsRole extends Migration
 {
@@ -14,7 +12,7 @@ class RenameGatwickGndStudentsRole extends Migration
      */
     public function up()
     {
-        DB::table("mship_role")->where(["name" => "Gatwick Students"])->update(["name" => "Gatwick GND Students"]);
+        DB::table('mship_role')->where(['name' => 'Gatwick Students'])->update(['name' => 'Gatwick GND Students']);
     }
 
     /**
