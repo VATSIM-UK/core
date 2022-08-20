@@ -67,15 +67,15 @@
         }
     ],
     "require": {
-        "php": ">=7.4|>=8.0",
+        "php": "^8.0.2",
         "alawrence/laravel-ipboard": "dev-main",
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^2.7",
         "benjaminhirsch/nova-slug-field": "^1.2",
         "cobaltgrid/vatsim-stand-status": "^2.1.1",
         "doctrine/dbal": "~3.3",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/framework": "^8.24.0",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^9.19",
         "laravel/helpers": "^1.1",
         "laravel/horizon": "^5.0",
         "laravel/nova": "^3.15",
@@ -94,22 +94,25 @@
         "pusher/pusher-php-server": "~6.0",
         "sentry/sentry-laravel": "^2.4",
         "sixlive/nova-text-copy-field": "^1.5",
-        "spatie/laravel-cookie-consent": "^2.4",
+        "spatie/laravel-cookie-consent": "^3.2.2",
         "spatie/laravel-permission": "^5.5",
-        "spatie/laravel-schedule-monitor": "^2.1",
+        "spatie/laravel-schedule-monitor": "^3.0",
+        "symfony/http-client": "^6.1",
+        "symfony/mailgun-mailer": "^6.1",
         "symfony/translation": "^5.0",
         "titasgailius/search-relations": "^2.0",
         "vatsim/sso": "3.0",
         "vatsimuk/waiting-lists-manager": "@dev",
         "vyuldashev/nova-permission": "^3.0",
-        "watson/rememberable": "^5.0",
+        "watson/rememberable": "^6.0",
         "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {
         "ext-json": "*",
         "codedungeon/phpunit-result-printer": "^0.32.0",
-        "facade/ignition": "^2.3.6",
-        "fakerphp/faker": "^1.13",
+        "nunomaduro/collision": "^6.1",
+        "spatie/laravel-ignition": "^1.0",
+        "fakerphp/faker": "^1.9.1",
         "laracasts/generators": "^2.0",
         "laravel/homestead": "^13.1.1",
         "laravel/legacy-factories": "^1.1",
@@ -118,7 +121,7 @@
         "spatie/laravel-ray": "^1.23",
         "symfony/css-selector": "^4.0",
         "symfony/dom-crawler": "^5.0",
-        "timacdonald/log-fake": "^1.2"
+        "timacdonald/log-fake": "^2.0"
     },
     "autoload": {
         "files": [
@@ -161,9 +164,6 @@
         ]
     },
     "config": {
-        "platform": {
-            "php": "7.4"
-        },
         "preferred-install": "dist",
         "sort-packages": true
     }
