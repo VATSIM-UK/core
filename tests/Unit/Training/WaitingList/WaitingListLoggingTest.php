@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 use TiMacDonald\Log\LogFake;
+use TiMacDonald\Log\LogEntry;
 
 class WaitingListLoggingTest extends TestCase
 {
@@ -32,7 +33,7 @@ class WaitingListLoggingTest extends TestCase
     /** @test */
     public function itLogsTheChangeInContentForNotesInLists()
     {
-        Log::swap(new LogFake);
+        LogFake::bind();
 
         $waitingListAccount = $this->waitingList->accounts->find($this->account->id)->pivot;
 
@@ -45,8 +46,9 @@ class WaitingListLoggingTest extends TestCase
         $listener = app()->make(LogNoteChanged::class);
         $listener->handle($event);
 
-        Log::channel('training')->assertLoggedMessage('info',
-            "A note about {$this->account->name} ({$this->account->id}) in waiting list {$this->waitingList->name} ({$this->waitingList->id}) was changed from 
-            {$event->oldNoteContent} to {$event->newNoteContent}");
+        Log::channel('training')->assertLogged(function (LogEntry $log) use ($event) {
+            return $log->level === 'info' && $log->message == "A note about {$this->account->name} ({$this->account->id}) in waiting list {$this->waitingList->name} ({$this->waitingList->id}) was changed from 
+            {$event->oldNoteContent} to {$event->newNoteContent}";
+        });
     }
 }
