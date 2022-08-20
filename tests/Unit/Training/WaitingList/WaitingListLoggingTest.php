@@ -9,8 +9,8 @@ use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
-use TiMacDonald\Log\LogFake;
 use TiMacDonald\Log\LogEntry;
+use TiMacDonald\Log\LogFake;
 
 class WaitingListLoggingTest extends TestCase
 {

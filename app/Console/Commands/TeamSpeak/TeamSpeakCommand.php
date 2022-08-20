@@ -56,7 +56,7 @@ abstract class TeamSpeakCommand extends Command
             self::$command->log('Insufficient permissions to perform this action on this member.');
         } elseif ($e->getMessage() == 'duplicate entry') {
             if ($account) {
-                self::$command->log('Member already has server group. [' . $account->real_name . ' ' . $account->id . ']');
+                self::$command->log('Member already has server group. ['.$account->real_name.' '.$account->id.']');
             }
             self::$command->log('Member already has server group.');
         } else {
@@ -81,24 +81,24 @@ abstract class TeamSpeakCommand extends Command
             return;
         }
 
-        self::$command->log('Caught: ' . get_class($e));
+        self::$command->log('Caught: '.get_class($e));
         self::$command->log($e->getTraceAsString());
 
         $member = Registration::where('dbid', self::$command->currentMember)->first();
-        if (!is_null(self::$command->currentMember) && !is_null($member)) {
+        if (! is_null(self::$command->currentMember) && ! is_null($member)) {
             $member = $member->account;
         } else {
             return;
         }
 
-        $description = $member->name_first . ' '
-            . $member->name_last . ' ('
-            . $member->id . ')';
-        $message = 'TeaMan has encountered a previously unhandled error:' . PHP_EOL . PHP_EOL
-            . 'Client: ' . $description . PHP_EOL . PHP_EOL
-            . 'Stack trace:' . PHP_EOL . PHP_EOL
-            . $e->getTraceAsString()
-            . PHP_EOL . 'Error message: ' . $e->getMessage() . PHP_EOL;
+        $description = $member->name_first.' '
+            .$member->name_last.' ('
+            .$member->id.')';
+        $message = 'TeaMan has encountered a previously unhandled error:'.PHP_EOL.PHP_EOL
+            .'Client: '.$description.PHP_EOL.PHP_EOL
+            .'Stack trace:'.PHP_EOL.PHP_EOL
+            .$e->getTraceAsString()
+            .PHP_EOL.'Error message: '.$e->getMessage().PHP_EOL;
         self::$command->log($message);
     }
 }
