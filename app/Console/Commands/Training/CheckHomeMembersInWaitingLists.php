@@ -34,7 +34,7 @@ class CheckHomeMembersInWaitingLists extends Command
 
         // for each ATC list, check for home members
         $waitingLists->each(function ($waitingList) {
-            $waitingList->accounts->each(function ($account) use($waitingList) {
+            $waitingList->accounts->each(function ($account) use ($waitingList) {
                 CheckHomeMemberInWaitingList::dispatch($waitingList, $account);
             });
         });

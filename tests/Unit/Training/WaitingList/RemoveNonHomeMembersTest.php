@@ -23,11 +23,12 @@ class RemoveNonHomeMembersTest extends TestCase
 
         $this->waitingList = factory(WaitingList::class)->create();
     }
+
     /** @test * */
     public function itWillRemoveMemberFromWaitingListWhenNotHomeMember()
     {
         $account = factory(Account::class)->create();
-        $visitingState = State::findByCode("VISITING");
+        $visitingState = State::findByCode('VISITING');
         $account->addState($visitingState);
 
         $this->waitingList->addToWaitingList($account->refresh(), $this->privacc);
@@ -41,7 +42,7 @@ class RemoveNonHomeMembersTest extends TestCase
     public function itWillNotRemoveHomeMembersFromWaitingList()
     {
         $account = factory(Account::class)->create();
-        $visitingState = State::findByCode("DIVISION");
+        $visitingState = State::findByCode('DIVISION');
         $account->addState($visitingState);
 
         $this->waitingList->addToWaitingList($account->refresh(), $this->privacc);
@@ -52,11 +53,11 @@ class RemoveNonHomeMembersTest extends TestCase
         $this->assertTrue($this->waitingList->accounts->contains($account));
     }
 
-        /** @test * */
+    /** @test * */
     public function itWillDispatchNotificationWhenRemovingNonHomeMember()
     {
         $account = factory(Account::class)->create();
-        $visitingState = State::findByCode("VISITING");
+        $visitingState = State::findByCode('VISITING');
         $account->addState($visitingState);
 
         $this->waitingList->addToWaitingList($account->refresh(), $this->privacc);

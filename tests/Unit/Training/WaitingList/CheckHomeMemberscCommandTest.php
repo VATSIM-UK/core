@@ -12,6 +12,7 @@ use Tests\TestCase;
 class CheckHomeMemberscCommandTest extends TestCase
 {
     use DatabaseTransactions;
+
     /** @test */
     public function itShouldSendAJobForAllMembersOfWaitingList()
     {
@@ -24,7 +25,7 @@ class CheckHomeMemberscCommandTest extends TestCase
 
         Queue::fake();
 
-        $this->artisan("training:check-home-members");
+        $this->artisan('training:check-home-members');
 
         Queue::assertPushed(CheckHomeMemberInWaitingList::class, $accounts->count());
     }

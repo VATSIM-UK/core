@@ -6,7 +6,6 @@ use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\RemovedFromWaitingListNonHomeMember;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -43,10 +42,11 @@ class CheckHomeMemberInWaitingList implements ShouldQueue
             $this->waitingList->accounts()->find($this->account->id);
         } catch (ModelNotFoundException) {
             Log::warning("Account {$this->account->id} not in waiting list.");
+
             return;
         }
 
-        if (!$this->account->primary_state->isDivision) {
+        if (! $this->account->primary_state->isDivision) {
             $this->waitingList->removeFromWaitingList($this->account);
             $this->account->notify(new RemovedFromWaitingListNonHomeMember);
         }

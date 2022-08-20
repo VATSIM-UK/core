@@ -3,7 +3,6 @@
 namespace App\Notifications\Training;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -31,8 +30,8 @@ class RemovedFromWaitingListNonHomeMember extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->from("support@vatsim.uk", "VATSIM UK - Member Services")
-                    ->subject("UK ATC training waiting list removal")
-                    ->view("emails.training.waiting_list_non_home_removal", ['recipient' => $notifiable]);
+                    ->from('support@vatsim.uk', 'VATSIM UK - Member Services')
+                    ->subject('UK ATC training waiting list removal')
+                    ->view('emails.training.waiting_list_non_home_removal', ['recipient' => $notifiable]);
     }
 }
