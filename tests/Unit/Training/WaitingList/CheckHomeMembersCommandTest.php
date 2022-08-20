@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
-class CheckHomeMemberscCommandTest extends TestCase
+class CheckHomeMembersCommandTest extends TestCase
 {
     use DatabaseTransactions;
 

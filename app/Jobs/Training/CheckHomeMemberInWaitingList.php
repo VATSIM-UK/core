@@ -39,7 +39,7 @@ class CheckHomeMemberInWaitingList implements ShouldQueue
     public function handle()
     {
         try {
-            $this->waitingList->accounts()->find($this->account->id);
+            $this->waitingList->accounts()->findOrFail($this->account->id);
         } catch (ModelNotFoundException) {
             Log::warning("Account {$this->account->id} not in waiting list.");
 
