@@ -22,6 +22,6 @@ class RenameGatwickGndStudentsRole extends Migration
      */
     public function down()
     {
-        //
+        DB::table('mship_role')->where(['name' => 'Gatwick GND Students'])->update(['name' => 'Gatwick Students']);
     }
 }
