@@ -45,7 +45,7 @@ class SyncCtsRoles extends Command
 
         $this->syncPilotStudents(55); // Pilot Students
 
-        $gatwickStudentsRoleId = Role::findByName('Gatwick Students')->id;
+        $gatwickStudentsRoleId = Role::findByName('Gatwick GND Students')->id;
         $this->syncStudentsByPosition('EGKK_GND', $gatwickStudentsRoleId);
 
         $this->syncAtcExaminers(31);
