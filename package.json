@@ -38,8 +38,8 @@
     "resolve-url-loader": "5.0.0",
     "sass-loader": "^12.6.0",
     "sass": "^1.54.8",
-    "vue": "^2.7.9",
-    "vue-template-compiler": "^2.7.9"
+    "vue": "^2.7.10",
+    "vue-template-compiler": "^2.7.10"
   },
   "release": {
     "repositoryUrl": "https://github.com/VATSIM-UK/core",
