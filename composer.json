@@ -99,7 +99,7 @@
         "spatie/laravel-schedule-monitor": "^3.0",
         "symfony/http-client": "^6.1",
         "symfony/mailgun-mailer": "^6.1",
-        "symfony/translation": "^5.0",
+        "symfony/translation": "^6.1",
         "titasgailius/search-relations": "^2.0",
         "vatsim/sso": "3.0",
         "vatsimuk/waiting-lists-manager": "@dev",
