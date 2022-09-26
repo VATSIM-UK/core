@@ -5,10 +5,10 @@ namespace App\Models\Traits;
 trait HasStatus
 {
     /**
-     * Check if the current status of the model is the given status
+     * Check if the current status of the model is the given status.
      *
-     * @param int $status
-     * @return boolean
+     * @param  int  $status
+     * @return bool
      */
     public function isStatus($status)
     {
@@ -16,10 +16,10 @@ trait HasStatus
     }
 
     /**
-     * Check if the current status of the model is in the given list of stati
+     * Check if the current status of the model is in the given list of stati.
      *
-     * @param array $stati List to check against
-     * @return boolean
+     * @param  array  $stati  List to check against
+     * @return bool
      */
     public function isStatusIn($stati)
     {
@@ -27,13 +27,13 @@ trait HasStatus
     }
 
     /**
-     * Check if the current status of the model is NOT in the given list of stati
+     * Check if the current status of the model is NOT in the given list of stati.
      *
-     * @param array $stati List to check against
-     * @return boolean
+     * @param  array  $stati  List to check against
+     * @return bool
      */
     public function isStatusNotIn($stati)
     {
-        return !$this->isStatusIn($stati);
+        return ! $this->isStatusIn($stati);
     }
 }

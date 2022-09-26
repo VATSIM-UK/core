@@ -266,7 +266,7 @@ class Reference extends Model
         $this->save();
 
         if ($staffReason) {
-            $noteContent = 'VT Reference from ' . $this->account->name . " was rejected.\n" . $staffReason;
+            $noteContent = 'VT Reference from '.$this->account->name." was rejected.\n".$staffReason;
             $note = $this->application->account->addNote(
                 Type::isShortCode('visittransfer')->first(),
                 $noteContent,
@@ -309,7 +309,7 @@ class Reference extends Model
         $this->save();
 
         if ($staffComment) {
-            $noteContent = 'VT Reference from ' . $this->account->name . " was accepted.\n" . $staffComment;
+            $noteContent = 'VT Reference from '.$this->account->name." was accepted.\n".$staffComment;
             $note = $this->application->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
@@ -364,7 +364,7 @@ class Reference extends Model
     /** Guards */
     private function guardAgainstReSubmittingReference()
     {
-        if (!$this->is_requested) {
+        if (! $this->is_requested) {
             throw new ReferenceNotRequestedException($this);
         }
     }

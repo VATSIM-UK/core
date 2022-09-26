@@ -348,7 +348,7 @@ class Application extends Model
 
     public function getCanRejectAttribute()
     {
-        return !$this->isStatusIn(self::$APPLICATION_CANT_BE_REJECTED);
+        return ! $this->isStatusIn(self::$APPLICATION_CANT_BE_REJECTED);
     }
 
     public function getIsNotEditableAttribute()
@@ -459,7 +459,7 @@ class Application extends Model
 
     public function getTrainingTeamAttribute()
     {
-        if (!$this->exists) {
+        if (! $this->exists) {
             return 'Unknown';
         }
 
@@ -473,10 +473,10 @@ class Application extends Model
     public function getTypeStringAttribute()
     {
         if ($this->is_visit) {
-            return $this->training_team . ' Visit';
+            return $this->training_team.' Visit';
         }
 
-        return $this->training_team . ' Transfer';
+        return $this->training_team.' Transfer';
     }
 
     public function getNumberReferencesRequiredRelativeAttribute()
@@ -510,7 +510,6 @@ class Application extends Model
     }
 
     /** Business logic. */
-
     public function setFacility(Facility $facility)
     {
         $this->guardAgainstTransferringToANonTrainingFacility($facility);
@@ -628,7 +627,7 @@ class Application extends Model
         $this->save();
 
         if ($staffReason) {
-            $noteContent = 'VT Application for ' . $this->type_string . ' ' . $this->facility->name . " was progressed to 'Under Review'.\n" . $staffReason;
+            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was progressed to 'Under Review'.\n".$staffReason;
             $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
@@ -646,7 +645,7 @@ class Application extends Model
         $this->save();
 
         if ($staffReason) {
-            $noteContent = 'VT Application for ' . $this->type_string . ' ' . $this->facility->name . " was rejected.\n" . $staffReason;
+            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was rejected.\n".$staffReason;
             $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
@@ -670,8 +669,12 @@ class Application extends Model
 
         // Deal with refereneces
         foreach ($this->referees as $reference) {
-            if ($reference->isStatusIn(Reference::$REFERENCE_IS_PENDING)) $reference->cancel();
-            if ($reference->isStatus(Reference::STATUS_UNDER_REVIEW)) $reference->accept();
+            if ($reference->isStatusIn(Reference::$REFERENCE_IS_PENDING)) {
+                $reference->cancel();
+            }
+            if ($reference->isStatus(Reference::STATUS_UNDER_REVIEW)) {
+                $reference->accept();
+            }
         }
 
         $this->changeStatus(self::STATUS_ACCEPTED, null, $staffComment, $actor);
@@ -699,7 +702,7 @@ class Application extends Model
         $this->guardAgainstNonAcceptedApplication();
         $this->changeStatus(self::STATUS_CANCELLED, $publicReason, $staffReason, $actor);
 
-        if ($this->is_visit && !$this->account->visitApplications()->statusIn([self::STATUS_COMPLETED, self::STATUS_ACCEPTED])->exists()) {
+        if ($this->is_visit && ! $this->account->visitApplications()->statusIn([self::STATUS_COMPLETED, self::STATUS_ACCEPTED])->exists()) {
             $this->account->removeState(State::findByCode('VISITING'));
         }
 
@@ -719,7 +722,7 @@ class Application extends Model
 
         $noteContent = "VT Application for {$this->type_string} {$this->facility->name} was set to {$this->status_string}.";
         if ($staffReason) {
-            $noteContent .= "\n" . $staffReason;
+            $noteContent .= "\n".$staffReason;
         }
 
         // Add a note
@@ -731,7 +734,7 @@ class Application extends Model
     {
         // $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
 
-        $columnName = 'check_outcome_' . $check;
+        $columnName = 'check_outcome_'.$check;
         $this->{$columnName} = (int) $outcome;
         $this->save();
     }
@@ -786,7 +789,7 @@ class Application extends Model
 
     public function check90DayQualification()
     {
-        if (!$this->submitted_at) {
+        if (! $this->submitted_at) {
             return false;
         }
 
@@ -909,7 +912,7 @@ class Application extends Model
 
     private function guardAgainstDuplicateCheckOutcomeSubmission($check)
     {
-        $tableColumnName = 'check_outcome_' . $check;
+        $tableColumnName = 'check_outcome_'.$check;
         if ($this->{$tableColumnName} !== null) {
             throw new CheckOutcomeAlreadySetException($this, $check);
         }
