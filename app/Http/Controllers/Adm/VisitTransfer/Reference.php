@@ -71,7 +71,7 @@ class Reference extends AdmController
             return Redirect::back()->withError($e->getMessage());
         }
 
-        return Redirect::back()->withSuccess('Reference #'.$reference->id.' - '.$reference->account->name.' rejected &amp; candidate notified.');
+        return Redirect::back()->withSuccess('Reference #'.$reference->id.' - '.$reference->account->name.' rejected & candidate notified.');
     }
 
     public function postAccept(ReferenceAcceptRequest $request, ReferenceModel $reference)
@@ -82,6 +82,6 @@ class Reference extends AdmController
             return Redirect::back()->withError($e->getMessage());
         }
 
-        return Redirect::back()->withSuccess('Reference #'.$reference->id.' - '.$reference->account->name.' accepted &amp; candidate notified.');
+        return Redirect::back()->withSuccess('Reference #'.$reference->id.' - '.$reference->account->name.' accepted & candidate notified.');
     }
 }

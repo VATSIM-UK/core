@@ -25,6 +25,7 @@ use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\NetworkData\Atc;
+use App\Models\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
@@ -127,7 +128,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Application extends Model
 {
-    use PublicId, SoftDeletes;
+    use PublicId, SoftDeletes, HasStatus;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
     protected static $public_id_min_length = 8;
@@ -509,21 +510,6 @@ class Application extends Model
     }
 
     /** Business logic. */
-    public function isStatus($status)
-    {
-        return $this->status == $status;
-    }
-
-    public function isStatusIn($stati)
-    {
-        return in_array($this->status, $stati);
-    }
-
-    public function isStatusNotIn($stati)
-    {
-        return ! $this->isStatusIn($stati);
-    }
-
     public function setFacility(Facility $facility)
     {
         $this->guardAgainstTransferringToANonTrainingFacility($facility);
@@ -683,13 +669,11 @@ class Application extends Model
 
         // Deal with refereneces
         foreach ($this->referees as $reference) {
-            switch ($reference->status) {
-                case Reference::STATUS_UNDER_REVIEW:
-                    $reference->cancel();
-                    break;
-                case Reference::STATUS_REQUESTED:
-                    $reference->accept(null, $actor);
-                    break;
+            if ($reference->isStatusIn(Reference::$REFERENCE_IS_PENDING)) {
+                $reference->cancel();
+            }
+            if ($reference->isStatus(Reference::STATUS_UNDER_REVIEW)) {
+                $reference->accept();
             }
         }
 
