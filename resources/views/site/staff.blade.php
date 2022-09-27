@@ -166,11 +166,15 @@
                     <table class="table">
                         <tr>
                             <td>Member Services Assistant</td>
-                            <td>Dale Stainrod</td>
+                            <td>James Thomas</td>
                         </tr>
                         <tr>
                             <td>Member Services Assistant</td>
-                            <td>James Thomas</td>
+                            <td>William Brushfield</td>
+                        </tr>
+						<tr>
+                            <td>Member Services Assistant</td>
+                            <td>William Shaw</td>
                         </tr>
                     </table>
                 </div>
@@ -207,7 +211,7 @@
                         <table class="table">
                             <tr>
                                 <td>ATC Training Manager</td>
-                                <td>Oliver Rhodes</td>
+                                <td>Vacant</td>
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
@@ -240,10 +244,6 @@
                             <tr>
                                 <td>TG Instructor (TWR)</td>
                                 <td>Daniel Blanco</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (TWR)</td>
-                                <td>George Peppard</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (TWR)</td>
