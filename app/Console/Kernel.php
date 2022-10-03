@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\Deployment\HerokuPostDeploy;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Spatie\ScheduleMonitor\Models\MonitoredScheduledTaskLogItem;
 
 class Kernel extends ConsoleKernel
 {
@@ -65,7 +66,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('sync:tg-forum-groups')
             ->dailyAt('04:30');
 
-        $schedule->command('schedule-monitor:clean')
+        $schedule->command('model:prune', ['--model' => MonitoredScheduledTaskLogItem::class])
             ->dailyAt('08:00');
     }
 
