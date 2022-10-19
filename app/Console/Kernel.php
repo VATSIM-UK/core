@@ -19,7 +19,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         HerokuPostDeploy::class,
-        BugsnagDeployCommand::class
+        BugsnagDeployCommand::class,
     ];
 
     /**
