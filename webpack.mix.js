@@ -11,9 +11,6 @@ let mix = require('laravel-mix');
  |
  */
 
-// Sentry
-mix.js('resources/assets/js/sentry.js', 'public/js/sentry.js');
-
 // admin (AdminLTE)
 mix.less('resources/assets/less/admin.less', 'public/css/admin-all.css');
 
