@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
                 $report->setUser([
                     'id' => $user->id,
                     'name' => $user->name,
-                    'email' => $user->email
+                    'email' => $user->email,
                 ]);
             }
         });
