@@ -18,10 +18,8 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "@sentry/tracing": "^7.13.0",
-    "@sentry/browser": "^7.13.0",
     "admin-lte": "2.4.18",
-    "axios": "^0.27",
+    "axios": "^1.1",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.4.3",
     "bootstrap-tour": "^0.12.0",
@@ -36,26 +34,9 @@
     "popper.js": "^1.16",
     "postcss": "^8.4",
     "resolve-url-loader": "5.0.0",
-    "sass-loader": "^12.6.0",
     "sass": "^1.55.0",
-    "vue": "^2.7.10",
-    "vue-template-compiler": "^2.7.10"
-  },
-  "release": {
-    "repositoryUrl": "https://github.com/VATSIM-UK/core",
-    "branches": [
-      "main"
-    ],
-    "plugins": [
-      "@semantic-release/npm",
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      [
-        "@semantic-release/github",
-        {
-          "releasedLabels": false
-        }
-      ]
-    ]
+    "sass-loader": "^13.1.0",
+    "vue": "^2.7.13",
+    "vue-template-compiler": "^2.7.13"
   }
 }

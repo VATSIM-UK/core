@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\Deployment\HerokuPostDeploy;
+use Bugsnag\BugsnagLaravel\Commands\DeployCommand as BugsnagDeployCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Spatie\ScheduleMonitor\Models\MonitoredScheduledTaskLogItem;
@@ -18,6 +19,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         HerokuPostDeploy::class,
+        BugsnagDeployCommand::class,
     ];
 
     /**
@@ -78,5 +80,13 @@ class Kernel extends ConsoleKernel
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');
+    }
+
+    protected function bootstrappers()
+    {
+        return array_merge(
+            [\Bugsnag\BugsnagLaravel\OomBootstrapper::class],
+            parent::bootstrappers(),
+        );
     }
 }
