@@ -38,22 +38,5 @@
     "sass-loader": "^12.6.0",
     "vue": "^2.7.10",
     "vue-template-compiler": "^2.7.10"
-  },
-  "release": {
-    "repositoryUrl": "https://github.com/VATSIM-UK/core",
-    "branches": [
-      "main"
-    ],
-    "plugins": [
-      "@semantic-release/npm",
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      [
-        "@semantic-release/github",
-        {
-          "releasedLabels": false
-        }
-      ]
-    ]
   }
 }
