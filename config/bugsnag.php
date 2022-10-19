@@ -36,7 +36,7 @@ return [
     |
     */
 
-    'app_version' => trim(exec('git --git-dir ' . base_path('.git') . ' log --pretty="%h" -n1 HEAD')),
+    'app_version' => trim(exec('git --git-dir '.base_path('.git').' log --pretty="%h" -n1 HEAD')),
 
     /*
     |--------------------------------------------------------------------------
