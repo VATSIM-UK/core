@@ -20,7 +20,6 @@ use App\Policies\VisitTransfer\ApplicationPolicy;
 use App\Policies\VisitTransfer\ReferencePolicy;
 use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Laravel\Passport\Passport;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 
 class AuthServiceProvider extends ServiceProvider
