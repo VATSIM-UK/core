@@ -121,7 +121,7 @@
         "phpunit/phpunit": "^9.4",
         "spatie/laravel-ray": "^1.23",
         "symfony/css-selector": "^4.0",
-        "symfony/dom-crawler": "^5.0",
+        "symfony/dom-crawler": "^6.1",
         "timacdonald/log-fake": "^2.0"
     },
     "autoload": {
