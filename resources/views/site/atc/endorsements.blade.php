@@ -38,11 +38,11 @@
                     <h3>Background</h3>
                     
                     <p>
-                        After Heathrow, London Gatwick (EGKK) is by far the busiest airfield in VATSIM UK, boasting over
-                        65,000 movements every year. Controlling at London Gatwick is restricted by the ATC Training
-                        Department to S2 rated members or S1s that hold a special endorsement. This restriction for S1s is
-                        in place to allow members to gain experience in quieter environments and practice their new-found
-                        skills before tackling the workload at Gatwick.
+                        London Gatwick (EGKK) was the 3rd busiest airport on the VATSIM network in 2021 with over 81,000
+                        movements. Controlling at London Gatwick is restricted by the ATC Training Department to S2 rated 
+                        members, or S1s that hold a special endorsement. This restriction for S1s is in place to allow 
+                        members to gain experience in quieter environments and practice their skills before tackling 
+                        the workload at Gatwick.
                     </p>
 
                     <h3>Endorsements Offered</h3>
@@ -185,20 +185,20 @@
                     </p>
                     
                     <ul>
-                        <li>Ground and Delivery;</li>
-                        <li>Tower;</li>
-                        <li>Approach Radar.</li>
+                        <li>Ground and Delivery</li>
+                        <li>Tower</li>
+                        <li>Approach (Director).</li>
                     </ul>
 
                     <h3>Endorsement Process</h3>
                     
                     <p>
-                        The endorsement process for all Heathrow endorsements is the same, as follows:
+                        The endorsement process for all Heathrow endorsements is the same:
                     </p>
 
                     <ol>
-                        <li>Enroll on the online Moodle course relevant to the validation to be achieved;</li>
-                        <li>Complete the Moodle course and pass the final exam;</li>
+                        <li>Enroll on the online Moodle course relevant to the validation to be achieved</li>
+                        <li>Complete the Moodle course and pass the final exam</li>
                         <li>Undertake practical sessions with a Heathrow mentor.</li>
                     </ol>
 
@@ -266,9 +266,9 @@
                     </p>
                     
                     <ul>
-                        <li>Must be a home member or a visitor that has completed a visiting application;</li>
-                        <li>Must be rated S2 or higher;</li>
-                        <li>Must hold the equivalent permanent controller rating to the endorsement that they wish to undertake;</li>
+                        <li>Must be a home member or a visitor that has completed a visiting application</li>
+                        <li>Must be rated S2 or higher</li>
+                        <li>Must hold the equivalent permanent controller rating to the endorsement that they wish to undertake</li>
                         <li>Members wishing to undertake the PAR endorsement must hold the Approach endorsement.</li>
                     </ul>
 
@@ -279,9 +279,9 @@
                     </p>
                     
                     <ol>
-                        <li><a href="https://helpdesk.vatsim.uk">Submit a ticket</a> to ATC Training in the helpdesk, requesting to have the exam enabled on the relevant self study course;</li>
-                        <li>Complete the online self-study course and pass the exam at the end;</li>
-                        <li>Upon completing the exam, submit a ticket to the helpdesk, stating that the course has been successfully completed;</li>
+                        <li><a href="https://helpdesk.vatsim.uk">Submit a ticket</a> to ATC Training in the helpdesk, requesting to have the exam enabled on the relevant self study course</li>
+                        <li>Complete the online self-study course and pass the exam at the end</li>
+                        <li>Upon completing the exam, submit a ticket to the helpdesk, stating that the course has been successfully completed</li>
                         <li>The endorsement will then be granted by the ATC Training Department.</li>
                     </ol>
                 </div>
