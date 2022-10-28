@@ -11908,20 +11908,20 @@
         },
         {
             "name": "laravel/homestead",
-            "version": "v13.2.1",
+            "version": "v13.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/homestead.git",
-                "reference": "248df11ae03152cb64a5735c4c70659051a47c29"
+                "reference": "d30b11d3f0cabcc891d6decd2bed2f24cbc3c8b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/homestead/zipball/248df11ae03152cb64a5735c4c70659051a47c29",
-                "reference": "248df11ae03152cb64a5735c4c70659051a47c29",
+                "url": "https://api.github.com/repos/laravel/homestead/zipball/d30b11d3f0cabcc891d6decd2bed2f24cbc3c8b7",
+                "reference": "d30b11d3f0cabcc891d6decd2bed2f24cbc3c8b7",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.0 || <8.2",
+                "php": "^8.0 || <8.3",
                 "symfony/console": "^5.0 || ^6.0",
                 "symfony/process": "^5.0 || ^6.0",
                 "symfony/yaml": "^5.0 || ^6.0"
@@ -11956,9 +11956,9 @@
             "description": "A virtual machine for web artisans.",
             "support": {
                 "issues": "https://github.com/laravel/homestead/issues",
-                "source": "https://github.com/laravel/homestead/tree/v13.2.1"
+                "source": "https://github.com/laravel/homestead/tree/v13.3.1"
             },
-            "time": "2022-02-02T19:42:25+00:00"
+            "time": "2022-10-26T01:09:41+00:00"
         },
         {
             "name": "laravel/legacy-factories",
@@ -14574,16 +14574,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v5.4.12",
+            "version": "v5.4.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "7a3aa21ac8ab1a96cc6de5bbcab4bc9fc943b18c"
+                "reference": "e83fe9a72011f07c662da46a05603d66deeeb487"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/7a3aa21ac8ab1a96cc6de5bbcab4bc9fc943b18c",
-                "reference": "7a3aa21ac8ab1a96cc6de5bbcab4bc9fc943b18c",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/e83fe9a72011f07c662da46a05603d66deeeb487",
+                "reference": "e83fe9a72011f07c662da46a05603d66deeeb487",
                 "shasum": ""
             },
             "require": {
@@ -14629,7 +14629,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v5.4.12"
+                "source": "https://github.com/symfony/yaml/tree/v5.4.14"
             },
             "funding": [
                 {
@@ -14645,7 +14645,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-02T15:52:22+00:00"
+            "time": "2022-10-03T15:15:50+00:00"
         },
         {
             "name": "theseer/tokenizer",
