@@ -70,6 +70,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('model:prune', ['--model' => MonitoredScheduledTaskLogItem::class])
             ->dailyAt('08:00');
+
+        $schedule->command('waitinglists:hourchecker')
+            ->twiceDaily(2, 14);
     }
 
     /**
