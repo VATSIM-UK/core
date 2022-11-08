@@ -36,10 +36,18 @@
                             @endif</td>
                     </tr>
                 </table>
+                @if(
+                    $list->pivot->current_status == 'Active' &&
+                    $list->pivot->pending_removal?->isPendingRemoval()
+                )
+                <div class="alert alert-danger">
+                    <strong>Important: </strong> You do not currently meet the hour check criteria of 12 hours in the last 3 months. You will be automatically removed from this waiting list in <b>{{\Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInDays($list->pivot->pending_removal->removal_date)}} days</b> if you continue to not meet the requirement.
+                </div>
+                @endif
             </div>
         </div>
     </div>
-    @if($list->isATCList() || count($list->pivot->flags))
+    @if($list->enforcesHourRequirement() || count($list->pivot->flags))
     <div class="col-lg-6">
         <div class="panel panel-ukblue">
             <div class="panel-heading">
@@ -54,7 +62,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if($list->isATCList())
+                        @if($list->enforcesHourRequirement())
                         <tr>
                             <td colspan="2" class="text-center">
                                 The following hour check:
@@ -68,7 +76,7 @@
                         </tr>
                         @endif
                         <tr>
-                            <td colspan="2" class="text-center">{{$list->isATCList() ? ' and ': null}}
+                            <td colspan="2" class="text-center">{{$list->enforcesHourRequirement() ? ' and ': null}}
                                 <strong>{{$list->flags_check}}</strong> of the following:
                             </td>
                         </tr>
@@ -87,13 +95,13 @@
     </div>
     @endif
 </div>
-@if($list->isATCList() || count($automaticFlags))
+@if($list->enforcesHourRequirement() || count($automaticFlags))
 <div class="alert alert-warning">
     <strong>Important: </strong> Automated eligibility flags are only calculated every 24 hours! If you have just completed
     a network session, the flags shown above may not be accurate.
 </div>
 <div class="row">
-    @if($list->isATCList())
+    @if($list->enforcesHourRequirement())
     <div class="col-lg-6">
         <div class="panel panel-ukblue">
             <div class="panel-heading">
