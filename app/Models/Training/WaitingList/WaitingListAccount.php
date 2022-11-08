@@ -45,6 +45,11 @@ class WaitingListAccount extends Pivot
         )->withPivot(['marked_at', 'id'])->using(WaitingListAccountFlag::class);
     }
 
+    public function pendingRemoval()
+    {
+        return $this->hasMany(WaitingListAccountPendingRemoval::class, 'waiting_list_account_id')->orderBy('created_at', 'desc');
+    }
+
     public function waitingList()
     {
         return $this->belongsTo(WaitingList::class, 'list_id');
@@ -80,6 +85,14 @@ class WaitingListAccount extends Pivot
         return $this->status()->detach($listStatus);
     }
 
+    /**
+     * @param  \App\Models\Training\WaitingList\WaitingListAccountPendingRemoval  $pendingRemoval
+     */
+    public function addPendingRemoval(Carbon $removalDate)
+    {
+        return $this->pendingRemoval()->create(['removal_date' => $removalDate]);
+    }
+
     public function addFlag(WaitingListFlag $listFlag, $value = null)
     {
         return $this->flags()->attach($listFlag, ['marked_at' => $value]);
@@ -112,6 +125,11 @@ class WaitingListAccount extends Pivot
     public function getCurrentStatusAttribute()
     {
         return $this->status()->first();
+    }
+
+    public function getPendingRemovalAttribute()
+    {
+        return $this->pendingRemoval()->first();
     }
 
     public function getPositionAttribute()
