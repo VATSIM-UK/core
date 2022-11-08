@@ -11293,16 +11293,16 @@
         },
         {
             "name": "wohali/oauth2-discord-new",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wohali/oauth2-discord-new.git",
-                "reference": "0dcb5059cded358f55ae566de9621652cf8542c6"
+                "reference": "f34be83cbc88670405c4e63d27cf1003aa858089"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wohali/oauth2-discord-new/zipball/0dcb5059cded358f55ae566de9621652cf8542c6",
-                "reference": "0dcb5059cded358f55ae566de9621652cf8542c6",
+                "url": "https://api.github.com/repos/wohali/oauth2-discord-new/zipball/f34be83cbc88670405c4e63d27cf1003aa858089",
+                "reference": "f34be83cbc88670405c4e63d27cf1003aa858089",
                 "shasum": ""
             },
             "require": {
@@ -11350,9 +11350,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wohali/oauth2-discord-new/issues",
-                "source": "https://github.com/wohali/oauth2-discord-new/tree/master"
+                "source": "https://github.com/wohali/oauth2-discord-new/tree/1.2.0"
             },
-            "time": "2020-06-12T07:27:09+00:00"
+            "time": "2022-11-01T04:14:25+00:00"
         }
     ],
     "packages-dev": [
