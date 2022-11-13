@@ -7459,16 +7459,16 @@
         },
         {
             "name": "sentry/sentry-laravel",
-            "version": "3.0.1",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-laravel.git",
-                "reference": "09d936531a934688b74bd605487c8a79ffe784be"
+                "reference": "a15d63013028e39f61f5c7ec764becac4b391b39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/09d936531a934688b74bd605487c8a79ffe784be",
-                "reference": "09d936531a934688b74bd605487c8a79ffe784be",
+                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/a15d63013028e39f61f5c7ec764becac4b391b39",
+                "reference": "a15d63013028e39f61f5c7ec764becac4b391b39",
                 "shasum": ""
             },
             "require": {
@@ -7536,7 +7536,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-laravel/issues",
-                "source": "https://github.com/getsentry/sentry-laravel/tree/3.0.1"
+                "source": "https://github.com/getsentry/sentry-laravel/tree/3.1.0"
             },
             "funding": [
                 {
@@ -7548,7 +7548,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2022-10-27T11:40:07+00:00"
+            "time": "2022-11-10T12:55:15+00:00"
         },
         {
             "name": "sixlive/nova-text-copy-field",
