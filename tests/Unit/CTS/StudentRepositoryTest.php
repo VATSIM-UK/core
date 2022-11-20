@@ -133,4 +133,23 @@ class StudentRepositoryTest extends TestCase
         $return = $this->subjectUnderTest->getStudentsWithRequestPermissionsForType('TWR');
         $this->assertEquals($return, collect($twrStudent->cid));
     }
+
+    /** @test */
+    public function itDoesNotDuplicateStudentsForPositionTypes()
+    {
+        $appStudent = factory(Member::class)->create();
+        factory(PositionValidation::class)->create([
+            'member_id' => $appStudent,
+            'status' => 1,
+            'position_id' => factory(Position::class)->create(['callsign' => 'EGKK_APP']),
+        ]);
+        factory(PositionValidation::class)->create([
+            'member_id' => $appStudent,
+            'status' => 1,
+            'position_id' => factory(Position::class)->create(['callsign' => 'EGLL_APP']),
+        ]);
+
+        $return = $this->subjectUnderTest->getStudentsWithRequestPermissionsForType('APP');
+        $this->assertEquals($return, collect($appStudent->cid));
+    }
 }

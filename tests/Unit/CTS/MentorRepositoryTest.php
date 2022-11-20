@@ -193,7 +193,6 @@ class MentorRepositoryTest extends TestCase
             'status' => 5,
             'position_id' => factory(Position::class)->create(['callsign' => 'EGKK_APP']),
         ]);
-
         $twrMentor = factory(Member::class)->create();
         factory(PositionValidation::class)->create([
             'member_id' => $twrMentor,
@@ -206,5 +205,25 @@ class MentorRepositoryTest extends TestCase
 
         $return = $this->subjectUnderTest->getMentorsForPositionType('TWR');
         $this->assertEquals($return, collect($twrMentor->cid));
+    }
+
+
+    /** @test */
+    public function itDoesNotDuplicateMentorsForPositionTypes()
+    {
+        $appMentor = factory(Member::class)->create();
+        factory(PositionValidation::class)->create([
+            'member_id' => $appMentor,
+            'status' => 5,
+            'position_id' => factory(Position::class)->create(['callsign' => 'EGKK_APP']),
+        ]);
+        factory(PositionValidation::class)->create([
+            'member_id' => $appMentor,
+            'status' => 5,
+            'position_id' => factory(Position::class)->create(['callsign' => 'EGLL_APP']),
+        ]);
+
+        $return = $this->subjectUnderTest->getMentorsForPositionType('APP');
+        $this->assertEquals($return, collect($appMentor->cid));
     }
 }
