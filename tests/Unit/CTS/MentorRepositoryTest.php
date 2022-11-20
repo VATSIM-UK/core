@@ -207,7 +207,6 @@ class MentorRepositoryTest extends TestCase
         $this->assertEquals($return, collect($twrMentor->cid));
     }
 
-
     /** @test */
     public function itDoesNotDuplicateMentorsForPositionTypes()
     {
