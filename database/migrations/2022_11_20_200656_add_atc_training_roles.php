@@ -16,15 +16,9 @@ return new class extends Migration
         // Clear cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
 
-        foreach (['S2', 'S3', 'C1'] as $qualification) {
+        foreach (['TWR' => 'S2', 'APP' => 'S3', 'ENR' => 'C1'] as $type => $qualification) {
             $studentRole = Role::create([
-                'name' => "$qualification Students",
-                'guard_name' => 'web',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-            $mentorRole = Role::create([
-                'name' => "$qualification Mentors",
+                'name' => "ATC Students ($type)",
                 'guard_name' => 'web',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -32,11 +26,9 @@ return new class extends Migration
 
             $lowercaseQualification = strtolower($qualification);
 
-            $studentPermission = Permission::create(['name' => "discord/{$lowercaseQualification}-students", 'guard_name' => 'web']);
-            $mentorPermission = Permission::create(['name' => "discord/{$lowercaseQualification}-mentors", 'guard_name' => 'web']);
+            $studentPermission = Permission::create(['name' => "discord/atc/student/{$lowercaseQualification}", 'guard_name' => 'web']);
 
             $studentRole->givePermissionTo($studentPermission);
-            $mentorRole->givePermissionTo($mentorPermission);
         }
     }
 

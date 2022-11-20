@@ -40,14 +40,6 @@ class MentorRepository
         return $this->format($mentors->unique());
     }
 
-    public function getMentorsForPositionType(string $positionSuffix): Collection
-    {
-        return $this->format(PositionValidation::with(['member'])
-            ->whereHas('position', function (Builder $query) use ($positionSuffix) {
-                $query->where('callsign', 'like', "%_$positionSuffix");
-            })->mentors()->select('member_id')->distinct()->get()->map(fn ($position) => $position->member));
-    }
-
     private function format(Collection $data)
     {
         return $data->pluck('cid')->transform(function ($item) {

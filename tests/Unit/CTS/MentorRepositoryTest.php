@@ -183,47 +183,4 @@ class MentorRepositoryTest extends TestCase
 
         $this->assertEquals($return, collect($member->cid));
     }
-
-    /** @test */
-    public function itCanReturnAListOfMentorsForAPositionType()
-    {
-        $appMentor = factory(Member::class)->create();
-        factory(PositionValidation::class)->create([
-            'member_id' => $appMentor->id,
-            'status' => 5,
-            'position_id' => factory(Position::class)->create(['callsign' => 'EGKK_APP']),
-        ]);
-        $twrMentor = factory(Member::class)->create();
-        factory(PositionValidation::class)->create([
-            'member_id' => $twrMentor,
-            'status' => 5,
-            'position_id' => factory(Position::class)->create(['callsign' => 'EGKK_TWR']),
-        ]);
-
-        $return = $this->subjectUnderTest->getMentorsForPositionType('APP');
-        $this->assertEquals($return, collect($appMentor->cid));
-
-        $return = $this->subjectUnderTest->getMentorsForPositionType('TWR');
-        $this->assertEquals($return, collect($twrMentor->cid));
-    }
-
-
-    /** @test */
-    public function itDoesNotDuplicateMentorsForPositionTypes()
-    {
-        $appMentor = factory(Member::class)->create();
-        factory(PositionValidation::class)->create([
-            'member_id' => $appMentor,
-            'status' => 5,
-            'position_id' => factory(Position::class)->create(['callsign' => 'EGKK_APP']),
-        ]);
-        factory(PositionValidation::class)->create([
-            'member_id' => $appMentor,
-            'status' => 5,
-            'position_id' => factory(Position::class)->create(['callsign' => 'EGLL_APP']),
-        ]);
-
-        $return = $this->subjectUnderTest->getMentorsForPositionType('APP');
-        $this->assertEquals($return, collect($appMentor->cid));
-    }
 }

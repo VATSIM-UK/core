@@ -39,14 +39,6 @@ class StudentRepository
         return $this->format($students->unique());
     }
 
-    public function getStudentsWithRequestPermissionsForType(string $positionSuffix): Collection
-    {
-        return $this->format(PositionValidation::with(['member'])
-            ->whereHas('position', function (Builder $query) use ($positionSuffix) {
-                $query->where('callsign', 'like', "%_$positionSuffix");
-            })->students()->select('member_id')->distinct()->get()->map(fn ($position) => $position->member));
-    }
-
     private function format(Collection $data)
     {
         return $data->pluck('cid')->transform(function ($item) {
