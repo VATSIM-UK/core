@@ -48,6 +48,19 @@ class SyncCtsRoles extends Command
         $gatwickStudentsRoleId = Role::findByName('Gatwick GND Students')->id;
         $this->syncStudentsByPosition('EGKK_GND', $gatwickStudentsRoleId);
 
+        $trainingPositions = [
+            ["suffix" => "TWR", "student" => Role::findByName('S2 Students')->id, "mentor" => Role::findByName('S2 Mentors')->id],
+            ["suffix" => "APP", "student" => Role::findByName('S3 Students')->id, "mentor" => Role::findByName('S3 Mentors')->id],
+            ["suffix" => "CTR", "student" => Role::findByName('C1 Students')->id, "mentor" => Role::findByName('C1 Mentors')->id],
+        ];
+
+        foreach ($trainingPositions as $positionRoles) {
+            $this->syncMentorsByPositionType($positionRoles["suffix"], $positionRoles["mentor"]);
+            $this->syncStudentsByPositionType($positionRoles["suffix"], $positionRoles["student"]);
+        }
+
+        $this->syncStudentsByPosition('EGKK_GND', $gatwickStudentsRoleId);
+
         $this->syncAtcExaminers(31);
         $this->syncPilotExaminers(40);
     }
@@ -63,6 +76,13 @@ class SyncCtsRoles extends Command
     {
         $hasRole = $this->getAccountsWithRoleId($roleId);
         $shouldHaveRole = (new MentorRepository)->getMentorsFor($search);
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncMentorsByPositionType(string $positionSuffix, int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new MentorRepository)->getMentorsForPositionType($positionSuffix);
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 
@@ -94,16 +114,23 @@ class SyncCtsRoles extends Command
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 
+    private function syncStudentsByPositionType(string $positionSuffix, int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new StudentRepository)->getStudentsWithRequestPermissionsForType($positionSuffix);
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
     private function syncRoles(Collection $hasRole, Collection $shouldHaveRole, $roleId): void
     {
         // Users that have the role, but should not have the role
         $removeRole = $hasRole->filter(function ($value) use ($shouldHaveRole) {
-            return ! $shouldHaveRole->contains($value);
+            return !$shouldHaveRole->contains($value);
         })->all();
 
         // Users that should have the role, but do not have the role
         $assignRole = $shouldHaveRole->filter(function ($value) use ($hasRole) {
-            return ! $hasRole->contains($value);
+            return !$hasRole->contains($value);
         })->all();
 
         foreach ($assignRole as $account) {

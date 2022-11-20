@@ -109,4 +109,28 @@ class StudentRepositoryTest extends TestCase
 
         $this->assertNull($return->first());
     }
+
+    /** @test */
+    public function itCanReturnAListOfStudentsForAPositionType()
+    {
+        $appStudent = factory(Member::class)->create();
+        factory(PositionValidation::class)->create([
+            'member_id' => $appStudent->id,
+            'status' => 1,
+            'position_id' => factory(Position::class)->create(['callsign' => 'EGKK_APP']),
+        ]);
+
+        $twrStudent = factory(Member::class)->create();
+        factory(PositionValidation::class)->create([
+            'member_id' => $twrStudent,
+            'status' => 1,
+            'position_id' => factory(Position::class)->create(['callsign' => 'EGKK_TWR']),
+        ]);
+
+        $return = $this->subjectUnderTest->getStudentsWithRequestPermissionsForType('APP');
+        $this->assertEquals($return, collect($appStudent->cid));
+
+        $return = $this->subjectUnderTest->getStudentsWithRequestPermissionsForType('TWR');
+        $this->assertEquals($return, collect($twrStudent->cid));
+    }
 }
