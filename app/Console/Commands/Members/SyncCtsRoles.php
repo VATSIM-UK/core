@@ -59,8 +59,6 @@ class SyncCtsRoles extends Command
             $this->syncStudentsByPositionType($positionRoles['suffix'], $positionRoles['student']);
         }
 
-        $this->syncStudentsByPosition('EGKK_GND', $gatwickStudentsRoleId);
-
         $this->syncAtcExaminers(31);
         $this->syncPilotExaminers(40);
     }
@@ -125,12 +123,12 @@ class SyncCtsRoles extends Command
     {
         // Users that have the role, but should not have the role
         $removeRole = $hasRole->filter(function ($value) use ($shouldHaveRole) {
-            return ! $shouldHaveRole->contains($value);
+            return !$shouldHaveRole->contains($value);
         })->all();
 
         // Users that should have the role, but do not have the role
         $assignRole = $shouldHaveRole->filter(function ($value) use ($hasRole) {
-            return ! $hasRole->contains($value);
+            return !$hasRole->contains($value);
         })->all();
 
         foreach ($assignRole as $account) {
