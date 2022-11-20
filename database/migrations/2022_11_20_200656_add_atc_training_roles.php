@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -18,7 +16,7 @@ return new class extends Migration
         // Clear cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
 
-        foreach (["S2", "S3", "C1"] as $qualification) {
+        foreach (['S2', 'S3', 'C1'] as $qualification) {
             $studentRole = Role::create([
                 'name' => "$qualification Students",
                 'guard_name' => 'web',

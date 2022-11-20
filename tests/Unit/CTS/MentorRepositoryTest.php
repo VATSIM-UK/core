@@ -184,7 +184,6 @@ class MentorRepositoryTest extends TestCase
         $this->assertEquals($return, collect($member->cid));
     }
 
-
     /** @test */
     public function itCanReturnAListOfMentorsForAPositionType()
     {
