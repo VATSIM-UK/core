@@ -33,23 +33,26 @@ class SyncCtsRoles extends Command
      */
     public function handle()
     {
+        // Sync Mentors
         $this->syncMentorsByRts(12, 35); // Heathrow
         $this->syncMentorsByRts(13, 42); // Pilot
         $this->syncMentorsByRts(17, 34); // Enroute
         $this->syncMentorsByRts(18, 33); // Tower
         $this->syncMentorsByRts(19, 47); // Approach
-
         $this->syncMentorsByCallsign('OBS', 32); // OBS Mentors
         $this->syncMentorsByCallsign('EGKK_GND', 53); // Gatwick Mentors
         $this->syncMentorsByCallsign('TFP', 65); // PTD Flying Programme Mentors
 
+        // Sync Students
         $this->syncPilotStudents(55); // Pilot Students
+        $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
+        $this->syncStudentsByRts(18, Role::findByName('ATC Students (TWR)')->id); // TWR Students
+        $this->syncStudentsByRts(19, Role::findByName('ATC Students (APP)')->id); // APP Students
+        $this->syncStudentsByRts(17, Role::findByName('ATC Students (ENR)')->id); // Enroute Students
 
-        $gatwickStudentsRoleId = Role::findByName('Gatwick GND Students')->id;
-        $this->syncStudentsByPosition('EGKK_GND', $gatwickStudentsRoleId);
-
-        $this->syncAtcExaminers(31);
-        $this->syncPilotExaminers(40);
+        // Sync Examiners
+        $this->syncAtcExaminers(31); // ATC
+        $this->syncPilotExaminers(40); // Pilot
     }
 
     private function syncMentorsByRts(int $rtsId, int $roleId): void
@@ -91,6 +94,13 @@ class SyncCtsRoles extends Command
     {
         $hasRole = $this->getAccountsWithRoleId($roleId);
         $shouldHaveRole = (new StudentRepository)->getStudentsWithRequestPermissionsFor($callsign);
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncStudentsByRts(int $rtsId, int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new StudentRepository)->getStudentsWithin($rtsId);
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 
