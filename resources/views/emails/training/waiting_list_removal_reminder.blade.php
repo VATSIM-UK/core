@@ -3,22 +3,22 @@
 @section('body')
 
 <p>
-    <b>Warning: You only have {{$remaining_days}} days remaining to meet the hour check requirements for the waiting list: {{$list_name}} before you are removed.
+    <b>Warning: You will be removed from the {{$list_name}} waiting list in {{$remaining_days}} days</b>
 </p>
 
 <p>
-    Your network activity has remained below the requirement to remain eligible on a waiting list for training that you are on.
+    Your network activity is still below the requirements to remain on the {{$list_name}} waiting list. As a reminder, you must maintain a minimum of 12 hours controlling or mentoring (network sessions only) on UK positions as documented in the ATC Training Handbook section 5.3.
 </p>
 
 <p>
-    To be eligible for the waiting list: <b>{{$list_name}}</b>, you must maintain a minimum of 12 hours controlling or mentoring in the UK divison over a 3 month rolling period.
+    As mentioned in our previous email and documented in the ATC Training Handbook section 5.4, you will be removed from the {{$list_name}} waiting list on {{$removal_date->format("l jS \\o\\f F Y")}} (in {{$remaining_days}} days).
 </p>
 
 <p>
-    You have {{$remaining_days}} days to meet the above eligibility criteria. If you do not take steps to meet the criteria then you will be automatically removed from the waiting list on <b>{{$removal_date->format("l jS \\o\\f F Y")}}</b>.
+    As a reminder, from any point from joining the waiting list to completing training you may 'defer' your training place. There is more information around this in the ATC Training Handbook section 5.9.
 </p>
 
 <p>
-    If there are circumstances preventing you from meeting the activity requirement for this waiting list, please open a ticket to the member services department on the <a href='https://helpdesk.vatsim.uk/'>helpdesk</a> as soon as possible.
+    If you have any issues with meeting this criteria and are still interested in training then please reach out to us by <a href='https://helpdesk.vatsim.uk/'>opening a ticket</a> with help topic 'Member Services'.
 </p>
 @stop

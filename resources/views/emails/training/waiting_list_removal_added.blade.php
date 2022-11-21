@@ -2,18 +2,22 @@
 
 @section('body')
 <p>
-    Your network activity has fallen below the requirement to remain eligible on a waiting list for training that you are on.
+    Our systems show that you have fallen below the required activity to remain on a waiting list as described in the ATC Training Handbook section 5.3.
 </p>
 
 <p>
-    To be eligible for the waiting list: <b>{{$list_name}}</b>, you must maintain a minimum of 12 hours controlling or mentoring in the UK divison over a 3 month rolling period.
+    In order to ensure that only active members of our division remain on the <b>{{$list_name}}</b> waiting list, all members on the list must maintain a minimum of 12 hours controlling or network mentoring over a rolling 3 month period.
 </p>
 
 <p>
-    You now have 30 days to meet the above eligibility criteria. If you do not take steps to meet the criteria then you will be automatically removed from the waiting list on <b>{{$removal_date->format("l jS \\o\\f F Y")}}</b>, which is in <b>{{$remaining_days}}</b> days.
+    As defined in ATC Training Handbook section 5.4, you now have 30 days to regain the above activity requirements. If you do not meet the activity requirements above by {{$removal_date->format("l jS \\o\\f F Y")}} ({{$remaining_days}} days) then you will be removed from the waiting list.
 </p>
 
 <p>
-    If there are circumstances preventing you from meeting the activity requirement for this waiting list, please open a ticket to the member services department on the <a href='https://helpdesk.vatsim.uk/'>helpdesk</a> as soon as possible.
+    As a reminder, from any point from joining the waiting list to completing training you may 'defer' your training place. There is more information around this in the ATC Training Handbook section 5.9.
+</p>
+
+<p>
+    If you have any issues with meeting this criteria and are still interested in training then please reach out to us by <a href='https://helpdesk.vatsim.uk/'>opening a ticket</a> with help topic 'Member Services'
 </p>
 @stop

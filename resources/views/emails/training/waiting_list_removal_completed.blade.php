@@ -2,10 +2,14 @@
 
 @section('body')
 <p>
-    You have been automatically removed from the waiting list: <b>{{$list_name}}</b> because you have not met the required number of hours controlling on the network for 30 days.
+    You have been removed from the <b>{{$list_name}}</b> waiting list due to not maintaining the activity requirements to stay on the {{$list_name}} waiting list.
 </p>
 
 <p>
-    If you wish to re-join the waiting list you may do so when you meet the eligibility requirements.
+    As mentioned in previous emails and documented in the ATC Training Handbook section 5.3, you must maintain a minimum of 12 hours controlling or mentoring (network sessions only) on UK positions in order to remain on the list.
+</p>
+
+<p>
+    If you would like to rejoin the waiting list then please <a href='https://helpdesk.vatsim.uk/'>open a ticket</a> with help topic 'Member Services' and one of the team will add you back to the list.
 </p>
 @stop

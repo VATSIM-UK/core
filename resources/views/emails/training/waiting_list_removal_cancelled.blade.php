@@ -2,14 +2,14 @@
 
 @section('body')
 <p>
-    We wanted to let you know that your controlling hours in the last 3 months now exceeds 12 hours, making you eligible for the waiting list: <b>{{$list_name}}</b> again.
+    We are getting in touch to let you know that you now meet the activity requirements to remain on the <b>{{$list_name}}</b> waiting list once again.
 </p>
 
 <p>
-    Your position on this waiting list remains as it was before you originally became ineligible, when you reach the top of the list you will be offered a training place.
+    As a reminder, in order to remain on the list, you must maintain a minimum of 12 hours controlling or network mentoring over a rolling 3 month period.
 </p>
 
 <p>
-    To avoid being removed from this list in the future, please ensure that you continue to meet the controlling activity requirements of 12 hours in the last 3 months.
+    You can track your position and your recent controlling hours <a href="https://www.vatsim.uk/mship/waiting-lists">here</a>.
 </p>
 @stop
