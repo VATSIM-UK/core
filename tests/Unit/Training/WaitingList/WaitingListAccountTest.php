@@ -25,6 +25,32 @@ class WaitingListAccountTest extends TestCase
     }
 
     /** @test * */
+    public function itIsNotMarkedForRemovalOnCreation()
+    {
+        $account = factory(Account::class)->create();
+
+        $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertNull($this->waitingList->accounts->first()->pivot->pending_removal);
+    }
+
+    /** @test * */
+    public function itCanBeMarkedForRemoval()
+    {
+        $account = factory(Account::class)->create();
+
+        $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $testRemovalDate    = Carbon::parse("next week");
+        
+        $this->waitingList->accounts->first()->pivot->addPendingRemoval($testRemovalDate);
+
+        $this->assertDatabaseHas('training_waiting_list_account_pending_removal', [
+                'removal_date' => $testRemovalDate->toDateTimeString()
+        ]);
+    }
+
+    /** @test * */
     public function itCanHaveAStatusAssociatedWithIt()
     {
         $status = factory(WaitingListStatus::class)->create();

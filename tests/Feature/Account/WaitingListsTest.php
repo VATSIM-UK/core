@@ -50,7 +50,7 @@ class WaitingListsTests extends TestCase
     /** @test */
     public function testViewPilotWaitingListDetailsNoFlags()
     {
-        $list = factory(WaitingList::class)->create(['name' => 'My List', 'department' => WaitingList::PILOT_DEPARTMENT]);
+        $list = factory(WaitingList::class)->create(['name' => 'My List', 'department' => WaitingList::PILOT_DEPARTMENT, 'enforce_hour_requirement' => 'no']);
         handleService(new AddToWaitingList($list, $this->user, $this->privacc));
 
         $response = $this->actingAs($this->user)
