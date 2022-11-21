@@ -22,6 +22,11 @@
                         <td>
                             @if($waitingList->pivot->position)
                             {{$waitingList->pivot->position}}
+                            @elseif(
+                                $waitingList->pivot->current_status == 'Active' &&
+                                $waitingList->pivot->pending_removal?->isPendingRemoval()
+                            )
+                            Ineligible: Removing in <b>{{\Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInDays($waitingList->pivot->pending_removal->removal_date)}} days</b>
                             @else
                             - <span class="fa fa-question-circle ml-2 text-info text-sm tooltip_displays" data-toggle="tooltip" data-placement="top" title="You might not have a position because you aren't meeting eligibility criteria. Once you are meeting the criteria, your position will be shown."></span>
                             @endif

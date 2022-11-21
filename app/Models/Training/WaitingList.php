@@ -172,6 +172,11 @@ class WaitingList extends Model
         return $this->department == self::PILOT_DEPARTMENT;
     }
 
+    public function enforcesHourRequirement()
+    {
+        return $this->enforce_hour_requirement === 'yes';
+    }
+
     public function __toString()
     {
         return (string) $this->name;
