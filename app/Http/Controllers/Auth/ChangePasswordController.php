@@ -34,7 +34,7 @@ class ChangePasswordController extends BaseController
     protected function validateOld(Request $request)
     {
         $this->validate($request, [
-            'old_password' => 'required|string|password',
+            'old_password' => 'required|string|current_password',
         ]);
     }
 

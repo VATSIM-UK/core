@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  vatsimuk-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+    depends_on:
+      - mysql
+    volumes:
+      - ..:/workspace:cached
+
+  redis:
+    image: redis:7-alpine
+
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./mysql_init:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: core
+
+  pma:
+    image: phpmyadmin
+    ports:
+      - 8090:80
+    environment:
+      - PMA_ARBITRARY=1
+
+volumes:
+  db-data: null

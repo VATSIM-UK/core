@@ -27,7 +27,7 @@ class AddStudentToWaitingList extends Action
      * @param  \Illuminate\Support\Collection  $models
      * @return mixed
      */
-    public function handle(ActionFields $fields, Collection $models)
+    public function handle(ActionFields $fields, Collection $models) // NOSONAR
     {
         /** @var \App\Models\Training\WaitingList $waitingList */
         $waitingList = $models->first();
@@ -37,6 +37,10 @@ class AddStudentToWaitingList extends Action
             $account = Account::findOrFail($fields->cid);
         } catch (ModelNotFoundException $e) {
             return $this->dangerAction('The specified CID was not found.');
+        }
+
+        if (! $account->primary_state->isDivision) {
+            return $this->dangerAction('The specified member is not a home UK member.');
         }
 
         if ($waitingList->accounts->contains($account)) {

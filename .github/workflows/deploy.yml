@@ -13,7 +13,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout Codes
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           ref: ${{ github.event.client_payload.ref }}
@@ -59,12 +59,12 @@ jobs:
       #
       # GITHUB DEPLOYMENT JOB START
       #
-      - uses: chrnorm/deployment-action@releases/v1
+      - uses: chrnorm/deployment-action@v2
         name: Create GitHub Deployment
         id: github_deployment
         with:
           token: ${{ github.token }}
-          target_url: https://www.vatsim.uk
+          environment_url: https://www.vatsim.uk
           environment: production
           ref: ${{ github.event.client_payload.ref }}
 
@@ -73,7 +73,7 @@ jobs:
       #
 
       - name: Setup Yarn
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
@@ -88,7 +88,7 @@ jobs:
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - name: Restore Yarn Cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -188,34 +188,20 @@ jobs:
           envs: RELEASE_DIRECTORY,SHARED_DIRECTORY,APPLICATION_ROOT
 
       - name: Trigger Forge Deployment
-        uses: jbrooksuk/laravel-forge-action@v1.0.2
+        uses: jbrooksuk/laravel-forge-action@v1.0.3
         with:
           trigger_url: ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
 
       #
       # SENTRY
-      # Create a Sentry release for Laravel
+      # Create a Sentry release
       #
-      - name: Create Sentry release (Laravel)
+      - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: vatsim-uk
           SENTRY_PROJECT: core
-        with:
-          environment: production
-          version: ${{ github.sha }}
-
-      #
-      # SENTRY
-      # Create a Sentry release for JS
-      #
-      - name: Create Sentry release (JS)
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: vatsim-uk
-          SENTRY_PROJECT: core-js
         with:
           environment: production
           version: ${{ github.sha }}

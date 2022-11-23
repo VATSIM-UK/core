@@ -7,6 +7,26 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
                 <div class="panel-heading">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i> &thinsp; VATGlasses
+                </div>
+                <div class="panel-body">
+
+                    <p>
+                        <a href="https://vatglasses.uk/ukireland/" target="_blank" rel="noopener noreferrer"><strong>VATGlasses</strong></a> is a new tool that shows accurate coverage in the UK.
+                        You can adjust the slider to show coverage at different levels and also track your flight.
+                    </p>
+                    
+                    <p>
+                        <strong>Please note:</strong> Other tools such as VATSpy, SimAware and Qutescoop may not 'light up' the correct areas.
+                    </p>
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading">
                     <i class="fa fa-map-marker" aria-hidden="true"></i> &thinsp; UK Area Sectors
                 </div>
                 <div class="panel-body">
@@ -16,19 +36,19 @@
                     </h3>
 
                     <p>
-                        This page is to help pilots flying in UK airspace determine when they should contact one of our Area (CTR) sectors. We have tried to keep this as simple as possible, splitting the information into distinct sections depending on your type of flight.
+                        This page explains the basics of the En Route (CTR) sectors in the UK. The information is split into sections for different stages of flight.
                     </p>
 
                     <p>
-                        If you are ever unsure, please PM one of our controllers saying that you have read the website but are unsure whether you need to contact them. They will gladly advise!
+                        If you are ever unsure who to call, please message one of our controllers. They will be more than happy to help!
                     </p>
 
                     <p>
-                        <strong>Do not call</strong> EGTT_I_CTR or EGPX_I_CTR as civilian ‘airliner’ traffic – these positions are for Flight Information Services outside of controlled airspace only.
+                        <strong>Do not call</strong> EGTT_I_CTR or EGPX_I_CTR as civilian ‘airliner’ traffic – these positions are for UK Flight Information Services (FIS) outside of controlled airspace only.
                     </p>
 
                     <p>
-                        <strong>Do not call</strong> EGVV_CTR or EGQQ_CTR as a civilian ‘airliner’ – these positions are primarily for Military operations. UK FIS may be available on request/as coordinated with civilian area controllers (normally only above FL100).
+                        <strong>Do not call</strong> EGVV_CTR as a civilian ‘airliner’ – these positions are for Military operations. UK FIS may be available on request (normally only above FL100).
                     </p>
 
                     <h3>
@@ -56,14 +76,14 @@
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-departing-ifr">
                     <div class="panel-heading">
-                        <i class="fa fa-plane-departure" aria-hidden="true"></i> &thinsp; I am <strong>departing IFR</strong> from a UK airfield...
+                        <i class="fa fa-plane-departure" aria-hidden="true"></i> &thinsp; I am <strong>departing</strong> from a UK airfield...
                         <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
                 </a>
                 <div id="sectors-departing-ifr" class="panel-collapse collapse panel-body">
 
                     <p>
-                        Always contact <strong>local ATC</strong> (DEL/GND/TWR/APP) where it is online. There are a number of APP positions that cover more than one airfield top-down:
+                        Always contact <strong>local ATC</strong> (DEL/GND/TWR/APP) where it is online. There are a many APP positions that cover more than one airfield top-down:
                     </p>
 
                     <ul>
@@ -107,9 +127,17 @@
                     <h3>Are all airfields covered top-down?</h3>
 
                     <p>
-                        At airfields <strong>outside</strong> of <a href="https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification." target="_blank" rel="noopener noreferrer">
-                        controlled airspace</a> you may, if you wish, depart at your own discretion. However, if you intend to join
-                        controlled airspace, it is generally advisable to request joining clearance from the controller <strong>prior</strong> to departure.
+                        Our controllers provide a top-down service at all airfields that have a permanent Tower or Approach facility in the real world. This includes airports <strong>outside</strong> of 
+                        <a href="https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification." target="_blank" rel="noopener noreferrer">
+                        controlled airspace</a>.
+                    </p>
+
+                    <p>
+                        When it is busy, controllers will usually downgrade the service at quieter airfields. Before departing, you <strong>must</strong> contact the controller to check what service they are providing.
+                    </p>
+
+                    <p>
+                        If you are departing from an airfield outside of controlled airspace (with or without top-down cover) and intend to <strong>join</strong> controlled airspace on your route, you must ensure you obtain clearance to do so on the ground or in the air.
                     </p>
 
                     <h3>
@@ -117,11 +145,15 @@
                     </h3>
 
                     <p>
-                        In the absence of local ATC, contact the first controller listed below that you see online (the priority is from left to right). Sometimes, the callsign may differ slightly, so it is best to cross-check the frequency too.
+                        When there is no local ATC, contact the first controller listed below that you see online. The priority is from left to right.
                     </p>
 
                     <p>
-                        The location of these airports within our sectors are also marked on the diagrams in the next section.
+                        <strong>Note:</strong> Sometimes, the callsign may be different from below, so it is best to cross-check the frequency too. 
+                    </p>
+
+                    <p>
+                        You can also see these airports on the sector maps in the next section.
                     </p>
 
                     <p style="margin-left: 40px">
@@ -204,11 +236,11 @@
                 <div id="sectors-arriving-transiting" class="panel-collapse collapse panel-body">
 
                     <p>
-                        Our controllers will always send you a contact me if you are entering their airspace. However, if you’d like to pre-empt their call, please use the diagrams below for an idea of where each sector covers.
+                        Our controllers will always send you a contact me if you are entering their airspace. However, you can also use the diagrams below if you want to know when to call them in advance.
                     </p>
 
                     <p>
-                        You are encouraged to look-up and plan for descent in accordance with your expected STAR. If you need to descend before you enter an online controller’s airspace, then please do.
+                        You should look-up and plan for descent according to your expected STAR. You can also report your expected STAR on first contact to save time. If you need to descend before you enter an online controller’s airspace, then do so.
                     </p>
 
                     <h3>
@@ -216,7 +248,7 @@
                     </h3>
 
                     <p>
-                        The main London sectors (North, South, Central & West) are shown below. Sometimes these sectors are bandboxed using the LON_SC_CTR or LON_CTR callsigns.
+                        The main London sectors (North, South, Central & West) are shown below. Sometimes these sectors are combined using the LON_SC_CTR or LON_CTR callsigns.
                     </p>
 
                     <img class="img-responsive center-block" src="/images/egttsectors-lon.png" alt="diagram of main London sectors">
@@ -245,15 +277,15 @@
                     </h3>
 
                     <p>
-                        We regularly split off the airspace in the London TMA area with LTC sectors, which are shown in the diagram below. There are 4 main sectors (NE, NW, SE, SW) which can be ‘bandboxed’ together using the LTC_N_CTR, LTC_S_CTR or LTC_CTR callsigns.
+                        We can also split off the airspace in the London area with LTC sectors. There are 4 main sectors (NE, NW, SE, SW) which can be combined using the LTC_N_CTR, LTC_S_CTR or LTC_CTR callsigns.
                     </p>
 
                     <p>
-                        The top of these sectors is generally at FL155, up to a maximum of FL185.
+                        The top of these sectors is generally at FL155, but no higher than FL195.
                     </p>
 
                     <p>
-                        It is especially important to descend in accordance with the STAR when only these sectors are online.
+                        It is especially important to descend according to your STAR when only these sectors are online. Do not wait for a contact me before starting your descent.
                     </p>
 
                     <img class="img-responsive center-block" src="/images/egttsectors-ltc-2202.png" alt="diagram of London TMA split sectors">
@@ -263,19 +295,19 @@
                     </h3>
 
                     <p>
-                        The most frequent callsign you will see for Scottish Control is SCO_CTR which bandboxes all Scottish airspace. Two main splits are shown on the diagram below.
+                        You will most often see SCO_CTR which covers all Scottish airspace. The diagram below shows the two main upper splits.
                     </p>
 
                     <p>
-                        The STC_CTR callsign covers an area <strong>below FL255</strong> around the Scottish TMA (near the main airports, EGPH, EGPF and EGPK).
+                        STC_CTR covers an area <strong>below FL255</strong> around the Scottish TMA - near the main airports, EGPH, EGPF and EGPK.
                     </p>
 
                     <p>
-                        The STC_A_CTR callsign covers an area <strong>below FL255</strong> in the Belfast area, with responsibility for EGAA and EGAC traffic.
+                        STC_A_CTR covers an area <strong>below FL255</strong> in the Belfast area, with responsibility for EGAA and EGAC traffic.
                     </p>
 
                     <p>
-                        If Scottish airspace is split any further, it will most likely be during events when lots of ATC is online to direct you between controllers, so do not worry.
+                        Further Scottish splits are sometimes used during events.
                     </p>
 
                     <img class="img-responsive center-block" src="/images/egpxsectors.png" alt="diagram of main Scottish sectors">
@@ -299,15 +331,15 @@
                 <div id="sectors-vfr" class="panel-collapse collapse panel-body">
 
                     <p>
-                        If you are departing from an airfield <strong>inside</strong> controlled airspace, then you <strong>must</strong> obtain clearance for all stages of your departure from the relevant area controller, as set out in Section 1.
+                        If you are departing from an airfield as VFR, please see the section above - "I am departing from a UK airfield".
                     </p>
 
                     <p>
-                        If you are departing from an airfield <strong>outside</strong> of controlled airspace, then you <strong>may</strong> ask the area controller directly above that airfield whether they are able to provide an air traffic service.
+                        If you want to enter controlled airspace, you must check if any controller is covering that airspace. If yes, you need to get a clearance before entering it.
                     </p>
 
                     <p>
-                        If you have departed from an airfield without speaking to ATC but wish to enter controlled airspace, you must obtain a clearance from the area controller that covers that airspace before doing so. Feel free to ask a controller whether they cover airspace if you are unsure.
+                        By using the altitude slider on <a href="https://vatglasses.uk/ukireland/" target="_blank" rel="noopener noreferrer"><strong>VATGlasses</strong></a>, you can check for coverage. Feel free to ask a controller whether they cover airspace if you are unsure.
                     </p>
 
                     <h3>London &amp; Scottish Information</h3>
@@ -321,11 +353,11 @@
                     </p>
 
                     <p>
-                        Both of these positions are able to provide a <strong>Basic Service</strong>, which is a type of UK Flight Information Service (UK FIS) (see page 71 of <a href="https://publicapps.caa.co.uk/modalapplication.aspx?appid=11&mode=detail&id=7919" target="_blank" rel="noopener noreferrer">The Skyway Code</a>), to aircraft operating outside of controlled airspace.
+                        Both of these positions are able to provide a <strong>Basic Service</strong> to flights outside of controlled airspace. This is a type of UK Flight Information Service (UK FIS) (see page 71 of <a href="https://publicapps.caa.co.uk/modalapplication.aspx?appid=11&mode=detail&id=7919" target="_blank" rel="noopener noreferrer">The Skyway Code</a>).
                     </p>
 
                     <p>
-                        They are also able to coordinate airways joining clearances for IFR departures from airfields outside of controlled airspace.
+                        They are also able to arrange airspace joining clearances for IFR departures from airfields not covered top down.
                     </p>
 
                 </div>
@@ -347,25 +379,20 @@
                 <div id="sectors-military" class="panel-collapse collapse panel-body">
 
                     <p>
-                        Military airfields are <strong>not</strong> covered &apos;top-down&apos; by the civilian Area Control positions outlined in Section 1.
+                        Military airfields are <strong>not</strong> covered &apos;top-down&apos; by the civilian En Route Control positions.
                     </p>
 
                     <p>
-                        The same principles apply for military operations – contact local ATC if online but otherwise, the two main relevant callsigns are:
+                        If local military ATC is online, you should contact them on the ground or if you are inbound. Otherwise, if Swanwick Mil is online, they cover all airspace and airports.
                     </p>
 
                     <p style="margin-left: 40px">
-                        <strong>EGVV_CTR</strong> (135.150) – &quot;Swanwick Mil&quot; <br>
-                        Covers <strong>EGTT FIR</strong> airspace and airports for military operations, as well as in the <strong>EGPX FIR</strong> when Swanwick Mil (North sector) is offline.
-                    </p>
-
-                    <p style="margin-left: 40px">
-                        <strong>EGQQ_CTR</strong> (134.300) - &quot;Swanwick Mil&quot; (North sector) <br>
-                        Covers <strong>EGPX FIR</strong> airspace and airports for military operations.
+                        <strong>EGVV_CTR</strong> (133.900) – &quot;Swanwick Mil&quot; <br>
+                        Covers <strong>EGTT and EGPX FIR</strong> airspace and airports for military operations.
                     </p>
 
                     <p>
-                        If you are departing from a military airfield and joining the airways system as civilian air traffic does, please ensure you request airways joining clearance from the relevant civilian area sector (in Section 2) <strong>before</strong> you enter controlled airspace. If you are unsure who to obtain this from, please ask a controller.
+                        If you are departing from a military airfield and joining controlled airspace in the same way civilian air traffic does, you must get a joining clearance from the relevant civilian area sector before you enter controlled airspace. If you are unsure who to get this from, please ask a controller or check <a href="https://vatglasses.uk/ukireland/" target="_blank" rel="noopener noreferrer"><strong>VATGlasses</strong></a>.
                     </p>
 
                 </div>
@@ -430,6 +457,9 @@
                             LON_D_CTR
                         </li>
                         <li>
+                            SCO_WD_CTR
+                        </li>
+                        <li>
                             STC_CTR
                         </li>
                         <li>
@@ -453,16 +483,17 @@
                     </ul>
 
                     <p>
-                        Members may open either a single Primary or Secondary sector, or a valid combination of
-                        Primary (e.g. LON_SC_CTR) or Secondary (e.g. LTC_CTR, MAN_CTR) sectors.<br>
+                        UK home-rated or visiting controllers may open either a single Primary or Secondary sector, 
+                        or a valid combination of Primary (e.g. LON_SC_CTR) or Secondary (e.g. LTC_CTR, MAN_CTR) sectors.<br>
                     </p>
 
                     <p>
                         Further splits require the remaining portion of the Primary or Secondary sector to be
                         staffed too - e.g. opening LTC_NE_CTR requires LTC_NW_CTR (as the remaining portion of
                         LTC_N_CTR) to be online. Splits not defined in the London or Scottish FIR (EGTT) vMATS 
-                        Part II require specific approval from the Operations Department in the form of a 
-                        Temporary Instruction or Procedure Change.
+                        Part 2 require specific approval from the Operations Department in the form of a 
+                        <a href="https://community.vatsim.uk/forum/240-atc-temporary-instructions/" target="_blank" rel="noopener noreferrer">Temporary Instruction</a>
+                        or permanent <a href="https://community.vatsim.uk/forum/166-atc-procedure-changes/" target="_blank" rel="noopener noreferrer">Procedure Change</a>.
                     </p>
 
                 </div>

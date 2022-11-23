@@ -6,7 +6,9 @@ use App\Http\Controllers\BaseController;
 use App\Libraries\Discord;
 use App\Libraries\Forum;
 use App\Libraries\UKCP;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use HTML;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
@@ -25,6 +27,18 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+        Bugsnag::registerCallback(function ($report) {
+            if (Auth::check()) {
+                $user = Auth::user();
+
+                $report->setUser([
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                ]);
+            }
+        });
 
         if ($this->app->runningInConsole()) {
             URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));

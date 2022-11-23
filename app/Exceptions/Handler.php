@@ -56,17 +56,6 @@ class Handler extends ExceptionHandler
             }
         }
 
-        if (app()->bound('sentry') && $this->shouldReport($e)) {
-            \Sentry\configureScope(function (\Sentry\State\Scope $scope): void {
-                $scope->setUser([
-                    'id' => auth()->user() ? auth()->user()->id : 'Guest',
-                    'username' => auth()->user() ? auth()->user()->name : 'Guest',
-                    'email' => auth()->user() ? auth()->user()->email : 'Guest',
-                ]);
-            });
-            app('sentry')->captureException($e);
-        }
-
         parent::report($e);
     }
 
