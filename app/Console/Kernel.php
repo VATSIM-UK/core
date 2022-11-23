@@ -67,9 +67,6 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('schedule-monitor:clean')
             ->dailyAt('08:00');
-
-        $schedule->command('training:check-home-members')
-            ->dailyAt('05:00');
     }
 
     /**
