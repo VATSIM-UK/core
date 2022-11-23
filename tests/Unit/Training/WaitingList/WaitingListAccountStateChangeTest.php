@@ -100,4 +100,17 @@ class WaitingListAccountStateChangeTest extends TestCase
 
         Notification::assertSentTo($account, RemovedFromWaitingListInactiveAccount::class);
     }
+
+    /** @test */
+    public function itShouldNotNotifyInactiveAccountNotOnList()
+    {
+        $account = factory(Account::class)->create();
+        $account->inactive = true;
+        $account->save();
+
+        $event = new AccountAltered($account->fresh());
+        (new CheckWaitingListAccountInactivity())->handle($event);
+
+        Notification::assertNotSentTo($account, RemovedFromWaitingListInactiveAccount::class);
+    }
 }
