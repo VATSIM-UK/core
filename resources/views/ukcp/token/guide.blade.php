@@ -54,7 +54,7 @@
                             target="_blank">a
                         package from Microsoft</a>. You can download that below too.
                     <br/>
-                    <a href="https://aka.ms/vs/15/release/VC_redist.x86.exe"
+                    <a href="https://aka.ms/vs/17/release/VC_redist.x86.exe"
                        target="_blank">
                         <br/>
                         <button class="btn btn-primary center-block">Download Visual C++ Redistributable Package

@@ -422,7 +422,6 @@
 </section>
 
 <!-- Scripts -->
-<script src="{{ mix('js/sentry.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jarallax/1.10.3/jarallax.min.js" integrity="sha512-1RIeczLHpQNM864FPmyjgIOPQmljv9ixHg5J1knRhTApLpvxqA0vOTxgGF89/DpgZIAXRCn9dRiakPjyTUl9Rg==" crossorigin="anonymous"></script>
 <script src="{{ mix('js/home.js') }}"></script>
 <script src="{{ mix('js/top-notification.js') }}"></script>

@@ -4,8 +4,6 @@ namespace App\Listeners\Training\WaitingList;
 
 use App\Events\Mship\AccountAltered;
 use App\Notifications\Training\RemovedFromWaitingListInactiveAccount;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
 class CheckWaitingListAccountInactivity
@@ -21,8 +19,9 @@ class CheckWaitingListAccountInactivity
         Log::debug("CheckWaitingListAccountInactivity listener triggered for account {$event->account->id}");
         $account = $event->account;
 
-        if (!$account->inactive) {
+        if (! $account->inactive) {
             Log::debug("Account {$account->id} is not inactive, skipping");
+
             return;
         }
 

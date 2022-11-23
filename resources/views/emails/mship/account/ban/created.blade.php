@@ -2,17 +2,16 @@
 
 @section('body')
 <p>
-    Your access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/CT System) has been revoked for {{ $ban->period_amount_string }}.  This is due to the following reason:
+    Your access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/CT System) has been revoked for {{ $ban->period_amount_string }}.
 </p>
 
+@if($ban->reason_extra)
 <p>
-    {!! $ban->reason  !!}<br />
-    {!! nl2br($ban->reason->reason_text) !!}
-    @if($ban->reason_extra)
-        <br />
-        {!! nl2br($ban->reason_extra) !!}
-    @endif
+    The following reason has been given:
+    <br />
+    {!! nl2br($ban->reason_extra) !!}
 </p>
+@endif
 
 <p>
     Your account will automatically regain access to all of the VATSIM United Kingdom services at {{ $ban->period_finish->format("l jS \\of F Y H:i:s \\z") }}.
@@ -20,8 +19,8 @@
 </p>
 
 @if($ban->is_local)
-    <p>
-        <strong>This ban only applies to VATSIM UK services.  You will be notified separately if you are also banned from network services.</strong>
-    </p>
+<p>
+    <strong>This ban only applies to VATSIM UK services. You will be notified separately if you are also banned from network services.</strong>
+</p>
 @endif
 @stop
