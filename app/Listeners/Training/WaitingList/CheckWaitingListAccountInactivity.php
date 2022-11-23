@@ -27,6 +27,7 @@ class CheckWaitingListAccountInactivity
 
         if ($account->currentWaitingLists->count() == 0) {
             Log::debug("Inactive account {$account->id} is not in a waiting list, skipping");
+
             return;
         }
 
