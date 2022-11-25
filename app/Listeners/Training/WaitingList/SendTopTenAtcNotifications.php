@@ -36,8 +36,10 @@ class SendTopTenAtcNotifications
                 if ($account->pivot->top_ten_notified == 'no') { // We do not want to notify people who have already been notified of their top 10 position
                     return true;
                 }
+
                 return false;
             }
+
             return false;
         });
 
