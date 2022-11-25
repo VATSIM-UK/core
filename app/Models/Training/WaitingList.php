@@ -3,6 +3,7 @@
 namespace App\Models\Training;
 
 use App\Events\Training\WaitingListCreated;
+use App\Events\Training\WaitingListAtcPositionsChanged;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
@@ -71,6 +72,7 @@ class WaitingList extends Model
                 'deleted_at',
                 'notes',
                 'created_at',
+                'top_ten_notified',
             ])->wherePivot('deleted_at', null);
     }
 
@@ -158,6 +160,9 @@ class WaitingList extends Model
     {
         $waitingListAccount = $this->accounts()->where('account_id', $account->id)->first()->pivot;
         $waitingListAccount->delete();
+        if ($this->isAtcList()) {
+            event(new WaitingListAtcPositionsChanged($this));
+        }
     }
 
     public function isAtcList()
