@@ -18,7 +18,7 @@ class WaitingListAtcTopTen extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(String $list_name)
+    public function __construct(string $list_name)
     {
         parent::__construct();
 

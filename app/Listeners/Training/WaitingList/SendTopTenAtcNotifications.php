@@ -27,7 +27,7 @@ class SendTopTenAtcNotifications
     public function handle(WaitingListAtcPositionsChanged $event)
     {
         $matched = 0;
-        $topTenNonNotified = $event->waitingList->accounts()->get()->filter(function(Account $account) use (&$matched, $event) {
+        $topTenNonNotified = $event->waitingList->accounts()->get()->filter(function (Account $account) use (&$matched, $event) {
             if ($matched >= 10) { // After we have 10 results, retrieving account positions is unnecessary resource usage
                 return false;
             }
@@ -41,9 +41,9 @@ class SendTopTenAtcNotifications
             return false;
         });
 
-        $topTenNonNotified->each(function(Account $account) use ($event) {
+        $topTenNonNotified->each(function (Account $account) use ($event) {
             $account->notify(new WaitingListAtcTopTen($event->waitingList->name));
-            $account->pivot->top_ten_notified   = 'yes';
+            $account->pivot->top_ten_notified = 'yes';
             $account->pivot->save();
         });
     }

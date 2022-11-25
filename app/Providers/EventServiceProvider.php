@@ -43,9 +43,9 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\Training\WaitingListAtcPositionsChanged::class => [
-            \App\Listeners\Training\WaitingList\SendTopTenAtcNotifications::class
+            \App\Listeners\Training\WaitingList\SendTopTenAtcNotifications::class,
         ],
-        
+
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [
             \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
             \App\Listeners\VisitTransfer\NotifyAllReferees::class,

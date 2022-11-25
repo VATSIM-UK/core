@@ -2,8 +2,8 @@
 
 namespace App\Models\Training;
 
-use App\Events\Training\WaitingListCreated;
 use App\Events\Training\WaitingListAtcPositionsChanged;
+use App\Events\Training\WaitingListCreated;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
