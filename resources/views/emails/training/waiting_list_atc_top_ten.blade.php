@@ -6,7 +6,7 @@
 </p>
 
 <p>
-    For all ratings you must have completed the relevant CTS theory exam to be eligible for a place. If you haven't already we recommend that you start looking through the theory material now and when you feel ready you attempt the theory exam.
+    For all ratings you must have completed the relevant CTS theory exam to be eligible for a place. If you haven't already, we recommend that you start looking through the theory material now and when you feel ready you attempt the theory exam.
 </p>
 
 <p>
