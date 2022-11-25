@@ -2550,16 +2550,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v9.40.1",
+            "version": "v9.41.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "9611fdaf2db5759b8299802d7185bcdbee0340bb"
+                "reference": "cc902ce61b4ca08ca7449664cfab2fa96a1d1e28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/9611fdaf2db5759b8299802d7185bcdbee0340bb",
-                "reference": "9611fdaf2db5759b8299802d7185bcdbee0340bb",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/cc902ce61b4ca08ca7449664cfab2fa96a1d1e28",
+                "reference": "cc902ce61b4ca08ca7449664cfab2fa96a1d1e28",
                 "shasum": ""
             },
             "require": {
@@ -2732,7 +2732,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2022-11-15T16:13:22+00:00"
+            "time": "2022-11-22T15:10:46+00:00"
         },
         {
             "name": "laravel/helpers",
@@ -7355,16 +7355,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "3.11.0",
+            "version": "3.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "91bd6e54d9352754bbdd1d800d2b88618f8130d4"
+                "reference": "4902f43640963ed45517fd7c1da7fdd5511bb304"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/91bd6e54d9352754bbdd1d800d2b88618f8130d4",
-                "reference": "91bd6e54d9352754bbdd1d800d2b88618f8130d4",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/4902f43640963ed45517fd7c1da7fdd5511bb304",
+                "reference": "4902f43640963ed45517fd7c1da7fdd5511bb304",
                 "shasum": ""
             },
             "require": {
@@ -7409,7 +7409,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.11.x-dev"
+                    "dev-master": "3.12.x-dev"
                 }
             },
             "autoload": {
@@ -7443,7 +7443,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/3.11.0"
+                "source": "https://github.com/getsentry/sentry-php/tree/3.12.0"
             },
             "funding": [
                 {
@@ -7455,20 +7455,20 @@
                     "type": "custom"
                 }
             ],
-            "time": "2022-10-25T14:36:50+00:00"
+            "time": "2022-11-22T10:57:08+00:00"
         },
         {
             "name": "sentry/sentry-laravel",
-            "version": "3.1.1",
+            "version": "3.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-laravel.git",
-                "reference": "dd55f62a5b7bed0edabc5afcd04e5435713f57ae"
+                "reference": "1626336dc478abcd8aa5cb128b69423299216bf9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/dd55f62a5b7bed0edabc5afcd04e5435713f57ae",
-                "reference": "dd55f62a5b7bed0edabc5afcd04e5435713f57ae",
+                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/1626336dc478abcd8aa5cb128b69423299216bf9",
+                "reference": "1626336dc478abcd8aa5cb128b69423299216bf9",
                 "shasum": ""
             },
             "require": {
@@ -7476,7 +7476,7 @@
                 "nyholm/psr7": "^1.0",
                 "php": "^7.2 | ^8.0",
                 "sentry/sdk": "^3.3",
-                "sentry/sentry": "^3.10",
+                "sentry/sentry": "^3.12",
                 "symfony/psr-http-message-bridge": "^1.0 | ^2.0"
             },
             "conflict": {
@@ -7536,7 +7536,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-laravel/issues",
-                "source": "https://github.com/getsentry/sentry-laravel/tree/3.1.1"
+                "source": "https://github.com/getsentry/sentry-laravel/tree/3.1.2"
             },
             "funding": [
                 {
@@ -7548,7 +7548,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2022-11-14T11:55:52+00:00"
+            "time": "2022-11-23T13:25:02+00:00"
         },
         {
             "name": "sixlive/nova-text-copy-field",
