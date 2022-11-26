@@ -45,6 +45,7 @@ class WaitingListRemovalCompleted extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         $subject = 'You have been removed from a waiting list due to network inactivity';
+
         return (new MailMessage)
             ->from('atc-team@vatsim.uk', 'VATSIM UK - ATC Training')
             ->subject($subject)

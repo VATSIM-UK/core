@@ -45,6 +45,7 @@ class WaitingListRemovalCancelled extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         $subject = 'You now meet the eligibility for a waiting list you are a member of';
+
         return (new MailMessage)
             ->from('atc-team@vatsim.uk', 'VATSIM UK - ATC Training')
             ->subject($subject)

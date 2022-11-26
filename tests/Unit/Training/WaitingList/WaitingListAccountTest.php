@@ -40,7 +40,7 @@ class WaitingListAccountTest extends TestCase
         $account = factory(Account::class)->create();
 
         $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->privacc);
-        $testRemovalDate = Carbon::parse("next week");
+        $testRemovalDate = Carbon::parse('next week');
 
         $this->waitingList->accounts->first()->pivot->addPendingRemoval($testRemovalDate);
 

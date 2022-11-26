@@ -49,6 +49,7 @@ class WaitingListRemovalAdded extends Notification implements ShouldQueue
     {
         $remainingDays = Carbon::parse(Carbon::now())->diffInDays($this->removal_date);
         $subject = 'Waiting List Activity Warning Notification';
+
         return (new MailMessage)
             ->from('atc-team@vatsim.uk', 'VATSIM UK - ATC Training')
             ->subject($subject)
