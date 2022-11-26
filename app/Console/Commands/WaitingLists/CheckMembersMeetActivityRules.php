@@ -4,16 +4,15 @@ namespace App\Console\Commands\WaitingLists;
 
 use App\Console\Commands\Command;
 use App\Events\Training\AccountMarkedForRemovalFromWaitingList;
-use App\Events\Training\AccountWithinFiveDaysOfWaitingListRemoval;
 use App\Events\Training\AccountRegainedActivityRequirementsForWaitingList;
 use App\Events\Training\AccountRemovedFromWaitingListDueToActivity;
+use App\Events\Training\AccountWithinFiveDaysOfWaitingListRemoval;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
 use Carbon\Carbon;
 
 class CheckMembersMeetActivityRules extends Command
 {
-
     protected $minutesRequired = 720; // 12 hours is represented as 720 minutes
 
     /**
@@ -38,7 +37,7 @@ class CheckMembersMeetActivityRules extends Command
         foreach ($this->retrieveHourEnforcedWaitingLists() as $waitingList) {
             $this->identifyNewNonEligibleWaitingListAccounts($waitingList);
             $this->processWaitingListAccountsMarkedForRemoval($waitingList);
-       }
+        }
     }
 
     /**
@@ -53,7 +52,7 @@ class CheckMembersMeetActivityRules extends Command
 
     /**
      * Identifies accounts on enforced waiting lists who have fallen below the hour requirement.
-     * 
+     *
      * @param  WaitingList  $waitingList
      */
     protected function identifyNewNonEligibleWaitingListAccounts(WaitingList $waitingList)
@@ -86,16 +85,16 @@ class CheckMembersMeetActivityRules extends Command
 
     /**
      * Performs two actions:.
-     * 
+     *
      * - Checks to see if members who are pending removal have now met the hour criteria
      * - Sends reminder emails as per policy schedule, and actions waiting list removal
-     * 
+     *
      * @param  WaitingList  $waitingList
      */
     protected function processWaitingListAccountsMarkedForRemoval(WaitingList $waitingList)
     {
         $waitingListAccounts = $waitingList->accounts
-            ->filter(function($account){
+            ->filter(function ($account) {
                 return $account->pivot->current_status->name == 'Active' && $account->pivot->pending_removal?->status == 'Pending';
             });
 
@@ -121,7 +120,7 @@ class CheckMembersMeetActivityRules extends Command
             }
 
             // Action waiting list reminders that qualify per the reminder schedule
-            if(
+            if (
                 Carbon::parse($account->pivot->pending_removal->removal_date)->subDays(6) <= Carbon::now() &&
                 $account->pivot->pending_removal->emails_sent < 1
             ) {
