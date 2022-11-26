@@ -42,6 +42,22 @@ class EventServiceProvider extends ServiceProvider
             FlushEndorsementCache::class,
         ],
 
+        \App\Events\Training\AccountMarkedForRemovalFromWaitingList::class => [
+            \App\Listeners\Training\WaitingList\SendAccountMarkedForRemovalNotification::class,
+        ],
+
+        \App\Events\Training\AccountWithinFiveDaysOfWaitingListRemoval::class => [
+            \App\Listeners\Training\WaitingList\SendWaitingListRemovalFiveDayReminderNotification::class,
+        ],
+
+        \App\Events\Training\AccountRegainedActivityRequirementsForWaitingList::class => [
+            \App\Listeners\Training\WaitingList\SendAccountRegainedActivityNotification::class,
+        ],
+
+        \App\Events\Training\AccountRemovedFromWaitingListDueToActivity::class => [
+            \App\Listeners\Training\WaitingList\SendAccountRemovedDueToActivityNotification::class,
+        ],
+
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [
             \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
             \App\Listeners\VisitTransfer\NotifyAllReferees::class,

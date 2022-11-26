@@ -47,7 +47,7 @@
             </div>
         </div>
     </div>
-    @if($list->enforcesHourRequirement() || count($list->pivot->flags))
+    @if($list->isATCList() || count($list->pivot->flags))
     <div class="col-lg-6">
         <div class="panel panel-ukblue">
             <div class="panel-heading">
@@ -62,7 +62,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if($list->enforcesHourRequirement())
+                        @if($list->isATCList())
                         <tr>
                             <td colspan="2" class="text-center">
                                 The following hour check:
@@ -76,7 +76,7 @@
                         </tr>
                         @endif
                         <tr>
-                            <td colspan="2" class="text-center">{{$list->enforcesHourRequirement() ? ' and ': null}}
+                            <td colspan="2" class="text-center">{{$list->isATCList() ? ' and ': null}}
                                 <strong>{{$list->flags_check}}</strong> of the following:
                             </td>
                         </tr>
@@ -95,13 +95,13 @@
     </div>
     @endif
 </div>
-@if($list->enforcesHourRequirement() || count($automaticFlags))
+@if($list->isATCList() || count($automaticFlags))
 <div class="alert alert-warning">
     <strong>Important: </strong> Automated eligibility flags are only calculated every 24 hours! If you have just completed
     a network session, the flags shown above may not be accurate.
 </div>
 <div class="row">
-    @if($list->enforcesHourRequirement())
+    @if($list->isATCList())
     <div class="col-lg-6">
         <div class="panel panel-ukblue">
             <div class="panel-heading">

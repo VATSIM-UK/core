@@ -11,14 +11,14 @@ class WaitingListRemovalCancelled extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $list_name;
+    private string $list_name;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(String $list_name)
+    public function __construct(string $list_name)
     {
         parent::__construct();
 
@@ -33,7 +33,7 @@ class WaitingListRemovalCancelled extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['mail'];
     }
 
     /**
@@ -44,7 +44,7 @@ class WaitingListRemovalCancelled extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $subject        = 'You now meet the eligibility for a waiting list you are a member of';
+        $subject = 'You now meet the eligibility for a waiting list you are a member of';
         return (new MailMessage)
             ->from('atc-team@vatsim.uk', 'VATSIM UK - ATC Training')
             ->subject($subject)

@@ -37,5 +37,4 @@ class WaitingListAccountPendingRemoval extends Pivot
     {
         return $this->status == 'Pending';
     }
-
 }
