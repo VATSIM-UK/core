@@ -31,7 +31,7 @@ class RemovedFromWaitingListInactiveAccount extends Notification
     {
         return (new MailMessage)
         ->from('support@vatsim.uk', 'VATSIM UK - Member Services')
-        ->subject('UK ATC training waiting list removal')
+        ->subject('UK Training Waiting List Removal')
         ->view('emails.training.waiting_list_inactive_account', ['recipient' => $notifiable]);
     }
 }

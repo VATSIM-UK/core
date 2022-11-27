@@ -16,25 +16,25 @@ class CheckWaitingListAccountMshipState
      */
     public function handle(AccountAltered $event)
     {
-        Log::debug('CheckWaitingListAccountMshipState listener triggered');
+        Log::debug("CheckWaitingListAccountMshipState listener triggered for account {$event->account->id}");
         $account = $event->account;
 
         $accountsWaitingList = $account->currentWaitingLists;
 
         if ($account->hasState('DIVISION')) {
-            Log::debug('Account has DIVISION state, skipping removal from waiting list');
+            Log::debug("Account {$account->id} has DIVISION state, skipping removal from waiting list");
 
             return;
         }
 
         if ($accountsWaitingList->count() == 0) {
-            Log::debug('Account is not waiting list, skipping');
+            Log::debug("Account {$account->id} is not waiting list, skipping");
 
             return;
         }
 
         foreach ($accountsWaitingList as $waitingList) {
-            Log::info("Account {$account->id} is in waiting list {$waitingList->id}, with non-home member state removing from waiting list");
+            Log::info("Account {$account->id} is in waiting list {$waitingList->id}, with non-home member state - removing from waiting list");
             $waitingList->removeFromWaitingList($account);
         }
 
