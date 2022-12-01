@@ -11,7 +11,7 @@ class WaitingListAtcTopTen extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $list_name;
+    private string $list_name;
 
     /**
      * Create a new notification instance.
