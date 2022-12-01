@@ -9,7 +9,6 @@ use Carbon\Carbon;
 
 class SendAtcTopTenNotification extends Command
 {
-
     /**
      * The console command name.
      *
