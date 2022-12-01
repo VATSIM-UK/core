@@ -44,22 +44,9 @@ class WaitingListAtcTopTen extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $subject = 'You are now top 10 in an ATC waiting list';
-
         return (new MailMessage)
             ->from('atc-team@vatsim.uk', 'VATSIM UK - ATC Training')
-            ->subject($subject)
-            ->view('emails.training.waiting_list_atc_top_ten', ['list_name' => $this->list_name, 'recipient' => $notifiable, 'subject' => $subject]);
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [];
+            ->subject('You are now top 10 in an ATC waiting list')
+            ->view('emails.training.waiting_list_atc_top_ten', ['list_name' => $this->list_name, 'recipient' => $notifiable, 'subject' => 'You are now top 10 in an ATC waiting list']);
     }
 }

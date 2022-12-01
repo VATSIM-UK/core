@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('training_waiting_list_account', function (Blueprint $table) {
-            $table->enum('top_ten_notified', ['yes', 'no'])->after('notes')->defalt('no');
+            $table->timestamp('within_top_ten_notification_sent_at')->nullable()->after('notes');
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('training_waiting_list_account', function (Blueprint $table) {
-            $table->dropColumn('top_ten_notified');
+            $table->dropColumn('within_top_ten_notification_sent_at');
         });
     }
 };

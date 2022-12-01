@@ -72,7 +72,7 @@ class WaitingList extends Model
                 'deleted_at',
                 'notes',
                 'created_at',
-                'top_ten_notified',
+                'within_top_ten_notification_sent_at',
             ])->wherePivot('deleted_at', null);
     }
 
@@ -160,9 +160,6 @@ class WaitingList extends Model
     {
         $waitingListAccount = $this->accounts()->where('account_id', $account->id)->first()->pivot;
         $waitingListAccount->delete();
-        if ($this->isAtcList()) {
-            event(new WaitingListAtcPositionsChanged($this));
-        }
     }
 
     public function isAtcList()
