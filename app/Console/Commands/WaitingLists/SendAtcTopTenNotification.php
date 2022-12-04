@@ -6,6 +6,7 @@ use App\Console\Commands\Command;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\WaitingListAtcTopTen;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class SendAtcTopTenNotification extends Command
 {
@@ -28,20 +29,24 @@ class SendAtcTopTenNotification extends Command
      */
     public function handle()
     {
-        $waitingLists = WaitingList::all()->filter(function ($waitingList) {
+
+        WaitingList::all()->filter(function ($waitingList) {
             return $waitingList->isAtcList();
-        });
-
-        foreach ($waitingLists as $waitingList) {
-            $nonNotifiedTopTenAccounts = $waitingList->accountsByEligibility(true)->take(10)->filter(function ($account) {
-                return is_null($account->pivot->within_top_ten_notification_sent_at);
-            });
-
-            foreach ($nonNotifiedTopTenAccounts as $account) {
-                $account->notify(new WaitingListAtcTopTen($waitingList->name));
+        })->mapWithKeys(function (WaitingList $waitingList) {
+            return [$waitingList->name =>
+                $waitingList
+                    ->accountsByEligibility(true)
+                    ->take(10)
+                    ->filter(function ($account) {
+                        return is_null($account->pivot->within_top_ten_notification_sent_at);
+                    })
+            ];
+        })->each(function (Collection $accounts, string $waitingListName) {
+            $accounts->each(function ($account) use ($waitingListName) {
+                $account->notify(new WaitingListAtcTopTen($waitingListName));
                 $account->pivot->within_top_ten_notification_sent_at = Carbon::now();
                 $account->pivot->save();
-            }
-        }
+            });
+        });
     }
 }
