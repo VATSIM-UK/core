@@ -43,9 +43,9 @@ class CheckMembersMeetActivityRules extends Command
                     ->whereDate('disconnected_at', '>=', Carbon::parse('3 months ago'))
                     ->isUk()
                     ->sum('minutes_online');
-                
+
                 if ($activeMinutes < $this->minutesRequired) {
-                    if(is_null($account->pivot->pending_removal?->removal_date) || $account->pivot->pending_removal->status != 'Pending'){
+                    if (is_null($account->pivot->pending_removal?->removal_date) || $account->pivot->pending_removal->status != 'Pending') {
                         $removalDate = Carbon::now();
                         $removalDate->addDays(31); // When calculating date diff, this will be a difference of 30 days
                         $account->pivot->addPendingRemoval($removalDate);
