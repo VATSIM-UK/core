@@ -61,7 +61,7 @@ class Kernel extends ConsoleKernel
         // === By Day === //
 
         $schedule->command('waitinglists:sendatctoptennotification')
-            ->dailyAt('02:30');
+            ->dailyAt('17:00');
 
         $schedule->command('telescope:prune')
             ->dailyAt('03:30')
