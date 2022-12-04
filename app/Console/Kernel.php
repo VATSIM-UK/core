@@ -59,6 +59,10 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(15)
             ->graceTimeInMinutes(15);
 
+        $schedule->command('waitinglists:processpendingremovals')
+            ->hourlyAt(30)
+            ->graceTimeInMinutes(15);
+
         // === By Day === //
 
         $schedule->command('telescope:prune')
@@ -71,7 +75,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('model:prune', ['--model' => MonitoredScheduledTaskLogItem::class])
             ->dailyAt('08:00');
 
-        $schedule->command('waitinglists:hourchecker')
+        $schedule->command('waitinglists:checkmembersmeetactivityrules')
             ->twiceDaily(2, 14);
     }
 
