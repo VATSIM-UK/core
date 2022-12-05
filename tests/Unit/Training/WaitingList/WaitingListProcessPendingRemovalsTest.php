@@ -43,7 +43,7 @@ class WaitingListProcessPendingRemovalsTest extends TestCase
 
         Notification::fake();
 
-        $this->artisan("waitinglists:processpendingremovals");
+        $this->artisan('waitinglists:processpendingremovals');
 
         $this->assertDatabaseHas('training_waiting_list_account_pending_removal',
             ['waiting_list_account_id' => $waitingListAccount->pivot->id, 'emails_sent' => 1]);
@@ -70,7 +70,7 @@ class WaitingListProcessPendingRemovalsTest extends TestCase
 
         Notification::fake();
 
-        $this->artisan("waitinglists:processpendingremovals");
+        $this->artisan('waitinglists:processpendingremovals');
 
         $this->assertNull($this->waitingList->accounts()->find($account->id), 'Waiting list account was deleted');
 

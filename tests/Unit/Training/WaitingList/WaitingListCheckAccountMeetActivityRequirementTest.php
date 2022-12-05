@@ -34,7 +34,7 @@ class WaitingListCheckAccountsMeetActivityRequirementTest extends TestCase
         $waitingListAccount = $this->waitingList->accounts()->findOrFail($account->id);
         $waitingListAccount->pivot->addStatus($status);
 
-        $this->artisan("waitinglists:checkmembersmeetactivityrules");
+        $this->artisan('waitinglists:checkmembersmeetactivityrules');
 
         $this->assertDatabaseHas('training_waiting_list_account_pending_removal',
             ['waiting_list_account_id' => $waitingListAccount->pivot->id, 'status' => 'Pending']);
@@ -54,7 +54,7 @@ class WaitingListCheckAccountsMeetActivityRequirementTest extends TestCase
 
         $atcSession = factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
 
-        $this->artisan("waitinglists:checkmembersmeetactivityrules");
+        $this->artisan('waitinglists:checkmembersmeetactivityrules');
 
         $this->assertDatabaseMissing('training_waiting_list_account_pending_removal',
             ['waiting_list_account_id' => $waitingListAccount->pivot->id]);
@@ -72,11 +72,11 @@ class WaitingListCheckAccountsMeetActivityRequirementTest extends TestCase
         $waitingListAccount = $this->waitingList->accounts()->findOrFail($account->id);
         $waitingListAccount->pivot->addStatus($status);
 
-        $this->artisan("waitinglists:checkmembersmeetactivityrules");
+        $this->artisan('waitinglists:checkmembersmeetactivityrules');
 
         $atcSession = factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
 
-        $this->artisan("waitinglists:checkmembersmeetactivityrules");
+        $this->artisan('waitinglists:checkmembersmeetactivityrules');
 
         $this->assertDatabaseMissing('training_waiting_list_account_pending_removal',
             ['waiting_list_account_id' => $waitingListAccount->pivot->id, 'status' => 'Pending']);
