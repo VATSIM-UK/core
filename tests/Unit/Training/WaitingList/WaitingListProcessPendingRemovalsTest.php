@@ -40,9 +40,9 @@ class WaitingListProcessPendingRemovalsTest extends TestCase
         $removalDate = Carbon::now();
         $removalDate->addDays(5);
         $waitingListAccount->pivot->addPendingRemoval($removalDate);
-        
+
         Notification::fake();
-        
+
         $this->artisan("waitinglists:processpendingremovals");
 
         $this->assertDatabaseHas('training_waiting_list_account_pending_removal',
@@ -67,12 +67,12 @@ class WaitingListProcessPendingRemovalsTest extends TestCase
         $removalDate->subDays(1);
         $waitingListAccount->pivot->addPendingRemoval($removalDate);
         $waitingListAccount->pivot->pending_removal->incrementEmailCount();
-        
+
         Notification::fake();
-        
+
         $this->artisan("waitinglists:processpendingremovals");
 
-        $this->assertNull($this->waitingList->accounts()->find($account->id), "Waiting list account was deleted");
+        $this->assertNull($this->waitingList->accounts()->find($account->id), 'Waiting list account was deleted');
 
         $this->assertDatabaseHas('training_waiting_list_account_pending_removal',
             ['waiting_list_account_id' => $waitingListAccount->pivot->id, 'status' => 'Completed']);
