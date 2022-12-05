@@ -55,15 +55,4 @@ class WaitingListRemovalAdded extends Notification implements ShouldQueue
             ->subject($subject)
             ->view('emails.training.waiting_list_removal_added', ['removal_date' => $this->removal_date, 'remaining_days' => $remainingDays, 'list_name' => $this->list_name, 'recipient' => $notifiable, 'subject' => $subject]);
     }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [];
-    }
 }
