@@ -103,7 +103,7 @@ class WaitingList extends Model
      */
     public function scopeAtc($query)
     {
-        return $query->where('department', '=', 'atc');
+        return $query->where('department', '=', self::ATC_DEPARTMENT);
     }
 
     /**
