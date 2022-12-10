@@ -29,9 +29,7 @@ class SendAtcTopTenNotification extends Command
      */
     public function handle()
     {
-        WaitingList::all()->filter(function ($waitingList) {
-            return $waitingList->isAtcList();
-        })->mapWithKeys(function (WaitingList $waitingList) {
+        WaitingList::atc()->get()->mapWithKeys(function (WaitingList $waitingList) {
             return [$waitingList->name => $waitingList
                     ->accountsByEligibility(true)
                     ->take(10)

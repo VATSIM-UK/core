@@ -96,6 +96,17 @@ class WaitingList extends Model
     }
 
     /**
+     * Scope a query to only include ATC waiting lists.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeAtc($query)
+    {
+        return $query->where('department', '=', 'atc');
+    }
+
+    /**
      * Get the position of an account in the eligible waiting list.
      *
      * @return int|null
