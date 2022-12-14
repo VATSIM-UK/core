@@ -10,7 +10,7 @@ $factory->define(App\Models\Training\WaitingList::class, function (Faker $faker)
         'slug' => str_slug($name),
         'department' => 'atc',
         'flags_check' => 'all',
-        'cts_theory_exam_level' => null
+        'cts_theory_exam_level' => null,
     ];
 });
 

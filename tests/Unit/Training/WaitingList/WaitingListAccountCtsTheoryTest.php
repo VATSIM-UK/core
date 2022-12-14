@@ -32,16 +32,15 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     public function itShouldDetectWhenTheoryExamPassed()
     {
         $waitingList = factory(WaitingList::class)->create([
-            'cts_theory_exam_level' => 'S3'
+            'cts_theory_exam_level' => 'S3',
         ]);
         $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
 
         TheoryResult::factory()->create([
             'student_id' => $this->member->id,
             'exam' => 'S3',
-            'pass' => true
+            'pass' => true,
         ]);
-
 
         $this->assertTrue($waitingList->fresh()->accounts->find($this->account->id)->pivot->theoryExamPassed);
     }
@@ -50,14 +49,14 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     public function itShouldDetectWhenTheoryExamFailed()
     {
         $waitingList = factory(WaitingList::class)->create([
-            'cts_theory_exam_level' => 'S3'
+            'cts_theory_exam_level' => 'S3',
         ]);
         $waitingList->addToWaitingList($this->account, $this->privacc);
 
         TheoryResult::factory()->create([
             'student_id' => $this->account->id,
             'exam' => 'S3',
-            'pass' => false
+            'pass' => false,
         ]);
 
         $this->assertFalse($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);

@@ -178,7 +178,7 @@ class WaitingListAccount extends Pivot
         return $this->atcHourCheck() && $this->allFlagsChecker() && $this->current_status->name == 'Active';
     }
 
-    public function getTheoryExamPassedAttribute() : bool
+    public function getTheoryExamPassedAttribute(): bool
     {
         if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT || ! $this->waitingList->cts_theory_exam_level) {
             return false;

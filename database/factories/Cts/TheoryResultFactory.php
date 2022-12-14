@@ -20,7 +20,7 @@ class TheoryResultFactory extends Factory
         return [
             'student_id' => factory(Member::class)->create()->id,
             'exam' => $this->faker->randomElement(['S1', 'S2', 'S3']),
-            'pass' => 0
+            'pass' => 0,
         ];
     }
 }
