@@ -2,6 +2,8 @@
 
 namespace App\Models\Training\WaitingList;
 
+use App\Models\Cts\Member;
+use App\Models\Cts\TheoryResult;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
@@ -174,6 +176,21 @@ class WaitingListAccount extends Pivot
         // are all the flags true
         // and is the atc hour check true
         return $this->atcHourCheck() && $this->allFlagsChecker() && $this->current_status->name == 'Active';
+    }
+
+    public function getTheoryExamPassedAttribute() : bool
+    {
+        if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT || ! $this->waitingList->cts_theory_exam_level) {
+            return false;
+        }
+
+        // the internal CTS member column id not the same as the account id
+        // so search on the indexed column cid.
+        $memberId = Member::where('cid', $this->account_id)->first()->id;
+
+        return TheoryResult::where('student_id', $memberId)
+            ->where('exam', $this->waitingList->cts_theory_exam_level)
+            ->where('pass', true)->count() > 0;
     }
 
     public function setNotesAttribute($value)
