@@ -54,7 +54,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         $waitingList->addToWaitingList($this->account, $this->privacc);
 
         TheoryResult::factory()->create([
-            'student_id' => $this->account->id,
+            'student_id' => $this->member->id,
             'exam' => 'S3',
             'pass' => false,
         ]);
@@ -63,7 +63,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     }
 
     /** @test */
-    public function itShouldReturnFalseWhenPilotWaitingList()
+    public function itShouldReturnNullWhenPilotWaitingList()
     {
         $waitingList = factory(WaitingList::class)->create([
             'cts_theory_exam_level' => null,
@@ -72,11 +72,11 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
         $waitingList->addToWaitingList($this->account, $this->privacc);
 
-        $this->assertFalse($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);
+        $this->assertNull($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);
     }
 
     /** @test */
-    public function itShouldReturnFalseWhenNoExamConfigured()
+    public function itShouldReturnNullWhenNoExamConfigured()
     {
         $waitingList = factory(WaitingList::class)->create([
             'cts_theory_exam_level' => null,
@@ -84,6 +84,18 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
         $waitingList->addToWaitingList($this->account, $this->privacc);
 
-        $this->assertFalse($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);
+        $this->assertNull($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);
+    }
+
+    /** @test */
+    public function itShouldReturnNullWhenNoTheoryResultFound()
+    {
+        $waitingList = factory(WaitingList::class)->create([
+            'cts_theory_exam_level' => 'S3',
+        ]);
+
+        $waitingList->addToWaitingList($this->account, $this->privacc);
+
+        $this->assertNull($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);
     }
 }

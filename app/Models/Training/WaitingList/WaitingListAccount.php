@@ -178,17 +178,19 @@ class WaitingListAccount extends Pivot
         return $this->atcHourCheck() && $this->allFlagsChecker() && $this->current_status->name == 'Active';
     }
 
-    public function getTheoryExamPassedAttribute(): bool
+    public function getTheoryExamPassedAttribute(): ?bool
     {
         if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT || ! $this->waitingList->cts_theory_exam_level) {
-            return false;
+            return null;
         }
 
-        // the internal CTS member column id not the same as the account id
-        // so search on the indexed column cid.
-        $memberId = Member::where('cid', $this->account_id)->first()->id;
+        $result = TheoryResult::forAccount($this->account_id);
 
-        return TheoryResult::where('student_id', $memberId)
+        if (!$result) {
+            return null;
+        }
+
+        return $result
             ->where('exam', $this->waitingList->cts_theory_exam_level)
             ->where('pass', true)->count() > 0;
     }
