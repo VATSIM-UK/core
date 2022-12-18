@@ -2,7 +2,6 @@
 
 namespace App\Models\Training\WaitingList;
 
-use App\Models\Cts\Member;
 use App\Models\Cts\TheoryResult;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
@@ -186,7 +185,7 @@ class WaitingListAccount extends Pivot
 
         $result = TheoryResult::forAccount($this->account_id);
 
-        if (!$result) {
+        if (! $result) {
             return null;
         }
 
