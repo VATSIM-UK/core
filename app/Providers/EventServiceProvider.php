@@ -21,8 +21,8 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         \App\Events\Mship\AccountAltered::class => [
-            \App\Listeners\Training\WaitingList\CheckWaitingListAccountMshipState::class,
-            \App\Listeners\Training\WaitingList\CheckWaitingListAccountInactivity::class,
+            // \App\Listeners\Training\WaitingList\CheckWaitingListAccountMshipState::class,
+            // \App\Listeners\Training\WaitingList\CheckWaitingListAccountInactivity::class,
         ],
 
         \App\Events\Mship\Qualifications\QualificationAdded::class => [
