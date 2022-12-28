@@ -253,7 +253,7 @@ class WaitingListTest extends TestCase
         $accounts = factory(Account::class, 11)->create()->each(function ($account) use ($status) {
             $atcSession = factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
             $this->waitingList->addToWaitingList($account, $this->privacc);
-            $this->waitingList->accounts()->each(function($waitingListAccount) use ($status) {
+            $this->waitingList->accounts()->each(function ($waitingListAccount) use ($status) {
                 $waitingListAccount->pivot->addStatus($status);
             });
         });
