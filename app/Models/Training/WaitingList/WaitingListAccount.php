@@ -185,7 +185,7 @@ class WaitingListAccount extends Pivot
 
         $result = TheoryResult::forAccount($this->account_id);
 
-        if (! $result) {
+        if (! $result || ! $result->count()) {
             return null;
         }
 

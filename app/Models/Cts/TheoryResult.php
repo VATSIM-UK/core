@@ -2,6 +2,7 @@
 
 namespace App\Models\Cts;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -19,7 +20,7 @@ class TheoryResult extends Model
      * and handle the logic where a member_id in CTS is different to that
      * of the account_id in Core.
      */
-    public static function forAccount(int $account_id): ?TheoryResult
+    public static function forAccount(int $account_id): ?Collection
     {
         try {
             $memberId = Member::where('cid', $account_id)->firstOrFail()->id;
@@ -31,6 +32,6 @@ class TheoryResult extends Model
 
         // return the first part of a query to get results for a given member.
         // providing a member_id is found, otherwise return null.
-        return self::where('student_id', $memberId)->first();
+        return self::where('student_id', $memberId)->get();
     }
 }
