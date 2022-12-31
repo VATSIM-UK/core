@@ -98,4 +98,67 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
         $this->assertNull($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);
     }
+
+    /** @test */
+    public function itShouldOnlyDetectPassesAtTheConfiguredExamLevel()
+    {
+        $waitingList = factory(WaitingList::class)->create([
+            'cts_theory_exam_level' => 'S3',
+        ]);
+        $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
+
+        TheoryResult::factory()->create([
+            'student_id' => $this->member->id,
+            'exam' => 'S2',
+            'pass' => true,
+        ]);
+
+        $this->assertFalse($waitingList->fresh()->accounts->find($this->account->id)->pivot->theoryExamPassed);
+    }
+
+    /** @test */
+    public function itShouldDisregardMultipleFailuresAtConfiguredLevel()
+    {
+        $waitingList = factory(WaitingList::class)->create([
+            'cts_theory_exam_level' => 'S3',
+        ]);
+        $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
+
+        TheoryResult::factory()->create([
+            'student_id' => $this->member->id,
+            'exam' => 'S3',
+            'pass' => false,
+        ]);
+
+        TheoryResult::factory()->create([
+            'student_id' => $this->member->id,
+            'exam' => 'S3',
+            'pass' => false,
+        ]);
+
+        $this->assertFalse($waitingList->fresh()->accounts->find($this->account->id)->pivot->theoryExamPassed);
+    }
+
+    /** @test */
+    public function itShouldDisplayPassedWithPreviousFailuresAndThenPass()
+    {
+        $waitingList = factory(WaitingList::class)->create([
+            'cts_theory_exam_level' => 'S3',
+        ]);
+        $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
+
+        TheoryResult::factory()->create([
+            'student_id' => $this->member->id,
+            'exam' => 'S3',
+            'pass' => false,
+        ]);
+
+        TheoryResult::factory()->create([
+            'student_id' => $this->member->id,
+            'exam' => 'S3',
+            'pass' => true,
+        ]);
+
+        $this->assertTrue($waitingList->fresh()->accounts->find($this->account->id)->pivot->theoryExamPassed);
+    }
 }
