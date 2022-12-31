@@ -194,6 +194,29 @@ class MockCtsDatabase
                 PRIMARY KEY (`id`)
               );"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `theory_results` (
+                `id` mediumint unsigned NOT NULL AUTO_INCREMENT,
+                `exam` char(2) NOT NULL DEFAULT '',
+                `student_id` int unsigned NOT NULL DEFAULT '0',
+                `questions` tinyint unsigned NOT NULL DEFAULT '0',
+                `time_mins` tinyint unsigned NOT NULL DEFAULT '0',
+                `passmark` tinyint unsigned NOT NULL DEFAULT '0',
+                `correct` tinyint unsigned NOT NULL DEFAULT '0',
+                `pass` tinyint unsigned NOT NULL DEFAULT '0',
+                `started` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                `expires` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+                `submitted` tinyint(1) NOT NULL DEFAULT '0',
+                `submitted_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+                `upgraded` tinyint unsigned DEFAULT '0',
+                `upgraded_by` int unsigned DEFAULT '0',
+                `upgraded_date` datetime DEFAULT NULL,
+                `old_type` tinyint NOT NULL DEFAULT '0',
+                PRIMARY KEY (`id`),
+                KEY `student_id` (`student_id`)
+              );"
+        );
     }
 
     public static function destroy()
@@ -232,6 +255,10 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `examinerSettings`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `theory_results`;'
         );
     }
 }

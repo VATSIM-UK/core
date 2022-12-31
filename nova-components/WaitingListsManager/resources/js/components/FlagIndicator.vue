@@ -2,20 +2,23 @@
     <div class="flex-row">
         <p class="text-center">
             <span class="mr-1" :class="{ 'italic': automated }">{{ flag.name }}</span>
-            <span
-                class="inline-block rounded-full w-2 h-2"
-                :class="{ 'bg-success': flag.pivot.value, 'bg-danger': !flag.pivot.value, 'cursor-pointer': !automated }"
-                @click="changeFlag(flag)"
-            ></span>
+            <boolean-indicator
+                :value="flag.pivot.value"
+                :class="{ 'cursor-pointer': !automated }"
+                @click.native="changeFlag(flag)"
+            />
         </p>
     </div>
 </template>
 
 <script>
+    import BooleanIndicator from "./BooleanIndicator";
     export default {
         name: "FlagIndicator",
 
         props: ['flag'],
+
+        components: { BooleanIndicator },
 
         computed: {
             automated() {
@@ -25,6 +28,8 @@
 
         methods: {
             changeFlag(flag) {
+                if (this.automated) return;
+
                 this.$emit('changeFlag', flag)
             }
         }
