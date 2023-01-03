@@ -68,7 +68,7 @@
                         </tr>
                         <tr>
                             <td>Aerodrome Operations Coordinator</td>
-                            <td>Chad Byworth</td>
+                            <td><em>Vacant</em></td>
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
@@ -77,6 +77,14 @@
                         <tr>
                             <td>Sector File Coordinator</td>
                             <td>Thomas Mills</td>
+                        </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>Harrison Grose</td>
+                        </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>Peter Mooney</td>
                         </tr>
                     </table>
                 </div>
