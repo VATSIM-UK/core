@@ -115,7 +115,7 @@
         "spatie/laravel-ignition": "^1.0",
         "fakerphp/faker": "^1.9.1",
         "laracasts/generators": "^2.0",
-        "laravel/homestead": "^13.1.1",
+        "laravel/homestead": "^14.0.0",
         "laravel/legacy-factories": "^1.1",
         "mockery/mockery": "1.5.*",
         "phpunit/phpunit": "^9.4",
