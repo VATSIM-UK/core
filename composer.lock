@@ -8783,16 +8783,16 @@
         },
         {
             "name": "symfony/http-client-contracts",
-            "version": "v3.1.1",
+            "version": "v3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client-contracts.git",
-                "reference": "fd038f08c623ab5d22b26e9ba35afe8c79071800"
+                "reference": "c5f587eb445224ddfeb05b5ee703476742d730bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/fd038f08c623ab5d22b26e9ba35afe8c79071800",
-                "reference": "fd038f08c623ab5d22b26e9ba35afe8c79071800",
+                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/c5f587eb445224ddfeb05b5ee703476742d730bf",
+                "reference": "c5f587eb445224ddfeb05b5ee703476742d730bf",
                 "shasum": ""
             },
             "require": {
@@ -8804,7 +8804,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.1-dev"
+                    "dev-main": "3.3-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -8844,7 +8844,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client-contracts/tree/v3.1.1"
+                "source": "https://github.com/symfony/http-client-contracts/tree/v3.2.0"
             },
             "funding": [
                 {
@@ -8860,7 +8860,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-22T07:30:54+00:00"
+            "time": "2022-11-25T10:21:52+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -11938,16 +11938,16 @@
         },
         {
             "name": "laravel/homestead",
-            "version": "v14.0.0",
+            "version": "v14.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/homestead.git",
-                "reference": "90405576fa86b14821c43aaa6eb6d5cd686fbf0d"
+                "reference": "7085805884aa99d5ec373d8c4320d9be326d74c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/homestead/zipball/90405576fa86b14821c43aaa6eb6d5cd686fbf0d",
-                "reference": "90405576fa86b14821c43aaa6eb6d5cd686fbf0d",
+                "url": "https://api.github.com/repos/laravel/homestead/zipball/7085805884aa99d5ec373d8c4320d9be326d74c0",
+                "reference": "7085805884aa99d5ec373d8c4320d9be326d74c0",
                 "shasum": ""
             },
             "require": {
@@ -11986,9 +11986,9 @@
             "description": "A virtual machine for web artisans.",
             "support": {
                 "issues": "https://github.com/laravel/homestead/issues",
-                "source": "https://github.com/laravel/homestead/tree/v14.0.0"
+                "source": "https://github.com/laravel/homestead/tree/v14.0.1"
             },
-            "time": "2023-01-05T05:05:29+00:00"
+            "time": "2023-01-10T00:38:36+00:00"
         },
         {
             "name": "laravel/legacy-factories",
