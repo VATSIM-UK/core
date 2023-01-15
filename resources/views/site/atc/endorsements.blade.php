@@ -38,22 +38,16 @@
                     <h3>Background</h3>
                     
                     <p>
-                        London Gatwick (EGKK) was the 3rd busiest airport on the VATSIM network in 2021 with over 81,000
+                        London Gatwick (EGKK) was the 2nd busiest airport on the VATSIM network in 2022 with over 84,000
                         movements. Controlling at London Gatwick is restricted by the ATC Training Department to S2 rated 
                         members, or S1s that hold a special endorsement. This restriction for S1s is in place to allow 
                         members to gain experience in quieter environments and practice their skills before tackling 
                         the workload at Gatwick.
                     </p>
-
-                    <h3>Endorsements Offered</h3>
                     
                     <p>
-                        Gatwick offers one endorsement:
+                        The Gatwick (S1) Endorsement enables controllers to open Ground (EGKK_GND) or Delivery (EGKK_DEL).
                     </p>
-                    
-                    <ul>
-                        <li>Ground and Delivery for S1 Rated Controllers.</li>
-                    </ul>
 
                     <h3>Endorsement Process</h3>
                     
@@ -259,7 +253,7 @@
                         <li>EGVV_x_CTR - Swanwick Military - Various other splits, as outlined in <a href="https://community.vatsim.uk/topic/37499-2020-12-03-swanwick-mil-sectorisation-and-frequency-change/">this procedure change post</a>.</li>
                     </ul>
 
-                    <h3>Prerequisites</h3>
+                    <h3>Requirements</h3>
                     
                     <p>
                         In order to be able to be eligible for military endorsement, a controller must meet the following requirements.
@@ -289,6 +283,69 @@
         </div>
 
     </div>
+    
+    <div class="row equal">
+
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-ukblue">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#endorsement-oceanic">
+                    <div class="panel-heading">
+                        <i class="fa fa-water" aria-hidden="true"></i> &thinsp; Shanwick Oceanic (C1+)
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
+                    </div>
+                </a>
+                <div id="endorsement-oceanic" class="panel-collapse collapse panel-body">
+                    <h3>Background</h3>
+                    <p>
+                        Shanwick Oceanic (EGGX) is a designated special center under the terms of the <a
+                        href="https://vatsim.net/docs/policy/global-ratings-policy">VATSIM Global Ratings Policy</a>.
+                        Controllers rated C1 or higher may apply for an endorsement to open EGGX positions, or the 
+                        combined Shanwick & Gander position (NAT_FSS).
+                    </p>
+
+                    <h3>Requirements</h3>
+                    
+                    <p>
+                        In order to be granted the Shanwick Oceanic endorsement, you must meet the following
+                        requirements:
+                    </p>
+                    
+                    <ul>
+                        <li>Home member or a visitor with an approved visiting application</li>
+                        <li>Permanent controller of C1 or higher.</li>
+                    </ul>
+                    
+                    <h3>Endorsement Process</h3>
+                    
+                    <p>
+                        The endorsement process for the Shanwick Oceanic endorsement is as follows:
+                    </p>
+                    
+                    <ol>
+                        <li>Enroll on the Shanwick Oceanic <a href="https://moodle.vatsim.uk/course/view.php?id=35">online Moodle course</a></li>
+                        <li>Complete the Moodle course and pass the final exam</li>
+                        <li>Practical training - there is no formal assessment, so mentors will issue the endorsement once competency is demonstrated.</li>
+                    </ol>
+
+                    <h3>Get Started</h3>
+                    
+                    <p>
+                        <strong>Home Members</strong> - please complete the online Moodle course and theory exam. Once 
+                        completed, please <a href="https://helpdesk.vatsim.uk">open a ticket</a> with ATC Training in
+                        the helpdesk.
+                    </p>
+                    
+                    <p>
+                        <strong>Visiting Members</strong> - please <a href="https://www.vatsim.uk/visit-transfer">complete
+                        an application</a> to visit the UK. If you are already a visitor in the UK, please 
+                        <a href="https://helpdesk.vatsim.uk">open a ticket</a> with ATC Training in the helpdesk.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <div class="row equal">
 
@@ -304,9 +361,9 @@
                     <h3>Background</h3>
                     <p>
                         London Bandbox (LON_CTR) is a designated special center under the terms of the <a
-                        href="https://www.vatsim.net/grp/">VATSIM Global Ratings Policy</a>, covering all 
-                        four primary London Control sectors. Controllers rated C1 or higher may
-                        apply for an endorsement to open this position.
+                        href="https://vatsim.net/docs/policy/global-ratings-policy">VATSIM Global Ratings Policy</a>, 
+                        covering all four London sector groups (South, Central, North and West). Controllers rated C1 
+                        or higher may apply for an endorsement to enable them to open this position.
                     </p>
 
                     <h3>Requirements</h3>
@@ -317,9 +374,9 @@
                     </p>
                     
                     <ul>
-                        <li><strong>20 hours</strong> post-C1 on two of the four sectors within the EGTT FIR (40 total)</li>
-                        <li><strong>10 hours</strong> post-C1 on the remaining two sectors within the EGTT FIR (20 total)</li>
-                        <li>An additional <strong>20 hours</strong> post-C1 on any VATSIM CTR sector (including those above).</li>
+                        <li><strong>20 hours</strong> post-C1 on two of the four 'parent' London positions (40 total)</li>
+                        <li><strong>10 hours</strong> post-C1 on the remaining two 'parent' London positions (20 total)</li>
+                        <li>An additional <strong>20 hours</strong> post-C1 on any UK CTR position (including those above).</li>
                     </ul>
                     
                     <p>
@@ -335,7 +392,7 @@
                         depending on which adjacent controllers are online. Controllers are therefore advised to use caution
                         when exercising the privileges of their validation. It is often wise to use the validation either
                         during the quieter hours of the evening, when there are a number of Approach positions online
-                        covering the major aerodromes, or to cover off remaining sectors when other London sectors are open.
+                        covering the major aerodromes, or to cover off remaining sectors when other London positions are open.
                         Equally, if traffic levels increase significantly, controllers should consider downsizing to a
                         smaller sector.
                     </p>
