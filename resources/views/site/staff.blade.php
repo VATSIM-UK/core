@@ -110,10 +110,6 @@
                             <td>Marketing Assistant</td>
                             <td>Piers Austin-Foss</td>
                         </tr>
-                        <tr>
-                            <td>Media Manager</td>
-                            <td>Thomas Greer</td>
-                        </tr>
                     </table>
                 </div>
             </div>
