@@ -299,8 +299,8 @@
                     <p>
                         Shanwick Oceanic (EGGX) is a designated special center under the terms of the <a
                         href="https://vatsim.net/docs/policy/global-ratings-policy">VATSIM Global Ratings Policy</a>.
-                        Controllers rated C1 or higher may apply for an endorsement to open EGGX positions, or the 
-                        combined Shanwick & Gander position (NAT_FSS).
+                        Controllers rated C1 or higher may apply for an endorsement to open Shanwick (EGGX) and 
+                        Gander (CZQO) positions, or the combined Shanwick & Gander position (NAT_FSS).
                     </p>
 
                     <h3>Requirements</h3>
