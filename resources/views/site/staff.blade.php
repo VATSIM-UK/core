@@ -238,6 +238,10 @@
                                 <td>Lee Roberts</td>
                             </tr>
                             <tr>
+                                <td>Division Instructor</td>
+                                <td>Fergus Walsh</td>
+                            </tr>
+                            <tr>
                                 <td>TG Instructor (New Controller)</td>
                                 <td>James Taylor</td>
                             </tr>
@@ -256,6 +260,14 @@
                             <tr>
                                 <td>TG Instructor (APP)</td>
                                 <td>Reece Buckley</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (APP)</td>
+                                <td>Samuel Lefevre</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (APP)</td>
+                                <td>William Jennings</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (ENR)</td>
