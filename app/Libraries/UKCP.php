@@ -100,7 +100,7 @@ class UKCP
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
-            Log::warning("UKCP Client Exception $e when getting user account {$account->id}");
+            Log::info("UKCP Client Exception $e when getting user account {$account->id}");
 
             return false;
         }
@@ -118,7 +118,7 @@ class UKCP
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
-            Log::warning("UKCP Client Exception {$e->getMessage()} when getting user account {$account->id}");
+            Log::info("UKCP Client Exception {$e->getMessage()} when getting user account {$account->id}");
 
             return;
         }
