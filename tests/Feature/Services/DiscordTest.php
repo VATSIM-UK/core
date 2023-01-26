@@ -23,7 +23,7 @@ class DiscordTest extends TestCase
             ->get(route('discord.create'))
             ->assertRedirect();
 
-        $expectedUrl = 'https://discord.com/api/oauth2/authorize';
+        $expectedUrl = 'https://discord.com/oauth2/authorize';
         $redirectUrl = explode('?', $response->getTargetUrl())[0];
 
         $this->assertEquals($expectedUrl, $redirectUrl);
