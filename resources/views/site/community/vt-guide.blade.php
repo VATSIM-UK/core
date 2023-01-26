@@ -43,7 +43,7 @@
 
                         <ul>
                             <li>
-                                All Transfering/Visiting controllers are subject to the global&nbsp;<a
+                                All Transferring/Visiting controllers are subject to the global&nbsp;<a
                                         href="https://vatsim.net/docs/policy/transfer-and-visiting-controller-policy/"
                                         rel="external nofollow" target="_blank">VATSIM&nbsp;Transfer &amp; Visiting
                                     Controller Policy</a>&nbsp;and <a
@@ -195,7 +195,7 @@
                 </p>
                 
                 <p>
-                    <strong>Legacy Visiting Groups are listed in the Visiting and Trasnfering Controller Policy</strong>
+                    <strong>Legacy Visiting Groups are listed in the Visiting and Transferring Controller Policy</strong>
                 </p>
 
             </div>
