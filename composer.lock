@@ -11939,16 +11939,16 @@
         },
         {
             "name": "laravel/homestead",
-            "version": "v14.0.1",
+            "version": "v14.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/homestead.git",
-                "reference": "7085805884aa99d5ec373d8c4320d9be326d74c0"
+                "reference": "839e354460ef79dbeb68f88d80eed40bd41c4760"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/homestead/zipball/7085805884aa99d5ec373d8c4320d9be326d74c0",
-                "reference": "7085805884aa99d5ec373d8c4320d9be326d74c0",
+                "url": "https://api.github.com/repos/laravel/homestead/zipball/839e354460ef79dbeb68f88d80eed40bd41c4760",
+                "reference": "839e354460ef79dbeb68f88d80eed40bd41c4760",
                 "shasum": ""
             },
             "require": {
@@ -11987,9 +11987,9 @@
             "description": "A virtual machine for web artisans.",
             "support": {
                 "issues": "https://github.com/laravel/homestead/issues",
-                "source": "https://github.com/laravel/homestead/tree/v14.0.1"
+                "source": "https://github.com/laravel/homestead/tree/v14.1.1"
             },
-            "time": "2023-01-10T00:38:36+00:00"
+            "time": "2023-01-17T17:52:32+00:00"
         },
         {
             "name": "laravel/legacy-factories",
