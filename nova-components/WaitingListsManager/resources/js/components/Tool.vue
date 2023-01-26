@@ -1,8 +1,15 @@
 <template>
     <div>
         <loading-card :loading="!loaded">
+            <div class="py-3 mx-6">
+                <heading class="mb-6">
+                Eligible Waiting List (EWL)
+                </heading>
+                <p>Note: Theory exam status does <strong>not</strong> influence overall eligibility in this list.
+                It is included for reference purposes.</p>
+            </div>
+
             <bucket
-                title="Eligible Waiting List (EWL)"
                 :accounts="eligibleAccounts"
                 :type="type"
                 @removeAccount="removeAccount"
@@ -11,8 +18,10 @@
                 @changeNote="openNotesModal"
                 @changeFlag="openFlagChangeModal"
             />
+            <heading class="mb-6 py-3 px-6">
+                Master Waiting List (MWL)
+            </heading>
             <bucket
-                title="Master Waiting List (MWL)"
                 :accounts="normalAccounts"
                 :type="type"
                 @removeAccount="removeAccount"
@@ -60,7 +69,6 @@
         mounted() {
             this.loadAccounts()
 
-            console.log(this.panel.fields[0].type)
             // required to detect any changes in the other buckets which might be present on the page.
             EventBus.$on('list-changed', this.loadAccounts)
         },

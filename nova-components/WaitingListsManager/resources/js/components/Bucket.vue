@@ -1,6 +1,5 @@
 <template>
     <div>
-        <heading class="mb-6 py-3 px-6" v-text="title" />
         <p class="flex flex-col justify-center text-center p-2" v-if="numberOfAccounts < 1">
             There are no accounts assigned to this 'bucket'.
         </p>
@@ -14,8 +13,9 @@
                     <th class="text-left">CID</th>
                     <th class="text-left">Added On</th>
                     <th class="text-left">Notes</th>
-                    <th class="text-left" v-if="showHourChecker">Hour Check</th>
+                    <th class="text-left" v-if="isAtcList">Hour Check</th>
                     <th>Status Change</th>
+                    <th class="text-left" v-if="isAtcList">Theory Exam</th>
                     <th>Flags</th>
                     <th></th>
                 </tr>
@@ -35,10 +35,8 @@
                             :account="account"
                             @changeNote="changeNote"/>
                     </td>
-                    <td v-if="showHourChecker">
-                        <span class="inline-block rounded-full w-2 h-2"
-                              :class="{ 'bg-success': account.atcHourCheck, 'bg-danger': !account.atcHourCheck }"
-                        ></span>
+                    <td v-if="isAtcList">
+                        <boolean-indicator :value="account.atcHourCheck" />
                     </td>
                     <td>
                         <div class="flex justify-around">
@@ -54,12 +52,14 @@
 
                     </td>
                     <td>
+                        <boolean-indicator :value="account.theory_exam_passed" />
+                    <td>
                         <flag-indicator
                             v-for="flag in account.flags"
                             :key="flag.pivot.id"
                             :flag="flag"
                             @changeFlag="changeFlag"
-                        ></flag-indicator>
+                        />
                     </td>
                     <td>
                         <div class="flex justify-around">
@@ -78,10 +78,13 @@
 </template>
 
 <script>
+    import BooleanIndicator from "./BooleanIndicator";
     export default {
         name: "Bucket",
 
-        props: ['accounts', 'title', 'type'],
+        props: ['accounts', 'type'],
+
+        components: { BooleanIndicator },
 
         data() {
             return {
@@ -91,15 +94,15 @@
 
         methods: {
             removeAccount(account) {
-                this.$emit('removeAccount', { account: account })
+                this.$emit('removeAccount', { account })
             },
 
             deferAccount(account) {
-                this.$emit('deferAccount', { account: account })
+                this.$emit('deferAccount', { account })
             },
 
             activeAccount(account) {
-                this.$emit('activeAccount', { account: account })
+                this.$emit('activeAccount', { account })
             },
 
             changeNote(account) {
@@ -123,7 +126,7 @@
                 if (this.accounts) return this.$props.accounts.length
             },
 
-            showHourChecker () {
+            isAtcList() {
                 return this.type === 'atc'
             }
         },
