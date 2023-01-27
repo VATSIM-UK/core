@@ -7893,16 +7893,16 @@
         },
         {
             "name": "spatie/laravel-package-tools",
-            "version": "1.14.0",
+            "version": "1.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-package-tools.git",
-                "reference": "9964e65c318c30577ca1b91469f739d2b381359b"
+                "reference": "b477dd2f89d0751f0e51ffb3a70181f0bc7ab8df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/9964e65c318c30577ca1b91469f739d2b381359b",
-                "reference": "9964e65c318c30577ca1b91469f739d2b381359b",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/b477dd2f89d0751f0e51ffb3a70181f0bc7ab8df",
+                "reference": "b477dd2f89d0751f0e51ffb3a70181f0bc7ab8df",
                 "shasum": ""
             },
             "require": {
@@ -7941,7 +7941,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-package-tools/issues",
-                "source": "https://github.com/spatie/laravel-package-tools/tree/1.14.0"
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.14.1"
             },
             "funding": [
                 {
@@ -7949,7 +7949,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-01-10T14:09:55+00:00"
+            "time": "2023-01-27T15:33:45+00:00"
         },
         {
             "name": "spatie/laravel-permission",
@@ -8035,20 +8035,20 @@
         },
         {
             "name": "spatie/laravel-schedule-monitor",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-schedule-monitor.git",
-                "reference": "a8799864a295a4844a8bc7cb1b297b65ea18fb11"
+                "reference": "65f2209fe8a40fb8cf613c9c80de7c50f334f1fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-schedule-monitor/zipball/a8799864a295a4844a8bc7cb1b297b65ea18fb11",
-                "reference": "a8799864a295a4844a8bc7cb1b297b65ea18fb11",
+                "url": "https://api.github.com/repos/spatie/laravel-schedule-monitor/zipball/65f2209fe8a40fb8cf613c9c80de7c50f334f1fc",
+                "reference": "65f2209fe8a40fb8cf613c9c80de7c50f334f1fc",
                 "shasum": ""
             },
             "require": {
-                "illuminate/bus": "^9.0",
+                "illuminate/bus": "^9.0|^10.0",
                 "lorisleiva/cron-translator": "^0.3.0|^0.4.0",
                 "nesbot/carbon": "^2.63",
                 "nunomaduro/termwind": "^1.10.1",
@@ -8058,7 +8058,7 @@
             "require-dev": {
                 "mockery/mockery": "^1.4",
                 "ohdearapp/ohdear-php-sdk": "^3.0",
-                "orchestra/testbench": "^7.0",
+                "orchestra/testbench": "^7.0|^8.0",
                 "pestphp/pest": "^1.20",
                 "pestphp/pest-plugin-laravel": "^1.2",
                 "spatie/phpunit-snapshot-assertions": "^4.2",
@@ -8101,7 +8101,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-schedule-monitor/issues",
-                "source": "https://github.com/spatie/laravel-schedule-monitor/tree/3.1.0"
+                "source": "https://github.com/spatie/laravel-schedule-monitor/tree/3.1.1"
             },
             "funding": [
                 {
@@ -8109,7 +8109,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-01-16T14:44:46+00:00"
+            "time": "2023-01-23T15:10:23+00:00"
         },
         {
             "name": "spatie/once",
