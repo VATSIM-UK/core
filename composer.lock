@@ -14185,16 +14185,16 @@
         },
         {
             "name": "spatie/laravel-ray",
-            "version": "1.32.0",
+            "version": "1.32.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-ray.git",
-                "reference": "05fc99dba671c5d7478cb0400fe7152d7f00712e"
+                "reference": "8ecf893a7af385e72b1f63cbd318fb00e2dca340"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-ray/zipball/05fc99dba671c5d7478cb0400fe7152d7f00712e",
-                "reference": "05fc99dba671c5d7478cb0400fe7152d7f00712e",
+                "url": "https://api.github.com/repos/spatie/laravel-ray/zipball/8ecf893a7af385e72b1f63cbd318fb00e2dca340",
+                "reference": "8ecf893a7af385e72b1f63cbd318fb00e2dca340",
                 "shasum": ""
             },
             "require": {
@@ -14254,7 +14254,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-ray/issues",
-                "source": "https://github.com/spatie/laravel-ray/tree/1.32.0"
+                "source": "https://github.com/spatie/laravel-ray/tree/1.32.1"
             },
             "funding": [
                 {
@@ -14266,7 +14266,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2023-01-11T10:37:27+00:00"
+            "time": "2023-01-26T13:02:05+00:00"
         },
         {
             "name": "spatie/macroable",
@@ -14548,16 +14548,16 @@
         },
         {
             "name": "symfony/stopwatch",
-            "version": "v6.2.0",
+            "version": "v6.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/stopwatch.git",
-                "reference": "266636bb8f3fbdccc302491df7b3a1b9a8c238a7"
+                "reference": "00b6ac156aacffc53487c930e0ab14587a6607f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/stopwatch/zipball/266636bb8f3fbdccc302491df7b3a1b9a8c238a7",
-                "reference": "266636bb8f3fbdccc302491df7b3a1b9a8c238a7",
+                "url": "https://api.github.com/repos/symfony/stopwatch/zipball/00b6ac156aacffc53487c930e0ab14587a6607f6",
+                "reference": "00b6ac156aacffc53487c930e0ab14587a6607f6",
                 "shasum": ""
             },
             "require": {
@@ -14590,7 +14590,7 @@
             "description": "Provides a way to profile code",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/stopwatch/tree/v6.2.0"
+                "source": "https://github.com/symfony/stopwatch/tree/v6.2.5"
             },
             "funding": [
                 {
@@ -14606,7 +14606,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-09-28T16:00:52+00:00"
+            "time": "2023-01-01T08:36:55+00:00"
         },
         {
             "name": "symfony/yaml",
