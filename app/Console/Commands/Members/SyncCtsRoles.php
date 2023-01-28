@@ -45,6 +45,7 @@ class SyncCtsRoles extends Command
 
         // Sync Students
         $this->syncPilotStudents(55); // Pilot Students
+        $this->syncStudentsByPosition('TFP_FLIGHT', Role::findByName('TFP Student')->id); // TFP Students
         $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
         $this->syncStudentsByRts(18, Role::findByName('ATC Students (TWR)')->id); // TWR Students
         $this->syncStudentsByRts(19, Role::findByName('ATC Students (APP)')->id); // APP Students
@@ -108,12 +109,12 @@ class SyncCtsRoles extends Command
     {
         // Users that have the role, but should not have the role
         $removeRole = $hasRole->filter(function ($value) use ($shouldHaveRole) {
-            return ! $shouldHaveRole->contains($value);
+            return !$shouldHaveRole->contains($value);
         })->all();
 
         // Users that should have the role, but do not have the role
         $assignRole = $shouldHaveRole->filter(function ($value) use ($hasRole) {
-            return ! $hasRole->contains($value);
+            return !$hasRole->contains($value);
         })->all();
 
         foreach ($assignRole as $account) {
