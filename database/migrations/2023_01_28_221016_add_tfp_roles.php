@@ -1,7 +1,7 @@
 <?php
 
-use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Migrations\Migration;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 return new class extends Migration
@@ -14,13 +14,13 @@ return new class extends Migration
     public function up()
     {
         $studentRole = Role::create([
-            'name' => "TFP Student",
+            'name' => 'TFP Student',
             'guard_name' => 'web',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $studentPermission = Permission::create(['name' => "discord/pilot/student/tfp", 'guard_name' => 'web']);
+        $studentPermission = Permission::create(['name' => 'discord/pilot/student/tfp', 'guard_name' => 'web']);
 
         $studentRole->givePermissionTo($studentPermission);
     }
