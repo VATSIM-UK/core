@@ -45,6 +45,7 @@ class SyncCtsRoles extends Command
 
         // Sync Students
         $this->syncPilotStudents(55); // Pilot Students
+        $this->syncStudentsByPosition('TFP_FLIGHT', Role::findByName('TFP Student')->id); // TFP Students
         $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
         $this->syncStudentsByRts(18, Role::findByName('ATC Students (TWR)')->id); // TWR Students
         $this->syncStudentsByRts(19, Role::findByName('ATC Students (APP)')->id); // APP Students
