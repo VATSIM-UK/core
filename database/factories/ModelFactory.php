@@ -14,14 +14,25 @@ $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $fak
 
 $factory->state(App\Models\Mship\Account::class, 'withQualification', function (Faker\Generator $faker) {
     $id = rand(10000000, 99999999);
-    $qual = factory(Qualification::class)->create();
+    $qualAtc = factory(Qualification::class)->states('atc')->create();
     // Assoc qualification to account
     \DB::table('mship_account_qualification')->insert([
         'account_id' => $id,
-        'qualification_id' => $qual->id,
+        'qualification_id' => $qualAtc->id,
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
     ]);
+
+    $qualPilot = factory(Qualification::class)->states('pilot')->create();
+    // Assoc qualification to account
+    \DB::table('mship_account_qualification')->insert([
+        'account_id' => $id,
+        'qualification_id' => $qualPilot->id,
+        'created_at' => \Carbon\Carbon::now(),
+        'updated_at' => \Carbon\Carbon::now(),
+    ]);
+
+
 
     return [
         'id' => $id,
@@ -34,9 +45,9 @@ $factory->state(App\Models\Mship\Account::class, 'withQualification', function (
 
 $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
     $foundUniqueCode = false;
-    while (! $foundUniqueCode) {
+    while (!$foundUniqueCode) {
         $code = $faker->bothify('?##');
-        if (! Qualification::code($code)->exists()) {
+        if (!Qualification::code($code)->exists()) {
             $foundUniqueCode = true;
         }
     }
