@@ -48,7 +48,7 @@
                                     Conduct</a>;
                             </li>
                             <li>
-                                <a href="https://www.vatsim.net/documents/code-of-regulations"
+                                <a href="https://vatsim.net/docs/policy/code-of-regulations"
                                    rel="external nofollow">Code of Regulations</a>;
                             </li>
                             <li>
