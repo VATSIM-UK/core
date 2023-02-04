@@ -22,7 +22,7 @@ class DiscordQualificationRoleFactory extends Factory
             'name' => fake()->sentence(2),
             'discord_id' => fake()->numberBetween(100000, 2000000),
             'qualification_id' => factory(Qualification::class),
-            'state_id' => factory(State::class)
+            'state_id' => factory(State::class),
         ];
     }
 }

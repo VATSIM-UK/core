@@ -11,7 +11,8 @@ class DiscordQualificationRoleTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $homeAccount, $internationalAccount;
+    private $homeAccount;
+    private $internationalAccount;
 
     protected function setUp(): void
     {
@@ -31,7 +32,6 @@ class DiscordQualificationRoleTest extends TestCase
     /** @test */
     public function itReportsIfAccountSatifiesWithoutState()
     {
-
         $role = DiscordQualificationRole::factory()->create(['qualification_id' => $this->homeAccount->qualifications->first()->id, 'state_id' => null]);
 
         $this->assertTrue($role->accountSatisfies($this->homeAccount));

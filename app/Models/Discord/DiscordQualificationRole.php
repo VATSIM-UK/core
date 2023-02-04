@@ -20,10 +20,9 @@ class DiscordQualificationRole extends Model
     }
 
     /**
-     * Membership State Association
-     * 
-     * When associated with a state, this association should only be applied if the user is in that state
+     * Membership State Association.
      *
+     * When associated with a state, this association should only be applied if the user is in that state
      */
     public function state()
     {
@@ -31,13 +30,13 @@ class DiscordQualificationRole extends Model
     }
 
     /**
-     * Determine if account satifies the requirements for the role
+     * Determine if account satifies the requirements for the role.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @return bool
      */
     public function accountSatisfies(Account $account): bool
     {
-        return $account->hasQualification($this->qualification) && (!$this->state || $account->hasState($this->state));
+        return $account->hasQualification($this->qualification) && (! $this->state || $account->hasState($this->state));
     }
 }
