@@ -26,11 +26,6 @@
                         equipped with CPDLC software, and as it is not a controller requirement, this is not a
                         requirement for pilots to have in order to fly over the North Atlantic Ocean.
                     </p>
-
-                    <p>
-                        <a href="https://community.vatsim.uk/files/downloads/file/261-notam-implementation-of-ads-b-over-the-ocean/" rel="">Download the Oceanic
-                            procedures document</a> for further information.
-                    </p>
                 </div>
             </div>
         </div>
