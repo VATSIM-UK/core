@@ -43,7 +43,7 @@ return [
 
     'debug' => env('APP_DEBUG', false),
     'debug_smartcars' => env('APP_DEBUG_SMARTCARS', false),
-    'debug_waiting_list_removals' => env('APP_DEBUG_WAITING_LIST_REMOVALS', false),
+    'debug_waiting_list_removals' => env('APP_DEBUG_WAITING_LIST_REMOVALS', true),
 
     /*
     |--------------------------------------------------------------------------
