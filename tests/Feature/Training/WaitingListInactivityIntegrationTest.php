@@ -29,7 +29,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
     /** @test */
     public function itShouldReactToRealAccountAlteredEventForInactivity()
     {
-        $account = factory(Account::class)->create(["inactive" => false]);
+        $account = factory(Account::class)->create(['inactive' => false]);
         $account->addState(State::findByCode('DIVISION'));
 
         $waitingList = factory(WaitingList::class)->create();
@@ -65,7 +65,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
 
     /** @test
      * @group test1
-    */
+     */
     public function itShouldReactToRealAccountAlteredEventForStateChanged()
     {
         $account = factory(Account::class)->create();
@@ -93,7 +93,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
 
         $this->assertFalse($waitingList->accounts->contains($account));
 
-        $account->updateDivision("EUD", "EUR");
+        $account->updateDivision('EUD', 'EUR');
         $account->refresh();
 
         $this->assertFalse($waitingList->fresh()->accounts->contains($account));

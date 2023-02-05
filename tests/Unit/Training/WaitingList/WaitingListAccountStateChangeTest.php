@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Training\WaitingList;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use App\Events\Mship\AccountAltered;
 use App\Listeners\Training\WaitingList\CheckWaitingListAccountInactivity;
 use App\Listeners\Training\WaitingList\CheckWaitingListAccountMshipState;
@@ -15,6 +14,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class WaitingListAccountStateChangeTest extends TestCase
@@ -36,12 +36,10 @@ class WaitingListAccountStateChangeTest extends TestCase
         $this->waitingList = factory(WaitingList::class)->create();
     }
 
-
-
     /**
      * @test
      * @dataProvider invalidStateProvider
-    */
+     */
     public function itShouldRemoveFromListWhenAccountIsAlteredToNonDivisionState(string $state)
     {
         $account = factory(Account::class)->create();
@@ -60,12 +58,12 @@ class WaitingListAccountStateChangeTest extends TestCase
         Notification::assertSentTo($account, RemovedFromWaitingListNonHomeMember::class);
     }
 
-    public function invalidStateProvider() : array
+    public function invalidStateProvider(): array
     {
         return [
-            ["INTERNATIONAL"],
-            ["REGION"],
-            ["UNKNOWN"],
+            ['INTERNATIONAL'],
+            ['REGION'],
+            ['UNKNOWN'],
         ];
     }
 

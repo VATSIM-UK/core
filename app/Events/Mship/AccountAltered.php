@@ -18,6 +18,6 @@ class AccountAltered extends Event
     {
         $this->account = $account;
         // enable dry run when debug is true
-        $this->dryRun = config("app.debug_waiting_list_removals");
+        $this->dryRun = config('app.debug_waiting_list_removals');
     }
 }

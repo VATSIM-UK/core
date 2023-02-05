@@ -39,7 +39,7 @@ class CheckWaitingListAccountInactivity
             }
         }
 
-        Log::info("Account {$account->id} is in waiting lists {$account->currentWaitingLists->pluck("id")->join(", ")}, with inactive account state - (fake) notifying account");
+        Log::info("Account {$account->id} is in waiting lists {$account->currentWaitingLists->pluck('id')->join(', ')}, with inactive account state - (fake) notifying account");
 
         if (! $event->dryRun) {
             $account->notify(new RemovedFromWaitingListInactiveAccount);

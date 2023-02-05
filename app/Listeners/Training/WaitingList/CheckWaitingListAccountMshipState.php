@@ -23,7 +23,7 @@ class CheckWaitingListAccountMshipState
 
         $accountsWaitingList = $account->currentWaitingLists;
 
-        if ($account->hasState(State::findByCode("DIVISION"))) {
+        if ($account->hasState(State::findByCode('DIVISION'))) {
             Log::debug("Account {$account->id} has DIVISION state, skipping removal from waiting list");
 
             return;
@@ -43,7 +43,7 @@ class CheckWaitingListAccountMshipState
             }
         }
 
-        Log::info("Account {$account->id} is in waiting lists {$accountsWaitingList->pluck("id")->join(", ")}, with non-home member state - notifying account");
+        Log::info("Account {$account->id} is in waiting lists {$accountsWaitingList->pluck('id')->join(', ')}, with non-home member state - notifying account");
 
         if (! $event->dryRun) {
             $account->notify(new RemovedFromWaitingListNonHomeMember);
