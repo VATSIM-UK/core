@@ -86,6 +86,7 @@ class AccountAlteredEventTest extends TestCase
         Queue::fake();
 
         $this->user->discord_id = null;
+        $this->user->save();
         Cache::flush(); // Remove time lockout cache
         event(new AccountAltered($this->user));
 
