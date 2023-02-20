@@ -3044,16 +3044,16 @@
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.14.1",
+            "version": "v5.14.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "a990617de27700df73841f6ccaff46e09ba9ec3f"
+                "reference": "d41a14c601766af0e2cce9486fd5dd143688c25f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/a990617de27700df73841f6ccaff46e09ba9ec3f",
-                "reference": "a990617de27700df73841f6ccaff46e09ba9ec3f",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/d41a14c601766af0e2cce9486fd5dd143688c25f",
+                "reference": "d41a14c601766af0e2cce9486fd5dd143688c25f",
                 "shasum": ""
             },
             "require": {
@@ -3115,9 +3115,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.14.1"
+                "source": "https://github.com/laravel/horizon/tree/v5.14.2"
             },
-            "time": "2023-02-07T14:56:05+00:00"
+            "time": "2023-02-10T15:40:38+00:00"
         },
         {
             "name": "laravel/nova",
@@ -3356,16 +3356,16 @@
         },
         {
             "name": "laravel/telescope",
-            "version": "v4.13.1",
+            "version": "v4.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/telescope.git",
-                "reference": "f8afaccfb5b636aa20735e0a390ab312a6f57c65"
+                "reference": "34a259cf19a73cc3b9b31f49c3c85595afcfbb70"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/telescope/zipball/f8afaccfb5b636aa20735e0a390ab312a6f57c65",
-                "reference": "f8afaccfb5b636aa20735e0a390ab312a6f57c65",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/34a259cf19a73cc3b9b31f49c3c85595afcfbb70",
+                "reference": "34a259cf19a73cc3b9b31f49c3c85595afcfbb70",
                 "shasum": ""
             },
             "require": {
@@ -3419,9 +3419,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/telescope/issues",
-                "source": "https://github.com/laravel/telescope/tree/v4.13.1"
+                "source": "https://github.com/laravel/telescope/tree/v4.13.2"
             },
-            "time": "2023-02-06T14:37:41+00:00"
+            "time": "2023-02-16T15:32:51+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -12425,16 +12425,16 @@
         },
         {
             "name": "nunomaduro/collision",
-            "version": "v7.0.1",
+            "version": "v7.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nunomaduro/collision.git",
-                "reference": "0422294fcfb1ca2e15dfc20122d218c45c5bbf51"
+                "reference": "fbf3c8a8ee08068bee7d81ee0cee5ddf032aaa84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nunomaduro/collision/zipball/0422294fcfb1ca2e15dfc20122d218c45c5bbf51",
-                "reference": "0422294fcfb1ca2e15dfc20122d218c45c5bbf51",
+                "url": "https://api.github.com/repos/nunomaduro/collision/zipball/fbf3c8a8ee08068bee7d81ee0cee5ddf032aaa84",
+                "reference": "fbf3c8a8ee08068bee7d81ee0cee5ddf032aaa84",
                 "shasum": ""
             },
             "require": {
@@ -12445,14 +12445,14 @@
             },
             "require-dev": {
                 "laravel/framework": "^10.0.0",
-                "laravel/pint": "^1.4.1",
-                "laravel/sail": "^1.20.1",
+                "laravel/pint": "^1.5.0",
+                "laravel/sail": "^1.20.2",
                 "laravel/sanctum": "^3.2.1",
                 "laravel/tinker": "^2.8.0",
                 "nunomaduro/larastan": "^2.4.0",
                 "orchestra/testbench-core": "^8.0.0",
                 "pestphp/pest": "^2.0.0",
-                "phpunit/phpunit": "^10.0.6",
+                "phpunit/phpunit": "^10.0.7",
                 "spatie/laravel-ignition": "^2.0.0"
             },
             "type": "library",
@@ -12512,7 +12512,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2023-02-08T12:07:35+00:00"
+            "time": "2023-02-16T14:34:30+00:00"
         },
         {
             "name": "phar-io/manifest",
