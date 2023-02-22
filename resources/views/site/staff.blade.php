@@ -145,6 +145,10 @@
                             <td>Developer</td>
                             <td>Andy Ford</td>
                         </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Dave Etheridge</td>
+                        </tr>
                     </table>
                 </div>
             </div>
