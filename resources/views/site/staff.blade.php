@@ -149,6 +149,10 @@
                             <td>Developer</td>
                             <td>Dave Etheridge</td>
                         </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Ben Esen</td>
+                        </tr>
                     </table>
                 </div>
             </div>
