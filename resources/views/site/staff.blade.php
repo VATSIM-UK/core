@@ -153,6 +153,10 @@
                             <td>Developer</td>
                             <td>Ben Esen</td>
                         </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Kevin Gunn</td>
+                        </tr>
                     </table>
                 </div>
             </div>
