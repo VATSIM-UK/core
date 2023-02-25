@@ -147,11 +147,11 @@
                         </tr>
                         <tr>
                             <td>Developer</td>
-                            <td>Dave Etheridge</td>
+                            <td>Ben Esen</td>
                         </tr>
                         <tr>
                             <td>Developer</td>
-                            <td>Ben Esen</td>
+                            <td>Dave Etheridge</td>
                         </tr>
                         <tr>
                             <td>Developer</td>
