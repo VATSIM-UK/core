@@ -42,8 +42,8 @@ class SyncCtsRoles extends Command
         $this->syncMentorsByCallsign('OBS', 32); // OBS Mentors
         $this->syncMentorsByCallsign('EGKK_GND', 53); // Gatwick Mentors
         $this->syncMentorsByCallsign('TFP', 65); // PTD Flying Programme Mentors
-        $this->syncMentorsByCallsign("P1_PPL(A)", Role::findByName("P1 Mentor")->id); // P1 Mentors
-        $this->syncMentorsByCallsign("P2_SEIR(A)", Role::findByName("P2 Mentor")->id); // P2 Mentors
+        $this->syncMentorsByCallsign('P1_PPL(A)', Role::findByName('P1 Mentor')->id); // P1 Mentors
+        $this->syncMentorsByCallsign('P2_SEIR(A)', Role::findByName('P2 Mentor')->id); // P2 Mentors
 
         // Sync Students
         $this->syncPilotStudents(55); // Pilot Students
