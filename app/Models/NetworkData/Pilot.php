@@ -63,6 +63,7 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereRoute($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot withinDivision()
+ *
  * @mixin \Eloquent
  */
 class Pilot extends Model

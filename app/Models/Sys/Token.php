@@ -46,6 +46,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereUsedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Token extends Model

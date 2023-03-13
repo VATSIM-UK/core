@@ -66,10 +66,10 @@ class Discord
     {
         $response = Http::withHeaders($this->headers)
             ->patch("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}",
-            [
-                'nick' => $nickname,
-            ]
-        );
+                [
+                    'nick' => $nickname,
+                ]
+            );
 
         return $this->result($response);
     }

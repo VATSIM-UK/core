@@ -61,6 +61,7 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withCallsignIn($callsigns)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Atc extends Model

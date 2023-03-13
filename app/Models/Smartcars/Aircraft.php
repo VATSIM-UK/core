@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Aircraft whereRegistration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Aircraft whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Aircraft whereWeightKg($value)
+ *
  * @mixin \Eloquent
  */
 class Aircraft extends Model

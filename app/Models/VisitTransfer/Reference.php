@@ -73,6 +73,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Reference whereSubmittedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Reference withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Reference withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Reference extends Model

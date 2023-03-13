@@ -46,6 +46,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereTimeDeparture($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereTimeRemaining($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Posrep extends Model

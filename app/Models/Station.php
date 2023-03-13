@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereSubStation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Station extends Model
@@ -61,24 +62,24 @@ class Station extends Model
     public function getTypeAttribute($type)
     {
         switch ($type) {
-                case self::TYPE_ATIS:
-                    return 'ATIS';
-                case self::TYPE_DELIVERY:
-                    return 'Delivery';
-                case self::TYPE_GROUND:
-                    return 'Ground';
-                case self::TYPE_TOWER:
-                    return 'Tower';
-                case self::TYPE_APPROACH:
-                    return 'Approach/Radar';
-                case self::TYPE_ENROUTE:
-                    return 'Enroute';
-                case self::TYPE_TERMINAL:
-                    return 'Terminal Control';
-                case self::TYPE_FSS:
-                    return 'Flight Service Stations';
-                default:
-                    return 'Unknown';
-            }
+            case self::TYPE_ATIS:
+                return 'ATIS';
+            case self::TYPE_DELIVERY:
+                return 'Delivery';
+            case self::TYPE_GROUND:
+                return 'Ground';
+            case self::TYPE_TOWER:
+                return 'Tower';
+            case self::TYPE_APPROACH:
+                return 'Approach/Radar';
+            case self::TYPE_ENROUTE:
+                return 'Enroute';
+            case self::TYPE_TERMINAL:
+                return 'Terminal Control';
+            case self::TYPE_FSS:
+                return 'Flight Service Stations';
+            default:
+                return 'Unknown';
+        }
     }
 }

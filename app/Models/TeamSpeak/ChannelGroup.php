@@ -27,6 +27,7 @@ use App\Scopes\TeamSpeak\GroupScope;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereProtected($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereQualificationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereType($value)
+ *
  * @mixin \Eloquent
  */
 class ChannelGroup extends Group

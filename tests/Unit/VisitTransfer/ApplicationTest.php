@@ -193,6 +193,7 @@ class ApplicationTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider providerCancelTest
      */
     public function itCanBeCancelled($with_another_application)

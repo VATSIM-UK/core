@@ -18,7 +18,6 @@ Route::group([
     'as'     => 'password.',
     'prefix' => 'password',
 ], function () {
-
     // Reset
     Route::group([
         'middleware' => 'auth:vatsim-sso',
@@ -48,7 +47,6 @@ Route::group([
     'namespace'  => 'Mship',
     'middleware' => 'auth_full_group',
 ], function () {
-
     // Manage
     Route::group([
         'as'     => 'manage.',
@@ -170,7 +168,6 @@ Route::group([
         'as'     => 'application.',
         'prefix' => 'application',
     ], function () {
-
         // Start
         Route::get('start/{type}/{team}')->uses('Application@getStart')->name('start')->where('type', "\d+");
         Route::post('start/{type}/{team}')->uses('Application@postStart')->name('start.post')->where('type', "\d+");

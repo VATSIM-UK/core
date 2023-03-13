@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Ban\Reason whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Reason extends Model

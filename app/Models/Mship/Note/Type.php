@@ -41,6 +41,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Type extends Model

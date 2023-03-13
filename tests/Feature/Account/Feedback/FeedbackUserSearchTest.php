@@ -27,7 +27,7 @@ class FeedbackUserSearchTest extends TestCase
             ->getContent();
 
         $this->assertStringContainsString(e($this->otherUser->real_name), $searchQuery);
-        $this->assertStringContainsString((string) ($this->otherUser->id), $searchQuery);
+        $this->assertStringContainsString((string) $this->otherUser->id, $searchQuery);
     }
 
     /** @test */
@@ -38,6 +38,6 @@ class FeedbackUserSearchTest extends TestCase
             ->getContent();
 
         $this->assertStringNotContainsString(e($this->user->real_name), $searchQuery);
-        $this->assertStringNotContainsString((string) ($this->user->id), $searchQuery);
+        $this->assertStringNotContainsString((string) $this->user->id, $searchQuery);
     }
 }

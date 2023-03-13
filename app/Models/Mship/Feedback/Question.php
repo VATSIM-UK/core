@@ -44,6 +44,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Question extends Model
