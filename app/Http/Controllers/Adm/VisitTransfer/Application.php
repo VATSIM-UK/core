@@ -62,7 +62,7 @@ class Application extends AdmController
             ->with('applications', $applications)
             ->with('sortBy', $sortBy)
             ->with('sortDir', $sortDir)
-            ->with('sortDirSwitch', ($sortDir == 'DESC' ? 'ASC' : 'DESC'));
+            ->with('sortDirSwitch', $sortDir == 'DESC' ? 'ASC' : 'DESC');
     }
 
     public function getView(ApplicationModel $application)

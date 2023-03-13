@@ -38,6 +38,7 @@ class WaitingListAccountStateChangeTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider invalidStateProvider
      */
     public function itShouldRemoveFromListWhenAccountIsAlteredToNonDivisionState(string $state)

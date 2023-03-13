@@ -60,6 +60,7 @@ use Malahierba\PublicId\PublicId;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereTrainingRequired($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereTrainingSpaces($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereTrainingTeam($value)
+ *
  * @mixin \Eloquent
  */
 class Facility extends Model

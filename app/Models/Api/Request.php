@@ -27,6 +27,7 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereUrlFull($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereUrlName($value)
+ *
  * @mixin \Eloquent
  */
 class Request extends Model

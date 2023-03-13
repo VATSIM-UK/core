@@ -25,6 +25,7 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Data\Change whereDataOld($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Data\Change whereModelId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Data\Change whereModelType($value)
+ *
  * @mixin \Eloquent
  */
 class Change extends Model

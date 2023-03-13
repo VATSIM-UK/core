@@ -20,6 +20,7 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer whereQuestionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer whereResponse($value)
+ *
  * @mixin \Eloquent
  */
 class Answer extends Model

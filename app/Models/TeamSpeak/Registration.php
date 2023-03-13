@@ -43,6 +43,7 @@ use TeamSpeak3_Adapter_ServerQuery_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Registration whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Registration extends Model

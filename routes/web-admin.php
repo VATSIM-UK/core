@@ -7,7 +7,6 @@ Route::group([
     'middleware' => ['auth_full_group', 'admin'],
     'as' => 'adm.',
 ], function () {
-
     // Main
     Route::get('/')->uses('Dashboard@index')->name('index');
     Route::any('/search/{q?}')->uses('Dashboard@anySearch')->name('search');
@@ -50,7 +49,6 @@ Route::group([
         'as' => 'mship.',
         'namespace' => 'Mship',
     ], function () {
-
         // Account
         Route::group([
             'prefix' => 'account/',

@@ -32,6 +32,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email whereVerifiedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Email extends Model

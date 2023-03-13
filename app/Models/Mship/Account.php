@@ -79,6 +79,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read mixed $has_unread_notifications
  * @property-read mixed $is_banned
  * @property mixed $is_inactive
+ *
  * @propernty-read mixed $is_network_banned
  *
  * @property-read bool $is_on_network
@@ -157,6 +158,7 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract

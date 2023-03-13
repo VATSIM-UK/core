@@ -27,6 +27,7 @@ class ApplicationPolicyTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider providerApplicationState
      */
     public function testActionsPolicy($status, $num_accepted_references, $num_pending_references, $checks_met, $can_accept, $can_reject, $can_complete, $can_cancel)
