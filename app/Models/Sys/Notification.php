@@ -32,6 +32,7 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Notification whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Notification whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Notification withStatus($status)
+ *
  * @mixin \Eloquent
  */
 class Notification extends Model

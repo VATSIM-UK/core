@@ -40,6 +40,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Form whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Form withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Form withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Form extends Model

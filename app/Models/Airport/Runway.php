@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereSurfaceType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereWidth($value)
+ *
  * @mixin \Eloquent
  */
 class Runway extends Model
@@ -67,18 +68,18 @@ class Runway extends Model
     public function getSurfaceTypeAttribute($type)
     {
         switch ($type) {
-                case self::SURFACE_TYPE_ASPHALT:
-                    return 'Asphalt';
-                case self::SURFACE_TYPE_GRASS:
-                    return 'Grass';
-                case self::SURFACE_TYPE_CONCRETE:
-                    return 'Concrete';
-                case self::SURFACE_TYPE_SAND:
-                    return 'Sand';
-                case self::SURFACE_TYPE_GRE:
-                    return 'Graded/Rolled Earth';
-                default:
-                    return 'Unknown';
-            }
+            case self::SURFACE_TYPE_ASPHALT:
+                return 'Asphalt';
+            case self::SURFACE_TYPE_GRASS:
+                return 'Grass';
+            case self::SURFACE_TYPE_CONCRETE:
+                return 'Concrete';
+            case self::SURFACE_TYPE_SAND:
+                return 'Sand';
+            case self::SURFACE_TYPE_GRE:
+                return 'Graded/Rolled Earth';
+            default:
+                return 'Unknown';
+        }
     }
 }

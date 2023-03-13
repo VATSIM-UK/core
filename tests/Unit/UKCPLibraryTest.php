@@ -21,16 +21,16 @@ class UKCPLibraryTest extends TestCase
         $this->mock(Client::class, function (MockInterface $mock) use ($token) {
             $mock->shouldReceive('get')
                 ->andReturn(
-                        new \GuzzleHttp\Psr7\Response(200, [], json_encode([
-                            'id' => $this->user->id,
-                            'tokens' => [],
-                        ])),
-                        new \GuzzleHttp\Psr7\Response(200, [], json_encode([
-                            'id' => $this->user->id,
-                            'tokens' => [
-                                ['id' => '1234abc', 'revoked' => false],
-                            ],
-                        ])));
+                    new \GuzzleHttp\Psr7\Response(200, [], json_encode([
+                        'id' => $this->user->id,
+                        'tokens' => [],
+                    ])),
+                    new \GuzzleHttp\Psr7\Response(200, [], json_encode([
+                        'id' => $this->user->id,
+                        'tokens' => [
+                            ['id' => '1234abc', 'revoked' => false],
+                        ],
+                    ])));
 
             $mock->shouldReceive('post')
                 ->andReturn(new \GuzzleHttp\Psr7\Response(200, [], $token));

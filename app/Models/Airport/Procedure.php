@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereSTAR()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Procedure extends Model
@@ -82,12 +83,12 @@ class Procedure extends Model
     public function getProcedureTypeAttribute()
     {
         switch ($this->type) {
-                case self::TYPE_SID:
-                    return 'SID';
-                case self::TYPE_STAR:
-                    return 'STAR';
-                default:
-                    return '';
-            }
+            case self::TYPE_SID:
+                return 'SID';
+            case self::TYPE_STAR:
+                return 'STAR';
+            default:
+                return '';
+        }
     }
 }
