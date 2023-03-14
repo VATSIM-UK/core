@@ -23,6 +23,7 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereRequiresValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereRules($value)
+ *
  * @mixin \Eloquent
  */
 class Type extends Model

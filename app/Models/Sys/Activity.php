@@ -29,6 +29,7 @@ use Request;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereSubjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereSubjectType($value)
+ *
  * @mixin \Eloquent
  */
 class Activity extends Model

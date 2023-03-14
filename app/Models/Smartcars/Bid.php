@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Smartcars\Bid withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Smartcars\Bid withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Bid extends Model

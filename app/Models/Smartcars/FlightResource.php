@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightResource whereResource($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightResource whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightResource whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class FlightResource extends Model

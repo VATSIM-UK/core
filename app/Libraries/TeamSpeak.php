@@ -285,7 +285,6 @@ class TeamSpeak
 
             // Check to see if their name is at least partially right
             if ($member->isPartiallyValidDisplayName($client['client_nickname'])) {
-
                 // If they have a grace period, allow it for now
                 if (! $recentlyTold) {
                     // Give them a grace period if they haven't recently had one

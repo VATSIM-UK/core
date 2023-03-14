@@ -52,6 +52,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereRepealedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Ban extends Model

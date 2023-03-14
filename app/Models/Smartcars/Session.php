@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Session whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Session whereSessionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Session whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Session extends Model

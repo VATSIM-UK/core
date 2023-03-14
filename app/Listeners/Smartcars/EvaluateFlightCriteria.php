@@ -103,6 +103,6 @@ class EvaluateFlightCriteria implements ShouldQueue
     {
         $time = explode(':', $time);
 
-        return ($time[0] * 60) + ($time[1]) + ($time[2] / 60);
+        return ($time[0] * 60) + $time[1] + ($time[2] / 60);
     }
 }
