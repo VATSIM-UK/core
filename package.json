@@ -24,7 +24,7 @@
     "bootstrap-sass": "^3.4.3",
     "bootstrap-tour": "^0.12.0",
     "cross-env": "^7.0.3",
-    "jquery": "^3.6.3",
+    "jquery": "^3.6.4",
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
     "laravel-mix": "^6.0.34",
