@@ -35,13 +35,14 @@ class SyncCtsRoles extends Command
     {
         // Sync Mentors
         $this->syncMentorsByRts(12, 35); // Heathrow
-        $this->syncMentorsByRts(13, 42); // Pilot
         $this->syncMentorsByRts(17, 34); // Enroute
         $this->syncMentorsByRts(18, 33); // Tower
         $this->syncMentorsByRts(19, 47); // Approach
         $this->syncMentorsByCallsign('OBS', 32); // OBS Mentors
         $this->syncMentorsByCallsign('EGKK_GND', 53); // Gatwick Mentors
         $this->syncMentorsByCallsign('TFP', 65); // PTD Flying Programme Mentors
+        $this->syncMentorsByCallsign('P1_PPL(A)', Role::findByName('P1 Mentor')->id); // P1 Mentors
+        $this->syncMentorsByCallsign('P2_SEIR(A)', Role::findByName('P2 Mentor')->id); // P2 Mentors
 
         // Sync Students
         $this->syncPilotStudents(55); // Pilot Students
