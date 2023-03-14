@@ -35,7 +35,6 @@ class SyncCtsRoles extends Command
     {
         // Sync Mentors
         $this->syncMentorsByRts(12, 35); // Heathrow
-        $this->syncMentorsByRts(13, 42); // Pilot
         $this->syncMentorsByRts(17, 34); // Enroute
         $this->syncMentorsByRts(18, 33); // Tower
         $this->syncMentorsByRts(19, 47); // Approach
