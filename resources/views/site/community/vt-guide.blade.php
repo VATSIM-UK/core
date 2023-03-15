@@ -3,9 +3,9 @@
 @section('content')
 
     <div class="alert alert-danger">
-		<h3 style="margin-top: 0">Visiting and Transfers on Hold</h3>
-		<p>Please note we are not currently accepting any applications for visiting or Transferring controllers of S2 or higher. This is due to changes in policies and while we redesign the training process for visiting and transferring controllers.</p>
-        <p>S1 and OBS rated members remain unaffected by this.</p>
+		<h3 style="margin-top: 0">S2 and S3 Visiting and Transfers on Hold</h3>
+		<p>Please note we are not currently accepting any applications for visiting or transferring S2 and S3 controllers. This is due to changes in policies and while we redesign the training process for visiting and transferring controllers.</p>
+        <p>C1 visiting and transferring training materials are now completed and applications are now open. S1 and OBS rated members remain unaffected by this.</p>
 	</div>
     
     <div class="col-md-9">
