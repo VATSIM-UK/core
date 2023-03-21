@@ -23,19 +23,17 @@
 </p>
 @elseif($application->is_accepted)
 <p>
-    Your application has been accepted by the community department. It is important to note that <strong>this does not</strong> mean you
+    Your application has been accepted by the Member Services department. It is important to note that <strong>this does not</strong> mean you
     have completed your application, it simply means the details of your application have been checked and deemed valid.
     You will be informed when your application is <strong>completed</strong>.
 </p>
 @if($application->training_required)
 <p>
-    In order for your application to be deemed completed, you will be required to undergo training. The training department will contact you
-    to outline the bespoke training plan we will put together for you.
+   In order for your application to be deemed completed, you will be required to undergo training. The training will be as per the VATUK <a href="https://community.vatsim.uk/files/downloads/file/291-visiting-and-transferring-controller-policy/">VATUK Visiting and Transferring Control Policy </a>. We will be in touch when we can offer you a training place. You will be able to see your place on the waiting list <a href="https://www.vatsim.uk/mship/waiting-lists">My Waiting List </a>. Please allow a few days for this to show your place.
 </p>
 <p>
-    To remain compliant with the Visiting &amp; Transferring policy, you must engage with training <strong>within</strong> 90 days of the date of application.
-    As such, if you <strong>do not</strong> engage with training before {{ $application->submitted_at->addDays(90)->toDateString() }} then your
-    application will lapse and your {{ $application->type_string }} request denied.
+   To remain compliant with the Visiting Transfer and Controller Policy, you must complete your training <strong>within</strong> 90 days of the date of accepting your Training Place.
+   As such, if you <strong>do not</strong> complete your training within the 90 days then your transfer will be cancelled.
 </p>
 @endif
 @elseif($application->is_rejected)
