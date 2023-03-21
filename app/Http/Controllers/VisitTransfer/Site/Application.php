@@ -159,7 +159,7 @@ class Application extends BaseController
             return Redirect::route('visiting.application.statement', [$application->public_id])->withError($e->getMessage());
         }
 
-        return Redirect::route('visiting.application.referees', [$application->public_id])->withSuccess('Statement completed');
+        return Redirect::route('visiting.application.continue', [$application->public_id])->withSuccess('Statement completed');
     }
 
     public function getReferees(\App\Models\VisitTransfer\Application $application)
