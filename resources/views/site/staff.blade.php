@@ -262,14 +262,6 @@
                                 <td>Daniel Blanco</td>
                             </tr>
                             <tr>
-                                <td>TG Instructor (TWR)</td>
-                                <td>Kye Taylor</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (APP)</td>
-                                <td>Reece Buckley</td>
-                            </tr>
-                            <tr>
                                 <td>TG Instructor (APP)</td>
                                 <td>Samuel Lefevre</td>
                             </tr>
