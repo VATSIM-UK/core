@@ -21,7 +21,7 @@ class CheckWaitingListAccountMshipState
         // ensure we have the latest data
         $account = $event->account->refresh();
 
-        $accountsWaitingList = $account->currentWaitingLists->filter(function($waitingList) {
+        $accountsWaitingList = $account->currentWaitingLists->filter(function ($waitingList) {
             return $waitingList->home_members_only;
         });
 
