@@ -21,8 +21,8 @@ class CheckWaitingListAccountMshipState
         // ensure we have the latest data
         $account = $event->account->refresh();
 
-        $accountsWaitingList = $account->currentWaitingLists->filter(function ($waitingList) {
-            return $waitingList->home_members_only === 1;
+        $accountsWaitingList = $account->currentWaitingLists->filter(function($waitingList) {
+            return $waitingList->home_members_only;
         });
 
         if ($account->hasState(State::findByCode('DIVISION'))) {

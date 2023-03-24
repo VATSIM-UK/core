@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('training_waiting_list', function (Blueprint $table) {
-            $table->smallInteger('home_members_only')->default(1)->after('flags_check');
+            $table->boolean('home_members_only')->default(1)->after('flags_check');
         });
     }
 
