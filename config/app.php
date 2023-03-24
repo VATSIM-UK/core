@@ -173,6 +173,7 @@ return [
         App\Providers\NovaServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
         App\Providers\TrainingEventServiceProvider::class,
     ],
 

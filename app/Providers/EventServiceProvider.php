@@ -21,7 +21,8 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         \App\Events\Mship\AccountAltered::class => [
-            \App\Listeners\Training\WaitingList\CheckWaitingListAccountMshipState::class,
+            // \App\Listeners\Training\WaitingList\CheckWaitingListAccountMshipState::class,
+            // \App\Listeners\Training\WaitingList\CheckWaitingListAccountInactivity::class,
         ],
 
         \App\Events\Mship\Qualifications\QualificationAdded::class => [
@@ -40,6 +41,22 @@ class EventServiceProvider extends ServiceProvider
         AtcSessionEnded::class => [
             //AtcSessionRecordedSuccessNotification::class, // temporarily disabled
             FlushEndorsementCache::class,
+        ],
+
+        \App\Events\Training\AccountMarkedForRemovalFromWaitingList::class => [
+            \App\Listeners\Training\WaitingList\SendAccountMarkedForRemovalNotification::class,
+        ],
+
+        \App\Events\Training\AccountWithinFiveDaysOfWaitingListRemoval::class => [
+            \App\Listeners\Training\WaitingList\SendWaitingListRemovalFiveDayReminderNotification::class,
+        ],
+
+        \App\Events\Training\AccountRegainedActivityRequirementsForWaitingList::class => [
+            \App\Listeners\Training\WaitingList\SendAccountRegainedActivityNotification::class,
+        ],
+
+        \App\Events\Training\AccountRemovedFromWaitingListDueToActivity::class => [
+            \App\Listeners\Training\WaitingList\SendAccountRemovedDueToActivityNotification::class,
         ],
 
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [

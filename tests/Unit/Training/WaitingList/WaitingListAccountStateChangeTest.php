@@ -46,13 +46,12 @@ class WaitingListAccountStateChangeTest extends TestCase
     {
         $account = factory(Account::class)->create();
         $account->addState(State::findByCode('DIVISION'));
-        $account->refresh();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
-        $account->addState(State::findByCode($state));
+        $account->fresh()->addState(State::findByCode('VISITING'), 'EUR', 'EUD');
 
-        $event = new AccountAltered($account->refresh());
+        $event = new AccountAltered($account);
         (new CheckWaitingListAccountMshipState())->handle($event);
 
         $this->assertFalse($this->waitingList->accounts->contains($account));

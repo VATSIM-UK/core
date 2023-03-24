@@ -36,6 +36,14 @@
                             @endif</td>
                     </tr>
                 </table>
+                @if(
+                    $list->pivot->current_status == 'Active' &&
+                    $list->pivot->pending_removal?->isPendingRemoval()
+                )
+                <div class="alert alert-danger">
+                    <strong>Important: </strong> You do not currently meet the hour check criteria of 12 hours in the last 3 months. You will be automatically removed from this waiting list in <b>{{\Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInDays($list->pivot->pending_removal->removal_date)}} days</b> if you continue to not meet the requirement.
+                </div>
+                @endif
             </div>
         </div>
     </div>
