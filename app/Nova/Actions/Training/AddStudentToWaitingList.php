@@ -39,7 +39,7 @@ class AddStudentToWaitingList extends Action
             return $this->dangerAction('The specified CID was not found.');
         }
 
-        if (! $account->primary_state->isDivision) {
+        if ($waitingList->home_members_only === 1 && ! $account->primary_state->isDivision) {
             return $this->dangerAction('The specified member is not a home UK member.');
         }
 
