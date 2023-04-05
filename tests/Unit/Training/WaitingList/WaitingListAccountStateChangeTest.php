@@ -22,6 +22,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     use DatabaseTransactions;
 
     private WaitingList $waitingList;
+    private WaitingList $nonHomeMembersOnlyWaitingList;
 
     public function setUp(): void
     {
@@ -34,6 +35,9 @@ class WaitingListAccountStateChangeTest extends TestCase
         Config::set('app.debug_waiting_list_removals', false);
 
         $this->waitingList = factory(WaitingList::class)->create();
+        $this->nonHomeMembersOnlyWaitingList = factory(WaitingList::class)->create();
+        $this->nonHomeMembersOnlyWaitingList->home_members_only = 0;
+        $this->nonHomeMembersOnlyWaitingList->save();
     }
 
     /**
@@ -57,6 +61,27 @@ class WaitingListAccountStateChangeTest extends TestCase
         $this->assertFalse($this->waitingList->accounts->contains($account));
 
         Notification::assertSentTo($account, RemovedFromWaitingListNonHomeMember::class);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider invalidStateProvider
+     */
+    public function itShouldNotRemoveFromNonHomeMembersOnlyListWhenAccountIsAlteredToNonDivisionState(string $state)
+    {
+        $account = factory(Account::class)->create();
+        $account->addState(State::findByCode('DIVISION'));
+        $account->refresh();
+
+        $this->nonHomeMembersOnlyWaitingList->addToWaitingList($account, $this->privacc);
+
+        $account->addState(State::findByCode($state));
+
+        $event = new AccountAltered($account->refresh());
+        (new CheckWaitingListAccountMshipState())->handle($event);
+
+        $this->assertTrue($this->nonHomeMembersOnlyWaitingList->accounts->contains($account));
     }
 
     public function invalidStateProvider(): array
