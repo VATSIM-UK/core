@@ -32,7 +32,7 @@ class CheckWaitingListAccountMshipState
         }
 
         if ($accountsWaitingList->count() == 0) {
-            Log::debug("Account {$account->id} is not in a 'home members only' waiting list, skipping");
+            Log::debug("Account {$account->id} is not in a 'home members only' waiting list, skipping.");
 
             return;
         }
