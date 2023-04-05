@@ -21,7 +21,9 @@ class CheckWaitingListAccountMshipState
         // ensure we have the latest data
         $account = $event->account->refresh();
 
-        $accountsWaitingList = $account->currentWaitingLists;
+        $accountsWaitingList = $account->currentWaitingLists->filter(function ($waitingList) {
+            return $waitingList->home_members_only;
+        });
 
         if ($account->hasState(State::findByCode('DIVISION'))) {
             Log::debug("Account {$account->id} has DIVISION state, skipping removal from waiting list");
@@ -30,7 +32,7 @@ class CheckWaitingListAccountMshipState
         }
 
         if ($accountsWaitingList->count() == 0) {
-            Log::debug("Account {$account->id} is not in a waiting list, skipping");
+            Log::debug("Account {$account->id} is not in a 'home members only' waiting list, skipping.");
 
             return;
         }
