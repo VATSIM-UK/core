@@ -3,10 +3,11 @@
 namespace App\Notifications\Training;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class RemovedFromWaitingListInactiveAccount extends Notification
+class RemovedFromWaitingListInactiveAccount extends Notification implements ShouldQueue
 {
     use Queueable;
 

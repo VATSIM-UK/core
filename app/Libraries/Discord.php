@@ -133,6 +133,14 @@ class Discord
         });
     }
 
+    public function sendMessageToChannel(string $channelId, array $messageContents)
+    {
+        $response = Http::withHeaders($this->headers)
+            ->post("{$this->base_url}/channels/{$channelId}/messages", $messageContents);
+
+        return $this->result($response);
+    }
+
     protected function result(Response $response)
     {
         if ($response->status() == 404 && $response->json()['message'] == 'Unknown Member') {

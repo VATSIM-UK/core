@@ -47,8 +47,6 @@ class CheckWaitingListAccountMshipState
 
         Log::info("Account {$account->id} is in waiting lists {$accountsWaitingList->pluck('id')->join(', ')}, with non-home member state - notifying account");
 
-        if (! $event->dryRun) {
-            $account->notify(new RemovedFromWaitingListNonHomeMember);
-        }
+        $account->notify(new RemovedFromWaitingListNonHomeMember($accountsWaitingList));
     }
 }
