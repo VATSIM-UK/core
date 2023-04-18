@@ -8,6 +8,7 @@ use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingList extends Model
@@ -53,7 +54,7 @@ class WaitingList extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function accounts()
+    public function accounts(): BelongsToMany
     {
         return $this->belongsToMany(
             Account::class,
