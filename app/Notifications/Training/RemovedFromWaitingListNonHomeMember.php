@@ -67,9 +67,9 @@ class RemovedFromWaitingListNonHomeMember extends Notification implements Should
                         ],
                         [
                             'name' => 'Waiting List(s)',
-                            'value' => $this->waitingLists->pluck("name")->implode(", "),
+                            'value' => $this->waitingLists->pluck('name')->implode(', '),
                             'inline' => false,
-                        ]
+                        ],
                     ],
                 ],
             ],
