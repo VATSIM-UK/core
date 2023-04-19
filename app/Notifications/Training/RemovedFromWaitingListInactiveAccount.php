@@ -53,7 +53,7 @@ class RemovedFromWaitingListInactiveAccount extends Notification implements Shou
             'embeds' => [
                 [
                     'title' => 'Member Removed from Waiting List',
-                    'description' => 'A member has been removed from a waiting list(s) due to having an inactive account.',
+                    'description' => 'A member has been removed from a waiting list(s) due to having an inactive network account i.e. NOT ATC hours.',
                     'fields' => [
                         [
                             'name' => 'CID',
