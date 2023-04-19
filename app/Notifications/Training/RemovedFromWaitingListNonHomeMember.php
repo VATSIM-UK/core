@@ -52,8 +52,8 @@ class RemovedFromWaitingListNonHomeMember extends Notification implements Should
             'content' => '',
             'embeds' => [
                 [
-                    'title' => 'User Removed from Waiting List',
-                    'description' => 'A user has been removed from a waiting list(s) due to not being a home member.',
+                    'title' => 'Member Removed from Waiting List',
+                    'description' => 'A member has been removed from a waiting list(s) due to not being a home member.',
                     'fields' => [
                         [
                             'name' => 'CID',

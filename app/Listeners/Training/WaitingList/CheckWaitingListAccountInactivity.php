@@ -34,15 +34,11 @@ class CheckWaitingListAccountInactivity
         foreach ($account->currentWaitingLists as $waitingList) {
             Log::info("Inactive account {$account->id} is in waiting list {$waitingList->id} - removing from waiting list");
 
-            if (! $event->dryRun) {
-                $waitingList->removeFromWaitingList($account);
-            }
+            $waitingList->removeFromWaitingList($account);
         }
 
         Log::info("Account {$account->id} is in waiting lists {$account->currentWaitingLists->pluck('id')->join(', ')}, with inactive account state - (fake) notifying account");
 
-        if (! $event->dryRun) {
-            $account->notify(new RemovedFromWaitingListInactiveAccount);
-        }
+        $account->notify(new RemovedFromWaitingListInactiveAccount($account->currentWaitingLists));
     }
 }

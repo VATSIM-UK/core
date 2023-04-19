@@ -32,8 +32,6 @@ class WaitingListAccountStateChangeTest extends TestCase
 
         Notification::fake();
 
-        Config::set('app.debug_waiting_list_removals', false);
-
         $this->waitingList = factory(WaitingList::class)->create();
         $this->nonHomeMembersOnlyWaitingList = factory(WaitingList::class)->create();
         $this->nonHomeMembersOnlyWaitingList->home_members_only = 0;

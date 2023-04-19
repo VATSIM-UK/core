@@ -2,14 +2,24 @@
 
 namespace App\Notifications\Training;
 
+use App\Notifications\DiscordNotification;
+use App\Notifications\DiscordNotificationChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
-class RemovedFromWaitingListInactiveAccount extends Notification implements ShouldQueue
+class RemovedFromWaitingListInactiveAccount extends Notification implements ShouldQueue, DiscordNotification
 {
     use Queueable;
+
+    private $waitingLists;
+
+    public function __construct(Collection $waitingLists)
+    {
+        $this->waitingLists = $waitingLists;
+    }
 
     /**
      * Get the notification's delivery channels.
@@ -19,7 +29,7 @@ class RemovedFromWaitingListInactiveAccount extends Notification implements Shou
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return [DiscordNotificationChannel::class];
     }
 
     /**
@@ -34,5 +44,40 @@ class RemovedFromWaitingListInactiveAccount extends Notification implements Shou
         ->from('support@vatsim.uk', 'VATSIM UK - Member Services')
         ->subject('UK Training Waiting List Removal')
         ->view('emails.training.waiting_list_inactive_account', ['recipient' => $notifiable]);
+    }
+
+    public function toDiscord(object $notifiable)
+    {
+        return [
+            'content' => '',
+            'embeds' => [
+                [
+                    'title' => 'Member Removed from Waiting List',
+                    'description' => 'A member has been removed from a waiting list(s) due to having an inactive account.',
+                    'fields' => [
+                        [
+                            'name' => 'CID',
+                            'value' => $notifiable->id,
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'Name',
+                            'value' => $notifiable->name,
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'Waiting List(s)',
+                            'value' => $this->waitingLists->pluck('name')->implode(', '),
+                            'inline' => false,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    public function getChannel(): string
+    {
+        return config('services.discord.training_alerts_channel_id');
     }
 }

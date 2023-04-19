@@ -21,9 +21,6 @@ class WaitingListInactivityIntegrationTest extends TestCase
         parent::setUp();
 
         Notification::fake();
-
-        // disable dry run
-        Config::set('app.debug_waiting_list_removals', false);
     }
 
     /** @test */
