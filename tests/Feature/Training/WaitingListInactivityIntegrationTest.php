@@ -8,7 +8,6 @@ use App\Models\Training\WaitingList;
 use App\Notifications\Training\RemovedFromWaitingListInactiveAccount;
 use App\Notifications\Training\RemovedFromWaitingListNonHomeMember;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -21,9 +20,6 @@ class WaitingListInactivityIntegrationTest extends TestCase
         parent::setUp();
 
         Notification::fake();
-
-        // disable dry run
-        Config::set('app.debug_waiting_list_removals', false);
     }
 
     /** @test */

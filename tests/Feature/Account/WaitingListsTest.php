@@ -2,14 +2,25 @@
 
 namespace Tests\Feature\Account;
 
+use App\Events\Mship\AccountAltered;
+use App\Http\Controllers\Adm\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Services\Training\AddToWaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
-class WaitingListsTests extends TestCase
+class WaitingListsTest extends TestCase
 {
     use DatabaseTransactions;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        // disable account altered event to stop it from removing accounts from waiting lists
+        Event::fake([AccountAltered::class]);
+    }
 
     /** @test */
     public function testIndexWithNoWaitingListAccounts()
