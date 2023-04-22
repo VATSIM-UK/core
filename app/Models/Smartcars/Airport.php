@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Airport whereLongitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Airport whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Airport whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Airport extends Model

@@ -71,7 +71,7 @@ class AccountModelTest extends TestCase
             'nickname' => 'Delboy',
         ]);
 
-        $fullNickname = 'Delboy ' . $this->user->name_last;
+        $fullNickname = 'Delboy '.$this->user->name_last;
         $this->assertTrue($this->user->isValidDisplayName($fullNickname));
     }
 
@@ -109,7 +109,7 @@ class AccountModelTest extends TestCase
             'nickname' => 'Delboy',
         ]);
 
-        $fullNickname = 'Rodney ' . $this->user->name_last;
+        $fullNickname = 'Rodney '.$this->user->name_last;
         $this->assertFalse($this->user->isValidDisplayName($fullNickname));
         $this->assertFalse($this->user->isValidDisplayName('DeLbOy TrOttEr'));
         $this->assertTrue($this->user->isValidDisplayName('Delboy Trotter'));

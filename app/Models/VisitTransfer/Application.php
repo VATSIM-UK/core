@@ -124,6 +124,7 @@ use Malahierba\PublicId\PublicId;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereWillAutoAccept($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Application withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Application withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Application extends Model

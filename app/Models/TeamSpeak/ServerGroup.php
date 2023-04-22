@@ -27,6 +27,7 @@ use App\Scopes\TeamSpeak\GroupScope;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ServerGroup whereProtected($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ServerGroup whereQualificationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ServerGroup whereType($value)
+ *
  * @mixin \Eloquent
  */
 class ServerGroup extends Group

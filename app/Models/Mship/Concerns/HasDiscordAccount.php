@@ -5,7 +5,6 @@ namespace App\Models\Mship\Concerns;
 use App\Events\Discord\DiscordUnlinked;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Libraries\Discord;
-use App\Models\Discord\DiscordQualificationRole;
 use App\Models\Discord\DiscordRoleRule;
 use Illuminate\Support\Str;
 
@@ -17,7 +16,7 @@ trait HasDiscordAccount
     public function getDiscordNameAttribute()
     {
         if (Str::length($this->name) >= 32) {
-            return $this->name_preferred . ' ' . substr($this->name_last, 0, 1);
+            return $this->name_preferred.' '.substr($this->name_last, 0, 1);
         }
 
         return $this->name;
@@ -28,7 +27,7 @@ trait HasDiscordAccount
      */
     public function syncToDiscord()
     {
-        if (!config('services.discord.token')) {
+        if (! config('services.discord.token')) {
             return;
         }
 
@@ -48,7 +47,6 @@ trait HasDiscordAccount
 
         // Handle if the user is banned on core
         if ($this->isBanned) {
-
             // If they are already in the suspended role, we are happy
             if ($currentRoles->contains($suspendedRoleId)) {
                 return;
@@ -74,17 +72,18 @@ trait HasDiscordAccount
 
         // Evaluate available discord roles
         $discordRoleRules = DiscordRoleRule::lazy()->mapWithKeys(function (DiscordRoleRule $roleRule) {
-            return ["discord_id" => $roleRule->discord_id, "satisfied" => $roleRule->accountSatisfies($this)];
+            return ['discord_id' => $roleRule->discord_id, 'satisfied' => $roleRule->accountSatisfies($this)];
         });
 
         // Group each of the role rules by the discord role id (there could be multiple rules for a single discord role). We then eveluate each grouped set, to see if the user has any of the rules satisified
         $discordRoleRules->groupBy('discord_id')->each(function ($groupedRoleRules, $discordRoleId) use ($currentRoles, $discord) {
-            if (collect($groupedRoleRules)->contains(fn ($rule) => !!$rule["satisified"])) {
+            if (collect($groupedRoleRules)->contains(fn ($rule) => (bool) $rule['satisified'])) {
                 // At least one role rule grants this discord role. We will give it to the user if they don't already have it
-                if (!$currentRoles->contains($discordRoleId)) {
+                if (! $currentRoles->contains($discordRoleId)) {
                     $discord->grantRoleById($this, $discordRoleId);
                     sleep(1);
                 }
+
                 return;
             }
 
@@ -93,6 +92,7 @@ trait HasDiscordAccount
                 $discord->removeRoleById($this, $discordRoleId);
                 sleep(1);
             }
+
             return false;
         });
     }

@@ -158,9 +158,9 @@ class Account extends Resource
     public function cards(Request $request)
     {
         return [
-            (new Metrics\TotalAccounts),
-            (new Metrics\TotalDivisionAccounts),
-            (new Metrics\TotalNonDivisionAccounts),
+            new Metrics\TotalAccounts,
+            new Metrics\TotalDivisionAccounts,
+            new Metrics\TotalNonDivisionAccounts,
         ];
     }
 
@@ -173,7 +173,7 @@ class Account extends Resource
     public function filters(Request $request)
     {
         return [
-            (new Filters\MembershipState),
+            new Filters\MembershipState,
         ];
     }
 
@@ -197,8 +197,8 @@ class Account extends Resource
     public function actions(Request $request)
     {
         return [
-            (new Actions\Mship\AddNoteToAccount),
-            (new Actions\Mship\BanAccount),
+            new Actions\Mship\AddNoteToAccount,
+            new Actions\Mship\BanAccount,
         ];
     }
 }

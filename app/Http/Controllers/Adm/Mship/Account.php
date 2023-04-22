@@ -66,7 +66,7 @@ class Account extends AdmController
         // Now we need to prepare the collection as a result for the view!
         $members = new Collection();
         foreach ($memberSearch as $m) {
-            $members->prepend(($m->account ? $m->account : $m));
+            $members->prepend($m->account ? $m->account : $m);
         }
         $members = $members->reverse();
 
@@ -75,7 +75,7 @@ class Account extends AdmController
             ->with('membersQuery', $memberSearch)
             ->with('sortBy', $sortBy)
             ->with('sortDir', $sortDir)
-            ->with('sortDirSwitch', ($sortDir == 'DESC' ? 'ASC' : 'DESC'));
+            ->with('sortDirSwitch', $sortDir == 'DESC' ? 'ASC' : 'DESC');
     }
 
     public function getDetail(AccountData $mshipAccount, $tab = 'basic', $tabId = 0)

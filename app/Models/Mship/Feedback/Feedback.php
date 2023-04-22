@@ -42,6 +42,7 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereSubmitterAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Feedback extends Model

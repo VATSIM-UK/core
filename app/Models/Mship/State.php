@@ -35,6 +35,7 @@ namespace App\Models\Mship;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State whereRegion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class State extends \App\Models\Model
@@ -112,6 +113,6 @@ class State extends \App\Models\Model
 
     public function __toString()
     {
-        return '[' . $this->code . '] ' . $this->name;
+        return '['.$this->code.'] '.$this->name;
     }
 }

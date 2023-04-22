@@ -31,6 +31,7 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereNoteTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereWriterId($value)
+ *
  * @mixin \Eloquent
  */
 class Note extends Model

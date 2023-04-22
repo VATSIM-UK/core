@@ -33,8 +33,9 @@ class DiscordRoleRuleTest extends TestCase
         $this->internationalAccount = $this->internationalAccount->fresh();
     }
 
-    /** 
+    /**
      * @dataProvider providerTestData
+     *
      * @test
      */
     public function itReportsAccountSatisfiesCorrectly($permSetup, $stateSetup, $qualSetup, $ctsControlSetup, $expected)
@@ -54,19 +55,25 @@ class DiscordRoleRuleTest extends TestCase
 
         // Setup CTS may control
         $member = factory(Member::class)->create([
-            'visit_may_control' => $ctsControlSetup[0] ? 'Some Group / CTS_SEARCH_QUERY / Another Group' : 'Some Group / Another Group'
+            'visit_may_control' => $ctsControlSetup[0] ? 'Some Group / CTS_SEARCH_QUERY / Another Group' : 'Some Group / Another Group',
         ]);
         $account->id = $member->cid; // Can't seem to set CID on member...
         $account->save();
 
         // Setup Perm
-        if ($permSetup[0]) $account->givePermissionTo($role->permission);
+        if ($permSetup[0]) {
+            $account->givePermissionTo($role->permission);
+        }
 
         // Setup State
-        if ($stateSetup[0]) $account->addState($state);
+        if ($stateSetup[0]) {
+            $account->addState($state);
+        }
 
         // Setup Qualification
-        if ($qualSetup[0]) $account->addQualification($role->qualification);
+        if ($qualSetup[0]) {
+            $account->addQualification($role->qualification);
+        }
 
         $this->assertEquals($expected, $role->accountSatisfies($account->fresh()));
     }

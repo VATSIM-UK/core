@@ -38,6 +38,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP3Longitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP4Latitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP4Longitude($value)
+ *
  * @mixin \Eloquent
  */
 class FlightCriterion extends Model

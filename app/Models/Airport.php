@@ -23,6 +23,7 @@ use App\Models\NetworkData\Pilot;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereIdent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereLatitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereLongitude($value)
+ *
  * @mixin \Eloquent
  *
  * @property string|null $icao

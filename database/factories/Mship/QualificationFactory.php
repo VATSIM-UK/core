@@ -36,7 +36,7 @@ class QualificationFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'type' => 'atc',
-                'code' => $this->findUniqueQualificationCode('C##')
+                'code' => $this->findUniqueQualificationCode('C##'),
             ];
         });
     }
@@ -46,7 +46,7 @@ class QualificationFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'type' => 'pilot',
-                'code' => $this->findUniqueQualificationCode('P##')
+                'code' => $this->findUniqueQualificationCode('P##'),
             ];
         });
     }
@@ -55,10 +55,13 @@ class QualificationFactory extends Factory
     {
         $foundUniqueCode = false;
         $code = null;
-        while (!$foundUniqueCode) {
+        while (! $foundUniqueCode) {
             $code = $this->faker->bothify($pattern);
-            if (!Qualification::code($code)->exists()) $foundUniqueCode = true;
+            if (! Qualification::code($code)->exists()) {
+                $foundUniqueCode = true;
+            }
         }
+
         return $code;
     }
 }

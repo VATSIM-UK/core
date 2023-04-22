@@ -22,6 +22,7 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereSsoAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Email extends Model

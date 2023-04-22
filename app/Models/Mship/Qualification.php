@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification whereNameSmall($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification whereVatsim($value)
+ *
  * @mixin \Eloquent
  */
 class Qualification extends Model
