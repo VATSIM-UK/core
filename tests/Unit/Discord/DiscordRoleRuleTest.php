@@ -15,24 +15,6 @@ class DiscordRoleRuleTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $homeAccount;
-    private $internationalAccount;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->homeAccount = factory(Account::class)->states('withQualification')->create();
-        $this->homeAccount->addState(\App\Models\Mship\State::findByCode('DIVISION'));
-        $this->homeAccount = $this->homeAccount->fresh();
-
-        $this->internationalAccount = factory(Account::class)->create();
-        $this->internationalAccount->addQualification($this->homeAccount->qualifications->first());
-        $this->internationalAccount->addQualification($this->homeAccount->qualifications->last());
-        $this->internationalAccount->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
-        $this->internationalAccount = $this->internationalAccount->fresh();
-    }
-
     /**
      * @dataProvider providerTestData
      *
