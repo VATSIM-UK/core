@@ -3,7 +3,7 @@
 namespace Tests\Unit\Discord;
 
 use App\Models\Cts\Member;
-use App\Models\Discord\DiscordRole;
+use App\Models\Discord\DiscordRoleRule;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
-class DiscordRoleTest extends TestCase
+class DiscordRoleRuleTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -43,7 +43,7 @@ class DiscordRoleTest extends TestCase
 
         $state = State::first();
 
-        $role = DiscordRole::factory()->create(
+        $role = DiscordRoleRule::factory()->create(
             [
                 'permission_id' => $permSetup[1] ? factory(Permission::class)->create() : null,
                 'state_id' => $stateSetup[1] ? $state : null,

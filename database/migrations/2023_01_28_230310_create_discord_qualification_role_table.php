@@ -19,6 +19,8 @@ return new class extends Migration
             $table->unsignedInteger('state_id')->nullable();
             $table->string('cts_may_control_contains')->nullable();
         });
+
+        Schema::rename('discord_roles', 'discord_role_rules');
     }
 
     /**
@@ -28,6 +30,7 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::rename('discord_role_rules', 'discord_roles');
         Schema::table('discord_roles', function (Blueprint $table) {
             $table->integer('permission_id')->change();
             $table->dropColumn('qualification_id');

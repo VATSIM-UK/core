@@ -6,7 +6,7 @@ use App\Events\Discord\DiscordUnlinked;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Libraries\Discord;
 use App\Models\Discord\DiscordQualificationRole;
-use App\Models\Discord\DiscordRole;
+use App\Models\Discord\DiscordRoleRule;
 use Illuminate\Support\Str;
 
 /**
@@ -17,7 +17,7 @@ trait HasDiscordAccount
     public function getDiscordNameAttribute()
     {
         if (Str::length($this->name) >= 32) {
-            return $this->name_preferred.' '.substr($this->name_last, 0, 1);
+            return $this->name_preferred . ' ' . substr($this->name_last, 0, 1);
         }
 
         return $this->name;
@@ -28,7 +28,7 @@ trait HasDiscordAccount
      */
     public function syncToDiscord()
     {
-        if (! config('services.discord.token')) {
+        if (!config('services.discord.token')) {
             return;
         }
 
@@ -72,48 +72,28 @@ trait HasDiscordAccount
             $discord->removeRoleById($this, $suspendedRoleId);
         }
 
-        // Evaluate available discord
-        $discordRoles = DiscordRole::lazy()->groupBy(fn (DiscordRole $role) => $this->hasPermissionTo($role->permission_id));
-        $discordQualificationRoles = DiscordQualificationRole::lazy()->groupBy(fn (DiscordQualificationRole $role) => $role->accountSatisfies($this));
+        // Evaluate available discord roles
+        $discordRoleRules = DiscordRoleRule::lazy()->mapWithKeys(function (DiscordRoleRule $roleRule) {
+            return ["discord_id" => $roleRule->discord_id, "satisfied" => $roleRule->accountSatisfies($this)];
+        });
 
-        $rolesShouldHave = array_merge(
-            $discordRoles->get('true', []),
-            $discordQualificationRoles->get('true', [])
-        );
+        // Group each of the role rules by the discord role id (there could be multiple rules for a single discord role). We then eveluate each grouped set, to see if the user has any of the rules satisified
+        $discordRoleRules->groupBy('discord_id')->each(function ($groupedRoleRules, $discordRoleId) use ($currentRoles, $discord) {
+            if (collect($groupedRoleRules)->contains(fn ($rule) => !!$rule["satisified"])) {
+                // At least one role rule grants this discord role. We will give it to the user if they don't already have it
+                if (!$currentRoles->contains($discordRoleId)) {
+                    $discord->grantRoleById($this, $discordRoleId);
+                    sleep(1);
+                }
+                return;
+            }
 
-        $rolesShouldNotHave = array_merge(
-            $discordRoles->get('false', []),
-            $discordQualificationRoles->get('false', [])
-        );
-
-        //     $rolesShouldHaveByPermission = DiscordRole::lazy()->filter(function (DiscordRole $role) {
-        //         return $this->hasPermissionTo($role->permission_id);
-        //     })->map(fn (DiscordRole $role) => $role->discord_id);
-
-        // $rolesShouldHaveByQualification = DiscordQualificationRole::lazy()->filter(function (DiscordRole $role) {
-        //     return $this->hasPermissionTo($role->permission_id);
-        // })->map(fn (DiscordRole $role) => $role->discord_id);
-
-        // // Grant roles allowed by permissions
-        // DiscordRole::lazy()->filter(function (DiscordRole $role) {
-        //     return $this->hasPermissionTo($role->permission_id);
-        // })->each(function (DiscordRole $role) use ($currentRoles, $discord) {
-        //     if (!$currentRoles->contains($role->discord_id)) {
-        //         $discord->grantRoleById($this, $role->discord_id);
-        //         sleep(1);
-        //     }
-        // });
-
-        // // For each role they don't have permission to, remove the role
-        // DiscordRole::lazy()->filter(function (DiscordRole $role) {
-        //     return !$this->hasPermissionTo($role->permission_id);
-        // })->each(function (DiscordRole $role) use ($currentRoles, $discord) {
-        //     if ($currentRoles->contains($role->discord_id)) {
-        //         $discord->removeRoleById($this, $role->discord_id);
-        //         sleep(1);
-        //     }
-        // });
-
-        // sleep(1);
+            if ($currentRoles->contains($discordRoleId)) {
+                // None of the rules grant this role. We will remove it if they have it
+                $discord->removeRoleById($this, $discordRoleId);
+                sleep(1);
+            }
+            return false;
+        });
     }
 }
