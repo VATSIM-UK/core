@@ -22,7 +22,6 @@ class DiscordRoleRuleTest extends TestCase
      */
     public function itReportsAccountSatisfiesCorrectly($permSetup, $stateSetup, $qualSetup, $ctsControlSetup, $expected)
     {
-
         $state = State::first();
 
         $role = DiscordRoleRule::factory()->create(

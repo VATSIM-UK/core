@@ -67,27 +67,27 @@ class DiscordRoleRule extends Model
 
     protected function accountSatisfiesPermissionRequirement(Account $account): bool
     {
-        return !$this->permission_id || $account->hasPermissionTo($this->permission_id);
+        return ! $this->permission_id || $account->hasPermissionTo($this->permission_id);
     }
 
     protected function accountSatisfiesQualificationRequirement(Account $account): bool
     {
-        return !$this->qualification || $account->hasQualification($this->qualification);
+        return ! $this->qualification || $account->hasQualification($this->qualification);
     }
 
     protected function accountSatisfiesStateRequirement(Account $account): bool
     {
-        return !$this->state || $account->hasState($this->state);
+        return ! $this->state || $account->hasState($this->state);
     }
 
     protected function accountSatisfiesCTSMayControlRequirement(Account $account): bool
     {
-        if (!$this->cts_may_control_contains) {
+        if (! $this->cts_may_control_contains) {
             return true;
         }
 
         $ctsMember = Member::where('cid', $account->getKey())->first();
-        if (!$ctsMember) {
+        if (! $ctsMember) {
             return false;
         }
 
