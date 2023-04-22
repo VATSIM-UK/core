@@ -104,6 +104,10 @@ class UpdateMember extends Job implements ShouldQueue
                 $member->name_last = $this->data->name_last;
             }
 
+            if (! empty($this->data->email) && is_string($this->data->email)) {
+                $member->email = $this->data->email;
+            }
+
             $member->cert_checked_at = Carbon::now();
             $member->is_inactive = (bool) ($this->data->rating < 0);
 

@@ -76,15 +76,11 @@
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
-                            <td>Thomas Mills</td>
-                        </tr>
-                        <tr>
-                            <td>Operations Assistant</td>
-                            <td>Harrison Grose</td>
-                        </tr>
-                        <tr>
-                            <td>Operations Assistant</td>
                             <td>Peter Mooney</td>
+                        </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>Chad Byworth</td>
                         </tr>
                     </table>
                 </div>
@@ -134,16 +130,24 @@
                             <td>Callum Axon</td>
                         </tr>
                         <tr>
-                            <td>System Administrator</td>
-                            <td>Nathan Davies</td>
-                        </tr>
-                        <tr>
                             <td>Developer</td>
                             <td>Alex Toff</td>
                         </tr>
                         <tr>
                             <td>Developer</td>
                             <td>Andy Ford</td>
+                        </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Ben Esen</td>
+                        </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Dave Etheridge</td>
+                        </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Kevin Gunn</td>
                         </tr>
                     </table>
                 </div>
@@ -164,8 +168,8 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Member Services Director (VATUK3)</h4><br />
-                    <img src="{{ $teamPhotos[6298] }}" width=50px class="img-responsive center-block profile-picture" />
-                    <p class="text-center">Lee Roberts</p>
+                    <img src="{{ $teamPhotos[5660] }}" width=50px class="img-responsive center-block profile-picture" />
+                    <p class="text-center">John Batten</p>
                     <h4 class="text-center">Member Services Team</h4>
                     <table class="table">
                         <tr>
@@ -252,14 +256,6 @@
                             <tr>
                                 <td>TG Instructor (TWR)</td>
                                 <td>Daniel Blanco</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (TWR)</td>
-                                <td>Kye Taylor</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (APP)</td>
-                                <td>Reece Buckley</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>

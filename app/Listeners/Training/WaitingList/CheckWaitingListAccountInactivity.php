@@ -17,9 +17,9 @@ class CheckWaitingListAccountInactivity
     public function handle(AccountAltered $event)
     {
         Log::debug("CheckWaitingListAccountInactivity listener triggered for account {$event->account->id}");
-        $account = $event->account;
+        $account = $event->account->refresh();
 
-        if (! $account->inactive) {
+        if (! $account->is_inactive) {
             Log::debug("Account {$account->id} is not inactive, skipping");
 
             return;
@@ -31,13 +31,14 @@ class CheckWaitingListAccountInactivity
             return;
         }
 
-        $accountsWaitingList = $account->currentWaitingLists;
+        foreach ($account->currentWaitingLists as $waitingList) {
+            Log::info("Inactive account {$account->id} is in waiting list {$waitingList->id} - removing from waiting list");
 
-        foreach ($accountsWaitingList as $waitingList) {
-            Log::info("Account {$account->id} is in waiting list {$waitingList->id}, with inactive account state - removing from waiting list");
             $waitingList->removeFromWaitingList($account);
         }
 
-        $account->notify(new RemovedFromWaitingListInactiveAccount);
+        Log::info("Account {$account->id} is in waiting lists {$account->currentWaitingLists->pluck('id')->join(', ')}, with inactive account state - (fake) notifying account");
+
+        $account->notify(new RemovedFromWaitingListInactiveAccount($account->currentWaitingLists));
     }
 }

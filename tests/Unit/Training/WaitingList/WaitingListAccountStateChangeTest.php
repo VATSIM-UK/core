@@ -13,6 +13,7 @@ use App\Notifications\Training\RemovedFromWaitingListNonHomeMember;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class WaitingListAccountStateChangeTest extends TestCase
@@ -20,6 +21,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     use DatabaseTransactions;
 
     private WaitingList $waitingList;
+    private WaitingList $nonHomeMembersOnlyWaitingList;
 
     public function setUp(): void
     {
@@ -30,24 +32,62 @@ class WaitingListAccountStateChangeTest extends TestCase
         Notification::fake();
 
         $this->waitingList = factory(WaitingList::class)->create();
+        $this->nonHomeMembersOnlyWaitingList = factory(WaitingList::class)->create();
+        $this->nonHomeMembersOnlyWaitingList->home_members_only = 0;
+        $this->nonHomeMembersOnlyWaitingList->save();
     }
 
-    /** @test */
-    public function itShouldRemoveFromListWhenAccountIsAlteredToNonDivisionState()
+    /**
+     * @test
+     *
+     * @dataProvider invalidStateProvider
+     */
+    public function itShouldRemoveFromListWhenAccountIsAlteredToNonDivisionState(string $state)
     {
         $account = factory(Account::class)->create();
         $account->addState(State::findByCode('DIVISION'));
+        $account->refresh();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
-        $account->fresh()->addState(State::findByCode('VISITING'), 'EUR', 'EUD');
+        $account->addState(State::findByCode($state));
 
-        $event = new AccountAltered($account);
+        $event = new AccountAltered($account->refresh());
         (new CheckWaitingListAccountMshipState())->handle($event);
 
         $this->assertFalse($this->waitingList->accounts->contains($account));
 
         Notification::assertSentTo($account, RemovedFromWaitingListNonHomeMember::class);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider invalidStateProvider
+     */
+    public function itShouldNotRemoveFromNonHomeMembersOnlyListWhenAccountIsAlteredToNonDivisionState(string $state)
+    {
+        $account = factory(Account::class)->create();
+        $account->addState(State::findByCode('DIVISION'));
+        $account->refresh();
+
+        $this->nonHomeMembersOnlyWaitingList->addToWaitingList($account, $this->privacc);
+
+        $account->addState(State::findByCode($state));
+
+        $event = new AccountAltered($account->refresh());
+        (new CheckWaitingListAccountMshipState())->handle($event);
+
+        $this->assertTrue($this->nonHomeMembersOnlyWaitingList->accounts->contains($account));
+    }
+
+    public function invalidStateProvider(): array
+    {
+        return [
+            ['INTERNATIONAL'],
+            ['REGION'],
+            ['UNKNOWN'],
+        ];
     }
 
     /** @test */

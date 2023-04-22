@@ -111,7 +111,7 @@
     "require-dev": {
         "ext-json": "*",
         "codedungeon/phpunit-result-printer": "^0.32.0",
-        "nunomaduro/collision": "^6.1",
+        "nunomaduro/collision": "^7.0",
         "spatie/laravel-ignition": "^1.0",
         "fakerphp/faker": "^1.9.1",
         "laracasts/generators": "^2.0",
