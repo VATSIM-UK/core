@@ -3,6 +3,7 @@
 namespace App\Models\Mship;
 
 use App\Models\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\Mship\Qualification.
@@ -36,6 +37,8 @@ use App\Models\Model;
  */
 class Qualification extends Model
 {
+    use HasFactory;
+
     protected $table = 'mship_qualification';
     protected $primaryKey = 'id';
     protected $hidden = ['id'];

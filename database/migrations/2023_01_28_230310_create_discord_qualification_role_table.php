@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('discord_qualification_roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name'); // Free-text name to description the purpose of the associaiton
-            $table->bigInteger('discord_id'); // Discord role ID
-            $table->unsignedInteger('qualification_id'); // mship_qualification ID
-            $table->unsignedInteger('state_id')->nullable(); // mship_state ID
+        Schema::table('discord_roles', function (Blueprint $table) {
+            $table->integer('permission_id')->nullable()->change();
+            $table->unsignedInteger('qualification_id')->nullable();
+            $table->unsignedInteger('state_id')->nullable();
+            $table->string('cts_may_control_contains')->nullable();
         });
     }
 
@@ -29,6 +28,11 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('discord_qualification_roles');
+        Schema::table('discord_roles', function (Blueprint $table) {
+            $table->integer('permission_id')->change();
+            $table->dropColumn('qualification_id');
+            $table->dropColumn('state_id');
+            $table->dropColumn('cts_may_control_contains');
+        });
     }
 };
