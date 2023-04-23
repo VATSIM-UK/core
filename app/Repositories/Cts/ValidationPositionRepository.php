@@ -18,8 +18,8 @@ class ValidationPositionRepository
 
     public function getValidatedMembersFor(ValidationPosition $validationPosition)
     {
-        return $validationPosition->members->map(function ($member) {
-            return ['id' => $member->cid, 'name' => $member->name];
-        });
+        return $validationPosition->members->unique()->pluck('cid')->transform(function ($item) {
+            return (string) $item;
+        })->sort()->values();
     }
 }
