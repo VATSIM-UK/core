@@ -114,7 +114,7 @@ class SyncCtsRoles extends Command
     private function syncValidatedMembers(ValidationPosition $validationPosition, int $roleId): void
     {
         $hasRole = $this->getAccountsWithRoleId($roleId);
-        $shouldHaveRole = (new ValidationPositionRepository)->getValidatedMembersFor($validationPosition);
+        $shouldHaveRole = (new ValidationPositionRepository)->getValidatedMembersFor($validationPosition)->map(fn ($item) => $item['id']);
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 
