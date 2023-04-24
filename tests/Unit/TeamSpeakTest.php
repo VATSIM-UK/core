@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Models\Mship\Qualification;
 use App\Models\TeamSpeak\Channel;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\ServerGroup;
@@ -93,7 +92,7 @@ class TeamSpeakTest extends TestCase
     public function testGroupQualification()
     {
         $group = $this->serverGroups->first();
-        $qualification = Qualification::factory()->create();
+        $qualification = factory(\App\Models\Mship\Qualification::class)->create();
         $group->qualification()->associate($qualification)->save();
         $group = $group->fresh(['qualification']);
         $this->assertEquals($group->qualification->id, $qualification->id);
