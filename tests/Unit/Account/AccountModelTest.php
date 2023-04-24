@@ -249,7 +249,7 @@ class AccountModelTest extends TestCase
     /** @test */
     public function itStoresQualifications()
     {
-        $qualification = Qualification::factory()->create();
+        $qualification = factory(Qualification::class)->create();
 
         $this->user->addQualification($qualification);
 
@@ -267,19 +267,19 @@ class AccountModelTest extends TestCase
     {
         Carbon::setTestNow(Carbon::now()); // Check this works even when the timestamps are the same
 
-        $mockS1Qual = Qualification::factory()->atc()->create([
+        $mockS1Qual = factory(Qualification::class)->state('atc')->create([
             'code' => 'AS1',
             'vatsim' => 1,
         ]);
-        $mockS2Qual = Qualification::factory()->atc()->create([
+        $mockS2Qual = factory(Qualification::class)->state('atc')->create([
             'code' => 'AS2',
             'vatsim' => 2,
         ]);
-        $mockP1Qual = Qualification::factory()->pilot()->create([
+        $mockP1Qual = factory(Qualification::class)->state('pilot')->create([
             'code' => 'AP1',
             'vatsim' => 3,
         ]);
-        $mockP2Qual = Qualification::factory()->pilot()->create([
+        $mockP2Qual = factory(Qualification::class)->state('pilot')->create([
             'code' => 'AP2',
             'vatsim' => 4,
         ]);
@@ -307,7 +307,7 @@ class AccountModelTest extends TestCase
         // Simulate an update one day later.
         Carbon::setTestNow(Carbon::now()->addDay());
 
-        $qualification = Qualification::factory()->create();
+        $qualification = factory(Qualification::class)->create();
         $this->user->fresh()->addQualification($qualification);
 
         $this->assertNotEquals($originalUpdatedAt, $this->user->fresh()->updated_at);
