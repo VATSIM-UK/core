@@ -1,3 +1,3 @@
 # Code of Conduct
 
-Coming soon.
+Coming soon
