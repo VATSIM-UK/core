@@ -96,7 +96,7 @@ class Feedback extends Resource
             BelongsTo::make('Submitted By', 'submitter', 'App\Nova\Account')
                 ->canSeeWhen('seeSubmitter', $this),
 
-            DateTime::make('Submitted At', 'created_at')->onlyOnDetail()->format('Do MMMM YYYY HH:mm'),
+            DateTime::make('Submitted At', 'created_at')->format('Do MMMM YYYY HH:mm'),
 
             new Panel('Actioned Information', [
                 Boolean::make('Actioned', function () {
