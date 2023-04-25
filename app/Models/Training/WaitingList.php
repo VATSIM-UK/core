@@ -9,6 +9,7 @@ use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class WaitingList extends Model
 {
@@ -170,6 +171,15 @@ class WaitingList extends Model
     public function isPilotList()
     {
         return $this->department == self::PILOT_DEPARTMENT;
+    }
+
+    public function getFormattedDepartmentAttribute()
+    {
+        return match ($this->department) {
+            self::ATC_DEPARTMENT => 'ATC Training',
+            self::PILOT_DEPARTMENT => 'Pilot Training',
+            default => ucfirst($this->department),
+        };
     }
 
     public function __toString()

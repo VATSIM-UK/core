@@ -15,7 +15,7 @@
                     </tr>
                     <tr>
                         <th>Department</th>
-                        <td>{{$list->department}}</td>
+                        <td>{{ $list->formatted_department }}</td>
                     </tr>
                     <tr>
                         <th>Your Status</th>
