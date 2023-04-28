@@ -283,7 +283,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
-                                <td>Nathaniel Leff</td>
+                                <td>Fraser Cooper</td>
                             </tr>
                         </table>
                     </div>
