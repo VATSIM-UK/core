@@ -25,7 +25,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
     /** @test */
     public function itShouldReactToRealAccountAlteredEventForInactivity()
     {
-        $this->markTestSkipped("The event is not fired as it is currently disabled.");
+        $this->markTestSkipped('The event is not fired as it is currently disabled.');
 
         $account = factory(Account::class)->create(['inactive' => false]);
         $account->addState(State::findByCode('DIVISION'));
@@ -47,7 +47,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
     /** @test */
     public function itShouldReactToRealAccountAlteredEventForInactivityNotOnList()
     {
-        $this->markTestSkipped("The event is not fired as it is currently disabled.");
+        $this->markTestSkipped('The event is not fired as it is currently disabled.');
 
         $account = factory(Account::class)->create();
         $account->addState(State::findByCode('DIVISION'));
