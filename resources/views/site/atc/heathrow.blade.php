@@ -80,7 +80,8 @@
 
                     <h2>Get Started</h2>
                     <p>
-                        If you are interested in obtaining a Heathrow endorsement, please sublit a ticket to ATC Training in the <a href="https://helpdesk.vatsim.uk/" target="_blank">helpdesk</a>.
+                        If you are interested in obtaining a Heathrow endorsement, please complete the relevant Moodle course then submit a ticket to ATC Training in the <a href="https://helpdesk.vatsim.uk/" target="_blank">helpdesk</a>
+                        to request access to the theory exam.
                     </p>
 		</div>
             </div>
