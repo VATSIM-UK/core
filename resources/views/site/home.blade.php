@@ -142,6 +142,9 @@
                                 Endorsements</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.atc.heathrow') }}">Heathrow Endorsements</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link"
                                href="https://community.vatsim.uk/files/downloads/category/4-policy-documents/">Regulations
                                 and Policies</a>
