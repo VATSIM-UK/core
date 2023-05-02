@@ -114,7 +114,7 @@ class SyncCtsRoles extends Command
     private function syncValidatedMembers(ValidationPosition $validationPosition, int $roleId): void
     {
         $hasRole = $this->getAccountsWithRoleId($roleId);
-        $shouldHaveRole = (new ValidationPositionRepository)->getValidatedMembersFor($validationPosition);
+        $shouldHaveRole = (new ValidationPositionRepository)->getValidatedMembersFor($validationPosition)->map(fn ($item) => $item['id']);
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 
@@ -122,12 +122,12 @@ class SyncCtsRoles extends Command
     {
         // Users that have the role, but should not have the role
         $removeRole = $hasRole->filter(function ($value) use ($shouldHaveRole) {
-            return ! $shouldHaveRole->contains($value);
+            return !$shouldHaveRole->contains($value);
         })->all();
 
         // Users that should have the role, but do not have the role
         $assignRole = $shouldHaveRole->filter(function ($value) use ($hasRole) {
-            return ! $hasRole->contains($value);
+            return !$hasRole->contains($value);
         })->all();
 
         foreach ($assignRole as $account) {
