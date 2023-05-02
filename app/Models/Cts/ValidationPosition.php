@@ -2,7 +2,6 @@
 
 namespace App\Models\Cts;
 
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class ValidationPosition extends Model
