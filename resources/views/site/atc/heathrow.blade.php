@@ -74,7 +74,7 @@
                     <h3><Strong>To be eligibile for a training place you are required to maintain the following requirements:</Strong></h3>
                     <ul>
                         <li>Ground / Delivery : <strong>12</strong> hours controlling UK positions within the preceeding 3 months.</li>
-                        <li>Tower : <strong>12</strong> hours controlling UK positions within the preceeding 3 months, which at least <stong>5 hours</stong> must include EGLL_GND or _DEL positions.</li>
+                        <li>Tower : <strong>12</strong> hours controlling UK positions within the preceeding 3 months, which at least <strong>5 hours</strong> must include EGLL_GND or _DEL positions.</li>
                         <li>Approach : <strong>12</strong> hours controlling UK positions within the preceeding 3 months, which at least <strong>5 hours</strong> must include EGLL_TWR positions.</li>
                     </ul>
 
