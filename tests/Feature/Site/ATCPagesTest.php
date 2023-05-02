@@ -25,6 +25,12 @@ class ATCPagesTest extends TestCase
     }
 
     /** @test */
+    public function testItLoadsTheHeathrowPage()
+    {
+        $this->get(route('site.atc.heathrow'))->assertOk();
+    }
+
+    /** @test */
     public function testItLoadsTheBecomingAMentorPage()
     {
         $this->get(route('site.atc.mentor'))->assertOk();
