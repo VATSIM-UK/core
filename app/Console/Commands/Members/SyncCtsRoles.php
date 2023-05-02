@@ -3,12 +3,10 @@
 namespace App\Console\Commands\Members;
 
 use App\Console\Commands\Command;
-use App\Models\Cts\ValidationPosition;
 use App\Models\Mship\Account;
 use App\Repositories\Cts\ExaminerRepository;
 use App\Repositories\Cts\MentorRepository;
 use App\Repositories\Cts\StudentRepository;
-use App\Repositories\Cts\ValidationPositionRepository;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Role;
 
@@ -57,9 +55,6 @@ class SyncCtsRoles extends Command
         // Sync Examiners
         $this->syncAtcExaminers(31); // ATC
         $this->syncPilotExaminers(40); // Pilot
-
-        // Sync Special Endorsements
-        $this->syncValidatedMembers(ValidationPosition::whereName('Shanwick Oceanic (EGGX)')->first(), Role::findByName('Shanwick Controller')->id);
     }
 
     private function syncMentorsByRts(int $rtsId, int $roleId): void
@@ -111,23 +106,16 @@ class SyncCtsRoles extends Command
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 
-    private function syncValidatedMembers(ValidationPosition $validationPosition, int $roleId): void
-    {
-        $hasRole = $this->getAccountsWithRoleId($roleId);
-        $shouldHaveRole = (new ValidationPositionRepository)->getValidatedMembersFor($validationPosition)->map(fn ($item) => $item['id']);
-        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
-    }
-
     private function syncRoles(Collection $hasRole, Collection $shouldHaveRole, $roleId): void
     {
         // Users that have the role, but should not have the role
         $removeRole = $hasRole->filter(function ($value) use ($shouldHaveRole) {
-            return ! $shouldHaveRole->contains($value);
+            return !$shouldHaveRole->contains($value);
         })->all();
 
         // Users that should have the role, but do not have the role
         $assignRole = $shouldHaveRole->filter(function ($value) use ($hasRole) {
-            return ! $hasRole->contains($value);
+            return !$hasRole->contains($value);
         })->all();
 
         foreach ($assignRole as $account) {

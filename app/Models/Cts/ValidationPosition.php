@@ -16,9 +16,4 @@ class ValidationPosition extends Model
     {
         return $this->belongsToMany(Member::class, 'validations', 'position_id', 'member_id');
     }
-
-    public function scopeWhereName(Builder $query, string $name)
-    {
-        return $query->where('position', $name);
-    }
 }
