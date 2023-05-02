@@ -172,6 +172,15 @@ class WaitingList extends Model
         return $this->department == self::PILOT_DEPARTMENT;
     }
 
+    public function getFormattedDepartmentAttribute()
+    {
+        return match ($this->department) {
+            self::ATC_DEPARTMENT => 'ATC Training',
+            self::PILOT_DEPARTMENT => 'Pilot Training',
+            default => ucfirst($this->department),
+        };
+    }
+
     public function __toString()
     {
         return (string) $this->name;
