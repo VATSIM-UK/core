@@ -161,7 +161,7 @@
                 </a>
                 </a>
                 <div id="endorsement-heathrow" class="panel-collapse collapse panel-body">
-                    Details of the Heathrow endorsements can be found omn the dedicated <a class="nav-link" href="{{ route('site.atc.heathrow') }}">Heathrow Endorsements page</a>
+                    View the details for the Heathrow endorsements by <a class="nav-link" href="{{ route('site.atc.heathrow') }}">clicking here</a>.
 
                 </div>
             </div>
