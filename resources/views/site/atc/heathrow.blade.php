@@ -5,7 +5,7 @@
 
         <div class="col-md-9">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-pencil"></i> &thinsp; New Controller
+                <div class="panel-heading"><i class="glyphicon glyphicon-pencil"></i> &thinsp;Heathrow Endorsements
                 </div>
                 <div class="panel-body">
                     <p>
