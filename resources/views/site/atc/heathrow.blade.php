@@ -5,7 +5,7 @@
 
         <div class="col-md-9">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-pencil"></i> &thinsp; New Controller
+                <div class="panel-heading"><i class="glyphicon glyphicon-pencil"></i> &thinsp;Heathrow Endorsements
                 </div>
                 <div class="panel-body">
                     <p>
@@ -33,7 +33,7 @@
 
                     <h2>Training Process</h2>
                     <p>
-                        <img class="img-responsive center-block" src="/images/heathrow-flow.svg" alt="Heathrow Flow Diagram" width=25%>
+                        <img class="img-responsive" src="/images/heathrow-flow.svg" alt="Heathrow Flow Diagram" width=25%>
                     </p>
 
                     <ol>
