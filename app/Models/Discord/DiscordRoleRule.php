@@ -72,12 +72,12 @@ class DiscordRoleRule extends Model
 
     protected function accountSatisfiesQualificationRequirement(Account $account): bool
     {
-        return ! $this->qualification || $account->hasQualification($this->qualification);
+        return ! $this->qualification_id || $account->hasQualification($this->qualification);
     }
 
     protected function accountSatisfiesStateRequirement(Account $account): bool
     {
-        return ! $this->state || $account->hasState($this->state);
+        return ! $this->state_id || $account->hasState($this->state);
     }
 
     protected function accountSatisfiesCTSMayControlRequirement(Account $account): bool
