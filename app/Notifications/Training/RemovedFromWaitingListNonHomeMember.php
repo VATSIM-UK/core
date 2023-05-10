@@ -29,7 +29,7 @@ class RemovedFromWaitingListNonHomeMember extends Notification implements Should
      */
     public function via($notifiable)
     {
-        return [DiscordNotificationChannel::class];
+        return ['mail', DiscordNotificationChannel::class];
     }
 
     /**
