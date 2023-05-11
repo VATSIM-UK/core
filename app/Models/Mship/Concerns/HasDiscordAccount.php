@@ -42,6 +42,7 @@ trait HasDiscordAccount
             $discord->setNickname($this, $this->discordName);
         } catch (DiscordUserNotFoundException $e) {
             Log::debug('Discord user not found. Unlinking', ['user' => $this->getKey()]);
+
             return event(new DiscordUnlinked($this));
         }
 
@@ -53,6 +54,7 @@ trait HasDiscordAccount
             // If they are already in the suspended role, we are happy
             if ($currentRoles->contains($suspendedRoleId)) {
                 Log::debug('User is already suspended on discord', ['user' => $this->getKey()]);
+
                 return;
             }
 
@@ -67,6 +69,7 @@ trait HasDiscordAccount
 
             // We'll return, as suspended users should only have this suspended role
             Log::debug('User given suspended role on Discord', ['user' => $this->getKey()]);
+
             return;
         }
 
