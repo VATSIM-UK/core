@@ -41,6 +41,8 @@ trait HasDiscordAccount
         try {
             $discord->setNickname($this, $this->discordName);
         } catch (DiscordUserNotFoundException $e) {
+            Log::debug('Discord user not found - unlinking', ['user' => $this->getKey()]);
+
             return event(new DiscordUnlinked($this));
         }
 
@@ -51,6 +53,8 @@ trait HasDiscordAccount
         if ($this->isBanned) {
             // If they are already in the suspended role, we are happy
             if ($currentRoles->contains($suspendedRoleId)) {
+                Log::debug('User is already suspended on discord', ['user' => $this->getKey()]);
+
                 return;
             }
 
@@ -64,6 +68,8 @@ trait HasDiscordAccount
             $discord->grantRoleById($this, $suspendedRoleId);
 
             // We'll return, as suspended users should only have this suspended role
+            Log::debug('User given suspended role on Discord', ['user' => $this->getKey()]);
+
             return;
         }
 
@@ -77,12 +83,15 @@ trait HasDiscordAccount
             return ['discord_id' => $roleRule->discord_id, 'satisfied' => $roleRule->accountSatisfies($this)];
         });
 
+        Log::debug('Gathering role rules', ['rules' => $discordRoleRules->toArray(), 'user' => $this->getKey()]);
+
         // Group each of the role rules by the discord role id (there could be multiple rules for a single discord role). We then eveluate each grouped set, to see if the user has any of the rules satisified
         $discordRoleRules->groupBy('discord_id')->each(function ($groupedRoleRules, $discordRoleId) use ($currentRoles, $discord) {
+            Log::debug('Processing role rules for discord role', ['discord_role_id' => $discordRoleId, 'grouped_role_rules' => $groupedRoleRules, 'user' => $this->getKey()]);
             if (collect($groupedRoleRules)->contains(fn ($rule) => (bool) $rule['satisfied'])) {
                 // At least one role rule grants this discord role. We will give it to the user if they don't already have it
                 if (! $currentRoles->contains($discordRoleId)) {
-                    Log::debug("{$this->full_name} ({$this->getKey()}) should have discord role {$discordRoleId}, but doesn't");
+                    Log::info("{$this->full_name} ({$this->getKey()}) should have discord role {$discordRoleId}, but doesn't");
                     $discord->grantRoleById($this, $discordRoleId);
                     sleep(1);
                 }
@@ -92,7 +101,7 @@ trait HasDiscordAccount
 
             if ($currentRoles->contains($discordRoleId)) {
                 // None of the rules grant this role. We will remove it if they have it
-                Log::debug("{$this->full_name} ({$this->getKey()}) shouldn't have discord role {$discordRoleId}, but has it");
+                Log::info("{$this->full_name} ({$this->getKey()}) shouldn't have discord role {$discordRoleId}, but has it");
                 $discord->removeRoleById($this, $discordRoleId);
                 sleep(1);
             }
