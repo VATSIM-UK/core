@@ -77,7 +77,7 @@ trait HasDiscordAccount
             return ['discord_id' => $roleRule->discord_id, 'satisfied' => $roleRule->accountSatisfies($this)];
         });
 
-        // Group each of the role rules by the discord role id (there could be multiple rules for a single discord role). We then eveluate each grouped set, to see if the user has any of the rules satisified
+        // Group each of the role rules by the discord role id (there could be multiple rules for a single discord role). We then evaluate each grouped set, to see if the user has any of the rules satisified
         $discordRoleRules->groupBy('discord_id')->each(function ($groupedRoleRules, $discordRoleId) use ($currentRoles, $discord) {
             if (collect($groupedRoleRules)->contains(fn ($rule) => (bool) $rule['satisfied'])) {
                 // At least one role rule grants this discord role. We will give it to the user if they don't already have it
