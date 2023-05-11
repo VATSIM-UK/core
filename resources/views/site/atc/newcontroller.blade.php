@@ -13,11 +13,11 @@
                 </div>
                 <div class="panel-body">
                                         <p>
-										
+
                         </p>
 Welcome to the exciting world of air traffic control (ATC) in VATSIM UK. If you already have some experience of VATSIM as a pilot, this will certainly provide you with a head start, but it is by no means necessary. You do not even need to own a copy of Flight Simulator; the software for VATSIM ATC is standalone and entirely free of charge!
 					<p>
-Becoming a controller requires a certain amount of training before being allowed to control ‘live’ traffic. While undertaking training a certain amount of commitment and self study is required - so be prepared for this! There is a system of graduated controller ratings that determine the ATC positions you can control, so being a VATSIM controller is a constant learning process. We want this to be both enjoyable and educational!					
+Becoming a controller requires a certain amount of training before being allowed to control ‘live’ traffic. While undertaking training a certain amount of commitment and self study is required - so be prepared for this! There is a system of graduated controller ratings that determine the ATC positions you can control, so being a VATSIM controller is a constant learning process. We want this to be both enjoyable and educational!
 					</p>
 
 					<p>
@@ -26,7 +26,7 @@ Becoming a controller requires a certain amount of training before being allowed
 
 <p>
 If you’re not already a member of VATSIM’s UK division, the first step is to follow the instructions on the <a href="https://www.vatsim.uk/join" rel="external nofollow">Join Us</a> page – you’ll need to ensure that your division is set to ‘United Kingdom’. If you need to make a change, this may take up to 24 hours to process. <b>You will lose your place on the waiting list if you later transfer to another division, and will be unable to undertake training in VATSIM UK.</b>
-</p>                    
+</p>
 					<h2>
                         Required Software
                     </h2>
@@ -50,7 +50,7 @@ If you’re not already a member of VATSIM’s UK division, the first step is to
                     <p>
                         <a href="https://audio.vatsim.net/docs/2.0/atc/euroscope" rel="external nofollow">Audio for VATSIM</a> is the programme we utilise to transmit and receive on ATC frequencies. This software will allow you to connect and observe current controllers on frequency.
                     </p>
-					
+
 					<h3>
 						TeamSpeak
 					</h3>
@@ -62,32 +62,28 @@ If you’re not already a member of VATSIM’s UK division, the first step is to
 					<h2>
 						OBS -> S1 Training Process
 					</h2>
-					
+
 					<img class="img-responsive center-block" src="/images/tgnc_flow_new.png" alt="TGNC Flow Diagram">
 
                     <h3>
 						Step 1 - OBS_PT1 Group Session
 					</h3>
-					
+
 					<p>
 						In order to join the 'New Controller TG':
 						<ul>
 							<li>
 								Login to the <a href="https://cts.vatsim.uk" rel="external nofollow">Central Training System (CTS)</a> via VATSIM SSO (Single Sign-On);
-							<img class="img-responsive center-block" src="/images/TGNC_ScreenShot_1.png" alt="TGNC ScreenShot 1">
-
-
-							</li>
+    							<img class="img-responsive center-block mt-4 mb-4" src="/images/tgnc_screenshot_1.png" alt="CTS Login Screen screenshot">
+    						</li>
 							<li>
-							In the ‘Students’ menu, under the blue bar labelled ‘Group’ select ‘Choose Home’ (for some members, this may show as ‘Transfer’).
-							<img class="img-responsive center-block" src="/images/TGNC_ScreenShot_2.png" alt="TGNC ScreenShot 2">
-
+                                In the ‘Students’ menu, under the blue bar labelled ‘Group’ select ‘Choose Home’ (for some members, this may show as ‘Transfer’).
+                                <img class="img-responsive center-block mt-4 mb-" src="/images/tgnc_screenshot_2.png" alt="CTS Home Screen screenshot">
 							</li>
 							<li>
 								 Select ‘New Controller’ and click ‘Request’. Once your request has been processed, you’ll receive an automated email from the CT System.
-								<img class="img-responsive center-block" src="/images/TGNC_ScreenShot_3.png" alt="TGNC ScreenShot 3">
-
-							</li>
+								<img class="img-responsive center-block mt-4 mb-" src="/images/tgnc_screenshot_3a.png" alt="CTS Transfer screenshot">
+    						</li>
 						</ul>
 					</p>
 
@@ -137,7 +133,7 @@ If you’re not already a member of VATSIM’s UK division, the first step is to
 					To get the most out of your training, it’s essential that you make the most of the resources available in your own time. This allows our mentors time to be focused on the things you can’t learn yourself helping you get more out of your own training.
 					</p>
 					<p>
-					What do we expect from you?	
+					What do we expect from you?
 						<ul>
 							<li>
 								To review session reports and revise the theory content between sessions to ensure that you arrive at each mentoring session well prepared. The amount of time you’ll need to spend doing this depends on your learning style, how much you already know, and your stage in training. As a general ‘rule of thumb’ we expect you to commit roughly ‘time twice’: if you have a two-hour mentoring session, spend around two hours after the session consolidating your knowledge.
@@ -151,7 +147,7 @@ If you’re not already a member of VATSIM’s UK division, the first step is to
 							<li>
 								To arrive at each session with the attitude to learn and more importantly to have fun.
 							</li>
-							
+
 						</ul>
 					</p>
 					<p>
@@ -167,11 +163,11 @@ If you’re not already a member of VATSIM’s UK division, the first step is to
 								Where required, an individual training plan created by the New Controller Training Group Instructors so we can guide your training to what suits you best.
 							</li>
 						</ul>
-					</p>	
+					</p>
 					<h3>
 						Step 4 - Practical Exam
 					</h3>
-					
+
 					<p>
 						Your exam will include around an hour of controlling, some questions, and a comprehensive debrief in which your examiner will explain what you’ve done well and what you need to improve upon. If you meet the standard to be awarded a rating, they will request your rating to be upgraded to S1!
 					</p>
@@ -189,8 +185,8 @@ If you’re not already a member of VATSIM’s UK division, the first step is to
 					</h2>
 
 					<p>
-						To progress to your S2 rating, you will need to request to join the waiting list. To do this, submit a ticket to ATC Training via the <a href="https://helpdesk.vatsim.uk" rel="external nofollow">helpdesk</a>. You may be offered a training place at any UK aerodrome. 
-					</p>		
+						To progress to your S2 rating, you will need to request to join the waiting list. To do this, submit a ticket to ATC Training via the <a href="https://helpdesk.vatsim.uk" rel="external nofollow">helpdesk</a>. You may be offered a training place at any UK aerodrome.
+					</p>
 					<p>
                         Further information on our training programmes is available in the <a href="https://community.vatsim.uk/files/downloads/file/230-atc-training-handbook/" target="_blank" rel="noopener noreferrer">ATC Training Handbook</a>.
                     </p>
@@ -211,11 +207,11 @@ If you’re not already a member of VATSIM’s UK division, the first step is to
 					</h3>
 
 					<p>
-					After solidifying your S1 knowledge and having controlled for at least 50 hours, you may wish to train on our A/G Fiso endorsement. This is a moodle based teaching module that allows you to control smaller airfields as an A/G (Air - Ground Radio Operator) or FISO (Flight Information Service Officer). This module will start to teach the basics of VFR flight and will stand you in good stead for beginning your S2 training. You can find further details <a href="https://www.vatsim.uk/atc/endorsements" rel="external nofollow">here</a>	and if you wish to be enrolled in the course then submit a ticket to <a href="https://helpdesk.vatsim.uk" rel="external nofollow">helpdesk</a>.	
+					After solidifying your S1 knowledge and having controlled for at least 50 hours, you may wish to train on our A/G Fiso endorsement. This is a moodle based teaching module that allows you to control smaller airfields as an A/G (Air - Ground Radio Operator) or FISO (Flight Information Service Officer). This module will start to teach the basics of VFR flight and will stand you in good stead for beginning your S2 training. You can find further details <a href="https://www.vatsim.uk/atc/endorsements" rel="external nofollow">here</a>	and if you wish to be enrolled in the course then submit a ticket to <a href="https://helpdesk.vatsim.uk" rel="external nofollow">helpdesk</a>.
 					</p>
-		
-		
-		
+
+
+
 
 
 		</div>
@@ -246,7 +242,7 @@ If you’re not already a member of VATSIM’s UK division, the first step is to
                     <p>
                         <strong>What do I need before attending a group session?</strong>
                     </p>
-						
+
                     <ul>
                         <li>
                             An installed version of <a href="http://www.euroscope.hu/" rel="external nofollow">Euroscope</a>
@@ -263,7 +259,7 @@ If you’re not already a member of VATSIM’s UK division, the first step is to
                         <li>
                             <a href="{{ route('site.community.teamspeak') }}" rel="">Teamspeak</a>&nbsp;Installed
                         </li>
-                        
+
                     </ul>
 
                     <p>
