@@ -26,12 +26,13 @@ class HasDiscordAccountTest extends TestCase
         });
 
         $permissionHas = factory(Permission::class)->create();
+        DiscordRoleRule::factory()->create(['discord_id' => '3', 'permission_id' => factory(Permission::class)->create()]); // Role rule means user shouldn't have role
+
         DiscordRoleRule::factory()->create(['discord_id' => '1', 'permission_id' => $permissionHas]); // Role rule means user should have
         DiscordRoleRule::factory()->create(['discord_id' => '1', 'permission_id' => factory(Permission::class)->create()]); // Role rule means user shouldn't have (but granted by one above)
 
         DiscordRoleRule::factory()->create(['discord_id' => '2', 'permission_id' => factory(Permission::class)->create()]); // Role rule means user shouldn't have role. Should be removed
 
-        DiscordRoleRule::factory()->create(['discord_id' => '3', 'permission_id' => factory(Permission::class)->create()]); // Role rule means user shouldn't have role
 
         $this->user->givePermissionTo($permissionHas);
 
