@@ -41,7 +41,7 @@ trait HasDiscordAccount
         try {
             $discord->setNickname($this, $this->discordName);
         } catch (DiscordUserNotFoundException $e) {
-            Log::debug('Discord user not found. Unlinking', ['user' => $this->getKey()]);
+            Log::debug('Discord user not found - unlinking', ['user' => $this->getKey()]);
 
             return event(new DiscordUnlinked($this));
         }
