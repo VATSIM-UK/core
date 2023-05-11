@@ -87,7 +87,7 @@ class DiscordRoleRule extends Model
         }
 
         $ctsMember = Member::where('cid', $account->getKey())->first();
-        if (! $ctsMember) {
+        if (! $ctsMember || ! $ctsMember->visit_may_control) {
             return false;
         }
 
