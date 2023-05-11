@@ -95,7 +95,6 @@ trait HasDiscordAccount
                     $discord->grantRoleById($this, $discordRoleId);
                     sleep(1);
                 }
-
                 return;
             }
 
