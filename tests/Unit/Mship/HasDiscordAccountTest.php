@@ -33,7 +33,6 @@ class HasDiscordAccountTest extends TestCase
 
         DiscordRoleRule::factory()->create(['discord_id' => '2', 'permission_id' => factory(Permission::class)->create()]); // Role rule means user shouldn't have role. Should be removed
 
-
         $this->user->givePermissionTo($permissionHas);
 
         $this->user->syncToDiscord();
