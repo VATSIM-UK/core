@@ -17,7 +17,7 @@ trait HasDiscordAccount
     public function getDiscordNameAttribute()
     {
         if (Str::length($this->name) >= 32) {
-            return $this->name_preferred . ' ' . substr($this->name_last, 0, 1);
+            return $this->name_preferred.' '.substr($this->name_last, 0, 1);
         }
 
         return $this->name;
@@ -28,7 +28,7 @@ trait HasDiscordAccount
      */
     public function syncToDiscord()
     {
-        if (!config('services.discord.token')) {
+        if (! config('services.discord.token')) {
             return;
         }
 
@@ -83,14 +83,13 @@ trait HasDiscordAccount
             return ['discord_id' => $roleRule->discord_id, 'satisfied' => $roleRule->accountSatisfies($this)];
         });
 
-
         Log::debug('Gathering role rules', ['rules' => $discordRoleRules->toArray(), 'user' => $this->getKey()]);
 
         // Group each of the role rules by the discord role id (there could be multiple rules for a single discord role). We then eveluate each grouped set, to see if the user has any of the rules satisified
         $discordRoleRules->groupBy('discord_id')->each(function ($groupedRoleRules, $discordRoleId) use ($currentRoles, $discord) {
             if (collect($groupedRoleRules)->contains(fn ($rule) => (bool) $rule['satisfied'])) {
                 // At least one role rule grants this discord role. We will give it to the user if they don't already have it
-                if (!$currentRoles->contains($discordRoleId)) {
+                if (! $currentRoles->contains($discordRoleId)) {
                     Log::info("{$this->full_name} ({$this->getKey()}) should have discord role {$discordRoleId}, but doesn't");
                     $discord->grantRoleById($this, $discordRoleId);
                     sleep(1);
