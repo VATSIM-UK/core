@@ -81,7 +81,7 @@ trait HasDiscordAccount
         });
 
 
-        Log::debug('Gathering role rules', ['rules' => $discordRoleRules->toArray()]);
+        Log::debug('Gathering role rules', ['rules' => $discordRoleRules->toArray(), 'user' => $this->getKey()]);
 
         // Group each of the role rules by the discord role id (there could be multiple rules for a single discord role). We then eveluate each grouped set, to see if the user has any of the rules satisified
         $discordRoleRules->groupBy('discord_id')->each(function ($groupedRoleRules, $discordRoleId) use ($currentRoles, $discord) {
