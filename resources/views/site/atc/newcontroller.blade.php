@@ -17,7 +17,7 @@
                         </p>
 Welcome to the exciting world of air traffic control (ATC) in VATSIM UK. If you already have some experience of VATSIM as a pilot, this will certainly provide you with a head start, but it is by no means necessary. You do not even need to own a copy of Flight Simulator; the software for VATSIM ATC is standalone and entirely free of charge!
 					<p>
-Becoming a controller requires a certain amount of training before being allowed to control ‘live’ traffic. While undertaking training a certain amount of commitment and self study is required - so be prepared for this! There is a system of graduated controller ratings that determine the ATC positions you can control, so being a VATSIM controller is a constant learning process. We want this to be both enjoyable and educational!
+Becoming a controller requires a certain amount of training before being allowed to control ‘live’ traffic. While undertaking training a certain amount of commitment and self-study is required - so be prepared for this! There is a system of graduated controller ratings that determine the ATC positions you can control, so being a VATSIM controller is a constant learning process. We want this to be both enjoyable and educational!
 					</p>
 
 					<p>
@@ -25,7 +25,7 @@ Becoming a controller requires a certain amount of training before being allowed
 					</p>
 
 <p>
-If you’re not already a member of VATSIM’s UK division, the first step is to follow the instructions on the <a href="https://www.vatsim.uk/join" rel="external nofollow">Join Us</a> page – you’ll need to ensure that your division is set to ‘United Kingdom’. If you need to make a change, this may take up to 24 hours to process. <b>You will lose your place on the waiting list if you later transfer to another division, and will be unable to undertake training in VATSIM UK.</b>
+If you’re not already a member of VATSIM’s UK division, the first step is to follow the instructions on the <a href="https://www.vatsim.uk/join" rel="external nofollow">Join Us</a> page – you’ll need to ensure that your division is set to ‘United Kingdom’. If you need to make a change, this may take up to 24 hours to process. <b>You will lose your place on the waiting list if you later transfer to another division and will be unable to undertake training in VATSIM UK.</b>
 </p>
 					<h2>
                         Required Software
