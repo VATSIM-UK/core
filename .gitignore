@@ -7,7 +7,6 @@
 /coverage
 /vendor
 /.idea
-/.vscode
 /.vagrant
 /laradock
 Homestead.json
