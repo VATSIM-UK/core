@@ -111,14 +111,15 @@
     "require-dev": {
         "ext-json": "*",
         "codedungeon/phpunit-result-printer": "^0.32.0",
-        "nunomaduro/collision": "^7.0",
-        "spatie/laravel-ignition": "^1.0",
         "fakerphp/faker": "^1.9.1",
         "laracasts/generators": "^2.0",
         "laravel/homestead": "^14.0.0",
         "laravel/legacy-factories": "^1.1",
+        "laravel/pint": "^1.10",
         "mockery/mockery": "1.5.*",
+        "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^9.4",
+        "spatie/laravel-ignition": "^1.0",
         "spatie/laravel-ray": "^1.23",
         "symfony/css-selector": "^4.0",
         "symfony/dom-crawler": "^6.1",
@@ -162,6 +163,9 @@
             "php artisan ide-helper:generate",
             "php artisan ide-helper:models -RW",
             "php artisan ide-helper:meta"
+        ],
+        "lint": [
+            "./vendor/bin/pint"
         ]
     },
     "config": {

@@ -177,6 +177,22 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: 8.1
+
+      - name: Install PHP dependencies
+        uses: ramsey/composer-install@v2
+
+      - name: 'Lint PHP'
+        run: composer lint -- --test
+      
+
   trigger-deploy:
     name: Trigger Deploy
     needs: test
