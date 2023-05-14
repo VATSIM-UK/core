@@ -61,6 +61,7 @@ class TeamSpeakMapper extends Command
             foreach ($qualifications as $qual) {
                 if (preg_match("/^{$qual->code}/", $group['name'])) {
                     $qualificationId = $qual->id;
+
                     continue;
                 }
             }

@@ -26,5 +26,6 @@ class Contact extends Model
     use Notifiable;
 
     protected $table = 'contacts';
+
     public $timestamps = false;
 }

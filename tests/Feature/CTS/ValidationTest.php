@@ -38,7 +38,7 @@ class ValidationTest extends TestCase
         $member = factory(Member::class)->create();
         $position = factory(ValidationPosition::class)->create();
         $validation = factory(Validation::class)->create([
-            'member_id'   => $member,
+            'member_id' => $member,
             'position_id' => $position,
         ]);
 
@@ -50,7 +50,7 @@ class ValidationTest extends TestCase
                 ],
                 'validated_members' => [
                     [
-                        'id'   => $member->cid,
+                        'id' => $member->cid,
                         'name' => $member->name,
                     ],
                 ],

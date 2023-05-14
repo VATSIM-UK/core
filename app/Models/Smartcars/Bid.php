@@ -44,10 +44,12 @@ class Bid extends Model
     use SoftDeletingTrait;
 
     protected $table = 'smartcars_bid';
+
     protected $fillable = [
         'flight_id',
         'account_id',
     ];
+
     protected $dates = [
         'completed_at',
         'deleted_at',

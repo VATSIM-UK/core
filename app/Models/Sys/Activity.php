@@ -37,8 +37,11 @@ class Activity extends Model
     use OverridesUpdatedAt;
 
     protected $table = 'sys_activity';
+
     protected $primaryKey = 'id';
+
     protected $dates = ['created_at'];
+
     protected $fillable = ['actor_id', 'subject_id', 'subject_type', 'action'];
 
     public function actor()

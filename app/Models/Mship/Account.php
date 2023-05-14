@@ -195,8 +195,11 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     protected $table = 'mship_account';
+
     protected $guard_name = ['web'];
+
     public $incrementing = false;
+
     protected $dates = [
         'last_login',
         'joined_at',
@@ -207,6 +210,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'password_set_at',
         'password_expires_at',
     ];
+
     protected $fillable = [
         'id',
         'name_first',
@@ -218,14 +222,18 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'joined_at',
         'cert_checked_at',
     ];
+
     protected $attributes = [
-        'name_first'    => '',
-        'name_last'     => '',
-        'inactive'      => false,
+        'name_first' => '',
+        'name_last' => '',
+        'inactive' => false,
         'last_login_ip' => '0.0.0.0',
     ];
+
     protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
+
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
+
     protected $casts = [
         'inactive' => 'boolean',
         'discord_id' => 'int',
@@ -259,7 +267,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     /**
      * Find an account by its ID or retrieve it from Cert. If false, user does not exist at VATSIM.NET.
      *
-     * @param $accountId
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|bool|static[]
      *
      * @throws InvalidCIDException

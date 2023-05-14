@@ -35,6 +35,7 @@ use Illuminate\Database\Eloquent\Model;
 class Runway extends Model
 {
     protected $table = 'airport_runways';
+
     protected $fillable = [
         'ident',
         'heading',
@@ -44,9 +45,13 @@ class Runway extends Model
     ];
 
     const SURFACE_TYPE_ASPHALT = 1;
+
     const SURFACE_TYPE_GRASS = 2;
+
     const SURFACE_TYPE_CONCRETE = 3;
+
     const SURFACE_TYPE_SAND = 4;
+
     const SURFACE_TYPE_GRE = 5;
 
     /**

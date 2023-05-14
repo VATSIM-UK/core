@@ -21,8 +21,10 @@ class WaitingListFlagTest extends TestCase
 
     /** @var WaitingListFlag */
     private $flag;
+
     /** @var WaitingList */
     private $waitingList;
+
     /** @var Endorsement */
     private $endorsement;
 

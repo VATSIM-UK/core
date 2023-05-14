@@ -111,11 +111,11 @@ trait HasPassword
     public function getMandatoryPasswordAttribute()
     {
         return $this->roles()
-                    ->get()
-                    ->filter(function ($value) {
-                        return $value->password_mandatory;
-                    })
-                    ->isNotEmpty();
+            ->get()
+            ->filter(function ($value) {
+                return $value->password_mandatory;
+            })
+            ->isNotEmpty();
     }
 
     /**

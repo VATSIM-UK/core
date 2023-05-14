@@ -11,7 +11,6 @@ class CheckWaitingListAccountInactivity
     /**
      * Handle the event.
      *
-     * @param  \App\Events\Mship\AccountAltered  $event
      * @return void
      */
     public function handle(AccountAltered $event)

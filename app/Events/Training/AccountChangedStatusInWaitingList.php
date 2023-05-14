@@ -14,7 +14,9 @@ class AccountChangedStatusInWaitingList
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $account;
+
     public $waitingList;
+
     public $staffAccount;
 
     /**

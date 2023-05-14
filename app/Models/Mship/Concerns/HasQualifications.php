@@ -26,7 +26,6 @@ trait HasQualifications
     /**
      * Determine if the given qualification exists on the member account.
      *
-     * @param  Qualification  $qualification
      * @return bool
      */
     public function hasQualification(Qualification $qualification)
@@ -39,7 +38,6 @@ trait HasQualifications
     /**
      * Add a qualification to the current member account.
      *
-     * @param  Qualification  $qualification
      * @return self
      */
     public function addQualification(Qualification $qualification)

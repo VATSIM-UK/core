@@ -25,9 +25,11 @@ use App\Models\Model;
 class Email extends Model
 {
     protected $table = 'vt_facility_email';
+
     protected $primaryKey = 'id';
 
     public $timestamps = true;
+
     public $fillable = [
         'facility_id',
         'email',

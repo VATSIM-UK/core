@@ -37,9 +37,13 @@ use App\Models\Model;
 class Note extends Model
 {
     protected $table = 'mship_account_note';
+
     protected $primaryKey = 'id';
+
     protected $dates = ['created_at', 'updated_at'];
+
     protected $touches = ['account'];
+
     protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     public function account()

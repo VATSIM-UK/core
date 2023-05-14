@@ -45,13 +45,16 @@ use Illuminate\Database\Eloquent\Model;
 class Pirep extends Model
 {
     protected $table = 'smartcars_pirep';
+
     protected $fillable = [
         'bid_id',
         'flight_id',
     ];
+
     protected $dates = [
         'deleted_at',
     ];
+
     protected $casts = [
         'passed' => 'boolean',
     ];

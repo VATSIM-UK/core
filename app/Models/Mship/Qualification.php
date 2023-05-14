@@ -41,8 +41,11 @@ class Qualification extends Model
     use HasFactory;
 
     protected $table = 'mship_qualification';
+
     protected $primaryKey = 'id';
+
     protected $hidden = ['id'];
+
     public $timestamps = false;
 
     public function scopeCode($query, $code)

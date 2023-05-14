@@ -52,11 +52,14 @@ use Illuminate\Database\Eloquent\Model;
 class Posrep extends Model
 {
     protected $table = 'smartcars_posrep';
+
     protected $fillable = [
         'bid_id',
         'flight_id',
     ];
+
     public $timestamps = true;
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -76,7 +79,6 @@ class Posrep extends Model
     /**
      * Determine whether a posrep is valid against the provided criteria.
      *
-     * @param  FlightCriterion  $criterion
      * @return bool
      */
     public function positionIsValid(FlightCriterion $criterion)

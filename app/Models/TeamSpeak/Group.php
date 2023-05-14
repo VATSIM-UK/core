@@ -35,7 +35,9 @@ use Spatie\Permission\Models\Permission;
 class Group extends Model
 {
     public $timestamps = false;
+
     protected $table = 'teamspeak_group';
+
     protected $primaryKey = 'id';
 
     /**

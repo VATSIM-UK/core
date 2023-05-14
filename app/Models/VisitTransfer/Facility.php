@@ -68,12 +68,17 @@ class Facility extends Model
     use PublicId, Notifiable;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-facility';
+
     protected static $public_id_min_length = 8;
+
     protected static $public_id_alphabet = 'upper_alphanumeric';
 
     protected $table = 'vt_facility';
+
     protected $primaryKey = 'id';
+
     public $timestamps = false;
+
     public $casts = [
         'can_visit' => 'boolean',
         'can_transfer' => 'boolean',
@@ -85,6 +90,7 @@ class Facility extends Model
         'open' => 'boolean',
         'public' => 'boolean',
     ];
+
     public $fillable = [
         'name',
         'description',
@@ -259,8 +265,8 @@ class Facility extends Model
     private function guardAgainstDuplicateFacilityName($proposedName, $excludeCurrent = false)
     {
         if ($excludeCurrent && self::where('id', '!=', $excludeCurrent)
-                ->where('name', 'LIKE', $proposedName)
-                ->count() > 0
+            ->where('name', 'LIKE', $proposedName)
+            ->count() > 0
         ) {
             throw new DuplicateFacilityNameException($proposedName);
         }

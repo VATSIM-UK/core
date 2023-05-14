@@ -20,7 +20,6 @@ class LogAccountPromoted
     /**
      * Handle the event.
      *
-     * @param  AccountPromotedInWaitingList  $event
      * @return void
      */
     public function handle(AccountPromotedInWaitingList $event)

@@ -19,6 +19,7 @@ class UpdateMember extends Job implements ShouldQueue
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
     protected $accountID;
+
     protected $data;
 
     /**
