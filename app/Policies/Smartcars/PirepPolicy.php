@@ -14,8 +14,6 @@ class PirepPolicy extends BasePolicy
     /**
      * Determine whether the user can view the pirep.
      *
-     * @param  Account  $account
-     * @param  Pirep  $pirep
      * @return bool
      */
     public function viewAccount(Account $account, Pirep $pirep)

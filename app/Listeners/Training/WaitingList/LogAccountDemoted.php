@@ -20,7 +20,6 @@ class LogAccountDemoted
     /**
      * Handle the event.
      *
-     * @param  AccountDemotedInWaitingList  $event
      * @return void
      */
     public function handle(AccountDemotedInWaitingList $event)

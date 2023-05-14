@@ -16,10 +16,12 @@ class UserImpersonated extends Notification implements ShouldQueue
      * @var Account
      */
     protected $target;
+
     /**
      * @var Account
      */
     protected $impersonator;
+
     /**
      * @var string
      */
@@ -27,10 +29,6 @@ class UserImpersonated extends Notification implements ShouldQueue
 
     /**
      * Create a new notification instance.
-     *
-     * @param  Account  $target
-     * @param  Account  $impersonator
-     * @param $reason
      */
     public function __construct(Account $target, Account $impersonator, $reason)
     {

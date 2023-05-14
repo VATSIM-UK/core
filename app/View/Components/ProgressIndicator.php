@@ -7,15 +7,18 @@ use Illuminate\View\Component;
 class ProgressIndicator extends Component
 {
     public float $value;
+
     public string $text;
+
     public float $min;
+
     public float $max;
+
     public string $class;
 
     /**
      * Create a new component instance.
      *
-     * @param  float  $value
      * @param  string  $text
      * @param  string  $class
      * @param  int  $min

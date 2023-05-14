@@ -38,6 +38,7 @@ use Illuminate\Database\Eloquent\Model;
 class Navaid extends Model
 {
     protected $table = 'airport_navaids';
+
     protected $fillable = [
         'type',
         'name',
@@ -49,13 +50,19 @@ class Navaid extends Model
     ];
 
     const FREQUENCY_BAND_MHZ = 1;
+
     const FREQUENCY_BAND_KHZ = 2;
 
     const TYPE_NDB = 1;
+
     const TYPE_VOR = 2;
+
     const TYPE_VORDME = 3;
+
     const TYPE_DME = 4;
+
     const TYPE_ILS = 5;
+
     const TYPE_TACAN = 6;
 
     /**

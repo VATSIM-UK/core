@@ -12,7 +12,6 @@ class RemoveDiscordUser implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  DiscordUnlinked  $event
      * @return void
      */
     public function handle(DiscordUnlinked $event)

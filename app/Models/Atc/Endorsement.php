@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 class Endorsement extends Model
 {
     protected $table = 'endorsements';
+
     protected $fillable = [
         'name',
     ];

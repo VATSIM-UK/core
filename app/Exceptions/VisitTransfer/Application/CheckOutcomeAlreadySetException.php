@@ -7,6 +7,7 @@ use App\Models\VisitTransfer\Application;
 class CheckOutcomeAlreadySetException extends \Exception
 {
     private $application;
+
     private $check;
 
     public function __construct(Application $application, $check)

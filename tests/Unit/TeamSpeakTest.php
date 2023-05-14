@@ -15,7 +15,9 @@ class TeamSpeakTest extends TestCase
     use DatabaseTransactions;
 
     protected $channel;
+
     protected $channelGroups;
+
     protected $serverGroups;
 
     public function setUp(): void

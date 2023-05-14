@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\Storage;
 abstract class StorageWrapper
 {
     protected $basePath = '/storage/';
+
     protected $disk = 'public';
 
     /**
      * Store an image on the disk.
      *
-     * @param  CoreUploadedFile  $image
      * @return false|string
      */
     public function store(CoreUploadedFile $image)
@@ -24,7 +24,6 @@ abstract class StorageWrapper
     /**
      * Generates a public url to the image.
      *
-     * @param $fileName
      * @return bool|string
      */
     public function retrieve($fileName)
@@ -35,7 +34,6 @@ abstract class StorageWrapper
     /**
      * Deletes the image file.
      *
-     * @param $fileName
      * @return bool
      */
     public function delete($fileName)
@@ -46,7 +44,6 @@ abstract class StorageWrapper
     /**
      * Helper function to generate the full file name.
      *
-     * @param $fileName
      * @return string
      */
     protected function parseFileName($fileName)

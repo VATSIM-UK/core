@@ -25,9 +25,13 @@ use App\Models\Model;
 class Channel extends Model
 {
     public $timestamps = false;
+
     public $incrementing = false;
+
     protected $table = 'teamspeak_channel';
+
     protected $primaryKey = 'id';
+
     protected $guarded = [];
 
     /**

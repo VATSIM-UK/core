@@ -41,9 +41,9 @@ class RemovedFromWaitingListInactiveAccount extends Notification implements Shou
     public function toMail($notifiable)
     {
         return (new MailMessage)
-        ->from('support@vatsim.uk', 'VATSIM UK - Member Services')
-        ->subject('UK Training Waiting List Removal')
-        ->view('emails.training.waiting_list_inactive_account', ['recipient' => $notifiable]);
+            ->from('support@vatsim.uk', 'VATSIM UK - Member Services')
+            ->subject('UK Training Waiting List Removal')
+            ->view('emails.training.waiting_list_inactive_account', ['recipient' => $notifiable]);
     }
 
     public function toDiscord(object $notifiable)

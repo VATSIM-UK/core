@@ -49,8 +49,11 @@ class Type extends Model
     use SoftDeletingTrait;
 
     protected $table = 'mship_note_type';
+
     protected $primaryKey = 'id';
+
     protected $dates = ['created_at', 'deleted_at'];
+
     protected $fillable = ['name', 'short_code', 'is_available', 'is_default'];
 
     public static function getNoteColourCodes()

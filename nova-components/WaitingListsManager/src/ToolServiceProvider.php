@@ -46,8 +46,8 @@ class ToolServiceProvider extends ServiceProvider
         }
 
         Route::middleware(['nova', SubstituteBindings::class])
-                ->prefix('nova-vendor/waiting-lists-manager')
-                ->group(__DIR__.'/../routes/api.php');
+            ->prefix('nova-vendor/waiting-lists-manager')
+            ->group(__DIR__.'/../routes/api.php');
     }
 
     /**

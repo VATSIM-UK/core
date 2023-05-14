@@ -13,6 +13,7 @@ use Log;
 class Router extends AdmController
 {
     protected $pilot;
+
     protected $session;
 
     public function __construct()

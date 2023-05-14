@@ -33,6 +33,7 @@ use App\Models\Model;
 class Request extends Model
 {
     protected $table = 'api_request';
+
     public $fillable = [
         'api_account_id',
         'method',

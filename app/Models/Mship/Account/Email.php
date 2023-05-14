@@ -38,8 +38,11 @@ use Carbon\Carbon;
 class Email extends Model
 {
     protected $table = 'mship_account_email';
+
     protected $dates = ['verified_at', 'created_at', 'updated_at'];
+
     protected $fillable = ['email'];
+
     protected $touches = ['account'];
 
     public function scopeEmailMatches($query, $email)

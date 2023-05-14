@@ -16,6 +16,7 @@ class WaitingListStatus extends Model
     ];
 
     const DEFAULT_STATUS = 1;
+
     const DEFERRED = 2;
 
     public function waitingListAccount()

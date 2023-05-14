@@ -27,7 +27,6 @@ class Account extends Resource
     /**
      * Removes Account from navigation bar.
      *
-     * @param  Request  $request
      * @return bool
      */
     public static function availableForNavigation(Request $request)
@@ -74,7 +73,6 @@ class Account extends Resource
     /**
      * Global disable of account creation as data comes from core.
      *
-     * @param  Request  $request
      * @return bool
      */
     public static function authorizedToCreate(Request $request)
@@ -87,7 +85,6 @@ class Account extends Resource
      *
      * @SEMI-TEMPORARY
      *
-     * @param  NovaRequest  $request
      * @param  \Illuminate\Database\Eloquent\Model|string  $model
      * @return bool
      */
@@ -99,7 +96,6 @@ class Account extends Resource
     /**
      * Globally disable the ability to delete an account.
      *
-     * @param  Request  $request
      * @return bool
      */
     public function authorizedToDelete(Request $request)
@@ -110,7 +106,6 @@ class Account extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function fields(Request $request)
@@ -152,7 +147,6 @@ class Account extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function cards(Request $request)
@@ -167,7 +161,6 @@ class Account extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function filters(Request $request)
@@ -180,7 +173,6 @@ class Account extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function lenses(Request $request)
@@ -191,7 +183,6 @@ class Account extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function actions(Request $request)

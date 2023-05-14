@@ -15,6 +15,7 @@ class SyncTGMembersToForumGroups implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $rtsId;
+
     protected $forumGroup;
 
     public function __construct(int $rtsId, int $forumGroup)

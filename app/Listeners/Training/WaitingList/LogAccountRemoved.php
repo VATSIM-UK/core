@@ -20,7 +20,6 @@ class LogAccountRemoved
     /**
      * Handle the event.
      *
-     * @param  AccountRemovedFromWaitingList  $event
      * @return void
      */
     public function handle(AccountRemovedFromWaitingList $event)

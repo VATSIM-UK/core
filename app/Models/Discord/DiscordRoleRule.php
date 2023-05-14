@@ -53,9 +53,6 @@ class DiscordRoleRule extends Model
 
     /**
      * Determine if account satifies the requirements for the role.
-     *
-     * @param  Account  $account
-     * @return bool
      */
     public function accountSatisfies(Account $account): bool
     {

@@ -17,6 +17,7 @@ class WaitingListLoggingTest extends TestCase
     use DatabaseTransactions, WaitingListTestHelper;
 
     private $waitingList;
+
     private $account;
 
     protected function setUp(): void

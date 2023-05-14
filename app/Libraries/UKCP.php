@@ -46,7 +46,6 @@ class UKCP
     }
 
     /**
-     * @param  Account  $account
      * @return array|Collection|mixed|ResponseInterface
      */
     public function getValidTokensFor(Account $account)
@@ -60,7 +59,6 @@ class UKCP
     }
 
     /**
-     * @param  Account  $account
      * @return object|null
      */
     public function createTokenFor(Account $account)
@@ -89,8 +87,6 @@ class UKCP
     }
 
     /**
-     * @param  string  $tokenId
-     * @param  Account  $account
      * @return bool
      */
     public function deleteToken(string $tokenId, Account $account)

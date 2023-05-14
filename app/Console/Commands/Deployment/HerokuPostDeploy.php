@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 class HerokuPostDeploy extends Command
 {
     protected $signature = 'postdeploy:heroku';
+
     protected $description = 'Run post-deploy on Heroku';
 
     public function handle()

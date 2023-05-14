@@ -129,7 +129,7 @@ class Discord
 
         return Cache::remember($account->id.'.discord.userdata', now()->addHours(12), function () use ($account) {
             return Http::withHeaders($this->headers)
-            ->get("{$this->base_url}/users/{$account->discord_id}")->json();
+                ->get("{$this->base_url}/users/{$account->discord_id}")->json();
         });
     }
 

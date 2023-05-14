@@ -16,6 +16,7 @@ abstract class TestCase extends BaseTestCase
     protected $knownDate;
 
     protected $privacc;
+
     protected $user;
 
     protected function setUp(): void
