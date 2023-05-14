@@ -173,7 +173,7 @@ class BaseController extends \Illuminate\Routing\Controller
      * Add a new element to the breadcrumb to be shown on this page.
      *
      * @param  string  $name  The text to display on the page.
-     * @param    $uri  The URI the text should link to.
+     * @param  $uri  The URI the text should link to.
      * @param  bool  $linkToPrevious  Set to TRUE if the breadcrumb is a parent of the previous one.
      * @param  bool  $first  Set to TRUE if the breadcrumb should be first.
      */
