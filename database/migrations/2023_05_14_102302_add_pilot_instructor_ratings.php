@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -14,7 +12,7 @@ return new class extends Migration
      */
     public function up()
     {
-        DB::table("mship_qualification")->insert(
+        DB::table('mship_qualification')->insert(
             [
                 'code' => 'FI',
                 'type' => 'pilot',
@@ -25,7 +23,7 @@ return new class extends Migration
             ]
         );
 
-        DB::table("mship_qualification")->insert(
+        DB::table('mship_qualification')->insert(
             [
                 'code' => 'FE',
                 'type' => 'pilot',
@@ -44,7 +42,7 @@ return new class extends Migration
      */
     public function down()
     {
-        DB::table("mship_qualification")->where('code', 'FI')->delete();
-        DB::table("mship_qualification")->where('code', 'FE')->delete();
+        DB::table('mship_qualification')->where('code', 'FI')->delete();
+        DB::table('mship_qualification')->where('code', 'FE')->delete();
     }
 };
