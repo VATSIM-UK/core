@@ -24,7 +24,9 @@ use App\Models\Model;
 class Confirmation extends Model
 {
     public $incrementing = false;
+
     protected $table = 'teamspeak_confirmation';
+
     protected $primaryKey = 'registration_id';
 
     public function registration()

@@ -22,6 +22,7 @@ class FeedbackResponse extends Resource
      * @var int
      */
     public static $perPageViaRelationship = 10;
+
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
@@ -39,8 +40,6 @@ class FeedbackResponse extends Resource
     /**
      * Order responses as they appear on the form.
      *
-     * @param $query
-     * @param  array  $orderings
      * @return mixed
      */
     protected static function applyOrderings($query, array $orderings)
@@ -71,7 +70,6 @@ class FeedbackResponse extends Resource
     /**
      * Remove from navigation as only a background resource.
      *
-     * @param  Request  $request
      * @return bool
      */
     public static function availableForNavigation(Request $request)
@@ -82,7 +80,6 @@ class FeedbackResponse extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function fields(Request $request)
@@ -101,7 +98,6 @@ class FeedbackResponse extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function cards(Request $request)
@@ -112,7 +108,6 @@ class FeedbackResponse extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function filters(Request $request)
@@ -123,7 +118,6 @@ class FeedbackResponse extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function lenses(Request $request)
@@ -134,7 +128,6 @@ class FeedbackResponse extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function actions(Request $request)

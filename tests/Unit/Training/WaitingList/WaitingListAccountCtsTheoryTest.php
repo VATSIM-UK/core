@@ -15,6 +15,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     use DatabaseTransactions;
 
     private Member $member;
+
     private Account $account;
 
     public function setUp(): void

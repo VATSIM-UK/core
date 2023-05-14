@@ -50,12 +50,14 @@ class Feedback extends Model
     use Notifiable;
 
     protected $table = 'mship_feedback';
+
     protected $dates = [
         'created_at',
         'updated_at',
         'actioned_at',
         'sent_at',
     ];
+
     protected $fillable = [
         'account_id',
         'submitter_account_id',

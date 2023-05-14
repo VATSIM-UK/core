@@ -12,6 +12,7 @@ class FTEWebInterfaceTest extends TestCase
     use DatabaseTransactions;
 
     private $exercise;
+
     private $pirep;
 
     public function setUp(): void

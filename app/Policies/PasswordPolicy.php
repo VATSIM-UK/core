@@ -9,7 +9,6 @@ class PasswordPolicy extends Policy
     /**
      * Determine whether the user can create a new password.
      *
-     * @param  Account  $user
      * @return mixed
      */
     public function create(Account $user)
@@ -24,7 +23,6 @@ class PasswordPolicy extends Policy
     /**
      * Determine whether the user can update their password.
      *
-     * @param  Account  $user
      * @return mixed
      */
     public function change(Account $user)
@@ -39,7 +37,6 @@ class PasswordPolicy extends Policy
     /**
      * Determine whether the user can delete their password.
      *
-     * @param  Account  $user
      * @return mixed
      */
     public function delete(Account $user)

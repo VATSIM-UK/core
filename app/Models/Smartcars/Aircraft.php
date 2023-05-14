@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\Model;
 class Aircraft extends Model
 {
     protected $table = 'smartcars_aircraft';
+
     protected $fillable = [
         'icao',
         'name',
@@ -50,7 +51,9 @@ class Aircraft extends Model
         'max_passengers',
         'max_cargo_kg',
     ];
+
     public $timestamps = true;
+
     protected $dates = [
         'created_at',
         'updated_at',

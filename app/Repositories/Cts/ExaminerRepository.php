@@ -9,8 +9,8 @@ class ExaminerRepository
     public function getAtcExaminers()
     {
         $examiners = ExaminerSettings::with(['member'])
-                                    ->atc()
-                                    ->get();
+            ->atc()
+            ->get();
 
         return $examiners->reject(function ($examiner) {
             return ! (bool) $examiner->member->examiner;
@@ -22,8 +22,8 @@ class ExaminerRepository
     public function getPilotExaminers()
     {
         $examiners = ExaminerSettings::with(['member'])
-                                    ->pilot()
-                                    ->get();
+            ->pilot()
+            ->get();
 
         return $examiners->reject(function ($examiner) {
             return ! (bool) $examiner->member->examiner;

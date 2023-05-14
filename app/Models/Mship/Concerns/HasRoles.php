@@ -31,7 +31,6 @@ trait HasRoles
     }
 
     /**
-     * @param $role
      * @return bool
      */
     public function fireRoleAssignedEvent($role)
@@ -46,7 +45,6 @@ trait HasRoles
     }
 
     /**
-     * @param $role
      * @return $this
      */
     public function removeRole($role)
@@ -59,7 +57,6 @@ trait HasRoles
     }
 
     /**
-     * @param $role
      * @return bool
      */
     public function fireRoleRemovedEvent($role)

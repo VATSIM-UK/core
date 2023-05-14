@@ -81,7 +81,9 @@ class Reference extends Model
     use Notifiable, SoftDeletes, HasStatus;
 
     protected $table = 'vt_reference';
+
     protected $primaryKey = 'id';
+
     protected $fillable = [
         'application_id',
         'account_id',
@@ -90,17 +92,27 @@ class Reference extends Model
         'status',
         'status_note',
     ];
+
     protected $touches = ['application'];
+
     protected $dates = ['contacted_at', 'reminded_at', 'submitted_at', 'deleted_at'];
+
     public $timestamps = false;
+
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
 
     const STATUS_DRAFT = 10;
+
     const STATUS_REQUESTED = 30;
+
     const STATUS_UNDER_REVIEW = 50;
+
     const STATUS_ACCEPTED = 90;
+
     const STATUS_REJECTED = 95;
+
     const STATUS_CANCELLED = 100;
+
     const STATUS_DELETED = 101;
 
     public static $REFERENCE_IS_PENDING = [

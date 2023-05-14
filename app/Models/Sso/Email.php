@@ -28,8 +28,11 @@ use App\Models\Model;
 class Email extends Model
 {
     protected $table = 'mship_oauth_emails';
+
     protected $primaryKey = 'id';
+
     protected $dates = ['created_at', 'updated_at'];
+
     protected $hidden = ['id'];
 
     public function email()

@@ -33,8 +33,6 @@ trait TracksEvents
 
     /**
      * Create an activity for the event.
-     *
-     * @param $event
      */
     public function addActivity($event)
     {

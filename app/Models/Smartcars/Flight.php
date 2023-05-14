@@ -60,6 +60,7 @@ use Illuminate\Database\Eloquent\Model;
 class Flight extends Model
 {
     protected $table = 'smartcars_flight';
+
     protected $fillable = [
         'code',
         'name',

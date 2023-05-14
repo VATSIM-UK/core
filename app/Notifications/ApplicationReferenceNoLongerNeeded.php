@@ -12,6 +12,7 @@ class ApplicationReferenceNoLongerNeeded extends Notification implements ShouldQ
     use Queueable;
 
     private $reference;
+
     private $application;
 
     /**

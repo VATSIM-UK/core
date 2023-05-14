@@ -69,12 +69,17 @@ class Atc extends Model
     use PublicId, SoftDeletes, Rememberable;
 
     protected static $public_id_salt = 'vatsim-uk-network-data-atc-sessions';
+
     protected static $public_id_min_length = 10;
+
     protected static $public_id_alphabet = 'upper_alphanumeric';
 
     protected $table = 'networkdata_atc';
+
     protected $primaryKey = 'id';
+
     public $dates = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
+
     public $timestamps = true;
 
     protected $fillable = [
@@ -106,12 +111,19 @@ class Atc extends Model
     ];
 
     const TYPE_OBS = 1;
+
     const TYPE_DEL = 2;
+
     const TYPE_GND = 3;
+
     const TYPE_TWR = 4;
+
     const TYPE_APP = 5;
+
     const TYPE_DEP = 5;
+
     const TYPE_CTR = 6;
+
     const TYPE_FSS = 7;
 
     protected static function boot()

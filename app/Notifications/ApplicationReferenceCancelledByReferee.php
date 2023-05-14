@@ -12,6 +12,7 @@ class ApplicationReferenceCancelledByReferee extends Notification implements Sho
     use Queueable;
 
     private $reference;
+
     private $application;
 
     /**

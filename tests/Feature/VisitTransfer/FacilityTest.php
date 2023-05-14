@@ -13,6 +13,7 @@ class FacilityTest extends TestCase
     use DatabaseTransactions;
 
     private $internationalUser;
+
     private $divisionUser;
 
     public function setUp(): void

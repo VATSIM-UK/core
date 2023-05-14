@@ -13,6 +13,7 @@ class TheoryResult extends Model
     use HasFactory;
 
     protected $connection = 'cts';
+
     public $timestamps = false;
 
     /**

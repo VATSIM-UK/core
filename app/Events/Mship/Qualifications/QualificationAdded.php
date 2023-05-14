@@ -12,6 +12,7 @@ class QualificationAdded extends Event
     use SerializesModels;
 
     public $account;
+
     public $qualification;
 
     public function __construct(Account $account, Qualification $qualification)

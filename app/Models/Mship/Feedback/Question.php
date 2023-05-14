@@ -52,10 +52,12 @@ class Question extends Model
     use SoftDeletes;
 
     protected $table = 'mship_feedback_questions';
+
     protected $dates = [
         'created_at',
         'updated_at',
     ];
+
     protected $fillable = [
         'type_id',
         'slug',
@@ -63,6 +65,7 @@ class Question extends Model
         'options',
         'required',
     ];
+
     protected $casts = [
         'required' => 'boolean',
         'options' => 'array',

@@ -33,8 +33,11 @@ class Change extends Model
     use OverridesUpdatedAt;
 
     protected $table = 'sys_data_change';
+
     protected $primaryKey = 'data_change_id';
+
     protected $hidden = ['data_change_id'];
+
     protected $fillable = ['model_type', 'model_id', 'data_key', 'data_old', 'data_new'];
 
     public function model()
