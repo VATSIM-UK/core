@@ -179,7 +179,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository'
+      - name: Checkout Repository
         uses: actions/checkout@v2
 
       - name: Setup PHP
