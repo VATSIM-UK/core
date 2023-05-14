@@ -254,6 +254,10 @@
                                 <td>John Batten</td>
                             </tr>
                             <tr>
+                                <td>Lead Mentor (New Controller)</td>
+                                <td>Stephen Lee</td>
+                            </tr>
+                            <tr>
                                 <td>TG Instructor (TWR)</td>
                                 <td>Daniel Blanco</td>
                             </tr>
