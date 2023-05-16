@@ -8,8 +8,8 @@
                 </div>
                 <div class="panel-body">
                     <p>
-                        Stand allocation in VATSIM UK is fully automated via the UK Controller Plugin. The system uses
-                        real-world combined with VATSIM network data to ensure that every flight is assigned the most realistic stand possible. The system
+                        Stand allocation at VATSIM UK is fully automated via the UK Controller Plugin. The system uses
+                        real-world and VATSIM network data to ensure that every flight is assigned the most realistic stand possible. The system
                         is reactive to network events such as pilots connecting on the stand and will re-assign stands accordingly.
                     </p>
                     <p>
