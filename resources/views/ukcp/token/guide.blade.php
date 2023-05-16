@@ -77,7 +77,7 @@
                         <li>Click Other Set, then Plugins.</li>
                         <li>Click "Load" on the dialog that opens.</li>
                         <li>Select the UKControllerPlugin.dll file from the /Data/Plugins directory.</li>
-                        <li>If this is your first time setting up the plugin, see the steps below for configuring your personal credentials.</li>
+                        <li>If this is your first time setting up the plugin, see the Step Three for configuring your personal credentials.</li>
                     </ol>
                 </div>
             </div>
