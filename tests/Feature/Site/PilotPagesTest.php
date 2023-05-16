@@ -30,7 +30,7 @@ class PilotPagesTest extends TestCase
         $this->get(route('site.pilots.oceanic'))->assertOk();
     }
 
-        /** @test */
+    /** @test */
     public function testItLoadsTheStandGuidePage()
     {
         $this->get(route('site.pilots.stands'))->assertOk();
