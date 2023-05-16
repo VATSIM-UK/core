@@ -77,7 +77,7 @@
                     </p>
                     <p>
                         Please note that stand requests <strong>are not a reservation</strong> and do not give you exclusive use of a stand.
-                        Other members are welcome to request the same stand and may also choose to spawn up on it. Stand requests are honoured
+                        Other members are welcome to request the same stand and may also choose to connect onto it. Stand requests are honoured
                         on a "first arrival first served" basis.
                     </p>
                     <p>
