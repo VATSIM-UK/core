@@ -104,7 +104,7 @@
                     actions such as assigning squawk codes.<br/>
                     <br/>
 
-                    If you would like to generate a fresh key, you may do so using the option in the "OP" menu on the bottom left of the
+                    If you would like to generate a fresh key, you may do so using the option in the "OP" menu on the bottom right of the
                     EuroScope radar screen, once the plugin has loaded.<br/><br/>
                     
                     <p>The UK Controller Plugin should now be fully installed!</p>
