@@ -88,8 +88,6 @@ class WaitingListAccount extends Pivot
 
     /**
      * Mark a Flag as true.
-     *
-     * @param  WaitingListFlag  $listFlag
      */
     public function markFlag(WaitingListFlag $listFlag)
     {

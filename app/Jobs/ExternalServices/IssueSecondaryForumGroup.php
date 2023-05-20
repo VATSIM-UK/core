@@ -19,6 +19,7 @@ class IssueSecondaryForumGroup implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $cid;
+
     protected $forumGroup;
 
     /**

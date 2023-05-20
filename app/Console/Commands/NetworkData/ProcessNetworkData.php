@@ -38,6 +38,7 @@ class ProcessNetworkData extends Command
     protected $description = 'Download and parse the VATSIM data feed file.';
 
     private $lastUpdatedAt = null;
+
     private $networkData = null;
 
     /**
@@ -110,25 +111,27 @@ class ProcessNetworkData extends Command
             } catch (InvalidCIDException $e) {
                 $this->info('Invalid CID: '.$controller['cid'], 'vvv');
                 DB::commit();
+
                 continue;
             }
 
             if (! $account) {
                 $this->info('Unable to find or retrieve CID: '.$controller['cid'], 'vvv');
+
                 continue;
             }
 
             $qualification = Qualification::parseVatsimATCQualification($controller['rating']);
             $atc = Atc::updateOrCreate(
                 [
-                    'account_id'       => $account->id,
-                    'callsign'         => $controller['callsign'],
-                    'frequency'        => $controller['frequency'],
+                    'account_id' => $account->id,
+                    'callsign' => $controller['callsign'],
+                    'frequency' => $controller['frequency'],
                     'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
-                    'facility_type'    => $controller['facility'],
-                    'connected_at'     => Carbon::create($controller['logon_time']),
-                    'disconnected_at'  => null,
-                    'deleted_at'       => null,
+                    'facility_type' => $controller['facility'],
+                    'connected_at' => Carbon::create($controller['logon_time']),
+                    'disconnected_at' => null,
+                    'deleted_at' => null,
                 ],
                 [
                     'updated_at' => Carbon::now(),
@@ -199,31 +202,33 @@ class ProcessNetworkData extends Command
             } catch (InvalidCIDException $e) {
                 $this->info('Invalid CID: '.$pilot['cid'], 'vvv');
                 DB::commit();
+
                 continue;
             }
 
             if (! $account) {
                 $this->info('Unable to find or retrieve CID: '.$pilot['cid'], 'vvv');
+
                 continue;
             }
 
             $flight = Pilot::firstOrNew([
-                'account_id'        => $account->id,
-                'callsign'          => $pilot['callsign'],
-                'flight_type'       => $pilot['flight_plan']['flight_rules'],
+                'account_id' => $account->id,
+                'callsign' => $pilot['callsign'],
+                'flight_type' => $pilot['flight_plan']['flight_rules'],
                 'departure_airport' => $pilot['flight_plan']['departure'],
-                'arrival_airport'   => $pilot['flight_plan']['arrival'],
-                'connected_at'      => Carbon::create($pilot['logon_time']),
-                'disconnected_at'   => null,
+                'arrival_airport' => $pilot['flight_plan']['arrival'],
+                'connected_at' => Carbon::create($pilot['logon_time']),
+                'disconnected_at' => null,
             ]);
 
             $flight->fill([
                 'alternative_airport' => $pilot['flight_plan']['alternate'],
-                'aircraft'            => $pilot['flight_plan']['aircraft'],
-                'cruise_altitude'     => $pilot['flight_plan']['altitude'],
-                'cruise_tas'          => $pilot['flight_plan']['cruise_tas'],
-                'route'               => $pilot['flight_plan']['route'],
-                'remarks'             => $pilot['flight_plan']['remarks'],
+                'aircraft' => $pilot['flight_plan']['aircraft'],
+                'cruise_altitude' => $pilot['flight_plan']['altitude'],
+                'cruise_tas' => $pilot['flight_plan']['cruise_tas'],
+                'route' => $pilot['flight_plan']['route'],
+                'remarks' => $pilot['flight_plan']['remarks'],
             ]);
 
             if ($pilot['latitude'] > 90 || $pilot['latitude'] < -90) {

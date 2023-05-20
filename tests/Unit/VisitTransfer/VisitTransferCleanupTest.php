@@ -13,7 +13,9 @@ class VisitTransferCleanupTest extends TestCase
     use DatabaseTransactions;
 
     public $newApplication;
+
     public $oldApplication;
+
     public $facility;
 
     public function setUp(): void

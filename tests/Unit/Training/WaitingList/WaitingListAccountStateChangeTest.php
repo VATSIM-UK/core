@@ -21,6 +21,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     use DatabaseTransactions;
 
     private WaitingList $waitingList;
+
     private WaitingList $nonHomeMembersOnlyWaitingList;
 
     public function setUp(): void

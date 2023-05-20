@@ -16,8 +16,8 @@ class ResolveMissingVtPermissions extends Migration
             ->update(['name' => 'adm/visit-transfer/facility/create']);
 
         $checkPermission = DB::table('mship_permission')
-                ->where('name', '=', 'adm/visit-transfer/facility/*/update')
-                ->count() > 0;
+            ->where('name', '=', 'adm/visit-transfer/facility/*/update')
+            ->count() > 0;
         if ($checkPermission) {
             DB::table('mship_permission')
                 ->insert([
@@ -31,8 +31,8 @@ class ResolveMissingVtPermissions extends Migration
         }
 
         $checkPermission = DB::table('mship_permission')
-                ->where('name', '=', 'adm/visit-transfer/facility/*/check/met')
-                ->count() > 0;
+            ->where('name', '=', 'adm/visit-transfer/facility/*/check/met')
+            ->count() > 0;
         if ($checkPermission) {
             DB::table('mship_permission')
                 ->insert([

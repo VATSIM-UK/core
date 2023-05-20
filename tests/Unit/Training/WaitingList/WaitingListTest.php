@@ -15,6 +15,7 @@ class WaitingListTest extends TestCase
     use DatabaseTransactions, WaitingListTestHelper;
 
     private $waitingList;
+
     private $staffUser;
 
     public function setUp(): void

@@ -13,7 +13,6 @@ class ExercisePolicy
     /**
      * Determine whether the user can create a bid for the flight.
      *
-     * @param  \App\Models\Smartcars\Flight  $flight
      * @return mixed
      */
     public function bid(Account $account, Flight $flight)

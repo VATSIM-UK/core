@@ -5,7 +5,6 @@
  * parameter is provided, check that the string has at
  * least that number of uppercase characters.
  *
- * @param $string
  * @param  int  $count
  * @return bool
  */
@@ -19,7 +18,6 @@ function str_has_upper($string, $count = 1)
  * parameter is provided, check that the string has at
  * least that number of lowercase characters.
  *
- * @param $string
  * @param  int  $count
  * @return bool
  */
@@ -33,7 +31,6 @@ function str_has_lower($string, $count = 1)
  * parameter is provided, check that the string has at
  * least that number of numeric characters.
  *
- * @param $string
  * @param  int  $count
  * @return bool
  */
@@ -111,7 +108,7 @@ function is_relative_date_string($suspectedRelativeDateString)
     }
 }
 
-function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute = false)
+function human_diff_string(Carbon\Carbon $ts1, Carbon\Carbon $ts2, $absolute = false)
 {
     if (! $ts1 or ! $ts2) {
         return 'unknown length';
@@ -218,7 +215,7 @@ function maskEmail($email)
     return "{$delimited[0]}@{$delimited[1]}";
 }
 
-function handleService(\App\Services\BaseService $service)
+function handleService(App\Services\BaseService $service)
 {
     return $service->handle();
 }

@@ -11,8 +11,11 @@ use Carbon\Carbon;
 class AddToWaitingList implements BaseService
 {
     protected $waitingList;
+
     protected $staffAccount;
+
     protected $account;
+
     protected $createdAt;
 
     public function __construct(WaitingList $waitingList, Account $account, Account $staffAccount, Carbon $created_at = null)

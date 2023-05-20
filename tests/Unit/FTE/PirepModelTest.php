@@ -56,7 +56,7 @@ class PirepModelTest extends TestCase
     public function testItCanBeMarkedFailedWithPosrep()
     {
         $posrep = factory(Posrep::class)->create([
-            'bid_id' =>$this->pirep->bid->id,
+            'bid_id' => $this->pirep->bid->id,
         ]);
 
         $this->pirep->markFailed('It went wrong', $posrep->id);

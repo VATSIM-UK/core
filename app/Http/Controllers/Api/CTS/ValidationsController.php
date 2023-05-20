@@ -13,7 +13,7 @@ class ValidationsController
     {
         if (! $request->get('position')) {
             return response()->json([
-                'status'  => '400',
+                'status' => '400',
                 'message' => 'No position was supplied.',
             ], 400);
         }
@@ -22,7 +22,7 @@ class ValidationsController
             $position = (new ValidationPositionRepository())->findByPosition($request->get('position'));
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'status'  => '404',
+                'status' => '404',
                 'message' => 'Position could not be found.',
             ], 404);
         }

@@ -12,6 +12,7 @@ class ApplicationReferenceRejected extends Notification implements ShouldQueue
     use Queueable;
 
     private $reference;
+
     private $application;
 
     /**

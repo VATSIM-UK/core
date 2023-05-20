@@ -51,9 +51,13 @@ class Registration extends Model
     use SoftDeletingTrait;
 
     protected $table = 'teamspeak_registration';
+
     protected $primaryKey = 'id';
+
     protected $fillable = ['*'];
+
     protected $attributes = ['registration_ip' => '0.0.0.0', 'last_ip' => '0.0.0.0'];
+
     protected $dates = ['created_at', 'updated_at'];
 
     public function delete($tscon = null)

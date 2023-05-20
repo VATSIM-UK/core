@@ -63,6 +63,7 @@ use App\Models\NetworkData\Pilot;
 class Airport extends Model
 {
     public $table = 'airports';
+
     protected $fillable = [
         'icao',
         'iata',
@@ -84,6 +85,7 @@ class Airport extends Model
     ];
 
     const FIR_TYPE_EGTT = 1;
+
     const FIR_TYPE_EGPX = 2;
 
     public function scopeUK($query)
@@ -165,8 +167,6 @@ class Airport extends Model
     /**
      * Determines whether a set of given decimal coordinates are close to the airport.
      *
-     * @param $latitude
-     * @param $longitude
      * @return bool
      */
     public function containsCoordinates($latitude, $longitude)

@@ -15,13 +15,11 @@ class EmailVerification extends Notification implements ShouldQueue
     use Queueable;
 
     private $token;
+
     private $email;
 
     /**
      * Create a new notification instance.
-     *
-     * @param  Email  $email
-     * @param  Token  $token
      */
     public function __construct(Email $email, Token $token)
     {
@@ -55,13 +53,11 @@ class EmailVerification extends Notification implements ShouldQueue
             use Queueable, SerializesModels;
 
             private $account;
+
             private $token;
 
             /**
              * Create a new message instance.
-             *
-             * @param  Account  $account
-             * @param  Token  $token
              */
             public function __construct(Account $account, Token $token)
             {

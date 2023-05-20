@@ -41,9 +41,9 @@ class RemovedFromWaitingListNonHomeMember extends Notification implements Should
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->from('support@vatsim.uk', 'VATSIM UK - Member Services')
-                    ->subject('UK Training Waiting List Removal')
-                    ->view('emails.training.waiting_list_non_home_removal', ['recipient' => $notifiable]);
+            ->from('support@vatsim.uk', 'VATSIM UK - Member Services')
+            ->subject('UK Training Waiting List Removal')
+            ->view('emails.training.waiting_list_non_home_removal', ['recipient' => $notifiable]);
     }
 
     public function toDiscord(object $notifiable)

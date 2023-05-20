@@ -10,7 +10,7 @@ $factory->define(\App\Models\Airport\Procedure::class, function (Faker $faker) {
             return $airport->id;
         },
         'runway_id' => function () use ($airport) {
-            return factory(\App\Models\Airport\Runway::class)->create(['airport_id'=>$airport->id])->id;
+            return factory(\App\Models\Airport\Runway::class)->create(['airport_id' => $airport->id])->id;
         },
         'type' => $faker->randomElement([1, 2]),
         'ident' => strtoupper($faker->word).$faker->numberBetween(0, 100),

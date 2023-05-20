@@ -61,6 +61,7 @@ class Feedback extends \App\Http\Controllers\BaseController
                         }
                         $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug), $value, $value, $selected);
                     }
+
                     continue;
                 }
                 // No values, so we cant use it :/
@@ -90,8 +91,8 @@ class Feedback extends \App\Http\Controllers\BaseController
 
                 if ($request->input($question->slug) == \Auth::user()->id) {
                     return Redirect::back()
-                       ->withError('You cannot leave feedback about yourself')
-                       ->withInput();
+                        ->withError('You cannot leave feedback about yourself')
+                        ->withInput();
                 }
             }
 

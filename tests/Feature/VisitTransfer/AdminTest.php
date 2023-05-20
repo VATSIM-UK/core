@@ -15,8 +15,11 @@ class AdminTest extends TestCase
     use DatabaseTransactions;
 
     public $application;
+
     public $ref1;
+
     public $ref2;
+
     public $user;
 
     public function setUp(): void

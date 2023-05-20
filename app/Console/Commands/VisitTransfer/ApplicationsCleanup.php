@@ -62,6 +62,7 @@ class ApplicationsCleanup extends Command
             foreach ($application->referees as $referee) {
                 if (! $referee->is_submitted && $referee->contacted_at && $referee->contacted_at->addDays(14)->lt(new Carbon)) {
                     $application->lapse();
+
                     continue;
                 }
             }

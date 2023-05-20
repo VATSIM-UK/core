@@ -88,8 +88,6 @@ trait HasHelpdeskAccount
 
     /**
      * Update the user's Helpdesk name and email.
-     *
-     * @param $helpdeskAccount
      */
     protected function updateHelpdeskNameAndEmail($helpdeskAccount)
     {
@@ -109,7 +107,6 @@ trait HasHelpdeskAccount
      * Update the user's Helpdesk email and return the email ID.
      * Does not update default_email_id on user's account.
      *
-     * @param $helpdeskAccount
      * @return int|null
      */
     protected function updateHelpdeskEmailGetId($helpdeskAccount)
@@ -143,8 +140,6 @@ trait HasHelpdeskAccount
 
     /**
      * Update the user's Helpdesk username.
-     *
-     * @param $helpdeskAccount
      */
     protected function updateHelpdeskUsername($helpdeskAccount)
     {

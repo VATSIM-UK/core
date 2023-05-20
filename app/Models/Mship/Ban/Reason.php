@@ -39,8 +39,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Reason extends Model
 {
     use SoftDeletes;
+
     protected $primaryKey = 'id';
+
     protected $table = 'mship_ban_reason';
+
     public $timestamps = true;
 
     protected $dates = ['deleted_at'];

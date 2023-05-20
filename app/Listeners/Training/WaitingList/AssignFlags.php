@@ -21,7 +21,6 @@ class AssignFlags
     /**
      * Handle the event.
      *
-     * @param  AccountAddedToWaitingList  $event
      * @return void
      */
     public function handle(AccountAddedToWaitingList $event)

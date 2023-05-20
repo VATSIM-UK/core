@@ -28,9 +28,11 @@ class WaitingList extends Model
     protected $dates = ['deleted_at'];
 
     const ATC_DEPARTMENT = 'atc';
+
     const PILOT_DEPARTMENT = 'pilot';
 
     const ALL_FLAGS = 'all';
+
     const ANY_FLAGS = 'any';
 
     /**
@@ -91,7 +93,6 @@ class WaitingList extends Model
     /**
      * Get the position of an account in the eligible waiting list.
      *
-     * @param  Account  $account
      * @return int|null
      */
     public function accountPosition(Account $account)
@@ -106,7 +107,6 @@ class WaitingList extends Model
     /**
      * Associate a flag with a waiting list.
      *
-     * @param  WaitingListFlag  $flag
      * @return mixed
      */
     public function addFlag(WaitingListFlag $flag)
@@ -123,7 +123,6 @@ class WaitingList extends Model
     /**
      * Remove a flag from a waiting list.
      *
-     * @param  WaitingListFlag  $flag
      * @return mixed
      */
     public function removeFlag(WaitingListFlag $flag)
@@ -133,10 +132,6 @@ class WaitingList extends Model
 
     /**
      * Add an Account to a waiting list.
-     *
-     * @param  Account  $account
-     * @param  Account  $staffAccount
-     * @param  Carbon|null  $createdAt
      */
     public function addToWaitingList(Account $account, Account $staffAccount, Carbon $createdAt = null)
     {
@@ -153,7 +148,6 @@ class WaitingList extends Model
     /**
      * Remove an Account from a waiting list.
      *
-     * @param  Account  $account
      * @return void
      */
     public function removeFromWaitingList(Account $account)

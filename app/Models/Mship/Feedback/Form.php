@@ -48,11 +48,13 @@ class Form extends Model
     use SoftDeletes;
 
     protected $table = 'mship_feedback_forms';
+
     protected $dates = [
         'created_at',
         'updated_at',
         'deleted_at',
     ];
+
     protected $fillable = [
         'name',
         'slug',
