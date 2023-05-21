@@ -17,7 +17,11 @@
 				<tr>
 					<td>{{ $item->form->name }}</td>
 					<td>{{ $item->created_at->format('d M Y') }}</td>
-					<td>{{ $item->position->response }}</td>
+					@if($item->position && $item->position->response !== null)
+						<td>{{ $item->position->response }}</td>
+					@else
+						<td>N/A</td>
+				@endif
 					@if($item->sent_comment)
 						<td>{{ $item->sent_comment }}</td>
 					@else
