@@ -60,8 +60,8 @@
                     </p>
 
                     <ol>
-                        <li>&quot;London Control&quot; - all LON and LTC sectors</li>
-                        <li>&quot;Scottish Control&quot; - all SCO, STC and MAN sectors</li>
+                        <li>&quot;London Control&quot; - all LON and LTC callsigns</li>
+                        <li>&quot;Scottish Control&quot; - all SCO, STC and MAN callsigns</li>
                     </ol>
 
                 </div>
@@ -83,7 +83,7 @@
                 <div id="sectors-departing-ifr" class="panel-collapse collapse panel-body">
 
                     <p>
-                        Always contact <strong>local ATC</strong> (DEL/GND/TWR/APP) where it is online. There are a many APP positions that cover more than one airfield top-down:
+                        Always contact <strong>local ATC</strong> (DEL/GND/TWR/APP) where it is online. There are many APP positions that cover more than one airfield top-down:
                     </p>
 
                     <ul>
@@ -121,7 +121,7 @@
                     </h3>
 
                     <p>
-                        In the absence of local ATC, our area sectors provide a top-down service at airfields contained within the sector(s) they are controlling. You should request clearance, pushback, taxi etc. as you would if there were an aerodrome controller online.
+                        In the absence of local ATC, our area controllers provide a top-down service at airfields contained within the sector(s) they are controlling. You should request clearance, pushback, taxi etc. as you would if there were an aerodrome controller online.
                     </p>
 
                     <h3>Are all airfields covered top-down?</h3>
@@ -236,19 +236,21 @@
                 <div id="sectors-arriving-transiting" class="panel-collapse collapse panel-body">
 
                     <p>
-                        Our controllers will always send you a contact me if you are entering their airspace. However, you can also use the diagrams below if you want to know when to call them in advance.
+                        Our controllers will always send you a contact me if you are entering their airspace. However, you can use the diagrams below or 
+                        <a href="https://vatglasses.uk/ukireland/" target="_blank" rel="noopener noreferrer"><strong>VATGlasses</strong></a> if you want to know when to call them in advance.
                     </p>
 
                     <p>
-                        You should look-up and plan for descent according to your expected STAR. You can also report your expected STAR on first contact to save time. If you need to descend before you enter an online controller’s airspace, then do so.
+                        You should look-up and plan for descent according to your expected STAR. You can also report your expected STAR on first contact to save time. 
+                        If you need to descend before you enter an online controller’s airspace, then do so.
                     </p>
 
                     <h3>
-                        London Main Sectors
+                        London - Main Positions
                     </h3>
 
                     <p>
-                        The main London sectors (North, South, Central & West) are shown below. Sometimes these sectors are combined using the LON_SC_CTR or LON_CTR callsigns.
+                        The main London sector groups (North, South, Central & West) are shown below. Sometimes these sectors are combined using the LON_SC_CTR or LON_CTR callsigns.
                     </p>
 
                     <img class="img-responsive center-block" src="/images/egttsectors-lon.png" alt="diagram of main London sectors">
@@ -273,11 +275,11 @@
                     </ul>
 
                     <h3>
-                        London TMA Split Sectors
+                        London - TMA Split Positions
                     </h3>
 
                     <p>
-                        We can also split off the airspace in the London area with LTC sectors. There are 4 main sectors (NE, NW, SE, SW) which can be combined using the LTC_N_CTR, LTC_S_CTR or LTC_CTR callsigns.
+                        We can also split off the airspace in the London area with LTC sectors. There are 4 main sectors (NE, NW, SE, SW) which may be combined using the LTC_N_CTR, LTC_S_CTR or LTC_CTR callsigns.
                     </p>
 
                     <p>
@@ -291,7 +293,7 @@
                     <img class="img-responsive center-block" src="/images/egttsectors-ltc-2202.png" alt="diagram of London TMA split sectors">
 
                     <h3>
-                        Scottish Main Sectors
+                        Scottish - Main Positions
                     </h3>
 
                     <p>
