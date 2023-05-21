@@ -154,7 +154,8 @@ class UKCP
             }
 
             $response = $this->client->get(
-                sprintf('%s/api/stand/status?airfield=%s', config('services.ukcp.url'), $airfield)
+                sprintf('%s/api/stand/status?airfield=%s', config('services.ukcp.url'), $airfield),
+                ['timeout' => 5]
             );
             $body = json_decode($response->getBody()->getContents(), true);
             
