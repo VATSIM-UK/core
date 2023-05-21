@@ -2,9 +2,12 @@
 
 namespace Tests\Feature\Site;
 
+use App\Libraries\UKCP;
 use App\Models\Airport;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Mockery\MockInterface;
 use Tests\TestCase;
+use Illuminate\Support\Str;
 
 class AirfieldInformationTest extends TestCase
 {
@@ -14,6 +17,13 @@ class AirfieldInformationTest extends TestCase
     public function testItLoadsTheAirportPage()
     {
         $airport = factory(Airport::class)->create();
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($airport) {
+            $mock->shouldReceive('getStandStatus')
+                ->with(Str::upper($airport->icao))
+                ->twice()
+                ->andReturn([]);
+        });
 
         // Load as logged in user
         $this->actingAs($this->user)
