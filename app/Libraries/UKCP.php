@@ -3,9 +3,11 @@
 namespace App\Libraries;
 
 use App\Models\Mship\Account;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Psr\Http\Message\ResponseInterface;
@@ -20,6 +22,8 @@ class UKCP
 
     /** @var string */
     const TOKEN_PATH_ROOT = 'ukcp/tokens/';
+
+    const STAND_STATUS_CACHE_FORMAT = 'UKCP_STAND_STATUS_%s';
 
     /**
      * UKCP constructor.
@@ -139,5 +143,39 @@ class UKCP
     public static function getPathForToken($tokenID, $account)
     {
         return self::TOKEN_PATH_ROOT.$account->id.'/'.$tokenID.'.json';
+    }
+
+    public function getStandStatus(string $airfield): array
+    {
+        try {
+            $cached = Cache::get($this->getStandStatusCacheKey($airfield));
+            if ($cached) {
+                return $cached;
+            }
+
+            $response = $this->client->get(
+                sprintf('%s/api/stand/status?airfield=%s', config('services.ukcp.url'), $airfield)
+            );
+            $body = json_decode($response->getBody()->getContents(), true);
+            
+
+            return tap(
+                collect($body['stands'])->sortBy('identifier', SORT_NUMERIC)->values()->toArray(),
+                fn (array $stands) => Cache::put(
+                    $this->getStandStatusCacheKey($airfield),
+                    collect($stands)->sortBy('identifier', SORT_NUMERIC)->values()->toArray(),
+                    Carbon::parse($body['refresh_at'])
+                )
+            );
+        } catch (ClientException $e) {
+            Log::warning("UKCP Client Error {$e->getMessage()} when getting stand status for {$airfield}");
+
+            return [];
+        }
+    }
+
+    private function getStandStatusCacheKey(string $airfield): string
+    {
+        return sprintf(self::STAND_STATUS_CACHE_FORMAT, $airfield);
     }
 }
