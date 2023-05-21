@@ -34,12 +34,12 @@ class AirportController extends BaseController
         })->collapse();
 
         return $this->viewMake('site.airport.view')
-        ->with(
-            [
-                'airport' => $airport,
-                'stations' => $stations,
-                'stands' => $this->ukcp->getStandStatus(Str::upper($airport->icao))
-            ]
-        );
+            ->with(
+                [
+                    'airport' => $airport,
+                    'stations' => $stations,
+                    'stands' => $this->ukcp->getStandStatus(Str::upper($airport->icao)),
+                ]
+            );
     }
 }
