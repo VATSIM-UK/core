@@ -222,6 +222,10 @@
                                 <td>Vacant</td>
                             </tr>
                             <tr>
+                                <td>Training Department Assistant</td>
+                                <td>Craig Stewart</td>
+                            </tr>
+                            <tr>
                                 <td>Division Instructor</td>
                                 <td>Jack Edwards</td>
                             </tr>
@@ -260,6 +264,10 @@
                             <tr>
                                 <td>TG Instructor (TWR)</td>
                                 <td>Daniel Blanco</td>
+                            </tr>
+                            <tr>
+                                <td>Lead Mentor (TWR)</td>
+                                <td>Will Hinshaw</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
