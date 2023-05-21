@@ -158,7 +158,6 @@ class UKCP
                 ['timeout' => 5]
             );
             $body = json_decode($response->getBody()->getContents(), true);
-            
 
             return tap(
                 collect($body['stands'])->sortBy('identifier', SORT_NUMERIC)->values()->toArray(),

@@ -5,9 +5,9 @@ namespace Tests\Feature\Site;
 use App\Libraries\UKCP;
 use App\Models\Airport;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Str;
 use Mockery\MockInterface;
 use Tests\TestCase;
-use Illuminate\Support\Str;
 
 class AirfieldInformationTest extends TestCase
 {
