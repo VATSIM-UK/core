@@ -88,7 +88,7 @@ class UKCPLibraryTest extends TestCase
         $now = Carbon::now();
         $this->mock(Client::class, function (MockInterface $mock) use ($now) {
             $mock->shouldReceive('get')
-                ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL')
+                ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL', ['timeout' => 5])
                 ->andReturn(
                     new \GuzzleHttp\Psr7\Response(200, [], json_encode([
                         'refresh_at' => $now,
@@ -133,7 +133,7 @@ class UKCPLibraryTest extends TestCase
     {
         $this->mock(Client::class, function (MockInterface $mock) {
             $mock->shouldReceive('get')
-                ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL')
+                ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL', ['timeout' => 5])
                 ->andThrow(
                     new ClientException(
                         'Bang',
