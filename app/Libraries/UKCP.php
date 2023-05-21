@@ -163,7 +163,7 @@ class UKCP
                 collect($body['stands'])->sortBy('identifier', SORT_NUMERIC)->values()->toArray(),
                 fn (array $stands) => Cache::put(
                     $this->getStandStatusCacheKey($airfield),
-                    collect($stands)->sortBy('identifier', SORT_NUMERIC)->values()->toArray(),
+                    $stands,
                     Carbon::parse($body['refresh_at'])
                 )
             );
