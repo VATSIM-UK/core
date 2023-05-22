@@ -130,10 +130,6 @@
                                 <p class="text-danger">
                                     Your application cannot be completed without receiving training from the {{ strtoupper($application->training_team) }} department.
                                     They will be in touch to discuss this with you.<br />
-                                    <strong>
-                                        You must engage with training before {{ $application->submitted_at->addDays(90)->toDateString() }} otherwise your
-                                        application will be terminated under section 1.9 of the Visiting & Transferring Policy.
-                                    </strong>
                                 </p>
                             @endif
                         </div>
