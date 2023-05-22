@@ -110,6 +110,13 @@ class Feedback extends Model
         return $this->hasMany(\App\Models\Mship\Feedback\Answer::class);
     }
 
+    public function position()
+    {
+        return $this->hasOne(\App\Models\Mship\Feedback\Answer::class)->whereHas('question', function ($query) {
+            $query->where('slug', ['callsign3', 'sessionposition2']);
+        });
+    }
+
     public function account()
     {
         return $this->belongsTo(\App\Models\Mship\Account::class);
