@@ -90,13 +90,13 @@ class UKCPLibraryTest extends TestCase
 
     public function testItCachesSortedStandStatus()
     {
-        $now = Carbon::now();
+        $expiry = Carbon::now()->addMinutes(5);
         $this->mock(Client::class, function (MockInterface $mock) use ($now) {
             $mock->shouldReceive('get')
                 ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL', ['timeout' => 5])
                 ->andReturn(
                     new \GuzzleHttp\Psr7\Response(200, [], json_encode([
-                        'refresh_at' => $now,
+                        'refresh_at' => $expiry,
                         'stands' => [
                             [
                                 'identifier' => '1',
@@ -113,7 +113,7 @@ class UKCPLibraryTest extends TestCase
         });
 
         $expectedData = [
-            'refresh_at' => $now,
+            'refresh_at' => $expiry,
             'stands' => [
                 [
                     'identifier' => '1',
