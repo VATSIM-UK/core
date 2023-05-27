@@ -174,8 +174,8 @@ class UKCP
         }
     }
 
-    private function getStandStatusCacheKey(string $airfield): string
+    private function getStandStatusCacheKey(string $airfieldIcao): string
     {
-        return sprintf(self::STAND_STATUS_CACHE_FORMAT, $airfield);
+        return sprintf(self::STAND_STATUS_CACHE_FORMAT, $airfieldIcao);
     }
 }
