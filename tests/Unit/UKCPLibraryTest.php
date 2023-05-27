@@ -23,7 +23,7 @@ class UKCPLibraryTest extends TestCase
 
     public function tearDown(): void
     {
-        Cache::flush();
+        Cache::forget('UKCP_STAND_STATUS_EGLL');
         parent::tearDown();
     }
 
@@ -84,7 +84,7 @@ class UKCPLibraryTest extends TestCase
     public function testItReturnsCachedStandStatus()
     {
         $ukcp = $this->app->get(UKCP::class);
-        Cache::put('UKCP_STAND_STATUS_EGLL', ['foo' => 'bar'], 60);
+        Cache::put('UKCP_STAND_STATUS_EGLL', ['stands' => ['foo' => 'bar']], 60);
         $this->assertEquals(['foo' => 'bar'], $ukcp->getStandStatus('EGLL'));
     }
 
