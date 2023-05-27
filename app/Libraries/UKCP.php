@@ -146,25 +146,21 @@ class UKCP
     public function getStandStatus(string $airfield): array
     {
         try {
-            $cached = Cache::get($this->getStandStatusCacheKey($airfield));
-            if ($cached) {
-                return $cached;
-            }
+            return Cache::remember(
+                $this->getStandStatusCacheKey($airfield),
+                fn (array $cachedResponse) => $cachedResponse['refresh_at'],
+                function () use ($airfield) {
+                    $response = $this->client->get(
+                        sprintf('%s/api/stand/status?airfield=%s', config('services.ukcp.url'), $airfield),
+                        ['timeout' => 5]
+                    );
+                    $body = json_decode($response->getBody()->getContents(), true);
 
-            $response = $this->client->get(
-                sprintf('%s/api/stand/status?airfield=%s', config('services.ukcp.url'), $airfield),
-                ['timeout' => 5]
-            );
-            $body = json_decode($response->getBody()->getContents(), true);
-
-            return tap(
-                collect($body['stands'])->sortBy('identifier', SORT_NUMERIC)->values()->toArray(),
-                fn (array $stands) => Cache::put(
-                    $this->getStandStatusCacheKey($airfield),
-                    $stands,
-                    Carbon::parse($body['refresh_at'])
-                )
-            );
+                    return [
+                        'stands' => collect($body['stands'])->sortBy('identifier', SORT_NUMERIC)->values()->toArray(),
+                        'refresh_at' => Carbon::parse($body['refresh_at']),
+                    ];
+                })['stands'];
         } catch (ClientException $e) {
             Log::warning("UKCP Client Error {$e->getMessage()} when getting stand status for {$airfield}");
 
