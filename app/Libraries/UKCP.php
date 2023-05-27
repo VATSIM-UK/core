@@ -23,8 +23,6 @@ class UKCP
     /** @var string */
     const TOKEN_PATH_ROOT = 'ukcp/tokens/';
 
-    const STAND_STATUS_CACHE_FORMAT = 'UKCP_STAND_STATUS_%s';
-
     /**
      * UKCP constructor.
      */
@@ -176,6 +174,6 @@ class UKCP
 
     private function getStandStatusCacheKey(string $airfieldIcao): string
     {
-        return sprintf(self::STAND_STATUS_CACHE_FORMAT, $airfieldIcao);
+        return sprintf('UKCP_STAND_STATUS_%s', $airfieldIcao);
     }
 }
