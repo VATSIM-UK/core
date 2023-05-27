@@ -8,7 +8,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Hamcrest\Core\IsEqual;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Mockery\MockInterface;
@@ -20,6 +19,12 @@ class UKCPLibraryTest extends TestCase
     {
         parent::setUp();
         Carbon::setTestNow(Carbon::now()->addMinutes(30));
+    }
+
+    public function tearDown(): void
+    {
+        Cache::flush();
+        parent::tearDown();
     }
 
     /** @test */
@@ -108,25 +113,23 @@ class UKCPLibraryTest extends TestCase
         });
 
         $expectedData = [
-            [
-                'identifier' => '1',
-            ],
-            [
-                'identifier' => '2',
-            ],
-            [
-                'identifier' => '12',
+            'refresh_at' => $now,
+            'stands' => [
+                [
+                    'identifier' => '1',
+                ],
+                [
+                    'identifier' => '2',
+                ],
+                [
+                    'identifier' => '12',
+                ],
             ],
         ];
 
-        Cache::shouldReceive('get')
-            ->andReturn(null);
-        Cache::shouldReceive('put')
-            ->with('UKCP_STAND_STATUS_EGLL', $expectedData, IsEqual::equalTo($now))
-            ->once();
-
         $ukcp = $this->app->get(UKCP::class);
-        $this->assertEquals($expectedData, $ukcp->getStandStatus('EGLL'));
+        $this->assertEquals($expectedData['stands'], $ukcp->getStandStatus('EGLL'));
+        $this->assertEquals($expectedData, Cache::get('UKCP_STAND_STATUS_EGLL'));
     }
 
     public function testItReturnsEmptyIfClientThrows()
@@ -143,11 +146,8 @@ class UKCPLibraryTest extends TestCase
                 );
         });
 
-        Cache::shouldReceive('get')
-            ->andReturn(null);
-        Cache::shouldReceive('put')
-            ->never();
         $ukcp = $this->app->get(UKCP::class);
         $this->assertEquals([], $ukcp->getStandStatus('EGLL'));
+        $this->assertNull(Cache::get('UKCP_STAND_STATUS_EGLL'));
     }
 }
