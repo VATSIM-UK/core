@@ -91,7 +91,7 @@ class UKCPLibraryTest extends TestCase
     public function testItCachesSortedStandStatus()
     {
         $expiry = Carbon::now()->addMinutes(5);
-        $this->mock(Client::class, function (MockInterface $mock) use ($now) {
+        $this->mock(Client::class, function (MockInterface $mock) {
             $mock->shouldReceive('get')
                 ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL', ['timeout' => 5])
                 ->andReturn(
