@@ -93,7 +93,7 @@ class UKCPLibraryTest extends TestCase
         $expiry = Carbon::now()->addMinutes(5);
         $this->mock(Client::class, function (MockInterface $mock) use ($expiry) {
             $mock->shouldReceive('get')
-                ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL', ['timeout' => 5])
+                ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL', ['timeout' => 8])
                 ->andReturn(
                     new \GuzzleHttp\Psr7\Response(200, [], json_encode([
                         'refresh_at' => $expiry,
@@ -136,7 +136,7 @@ class UKCPLibraryTest extends TestCase
     {
         $this->mock(Client::class, function (MockInterface $mock) {
             $mock->shouldReceive('get')
-                ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL', ['timeout' => 5])
+                ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL', ['timeout' => 8])
                 ->andThrow(
                     new ClientException(
                         'Bang',
