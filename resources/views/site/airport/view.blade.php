@@ -28,7 +28,15 @@
                 $('#online-pilots').DataTable();
             @endif
             @if($stands)
-                $('#stands').DataTable();
+                $('#stands').DataTable(
+                    {
+                        "aaSorting": [], 
+                        "columnDefs": [
+                            { targets: 'no-sort', orderable: false },
+                            { targets: 'no-search', searchable: false}
+                        ]
+                    }
+                );
             @endif
 
             if($('#additionalInformationContainer').height() < 42){
@@ -70,29 +78,41 @@
                 @endif
             @endforeach
             @if ($stands)
-                @foreach($stands->occupiedStands() as $stand)
-                    new google.maps.Circle({
-                        strokeColor: '#FF0000',
-                        strokeOpacity: 0.8,
-                        strokeWeight: 2,
-                        fillColor: '#FF0000',
-                        fillOpacity: 0.35,
-                        map: map,
-                        center: { lat:{{$stand->latitude}}, lng: {{$stand->longitude}}},
-                        radius: 30
-                    });
-                @endforeach
-                @foreach(collect($stands->allStands())->whereNull('occupier') as $stand)
-                new google.maps.Circle({
-                    strokeColor: '#32cd32',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: '#32cd32',
-                    fillOpacity: 0.35,
-                    map: map,
-                    center: { lat:{{$stand->latitude}}, lng: {{$stand->longitude}}},
-                    radius: 30
-                });
+                @foreach($stands as $stand)
+                    @if($stand['status'] === 'available')
+                        new google.maps.Circle({
+                            strokeColor: '#32cd32',
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: '#32cd32',
+                            fillOpacity: 0.35,
+                            map: map,
+                            center: { lat:{{$stand['latitude']}}, lng: {{$stand['longitude']}}},
+                            radius: 30
+                        });
+                    @elseif(in_array($stand['status'], ['occupied', 'unavailable', 'reserved']))
+                        new google.maps.Circle({
+                            strokeColor: '#FF0000',
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: '#FF0000',
+                            fillOpacity: 0.35,
+                            map: map,
+                            center: { lat:{{$stand['latitude']}}, lng: {{$stand['longitude']}}},
+                            radius: 30
+                        });
+                    @else
+                        new google.maps.Circle({
+                            strokeColor: '#FFBF00',
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: '#FFBF00',
+                            fillOpacity: 0.35,
+                            map: map,
+                            center: { lat:{{$stand['latitude']}}, lng: {{$stand['longitude']}}},
+                            radius: 30
+                        });
+                    @endif
                 @endforeach
             @endif
         }
@@ -468,18 +488,30 @@
                 <div class="panel-body table-responsive">
                     <table id="stands" class="table">
                         <thead>
-                        <th>Stand</th>
-                        <th>Status</th>
+                        <th class="no-sort">Stand</th>
+                        <th class="no-sort no-search">Status</th>
                         </thead>
                         <tbody>
-                            @foreach($stands->allStands() as $stand)
+                            @foreach($stands as $index => $stand)
                                 <tr>
-                                    <td>{{$stand->id}}</td>
+                                    <td>{{$stand['identifier']}}</td>
                                     <td>
-                                        @if($stand->occupier)
-                                            <span style="color:red">Occupied by {{$stand->occupier->callsign}}</span>
-                                        @else
-                                            <span style="color:green">Free</span>
+                                        @if($stand['status'] === 'available')
+                                            <span style="color:green">Available</span>
+                                        @elseif($stand['status'] === 'closed')
+                                            <span style="color:red">Stand closed</span>
+                                        @elseif($stand['status'] === 'unavailable')
+                                            <span style="color:red">Unavailable</span>
+                                        @elseif($stand['status'] === 'occupied')
+                                            <span style="color:red">Occupied by {{$stand['callsign']}}</span>
+                                        @elseif($stand['status'] === 'assigned')
+                                            <span style="color:red">Assigned to {{$stand['callsign']}}</span>
+                                        @elseif($stand['status'] === 'reserved')
+                                            <span style="color:red">Reserved for {{$stand['callsign']}}</span>
+                                        @elseif($stand['status'] === 'reserved_soon')
+                                            <span style="color:#9744FD">Reserved soon</span>
+                                        @elseif($stand['status'] === 'requested')
+                                            <span style="color:#9744FD">Requested by {{$stand['requested_by'][0]}}</span>
                                         @endif
                                     </td>
                                 </tr>

@@ -3,9 +3,11 @@
 namespace App\Libraries;
 
 use App\Models\Mship\Account;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Psr\Http\Message\ResponseInterface;
@@ -139,5 +141,35 @@ class UKCP
     public static function getPathForToken($tokenID, $account)
     {
         return self::TOKEN_PATH_ROOT.$account->id.'/'.$tokenID.'.json';
+    }
+
+    public function getStandStatus(string $airfield): array
+    {
+        try {
+            return Cache::remember(
+                $this->getStandStatusCacheKey($airfield),
+                fn (array $cachedResponse) => $cachedResponse['refresh_at'],
+                function () use ($airfield) {
+                    $response = $this->client->get(
+                        sprintf('%s/api/stand/status?airfield=%s', config('services.ukcp.url'), $airfield),
+                        ['timeout' => 5]
+                    );
+                    $body = json_decode($response->getBody()->getContents(), true);
+
+                    return [
+                        'stands' => collect($body['stands'])->sortBy('identifier', SORT_NUMERIC)->values()->toArray(),
+                        'refresh_at' => Carbon::parse($body['refresh_at']),
+                    ];
+                })['stands'];
+        } catch (ClientException $e) {
+            Log::warning("UKCP Client Error {$e->getMessage()} when getting stand status for {$airfield}");
+
+            return [];
+        }
+    }
+
+    private function getStandStatusCacheKey(string $airfieldIcao): string
+    {
+        return sprintf('UKCP_STAND_STATUS_%s', $airfieldIcao);
     }
 }
