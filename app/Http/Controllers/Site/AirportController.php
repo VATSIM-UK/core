@@ -3,12 +3,19 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\BaseController;
+use App\Libraries\UKCP;
 use App\Models\Airport;
-use CobaltGrid\VatsimStandStatus\StandStatus;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class AirportController extends BaseController
 {
+    private readonly UKCP $ukcp;
+
+    public function __construct(UKCP $ukcp)
+    {
+        $this->ukcp = $ukcp;
+    }
+
     public function index()
     {
         $airports = Airport::uk()->orderBy('name')->get()->split(2);
@@ -26,24 +33,13 @@ class AirportController extends BaseController
             });
         })->collapse();
 
-        return $this->viewMake('site.airport.view')->with(['airport' => $airport, 'stations' => $stations, 'stands' => $this->loadStandStatus($airport)]);
-    }
-
-    private function loadStandStatus($airport)
-    {
-        $file_path = resource_path().'/assets/data/stands/'.strtolower($airport->icao).'.csv';
-
-        if (File::exists($file_path)) {
-            $standStatus = new StandStatus(
-                $airport->latitude,
-                $airport->longitude,
-                StandStatus::COORD_FORMAT_CAA
+        return $this->viewMake('site.airport.view')
+            ->with(
+                [
+                    'airport' => $airport,
+                    'stations' => $stations,
+                    'stands' => $this->ukcp->getStandStatus(Str::upper($airport->icao)),
+                ]
             );
-
-            return $standStatus
-                ->loadStandDataFromCSV($file_path)
-                ->setMaxAircraftAltitude($airport->elevation + 300)
-                ->parseData();
-        }
     }
 }

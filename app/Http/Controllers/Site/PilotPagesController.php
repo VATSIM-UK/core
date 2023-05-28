@@ -41,4 +41,12 @@ class PilotPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.pilots.oceanic');
     }
+
+    public function viewStandGuide()
+    {
+        $this->setTitle('Stand Guide');
+        $this->addBreadcrumb('Stand Guide', route('site.pilots.stands'));
+
+        return $this->viewMake('site.pilots.stands');
+    }
 }

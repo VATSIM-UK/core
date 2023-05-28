@@ -8,7 +8,7 @@
                     <p>
                         Before you can start your application, you must first read and agree to the terms and conditions of the
                         Visiting &amp; Transferring Controller Policy (VTCP).
-                        {!! link_to("https://www.vatsim.net/documents/transfer-and-visiting-controller-policy", "The VTCP can be located on the VATSIM.net website", ["target" => "_blank"]) !!}
+                        {!! link_to("https://www.vatsim.net/docs/policy/transfer-and-visiting-controller-policy", "The VTCP can be located on the VATSIM.net website", ["target" => "_blank"]) !!}
                     </p>
 
                 {!! Form::open(["route" => ["visiting.application.start.post", $applicationType, $trainingTeam], "method" => "POST"]) !!}

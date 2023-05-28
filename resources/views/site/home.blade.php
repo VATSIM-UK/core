@@ -118,6 +118,9 @@
                             <a class="nav-link" href="{{ route('site.airports') }}">Airports</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.pilots.stands') }}">Stand Guide</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('site.operations.sectors') }}">Area Sectors</a>
                         </li>
                         <li class="nav-item">
