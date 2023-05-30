@@ -129,7 +129,7 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/')->uses('Token@show')->name('guide');
-    Route::get('/token/refresh')->uses('Token@refresh')->name('token.refresh');
+    Route::get('/token/invalidate')->uses('Token@invalidate')->name('token.invalidate');
 });
 
 // Controllers

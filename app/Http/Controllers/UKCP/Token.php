@@ -20,7 +20,7 @@ class Token extends BaseController
         parent::__construct();
     }
 
-    public function refresh()
+    public function invalidate()
     {
         $currentTokens = $this->ukcp->getValidTokensFor(auth()->user());
 
@@ -28,24 +28,11 @@ class Token extends BaseController
             $this->ukcp->deleteToken($token->id, auth()->user());
         }
 
-        $newToken = $this->ukcp->createTokenFor(auth()->user());
-
-        if (! $newToken) {
-            return Redirect::route('mship.manage.dashboard')
-                ->withError('An unknown error occured, please contact Web Services.');
-        }
-
-        return redirect()->route('ukcp.guide')->withSuccess('Tokens Updated!');
+        return redirect()->route('ukcp.guide')->withSuccess('Tokens Invalidated!');
     }
 
     public function show()
     {
-        $latestId = $this->ukcp->getValidTokensFor(auth()->user());
-
-        if ($latestId->isEmpty()) {
-            return Redirect::route('ukcp.token.refresh');
-        }
-
-        return $this->viewMake('ukcp.token.guide')->with('newToken', $latestId->first()->id);
+        return $this->viewMake('ukcp.token.guide');
     }
 }
