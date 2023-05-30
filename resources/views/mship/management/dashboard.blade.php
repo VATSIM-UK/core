@@ -433,10 +433,12 @@
                             @if(count($pluginKeys))
                                 <div class="text-center pt-4">
                                     <a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.refresh') }}">
-                                        Refresh Token(s)
+                                        Invalidate Token(s)
                                     </a>
                                     </br>
-                                    <small>Note: Will invalidate all current tokens</small>
+                                    <small>
+                                        Note: If you are currently online, some operations, such as squawk assignments, will fail.
+                                    </small>
                                 </div>
                             @endif
                         </div>
