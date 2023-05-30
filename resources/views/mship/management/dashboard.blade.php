@@ -475,6 +475,14 @@
                                 your keys</b> as actions taken with these keys are logged against your account.
                         </div>
                     </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            When you start EuroScope, the plugin will automatically take you through the process
+                            to set up a new key, if required. You can find more information about this process in the
+                            UK Controller Plugin guide.
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-footer panel-footer-primary">
                     <div class="row">
