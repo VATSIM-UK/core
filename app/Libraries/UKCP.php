@@ -9,7 +9,6 @@ use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Psr\Http\Message\ResponseInterface;
 
 class UKCP
@@ -32,21 +31,6 @@ class UKCP
         $this->client = $client;
     }
 
-    public function createAccountFor(Account $account)
-    {
-        try {
-            $result = $this->client->post(config('services.ukcp.url').'/api/user/'.$account->id, ['headers' => [
-                'Authorization' => 'Bearer '.$this->apiKey,
-            ]]);
-        } catch (ClientException $e) {
-            Log::warning("UKCP Client Error {$e->getMessage()} when creating account {$account->id}");
-
-            return;
-        }
-
-        return $result->getBody()->getContents();
-    }
-
     /**
      * @return array|Collection|mixed|ResponseInterface
      */
@@ -58,34 +42,6 @@ class UKCP
             ->filter(function ($item) {
                 return $item->revoked === false;
             });
-    }
-
-    /**
-     * @return object|null
-     */
-    public function createTokenFor(Account $account)
-    {
-        $pluginAccount = collect($this->getAccountFor($account));
-
-        if ($pluginAccount->isEmpty()) {
-            $result = $this->createAccountFor($account);
-        } else {
-            try {
-                $response = $this->client->post(config('services.ukcp.url').'/api/user/'.$account->id.'/token', ['headers' => [
-                    'Authorization' => 'Bearer '.$this->apiKey,
-                ]]);
-                $result = $response->getBody()->getContents();
-            } catch (ClientException $e) {
-                Log::warning("UKCP Client Error {$e->getMessage()} failed to create UKCP Token for {$account->id}");
-
-                return;
-            }
-        }
-
-        $token = $this->getValidTokensFor($account)->first();
-        Storage::disk('local')->put(self::getPathForToken($token->id, $account), $result);
-
-        return $token;
     }
 
     /**
@@ -102,9 +58,6 @@ class UKCP
 
             return false;
         }
-
-        // Delete local file
-        Storage::disk('local')->delete(self::getPathForToken($tokenId, $account));
 
         return true;
     }

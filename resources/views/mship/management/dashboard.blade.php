@@ -432,11 +432,13 @@
                             <b>UK CONTROLLER<br/>PLUGIN KEYS</b>
                             @if(count($pluginKeys))
                                 <div class="text-center pt-4">
-                                    <a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.refresh') }}">
-                                        Refresh Token(s)
+                                    <a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.invalidate') }}">
+                                        Invalidate Token(s)
                                     </a>
                                     </br>
-                                    <small>Note: Will invalidate all current tokens</small>
+                                    <small>
+                                        Note: If you are currently online, some operations, such as squawk assignments, will fail.
+                                    </small>
                                 </div>
                             @endif
                         </div>
@@ -458,13 +460,10 @@
                                             <em>{{ \Carbon\Carbon::createFromTimeString($key->expires_at)->diffForHumans() }}</em>
                                         </a>
                                         <br/>
-                                        [ <a href="{{ route('ukcp.token.download', $key->id) }}">Download Key</a> ]
                                     </div>
                                 @empty
                                     <p>
                                         No keys found.</br>
-                                        <a class="btn btn-sm btn-info" href="{{ route('ukcp.token.refresh') }}">Create
-                                            UKCP Token</a>
                                     </p>
                                 @endforelse
                             </div>
@@ -476,6 +475,14 @@
                             The UK Controller Plugin uses a key to identify who is using the plugin. <br/><b>Do not
                                 share
                                 your keys</b> as actions taken with these keys are logged against your account.
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            When you start EuroScope, the plugin will automatically take you through the process
+                            to set up a new key, if required. You can find more information about this process in the
+                            UK Controller Plugin guide.
                         </div>
                     </div>
                 </div>
