@@ -32,10 +32,6 @@ class UKCPLibraryTest extends TestCase
     {
         $currentTokenID = '1234567891234abcd';
 
-        // Put in a fake existing token
-        Storage::fake('local');
-        Storage::disk('local')->put(UKCP::getPathForToken($currentTokenID, $this->user), '');
-
         $this->mock(Client::class, function (MockInterface $mock) {
             $mock->shouldReceive('delete')
                 ->andReturn(new \GuzzleHttp\Psr7\Response(200, [], true));
