@@ -61,34 +61,6 @@ class UKCP
     }
 
     /**
-     * @return object|null
-     */
-    public function createTokenFor(Account $account)
-    {
-        $pluginAccount = collect($this->getAccountFor($account));
-
-        if ($pluginAccount->isEmpty()) {
-            $result = $this->createAccountFor($account);
-        } else {
-            try {
-                $response = $this->client->post(config('services.ukcp.url').'/api/user/'.$account->id.'/token', ['headers' => [
-                    'Authorization' => 'Bearer '.$this->apiKey,
-                ]]);
-                $result = $response->getBody()->getContents();
-            } catch (ClientException $e) {
-                Log::warning("UKCP Client Error {$e->getMessage()} failed to create UKCP Token for {$account->id}");
-
-                return;
-            }
-        }
-
-        $token = $this->getValidTokensFor($account)->first();
-        Storage::disk('local')->put(self::getPathForToken($token->id, $account), $result);
-
-        return $token;
-    }
-
-    /**
      * @return bool
      */
     public function deleteToken(string $tokenId, Account $account)
