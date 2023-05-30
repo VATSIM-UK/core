@@ -458,13 +458,10 @@
                                             <em>{{ \Carbon\Carbon::createFromTimeString($key->expires_at)->diffForHumans() }}</em>
                                         </a>
                                         <br/>
-                                        [ <a href="{{ route('ukcp.token.download', $key->id) }}">Download Key</a> ]
                                     </div>
                                 @empty
                                     <p>
                                         No keys found.</br>
-                                        <a class="btn btn-sm btn-info" href="{{ route('ukcp.token.refresh') }}">Create
-                                            UKCP Token</a>
                                     </p>
                                 @endforelse
                             </div>
