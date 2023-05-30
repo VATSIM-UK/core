@@ -75,9 +75,6 @@ class UKCP
             return false;
         }
 
-        // Delete local file
-        Storage::disk('local')->delete(self::getPathForToken($tokenId, $account));
-
         return true;
     }
 
