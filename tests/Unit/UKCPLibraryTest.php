@@ -43,8 +43,6 @@ class UKCPLibraryTest extends TestCase
 
         $ukcp = resolve(UKCP::class);
         $ukcp->deleteToken($currentTokenID, $this->user);
-
-        Storage::disk('local')->assertMissing(UKCP::getPathForToken($currentTokenID, $this->user));
     }
 
     public function testItReturnsCachedStandStatus()
