@@ -4,9 +4,6 @@ namespace App\Http\Controllers\UKCP;
 
 use App\Http\Controllers\BaseController;
 use App\Libraries\UKCP as UKCPLibrary;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
-use League\Flysystem\FileNotFoundException;
 
 class Token extends BaseController
 {
