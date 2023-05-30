@@ -48,20 +48,4 @@ class Token extends BaseController
 
         return $this->viewMake('ukcp.token.guide')->with('newToken', $latestId->first()->id);
     }
-
-    public function download($tokenId)
-    {
-        try {
-            return Storage::disk('local')
-                ->download(
-                    $this->ukcp::getPathForToken($tokenId, auth()->user()),
-                    "{$this->ukcp::getKeyForToken($tokenId)}.json",
-                    [
-                        'Content-Type: application/json',
-                    ]
-                );
-        } catch (FileNotFoundException $e) {
-            return redirect()->back()->with('error', 'There was an issue downloading your file. Please contact Web Services.');
-        }
-    }
 }
