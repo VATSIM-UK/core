@@ -432,7 +432,7 @@
                             <b>UK CONTROLLER<br/>PLUGIN KEYS</b>
                             @if(count($pluginKeys))
                                 <div class="text-center pt-4">
-                                    <a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.refresh') }}">
+                                    <a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.invalidate') }}">
                                         Invalidate Token(s)
                                     </a>
                                     </br>
