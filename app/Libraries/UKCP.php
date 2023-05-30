@@ -32,21 +32,6 @@ class UKCP
         $this->client = $client;
     }
 
-    public function createAccountFor(Account $account)
-    {
-        try {
-            $result = $this->client->post(config('services.ukcp.url').'/api/user/'.$account->id, ['headers' => [
-                'Authorization' => 'Bearer '.$this->apiKey,
-            ]]);
-        } catch (ClientException $e) {
-            Log::warning("UKCP Client Error {$e->getMessage()} when creating account {$account->id}");
-
-            return;
-        }
-
-        return $result->getBody()->getContents();
-    }
-
     /**
      * @return array|Collection|mixed|ResponseInterface
      */
