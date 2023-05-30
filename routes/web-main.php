@@ -130,7 +130,6 @@ Route::group([
 ], function () {
     Route::get('/')->uses('Token@show')->name('guide');
     Route::get('/token/refresh')->uses('Token@refresh')->name('token.refresh');
-    Route::get('token/{id}/download')->uses('Token@download')->name('token.download');
 });
 
 // Controllers
