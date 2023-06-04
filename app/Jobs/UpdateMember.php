@@ -13,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class UpdateMember extends Job implements ShouldQueue
 {
@@ -198,6 +199,23 @@ class UpdateMember extends Job implements ShouldQueue
         foreach ($pilotRatings as $pr) {
             if (! $member->hasQualification($pr)) {
                 $member->addQualification($pr);
+                Log::debug("Added rating {$pr->code} to member {$member->id}");
+            }
+        }
+
+        // it is possible for members to now be assigned instructor/examiner ratings
+        // which implicitly remove their previous ratings. We need to check for this
+        // and remove any ratings that are no longer valid.
+        // If this rating is eventually revoked, the bitmask will be reset to their previous
+        // permanent rating, which the logic above handles.
+        $memberPilotRatings = $member->fresh()->qualifications_pilot;
+
+        $pilotRatingsCollection = collect($pilotRatings);
+        foreach ($memberPilotRatings as $mpr) {
+            Log::debug("Checking pilot rating {$mpr->code} for member {$member->id}");
+
+            if (! $pilotRatingsCollection->contains($mpr->code) && $mpr->code != 'P0') {
+                $member->removeQualification($mpr);
             }
         }
 
