@@ -6,7 +6,7 @@ use App\Events\Mship\AccountAltered;
 use App\Events\Mship\Qualifications\QualificationAdded;
 use App\Models\Mship\AccountQualification;
 use App\Models\Mship\Qualification;
-use Exception;
+use Illuminate\Support\Facades\Log;
 
 trait HasQualifications
 {
@@ -19,7 +19,8 @@ trait HasQualifications
             'qualification_id'
         )->orderBy('vatsim')
             ->using(AccountQualification::class)
-            ->wherePivot('deleted_at', '=', null)
+            ->withPivot('deleted_at', 'id')
+            ->wherePivotNull('deleted_at')
             ->withTimestamps();
     }
 
@@ -46,6 +47,23 @@ trait HasQualifications
             $this->qualifications()->attach($qualification);
             $this->touch();
             event(new QualificationAdded($this, $qualification));
+            event(new AccountAltered($this));
+        }
+
+        return $this;
+    }
+
+    public function removeQualification(Qualification $qualification)
+    {
+        if ($this->hasQualification($qualification)) {
+            Log::info("Removing qualification {$qualification->code} from member {$this->id}");
+
+            $memberQualificationPivot = $this->qualifications_pilot->where('code', $qualification->code)->first()->pivot;
+
+            $memberQualificationPivot->deleted_at = now();
+            $memberQualificationPivot->save();
+
+            $this->touch();
             event(new AccountAltered($this));
         }
 
