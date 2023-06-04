@@ -11,13 +11,11 @@ class QualificationDetectionTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function itHandlesMinus1ReportedAsP0()
+    public function itHandlesMinus1ByNotAssigningPilotRatings()
     {
         $qualifications = Qualification::parseVatsimPilotQualifications(-1);
 
-        $p0_qualification = Qualification::where('code', 'P0')->first();
-
-        $this->assertTrue(collect($qualifications)->pluck('code')->contains($p0_qualification->code));
+        $this->assertEmpty($qualifications);
     }
 
     /** @test */
