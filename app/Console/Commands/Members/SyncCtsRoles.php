@@ -60,6 +60,9 @@ class SyncCtsRoles extends Command
 
         // Sync Special Endorsements
         $this->syncValidatedMembers(ValidationPosition::whereName('Shanwick Oceanic (EGGX)')->first(), Role::findByName('Shanwick Controller')->id);
+        $this->syncValidatedMembers(ValidationPosition::whereName('Heathrow (GND)')->first(), Role::findByName('Heathrow Endorsed Ground')->id);
+        $this->syncValidatedMembers(ValidationPosition::whereName('Heathrow (TWR)')->first(), Role::findByName('Heathrow Endorsed Tower')->id);
+        $this->syncValidatedMembers(ValidationPosition::whereName('Heathrow (APP)')->first(), Role::findByName('Heathrow Endorsed Approach')->id);
     }
 
     private function syncMentorsByRts(int $rtsId, int $roleId): void
