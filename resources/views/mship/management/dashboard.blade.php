@@ -287,7 +287,7 @@
                                 <div class="col-xs-6 col-lg-6 col-md-12 row-text-contain text-center">
                                     <b>PILOT QUALIFICATIONS</b>
                                     <br/>
-                                    <small>Showing all achieved</small>
+                                    <small>Showing all achieved including military</small>
                                 </div>
                                 <div class="col-xs-6 col-lg-6 col-md-12 text-center">
                                     @foreach($_account->qualifications_pilot as $qual)
@@ -306,6 +306,14 @@
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
                                            title="{{ $qual->pivot->created_at }}">
                                             <em>granted {{ $qual->pivot->created_at }}</em>
+                                        </a>
+                                        <br/>
+                                    @endforeach
+                                    @foreach($_account->qualifications_pilot_military as $qual)
+                                        {{ $qual }}
+                                        <a class="tooltip_displays" href="#" data-toggle="tooltip"
+                                        title="{{ $qual->pivot->created_at }}">
+                                            <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                         </a>
                                         <br/>
                                     @endforeach

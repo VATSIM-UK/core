@@ -120,7 +120,8 @@ trait HasQualifications
             ->merge($this->qualifications_pilot_training)
             ->merge($this->qualifications_admin)
             ->push($this->qualification_atc)
-            ->push($this->qualification_pilot);
+            ->push($this->qualification_pilot)
+            ->push($this->qualification_pilot_military);
     }
 
     public function getQualificationAtcAttribute()
@@ -150,6 +151,13 @@ trait HasQualifications
     {
         return $this->qualifications->filter(function ($qual) {
             return $qual->type == 'pilot';
+        });
+    }
+
+    public function getQualificationsPilotMilitaryAttribute()
+    {
+        return $this->qualifications->filter(function ($qual) {
+            return $qual->type == 'pilot_military';
         });
     }
 

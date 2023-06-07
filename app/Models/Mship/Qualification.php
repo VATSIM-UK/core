@@ -128,6 +128,31 @@ class Qualification extends Model
         return $ratingsOutput;
     }
 
+    public static function parseVatsimMilitaryPilotQualifications(int $bitmask): array
+    {
+        $ratings = [];
+        if ($bitmask >= 0) {
+            array_push($ratings, self::ofType('pilot_military')->networkValue(0)->first());
+        }
+
+        // construct array of ratings to help with the bitmask mapping
+        // where index zero is the first rating to be picked up by the bitmask (M1)
+        $militaryRatings = self::ofType('pilot_military')->where('vatsim', '!=', 0)->orderBy('vatsim')->get();
+
+        // bitshift the bitmask to the right by 1 to find ratings
+        for ($i = 0; $i < count($militaryRatings); $i++) {
+            var_dump($bitmask & (1 << $i));
+            if (($bitmask & (1 << $i)) != 0) {
+                $ro = $militaryRatings->slice($i, 1)->first();
+                if ($ro) {
+                    array_push($ratings, $ro);
+                }
+            }
+        }
+
+        return $ratings;
+    }
+
     public function __toString()
     {
         return $this->code;
