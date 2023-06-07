@@ -170,6 +170,15 @@ trait HasQualifications
         })->first();
     }
 
+    public function getQualificationPilotMilitaryAttribute()
+    {
+        return $this->qualifications->filter(function ($qual) {
+            return $qual->type == 'pilot_military';
+        })->sortByDesc(function ($qualification) {
+            return $qualification->vatsim;
+        })->first();
+    }
+
     public function getQualificationsPilotStringAttribute()
     {
         return optional($this->qualification_pilot)->code ?? 'None';

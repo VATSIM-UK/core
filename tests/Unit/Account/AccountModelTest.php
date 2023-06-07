@@ -287,7 +287,7 @@ class AccountModelTest extends TestCase
         $pilotMilitary = Qualification::factory()->atc()->create([
             'code' => 'MP1',
             'vatsim' => 3,
-            'type' => 'pilot_military'
+            'type' => 'pilot_military',
         ]);
 
         $this->user->qualifications()->sync([$mockS1Qual->id, $mockS2Qual->id, $mockP1Qual->id, $mockP2Qual->id, $pilotMilitary->id]);
