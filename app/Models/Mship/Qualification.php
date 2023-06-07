@@ -141,7 +141,6 @@ class Qualification extends Model
 
         // bitshift the bitmask to the right by 1 to find ratings
         for ($i = 0; $i < count($militaryRatings); $i++) {
-            var_dump($bitmask & (1 << $i));
             if (($bitmask & (1 << $i)) != 0) {
                 $ro = $militaryRatings->slice($i, 1)->first();
                 if ($ro) {
