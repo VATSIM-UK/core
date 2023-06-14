@@ -534,14 +534,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $array['atc_rating'] = $this->qualification_atc;
         $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
         $array['pilot_rating'] = [];
-        // sort pilot ratings in order Pilot -> Military
         foreach ($this->qualifications_pilot as $rp) {
             $array['pilot_rating'][] = $rp->code;
         }
-        foreach ($this->qualifications_pilot_military as $rp) {
-            $array['pilot_rating'][] = $rp->code;
-        }
-
         $array['pilot_rating'] = implode(', ', $array['pilot_rating']);
 
         return $array;
