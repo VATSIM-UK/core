@@ -69,7 +69,6 @@ class UpdateMember extends Job implements ShouldQueue
                 'rating' => (string) $response['rating'],
                 'regdate' => Carbon::parse($response['reg_date'])->toDateTimeString(),
                 'pilotrating' => (string) $response['pilotrating'],
-                'militaryrating' => $response['militaryrating'],
                 'country' => null,
                 'region' => $response['region_id'],
                 'division' => $response['division_id'],
@@ -217,14 +216,6 @@ class UpdateMember extends Job implements ShouldQueue
 
             if (! $pilotRatingsCollection->contains($mpr->code) && $mpr->code != 'P0') {
                 $member->removeQualification($mpr);
-            }
-        }
-
-        $militaryRatings = QualificationData::parseVatsimMilitaryQualifications($this->data->militaryrating);
-        foreach ($militaryRatings as $militaryRating) {
-            if (! $member->hasQualification($militaryRating)) {
-                $member->addQualification($militaryRating);
-                Log::debug("Added military rating {$militaryRating->code} to member {$member->id}");
             }
         }
 

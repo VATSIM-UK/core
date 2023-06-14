@@ -120,8 +120,7 @@ trait HasQualifications
             ->merge($this->qualifications_pilot_training)
             ->merge($this->qualifications_admin)
             ->push($this->qualification_atc)
-            ->push($this->qualification_pilot)
-            ->push($this->qualification_pilot_military);
+            ->push($this->qualification_pilot);
     }
 
     public function getQualificationAtcAttribute()
@@ -154,26 +153,10 @@ trait HasQualifications
         });
     }
 
-    public function getQualificationsPilotMilitaryAttribute()
-    {
-        return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'pilot_military';
-        });
-    }
-
     public function getQualificationPilotAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
             return $qual->type == 'pilot';
-        })->sortByDesc(function ($qualification) {
-            return $qualification->vatsim;
-        })->first();
-    }
-
-    public function getQualificationPilotMilitaryAttribute()
-    {
-        return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'pilot_military';
         })->sortByDesc(function ($qualification) {
             return $qualification->vatsim;
         })->first();

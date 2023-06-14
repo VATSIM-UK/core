@@ -284,13 +284,7 @@ class AccountModelTest extends TestCase
             'vatsim' => 4,
         ]);
 
-        $pilotMilitary = Qualification::factory()->atc()->create([
-            'code' => 'MP1',
-            'vatsim' => 3,
-            'type' => 'pilot_military',
-        ]);
-
-        $this->user->qualifications()->sync([$mockS1Qual->id, $mockS2Qual->id, $mockP1Qual->id, $mockP2Qual->id, $pilotMilitary->id]);
+        $this->user->qualifications()->sync([$mockS1Qual->id, $mockS2Qual->id, $mockP1Qual->id, $mockP2Qual->id]);
         $this->user = $this->user->fresh();
 
         $this->assertEquals($this->user->qualification_atc->id, $mockS2Qual->id);
@@ -298,7 +292,7 @@ class AccountModelTest extends TestCase
         $this->assertEqualsCanonicalizing([$mockP1Qual->id, $mockP2Qual->id], $this->user->qualifications_pilot->map(function ($qual) {
             return $qual->id;
         })->all());
-        $this->assertEqualsCanonicalizing([$mockS2Qual->id, $mockP2Qual->id, $pilotMilitary->id], $this->user->active_qualifications->map(function ($qual) {
+        $this->assertEqualsCanonicalizing([$mockS2Qual->id, $mockP2Qual->id], $this->user->active_qualifications->map(function ($qual) {
             return $qual->id;
         })->all());
 
