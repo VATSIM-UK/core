@@ -5616,16 +5616,16 @@
         },
         {
             "name": "ohdearapp/ohdear-php-sdk",
-            "version": "3.6.0",
+            "version": "3.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ohdearapp/ohdear-php-sdk.git",
-                "reference": "88e586773d35e9bb36816e2b5c67b8445508e625"
+                "reference": "ad24de99a422a05b4eefc1cde854c5b37ed62b21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/88e586773d35e9bb36816e2b5c67b8445508e625",
-                "reference": "88e586773d35e9bb36816e2b5c67b8445508e625",
+                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/ad24de99a422a05b4eefc1cde854c5b37ed62b21",
+                "reference": "ad24de99a422a05b4eefc1cde854c5b37ed62b21",
                 "shasum": ""
             },
             "require": {
@@ -5667,9 +5667,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ohdearapp/ohdear-php-sdk/issues",
-                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.6.0"
+                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.6.2"
             },
-            "time": "2023-04-06T06:37:28+00:00"
+            "time": "2023-06-10T10:10:32+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
