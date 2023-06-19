@@ -323,4 +323,17 @@ class WaitingListAccountTest extends TestCase
 
         $this->assertTrue($pilotList->accounts()->find($account)->pivot->atcHourCheck());
     }
+
+    /** @test */
+    public function itShouldPassEligibilityIfAtcHourCheckFeatureTogglejDisabled()
+    {
+        $this->waitingList->feature_toggles = ['check_atc_hours' => false];
+        $this->waitingList->save();
+
+        $account = factory(Account::class)->create();
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertTrue($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
+    }
 }
