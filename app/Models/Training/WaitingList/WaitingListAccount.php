@@ -140,7 +140,7 @@ class WaitingListAccount extends Pivot
             return true;
         }
 
-        if ($this->waitingList->should_check_atc_hours == false) {
+        if (! $this->waitingList->should_check_atc_hours) {
             return true;
         }
 
