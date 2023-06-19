@@ -65,6 +65,11 @@ class WaitingListsManagerController extends Controller
         return [];
     }
 
+    public function featureToggles(WaitingList $waitingList)
+    {
+        return response()->json($waitingList->feature_toggles_formatted);
+    }
+
     private function findWaitingListAccount(Account &$account, WaitingList &$waitingList): WaitingListAccount
     {
         return $account->currentWaitingLists()

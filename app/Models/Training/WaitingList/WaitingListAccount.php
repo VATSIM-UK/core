@@ -140,6 +140,10 @@ class WaitingListAccount extends Pivot
             return true;
         }
 
+        if ($this->waitingList->should_check_atc_hours == false) {
+            return true;
+        }
+
         // 12 hours is represented as 720 minutes
         $minutesRequired = 720;
 
