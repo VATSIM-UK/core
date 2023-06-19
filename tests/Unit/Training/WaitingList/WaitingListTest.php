@@ -199,7 +199,6 @@ class WaitingListTest extends TestCase
     /** @test */
     public function itCanDetectWhetherToCheckForCtsTheoryExam()
     {
-        $this->waitingList->department = WaitingList::ATC_DEPARTMENT;
         $this->waitingList->feature_toggles = null;
         $this->waitingList->save();
 

@@ -181,12 +181,12 @@ class WaitingList extends Model
 
     public function getShouldCheckAtcHoursAttribute(): bool
     {
-        return $this->isAtcList() && ($this->feature_toggles['check_atc_hours'] ?? true);
+        return $this->feature_toggles['check_atc_hours'] ?? true;
     }
 
     public function getShouldCheckCtsTheoryExamAttribute(): bool
     {
-        return $this->isAtcList() && ($this->feature_toggles['check_cts_theory_exam'] ?? true);
+        return $this->feature_toggles['check_cts_theory_exam'] ?? true;
     }
 
     public function getFeatureTogglesFormattedAttribute(): object
