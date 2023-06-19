@@ -181,20 +181,16 @@ class WaitingList extends Model
 
     public function getShouldCheckAtcHoursAttribute(): bool
     {
-        // default to true
         return $this->isAtcList() && ($this->feature_toggles['check_atc_hours'] ?? true);
     }
 
     public function getShouldCheckCtsTheoryExamAttribute(): bool
     {
-        // default to true for atc lists.
         return $this->isAtcList() && ($this->feature_toggles['check_cts_theory_exam'] ?? true);
     }
 
     public function getFeatureTogglesFormattedAttribute(): object
     {
-        // convert feature toggles to an object with defaults included to
-        // ensure keys are always present.
         return (object) [
             'check_atc_hours' => $this->getShouldCheckAtcHoursAttribute(),
             'check_cts_theory_exam' => $this->getShouldCheckCtsTheoryExamAttribute(),
