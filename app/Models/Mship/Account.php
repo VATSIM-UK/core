@@ -26,6 +26,7 @@ use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Concerns\HasWaitingLists;
 use App\Models\Mship\Note\Type;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -161,7 +162,7 @@ use Watson\Rememberable\Rememberable;
  *
  * @mixin \Eloquent
  */
-class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
+class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser
 {
     use SoftDeletingTrait,
         Rememberable,
@@ -523,6 +524,11 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             ->session_timeout;
 
         return $timeout === null ? 0 : $timeout;
+    }
+
+    public function canAccessFilament(): bool
+    {
+        return $this->hasPermissionTo('admin/beta');
     }
 
     public function toArray()
