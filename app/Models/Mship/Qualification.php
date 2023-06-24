@@ -130,7 +130,7 @@ class Qualification extends Model
 
     public static function parseVatsimMilitaryPilotQualifications(int $bitmask): array
     {
-        return self::ofType('pilot_military')->where('vatsim', '<=', $bitmask)->orderBy('vatsim')->get()->toArray();
+        return self::ofType('pilot_military')->where('vatsim', '<=', $bitmask)->orderBy('vatsim')->get()->all();
     }
 
     public function __toString()
