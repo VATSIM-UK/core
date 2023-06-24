@@ -219,6 +219,14 @@ class UpdateMember extends Job implements ShouldQueue
             }
         }
 
+        $militaryRatings = QualificationData::parseVatsimMilitaryQualifications($this->data->militaryrating);
+        foreach ($militaryRatings as $militaryRating) {
+            if (! $member->hasQualification($militaryRating)) {
+                $member->addQualification($militaryRating);
+                Log::debug("Added military rating {$militaryRating->code} to member {$member->id}");
+            }
+        }
+
         return $member;
     }
 
