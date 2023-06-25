@@ -44,15 +44,6 @@ class Discord
         $response = Http::withHeaders($this->headers)
             ->put("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
 
-        $retry_after = $response->json()['retry_after'] ?? null;
-
-        // discord API will return a retry field if being rate limited non-globally
-        // wait until this has passed before proceeding.
-        if ($retry_after) {
-            sleep($retry_after);
-            $this->grantRoleById($account, $role);
-        }
-
         return $this->result($response);
     }
 
