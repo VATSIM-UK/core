@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\FilamentAccessMiddleware;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
 use Filament\Pages;
@@ -317,6 +318,7 @@ return [
     'middleware' => [
         'auth' => [
             Authenticate::class,
+            FilamentAccessMiddleware::class,
         ],
         'base' => [
             EncryptCookies::class,
