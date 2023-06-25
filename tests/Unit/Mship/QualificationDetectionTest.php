@@ -50,11 +50,10 @@ class QualificationDetectionTest extends TestCase
     {
         return [
             // [Bitmask, Expected Code]
-            [1, 'P1'],
-            [2, 'P2'],
-            [4, 'P3'],
-            [8, 'P4'],
-            [16, 'P5'],
+            [1, 'PPL'],
+            [3, 'IR'],
+            [7, 'CMEL'],
+            [15, 'ATPL'],
         ];
     }
 }
