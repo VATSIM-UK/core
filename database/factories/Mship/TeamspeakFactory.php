@@ -26,7 +26,7 @@ $factory->define(\App\Models\TeamSpeak\ChannelGroup::class, function (Faker\Gene
 $factory->define(\App\Models\TeamSpeak\Registration::class, function (Faker\Generator $faker) {
     return [
         'account_id' => function () {
-            return factory(\App\Models\Mship\Account::class)->create();
+            return \App\Models\Mship\Account::factory()->create();
         },
         'registration_ip' => $faker->ipv4,
         'last_ip' => $faker->ipv4,

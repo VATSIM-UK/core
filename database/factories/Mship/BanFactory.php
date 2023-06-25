@@ -16,10 +16,10 @@ $factory->define(\App\Models\Mship\Ban\Reason::class, function (Faker $faker) {
 $factory->define(\App\Models\Mship\Account\Ban::class, function (Faker $faker) {
     return [
         'account_id' => function () {
-            return factory(\App\Models\Mship\Account::class)->create()->id;
+            return \App\Models\Mship\Account::factory()->create()->id;
         },
         'banned_by' => function () {
-            return factory(\App\Models\Mship\Account::class)->create()->id;
+            return \App\Models\Mship\Account::factory()->create()->id;
         },
         'type' => \App\Models\Mship\Account\Ban::TYPE_LOCAL,
         'reason_id' => function () {
