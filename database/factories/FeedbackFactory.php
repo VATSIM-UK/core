@@ -35,8 +35,8 @@ $factory->define(App\Models\Mship\Feedback\Question::class, function (Faker $fak
 $factory->define(App\Models\Mship\Feedback\Feedback::class, function (Faker $faker) {
     return [
         'form_id' => factory(App\Models\Mship\Feedback\Form::class)->create()->id,
-        'account_id' => factory(App\Models\Mship\Account::class)->create()->id,
-        'submitter_account_id' => factory(App\Models\Mship\Account::class)->create()->fresh()->id,
+        'account_id' => App\Models\Mship\Account::factory()->create()->id,
+        'submitter_account_id' => App\Models\Mship\Account::factory()->create()->fresh()->id,
     ];
 });
 

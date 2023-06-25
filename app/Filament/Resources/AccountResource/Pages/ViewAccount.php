@@ -23,7 +23,7 @@ class ViewAccount extends ViewRecord
     {
         return [
             Actions\Action::make('impersonate')
-                ->visible(fn (Account $subject) => auth()->user()->can('impersonate', $subject))
+                ->visible(fn (Account $record) => auth()->user()->can('impersonate', $record))
                 ->color('danger')
                 ->modalHeading('Impersonate User')
                 ->modalSubheading(new HtmlString('<p>Clicking confirm will log you in as this user on the user facing side and log you out of your own account.</p>
