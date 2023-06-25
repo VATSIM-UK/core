@@ -8,10 +8,8 @@ use App\Libraries\Forum;
 use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use HTML;
-use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
@@ -51,10 +49,6 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('layout*', function ($view) {
             $view->with('_bannerUrl', BaseController::generateBannerUrl());
-        });
-
-        RateLimiter::for('discord-sync', function (object $job) {
-            return Limit::perHour(1)->by($job->getAccountId());
         });
     }
 
