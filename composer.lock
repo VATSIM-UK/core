@@ -10272,24 +10272,28 @@
         },
         {
             "name": "symfony/mailgun-mailer",
-            "version": "v6.2.10",
+            "version": "v6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mailgun-mailer.git",
-                "reference": "2c9d47b11cc154d2db3f571030cd965d128de1a8"
+                "reference": "2fafefe8683a93155aceb6cca622c7cee2e27174"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mailgun-mailer/zipball/2c9d47b11cc154d2db3f571030cd965d128de1a8",
-                "reference": "2c9d47b11cc154d2db3f571030cd965d128de1a8",
+                "url": "https://api.github.com/repos/symfony/mailgun-mailer/zipball/2fafefe8683a93155aceb6cca622c7cee2e27174",
+                "reference": "2fafefe8683a93155aceb6cca622c7cee2e27174",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1",
                 "symfony/mailer": "^5.4.21|^6.2.7"
             },
+            "conflict": {
+                "symfony/http-foundation": "<6.2"
+            },
             "require-dev": {
-                "symfony/http-client": "^5.4|^6.0"
+                "symfony/http-client": "^5.4|^6.0",
+                "symfony/webhook": "^6.3"
             },
             "type": "symfony-mailer-bridge",
             "autoload": {
@@ -10317,7 +10321,7 @@
             "description": "Symfony Mailgun Mailer Bridge",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/mailgun-mailer/tree/v6.2.10"
+                "source": "https://github.com/symfony/mailgun-mailer/tree/v6.3.0"
             },
             "funding": [
                 {
@@ -10333,7 +10337,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-04-14T16:23:31+00:00"
+            "time": "2023-05-02T16:15:19+00:00"
         },
         {
             "name": "symfony/mime",
