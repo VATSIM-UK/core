@@ -60,7 +60,7 @@ class AdminMiddlewareTest extends TestCase
     /** @test */
     public function testTelescopeIsAvailableToAuthorisedUsers()
     {
-        $admin = factory(Account::class)->create();
+        $admin = Account::factory()->create();
         $admin->givePermissionTo('telescope');
 
         $this->actingAs($admin)
@@ -90,7 +90,7 @@ class AdminMiddlewareTest extends TestCase
     /** @test */
     public function testHorizonIsAvailableToAuthorisedUsers()
     {
-        $admin = factory(Account::class)->create();
+        $admin = Account::factory()->create();
         $admin->givePermissionTo('horizon');
 
         $this->actingAs($admin)

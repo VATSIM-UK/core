@@ -33,6 +33,6 @@ trait WaitingListTestHelper
 
     private function createAdminAccount()
     {
-        return factory(Account::class)->create();
+        return Account::factory()->create();
     }
 }

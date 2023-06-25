@@ -25,7 +25,7 @@ class AccountBanTest extends TestCase
     {
         parent::setUp();
 
-        $this->account = factory(Account::class)->create();
+        $this->account = Account::factory()->create();
 
         Event::fake();
 

@@ -38,7 +38,7 @@ class AccountSyncTest extends TestCase
     public function itTriggersWhenBanned()
     {
         $reason = factory(Reason::class)->create();
-        $banner = factory(Account::class)->create();
+        $banner = Account::factory()->create();
 
         $this->user->addBan($reason, Lorem::paragraph(), Lorem::paragraph(), $banner);
 
