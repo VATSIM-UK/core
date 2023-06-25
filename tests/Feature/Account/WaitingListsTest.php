@@ -3,7 +3,6 @@
 namespace Tests\Feature\Account;
 
 use App\Events\Mship\AccountAltered;
-use App\Http\Controllers\Adm\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Services\Training\AddToWaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
