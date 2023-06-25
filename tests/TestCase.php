@@ -47,13 +47,15 @@ abstract class TestCase extends BaseTestCase
         $this->createPrivaccUser();
 
         // Create generic user
-        $this->user = factory(Account::class)->states('withQualification')->create();
+        $this->user = Account::factory()->withQualification()->create();
     }
 
     protected function createPrivaccUser()
     {
-        $user = factory(Account::class)->create();
-        $user->assignRole(Role::findByName('privacc'));
+        $user = Account::factory()->create();
+        $role = Role::findByName('privacc');
+        $role->givePermissionTo('*');
+        $user->assignRole($role);
         $this->privacc = $user->fresh();
     }
 

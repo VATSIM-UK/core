@@ -30,6 +30,8 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -168,6 +170,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         Notifiable,
         Authenticatable,
         Authorizable,
+        HasFactory,
         HasNetworkData,
         HasMoodleAccount,
         HasHelpdeskAccount,
@@ -224,8 +227,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     ];
 
     protected $attributes = [
-        'name_first' => '',
-        'name_last' => '',
         'inactive' => false,
         'last_login_ip' => '0.0.0.0',
     ];
@@ -418,9 +419,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      *
      * @return mixed|string
      */
-    public function getNameAttribute()
+    public function name(): Attribute
     {
-        return $this->name_preferred.' '.$this->name_last;
+        return Attribute::make(get: fn () => $this->name_preferred.' '.$this->name_last);
     }
 
     /**

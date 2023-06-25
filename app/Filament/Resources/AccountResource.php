@@ -5,11 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Filament\Resources\AccountResource\RelationManagers\RolesRelationManager;
 use App\Models\Mship\Account;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Database\Eloquent\Model;
 
 class AccountResource extends Resource
 {
@@ -17,13 +20,37 @@ class AccountResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?string $navigationGroup = 'User Management';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['id', 'name_first', 'name_last', 'nickname'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'VATSIM ID' => $record->id,
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->required()->autofocus()->disabled(),
-                TextInput::make('id')->required()->autofocus()->disabled()->label('CID'),
-                TextInput::make('primary_email')->required()->autofocus()->disabled(),
+                Fieldset::make('Basic Details')->schema([
+                    TextInput::make('name_first')->label('First Name')->required()->disabled()->visibleOn('view'),
+                    TextInput::make('name_last')->label('Last Name')->required()->disabled()->visibleOn('view'),
+                    TextInput::make('nickname')->label('Preferred First Name')->visibleOn('edit'),
+                    TextInput::make('id')->required()->autofocus()->disabled()->label('CID')->visibleOn('view'),
+
+                    TextInput::make('email')->label('Primary Email')->required()->disabled()->visibleOn('view'),
+
+                    Repeater::make('secondaryEmails')->relationship()->schema([TextInput::make('email')])->visibleOn('view'),
+                ]),
+
             ]);
     }
 
@@ -57,8 +84,8 @@ class AccountResource extends Resource
     {
         return [
             'index' => Pages\ListAccounts::route('/'),
-            'create' => Pages\CreateAccount::route('/create'),
             'view' => Pages\ViewAccount::route('/{record}'),
+            'edit' => Pages\EditAccount::route('/{record}/edit'),
         ];
     }
 }
