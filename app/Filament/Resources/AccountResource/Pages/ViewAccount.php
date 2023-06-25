@@ -35,6 +35,7 @@ class ViewAccount extends ViewRecord
                     Textarea::make('reason')->required()->minLength(10),
                 ])
                 ->action(function (array $data) {
+                    // Notify Privellged users that a user has been impersonated
                     Contact::where('key', 'PRIVACC')->first()
                         ->notify(new UserImpersonated($this->record, auth()->user(), $data['reason']));
 

@@ -17,7 +17,7 @@ class AccountPolicy
      */
     public function viewAny(Account $actor)
     {
-        return $actor->can('adm/mship/account/*');
+        return $actor->canAny(['account.view-insensitive.*', 'account.view-sensitive.*']);
     }
 
     /**
@@ -29,7 +29,7 @@ class AccountPolicy
      */
     public function view(Account $actor, Account $subject)
     {
-        return $actor->can('adm/mship/account/*');
+        return $actor->canAny(['account.view-insensitive.*', 'account.view-sensitive.*']);
     }
 
     /**
@@ -52,7 +52,7 @@ class AccountPolicy
      */
     public function update(Account $actor, Account $subject)
     {
-        return $actor->can('adm/mship/account/*');
+        return $actor->can("account.edit-basic-details.{$subject->id}");
     }
 
     /**
@@ -94,6 +94,6 @@ class AccountPolicy
     /** Determine whether the user can impersonate the subject account */
     public function impersonate(Account $actor, Account $subject)
     {
-        return $actor->can('adm/mship/account/*/impersonate');
+        return $actor->can("account.impersonate.{$subject->id}");
     }
 }

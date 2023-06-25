@@ -17,15 +17,15 @@ class ViewAccountPageTest extends BaseAdminTestCase
 
     public function test_cant_impersonate_without_permission()
     {
-        $this->user->givePermissionTo('adm/mship/account/*');
+        $this->user->givePermissionTo('account.view-insensitive.*');
         Livewire::actingAs($this->user);
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])->assertPageActionHidden('impersonate');
     }
 
     public function test_can_impersonate_with_permission()
     {
-        $this->user->givePermissionTo('adm/mship/account/*');
-        $this->user->givePermissionTo('adm/mship/account/*/impersonate');
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.impersonate.*');
         Livewire::actingAs($this->user);
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
             ->assertPageActionVisible('impersonate')
