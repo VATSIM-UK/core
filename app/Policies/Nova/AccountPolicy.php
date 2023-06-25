@@ -28,6 +28,7 @@ class AccountPolicy extends BasePolicy
     public function view(Account $account)
     {
         // TODO: Implement view() method.
+        return true;
     }
 
     public function delete(Account $account)
