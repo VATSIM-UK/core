@@ -4,7 +4,6 @@ namespace App\Filament\Resources\AccountResource\Pages;
 
 use App\Filament\Resources\AccountResource;
 use App\Models\Contact;
-use App\Models\Mship\Account;
 use App\Notifications\Mship\UserImpersonated;
 use Filament\Forms\Components\Textarea;
 use Filament\Pages\Actions;
@@ -21,9 +20,10 @@ class ViewAccount extends ViewRecord
 
     protected function getActions(): array
     {
+
         return [
             Actions\Action::make('impersonate')
-                ->visible(fn (Account $record) => auth()->user()->can('impersonate', $record))
+                ->visible(fn () => auth()->user()->can('impersonate', $this->record))
                 ->color('danger')
                 ->modalHeading('Impersonate User')
                 ->modalSubheading(new HtmlString('<p>Clicking confirm will log you in as this user on the user facing side and log you out of your own account.</p>
