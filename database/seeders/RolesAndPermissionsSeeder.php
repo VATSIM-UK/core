@@ -20,7 +20,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Add Privacc Role and Normal Member
         $privacc = Role::firstOrCreate(['name' => 'privacc', 'guard_name' => 'web', 'default' => false]);
-        Role::firstOrCreate(['name' => 'member', 'guard_name' => 'web', 'default' => true]);
+        $member = Role::firstOrCreate(['name' => 'member', 'guard_name' => 'web', 'default' => true]);
 
         // Add All Permissions
         $permissions = [
@@ -53,35 +53,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'role.edit.*',
             'role.delete.*',
 
-            // TeamSpeak Permissions
-            'teamspeak.servergroup.serveradmin',
-            'teamspeak.idle.extended',
-            'teamspeak.idle.permanent',
-            'teamspeak.servergroup.divisionstaff',
-            'teamspeak.servergroup.webstaff',
-            'teamspeak.servergroup.rtsm',
-            'teamspeak.servergroup.leadmentor',
-            'teamspeak.servergroup.atcstaff',
-            'teamspeak.servergroup.ptdstaff',
-            'teamspeak.servergroup.member',
-            'teamspeak.servergroup.divisioninstructor',
-            'teamspeak.channel.essex',
-            'teamspeak.channel.heathrow',
-            'teamspeak.channel.egtt',
-            'teamspeak.channel.northern',
-            'teamspeak.channel.scottish',
-            'teamspeak.channel.serts',
-            'teamspeak.channel.swrts',
-            'teamspeak.channel.military',
-            'teamspeak.channel.pilot',
-            'teamspeak.servergroup.globalmoderator',
-            'teamspeak.servergroup.bogecfounder',
-            'teamspeak.servergroup.marketingstaff',
-            'teamspeak.servergroup.communitymanager',
-            'teamspeak.servergroup.tgncmanager',
-            'teamspeak.servergroup.atcmentor',
-            'teamspeak.servergroup.ptdmentor',
-
             // Visit Transfer System Permissions
             'vt.access',
             'vt.facility.view.*',
@@ -94,6 +65,16 @@ class RolesAndPermissionsSeeder extends Seeder
             'vt.application.reference.accept.*',
             'vt.application.reference.reject.*',
             'vt.application.check.modify.*',
+
+            // Waiting List System Permissions,
+            'waiting-lists.list.*.*',
+            'waiting-lists.list.*.view',
+            'waiting-lists.list.*.add-accounts',
+            'waiting-lists.list.*.add-accounts-admin',
+            'waiting-lists.list.*.remove-accounts',
+            'waiting-lists.list.*.add-flags',
+            'waiting-lists.list.*.update',
+            'waiting-lists.create',
 
             // Feedback System Permissions
             'feedback.access',
@@ -132,6 +113,60 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Operations System Permissions
             'operations.access',
+
+            // TeamSpeak Permissions
+            'teamspeak.servergroup.serveradmin',
+            'teamspeak.idle.extended',
+            'teamspeak.idle.permanent',
+            'teamspeak.servergroup.divisionstaff',
+            'teamspeak.servergroup.webstaff',
+            'teamspeak.servergroup.rtsm',
+            'teamspeak.servergroup.leadmentor',
+            'teamspeak.servergroup.atcstaff',
+            'teamspeak.servergroup.ptdstaff',
+            'teamspeak.servergroup.member',
+            'teamspeak.servergroup.divisioninstructor',
+            'teamspeak.channel.essex',
+            'teamspeak.channel.heathrow',
+            'teamspeak.channel.egtt',
+            'teamspeak.channel.northern',
+            'teamspeak.channel.scottish',
+            'teamspeak.channel.serts',
+            'teamspeak.channel.swrts',
+            'teamspeak.channel.military',
+            'teamspeak.channel.pilot',
+            'teamspeak.servergroup.globalmoderator',
+            'teamspeak.servergroup.bogecfounder',
+            'teamspeak.servergroup.marketingstaff',
+            'teamspeak.servergroup.communitymanager',
+            'teamspeak.servergroup.tgncmanager',
+            'teamspeak.servergroup.atcmentor',
+            'teamspeak.servergroup.ptdmentor',
+
+            // Discord Permissions
+            'discord.member',
+            'discord.dsg',
+            'discord.web',
+            'discord.moderator',
+            'discord.memberservices',
+            'discord.marketing',
+            'discord.trainingmanager',
+            'discord.atc.divisioninstructor',
+            'discord.atc.appinstructor',
+            'discord.atc.twrinstructor',
+            'discord.atc.ncinstructor',
+            'discord.atc.examiner',
+            'discord.atc.mentor.s1',
+            'discord.atc.mentor.s2',
+            'discord.atc.mentor.s3',
+            'discord.atc.mentor.c1',
+            'discord.atc.mentor.heathrow',
+            'discord.pilot.examiner',
+            'discord.pilot.instructor',
+            'discord.pilot.mentor',
+            'discord.graphics',
+            'discord.rostering',
+            'discord.livestreaming',
         ];
 
         foreach ($permissions as $permission) {
@@ -139,5 +174,6 @@ class RolesAndPermissionsSeeder extends Seeder
         }
 
         $privacc->givePermissionTo(['*']);
+        $member->givePermissionTo('discord.member');
     }
 }
