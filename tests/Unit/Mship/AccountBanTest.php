@@ -4,6 +4,7 @@ namespace Tests\Unit\Mship;
 
 use App\Events\Mship\Bans\BanUpdated;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
 use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanRepealed;
@@ -30,6 +31,16 @@ class AccountBanTest extends TestCase
         Event::fake();
 
         Notification::fake();
+    }
+
+    /** @test */
+    public function bannedScopesWork()
+    {
+        $bannedAccount = Account::factory()->has(Ban::factory())->create();
+        $activeAcount = Account::factory()->create();
+
+        $this->assertEquals([$bannedAccount->id], Account::banned()->pluck('id')->all());
+        $this->assertEquals([$activeAcount->id], Account::notBanned()->pluck('id')->all());
     }
 
     /** @test */

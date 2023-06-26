@@ -4,6 +4,8 @@ namespace Tests\Feature\Admin\Account;
 
 use App\Filament\Resources\AccountResource;
 use App\Filament\Resources\AccountResource\Pages\ViewAccount;
+use App\Jobs\UpdateMember;
+use Illuminate\Support\Facades\Bus;
 use Livewire\Livewire;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
@@ -32,5 +34,19 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->callPageAction('impersonate', data: ['reason' => 'Some reason for impersonating a user']);
 
         $this->assertEquals($this->privacc->id, auth()->user()->id);
+    }
+
+    public function test_can_request_update()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        Livewire::actingAs($this->user);
+
+        Bus::fake();
+
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertPageActionVisible('request_central_update')
+            ->callPageAction('request_central_update');
+
+        Bus::assertDispatched(UpdateMember::class, fn (UpdateMember $job) => $job->accountID === $this->privacc->id);
     }
 }

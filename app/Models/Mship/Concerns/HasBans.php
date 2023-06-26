@@ -8,9 +8,22 @@ use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 trait HasBans
 {
+    public function scopeBanned(Builder $query)
+    {
+        return $query->whereHas('bans', function (Builder $banQuery) {
+            $banQuery->whereNull('period_finish')->orWhere('period_finish', '>', now());
+        });
+    }
+
+    public function scopeNotBanned(Builder $query)
+    {
+        return $query->whereNot(fn (Builder $subQuery) => $subQuery->banned());
+    }
+
     public function bans()
     {
         return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'account_id')->orderBy(

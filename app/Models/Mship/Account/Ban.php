@@ -5,6 +5,7 @@ namespace App\Models\Mship\Account;
 use App\Events\Mship\Bans\BanUpdated;
 use App\Models\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\Mship\Account\Ban.
@@ -57,6 +58,8 @@ use Carbon\Carbon;
  */
 class Ban extends Model
 {
+    use HasFactory;
+
     protected $table = 'mship_account_ban';
 
     protected $primaryKey = 'id';

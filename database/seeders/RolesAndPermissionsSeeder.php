@@ -44,14 +44,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'account.ban.repeal.*',
 
             // Permissions & Access Permissions
-            'permission.view',
+            'permission.view.*',
             'permission.create',
-            'permission.edit',
-            'permission.delete',
-            'role.view',
+            'permission.edit.*',
+            'permission.delete.*',
+            'role.view.*',
             'role.create',
-            'role.edit',
-            'role.delete',
+            'role.edit.*',
+            'role.delete.*',
 
             // TeamSpeak Permissions
             'teamspeak.servergroup.serveradmin',
