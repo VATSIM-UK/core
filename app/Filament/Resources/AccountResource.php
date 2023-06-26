@@ -62,9 +62,9 @@ class AccountResource extends Resource
 
                     Fieldset::make('State')->schema([
                         Grid::make(3)->schema([
-                            Placeholder::make('vatsim_region')->label('VATSIM Region')->content(fn ($record) => $record->primary_permanent_state->pivot->region),
-                            Placeholder::make('vatsim_division')->label('VATSIM Division')->content(fn ($record) => $record->primary_permanent_state->pivot->division),
-                            Placeholder::make('uk_primary_state')->label('UK Primary State')->content(fn ($record) => $record->primary_state->name),
+                            Placeholder::make('vatsim_region')->label('VATSIM Region')->content(fn ($record) => $record->primary_permanent_state?->pivot?->region),
+                            Placeholder::make('vatsim_division')->label('VATSIM Division')->content(fn ($record) => $record->primary_permanent_state?->pivot?->division),
+                            Placeholder::make('uk_primary_state')->label('UK Primary State')->content(fn ($record) => $record->primary_state?->name),
                         ]),
                     ])->visibleOn('view'),
 

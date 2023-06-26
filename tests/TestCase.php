@@ -55,7 +55,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function createPrivaccUser()
     {
-        $user = Account::factory()->create();
+        $user = Account::factory()->withQualification()->create();
         $role = Role::findByName('privacc');
         $role->givePermissionTo('*');
         $user->assignRole($role);
