@@ -27,8 +27,11 @@ class ViewAccount extends ViewRecord
             Actions\Action::make('request_central_update')
                 ->color('secondary')
                 ->icon('heroicon-o-cloud-download')
-                ->action(fn () => UpdateMember::dispatch($this->record->id))
-                ->successNotificationTitle('User queued to refresh central membership details & sync to external services'),
+                ->action(function ($action) {
+                    UpdateMember::dispatch($this->record->id);
+                    $action->success();
+                })
+                ->successNotificationTitle('Central details refresh & service sync queued'),
 
             ActionGroup::make([
                 $this->getImpersonateAction(),
