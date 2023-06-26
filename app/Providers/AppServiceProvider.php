@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\Telescope;
+use Whitecube\LaravelCookieConsent\Facades\Cookies;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -56,6 +57,10 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('discord-sync', function (object $job) {
             return Limit::perHour(1)->by($job->getAccountId());
         });
+
+        Cookies::essentials()
+            ->session()
+            ->csrf();
     }
 
     /**
