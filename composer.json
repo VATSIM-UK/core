@@ -104,7 +104,7 @@
         "vatsimuk/waiting-lists-manager": "@dev",
         "vyuldashev/nova-permission": "^3.0",
         "watson/rememberable": "^6.0",
-        "whitecube/laravel-cookie-consent": "^1.0",
+        "whitecube/laravel-cookie-consent": "^1.0.1",
         "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {

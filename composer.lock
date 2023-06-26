@@ -11055,7 +11055,7 @@
         },
         {
             "name": "vatsimuk/waiting-lists-manager",
-            "version": "dev-cookie-consent",
+            "version": "dev-web-122-update-cookie-message",
             "dist": {
                 "type": "path",
                 "url": "nova-components/WaitingListsManager",
@@ -11405,16 +11405,16 @@
         },
         {
             "name": "whitecube/laravel-cookie-consent",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/whitecube/laravel-cookie-consent.git",
-                "reference": "f3b2dcd01ace757f33ca91806cfc017c2a7c0dcc"
+                "reference": "c0e85f7ef04a7b28d081128fd6d096682f453950"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/f3b2dcd01ace757f33ca91806cfc017c2a7c0dcc",
-                "reference": "f3b2dcd01ace757f33ca91806cfc017c2a7c0dcc",
+                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/c0e85f7ef04a7b28d081128fd6d096682f453950",
+                "reference": "c0e85f7ef04a7b28d081128fd6d096682f453950",
                 "shasum": ""
             },
             "require": {
@@ -11468,7 +11468,7 @@
             ],
             "support": {
                 "issues": "https://github.com/whitecube/laravel-cookie-consent/issues",
-                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.0.0"
+                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.0.1"
             },
             "funding": [
                 {
@@ -11476,7 +11476,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-06-15T10:10:16+00:00"
+            "time": "2023-06-26T14:13:38+00:00"
         },
         {
             "name": "wohali/oauth2-discord-new",
