@@ -57,8 +57,6 @@ class WaitingList extends Model
 
     /**
      * Many WaitingLists can have many Accounts (pivot).
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function accounts(): BelongsToMany
     {

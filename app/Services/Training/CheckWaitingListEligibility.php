@@ -11,9 +11,11 @@ class CheckWaitingListEligibility
 {
     public function __construct(
         private Account $account
-    ) {}
+    ) {
+    }
 
     private ?bool $baseControllingHoursCheck = null;
+
     private ?bool $waitingListFlagsCheck = null;
 
     public function checkBaseControllingHours()

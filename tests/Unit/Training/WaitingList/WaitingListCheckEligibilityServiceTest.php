@@ -19,7 +19,7 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'minutes_online' => 60,
-            'disconnected_at' => now()
+            'disconnected_at' => now(),
         ]);
 
         $result = (new CheckWaitingListEligibility($this->user))->checkBaseControllingHours();
@@ -32,7 +32,7 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
             'minutes_online' => 721,
-            'disconnected_at' => now()
+            'disconnected_at' => now(),
         ]);
 
         $result = (new CheckWaitingListEligibility($this->user))->checkBaseControllingHours();
@@ -44,7 +44,6 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
     {
         $waitingList = factory(WaitingList::class)->create();
         $waitingList->addToWaitingList($this->user, $this->privacc);
-
 
         [$result, $summary] = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
@@ -89,7 +88,6 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $waitingList = factory(WaitingList::class)->create();
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
-
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 35]);
         $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
@@ -97,7 +95,7 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
             'name' => 'endorsement',
             'list_id' => $waitingList->id,
             'default_value' => false,
-            'endorsement_id' => $condition->endorsement->id
+            'endorsement_id' => $condition->endorsement->id,
         ]);
         $waitingList->addFlag($flag);
         $waitingList->fresh();
@@ -113,7 +111,6 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $waitingList = factory(WaitingList::class)->create();
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
-
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 65]);
         $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
@@ -121,7 +118,7 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
             'name' => 'endorsement',
             'list_id' => $waitingList->id,
             'default_value' => false,
-            'endorsement_id' => $condition->endorsement->id
+            'endorsement_id' => $condition->endorsement->id,
         ]);
         $waitingList->addFlag($flag);
         $waitingList->fresh();
@@ -135,6 +132,8 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
     public function test_pass_check_on_any_with_failing_and_passing_flags()
     {
         $waitingList = factory(WaitingList::class)->create();
+        $waitingList->flags_check = WaitingList::ANY_FLAGS;
+        $waitingList->save();
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
         $flag1 = $this->createFlag('manual', $waitingList, false);
@@ -144,10 +143,9 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
         $flag3 = factory(WaitingListFlag::class)->create([
-            'name' => 'endorsement',
+            'name' => 'endorsement_2',
             'list_id' => $waitingList->id,
-            'default_value' => false,
-            'endorsement_id' => $condition->endorsement->id
+            'endorsement_id' => $condition->endorsement->id,
         ]);
         $waitingList->addFlag($flag3);
         $waitingList->fresh();
@@ -160,7 +158,34 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
     public function test_pass_check_on_all_with_all_passing_automated_flags()
     {
+        $waitingList = factory(WaitingList::class)->create();
+        $waitingList->addToWaitingList($this->user, $this->privacc);
 
+        factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 65]);
+        factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGNX_APP', 'minutes_online' => 65]);
+        $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
+        $conditionSecond = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGNX_APP']]);
+
+        $flag1 = factory(WaitingListFlag::class)->create([
+            'name' => 'endorsement',
+            'list_id' => $waitingList->id,
+            'default_value' => false,
+            'endorsement_id' => $condition->endorsement->id,
+        ]);
+        $flag2 = factory(WaitingListFlag::class)->create([
+            'name' => 'endorsement',
+            'list_id' => $waitingList->id,
+            'default_value' => false,
+            'endorsement_id' => $conditionSecond->endorsement->id,
+        ]);
+        $waitingList->addFlag($flag1);
+        $waitingList->addFlag($flag2);
+        $waitingList->fresh();
+
+        [$result, $summary] = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh(), 'all');
+
+        $this->assertTrue($result);
+        $this->assertEquals($summary, [$flag1->id => true, $flag2->id => true]);
     }
 
     private function createFlag($name, $waitingList, $defaultValue = false)
