@@ -55,10 +55,10 @@ class AccountResource extends Resource
                     ]),
 
                     Fieldset::make('Emails')->schema([
-                        TextInput::make('email')->label('Primary Email')->required()->disabled()->visibleOn('view'),
+                        TextInput::make('email')->label('Primary Email')->required()->disabled(),
 
-                        Repeater::make('secondaryEmails')->relationship()->schema([TextInput::make('email')])->visibleOn('view'),
-                    ])->visibleOn('view')->when(fn ($record) => auth()->user()->can("account.view-sensitive.$record->id")),
+                        Repeater::make('secondaryEmails')->relationship()->schema([TextInput::make('email')])->disabled(),
+                    ])->when(fn ($record, $context) => auth()->user()->can("account.view-sensitive.$record->id") && $context === 'view'),
 
                     Fieldset::make('State')->schema([
                         Grid::make(3)->schema([
@@ -72,7 +72,7 @@ class AccountResource extends Resource
                         return [
                             Grid::make(3)->schema(static::makeQualificationSummaryPlaceholders($record))->visibleOn('view'),
                         ];
-                    }),
+                    })->visibleOn('view'),
                 ]),
             ]);
     }

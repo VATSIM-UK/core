@@ -4,6 +4,7 @@ namespace Tests\Unit\Account\Sync;
 
 use App\Events\Mship\AccountAltered;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
 use Carbon\Carbon;
 use Faker\Provider\Lorem;
@@ -37,7 +38,7 @@ class AccountSyncTest extends TestCase
     /** @test */
     public function itTriggersWhenBanned()
     {
-        $reason = factory(Reason::class)->create();
+        $reason = Reason::factory()->create();
         $banner = Account::factory()->create();
 
         $this->user->addBan($reason, Lorem::paragraph(), Lorem::paragraph(), $banner);
@@ -48,7 +49,7 @@ class AccountSyncTest extends TestCase
     /** @test */
     public function itTriggersWhenUnBanned()
     {
-        $ban = factory(Account\Ban::class)->create();
+        $ban = Ban::factory()->create();
         $ban->repeal();
 
         Event::assertDispatched(AccountAltered::class);

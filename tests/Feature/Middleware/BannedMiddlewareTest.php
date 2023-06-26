@@ -29,7 +29,7 @@ class BannedMiddlewareTest extends TestCase
     public function testLocalBannedUserIsRedirectedToCorrectRoute()
     {
         $account = Account::factory()->create();
-        $banReason = factory(Reason::class)->create();
+        $banReason = Reason::factory()->create();
 
         $account->addBan($banReason, 'Local ban', 'Ban note.');
 

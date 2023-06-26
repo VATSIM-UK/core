@@ -218,6 +218,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'id',
         'name_first',
         'name_last',
+        'nickname',
         'email',
         'password',
         'password_set_at',
