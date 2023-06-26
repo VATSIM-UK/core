@@ -118,7 +118,7 @@
         "laravel/pint": "^1.10",
         "mockery/mockery": "1.6.*",
         "nunomaduro/collision": "^7.0",
-        "phpunit/phpunit": "^9.4",
+        "phpunit/phpunit": "^10.2",
         "spatie/laravel-ignition": "^1.0",
         "spatie/laravel-ray": "^1.23",
         "symfony/css-selector": "^4.0",
