@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\QualificationTypeEnum;
 use App\Filament\Resources\AccountResource\Pages;
+use App\Filament\Resources\AccountResource\RelationManagers\QualificationsRelationManager;
 use App\Filament\Resources\AccountResource\RelationManagers\RolesRelationManager;
+use App\Filament\Resources\AccountResource\RelationManagers\StatesRelationManager;
 use App\Models\Mship\Account;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
@@ -47,7 +50,8 @@ class AccountResource extends Resource
                     Grid::make(3)->schema([
                         Placeholder::make('Central Account Name')->content(fn ($record) => $record->name_first.' '.$record->name_last)->visibleOn('view'),
                         TextInput::make('nickname')->label('Preferred Name'),
-                        TextInput::make('id')->required()->autofocus()->disabled()->label('CID')->visibleOn('view'),
+                        Placeholder::make('id')->label('CID')->content(fn ($record) => $record->id)->visibleOn('view'),
+
                     ]),
 
                     Fieldset::make('Emails')->schema([
@@ -55,8 +59,21 @@ class AccountResource extends Resource
 
                         Repeater::make('secondaryEmails')->relationship()->schema([TextInput::make('email')])->visibleOn('view'),
                     ])->visibleOn('view')->when(fn ($record) => auth()->user()->can("account.view-sensitive.$record->id")),
-                ]),
 
+                    Fieldset::make('State')->schema([
+                        Grid::make(3)->schema([
+                            Placeholder::make('vatsim_region')->label('VATSIM Region')->content(fn ($record) => $record->primary_permanent_state->pivot->region),
+                            Placeholder::make('vatsim_division')->label('VATSIM Division')->content(fn ($record) => $record->primary_permanent_state->pivot->division),
+                            Placeholder::make('uk_primary_state')->label('UK Primary State')->content(fn ($record) => $record->primary_state->name),
+                        ]),
+                    ])->visibleOn('view'),
+
+                    Fieldset::make('Qualifications')->schema(function ($record) {
+                        return [
+                            Grid::make(3)->schema(static::makeQualificationSummaryPlaceholders($record))->visibleOn('view'),
+                        ];
+                    }),
+                ]),
             ]);
     }
 
@@ -99,6 +116,8 @@ class AccountResource extends Resource
     public static function getRelations(): array
     {
         return [
+            StatesRelationManager::class,
+            QualificationsRelationManager::class,
             RolesRelationManager::class,
         ];
     }
@@ -110,5 +129,12 @@ class AccountResource extends Resource
             'view' => Pages\ViewAccount::route('/{record}'),
             'edit' => Pages\EditAccount::route('/{record}/edit'),
         ];
+    }
+
+    private static function makeQualificationSummaryPlaceholders($record): array
+    {
+        return $record->active_qualifications->map(function ($qualification) {
+            return Placeholder::make("qualification_{$qualification->type}")->label(QualificationTypeEnum::from($qualification->type)->human())->content("{$qualification->name_long} ({$qualification->code})");
+        })->all();
     }
 }
