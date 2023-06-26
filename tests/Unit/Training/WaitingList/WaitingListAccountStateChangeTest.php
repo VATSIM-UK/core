@@ -11,10 +11,8 @@ use App\Models\Training\WaitingList;
 use App\Notifications\Training\RemovedFromWaitingListInactiveAccount;
 use App\Notifications\Training\RemovedFromWaitingListNonHomeMember;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class WaitingListAccountStateChangeTest extends TestCase
@@ -22,6 +20,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     use DatabaseTransactions;
 
     private WaitingList $waitingList;
+
     private WaitingList $nonHomeMembersOnlyWaitingList;
 
     public function setUp(): void
@@ -31,8 +30,6 @@ class WaitingListAccountStateChangeTest extends TestCase
         Event::fake();
 
         Notification::fake();
-
-        Config::set('app.debug_waiting_list_removals', false);
 
         $this->waitingList = factory(WaitingList::class)->create();
         $this->nonHomeMembersOnlyWaitingList = factory(WaitingList::class)->create();

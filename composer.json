@@ -73,8 +73,8 @@
         "barryvdh/laravel-ide-helper": "^2.7",
         "benjaminhirsch/nova-slug-field": "^1.2",
         "bugsnag/bugsnag-laravel": "^2.0",
-        "cobaltgrid/vatsim-stand-status": "^2.1.1",
         "doctrine/dbal": "~3.3",
+        "filament/filament": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.19",
         "laravel/helpers": "^1.1",
@@ -95,7 +95,6 @@
         "pusher/pusher-php-server": "~7.2",
         "sentry/sentry-laravel": "^3.0",
         "sixlive/nova-text-copy-field": "^1.5",
-        "spatie/laravel-cookie-consent": "^3.2.2",
         "spatie/laravel-permission": "^5.5",
         "spatie/laravel-schedule-monitor": "^3.0",
         "symfony/http-client": "^6.1",
@@ -106,19 +105,21 @@
         "vatsimuk/waiting-lists-manager": "@dev",
         "vyuldashev/nova-permission": "^3.0",
         "watson/rememberable": "^6.0",
+        "whitecube/laravel-cookie-consent": "^1.0.1",
         "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {
         "ext-json": "*",
         "codedungeon/phpunit-result-printer": "^0.32.0",
-        "nunomaduro/collision": "^7.0",
-        "spatie/laravel-ignition": "^1.0",
         "fakerphp/faker": "^1.9.1",
         "laracasts/generators": "^2.0",
         "laravel/homestead": "^14.0.0",
         "laravel/legacy-factories": "^1.1",
-        "mockery/mockery": "1.5.*",
+        "laravel/pint": "^1.10",
+        "mockery/mockery": "1.6.*",
+        "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^9.4",
+        "spatie/laravel-ignition": "^1.0",
         "spatie/laravel-ray": "^1.23",
         "symfony/css-selector": "^4.0",
         "symfony/dom-crawler": "^6.1",
@@ -162,10 +163,16 @@
             "php artisan ide-helper:generate",
             "php artisan ide-helper:models -RW",
             "php artisan ide-helper:meta"
+        ],
+        "lint": [
+            "./vendor/bin/pint"
         ]
     },
     "config": {
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }

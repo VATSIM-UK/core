@@ -23,6 +23,7 @@
     </style>
 
     @yield('styles')
+    @cookieconsentscripts
 </head>
 <body>
 @include('components.nav')
@@ -77,5 +78,6 @@
 
 @yield('scripts')
 @include('partials/_snow')
+@cookieconsentview
 </body>
 </html>

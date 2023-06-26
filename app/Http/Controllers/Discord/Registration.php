@@ -23,9 +23,9 @@ class Registration extends BaseController
         parent::__construct();
 
         $this->provider = new Discord([
-            'clientId'     => config('services.discord.client_id'),
+            'clientId' => config('services.discord.client_id'),
             'clientSecret' => config('services.discord.client_secret'),
-            'redirectUri'  => config('services.discord.redirect_uri'),
+            'redirectUri' => config('services.discord.redirect_uri'),
         ]);
     }
 

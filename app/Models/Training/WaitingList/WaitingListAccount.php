@@ -88,8 +88,6 @@ class WaitingListAccount extends Pivot
 
     /**
      * Mark a Flag as true.
-     *
-     * @param  WaitingListFlag  $listFlag
      */
     public function markFlag(WaitingListFlag $listFlag)
     {
@@ -139,6 +137,10 @@ class WaitingListAccount extends Pivot
     public function atcHourCheck()
     {
         if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT) {
+            return true;
+        }
+
+        if (! $this->waitingList->should_check_atc_hours) {
             return true;
         }
 

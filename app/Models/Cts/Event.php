@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $connection = 'cts';
+
     protected $guarded = [];
 
     public const CREATED_AT = 'add_date';
+
     public const UPDATED_AT = null;
 
     public function member()

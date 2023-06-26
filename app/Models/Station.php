@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Model;
 class Station extends Model
 {
     protected $table = 'stations';
+
     protected $fillable = [
         'callsign',
         'name',
@@ -38,17 +39,25 @@ class Station extends Model
         'type',
         'sub_station',
     ];
+
     protected $casts = [
         'sub_station' => 'boolean',
     ];
 
     const TYPE_ATIS = 1;
+
     const TYPE_DELIVERY = 2;
+
     const TYPE_GROUND = 3;
+
     const TYPE_TOWER = 4;
+
     const TYPE_APPROACH = 5;
+
     const TYPE_ENROUTE = 6;
+
     const TYPE_TERMINAL = 7;
+
     const TYPE_FSS = 8;
 
     /**

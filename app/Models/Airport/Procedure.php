@@ -42,6 +42,7 @@ use Illuminate\Database\Eloquent\Model;
 class Procedure extends Model
 {
     protected $table = 'airport_procedures';
+
     protected $fillable = [
         'type',
         'ident',
@@ -52,6 +53,7 @@ class Procedure extends Model
     ];
 
     const TYPE_SID = 1;
+
     const TYPE_STAR = 2;
 
     public function scopeWhereSID($query)

@@ -50,12 +50,14 @@ class Feedback extends Model
     use Notifiable;
 
     protected $table = 'mship_feedback';
+
     protected $dates = [
         'created_at',
         'updated_at',
         'actioned_at',
         'sent_at',
     ];
+
     protected $fillable = [
         'account_id',
         'submitter_account_id',
@@ -106,6 +108,13 @@ class Feedback extends Model
     public function answers()
     {
         return $this->hasMany(\App\Models\Mship\Feedback\Answer::class);
+    }
+
+    public function position()
+    {
+        return $this->hasOne(\App\Models\Mship\Feedback\Answer::class)->whereHas('question', function ($query) {
+            $query->where('slug', ['callsign3', 'sessionposition2']);
+        });
     }
 
     public function account()

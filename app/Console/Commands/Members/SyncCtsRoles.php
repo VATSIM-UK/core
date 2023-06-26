@@ -3,10 +3,12 @@
 namespace App\Console\Commands\Members;
 
 use App\Console\Commands\Command;
+use App\Models\Cts\ValidationPosition;
 use App\Models\Mship\Account;
 use App\Repositories\Cts\ExaminerRepository;
 use App\Repositories\Cts\MentorRepository;
 use App\Repositories\Cts\StudentRepository;
+use App\Repositories\Cts\ValidationPositionRepository;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Role;
 
@@ -55,6 +57,12 @@ class SyncCtsRoles extends Command
         // Sync Examiners
         $this->syncAtcExaminers(31); // ATC
         $this->syncPilotExaminers(40); // Pilot
+
+        // Sync Special Endorsements
+        $this->syncValidatedMembers(ValidationPosition::whereName('Shanwick Oceanic (EGGX)')->first(), Role::findByName('Shanwick Controller')->id);
+        $this->syncValidatedMembers(ValidationPosition::whereName('Heathrow (GND)')->first(), Role::findByName('Heathrow Endorsed Ground')->id);
+        $this->syncValidatedMembers(ValidationPosition::whereName('Heathrow (TWR)')->first(), Role::findByName('Heathrow Endorsed Tower')->id);
+        $this->syncValidatedMembers(ValidationPosition::whereName('Heathrow (APP)')->first(), Role::findByName('Heathrow Endorsed Approach')->id);
     }
 
     private function syncMentorsByRts(int $rtsId, int $roleId): void
@@ -103,6 +111,13 @@ class SyncCtsRoles extends Command
     {
         $hasRole = $this->getAccountsWithRoleId($roleId);
         $shouldHaveRole = (new StudentRepository)->getStudentsWithin($rtsId);
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncValidatedMembers(ValidationPosition $validationPosition, int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new ValidationPositionRepository)->getValidatedMembersFor($validationPosition)->map(fn ($item) => $item['id']);
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 

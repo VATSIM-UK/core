@@ -249,7 +249,7 @@ class AccountModelTest extends TestCase
     /** @test */
     public function itStoresQualifications()
     {
-        $qualification = factory(Qualification::class)->create();
+        $qualification = Qualification::factory()->create();
 
         $this->user->addQualification($qualification);
 
@@ -267,24 +267,30 @@ class AccountModelTest extends TestCase
     {
         Carbon::setTestNow(Carbon::now()); // Check this works even when the timestamps are the same
 
-        $mockS1Qual = factory(Qualification::class)->state('atc')->create([
+        $mockS1Qual = Qualification::factory()->atc()->create([
             'code' => 'AS1',
             'vatsim' => 1,
         ]);
-        $mockS2Qual = factory(Qualification::class)->state('atc')->create([
+        $mockS2Qual = Qualification::factory()->atc()->create([
             'code' => 'AS2',
             'vatsim' => 2,
         ]);
-        $mockP1Qual = factory(Qualification::class)->state('pilot')->create([
+        $mockP1Qual = Qualification::factory()->pilot()->create([
             'code' => 'AP1',
             'vatsim' => 3,
         ]);
-        $mockP2Qual = factory(Qualification::class)->state('pilot')->create([
+        $mockP2Qual = Qualification::factory()->pilot()->create([
             'code' => 'AP2',
             'vatsim' => 4,
         ]);
 
-        $this->user->qualifications()->sync([$mockS1Qual->id, $mockS2Qual->id, $mockP1Qual->id, $mockP2Qual->id]);
+        $pilotMilitary = Qualification::factory()->atc()->create([
+            'code' => 'MP1',
+            'vatsim' => 3,
+            'type' => 'pilot_military',
+        ]);
+
+        $this->user->qualifications()->sync([$mockS1Qual->id, $mockS2Qual->id, $mockP1Qual->id, $mockP2Qual->id, $pilotMilitary->id]);
         $this->user = $this->user->fresh();
 
         $this->assertEquals($this->user->qualification_atc->id, $mockS2Qual->id);
@@ -292,7 +298,7 @@ class AccountModelTest extends TestCase
         $this->assertEqualsCanonicalizing([$mockP1Qual->id, $mockP2Qual->id], $this->user->qualifications_pilot->map(function ($qual) {
             return $qual->id;
         })->all());
-        $this->assertEqualsCanonicalizing([$mockS2Qual->id, $mockP2Qual->id], $this->user->active_qualifications->map(function ($qual) {
+        $this->assertEqualsCanonicalizing([$mockS2Qual->id, $mockP2Qual->id, $pilotMilitary->id], $this->user->active_qualifications->map(function ($qual) {
             return $qual->id;
         })->all());
 
@@ -307,7 +313,7 @@ class AccountModelTest extends TestCase
         // Simulate an update one day later.
         Carbon::setTestNow(Carbon::now()->addDay());
 
-        $qualification = factory(Qualification::class)->create();
+        $qualification = Qualification::factory()->create();
         $this->user->fresh()->addQualification($qualification);
 
         $this->assertNotEquals($originalUpdatedAt, $this->user->fresh()->updated_at);

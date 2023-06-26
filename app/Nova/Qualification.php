@@ -47,7 +47,6 @@ class Qualification extends Resource
     /**
      * Globally disable the ability to edit a Qualification.
      *
-     * @param  Request  $request
      * @return bool
      */
     public function authorizeToUpdate(Request $request)
@@ -58,7 +57,6 @@ class Qualification extends Resource
     /**
      * Globally disable the ability to edit an attached Qualification.
      *
-     * @param  NovaRequest  $request
      * @return bool
      */
     public function authorizedToUpdateForSerialization(NovaRequest $request)
@@ -69,7 +67,6 @@ class Qualification extends Resource
     /**
      * Globally disable the ability to detach on the pivot.
      *
-     * @param  NovaRequest  $request
      * @return bool
      */
     public function authorizedToDeleteForSerialization(NovaRequest $request)
@@ -80,7 +77,6 @@ class Qualification extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function fields(Request $request)
@@ -105,7 +101,6 @@ class Qualification extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function cards(Request $request)
@@ -116,7 +111,6 @@ class Qualification extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function filters(Request $request)
@@ -127,7 +121,6 @@ class Qualification extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function lenses(Request $request)
@@ -138,7 +131,6 @@ class Qualification extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function actions(Request $request)

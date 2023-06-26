@@ -13,9 +13,9 @@
                     <th class="text-left">CID</th>
                     <th class="text-left">Added On</th>
                     <th class="text-left">Notes</th>
-                    <th class="text-left" v-if="isAtcList">Hour Check</th>
+                    <th class="text-left" v-if="showAtcHourCheck">Hour Check</th>
                     <th>Status Change</th>
-                    <th class="text-left" v-if="isAtcList">Theory Exam</th>
+                    <th class="text-left" v-if="showCtsTheoryExam">Theory Exam</th>
                     <th>Flags</th>
                     <th></th>
                 </tr>
@@ -35,7 +35,7 @@
                             :account="account"
                             @changeNote="changeNote"/>
                     </td>
-                    <td v-if="isAtcList">
+                    <td v-if="showAtcHourCheck">
                         <boolean-indicator :value="account.atcHourCheck" />
                     </td>
                     <td>
@@ -51,7 +51,7 @@
                         </div>
 
                     </td>
-                    <td>
+                    <td v-if="showCtsTheoryExam">
                         <boolean-indicator :value="account.theory_exam_passed" />
                     <td>
                         <flag-indicator
@@ -82,7 +82,7 @@
     export default {
         name: "Bucket",
 
-        props: ['accounts', 'type'],
+        props: ['accounts', 'type', 'featureToggles'],
 
         components: { BooleanIndicator },
 
@@ -128,6 +128,12 @@
 
             isAtcList() {
                 return this.type === 'atc'
+            },
+            showAtcHourCheck() {
+                return this.isAtcList && this.featureToggles.check_atc_hours
+            },
+            showCtsTheoryExam() {
+                return this.isAtcList && this.featureToggles.check_cts_theory_exam
             }
         },
     }

@@ -19,7 +19,6 @@ class SetupDiscordUser implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  DiscordLinked  $event
      * @return void
      */
     public function handle(DiscordLinked $event)

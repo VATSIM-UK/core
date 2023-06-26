@@ -27,7 +27,6 @@ class FlightController extends Controller
     /**
      * Edit the specified resource.
      *
-     * @param  \App\Models\Smartcars\Pirep  $flight
      * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -47,7 +46,6 @@ class FlightController extends Controller
     /**
      * Update the specified resource.
      *
-     * @param  \App\Models\Smartcars\Pirep  $flight
      * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException

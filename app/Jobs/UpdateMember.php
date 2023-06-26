@@ -13,12 +13,14 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class UpdateMember extends Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
     protected $accountID;
+
     protected $data;
 
     /**
@@ -67,6 +69,7 @@ class UpdateMember extends Job implements ShouldQueue
                 'rating' => (string) $response['rating'],
                 'regdate' => Carbon::parse($response['reg_date'])->toDateTimeString(),
                 'pilotrating' => (string) $response['pilotrating'],
+                'militaryrating' => $response['militaryrating'],
                 'country' => null,
                 'region' => $response['region_id'],
                 'division' => $response['division_id'],
@@ -102,6 +105,10 @@ class UpdateMember extends Job implements ShouldQueue
 
             if (! empty($this->data->name_last) && is_string($this->data->name_last)) {
                 $member->name_last = $this->data->name_last;
+            }
+
+            if (! empty($this->data->email) && is_string($this->data->email)) {
+                $member->email = $this->data->email;
             }
 
             $member->cert_checked_at = Carbon::now();
@@ -193,6 +200,31 @@ class UpdateMember extends Job implements ShouldQueue
         foreach ($pilotRatings as $pr) {
             if (! $member->hasQualification($pr)) {
                 $member->addQualification($pr);
+                Log::debug("Added rating {$pr->code} to member {$member->id}");
+            }
+        }
+
+        // it is possible for members to now be assigned instructor/examiner ratings
+        // which implicitly remove their previous ratings. We need to check for this
+        // and remove any ratings that are no longer valid.
+        // If this rating is eventually revoked, the bitmask will be reset to their previous
+        // permanent rating, which the logic above handles.
+        $memberPilotRatings = $member->fresh()->qualifications_pilot;
+
+        $pilotRatingsCollection = collect($pilotRatings);
+        foreach ($memberPilotRatings as $mpr) {
+            Log::debug("Checking pilot rating {$mpr->code} for member {$member->id}");
+
+            if (! $pilotRatingsCollection->contains($mpr->code) && $mpr->code != 'P0') {
+                $member->removeQualification($mpr);
+            }
+        }
+
+        $militaryRatings = QualificationData::parseVatsimMilitaryPilotQualifications($this->data->militaryrating);
+        foreach ($militaryRatings as $militaryRating) {
+            if (! $member->hasQualification($militaryRating)) {
+                $member->addQualification($militaryRating);
+                Log::debug("Added military rating {$militaryRating->code} to member {$member->id}");
             }
         }
 

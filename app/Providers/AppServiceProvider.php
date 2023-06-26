@@ -8,14 +8,17 @@ use App\Libraries\Forum;
 use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use HTML;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\Telescope;
+use Whitecube\LaravelCookieConsent\Facades\Cookies;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,6 +53,14 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layout*', function ($view) {
             $view->with('_bannerUrl', BaseController::generateBannerUrl());
         });
+
+        RateLimiter::for('discord-sync', function (object $job) {
+            return Limit::perHour(1)->by($job->getAccountId());
+        });
+
+        Cookies::essentials()
+            ->session()
+            ->csrf();
     }
 
     /**

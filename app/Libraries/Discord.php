@@ -44,6 +44,15 @@ class Discord
         $response = Http::withHeaders($this->headers)
             ->put("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
 
+        $retry_after = $response->json()['retry_after'] ?? null;
+
+        // discord API will return a retry field if being rate limited non-globally
+        // wait until this has passed before proceeding.
+        if ($retry_after) {
+            sleep($retry_after);
+            $this->grantRoleById($account, $role);
+        }
+
         return $this->result($response);
     }
 
@@ -129,8 +138,16 @@ class Discord
 
         return Cache::remember($account->id.'.discord.userdata', now()->addHours(12), function () use ($account) {
             return Http::withHeaders($this->headers)
-            ->get("{$this->base_url}/users/{$account->discord_id}")->json();
+                ->get("{$this->base_url}/users/{$account->discord_id}")->json();
         });
+    }
+
+    public function sendMessageToChannel(string $channelId, array $messageContents)
+    {
+        $response = Http::withHeaders($this->headers)
+            ->post("{$this->base_url}/channels/{$channelId}/messages", $messageContents);
+
+        return $this->result($response);
     }
 
     protected function result(Response $response)

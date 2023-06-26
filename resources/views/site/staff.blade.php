@@ -76,15 +76,11 @@
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
-                            <td>Thomas Mills</td>
-                        </tr>
-                        <tr>
-                            <td>Operations Assistant</td>
-                            <td>Harrison Grose</td>
-                        </tr>
-                        <tr>
-                            <td>Operations Assistant</td>
                             <td>Peter Mooney</td>
+                        </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>Chad Byworth</td>
                         </tr>
                     </table>
                 </div>
@@ -226,6 +222,10 @@
                                 <td>Vacant</td>
                             </tr>
                             <tr>
+                                <td>Training Department Assistant</td>
+                                <td>Craig Stewart</td>
+                            </tr>
+                            <tr>
                                 <td>Division Instructor</td>
                                 <td>Jack Edwards</td>
                             </tr>
@@ -258,8 +258,16 @@
                                 <td>John Batten</td>
                             </tr>
                             <tr>
+                                <td>Lead Mentor (New Controller)</td>
+                                <td>Stephen Lee</td>
+                            </tr>
+                            <tr>
                                 <td>TG Instructor (TWR)</td>
                                 <td>Daniel Blanco</td>
+                            </tr>
+                            <tr>
+                                <td>Lead Mentor (TWR)</td>
+                                <td>Will Hinshaw</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
@@ -275,7 +283,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
-                                <td>Nathaniel Leff</td>
+                                <td>Fraser Cooper</td>
                             </tr>
                         </table>
                     </div>

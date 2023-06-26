@@ -14,17 +14,18 @@ class AccountNoteChanged implements ShouldQueue
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $account;
+
     /** @var WaitingListAccount */
     public $waitingListAccount;
+
     public $oldNoteContent = null;
+
     public $newNoteContent;
 
     /**
      * Create a new event instance.
      *
      * @param  Account  $account
-     * @param $oldNoteContent
-     * @param $newNoteContent
      */
     public function __construct(WaitingListAccount $account, $oldNoteContent, $newNoteContent)
     {

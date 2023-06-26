@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PositionValidation extends Model
 {
     protected $connection = 'cts';
+
     protected $table = 'position_validations';
 
     public $timestamps = false;

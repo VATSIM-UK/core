@@ -71,7 +71,9 @@ class Pilot extends Model
     use Rememberable;
 
     protected $table = 'networkdata_pilots';
+
     protected $primaryKey = 'id';
+
     public $dates = ['departed_at', 'arrived_at', 'connected_at', 'disconnected_at', 'created_at', 'updated_at'];
 
     protected $fillable = [

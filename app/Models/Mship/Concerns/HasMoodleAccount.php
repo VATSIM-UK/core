@@ -73,10 +73,10 @@ trait HasMoodleAccount
     {
         // Ensure has SSO link
         $linkedLogin = DB::table(config('services.moodle.database').'.mdl_auth_oauth2_linked_login')
-        ->where('username', $this->id)
-        ->where('issuerid', config('services.moodle.oauth_issuer_id'))
-        ->where('userid', $moodleAccountID)
-        ->first();
+            ->where('username', $this->id)
+            ->where('issuerid', config('services.moodle.oauth_issuer_id'))
+            ->where('userid', $moodleAccountID)
+            ->first();
 
         if (! $linkedLogin) {
             DB::table(config('services.moodle.database').'.mdl_auth_oauth2_linked_login')->insert([

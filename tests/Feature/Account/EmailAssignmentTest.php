@@ -15,6 +15,7 @@ class EmailAssignmentTest extends TestCase
     use DatabaseTransactions;
 
     private $userOther;
+
     private $emailOther;
 
     public function setUp(): void

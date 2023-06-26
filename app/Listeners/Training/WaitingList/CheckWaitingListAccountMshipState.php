@@ -12,7 +12,6 @@ class CheckWaitingListAccountMshipState
     /**
      * Handle the event.
      *
-     * @param  \App\Events\Mship\AccountAltered  $event
      * @return void
      */
     public function handle(AccountAltered $event)
@@ -40,15 +39,11 @@ class CheckWaitingListAccountMshipState
         foreach ($accountsWaitingList as $waitingList) {
             Log::info("Account {$account->id} is in waiting list {$waitingList->id}, with non-home member state - removing from waiting list");
 
-            if (! $event->dryRun) {
-                $waitingList->removeFromWaitingList($account);
-            }
+            $waitingList->removeFromWaitingList($account);
         }
 
         Log::info("Account {$account->id} is in waiting lists {$accountsWaitingList->pluck('id')->join(', ')}, with non-home member state - notifying account");
 
-        if (! $event->dryRun) {
-            $account->notify(new RemovedFromWaitingListNonHomeMember);
-        }
+        $account->notify(new RemovedFromWaitingListNonHomeMember($accountsWaitingList));
     }
 }

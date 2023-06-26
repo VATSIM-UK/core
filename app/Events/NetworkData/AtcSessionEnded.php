@@ -16,8 +16,6 @@ class AtcSessionEnded extends Event
      * Construct the event, storing the ATC session that's just ended.
      *
      * There's little to construct at the minute as it's simply a notification!
-     *
-     * @param  Atc  $atc
      */
     public function __construct(Atc $atc)
     {

@@ -14,11 +14,20 @@ $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $fak
 
 $factory->state(App\Models\Mship\Account::class, 'withQualification', function (Faker\Generator $faker) {
     $id = rand(10000000, 99999999);
-    $qual = factory(Qualification::class)->create();
+    $qualAtc = Qualification::factory()->atc()->create();
     // Assoc qualification to account
     \DB::table('mship_account_qualification')->insert([
         'account_id' => $id,
-        'qualification_id' => $qual->id,
+        'qualification_id' => $qualAtc->id,
+        'created_at' => \Carbon\Carbon::now(),
+        'updated_at' => \Carbon\Carbon::now(),
+    ]);
+
+    $qualPilot = Qualification::factory()->pilot()->create();
+    // Assoc qualification to account
+    \DB::table('mship_account_qualification')->insert([
+        'account_id' => $id,
+        'qualification_id' => $qualPilot->id,
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
     ]);
@@ -30,42 +39,6 @@ $factory->state(App\Models\Mship\Account::class, 'withQualification', function (
         'email' => $faker->email,
         'is_invisible' => 0,
     ];
-});
-
-$factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
-    $foundUniqueCode = false;
-    while (! $foundUniqueCode) {
-        $code = $faker->bothify('?##');
-        if (! Qualification::code($code)->exists()) {
-            $foundUniqueCode = true;
-        }
-    }
-
-    return [
-        'code' => $code,
-        'name_small' => $faker->word,
-        'name_long' => $faker->word,
-        'name_grp' => $faker->word,
-        'vatsim' => $faker->randomDigit,
-    ];
-});
-
-$factory->state(App\Models\Mship\Qualification::class, 'atc', function (Faker\Generator $faker) use ($factory) {
-    $atc = $factory->raw(App\Models\Mship\Qualification::class);
-
-    return array_merge($atc, [
-        'code' => $faker->numerify('C##'),
-        'type' => 'atc',
-    ]);
-});
-
-$factory->state(App\Models\Mship\Qualification::class, 'pilot', function (Faker\Generator $faker) use ($factory) {
-    $atc = $factory->raw(App\Models\Mship\Qualification::class);
-
-    return array_merge($atc, [
-        'code' => $faker->numerify('P##'),
-        'type' => 'pilot',
-    ]);
 });
 
 $factory->define(\Spatie\Permission\Models\Role::class, function (Faker\Generator $faker) {

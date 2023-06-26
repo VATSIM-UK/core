@@ -10,8 +10,11 @@ use Illuminate\Contracts\Auth\Authenticatable;
 class AddNote implements BaseService
 {
     protected $account;
+
     protected $noteType;
+
     protected $noteTaker;
+
     protected $noteContent;
 
     public function __construct(Account $account, Type $noteType, Authenticatable $noteTaker, $noteContent)

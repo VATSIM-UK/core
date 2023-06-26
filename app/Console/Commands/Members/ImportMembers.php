@@ -16,7 +16,9 @@ class ImportMembers extends Command
     protected $description = 'Import VATSIM UK members from the VATSIM API.';
 
     protected int $countNewlyCreated = 0;
+
     protected int $countUpdated = 0;
+
     protected int $countSkipped = 0;
 
     public function handle()

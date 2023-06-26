@@ -4,9 +4,10 @@
 <div class="row">
     <div class="col-md-12">
         <h3>C1 Training Place - Hour Checker</h3>
-        <p>At least 12 hours on UK ATC positions in the three months before a place is offered</p>
-        <p>When a training place becomes available on a certain sector, the first eligible student who meets the requirements for that sector will be offered the place. You will only be offered a place on a sector for which you meet the requirements. You are not required to notify us when you meet the requirements for any of the above sectors.</p>
-        <p>Below you can view your progress towards, and an overview of the required criteria for each enroute sector.</p>
+        <p>You must have controlled at least 12 hours on UK ATC positions in the three months before a place is offered.</p>
+        <p>When a training place becomes available for a particular sector group, the first eligible student who meets the requirements for that sector group will be offered the place.
+        You will only be offered a place for a sector group for which you meet the requirements. You do not need to notify us when you meet the requirements.</p>
+        <p>Below you can view your progress towards the required criteria for each enroute sector group.</p>
     </div>
 </div>
 <div class="row">

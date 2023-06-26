@@ -51,7 +51,6 @@ class WaitingList extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function fields(Request $request)
@@ -80,7 +79,7 @@ class WaitingList extends Resource
                 'all' => 'ALL Flags',
                 'any' => 'ANY Flags',
             ])->displayUsingLabels()->rules(['required'])
-            ->help('Waiting lists can be set so either a: all flags need to be met or b: any of the flags'),
+                ->help('Waiting lists can be set so either a: all flags need to be met or b: any of the flags'),
 
             HasMany::make('Flags', 'flags', WaitingListFlag::class)
                 ->canSeeWhen('addFlags', $this),
@@ -97,7 +96,6 @@ class WaitingList extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function cards(Request $request)
@@ -108,7 +106,6 @@ class WaitingList extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function filters(Request $request)
@@ -119,7 +116,6 @@ class WaitingList extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function lenses(Request $request)
@@ -130,7 +126,6 @@ class WaitingList extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function actions(Request $request)

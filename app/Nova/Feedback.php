@@ -79,7 +79,6 @@ class Feedback extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function fields(Request $request)
@@ -96,7 +95,7 @@ class Feedback extends Resource
             BelongsTo::make('Submitted By', 'submitter', 'App\Nova\Account')
                 ->canSeeWhen('seeSubmitter', $this),
 
-            DateTime::make('Submitted At', 'created_at')->onlyOnDetail()->format('Do MMMM YYYY HH:mm'),
+            DateTime::make('Submitted At', 'created_at')->format('Do MMMM YYYY HH:mm'),
 
             new Panel('Actioned Information', [
                 Boolean::make('Actioned', function () {
@@ -135,7 +134,6 @@ class Feedback extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function cards(Request $request)
@@ -150,7 +148,6 @@ class Feedback extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function filters(Request $request)
@@ -163,7 +160,6 @@ class Feedback extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function lenses(Request $request)
@@ -174,7 +170,6 @@ class Feedback extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function actions(Request $request)

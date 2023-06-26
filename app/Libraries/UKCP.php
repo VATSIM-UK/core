@@ -3,11 +3,12 @@
 namespace App\Libraries;
 
 use App\Models\Mship\Account;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Psr\Http\Message\ResponseInterface;
 
 class UKCP
@@ -30,23 +31,7 @@ class UKCP
         $this->client = $client;
     }
 
-    public function createAccountFor(Account $account)
-    {
-        try {
-            $result = $this->client->post(config('services.ukcp.url').'/api/user/'.$account->id, ['headers' => [
-                'Authorization' => 'Bearer '.$this->apiKey,
-            ]]);
-        } catch (ClientException $e) {
-            Log::warning("UKCP Client Error {$e->getMessage()} when creating account {$account->id}");
-
-            return;
-        }
-
-        return $result->getBody()->getContents();
-    }
-
     /**
-     * @param  Account  $account
      * @return array|Collection|mixed|ResponseInterface
      */
     public function getValidTokensFor(Account $account)
@@ -60,37 +45,6 @@ class UKCP
     }
 
     /**
-     * @param  Account  $account
-     * @return object|null
-     */
-    public function createTokenFor(Account $account)
-    {
-        $pluginAccount = collect($this->getAccountFor($account));
-
-        if ($pluginAccount->isEmpty()) {
-            $result = $this->createAccountFor($account);
-        } else {
-            try {
-                $response = $this->client->post(config('services.ukcp.url').'/api/user/'.$account->id.'/token', ['headers' => [
-                    'Authorization' => 'Bearer '.$this->apiKey,
-                ]]);
-                $result = $response->getBody()->getContents();
-            } catch (ClientException $e) {
-                Log::warning("UKCP Client Error {$e->getMessage()} failed to create UKCP Token for {$account->id}");
-
-                return;
-            }
-        }
-
-        $token = $this->getValidTokensFor($account)->first();
-        Storage::disk('local')->put(self::getPathForToken($token->id, $account), $result);
-
-        return $token;
-    }
-
-    /**
-     * @param  string  $tokenId
-     * @param  Account  $account
      * @return bool
      */
     public function deleteToken(string $tokenId, Account $account)
@@ -104,9 +58,6 @@ class UKCP
 
             return false;
         }
-
-        // Delete local file
-        Storage::disk('local')->delete(self::getPathForToken($tokenId, $account));
 
         return true;
     }
@@ -143,5 +94,35 @@ class UKCP
     public static function getPathForToken($tokenID, $account)
     {
         return self::TOKEN_PATH_ROOT.$account->id.'/'.$tokenID.'.json';
+    }
+
+    public function getStandStatus(string $airfield): array
+    {
+        try {
+            return Cache::remember(
+                $this->getStandStatusCacheKey($airfield),
+                fn (array $cachedResponse) => $cachedResponse['refresh_at'],
+                function () use ($airfield) {
+                    $response = $this->client->get(
+                        sprintf('%s/api/stand/status?airfield=%s', config('services.ukcp.url'), $airfield),
+                        ['timeout' => 8]
+                    );
+                    $body = json_decode($response->getBody()->getContents(), true);
+
+                    return [
+                        'stands' => collect($body['stands'])->sortBy('identifier', SORT_NUMERIC)->values()->toArray(),
+                        'refresh_at' => Carbon::parse($body['refresh_at']),
+                    ];
+                })['stands'];
+        } catch (ClientException $e) {
+            Log::warning("UKCP Client Error {$e->getMessage()} when getting stand status for {$airfield}");
+
+            return [];
+        }
+    }
+
+    private function getStandStatusCacheKey(string $airfieldIcao): string
+    {
+        return sprintf('UKCP_STAND_STATUS_%s', $airfieldIcao);
     }
 }

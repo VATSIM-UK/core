@@ -25,7 +25,7 @@ class Endorsement extends AdmController
         $endorsements = EndorsementModel::get(['id', 'name']);
 
         return $this->viewMake('adm.atc.endorsement.index')
-                  ->with('endorsements', $endorsements);
+            ->with('endorsements', $endorsements);
     }
 
     public function getUserEndorsement(Request $request)

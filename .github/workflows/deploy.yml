@@ -42,6 +42,7 @@ jobs:
           SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
           PHP_PATH: /bin/php8.1
           VERSIONS_TO_KEEP: 5
+          DISCORD_TRAINING_ALERTS_CHANNEL_ID: ${{ secrets.DISCORD_TRAINING_ALERTS_CHANNEL_ID }}
 
       #
       # DISCORD NOTIFICATION JOB START

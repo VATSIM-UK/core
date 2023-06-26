@@ -9,6 +9,10 @@ on:
       - v*
   pull_request:
 
+env:
+  NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+  NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
+
 jobs:
   test:
     name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }}
@@ -17,9 +21,6 @@ jobs:
       group: core-test-${{ github.ref }}
       cancel-in-progress: true
     continue-on-error: ${{ matrix.experimental }}
-    env:
-      NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
-      NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -47,9 +48,6 @@ jobs:
 
       # Authenticate Nova
       - name: Authenticate Nova Installation
-        env:
-          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
-          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
         run: |
           cp auth.json.example auth.json
           composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_PASSWORD}
@@ -176,6 +174,30 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+
+      - name: Authenticate Nova Installation
+        run: |
+          cp auth.json.example auth.json
+          composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_PASSWORD}
+
+      - name: Install PHP dependencies
+        uses: ramsey/composer-install@v2
+
+      - name: 'Lint PHP'
+        run: composer lint -- --test
+      
 
   trigger-deploy:
     name: Trigger Deploy

@@ -29,9 +29,13 @@ class GenerateEloquentMethodPHPDoc extends Command
     protected $description = 'Generate autocompletion for models extending an abstract model';
 
     protected $abstract_model = Command::class;
+
     protected $eloquent_model = Model::class;
+
     protected $eloquent_methods = [];
+
     protected $scraped_class = Builder::class;
+
     protected $scraped_methods = [];
 
     /**

@@ -24,7 +24,6 @@ use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
-use App\Models\NetworkData\Atc;
 use App\Models\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -132,11 +131,15 @@ class Application extends Model
     use PublicId, SoftDeletes, HasStatus;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
+
     protected static $public_id_min_length = 8;
+
     protected static $public_id_alphabet = 'upper_alphanumeric';
+
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
 
     protected $table = 'vt_application';
+
     protected $fillable = [
         'type',
         'training_team',
@@ -146,31 +149,45 @@ class Application extends Model
         'status',
         'expires_at',
     ];
+
     public $timestamps = true;
+
     protected $dates = [
         'expires_at',
         'submitted_at',
         'created_at',
         'updated_at',
     ];
+
     protected $casts = [
         'check_outcome_90_day' => 'boolean',
         'check_outcome_50_hours' => 'boolean',
     ];
 
     const TYPE_VISIT = 10;
+
     const TYPE_TRANSFER = 40;
 
     const STATUS_IN_PROGRESS = 10; // Member hasn't yet submitted application formally.
+
     const STATUS_WITHDRAWN = 15; // Application has been withdrawn.
+
     const STATUS_EXPIRED = 16; // Application expired after 1 hour.
+
     const STATUS_SUBMITTED = 30; // Member has formally submitted application.
+
     const STATUS_UNDER_REVIEW = 50; // References and checks have been completed.
+
     const STATUS_ACCEPTED = 60; // Application has been accepted by staff
+
     const STATUS_PENDING_CERT = 70; // Application has been completed, but is pending a cert update to be formally complete.
+
     const STATUS_COMPLETED = 90; // Application has been formally completed, visit/transfer complete.
+
     const STATUS_LAPSED = 93; // Application has lapsed.
+
     const STATUS_CANCELLED = 96; // Application has been cancelled
+
     const STATUS_REJECTED = 99; // Application has been rejected by staff
 
     public static $APPLICATION_IS_CONSIDERED_EDITABLE = [

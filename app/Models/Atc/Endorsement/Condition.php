@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Condition extends Model
 {
     protected $table = 'endorsement_conditions';
+
     protected $fillable = [
         'endorsement_id',
         'positions',
@@ -25,6 +26,7 @@ class Condition extends Model
     private $progress;
 
     const TYPE_ON_SINGLE_AIRFIELD = 1; // To qualify, any of the member positions must have at least the given hours
+
     const TYPE_SUM_OF_AIRFIELDS = 2; // To qualify, the sum of hours across all qualifying positions must meet the given hours
 
     public function endorsement()

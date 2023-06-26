@@ -12,6 +12,7 @@
             <bucket
                 :accounts="eligibleAccounts"
                 :type="type"
+                :featureToggles="featureToggles"
                 @removeAccount="removeAccount"
                 @deferAccount="deferAccount"
                 @activeAccount="activeAccount"
@@ -24,6 +25,7 @@
             <bucket
                 :accounts="normalAccounts"
                 :type="type"
+                :featureToggles="featureToggles"
                 @removeAccount="removeAccount"
                 @deferAccount="deferAccount"
                 @activeAccount="activeAccount"
@@ -62,7 +64,8 @@
                 flagConfirmModalOpen: false,
                 notesModalOpen: false,
                 selectedFlag: null,
-                selectedAccount: null
+                selectedAccount: null,
+                featureToggles: {},
             }
         },
 
@@ -71,6 +74,8 @@
 
             // required to detect any changes in the other buckets which might be present on the page.
             EventBus.$on('list-changed', this.loadAccounts)
+
+            this.getFeatureToggles()
         },
 
         computed: {
@@ -95,10 +100,6 @@
                         }
                     )
 
-            },
-
-            getHourCheck(check) {
-                return (check ? "Y" : "N")
             },
 
             removeAccount(payload) {
@@ -163,6 +164,12 @@
                     this.$toasted.show(response.data.success, { type: 'success' })
 
                     EventBus.$emit('list-changed')
+                })
+            },
+
+            getFeatureToggles() {
+                Nova.request().get(`/nova-vendor/waiting-lists-manager/feature-toggles/${this.resourceId}`).then((response) => {
+                    this.featureToggles = response.data
                 })
             }
         }

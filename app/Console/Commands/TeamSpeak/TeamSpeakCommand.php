@@ -30,10 +30,6 @@ abstract class TeamSpeakCommand extends Command
      *
      * In order to avoid self::$command being overwritten when each inherited class is constructed, the assignment
      * must be made here, when it is known that this is the command to be run.
-     *
-     * @param  \Symfony\Component\Console\Input\InputInterface  $input
-     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
-     * @return int
      */
     public function run(InputInterface $input, OutputInterface $output): int
     {
@@ -45,7 +41,6 @@ abstract class TeamSpeakCommand extends Command
     /**
      * Handling for a serverquery exception thrown by the TeamSpeak framework.
      *
-     * @param  TeamSpeak3_Adapter_ServerQuery_Exception  $e
      * @param  Account  $account
      */
     protected static function handleServerQueryException(TeamSpeak3_Adapter_ServerQuery_Exception $e, Account $account = null)
@@ -66,8 +61,6 @@ abstract class TeamSpeakCommand extends Command
 
     /**
      * Handling for all exceptions.
-     *
-     * @param  \Exception  $e
      */
     protected static function handleException(Exception $e)
     {

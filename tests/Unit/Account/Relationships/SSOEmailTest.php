@@ -12,7 +12,9 @@ class SSOEmailTest extends TestCase
     use DatabaseTransactions;
 
     private $email;
+
     private $ssoService;
+
     private $secondEmail;
 
     public function setUp(): void
