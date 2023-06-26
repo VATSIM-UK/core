@@ -28,6 +28,8 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Admin Access Permissions
             'admin.access',
+            'horizon.access',
+            'telescope.access',
 
             // Account Permissions
             'account.self',

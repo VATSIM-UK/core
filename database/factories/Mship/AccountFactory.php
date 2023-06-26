@@ -5,7 +5,6 @@ namespace Database\Factories\Mship;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\DB;
 
 class AccountFactory extends Factory
 {
@@ -29,27 +28,6 @@ class AccountFactory extends Factory
 
     public function withQualification(): Factory
     {
-        return $this->state(function () {
-            $id = rand(10000000, 99999999);
-            $qualAtc = Qualification::factory()->atc()->create();
-            // Assoc qualification to account
-            DB::table('mship_account_qualification')->insert([
-                'account_id' => $id,
-                'qualification_id' => $qualAtc->id,
-                'created_at' => \Carbon\Carbon::now(),
-                'updated_at' => \Carbon\Carbon::now(),
-            ]);
-
-            $qualPilot = Qualification::factory()->pilot()->create();
-            // Assoc qualification to account
-            DB::table('mship_account_qualification')->insert([
-                'account_id' => $id,
-                'qualification_id' => $qualPilot->id,
-                'created_at' => \Carbon\Carbon::now(),
-                'updated_at' => \Carbon\Carbon::now(),
-            ]);
-
-            return [];
-        });
+        return $this->hasAttached(Qualification::factory()->atc()->create())->hasAttached(Qualification::factory()->pilot()->create());
     }
 }

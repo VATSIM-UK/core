@@ -60,7 +60,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     protected function gate()
     {
         Gate::define('viewTelescope', function ($user) {
-            return $user->can('use-permission', 'telescope');
+            return $user->can('telescope.access');
         });
     }
 }

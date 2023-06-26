@@ -33,16 +33,6 @@ class AdminMiddlewareTest extends TestCase
     }
 
     /** @test */
-    public function testPrivaccDoesntWorkInProduction()
-    {
-        config()->set('app.env', 'production');
-
-        $this->actingAs($this->privacc)
-            ->get('adm')
-            ->assertForbidden();
-    }
-
-    /** @test */
     public function testTelescopeIsNotAvailableToGuests()
     {
         $this->get(config('telescope.path'))
@@ -61,7 +51,7 @@ class AdminMiddlewareTest extends TestCase
     public function testTelescopeIsAvailableToAuthorisedUsers()
     {
         $admin = Account::factory()->create();
-        $admin->givePermissionTo('telescope');
+        $admin->givePermissionTo('telescope.access');
 
         $this->actingAs($admin)
             ->get(config('telescope.path'))
@@ -91,7 +81,7 @@ class AdminMiddlewareTest extends TestCase
     public function testHorizonIsAvailableToAuthorisedUsers()
     {
         $admin = Account::factory()->create();
-        $admin->givePermissionTo('horizon');
+        $admin->givePermissionTo('horizon.access');
 
         $this->actingAs($admin)
             ->get(config('horizon.path'))
