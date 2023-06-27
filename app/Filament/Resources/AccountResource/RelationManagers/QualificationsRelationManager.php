@@ -19,7 +19,7 @@ class QualificationsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('code'),
                 Tables\Columns\TextColumn::make('name_long')->label('Name'),
-                Tables\Columns\TextColumn::make('created_at')->since()->tooltip(fn ($record) => $record->created_at)->label('Awarded')->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at)->label('Awarded')->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type')->options(collect(QualificationTypeEnum::cases())->mapWithKeys(fn ($enum) => [$enum->value => $enum->name]))->multiple(),

@@ -4,10 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Enums\QualificationTypeEnum;
 use App\Filament\Resources\AccountResource\Pages;
+use App\Filament\Resources\AccountResource\RelationManagers\BansRelationManager;
 use App\Filament\Resources\AccountResource\RelationManagers\QualificationsRelationManager;
 use App\Filament\Resources\AccountResource\RelationManagers\RolesRelationManager;
 use App\Filament\Resources\AccountResource\RelationManagers\StatesRelationManager;
 use App\Models\Mship\Account;
+use Carbon\CarbonInterface;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
@@ -58,7 +60,7 @@ class AccountResource extends Resource
                         TextInput::make('email')->label('Primary Email')->required()->disabled(),
 
                         Repeater::make('secondaryEmails')->relationship()->schema([TextInput::make('email')])->disabled(),
-                    ])->when(fn ($record, $context) => auth()->user()->can("account.view-sensitive.$record->id") && $context === 'view'),
+                    ])->when(fn ($record, $context) => auth()->user()->can('viewSensitive', $record) && $context === 'view'),
 
                     Fieldset::make('State')->schema([
                         Grid::make(3)->schema([
@@ -95,7 +97,7 @@ class AccountResource extends Resource
                     ->boolean()
                     ->falseIcon('')
                     ->trueColor('danger')
-                    ->tooltip(fn ($record) => $record->is_banned ? ($record->is_network_banned ? 'Banned on VATSIM.NET' : ('Banned locally for another '.$record->system_ban->period_amount_string)) : null),
+                    ->tooltip(fn ($record) => $record->is_banned ? ($record->is_network_banned ? 'Banned on VATSIM.NET' : ('Banned locally for another '.now()->diffForHumans($record->system_ban->period_finish, CarbonInterface::DIFF_ABSOLUTE))) : null),
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('banned')
@@ -119,6 +121,7 @@ class AccountResource extends Resource
             StatesRelationManager::class,
             QualificationsRelationManager::class,
             RolesRelationManager::class,
+            BansRelationManager::class,
         ];
     }
 

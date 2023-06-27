@@ -40,5 +40,13 @@ class FilamentServiceProvider extends ServiceProvider
 
             return static::getUrl(static::hasPage('view') ? 'view' : 'edit', ['record' => $record]);
         });
+
+        /**
+         * Configures a table View action to route to the resource's view page
+         */
+        \Filament\Tables\Actions\ViewAction::macro('resource', function (string $resourceClass): \Filament\Tables\Actions\ViewAction {
+            /** @var \Filament\Tables\Actions\ViewAction $this */
+            return $this->url(fn ($record) => $resourceClass::urlToView($record));
+        });
     }
 }

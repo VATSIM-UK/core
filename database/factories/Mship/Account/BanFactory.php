@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Mship\Account;
 
+use App\Enums\BanTypeEnum;
 use App\Models\Mship\Account;
 use App\Models\Mship\Ban\Reason;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,7 +22,7 @@ class BanFactory extends Factory
         return [
             'account_id' => Account::factory(),
             'banned_by' => Account::factory(),
-            'type' => \App\Models\Mship\Account\Ban::TYPE_LOCAL,
+            'type' => BanTypeEnum::Local,
             'reason_id' => Reason::factory(),
             'reason_extra' => fake()->paragraph,
             'period_start' => now()->subDay(),

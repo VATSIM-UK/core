@@ -29,7 +29,19 @@ class AccountPolicy
      */
     public function view(Account $actor, Account $subject)
     {
-        return $actor->canAny(['account.view-insensitive.*', 'account.view-sensitive.*']);
+        return $actor->canAny(['account.view-insensitive.*', 'account.view-sensitive.*']) && ($subject->getKey() !== $actor->getKey() || $actor->can('account.self'));
+    }
+
+    /**
+     * Determine whether the user can view sensitive information on the model.
+     *
+     * @param  \App\Models\Mship\Account  $account
+     * @param  \App\Models\Mship\Account  $account
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewSensitive(Account $actor, Account $subject)
+    {
+        return $actor->can('account.view-sensitive.*');
     }
 
     /**
@@ -52,7 +64,7 @@ class AccountPolicy
      */
     public function update(Account $actor, Account $subject)
     {
-        return $actor->can("account.edit-basic-details.{$subject->id}");
+        return $actor->can("account.edit-basic-details.{$subject->id}") && ($subject->getKey() !== $actor->getKey() || $actor->can('account.self'));
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\RoleResource\RelationManagers;
 
-use App\Filament\Helpers\ResourceManagers\MakesExternalViewButtons;
 use App\Filament\Resources\AccountResource;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
@@ -10,8 +9,6 @@ use Filament\Tables;
 
 class UsersRelationManager extends RelationManager
 {
-    use MakesExternalViewButtons;
-
     protected static string $relationship = 'users';
 
     protected static ?string $recordTitleAttribute = 'id';
@@ -28,7 +25,7 @@ class UsersRelationManager extends RelationManager
                     ->recordTitle(fn ($record) => "$record->name ($record->id)"),
             ])
             ->actions([
-                self::resourceViewAction(AccountResource::class),
+                Tables\Actions\ViewAction::make()->resource(AccountResource::class),
                 Tables\Actions\DetachAction::make()
                     ->using(function ($record, $livewire) {
                         $record->removeRole($livewire->ownerRecord);
