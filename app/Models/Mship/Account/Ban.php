@@ -86,6 +86,11 @@ class Ban extends Model
         return $query->isNotRepealed()->where('period_finish', '>=', \Carbon\Carbon::now())->orWhereNull('period_finish');
     }
 
+    public static function scopeIsInActive($query)
+    {
+        return $query->isHistoric()->orWhere(fn ($query) => $query->isRepealed());
+    }
+
     public static function scopeIsHistoric($query)
     {
         return $query->isNotRepealed()->where('period_finish', '<', \Carbon\Carbon::now());

@@ -355,7 +355,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $note->save();
 
         if (! is_null($attachment)) {
-            $note->attachment()->save($attachment);
+            $note->attachment()->associate($attachment)->save();
         }
 
         return $note;

@@ -39,8 +39,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'account.impersonate.*',
             'account.edit-roles.*',
             'account.edit-notes.*',
-            'account.ban.create.*',
-            'account.ban.modify.*',
+            'account.ban.create',
+            'account.ban.edit.*',
             'account.ban.repeal.*',
 
             // Permissions & Access Permissions
@@ -56,7 +56,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // Visit Transfer System Permissions
             'vt.access',
             'vt.facility.view.*',
-            'vt.facility.create.*',
+            'vt.facility.create',
             'vt.facility.update.*',
             'vt.application.view.*',
             'vt.application.accept.*',

@@ -41,6 +41,11 @@ class BansRelationManager extends RelationManager
         ]);
     }
 
+    protected function canCreate(): bool
+    {
+        return auth()->user()->can('create', [$this->getRelatedModel(), $this->ownerRecord]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -53,16 +58,20 @@ class BansRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('period_finish')->label('Ends')->since()->description(fn ($record) => $record->period_finish),
                 Tables\Columns\TextColumn::make('banner.name')->label('By'),
             ])
-            ->filters([
-                //
-            ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->disabled(fn ($livewire) => $livewire->ownerRecord->is_banned)
                     ->disableCreateAnother()
                     ->using(function (array $data, self $livewire) {
                         return static::createBan($data, $livewire);
                     }),
+            ])
+            ->filters([
+                Tables\Filters\TrashedFilter::make('repealed')
+                    ->label('Repealed')
+                    ->placeholder('Without Repealed')
+                    ->trueLabel('With Repealed Records')
+                    ->falseLabel('Only Repealed Records')
+                    ->queries(true: fn ($query) => $query, false: fn ($query) => $query->isRepealed(), blank: fn ($query) => $query->isNotRepealed()),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()->resource(BanResource::class),

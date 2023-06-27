@@ -19,7 +19,6 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class AccountResource extends Resource
@@ -98,13 +97,6 @@ class AccountResource extends Resource
                     ->falseIcon('')
                     ->trueColor('danger')
                     ->tooltip(fn ($record) => $record->is_banned ? ($record->is_network_banned ? 'Banned on VATSIM.NET' : ('Banned locally for another '.now()->diffForHumans($record->system_ban->period_finish, CarbonInterface::DIFF_ABSOLUTE))) : null),
-            ])
-            ->filters([
-                Tables\Filters\TernaryFilter::make('banned')
-                    ->queries(
-                        true: fn (Builder $query) => $query->banned(),
-                        false: fn (Builder $query) => $query->notBanned(),
-                    ),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
