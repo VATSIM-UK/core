@@ -4,17 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Enums\QualificationTypeEnum;
 use App\Filament\Resources\AccountResource\Pages;
-use App\Filament\Resources\AccountResource\RelationManagers\BansRelationManager;
-use App\Filament\Resources\AccountResource\RelationManagers\QualificationsRelationManager;
-use App\Filament\Resources\AccountResource\RelationManagers\RolesRelationManager;
-use App\Filament\Resources\AccountResource\RelationManagers\StatesRelationManager;
+use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Mship\Account;
 use Carbon\CarbonInterface;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -47,31 +40,50 @@ class AccountResource extends Resource
     {
         return $form
             ->schema([
-                Fieldset::make('Basic Details')->schema([
-                    Grid::make(3)->schema([
-                        Placeholder::make('Central Account Name')->content(fn ($record) => $record->name_first.' '.$record->name_last)->visibleOn('view'),
-                        TextInput::make('nickname')->label('Preferred Name'),
-                        Placeholder::make('id')->label('CID')->content(fn ($record) => $record->id)->visibleOn('view'),
+                Forms\Components\Fieldset::make('Basic Details')->schema([
+                    Forms\Components\Grid::make(3)->schema([
+                        Forms\Components\Placeholder::make('Central Account Name')
+                            ->content(fn ($record) => $record->name_first.' '.$record->name_last)
+                            ->visibleOn('view'),
+                        Forms\Components\TextInput::make('nickname')
+                            ->label('Preferred Name'),
+                        Forms\Components\Placeholder::make('id')
+                            ->label('CID')
+                            ->content(fn ($record) => $record->id)
+                            ->visibleOn('view'),
 
                     ]),
 
-                    Fieldset::make('Emails')->schema([
-                        TextInput::make('email')->label('Primary Email')->required()->disabled(),
+                    Forms\Components\Fieldset::make('Emails')->schema([
+                        Forms\Components\TextInput::make('email')
+                            ->label('Primary Email')
+                            ->required()
+                            ->disabled(),
 
-                        Repeater::make('secondaryEmails')->relationship()->schema([TextInput::make('email')])->disabled(),
+                        Forms\Components\Repeater::make('secondaryEmails')
+                            ->relationship()
+                            ->schema([Forms\Components\TextInput::make('email')])->disabled(),
                     ])->when(fn ($record, $context) => auth()->user()->can('viewSensitive', $record) && $context === 'view'),
 
-                    Fieldset::make('State')->schema([
-                        Grid::make(3)->schema([
-                            Placeholder::make('vatsim_region')->label('VATSIM Region')->content(fn ($record) => $record->primary_permanent_state?->pivot?->region),
-                            Placeholder::make('vatsim_division')->label('VATSIM Division')->content(fn ($record) => $record->primary_permanent_state?->pivot?->division),
-                            Placeholder::make('uk_primary_state')->label('UK Primary State')->content(fn ($record) => $record->primary_state?->name),
+                    Forms\Components\Fieldset::make('State')->schema([
+                        Forms\Components\Grid::make(3)->schema([
+                            Forms\Components\Placeholder::make('vatsim_region')
+                                ->label('VATSIM Region')
+                                ->content(fn ($record) => $record->primary_permanent_state?->pivot?->region),
+                            Forms\Components\Placeholder::make('vatsim_division')
+                                ->label('VATSIM Division')
+                                ->content(fn ($record) => $record->primary_permanent_state?->pivot?->division),
+                            Forms\Components\Placeholder::make('uk_primary_state')
+                                ->label('UK Primary State')
+                                ->content(fn ($record) => $record->primary_state?->name),
                         ]),
                     ])->visibleOn('view'),
 
-                    Fieldset::make('Qualifications')->schema(function ($record) {
+                    Forms\Components\Fieldset::make('Qualifications')->schema(function ($record) {
                         return [
-                            Grid::make(3)->schema(static::makeQualificationSummaryPlaceholders($record))->visibleOn('view'),
+                            Forms\Components\Grid::make(3)
+                                ->schema(static::makeQualificationSummaryPlaceholders($record))
+                                ->visibleOn('view'),
                         ];
                     })->visibleOn('view'),
                 ]),
@@ -110,10 +122,10 @@ class AccountResource extends Resource
     public static function getRelations(): array
     {
         return [
-            StatesRelationManager::class,
-            QualificationsRelationManager::class,
-            RolesRelationManager::class,
-            BansRelationManager::class,
+            RelationManagers\StatesRelationManager::class,
+            RelationManagers\QualificationsRelationManager::class,
+            RelationManagers\RolesRelationManager::class,
+            RelationManagers\BansRelationManager::class,
         ];
     }
 
@@ -126,10 +138,13 @@ class AccountResource extends Resource
         ];
     }
 
+    /** Maps the account's active qualifications into a set of placeholder fields */
     private static function makeQualificationSummaryPlaceholders($record): array
     {
         return $record->active_qualifications->map(function ($qualification) {
-            return Placeholder::make("qualification_{$qualification->type}")->label(QualificationTypeEnum::from($qualification->type)->human())->content("{$qualification->name_long} ({$qualification->code})");
+            return Forms\Components\Placeholder::make("qualification_{$qualification->type}")
+                ->label(QualificationTypeEnum::from($qualification->type)->human())
+                ->content("{$qualification->name_long} ({$qualification->code})");
         })->all();
     }
 }

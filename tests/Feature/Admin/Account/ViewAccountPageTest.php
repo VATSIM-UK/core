@@ -49,6 +49,19 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->assertFormFieldExists('email');
     }
 
+    public function test_cant_see_ban_relation_manager_without_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertDontSee('Bans');
+
+        $this->user->givePermissionTo('account.view-sensitive.*');
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertSee('Bans');
+    }
+
     public function test_can_request_update()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
