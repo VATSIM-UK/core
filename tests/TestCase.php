@@ -35,9 +35,6 @@ abstract class TestCase extends BaseTestCase
         Carbon::setTestNow(Carbon::now());
         $this->knownDate = Carbon::now();
 
-        // Seed
-        $this->seed();
-
         // Create tables for other services
         $this->seedLegacyTables();
 
