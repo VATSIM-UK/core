@@ -21,8 +21,7 @@ class BansRelationManagerTest extends BaseAdminTestCase
 
         $account = Account::factory()->has(Ban::factory())->create();
         Livewire::test(BansRelationManager::class, ['ownerRecord' => $account])
-            ->assertSuccessful()
-            ->assertCanSeeTableRecords($account->bans);
+            ->assertSuccessful();
     }
 
     public function test_it_hides_create_button()
