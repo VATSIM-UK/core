@@ -16,7 +16,7 @@ trait HasBans
     public function scopeBanned(Builder $query)
     {
         return $query->whereHas('bans', function (Builder $banQuery) {
-            $banQuery->whereNull('period_finish')->orWhere('period_finish', '>', now());
+            $banQuery->isActive();
         });
     }
 

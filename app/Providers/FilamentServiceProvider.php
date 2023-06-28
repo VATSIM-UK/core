@@ -43,6 +43,9 @@ class FilamentServiceProvider extends ServiceProvider
             return static::getUrl(static::hasPage('view') ? 'view' : 'edit', ['record' => $record]);
         });
 
+        /**
+         * Configures a text column with a link which routes to the resource's view page
+         */
         \Filament\Tables\Columns\TextColumn::macro('viewResource', function (string $resourceClass, string $attribute = null): \Filament\Tables\Columns\TextColumn {
             /** @var \Filament\Tables\Actions\TextColumn $this */
             $attribute = $attribute ?? explode('.', $this->getName())[0]; // We assume that the column name is like user or user.name - we want the first part to get the relation
@@ -53,7 +56,7 @@ class FilamentServiceProvider extends ServiceProvider
         });
 
         /**
-         * Configures a table View action to route to the resource's view page
+         * Configures a table view action to route to the resource's view page
          */
         \Filament\Tables\Actions\ViewAction::macro('resource', function (string $resourceClass): \Filament\Tables\Actions\ViewAction {
             /** @var \Filament\Tables\Actions\ViewAction $this */

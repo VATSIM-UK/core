@@ -12,6 +12,7 @@ use App\Policies\Mship\Account\BanPolicy;
 use App\Policies\Nova\FeedbackPolicy;
 use App\Policies\Nova\QualificationPolicy;
 use App\Policies\PasswordPolicy;
+use App\Policies\RolePolicy;
 use App\Policies\Smartcars\ExercisePolicy;
 use App\Policies\Smartcars\PirepPolicy;
 use App\Policies\Training\WaitingListFlagsPolicy;
@@ -22,6 +23,7 @@ use App\Registrars\PermissionRegistrar as RegistrarsPermissionRegistrar;
 use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 class AuthServiceProvider extends ServiceProvider
@@ -41,7 +43,9 @@ class AuthServiceProvider extends ServiceProvider
         WaitingList\WaitingListFlag::class => WaitingListFlagsPolicy::class,
         Qualification::class => QualificationPolicy::class,
         Feedback::class => FeedbackPolicy::class,
+
         Ban::class => BanPolicy::class,
+        Role::class => RolePolicy::class,
     ];
 
     /**

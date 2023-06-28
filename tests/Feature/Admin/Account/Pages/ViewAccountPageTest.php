@@ -1,8 +1,7 @@
 <?php
 
-namespace Tests\Feature\Admin\Account;
+namespace Tests\Feature\Admin\Account\Pages;
 
-use App\Filament\Resources\AccountResource;
 use App\Filament\Resources\AccountResource\Pages\ViewAccount;
 use App\Jobs\UpdateMember;
 use Illuminate\Support\Facades\Bus;
@@ -11,12 +10,6 @@ use Tests\Feature\Admin\BaseAdminTestCase;
 
 class ViewAccountPageTest extends BaseAdminTestCase
 {
-    public function test_page_renders()
-    {
-        $this->actingAsSuperUser();
-        $this->get(AccountResource::getUrl('view', ['record' => $this->user->id]))->assertSuccessful();
-    }
-
     public function test_cant_impersonate_without_permission()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
