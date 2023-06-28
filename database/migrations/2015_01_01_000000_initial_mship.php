@@ -169,6 +169,11 @@ class InitialMship extends Migration
             $table->softDeletes();
         });
 
+        DB::table('mship_role')->insert([
+            ['name' => 'PrivAcc', 'default' => 0, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'Members', 'default' => '1', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+        ]);
+
         // Creates the assigned_roles (Many-to-Many relation) table
         Schema::create('mship_account_role', function ($table) {
             $table->increments('account_role_id')->unsigned();
@@ -186,6 +191,68 @@ class InitialMship extends Migration
             $table->softDeletes();
         });
 
+        DB::table('mship_permission')->insert([
+            ['name' => '*', 'display_name' => 'SUPERMAN POWERS', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+
+            ['name' => 'adm/dashboard', 'display_name' => 'Admin / Dashboard ', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/search', 'display_name' => 'Admin / Search ', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+
+            ['name' => 'adm/mship', 'display_name' => 'Admin / Membership ', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+
+            ['name' => 'adm/mship/account', 'display_name' => 'Admin / Membership / Account', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*', 'display_name' => 'Admin / Membership / Account / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/list', 'display_name' => 'Admin / Membership / Account / List', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/datachanges', 'display_name' => 'Admin / Membership / Account / Data Changes', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/datachanges/view', 'display_name' => 'Admin / Membership / Account / Data Changes / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/flag/view', 'display_name' => 'Admin / Membership / Account / Flag / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/flags', 'display_name' => 'Admin / Membership / Account / Flag', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/roles', 'display_name' => 'Admin / Membership / Account / Roles', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/roles/attach', 'display_name' => 'Admin / Membership / Account / Roles / Attach', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/roles/*/detach', 'display_name' => 'Admin / Membership / Account / Roles / Detach', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/note/create', 'display_name' => 'Admin / Membership / Account / Note / Create', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/note/view', 'display_name' => 'Admin / Membership / Account / Note / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/note/filter', 'display_name' => 'Admin / Membership / Account / Note / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/notes', 'display_name' => 'Admin / Membership / Account / Note', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/receivedEmails', 'display_name' => 'Admin / Membership / Account / Received Emails', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/security', 'display_name' => 'Admin / Membership / Account / Security', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/security/change', 'display_name' => 'Admin / Membership / Account / Security / Change', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/security/enable', 'display_name' => 'Admin / Membership / Account / Security / Enable', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/security/reset', 'display_name' => 'Admin / Membership / Account / Security / Reset', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/security/view', 'display_name' => 'Admin / Membership / Account / Security / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/sentEmails', 'display_name' => 'Admin / Membership / Account / Sent Emails', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/timeline', 'display_name' => 'Admin / Membership / Account / Timeline', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/view/email', 'display_name' => 'Admin / Membership / Account / View / Email', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/impersonate', 'display_name' => 'Admin / Membership / Account / Impersonate', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/own', 'display_name' => 'Admin / Membership / Account / View & Manage Own', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+
+            ['name' => 'adm/mship/account/*/bans', 'display_name' => 'Admin / Membership / Account / Bans', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/ban/add', 'display_name' => 'Admin / Membership / Account / Ban / Add', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/ban/modify', 'display_name' => 'Admin / Membership / Account / Ban / Modify', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/account/*/ban/view', 'display_name' => 'Admin / Membership / Account / Ban / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/ban/*/repeal', 'display_name' => 'Admin / Membership / Account / Ban / Repeal', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+
+            ['name' => 'adm/mship/permission', 'display_name' => 'Admin / Membership / Permission', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/permission/create', 'display_name' => 'Admin / Membership / Permission / Create', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/permission/list', 'display_name' => 'Admin / Membership / Permission / List', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/permission/*/update', 'display_name' => 'Admin / Membership / Permission / Update', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/permission/*/delete', 'display_name' => 'Admin / Membership / Permission / Delete', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/permission/*/delete', 'display_name' => 'Admin / Membership / Permission / Delete', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/permission/attach', 'display_name' => 'Admin / Membership / Permission / Attach', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+
+            ['name' => 'adm/mship/role', 'display_name' => 'Admin / Membership / Role', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/role/*/delete', 'display_name' => 'Admin / Membership / Role / Delete', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/role/*/update', 'display_name' => 'Admin / Membership / Role / Update', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/role/create', 'display_name' => 'Admin / Membership / Role / Create', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/role/list', 'display_name' => 'Admin / Membership / Role / List', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/mship/role/default', 'display_name' => 'Admin / Membership / Roles / Set Default', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+
+            ['name' => 'adm/sys/timeline/mship', 'display_name' => 'Admin / System / Timeline / Membership', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+
+            ['name' => 'teamspeak/serveradmin', 'display_name' => 'TeamSpeak / Server Admin', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'teamspeak/idle/extended', 'display_name' => 'TeamSpeak / Extended Idle', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'teamspeak/idle/permanent', 'display_name' => 'TeamSpeak / Permanent Idle', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+        ]);
+
         // Creates the permission_role (Many-to-Many relation) table
         Schema::create('mship_permission_role', function ($table) {
             $table->increments('permission_role_id')->unsigned();
@@ -193,6 +260,10 @@ class InitialMship extends Migration
             $table->integer('role_id')->unsigned();
             $table->timestamps();
         });
+
+        DB::table('mship_permission_role')->insert([
+            ['role_id' => 1, 'permission_id' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+        ]);
 
         Schema::create('mship_account_ban', function (Blueprint $table) {
             $table->increments('account_ban_id');

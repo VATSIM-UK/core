@@ -89,6 +89,21 @@ class AddWaitingListTable extends Migration
             'created_at' => \Carbon\Carbon::now(),
             'updated_at' => \Carbon\Carbon::now(),
         ]);
+
+        $this->createPermission('nova');
+        $this->createPermission('waitingLists/create');
+        $this->createPermission('waitingLists/atc/view');
+        $this->createPermission('waitingLists/atc/addAccounts');
+        $this->createPermission('waitingLists/atc/removeAccount');
+        $this->createPermission('waitingLists/atc/addFlags');
+        $this->createPermission('waitingLists/atc/update');
+        $this->createPermission('waitingLists/atc/delete');
+        $this->createPermission('waitingLists/pilot/view');
+        $this->createPermission('waitingLists/pilot/addAccounts');
+        $this->createPermission('waitingLists/pilot/removeAccount');
+        $this->createPermission('waitingLists/pilot/addFlags');
+        $this->createPermission('waitingLists/pilot/update');
+        $this->createPermission('waitingLists/pilot/delete');
     }
 
     /**
@@ -105,5 +120,13 @@ class AddWaitingListTable extends Migration
         Schema::dropIfExists('training_waiting_list_status');
         Schema::dropIfExists('training_waiting_list_flags');
         Schema::dropIfExists('training_waiting_list_account_flag');
+    }
+
+    private function createPermission(string $name, $guard = 'web')
+    {
+        return \DB::table(config('permission.table_names.permissions'))->insert([
+            'name' => $name,
+            'guard_name' => $guard,
+        ]);
     }
 }
