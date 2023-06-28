@@ -39,7 +39,7 @@ class AccountBanTest extends TestCase
         $bannedAccount = Account::factory()->has(Ban::factory())->create();
         $activeAcount = Account::factory()->create();
 
-        $this->assertEquals([$bannedAccount->id], Account::banned()->pluck('id')->all());
+        $this->assertEquals([$bannedAccount->id], Account::banned()->whereIn('id', [$bannedAccount->id, $activeAcount->id])->pluck('id')->all());
         $this->assertEquals([$activeAcount->id], Account::notBanned()->whereIn('id', [$bannedAccount->id, $activeAcount->id])->pluck('id')->all());
     }
 

@@ -19,7 +19,9 @@ use App\Policies\Training\WaitingListPolicy;
 use App\Policies\VisitTransfer\ApplicationPolicy;
 use App\Policies\VisitTransfer\ReferencePolicy;
 use App\Registrars\PermissionRegistrar as RegistrarsPermissionRegistrar;
+use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\PermissionRegistrar;
 
 class AuthServiceProvider extends ServiceProvider
@@ -61,5 +63,18 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        // TODO: Remove use-permission
+        Gate::define('use-permission', function ($user, $permission) {
+            if ($user->hasRole('privacc') && config()->get('app.env') != 'production') {
+                return true;
+            }
+
+            try {
+                return auth()->user()->hasPermissionTo($permission);
+            } catch (PermissionDoesNotExist $e) {
+                return false;
+            }
+        });
     }
 }

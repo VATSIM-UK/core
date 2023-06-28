@@ -52,7 +52,7 @@ class BansRelationManagerTest extends BaseAdminTestCase
         $reason = Reason::factory()->create()->id;
 
         Livewire::test(BansRelationManager::class, ['ownerRecord' => $account])
-            ->callPageAction('create', ['reason' => Reason::factory()->create()->id, 'extra_info' => 'the extra info', 'note' => 'the note']);
+            ->callTableAction('create', ['reason' => Reason::factory()->create()->id, 'extra_info' => 'the extra info', 'note' => 'the note']);
 
         $this->assertDatabaseHas('mship_account_bans', ['account_id' => $account->id, 'banner_id' => $this->privacc->id, 'reason_id' => $reason, 'reason_extra' => 'the extra info']);
         Notification::assertSentTo([$account], BanCreated::class);
