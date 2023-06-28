@@ -21,7 +21,8 @@ class BansRelationManagerTest extends BaseAdminTestCase
 
         $account = Account::factory()->has(Ban::factory())->create();
         Livewire::test(BansRelationManager::class, ['ownerRecord' => $account])
-            ->assertSuccessful();
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords($account->bans);
     }
 
     public function test_it_hides_create_button()
@@ -51,7 +52,7 @@ class BansRelationManagerTest extends BaseAdminTestCase
         $reason = Reason::factory()->create()->id;
 
         Livewire::test(BansRelationManager::class, ['ownerRecord' => $account])
-            ->callTableAction('create', ['reason' => Reason::factory()->create()->id, 'extra_info' => 'the extra info', 'note' => 'the note']);
+            ->callTableAction('create', null, ['reason' => Reason::factory()->create()->id, 'extra_info' => 'the extra info', 'note' => 'the note']);
 
         $this->assertDatabaseHas('mship_account_bans', ['account_id' => $account->id, 'banner_id' => $this->privacc->id, 'reason_id' => $reason, 'reason_extra' => 'the extra info']);
         Notification::assertSentTo([$account], BanCreated::class);
