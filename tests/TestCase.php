@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
+use Queue;
 use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
@@ -47,6 +48,7 @@ abstract class TestCase extends BaseTestCase
         $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->registerPermissions();
 
         \Illuminate\Support\Facades\Notification::fake();
+        Queue::fake();
     }
 
     public function __get($name)
