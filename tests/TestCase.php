@@ -37,6 +37,8 @@ abstract class TestCase extends BaseTestCase
         Carbon::setTestNow($now);
         $this->knownDate = $now;
 
+        $this->seed();
+
         // Force regeneration of permissions cache
         app()['cache']->forget('spatie.permission.cache');
         $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->registerPermissions();

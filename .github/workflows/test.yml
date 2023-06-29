@@ -147,7 +147,7 @@ jobs:
 
       # Run Database Migration
       - name: Migrate & Seed Database
-        run: php artisan migrate && php artisan cts:migrate:fresh && php artisan db:seed
+        run: php artisan migrate && php artisan cts:migrate:fresh
 
       # Cache Setup
       - name: Cache Routes
