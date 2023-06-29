@@ -58,13 +58,20 @@ abstract class TestCase extends BaseTestCase
         }
     }
 
+    public function __set($name, $value)
+    {
+        if (in_array($name, ['privacc', 'user'])) {
+            $this->$name = $value;
+        }
+    }
+
     protected function getOrMakeUser(): Account
     {
         if ($this->user) {
             return $this->user;
         }
 
-        return $this->user = Account::factory()->withQualification()->create();
+        return $this->user = Account::factory()->withQualification()->createQuietly();
     }
 
     protected function getOrMakePrivaccUser(): Account
@@ -73,7 +80,7 @@ abstract class TestCase extends BaseTestCase
             return $this->privacc;
         }
 
-        $user = Account::factory()->withQualification()->create();
+        $user = Account::factory()->withQualification()->createQuietly();
         $role = Role::findByName('privacc');
         $role->givePermissionTo('*');
         $user->assignRole($role);

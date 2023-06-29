@@ -22,7 +22,6 @@ class AccountFactory extends Factory
             'name_first' => fake()->firstName,
             'name_last' => fake()->lastName,
             'email' => fake()->email,
-            'is_invisible' => 0,
         ];
     }
 
