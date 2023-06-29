@@ -20,6 +20,8 @@ abstract class TestCase extends BaseTestCase
 
     private $user;
 
+    protected $connectionsToTransact = [null, 'cts']; // Default and CTS database connections
+
     protected function setUp(): void
     {
         parent::setUp();
