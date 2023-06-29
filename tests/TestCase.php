@@ -69,7 +69,10 @@ abstract class TestCase extends BaseTestCase
             return $this->user;
         }
 
-        return $this->user = Account::factory()->withQualification()->createQuietly();
+        $this->user = Account::factory()->withQualification()->createQuietly();
+        $this->user->assignRole(Role::findByName('member'));
+
+        return $this->user;
     }
 
     protected function getOrMakePrivaccUser(): Account
