@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
@@ -70,7 +71,7 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->user = Account::factory()->withQualification()->createQuietly();
-        $this->user->assignRole(Role::findByName('member'));
+        DB::table('mship_account_role')->insert(['model_type' => Account::class, 'model_id' => $this->user->id, 'role_id' => Role::findByName('member')->id]); // Done manually to avoid firing events
 
         return $this->user;
     }
@@ -84,7 +85,7 @@ abstract class TestCase extends BaseTestCase
         $user = Account::factory()->withQualification()->createQuietly();
         $role = Role::findByName('privacc');
         $role->givePermissionTo('*');
-        $user->assignRole($role);
+        DB::table('mship_account_role')->insert(['model_type' => Account::class, 'model_id' => $user->id, 'role_id' => $role->id]); // Done manually to avoid firing events
 
         return $this->privacc = $user->fresh();
     }
