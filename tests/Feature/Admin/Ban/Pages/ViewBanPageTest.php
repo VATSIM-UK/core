@@ -30,14 +30,12 @@ class ViewBanPageTest extends BaseAdminTestCase
         $ban = Ban::factory()->create();
         $this->actingAsSuperUser();
 
-        $now = now()->micro(0);
-
         $this->mockPolicyAction(BanPolicy::class, 'update');
-        Livewire::test(ViewBan::class, ['record' => $ban->id])->callPageAction('edit', ['period_finish' => $now, 'extra_info' => 'Ban was updated', 'note' => 'An updated note']);
+        Livewire::test(ViewBan::class, ['record' => $ban->id])->callPageAction('edit', ['period_finish' => $this->knownDate, 'extra_info' => 'Ban was updated', 'note' => 'An updated note']);
 
         $ban = $ban->fresh();
 
-        $this->assertEquals($now, $ban->period_finish);
+        $this->assertEquals($this->knownDate, $ban->period_finish);
         $this->assertStringContainsString('Ban was updated', $ban->reason_extra);
 
         Notification::assertSentTo([$ban->account], BanModified::class);
