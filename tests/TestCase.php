@@ -60,9 +60,7 @@ abstract class TestCase extends BaseTestCase
 
     public function __set($name, $value)
     {
-        if (in_array($name, ['privacc', 'user'])) {
-            $this->$name = $value;
-        }
+        $this->$name = $value;
     }
 
     protected function getOrMakeUser(): Account
