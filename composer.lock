@@ -8653,16 +8653,16 @@
         },
         {
             "name": "sentry/sentry-laravel",
-            "version": "3.5.1",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-laravel.git",
-                "reference": "85c2168e469ca73ee90de5e71cef53153e949e64"
+                "reference": "6aacef4d12c22046f68ab617ee1496b9655b8eb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/85c2168e469ca73ee90de5e71cef53153e949e64",
-                "reference": "85c2168e469ca73ee90de5e71cef53153e949e64",
+                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/6aacef4d12c22046f68ab617ee1496b9655b8eb9",
+                "reference": "6aacef4d12c22046f68ab617ee1496b9655b8eb9",
                 "shasum": ""
             },
             "require": {
@@ -8670,7 +8670,7 @@
                 "nyholm/psr7": "^1.0",
                 "php": "^7.2 | ^8.0",
                 "sentry/sdk": "^3.4",
-                "sentry/sentry": "^3.19",
+                "sentry/sentry": "^3.20",
                 "symfony/psr-http-message-bridge": "^1.0 | ^2.0"
             },
             "require-dev": {
@@ -8727,7 +8727,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-laravel/issues",
-                "source": "https://github.com/getsentry/sentry-laravel/tree/3.5.1"
+                "source": "https://github.com/getsentry/sentry-laravel/tree/3.6.0"
             },
             "funding": [
                 {
@@ -8739,7 +8739,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-06-20T13:19:32+00:00"
+            "time": "2023-06-29T10:31:13+00:00"
         },
         {
             "name": "sixlive/nova-text-copy-field",
