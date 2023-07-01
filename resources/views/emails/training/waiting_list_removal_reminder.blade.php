@@ -11,7 +11,7 @@
 </p>
 
 <p>
-    As mentioned in our previous email and documented in the ATC Training Handbook section 5.4, you will be removed from the {{$list_name}} waiting list on {{$removal_date->format("l jS \\o\\f F Y")}} (in {{$remaining_days}} days).
+    As mentioned in our previous email and documented in the ATC Training Handbook section 5.4, you will be removed from the {{$list_name}} waiting list on {{$remove_at->format("l jS \\o\\f F Y")}} (in {{$remaining_days}} days).
 </p>
 
 <p>

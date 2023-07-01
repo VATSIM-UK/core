@@ -6,6 +6,7 @@ use App\Console\Commands\Command;
 use App\Events\Training\AccountRemovedFromWaitingListDueToActivity;
 use App\Events\Training\AccountWithinFiveDaysOfWaitingListRemoval;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingListAccountPendingRemoval;
 use Carbon\Carbon;
 
 class ProcessPendingRemovals extends Command
@@ -34,21 +35,19 @@ class ProcessPendingRemovals extends Command
         })->each(function (WaitingList $waitingList) {
             $waitingList->accounts
             ->filter(function ($account) {
-                return $account->pivot->current_status->name == 'Active';
-            })->filter(function ($account) {
-                return $account->pivot->pending_removal?->status == 'Pending';
+                return $account->pivot->current_status->name == 'Active' && !is_null($account->pivot->pending_removal?->remove_at);
             })->each(function ($account) use ($waitingList) {
                 // Send 5 day reminders
                 if (
-                    Carbon::parse($account->pivot->pending_removal->removal_date)->subDays(6) <= Carbon::now() &&
-                    $account->pivot->pending_removal->emails_sent < 1
+                    Carbon::parse($account->pivot->pending_removal->remove_at)->subDays(6) <= Carbon::now() &&
+                    is_null($account->pivot->pending_removal->reminder_sent_at)
                 ) {
-                    $account->pivot->pending_removal->incrementEmailCount();
-                    event(new AccountWithinFiveDaysOfWaitingListRemoval($account, $waitingList, Carbon::parse($account->pivot->pending_removal->removal_date)));
+                    $account->pivot->pending_removal->markReminderSent();
+                    event(new AccountWithinFiveDaysOfWaitingListRemoval($account, $waitingList, Carbon::parse($account->pivot->pending_removal->remove_at)));
                 }
 
                 // Remove accounts past removal date
-                if (Carbon::now() >= Carbon::parse($account->pivot->pending_removal->removal_date)) {
+                if (Carbon::now() >= Carbon::parse($account->pivot->pending_removal->remove_at)) {
                     $waitingList->removeFromWaitingList($account);
                     $account->pivot->pending_removal->markComplete();
                     event(new AccountRemovedFromWaitingListDueToActivity($account, $waitingList));

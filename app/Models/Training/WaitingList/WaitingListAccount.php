@@ -90,7 +90,7 @@ class WaitingListAccount extends Pivot
      */
     public function addPendingRemoval(Carbon $removalDate)
     {
-        return $this->pendingRemoval()->create(['removal_date' => $removalDate]);
+        return $this->pendingRemoval()->create(['remove_at' => $removalDate]);
     }
 
     public function addFlag(WaitingListFlag $listFlag, $value = null)

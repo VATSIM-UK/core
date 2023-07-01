@@ -36,8 +36,7 @@ class WaitingListCheckAccountsMeetActivityRequirementTest extends TestCase
 
         $this->artisan('waitinglists:checkmembersmeetactivityrules');
 
-        $this->assertDatabaseHas('training_waiting_list_account_pending_removal',
-            ['waiting_list_account_id' => $waitingListAccount->pivot->id, 'status' => 'Pending']);
+        $this->assertNotNull($this->waitingList->accounts()->find($account->id)->pivot->pending_removal?->remove_at);
     }
 
     /** @test */
@@ -78,10 +77,35 @@ class WaitingListCheckAccountsMeetActivityRequirementTest extends TestCase
 
         $this->artisan('waitinglists:checkmembersmeetactivityrules');
 
-        $this->assertDatabaseMissing('training_waiting_list_account_pending_removal',
-            ['waiting_list_account_id' => $waitingListAccount->pivot->id, 'status' => 'Pending']);
+        $this->assertNull($this->waitingList->accounts()->find($account->id)->pivot->pending_removal?->remove_at);
+    }
 
-        $this->assertDatabaseHas('training_waiting_list_account_pending_removal',
-            ['waiting_list_account_id' => $waitingListAccount->pivot->id, 'status' => 'Cancelled']);
+    /** @test */
+    public function itShouldHandleUsersHoppingOnAndOffRemovalsList()
+    {
+        $account = factory(Account::class)->create()->refresh();
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $status = WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS);
+
+        $waitingListAccount = $this->waitingList->accounts()->findOrFail($account->id);
+        $waitingListAccount->pivot->addStatus($status);
+
+        $this->artisan('waitinglists:checkmembersmeetactivityrules');
+
+        $this->assertNotNull($this->waitingList->accounts()->find($account->id)->pivot->pending_removal?->remove_at);
+
+        $atcSession = factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
+
+        $this->artisan('waitinglists:checkmembersmeetactivityrules');
+
+        $this->assertNull($this->waitingList->accounts()->find($account->id)->pivot->pending_removal?->remove_at);
+
+        Atc::truncate();
+
+        $this->artisan('waitinglists:checkmembersmeetactivityrules');
+
+        $this->assertNotNull($this->waitingList->accounts()->find($account->id)->pivot->pending_removal?->remove_at);
     }
 }

@@ -45,14 +45,14 @@ class CheckMembersMeetActivityRules extends Command
                     ->sum('minutes_online');
 
                 if ($activeMinutes < $this->minutesRequired) {
-                    if (is_null($account->pivot->pending_removal?->removal_date) || $account->pivot->pending_removal->status != 'Pending') {
+                    if (is_null($account->pivot->pending_removal?->remove_at)) {
                         $removalDate = Carbon::now();
                         $removalDate->addDays(31); // When calculating date diff, this will be a difference of 30 days
                         $account->pivot->addPendingRemoval($removalDate);
                         event(new AccountMarkedForRemovalFromWaitingList($account, $waitingList, $removalDate));
                     }
                 } else {
-                    if ($account->pivot->pending_removal?->status == 'Pending') {
+                    if (!is_null($account->pivot->pending_removal?->remove_at)) {
                         $account->pivot->pending_removal->cancelRemoval();
                         event(new AccountRegainedActivityRequirementsForWaitingList($account, $waitingList));
                     }

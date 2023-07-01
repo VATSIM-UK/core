@@ -17,7 +17,7 @@ class WaitingListRemovalAdded extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(private string $list_name, private Carbon $removal_date){parent::__construct();}
+    public function __construct(private string $list_name, private Carbon $remove_at){parent::__construct();}
 
     /**
      * Get the notification's delivery channels.
@@ -38,12 +38,12 @@ class WaitingListRemovalAdded extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $remainingDays = Carbon::parse(Carbon::now())->diffInDays($this->removal_date);
+        $remainingDays = Carbon::parse(Carbon::now())->diffInDays($this->remove_at);
         $subject = 'Waiting List Activity Warning Notification';
 
         return (new MailMessage)
             ->from('atc-team@vatsim.uk', 'VATSIM UK - ATC Training')
             ->subject($subject)
-            ->view('emails.training.waiting_list_removal_added', ['removal_date' => $this->removal_date, 'remaining_days' => $remainingDays, 'list_name' => $this->list_name, 'recipient' => $notifiable, 'subject' => $subject]);
+            ->view('emails.training.waiting_list_removal_added', ['remove_at' => $this->remove_at, 'remaining_days' => $remainingDays, 'list_name' => $this->list_name, 'recipient' => $notifiable, 'subject' => $subject]);
     }
 }

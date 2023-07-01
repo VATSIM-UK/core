@@ -45,7 +45,7 @@ class WaitingListAccountTest extends TestCase
         $this->waitingList->accounts->first()->pivot->addPendingRemoval($testRemovalDate);
 
         $this->assertDatabaseHas('training_waiting_list_account_pending_removal', [
-            'removal_date' => $testRemovalDate->toDateTimeString(),
+            'remove_at' => $testRemovalDate->toDateTimeString(),
         ]);
     }
 

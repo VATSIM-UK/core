@@ -2,10 +2,14 @@
 
 namespace App\Models\Training\WaitingList;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingListAccountPendingRemoval extends Pivot
 {
+    use SoftDeletes;
+    
     public $timestamps = true;
 
     public $table = 'training_waiting_list_account_pending_removal';
@@ -17,24 +21,19 @@ class WaitingListAccountPendingRemoval extends Pivot
 
     public function cancelRemoval()
     {
-        $this->status = 'Cancelled';
+        $this->cancelled_at = Carbon::now();
         $this->save();
+        $this->delete();
     }
 
     public function markComplete()
     {
-        $this->status = 'Completed';
-        $this->save();
+        $this->delete();
     }
 
-    public function incrementEmailCount()
+    public function markReminderSent()
     {
-        $this->emails_sent = $this->emails_sent + 1;
+        $this->reminder_sent_at = Carbon::now();
         $this->save();
-    }
-
-    public function isPendingRemoval()
-    {
-        return $this->status == 'Pending';
     }
 }

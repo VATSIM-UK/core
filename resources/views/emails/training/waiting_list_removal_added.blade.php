@@ -10,7 +10,7 @@
 </p>
 
 <p>
-    As defined in ATC Training Handbook section 5.4, you now have 30 days to regain the above activity requirements. If you do not meet the activity requirements above by {{$removal_date->format("l jS \\o\\f F Y")}} ({{$remaining_days}} days) then you will be removed from the waiting list.
+    As defined in ATC Training Handbook section 5.4, you now have 30 days to regain the above activity requirements. If you do not meet the activity requirements above by {{$remove_at->format("l jS \\o\\f F Y")}} ({{$remaining_days}} days) then you will be removed from the waiting list.
 </p>
 
 <p>
