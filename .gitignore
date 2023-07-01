@@ -8,6 +8,7 @@
 /vendor
 /.idea
 /.vagrant
+/.vscode
 /laradock
 Homestead.json
 Homestead.yaml
