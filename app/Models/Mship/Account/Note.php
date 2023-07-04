@@ -44,6 +44,8 @@ class Note extends Model
 
     protected $touches = ['account'];
 
+    protected $fillable = ['content'];
+
     protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     public function account()

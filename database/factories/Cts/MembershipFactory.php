@@ -10,7 +10,7 @@ $factory->define(App\Models\Cts\Membership::class, function (Faker $faker) {
         'type' => 'H',
         'rtsm' => 0,
         'rtsi' => 0,
-        'hidden' => 0,
+        'hidden' => '0',
         'sequence' => 0,
         'other' => 0,
         'pending' => 0,

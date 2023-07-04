@@ -25,7 +25,7 @@ class ApplicationCleanUpTest extends TestCase
         Mail::fake();
 
         // Make user an S2
-        $this->user = factory(Account::class)->create();
+        $this->user = Account::factory()->create();
         $qualification = Qualification::code('S2')->first();
         $this->user->addQualification($qualification);
         $this->user->qualifications()->updateExistingPivot($qualification->id, ['created_at' => new Carbon('100 days ago')]);

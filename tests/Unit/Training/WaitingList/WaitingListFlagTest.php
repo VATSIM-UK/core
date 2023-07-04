@@ -99,7 +99,7 @@ class WaitingListFlagTest extends TestCase
     /** @test */
     public function itDetectsTrueValueForFlagWithEndorsement()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         // populate network data
         factory(Atc::class)->create(['account_id' => $account->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 61]);
         $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
@@ -118,7 +118,7 @@ class WaitingListFlagTest extends TestCase
     /** @test */
     public function itAssignsDefaultFlagsOnAddingAccountToList()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -137,7 +137,7 @@ class WaitingListFlagTest extends TestCase
     /** @test */
     public function itIsPropagatedToExistingAccountsWhenAFlagIsAdded()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         // null list represents a flag which hasn't yet been assigned to list.
         // Normal flow wouldn't have this, but needs to emulate the action
         $flag = factory(WaitingListFlag::class)->create(['list_id' => null]);
@@ -154,7 +154,7 @@ class WaitingListFlagTest extends TestCase
     /** @test */
     public function itDetectsWhetherAllTheFlagsAreTrue()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         // null list represents a flag which hasn't yet been assigned to list.
         // Normal flow wouldn't have this, but needs to emulate the action
         // all of the flags below have a default value of false.
@@ -173,7 +173,7 @@ class WaitingListFlagTest extends TestCase
     /** @test */
     public function itDetectsWhetherAnAccountShouldBeInTheActiveBucket()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         // null list represents a flag which hasn't yet been assigned to list.
         // Normal flow wouldn't have this, but needs to emulate the action
         // all of the flags below have a default value of false.
@@ -202,7 +202,7 @@ class WaitingListFlagTest extends TestCase
     /** @test */
     public function itShouldCheckWithOnlyOneFlagWhenAnyDefinedAsWaitingList()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $anyCheckerWaitingList = factory(WaitingList::class)->create(['flags_check' => WaitingList::ANY_FLAGS]);
 
         // create an atc session which will pass the 12 hour check hardcoded against a waiting list flags

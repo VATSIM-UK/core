@@ -9,6 +9,7 @@ $factory->define(App\Models\Cts\Event::class, function (Faker $faker) {
 
     return [
         'event' => $faker->sentence,
+        'tagline' => 'event tagline',
         'date' => $faker->dateTimeInInterval('+1 YEAR')->format('Y-m-d'),
         'from' => $from,
         'to' => Carbon::createFromTimeString($from)->addHours(rand(1, 4))->toTimeString(),

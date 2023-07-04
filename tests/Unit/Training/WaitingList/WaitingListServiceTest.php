@@ -25,7 +25,7 @@ class WaitingListServiceTest extends TestCase
     /** @test **/
     public function itAddsAccountToWaitingListWithDefaultStatus()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         handleService(new AddToWaitingList($this->waitingList, $account->first(), $this->privacc));
 
@@ -37,7 +37,7 @@ class WaitingListServiceTest extends TestCase
     /** @test **/
     public function itHandlesAStudentBeingAddedAfterRemoval()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         handleService(new AddToWaitingList($this->waitingList, $account->fresh(), $this->privacc));
 

@@ -5,19 +5,23 @@ namespace Tests;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
-use Tests\Database\MockCtsDatabase;
 
 abstract class TestCase extends BaseTestCase
 {
+    use DatabaseTransactions;
     use CreatesApplication;
 
     protected $knownDate;
 
-    protected $privacc;
+    private $privacc;
 
-    protected $user;
+    private $user;
+
+    protected $connectionsToTransact = [null, 'cts']; // Default and CTS database connections
 
     protected function setUp(): void
     {
@@ -32,49 +36,58 @@ abstract class TestCase extends BaseTestCase
             config(['app.url' => 'http://'.config('app.url')]);
         }
 
-        Carbon::setTestNow(Carbon::now());
-        $this->knownDate = Carbon::now();
+        $now = now()->setMicro(0);
+        Carbon::setTestNow($now);
+        $this->knownDate = $now;
 
-        // Create tables for other services
-        $this->seedLegacyTables();
+        $this->seed();
 
         // Force regeneration of permissions cache
         app()['cache']->forget('spatie.permission.cache');
         $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->registerPermissions();
 
         \Illuminate\Support\Facades\Notification::fake();
-        // Create global super admin for testing
-        $this->createPrivaccUser();
-
-        // Create generic user
-        $this->user = factory(Account::class)->states('withQualification')->create();
     }
 
-    protected function createPrivaccUser()
+    public function __get($name)
     {
-        $user = factory(Account::class)->create();
-        $user->assignRole(Role::findByName('privacc'));
-        $this->privacc = $user->fresh();
+        if ($name === 'privacc') {
+            return $this->getOrMakePrivaccUser();
+        }
+        if ($name === 'user') {
+            return $this->getOrMakeUser();
+        }
     }
 
-    protected function seedLegacyTables()
+    public function __set($name, $value)
     {
-        if (! method_exists($this, 'beginDatabaseTransaction')) {
-            return;
+        $this->$name = $value;
+    }
+
+    protected function getOrMakeUser(): Account
+    {
+        if ($this->user) {
+            return $this->user;
         }
 
-        $this->dropLegacyTables();
+        $this->user = Account::factory()->withQualification()->createQuietly();
+        DB::table('mship_account_role')->insert(['model_type' => Account::class, 'model_id' => $this->user->id, 'role_id' => Role::findByName('member')->id]); // Done manually to avoid firing events
 
-        MockCtsDatabase::create();
+        return $this->user;
     }
 
-    protected function dropLegacyTables()
+    protected function getOrMakePrivaccUser(): Account
     {
-        if (! method_exists($this, 'beginDatabaseTransaction')) {
-            return;
+        if ($this->privacc) {
+            return $this->privacc;
         }
 
-        MockCtsDatabase::destroy();
+        $user = Account::factory()->withQualification()->createQuietly();
+        $role = Role::findByName('privacc');
+        $role->givePermissionTo('*');
+        DB::table('mship_account_role')->insert(['model_type' => Account::class, 'model_id' => $user->id, 'role_id' => $role->id]); // Done manually to avoid firing events
+
+        return $this->privacc = $user->fresh();
     }
 
     public function markNovaTest()

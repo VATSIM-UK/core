@@ -2,15 +2,29 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Enums\BanTypeEnum;
 use App\Events\Mship\AccountAltered;
 use App\Events\Mship\Bans\BanUpdated;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 trait HasBans
 {
+    public function scopeBanned(Builder $query)
+    {
+        return $query->whereHas('bans', function (Builder $banQuery) {
+            $banQuery->isActive();
+        });
+    }
+
+    public function scopeNotBanned(Builder $query)
+    {
+        return $query->whereNot(fn (Builder $subQuery) => $subQuery->banned());
+    }
+
     public function bans()
     {
         return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'account_id')->orderBy(
@@ -19,7 +33,7 @@ trait HasBans
         );
     }
 
-    public function addBan(Reason $banReason, $banExtraReason = null, $banNote = null, $writerId = null, $type = Ban::TYPE_LOCAL)
+    public function addBan(Reason $banReason, $banExtraReason = null, $banNote = null, $writerId = null, $type = BanTypeEnum::Local)
     {
         if ($writerId == null) {
             $writerId = 0;
@@ -87,7 +101,7 @@ trait HasBans
     {
         if ($this->is_network_banned === false) {
             $ban = new \App\Models\Mship\Account\Ban();
-            $ban->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
+            $ban->type = BanTypeEnum::Network;
             $ban->reason_extra = $reason;
             $ban->period_start = Carbon::now();
 

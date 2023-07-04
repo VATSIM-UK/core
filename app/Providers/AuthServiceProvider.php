@@ -2,25 +2,29 @@
 
 namespace App\Providers;
 
-use App\Models\Mship\Account;
+use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Smartcars;
 use App\Models\Training\WaitingList;
 use App\Models\VisitTransfer;
 use App\Nova\Qualification;
-use App\Policies\Nova\AccountPolicy;
+use App\Policies\Mship\Account\BanPolicy;
 use App\Policies\Nova\FeedbackPolicy;
 use App\Policies\Nova\QualificationPolicy;
 use App\Policies\PasswordPolicy;
+use App\Policies\RolePolicy;
 use App\Policies\Smartcars\ExercisePolicy;
 use App\Policies\Smartcars\PirepPolicy;
 use App\Policies\Training\WaitingListFlagsPolicy;
 use App\Policies\Training\WaitingListPolicy;
 use App\Policies\VisitTransfer\ApplicationPolicy;
 use App\Policies\VisitTransfer\ReferencePolicy;
+use App\Registrars\PermissionRegistrar as RegistrarsPermissionRegistrar;
 use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -37,10 +41,23 @@ class AuthServiceProvider extends ServiceProvider
         VisitTransfer\Reference::class => ReferencePolicy::class,
         WaitingList::class => WaitingListPolicy::class,
         WaitingList\WaitingListFlag::class => WaitingListFlagsPolicy::class,
-        Account::class => AccountPolicy::class,
         Qualification::class => QualificationPolicy::class,
         Feedback::class => FeedbackPolicy::class,
+
+        Ban::class => BanPolicy::class,
+        Role::class => RolePolicy::class,
     ];
+
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        // Custom spatie permissions override
+        $this->app->singleton(PermissionRegistrar::class, RegistrarsPermissionRegistrar::class);
+    }
 
     /**
      * Register any authentication / authorization services.
@@ -51,6 +68,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        // TODO: Remove use-permission
         Gate::define('use-permission', function ($user, $permission) {
             if ($user->hasRole('privacc') && config()->get('app.env') != 'production') {
                 return true;
@@ -62,15 +80,5 @@ class AuthServiceProvider extends ServiceProvider
                 return false;
             }
         });
-
-        $this->serviceAccessGates();
-    }
-
-    /**
-     * Define the gates to authorise access to different services.
-     */
-    protected function serviceAccessGates()
-    {
-        //
     }
 }

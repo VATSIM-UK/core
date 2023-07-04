@@ -87,7 +87,7 @@ trait HasPassword
             return false;
         }
 
-        return $this->password_expires_at->isPast();
+        return $this->password_expires_at->lte(now());
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Tests\Unit\Mship;
 
 use App\Events\Mship\Bans\BanUpdated;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
 use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanRepealed;
@@ -25,7 +26,7 @@ class AccountBanTest extends TestCase
     {
         parent::setUp();
 
-        $this->account = factory(Account::class)->create();
+        $this->account = Account::factory()->create();
 
         Event::fake();
 
@@ -33,9 +34,19 @@ class AccountBanTest extends TestCase
     }
 
     /** @test */
+    public function bannedScopesWork()
+    {
+        $bannedAccount = Account::factory()->has(Ban::factory())->create();
+        $activeAcount = Account::factory()->create();
+
+        $this->assertEquals([$bannedAccount->id], Account::banned()->whereIn('id', [$bannedAccount->id, $activeAcount->id])->pluck('id')->all());
+        $this->assertEquals([$activeAcount->id], Account::notBanned()->whereIn('id', [$bannedAccount->id, $activeAcount->id])->pluck('id')->all());
+    }
+
+    /** @test */
     public function itDispatchesEventOnBanSave()
     {
-        $reason = factory(Reason::class)->create();
+        $reason = Reason::factory()->create();
 
         $ban = $this->account->addBan($reason, 'ExtraReason', 'NoteForBan', $this->privacc);
 
@@ -47,7 +58,7 @@ class AccountBanTest extends TestCase
     /** @test */
     public function itAppliesLocalBansCorrectlyViaService()
     {
-        $reason = factory(Reason::class)->create();
+        $reason = Reason::factory()->create();
 
         $service = new BanAccount($this->account, $reason, $this->privacc,
             ['ban_internal_note' => 'Testing an internal note.', 'ban_reason_extra' => 'Testing the note to a user.']);
@@ -66,7 +77,7 @@ class AccountBanTest extends TestCase
     /** @test */
     public function itRepealsLocalBansCorrectlyViaService()
     {
-        $reason = factory(Reason::class)->create();
+        $reason = Reason::factory()->create();
 
         $banService = new BanAccount($this->account, $reason, $this->privacc,
             ['ban_internal_note' => 'Testing an internal note.', 'ban_reason_extra' => 'Testing the note to a user.']);

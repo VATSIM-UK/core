@@ -44,7 +44,7 @@ class WaitingListAccountStateChangeTest extends TestCase
      */
     public function itShouldRemoveFromListWhenAccountIsAlteredToNonDivisionState(string $state)
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
         $account->refresh();
 
@@ -67,7 +67,7 @@ class WaitingListAccountStateChangeTest extends TestCase
      */
     public function itShouldNotRemoveFromNonHomeMembersOnlyListWhenAccountIsAlteredToNonDivisionState(string $state)
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
         $account->refresh();
 
@@ -93,7 +93,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     /** @test */
     public function itShouldNotRemoveFromListWhenDivisionStateDoesNotChange()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
@@ -110,7 +110,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     /** @test */
     public function itShouldNotSendNotificationWhenNotOnListButStateChanged()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
         $event = new AccountAltered($account);
@@ -124,7 +124,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     /** @test */
     public function itShouldRemoveFromListWhenUserBecomesInactiveWhenAltered()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $account->inactive = false;
         $account->save();
 
@@ -144,7 +144,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     /** @test */
     public function itShouldNotNotifyInactiveAccountNotOnList()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $account->inactive = true;
         $account->save();
 

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\BanTypeEnum;
 use App\Events\Mship\AccountAltered;
 use App\Jobs\Middleware\RateLimited;
 use App\Models\Mship\Account;
@@ -19,7 +20,7 @@ class UpdateMember extends Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
-    protected $accountID;
+    public $accountID;
 
     protected $data;
 
@@ -140,7 +141,7 @@ class UpdateMember extends Job implements ShouldQueue
         if ($this->data->rating == 0 && $member->is_network_banned === false) {
             // Add a ban.
             $newBan = new Account\Ban();
-            $newBan->type = Account\Ban::TYPE_NETWORK;
+            $newBan->type = BanTypeEnum::Network;
             $newBan->reason_extra = 'Network ban discovered via Cert update scripts.';
             $newBan->period_start = Carbon::now();
             $member->bans()->save($newBan);

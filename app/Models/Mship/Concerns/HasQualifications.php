@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Enums\QualificationTypeEnum;
 use App\Events\Mship\AccountAltered;
 use App\Events\Mship\Qualifications\QualificationAdded;
 use App\Models\Mship\AccountQualification;
@@ -121,60 +122,55 @@ trait HasQualifications
             ->merge($this->qualifications_admin)
             ->push($this->qualification_atc)
             ->push($this->qualification_pilot)
-            ->push($this->qualification_pilot_military);
-    }
-
-    public function getQualificationAtcAttribute()
-    {
-        return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'atc';
-        })->sortByDesc(function ($qualification, $key) {
-            return $qualification->vatsim;
-        })->first();
+            ->push($this->qualification_pilot_military)
+            ->filter(); // Removes nullish values
     }
 
     public function getQualificationsAtcAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'atc';
+            return $qual->type == QualificationTypeEnum::ATC->value;
         });
+    }
+
+    public function getQualificationAtcAttribute()
+    {
+        return $this->qualifications_atc->sortByDesc(function ($qualification, $key) {
+            return $qualification->vatsim;
+        })->first();
     }
 
     public function getQualificationsAtcTrainingAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'training_atc';
+            return $qual->type == QualificationTypeEnum::ATCTraining->value;
         });
     }
 
     public function getQualificationsPilotAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'pilot';
-        });
-    }
-
-    public function getQualificationsPilotMilitaryAttribute()
-    {
-        return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'pilot_military';
+            return $qual->type == QualificationTypeEnum::Pilot->value;
         });
     }
 
     public function getQualificationPilotAttribute()
     {
-        return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'pilot';
-        })->sortByDesc(function ($qualification) {
+        return $this->qualifications_pilot->sortByDesc(function ($qualification) {
             return $qualification->vatsim;
         })->first();
     }
 
-    public function getQualificationPilotMilitaryAttribute()
+    public function getQualificationsPilotMilitaryAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'pilot_military';
-        })->sortByDesc(function ($qualification) {
+            return $qual->type == QualificationTypeEnum::MilitaryPilot->value;
+        });
+    }
+
+    public function getQualificationPilotMilitaryAttribute()
+    {
+        return $this->qualifications_pilot_military->sortByDesc(function ($qualification) {
             return $qualification->vatsim;
         })->first();
     }
@@ -187,14 +183,14 @@ trait HasQualifications
     public function getQualificationsPilotTrainingAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'training_pilot';
+            return $qual->type == QualificationTypeEnum::PilotTraining->value;
         });
     }
 
     public function getQualificationsAdminAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->type == 'admin';
+            return $qual->type == QualificationTypeEnum::Admin->value;
         });
     }
 }
