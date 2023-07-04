@@ -31,11 +31,11 @@ class SendAtcTopTenNotification extends Command
     {
         WaitingList::atc()->get()->mapWithKeys(function (WaitingList $waitingList) {
             return [$waitingList->name => $waitingList
-                    ->accountsByEligibility(true)
-                    ->take(10)
-                    ->filter(function ($account) {
-                        return is_null($account->pivot->within_top_ten_notification_sent_at);
-                    }),
+                ->accountsByEligibility(true)
+                ->take(10)
+                ->filter(function ($account) {
+                    return is_null($account->pivot->within_top_ten_notification_sent_at);
+                }),
             ];
         })->each(function (Collection $accounts, string $waitingListName) {
             $accounts->each(function ($account) use ($waitingListName) {

@@ -9,7 +9,6 @@ use App\Models\Training\WaitingList\WaitingListStatus;
 use App\Notifications\Training\WaitingListAtcTopTen;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
-use PHPUnit\Framework\Error\Notice;
 use Tests\TestCase;
 
 class WaitingListTopTenNotificationTest extends TestCase
@@ -31,7 +30,7 @@ class WaitingListTopTenNotificationTest extends TestCase
     public function itSendsTopTenNotificationsOncePerAccount()
     {
         $status = WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS);
-        $accounts = factory(Account::class, 10)->create()->each(function ($account) use ($status) {
+        $accounts = factory(Account::class, 10)->create()->each(function ($account) {
             factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
 
             $this->waitingList->addToWaitingList($account, $this->privacc);
@@ -53,7 +52,7 @@ class WaitingListTopTenNotificationTest extends TestCase
     public function itDoesNotSendTopTenNotificationIfAccountAlreadyReceived()
     {
         $status = WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS);
-        $accounts = factory(Account::class, 3)->create()->each(function ($account) use ($status) {
+        $accounts = factory(Account::class, 3)->create()->each(function ($account) {
             factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
 
             $this->waitingList->addToWaitingList($account, $this->privacc);
@@ -79,7 +78,7 @@ class WaitingListTopTenNotificationTest extends TestCase
     public function itDoesNotSendNotificationIfDropsOutAndBackInOfTopTen()
     {
         $status = WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS);
-        $accounts = factory(Account::class, 10)->create()->each(function ($account) use ($status) {
+        $accounts = factory(Account::class, 10)->create()->each(function ($account) {
             factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
 
             $this->waitingList->addToWaitingList($account, $this->privacc);
