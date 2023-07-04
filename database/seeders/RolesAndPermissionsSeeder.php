@@ -176,7 +176,9 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        $privacc->givePermissionTo(['*']);
-        $member->givePermissionTo('discord.member');
+        if (Permission::findByName('*')) {
+            $privacc->givePermissionTo('*');
+        }
+        // $member->givePermissionTo('discord.member');
     }
 }
