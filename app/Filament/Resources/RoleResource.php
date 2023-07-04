@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\RoleResource\Pages;
 use App\Filament\Resources\RoleResource\RelationManagers;
 use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Grid;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -25,8 +27,11 @@ class RoleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required()->unique(),
+                Forms\Components\TextInput::make('name')->required()->unique(ignorable: fn ($record) => $record),
                 Forms\Components\TextInput::make('guard_name'),
+                Grid::make(1)->schema([
+                    CheckboxList::make('permissions')->relationship('permissions', 'name')->columns(3)->searchable()->bulkToggleable(),
+                ]),
             ]);
     }
 
@@ -49,7 +54,6 @@ class RoleResource extends Resource
     {
         return [
             RelationManagers\UsersRelationManager::class,
-            RelationManagers\PermissionsRelationManager::class,
         ];
     }
 
