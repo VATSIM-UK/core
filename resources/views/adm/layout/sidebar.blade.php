@@ -13,8 +13,6 @@
 
         @include('adm.layout.sidebar.membership')
 
-        @include('adm.layout.sidebar.operations')
-
         @include('adm.layout.sidebar.atc')
 
         @include('adm.layout.sidebar.smartCARS')
