@@ -2,7 +2,7 @@
 
 $factory->define(\App\Models\VisitTransfer\Application::class, function ($faker) {
     return [
-        'account_id' => factory(\App\Models\Mship\Account::class)->create()->id,
+        'account_id' => \App\Models\Mship\Account::factory()->create()->id,
     ];
 });
 

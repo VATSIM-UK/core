@@ -2,9 +2,11 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Enums\BanTypeEnum;
 use App\Events\Mship\Bans\BanUpdated;
 use App\Models\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\Mship\Account\Ban.
@@ -57,6 +59,8 @@ use Carbon\Carbon;
  */
 class Ban extends Model
 {
+    use HasFactory;
+
     protected $table = 'mship_account_ban';
 
     protected $primaryKey = 'id';
@@ -67,23 +71,24 @@ class Ban extends Model
 
     protected $trackedEvents = ['created', 'updated', 'deleted'];
 
-    const TYPE_LOCAL = 80;
-
-    const TYPE_NETWORK = 90;
-
     public static function scopeIsNetwork($query)
     {
-        return $query->where('type', '=', self::TYPE_NETWORK);
+        return $query->where('type', '=', BanTypeEnum::Network->value);
     }
 
     public static function scopeIsLocal($query)
     {
-        return $query->where('type', '=', self::TYPE_LOCAL);
+        return $query->where('type', '=', BanTypeEnum::Local->value);
     }
 
     public static function scopeIsActive($query)
     {
         return $query->isNotRepealed()->where('period_finish', '>=', \Carbon\Carbon::now())->orWhereNull('period_finish');
+    }
+
+    public static function scopeIsInActive($query)
+    {
+        return $query->isHistoric()->orWhere(fn ($query) => $query->isRepealed());
     }
 
     public static function scopeIsHistoric($query)
@@ -130,12 +135,12 @@ class Ban extends Model
 
     public function getIsLocalAttribute()
     {
-        return $this->type == self::TYPE_LOCAL;
+        return $this->type == BanTypeEnum::Local->value;
     }
 
     public function getIsNetworkAttribute()
     {
-        return $this->type == self::TYPE_NETWORK;
+        return $this->type == BanTypeEnum::Network->value;
     }
 
     public function getIsRepealedAttribute()
@@ -160,10 +165,10 @@ class Ban extends Model
     public function getTypeStringAttribute()
     {
         switch ($this->attributes['type']) {
-            case self::TYPE_LOCAL:
+            case BanTypeEnum::Local->value:
                 return trans('mship.ban.type.local');
                 break;
-            case self::TYPE_NETWORK:
+            case BanTypeEnum::Network->value:
                 return trans('mship.ban.type.network');
                 break;
             default:

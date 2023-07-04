@@ -50,7 +50,7 @@ class AtcSessionModelTest extends TestCase
         $qualification = Qualification::inRandomOrder()->first();
         $atcSession = factory(\App\Models\NetworkData\Atc::class)->make();
         $atcSession->qualification_id = $qualification->id;
-        $account = factory(\App\Models\Mship\Account::class)->create();
+        $account = \App\Models\Mship\Account::factory()->create();
         $account->networkDataAtc()->save($atcSession);
 
         $atcSession->connected_at = \Carbon\Carbon::now()->subMinutes(2);
@@ -70,7 +70,7 @@ class AtcSessionModelTest extends TestCase
         $qualification = Qualification::inRandomOrder()->first();
         $atcSession = factory(\App\Models\NetworkData\Atc::class)->make();
         $atcSession->qualification_id = $qualification->id;
-        $account = factory(\App\Models\Mship\Account::class)->create();
+        $account = \App\Models\Mship\Account::factory()->create();
         $account->networkDataAtc()->save($atcSession);
 
         $atcSession->delete();

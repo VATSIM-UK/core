@@ -25,7 +25,7 @@ class EmailAssignmentTest extends TestCase
         // Fake notifications
         Notification::fake();
 
-        $this->userOther = factory(\App\Models\Mship\Account::class)->create();
+        $this->userOther = \App\Models\Mship\Account::factory()->create();
 
         $this->emailOther = 'email@otheruser.co.uk';
     }

@@ -26,7 +26,7 @@ class AccountTest extends TestCase
     public function testCanViewBansList()
     {
         // Add a ban
-        $ban = factory(Ban::class)->create([
+        $ban = Ban::factory()->create([
             'account_id' => $this->user->id,
         ]);
 

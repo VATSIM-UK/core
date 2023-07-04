@@ -174,6 +174,7 @@ return [
         App\Providers\ResponseMacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TrainingEventServiceProvider::class,
+        App\Providers\FilamentServiceProvider::class,
     ],
 
     /*

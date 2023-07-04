@@ -25,7 +25,7 @@ class AccountAlteredEventTest extends TestCase
         // Disable Discord connection
         config(['services.discord.token' => null]);
         $this->user->discord_id = 1234;
-        $this->user->save();
+        $this->user->saveQuietly();
 
         Cache::flush(); // Remove time lockout cache
     }

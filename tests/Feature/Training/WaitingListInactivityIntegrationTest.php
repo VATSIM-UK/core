@@ -27,7 +27,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
     {
         $this->markTestSkipped('The event is not fired as it is currently disabled.');
 
-        $account = factory(Account::class)->create(['inactive' => false]);
+        $account = Account::factory()->create(['inactive' => false]);
         $account->addState(State::findByCode('DIVISION'));
 
         $waitingList = factory(WaitingList::class)->create();
@@ -49,7 +49,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
     {
         $this->markTestSkipped('The event is not fired as it is currently disabled.');
 
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
         $waitingList = factory(WaitingList::class)->create();
@@ -68,7 +68,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
      */
     public function itShouldReactToRealAccountAlteredEventForStateChanged()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
         $account->refresh();
 
@@ -86,7 +86,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
     /** @test */
     public function itShouldReactToRealAccountAlteredEventForMshipStateNotOnList()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
         $waitingList = factory(WaitingList::class)->create();

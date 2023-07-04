@@ -146,8 +146,8 @@ jobs:
         run: php artisan telescope:publish
 
       # Run Database Migration
-      - name: Migrate Database
-        run: php artisan migrate
+      - name: Migrate & Seed Database
+        run: php artisan migrate && php artisan cts:migrate:fresh
 
       # Cache Setup
       - name: Cache Routes

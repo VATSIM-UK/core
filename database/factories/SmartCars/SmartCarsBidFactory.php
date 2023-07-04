@@ -8,7 +8,7 @@ $factory->define(\App\Models\Smartcars\Bid::class, function (Faker $faker) {
             return factory(\App\Models\Smartcars\Flight::class)->create()->id;
         },
         'account_id' => function () {
-            return factory(\App\Models\Mship\Account::class)->create()->id;
+            return \App\Models\Mship\Account::factory()->create()->id;
         },
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),

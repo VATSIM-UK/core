@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Account\Filament;
+namespace Tests\Feature\Admin\Filament;
 
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -22,7 +22,7 @@ class FilamentAccessTest extends TestCase
     /** @test */
     public function itReturns403WhenNavigatingToUrlWithoutRole()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $this->actingAs($account);
 
@@ -32,10 +32,10 @@ class FilamentAccessTest extends TestCase
     /** @test */
     public function itReturns200WhenNavigatingToUrlWithRole()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $role = factory(Role::class)->create();
-        $role->givePermissionTo('admin/beta');
+        $role->givePermissionTo('admin.access');
 
         $account->assignRole($role);
 

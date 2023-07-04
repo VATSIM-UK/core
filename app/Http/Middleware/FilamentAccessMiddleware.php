@@ -17,7 +17,7 @@ class FilamentAccessMiddleware
     {
         $account = $request->user();
 
-        if (! $account->can('use-permission', 'admin/beta')) {
+        if (! $account->can('admin.access')) {
             return abort(403);
         }
 
