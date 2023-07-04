@@ -69,7 +69,6 @@ class GenerateQuarterlyStats extends Page
             ['name' => 'Visiting Controllers Above S1', 'value' => $this->visitingControllersAboveS1($startDate, $endDate)],
             ['name' => 'Completed Transfer (Ex OBS)', 'value' => $this->completedTransfersExObs($startDate, $endDate)],
         ]);
-        // dd();
     }
 
     protected static function canUse(): bool
