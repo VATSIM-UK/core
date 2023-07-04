@@ -25,7 +25,7 @@ class BanResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
-        return static::getModel()::isActive()->count();
+        return static::getModel()::isActive()->isLocal()->count();
     }
 
     public static function form(Form $form): Form
@@ -73,7 +73,7 @@ class BanResource extends Resource
                 Tables\Columns\IconColumn::make('active')->boolean()->getStateUsing(fn ($record) => $record->is_active)->trueColor('danger')->falseColor('success'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('type')->options(BanTypeEnum::class),
+                Tables\Filters\SelectFilter::make('type')->options(BanTypeEnum::class)->default(BanTypeEnum::Local),
                 Tables\Filters\TernaryFilter::make('active')
                     ->queries(
                         true: fn (Builder $query) => $query->isActive(),
