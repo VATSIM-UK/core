@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // Caution: This seeder is run on production too!
         $this->call(RolesAndPermissionsSeeder::class);
     }
 }
