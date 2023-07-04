@@ -246,36 +246,4 @@ class WaitingListTest extends TestCase
         // both values are false set so return value
         $this->assertEquals((object) ['check_atc_hours' => false, 'check_cts_theory_exam' => false], $this->waitingList->feature_toggles_formatted);
     }
-
-    public function itSendsTopTenNotificationsOncePerAccount()
-    {
-        $status = WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS);
-        $accounts = factory(Account::class, 11)->create()->each(function ($account) use ($status) {
-            $atcSession = factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
-            $this->waitingList->addToWaitingList($account, $this->privacc);
-            $this->waitingList->accounts()->each(function ($waitingListAccount) use ($status) {
-                $waitingListAccount->pivot->addStatus($status);
-            });
-        });
-
-        Notification::fake();
-
-        $this->artisan('waitinglists:sendatctoptennotification');
-
-        Notification::assertTimesSent(10, WaitingListAtcTopTen::class);
-
-        Notification::fake();
-
-        $this->artisan('waitinglists:sendatctoptennotification');
-
-        Notification::assertNothingSent();
-
-        Notification::fake();
-
-        $this->waitingList->removeFromWaitingList($accounts[1]);
-
-        $this->artisan('waitinglists:sendatctoptennotification');
-
-        Notification::assertTimesSent(1, WaitingListAtcTopTen::class);
-    }
 }
