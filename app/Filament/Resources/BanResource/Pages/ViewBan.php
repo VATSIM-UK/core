@@ -25,7 +25,7 @@ class ViewBan extends ViewRecord
                 ->color('warning')
                 ->visible(auth()->user()->can('update', $this->record))
                 ->form([
-                    Forms\Components\DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->required()->notIn($this->record->period_finish),
+                    Forms\Components\DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->required()->notIn($this->record->period_finish ?? ''),
                     Grid::make(2)->schema([
                         Forms\Components\Textarea::make('extra_info')
                             ->required()

@@ -8,12 +8,14 @@ use App\Filament\Resources\BanResource\Pages;
 use App\Filament\Resources\BanResource\RelationManagers\NotesRelationManager;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
+use Carbon\CarbonInterval;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 
 class BanResource extends Resource
 {
@@ -25,7 +27,7 @@ class BanResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
-        return static::getModel()::isActive()->isLocal()->count();
+        return Cache::remember('admin.bans.local-ban-count', CarbonInterval::minute(5), fn () => static::getModel()::isActive()->isLocal()->count());
     }
 
     public static function form(Form $form): Form
@@ -45,7 +47,7 @@ class BanResource extends Resource
                         return [$model->getKey() => str($model)];
                     }))->disabled(),
 
-                Forms\Components\Placeholder::make('reason.description')->label('Category Description')->content(fn ($record) => $record->reason->reason_text),
+                Forms\Components\Placeholder::make('reason.description')->label('Category Description')->content(fn ($record) => $record->reason?->reason_text),
 
                 Forms\Components\Textarea::make('reason_extra'),
             ]),
@@ -73,7 +75,7 @@ class BanResource extends Resource
                 Tables\Columns\IconColumn::make('active')->boolean()->getStateUsing(fn ($record) => $record->is_active)->trueColor('danger')->falseColor('success'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('type')->options(BanTypeEnum::class)->default(BanTypeEnum::Local),
+                Tables\Filters\SelectFilter::make('type')->options(BanTypeEnum::class)->default(BanTypeEnum::Local->value),
                 Tables\Filters\TernaryFilter::make('active')
                     ->queries(
                         true: fn (Builder $query) => $query->isActive(),
