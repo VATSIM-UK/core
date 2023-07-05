@@ -83,7 +83,7 @@ class Ban extends Model
 
     public static function scopeIsActive($query)
     {
-        return $query->isNotRepealed()->where('period_finish', '>=', \Carbon\Carbon::now())->orWhereNull('period_finish');
+        return $query->isNotRepealed()->where(fn ($query) => $query->where('period_finish', '>=', \Carbon\Carbon::now())->orWhereNull('period_finish'));
     }
 
     public static function scopeIsInActive($query)
@@ -154,7 +154,7 @@ class Ban extends Model
         $period_finish = $this->period_finish;
         $now = \Carbon\Carbon::now();
 
-        return ! $period_finish || ($now->between($period_start, $period_finish) && ! $this->is_repealed);
+        return ! $this->is_repealed && (! $period_finish || $now->between($period_start, $period_finish));
     }
 
     public function getIsExpiredAttribute()
