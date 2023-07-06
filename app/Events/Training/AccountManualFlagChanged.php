@@ -10,7 +10,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AccountChangedStatusInWaitingList implements AccountCentricEvent
+class AccountManualFlagChanged implements AccountCentricEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,8 +19,10 @@ class AccountChangedStatusInWaitingList implements AccountCentricEvent
      *
      * @return void
      */
-    public function __construct(public Account $account, public WaitingList $waitingList, public Account $staffAccount)
-    {
+    public function __construct(
+        private Account $account,
+        private WaitingList $waitingList,
+    ) {
     }
 
     /**

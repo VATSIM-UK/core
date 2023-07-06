@@ -2,6 +2,8 @@
 
 namespace App\Models\Training;
 
+use App\Events\Training\AccountAddedToWaitingList;
+use App\Events\Training\FlagAddedToWaitingList;
 use App\Events\Training\WaitingListCreated;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListAccount;
@@ -70,6 +72,9 @@ class WaitingList extends Model
                 'deleted_at',
                 'notes',
                 'created_at',
+                'eligible',
+                'eligibility_summary',
+                'flags_status_summary',
             ])->wherePivot('deleted_at', null);
     }
 
@@ -78,9 +83,7 @@ class WaitingList extends Model
         return $this->accounts()
             ->orderByPivot('created_at')
             ->get()
-            ->filter(function ($model) use ($eligible) {
-                return $model->pivot->eligibility == $eligible;
-            })->values();
+            ->filter(fn ($model) => $model->pivot->eligible == $eligible)->values();
     }
 
     /**
@@ -120,6 +123,8 @@ class WaitingList extends Model
             $account->pivot->flags()->attach($flag);
         });
 
+        event(new FlagAddedToWaitingList($this));
+
         return $savedFlag;
     }
 
@@ -146,6 +151,8 @@ class WaitingList extends Model
         $pivot = $this->accounts()->find($account->id)->pivot;
         $pivot->created_at = $timestamp;
         $pivot->save();
+
+        event(new AccountAddedToWaitingList($account, $this->fresh(), $staffAccount));
     }
 
     /**

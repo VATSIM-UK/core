@@ -2,6 +2,7 @@
 
 namespace App\Events\Training;
 
+use App\Contracts\AccountCentricEvent;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -9,24 +10,15 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AccountAddedToWaitingList
+class AccountAddedToWaitingList implements AccountCentricEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $account;
-
-    public $waitingList;
-
-    public $staffAccount;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Account $account, WaitingList $waitingList, Account $staffAccount)
+    public function __construct(public Account $account, public WaitingList $waitingList, public Account $staffAccount)
     {
-        $this->account = $account;
-        $this->waitingList = $waitingList;
-        $this->staffAccount = $staffAccount;
     }
 
     /**
@@ -37,5 +29,10 @@ class AccountAddedToWaitingList
     public function broadcastOn()
     {
         return new PrivateChannel('channel-name');
+    }
+
+    public function getAccount(): Account
+    {
+        return $this->account;
     }
 }

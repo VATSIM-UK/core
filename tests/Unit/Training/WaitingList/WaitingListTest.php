@@ -76,13 +76,15 @@ class WaitingListTest extends TestCase
         $uneligible_account = factory(Account::class)->create();
         $this->waitingList->department = WaitingList::PILOT_DEPARTMENT;
         $this->waitingList->save();
-        factory(WaitingList\WaitingListStatus::class)->state('default')->create();
 
-        handleService(new AddToWaitingList($this->waitingList, $eligible_account, $this->privacc));
-        handleService(new AddToWaitingList($this->waitingList, $uneligible_account, $this->privacc));
-        $flag = $this->waitingList->addFlag(factory(WaitingListFlag::class)->create(['default_value' => false]));
+        $flag = factory(WaitingListFlag::class)->create(['default_value' => false]);
+        $this->waitingList->addFlag($flag);
+        $this->waitingList->addToWaitingList($eligible_account, $this->privacc);
+        $this->waitingList->addToWaitingList($uneligible_account, $this->privacc);
 
-        $this->waitingList->accounts()->first()->pivot->markFlag($flag);
+        $this->waitingList->accounts()->find($eligible_account)->pivot->markFlag($flag);
+
+        $this->waitingList = $this->waitingList->fresh();
 
         $this->assertCount(1, $this->waitingList->accountsByEligibility());
         $this->assertEquals($eligible_account->id, $this->waitingList->accountsByEligibility()->first()->id);
@@ -107,13 +109,15 @@ class WaitingListTest extends TestCase
 
         // Add an ineligible user
         $ineligible_user = factory(Account::class)->create();
-        handleService(new AddToWaitingList($this->waitingList, $ineligible_user, $this->privacc));
+        $this->waitingList->addToWaitingList($ineligible_user, $this->privacc);
 
         // Add to list
         foreach ($accounts as $i => $account) {
-            handleService(new AddToWaitingList($this->waitingList, $account, $this->privacc, $accounts_added_at[$i]));
+            $this->waitingList->addToWaitingList($account, $this->privacc, $accounts_added_at[$i]);
             WaitingList\WaitingListAccount::where('account_id', $account->id)->first()->markFlag($flag);
         }
+
+        $this->waitingList = $this->waitingList->fresh();
 
         $this->assertNull($this->waitingList->accountPosition(factory(Account::class)->create())); // A user not in the list should return null
         $this->assertNull($this->waitingList->accountPosition($ineligible_user)); // A user not eligible should return null

@@ -10,6 +10,7 @@ use App\Listeners\Discord\RemoveDiscordUser;
 use App\Listeners\Discord\SetupDiscordUser;
 use App\Listeners\NetworkData\FlushEndorsementCache;
 use App\Listeners\Smartcars\EvaluateFlightCriteria;
+use App\Listeners\Training\WaitingList\CheckAccountWaitingListEligibilityListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -109,6 +110,9 @@ class EventServiceProvider extends ServiceProvider
 
         DiscordUnlinked::class => [
             RemoveDiscordUser::class,
+        ],
+        AtcSessionEnded::class => [
+            CheckAccountWaitingListEligibilityListener::class,
         ],
     ];
 

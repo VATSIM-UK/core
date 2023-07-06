@@ -11,6 +11,7 @@ class TrainingEventServiceProvider extends ServiceProvider
             \App\Listeners\Training\WaitingList\LogAccountAdded::class,
             \App\Listeners\Training\WaitingList\AssignDefaultStatus::class,
             \App\Listeners\Training\WaitingList\AssignFlags::class,
+            \App\Listeners\Training\WaitingList\CheckAccountWaitingListEligibilityListener::class,
         ],
         \App\Events\Training\AccountRemovedFromWaitingList::class => [
             \App\Listeners\Training\WaitingList\LogAccountRemoved::class,
@@ -18,6 +19,15 @@ class TrainingEventServiceProvider extends ServiceProvider
         \App\Events\Training\AccountNoteChanged::class => [
             \App\Listeners\Training\WaitingList\LogNoteChanged::class,
         ],
+        \App\Events\Training\AccountChangedStatusInWaitingList::class => [
+            \App\Listeners\Training\WaitingList\CheckAccountWaitingListEligibilityListener::class,
+        ],
+        \App\Events\Training\AccountManualFlagChanged::class => [
+            \App\Listeners\Training\WaitingList\CheckAccountWaitingListEligibilityListener::class,
+        ],
+        \App\Events\Training\FlagAddedToWaitingList::class => [
+            \App\Listeners\Training\WaitingList\CheckWaitingListFollowingFlagAddition::class,
+        ]
     ];
 
     /**

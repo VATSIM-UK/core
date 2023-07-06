@@ -69,6 +69,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('model:prune', ['--model' => MonitoredScheduledTaskLogItem::class])
             ->dailyAt('08:00');
+
+        $schedule->command('waiting-lists:check-eligibility')
+            ->dailyAt('08:30');
     }
 
     /**

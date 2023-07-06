@@ -18,8 +18,13 @@ class CheckWaitingListEligibility
 
     private ?bool $waitingListFlagsCheck = null;
 
-    public function checkBaseControllingHours()
+    public function checkBaseControllingHours(WaitingList $waitingList)
     {
+        if (! $waitingList->should_check_atc_hours || $waitingList->department == WaitingList::PILOT_DEPARTMENT) {
+            $this->baseControllingHoursCheck = true;
+            return true;
+        }
+
         // avoid extra queries if method called multiple times
         // for lifecycle of class.
         if ($this->baseControllingHoursCheck !== null) {
@@ -40,17 +45,37 @@ class CheckWaitingListEligibility
         $waitingListAccount = $waitingList->accounts()->where('account_id', $this->account->id)->first()->pivot;
 
         if ($waitingList->flags->count() == 0) {
-            return [true, null];
+            return ['overall' => true, 'summary' => null];
         }
 
         $summaryByFlag = $waitingListAccount->flags()->get()->mapWithKeys(function ($flag) {
-            return [$flag->id => $flag->pivot->value];
+            return [$flag->name => $flag->pivot->value];
         });
 
         $method = $waitingList->flags_check == WaitingList::ALL_FLAGS ? 'every' : 'some';
         // check if all flags are true or if any flags are true depending on the waiting list flags check type
         $this->waitingListFlagsCheck = $summaryByFlag->$method(fn ($value) => $value);
 
-        return [$this->waitingListFlagsCheck, $summaryByFlag->toArray()];
+        return ['overall' => $this->waitingListFlagsCheck, 'summary' => $summaryByFlag->toArray()];
+    }
+
+    public function checkAccountStatus(WaitingList $waitingList)
+    {
+        $waitingListAccount = $waitingList->accounts()->where('account_id', $this->account->id)->first()->pivot;
+
+        return $waitingListAccount->current_status->name == 'Active';
+    }
+
+    public function getOverallEligibility(WaitingList $waitingList): bool
+    {
+        $base_hour_checks = $this->checkBaseControllingHours($waitingList);
+        $flags_summary = $this->checkWaitingListFlags($waitingList);
+
+        return $base_hour_checks && $flags_summary['overall'] && $this->checkAccountStatus($waitingList);
+    }
+
+    public function getWaitingListAccount(WaitingList $waitingList)
+    {
+        return $waitingList->accounts()->where('account_id', $this->account->id)->first()->pivot;
     }
 }

@@ -14,6 +14,15 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private WaitingList $waitingList;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->waitingList = factory(WaitingList::class)->create();
+    }
+
     public function test_returns_false_if_basic_12_hour_check_fails()
     {
         factory(Atc::class)->create([
@@ -22,7 +31,7 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
             'disconnected_at' => now(),
         ]);
 
-        $result = (new CheckWaitingListEligibility($this->user))->checkBaseControllingHours();
+        $result = (new CheckWaitingListEligibility($this->user))->checkBaseControllingHours($this->waitingList);
 
         $this->assertFalse($result);
     }
@@ -35,7 +44,7 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
             'disconnected_at' => now(),
         ]);
 
-        $result = (new CheckWaitingListEligibility($this->user))->checkBaseControllingHours();
+        $result = (new CheckWaitingListEligibility($this->user))->checkBaseControllingHours($this->waitingList);
 
         $this->assertTrue($result);
     }
@@ -45,10 +54,10 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $waitingList = factory(WaitingList::class)->create();
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
-        [$result, $summary] = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
+        $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result);
-        $this->assertNull($summary);
+        $this->assertTrue($result["overall"]);
+        $this->assertNull($result["summary"]);
     }
 
     public function test_passes_checks_when_manual_flag_is_true_in_all_flags_config()
@@ -64,10 +73,10 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $waitingList->addFlag($flag);
         $waitingList->accounts()->first()->pivot->markFlag($flag);
 
-        [$result, $summary] = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
+        $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result);
-        $this->assertEquals($summary, [$flag->id => true]);
+        $this->assertTrue($result["overall"]);
+        $this->assertEquals($result["summary"], [$flag->name => true]);
     }
 
     public function test_fails_checks_when_manual_flag_is_false_in_all_flags_config()
@@ -77,10 +86,10 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $flag = $this->createFlag('manual', $waitingList, false);
 
-        [$result, $summary] = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList);
+        $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList);
 
-        $this->assertFalse($result);
-        $this->assertEquals($summary, [$flag->id => false]);
+        $this->assertFalse($result["overall"]);
+        $this->assertEquals($result["summary"], [$flag->name => false]);
     }
 
     public function test_fails_check_when_endorsement_linked_flag_is_false()
@@ -100,10 +109,10 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $waitingList->addFlag($flag);
         $waitingList->fresh();
 
-        [$result, $summary] = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
+        $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertFalse($result);
-        $this->assertEquals($summary, [$flag->id => false]);
+        $this->assertFalse($result["overall"]);
+        $this->assertEquals($result["summary"], [$flag->name => false]);
     }
 
     public function test_pass_check_when_endorsement_linked_flag_is_true()
@@ -123,10 +132,10 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $waitingList->addFlag($flag);
         $waitingList->fresh();
 
-        [$result, $summary] = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
+        $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result);
-        $this->assertEquals($summary, [$flag->id => true]);
+        $this->assertTrue($result["overall"]);
+        $this->assertEquals($result["summary"], [$flag->name => true]);
     }
 
     public function test_pass_check_on_any_with_failing_and_passing_flags()
@@ -150,10 +159,10 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $waitingList->addFlag($flag3);
         $waitingList->fresh();
 
-        [$result, $summary] = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
+        $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result);
-        $this->assertEquals($summary, [$flag1->id => false, $flag2->id => false, $flag3->id => true]);
+        $this->assertTrue($result["overall"]);
+        $this->assertEquals($result["summary"], [$flag1->name => false, $flag2->name => false, $flag3->name => true]);
     }
 
     public function test_pass_check_on_all_with_all_passing_automated_flags()
@@ -182,10 +191,22 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $waitingList->addFlag($flag2);
         $waitingList->fresh();
 
-        [$result, $summary] = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh(), 'all');
+        $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh(), 'all');
 
-        $this->assertTrue($result);
-        $this->assertEquals($summary, [$flag1->id => true, $flag2->id => true]);
+        $this->assertTrue($result["overall"]);
+        $this->assertEquals($result["summary"], [$flag1->name => true, $flag2->name => true]);
+    }
+
+    public function test_hour_check_is_true_when_feature_toggle_is_false()
+    {
+        $waitingList = factory(WaitingList::class)->create();
+        $waitingList->feature_toggles = ['check_atc_hours' => false];
+
+        $waitingList->addToWaitingList($this->user, $this->privacc);
+
+        $service = new CheckWaitingListEligibility($this->user);
+
+        $this->assertTrue($service->checkBaseControllingHours($waitingList));
     }
 
     private function createFlag($name, $waitingList, $defaultValue = false)

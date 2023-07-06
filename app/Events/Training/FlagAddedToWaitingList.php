@@ -2,15 +2,16 @@
 
 namespace App\Events\Training;
 
-use App\Contracts\AccountCentricEvent;
-use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AccountChangedStatusInWaitingList implements AccountCentricEvent
+class FlagAddedToWaitingList
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,9 +20,8 @@ class AccountChangedStatusInWaitingList implements AccountCentricEvent
      *
      * @return void
      */
-    public function __construct(public Account $account, public WaitingList $waitingList, public Account $staffAccount)
-    {
-    }
+    public function __construct(private WaitingList $waitingList)
+    {}
 
     /**
      * Get the channels the event should broadcast on.
@@ -33,8 +33,8 @@ class AccountChangedStatusInWaitingList implements AccountCentricEvent
         return new PrivateChannel('channel-name');
     }
 
-    public function getAccount(): Account
+    public function getWaitingList(): WaitingList
     {
-        return $this->account;
+        return $this->waitingList;
     }
 }
