@@ -3,6 +3,7 @@
 namespace App\Models\Mship\Ban;
 
 use App\Models\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -38,7 +39,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Reason extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     protected $primaryKey = 'id';
 

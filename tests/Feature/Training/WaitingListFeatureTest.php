@@ -33,7 +33,7 @@ class WaitingListFeatureTest extends TestCase
     /** @test * */
     public function testAStudentCanHaveTheirStatusChangedToDeferred()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -54,7 +54,7 @@ class WaitingListFeatureTest extends TestCase
     /** @test * */
     public function testAStudentCanHaveTheirStatusChangedToActive()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -75,7 +75,7 @@ class WaitingListFeatureTest extends TestCase
     /** @test */
     public function testAStudentCanHaveAFlagToggledAboutThem()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $flag = factory(WaitingListFlag::class)->create();
         $this->waitingList->addFlag($flag);
 
@@ -90,7 +90,7 @@ class WaitingListFeatureTest extends TestCase
     /** @test */
     public function testStudentsCanHaveNoteAddedAboutThem()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 

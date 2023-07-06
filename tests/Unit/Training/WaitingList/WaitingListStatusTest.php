@@ -31,7 +31,7 @@ class WaitingListStatusTest extends TestCase
     /** @test * */
     public function itHasListenerToAssignDefaultStatus()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $waitingList = factory(WaitingList::class)->create();
         $waitingList->addToWaitingList($account, $this->privacc);
 

@@ -6,7 +6,7 @@ $factory->define(App\Models\Mship\Account\Email::class, function (Faker $faker) 
     return [
         'id' => $faker->numberBetween(1, 100000),
         'account_id' => function () {
-            return factory(\App\Models\Mship\Account::class)->create()->id;
+            return \App\Models\Mship\Account::factory()->create()->id;
         },
         'email' => $faker->email,
         'verified_at' => $faker->dateTime(),

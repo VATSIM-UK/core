@@ -29,7 +29,7 @@ class WaitingListAccountTest extends TestCase
     {
         $status = factory(WaitingListStatus::class)->create();
 
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -48,7 +48,7 @@ class WaitingListAccountTest extends TestCase
 
         $secondStatus = factory(WaitingListStatus::class)->create();
 
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -72,7 +72,7 @@ class WaitingListAccountTest extends TestCase
     /** @test * */
     public function itChecksFor12HourRequirement()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         factory(Atc::class)->create(
             [
@@ -89,7 +89,7 @@ class WaitingListAccountTest extends TestCase
     /** @test */
     public function itDetectsWhen12HourRequirementHaveNotBeenMet()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         factory(Atc::class)->create(
             [
@@ -106,7 +106,7 @@ class WaitingListAccountTest extends TestCase
     /** @test */
     public function itChecksForMultipleSessionsIn12HourRequirement()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         factory(Atc::class, 12)->create(
             [
@@ -123,7 +123,7 @@ class WaitingListAccountTest extends TestCase
     /** @test */
     public function itDisregardsNonUKControllingSessionsForHourCheck()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         // 12 sessions of an hour each to satisfy the requirement, but with non-uk callsign
         factory(Atc::class, 12)->create(
@@ -141,7 +141,7 @@ class WaitingListAccountTest extends TestCase
     /** @test */
     public function itDisregardsSessionsGreaterThan3MonthsAgo()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         // 12 sessions of an hour satisfy the hour requirement, but not the date range
         // subtracting 3 months and a day satisfies a boundary condition
@@ -160,7 +160,7 @@ class WaitingListAccountTest extends TestCase
     /** @test */
     public function itHandlesExactly3MonthsAgoForAtcHourCheckCorrectly()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         // 12 sessions of an hour which occurred within the 3 month range
         factory(Atc::class, 12)
@@ -178,7 +178,7 @@ class WaitingListAccountTest extends TestCase
     /** @test */
     public function itHandlesJustShortOfThe12HourRequirement()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         // 11 sessions of an hour which occurred within the 3 month range
         factory(Atc::class, 11)
@@ -204,7 +204,7 @@ class WaitingListAccountTest extends TestCase
     /** @test */
     public function itCanHaveNotesAdded()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -220,7 +220,7 @@ class WaitingListAccountTest extends TestCase
     public function itCachesHourRequirementFlagWhenNotMetAndNoKeyExists()
     {
         $ttlDay = 86400;
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -242,7 +242,7 @@ class WaitingListAccountTest extends TestCase
     public function itCachesHourRequirementWheMetAndKeyDoesntExist()
     {
         $ttlDay = 86400;
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
@@ -270,7 +270,7 @@ class WaitingListAccountTest extends TestCase
     /** @test */
     public function itShouldReturnTheValueIfExists()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
@@ -289,7 +289,7 @@ class WaitingListAccountTest extends TestCase
     /** @test */
     public function itShouldDefaultCreatedAtToNowIfNotProvided()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
         $this->assertDatabaseHas('training_waiting_list_account', [
@@ -303,7 +303,7 @@ class WaitingListAccountTest extends TestCase
     public function itShouldSetCreatedAtToGivenDateIfProvided()
     {
         $date = Carbon::parse('2020-01-01 12:00:00');
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         $this->waitingList->addToWaitingList($account, $this->privacc, $date);
 
         $this->assertDatabaseHas('training_waiting_list_account', [
@@ -317,7 +317,7 @@ class WaitingListAccountTest extends TestCase
     public function itShouldPassHourCheckIfPilotWaitingList()
     {
         $pilotList = factory(WaitingList::class)->create(['department' => 'pilot']);
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $pilotList->addToWaitingList($account, $this->privacc);
 
@@ -330,7 +330,7 @@ class WaitingListAccountTest extends TestCase
         $this->waitingList->feature_toggles = ['check_atc_hours' => false];
         $this->waitingList->save();
 
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 

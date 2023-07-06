@@ -94,7 +94,7 @@ class RoleTest extends TestCase
         Event::fake();
 
         $role = factory(Role::class)->create();
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $account->assignRole($role);
 

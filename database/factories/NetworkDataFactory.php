@@ -9,7 +9,7 @@ $factory->define(\App\Models\NetworkData\Atc::class, function (Faker $faker) {
 
     return [
         'account_id' => function () {
-            return factory(\App\Models\Mship\Account::class)->create()->id;
+            return \App\Models\Mship\Account::factory()->create()->id;
         },
         'callsign' => $faker->randomElement(['EGLL', 'EGKK', 'EGCC', 'EGBB']).'_'.$faker->randomElement(['N', 'S', 'F', '']).'_'.$facility[1],
         'frequency' => $faker->randomFloat(3, 118, 134),

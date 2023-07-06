@@ -26,7 +26,7 @@ class WaitingListLoggingTest extends TestCase
 
         $this->waitingList = factory(WaitingList::class)->create();
 
-        $this->account = factory(Account::class)->create();
+        $this->account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($this->account, $this->privacc);
     }

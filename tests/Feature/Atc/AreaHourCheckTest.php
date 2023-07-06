@@ -17,7 +17,7 @@ class AreaHourCheckTest extends TestCase
     /** @test */
     public function testRedirectsAwayIfUserNotS3()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $qualification = Qualification::code('S2')->first();
         $account->addQualification($qualification);
@@ -33,7 +33,7 @@ class AreaHourCheckTest extends TestCase
     {
         // create relevant endorsement.
         factory(Endorsement::class)->create(['name' => 'LON_S_CTR']);
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $qualification = Qualification::code('S3')->first();
         $account->addQualification($qualification);
@@ -47,7 +47,7 @@ class AreaHourCheckTest extends TestCase
     /** @test */
     public function testRedirectsAwayIfNoRelevantEndorsementsCreated()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
         $qualification = Qualification::code('S3')->first();
         $account->addQualification($qualification);

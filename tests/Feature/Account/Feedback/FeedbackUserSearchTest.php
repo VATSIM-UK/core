@@ -16,7 +16,7 @@ class FeedbackUserSearchTest extends TestCase
     {
         parent::setUp();
 
-        $this->otherUser = factory(Account::class)->create();
+        $this->otherUser = Account::factory()->create();
     }
 
     /** @test */

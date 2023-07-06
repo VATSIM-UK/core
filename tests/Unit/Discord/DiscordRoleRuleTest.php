@@ -37,7 +37,7 @@ class DiscordRoleRuleTest extends TestCase
         $member = factory(Member::class)->create([
             'visit_may_control' => $ctsControlSetup[0] ? 'Some Group / CTS_SEARCH_QUERY / Another Group' : 'Some Group / Another Group',
         ]);
-        $account = factory(Account::class)->create(['id' => $member->cid]);
+        $account = Account::factory()->create(['id' => $member->cid]);
 
         // Setup Perm
         if ($permSetup[0]) {

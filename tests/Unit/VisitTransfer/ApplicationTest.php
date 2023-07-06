@@ -73,7 +73,7 @@ class ApplicationTest extends TestCase
     {
         Mail::fake();
 
-        $this->user = factory(Account::class)->create();
+        $this->user = Account::factory()->create();
         $qual = Qualification::code('S2')->first();
         $this->user->addQualification($qual)->save();
 
@@ -137,7 +137,7 @@ class ApplicationTest extends TestCase
     /** @test */
     public function itCorrectlyReports90DayCheck()
     {
-        $this->user = factory(Account::class)->create();
+        $this->user = Account::factory()->create();
         $qual = Qualification::code('S2')->first();
         $this->user->addQualification($qual);
         $this->user->save();
