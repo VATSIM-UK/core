@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Training\WaitingList;
 
+use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Listeners\Training\WaitingList\AssignFlags;
 use App\Models\Atc\Endorsement;
@@ -196,7 +197,10 @@ class WaitingListFlagTest extends TestCase
         // creates an atc session to simulate the 12 hour requirement stipulated within the model
         $atcSession = factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
 
-        $this->assertTrue($waitingListAccount->fresh()->eligibility);
+        // mock end of network session
+        event(new AtcSessionEnded($atcSession));
+
+        $this->assertTrue($waitingListAccount->fresh()->eligible);
     }
 
     /** @test */
@@ -235,6 +239,6 @@ class WaitingListFlagTest extends TestCase
         // and sets an active status
         $waitingListAccount->addStatus($status);
 
-        $this->assertTrue($waitingListAccount->fresh()->eligibility);
+        $this->assertTrue($waitingListAccount->fresh()->eligible);
     }
 }

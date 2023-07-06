@@ -29,7 +29,7 @@
                     @endif
                     <tr>
                         <th>Eligible</th>
-                        <td>@if ($list->pivot->eligibility)
+                        <td>@if ($list->pivot->eligible)
                             {!! HTML::img("tick_mark_circle", "png", 20) !!}
                             @else
                             {!! HTML::img("cross_mark_circle", "png", 20) !!}

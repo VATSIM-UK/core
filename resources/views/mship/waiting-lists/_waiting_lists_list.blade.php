@@ -27,7 +27,7 @@
                             @endif
                         </td>
                         <td>
-                            <x-boolean-indicator :value=" $waitingList->pivot->eligibility" />
+                            <x-boolean-indicator :value=" $waitingList->pivot->eligible" />
                         </td>
                         <td>{{$waitingList->pivot->current_status}}</td>
                         <td>{{$waitingList->pivot->created_at->format('d M Y')}}</td>
