@@ -168,6 +168,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'discord.graphics',
             // 'discord.rostering',
             // 'discord.livestreaming',
+            'discord.atc.student.obs'
         ];
 
         foreach ($permissions as $permission) {
