@@ -41,6 +41,7 @@ class EventServiceProvider extends ServiceProvider
         AtcSessionEnded::class => [
             //AtcSessionRecordedSuccessNotification::class, // temporarily disabled
             FlushEndorsementCache::class,
+            CheckAccountWaitingListEligibilityListener::class,
         ],
 
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [
@@ -110,9 +111,6 @@ class EventServiceProvider extends ServiceProvider
 
         DiscordUnlinked::class => [
             RemoveDiscordUser::class,
-        ],
-        AtcSessionEnded::class => [
-            CheckAccountWaitingListEligibilityListener::class,
         ],
     ];
 
