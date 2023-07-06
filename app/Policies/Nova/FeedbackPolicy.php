@@ -17,6 +17,11 @@ class FeedbackPolicy extends BasePolicy
         }
     }
 
+    public function viewAny()
+    {
+        return true;
+    }
+
     public function view(Account $account, Feedback $feedback)
     {
         return $account->checkPermissionTo("feedback/view/{$feedback->form->slug}", self::GUARD)

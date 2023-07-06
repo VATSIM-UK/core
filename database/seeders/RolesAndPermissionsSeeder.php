@@ -80,7 +80,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // // Feedback System Permissions
             // 'feedback.access',
             // 'feedback.view-insensitive',
-            // 'feedback.view-sensitive',
+            'feedback.view-sensitive',
             // 'feedback.view-type.*',
             // 'feedback.view-type.atc',
             // 'feedback.view-type.atc-mentor',
