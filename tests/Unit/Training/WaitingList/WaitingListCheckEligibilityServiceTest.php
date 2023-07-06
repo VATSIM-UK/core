@@ -56,8 +56,8 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result["overall"]);
-        $this->assertNull($result["summary"]);
+        $this->assertTrue($result['overall']);
+        $this->assertNull($result['summary']);
     }
 
     public function test_passes_checks_when_manual_flag_is_true_in_all_flags_config()
@@ -75,8 +75,8 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result["overall"]);
-        $this->assertEquals($result["summary"], [$flag->name => true]);
+        $this->assertTrue($result['overall']);
+        $this->assertEquals($result['summary'], [$flag->name => true]);
     }
 
     public function test_fails_checks_when_manual_flag_is_false_in_all_flags_config()
@@ -88,8 +88,8 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList);
 
-        $this->assertFalse($result["overall"]);
-        $this->assertEquals($result["summary"], [$flag->name => false]);
+        $this->assertFalse($result['overall']);
+        $this->assertEquals($result['summary'], [$flag->name => false]);
     }
 
     public function test_fails_check_when_endorsement_linked_flag_is_false()
@@ -111,8 +111,8 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertFalse($result["overall"]);
-        $this->assertEquals($result["summary"], [$flag->name => false]);
+        $this->assertFalse($result['overall']);
+        $this->assertEquals($result['summary'], [$flag->name => false]);
     }
 
     public function test_pass_check_when_endorsement_linked_flag_is_true()
@@ -134,8 +134,8 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result["overall"]);
-        $this->assertEquals($result["summary"], [$flag->name => true]);
+        $this->assertTrue($result['overall']);
+        $this->assertEquals($result['summary'], [$flag->name => true]);
     }
 
     public function test_pass_check_on_any_with_failing_and_passing_flags()
@@ -161,8 +161,8 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result["overall"]);
-        $this->assertEquals($result["summary"], [$flag1->name => false, $flag2->name => false, $flag3->name => true]);
+        $this->assertTrue($result['overall']);
+        $this->assertEquals($result['summary'], [$flag1->name => false, $flag2->name => false, $flag3->name => true]);
     }
 
     public function test_pass_check_on_all_with_all_passing_automated_flags()
@@ -193,8 +193,8 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh(), 'all');
 
-        $this->assertTrue($result["overall"]);
-        $this->assertEquals($result["summary"], [$flag1->name => true, $flag2->name => true]);
+        $this->assertTrue($result['overall']);
+        $this->assertEquals($result['summary'], [$flag1->name => true, $flag2->name => true]);
     }
 
     public function test_hour_check_is_true_when_feature_toggle_is_false()

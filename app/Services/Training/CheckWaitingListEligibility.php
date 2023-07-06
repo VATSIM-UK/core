@@ -22,6 +22,7 @@ class CheckWaitingListEligibility
     {
         if (! $waitingList->should_check_atc_hours || $waitingList->department == WaitingList::PILOT_DEPARTMENT) {
             $this->baseControllingHoursCheck = true;
+
             return true;
         }
 

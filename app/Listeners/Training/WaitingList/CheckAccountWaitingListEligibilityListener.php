@@ -11,7 +11,6 @@ class CheckAccountWaitingListEligibilityListener
     /**
      * Handle the event.
      *
-     * @param  \App\Contracts\AccountCentricEvent  $event
      * @return void
      */
     public function handle(AccountCentricEvent $event)

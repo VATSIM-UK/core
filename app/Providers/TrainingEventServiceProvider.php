@@ -27,7 +27,7 @@ class TrainingEventServiceProvider extends ServiceProvider
         ],
         \App\Events\Training\FlagAddedToWaitingList::class => [
             \App\Listeners\Training\WaitingList\CheckWaitingListFollowingFlagAddition::class,
-        ]
+        ],
     ];
 
     /**
