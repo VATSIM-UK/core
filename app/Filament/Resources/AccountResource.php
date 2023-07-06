@@ -42,7 +42,7 @@ class AccountResource extends Resource
             ->schema([
                 Forms\Components\Fieldset::make('Basic Details')->schema([
                     Forms\Components\Grid::make(3)->schema([
-                        Forms\Components\Placeholder::make('Central Account Name')
+                        Forms\Components\Placeholder::make('central_account_name')
                             ->content(fn ($record) => $record->name_first.' '.$record->name_last)
                             ->visibleOn('view'),
                         Forms\Components\TextInput::make('nickname')
