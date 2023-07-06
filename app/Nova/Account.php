@@ -80,6 +80,11 @@ class Account extends Resource
         return false;
     }
 
+    public static function authorizedToViewAny(Request $request)
+    {
+        return true;
+    }
+
     /**
      * Global method of disabling the ability to attach resources to Account.
      *
