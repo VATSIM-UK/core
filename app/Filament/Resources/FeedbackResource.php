@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FeedbackResource\Pages;
 use App\Filament\Resources\FeedbackResource\RelationManagers;
+use App\Filament\Resources\FeedbackResource\Widgets\FeedbackOverview;
 use App\Models\Mship\Feedback\Feedback;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -18,6 +19,15 @@ class FeedbackResource extends Resource
     protected static ?string $model = Feedback::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
+
+    protected static ?string $navigationGroup = 'Feedback';
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        return $query->with(['account', 'submitter', 'form']);
+    }
 
     public static function form(Form $form): Form
     {
@@ -36,7 +46,8 @@ class FeedbackResource extends Resource
 
                 Forms\Components\Placeholder::make('submitter.name')
                     ->label('Submitted by')
-                    ->hidden(fn ($record) => !auth()->user()->can('feedback.view-sensitive', $record)),
+                    ->visible(self::canSeeSubmitter())
+                    ->content(fn ($record) => $record->submitter->name),
 
                 Forms\Components\Placeholder::make('created_at')
                     ->label('Submitted at')
@@ -50,11 +61,11 @@ class FeedbackResource extends Resource
 
                         Forms\Components\Placeholder::make('sent_by')
                             ->label('Sent By')
-                            ->content(fn ($record) => $record->sent_by ? $record->sent_by->name : null),
+                            ->content(fn ($record) => $record->sent_by_id ? $record->sender->name : null),
 
-                        Forms\Components\Placeholder::make('sent_notes')
+                        Forms\Components\Placeholder::make('sent_comment')
                             ->label('Sent Notes')
-                            ->content(fn ($record) => $record->sent_notes),
+                            ->content(fn ($record) => $record->sent_comment),
                     ])->hidden(fn ($record) => $record->sent_at === null),
 
                 Forms\Components\Fieldset::make("Actioned Information")
@@ -97,44 +108,50 @@ class FeedbackResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('account.name')->label('Subject'),
-                Tables\Columns\TextColumn::make('submitter.name')->label('Submitted By')->hidden(fn ($record) => !auth()->user()->can('feedback.view-sensitive', $record)),
+                Tables\Columns\TextColumn::make('submitter.name')->label('Submitted By')->visible(self::canSeeSubmitter()),
                 Tables\Columns\TextColumn::make('created_at')
                 	->dateTime("d/m/Y H:i")
                     ->sortable(),
                 Tables\Columns\IconColumn::make('actioned_at')
+                    ->boolean()
                     ->trueIcon('heroicon-s-check-circle')
                     ->falseIcon('heroicon-s-x-circle')
                     ->label('Actioned')
-                    ->trueColor('green')
-                    ->falseColor('red')
+                    ->falseColor('danger')
                     ->getStateUsing(fn($record) => $record->actioned_at !== null),
+                Tables\Columns\IconColumn::make('sent_at')
+                    ->boolean()
+                    ->trueIcon('heroicon-s-check-circle')
+                    ->falseIcon('heroicon-s-x-circle')
+                    ->label('Sent to User')
+                    ->falseColor('danger')
+                    ->getStateUsing(fn($record) => $record->sent_at !== null),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListFeedback::route('/'),
-            'create' => Pages\CreateFeedback::route('/create'),
             'view' => Pages\ViewFeedback::route('/{record}'),
-            'edit' => Pages\EditFeedback::route('/{record}/edit'),
         ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            FeedbackOverview::class
+        ];
+    }
+
+    private static function canSeeSubmitter()
+    {
+        return auth()->user()->can("seeSubmitter", self::getModel());
     }
 }

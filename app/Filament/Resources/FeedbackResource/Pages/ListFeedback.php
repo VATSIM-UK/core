@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\FeedbackResource\Pages;
 
 use App\Filament\Resources\FeedbackResource;
+use App\Filament\Resources\FeedbackResource\Widgets\FeedbackOverview;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -12,8 +13,13 @@ class ListFeedback extends ListRecords
 
     protected function getActions(): array
     {
+        return [];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
         return [
-            Actions\CreateAction::make(),
+            FeedbackOverview::class
         ];
     }
 }

@@ -10,12 +10,12 @@ class FeedbackPolicy extends BasePolicy
 {
     private const GUARD = 'web';
 
-    public function before(Account $account, $policy)
-    {
-        if (parent::before($account, $policy)) {
-            return true;
-        }
-    }
+    // public function before(Account $account, $policy)
+    // {
+    //     if (parent::before($account, $policy)) {
+    //         return true;
+    //     }
+    // }
 
     public function viewAny()
     {
@@ -24,7 +24,12 @@ class FeedbackPolicy extends BasePolicy
 
     public function view(Account $account, Feedback $feedback)
     {
-        return $account->checkPermissionTo("feedback/view/{$feedback->form->slug}", self::GUARD)
+        $feedback->load("form");
+
+        $novaPermission = "feedback/view/{$feedback->form->slug}";
+        $permission = "feedback.view-type.{$feedback->form->slug}";
+
+        return ($account->checkPermissionTo($novaPermission, self::GUARD) || $account->checkPermissionTo($permission, self::GUARD))
             && ! in_array($feedback->account_id, $account->hiddenFeedbackUsers());
     }
 
