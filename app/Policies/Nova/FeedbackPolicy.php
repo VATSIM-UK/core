@@ -24,7 +24,7 @@ class FeedbackPolicy extends BasePolicy
 
     public function view(Account $account, Feedback $feedback)
     {
-        $feedback->load("form");
+        $feedback->load('form');
 
         $novaPermission = "feedback/view/{$feedback->form->slug}";
         $permission = "feedback.view-type.{$feedback->form->slug}";

@@ -3,16 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FeedbackResource\Pages;
-use App\Filament\Resources\FeedbackResource\RelationManagers;
 use App\Filament\Resources\FeedbackResource\Widgets\FeedbackOverview;
 use App\Models\Mship\Feedback\Feedback;
+use App\Models\Mship\Feedback\Form as FeedbackForm;
+use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class FeedbackResource extends Resource
 {
@@ -33,11 +33,11 @@ class FeedbackResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Placeholder::make("ID")
-                    ->label("ID")
+                Forms\Components\Placeholder::make('ID')
+                    ->label('ID')
                     ->content(fn ($record) => $record->id),
 
-                Forms\Components\Placeholder::make("Form Name")
+                Forms\Components\Placeholder::make('Form Name')
                     ->content(fn ($record) => $record->form->name),
 
                 Forms\Components\Placeholder::make('account.name')
@@ -53,7 +53,7 @@ class FeedbackResource extends Resource
                     ->label('Submitted at')
                     ->content(fn ($record) => $record->created_at->format('d/m/Y H:i')),
 
-                Forms\Components\Fieldset::make("Sent Information")
+                Forms\Components\Fieldset::make('Sent Information')
                     ->schema([
                         Forms\Components\Placeholder::make('sent_at')
                             ->label('Sent At')
@@ -68,7 +68,7 @@ class FeedbackResource extends Resource
                             ->content(fn ($record) => $record->sent_comment),
                     ])->hidden(fn ($record) => $record->sent_at === null),
 
-                Forms\Components\Fieldset::make("Actioned Information")
+                Forms\Components\Fieldset::make('Actioned Information')
                     ->schema([
                         Forms\Components\Placeholder::make('actioned_at')
                             ->label('Actioned At')
@@ -83,20 +83,21 @@ class FeedbackResource extends Resource
                             ->content(fn ($record) => $record->actioned_comment),
                     ])->hidden(fn ($record) => $record->actioned_at === null),
 
-                Forms\Components\Section::make("Answers")
+                Forms\Components\Section::make('Answers')
                     ->schema([
-                        Forms\Components\Repeater::make("Answers")
+                        Forms\Components\Repeater::make('Answers')
                             ->relationship('answers')
-                            ->label("")
+                            ->label('')
                             ->schema([
                                 Forms\Components\Placeholder::make('question')
                                     ->label('Question')
                                     ->content(fn ($record) => $record->question->question),
 
-                                Forms\Components\Placeholder::make('response')
+                                CopyablePlaceholder::make('response')
                                     ->label('Answer')
-                                    ->content(fn ($record) => $record->response),
-                            ])
+                                    ->content(fn ($record) => $record->response)
+                                    ->iconOnly(),
+                            ]),
                     ]),
             ]);
     }
@@ -110,7 +111,7 @@ class FeedbackResource extends Resource
                 Tables\Columns\TextColumn::make('account.name')->label('Subject'),
                 Tables\Columns\TextColumn::make('submitter.name')->label('Submitted By')->visible(self::canSeeSubmitter()),
                 Tables\Columns\TextColumn::make('created_at')
-                	->dateTime("d/m/Y H:i")
+                    ->dateTime('d/m/Y H:i')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('actioned_at')
                     ->boolean()
@@ -118,17 +119,33 @@ class FeedbackResource extends Resource
                     ->falseIcon('heroicon-s-x-circle')
                     ->label('Actioned')
                     ->falseColor('danger')
-                    ->getStateUsing(fn($record) => $record->actioned_at !== null),
+                    ->getStateUsing(fn ($record) => $record->actioned_at !== null),
                 Tables\Columns\IconColumn::make('sent_at')
                     ->boolean()
                     ->trueIcon('heroicon-s-check-circle')
                     ->falseIcon('heroicon-s-x-circle')
                     ->label('Sent to User')
                     ->falseColor('danger')
-                    ->getStateUsing(fn($record) => $record->sent_at !== null),
+                    ->getStateUsing(fn ($record) => $record->sent_at !== null),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('form')
+                    ->placeholder('All Forms')
+                    ->label('Feedback Form')
+                    ->options(
+                        FeedbackForm::all()->mapWithKeys(fn ($form) => [$form->id => $form->name])
+                    )
+                    ->attribute('form_id'),
+                Tables\Filters\TernaryFilter::make('actioned')
+                    ->placeholder('All')
+                    ->options([
+                        'Actioned' => true,
+                        'Un-actioned' => false,
+                    ])
+                    ->queries(
+                        true: fn ($query) => $query->whereNotNull('actioned_at'),
+                        false: fn ($query) => $query->whereNull('actioned_at'),
+                    ),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -146,12 +163,12 @@ class FeedbackResource extends Resource
     public static function getWidgets(): array
     {
         return [
-            FeedbackOverview::class
+            FeedbackOverview::class,
         ];
     }
 
     private static function canSeeSubmitter()
     {
-        return auth()->user()->can("seeSubmitter", self::getModel());
+        return auth()->user()->can('seeSubmitter', self::getModel());
     }
 }
