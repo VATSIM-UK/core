@@ -5973,16 +5973,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.67.0",
+            "version": "2.68.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "c1001b3bc75039b07f38a79db5237c4c529e04c8"
+                "reference": "4f991ed2a403c85efbc4f23eb4030063fdbe01da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/c1001b3bc75039b07f38a79db5237c4c529e04c8",
-                "reference": "c1001b3bc75039b07f38a79db5237c4c529e04c8",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/4f991ed2a403c85efbc4f23eb4030063fdbe01da",
+                "reference": "4f991ed2a403c85efbc4f23eb4030063fdbe01da",
                 "shasum": ""
             },
             "require": {
@@ -6071,7 +6071,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-25T22:09:47+00:00"
+            "time": "2023-06-20T18:29:04+00:00"
         },
         {
             "name": "nette/schema",
@@ -12482,16 +12482,16 @@
         },
         {
             "name": "whitecube/laravel-cookie-consent",
-            "version": "v1.0.1",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/whitecube/laravel-cookie-consent.git",
-                "reference": "c0e85f7ef04a7b28d081128fd6d096682f453950"
+                "reference": "b5d7a286cc55583fc81ee34bcd5062c9e8778041"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/c0e85f7ef04a7b28d081128fd6d096682f453950",
-                "reference": "c0e85f7ef04a7b28d081128fd6d096682f453950",
+                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/b5d7a286cc55583fc81ee34bcd5062c9e8778041",
+                "reference": "b5d7a286cc55583fc81ee34bcd5062c9e8778041",
                 "shasum": ""
             },
             "require": {
@@ -12545,7 +12545,7 @@
             ],
             "support": {
                 "issues": "https://github.com/whitecube/laravel-cookie-consent/issues",
-                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.0.1"
+                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.0.3"
             },
             "funding": [
                 {
@@ -12553,7 +12553,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-06-26T14:13:38+00:00"
+            "time": "2023-07-04T15:47:29+00:00"
         },
         {
             "name": "wohali/oauth2-discord-new",
