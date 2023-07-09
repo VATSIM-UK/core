@@ -36,6 +36,11 @@ class AccountResource extends Resource
         ];
     }
 
+    public static function getGlobalSearchResultUrl(Model $record): ?string
+    {
+        return AccountResource::getUrl('view', ['record' => $record]);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
