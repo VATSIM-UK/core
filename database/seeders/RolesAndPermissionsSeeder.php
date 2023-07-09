@@ -88,9 +88,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'feedback.view-type.atc-mentor',
             'feedback.view-type.pilot',
             'feedback.view-type.group',
-            // 'feedback.send',
-            // 'feedback.action',
-            // 'feedback.unaction',
+            'feedback.action',
             // 'feedback.form.create',
             // 'feedback.form.configure.*',
 
