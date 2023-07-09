@@ -22,7 +22,7 @@ class ViewFeedback extends ViewRecord
                         ->label('Comment')
                         ->rules('required', 'min:10'),
                 ])
-                ->hidden(fn () => $this->record->sent_at !== null),
+                ->visible(fn () => $this->record->sent_at === null && auth()->user()->can('actionFeedback', $this->record)),
             Actions\Action::make('action_feedback')
                 ->label('Action Feedback')
                 ->action(fn ($data) => $this->record->markActioned(auth()->user(), $data['comment']))
@@ -31,7 +31,7 @@ class ViewFeedback extends ViewRecord
                         ->label('Comment')
                         ->rules('required', 'min:10'),
                 ])
-                ->hidden(fn () => $this->record->actioned_at !== null),
+                ->visible(fn () => $this->record->actioned_at === null && auth()->user()->can('actionFeedback', $this->record)),
         ];
     }
 }
