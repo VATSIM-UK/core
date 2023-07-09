@@ -14,7 +14,7 @@ class FeedbackOverview extends BaseWidget
     {
         return [
             Card::make('Total Feedback', Feedback::count()),
-            Card::make('% Feedback Actioned', (max(Feedback::whereNotNull('actioned_at')->count(), 1) / Feedback::count() * 100).'%')
+            Card::make('% Feedback Actioned', round(max(Feedback::whereNotNull('actioned_at')->count(), 1) / Feedback::count() * 100).'%')
                 ->description('Total percentage of feedback actioned'),
         ];
     }
