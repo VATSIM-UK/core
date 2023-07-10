@@ -6,6 +6,7 @@ use App\Enums\QualificationTypeEnum;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Mship\Account;
+use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Carbon\CarbonInterface;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -52,11 +53,14 @@ class AccountResource extends Resource
                             ->visibleOn('view'),
                         Forms\Components\TextInput::make('nickname')
                             ->label('Preferred Name'),
-                        Forms\Components\Placeholder::make('id')
+                        CopyablePlaceholder::make('id')
                             ->label('CID')
                             ->content(fn ($record) => $record->id)
-                            ->visibleOn('view'),
-
+                            ->visibleOn('view')
+                            ->iconOnly()
+                            ->extraAttributes([
+                                'class' => 'flex items-center space-x-2',
+                            ]),
                     ]),
 
                     Forms\Components\Fieldset::make('Emails')->schema([
