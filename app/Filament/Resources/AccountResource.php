@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\QualificationTypeEnum;
+use App\Filament\Helpers\Pages\DefinesGatedAttributes;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Mship\Account;
@@ -15,7 +16,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 
-class AccountResource extends Resource
+class AccountResource extends Resource implements DefinesGatedAttributes
 {
     protected static ?string $model = Account::class;
 
@@ -34,6 +35,13 @@ class AccountResource extends Resource
     {
         return [
             'VATSIM ID' => $record->id,
+        ];
+    }
+
+    public static function gatedAttributes(Model $record): array
+    {
+        return [
+            'email' => auth()->user()->can('viewSensitive', $record),
         ];
     }
 

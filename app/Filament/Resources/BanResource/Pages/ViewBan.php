@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\BanResource\Pages;
 
+use App\Filament\Helpers\Pages\BaseViewRecordPage;
 use App\Filament\Resources\BanResource;
 use App\Models\Mship\Note\Type;
 use App\Notifications\Mship\BanModified;
@@ -11,9 +12,8 @@ use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Pages\Actions\Action;
 use Filament\Pages\Actions\EditAction;
-use Filament\Resources\Pages\ViewRecord;
 
-class ViewBan extends ViewRecord
+class ViewBan extends BaseViewRecordPage
 {
     protected static string $resource = BanResource::class;
 

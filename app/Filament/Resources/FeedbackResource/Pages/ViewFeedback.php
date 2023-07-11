@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\FeedbackResource\Pages;
 
+use App\Filament\Helpers\Pages\BaseViewRecordPage;
 use App\Filament\Resources\FeedbackResource;
 use Filament\Forms;
 use Filament\Pages\Actions;
-use Filament\Resources\Pages\ViewRecord;
 
-class ViewFeedback extends ViewRecord
+class ViewFeedback extends BaseViewRecordPage
 {
     protected static string $resource = FeedbackResource::class;
 

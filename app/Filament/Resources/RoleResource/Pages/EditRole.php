@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\RoleResource\Pages;
 
+use App\Filament\Helpers\Pages\BaseEditRecordPage;
 use App\Filament\Resources\RoleResource;
 use Filament\Pages\Actions;
-use Filament\Resources\Pages\EditRecord;
 
-class EditRole extends EditRecord
+class EditRole extends BaseEditRecordPage
 {
     protected static string $resource = RoleResource::class;
 
