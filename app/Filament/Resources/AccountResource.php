@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\QualificationTypeEnum;
-use App\Filament\Helpers\Pages\DefinesGatedAttributes;
+use App\Filament\Helpers\Resources\DefinesGatedAttributes;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Mship\Account;
