@@ -245,6 +245,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'password',
         'remember_token',
         'discord_access_token',
+        'discord_refresh_token',
         'vatsim_access_token',
         'vatsim_refresh_token',
     ];
