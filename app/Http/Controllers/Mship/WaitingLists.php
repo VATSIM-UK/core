@@ -31,6 +31,7 @@ class WaitingLists extends BaseController
     {
         $list = $request->user()->currentWaitingLists()->where('training_waiting_list.id', $waitingListId)->withPivot([
             'created_at',
+            'eligible',
         ])->firstOrFail();
 
         $automaticFlags = $list->pivot->flags->filter(function ($flag) {
