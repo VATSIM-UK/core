@@ -3,6 +3,7 @@
 namespace Vatsimuk\WaitingListsManager\Http;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Arr;
 
 class WaitingListAccountResource extends JsonResource
 {
@@ -16,7 +17,7 @@ class WaitingListAccountResource extends JsonResource
             'id' => $this->id,
             'pivot_id' => $this->pivot->id,
             'name' => $this->name,
-            'atcHourCheck' => $this->pivot->eligibility_summary['base_controlling_hours'] ?? false,
+            'atcHourCheck' => Arr::get($this->pivot->eligibility_summary, 'base_controlling_hours', false),
             'created_at' => $this->pivot->created_at,
             'status' => new WaitingListStatusResource($this->pivot->current_status),
             'flags' => $this->pivot->flags,

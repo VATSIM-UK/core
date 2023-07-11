@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Training;
 
-use App\Jobs\Training\CheckAccountWaitingListEligibility;
+use App\Jobs\Training\UpdateAccountWaitingListEligibility;
 use App\Models\Training\WaitingList;
 use Illuminate\Console\Command;
 
@@ -31,18 +31,6 @@ class CheckWaitingListEligibilityCommand extends Command
     {
         $activeWaitingLists = WaitingList::all();
 
-        if ($this->argument('account')) {
-            $activeWaitingLists = $activeWaitingLists->filter(function ($waitingList) {
-                return $waitingList->accounts->contains($this->argument('account'));
-            });
-
-            if ($activeWaitingLists->isEmpty()) {
-                $this->error('Account not found on any waiting lists');
-
-                return Command::FAILURE;
-            }
-        }
-
         if ($this->option('waiting-list')) {
             $activeWaitingLists = $activeWaitingLists->filter(function ($waitingList) {
                 return $waitingList->id === $this->option('waiting-list');
@@ -55,9 +43,21 @@ class CheckWaitingListEligibilityCommand extends Command
             }
         }
 
+        if ($this->argument('account')) {
+            $activeWaitingLists = $activeWaitingLists->filter(function ($waitingList) {
+                return $waitingList->accounts->contains($this->argument('account'));
+            });
+
+            if ($activeWaitingLists->isEmpty()) {
+                $this->error('Account not found on any waiting lists');
+
+                return Command::FAILURE;
+            }
+        }
+
         foreach ($activeWaitingLists as $waitingList) {
             foreach ($waitingList->accounts as $account) {
-                CheckAccountWaitingListEligibility::dispatch($account);
+                UpdateAccountWaitingListEligibility::dispatch($account);
             }
         }
 

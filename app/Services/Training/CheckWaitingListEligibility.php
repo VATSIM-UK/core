@@ -14,38 +14,33 @@ class CheckWaitingListEligibility
     ) {
     }
 
-    private ?bool $baseControllingHoursCheck = null;
-
-    private ?bool $waitingListFlagsCheck = null;
-
     public function checkBaseControllingHours(WaitingList $waitingList)
     {
         if (! $waitingList->should_check_atc_hours || $waitingList->department == WaitingList::PILOT_DEPARTMENT) {
-            $this->baseControllingHoursCheck = true;
-
             return true;
-        }
-
-        // avoid extra queries if method called multiple times
-        // for lifecycle of class.
-        if ($this->baseControllingHoursCheck !== null) {
-            return $this->baseControllingHoursCheck;
         }
 
         $recentAtcMinutes = Atc::where('account_id', $this->account->id)
             ->where('disconnected_at', '>=', Carbon::parse('3 months ago'))->isUk()
             ->sum('minutes_online');
 
-        $this->baseControllingHoursCheck = $recentAtcMinutes >= 720;
-
-        return $this->baseControllingHoursCheck;
+        return $recentAtcMinutes >= 720;
     }
 
-    public function checkWaitingListFlags(WaitingList $waitingList)
+    /**
+     * Check the waiting list flags defined in the waiting list
+     * and return an array with the overall eligibility and a summary of the flags.
+     *
+     * This can either be the manual or automated flags backed by an endorsement.
+     * The 'overall' key represents the status of the flags based on the waiting list flags check type.
+     *
+     * Within the 'summary' key, the key is the flag name and the value is the flag value.
+     */
+    public function checkWaitingListFlags(WaitingList $waitingList): array
     {
         $waitingListAccount = $waitingList->accounts()->where('account_id', $this->account->id)->first()->pivot;
 
-        if ($waitingList->flags->count() == 0) {
+        if ($waitingList->flags()->doesntExist()) {
             return ['overall' => true, 'summary' => null];
         }
 
@@ -55,14 +50,14 @@ class CheckWaitingListEligibility
 
         $method = $waitingList->flags_check == WaitingList::ALL_FLAGS ? 'every' : 'some';
         // check if all flags are true or if any flags are true depending on the waiting list flags check type
-        $this->waitingListFlagsCheck = $summaryByFlag->$method(fn ($value) => $value);
+        $overall = $summaryByFlag->$method(fn ($value) => $value);
 
-        return ['overall' => $this->waitingListFlagsCheck, 'summary' => $summaryByFlag->toArray()];
+        return ['overall' => $overall, 'summary' => $summaryByFlag->toArray()];
     }
 
     public function checkAccountStatus(WaitingList $waitingList)
     {
-        $waitingListAccount = $waitingList->accounts()->where('account_id', $this->account->id)->first()->pivot;
+        $waitingListAccount = $this->getWaitingListAccount($waitingList);
 
         return $waitingListAccount->current_status->name == 'Active';
     }

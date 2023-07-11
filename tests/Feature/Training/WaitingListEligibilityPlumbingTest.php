@@ -4,7 +4,7 @@ namespace Tests\Feature\Training;
 
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Events\Training\FlagAddedToWaitingList;
-use App\Jobs\Training\CheckAccountWaitingListEligibility;
+use App\Jobs\Training\UpdateAccountWaitingListEligibility;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use App\Models\Training\WaitingList\WaitingListStatus;
@@ -24,7 +24,7 @@ class WaitingListEligibilityPlumbingTest extends TestCase
         $waitingList = factory(WaitingList::class)->create();
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
-        Bus::assertDispatched(CheckAccountWaitingListEligibility::class, function ($job) {
+        Bus::assertDispatched(UpdateAccountWaitingListEligibility::class, function ($job) {
             return $job->account->id === $this->user->id;
         });
     }
@@ -52,7 +52,7 @@ class WaitingListEligibilityPlumbingTest extends TestCase
 
             $waitingListAccount->fresh()->markFlag($flag);
 
-            Bus::assertDispatched(CheckAccountWaitingListEligibility::class, function ($job) {
+            Bus::assertDispatched(UpdateAccountWaitingListEligibility::class, function ($job) {
                 return $job->account->id === $this->user->id;
             });
         }, [AccountAddedToWaitingList::class, FlagAddedToWaitingList::class]);
@@ -86,7 +86,7 @@ class WaitingListEligibilityPlumbingTest extends TestCase
 
             $waitingListAccount->fresh()->unMarkFlag($flag);
 
-            Bus::assertDispatched(CheckAccountWaitingListEligibility::class, function ($job) {
+            Bus::assertDispatched(UpdateAccountWaitingListEligibility::class, function ($job) {
                 return $job->account->id === $this->user->id;
             });
         }, [AccountAddedToWaitingList::class, FlagAddedToWaitingList::class]);
@@ -104,7 +104,7 @@ class WaitingListEligibilityPlumbingTest extends TestCase
                 'account' => $this->user->id,
             ]);
 
-            Bus::assertDispatched(CheckAccountWaitingListEligibility::class, function ($job) {
+            Bus::assertDispatched(UpdateAccountWaitingListEligibility::class, function ($job) {
                 return $job->account->id === $this->user->id;
             });
         }, [AccountAddedToWaitingList::class, FlagAddedToWaitingList::class]);
@@ -123,11 +123,11 @@ class WaitingListEligibilityPlumbingTest extends TestCase
 
             $this->artisan('waiting-lists:check-eligibility');
 
-            Bus::assertDispatched(CheckAccountWaitingListEligibility::class, function ($job) {
+            Bus::assertDispatched(UpdateAccountWaitingListEligibility::class, function ($job) {
                 return $job->account->id === $this->user->id;
             });
 
-            Bus::assertDispatched(CheckAccountWaitingListEligibility::class, function ($job) {
+            Bus::assertDispatched(UpdateAccountWaitingListEligibility::class, function ($job) {
                 return $job->account->id === $this->user->id;
             });
         }, [AccountAddedToWaitingList::class, FlagAddedToWaitingList::class]);
@@ -147,7 +147,7 @@ class WaitingListEligibilityPlumbingTest extends TestCase
             ]);
             $waitingList->addFlag($flag);
 
-            Bus::assertDispatched(CheckAccountWaitingListEligibility::class, function ($job) {
+            Bus::assertDispatched(UpdateAccountWaitingListEligibility::class, function ($job) {
                 return $job->account->id === $this->user->id;
             });
         }, [AccountAddedToWaitingList::class]);

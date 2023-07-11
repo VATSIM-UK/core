@@ -3,7 +3,7 @@
 namespace App\Listeners\Training\WaitingList;
 
 use App\Contracts\AccountCentricEvent;
-use App\Jobs\Training\CheckAccountWaitingListEligibility;
+use App\Jobs\Training\UpdateAccountWaitingListEligibility;
 use Illuminate\Support\Facades\Log;
 
 class CheckAccountWaitingListEligibilityListener
@@ -16,8 +16,8 @@ class CheckAccountWaitingListEligibilityListener
     public function handle(AccountCentricEvent $event)
     {
         $eventName = get_class($event);
-        Log::debug("Dispatching CheckAccountWaitingListEligibility job from listener on event {$eventName} for account {$event->getAccount()->id}");
+        Log::debug("Dispatching CheckAccountWaitingListEligibilityListener job from listener on event {$eventName} for account {$event->getAccount()->id}");
 
-        CheckAccountWaitingListEligibility::dispatch($event->getAccount());
+        UpdateAccountWaitingListEligibility::dispatch($event->getAccount());
     }
 }
