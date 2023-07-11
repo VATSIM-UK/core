@@ -28,7 +28,7 @@ class RoleResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')->required()->unique(ignorable: fn ($record) => $record),
-                Forms\Components\TextInput::make('guard_name'),
+                Forms\Components\TextInput::make('guard_name')->default('web')->in(array_keys(config('auth.guards'))),
                 Grid::make(1)->schema([
                     CheckboxList::make('permissions')->relationship('permissions', 'name')->columns(3)->searchable()->bulkToggleable(),
                 ]),

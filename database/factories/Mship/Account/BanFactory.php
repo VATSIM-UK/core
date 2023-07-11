@@ -29,4 +29,14 @@ class BanFactory extends Factory
             'period_finish' => now()->addDays(fake()->randomDigitNotNull),
         ];
     }
+
+    public function network()
+    {
+        return $this->state([
+            'banned_by' => null,
+            'type' => BanTypeEnum::Network,
+            'reason_id' => null,
+            'period_finish' => null,
+        ]);
+    }
 }

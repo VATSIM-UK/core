@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\BanResource\Pages;
 
+use App\Filament\Helpers\Pages\BaseViewRecordPage;
 use App\Filament\Resources\BanResource;
 use App\Models\Mship\Note\Type;
 use App\Notifications\Mship\BanModified;
@@ -11,9 +12,8 @@ use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Pages\Actions\Action;
 use Filament\Pages\Actions\EditAction;
-use Filament\Resources\Pages\ViewRecord;
 
-class ViewBan extends ViewRecord
+class ViewBan extends BaseViewRecordPage
 {
     protected static string $resource = BanResource::class;
 
@@ -25,7 +25,7 @@ class ViewBan extends ViewRecord
                 ->color('warning')
                 ->visible(auth()->user()->can('update', $this->record))
                 ->form([
-                    Forms\Components\DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->required()->notIn($this->record->period_finish),
+                    Forms\Components\DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->required()->notIn($this->record->period_finish ?? ''),
                     Grid::make(2)->schema([
                         Forms\Components\Textarea::make('extra_info')
                             ->required()
