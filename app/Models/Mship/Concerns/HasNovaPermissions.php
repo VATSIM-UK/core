@@ -22,7 +22,7 @@ trait HasNovaPermissions
 
     public function hiddenFeedbackUsers()
     {
-        if ($this->can('use-permission', 'feedback/own')) {
+        if ($this->can('use-permission', 'feedback/own') || $this->can('use-permission', 'feedback.view-own')) {
             return [];
         }
 
