@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AccountResource\Pages;
 
+use App\Filament\Helpers\Pages\BaseViewRecordPage;
 use App\Filament\Resources\AccountResource;
 use App\Jobs\UpdateMember;
 use App\Models\Contact;
@@ -9,14 +10,13 @@ use App\Notifications\Mship\UserImpersonated;
 use Filament\Forms\Components\Textarea;
 use Filament\Pages\Actions;
 use Filament\Pages\Actions\ActionGroup;
-use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\HtmlString;
 
-class ViewAccount extends ViewRecord
+class ViewAccount extends BaseViewRecordPage
 {
     protected static string $resource = AccountResource::class;
 

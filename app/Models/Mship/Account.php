@@ -241,6 +241,15 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'discord_id' => 'int',
     ];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'discord_access_token',
+        'discord_refresh_token',
+        'vatsim_access_token',
+        'vatsim_refresh_token',
+    ];
+
     protected static function boot()
     {
         parent::boot();

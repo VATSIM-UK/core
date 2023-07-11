@@ -51,7 +51,7 @@ class FilamentServiceProvider extends ServiceProvider
             $attribute = $attribute ?? explode('.', $this->getName())[0]; // We assume that the column name is like user or user.name - we want the first part to get the relation
 
             return $this
-                ->icon('heroicon-o-eye')
+                ->icon(fn ($record) => $record->{$attribute} ? 'heroicon-o-eye' : null)
                 ->url(fn ($record) => $resourceClass::urlToView($record->{$attribute}));
         });
 
