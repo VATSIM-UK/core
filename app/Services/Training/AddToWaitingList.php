@@ -2,7 +2,6 @@
 
 namespace App\Services\Training;
 
-use App\Events\Training\AccountAddedToWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Services\BaseService;
@@ -29,9 +28,5 @@ class AddToWaitingList implements BaseService
     public function handle()
     {
         $this->waitingList->addToWaitingList($this->account, $this->staffAccount, $this->createdAt);
-
-        $this->waitingList = $this->waitingList->fresh();
-
-        event(new AccountAddedToWaitingList($this->account, $this->waitingList->fresh(), $this->staffAccount));
     }
 }

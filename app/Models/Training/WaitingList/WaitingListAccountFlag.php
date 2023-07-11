@@ -2,6 +2,7 @@
 
 namespace App\Models\Training\WaitingList;
 
+use App\Events\Training\AccountManualFlagChanged;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class WaitingListAccountFlag extends Pivot
@@ -22,12 +23,16 @@ class WaitingListAccountFlag extends Pivot
     {
         $this->marked_at = now();
         $this->save();
+
+        event(new AccountManualFlagChanged($this->waitingListAccount->account, $this->waitingListAccount->waitingList));
     }
 
     public function unMark()
     {
         $this->marked_at = null;
         $this->save();
+
+        event(new AccountManualFlagChanged($this->waitingListAccount->account, $this->waitingListAccount->waitingList));
     }
 
     public function getValueAttribute()

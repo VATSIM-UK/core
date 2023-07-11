@@ -29,7 +29,7 @@
                     @endif
                     <tr>
                         <th>Eligible</th>
-                        <td>@if ($list->pivot->eligibility)
+                        <td>@if ($list->pivot->eligible)
                             {!! HTML::img("tick_mark_circle", "png", 20) !!}
                             @else
                             {!! HTML::img("cross_mark_circle", "png", 20) !!}
@@ -89,7 +89,7 @@
 </div>
 @if($list->isATCList() || count($automaticFlags))
 <div class="alert alert-warning">
-    <strong>Important: </strong> Automated eligibility flags are only calculated every 24 hours! If you have just completed
+    <strong>Important: </strong> Automated eligibility flags are only calculated every 24 hours, or after the end of an ATC session! If you have just completed
     a network session, the flags shown above may not be accurate.
 </div>
 <div class="row">
