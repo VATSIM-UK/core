@@ -56,21 +56,21 @@ class AccountResource extends Resource implements DefinesGatedAttributes
         return $form
             ->schema([
                 Forms\Components\Fieldset::make('Basic Details')->schema([
-                    Forms\Components\Grid::make(3)->schema([
-                        Forms\Components\Placeholder::make('central_account_name')
-                            ->content(fn ($record) => $record->name_first.' '.$record->name_last)
-                            ->visibleOn('view'),
-                        Forms\Components\TextInput::make('nickname')
-                            ->label('Preferred Name'),
-                        CopyablePlaceholder::make('id')
-                            ->label('CID')
-                            ->content(fn ($record) => $record->id)
-                            ->visibleOn('view')
-                            ->iconOnly()
-                            ->extraAttributes([
-                                'class' => 'flex items-center space-x-2',
-                            ]),
-                    ]),
+                    // Forms\Components\Grid::make(3)->schema([
+                    //     Forms\Components\Placeholder::make('central_account_name')
+                    //         ->content(fn ($record) => $record->name_first.' '.$record->name_last)
+                    //         ->visibleOn('view'),
+                    //     Forms\Components\TextInput::make('nickname')
+                    //         ->label('Preferred Name'),
+                    //     CopyablePlaceholder::make('id')
+                    //         ->label('CID')
+                    //         ->content(fn ($record) => $record->id)
+                    //         ->visibleOn('view')
+                    //         ->iconOnly()
+                    //         ->extraAttributes([
+                    //             'class' => 'flex items-center space-x-2',
+                    //         ]),
+                    // ]),
 
                     // Forms\Components\Fieldset::make('Emails')->schema([
                     //     Forms\Components\TextInput::make('email')
@@ -142,8 +142,8 @@ class AccountResource extends Resource implements DefinesGatedAttributes
         return [
             RelationManagers\StatesRelationManager::class,
             RelationManagers\QualificationsRelationManager::class,
-            RelationManagers\RolesRelationManager::class,
-            RelationManagers\BansRelationManager::class,
+            // RelationManagers\RolesRelationManager::class,
+            // RelationManagers\BansRelationManager::class,
         ];
     }
 
