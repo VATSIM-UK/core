@@ -113,7 +113,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'atc.endorsement.access',
 
             // // Operations System Permissions
-            // 'operations.access',
+            'operations.access',
 
             // // TeamSpeak Permissions
             // 'teamspeak.servergroup.serveradmin',
