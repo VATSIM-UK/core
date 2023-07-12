@@ -50,6 +50,9 @@ class SyncCtsRoles extends Command
         $this->syncPilotStudents(55); // Pilot Students
         $this->syncStudentsByPosition('TFP_FLIGHT', Role::findByName('TFP Student')->id); // TFP Students
         $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
+        // OBS Student
+        $this->syncStudentsByPositions(['OBS_CC_PT2', 'OBS_NX_PT2', 'OBS_PH_PT2', 'OBS_SS_PT2'], Role::findByName('OBS Students')->id);
+
         $this->syncStudentsByRts(18, Role::findByName('ATC Students (TWR)')->id); // TWR Students
         $this->syncStudentsByRts(19, Role::findByName('ATC Students (APP)')->id); // APP Students
         $this->syncStudentsByRts(17, Role::findByName('ATC Students (ENR)')->id); // Enroute Students
@@ -104,6 +107,16 @@ class SyncCtsRoles extends Command
     {
         $hasRole = $this->getAccountsWithRoleId($roleId);
         $shouldHaveRole = (new StudentRepository)->getStudentsWithRequestPermissionsFor($callsign);
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncStudentsByPositions(array $callsigns, int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = collect();
+        foreach ($callsigns as $callsign) {
+            $shouldHaveRole = $shouldHaveRole->merge((new StudentRepository)->getStudentsWithRequestPermissionsFor($callsign));
+        }
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 

@@ -2,12 +2,15 @@
 
 namespace App\Models\Training;
 
+use App\Events\Training\AccountAddedToWaitingList;
+use App\Events\Training\FlagAddedToWaitingList;
 use App\Events\Training\WaitingListCreated;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingList extends Model
@@ -56,10 +59,8 @@ class WaitingList extends Model
 
     /**
      * Many WaitingLists can have many Accounts (pivot).
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function accounts()
+    public function accounts(): BelongsToMany
     {
         return $this->belongsToMany(
             Account::class,
@@ -71,6 +72,9 @@ class WaitingList extends Model
                 'deleted_at',
                 'notes',
                 'created_at',
+                'eligible',
+                'eligibility_summary',
+                'flags_status_summary',
             ])->wherePivot('deleted_at', null);
     }
 
@@ -79,9 +83,7 @@ class WaitingList extends Model
         return $this->accounts()
             ->orderByPivot('created_at')
             ->get()
-            ->filter(function ($model) use ($eligible) {
-                return $model->pivot->eligibility == $eligible;
-            })->values();
+            ->filter(fn ($model) => $model->pivot->eligible == $eligible)->values();
     }
 
     /**
@@ -121,6 +123,8 @@ class WaitingList extends Model
             $account->pivot->flags()->attach($flag);
         });
 
+        event(new FlagAddedToWaitingList($this));
+
         return $savedFlag;
     }
 
@@ -147,6 +151,8 @@ class WaitingList extends Model
         $pivot = $this->accounts()->find($account->id)->pivot;
         $pivot->created_at = $timestamp;
         $pivot->save();
+
+        event(new AccountAddedToWaitingList($account, $this->fresh(), $staffAccount));
     }
 
     /**

@@ -17,9 +17,15 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['added_by', 'deleted_at', 'notes'];
+    public $fillable = ['added_by', 'deleted_at', 'notes', 'eligible', 'flags_status_summary', 'eligibility_summary'];
 
     protected $appends = ['atcHourCheck'];
+
+    protected $casts = [
+        'eligible' => 'boolean',
+        'eligibility_summary' => 'array',
+        'flags_status_summary' => 'array',
+    ];
 
     // 24 hours
     protected $cacheTtl = 86400;
@@ -169,14 +175,6 @@ class WaitingListAccount extends Pivot
         }
 
         return true;
-    }
-
-    public function getEligibilityAttribute()
-    {
-        // is the status of the account deferred
-        // are all the flags true
-        // and is the atc hour check true
-        return $this->atcHourCheck() && $this->allFlagsChecker() && $this->current_status->name == 'Active';
     }
 
     public function getTheoryExamPassedAttribute(): ?bool

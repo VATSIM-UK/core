@@ -3,9 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Enums\QualificationTypeEnum;
+use App\Filament\Helpers\Resources\DefinesGatedAttributes;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Mship\Account;
+use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Carbon\CarbonInterface;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -14,7 +16,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 
-class AccountResource extends Resource
+class AccountResource extends Resource implements DefinesGatedAttributes
 {
     protected static ?string $model = Account::class;
 
@@ -36,22 +38,38 @@ class AccountResource extends Resource
         ];
     }
 
+    public static function gatedAttributes(Model $record): array
+    {
+        return [
+            'email' => auth()->user()->can('viewSensitive', $record),
+            'secondaryEmails' => auth()->user()->can('viewSensitive', $record),
+        ];
+    }
+
+    public static function getGlobalSearchResultUrl(Model $record): ?string
+    {
+        return AccountResource::getUrl('view', ['record' => $record]);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Fieldset::make('Basic Details')->schema([
                     Forms\Components\Grid::make(3)->schema([
-                        Forms\Components\Placeholder::make('Central Account Name')
+                        Forms\Components\Placeholder::make('central_account_name')
                             ->content(fn ($record) => $record->name_first.' '.$record->name_last)
                             ->visibleOn('view'),
                         Forms\Components\TextInput::make('nickname')
                             ->label('Preferred Name'),
-                        Forms\Components\Placeholder::make('id')
+                        CopyablePlaceholder::make('id')
                             ->label('CID')
                             ->content(fn ($record) => $record->id)
-                            ->visibleOn('view'),
-
+                            ->visibleOn('view')
+                            ->iconOnly()
+                            ->extraAttributes([
+                                'class' => 'flex items-center space-x-2',
+                            ]),
                     ]),
 
                     Forms\Components\Fieldset::make('Emails')->schema([

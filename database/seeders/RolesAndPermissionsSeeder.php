@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
@@ -77,17 +78,17 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'waiting-lists.create',
 
             // // Feedback System Permissions
-            // 'feedback.access',
+            'feedback.access',
+            'feedback.view-submitter',
+            'feedback.view-own',
             // 'feedback.view-insensitive',
-            // 'feedback.view-sensitive',
-            // 'feedback.view-type.*',
-            // 'feedback.view-type.atc',
-            // 'feedback.view-type.atc-mentor',
-            // 'feedback.view-type.pilot',
-            // 'feedback.view-type.group',
-            // 'feedback.send',
-            // 'feedback.action',
-            // 'feedback.unaction',
+            'feedback.view-sensitive',
+            'feedback.view-type.*',
+            'feedback.view-type.atc',
+            'feedback.view-type.atc-mentor',
+            'feedback.view-type.pilot',
+            'feedback.view-type.group',
+            'feedback.action',
             // 'feedback.form.create',
             // 'feedback.form.configure.*',
 
@@ -167,6 +168,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'discord.graphics',
             // 'discord.rostering',
             // 'discord.livestreaming',
+            'discord.atc.student.obs',
         ];
 
         foreach ($permissions as $permission) {
@@ -176,9 +178,12 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        if (Permission::findByName('*')) {
+        try {
             $privacc->givePermissionTo('*');
+        } catch (PermissionDoesNotExist $exception) {
+            // It doesn't exist...
         }
+
         // $member->givePermissionTo('discord.member');
     }
 }
