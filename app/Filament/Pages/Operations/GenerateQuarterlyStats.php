@@ -2,18 +2,15 @@
 
 namespace App\Filament\Pages\Operations;
 
-use App\Filament\Helpers\Pages\RequiresAuthorisation;
+use App\Filament\Helpers\Pages\BasePage;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
-use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
 
-class GenerateQuarterlyStats extends Page
+class GenerateQuarterlyStats extends BasePage
 {
-    use RequiresAuthorisation {mount as parentMount; }
-
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     protected static ?string $navigationGroup = 'Operations';
@@ -32,7 +29,7 @@ class GenerateQuarterlyStats extends Page
 
     public function mount(): void
     {
-        $this->parentMount();
+        parent::mount();
         $this->form->fill();
     }
 

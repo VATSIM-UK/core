@@ -2,9 +2,19 @@
 
 namespace App\Filament\Helpers\Pages;
 
-trait RequiresAuthorisation
+use Filament\Pages\Page;
+
+abstract class BasePage extends Page
 {
-    abstract protected static function canUse(): bool;
+    /**
+     * Returns if the current user is able to see and use this page.
+     *
+     * Defaults to `true` unless overriden
+     */
+    protected static function canUse(): bool
+    {
+        return true;
+    }
 
     protected static function shouldRegisterNavigation(): bool
     {

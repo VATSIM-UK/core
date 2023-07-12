@@ -36,7 +36,7 @@ class FilamentServiceProvider extends ServiceProvider
          */
         \Filament\Resources\Resource::macro('urlToView', function (?Model $record): ?string {
             /** @var \Filament\Resources\Resource $this */
-            if (!$record) {
+            if (! $record) {
                 return null;
             }
 
