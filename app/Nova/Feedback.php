@@ -66,11 +66,6 @@ class Feedback extends Resource
         return false;
     }
 
-    public static function availableForNavigation(Request $request)
-    {
-        return $request->user()->can('use-permission', 'feedback');
-    }
-
     public static function indexQuery(NovaRequest $request, $query)
     {
         return $query->whereNotIn('account_id', $request->user()->hiddenFeedbackUsers());
