@@ -29,19 +29,21 @@ class ViewAccountPageTest extends BaseAdminTestCase
         $this->assertEquals($this->privacc->id, auth()->user()->id);
     }
 
-    // Disabled whilst investigating AccountResource loading issues
-    // public function test_cant_see_email_address_without_permission()
-    // {
-    //     $this->user->givePermissionTo('account.view-insensitive.*');
+    public function test_cant_see_email_address_without_permission()
+    {
+        // Disabled whilst investigating AccountResource loading
+        $this->markTestSkipped();
 
-    //     Livewire::actingAs($this->user);
-    //     Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-    //         ->assertFormFieldIsHidden('email');
+        $this->user->givePermissionTo('account.view-insensitive.*');
 
-    //     $this->user->givePermissionTo('account.view-sensitive.*');
-    //     Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-    //         ->assertFormFieldExists('email');
-    // }
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertFormFieldIsHidden('email');
+
+        $this->user->givePermissionTo('account.view-sensitive.*');
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertFormFieldExists('email');
+    }
 
     public function test_cant_see_ban_relation_manager_without_permission()
     {
