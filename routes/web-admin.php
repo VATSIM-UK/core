@@ -33,16 +33,6 @@ Route::group([
         Route::get('endorsement')->uses('Endorsement@getIndex')->name('endorsement.index');
     });
 
-    // Operations
-    Route::group([
-        'prefix' => 'ops',
-        'namespace' => 'Operations',
-        'as' => 'ops.',
-    ], function () {
-        Route::get('qstats')->uses('QuarterlyStats@get')->name('qstats.index');
-        Route::post('qstats')->uses('QuarterlyStats@generate')->name('qstats.generate');
-    });
-
     // Members
     Route::group([
         'prefix' => 'mship',

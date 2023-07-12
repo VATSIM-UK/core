@@ -86,5 +86,13 @@ class FilamentServiceProvider extends ServiceProvider
                     }
                 );
         });
+
+        /**
+         * Defines a suitable "in" validation requirement that the selected value exists in the given options
+         */
+        \Filament\Forms\Components\Select::macro('inOptions', function (): \Filament\Forms\Components\Select {
+            /** @var \Filament\Forms\Components\Select $this */
+            return $this->in(fn ($component) => array_keys($component->getOptions()));
+        });
     }
 }
