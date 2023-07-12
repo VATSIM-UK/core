@@ -1,29 +1,64 @@
 <?php
 
-namespace App\Http\Controllers\Adm\Operations;
+namespace App\Filament\Pages\Operations;
 
-use App\Http\Controllers\Adm\AdmController;
+use App\Filament\Helpers\Pages\BasePage;
 use App\Models\Mship\Account;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
-class QuarterlyStats extends AdmController
+class GenerateQuarterlyStats extends BasePage
 {
-    public function get()
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+
+    protected static ?string $navigationGroup = 'Operations';
+
+    protected static string $view = 'filament.pages.operations.generate-quarterly-stats';
+
+    protected static ?string $navigationLabel = 'Quarterly Stats';
+
+    public $quarter = null;
+
+    public $year = null;
+
+    public $statistics = null;
+
+    private $quarterMappings = ['01-01' => 'Q1', '04-01' => 'Q2', '07-01' => 'Q3', '10-01' => 'Q4'];
+
+    public function mount(): void
     {
-        return $this->viewMake('adm.ops.qstats');
+        parent::mount();
+        $this->form->fill();
     }
 
-    public function generate(Request $request)
+    protected function getFormSchema(): array
     {
-        $this->generateValidation($request);
+        $yearOptions = range(now()->year, 2016, -1);
 
-        $startDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'));
-        $endDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'))->addMonths(3);
+        return [
+            Grid::make()->schema([
+                Select::make('quarter')
+                    ->required()
+                    ->inOptions()
+                    ->options($this->quarterMappings),
+                Select::make('year')
+                    ->required()
+                    ->inOptions()
+                    ->options(collect($yearOptions)->mapWithKeys(fn ($year) => [$year => $year])),
+            ]),
+        ];
+    }
 
-        $stats = collect([
+    public function submit(): void
+    {
+        $this->validate();
+
+        $startDate = Carbon::parse($this->year.'-'.$this->quarter);
+        $endDate = $startDate->addMonths(3);
+
+        $this->statistics = collect([
             ['name' => 'Left Division', 'value' => $this->membersLeftDivision($startDate, $endDate)],
             ['name' => 'Pilots Visiting', 'value' => $this->pilotsVisiting($startDate, $endDate)],
             ['name' => 'New Joiners as First Division', 'value' => $this->newJoinersAsFirstDivision($startDate, $endDate)],
@@ -31,22 +66,11 @@ class QuarterlyStats extends AdmController
             ['name' => 'Visiting Controllers Above S1', 'value' => $this->visitingControllersAboveS1($startDate, $endDate)],
             ['name' => 'Completed Transfer (Ex OBS)', 'value' => $this->completedTransfersExObs($startDate, $endDate)],
         ]);
-
-        return $this->viewMake('adm.ops.qstats')
-            ->with('stats', $stats)
-            ->with('quarter', $startDate->quarter)
-            ->with('year', $startDate->year);
     }
 
-    private function generateValidation(Request $request)
+    protected static function canUse(): bool
     {
-        return $request->validate([
-            'quarter' => [
-                'required',
-                Rule::in(['01-01', '04-01', '07-01', '10-01']),
-            ],
-            'year' => 'required|numeric|min:2016|max:'.Carbon::now()->year,
-        ]);
+        return auth()->user()->can('operations.access');
     }
 
     private function membersLeftDivision($startDate, $endDate)
