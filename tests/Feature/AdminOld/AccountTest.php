@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Admin;
+namespace Tests\Feature\AdminOld;
 
 use App\Jobs\UpdateMember;
 use App\Models\Mship\Account\Ban;
