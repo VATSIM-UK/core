@@ -72,38 +72,38 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                             ]),
                     ]),
 
-                    Forms\Components\Fieldset::make('Emails')->schema([
-                        Forms\Components\TextInput::make('email')
-                            ->label('Primary Email')
-                            ->required()
-                            ->disabled(),
+                    // Forms\Components\Fieldset::make('Emails')->schema([
+                    //     Forms\Components\TextInput::make('email')
+                    //         ->label('Primary Email')
+                    //         ->required()
+                    //         ->disabled(),
 
-                        Forms\Components\Repeater::make('secondaryEmails')
-                            ->relationship()
-                            ->schema([Forms\Components\TextInput::make('email')])->disabled(),
-                    ])->when(fn ($record, $context) => auth()->user()->can('viewSensitive', $record) && $context === 'view'),
+                    //     Forms\Components\Repeater::make('secondaryEmails')
+                    //         ->relationship()
+                    //         ->schema([Forms\Components\TextInput::make('email')])->disabled(),
+                    // ])->when(fn ($record, $context) => auth()->user()->can('viewSensitive', $record) && $context === 'view'),
 
-                    Forms\Components\Fieldset::make('State')->schema([
-                        Forms\Components\Grid::make(3)->schema([
-                            Forms\Components\Placeholder::make('vatsim_region')
-                                ->label('VATSIM Region')
-                                ->content(fn ($record) => $record->primary_permanent_state?->pivot?->region),
-                            Forms\Components\Placeholder::make('vatsim_division')
-                                ->label('VATSIM Division')
-                                ->content(fn ($record) => $record->primary_permanent_state?->pivot?->division),
-                            Forms\Components\Placeholder::make('uk_primary_state')
-                                ->label('UK Primary State')
-                                ->content(fn ($record) => $record->primary_state?->name),
-                        ]),
-                    ])->visibleOn('view'),
+                    // Forms\Components\Fieldset::make('State')->schema([
+                    //     Forms\Components\Grid::make(3)->schema([
+                    //         Forms\Components\Placeholder::make('vatsim_region')
+                    //             ->label('VATSIM Region')
+                    //             ->content(fn ($record) => $record->primary_permanent_state?->pivot?->region),
+                    //         Forms\Components\Placeholder::make('vatsim_division')
+                    //             ->label('VATSIM Division')
+                    //             ->content(fn ($record) => $record->primary_permanent_state?->pivot?->division),
+                    //         Forms\Components\Placeholder::make('uk_primary_state')
+                    //             ->label('UK Primary State')
+                    //             ->content(fn ($record) => $record->primary_state?->name),
+                    //     ]),
+                    // ])->visibleOn('view'),
 
-                    Forms\Components\Fieldset::make('Qualifications')->schema(function ($record) {
-                        return [
-                            Forms\Components\Grid::make(3)
-                                ->schema(static::makeQualificationSummaryPlaceholders($record))
-                                ->visibleOn('view'),
-                        ];
-                    })->visibleOn('view'),
+                    // Forms\Components\Fieldset::make('Qualifications')->schema(function ($record) {
+                    //     return [
+                    //         Forms\Components\Grid::make(3)
+                    //             ->schema(static::makeQualificationSummaryPlaceholders($record))
+                    //             ->visibleOn('view'),
+                    //     ];
+                    // })->visibleOn('view'),
                 ]),
             ]);
     }
