@@ -56,7 +56,7 @@ class GenerateQuarterlyStats extends BasePage
         $this->validate();
 
         $startDate = Carbon::parse($this->year.'-'.$this->quarter);
-        $endDate = $startDate->addMonths(3);
+        $endDate = $startDate->copy()->addMonths(3);
 
         $this->statistics = collect([
             ['name' => 'Left Division', 'value' => $this->membersLeftDivision($startDate, $endDate)],
