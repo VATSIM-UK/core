@@ -7,10 +7,13 @@ use App\Models\Atc\Endorsement;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use App\Rules\HomeMemberId;
+use Carbon\Carbon;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Arr;
 
 class ViewWaitingList extends ViewRecord
 {
@@ -20,10 +23,11 @@ class ViewWaitingList extends ViewRecord
     {
         return [
             Actions\Action::make('add_student')
-                ->label('Add Student')
                 ->action(function ($data, $action) {
                     $account = Account::find($data['account_id']);
-                    $this->record->addToWaitingList($account, auth()->user());
+                    $joinDate = Arr::get($data, 'join_date');
+                    $createdAt = $joinDate ? new Carbon($joinDate) : null;
+                    $this->record->addToWaitingList($account, auth()->user(), $createdAt);
 
                     $action->success();
                 })
@@ -37,10 +41,12 @@ class ViewWaitingList extends ViewRecord
                             }
                         }])
                         ->required(),
-                ]),
+                    DatePicker::make('join_date')
+                        ->visible(fn () => auth()->user()->can('addAccountsAdmin', $this->record)),
+                ])
+                ->visible(fn () => auth()->user()->can('addAccounts', $this->record)),
 
             Actions\Action::make('add_flag')
-                ->label('Add Flag')
                 ->action(function ($data) {
                     $flag = WaitingListFlag::create([
                         'name' => $data['name'],
@@ -54,7 +60,8 @@ class ViewWaitingList extends ViewRecord
                     Select::make('endorsement_id')->label('Endorsement')->options(fn () => Endorsement::all()->mapWithKeys(function ($item) {
                         return [$item['id'] => $item['name']];
                     }))->hint('If an option is chosen here, this will be an automated flag. This cannot be reversed.'),
-                ]),
+                ])
+                ->visible(fn () => auth()->user()->can('addFlags', $this->record)),
 
             Actions\DeleteAction::make(),
         ];

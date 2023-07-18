@@ -9,6 +9,8 @@ use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 class AccountsRelationManager extends RelationManager
 {
@@ -76,14 +78,14 @@ class AccountsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('position')->getStateUsing(fn ($record) => $record->pivot->position ?? '-')->sortable(),
+                Tables\Columns\TextColumn::make('pivot.position')->getStateUsing(fn ($record) => $record->pivot->position ?? '-')->sortable(),
                 Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
                 Tables\Columns\TextColumn::make('name')->label('Name'),
-                Tables\Columns\TextColumn::make('created_at')->label('Added on')->dateTime('M dS Y'),
-                Tables\Columns\IconColumn::make('atc_hour_check')->boolean()->label('Hour check')->getStateUsing(fn ($record) => $record->pivot->atc_hour_check),
-                Tables\Columns\IconColumn::make('flags_check')->boolean()->label('Flags check')->getStateUsing(fn ($record) => (bool) $record->pivot?->flags_status_summary['overall']),
-                Tables\Columns\IconColumn::make('eligible')->boolean(),
-                Tables\Columns\BadgeColumn::make('status')->enum([
+                Tables\Columns\TextColumn::make('pivot.created_at')->label('Added on')->dateTime('M dS Y'),
+                Tables\Columns\IconColumn::make('pivot.atc_hour_check')->boolean()->label('Hour check')->getStateUsing(fn ($record) => $record->pivot->atc_hour_check),
+                Tables\Columns\IconColumn::make('pivot.flags_check')->boolean()->label('Flags check')->getStateUsing(fn ($record) => (bool) Arr::get($record->pivot?->flags_status_summary, 'overall')),
+                Tables\Columns\IconColumn::make('pivot.eligible')->boolean(),
+                Tables\Columns\BadgeColumn::make('pivot.status')->enum([
                     'Active' => 'Active',
                     'Deferred' => 'Deferred',
                 ])->getStateUsing(fn ($record) => $record->pivot->current_status->name)->colors([
@@ -94,7 +96,7 @@ class AccountsRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->using(function ($record, $data) {
-                        $record->update([
+                        $record->pivot->update([
                             'notes' => $data['notes'],
                         ]);
 
@@ -102,7 +104,7 @@ class AccountsRelationManager extends RelationManager
                         $status = WaitingListStatus::find($status);
                         $record->pivot->addStatus($status);
 
-                        $flagsById = collect($data['flags']);
+                        $flagsById = collect(Arr::get($data, 'flags', []));
                         // only update manual flags
                         $flagsToUpdate = $record->pivot->flags->filter(fn ($flag) => $flag->endorsement_id == null);
                         $flagsToUpdate->each(fn ($flag) => $flagsById->get($flag->id) ? $flag->pivot->mark() : $flag->pivot->unMark());
@@ -115,7 +117,29 @@ class AccountsRelationManager extends RelationManager
                     }),
 
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DetachAction::make()
+                    ->label('Remove')
+                    ->successNotificationTitle('User removed from waiting list'),
             ]);
+    }
+
+    public static function canViewForRecord(Model $ownerRecord): bool
+    {
+        return auth()->user()->can('view', $ownerRecord);
+    }
+
+    protected function canView(Model $record): bool
+    {
+        return true;
+    }
+
+    protected function canEdit(Model $record): bool
+    {
+        return auth()->user()->can('updateAccounts', $this->ownerRecord);
+    }
+
+    protected function canDetach(Model $record): bool
+    {
+        return auth()->user()->can('removeAccount', $this->ownerRecord);
     }
 }
