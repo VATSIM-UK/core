@@ -70,6 +70,8 @@ class RolesAndPermissionsSeeder extends Seeder
             // Waiting List System Permissions,
             'waiting-lists.access',
             'waiting-lists.view.*',
+            'waiting-lists.view.atc',
+            'waiting-lists.view.pilot',
             'waiting-lists.add-accounts.*',
             'waiting-lists.add-accounts-admin.*',
             'waiting-lists.update-accounts.*',
