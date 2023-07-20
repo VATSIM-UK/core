@@ -47,23 +47,23 @@ class ViewWaitingList extends ViewRecord
                 ->visible(fn () => auth()->user()->can('addAccounts', $this->record)),
 
             Actions\Action::make('add_flag')
-                ->action(function ($data) {
+                ->action(function ($data, $action) {
                     $flag = WaitingListFlag::create([
                         'name' => $data['name'],
                         'endorsement_id' => $data['endorsement_id'],
                     ]);
 
                     $this->record->addFlag($flag);
+
+                    $action->success();
                 })->form([
-                    TextInput::make('name')->rules('required', 'min:3', 'unique:training_waiting_list_flags,name'),
+                    TextInput::make('name')->rules(['required', 'min:3', 'unique:training_waiting_list_flags,name']),
 
                     Select::make('endorsement_id')->label('Endorsement')->options(fn () => Endorsement::all()->mapWithKeys(function ($item) {
                         return [$item['id'] => $item['name']];
                     }))->hint('If an option is chosen here, this will be an automated flag. This cannot be reversed.'),
                 ])
                 ->visible(fn () => auth()->user()->can('addFlags', $this->record)),
-
-            Actions\DeleteAction::make(),
         ];
     }
 }

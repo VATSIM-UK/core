@@ -24,21 +24,24 @@ class AccountsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                CopyablePlaceholder::make('id')
-                    ->label('CID')
-                    ->content(fn ($record) => $record->id)
-                    ->iconOnly(),
+                Forms\Components\Fieldset::make('Base Information')
+                    ->schema([
+                        CopyablePlaceholder::make('id')
+                            ->label('CID')
+                            ->content(fn ($record) => $record->id)
+                            ->iconOnly(),
 
-                Forms\Components\Textarea::make('notes')
-                    ->label('Notes')
-                    ->rows(3)
-                    ->placeholder('Add notes here'),
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Notes')
+                            ->rows(3)
+                            ->placeholder('Add notes here'),
 
+                    ]),
                 Forms\Components\Fieldset::make('account_status')
                     ->label('Account Status')
                     ->schema(function ($record) {
                         return [
-                            Forms\Components\Radio::make('status')
+                            Forms\Components\Radio::make('account_status')
                                 ->label('')
                                 ->required()
                                 ->options([
@@ -48,7 +51,6 @@ class AccountsRelationManager extends RelationManager
                                 ->afterStateHydrated(fn ($component, $state) => $component->state($record->pivot->current_status->id)),
                         ];
                     }),
-
                 Forms\Components\Fieldset::make('automatic_flags')
                     ->label('Automatic Flags')
                     ->schema(function ($record) {
@@ -71,6 +73,27 @@ class AccountsRelationManager extends RelationManager
                         })->all();
                     })
                     ->visible(fn ($record) => $record->pivot->flags->isNotEmpty()),
+
+                Forms\Components\Fieldset::make('eligibility_summary')
+                    ->label('Eligibility Breakdown')
+                    ->schema(function ($record) {
+                        return [
+                            Forms\Components\Toggle::make('base_controlling_hours')
+                                ->label('Controlling Hours')
+                                ->disabled()
+                                ->afterStateHydrated(fn ($component, $state) => $component->state(Arr::get($record->pivot->eligibility_summary, 'base_controlling_hours'))),
+
+                            Forms\Components\Toggle::make('flags_check')
+                                ->label('Flags Check')
+                                ->disabled()
+                                ->afterStateHydrated(fn ($component, $state) => $component->state((bool) Arr::get($record->pivot->flags_status_summary, 'overall'))),
+
+                            Forms\Components\Toggle::make('status')
+                                ->label('Status')
+                                ->disabled()
+                                ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $record->pivot->current_status->name == 'Active')),
+                        ];
+                    }),
             ]);
     }
 
@@ -78,29 +101,29 @@ class AccountsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('pivot.position')->getStateUsing(fn ($record) => $record->pivot->position ?? '-')->sortable(),
+                Tables\Columns\TextColumn::make('pivot.position')->getStateUsing(fn ($record) => $record->pivot->position ?? '-')->sortable()->label('Position'),
                 Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
                 Tables\Columns\TextColumn::make('name')->label('Name'),
                 Tables\Columns\TextColumn::make('pivot.created_at')->label('Added on')->dateTime('M dS Y'),
-                Tables\Columns\IconColumn::make('pivot.atc_hour_check')->boolean()->label('Hour check')->getStateUsing(fn ($record) => $record->pivot->atc_hour_check),
+                Tables\Columns\IconColumn::make('pivot.atc_hour_check')->boolean()->label('Hour check')->getStateUsing(fn ($record) => Arr::get($record->pivot?->eligibility_summary, 'base_controlling_hours')),
                 Tables\Columns\IconColumn::make('pivot.flags_check')->boolean()->label('Flags check')->getStateUsing(fn ($record) => (bool) Arr::get($record->pivot?->flags_status_summary, 'overall')),
-                Tables\Columns\IconColumn::make('pivot.eligible')->boolean(),
+                Tables\Columns\IconColumn::make('pivot.eligible')->boolean()->label('Eligible')->getStateUsing(fn ($record) => $record->pivot->eligible),
                 Tables\Columns\BadgeColumn::make('pivot.status')->enum([
                     'Active' => 'Active',
                     'Deferred' => 'Deferred',
                 ])->getStateUsing(fn ($record) => $record->pivot->current_status->name)->colors([
                     'success' => static fn ($record) => $record === 'Active',
                     'danger' => static fn ($record) => $record === 'Deferred',
-                ]),
+                ])->label('Status'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->using(function ($record, $data) {
+                    ->using(function ($record, $data, $livewire) {
                         $record->pivot->update([
                             'notes' => $data['notes'],
                         ]);
 
-                        $status = $data['status'] == WaitingListStatus::DEFAULT_STATUS ? WaitingListStatus::DEFAULT_STATUS : WaitingListStatus::DEFERRED;
+                        $status = $data['account_status'] == WaitingListStatus::DEFAULT_STATUS ? WaitingListStatus::DEFAULT_STATUS : WaitingListStatus::DEFERRED;
                         $status = WaitingListStatus::find($status);
                         $record->pivot->addStatus($status);
 
@@ -113,12 +136,15 @@ class AccountsRelationManager extends RelationManager
                             $flagsById->mapWithKeys(fn ($value, $key) => [$key => ['marked_at' => $value ? now() : null]])->all(),
                         );
 
+                        $livewire->emit('refreshWaitingList');
+
                         return $record;
                     }),
 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\DetachAction::make()
                     ->label('Remove')
+                    ->using(fn ($record) => static::$ownerRecord->removeFromWaitingList($record->pivot))
                     ->successNotificationTitle('User removed from waiting list'),
             ]);
     }
