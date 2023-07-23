@@ -12482,16 +12482,16 @@
         },
         {
             "name": "whitecube/laravel-cookie-consent",
-            "version": "v1.0.3",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/whitecube/laravel-cookie-consent.git",
-                "reference": "b5d7a286cc55583fc81ee34bcd5062c9e8778041"
+                "reference": "7aeda02e9c6d5e86f23d3f1b8373e28cd7af7c3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/b5d7a286cc55583fc81ee34bcd5062c9e8778041",
-                "reference": "b5d7a286cc55583fc81ee34bcd5062c9e8778041",
+                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/7aeda02e9c6d5e86f23d3f1b8373e28cd7af7c3c",
+                "reference": "7aeda02e9c6d5e86f23d3f1b8373e28cd7af7c3c",
                 "shasum": ""
             },
             "require": {
@@ -12545,7 +12545,7 @@
             ],
             "support": {
                 "issues": "https://github.com/whitecube/laravel-cookie-consent/issues",
-                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.0.3"
+                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.0.4"
             },
             "funding": [
                 {
@@ -12553,7 +12553,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-07-04T15:47:29+00:00"
+            "time": "2023-07-17T08:22:01+00:00"
         },
         {
             "name": "wohali/oauth2-discord-new",
