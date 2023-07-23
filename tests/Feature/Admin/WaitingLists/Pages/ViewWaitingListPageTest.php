@@ -3,7 +3,7 @@
 namespace Tests\Feature\Admin\WaitingLists;
 
 use App\Filament\Resources\WaitingListResource\Pages\ViewWaitingList;
-use App\Filament\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
+use App\Filament\Resources\WaitingListResource\RelationManagers\IneligibleAccountsRelationManager;
 use App\Models\Atc\Endorsement;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
@@ -246,8 +246,9 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $this->adminUser->givePermissionTo('waiting-lists.view.atc');
         $this->adminUser->givePermissionTo('waiting-lists.access');
 
-        Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList])
-            ->callTableAction('view', record: $waitingList->accounts->first());
-        // ->assertSee('Base Information');
+        Livewire::test(IneligibleAccountsRelationManager::class, ['ownerRecord' => $waitingList])
+            ->assertCanSeeTableRecords([$waitingList->accounts()->first()])
+            ->callTableAction('view', record: $waitingList->accounts->first())
+            ->assertSee('Base Information');
     }
 }
