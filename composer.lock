@@ -12482,16 +12482,16 @@
         },
         {
             "name": "whitecube/laravel-cookie-consent",
-            "version": "v1.0.3",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/whitecube/laravel-cookie-consent.git",
-                "reference": "b5d7a286cc55583fc81ee34bcd5062c9e8778041"
+                "reference": "7aeda02e9c6d5e86f23d3f1b8373e28cd7af7c3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/b5d7a286cc55583fc81ee34bcd5062c9e8778041",
-                "reference": "b5d7a286cc55583fc81ee34bcd5062c9e8778041",
+                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/7aeda02e9c6d5e86f23d3f1b8373e28cd7af7c3c",
+                "reference": "7aeda02e9c6d5e86f23d3f1b8373e28cd7af7c3c",
                 "shasum": ""
             },
             "require": {
@@ -12545,7 +12545,7 @@
             ],
             "support": {
                 "issues": "https://github.com/whitecube/laravel-cookie-consent/issues",
-                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.0.3"
+                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.0.4"
             },
             "funding": [
                 {
@@ -12553,7 +12553,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-07-04T15:47:29+00:00"
+            "time": "2023-07-17T08:22:01+00:00"
         },
         {
             "name": "wohali/oauth2-discord-new",
@@ -13343,37 +13343,33 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.6.2",
+            "version": "1.6.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "13a7fa2642c76c58fa2806ef7f565344c817a191"
+                "reference": "d1413755e26fe56a63455f7753221c86cbb88f66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/13a7fa2642c76c58fa2806ef7f565344c817a191",
-                "reference": "13a7fa2642c76c58fa2806ef7f565344c817a191",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/d1413755e26fe56a63455f7753221c86cbb88f66",
+                "reference": "d1413755e26fe56a63455f7753221c86cbb88f66",
                 "shasum": ""
             },
             "require": {
                 "hamcrest/hamcrest-php": "^2.0.1",
                 "lib-pcre": ">=7.0",
-                "php": "^7.4 || ^8.0"
+                "php": ">=7.4,<8.3"
             },
             "conflict": {
                 "phpunit/phpunit": "<8.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^8.5 || ^9.3",
-                "psalm/plugin-phpunit": "^0.18",
-                "vimeo/psalm": "^5.9"
+                "psalm/plugin-phpunit": "^0.18.4",
+                "symplify/easy-coding-standard": "^11.5.0",
+                "vimeo/psalm": "^5.13.1"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.6.x-dev"
-                }
-            },
             "autoload": {
                 "files": [
                     "library/helpers.php",
@@ -13391,12 +13387,20 @@
                 {
                     "name": "Pádraic Brady",
                     "email": "padraic.brady@gmail.com",
-                    "homepage": "http://blog.astrumfutura.com"
+                    "homepage": "https://github.com/padraic",
+                    "role": "Author"
                 },
                 {
                     "name": "Dave Marshall",
                     "email": "dave.marshall@atstsolutions.co.uk",
-                    "homepage": "http://davedevelopment.co.uk"
+                    "homepage": "https://davedevelopment.co.uk",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Nathanael Esayeas",
+                    "email": "nathanael.esayeas@protonmail.com",
+                    "homepage": "https://github.com/ghostwriter",
+                    "role": "Lead Developer"
                 }
             ],
             "description": "Mockery is a simple yet flexible PHP mock object framework",
@@ -13414,10 +13418,13 @@
                 "testing"
             ],
             "support": {
+                "docs": "https://docs.mockery.io/",
                 "issues": "https://github.com/mockery/mockery/issues",
-                "source": "https://github.com/mockery/mockery/tree/1.6.2"
+                "rss": "https://github.com/mockery/mockery/releases.atom",
+                "security": "https://github.com/mockery/mockery/security/advisories",
+                "source": "https://github.com/mockery/mockery"
             },
-            "time": "2023-06-07T09:07:52+00:00"
+            "time": "2023-07-19T15:51:02+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -15122,16 +15129,16 @@
         },
         {
             "name": "spatie/backtrace",
-            "version": "1.4.1",
+            "version": "1.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/backtrace.git",
-                "reference": "47794d19e3215ace9e005a8f200cd7cc7be52572"
+                "reference": "483f76a82964a0431aa836b6ed0edde0c248e3ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/backtrace/zipball/47794d19e3215ace9e005a8f200cd7cc7be52572",
-                "reference": "47794d19e3215ace9e005a8f200cd7cc7be52572",
+                "url": "https://api.github.com/repos/spatie/backtrace/zipball/483f76a82964a0431aa836b6ed0edde0c248e3ab",
+                "reference": "483f76a82964a0431aa836b6ed0edde0c248e3ab",
                 "shasum": ""
             },
             "require": {
@@ -15168,7 +15175,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/backtrace/tree/1.4.1"
+                "source": "https://github.com/spatie/backtrace/tree/1.5.3"
             },
             "funding": [
                 {
@@ -15180,7 +15187,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2023-06-13T14:35:04+00:00"
+            "time": "2023-06-28T12:59:17+00:00"
         },
         {
             "name": "spatie/flare-client-php",
@@ -15426,16 +15433,16 @@
         },
         {
             "name": "spatie/laravel-ray",
-            "version": "1.32.5",
+            "version": "1.32.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-ray.git",
-                "reference": "288f30c94c9725dfd78d8a1b82b230521f4d697e"
+                "reference": "8526dd6c6c838b4bac4e0df2ea7896b688b0d43e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-ray/zipball/288f30c94c9725dfd78d8a1b82b230521f4d697e",
-                "reference": "288f30c94c9725dfd78d8a1b82b230521f4d697e",
+                "url": "https://api.github.com/repos/spatie/laravel-ray/zipball/8526dd6c6c838b4bac4e0df2ea7896b688b0d43e",
+                "reference": "8526dd6c6c838b4bac4e0df2ea7896b688b0d43e",
                 "shasum": ""
             },
             "require": {
@@ -15495,7 +15502,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-ray/issues",
-                "source": "https://github.com/spatie/laravel-ray/tree/1.32.5"
+                "source": "https://github.com/spatie/laravel-ray/tree/1.32.6"
             },
             "funding": [
                 {
@@ -15507,7 +15514,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2023-06-23T07:04:32+00:00"
+            "time": "2023-07-19T12:30:16+00:00"
         },
         {
             "name": "spatie/macroable",
