@@ -3658,16 +3658,16 @@
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.18.0",
+            "version": "v5.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "b14498a09af826035e46ae8d6b013d0ec849bdb7"
+                "reference": "1c9b6b3068c64f50ae99a96ca662206c6078a1c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/b14498a09af826035e46ae8d6b013d0ec849bdb7",
-                "reference": "b14498a09af826035e46ae8d6b013d0ec849bdb7",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/1c9b6b3068c64f50ae99a96ca662206c6078a1c5",
+                "reference": "1c9b6b3068c64f50ae99a96ca662206c6078a1c5",
                 "shasum": ""
             },
             "require": {
@@ -3730,9 +3730,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.18.0"
+                "source": "https://github.com/laravel/horizon/tree/v5.19.0"
             },
-            "time": "2023-06-30T15:11:51+00:00"
+            "time": "2023-07-14T14:18:51+00:00"
         },
         {
             "name": "laravel/nova",
