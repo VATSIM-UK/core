@@ -4,11 +4,10 @@ namespace App\Policies\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use App\Policies\BasePolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Arr;
 
-class WaitingListPolicy extends BasePolicy
+class WaitingListPolicy
 {
     use HandlesAuthorization;
 
