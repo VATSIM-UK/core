@@ -26,6 +26,8 @@ class WaitingListLoggingTest extends TestCase
 
         $this->waitingList = factory(WaitingList::class)->create();
 
+        $this->actingAs($this->privacc);
+
         $this->account = Account::factory()->create();
 
         $this->waitingList->addToWaitingList($this->account, $this->privacc);
@@ -48,7 +50,7 @@ class WaitingListLoggingTest extends TestCase
         $listener->handle($event);
 
         Log::channel('training')->assertLogged(function (LogEntry $log) use ($event) {
-            return $log->level === 'info' && $log->message == "A note about {$this->account->name} ({$this->account->id}) in waiting list {$this->waitingList->name} ({$this->waitingList->id}) was changed from 
+            return $log->level === 'info' && $log->message == "A note about {$this->account->name} ({$this->account->id}) in waiting list {$this->waitingList->name} ({$this->waitingList->id}) was changed from
             {$event->oldNoteContent} to {$event->newNoteContent}";
         });
     }

@@ -22,6 +22,8 @@ class WaitingListWriteEligibilityTest extends TestCase
         parent::setUp();
 
         $this->waitingList = factory(WaitingList::class)->create();
+
+        $this->actingAs($this->privacc);
     }
 
     /** @test */

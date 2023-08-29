@@ -21,6 +21,8 @@ class WaitingListEligibilityPlumbingTest extends TestCase
     {
         Bus::fake();
 
+        $this->actingAs($this->privacc);
+
         $waitingList = factory(WaitingList::class)->create();
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
@@ -32,6 +34,8 @@ class WaitingListEligibilityPlumbingTest extends TestCase
     public function test_checks_eligibility_after_marking_manual_flag()
     {
         Bus::fake();
+
+        $this->actingAs($this->privacc);
 
         Event::fakeFor(function () {
             $waitingList = factory(WaitingList::class)->create();
@@ -61,6 +65,8 @@ class WaitingListEligibilityPlumbingTest extends TestCase
     public function test_checks_eligibility_after_unmarking_manual_flag()
     {
         Bus::fake();
+
+        $this->actingAs($this->privacc);
 
         Event::fakeFor(function () {
             $waitingList = factory(WaitingList::class)->create();
