@@ -103,8 +103,12 @@
                             <td>Ben Wright</td>
                         </tr>
                         <tr>
-                            <td>Marketing Assistant</td>
-                            <td>Piers Austin-Foss</td>
+                            <td>Events Manager</td>
+                            <td>Luke Thompson</td>
+                        </tr>
+                        <tr>
+                            <td>Media Manager</td>
+                            <td>Thomas Hallam</td>
                         </tr>
                     </table>
                 </div>
