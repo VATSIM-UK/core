@@ -24,7 +24,8 @@ class AccountsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\Fieldset::make('Base Information')
+                Forms\Components\Fieldset::make('base_information')
+                    ->label('Base Information')
                     ->schema([
                         CopyablePlaceholder::make('id')
                             ->label('CID')
@@ -37,13 +38,12 @@ class AccountsRelationManager extends RelationManager
                             ->placeholder('Add notes here'),
 
                     ]),
-                Forms\Components\Fieldset::make('account_status')
+                Forms\Components\Fieldset::make('account_status_fieldset')
                     ->label('Account Status')
                     ->schema(function ($record) {
                         return [
                             Forms\Components\Radio::make('account_status')
-                                ->label('')
-                                ->required()
+                                ->label('Status')
                                 ->options([
                                     WaitingListStatus::DEFAULT_STATUS => 'Active',
                                     WaitingListStatus::DEFERRED => 'Deferred',
@@ -139,12 +139,13 @@ class AccountsRelationManager extends RelationManager
                         $livewire->emit('refreshWaitingList');
 
                         return $record;
-                    }),
+                    })
+                    ->visible(fn ($record) => auth()->user()->can('updateAccounts', $record->pivot->waitingList)),
 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\DetachAction::make()
                     ->label('Remove')
-                    ->using(fn ($record) => static::$ownerRecord->removeFromWaitingList($record->pivot))
+                    ->using(fn ($record, $livewire) => $livewire->ownerRecord->removeFromWaitingList($record))
                     ->successNotificationTitle('User removed from waiting list'),
             ]);
     }

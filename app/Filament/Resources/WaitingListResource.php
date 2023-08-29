@@ -20,6 +20,8 @@ class WaitingListResource extends Resource
 
     protected static ?string $navigationGroup = 'Training';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Form $form): Form
     {
         return $form

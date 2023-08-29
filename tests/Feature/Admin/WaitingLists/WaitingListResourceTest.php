@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Admin\WaitingLists;
 
+use App\Filament\Resources\WaitingListResource;
+use App\Policies\Training\WaitingListPolicy;
 use Tests\Feature\Admin\BaseAdminResourceTestCase;
 
 class WaitingListResourceTest extends BaseAdminResourceTestCase

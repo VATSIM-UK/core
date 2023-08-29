@@ -12132,7 +12132,7 @@
         },
         {
             "name": "vatsimuk/waiting-lists-manager",
-            "version": "dev-main",
+            "version": "dev-web-133-add-waiting-lists",
             "dist": {
                 "type": "path",
                 "url": "nova-components/WaitingListsManager",
