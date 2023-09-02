@@ -78,7 +78,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class Reference extends Model
 {
-    use Notifiable, SoftDeletes, HasStatus;
+    use HasStatus, Notifiable, SoftDeletes;
 
     protected $table = 'vt_reference';
 

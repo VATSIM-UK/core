@@ -62,9 +62,6 @@ class WaitingListAccount extends Pivot
         return $this->belongsTo(Account::class, 'account_id');
     }
 
-    /**
-     * @param  \App\Models\Training\WaitingList\WaitingListStatus  $listStatus
-     */
     public function addStatus(WaitingListStatus $listStatus)
     {
         $nonEnded = $this->status->reject(function ($value, $key) {
@@ -79,7 +76,6 @@ class WaitingListAccount extends Pivot
     }
 
     /**
-     * @param  \App\Models\Training\WaitingList\WaitingListStatus  $listStatus
      * @return int
      */
     public function removeStatus(WaitingListStatus $listStatus)

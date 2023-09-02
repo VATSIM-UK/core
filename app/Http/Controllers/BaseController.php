@@ -16,10 +16,10 @@ use View;
 
 class BaseController extends \Illuminate\Routing\Controller
 {
-    use DispatchesJobs, ValidatesRequests, RedirectsUsers;
     use AuthorizesRequests {
         authorize as protected doAuthorize;
     }
+    use DispatchesJobs, RedirectsUsers, ValidatesRequests;
 
     protected $account;
 
