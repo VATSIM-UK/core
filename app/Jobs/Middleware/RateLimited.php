@@ -7,7 +7,6 @@ use Predis\Connection\ConnectionException;
 
 class RateLimited
 {
-    /** @var null */
     private $key;
 
     /** @var int */

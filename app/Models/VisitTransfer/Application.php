@@ -128,7 +128,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Application extends Model
 {
-    use PublicId, SoftDeletes, HasStatus;
+    use HasStatus, PublicId, SoftDeletes;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
 

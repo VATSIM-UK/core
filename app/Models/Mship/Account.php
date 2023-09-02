@@ -165,29 +165,29 @@ use Watson\Rememberable\Rememberable;
  */
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use SoftDeletingTrait,
-        Rememberable,
-        Notifiable,
-        Authenticatable,
+    use Authenticatable,
         Authorizable,
-        HasFactory,
-        HasNetworkData,
-        HasMoodleAccount,
-        HasHelpdeskAccount,
-        HasForumAccount,
-        HasCTSAccount,
-        HasVisitTransferApplications,
-        HasQualifications,
-        HasStates,
         HasBans,
-        HasTeamSpeakRegistrations,
-        HasPassword,
-        HasNotifications,
-        HasEmails,
-        HasRoles,
-        HasNovaPermissions,
+        HasCTSAccount,
         HasDiscordAccount,
-        HasWaitingLists;
+        HasEmails,
+        HasFactory,
+        HasForumAccount,
+        HasHelpdeskAccount,
+        HasMoodleAccount,
+        HasNetworkData,
+        HasNotifications,
+        HasNovaPermissions,
+        HasPassword,
+        HasQualifications,
+        HasRoles,
+        HasStates,
+        HasTeamSpeakRegistrations,
+        HasVisitTransferApplications,
+        HasWaitingLists,
+        Notifiable,
+        Rememberable,
+        SoftDeletingTrait;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
@@ -265,8 +265,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     /**
      * @param  Account  $model
-     * @param  null  $extra
-     * @param  null  $data
      */
     public static function eventCreated($model, $extra = null, $data = null)
     {

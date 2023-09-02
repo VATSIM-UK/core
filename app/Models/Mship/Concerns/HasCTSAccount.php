@@ -75,6 +75,7 @@ trait HasCTSAccount
                 $newMember['visit_from'] = "{$this->primary_permanent_state->pivot->region} - {$this->primary_permanent_state->pivot->division}";
             }
             DB::table("{$ctsDatabase}.members")->insert($newMember);
+
             // go no further.
             return;
         }
