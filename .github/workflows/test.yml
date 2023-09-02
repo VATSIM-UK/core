@@ -48,9 +48,13 @@ jobs:
 
       # Authenticate Nova
       - name: Authenticate Nova Installation
+        env:
+          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
         run: |
           cp auth.json.example auth.json
-          composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_PASSWORD}
+          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
+          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
 
       # Start MySQL and Create Databases
       - name: Create Databases
@@ -188,9 +192,13 @@ jobs:
           php-version: 8.1
 
       - name: Authenticate Nova Installation
+        env:
+          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
         run: |
           cp auth.json.example auth.json
-          composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_PASSWORD}
+          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
+          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
 
       - name: Install PHP dependencies
         uses: ramsey/composer-install@v2
