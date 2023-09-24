@@ -7,24 +7,10 @@
                 <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; The Flying Programme
                 </div>
                 <div class="panel-body">
-                    <h2>Introduction ✈️</h2>
-                    <p>
-                        On the 13<sup>th</sup> of March 2021, Pilot Training put out a prospectus forum post describing The Flying Programme. Envisioned as an expansion of the P0 Initial Pilot rating, The Flying Programme proposed sessions, group flights, and seminars open to all home members on VATSIM UK to assist in starting out on the network.
-                    </p>
+                    <h2>Introduction</h2>
+                    <p>The Flying Programme is an expansion of the P0 Initial Pilot rating aimed at assisting pilots starting on the network, pilots who are not confident on the network, or any pilots who feel they may benefit from 1-on-1 sessions to improve their VATSIM and flying skills. The programme helps pilots flying either the Boeing 737NG series or Airbus A320 family get started on the network and become fully competent pilots on the VATSIM network flying from A to B with training for any rare occurrences that may happen, such as holds and the different IFR approaches found across the world.</p>
                     
-                    <p>
-                        <b>On the 13<sup>th</sup> of February 2023, The Flying Programme will be released.</b>
-                    </p>
-                    
-                    <p>
-                        A special thanks to Ben Carpenter, who has led the TFP development team since March 2022, and to our 2 development members: William Shaw and Henry Yandell.
-                    </p>
-
-                    <h2>Implementation 🏗️</h2>
-
-                    <p>
-                        The Flying Programme consists of 3 different areas for members to engage with: a mandatory Moodle course, one-on-one sessions, and group sessions.
-                    </p>
+                    <p>The programme consists of 3 different areas for members to engage with a mandatory Moodle course, one-on-one sessions, and group sessions.</p>
 
                     <h3>The Moodle</h3>
                     
@@ -67,16 +53,6 @@
                     
                     <p>
                         The final assessment is open book, with a time limit of 1 hour and a pass grade of 75%. The exam may be retaken after a cooldown period, allowing you to revise the necessary areas.
-                    </p>
-                    
-                    <h4>Optional Section</h4>
-                    
-                    <p>
-                        In the future, there is provision for an optional section which will contain details and references to guides on advanced topics, such raw data approaches.
-                    </p>
-                    
-                    <p>
-                        If you are interested in authoring material for this section, please do get in touch via the <a href="https://helpdesk.vatsim.uk/" rel="external nofollow noopener" target="_blank">Helpdesk</a> (Help Topic: Pilot Training).
                     </p>
                     
                     <h3>One-on-One Sessions</h3>
@@ -185,7 +161,11 @@
                                 </p>
                                 
                                 <p>
-                                    From the <b>13<sup>th</sup> of February 2023</b>, the mandatory Moodle course will be available for <i>any home member of VATSIM UK</i> to join: <a href="https://moodle.vatsim.uk/course/view.php?id=63" rel="external nofollow noopener" target="_blank">https://moodle.vatsim.uk/course/view.php?id=63</a>
+                                    The mandatory Moodle course is available for <i>any home member of VATSIM UK</i> to join: <a href="https://moodle.vatsim.uk/course/view.php?id=63" rel="external nofollow noopener" target="_blank">https://moodle.vatsim.uk/course/view.php?id=63</a>
+                                </p>
+
+                                <p>
+                                    Upon completion of the moodle exam, please submit a ticket to Pilot Training department on the helpdesk stating your completion of the moodle to move onto the next step.
                                 </p>
                                 
                                 <p>
