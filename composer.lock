@@ -5976,16 +5976,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.70.0",
+            "version": "2.71.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "d3298b38ea8612e5f77d38d1a99438e42f70341d"
+                "reference": "98276233188583f2ff845a0f992a235472d9466a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/d3298b38ea8612e5f77d38d1a99438e42f70341d",
-                "reference": "d3298b38ea8612e5f77d38d1a99438e42f70341d",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/98276233188583f2ff845a0f992a235472d9466a",
+                "reference": "98276233188583f2ff845a0f992a235472d9466a",
                 "shasum": ""
             },
             "require": {
@@ -6078,7 +6078,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-09-07T16:43:50+00:00"
+            "time": "2023-09-25T11:31:05+00:00"
         },
         {
             "name": "nette/schema",
@@ -6450,16 +6450,16 @@
         },
         {
             "name": "ohdearapp/ohdear-php-sdk",
-            "version": "3.6.3",
+            "version": "3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ohdearapp/ohdear-php-sdk.git",
-                "reference": "93b797382c33c2ca0e8b084ab34bf2f21dc734c8"
+                "reference": "c94f2fa286504479f41d3eb9d2c2bd21dfbf0ba3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/93b797382c33c2ca0e8b084ab34bf2f21dc734c8",
-                "reference": "93b797382c33c2ca0e8b084ab34bf2f21dc734c8",
+                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/c94f2fa286504479f41d3eb9d2c2bd21dfbf0ba3",
+                "reference": "c94f2fa286504479f41d3eb9d2c2bd21dfbf0ba3",
                 "shasum": ""
             },
             "require": {
@@ -6468,6 +6468,7 @@
                 "php": "^8.1"
             },
             "require-dev": {
+                "laravel/pint": "^1.13",
                 "pestphp/pest": "^2.8.3",
                 "psalm/plugin-laravel": "^2.5",
                 "vlucas/phpdotenv": "^5.5"
@@ -6500,9 +6501,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ohdearapp/ohdear-php-sdk/issues",
-                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.6.3"
+                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.7.0"
             },
-            "time": "2023-09-04T07:54:53+00:00"
+            "time": "2023-09-25T06:51:31+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -7867,16 +7868,16 @@
         },
         {
             "name": "psr/http-client",
-            "version": "1.0.2",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-client.git",
-                "reference": "0955afe48220520692d2d09f7ab7e0f93ffd6a31"
+                "reference": "bb5906edc1c324c9a05aa0873d40117941e5fa90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-client/zipball/0955afe48220520692d2d09f7ab7e0f93ffd6a31",
-                "reference": "0955afe48220520692d2d09f7ab7e0f93ffd6a31",
+                "url": "https://api.github.com/repos/php-fig/http-client/zipball/bb5906edc1c324c9a05aa0873d40117941e5fa90",
+                "reference": "bb5906edc1c324c9a05aa0873d40117941e5fa90",
                 "shasum": ""
             },
             "require": {
@@ -7913,9 +7914,9 @@
                 "psr-18"
             ],
             "support": {
-                "source": "https://github.com/php-fig/http-client/tree/1.0.2"
+                "source": "https://github.com/php-fig/http-client"
             },
-            "time": "2023-04-10T20:12:12+00:00"
+            "time": "2023-09-23T14:17:50+00:00"
         },
         {
             "name": "psr/http-factory",
