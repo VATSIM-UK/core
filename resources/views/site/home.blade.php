@@ -127,6 +127,9 @@
                             <a class="nav-link" href="{{ route('site.pilots.landing') }}">Pilot Training</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.pilots.tfp') }}">Flying Programme</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
                         </li>
                     </ul>
