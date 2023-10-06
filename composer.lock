@@ -11533,16 +11533,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v6.3.2",
+            "version": "v6.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "53d1a83225002635bca3482fcbf963001313fb68"
+                "reference": "13d76d0fb049051ed12a04bef4f9de8715bea339"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/53d1a83225002635bca3482fcbf963001313fb68",
-                "reference": "53d1a83225002635bca3482fcbf963001313fb68",
+                "url": "https://api.github.com/repos/symfony/string/zipball/13d76d0fb049051ed12a04bef4f9de8715bea339",
+                "reference": "13d76d0fb049051ed12a04bef4f9de8715bea339",
                 "shasum": ""
             },
             "require": {
@@ -11599,7 +11599,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v6.3.2"
+                "source": "https://github.com/symfony/string/tree/v6.3.5"
             },
             "funding": [
                 {
@@ -11615,7 +11615,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-05T08:41:27+00:00"
+            "time": "2023-09-18T10:38:32+00:00"
         },
         {
             "name": "symfony/translation",
@@ -13180,16 +13180,16 @@
         },
         {
             "name": "laravel/homestead",
-            "version": "v14.4.2",
+            "version": "v14.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/homestead.git",
-                "reference": "63065d73e93310464a1d5026f588f21a02892c2a"
+                "reference": "78d44a2f38d27f057d87c7dcff5ed2f67e07f898"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/homestead/zipball/63065d73e93310464a1d5026f588f21a02892c2a",
-                "reference": "63065d73e93310464a1d5026f588f21a02892c2a",
+                "url": "https://api.github.com/repos/laravel/homestead/zipball/78d44a2f38d27f057d87c7dcff5ed2f67e07f898",
+                "reference": "78d44a2f38d27f057d87c7dcff5ed2f67e07f898",
                 "shasum": ""
             },
             "require": {
@@ -13228,9 +13228,9 @@
             "description": "A virtual machine for web artisans.",
             "support": {
                 "issues": "https://github.com/laravel/homestead/issues",
-                "source": "https://github.com/laravel/homestead/tree/v14.4.2"
+                "source": "https://github.com/laravel/homestead/tree/v14.5.0"
             },
-            "time": "2023-08-22T18:07:00+00:00"
+            "time": "2023-10-06T03:16:47+00:00"
         },
         {
             "name": "laravel/legacy-factories",
