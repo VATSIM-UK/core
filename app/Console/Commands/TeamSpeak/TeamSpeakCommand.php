@@ -40,8 +40,6 @@ abstract class TeamSpeakCommand extends Command
 
     /**
      * Handling for a serverquery exception thrown by the TeamSpeak framework.
-     *
-     * @param  Account  $account
      */
     protected static function handleServerQueryException(TeamSpeak3_Adapter_ServerQuery_Exception $e, Account $account = null)
     {
