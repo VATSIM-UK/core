@@ -8,6 +8,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
@@ -15,11 +16,7 @@ class DiscordRoleRuleTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /**
-     * @dataProvider providerTestData
-     *
-     * @test
-     */
+    #[DataProvider(method: 'providerTestData')]
     public function itReportsAccountSatisfiesCorrectly($permSetup, $stateSetup, $qualSetup, $ctsControlSetup, $expected)
     {
         $state = State::first();
@@ -57,7 +54,7 @@ class DiscordRoleRuleTest extends TestCase
         $this->assertEquals($expected, $role->accountSatisfies($account->fresh()));
     }
 
-    protected function providerTestData()
+    public static function providerTestData()
     {
         return [
             // [Has Perm, Requires Perm], [Has State, Requires State], [Has Qual, Requires Qual], [Has CTS, Requires CTS], Expected

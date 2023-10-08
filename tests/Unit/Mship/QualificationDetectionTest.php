@@ -4,6 +4,7 @@ namespace Tests\Unit\Mship;
 
 use App\Models\Mship\Qualification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Metadata\DataProvider;
 use Tests\TestCase;
 
 class QualificationDetectionTest extends TestCase
@@ -38,7 +39,7 @@ class QualificationDetectionTest extends TestCase
         $this->assertTrue(collect($qualifications)->pluck('code')->contains($flightExaminerQualification->code));
     }
 
-    /** @test @dataProvider pilotRatingsTestData */
+    #[DataProvider('pilotRatingsTestData')]
     public function itHandlesNormalPilotRatings($networkBitmask, $expectedCode)
     {
         $qualifications = Qualification::parseVatsimPilotQualifications($networkBitmask);
@@ -46,7 +47,7 @@ class QualificationDetectionTest extends TestCase
         $this->assertTrue(collect($qualifications)->pluck('code')->contains($expectedCode));
     }
 
-    protected function pilotRatingsTestData()
+    public static function pilotRatingsTestData()
     {
         return [
             // [Bitmask, Expected Code]

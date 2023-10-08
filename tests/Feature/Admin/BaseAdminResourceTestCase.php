@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use Exception;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 abstract class BaseAdminResourceTestCase extends BaseAdminTestCase
 {
@@ -13,9 +14,7 @@ abstract class BaseAdminResourceTestCase extends BaseAdminTestCase
 
     protected ?string $policy = null;
 
-    /**
-     * @dataProvider providerPageRenderData
-     */
+    #[DataProvider(method: 'providerPageRenderData')]
     public function test_page_renders(string $name, $dataGenerator)
     {
         $this->actingAsSuperUser();
@@ -35,22 +34,22 @@ abstract class BaseAdminResourceTestCase extends BaseAdminTestCase
         $this->get($this->resourceClass::getUrl($name, $dataGenerator()))->assertSuccessful();
     }
 
-    public function providerPageRenderData()
+    public static function providerPageRenderData()
     {
-        if (! $this->resourceClass) {
+        if (! self::$resourceClass) {
             throw new Exception('You must specify the resource class to use the BaseAdminResourceTestCase');
         }
 
-        $pages = $this->resourceClass::getPages();
+        $pages = self::$resourceClass::getPages();
 
         return collect($pages)->mapWithKeys(function ($page, $name) {
-            return [$name => [$name, fn () => (in_array($name, ['index', 'create']) ? null : ['record' => $this->makeFactoryModel()->create()])]];
+            return [$name => [$name, fn () => (in_array($name, ['index', 'create']) ? null : ['record' => self::makeFactoryModel()->create()])]];
         })->all();
     }
 
-    protected function makeFactoryModel(): \Illuminate\Database\Eloquent\Factories\Factory|\Illuminate\Database\Eloquent\FactoryBuilder
+    protected static function makeFactoryModel(): \Illuminate\Database\Eloquent\Factories\Factory|\Illuminate\Database\Eloquent\FactoryBuilder
     {
-        $model = $this->resourceClass::getModel();
+        $model = self::$resourceClass::getModel();
         if (method_exists($model, 'factory')) {
             return $model::factory();
         }

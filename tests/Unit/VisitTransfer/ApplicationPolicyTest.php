@@ -5,13 +5,14 @@ namespace Tests\Unit\VisitTransfer;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Reference;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ApplicationPolicyTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function providerApplicationState()
+    public static function providerApplicationState()
     {
         // Application Status, Number of Accepted References, Number of Pending References, Checks Met, Can Accept, Can Reject, Can Complete, Can Cancel
         return [
@@ -25,11 +26,7 @@ class ApplicationPolicyTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider providerApplicationState
-     */
+    #[DataProvider(method: 'providerApplicationState')]
     public function testActionsPolicy($status, $num_accepted_references, $num_pending_references, $checks_met, $can_accept, $can_reject, $can_complete, $can_cancel)
     {
         $application = factory(Application::class)->create([
