@@ -152,16 +152,13 @@ class Application extends Model
 
     public $timestamps = true;
 
-    protected $dates = [
-        'expires_at',
-        'submitted_at',
-        'created_at',
-        'updated_at',
-    ];
-
     protected $casts = [
         'check_outcome_90_day' => 'boolean',
         'check_outcome_50_hours' => 'boolean',
+        'expires_at' => 'datetime',
+        'submitted_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     const TYPE_VISIT = 10;

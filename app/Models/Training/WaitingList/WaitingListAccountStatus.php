@@ -10,7 +10,10 @@ class WaitingListAccountStatus extends Pivot
 
     public $table = 'training_waiting_list_account_status';
 
-    protected $dates = ['start_at', 'end_at'];
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+    ];
 
     public function isActive()
     {

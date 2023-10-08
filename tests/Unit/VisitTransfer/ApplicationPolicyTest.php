@@ -12,22 +12,22 @@ class ApplicationPolicyTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public static function providerApplicationState()
+    public static function providerApplicationState(): array
     {
         // Application Status, Number of Accepted References, Number of Pending References, Checks Met, Can Accept, Can Reject, Can Complete, Can Cancel
         return [
-            [Application::STATUS_CANCELLED, 0, 2, false, false, false, false, false],
-            [Application::STATUS_IN_PROGRESS, 0, 2, false, false, true, false, false],
-            [Application::STATUS_SUBMITTED, 0, 2, true, true, true, false, false],
-            [Application::STATUS_SUBMITTED, 2, 0, true, true, true, false, false],
-            [Application::STATUS_SUBMITTED, 2, 2, true, true, true, false, false],
-            [Application::STATUS_UNDER_REVIEW, 2, 0, true, true, true, false, false],
-            [Application::STATUS_ACCEPTED, 2, 0, true, false, false, true, true],
+            [Application::STATUS_CANCELLED, 0, 2, false, false, false, false],
+            [Application::STATUS_IN_PROGRESS, 0, 2, false, false, true, false],
+            [Application::STATUS_SUBMITTED, 0, 2, true, true, true, false],
+            [Application::STATUS_SUBMITTED, 2, 0, true, true, true, false],
+            [Application::STATUS_SUBMITTED, 2, 2, true, true, true, false],
+            [Application::STATUS_UNDER_REVIEW, 2, 0, true, true, true, false],
+            [Application::STATUS_ACCEPTED, 2, 0, true, false, false, true],
         ];
     }
 
-    #[DataProvider(method: 'providerApplicationState')]
-    public function testActionsPolicy($status, $num_accepted_references, $num_pending_references, $checks_met, $can_accept, $can_reject, $can_complete, $can_cancel)
+    #[DataProvider('providerApplicationState')]
+    public function testActionsPolicy($status, $num_accepted_references, $num_pending_references, $checks_met, $can_accept, $can_reject, $can_complete)
     {
         $application = factory(Application::class)->create([
             'status' => $status,

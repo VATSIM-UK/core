@@ -78,7 +78,13 @@ class Atc extends Model
 
     protected $primaryKey = 'id';
 
-    public $dates = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
+    protected $casts = [
+        'connected_at' => 'datetime',
+        'disconnected_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
 
     public $timestamps = true;
 

@@ -14,7 +14,7 @@ abstract class BaseAdminResourceTestCase extends BaseAdminTestCase
 
     protected ?string $policy = null;
 
-    #[DataProvider(method: 'providerPageRenderData')]
+    #[DataProvider('providerPageRenderData')]
     public function test_page_renders(string $name, $dataGenerator)
     {
         $this->actingAsSuperUser();

@@ -201,17 +201,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     public $incrementing = false;
 
-    protected $dates = [
-        'last_login',
-        'joined_at',
-        'cert_checked_at',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'password_set_at',
-        'password_expires_at',
-    ];
-
     protected $fillable = [
         'id',
         'name_first',
@@ -237,6 +226,14 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     protected $casts = [
         'inactive' => 'boolean',
         'discord_id' => 'int',
+        'last_login' => 'datetime',
+        'joined_at' => 'datetime',
+        'cert_checked_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'password_set_at' => 'datetime',
+        'password_expires_at' => 'datetime',
     ];
 
     protected $hidden = [
