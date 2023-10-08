@@ -31,6 +31,7 @@ class ViewWaitingList extends ViewRecord
 
                     $action->success();
                 })
+                ->successNotificationTitle('Student added to waiting list')
                 ->after(fn ($livewire) => $livewire->emit('refreshWaitingList'))
                 ->form([
                     TextInput::make('account_id')
@@ -56,7 +57,9 @@ class ViewWaitingList extends ViewRecord
                     $this->record->addFlag($flag);
 
                     $action->success();
-                })->form([
+                })
+                ->successNotificationTitle('Flag added to waiting list')
+                ->form([
                     TextInput::make('name')->rules(['required', 'min:3', 'unique:training_waiting_list_flags,name']),
 
                     Select::make('endorsement_id')->label('Endorsement')->options(fn () => Endorsement::all()->mapWithKeys(function ($item) {

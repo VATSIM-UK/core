@@ -19,6 +19,8 @@ class AccountWaitingListsTest extends TestCase
     {
         parent::setUp();
 
+        $this->actingAs($this->privacc);
+
         // create as division member
         $this->user->addState(State::findByCode('DIVISION'));
 
