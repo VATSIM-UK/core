@@ -24,6 +24,3 @@ flags:
   application:
     paths:
       - app/
-  waitinglistsmanager:
-    paths:
-      - nova-components/WaitingListsManager/src/

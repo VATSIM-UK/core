@@ -31,7 +31,6 @@ class HerokuPostDeploy extends Command
                 $this->call('migrate');
                 break;
             case 'development':
-                $this->call('nova:install');
                 $this->call('migrate:fresh');
                 $this->call('cts:migrate:fresh');
                 break;

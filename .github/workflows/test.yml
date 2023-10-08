@@ -9,10 +9,6 @@ on:
       - v*
   pull_request:
 
-env:
-  NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
-  NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
-
 jobs:
   test:
     name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }}
@@ -45,16 +41,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-
-      # Authenticate Nova
-      - name: Authenticate Nova Installation
-        env:
-          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
-          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
-        run: |
-          cp auth.json.example auth.json
-          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
-          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
 
       # Start MySQL and Create Databases
       - name: Create Databases
@@ -98,11 +84,6 @@ jobs:
            composer install --no-interaction
            php artisan package:discover
 
-      - name: Install Nova & Waiting Lists
-        run: |
-          php artisan nova:install
-          cd nova-components/WaitingListsManager && composer install && cd ../../
-
       #
       # YARN DEPENDENCIES
       #
@@ -127,12 +108,6 @@ jobs:
 
       - name: Compile Core Assets
         run: yarn run prod
-
-      - name: Install Waiting Lists Manager Assets
-        run: cd nova-components/WaitingListsManager && yarn && cd ../../
-
-      - name: Compile Waiting Lists Manager Assets
-        run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
 
       #
       # APPLICATION SETUP
@@ -191,21 +166,12 @@ jobs:
         with:
           php-version: 8.1
 
-      - name: Authenticate Nova Installation
-        env:
-          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
-          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
-        run: |
-          cp auth.json.example auth.json
-          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
-          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
-
       - name: Install PHP dependencies
         uses: ramsey/composer-install@v2
 
       - name: 'Lint PHP'
         run: composer lint -- --test
-      
+
 
   trigger-deploy:
     name: Trigger Deploy

@@ -17,7 +17,6 @@ use App\Models\Mship\Concerns\HasHelpdeskAccount;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
 use App\Models\Mship\Concerns\HasNotifications;
-use App\Models\Mship\Concerns\HasNovaPermissions;
 use App\Models\Mship\Concerns\HasPassword;
 use App\Models\Mship\Concerns\HasQualifications;
 use App\Models\Mship\Concerns\HasRoles;
@@ -177,7 +176,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         HasMoodleAccount,
         HasNetworkData,
         HasNotifications,
-        HasNovaPermissions,
         HasPassword,
         HasQualifications,
         HasRoles,
@@ -559,5 +557,14 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function hiddenFeedbackUsers()
+    {
+        if ($this->can('use-permission', 'feedback/own') || $this->can('use-permission', 'feedback.view-own')) {
+            return [];
+        }
+
+        return [$this->id];
     }
 }

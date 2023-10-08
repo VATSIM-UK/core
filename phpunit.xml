@@ -4,9 +4,6 @@
     <include>
       <directory suffix=".php">./app</directory>
     </include>
-    <exclude>
-      <directory suffix=".php">./app/Nova</directory>
-    </exclude>
   </coverage>
   <testsuites>
     <testsuite name="Feature">

@@ -101,28 +101,9 @@ jobs:
       - name: Install Core assets
         run: yarn
 
-      - name: Install Waiting Lists Manager assets
-        run: cd nova-components/WaitingListsManager && yarn && cd ../../
-
       # Run Webpack
       - name: Compile Core assets
         run: yarn run prod
-
-      - name: Compile Waiting Lists Manager assets
-        run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
-
-      #
-      # CONFIGURATION FILES
-      # Create any configuration files, interpolating secrets
-      #
-      - name: Create Nova authentication file
-        env:
-          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
-          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
-        run: |
-          cp auth.json.example auth.json
-          sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
-          sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
 
       # Not required for deployment
       - name: Remove node_modules
@@ -162,9 +143,6 @@ jobs:
 
             # Install application dependencies
             $PHP_PATH /usr/local/bin/composer install --no-interaction --no-dev
-
-            # Install Waiting List Dependencies
-            $PHP_PATH /usr/local/bin/composer install --working-dir="$RELEASE_DIRECTORY/nova-components/WaitingListsManager" --no-dev
           envs: RELEASE_DIRECTORY,APPLICATION_ROOT,TAG,PHP_PATH
 
       - name: (Remote) Update symbolic links

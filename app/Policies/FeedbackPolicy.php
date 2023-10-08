@@ -14,21 +14,18 @@ class FeedbackPolicy
 
     public function viewAny(Account $account)
     {
-        $novaPermission = 'feedback';
         $permission = 'feedback.access';
 
-        // return true;
-        return $account->checkPermissionTo($novaPermission, self::GUARD) || $account->checkPermissionTo($permission, self::GUARD);
+        return $account->checkPermissionTo($permission, self::GUARD);
     }
 
     public function view(Account $account, Feedback $feedback)
     {
         $feedback->load('form');
 
-        $novaPermission = "feedback/view/{$feedback->form->slug}";
         $permission = "feedback.view-type.{$feedback->form->slug}";
 
-        return $account->checkPermissionTo($novaPermission, self::GUARD) || $account->checkPermissionTo($permission, self::GUARD)
+        return $account->checkPermissionTo($permission, self::GUARD)
             && ! in_array($feedback->account_id, $account->hiddenFeedbackUsers());
     }
 
