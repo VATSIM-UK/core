@@ -64,8 +64,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
-
         // TODO: Remove use-permission
         Gate::define('use-permission', function ($user, $permission) {
             if ($user->hasRole('privacc') && config()->get('app.env') != 'production') {
