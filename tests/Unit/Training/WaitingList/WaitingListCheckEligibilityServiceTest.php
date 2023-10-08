@@ -21,6 +21,8 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         parent::setUp();
 
         $this->waitingList = factory(WaitingList::class)->create();
+
+        $this->actingAs($this->privacc);
     }
 
     public function test_returns_false_if_basic_12_hour_check_fails()

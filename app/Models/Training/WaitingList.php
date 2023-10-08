@@ -28,6 +28,8 @@ class WaitingList extends Model
 
     public $table = 'training_waiting_list';
 
+    protected $fillable = ['name', 'slug', 'department', 'feature_toggles'];
+
     const ATC_DEPARTMENT = 'atc';
 
     const PILOT_DEPARTMENT = 'pilot';
@@ -75,6 +77,18 @@ class WaitingList extends Model
                 'eligibility_summary',
                 'flags_status_summary',
             ])->wherePivot('deleted_at', null);
+    }
+
+    public function ineligibleAccounts(): BelongsToMany
+    {
+        return $this->accounts()
+            ->wherePivot('eligible', false);
+    }
+
+    public function eligibleAccounts(): BelongsToMany
+    {
+        return $this->accounts()
+            ->wherePivot('eligible', true);
     }
 
     public function accountsByEligibility($eligible = true)

@@ -27,6 +27,8 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         $this->member = factory(Member::class)->create();
         $this->account = Account::factory()->create(['id' => $this->member->cid]);
         $this->account->addState(State::findByCode('DIVISION'));
+
+        $this->actingAs($this->privacc);
     }
 
     /** @test */
