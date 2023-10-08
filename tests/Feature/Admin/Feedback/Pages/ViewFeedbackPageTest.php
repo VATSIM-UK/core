@@ -21,8 +21,6 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
         $this->adminUser->givePermissionTo('feedback.access');
         $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
 
-        // dd(config('app.url'));
-
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewFeedback::class, ['record' => $feedback->getRouteKey()])
             ->assertDontSee('Submitted By')

@@ -2,6 +2,7 @@
 
 namespace App\Models\Training\WaitingList;
 
+use App\Events\Training\AccountChangedStatusInWaitingList;
 use App\Models\Cts\TheoryResult;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
@@ -72,7 +73,9 @@ class WaitingListAccount extends Pivot
             $item->pivot->endStatus();
         });
 
-        return $this->status()->attach($listStatus, ['start_at' => now()]);
+        $this->status()->attach($listStatus, ['start_at' => now()]);
+
+        event(new AccountChangedStatusInWaitingList($this->account, $this->waitingList, auth()->user()));
     }
 
     /**

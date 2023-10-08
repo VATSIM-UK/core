@@ -28,6 +28,8 @@ class WaitingListFeatureTest extends TestCase
         $this->waitingList = factory(WaitingList::class)->create();
 
         Route::middlewareGroup('nova', []);
+
+        $this->actingAs($this->privacc);
     }
 
     /** @test * */
