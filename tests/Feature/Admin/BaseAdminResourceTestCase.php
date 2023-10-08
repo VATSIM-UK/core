@@ -10,7 +10,7 @@ abstract class BaseAdminResourceTestCase extends BaseAdminTestCase
 {
     use DatabaseTransactions;
 
-    protected ?string $resourceClass = null;
+    protected static ?string $resourceClass = null;
 
     protected ?string $policy = null;
 

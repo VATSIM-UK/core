@@ -8,7 +8,7 @@ use Tests\Feature\Admin\BaseAdminResourceTestCase;
 
 class RoleResourceTest extends BaseAdminResourceTestCase
 {
-    protected ?string $resourceClass = RoleResource::class;
+    protected static ?string $resourceClass = RoleResource::class;
 
     protected ?string $policy = RolePolicy::class;
 }
