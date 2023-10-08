@@ -12,7 +12,7 @@ class MilitaryPilotQualificationDetectionTest extends TestCase
     use RefreshDatabase;
 
     #[DataProvider('militaryRatingsTestData')]
-    public function itHandlesMilitaryPilotRatings($networkBitmask, $expectedCode)
+    public function testItHandlesMilitaryPilotRatings($networkBitmask, $expectedCode)
     {
         $qualifications = Qualification::parseVatsimMilitaryPilotQualifications($networkBitmask);
 
