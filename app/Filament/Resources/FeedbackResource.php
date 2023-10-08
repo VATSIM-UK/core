@@ -18,7 +18,7 @@ class FeedbackResource extends Resource
 {
     protected static ?string $model = Feedback::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-chat-alt-2';
 
     protected static ?string $navigationGroup = 'Feedback';
 
