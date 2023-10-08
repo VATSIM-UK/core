@@ -12,8 +12,8 @@ use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
 {
-    use DatabaseTransactions;
     use CreatesApplication;
+    use DatabaseTransactions;
 
     protected $knownDate;
 

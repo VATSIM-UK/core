@@ -49,4 +49,12 @@ class PilotPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.pilots.stands');
     }
+
+    public function viewTheFlyingProgramme()
+    {
+        $this->setTitle('The Flying Programme');
+        $this->addBreadcrumb('The Flying Programme', route('site.pilots.tfp'));
+
+        return $this->viewMake('site.pilots.tfp');
+    }
 }

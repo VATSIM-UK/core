@@ -65,7 +65,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Facility extends Model
 {
-    use PublicId, Notifiable;
+    use Notifiable, PublicId;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-facility';
 

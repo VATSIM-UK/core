@@ -34,7 +34,6 @@ class VATSIMOAuthProvider extends GenericProvider
      *
      * @param  Token  $token
      * @return Token
-     * @return null
      */
     public static function updateToken($token)
     {

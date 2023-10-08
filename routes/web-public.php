@@ -32,6 +32,7 @@ Route::group([
         Route::get('/becoming-a-mentor')->uses('PilotPagesController@viewBecomingAMentor')->name('mentor');
         Route::get('/oceanic')->uses('PilotPagesController@viewOceanic')->name('oceanic');
         Route::get('/stand-guide')->uses('PilotPagesController@viewStandGuide')->name('stands');
+        Route::get('/the-flying-programme')->uses('PilotPagesController@viewTheFlyingProgramme')->name('tfp');
     });
 
     Route::group([

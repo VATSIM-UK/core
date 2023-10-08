@@ -10,7 +10,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 
-class RemovedFromWaitingListInactiveAccount extends Notification implements ShouldQueue, DiscordNotification
+class RemovedFromWaitingListInactiveAccount extends Notification implements DiscordNotification, ShouldQueue
 {
     use Queueable;
 

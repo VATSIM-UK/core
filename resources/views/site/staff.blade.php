@@ -64,11 +64,15 @@
                     <table class="table">
                         <tr>
                             <td>Enroute Operations Coordinator</td>
-                            <td>Harry S (1237658)</td>
+                            <td>1237658</td>
                         </tr>
                         <tr>
                             <td>Aerodrome Operations Coordinator</td>
-                            <td><em>Vacant</em></td>
+                            <td>Adam Arkley</td>
+                        </tr>
+                        <tr>
+                            <td>Aerodrome Operations Coordinator</td>
+                            <td>Kye Taylor</td>
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
@@ -103,8 +107,12 @@
                             <td>Ben Wright</td>
                         </tr>
                         <tr>
-                            <td>Marketing Assistant</td>
-                            <td>Piers Austin-Foss</td>
+                            <td>Events Manager</td>
+                            <td>Luke Thompson</td>
+                        </tr>
+                        <tr>
+                            <td>Media Manager</td>
+                            <td>Thomas Hallam</td>
                         </tr>
                     </table>
                 </div>
@@ -219,7 +227,7 @@
                         <table class="table">
                             <tr>
                                 <td>ATC Training Manager</td>
-                                <td>Vacant</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>Training Department Assistant</td>
@@ -279,7 +287,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (ENR)</td>
-                                <td>Harry S</td>
+                                <td>1237658</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
@@ -296,15 +304,15 @@
                         <table class="table">
                             <tr>
                                 <td>Pilot Training Manager</td>
-                                <td>Vacant</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>Initial Flight Instructor</td>
-                                <td>Ben Carpenter</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>VFR Flight Instructor</td>
-                                <td>Dale Stainrod</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>IFR Flight Instructor</td>

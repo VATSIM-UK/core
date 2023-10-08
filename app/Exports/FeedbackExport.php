@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class FeedbackExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize
+class FeedbackExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping
 {
     private $request;
 

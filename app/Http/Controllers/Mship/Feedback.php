@@ -64,6 +64,7 @@ class Feedback extends \App\Http\Controllers\BaseController
 
                     continue;
                 }
+
                 // No values, so we cant use it :/
                 continue;
             }
