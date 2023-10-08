@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use Exception;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 abstract class BaseAdminResourceTestCase extends BaseAdminTestCase
 {
@@ -25,22 +26,22 @@ abstract class BaseAdminResourceTestCase extends BaseAdminTestCase
 
             // Test when the gate says no
             $this->mockPolicyAction($this->policy, $actionName, false);
-            $this->get($this->resourceClass::getUrl($name, $dataGenerator()))->assertForbidden();
+            $this->get(static::$resourceClass::getUrl($name, $dataGenerator()))->assertForbidden();
 
             // Test when gate says yes
             $this->mockPolicyAction($this->policy, $actionName, true);
         }
 
-        $this->get($this->resourceClass::getUrl($name, $dataGenerator()))->assertSuccessful();
+        $this->get(static::$resourceClass::getUrl($name, $dataGenerator()))->assertSuccessful();
     }
 
     public static function providerPageRenderData()
     {
-        if (! self::$resourceClass) {
+        if (! static::$resourceClass) {
             throw new Exception('You must specify the resource class to use the BaseAdminResourceTestCase');
         }
 
-        $pages = self::$resourceClass::getPages();
+        $pages = static::$resourceClass::getPages();
 
         return collect($pages)->mapWithKeys(function ($page, $name) {
             return [$name => [$name, fn () => (in_array($name, ['index', 'create']) ? null : ['record' => self::makeFactoryModel()->create()])]];
@@ -49,7 +50,7 @@ abstract class BaseAdminResourceTestCase extends BaseAdminTestCase
 
     protected static function makeFactoryModel(): \Illuminate\Database\Eloquent\Factories\Factory|\Illuminate\Database\Eloquent\FactoryBuilder
     {
-        $model = self::$resourceClass::getModel();
+        $model = static::$resourceClass::getModel();
         if (method_exists($model, 'factory')) {
             return $model::factory();
         }
