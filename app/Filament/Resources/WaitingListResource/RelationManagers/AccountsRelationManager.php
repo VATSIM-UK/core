@@ -5,10 +5,10 @@ namespace App\Filament\Resources\WaitingListResource\RelationManagers;
 use App\Models\Training\WaitingList\WaitingListStatus;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
@@ -20,7 +20,7 @@ class AccountsRelationManager extends RelationManager
 
     protected $listeners = ['refreshWaitingList' => '$refresh'];
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -97,7 +97,7 @@ class AccountsRelationManager extends RelationManager
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
@@ -108,10 +108,12 @@ class AccountsRelationManager extends RelationManager
                 Tables\Columns\IconColumn::make('pivot.atc_hour_check')->boolean()->label('Hour check')->getStateUsing(fn ($record) => Arr::get($record->pivot?->eligibility_summary, 'base_controlling_hours')),
                 Tables\Columns\IconColumn::make('pivot.flags_check')->boolean()->label('Flags check')->getStateUsing(fn ($record) => (bool) Arr::get($record->pivot?->flags_status_summary, 'overall')),
                 Tables\Columns\IconColumn::make('pivot.eligible')->boolean()->label('Eligible')->getStateUsing(fn ($record) => $record->pivot->eligible),
-                Tables\Columns\BadgeColumn::make('pivot.status')->enum([
-                    'Active' => 'Active',
-                    'Deferred' => 'Deferred',
-                ])->getStateUsing(fn ($record) => $record->pivot->current_status->name)->colors([
+                Tables\Columns\TextColumn::make('pivot.status')
+                    ->badge()
+                    ->color([
+                        'Active' => 'Active',
+                        'Deferred' => 'Deferred',
+                    ])->getStateUsing(fn ($record) => $record->pivot->current_status->name)->colors([
                     'success' => static fn ($record) => $record === 'Active',
                     'danger' => static fn ($record) => $record === 'Deferred',
                 ])->label('Status'),
@@ -150,7 +152,7 @@ class AccountsRelationManager extends RelationManager
             ]);
     }
 
-    public static function canViewForRecord(Model $ownerRecord): bool
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return auth()->user()->can('view', $ownerRecord);
     }

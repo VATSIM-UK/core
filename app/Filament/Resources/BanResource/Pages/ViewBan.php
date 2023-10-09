@@ -17,7 +17,7 @@ class ViewBan extends BaseViewRecordPage
 {
     protected static string $resource = BanResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             EditAction::make()

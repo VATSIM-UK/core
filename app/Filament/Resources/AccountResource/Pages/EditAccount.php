@@ -10,7 +10,7 @@ class EditAccount extends BaseEditRecordPage
 {
     protected static string $resource = AccountResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\ViewAction::make(),

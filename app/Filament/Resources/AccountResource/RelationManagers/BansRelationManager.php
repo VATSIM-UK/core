@@ -8,10 +8,10 @@ use App\Models\Mship\Ban\Reason;
 use App\Notifications\Mship\BanCreated;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
 class BansRelationManager extends RelationManager
@@ -20,7 +20,7 @@ class BansRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Select::make('reason')
@@ -46,7 +46,7 @@ class BansRelationManager extends RelationManager
         return auth()->user()->can('create', [$this->getRelatedModel(), $this->ownerRecord]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
@@ -78,7 +78,7 @@ class BansRelationManager extends RelationManager
             ]);
     }
 
-    public static function canViewForRecord(Model $ownerRecord): bool
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return auth()->user()->can('viewSensitive', $ownerRecord);
     }

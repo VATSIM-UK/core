@@ -4,7 +4,7 @@ namespace App\Filament\Resources\RoleResource\RelationManagers;
 
 use App\Filament\Resources\AccountResource;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 
 class UsersRelationManager extends RelationManager
@@ -13,7 +13,7 @@ class UsersRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([

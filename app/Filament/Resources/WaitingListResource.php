@@ -7,10 +7,10 @@ use App\Filament\Resources\WaitingListResource\RelationManagers\AccountsRelation
 use App\Filament\Resources\WaitingListResource\RelationManagers\IneligibleAccountsRelationManager;
 use App\Models\Training\WaitingList;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Support\Str;
 

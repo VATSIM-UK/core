@@ -61,12 +61,12 @@
     "require": {
         "php": "^8.1.0",
         "alawrence/laravel-ipboard": "dev-main",
-        "axonc/filament-copyable-placeholder": "^0.1.0",
+        "axonc/filament-copyable-placeholder": "^0.2.3",
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^2.7",
         "bugsnag/bugsnag-laravel": "^2.0",
         "doctrine/dbal": "~3.3",
-        "filament/filament": "^2.0",
+        "filament/filament": "^3.0-stable",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",
         "laravel/helpers": "^1.1",
@@ -99,6 +99,7 @@
         "ext-json": "*",
         "codedungeon/phpunit-result-printer": "^0.32.0",
         "fakerphp/faker": "^1.9.1",
+        "filament/upgrade": "^3.0-stable",
         "laracasts/generators": "^2.0",
         "laravel/homestead": "^14.0.0",
         "laravel/legacy-factories": "^1.1",
@@ -144,7 +145,8 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover"
+            "@php artisan package:discover",
+            "@php artisan filament:upgrade"
         ],
         "ide-helper": [
             "php artisan ide-helper:generate",

@@ -10,9 +10,9 @@ use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
 use Carbon\CarbonInterval;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
@@ -25,7 +25,7 @@ class BanResource extends Resource
 
     protected static ?string $navigationGroup = 'User Management';
 
-    protected static function getNavigationBadge(): ?string
+    public static function getNavigationBadge(): ?string
     {
         return Cache::remember('admin.bans.local-ban-count', CarbonInterval::minute(5), fn () => static::getModel()::isActive()->isLocal()->count());
     }

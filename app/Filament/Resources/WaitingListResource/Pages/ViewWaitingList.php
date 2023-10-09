@@ -19,7 +19,7 @@ class ViewWaitingList extends ViewRecord
 {
     protected static string $resource = WaitingListResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\Action::make('add_student')

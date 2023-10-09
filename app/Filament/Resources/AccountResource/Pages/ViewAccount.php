@@ -20,13 +20,13 @@ class ViewAccount extends BaseViewRecordPage
 {
     protected static string $resource = AccountResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
 
             Actions\Action::make('request_central_update')
-                ->color('secondary')
-                ->icon('heroicon-o-cloud-download')
+                ->color('gray')
+                ->icon('heroicon-o-cloud-arrow-down')
                 ->action(function ($action) {
                     UpdateMember::dispatch($this->record->id);
                     $action->success();

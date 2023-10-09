@@ -171,6 +171,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\HorizonServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
+        App\Providers\Filament\AppPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TrainingEventServiceProvider::class,
         App\Providers\FilamentServiceProvider::class,

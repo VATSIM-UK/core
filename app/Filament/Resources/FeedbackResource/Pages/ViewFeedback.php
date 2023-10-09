@@ -11,7 +11,7 @@ class ViewFeedback extends BaseViewRecordPage
 {
     protected static string $resource = FeedbackResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\Action::make('send_feedback')

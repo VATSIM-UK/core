@@ -10,7 +10,7 @@ class ListWaitingLists extends ListRecords
 {
     protected static string $resource = WaitingListResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

@@ -81,7 +81,7 @@ class FilamentServiceProvider extends ServiceProvider
                         $relationship = $this->getRelationship()->getResults();
 
                         return Action::make('view resource')
-                            ->icon('heroicon-o-external-link')
+                            ->icon('heroicon-o-arrow-top-right-on-square')
                             ->url($resourceClass::urlToView($relationship));
                     }
                 );

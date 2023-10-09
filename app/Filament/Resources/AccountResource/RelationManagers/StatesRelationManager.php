@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\AccountResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 
 class StatesRelationManager extends RelationManager
@@ -12,7 +12,7 @@ class StatesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
