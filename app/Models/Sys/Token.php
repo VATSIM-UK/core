@@ -57,7 +57,13 @@ class Token extends Model
 
     protected $primaryKey = 'token_id';
 
-    protected $dates = ['created_at', 'updated_at', 'expires_at', 'used_at', 'deleted_at'];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'expires_at' => 'datetime',
+        'used_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
 
     protected $hidden = ['token_id'];
 

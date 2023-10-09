@@ -6,6 +6,7 @@ use App\Models\Mship\Qualification;
 use App\Notifications\Mship\EmailVerification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -22,6 +23,8 @@ class AccountModelTest extends TestCase
             'name_last' => 'Doe',
             'email' => 'i_sleep@gmail.com',
         ]);
+
+        Notification::fake();
     }
 
     /** @test */
@@ -167,8 +170,6 @@ class AccountModelTest extends TestCase
     /** @test */
     public function itAllowsSecondaryEmailsToBeStored()
     {
-        $this->expectsNotification($this->user, EmailVerification::class);
-
         $verified = false;
         $email = $this->user->addSecondaryEmail('i_also_sleep@hotmail.com', $verified);
 
@@ -179,18 +180,20 @@ class AccountModelTest extends TestCase
             'account_id' => $this->user->id,
             'email' => 'i_also_sleep@hotmail.com',
         ]);
+
+        Notification::assertSentTo($this->user, EmailVerification::class);
     }
 
     /** @test */
     public function itDoesntListNewSecondaryEmailsAsVerified()
     {
-        $this->expectsNotification($this->user, EmailVerification::class);
-
         $verified = false;
         $email = $this->user->addSecondaryEmail('i_too_sleep@hotmail.com', $verified);
 
         $this->assertCount(0, $this->user->verified_secondary_emails);
         $this->assertNotContains($email->id, $this->user->verified_secondary_emails->pluck('id'));
+
+        Notification::assertSentTo($this->user, EmailVerification::class);
     }
 
     /** @test */

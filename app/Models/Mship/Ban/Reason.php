@@ -47,7 +47,9 @@ class Reason extends Model
 
     public $timestamps = true;
 
-    protected $dates = ['deleted_at'];
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
     public function bans()
     {

@@ -49,15 +49,15 @@ class Form extends Model
 
     protected $table = 'mship_feedback_forms';
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
-
     protected $fillable = [
         'name',
         'slug',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function scopePublic($query)

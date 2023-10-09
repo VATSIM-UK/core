@@ -50,9 +50,9 @@ class Bid extends Model
         'account_id',
     ];
 
-    protected $dates = [
-        'completed_at',
-        'deleted_at',
+    protected $casts = [
+        'completed_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function flight()

@@ -8,7 +8,7 @@ use Tests\Feature\Admin\BaseAdminResourceTestCase;
 
 class AccountResourceTest extends BaseAdminResourceTestCase
 {
-    protected ?string $resourceClass = AccountResource::class;
+    protected static ?string $resourceClass = AccountResource::class;
 
     protected ?string $policy = AccountPolicy::class;
 }

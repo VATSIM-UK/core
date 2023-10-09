@@ -28,8 +28,6 @@ class WaitingList extends Model
 
     public $table = 'training_waiting_list';
 
-    protected $dates = ['deleted_at'];
-
     protected $fillable = ['name', 'slug', 'department', 'feature_toggles'];
 
     const ATC_DEPARTMENT = 'atc';
@@ -42,6 +40,7 @@ class WaitingList extends Model
 
     protected $casts = [
         'feature_toggles' => 'array',
+        'deleted_at' => 'datetime',
     ];
 
     /**

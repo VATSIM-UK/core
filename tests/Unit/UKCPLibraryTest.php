@@ -37,7 +37,7 @@ class UKCPLibraryTest extends TestCase
         })->makePartial();
 
         $ukcp = resolve(UKCP::class);
-        $ukcp->deleteToken($currentTokenID, $this->user);
+        $this->assertTrue($ukcp->deleteToken($currentTokenID, $this->user));
     }
 
     public function testItReturnsCachedStandStatus()

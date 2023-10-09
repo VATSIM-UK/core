@@ -4,21 +4,22 @@ namespace Tests\Unit\Mship;
 
 use App\Models\Mship\Qualification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class MilitaryPilotQualificationDetectionTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test @dataProvider militaryRatingsTestData */
-    public function itHandlesMilitaryPilotRatings($networkBitmask, $expectedCode)
+    #[DataProvider('militaryRatingsTestData')]
+    public function testItHandlesMilitaryPilotRatings($networkBitmask, $expectedCode)
     {
         $qualifications = Qualification::parseVatsimMilitaryPilotQualifications($networkBitmask);
 
         $this->assertTrue(collect($qualifications)->pluck('code')->contains($expectedCode));
     }
 
-    protected function militaryRatingsTestData()
+    public static function militaryRatingsTestData()
     {
         return [
             // [Bitmask, Expected Code]

@@ -51,17 +51,17 @@ class Feedback extends Model
 
     protected $table = 'mship_feedback';
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'actioned_at',
-        'sent_at',
-    ];
-
     protected $fillable = [
         'account_id',
         'submitter_account_id',
         'form_id',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'actioned_at' => 'datetime',
+        'sent_at' => 'datetime',
     ];
 
     public function scopeATC($query)

@@ -13,6 +13,7 @@ use App\Notifications\Training\RemovedFromWaitingListNonHomeMember;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class WaitingListAccountStateChangeTest extends TestCase
@@ -37,11 +38,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $this->nonHomeMembersOnlyWaitingList->save();
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider invalidStateProvider
-     */
+    #[DataProvider('invalidStateProvider')]
     public function itShouldRemoveFromListWhenAccountIsAlteredToNonDivisionState(string $state)
     {
         $account = Account::factory()->create();
@@ -60,11 +57,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         Notification::assertSentTo($account, RemovedFromWaitingListNonHomeMember::class);
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider invalidStateProvider
-     */
+    #[DataProvider('invalidStateProvider')]
     public function itShouldNotRemoveFromNonHomeMembersOnlyListWhenAccountIsAlteredToNonDivisionState(string $state)
     {
         $account = Account::factory()->create();
@@ -81,7 +74,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $this->assertTrue($this->nonHomeMembersOnlyWaitingList->accounts->contains($account));
     }
 
-    public function invalidStateProvider(): array
+    public static function invalidStateProvider(): array
     {
         return [
             ['INTERNATIONAL'],

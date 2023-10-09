@@ -8,7 +8,7 @@ use Tests\Feature\Admin\BaseAdminResourceTestCase;
 
 class WaitingListResourceTest extends BaseAdminResourceTestCase
 {
-    protected ?string $resourceClass = WaitingListResource::class;
+    protected static ?string $resourceClass = WaitingListResource::class;
 
     protected ?string $policy = WaitingListPolicy::class;
 }

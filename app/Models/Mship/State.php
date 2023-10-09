@@ -44,7 +44,10 @@ class State extends \App\Models\Model
 
     protected $primaryKey = 'id';
 
-    protected $dates = ['created_at', 'deleted_at'];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     protected $hidden = ['id'];
 

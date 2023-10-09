@@ -52,9 +52,12 @@ class Type extends Model
 
     protected $primaryKey = 'id';
 
-    protected $dates = ['created_at', 'deleted_at'];
-
     protected $fillable = ['name', 'short_code', 'is_available', 'is_default'];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public static function getNoteColourCodes()
     {
