@@ -3,14 +3,21 @@
 namespace App\Filament\Resources\AccountResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 
 class RolesRelationManager extends RelationManager
 {
     protected static string $relationship = 'roles';
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?string $inverseRelationship = 'user';
+
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
 
     public function table(Table $table): Table
     {
@@ -19,10 +26,10 @@ class RolesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('name'),
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()->inverseRelationshipName('users')->preloadRecordSelect()->label('Add / Attach')->color('primary'),
+                Tables\Actions\AttachAction::make()->preloadRecordSelect()->label('Add / Attach')->color('primary'),
             ])
             ->actions([
-                Tables\Actions\DetachAction::make()->inverseRelationshipName('users')->label('Remove'),
+                Tables\Actions\DetachAction::make()->label('Remove'),
             ]);
     }
 }

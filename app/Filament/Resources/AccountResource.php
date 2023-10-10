@@ -7,13 +7,13 @@ use App\Filament\Helpers\Resources\DefinesGatedAttributes;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Mship\Account;
-use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Carbon\CarbonInterface;
 use Filament\Forms;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
 class AccountResource extends Resource implements DefinesGatedAttributes
@@ -56,54 +56,53 @@ class AccountResource extends Resource implements DefinesGatedAttributes
         return $form
             ->schema([
                 Forms\Components\Fieldset::make('Basic Details')->schema([
-                    // Forms\Components\Grid::make(3)->schema([
-                    //     Forms\Components\Placeholder::make('central_account_name')
-                    //         ->content(fn ($record) => $record->name_first.' '.$record->name_last)
-                    //         ->visibleOn('view'),
-                    //     Forms\Components\TextInput::make('nickname')
-                    //         ->label('Preferred Name'),
-                    //     CopyablePlaceholder::make('id')
-                    //         ->label('CID')
-                    //         ->content(fn ($record) => $record->id)
-                    //         ->visibleOn('view')
-                    //         ->iconOnly()
-                    //         ->extraAttributes([
-                    //             'class' => 'flex items-center space-x-2',
-                    //         ]),
-                    // ]),
+                    Forms\Components\Grid::make(3)->schema([
+                        Forms\Components\Placeholder::make('central_account_name')
+                            ->content(fn ($record) => $record->name_first.' '.$record->name_last)
+                            ->visibleOn('view'),
+                        Forms\Components\TextInput::make('nickname')
+                            ->label('Preferred Name'),
+                        Placeholder::make('id') // TODO: Make copyable again
+                            ->label('CID')
+                            ->content(fn ($record) => $record->id)
+                            ->visibleOn('view')
+                            ->extraAttributes([
+                                'class' => 'flex items-center space-x-2',
+                            ]),
+                    ]),
 
-                    // Forms\Components\Fieldset::make('Emails')->schema([
-                    //     Forms\Components\TextInput::make('email')
-                    //         ->label('Primary Email')
-                    //         ->required()
-                    //         ->disabled(),
+                    Forms\Components\Fieldset::make('Emails')->schema([
+                        Forms\Components\TextInput::make('email')
+                            ->label('Primary Email')
+                            ->required()
+                            ->disabled(),
 
-                    //     Forms\Components\Repeater::make('secondaryEmails')
-                    //         ->relationship()
-                    //         ->schema([Forms\Components\TextInput::make('email')])->disabled(),
-                    // ])->when(fn ($record, $context) => auth()->user()->can('viewSensitive', $record) && $context === 'view'),
+                        Forms\Components\Repeater::make('secondaryEmails')
+                            ->relationship()
+                            ->schema([Forms\Components\TextInput::make('email')])->disabled(),
+                    ])->visible(fn ($record, $context) => auth()->user()->can('viewSensitive', $record) && $context === 'view'),
 
-                    // Forms\Components\Fieldset::make('State')->schema([
-                    //     Forms\Components\Grid::make(3)->schema([
-                    //         Forms\Components\Placeholder::make('vatsim_region')
-                    //             ->label('VATSIM Region')
-                    //             ->content(fn ($record) => $record->primary_permanent_state?->pivot?->region),
-                    //         Forms\Components\Placeholder::make('vatsim_division')
-                    //             ->label('VATSIM Division')
-                    //             ->content(fn ($record) => $record->primary_permanent_state?->pivot?->division),
-                    //         Forms\Components\Placeholder::make('uk_primary_state')
-                    //             ->label('UK Primary State')
-                    //             ->content(fn ($record) => $record->primary_state?->name),
-                    //     ]),
-                    // ])->visibleOn('view'),
+                    Forms\Components\Fieldset::make('State')->schema([
+                        Forms\Components\Grid::make(3)->schema([
+                            Forms\Components\Placeholder::make('vatsim_region')
+                                ->label('VATSIM Region')
+                                ->content(fn ($record) => $record->primary_permanent_state?->pivot?->region),
+                            Forms\Components\Placeholder::make('vatsim_division')
+                                ->label('VATSIM Division')
+                                ->content(fn ($record) => $record->primary_permanent_state?->pivot?->division),
+                            Forms\Components\Placeholder::make('uk_primary_state')
+                                ->label('UK Primary State')
+                                ->content(fn ($record) => $record->primary_state?->name),
+                        ]),
+                    ])->visibleOn('view'),
 
-                    // Forms\Components\Fieldset::make('Qualifications')->schema(function ($record) {
-                    //     return [
-                    //         Forms\Components\Grid::make(3)
-                    //             ->schema(static::makeQualificationSummaryPlaceholders($record))
-                    //             ->visibleOn('view'),
-                    //     ];
-                    // })->visibleOn('view'),
+                    Forms\Components\Fieldset::make('Qualifications')->schema(function ($record) {
+                        return [
+                            Forms\Components\Grid::make(3)
+                                ->schema(static::makeQualificationSummaryPlaceholders($record))
+                                ->visibleOn('view'),
+                        ];
+                    })->visibleOn('view'),
                 ]),
             ]);
     }
@@ -142,8 +141,8 @@ class AccountResource extends Resource implements DefinesGatedAttributes
         return [
             RelationManagers\StatesRelationManager::class,
             RelationManagers\QualificationsRelationManager::class,
-            // RelationManagers\RolesRelationManager::class,
-            // RelationManagers\BansRelationManager::class,
+            RelationManagers\RolesRelationManager::class,
+            RelationManagers\BansRelationManager::class,
         ];
     }
 

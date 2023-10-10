@@ -20,6 +20,11 @@ class BansRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'id';
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Form $form): Form
     {
         return $form->schema([
@@ -43,7 +48,7 @@ class BansRelationManager extends RelationManager
 
     protected function canCreate(): bool
     {
-        return auth()->user()->can('create', [$this->getRelatedModel(), $this->ownerRecord]);
+        return auth()->user()->can('create', [$this->getTable()->getModel(), $this->ownerRecord]);
     }
 
     public function table(Table $table): Table
