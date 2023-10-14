@@ -7,6 +7,7 @@ use App\Filament\Helpers\Resources\DefinesGatedAttributes;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Mship\Account;
+use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Carbon\CarbonInterface;
 use Filament\Forms;
 use Filament\Forms\Components\Placeholder;
@@ -62,8 +63,9 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                             ->visibleOn('view'),
                         Forms\Components\TextInput::make('nickname')
                             ->label('Preferred Name'),
-                        Placeholder::make('id') // TODO: Make copyable again
+                        CopyablePlaceholder::make('id')
                             ->label('CID')
+                            ->iconOnly()
                             ->content(fn ($record) => $record->id)
                             ->visibleOn('view')
                             ->extraAttributes([

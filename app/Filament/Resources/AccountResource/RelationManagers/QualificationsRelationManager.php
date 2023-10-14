@@ -4,8 +4,8 @@ namespace App\Filament\Resources\AccountResource\RelationManagers;
 
 use App\Enums\QualificationTypeEnum;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 
 class QualificationsRelationManager extends RelationManager
 {

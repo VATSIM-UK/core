@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8de4f468e453ec22cf5478f62994f20f",
+    "content-hash": "083dbeb8a80c4dbba5e7474daf343c8f",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -59,16 +59,16 @@
         },
         {
             "name": "axonc/filament-copyable-placeholder",
-            "version": "v0.2.3",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AxonC/filament-copyable-placeholder.git",
-                "reference": "459466f8217b9b6c293f155a5d44a6a19716d890"
+                "reference": "82c77ba39e71c1b0f4f604587500f43404f70d07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AxonC/filament-copyable-placeholder/zipball/459466f8217b9b6c293f155a5d44a6a19716d890",
-                "reference": "459466f8217b9b6c293f155a5d44a6a19716d890",
+                "url": "https://api.github.com/repos/AxonC/filament-copyable-placeholder/zipball/82c77ba39e71c1b0f4f604587500f43404f70d07",
+                "reference": "82c77ba39e71c1b0f4f604587500f43404f70d07",
                 "shasum": ""
             },
             "require": {
@@ -125,9 +125,9 @@
             ],
             "support": {
                 "issues": "https://github.com/AxonC/filament-copyable-placeholder/issues",
-                "source": "https://github.com/AxonC/filament-copyable-placeholder/tree/v0.2.3"
+                "source": "https://github.com/AxonC/filament-copyable-placeholder/tree/v0.3.0"
             },
-            "time": "2023-10-09T17:49:58+00:00"
+            "time": "2023-10-14T17:40:33+00:00"
         },
         {
             "name": "barryvdh/laravel-debugbar",

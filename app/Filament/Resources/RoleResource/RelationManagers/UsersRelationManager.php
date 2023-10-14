@@ -4,8 +4,8 @@ namespace App\Filament\Resources\RoleResource\RelationManagers;
 
 use App\Filament\Resources\AccountResource;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 
 class UsersRelationManager extends RelationManager
 {

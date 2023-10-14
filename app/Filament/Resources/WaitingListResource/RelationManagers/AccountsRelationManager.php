@@ -114,9 +114,9 @@ class AccountsRelationManager extends RelationManager
                         'Active' => 'Active',
                         'Deferred' => 'Deferred',
                     ])->getStateUsing(fn ($record) => $record->pivot->current_status->name)->colors([
-                    'success' => static fn ($record) => $record === 'Active',
-                    'danger' => static fn ($record) => $record === 'Deferred',
-                ])->label('Status'),
+                        'success' => static fn ($record) => $record === 'Active',
+                        'danger' => static fn ($record) => $record === 'Deferred',
+                    ])->label('Status'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()

@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\AccountResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 
 class StatesRelationManager extends RelationManager
 {
