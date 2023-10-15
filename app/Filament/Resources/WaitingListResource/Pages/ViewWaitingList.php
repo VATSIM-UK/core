@@ -32,7 +32,7 @@ class ViewWaitingList extends ViewRecord
                     $action->success();
                 })
                 ->successNotificationTitle('Student added to waiting list')
-                ->after(fn ($livewire) => $livewire->emit('refreshWaitingList'))
+                ->after(fn ($livewire) => $livewire->dispatch('refreshWaitingList'))
                 ->form([
                     TextInput::make('account_id')
                         ->label('Account CID')
@@ -43,7 +43,8 @@ class ViewWaitingList extends ViewRecord
                         }])
                         ->required(),
                     DatePicker::make('join_date')
-                        ->visible(fn () => auth()->user()->can('addAccountsAdmin', $this->record)),
+                        ->visible(fn () => auth()->user()->can('addAccountsAdmin', $this->record))
+                        ->helperText('This field should only be used to override the date a member joined the waiting list. It is only available to admin-level users..'),
                 ])
                 ->visible(fn () => auth()->user()->can('addAccounts', $this->record)),
 

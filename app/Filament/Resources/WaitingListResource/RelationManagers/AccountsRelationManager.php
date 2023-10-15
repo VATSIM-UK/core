@@ -110,12 +110,9 @@ class AccountsRelationManager extends RelationManager
                 Tables\Columns\IconColumn::make('pivot.eligible')->boolean()->label('Eligible')->getStateUsing(fn ($record) => $record->pivot->eligible),
                 Tables\Columns\TextColumn::make('pivot.status')
                     ->badge()
-                    ->color([
-                        'Active' => 'Active',
-                        'Deferred' => 'Deferred',
-                    ])->getStateUsing(fn ($record) => $record->pivot->current_status->name)->colors([
-                        'success' => static fn ($record) => $record === 'Active',
-                        'danger' => static fn ($record) => $record === 'Deferred',
+                    ->getStateUsing(fn ($record) => $record->pivot->current_status->name)->colors([
+                        'success' => 'Active',
+                        'gray' => 'Deferred',
                     ])->label('Status'),
             ])
             ->actions([
@@ -138,11 +135,11 @@ class AccountsRelationManager extends RelationManager
                             $flagsById->mapWithKeys(fn ($value, $key) => [$key => ['marked_at' => $value ? now() : null]])->all(),
                         );
 
-                        $livewire->emit('refreshWaitingList');
+                        $livewire->dispatch('refreshWaitingList');
 
                         return $record;
                     })
-                    ->visible(fn ($record) => auth()->user()->can('updateAccounts', $record->pivot->waitingList)),
+                    ->visible(fn ($record) => $this->can('updateAccounts', $record->pivot->waitingList)),
 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\DetachAction::make()
@@ -150,6 +147,11 @@ class AccountsRelationManager extends RelationManager
                     ->using(fn ($record, $livewire) => $livewire->ownerRecord->removeFromWaitingList($record))
                     ->successNotificationTitle('User removed from waiting list'),
             ]);
+    }
+
+    public function isReadOnly(): bool
+    {
+        return false;
     }
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
@@ -164,11 +166,11 @@ class AccountsRelationManager extends RelationManager
 
     protected function canEdit(Model $record): bool
     {
-        return auth()->user()->can('updateAccounts', $this->ownerRecord);
+        return $this->can('updateAccounts', $this->getOwnerRecord());
     }
 
     protected function canDetach(Model $record): bool
     {
-        return auth()->user()->can('removeAccount', $this->ownerRecord);
+        return $this->can('removeAccount', $this->getOwnerRecord());
     }
 }

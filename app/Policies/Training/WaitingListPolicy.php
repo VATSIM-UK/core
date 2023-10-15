@@ -38,7 +38,7 @@ class WaitingListPolicy
 
     public function removeAccount(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.remove-accounts.%s', "waitingLists/{$waitingList->department}/removeAccount"]);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.remove-accounts.%s']);
     }
 
     public function addFlags(Account $account, WaitingList $waitingList)
