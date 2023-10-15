@@ -4,7 +4,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Mship\Account;
 use Illuminate\Support\Arr;
-use Livewire;
+use Livewire\Livewire;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
@@ -45,7 +45,7 @@ abstract class BaseAdminTestCase extends TestCase
         $this->partialMock($policyClass, fn (MockInterface $mock) => $mock->shouldReceive($policyAction)->andReturn($response));
     }
 
-    protected function assertPageActionDependentOnPolicy(string $pageClass, string $actionName, string $policyClass, ?string $policyAction, ?int $recordId)
+    protected function assertActionDependentOnPolicy(string $pageClass, string $actionName, string $policyClass, ?string $policyAction, ?int $recordId)
     {
         // Login as a user with access to the panel first
         Livewire::actingAs($this->privacc);
@@ -53,9 +53,9 @@ abstract class BaseAdminTestCase extends TestCase
         $policyActionName = $policyAction ?? $actionName;
 
         $this->mockPolicyAction($policyClass, $policyActionName, false);
-        Livewire::test($pageClass, ['record' => $recordId])->assertPageActionHidden($actionName);
+        Livewire::test($pageClass, ['record' => $recordId])->assertActionHidden($actionName);
 
         $this->mockPolicyAction($policyClass, $policyActionName, true);
-        Livewire::test($pageClass, ['record' => $recordId])->assertPageActionVisible($actionName);
+        Livewire::test($pageClass, ['record' => $recordId])->assertActionVisible($actionName);
     }
 }

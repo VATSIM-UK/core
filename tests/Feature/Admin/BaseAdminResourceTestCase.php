@@ -44,7 +44,7 @@ abstract class BaseAdminResourceTestCase extends BaseAdminTestCase
         $pages = static::$resourceClass::getPages();
 
         return collect($pages)->mapWithKeys(function ($page, $name) {
-            return [$name => [$name, fn () => (in_array($name, ['index', 'create']) ? null : ['record' => self::makeFactoryModel()->create()])]];
+            return [$name => [$name, fn () => (in_array($name, ['index', 'create']) ? [] : ['record' => self::makeFactoryModel()->create()])]];
         })->all();
     }
 

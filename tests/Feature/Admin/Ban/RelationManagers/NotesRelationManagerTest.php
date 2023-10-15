@@ -4,7 +4,8 @@ namespace Tests\Feature\Admin\Ban\RelationManagers;
 
 use App\Filament\Resources\BanResource\RelationManagers\NotesRelationManager;
 use App\Models\Mship\Account\Ban;
-use Livewire;
+use Filament\Resources\Pages\ViewRecord;
+use Livewire\Livewire;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
 class NotesRelationManagerTest extends BaseAdminTestCase
@@ -14,7 +15,7 @@ class NotesRelationManagerTest extends BaseAdminTestCase
         $this->actingAsSuperUser();
 
         $ban = Ban::factory()->create();
-        Livewire::test(NotesRelationManager::class, ['ownerRecord' => $ban])
+        Livewire::test(NotesRelationManager::class, ['ownerRecord' => $ban, 'pageClass' => ViewRecord::class])
             ->assertSuccessful();
     }
 
@@ -23,7 +24,7 @@ class NotesRelationManagerTest extends BaseAdminTestCase
         $this->actingAsSuperUser();
 
         $ban = Ban::factory()->create();
-        Livewire::test(NotesRelationManager::class, ['ownerRecord' => $ban])
+        Livewire::test(NotesRelationManager::class, ['ownerRecord' => $ban, 'pageClass' => ViewRecord::class])
             ->callTableAction('create', null, ['content' => 'the content']);
 
         $this->assertDatabaseHas('mship_account_note', ['account_id' => $ban->account->id, 'writer_id' => $this->privacc->id, 'content' => 'the content', 'attachment_id' => $ban->id, 'attachment_type' => Ban::class]);
