@@ -2,10 +2,10 @@
     <form wire:submit.prevent="submit">
         {{ $this->form }}
     
-        <x-filament-support::button  type="submit" class="my-6">Submit</x-filament-support::button>
+        <x-filament::button type="submit" class="my-2">Submit</x-filament::button>
     </form>
 
-    <div class="items-center" wire:loading.flex><x-filament-support::loading-indicator class="w-10 mx-auto" /></div>
+    <div class="items-center" wire:loading.flex><x-filament::loading-indicator class="w-10 mx-auto" /></div>
     @if($this->statistics)
     <x-filament::card heading="Results for {{$this->quarterMappings[$this->quarter]}} {{$this->year}}" wire:loading.remove>
         <table class="table text-center table-auto w-full">

@@ -55,7 +55,7 @@ class BanResource extends Resource
             Forms\Components\Fieldset::make('Timings')->schema([
                 Forms\Components\DateTimePicker::make('period_start')->required()->disabled(),
                 Forms\Components\DateTimePicker::make('period_finish')->disabled(),
-                Forms\Components\DateTimePicker::make('repealed_at')->when(fn ($record) => $record->repealed_at),
+                Forms\Components\DateTimePicker::make('repealed_at')->visible(fn ($record) => $record->repealed_at),
             ]),
 
             Forms\Components\DateTimePicker::make('updated_at')->label('Last Update')->disabled(),

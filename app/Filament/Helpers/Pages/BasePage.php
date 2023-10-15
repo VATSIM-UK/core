@@ -23,7 +23,6 @@ abstract class BasePage extends Page
 
     public function mount(): void
     {
-        parent::mount();
         abort_unless(static::canUse(), 403);
     }
 }

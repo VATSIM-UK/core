@@ -7,9 +7,9 @@ use App\Filament\Resources\AccountResource;
 use App\Jobs\UpdateMember;
 use App\Models\Contact;
 use App\Notifications\Mship\UserImpersonated;
+use Filament\Actions;
+use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Textarea;
-use Filament\Pages\Actions;
-use Filament\Pages\Actions\ActionGroup;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -47,7 +47,7 @@ class ViewAccount extends BaseViewRecordPage
             ->icon('heroicon-o-finger-print')
             ->color('danger')
             ->modalHeading('Impersonate User')
-            ->modalSubheading(new HtmlString('<p>Clicking confirm will log you in as this user on the user facing side and log you out of your own account.</p>
+            ->modalDescription(new HtmlString('<p>Clicking confirm will log you in as this user on the user facing side and log you out of your own account.</p>
 
 <p>This feature should only be used in rare and extreme circumstances. All impersonations are monitored, and may be followed up. Use of this feature must be authorized by the Web Services Director every time it is used.</p>
 
@@ -55,6 +55,7 @@ class ViewAccount extends BaseViewRecordPage
             ->form([
                 Textarea::make('reason')->required()->minLength(10),
             ])
+            ->modalSubmitActionLabel('Impersonate')
             ->action(function (array $data) {
                 // Notify Privellged users that a user has been impersonated
                 Contact::where('key', 'PRIVACC')->first()

@@ -4,7 +4,7 @@ namespace App\Filament\Resources\AccountResource\Pages;
 
 use App\Filament\Helpers\Pages\BaseEditRecordPage;
 use App\Filament\Resources\AccountResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 
 class EditAccount extends BaseEditRecordPage
 {

@@ -14,8 +14,7 @@ class FeedbackOverview extends BaseWidget
     {
         return [
             Stat::make('Total feedback', Feedback::count()),
-            Stat::make('% feedback actioned', round(max(Feedback::whereNotNull('actioned_at')->count(), 1) / max(Feedback::count(), 1) * 100).'%')
-                ->description('Total percentage of feedback actioned'),
+            Stat::make('% feedback actioned', round(max(Feedback::whereNotNull('actioned_at')->count(), 1) / max(Feedback::count(), 1) * 100).'%'),
         ];
     }
 }

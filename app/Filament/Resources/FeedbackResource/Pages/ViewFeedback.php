@@ -4,8 +4,8 @@ namespace App\Filament\Resources\FeedbackResource\Pages;
 
 use App\Filament\Helpers\Pages\BaseViewRecordPage;
 use App\Filament\Resources\FeedbackResource;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Pages\Actions;
 
 class ViewFeedback extends BaseViewRecordPage
 {

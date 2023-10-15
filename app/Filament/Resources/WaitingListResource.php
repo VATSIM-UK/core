@@ -22,6 +22,8 @@ class WaitingListResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
+
     public static function form(Form $form): Form
     {
         return $form

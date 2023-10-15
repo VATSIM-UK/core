@@ -4,7 +4,7 @@ namespace App\Filament\Resources\RoleResource\Pages;
 
 use App\Filament\Helpers\Pages\BaseEditRecordPage;
 use App\Filament\Resources\RoleResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 
 class EditRole extends BaseEditRecordPage
 {

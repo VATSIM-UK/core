@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\WaitingListResource\Pages;
 
 use App\Filament\Resources\WaitingListResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListWaitingLists extends ListRecords
