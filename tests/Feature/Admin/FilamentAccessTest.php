@@ -16,7 +16,7 @@ class FilamentAccessTest extends TestCase
     {
         $this->actingAs($this->privacc);
 
-        $this->get('/filament')->assertStatus(200);
+        $this->get('/admin')->assertStatus(200);
     }
 
     /** @test */
@@ -26,7 +26,7 @@ class FilamentAccessTest extends TestCase
 
         $this->actingAs($account);
 
-        $this->get('/filament')->assertStatus(403);
+        $this->get('/admin')->assertStatus(403);
     }
 
     /** @test */
@@ -41,6 +41,6 @@ class FilamentAccessTest extends TestCase
 
         $this->actingAs($account);
 
-        $this->get('/filament')->assertStatus(200);
+        $this->get('/admin')->assertStatus(200);
     }
 }
