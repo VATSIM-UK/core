@@ -175,12 +175,12 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->callAction('add_flag', data: [
-                'name' => 'test',
+                'name' => 'My Test Flag',
             ]);
 
         $this->assertDatabaseHas('training_waiting_list_flags', [
             'list_id' => $waitingList->id,
-            'name' => 'test',
+            'name' => 'My Test Flag',
             'endorsement_id' => null,
         ]);
     }
@@ -219,13 +219,14 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->callAction('add_flag', data: [
-                'name' => 'test',
+                'name' => 'My Test Flag',
                 'endorsement_id' => $endorsement->id,
-            ]);
+            ])
+            ->assertHasNoActionErrors();
 
         $this->assertDatabaseHas('training_waiting_list_flags', [
             'list_id' => $waitingList->id,
-            'name' => 'test',
+            'name' => 'My Test Flag',
             'endorsement_id' => $endorsement->id,
         ]);
     }
