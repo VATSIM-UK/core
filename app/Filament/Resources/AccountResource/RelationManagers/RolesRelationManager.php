@@ -12,7 +12,7 @@ class RolesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $inverseRelationship = 'user';
+    protected static ?string $inverseRelationship = 'users';
 
     public function isReadOnly(): bool
     {
