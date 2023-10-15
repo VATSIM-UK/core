@@ -12,9 +12,11 @@ class FeedbackOverview extends BaseWidget
 
     protected function getCards(): array
     {
+        $totalFeedback = Feedback::count();
+
         return [
-            Stat::make('Total feedback', Feedback::count()),
-            Stat::make('% feedback actioned', round(max(Feedback::whereNotNull('actioned_at')->count(), 1) / max(Feedback::count(), 1) * 100).'%'),
+            Stat::make('Total feedback', $totalFeedback),
+            Stat::make('% feedback actioned', ($totalFeedback ? round(Feedback::whereNotNull('actioned_at')->count() / $totalFeedback * 100) : 100).'%'),
         ];
     }
 }
