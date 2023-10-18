@@ -17,8 +17,12 @@ class FilamentAccessMiddleware
     {
         $account = $request->user();
 
-        if (! $account || ! $account->can('admin.access')) {
-            return abort(403);
+        if (! $account) {
+            return redirect()->route('login');
+        }
+
+        if (! $account->can('admin.access')) {
+            return abort(404);
         }
 
         return $next($request);

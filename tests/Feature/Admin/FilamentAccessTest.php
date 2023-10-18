@@ -19,6 +19,11 @@ class FilamentAccessTest extends TestCase
         $this->get('/admin')->assertStatus(200);
     }
 
+    public function itRedirectsToLoginWhenUnauthenticated()
+    {
+        $this->get('/admin')->assertRedirect('/login');
+    }
+
     /** @test */
     public function itReturns403WhenNavigatingToUrlWithoutRole()
     {
@@ -26,7 +31,7 @@ class FilamentAccessTest extends TestCase
 
         $this->actingAs($account);
 
-        $this->get('/admin')->assertStatus(403);
+        $this->get('/admin')->assertStatus(404);
     }
 
     /** @test */
