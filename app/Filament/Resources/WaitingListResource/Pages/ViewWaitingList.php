@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\WaitingListResource\Pages;
 
 use App\Filament\Resources\WaitingListResource;
+use App\Filament\Resources\WaitingListResource\Widgets\IndividualWaitingListOverview;
 use App\Models\Atc\Endorsement;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListFlag;
@@ -18,6 +19,13 @@ use Illuminate\Support\Arr;
 class ViewWaitingList extends ViewRecord
 {
     protected static string $resource = WaitingListResource::class;
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            IndividualWaitingListOverview::class,
+        ];
+    }
 
     protected function getHeaderActions(): array
     {

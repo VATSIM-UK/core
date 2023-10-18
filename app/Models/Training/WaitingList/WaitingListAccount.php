@@ -39,7 +39,7 @@ class WaitingListAccount extends Pivot
             'waiting_list_account_id',
             'status_id'
         )
-            ->withPivot(['start_at', 'end_at'])->using(WaitingListAccountStatus::class)
+            ->withPivot(['start_at', 'end_at', 'id'])->using(WaitingListAccountStatus::class)
             ->wherePivot('end_at', null);
     }
 
