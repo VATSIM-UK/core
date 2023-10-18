@@ -454,19 +454,16 @@
                         </li>
                         <li>
                             LON_E_CTR
-                        </li>                        
+                        </li>
                         <li>
                             LON_D_CTR
                         </li>
                         <li>
-                            SCO_WD_CTR
+                            LTC_N_CTR
                         </li>
                         <li>
-                            STC_CTR
-                        </li>
-                        <li>
-                            STC_A_CTR
-                        </li>
+                            LTC_S_CTR
+                        </li>          
                         <li>
                             MAN_W_CTR
                         </li>
@@ -475,13 +472,22 @@
                         </li>
                         <li>
                             MAN_SE_CTR
-                        </li>                          
-                        <li>
-                            LTC_N_CTR
                         </li>
                         <li>
-                            LTC_S_CTR
-                        </li>                      
+                            SCO_WD_CTR
+                        </li>
+                        <li>
+                            SCO_D_CTR
+                        </li>
+                        <li>
+                            SCO_S_CTR
+                        </li>
+                        <li>
+                            STC_CTR
+                        </li>
+                        <li>
+                            STC_A_CTR
+                        </li>
                     </ul>
 
                     <p>
