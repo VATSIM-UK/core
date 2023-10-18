@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
@@ -101,9 +102,9 @@ class AccountsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('pivot.position')->getStateUsing(fn ($record) => $record->pivot->position ?? '-')->sortable()->label('Position'),
+                Tables\Columns\TextColumn::make('pivot.position')->getStateUsing(fn ($record) => $record->pivot->position ?? '-')->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('pivot_created_at', $direction))->label('Position'),
                 Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
-                Tables\Columns\TextColumn::make('name')->label('Name'),
+                Tables\Columns\TextColumn::make('name')->label('Name')->searchable(['name_first', 'name_last']),
                 Tables\Columns\TextColumn::make('pivot.created_at')->label('Added on')->dateTime('M dS Y'),
                 Tables\Columns\IconColumn::make('pivot.atc_hour_check')->boolean()->label('Hour check')->getStateUsing(fn ($record) => Arr::get($record->pivot?->eligibility_summary, 'base_controlling_hours')),
                 Tables\Columns\IconColumn::make('pivot.flags_check')->boolean()->label('Flags check')->getStateUsing(fn ($record) => (bool) Arr::get($record->pivot?->flags_status_summary, 'overall')),
@@ -146,7 +147,7 @@ class AccountsRelationManager extends RelationManager
                     ->label('Remove')
                     ->using(fn ($record, $livewire) => $livewire->ownerRecord->removeFromWaitingList($record))
                     ->successNotificationTitle('User removed from waiting list'),
-            ]);
+            ])->defaultSort('pivot_created_at', 'asc')->persistSearchInSession()->defaultPaginationPageOption(25);
     }
 
     public function isReadOnly(): bool
