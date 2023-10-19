@@ -41,6 +41,16 @@ class BookingRepository
         return $this->formatBookings($bookings);
     }
 
+    public function getHistoricalBookings()
+    {
+        $bookings = Booking::where('date', '<', Carbon::now()->toDateString())
+            ->with('member')
+            ->orderBy('from')
+            ->get();
+
+        return $this->formatBookings($bookings);
+    }
+
     private function formatBookings(Collection $bookings)
     {
         $bookings->transform(function ($booking) {

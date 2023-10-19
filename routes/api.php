@@ -1,7 +1,17 @@
 <?php
+use Illuminate\Support\Facades\Cache;
 
 Route::get('validations')->uses('Api\CTS\ValidationsController@view')->name('api.validations');
 Route::get('metar/{airportIcao}')->uses('Site\MetarController@get')->name('api.metar');
+Route::get('/bookings', function () {
+    $bookings = Cache::remember('bookings', 720, function () {
+        $bookings = new BookingRepository();
+        return $bookings->getHistoricalBookings();
+    });
+
+    return response()->json($bookings);
+});
+
 
 Route::group([
     'middleware' => 'api_auth',
