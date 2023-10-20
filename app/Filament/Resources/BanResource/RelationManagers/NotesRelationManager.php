@@ -32,7 +32,7 @@ class NotesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('type.name'),
                 Tables\Columns\TextColumn::make('content')->wrap(),
-                Tables\Columns\TextColumn::make('account.name')->label('From'),
+                Tables\Columns\TextColumn::make('writer.name')->label('From'),
                 Tables\Columns\TextColumn::make('created_at')->label('Made')->since()->sortable(),
             ])
             ->headerActions([
