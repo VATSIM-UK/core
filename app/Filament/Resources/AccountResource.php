@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 
 class AccountResource extends Resource implements DefinesGatedAttributes
 {
@@ -72,6 +73,9 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                                 'class' => 'flex items-center space-x-2',
                             ]),
                     ]),
+
+                    Forms\Components\Placeholder::make('has_secondary_password')->content(fn ($record) => $record->hasPassword() ? 'Yes' : 'No'),
+                    Forms\Components\Placeholder::make('discord_id')->label('Discord ID')->content(fn ($record) => $record->discord_id ?? new HtmlString('<i>Not Linked</i>')),
 
                     Forms\Components\Fieldset::make('Emails')->schema([
                         Forms\Components\TextInput::make('email')

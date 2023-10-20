@@ -35,6 +35,17 @@ class ViewAccount extends BaseViewRecordPage
 
             ActionGroup::make([
                 $this->getImpersonateAction(),
+                Actions\Action::make('remove_password')
+                    ->visible(fn () => $this->record->hasPassword() && auth()->user()->can('removeSecondaryPassword', $this->record))
+                    ->color('warning')
+                    ->icon('heroicon-o-key')
+                    ->modalHeading('Remove Secondary Password')
+                    ->action(function () {
+                        $this->record->removePassword();
+                        $this->refreshFormData(['has_secondary_password']);
+                    })
+                    ->requiresConfirmation()
+                    ->successNotificationTitle('Password removed'),
                 Actions\EditAction::make()->visible(auth()->user()->can('update', $this->record)),
             ]),
         ];

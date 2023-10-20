@@ -29,6 +29,38 @@ class ViewAccountPageTest extends BaseAdminTestCase
         $this->assertEquals($this->privacc->id, auth()->user()->id);
     }
 
+    public function test_cant_remove_password_without_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->privacc->setPassword('123');
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])->assertActionHidden('remove_password');
+    }
+
+    public function test_can_remove_password_with_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.remove-password.*');
+        $this->privacc->setPassword('123');
+        $this->assertTrue($this->privacc->fresh()->hasPassword());
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertActionVisible('remove_password')
+            ->callAction('remove_password');
+
+        $this->assertFalse($this->privacc->fresh()->hasPassword());
+    }
+
+    public function test_can_remove_password_not_visible_when_no_password()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.remove-password.*');
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertActionHidden('remove_password');
+    }
+
     public function test_cant_see_email_address_without_permission()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
