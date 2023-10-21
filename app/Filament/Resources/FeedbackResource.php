@@ -114,19 +114,15 @@ class FeedbackResource extends Resource
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('actioned_at')
-                    ->boolean()
+                    ->timestampBoolean()
                     ->trueIcon('heroicon-s-check-circle')
                     ->falseIcon('heroicon-s-x-circle')
-                    ->label('Actioned')
-                    ->falseColor('danger')
-                    ->getStateUsing(fn ($record) => $record->actioned_at !== null),
+                    ->label('Actioned'),
                 Tables\Columns\IconColumn::make('sent_at')
-                    ->boolean()
+                    ->timestampBoolean()
                     ->trueIcon('heroicon-s-check-circle')
                     ->falseIcon('heroicon-s-x-circle')
-                    ->label('Sent to User')
-                    ->falseColor('danger')
-                    ->getStateUsing(fn ($record) => $record->sent_at !== null),
+                    ->label('Sent to User'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('form')

@@ -94,5 +94,10 @@ class FilamentServiceProvider extends ServiceProvider
             /** @var \Filament\Forms\Components\Select $this */
             return $this->in(fn ($component) => array_keys($component->getOptions()));
         });
+
+        \Filament\Tables\Columns\IconColumn::macro('timestampBoolean', function (): \Filament\Tables\Columns\IconColumn {
+            /** @var \Filament\Tables\Columns\IconColumn $this */
+            return $this->getStateUsing(fn ($record) => $record->{$this->getName()} !== null)->boolean();
+        });
     }
 }
