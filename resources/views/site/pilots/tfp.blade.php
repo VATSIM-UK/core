@@ -153,7 +153,7 @@
                 <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Interested? 🔍</div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                             <div>
                                 <h2>Students</h2>
                                 <p>

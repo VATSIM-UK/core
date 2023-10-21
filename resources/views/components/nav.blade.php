@@ -44,6 +44,7 @@
                                 <li>{!! link_to_route("site.pilots.ratings", "Ratings") !!}</li>
                                 <li>{!! link_to_route("site.pilots.mentor", "Becoming a Mentor") !!}</li>
                                 <li>{!! link_to_route("site.pilots.oceanic", "Oceanic Procedures") !!}</li>
+                                <li>{!! link_to_route("site.pilots.tfp", "Flying Programme") !!}</li>
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Flight Training Exercises</li>
                                 <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>

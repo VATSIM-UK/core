@@ -158,63 +158,63 @@
 
                     <p style="margin-left: 40px">
                         <strong>Manchester (EGCC)</strong><br>
-                        MAN_SE_CTR (134.425) &#8594; MAN_E_CTR (133.800) &#8594; MAN_CTR (133.200) &#8594; LON_N_CTR (133.700) &#8594; LON_NW_CTR (135.575) &#8594; LON_CTR (127.825)
+                        MAN_SE_CTR (134.430) &#8594; MAN_E_CTR (133.800) &#8594; MAN_CTR (133.200) &#8594; LON_N_CTR (133.705) &#8594; LON_NW_CTR (135.580) &#8594; LON_CTR (127.830)
                     </p>
 					<p style="margin-left: 40px">
-                        <strong>Leeds (EGNM), Doncaster (EGCN), Humberside (EGNJ), Newcastle (EGNT), Teesside (EGNV)</strong><br>
-                        MAN_NE_CTR (135.700) &#8594; MAN_E_CTR (133.800) &#8594; MAN_CTR (133.200) &#8594; LON_NE_CTR (128.125) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
+                        <strong>Leeds (EGNM), Humberside (EGNJ), Newcastle (EGNT), Teesside (EGNV)</strong><br>
+                        MAN_NE_CTR (135.715) &#8594; MAN_E_CTR (133.800) &#8594; MAN_CTR (133.200) &#8594; LON_NE_CTR (128.130) &#8594; LON_N_CTR (133.705) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Liverpool (EGGP), Hawarden (EGNR), Isle of Man (EGNS), Blackpool (EGNH)</strong><br>
-                        MAN_W_CTR (128.050) &#8594; MAN_CTR (133.200) &#8594; LON_NW_CTR (135.575) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
+                        MAN_W_CTR (128.055) &#8594; MAN_CTR (133.200) &#8594; LON_NW_CTR (135.580) &#8594; LON_N_CTR (133.705) &#8594; LON_CTR (127.830)
                     </p>
 					<p style="margin-left: 40px">
                         <strong>Norwich (EGSH)</strong><br>
-                        LON_NE_CTR (128.125) &#8594; LON_N_CTR (133.700) &#8594; LON_CTR (127.825)
+                        LON_NE_CTR (128.130) &#8594; LON_N_CTR (133.705) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>East Midlands (EGNX), Birmingham (EGBB), Coventry (EGBE)</strong><br>
-                        LON_M_CTR (120.025) &#8594; LON_C_CTR (127.100) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                        LON_M_CTR (120.025) &#8594; LON_C_CTR (127.105) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>London/Stansted (EGSS), Cambridge (EGSC)</strong><br>
-                        LTC_NE_CTR (118.825) &#8594; LTC_N_CTR (119.775) &#8594; LTC_CTR (135.800) &#8594; LTC_E_CTR (121.225) &#8594; LON_E_CTR (118.475) &#8594; LON_C_CTR (127.100) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                        LTC_NE_CTR (118.825) &#8594; LTC_N_CTR (119.780) &#8594; LTC_CTR (135.805) &#8594; LTC_E_CTR (121.230) &#8594; LON_E_CTR (118.480) &#8594; LON_C_CTR (127.105) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>London/Luton (EGGW)</strong><br>
-                        LTC_NW_CTR (121.275) &#8594; LTC_N_CTR (119.775) &#8594; LTC_CTR (135.800) &#8594; LON_M_CTR (120.025) &#8594; LON_C_CTR (127.100) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                        LTC_NW_CTR (121.280) &#8594; LTC_N_CTR (119.780) &#8594; LTC_CTR (135.805) &#8594; LON_M_CTR (120.025) &#8594; LON_C_CTR (127.105) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>London/Heathrow (EGLL), London/City (EGLC), Southend (EGMC), Biggin Hill (EGKB), Lydd (EGMD)</strong><br>
-                        LTC_SE_CTR (120.525) &#8594; LTC_S_CTR (134.125) &#8594; LTC_CTR (135.800) &#8594; LON_D_CTR (134.900) &#8594; LON_S_CTR (129.425) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                        LTC_SE_CTR (120.530) &#8594; LTC_S_CTR (134.125) &#8594; LTC_CTR (135.805) &#8594; LON_D_CTR (134.905) &#8594; LON_S_CTR (129.430) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>London/Gatwick (EGKK), Farnborough (EGLF)</strong><br>
-                        LTC_SW_CTR (133.175) &#8594; LTC_S_CTR (134.125) &#8594; LTC_CTR (135.800) &#8594; LON_S_CTR (129.425) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                        LTC_SW_CTR (133.180) &#8594; LTC_S_CTR (134.125) &#8594; LTC_CTR (135.805) &#8594; LON_S_CTR (129.430) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Southampton (EGHI), Bournemouth (EGHH)</strong><br>
-                        LON_S_CTR (129.425) &#8594; LON_SC_CTR (132.600) &#8594; LON_CTR (127.825)
+                        LON_S_CTR (129.430) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Bristol (EGGD), Cardiff (EGFF), Exeter (EGTE), Gloucester (EGBJ), Newquay (EGHQ), Channel Islands (EGJJ/JB/JA)</strong><br>
-                        LON_W_CTR (126.075) &#8594; LON_CTR (127.825)
+                        LON_W_CTR (126.080) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Edinburgh (EGPH), Glasgow (EGPF), Prestwick (EGPK)</strong><br>
-                        STC_CTR (126.300) &#8594; SCO_D_CTR (135.850) &#8594; SCO_WD_CTR (133.875) &#8594; SCO_S_CTR (134.775) &#8594; SCO_CTR (135.525)
+                        STC_CTR (126.300) &#8594; SCO_D_CTR (135.855) &#8594; SCO_WD_CTR (133.875) &#8594; SCO_S_CTR (134.775) &#8594; SCO_CTR (135.530)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Belfast/Aldergrove (EGAA), Belfast/City (EGAC)</strong><br>
-                        STC_A_CTR (123.775) &#8594; SCO_R_CTR (129.100) &#8594; SCO_W_CTR (132.725) &#8594; SCO_WD_CTR (133.875) &#8594; SCO_CTR (135.525)
+                        STC_A_CTR (123.775) &#8594; SCO_R_CTR (129.100) &#8594; SCO_W_CTR (132.730) &#8594; SCO_WD_CTR (133.875) &#8594; SCO_CTR (135.530)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Aberdeen/Dyce (EGPD), Dundee (EGPN)</strong><br>
-                        SCO_S_CTR (134.775) &#8594; SCO_E_CTR (121.325) &#8594; SCO_CTR (135.525)
+                        SCO_S_CTR (134.775) &#8594; SCO_E_CTR (121.325) &#8594; SCO_CTR (135.530)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>Inverness (EGPE), Stornoway (EGPO), Kirkwall (EGPA), Sumburgh (EGPB), Wick (EGPC)</strong><br>
-                        SCO_N_CTR (129.225) &#8594; SCO_E_CTR (121.325) &#8594; SCO_CTR (135.525)
+                        SCO_N_CTR (129.225) &#8594; SCO_E_CTR (121.325) &#8594; SCO_CTR (135.530)
                     </p>
 
                 </div>
@@ -253,7 +253,7 @@
                         The main London sector groups (North, South, Central & West) are shown below. Sometimes these sectors are combined using the LON_SC_CTR or LON_CTR callsigns.
                     </p>
 
-                    <img class="img-responsive center-block" src="/images/egttsectors-lon.png" alt="diagram of main London sectors">
+                    <img class="img-responsive center-block" src="/images/egtt-sectors-2023-11.png" alt="diagram of main London sectors">
 
                     <p>
                         e.g. If LON_CTR, LON_S_CTR and LON_W_CTR are online, then the...
@@ -290,7 +290,7 @@
                         It is especially important to descend according to your STAR when only these sectors are online. Do not wait for a contact me before starting your descent.
                     </p>
 
-                    <img class="img-responsive center-block" src="/images/egttsectors-ltc-2202.png" alt="diagram of London TMA split sectors">
+                    <img class="img-responsive center-block" src="/images/egtc-sectors-2023-11.png" alt="diagram of London TMA split sectors">
 
                     <h3>
                         Scottish - Main Positions
@@ -312,7 +312,7 @@
                         Further Scottish splits are sometimes used during events.
                     </p>
 
-                    <img class="img-responsive center-block" src="/images/egpxsectors.png" alt="diagram of main Scottish sectors">
+                    <img class="img-responsive center-block" src="/images/egpx-sectors-2023-11.png" alt="diagram of main Scottish sectors">
 
                 </div>
             </div>
@@ -454,19 +454,16 @@
                         </li>
                         <li>
                             LON_E_CTR
-                        </li>                        
+                        </li>
                         <li>
                             LON_D_CTR
                         </li>
                         <li>
-                            SCO_WD_CTR
+                            LTC_N_CTR
                         </li>
                         <li>
-                            STC_CTR
-                        </li>
-                        <li>
-                            STC_A_CTR
-                        </li>
+                            LTC_S_CTR
+                        </li>          
                         <li>
                             MAN_W_CTR
                         </li>
@@ -475,13 +472,22 @@
                         </li>
                         <li>
                             MAN_SE_CTR
-                        </li>                          
-                        <li>
-                            LTC_N_CTR
                         </li>
                         <li>
-                            LTC_S_CTR
-                        </li>                      
+                            SCO_WD_CTR
+                        </li>
+                        <li>
+                            SCO_D_CTR
+                        </li>
+                        <li>
+                            SCO_S_CTR
+                        </li>
+                        <li>
+                            STC_CTR
+                        </li>
+                        <li>
+                            STC_A_CTR
+                        </li>
                     </ul>
 
                     <p>
