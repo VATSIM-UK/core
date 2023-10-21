@@ -69,7 +69,7 @@
     "require": {
         "php": "^8.0.2",
         "alawrence/laravel-ipboard": "dev-main",
-        "axonc/filament-copyable-placeholder": "^0.1.0",
+        "axonc/filament-copyable-placeholder": "^0.2.1",
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^2.7",
         "benjaminhirsch/nova-slug-field": "^1.2",
