@@ -36,6 +36,12 @@ Generate an application key.
 php artisan key:generate
 ```
 
+Build the backend.
+
+```shell
+composer build
+```
+
 ### Compiling Frontend Assets
 Install all required dependencies
 ```shell
@@ -45,4 +51,9 @@ yarn
 Compile the assets.
 ```shell
 yarn dev
+```
+
+Depending on your node version you may need.
+```shell
+NODE_OPTIONS=--openssl-legacy-provider yarn dev
 ```

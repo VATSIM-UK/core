@@ -155,6 +155,12 @@
         ],
         "lint": [
             "./vendor/bin/pint"
+        ],
+        "build": [
+            "@php artisan horizon:publish",
+            "@php artisan telescope:publish",
+            "@php artisan migrate",
+            "@php artisan cts:migrate:fresh"
         ]
     },
     "config": {
