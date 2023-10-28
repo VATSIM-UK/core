@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Http\Middleware\FilamentAccessMiddleware;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -52,6 +53,12 @@ class AppPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 FilamentAccessMiddleware::class,
+            ])
+            ->navigationItems([
+                NavigationItem::make('Legacy Admin Panel')
+                    ->url(fn () => route('adm.index')) // This is a closure as routes may not have been registered yet
+                    ->icon('heroicon-o-clock')
+                    ->visible(fn () => request()->user()->hasPermissionTo('adm')),
             ]);
     }
 }

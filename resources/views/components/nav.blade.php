@@ -168,9 +168,9 @@
                         @endif
                     </a>
                 </li>
-                @if(Auth::user()->can('use-permission', 'adm'))
+                @if(Auth::user()->can('admin.access'))
                 <li class="dropdown dropdown-large">
-                    <a href="{{ route("adm.index") }}" title="Admin Dashboard">
+                    <a href="{{ route("filament.app.pages.dashboard") }}" title="Admin Dashboard">
                         <i class="fa fa-briefcase"></i>
                     </a>
                 </li>

@@ -2,7 +2,7 @@
 
 // Admin
 Route::group([
-    'prefix' => 'adm',
+    'prefix' => 'admin-legacy',
     'namespace' => 'Adm',
     'middleware' => ['auth_full_group', 'admin'],
     'as' => 'adm.',
@@ -29,7 +29,6 @@ Route::group([
         'prefix' => 'visit-transfer',
         'namespace' => 'VisitTransfer',
     ], function () {
-        Route::get('/')->uses('Dashboard@getDashboard')->name('dashboard');
         Route::get('/facility')->uses('Facility@getList')->name('facility');
         Route::get('/facility/create')->uses('Facility@getCreate')->name('facility.create');
         Route::post('/facility/create')->uses('Facility@postCreate')->name('facility.create.post');
@@ -48,7 +47,5 @@ Route::group([
         Route::post('/application/{application}/complete')->where('application', "\d+")->uses('Application@postComplete')->name('application.complete.post');
         Route::post('/application/{application}/cancel')->where('application', "\d+")->uses('Application@postCancel')->name('application.cancel.post');
         Route::get('/application/{scope?}')->where('scope', "\w+")->uses('Application@getList')->name('application.list');
-        Route::get('/hours/')->uses('VisitorStatsController@create')->name('hours.create');
-        Route::get('/hours/search')->uses('VisitorStatsController@index')->name('hours.search');
     });
 });
