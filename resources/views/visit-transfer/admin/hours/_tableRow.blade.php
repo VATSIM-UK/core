@@ -13,7 +13,7 @@ if($account->networkDataAtc->sum('minutes_online') > 0) {
             class="bg-danger"
         @endif
 >
-    <td>{!! link_to_route('adm.mship.account.details', $account->id, $account->id) !!}</td>
+    <td>{{ $account->id }}</td>
     <td>{{ $account->name }}</td>
     <td>{{ $account->qualificationAtc }}</td>
     <td>{{ $account->primaryState->pivot->region }} / {{ $account->primaryState->pivot->division }} </td>

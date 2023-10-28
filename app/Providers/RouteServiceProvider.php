@@ -4,10 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
-use Redirect;
 use Route;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -74,33 +71,12 @@ class RouteServiceProvider extends ServiceProvider
 
     private function registerRouteModelBindings()
     {
-        Route::model('mshipAccount', \App\Models\Mship\Account::class, function () {
-            return Redirect::route('adm.mship.account.index')->withError('The account ID you provided was not found.');
-        });
-
-        Route::model('mshipAccountEmail', \App\Models\Mship\Account\Email::class);
-
         Route::bind('mshipRegistration', function ($value) {
             return Auth::user()->teamspeakRegistrations()->findOrFail($value);
         });
 
-        Route::model('ban', \App\Models\Mship\Account\Ban::class, function () {
-            return Redirect::route('adm.mship.account.index')->withError('The ban ID you provided was not found.');
-        });
         Route::model('ssoEmail', \App\Models\Sso\Email::class);
         Route::model('sysNotification', \App\Models\Sys\Notification::class);
-
-        Route::model('mshipRole', Role::class, function () {
-            Redirect::route('adm.mship.role.index')->withError('Role doesn\'t exist.');
-        });
-
-        Route::model('mshipPermission', Permission::class, function () {
-            Redirect::route('adm.mship.permission.index')->withError('Permission doesn\'t exist.');
-        });
-
-        Route::model('mshipNoteType', \App\Models\Mship\Note\Type::class, function () {
-            Redirect::route('adm.mship.note.type.index')->withError("Note type doesn't exist.");
-        });
 
         Route::bind('applicationByPublicId', function ($value) {
             return \App\Models\VisitTransfer\Application::findByPublicId($value);

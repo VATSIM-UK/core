@@ -8,12 +8,7 @@
 
                     @if($note->attachment)
                         <i class="fa fa-link"></i>
-                        @if($note->attachment instanceof \App\Models\Mship\Account\Ban)
-                            @if($note->attachment->is_repealed)
-                                *Repealed*
-                            @endif
-                            Ban: {!! link_to_route("adm.mship.account.details", "#".str_pad($note->attachment->id, 5, 0, STR_PAD_LEFT), [$note->account->id, "notes", $note->attachment->id]) !!}
-                        @elseif($note->attachment instanceof \App\Models\VisitTransfer\Reference)
+                        @if($note->attachment instanceof \App\Models\VisitTransfer\Reference)
                             VT Reference: {!! link_to_route("adm.visiting.reference.view", "#".str_pad($note->attachment->id, 5, 0, STR_PAD_LEFT), [$note->attachment->id]) !!}
                         @elseif($note->attachment instanceof \App\Models\VisitTransfer\Application)
                             VT Application: {!! link_to_route("adm.visiting.application.view", "#".str_pad($note->attachment->id, 5, 0, STR_PAD_LEFT), [$note->attachment->id]) !!}
@@ -27,8 +22,7 @@
                       Unknown/System
                     @else
                       {{$note->writer->name}}
-                      ({!! link_to_route("adm.mship.account.details", $note->writer_id, [$note->writer_id]) !!}
-                      )
+                      {{$note->writer_id}}
                     @endif
 
 
