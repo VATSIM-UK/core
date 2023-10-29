@@ -28,7 +28,7 @@ class WaitingListResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->autofocus()->required()->reactive()
+                Forms\Components\TextInput::make('name')->autofocus()->required()->live(onBlur: true)
                     ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
                 Forms\Components\TextInput::make('slug')->required(),
 
