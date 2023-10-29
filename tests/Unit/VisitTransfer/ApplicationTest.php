@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ApplicationTest extends TestCase
@@ -182,7 +183,7 @@ class ApplicationTest extends TestCase
         });
     }
 
-    public function providerCancelTest()
+    public static function providerCancelTest()
     {
         // With another accepted visit application
         return [
@@ -191,11 +192,7 @@ class ApplicationTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider providerCancelTest
-     */
+    #[DataProvider('providerCancelTest')]
     public function itCanBeCancelled($with_another_application)
     {
         Notification::fake();

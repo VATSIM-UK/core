@@ -8,7 +8,7 @@ use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
 use App\Notifications\Mship\BanCreated;
 use App\Policies\Mship\Account\BanPolicy;
-use Livewire;
+use Livewire\Livewire;
 use Mockery\MockInterface;
 use Notification;
 use Tests\Feature\Admin\BaseAdminTestCase;
@@ -20,7 +20,7 @@ class BansRelationManagerTest extends BaseAdminTestCase
         $this->actingAsSuperUser();
 
         $account = Account::factory()->has(Ban::factory())->create();
-        Livewire::test(BansRelationManager::class, ['ownerRecord' => $account])
+        Livewire::test(BansRelationManager::class, ['ownerRecord' => $account, 'pageClass' => ViewRecord::class])
             ->assertSuccessful()
             ->assertCanSeeTableRecords($account->bans);
     }
@@ -33,13 +33,13 @@ class BansRelationManagerTest extends BaseAdminTestCase
             $mock->shouldReceive('create')->andReturnFalse();
         });
 
-        Livewire::test(BansRelationManager::class, ['ownerRecord' => $account])
+        Livewire::test(BansRelationManager::class, ['ownerRecord' => $account, 'pageClass' => ViewRecord::class])
             ->assertTableActionHidden('create');
 
         $this->partialMock(BanPolicy::class, function (MockInterface $mock) {
             $mock->shouldReceive('create')->andReturnTrue();
         });
-        Livewire::test(BansRelationManager::class, ['ownerRecord' => $account])
+        Livewire::test(BansRelationManager::class, ['ownerRecord' => $account, 'pageClass' => ViewRecord::class])
             ->assertTableActionVisible('create');
     }
 
@@ -51,7 +51,7 @@ class BansRelationManagerTest extends BaseAdminTestCase
         $account = Account::factory()->create();
         $reason = Reason::factory()->create()->id;
 
-        Livewire::test(BansRelationManager::class, ['ownerRecord' => $account])
+        Livewire::test(BansRelationManager::class, ['ownerRecord' => $account, 'pageClass' => ViewRecord::class])
             ->callTableAction('create', null, ['reason' => $reason, 'extra_info' => 'the extra info', 'note' => 'the note']);
 
         $this->assertDatabaseHas('mship_account_ban', ['account_id' => $account->id, 'banned_by' => $this->privacc->id, 'reason_id' => $reason, 'reason_extra' => 'the extra info']);

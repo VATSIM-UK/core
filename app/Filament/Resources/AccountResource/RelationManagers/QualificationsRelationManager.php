@@ -4,8 +4,8 @@ namespace App\Filament\Resources\AccountResource\RelationManagers;
 
 use App\Enums\QualificationTypeEnum;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 
 class QualificationsRelationManager extends RelationManager
 {
@@ -13,7 +13,7 @@ class QualificationsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([

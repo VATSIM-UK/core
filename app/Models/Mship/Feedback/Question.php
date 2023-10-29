@@ -53,11 +53,6 @@ class Question extends Model
 
     protected $table = 'mship_feedback_questions';
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
-
     protected $fillable = [
         'type_id',
         'slug',
@@ -70,6 +65,8 @@ class Question extends Model
         'required' => 'boolean',
         'options' => 'array',
         'permanent' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function scopeNotPermanent($query)

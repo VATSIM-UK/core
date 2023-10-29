@@ -4,60 +4,71 @@ namespace App\Policies\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use App\Policies\BasePolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Arr;
 
-class WaitingListPolicy extends BasePolicy
+class WaitingListPolicy
 {
     use HandlesAuthorization;
 
-    private const GUARD = 'web';
-
-    public function before(Account $account, $policy)
+    public function viewAny(Account $account)
     {
-        if (parent::before($account, $policy)) {
-            return true;
-        }
+        return $account->hasAnyPermission('waiting-lists.access');
     }
 
     public function view(Account $account, WaitingList $waitingList)
     {
-        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/view", self::GUARD);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.view.%s']);
     }
 
-    public function viewAny(Account $account)
+    public function addAccounts(Account $account, WaitingList $waitingList)
     {
-        return $account->checkPermissionTo('waitingLists/atc/view', self::GUARD) ||
-            $account->checkPermissionTo('waitingLists/pilot/view', self::GUARD);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-accounts.%s']);
     }
 
-    public function addAccounts(Account $account)
+    public function addAccountsAdmin(Account $account, WaitingList $waitingList)
     {
-        return $account->checkPermissionTo('waitingLists/addAccounts', self::GUARD);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-accounts-admin.%s']);
+    }
+
+    public function updateAccounts(Account $account, WaitingList $waitingList)
+    {
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.update-accounts.%s']);
     }
 
     public function removeAccount(Account $account, WaitingList $waitingList)
     {
-        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/removeAccount", self::GUARD);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.remove-accounts.%s']);
     }
 
-    public function addFlags(Account $account)
+    public function addFlags(Account $account, WaitingList $waitingList)
     {
-        return $account->checkPermissionTo('waitingLists/addFlags', self::GUARD);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-flags.%s']);
     }
 
     public function update(Account $account, WaitingList $waitingList)
     {
-        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/update", self::GUARD);
+        return false;
     }
 
     public function delete(Account $account, WaitingList $waitingList)
     {
-        return $account->checkPermissionTo("waitingLists/{$waitingList->department}/delete", self::GUARD);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.delete.%s']);
     }
 
     public function create(Account $account)
     {
-        return $account->checkPermissionTo('waitingLists/create', self::GUARD);
+        return $account->hasAnyPermission(['waiting-lists.create']);
+    }
+
+    /**
+     * Returns if the account has permission for either the ID or department type for the given permission
+     *
+     * @param  string|string[]  $permissionTemplate Of sprintf format, e.g. "permsion.to.%s"
+     * @return void
+     */
+    private function checkHasPermissionForList(Account $account, WaitingList $waitingList, mixed $permissionTemplates): bool
+    {
+        return $account->hasAnyPermission(collect(Arr::wrap($permissionTemplates))->flatMap(fn ($permissionTemplate) => [sprintf($permissionTemplate, $waitingList->id), sprintf($permissionTemplate, $waitingList->department)]));
     }
 }

@@ -81,7 +81,7 @@ class FilamentServiceProvider extends ServiceProvider
                         $relationship = $this->getRelationship()->getResults();
 
                         return Action::make('view resource')
-                            ->icon('heroicon-o-external-link')
+                            ->icon('heroicon-o-arrow-top-right-on-square')
                             ->url($resourceClass::urlToView($relationship));
                     }
                 );
@@ -93,6 +93,11 @@ class FilamentServiceProvider extends ServiceProvider
         \Filament\Forms\Components\Select::macro('inOptions', function (): \Filament\Forms\Components\Select {
             /** @var \Filament\Forms\Components\Select $this */
             return $this->in(fn ($component) => array_keys($component->getOptions()));
+        });
+
+        \Filament\Tables\Columns\IconColumn::macro('timestampBoolean', function (): \Filament\Tables\Columns\IconColumn {
+            /** @var \Filament\Tables\Columns\IconColumn $this */
+            return $this->getStateUsing(fn ($record) => $record->{$this->getName()} !== null)->boolean();
         });
     }
 }

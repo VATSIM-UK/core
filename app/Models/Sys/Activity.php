@@ -40,7 +40,7 @@ class Activity extends Model
 
     protected $primaryKey = 'id';
 
-    protected $dates = ['created_at'];
+    protected $casts = ['created_at' => 'datetime'];
 
     protected $fillable = ['actor_id', 'subject_id', 'subject_type', 'action'];
 

@@ -16,14 +16,13 @@ abstract class BasePage extends Page
         return true;
     }
 
-    protected static function shouldRegisterNavigation(): bool
+    public static function shouldRegisterNavigation(): bool
     {
         return static::canUse();
     }
 
     public function mount(): void
     {
-        parent::mount();
         abort_unless(static::canUse(), 403);
     }
 }

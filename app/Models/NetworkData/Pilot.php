@@ -74,7 +74,14 @@ class Pilot extends Model
 
     protected $primaryKey = 'id';
 
-    public $dates = ['departed_at', 'arrived_at', 'connected_at', 'disconnected_at', 'created_at', 'updated_at'];
+    protected $casts = [
+        'departed_at' => 'datetime',
+        'arrived_at' => 'datetime',
+        'connected_at' => 'datetime',
+        'disconnected_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     protected $fillable = [
         'account_id',

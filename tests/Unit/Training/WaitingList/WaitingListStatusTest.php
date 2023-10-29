@@ -20,6 +20,8 @@ class WaitingListStatusTest extends TestCase
         parent::setUp();
 
         $this->waitingListStatus = factory(WaitingListStatus::class)->states(['default'])->create();
+
+        $this->actingAs($this->privacc);
     }
 
     /** @test * */

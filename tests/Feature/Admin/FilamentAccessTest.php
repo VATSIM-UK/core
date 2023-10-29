@@ -16,7 +16,12 @@ class FilamentAccessTest extends TestCase
     {
         $this->actingAs($this->privacc);
 
-        $this->get('/filament')->assertStatus(200);
+        $this->get('/admin')->assertStatus(200);
+    }
+
+    public function itRedirectsToLoginWhenUnauthenticated()
+    {
+        $this->get('/admin')->assertRedirect('/login');
     }
 
     /** @test */
@@ -26,7 +31,7 @@ class FilamentAccessTest extends TestCase
 
         $this->actingAs($account);
 
-        $this->get('/filament')->assertStatus(403);
+        $this->get('/admin')->assertStatus(404);
     }
 
     /** @test */
@@ -41,6 +46,6 @@ class FilamentAccessTest extends TestCase
 
         $this->actingAs($account);
 
-        $this->get('/filament')->assertStatus(200);
+        $this->get('/admin')->assertStatus(200);
     }
 }

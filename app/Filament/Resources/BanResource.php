@@ -10,10 +10,10 @@ use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
 use Carbon\CarbonInterval;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 
@@ -25,7 +25,7 @@ class BanResource extends Resource
 
     protected static ?string $navigationGroup = 'User Management';
 
-    protected static function getNavigationBadge(): ?string
+    public static function getNavigationBadge(): ?string
     {
         return Cache::remember('admin.bans.local-ban-count', CarbonInterval::minute(5), fn () => static::getModel()::isActive()->isLocal()->count());
     }
@@ -55,7 +55,7 @@ class BanResource extends Resource
             Forms\Components\Fieldset::make('Timings')->schema([
                 Forms\Components\DateTimePicker::make('period_start')->required()->disabled(),
                 Forms\Components\DateTimePicker::make('period_finish')->disabled(),
-                Forms\Components\DateTimePicker::make('repealed_at')->when(fn ($record) => $record->repealed_at),
+                Forms\Components\DateTimePicker::make('repealed_at')->visible(fn ($record) => $record->repealed_at),
             ]),
 
             Forms\Components\DateTimePicker::make('updated_at')->label('Last Update')->disabled(),

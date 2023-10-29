@@ -20,7 +20,7 @@ class AdminMiddlewareTest extends TestCase
     /** @test */
     public function testANonStaffMemberCannotAccessAdmEndpoints()
     {
-        $this->actingAs($this->user)->get('adm')
+        $this->actingAs($this->user)->get(route('adm.index'))
             ->assertForbidden();
     }
 
@@ -28,7 +28,7 @@ class AdminMiddlewareTest extends TestCase
     public function testPrivaccCanBypassGuard()
     {
         $this->actingAs($this->privacc)
-            ->get('adm')
+            ->get(route('adm.index'))
             ->assertSuccessful();
     }
 

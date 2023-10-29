@@ -51,12 +51,9 @@ class Pirep extends Model
         'flight_id',
     ];
 
-    protected $dates = [
-        'deleted_at',
-    ];
-
     protected $casts = [
         'passed' => 'boolean',
+        'deleted_at' => 'datetime',
     ];
 
     public function bid()

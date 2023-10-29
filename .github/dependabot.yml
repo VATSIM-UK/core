@@ -58,19 +58,3 @@ updates:
   - dependency-name: laravel/telescope
     versions:
     - 4.4.4
-- package-ecosystem: composer
-  directory: "/nova-components/WaitingListsManager"
-  schedule:
-    interval: weekly
-    day: friday
-    time: "18:00"
-  open-pull-requests-limit: 99
-  labels: []
-- package-ecosystem: npm
-  directory: "/nova-components/WaitingListsManager"
-  schedule:
-    interval: weekly
-    day: friday
-    time: "18:00"
-  open-pull-requests-limit: 99
-  labels: []

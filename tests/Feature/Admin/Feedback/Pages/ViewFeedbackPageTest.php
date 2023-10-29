@@ -21,8 +21,6 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
         $this->adminUser->givePermissionTo('feedback.access');
         $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
 
-        // dd(config('app.url'));
-
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewFeedback::class, ['record' => $feedback->getRouteKey()])
             ->assertDontSee('Submitted By')
@@ -82,15 +80,15 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
-            ->assertPageActionVisible('action_feedback')
-            ->callPageAction('action_feedback', data: [
+            ->assertActionVisible('action_feedback')
+            ->callAction('action_feedback', data: [
                 'comment' => 'Testing action of feedback.',
             ]);
 
         $this->assertNotNull($feedback->fresh()->actioned_at);
 
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
-            ->assertPageActionHidden('action_feedback');
+            ->assertActionHidden('action_feedback');
     }
 
     public function test_cant_action_or_sendfeedback_without_permission()
@@ -103,8 +101,8 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
-            ->assertPageActionHidden('action_feedback')
-            ->assertPageActionHidden('send_feedback');
+            ->assertActionHidden('action_feedback')
+            ->assertActionHidden('send_feedback');
     }
 
     public function test_can_send_feedback_with_permission()
@@ -118,8 +116,8 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
-            ->assertPageActionVisible('send_feedback')
-            ->callPageAction('send_feedback', data: [
+            ->assertActionVisible('send_feedback')
+            ->callAction('send_feedback', data: [
                 'comment' => 'Testing sending of feedback.',
             ]);
 
@@ -133,8 +131,8 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
         $this->assertEquals($feedback->sent_comment, 'Testing sending of feedback.');
 
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
-            ->assertPageActionHidden('send_feedback')
-            ->assertPageActionHidden('action_feedback');
+            ->assertActionHidden('send_feedback')
+            ->assertActionHidden('action_feedback');
     }
 
     public function test_cant_view_feedback_of_slug_not_granted_permission_for()

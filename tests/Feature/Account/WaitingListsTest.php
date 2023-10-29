@@ -19,6 +19,8 @@ class WaitingListsTest extends TestCase
 
         // disable account altered event to stop it from removing accounts from waiting lists
         Event::fake([AccountAltered::class]);
+
+        $this->actingAs($this->privacc);
     }
 
     /** @test */

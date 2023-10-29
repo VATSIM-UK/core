@@ -8,7 +8,9 @@ class AccountState extends Pivot
 {
     protected $table = 'mship_account_state';
 
-    protected $dates = ['start_at', 'end_at'];
+    protected $casts = [
+        'start_at' => 'datetime',
+    ];
 
     protected $hidden = ['id'];
 }

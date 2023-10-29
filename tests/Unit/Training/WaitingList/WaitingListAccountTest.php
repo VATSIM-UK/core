@@ -22,6 +22,8 @@ class WaitingListAccountTest extends TestCase
         parent::setUp();
 
         $this->waitingList = $this->createList();
+
+        $this->actingAs($this->privacc);
     }
 
     /** @test * */

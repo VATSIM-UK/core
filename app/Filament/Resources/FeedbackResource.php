@@ -8,17 +8,17 @@ use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form as FeedbackForm;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
 class FeedbackResource extends Resource
 {
     protected static ?string $model = Feedback::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
     protected static ?string $navigationGroup = 'Feedback';
 
@@ -114,19 +114,15 @@ class FeedbackResource extends Resource
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('actioned_at')
-                    ->boolean()
+                    ->timestampBoolean()
                     ->trueIcon('heroicon-s-check-circle')
                     ->falseIcon('heroicon-s-x-circle')
-                    ->label('Actioned')
-                    ->falseColor('danger')
-                    ->getStateUsing(fn ($record) => $record->actioned_at !== null),
+                    ->label('Actioned'),
                 Tables\Columns\IconColumn::make('sent_at')
-                    ->boolean()
+                    ->timestampBoolean()
                     ->trueIcon('heroicon-s-check-circle')
                     ->falseIcon('heroicon-s-x-circle')
-                    ->label('Sent to User')
-                    ->falseColor('danger')
-                    ->getStateUsing(fn ($record) => $record->sent_at !== null),
+                    ->label('Sent to User'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('form')

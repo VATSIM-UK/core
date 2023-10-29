@@ -65,7 +65,13 @@ class Ban extends Model
 
     protected $primaryKey = 'id';
 
-    protected $dates = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];
+    protected $casts = [
+        'period_start' => 'datetime',
+        'period_finish' => 'datetime',
+        'created_at' => 'datetime',
+        'repealed_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     protected $touches = ['account'];
 

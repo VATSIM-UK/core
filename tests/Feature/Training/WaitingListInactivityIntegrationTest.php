@@ -20,6 +20,8 @@ class WaitingListInactivityIntegrationTest extends TestCase
         parent::setUp();
 
         Notification::fake();
+
+        $this->actingAs($this->privacc);
     }
 
     /** @test */

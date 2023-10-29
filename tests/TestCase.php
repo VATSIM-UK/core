@@ -89,11 +89,4 @@ abstract class TestCase extends BaseTestCase
 
         return $this->privacc = $user->fresh();
     }
-
-    public function markNovaTest()
-    {
-        if (! class_exists('\Laravel\Nova\Nova')) {
-            $this->markTestSkipped('Nova is required to pass test.');
-        }
-    }
 }

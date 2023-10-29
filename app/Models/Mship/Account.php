@@ -17,7 +17,6 @@ use App\Models\Mship\Concerns\HasHelpdeskAccount;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
 use App\Models\Mship\Concerns\HasNotifications;
-use App\Models\Mship\Concerns\HasNovaPermissions;
 use App\Models\Mship\Concerns\HasPassword;
 use App\Models\Mship\Concerns\HasQualifications;
 use App\Models\Mship\Concerns\HasRoles;
@@ -177,7 +176,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         HasMoodleAccount,
         HasNetworkData,
         HasNotifications,
-        HasNovaPermissions,
         HasPassword,
         HasQualifications,
         HasRoles,
@@ -202,17 +200,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     protected $guard_name = ['web'];
 
     public $incrementing = false;
-
-    protected $dates = [
-        'last_login',
-        'joined_at',
-        'cert_checked_at',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'password_set_at',
-        'password_expires_at',
-    ];
 
     protected $fillable = [
         'id',
@@ -239,6 +226,14 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     protected $casts = [
         'inactive' => 'boolean',
         'discord_id' => 'int',
+        'last_login' => 'datetime',
+        'joined_at' => 'datetime',
+        'cert_checked_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'password_set_at' => 'datetime',
+        'password_expires_at' => 'datetime',
     ];
 
     protected $hidden = [
@@ -559,5 +554,14 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function hiddenFeedbackUsers()
+    {
+        if ($this->can('use-permission', 'feedback/own') || $this->can('use-permission', 'feedback.view-own')) {
+            return [];
+        }
+
+        return [$this->id];
     }
 }

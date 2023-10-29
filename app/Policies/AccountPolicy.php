@@ -64,7 +64,17 @@ class AccountPolicy
      */
     public function update(Account $actor, Account $subject)
     {
-        return $actor->can("account.edit-basic-details.{$subject->id}") && ($subject->getKey() !== $actor->getKey() || $actor->can('account.self'));
+        return $actor->can("account.edit-basic-details.{$subject->id}") && $this->passesSelfCheck($actor, $subject);
+    }
+
+    /**
+     * Whether the user can remove another user's secondary password
+     *
+     * @return void
+     */
+    public function removeSecondaryPassword(Account $actor, Account $subject)
+    {
+        return $actor->can("account.remove-password.{$subject->id}") && $this->passesSelfCheck($actor, $subject);
     }
 
     /**
@@ -107,5 +117,10 @@ class AccountPolicy
     public function impersonate(Account $actor, Account $subject)
     {
         return $actor->can("account.impersonate.{$subject->id}");
+    }
+
+    protected function passesSelfCheck(Account $actor, Account $subject)
+    {
+        return $subject->getKey() !== $actor->getKey() || $actor->can('account.self');
     }
 }

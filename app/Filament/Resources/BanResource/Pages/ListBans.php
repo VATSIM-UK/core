@@ -9,7 +9,7 @@ class ListBans extends ListRecords
 {
     protected static string $resource = BanResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
         ];

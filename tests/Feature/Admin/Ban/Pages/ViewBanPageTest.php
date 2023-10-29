@@ -15,12 +15,12 @@ class ViewBanPageTest extends BaseAdminTestCase
 {
     public function test_can_only_modify_when_permitted_by_policy()
     {
-        $this->assertPageActionDependentOnPolicy(ViewBan::class, 'edit', BanPolicy::class, 'update', Ban::factory()->create()->id);
+        $this->assertActionDependentOnPolicy(ViewBan::class, 'edit', BanPolicy::class, 'update', Ban::factory()->create()->id);
     }
 
     public function test_can_only_repeal_when_permitted_by_policy()
     {
-        $this->assertPageActionDependentOnPolicy(ViewBan::class, 'repeal', BanPolicy::class, null, Ban::factory()->create()->id);
+        $this->assertActionDependentOnPolicy(ViewBan::class, 'repeal', BanPolicy::class, null, Ban::factory()->create()->id);
     }
 
     public function test_modify_ban_action_works()
@@ -31,7 +31,7 @@ class ViewBanPageTest extends BaseAdminTestCase
         $this->actingAsSuperUser();
 
         $this->mockPolicyAction(BanPolicy::class, 'update');
-        Livewire::test(ViewBan::class, ['record' => $ban->id])->callPageAction('edit', ['period_finish' => $this->knownDate, 'extra_info' => 'Ban was updated', 'note' => 'An updated note']);
+        Livewire::test(ViewBan::class, ['record' => $ban->id])->callAction('edit', ['period_finish' => $this->knownDate, 'extra_info' => 'Ban was updated', 'note' => 'An updated note']);
 
         $ban = $ban->fresh();
 
@@ -48,7 +48,7 @@ class ViewBanPageTest extends BaseAdminTestCase
         $this->actingAsAdminUser('account.ban.edit.*');
 
         $this->mockPolicyAction(BanPolicy::class, 'repeal');
-        Livewire::test(ViewBan::class, ['record' => $ban->id])->callPageAction('repeal', ['reason' => 'repeal reason']);
+        Livewire::test(ViewBan::class, ['record' => $ban->id])->callAction('repeal', ['reason' => 'repeal reason']);
 
         $this->assertNotNull($ban->fresh()->repealed_at);
         Notification::assertSentTo([$ban->account], BanRepealed::class);

@@ -4,14 +4,14 @@ namespace App\Filament\Resources\FeedbackResource\Pages;
 
 use App\Filament\Helpers\Pages\BaseViewRecordPage;
 use App\Filament\Resources\FeedbackResource;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Pages\Actions;
 
 class ViewFeedback extends BaseViewRecordPage
 {
     protected static string $resource = FeedbackResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\Action::make('send_feedback')

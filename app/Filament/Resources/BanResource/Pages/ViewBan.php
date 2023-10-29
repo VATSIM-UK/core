@@ -8,16 +8,16 @@ use App\Models\Mship\Note\Type;
 use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
-use Filament\Pages\Actions\Action;
-use Filament\Pages\Actions\EditAction;
 
 class ViewBan extends BaseViewRecordPage
 {
     protected static string $resource = BanResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             EditAction::make()

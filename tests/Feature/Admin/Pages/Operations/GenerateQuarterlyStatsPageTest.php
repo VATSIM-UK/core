@@ -3,7 +3,7 @@
 namespace Tests\Feature\Admin\Pages\Operations;
 
 use App\Filament\Pages\Operations\GenerateQuarterlyStats;
-use Livewire;
+use Livewire\Livewire;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
 class GenerateQuarterlyStatsPageTest extends BaseAdminTestCase

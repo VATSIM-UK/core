@@ -30,11 +30,6 @@ class Type extends Model
 {
     protected $table = 'mship_feedback_question_types';
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
-
     protected $fillable = [
         'name',
         'code',
@@ -44,6 +39,8 @@ class Type extends Model
 
     protected $casts = [
         'requires_value' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public $timestamps = false;

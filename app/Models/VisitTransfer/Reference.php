@@ -95,7 +95,12 @@ class Reference extends Model
 
     protected $touches = ['application'];
 
-    protected $dates = ['contacted_at', 'reminded_at', 'submitted_at', 'deleted_at'];
+    protected $casts = [
+        'contacted_at' => 'datetime',
+        'reminded_at' => 'datetime',
+        'submitted_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
 
     public $timestamps = false;
 

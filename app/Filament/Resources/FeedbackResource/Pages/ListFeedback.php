@@ -16,7 +16,7 @@ class ListFeedback extends ListRecords
         return parent::getTableQuery()->with(['account', 'submitter', 'form']);
     }
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [];
     }

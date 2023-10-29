@@ -14,7 +14,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
         Livewire::actingAs($this->user);
-        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])->assertPageActionHidden('impersonate');
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])->assertActionHidden('impersonate');
     }
 
     public function test_can_impersonate_with_permission()
@@ -23,17 +23,46 @@ class ViewAccountPageTest extends BaseAdminTestCase
         $this->user->givePermissionTo('account.impersonate.*');
         Livewire::actingAs($this->user);
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-            ->assertPageActionVisible('impersonate')
-            ->callPageAction('impersonate', data: ['reason' => 'Some reason for impersonating a user']);
+            ->assertActionVisible('impersonate')
+            ->callAction('impersonate', data: ['reason' => 'Some reason for impersonating a user']);
 
         $this->assertEquals($this->privacc->id, auth()->user()->id);
     }
 
+    public function test_cant_remove_password_without_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->privacc->setPassword('123');
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])->assertActionHidden('remove_password');
+    }
+
+    public function test_can_remove_password_with_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.remove-password.*');
+        $this->privacc->setPassword('123');
+        $this->assertTrue($this->privacc->fresh()->hasPassword());
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertActionVisible('remove_password')
+            ->callAction('remove_password');
+
+        $this->assertFalse($this->privacc->fresh()->hasPassword());
+    }
+
+    public function test_can_remove_password_not_visible_when_no_password()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.remove-password.*');
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertActionHidden('remove_password');
+    }
+
     public function test_cant_see_email_address_without_permission()
     {
-        // Disabled whilst investigating AccountResource loading
-        $this->markTestSkipped();
-
         $this->user->givePermissionTo('account.view-insensitive.*');
 
         Livewire::actingAs($this->user);
@@ -47,8 +76,6 @@ class ViewAccountPageTest extends BaseAdminTestCase
 
     public function test_cant_see_ban_relation_manager_without_permission()
     {
-        // Disabled whilst investigating AccountResource loading
-        $this->markTestSkipped();
         $this->user->givePermissionTo('account.view-insensitive.*');
 
         Livewire::actingAs($this->user);
@@ -68,8 +95,8 @@ class ViewAccountPageTest extends BaseAdminTestCase
         Bus::fake();
 
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-            ->assertPageActionVisible('request_central_update')
-            ->callPageAction('request_central_update');
+            ->assertActionVisible('request_central_update')
+            ->callAction('request_central_update');
 
         Bus::assertDispatched(UpdateMember::class, fn (UpdateMember $job) => $job->accountID === $this->privacc->id);
     }

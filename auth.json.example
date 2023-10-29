@@ -1,8 +1,0 @@
-{
-	"http-basic": {
-		"nova.laravel.com": {
-			"username": "your-username",
-			"password": "your-password"
-		}
-	}
-}
