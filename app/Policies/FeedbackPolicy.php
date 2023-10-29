@@ -31,11 +31,11 @@ class FeedbackPolicy
 
     public function actionFeedback(Account $account)
     {
-        return $account->checkPermissionTo('feedback/action', self::GUARD) || $account->checkPermissionTo('feedback.action', self::GUARD);
+        return $account->checkPermissionTo('feedback.action', self::GUARD);
     }
 
     public function seeSubmitter(Account $account)
     {
-        return $account->checkPermissionTo('feedback/submitter', self::GUARD) || $account->checkPermissionTo('feedback.view-submitter', self::GUARD);
+        return $account->checkPermissionTo('feedback.view-submitter', self::GUARD);
     }
 }

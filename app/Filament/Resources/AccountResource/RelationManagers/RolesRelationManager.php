@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AccountResource\RelationManagers;
 
+use App\Filament\Resources\RoleResource;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -29,6 +30,7 @@ class RolesRelationManager extends RelationManager
                 Tables\Actions\AttachAction::make()->preloadRecordSelect()->label('Add / Attach')->color('primary'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()->resource(RoleResource::class),
                 Tables\Actions\DetachAction::make()->label('Remove'),
             ]);
     }

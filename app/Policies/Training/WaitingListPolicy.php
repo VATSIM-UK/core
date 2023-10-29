@@ -13,17 +13,17 @@ class WaitingListPolicy
 
     public function viewAny(Account $account)
     {
-        return $account->hasAnyPermission('waiting-lists.access', 'waitingLists/atc/view', 'waitingLists/pilot/view');
+        return $account->hasAnyPermission('waiting-lists.access');
     }
 
     public function view(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.view.%s', "waitingLists/{$waitingList->department}/view"]);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.view.%s']);
     }
 
     public function addAccounts(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-accounts.%s', 'waitingLists/addAccounts']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-accounts.%s']);
     }
 
     public function addAccountsAdmin(Account $account, WaitingList $waitingList)
@@ -43,7 +43,7 @@ class WaitingListPolicy
 
     public function addFlags(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-flags.%s', 'waitingLists/addFlags']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-flags.%s']);
     }
 
     public function update(Account $account, WaitingList $waitingList)
@@ -53,12 +53,12 @@ class WaitingListPolicy
 
     public function delete(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.delete.%s', "waitingLists/{$waitingList->department}/delete"]);
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.delete.%s']);
     }
 
     public function create(Account $account)
     {
-        return $account->hasAnyPermission(['waiting-lists.create', 'waitingLists/create']);
+        return $account->hasAnyPermission(['waiting-lists.create']);
     }
 
     /**
