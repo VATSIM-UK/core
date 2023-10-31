@@ -71,7 +71,7 @@ class AccountsRelationManager extends RelationManager
                             Forms\Components\Toggle::make('cts_theory_exam')
                                 ->label('Passed')
                                 ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $record->pivot->theory_exam_passed))
-                                ->readonly(),
+                                ->disabled(),
                         ];
                     })
                     ->visible(fn ($record) => $record->waitingList->feature_toggles['check_cts_theory_exam'] ?? true),
