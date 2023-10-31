@@ -26,7 +26,7 @@ class TheoryResult extends Model
         try {
             $memberId = Member::where('cid', $account_id)->firstOrFail()->id;
         } catch (ModelNotFoundException) {
-            Log::warning("No member found for account_id ${$account_id}. Likely sync problems.");
+            Log::warning("No member found for account_id {$account_id}. Likely sync problems.");
 
             return null;
         }

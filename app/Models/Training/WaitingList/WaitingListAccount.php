@@ -8,6 +8,8 @@ use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
@@ -20,7 +22,7 @@ class WaitingListAccount extends Pivot
 
     public $fillable = ['added_by', 'deleted_at', 'notes', 'eligible', 'flags_status_summary', 'eligibility_summary'];
 
-    protected $appends = ['atcHourCheck'];
+    protected $appends = ['atcHourCheck', 'theory_exam_passed'];
 
     protected $casts = [
         'eligible' => 'boolean',
@@ -176,22 +178,47 @@ class WaitingListAccount extends Pivot
         return true;
     }
 
-    public function getTheoryExamPassedAttribute(): ?bool
+    public function theoryExamPassed(): Attribute
     {
-        if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT || ! $this->waitingList->cts_theory_exam_level) {
-            return null;
+        $passed = false;
+
+        if ($this->waitingList->department === WaitingList::ATC_DEPARTMENT) {
+            try {
+                $result = TheoryResult::forAccount($this->account_id);
+            } catch (ModelNotFoundException) {
+                return Attribute::make(
+                    get: fn () => false,
+                );
+            }
+
+            if ($result && $result->count()) {
+                $passed = $result
+                    ->where('exam', $this->waitingList->cts_theory_exam_level)
+                    ->where('pass', true)->count() > 0;
+            }
         }
 
-        $result = TheoryResult::forAccount($this->account_id);
-
-        if (! $result || ! $result->count()) {
-            return null;
-        }
-
-        return $result
-            ->where('exam', $this->waitingList->cts_theory_exam_level)
-            ->where('pass', true)->count() > 0;
+        return Attribute::make(
+            get: fn () => $passed,
+        );
     }
+
+    // public function getTheoryExamPassedAttribute(): ?bool
+    // {
+    //     if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT || ! $this->waitingList->cts_theory_exam_level) {
+    //         return null;
+    //     }
+
+    //     $result = TheoryResult::forAccount($this->account_id);
+
+    //     if (! $result || ! $result->count()) {
+    //         return null;
+    //     }
+
+    //     return $result
+    //         ->where('exam', $this->waitingList->cts_theory_exam_level)
+    //         ->where('pass', true)->count() > 0;
+    // }
 
     public function setNotesAttribute($value)
     {
