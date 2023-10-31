@@ -9,6 +9,7 @@ use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
@@ -182,7 +183,13 @@ class WaitingListAccount extends Pivot
         $passed = false;
 
         if ($this->waitingList->department === WaitingList::ATC_DEPARTMENT) {
-            $result = TheoryResult::forAccount($this->account_id);
+            try {
+                $result = TheoryResult::forAccount($this->account_id);
+            } catch (ModelNotFoundException) {
+                return Attribute::make(
+                    get: fn () => false,
+                );
+            }
 
             if ($result && $result->count()) {
                 $passed = $result
