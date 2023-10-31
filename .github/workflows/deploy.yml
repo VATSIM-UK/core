@@ -73,37 +73,37 @@ jobs:
       # BUILD DEPENDENCIES SETUP
       #
 
-      - name: Setup Yarn
-        uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
 
       #
-      # YARN BUILD
+      # NODE BUILD
       # Install node_modules and run webpack
       #
 
       # Restore Caches
-      - name: Get Yarn Cache Directory
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Get Node Cache Directory
+        id: node-cache-dir-path
+        run: echo "::set-output name=dir::$(node cache dir)"
 
-      - name: Restore Yarn Cache
+      - name: Restore Node Cache
         uses: actions/cache@v3
-        id: yarn-cache
+        id: node-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.node-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-node-
 
       # Install node_modules
       - name: Install Core assets
-        run: yarn
+        run: npm ci
 
       # Run Webpack
       - name: Compile Core assets
-        run: yarn run prod
+        run: npm run build
 
       # Not required for deployment
       - name: Remove node_modules
