@@ -64,6 +64,18 @@ class AccountsRelationManager extends RelationManager
                     })
                     ->visible(fn ($record) => $record->pivot->flags->filter(fn ($flag) => $flag->endorsement_id != null)->isNotEmpty()),
 
+                Forms\Components\Fieldset::make('cts_theory_exam')
+                    ->label('CTS Theory Exam')
+                    ->schema(function ($record) {
+                        return [
+                            Forms\Components\Toggle::make('cts_theory_exam')
+                                ->label('Passed')
+                                ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $record->pivot->theory_exam_passed))
+                                ->readonly(),
+                        ];
+                    })
+                    ->visible(fn ($record) => $record->waitingList->feature_toggles['check_cts_theory_exam'] ?? true),
+
                 Forms\Components\Fieldset::make('manual_flags')
                     ->label('Manual Flags')
                     ->schema(function ($record) {
@@ -106,6 +118,7 @@ class AccountsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
                 Tables\Columns\TextColumn::make('name')->label('Name')->searchable(['name_first', 'name_last']),
                 Tables\Columns\TextColumn::make('pivot.created_at')->label('Added on')->dateTime('M dS Y'),
+                Tables\Columns\IconColumn::make('pivot.cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn ($record) => $record->pivot->theory_exam_passed)->visible(fn ($record) => $record->waitingList->feature_toggles['check_cts_theory_exam'] ?? true),
                 Tables\Columns\IconColumn::make('pivot.atc_hour_check')->boolean()->label('Hour check')->getStateUsing(fn ($record) => Arr::get($record->pivot?->eligibility_summary, 'base_controlling_hours')),
                 Tables\Columns\IconColumn::make('pivot.flags_check')->boolean()->label('Flags check')->getStateUsing(fn ($record) => (bool) Arr::get($record->pivot?->flags_status_summary, 'overall')),
                 Tables\Columns\IconColumn::make('pivot.eligible')->boolean()->label('Eligible')->getStateUsing(fn ($record) => $record->pivot->eligible),
