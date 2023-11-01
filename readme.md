@@ -54,7 +54,7 @@ Compile the assets.
 yarn dev
 ```
 
-Depending on your node version you may need.
+Depending on your node version you may need to run the above as:
 ```shell
 NODE_OPTIONS=--openssl-legacy-provider yarn dev
 ```
