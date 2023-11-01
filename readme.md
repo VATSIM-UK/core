@@ -36,10 +36,11 @@ Generate an application key.
 php artisan key:generate
 ```
 
-Build the backend.
+Run migrations.
 
 ```shell
-composer build
+php artisan migrate
+php artisan cts:migrate:fresh # Optional if you require a CTS db for tests
 ```
 
 ### Compiling Frontend Assets
