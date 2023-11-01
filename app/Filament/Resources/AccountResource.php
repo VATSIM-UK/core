@@ -147,6 +147,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
             RelationManagers\FeedbackRelationManager::class,
             RelationManagers\RolesRelationManager::class,
             RelationManagers\BansRelationManager::class,
+            RelationManagers\NotesRelationManager::class,
         ];
     }
 

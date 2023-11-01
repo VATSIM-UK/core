@@ -337,7 +337,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function addNote($noteType, $noteContent, $writer = null, $attachment = null)
     {
         if (is_string($noteType)) {
-            $noteType = Type::isShortCode('visittransfer')->first();
+            $noteType = Type::isShortCode($noteType)->first();
         }
         if (is_object($noteType) && $noteType->exists) {
             $noteType = $noteType->getKey();

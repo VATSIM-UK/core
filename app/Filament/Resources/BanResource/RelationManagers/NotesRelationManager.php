@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\BanResource\RelationManagers;
 
+use App\Models\Mship\Account;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Note\Type;
 use Filament\Forms;
@@ -39,18 +40,23 @@ class NotesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->disableCreateAnother()
                     ->using(function (array $data, self $livewire) {
-                        return static::createNote($data, $livewire);
+                        return static::createNote($data, $livewire, Type::isShortCode('discipline')->first());
                     }),
             ])->defaultSort('created_at');
     }
 
-    private static function createNote(array $data, self $livewire): Note
+    protected static function createNote(array $data, self $livewire, Type $type): Note
     {
-        return $livewire->ownerRecord->account->addNote(
-            Type::isShortCode('discipline')->first(),
+        return static::getSubject($livewire)->addNote(
+            $type,
             $data['content'],
             auth()->user(),
             $livewire->ownerRecord
         );
+    }
+
+    protected static function getSubject($livewire): Account
+    {
+        return $livewire->ownerRecord->account;
     }
 }
