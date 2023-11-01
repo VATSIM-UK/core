@@ -21,7 +21,7 @@ Click "Open in Dev Container" when prompted, or run the task from the F1 menu.
 A docker-compose file is provided in `.devcontainer/docker-compose.yml`.
 
 ### Setup
-Generally, this project follows the [standard installation instructions](https://laravel.com/docs/9.x/installation)
+Generally, this project follows the [standard installation instructions](https://laravel.com/docs/10.x/installation)
 relating to Laravel.
 The following is an abbreviated guide to get started quickly.
 
