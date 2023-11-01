@@ -23,6 +23,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: core
+    ports:
+      - "${MYSQL_BIND_PORT:-13306}:3306"
 
   pma:
     image: phpmyadmin
