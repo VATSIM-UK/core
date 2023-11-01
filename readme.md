@@ -7,8 +7,8 @@ Core application for VATSIM UK
 ### Cloning This Repository
 Clone this repository to your local machine and enter the directory that is created
 ```shell
-git clone git@github.com:VATSIM-UK/nexus.git vatsim-uk-nexus
-cd vatsim-uk-nexus
+git clone git@github.com:VATSIM-UK/core.git vatsim-uk-core
+cd vatsim-uk-core
 ```
 
 ### Development Environment
