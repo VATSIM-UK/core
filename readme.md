@@ -12,7 +12,7 @@ cd vatsim-uk-core
 ```
 
 ### Development Environment
-This repository targets PHP 8.1 and Node JS 18.x.
+This repository targets PHP 8.1 and Node JS 20.x.
 
 If you use VS Code and Docker, our repository contains a dev container configuration that will 
 automatically launch a ready-to-go development environment (including databases).
@@ -46,17 +46,12 @@ php artisan cts:migrate:fresh # Optional if you require a CTS db for tests
 ### Compiling Frontend Assets
 Install all required dependencies
 ```shell
-yarn
+npm install
 ```
 
 Compile the assets.
 ```shell
-yarn dev
-```
-
-Depending on your node version you may need to run the above as:
-```shell
-NODE_OPTIONS=--openssl-legacy-provider yarn dev
+npm run dev
 ```
 
 ### Run Tests
