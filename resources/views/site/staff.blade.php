@@ -308,11 +308,11 @@
                             </tr>
                             <tr>
                                 <td>Initial Flight Instructor</td>
-                                <td><em>Cole Edwards</em></td>
+                                <td>Cole Edwards</td>
                             </tr>
                             <tr>
                                 <td>VFR Flight Instructor</td>
-                                <td><em>Benjamin Arrowsmith</em></td>
+                                <td>Benjamin Arrowsmith</td>
                             </tr>
                             <tr>
                                 <td>IFR Flight Instructor</td>
