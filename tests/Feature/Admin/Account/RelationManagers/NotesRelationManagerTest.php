@@ -29,6 +29,6 @@ class NotesRelationManagerTest extends BaseAdminTestCase
         Livewire::test(NotesRelationManager::class, ['ownerRecord' => $account, 'pageClass' => ViewRecord::class])
             ->callTableAction('create', null, ['content' => 'the content', 'type' => $generalTypeId]);
 
-        $this->assertDatabaseHas('mship_account_note', ['account_id' => $account->id, 'writer_id' => $this->privacc->id, 'content' => 'the content', 'attachment_id' => $account->id, 'attachment_type' => Account::class, 'note_type_id' => $generalTypeId]);
+        $this->assertDatabaseHas('mship_account_note', ['account_id' => $account->id, 'writer_id' => $this->privacc->id, 'content' => 'the content', 'attachment_id' => null, 'attachment_type' => null, 'note_type_id' => $generalTypeId]);
     }
 }

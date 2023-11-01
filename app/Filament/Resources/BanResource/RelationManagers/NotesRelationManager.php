@@ -2,21 +2,17 @@
 
 namespace App\Filament\Resources\BanResource\RelationManagers;
 
+use App\Filament\Resources\AccountResource\RelationManagers\NotesRelationManager as AccountNotesRelationManager;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Note;
 use App\Models\Mship\Note\Type;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
-class NotesRelationManager extends RelationManager
+class NotesRelationManager extends AccountNotesRelationManager
 {
-    protected static string $relationship = 'notes';
-
-    protected static ?string $recordTitleAttribute = 'id';
-
     public function form(Form $form): Form
     {
         return $form
@@ -29,34 +25,23 @@ class NotesRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('type.name'),
-                Tables\Columns\TextColumn::make('content')->wrap(),
-                Tables\Columns\TextColumn::make('writer.name')->label('From'),
-                Tables\Columns\TextColumn::make('created_at')->label('Made')->since()->sortable(),
-            ])
+        return parent::table($table)
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->disableCreateAnother()
+                CreateAction::make()
+                    ->createAnother(false)
                     ->using(function (array $data, self $livewire) {
                         return static::createNote($data, $livewire, Type::isShortCode('discipline')->first());
                     }),
-            ])->defaultSort('created_at');
-    }
-
-    protected static function createNote(array $data, self $livewire, Type $type): Note
-    {
-        return static::getSubject($livewire)->addNote(
-            $type,
-            $data['content'],
-            auth()->user(),
-            $livewire->ownerRecord
-        );
+            ]);
     }
 
     protected static function getSubject($livewire): Account
     {
         return $livewire->ownerRecord->account;
+    }
+
+    protected static function getAttachment($livewire): ?Model
+    {
+        return $livewire->ownerRecord;
     }
 }
