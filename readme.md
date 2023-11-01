@@ -58,3 +58,11 @@ Depending on your node version you may need to run the above as:
 ```shell
 NODE_OPTIONS=--openssl-legacy-provider yarn dev
 ```
+
+### Run Tests
+
+```shell
+php artisan test
+```
+
+If you wish you can use a separate `.env.testing` for testing.
