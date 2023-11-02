@@ -44,6 +44,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'account.ban.create',
             'account.ban.edit.*',
             'account.ban.repeal.*',
+            'account.note.create',
 
             // Permissions & Access Permissions
             'permission.view.*',
