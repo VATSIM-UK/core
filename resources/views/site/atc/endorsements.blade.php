@@ -123,7 +123,6 @@
                         <li>Compton Abbas (EGHA)</li>
                         <li>Coventry (EGBE)</li>
                         <li>Cumbernauld (EGPG)</li>
-                        <li>Cumbernauld (EGPG)</li>
                         <li>Denham (EGLD)</li>
                         <li>Derby (EGBD)</li>
                         <li>Dunkeswell (EGTU)</li>
@@ -175,6 +174,7 @@
                         <li>Wickenby (EGNW)</li>
                         <li>Wolverhampton / Halfpenny Green (EGBO)</li>
                         <li>Wycombe Air Park/Booker (EGTB)</li>
+                        <li>Stanley (SFAL) - see <a href="https://community.vatsim.uk/files/downloads/file/36-vatsim-argentina-comodoro-rivadavia-acc-vatsim-uk-mount-pleasant-ats-unit-loa/">Argentina LoA</a></li>
                     </ul>
 
                     <h3>Get Started</h3>
