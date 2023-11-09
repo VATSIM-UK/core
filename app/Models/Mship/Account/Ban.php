@@ -141,12 +141,12 @@ class Ban extends Model
 
     public function getIsLocalAttribute()
     {
-        return $this->type == BanTypeEnum::Local->value;
+        return $this->type == BanTypeEnum::Local;
     }
 
     public function getIsNetworkAttribute()
     {
-        return $this->type == BanTypeEnum::Network->value;
+        return $this->type == BanTypeEnum::Network;
     }
 
     public function getIsRepealedAttribute()
