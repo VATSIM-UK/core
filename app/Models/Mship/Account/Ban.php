@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int $id
  * @property int $account_id
  * @property int|null $banned_by
- * @property int $type
+ * @property BanTypeEnum $type
  * @property int|null $reason_id
  * @property string $reason_extra
  * @property \Carbon\Carbon|null $period_start
@@ -71,6 +71,7 @@ class Ban extends Model
         'created_at' => 'datetime',
         'repealed_at' => 'datetime',
         'updated_at' => 'datetime',
+        'type' => BanTypeEnum::class,
     ];
 
     protected $touches = ['account'];
@@ -79,12 +80,12 @@ class Ban extends Model
 
     public static function scopeIsNetwork($query)
     {
-        return $query->where('type', '=', BanTypeEnum::Network->value);
+        return $query->where('type', '=', BanTypeEnum::Network);
     }
 
     public static function scopeIsLocal($query)
     {
-        return $query->where('type', '=', BanTypeEnum::Local->value);
+        return $query->where('type', '=', BanTypeEnum::Local);
     }
 
     public static function scopeIsActive($query)
@@ -170,17 +171,11 @@ class Ban extends Model
 
     public function getTypeStringAttribute()
     {
-        switch ($this->attributes['type']) {
-            case BanTypeEnum::Local->value:
-                return trans('mship.ban.type.local');
-                break;
-            case BanTypeEnum::Network->value:
-                return trans('mship.ban.type.network');
-                break;
-            default:
-                return trans('mship.ban.type.unknown');
-                break;
-        }
+        return match ($this->type) {
+            BanTypeEnum::Local => trans('mship.ban.type.local'),
+            BanTypeEnum::Network => trans('mship.ban.type.network'),
+            default => trans('mship.ban.type.unknown'),
+        };
     }
 
     public function getPeriodAmountStringAttribute()
