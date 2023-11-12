@@ -153,10 +153,6 @@
                             <td>Developer</td>
                             <td>Dave Etheridge</td>
                         </tr>
-                        <tr>
-                            <td>Developer</td>
-                            <td>Kevin Gunn</td>
-                        </tr>
                     </table>
                 </div>
             </div>
