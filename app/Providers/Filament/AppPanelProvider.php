@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\FilamentAccessMiddleware;
+use App\Http\Middleware\TrackInactivity;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
@@ -49,6 +50,7 @@ class AppPanelProvider extends PanelProvider
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
+                TrackInactivity::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
