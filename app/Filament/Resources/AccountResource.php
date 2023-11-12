@@ -30,7 +30,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['id', 'name_first', 'name_last', 'nickname'];
+        return ['id', 'name_first', 'name_last', 'nickname', 'discord_id'];
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
