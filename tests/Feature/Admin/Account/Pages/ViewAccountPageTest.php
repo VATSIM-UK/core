@@ -100,4 +100,18 @@ class ViewAccountPageTest extends BaseAdminTestCase
 
         Bus::assertDispatched(UpdateMember::class, fn (UpdateMember $job) => $job->accountID === $this->privacc->id);
     }
+
+    public function test_records_page_visit_in_admin_log()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        Livewire::actingAs($this->user);
+
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id]);
+
+        $this->assertDatabaseHas('admin_access_logs', [
+            'accessor_account_id' => $this->user->id,
+            'loggable_id' => $this->privacc->id,
+            'loggable_type' => get_class($this->privacc),
+        ]);
+    }
 }

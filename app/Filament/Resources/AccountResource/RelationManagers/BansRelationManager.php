@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AccountResource\RelationManagers;
 
+use App\Filament\Helpers\Pages\LogRelationAccess;
 use App\Filament\Resources\BanResource;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
@@ -16,9 +17,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class BansRelationManager extends RelationManager
 {
+    use LogRelationAccess;
+
     protected static string $relationship = 'bans';
 
     protected static ?string $recordTitleAttribute = 'id';
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewBans';
+    }
 
     public function isReadOnly(): bool
     {
