@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AccountResource\Pages;
 
 use App\Filament\Helpers\Pages\BaseViewRecordPage;
+use App\Filament\Helpers\Pages\LogPageAccess;
 use App\Filament\Resources\AccountResource;
 use App\Jobs\UpdateMember;
 use App\Models\Contact;
@@ -18,7 +19,14 @@ use Illuminate\Support\HtmlString;
 
 class ViewAccount extends BaseViewRecordPage
 {
+    use LogPageAccess;
+
     protected static string $resource = AccountResource::class;
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewAccount';
+    }
 
     protected function getHeaderActions(): array
     {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AccountResource\RelationManagers;
 
+use App\Filament\Helpers\Pages\LogRelationAccess;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Note\Type;
@@ -15,6 +16,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class NotesRelationManager extends RelationManager
 {
+    use LogRelationAccess;
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewNotes';
+    }
+
     protected static string $relationship = 'notes';
 
     protected static ?string $recordTitleAttribute = 'id';
