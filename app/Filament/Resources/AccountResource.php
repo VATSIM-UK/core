@@ -117,7 +117,11 @@ class AccountResource extends Resource implements DefinesGatedAttributes
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable()->searchable()->label('ID'),
+                Tables\Columns\TextColumn::make('id')->sortable()->searchable()->label('CID'),
+                Tables\Columns\TextColumn::make('discord_id')
+                    ->searchable()
+                    ->label('Discord ID')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(['name_first', 'name_last']),
                 Tables\Columns\TextColumn::make('qualification_atc')->sortable()->label('ATC Rating'),
                 Tables\Columns\TextColumn::make('qualification_pilot')->sortable()->label('Pilot Rating'),
