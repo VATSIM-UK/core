@@ -8,7 +8,7 @@ use Filament\Tables\Table;
 
 class StatesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'states';
+    protected static string $relationship = 'statesHistory';
 
     protected static ?string $recordTitleAttribute = 'id';
 
@@ -16,6 +16,17 @@ class StatesRelationManager extends RelationManager
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('status')->badge()->getStateUsing(function ($record) {
+                    if ($record->pivot->end_at) {
+                        return 'Old';
+                    }
+
+                    return 'Active - '.($record->is_permanent ? 'Permenant' : 'Temporary');
+                })->color(fn (string $state): string => match ($state) {
+                    'Old' => 'gray',
+                    'Active - Permenant' => 'success',
+                    'Active - Temporary' => 'success',
+                }),
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('pivot.region')->label('Region'),
                 Tables\Columns\TextColumn::make('pivot.division')->label('Divison'),
