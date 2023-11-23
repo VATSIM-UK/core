@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\WaitingListResource\Pages;
 
+use App\Filament\Helpers\Pages\BaseListRecordsPage;
 use App\Filament\Resources\WaitingListResource;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 
-class ListWaitingLists extends ListRecords
+class ListWaitingLists extends BaseListRecordsPage
 {
     protected static string $resource = WaitingListResource::class;
 

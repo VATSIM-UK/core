@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\AccountResource\Pages;
 
+use App\Filament\Helpers\Pages\BaseListRecordsPage;
 use App\Filament\Resources\AccountResource;
-use Filament\Resources\Pages\ListRecords;
 
-class ListAccounts extends ListRecords
+class ListAccounts extends BaseListRecordsPage
 {
     protected static string $resource = AccountResource::class;
 
