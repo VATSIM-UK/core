@@ -217,8 +217,8 @@
                 <div class="panel-body">
                     <div class="col-md-6">
                         <h4 class="text-center">ATC Training Director (VATUK5)</h4><br />
-                        <img src="{{ $teamPhotos[6887] }}" width=50px class="img-responsive center-block profile-picture" />
-                        <p class="text-center">Adam Farquharson</p>
+                        <img src="{}" width=50px class="img-responsive center-block profile-picture" />
+                        <p class="text-center">Vacant</p>
                         <h4 class="text-center">ATC Training Team</h4>
                         <table class="table">
                             <tr>
@@ -231,10 +231,6 @@
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
-                                <td>Jack Edwards</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
                                 <td>Chris Pawley</td>
                             </tr>
                             <tr>
@@ -244,10 +240,6 @@
                             <tr>
                                 <td>Division Instructor</td>
                                 <td>Mike Pike</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
-                                <td>Lee Roberts</td>
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
