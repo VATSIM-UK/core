@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\FeedbackResource\Pages;
 
+use App\Filament\Helpers\Pages\BaseListRecordsPage;
 use App\Filament\Resources\FeedbackResource;
 use App\Filament\Resources\FeedbackResource\Widgets\FeedbackOverview;
-use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 
-class ListFeedback extends ListRecords
+class ListFeedback extends BaseListRecordsPage
 {
     protected static string $resource = FeedbackResource::class;
 

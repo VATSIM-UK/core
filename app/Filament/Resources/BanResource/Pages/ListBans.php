@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\BanResource\Pages;
 
+use App\Filament\Helpers\Pages\BaseListRecordsPage;
 use App\Filament\Resources\BanResource;
-use Filament\Resources\Pages\ListRecords;
 
-class ListBans extends ListRecords
+class ListBans extends BaseListRecordsPage
 {
     protected static string $resource = BanResource::class;
 
