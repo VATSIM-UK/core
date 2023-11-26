@@ -20,6 +20,7 @@ class StaffPageController extends \App\Http\Controllers\BaseController
     {
         $teamPhotos = collect(
             [
+                1 => null,
                 54 => null,
                 91 => null,
                 2311 => null,
@@ -28,8 +29,7 @@ class StaffPageController extends \App\Http\Controllers\BaseController
                 5125 => null,
                 6738 => null,
                 5660 => null,
-                7203 => null,
-                6887 => null,
+                7203 => null
             ]
         );
 
