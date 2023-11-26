@@ -217,7 +217,7 @@
                 <div class="panel-body">
                     <div class="col-md-6">
                         <h4 class="text-center">ATC Training Director (VATUK5)</h4><br />
-                        <img src="{}" width=50px class="img-responsive center-block profile-picture" />
+                        <img src="{{ $teamPhotos[1] }}" width=50px class="img-responsive center-block profile-picture" />
                         <p class="text-center">Vacant</p>
                         <h4 class="text-center">ATC Training Team</h4>
                         <table class="table">
