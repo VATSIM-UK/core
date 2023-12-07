@@ -199,6 +199,18 @@ class Atc extends Model
         return $query->where('connected_at', '>=', $startOfYear);
     }
 
+    public function scopeAccountIsPartOfUk($query)
+    {
+        return $query->join('mship_account_state', function ($join) {
+                $join->on('mship_account_state.account_id', '=', 'networkdata_atc.account_id')
+                    ->whereNull('mship_account_state.end_at');
+            })
+            ->join('mship_state', function ($join) {
+                $join->on('mship_state.id', '=', 'mship_account_state.state_id')
+                    ->whereIn('mship_state.code', ['DIVISION', 'VISITING', 'TRANSFERRING']);
+            });
+    }
+
     public static function scopeIsUK($query)
     {
         return $query->where(function ($subQuery) {
