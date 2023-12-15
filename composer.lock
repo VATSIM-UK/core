@@ -11909,16 +11909,16 @@
         },
         {
             "name": "filament/upgrade",
-            "version": "v3.1.7",
+            "version": "v3.1.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/upgrade.git",
-                "reference": "2b34a5b6b0eea4267a19ed58ea9f46c9b0fa3204"
+                "reference": "5e5b74562193239f2e81be23be80071bc2c878f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/upgrade/zipball/2b34a5b6b0eea4267a19ed58ea9f46c9b0fa3204",
-                "reference": "2b34a5b6b0eea4267a19ed58ea9f46c9b0fa3204",
+                "url": "https://api.github.com/repos/filamentphp/upgrade/zipball/5e5b74562193239f2e81be23be80071bc2c878f5",
+                "reference": "5e5b74562193239f2e81be23be80071bc2c878f5",
                 "shasum": ""
             },
             "require": {
@@ -11945,7 +11945,7 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2023-08-21T09:36:59+00:00"
+            "time": "2023-12-12T14:20:56+00:00"
         },
         {
             "name": "filp/whoops",
@@ -12718,16 +12718,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.47",
+            "version": "1.10.50",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "84dbb33b520ea28b6cf5676a3941f4bae1c1ff39"
+                "reference": "06a98513ac72c03e8366b5a0cb00750b487032e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/84dbb33b520ea28b6cf5676a3941f4bae1c1ff39",
-                "reference": "84dbb33b520ea28b6cf5676a3941f4bae1c1ff39",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/06a98513ac72c03e8366b5a0cb00750b487032e4",
+                "reference": "06a98513ac72c03e8366b5a0cb00750b487032e4",
                 "shasum": ""
             },
             "require": {
@@ -12776,7 +12776,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-01T15:19:17+00:00"
+            "time": "2023-12-13T10:59:42+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
