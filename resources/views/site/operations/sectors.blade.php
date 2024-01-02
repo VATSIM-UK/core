@@ -173,7 +173,7 @@
                         LON_NE_CTR (128.130) &#8594; LON_N_CTR (133.705) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
-                        <strong>East Midlands (EGNX), Birmingham (EGBB), Coventry (EGBE)</strong><br>
+                        <strong>East Midlands (EGNX), Birmingham (EGBB), Coventry (EGBE), Oxford (EGTK), Cranfield (EGTC)</strong><br>
                         LON_M_CTR (120.025) &#8594; LON_C_CTR (127.105) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
