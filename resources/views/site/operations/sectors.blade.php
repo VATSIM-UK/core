@@ -173,8 +173,8 @@
                         LON_NE_CTR (128.130) &#8594; LON_N_CTR (133.705) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
-                        <strong>East Midlands (EGNX), Birmingham (EGBB), Coventry (EGBE)</strong><br>
-                        LON_M_CTR (120.025) &#8594; LON_C_CTR (127.105) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
+                        <strong>East Midlands (EGNX), Birmingham (EGBB), Coventry (EGBE), Oxford (EGTK), Cranfield (EGTC)</strong><br>
+                        LTC_M_CTR (121.030) &#8594; LON_M_CTR (120.025) &#8594; LON_C_CTR (127.105) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>London/Stansted (EGSS), Cambridge (EGSC)</strong><br>
@@ -182,7 +182,7 @@
                     </p>
                     <p style="margin-left: 40px">
                         <strong>London/Luton (EGGW)</strong><br>
-                        LTC_NW_CTR (121.280) &#8594; LTC_N_CTR (119.780) &#8594; LTC_CTR (135.805) &#8594; LON_M_CTR (120.025) &#8594; LON_C_CTR (127.105) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
+                        LTC_NW_CTR (121.280) &#8594; LTC_N_CTR (119.780) &#8594; LTC_CTR (135.805) &#8594; LTC_M_CTR (121.030) &#8594; LON_M_CTR (120.025) &#8594; LON_C_CTR (127.105) &#8594; LON_SC_CTR (132.605) &#8594; LON_CTR (127.830)
                     </p>
                     <p style="margin-left: 40px">
                         <strong>London/Heathrow (EGLL), London/City (EGLC), Southend (EGMC), Biggin Hill (EGKB), Lydd (EGMD)</strong><br>
