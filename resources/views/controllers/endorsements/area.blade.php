@@ -11,18 +11,18 @@
     </div>
 </div>
 <div class="row">
-    @foreach ($endorsements as $endorsement)
+    @foreach ($positionGroups as $positionGroup)
         <div class="col-md-6">
             <div class="panel panel-ukblue">
                 <div class="panel-heading">
-                    <i class="fas fa-headset"></i>&nbsp;{{ $endorsement['name'] }}
+                    <i class="fas fa-headset"></i>&nbsp;{{ $positionGroup['name'] }}
                 </div>
                 <div class="panel-body">
                     <header>
                         <h4>Required Hours</h4>
                         <span>The following hours are required on the corresponding positions</span>
                         <ul>
-                            @foreach($endorsement['conditions'] as $condition)
+                            @foreach($positionGroup['conditions'] as $condition)
                                 <li>{{ $condition['position'] }} - {{ $condition['required_hours'] }} hours within the last {{ $condition['within_months'] }} months.</li>
                             @endforeach
                         </ul>
@@ -30,7 +30,7 @@
                     <main>
                         <h4>Your Progress</h4>
 
-                        @foreach($endorsement['conditions'] as $condition)
+                        @foreach($positionGroup['conditions'] as $condition)
                         {{ $condition['position'] }}
                         <div class="progress">
                             @if ($condition['complete'])

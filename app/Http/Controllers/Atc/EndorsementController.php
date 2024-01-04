@@ -29,9 +29,9 @@ class EndorsementController extends BaseController
 
     public function getAreaIndex()
     {
-        $endorsements = PositionGroup::whereIn('name', ['LON_S_CTR', 'LON_C_CTR', 'LON_N_CTR', 'SCO_CTR'])->get();
+        $positionGroups = PositionGroup::whereIn('name', ['LON_S_CTR', 'LON_C_CTR', 'LON_N_CTR', 'SCO_CTR'])->get();
 
-        if ($endorsements->count() < 1) {
+        if ($positionGroups->count() < 1) {
             return Redirect::route('mship.manage.dashboard')
                 ->withError('Endorsements improperly configured');
         }
@@ -41,8 +41,8 @@ class EndorsementController extends BaseController
                 ->withError('Only S3 rated controllers can see their C1 Training Place eligibility.');
         }
 
-        $positionGroups = $positionGroups->load('conditions')->map(function ($endorsement) {
-            $conditions = $positionGroups->conditions->map(function ($condition) {
+        $positionGroups = $positionGroups->load('conditions')->map(function ($positionGroup) {
+            $conditions = $positionGroup->conditions->map(function ($condition) use ($positionGroup) {
                 return [
                     'position_group_id' => $positionGroup->id,
                     // extract the likely position name from the criterion loaded into the database.
@@ -55,12 +55,12 @@ class EndorsementController extends BaseController
             });
 
             return [
-                'name' => $endorsement->name,
+                'name' => $positionGroup->name,
                 'conditions' => $conditions,
             ];
         });
 
         return $this->viewMake('controllers.endorsements.area')
-            ->with('endorsements', $endorsements);
+            ->with('positionGroups', $positionGroups);
     }
 }
