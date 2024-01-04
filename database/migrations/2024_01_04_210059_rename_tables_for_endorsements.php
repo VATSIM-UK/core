@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::rename('endorsement_stations', 'position_group_positions');
         Schema::rename('stations', 'positions');
         Schema::rename('airport_stations', 'airport_positions');
-        Schema::table('airport_stations', function (Blueprint $table) {
+        Schema::table('airport_positions', function (Blueprint $table) {
             $table->renameColumn('station_id', 'position_id');
         });
         Schema::table('training_waiting_list_flags', function (Blueprint $table) {
