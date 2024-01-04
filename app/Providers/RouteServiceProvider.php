@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Livewire\RosterSearch;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Livewire;
 use Route;
 
 class RouteServiceProvider extends ServiceProvider
@@ -52,6 +54,8 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
             ->namespace($this->namespace)
             ->group(base_path('routes/web.php'));
+
+        Route::get('/roster', RosterSearch::class)->name('site.roster');
     }
 
     /**

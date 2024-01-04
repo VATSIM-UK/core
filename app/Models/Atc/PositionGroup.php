@@ -2,22 +2,24 @@
 
 namespace App\Models\Atc;
 
-use App\Models\Atc\Endorsement\Condition;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
-class Endorsement extends Model
+class PositionGroup extends Model
 {
-    protected $table = 'endorsements';
-
     protected $fillable = [
         'name',
     ];
 
     public function conditions()
     {
-        return $this->hasMany(Condition::class);
+        return $this->hasMany(PositionGroupCondition::class);
+    }
+
+    public function positions()
+    {
+        return $this->belongsToMany(Position::class, 'position_group_positions', 'position_group_id', 'position_id');
     }
 
     public function conditionsMetForUser(Account $account): bool

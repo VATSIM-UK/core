@@ -19,8 +19,8 @@ class UpdateRoster extends Command
 
     public function handle()
     {
-        $this->fromDate = Carbon::parse($this->argument('fromDate'));
-        $this->toDate = Carbon::parse($this->argument('toDate'));
+        $this->fromDate = Carbon::parse($this->argument('fromDate'))->startOfDay();
+        $this->toDate = Carbon::parse($this->argument('toDate'))->endOfDay();
 
         $eligible = Atc::with(['account.states'])
             ->select(['networkdata_atc.account_id'])

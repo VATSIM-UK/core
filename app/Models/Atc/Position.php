@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Atc;
 
+use App\Models\Airport;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -28,10 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @mixin \Eloquent
  */
-class Station extends Model
+class Position extends Model
 {
-    protected $table = 'stations';
-
     protected $fillable = [
         'callsign',
         'name',
@@ -65,7 +64,7 @@ class Station extends Model
      */
     public function airports()
     {
-        return $this->belongsToMany(Airport::class, 'airport_stations');
+        return $this->belongsToMany(Airport::class, 'airport_positions');
     }
 
     public function getTypeAttribute($type)

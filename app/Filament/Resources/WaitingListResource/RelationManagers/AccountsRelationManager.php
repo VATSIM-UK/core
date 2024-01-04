@@ -55,14 +55,14 @@ class AccountsRelationManager extends RelationManager
                 Forms\Components\Fieldset::make('automatic_flags')
                     ->label('Automatic Flags')
                     ->schema(function ($record) {
-                        return $record->pivot->flags->filter(fn ($flag) => $flag->endorsement_id != null)->map(function ($flag) {
+                        return $record->pivot->flags->filter(fn ($flag) => $flag->position_group_id != null)->map(function ($flag) {
                             return Forms\Components\Toggle::make('flags.'.$flag->id)
                                 ->disabled()
                                 ->label($flag->name)
                                 ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $flag->pivot->value));
                         })->all();
                     })
-                    ->visible(fn ($record) => $record->pivot->flags->filter(fn ($flag) => $flag->endorsement_id != null)->isNotEmpty()),
+                    ->visible(fn ($record) => $record->pivot->flags->filter(fn ($flag) => $flag->position_group_id != null)->isNotEmpty()),
 
                 Forms\Components\Fieldset::make('cts_theory_exam')
                     ->label('CTS Theory Exam')
@@ -79,7 +79,7 @@ class AccountsRelationManager extends RelationManager
                 Forms\Components\Fieldset::make('manual_flags')
                     ->label('Manual Flags')
                     ->schema(function ($record) {
-                        return $record->pivot->flags->filter(fn ($flag) => $flag->endorsement_id == null)->map(function ($flag) {
+                        return $record->pivot->flags->filter(fn ($flag) => $flag->position_group_id == null)->map(function ($flag) {
                             return Forms\Components\Toggle::make('flags.'.$flag->id)
                                 ->label($flag->name)
                                 ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $flag->pivot->value));
@@ -142,7 +142,7 @@ class AccountsRelationManager extends RelationManager
 
                         $flagsById = collect(Arr::get($data, 'flags', []));
                         // only update manual flags
-                        $flagsToUpdate = $record->pivot->flags->filter(fn ($flag) => $flag->endorsement_id == null);
+                        $flagsToUpdate = $record->pivot->flags->filter(fn ($flag) => $flag->position_group_id == null);
                         $flagsToUpdate->each(fn ($flag) => $flagsById->get($flag->id) ? $flag->pivot->mark() : $flag->pivot->unMark());
 
                         $record->pivot->flags()->sync(

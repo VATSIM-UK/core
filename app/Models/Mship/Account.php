@@ -12,6 +12,7 @@ use App\Models\Mship\Concerns\HasBans;
 use App\Models\Mship\Concerns\HasCTSAccount;
 use App\Models\Mship\Concerns\HasDiscordAccount;
 use App\Models\Mship\Concerns\HasEmails;
+use App\Models\Mship\Concerns\HasEndorsement;
 use App\Models\Mship\Concerns\HasForumAccount;
 use App\Models\Mship\Concerns\HasHelpdeskAccount;
 use App\Models\Mship\Concerns\HasMoodleAccount;
@@ -170,6 +171,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         HasCTSAccount,
         HasDiscordAccount,
         HasEmails,
+        HasEndorsement,
         HasFactory,
         HasForumAccount,
         HasHelpdeskAccount,

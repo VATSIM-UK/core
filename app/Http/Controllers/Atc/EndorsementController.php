@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Atc;
 
 use App\Http\Controllers\BaseController;
-use App\Models\Atc\Endorsement;
+use App\Models\Atc\PositionGroup;
 use Illuminate\Support\Facades\Redirect;
 
 class EndorsementController extends BaseController
 {
     public function getGatwickGroundIndex()
     {
-        $endorsement = Endorsement::with('conditions')->where('name', 'EGKK_GND')->first();
+        $endorsement = PositionGroup::with('conditions')->where('name', 'EGKK_GND')->first();
 
         $hours = $endorsement->conditions->map(function ($condition) {
             return $condition->progressForUser($this->account);
@@ -29,7 +29,7 @@ class EndorsementController extends BaseController
 
     public function getAreaIndex()
     {
-        $endorsements = Endorsement::whereIn('name', ['LON_S_CTR', 'LON_C_CTR', 'LON_N_CTR', 'SCO_CTR'])->get();
+        $endorsements = PositionGroup::whereIn('name', ['LON_S_CTR', 'LON_C_CTR', 'LON_N_CTR', 'SCO_CTR'])->get();
 
         if ($endorsements->count() < 1) {
             return Redirect::route('mship.manage.dashboard')
@@ -41,10 +41,10 @@ class EndorsementController extends BaseController
                 ->withError('Only S3 rated controllers can see their C1 Training Place eligibility.');
         }
 
-        $endorsements = $endorsements->load('conditions')->map(function ($endorsement) {
-            $conditions = $endorsement->conditions->map(function ($condition) use ($endorsement) {
+        $positionGroups = $positionGroups->load('conditions')->map(function ($endorsement) {
+            $conditions = $positionGroups->conditions->map(function ($condition) use ($endorsement) {
                 return [
-                    'endorsement_id' => $endorsement->id,
+                    'position_group_id' => $positionGroup->id,
                     // extract the likely position name from the criterion loaded into the database.
                     'position' => str_replace('%', '_', $condition->positions[0]),
                     'required_hours' => $condition->required_hours,

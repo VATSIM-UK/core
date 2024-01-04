@@ -1,6 +1,6 @@
 <span>Requirements:</span>
 <ul>
-    @foreach($flag->endorsement->conditions as $condition)
+    @foreach($flag->positionGroup->conditions as $condition)
         @php
             $progress = $condition->progressForUser($user);
             $overallProgress = $condition->overallProgressForUser($user);

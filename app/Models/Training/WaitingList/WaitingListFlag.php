@@ -2,7 +2,7 @@
 
 namespace App\Models\Training\WaitingList;
 
-use App\Models\Atc\Endorsement;
+use App\Models\Atc\PositionGroup;
 use Illuminate\Database\Eloquent\Model;
 
 class WaitingListFlag extends Model
@@ -30,8 +30,8 @@ class WaitingListFlag extends Model
         )->withPivot(['marked_at'])->using(WaitingListAccountFlag::class);
     }
 
-    public function endorsement()
+    public function positionGroup()
     {
-        return $this->belongsTo(Endorsement::class);
+        return $this->belongsTo(PositionGroup::class);
     }
 }

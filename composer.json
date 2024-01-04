@@ -78,6 +78,7 @@
         "laravelcollective/html": "^6.0",
         "league/csv": "^8.0",
         "league/oauth2-client": "^2.4",
+        "livewire/livewire": "^3.3",
         "maatwebsite/excel": "~3.1.17",
         "malahierba-lab/public-id": "dev-main",
         "ohdearapp/ohdear-php-sdk": "^3.0",
@@ -150,7 +151,8 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover"
+            "@php artisan package:discover",
+            "@php artisan filament:upgrade"
         ],
         "ide-helper": [
             "php artisan ide-helper:generate",

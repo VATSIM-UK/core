@@ -15,6 +15,7 @@ class FilamentAccessMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+
         $account = $request->user();
 
         if (! $account) {

@@ -5,8 +5,8 @@ namespace Tests\Unit\Training\WaitingList;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Listeners\Training\WaitingList\AssignFlags;
-use App\Models\Atc\Endorsement;
-use App\Models\Atc\Endorsement\Condition;
+use App\Models\Atc\PositionGroup;
+use App\Models\Atc\PositionGroupCondition;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
@@ -26,8 +26,8 @@ class WaitingListFlagTest extends TestCase
     /** @var WaitingList */
     private $waitingList;
 
-    /** @var Endorsement */
-    private $endorsement;
+    /** @var PositionGroup */
+    private $positionGroup;
 
     protected function setUp(): void
     {
@@ -41,7 +41,7 @@ class WaitingListFlagTest extends TestCase
         $this->waitingList->addFlag($this->flag);
         $this->waitingList->addToWaitingList($this->privacc, $this->privacc);
 
-        $this->endorsement = factory(Endorsement::class)->create();
+        $this->positionGroup = factory(PositionGroup::class)->create();
 
     }
 
@@ -94,10 +94,10 @@ class WaitingListFlagTest extends TestCase
     /** @test */
     public function itCanBeRelatedToAnEndorsement()
     {
-        $this->assertNull($this->flag->endorsement);
-        $this->flag->update(['endorsement_id' => $this->endorsement->id]);
+        $this->assertNull($this->flag->positionGroup);
+        $this->flag->update(['position_group_id' => $this->positionGroup->id]);
 
-        $this->assertNotNull($this->flag->fresh()->endorsement);
+        $this->assertNotNull($this->flag->fresh()->positionGroup);
     }
 
     /** @test */
@@ -106,9 +106,9 @@ class WaitingListFlagTest extends TestCase
         $account = Account::factory()->create();
         // populate network data
         factory(Atc::class)->create(['account_id' => $account->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 61]);
-        $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
+        $condition = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
-        $flag = factory(WaitingListFlag::class)->create(['endorsement_id' => $condition->endorsement->id, 'list_id' => $this->waitingList->id]);
+        $flag = factory(WaitingListFlag::class)->create(['position_group_id' => $condition->positionGroup->id, 'list_id' => $this->waitingList->id]);
 
         // add to the waiting list
         handleService(new AddToWaitingList($this->waitingList, $account, $this->privacc));
@@ -224,14 +224,14 @@ class WaitingListFlagTest extends TestCase
 
         // create an ATC session and condition which pass
         factory(Atc::class)->create(['account_id' => $account->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 61]);
-        $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
+        $condition = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
         // create an endorsement condition which would not pass.
-        $conditionNotMet = factory(Condition::class)->create(['required_hours' => 100, 'positions' => ['EGXX_APP']]);
+        $conditionNotMet = factory(PositionGroupCondition::class)->create(['required_hours' => 100, 'positions' => ['EGXX_APP']]);
 
         // create the two flags with a linked endorsement. Only one should be met, but that is acceptable for an 'ANY' check.
-        $flag = factory(WaitingListFlag::class)->create(['endorsement_id' => $condition->endorsement->id, 'list_id' => null, 'default_value' => false]);
-        $unmetFlag = factory(WaitingListFlag::class)->create(['endorsement_id' => $conditionNotMet->endorsement->id, 'list_id' => null, 'default_value' => false]);
+        $flag = factory(WaitingListFlag::class)->create(['position_group_id' => $condition->positionGroup->id, 'list_id' => null, 'default_value' => false]);
+        $unmetFlag = factory(WaitingListFlag::class)->create(['position_group_id' => $conditionNotMet->positionGroup->id, 'list_id' => null, 'default_value' => false]);
 
         $anyCheckerWaitingList->addFlag($flag);
         $anyCheckerWaitingList->addFlag($unmetFlag);

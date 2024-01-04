@@ -4,7 +4,7 @@ namespace Tests\Feature\Admin\WaitingLists;
 
 use App\Filament\Resources\WaitingListResource\Pages\ViewWaitingList;
 use App\Filament\Resources\WaitingListResource\RelationManagers\IneligibleAccountsRelationManager;
-use App\Models\Atc\Endorsement;
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Training\WaitingList;
@@ -181,7 +181,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $this->assertDatabaseHas('training_waiting_list_flags', [
             'list_id' => $waitingList->id,
             'name' => 'My Test Flag',
-            'endorsement_id' => null,
+            'position_group_id' => null,
         ]);
     }
 
@@ -210,7 +210,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     public function test_admin_can_create_flag_with_linked_endorsement()
     {
         $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
-        $endorsement = factory(Endorsement::class)->create();
+        $positionGroup = factory(PositionGroup::class)->create();
 
         $this->adminUser->givePermissionTo('waiting-lists.view.atc');
         $this->adminUser->givePermissionTo('waiting-lists.access');
@@ -220,14 +220,14 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->callAction('add_flag', data: [
                 'name' => 'My Test Flag',
-                'endorsement_id' => $endorsement->id,
+                'position_group_id' => $positionGroup->id,
             ])
             ->assertHasNoActionErrors();
 
         $this->assertDatabaseHas('training_waiting_list_flags', [
             'list_id' => $waitingList->id,
             'name' => 'My Test Flag',
-            'endorsement_id' => $endorsement->id,
+            'position_group_id' => $positionGroup->id,
         ]);
     }
 

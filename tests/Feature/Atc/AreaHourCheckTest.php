@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Atc;
 
-use App\Models\Atc\Endorsement;
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -32,7 +32,7 @@ class AreaHourCheckTest extends TestCase
     public function testSuccessfulNavigationIfUserIsS3()
     {
         // create relevant endorsement.
-        factory(Endorsement::class)->create(['name' => 'LON_S_CTR']);
+        factory(PositionGroup::class)->create(['name' => 'LON_S_CTR']);
         $account = Account::factory()->create();
 
         $qualification = Qualification::code('S3')->first();

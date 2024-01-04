@@ -2,50 +2,51 @@
 
 namespace Tests\Unit\Endorsements;
 
-use App\Models\Atc\Endorsement;
+use App\Models\Atc\PositionGroup;
+use App\Models\Atc\PositionGroupCondition;
 use App\Models\NetworkData\Atc;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
-class EndorsementModelTest extends TestCase
+class PositionGroupModelTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $endorsement;
+    private $positionGroup;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->endorsement = factory(Endorsement::class)->create();
+        $this->positionGroup = factory(PositionGroup::class)->create();
     }
 
     /** @test */
     public function itCanBeCreated()
     {
-        $endorsement = Endorsement::create([
+        $positionGroup = PositionGroup::create([
             'name' => 'My First Endorsement',
         ]);
 
-        $this->assertDatabaseHas('endorsements', ['id' => $endorsement->id, 'name' => $endorsement->name]);
+        $this->assertDatabaseHas('position_groups', ['id' => $positionGroup->id, 'name' => $positionGroup->name]);
     }
 
     /** @test */
     public function itCanBeAssociatedWithACondition()
     {
-        $condition = factory(Endorsement\Condition::class)->make(['endorsement_id' => null]);
+        $condition = factory(PositionGroupCondition::class)->make(['position_group_id' => null]);
 
-        $this->assertCount(0, $this->endorsement->fresh()->conditions);
-        $this->endorsement->conditions()->save($condition);
-        $this->assertEquals($this->endorsement->id, $condition->fresh()->endorsement_id);
-        $this->assertEquals($this->endorsement->fresh()->conditions()->first()->id, $condition->id);
-        $this->assertCount(1, $this->endorsement->fresh()->conditions);
+        $this->assertCount(0, $this->positionGroup->fresh()->conditions);
+        $this->positionGroup->conditions()->save($condition);
+        $this->assertEquals($this->positionGroup->id, $condition->fresh()->position_group_id);
+        $this->assertEquals($this->positionGroup->fresh()->conditions()->first()->id, $condition->id);
+        $this->assertCount(1, $this->positionGroup->fresh()->conditions);
 
-        $condition = factory(Endorsement\Condition::class)->make(['endorsement_id' => null]);
-        $this->endorsement->conditions()->save($condition);
-        $this->assertCount(2, $this->endorsement->fresh()->conditions);
+        $condition = factory(PositionGroupCondition::class)->make(['position_group_id' => null]);
+        $this->positionGroup->conditions()->save($condition);
+        $this->assertCount(2, $this->positionGroup->fresh()->conditions);
     }
 
     /** @test */
@@ -60,7 +61,7 @@ class EndorsementModelTest extends TestCase
             'minutes_online' => 60,
         ]);
 
-        $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
+        $this->assertTrue($this->positionGroup->fresh()->conditionsMetForUser($this->user));
     }
 
     /** @test */
@@ -69,13 +70,13 @@ class EndorsementModelTest extends TestCase
         $this->createMockCondition();
 
         // network data not present for the specified position
-        $this->assertFalse($this->endorsement->fresh()->conditionsMetForUser($this->user));
+        $this->assertFalse($this->positionGroup->fresh()->conditionsMetForUser($this->user));
     }
 
     /** @test */
     public function itWillReportConditionsMetForMultipleAirfieldsWhenNetworkDataPresent()
     {
-        $this->createMockCondition(['EGKK_%', 'EGLL_%'], Endorsement\Condition::TYPE_SUM_OF_AIRFIELDS);
+        $this->createMockCondition(['EGKK_%', 'EGLL_%'], PositionGroupCondition::TYPE_SUM_OF_AIRFIELDS);
 
         // create the network data
         factory(Atc::class)->create([
@@ -90,13 +91,13 @@ class EndorsementModelTest extends TestCase
         ]);
 
         // should return true as it sums up to the 60 mins required in the mock condition.
-        $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
+        $this->assertTrue($this->positionGroup->fresh()->conditionsMetForUser($this->user));
     }
 
     /** @test */
     public function itWillReportConditionsNotMetForMultipleAirfieldsWhenRequiredTimeIsntMet()
     {
-        $this->createMockCondition(['EGKK_%', 'EGLL_%'], Endorsement\Condition::TYPE_SUM_OF_AIRFIELDS);
+        $this->createMockCondition(['EGKK_%', 'EGLL_%'], PositionGroupCondition::TYPE_SUM_OF_AIRFIELDS);
 
         // create the network data
         factory(Atc::class)->create([
@@ -110,7 +111,7 @@ class EndorsementModelTest extends TestCase
             'minutes_online' => 10,
         ]);
 
-        $this->assertFalse($this->endorsement->fresh()->conditionsMetForUser($this->user));
+        $this->assertFalse($this->positionGroup->fresh()->conditionsMetForUser($this->user));
     }
 
     /** @test */
@@ -127,7 +128,7 @@ class EndorsementModelTest extends TestCase
             ->andReturn(true);
 
         // true assertion based upon the return value of the mocked cache facade above.
-        $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
+        $this->assertTrue($this->positionGroup->fresh()->conditionsMetForUser($this->user));
     }
 
     /** @test */
@@ -137,7 +138,7 @@ class EndorsementModelTest extends TestCase
 
         $spy = Cache::spy();
 
-        $this->assertFalse($this->endorsement->fresh()->conditionsMetForUser($this->user));
+        $this->assertFalse($this->positionGroup->fresh()->conditionsMetForUser($this->user));
 
         $spy->shouldHaveReceived('put')
             ->once();
@@ -150,17 +151,17 @@ class EndorsementModelTest extends TestCase
         $atc->disconnectAt(Carbon::now());
 
         $spy->shouldHaveReceived('forget')
-            ->times(Endorsement::count());
+            ->times(PositionGroup::count());
 
-        $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
+        $this->assertTrue($this->positionGroup->fresh()->conditionsMetForUser($this->user));
     }
 
-    private function createMockCondition($positions = ['EGKK_%'], $type = Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD)
+    private function createMockCondition($positions = ['EGKK_%'], $type = PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD)
     {
         // create condition requiring an hour on a EGKK_TWR
-        return factory(Endorsement\Condition::class)->create(
+        return factory(PositionGroupCondition::class)->create(
             [
-                'endorsement_id' => $this->endorsement->id,
+                'position_group_id' => $this->positionGroup->id,
                 'required_hours' => 1,
                 'within_months' => null,
                 'type' => $type,

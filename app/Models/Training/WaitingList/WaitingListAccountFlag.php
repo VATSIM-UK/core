@@ -37,8 +37,8 @@ class WaitingListAccountFlag extends Pivot
 
     public function getValueAttribute()
     {
-        if ($this->flag->endorsement_id) {
-            return $this->flag->endorsement->conditionsMetForUser($this->waitingListAccount->account);
+        if ($this->flag->position_group_id) {
+            return $this->flag->positionGroup->conditionsMetForUser($this->waitingListAccount->account);
         }
 
         return ! is_null($this->marked_at);

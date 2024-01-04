@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Training\WaitingList;
 
-use App\Models\Atc\Endorsement\Condition;
+use App\Models\Atc\PositionGroupCondition;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
@@ -100,13 +100,13 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 35]);
-        $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
+        $condition = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
         $flag = factory(WaitingListFlag::class)->create([
             'name' => 'endorsement',
             'list_id' => $waitingList->id,
             'default_value' => false,
-            'endorsement_id' => $condition->endorsement->id,
+            'position_group_id' => $condition->positionGroup->id,
         ]);
         $waitingList->addFlag($flag);
         $waitingList->fresh();
@@ -123,13 +123,13 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 65]);
-        $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
+        $condition = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
         $flag = factory(WaitingListFlag::class)->create([
             'name' => 'endorsement',
             'list_id' => $waitingList->id,
             'default_value' => false,
-            'endorsement_id' => $condition->endorsement->id,
+            'position_group_id' => $condition->positionGroup->id,
         ]);
         $waitingList->addFlag($flag);
         $waitingList->fresh();
@@ -151,12 +151,12 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $flag2 = $this->createFlag('endorsement', $waitingList, false);
 
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 65]);
-        $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
+        $condition = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
         $flag3 = factory(WaitingListFlag::class)->create([
             'name' => 'endorsement_2',
             'list_id' => $waitingList->id,
-            'endorsement_id' => $condition->endorsement->id,
+            'position_group_id' => $condition->positionGroup->id,
         ]);
         $waitingList->addFlag($flag3);
         $waitingList->fresh();
@@ -174,20 +174,20 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 65]);
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGNX_APP', 'minutes_online' => 65]);
-        $condition = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
-        $conditionSecond = factory(Condition::class)->create(['required_hours' => 1, 'positions' => ['EGNX_APP']]);
+        $condition = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
+        $conditionSecond = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGNX_APP']]);
 
         $flag1 = factory(WaitingListFlag::class)->create([
             'name' => 'endorsement',
             'list_id' => $waitingList->id,
             'default_value' => false,
-            'endorsement_id' => $condition->endorsement->id,
+            'position_group_id' => $condition->positionGroup->id,
         ]);
         $flag2 = factory(WaitingListFlag::class)->create([
             'name' => 'endorsement',
             'list_id' => $waitingList->id,
             'default_value' => false,
-            'endorsement_id' => $conditionSecond->endorsement->id,
+            'position_group_id' => $conditionSecond->positionGroup->id,
         ]);
         $waitingList->addFlag($flag1);
         $waitingList->addFlag($flag2);

@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Models\Atc\Endorsement;
+namespace App\Models\Atc;
 
-use App\Models\Atc\Endorsement;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Condition extends Model
+class PositionGroupCondition extends Model
 {
-    protected $table = 'endorsement_conditions';
+    protected $table = 'position_group_conditions';
 
     protected $fillable = [
-        'endorsement_id',
+        'position_group_id',
         'positions',
         'required_hours',
         'type',
@@ -29,9 +28,9 @@ class Condition extends Model
 
     const TYPE_SUM_OF_AIRFIELDS = 2; // To qualify, the sum of hours across all qualifying positions must meet the given hours
 
-    public function endorsement()
+    public function positionGroup()
     {
-        return $this->belongsTo(Endorsement::class);
+        return $this->belongsTo(PositionGroup::class);
     }
 
     public function getHumanPositionsAttribute()

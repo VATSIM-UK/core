@@ -74,7 +74,7 @@
                         </tr>
                         @foreach($list->pivot->flags as $flag)
                         <tr>
-                            <td>{{$flag->name}} ({{$flag->endorsement_id ? 'Automatic': 'Manual'}})</td>
+                            <td>{{$flag->name}} ({{$flag->position_group_id ? 'Automatic': 'Manual'}})</td>
                             <td>
                                 <x-boolean-indicator :value="$flag->pivot->value" />
                             </td>
