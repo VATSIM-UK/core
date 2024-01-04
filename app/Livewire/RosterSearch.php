@@ -13,13 +13,14 @@ class RosterSearch extends Component
     public ?string $searchTerm;
 
     public ?Account $account;
+
     public ?Roster $roster;
 
     public function mount()
     {
-            $this->account = Account::findOrFail(1169992);
-            $this->roster = Roster::where('account_id', 1169992)->first();
-            $this->searchTerm = null;
+        $this->account = Account::findOrFail(1169992);
+        $this->roster = Roster::where('account_id', 1169992)->first();
+        $this->searchTerm = null;
     }
 
     public function search()

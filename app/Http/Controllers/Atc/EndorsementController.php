@@ -42,7 +42,7 @@ class EndorsementController extends BaseController
         }
 
         $positionGroups = $positionGroups->load('conditions')->map(function ($endorsement) {
-            $conditions = $positionGroups->conditions->map(function ($condition) use ($endorsement) {
+            $conditions = $positionGroups->conditions->map(function ($condition) {
                 return [
                     'position_group_id' => $positionGroup->id,
                     // extract the likely position name from the criterion loaded into the database.

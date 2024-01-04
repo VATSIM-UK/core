@@ -1,7 +1,5 @@
 <?php
 
-use App\Livewire\RosterSearch;
-
 Route::group([
     'as' => 'site.',
     'namespace' => 'Site',

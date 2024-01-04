@@ -12,7 +12,7 @@ class Endorsement extends Model
     protected $with = ['positionGroup'];
 
     protected $casts = [
-        'expired_at' => 'datetime'
+        'expired_at' => 'datetime',
     ];
 
     public function positionGroup()

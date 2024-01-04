@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Livewire\RosterSearch;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Livewire;
 use Route;
 
 class RouteServiceProvider extends ServiceProvider

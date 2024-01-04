@@ -6,15 +6,16 @@ use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Roster
  *
  * @property-read Account|null $account
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Roster newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Roster newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Roster query()
+ *
  * @mixin \Eloquent
  */
 class Roster extends Model
@@ -29,9 +30,9 @@ class Roster extends Model
         // and are still within the UK.
         static::addGlobalScope('eligibleState', function (Builder $builder) {
             $builder->whereHas('account', function ($query) {
-               $query->whereHas('states', function ($query) {
-                   $query->whereIn('mship_state.code', ['DIVISION', 'VISITING', 'TRANSFERRING']);
-               });
+                $query->whereHas('states', function ($query) {
+                    $query->whereIn('mship_state.code', ['DIVISION', 'VISITING', 'TRANSFERRING']);
+                });
             });
         });
     }

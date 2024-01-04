@@ -14,7 +14,9 @@ class UpdateRoster extends Command
     protected $description = 'Update the ATC roster based on ATC session data.';
 
     protected int $minimumHours = 3;
+
     protected Carbon $fromDate;
+
     protected Carbon $toDate;
 
     public function handle()
@@ -40,7 +42,7 @@ class UpdateRoster extends Command
 
         // Not on the roster, need to be on...
         Roster::upsert(
-            $eligible->map(fn($value) => ['account_id' => $value])->toArray(),
+            $eligible->map(fn ($value) => ['account_id' => $value])->toArray(),
             ['account_id']
         );
     }
