@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class FilamentAccessMiddleware
 {
@@ -18,6 +19,7 @@ class FilamentAccessMiddleware
         $account = $request->user();
 
         if (! $account) {
+            Session::put('url.intended', $request->url());
             return redirect()->route('login');
         }
 
