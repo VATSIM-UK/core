@@ -20,6 +20,7 @@ class FilamentAccessMiddleware
 
         if (! $account) {
             Session::put('url.intended', $request->url());
+
             return redirect()->route('login');
         }
 
