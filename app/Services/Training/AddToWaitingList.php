@@ -17,7 +17,7 @@ class AddToWaitingList implements BaseService
 
     protected $createdAt;
 
-    public function __construct(WaitingList $waitingList, Account $account, Account $staffAccount, Carbon $created_at = null)
+    public function __construct(WaitingList $waitingList, Account $account, Account $staffAccount, ?Carbon $created_at = null)
     {
         $this->waitingList = $waitingList;
         $this->account = $account;

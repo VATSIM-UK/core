@@ -154,7 +154,7 @@ class WaitingList extends Model
     /**
      * Add an Account to a waiting list.
      */
-    public function addToWaitingList(Account $account, Account $staffAccount, Carbon $createdAt = null)
+    public function addToWaitingList(Account $account, Account $staffAccount, ?Carbon $createdAt = null)
     {
         $timestamp = $createdAt != null ? $createdAt : Carbon::now();
         $this->accounts()->attach($account, ['added_by' => $staffAccount->id]);

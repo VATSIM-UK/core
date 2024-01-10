@@ -18,7 +18,7 @@ class RateLimited
     /** @var int */
     private $retryAfter;
 
-    public function __construct(string $key = null, ?int $allow = 50, ?int $every = 10, ?int $retryAfter = 10)
+    public function __construct(?string $key = null, ?int $allow = 50, ?int $every = 10, ?int $retryAfter = 10)
     {
         $this->key = $key ?? 'rate_limited_queue_job';
         $this->allow = $allow ?? 50;
