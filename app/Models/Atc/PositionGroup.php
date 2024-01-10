@@ -22,6 +22,11 @@ class PositionGroup extends Model
         return $this->belongsToMany(Position::class, 'position_group_positions', 'position_group_id', 'position_id');
     }
 
+    public function endorsement()
+    {
+        return $this->belongsTo(Endorsement::class);
+    }
+
     public function conditionsMetForUser(Account $account): bool
     {
         $cacheKey = $this->generateCacheKey($account);
@@ -45,5 +50,18 @@ class PositionGroup extends Model
     public function generateCacheKey(Account $account)
     {
         return "endorsement:{$this->id}:account:{$account->id}:met";
+    }
+
+    public static function unassignedFor(Account $account)
+    {
+        return self::all()->reject(function ($positionGroup) use (&$account) {
+            $endorsements = $account->endorsements;
+
+            $position_group_assigned = $endorsements->contains(function ($value, $key) use (&$positionGroup) {
+                return $value->position_group_id == $positionGroup->id;
+            });
+
+            return $position_group_assigned;
+        });
     }
 }

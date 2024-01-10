@@ -32,6 +32,7 @@
                             <span>{{ $roster ? 'On Roster' : 'Not on Roster' }}</span>
                         </div>
                         @if($account->endorsements->whereNull('expired_at')->isNotEmpty())
+                        	{{-- TODO: use relationsip or type --}}
                             <div class="flex flex-col items-center">
                                 <span class="font-bold">Perm Endorsements</span>
                                 @foreach($account->endorsements->whereNull('expired_at') as $accountEndorsement)
@@ -63,4 +64,3 @@
         </div>
     </div>
 </div>
-
