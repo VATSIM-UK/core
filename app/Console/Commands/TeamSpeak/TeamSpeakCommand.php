@@ -41,7 +41,7 @@ abstract class TeamSpeakCommand extends Command
     /**
      * Handling for a serverquery exception thrown by the TeamSpeak framework.
      */
-    protected static function handleServerQueryException(TeamSpeak3_Adapter_ServerQuery_Exception $e, Account $account = null)
+    protected static function handleServerQueryException(TeamSpeak3_Adapter_ServerQuery_Exception $e, ?Account $account = null)
     {
         if ($e->getCode() === TeamSpeak::CLIENT_INVALID_ID) {
             self::$command->log('Invalid client ID.');

@@ -275,7 +275,7 @@ class Reference extends Model
         event(new ReferenceUnderReview($this));
     }
 
-    public function reject($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
+    public function reject($publicReason = 'No reason was provided.', $staffReason = null, ?Account $actor = null)
     {
         $this->guardAgainstNonUnderReviewReference();
 
@@ -319,7 +319,7 @@ class Reference extends Model
         event(new ReferenceCancelled($this));
     }
 
-    public function accept($staffComment = null, Account $actor = null)
+    public function accept($staffComment = null, ?Account $actor = null)
     {
         $this->guardAgainstNonUnderReviewReference();
 

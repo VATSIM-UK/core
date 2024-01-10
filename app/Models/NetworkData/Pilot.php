@@ -151,7 +151,7 @@ class Pilot extends Model
         return $this->attributes['disconnected_at'] === null;
     }
 
-    public function isAtAirport(Airport $airport = null)
+    public function isAtAirport(?Airport $airport = null)
     {
         if (is_null($airport)) {
             return false;

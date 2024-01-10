@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Roster;
 
 use App\Models\Mship\Account;
 use App\Models\Roster;
@@ -8,20 +8,13 @@ use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Component;
 
-class RosterSearch extends Component
+class Search extends Component
 {
     public ?string $searchTerm;
 
     public ?Account $account;
 
     public ?Roster $roster;
-
-    public function mount()
-    {
-        $this->account = Account::findOrFail(1169992);
-        $this->roster = Roster::where('account_id', 1169992)->first();
-        $this->searchTerm = null;
-    }
 
     public function search()
     {
@@ -42,8 +35,8 @@ class RosterSearch extends Component
 
     // restrictions - mship_account_restrictions - account_id, string, deleted_at
 
-    // home member - RATING + other shit
-    // visiting/transferring - other shit
+    // home member - RATING + other stuff
+    // visiting/transferring - other stuff
 
     public function clear()
     {
@@ -52,6 +45,6 @@ class RosterSearch extends Component
 
     public function render()
     {
-        return view('livewire.roster-search');
+        return view('livewire.roster.search');
     }
 }

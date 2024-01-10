@@ -15,7 +15,7 @@ class MaxConnectionAttemptsExceededException extends Exception
      *
      * @param  string  $attempts  The number of connection attempts made. This is used as the exception code.
      */
-    public function __construct($attempts, Exception $previous = null)
+    public function __construct($attempts, ?Exception $previous = null)
     {
         parent::__construct($this->message, $attempts, $previous);
     }

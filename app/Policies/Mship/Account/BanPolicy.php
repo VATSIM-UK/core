@@ -36,7 +36,7 @@ class BanPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(Account $account, Account $subject = null)
+    public function create(Account $account, ?Account $subject = null)
     {
         return $account->can('account.ban.create') && ! $subject?->is_banned;
     }

@@ -636,7 +636,7 @@ class Application extends Model
         $this->facility->removeTrainingSpace();
     }
 
-    public function markAsUnderReview($staffReason = null, Account $actor = null)
+    public function markAsUnderReview($staffReason = null, ?Account $actor = null)
     {
         $this->attributes['status'] = self::STATUS_UNDER_REVIEW;
         $this->save();
@@ -651,7 +651,7 @@ class Application extends Model
         event(new ApplicationUnderReview($this));
     }
 
-    public function reject($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
+    public function reject($publicReason = 'No reason was provided.', $staffReason = null, ?Account $actor = null)
     {
         $this->guardAgainstNonRejectableApplication();
 
@@ -678,7 +678,7 @@ class Application extends Model
         }
     }
 
-    public function accept($staffComment = null, Account $actor = null)
+    public function accept($staffComment = null, ?Account $actor = null)
     {
         $this->guardAgainstUnAcceptableApplication();
 
@@ -705,14 +705,14 @@ class Application extends Model
         event(new ApplicationAccepted($this));
     }
 
-    public function complete($staffComment = null, Account $actor = null)
+    public function complete($staffComment = null, ?Account $actor = null)
     {
         $this->guardAgainstNonAcceptedApplication();
         $this->changeStatus(self::STATUS_COMPLETED, null, $staffComment, $actor);
         event(new ApplicationCompleted($this));
     }
 
-    public function cancel($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
+    public function cancel($publicReason = 'No reason was provided.', $staffReason = null, ?Account $actor = null)
     {
         $this->guardAgainstNonAcceptedApplication();
         $this->changeStatus(self::STATUS_CANCELLED, $publicReason, $staffReason, $actor);
@@ -728,7 +728,7 @@ class Application extends Model
         event(new ApplicationCancelled($this));
     }
 
-    public function changeStatus($status, $publicReason = null, $staffReason = null, Account $actor = null)
+    public function changeStatus($status, $publicReason = null, $staffReason = null, ?Account $actor = null)
     {
         // Set the status
         $this->status = $status;

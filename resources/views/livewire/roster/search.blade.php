@@ -20,6 +20,9 @@
                             </button>
                         </div>
                     </form>
+                    <div>
+                        <a wire:navigate href="{{ route('site.roster.index') }}" class="text-bold text-blue-500 hover:cursor-pointer">Go back</a>
+                    </div>
                 @else
                     <div class="flex flex-col items-center space-y-8">
                         <span class="font-bold">{{ $account->id }}</span>

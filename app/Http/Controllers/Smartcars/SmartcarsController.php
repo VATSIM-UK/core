@@ -25,7 +25,7 @@ class SmartcarsController extends BaseController
         return $this->viewMake('fte.guide');
     }
 
-    public function getExercise(Flight $exercise = null)
+    public function getExercise(?Flight $exercise = null)
     {
         if (is_null($exercise)) {
             $exercises = Flight::enabled()->orderBy('created_at')->get();
@@ -79,7 +79,7 @@ class SmartcarsController extends BaseController
         return redirect()->back()->with('success', 'Exercise booking successfully deleted.');
     }
 
-    public function getHistory(Request $request, Pirep $pirep = null)
+    public function getHistory(Request $request, ?Pirep $pirep = null)
     {
         if (is_null($pirep)) {
             $pireps = Pirep::query()->belongsTo($request->user()->id)->orderByDesc('created_at')->get();

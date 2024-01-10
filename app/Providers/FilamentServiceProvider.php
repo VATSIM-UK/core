@@ -46,7 +46,7 @@ class FilamentServiceProvider extends ServiceProvider
         /**
          * Configures a text column with a link which routes to the resource's view page
          */
-        \Filament\Tables\Columns\TextColumn::macro('viewResource', function (string $resourceClass, string $attribute = null): \Filament\Tables\Columns\TextColumn {
+        \Filament\Tables\Columns\TextColumn::macro('viewResource', function (string $resourceClass, ?string $attribute = null): \Filament\Tables\Columns\TextColumn {
             /** @var \Filament\Tables\Actions\TextColumn $this */
             $attribute = $attribute ?? explode('.', $this->getName())[0]; // We assume that the column name is like user or user.name - we want the first part to get the relation
 
@@ -66,7 +66,7 @@ class FilamentServiceProvider extends ServiceProvider
         /**
          * Defines a relationship that is linked to a resource
          */
-        \Filament\Forms\Components\Select::macro('resourceRelationship', function (string $resourceClass, string $relationName = null, string $titleAttribute = null): \Filament\Forms\Components\Select {
+        \Filament\Forms\Components\Select::macro('resourceRelationship', function (string $resourceClass, ?string $relationName = null, ?string $titleAttribute = null): \Filament\Forms\Components\Select {
             /** @var \Filament\Forms\Components\Select $this */
             $relationModelName = class_basename($resourceClass::getModel());
 
