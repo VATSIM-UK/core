@@ -39,8 +39,8 @@
 
                     <div class="col-md-12">
                         <h4 class="text-center">Division Director (VATUK1)</h4><br />
-                        <img src="{{ $teamPhotos[54] }}" width=50px class="img-responsive center-block profile-picture" />
-                        <p class="text-center">Chris Pawley</p>
+                        <img src="{{ $teamPhotos[7103] }}" width=50px class="img-responsive center-block profile-picture" />
+                        <p class="text-center">Ben Wright</p>
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                     <table class="table">
                         <tr>
                             <td>Enroute Operations Coordinator</td>
-                            <td>1237658</td>
+                            <td><em>Vacant</em></td>
                         </tr>
                         <tr>
                             <td>Aerodrome Operations Coordinator</td>
@@ -86,6 +86,10 @@
                             <td>Operations Assistant</td>
                             <td>Chad Byworth</td>
                         </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>1237658</td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -98,13 +102,13 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Marketing Director (VATUK4)</h4><br />
-                    <img src="{{ $teamPhotos[6738] }}" width=50px class="img-responsive center-block profile-picture" />
-                    <p class="text-center">Loui Ringer</p>
+                    <img src="{{ $teamPhotos[1] }}" width=50px class="img-responsive center-block profile-picture" />
+                    <p class="text-center"><em>Vacant</em></p>
                     <h4 class="text-center">Marketing Team</h4>
                     <table class="table">
                         <tr>
                             <td>Marketing General Manager</td>
-                            <td>Ben Wright</td>
+                            <td><em>Vacant</em></td>
                         </tr>
                         <tr>
                             <td>Events Manager</td>
@@ -217,13 +221,13 @@
                 <div class="panel-body">
                     <div class="col-md-6">
                         <h4 class="text-center">ATC Training Director (VATUK5)</h4><br />
-                        <img src="{{ $teamPhotos[1] }}" width=50px class="img-responsive center-block profile-picture" />
-                        <p class="text-center"><em>Vacant</em></p>
+                        <img src="{{ $teamPhotos[2308] }}" width=50px class="img-responsive center-block profile-picture" />
+                        <p class="text-center">Adam Arkley</p>
                         <h4 class="text-center">ATC Training Team</h4>
                         <table class="table">
                             <tr>
                                 <td>ATC Training Manager</td>
-                                <td><em>Vacant</em></td>
+                                <td>Will Jennings</td>
                             </tr>
                             <tr>
                                 <td>Training Department Assistant</td>
@@ -270,12 +274,8 @@
                                 <td>Samuel Lefevre</td>
                             </tr>
                             <tr>
-                                <td>TG Instructor (APP)</td>
-                                <td>William Jennings</td>
-                            </tr>
-                            <tr>
                                 <td>TG Instructor (ENR)</td>
-                                <td>1237658</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>

@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
 use App\Libraries\Forum;
 use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use HTML;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Auth;
@@ -76,6 +78,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(UKCP::class);
         $this->app->singleton(Discord::class);
         $this->app->singleton(Forum::class);
+        $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
     }
 
     public function registerHTMLComponents()
