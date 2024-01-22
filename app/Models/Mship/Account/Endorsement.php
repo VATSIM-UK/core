@@ -6,11 +6,12 @@ use App\Models\Atc\PositionGroup;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Endorsement extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'mship_account_endorsement';
 
@@ -37,5 +38,10 @@ class Endorsement extends Model
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => is_null($attributes['expired_at']) ? 'Permanent' : 'Temporary',
         );
+    }
+
+    public function hasExpired(): bool
+    {
+        return ! is_null($this->expired_at) && $this->expired_at->isPast();
     }
 }

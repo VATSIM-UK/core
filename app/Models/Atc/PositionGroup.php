@@ -3,11 +3,14 @@
 namespace App\Models\Atc;
 
 use App\Models\Mship\Account;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
 class PositionGroup extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
     ];
@@ -55,13 +58,15 @@ class PositionGroup extends Model
     public static function unassignedFor(Account $account)
     {
         return self::all()->reject(function ($positionGroup) use (&$account) {
-            $endorsements = $account->endorsements;
+            $nonExpiredEndorsements = $account->load('endorsements')->endorsements->reject(function ($endorsement) {
+                return $endorsement->hasExpired();
+            });
 
-            $position_group_assigned = $endorsements->contains(function ($value, $key) use (&$positionGroup) {
+            $positionGroupsAssigned = $nonExpiredEndorsements->contains(function ($value, $key) use (&$positionGroup) {
                 return $value->position_group_id == $positionGroup->id;
             });
 
-            return $position_group_assigned;
+            return $positionGroupsAssigned;
         });
     }
 }
