@@ -68,14 +68,12 @@ class EndorsementsRelationManager extends RelationManager
             ]);
     }
 
-    public static function createEndorsement(array $data, self $livewrite)
+    public static function createEndorsement(array $data, self $livewire)
     {
         $creator = auth()->user();
 
-        dd($creator);
-
         Endorsement::create([
-            'account_id' => $livewrite->ownerRecord->id,
+            'account_id' => $livewire->ownerRecord->id,
             'position_group_id' => $data['position_group_id'],
             'expired_at' => $data['expired_at'],
             'created_by' => $creator->id,
