@@ -4571,16 +4571,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "3.23.0",
+            "version": "3.23.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "d4ad81e2b67396e33dc9d7e54ec74ccf73151dcc"
+                "reference": "199e1aebbe3e62bd39f4d4fc8c61ce0b3786197e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/d4ad81e2b67396e33dc9d7e54ec74ccf73151dcc",
-                "reference": "d4ad81e2b67396e33dc9d7e54ec74ccf73151dcc",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/199e1aebbe3e62bd39f4d4fc8c61ce0b3786197e",
+                "reference": "199e1aebbe3e62bd39f4d4fc8c61ce0b3786197e",
                 "shasum": ""
             },
             "require": {
@@ -4645,7 +4645,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/3.23.0"
+                "source": "https://github.com/thephpleague/flysystem/tree/3.23.1"
             },
             "funding": [
                 {
@@ -4657,20 +4657,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-12-04T10:16:17+00:00"
+            "time": "2024-01-26T18:42:03+00:00"
         },
         {
             "name": "league/flysystem-local",
-            "version": "3.23.0",
+            "version": "3.23.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem-local.git",
-                "reference": "5cf046ba5f059460e86a997c504dd781a39a109b"
+                "reference": "b884d2bf9b53bb4804a56d2df4902bb51e253f00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem-local/zipball/5cf046ba5f059460e86a997c504dd781a39a109b",
-                "reference": "5cf046ba5f059460e86a997c504dd781a39a109b",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-local/zipball/b884d2bf9b53bb4804a56d2df4902bb51e253f00",
+                "reference": "b884d2bf9b53bb4804a56d2df4902bb51e253f00",
                 "shasum": ""
             },
             "require": {
@@ -4705,7 +4705,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem-local/issues",
-                "source": "https://github.com/thephpleague/flysystem-local/tree/3.23.0"
+                "source": "https://github.com/thephpleague/flysystem-local/tree/3.23.1"
             },
             "funding": [
                 {
@@ -4717,7 +4717,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-12-04T10:14:46+00:00"
+            "time": "2024-01-26T18:25:23+00:00"
         },
         {
             "name": "league/mime-type-detection",
@@ -8003,16 +8003,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "4.1.0",
+            "version": "4.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "89666f297891ff937fceb2f3d1fb967a6848cf37"
+                "reference": "95a428a59ebddf786a27f09d19ec395a32f62082"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/89666f297891ff937fceb2f3d1fb967a6848cf37",
-                "reference": "89666f297891ff937fceb2f3d1fb967a6848cf37",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/95a428a59ebddf786a27f09d19ec395a32f62082",
+                "reference": "95a428a59ebddf786a27f09d19ec395a32f62082",
                 "shasum": ""
             },
             "require": {
@@ -8036,7 +8036,7 @@
                 "phpbench/phpbench": "^1.0",
                 "phpstan/phpstan": "^1.3",
                 "phpunit/phpunit": "^8.5.14|^9.4",
-                "symfony/phpunit-bridge": "^5.2|^6.0",
+                "symfony/phpunit-bridge": "^5.2|^6.0|^7.0",
                 "vimeo/psalm": "^4.17"
             },
             "suggest": {
@@ -8076,7 +8076,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/4.1.0"
+                "source": "https://github.com/getsentry/sentry-php/tree/4.4.0"
             },
             "funding": [
                 {
@@ -8088,28 +8088,28 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-12-04T12:41:21+00:00"
+            "time": "2024-01-23T09:49:55+00:00"
         },
         {
             "name": "sentry/sentry-laravel",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-laravel.git",
-                "reference": "792944c1d0b7342d1635ac6d72fbdc2f32486310"
+                "reference": "fa38767be2f14505fd93bfa5acadb9dfec1fdeee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/792944c1d0b7342d1635ac6d72fbdc2f32486310",
-                "reference": "792944c1d0b7342d1635ac6d72fbdc2f32486310",
+                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/fa38767be2f14505fd93bfa5acadb9dfec1fdeee",
+                "reference": "fa38767be2f14505fd93bfa5acadb9dfec1fdeee",
                 "shasum": ""
             },
             "require": {
                 "illuminate/support": "^6.0 | ^7.0 | ^8.0 | ^9.0 | ^10.0",
                 "nyholm/psr7": "^1.0",
                 "php": "^7.2 | ^8.0",
-                "sentry/sentry": "^4.0",
-                "symfony/psr-http-message-bridge": "^1.0 | ^2.0"
+                "sentry/sentry": "^4.3",
+                "symfony/psr-http-message-bridge": "^1.0 | ^2.0 | ^6.0 | ^7.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.11",
@@ -8165,7 +8165,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-laravel/issues",
-                "source": "https://github.com/getsentry/sentry-laravel/tree/4.1.1"
+                "source": "https://github.com/getsentry/sentry-laravel/tree/4.1.2"
             },
             "funding": [
                 {
@@ -8177,7 +8177,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-12-12T22:17:13+00:00"
+            "time": "2024-01-16T12:46:27+00:00"
         },
         {
             "name": "spatie/color",
