@@ -101,7 +101,7 @@
         "fakerphp/faker": "^1.9.1",
         "filament/upgrade": "^3.0-stable",
         "laracasts/generators": "^2.0",
-        "laravel/homestead": "^14.0.0",
+        "laravel/homestead": "^15.0.1",
         "laravel/legacy-factories": "^1.1",
         "laravel/pint": "^1.10",
         "mockery/mockery": "1.6.*",
