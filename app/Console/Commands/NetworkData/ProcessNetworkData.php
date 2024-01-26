@@ -321,7 +321,7 @@ class ProcessNetworkData extends Command
     /**
      * Retrieve and cache an airport from the database.
      *
-     * @param $ident string
+     * @param  $ident  string
      * @return mixed
      */
     private function getAirport(string $ident)

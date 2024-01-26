@@ -78,7 +78,7 @@ class UKCP
     }
 
     /**
-     * @param $token object|string A token object or token ID string
+     * @param  $token  object|string A token object or token ID string
      * @return false|string
      */
     public static function getKeyForToken($token)
@@ -87,8 +87,8 @@ class UKCP
     }
 
     /**
-     * @param $tokenID string The full length token ID
-     * @param $account Account
+     * @param  $tokenID  string The full length token ID
+     * @param  $account  Account
      * @return string
      */
     public static function getPathForToken($tokenID, $account)
