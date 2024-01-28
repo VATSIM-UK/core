@@ -64,7 +64,7 @@ class WaitingListPolicy
     /**
      * Returns if the account has permission for either the ID or department type for the given permission
      *
-     * @param  string|string[]  $permissionTemplate Of sprintf format, e.g. "permsion.to.%s"
+     * @param  string|string[]  $permissionTemplate  Of sprintf format, e.g. "permsion.to.%s"
      * @return void
      */
     private function checkHasPermissionForList(Account $account, WaitingList $waitingList, mixed $permissionTemplates): bool

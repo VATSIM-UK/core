@@ -39,6 +39,7 @@ class WaitingList extends Model
     const ANY_FLAGS = 'any';
 
     protected $casts = [
+        'home_members_only' => 'boolean',
         'feature_toggles' => 'array',
         'deleted_at' => 'datetime',
     ];
