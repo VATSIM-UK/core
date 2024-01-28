@@ -65,8 +65,8 @@ class AirportTest extends TestCase
     public function itHasWorkingPositionsRelationship()
     {
         $airport = factory(Airport::class)->create();
-        $station1 = factory(Position::class)->create();
-        $station2 = factory(Position::class)->create();
+        $station1 = Position::factory()->create();
+        $station2 = Position::factory()->create();
         $airport->positions()->attach([$station1->id, $station2->id]);
         $airport = $airport->fresh();
 

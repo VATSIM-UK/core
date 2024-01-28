@@ -3,40 +3,22 @@
 namespace App\Models\Atc;
 
 use App\Models\Airport;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-/**
- * App\Models\Station.
- *
- * @property int $id
- * @property string $callsign
- * @property string $name
- * @property float $frequency
- * @property int $type
- * @property bool $sub_station
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport[] $airports
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereCallsign($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereFrequency($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereSubStation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Station whereUpdatedAt($value)
- *
- * @mixin \Eloquent
- */
 class Position extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'callsign',
         'name',
         'frequency',
         'type',
         'sub_station',
+        'temporarily_endorsable',
     ];
 
     protected $casts = [
@@ -59,15 +41,12 @@ class Position extends Model
 
     const TYPE_FSS = 8;
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function airports()
+    public function airports(): BelongsToMany
     {
         return $this->belongsToMany(Airport::class, 'airport_positions');
     }
 
-    public function getTypeAttribute($type)
+    public function getTypeAttribute(int $type): string
     {
         switch ($type) {
             case self::TYPE_ATIS:
@@ -89,5 +68,15 @@ class Position extends Model
             default:
                 return 'Unknown';
         }
+    }
+
+    public function isTemporarilyEndorsable(): bool
+    {
+        return $this->temporarily_endorsable ?? false;
+    }
+
+    public function scopeTemporarilyEndorsable(Builder $query): Builder
+    {
+        return $query->where('temporarily_endorsable', true);
     }
 }

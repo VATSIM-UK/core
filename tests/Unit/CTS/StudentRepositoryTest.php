@@ -26,7 +26,7 @@ class StudentRepositoryTest extends TestCase
     /** @test */
     public function itCanReturnAListOfStudentsOfAnRts()
     {
-        $position = factory(Position::class)->create(['rts_id' => 15]);
+        $position = Position::factory()->create(['rts_id' => 15]);
 
         $positionValidation = factory(PositionValidation::class)->create([
             'status' => 1,
@@ -41,7 +41,7 @@ class StudentRepositoryTest extends TestCase
     /** @test */
     public function itDoesNotReturnStudentsOfAnotherRts()
     {
-        $position = factory(Position::class)->create(['rts_id' => 15]);
+        $position = Position::factory()->create(['rts_id' => 15]);
 
         factory(PositionValidation::class)->create([
             'status' => 1,
@@ -58,8 +58,8 @@ class StudentRepositoryTest extends TestCase
     {
         $member = factory(Member::class)->create();
 
-        $positionOne = factory(Position::class)->create(['rts_id' => 15]);
-        $positionTwo = factory(Position::class)->create(['rts_id' => 15]);
+        $positionOne = Position::factory()->create(['rts_id' => 15]);
+        $positionTwo = Position::factory()->create(['rts_id' => 15]);
 
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
@@ -82,7 +82,7 @@ class StudentRepositoryTest extends TestCase
     public function itFormatsTheReturnDataForAnRtsCorrectly()
     {
         $member = factory(Member::class)->create();
-        $position = factory(Position::class)->create(['rts_id' => 15]);
+        $position = Position::factory()->create(['rts_id' => 15]);
 
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
@@ -98,7 +98,7 @@ class StudentRepositoryTest extends TestCase
     /** @test */
     public function itDoesNotReturnMentorsAsStudents()
     {
-        $position = factory(Position::class)->create(['rts_id' => 15]);
+        $position = Position::factory()->create(['rts_id' => 15]);
 
         factory(PositionValidation::class)->create([
             'status' => 5,
