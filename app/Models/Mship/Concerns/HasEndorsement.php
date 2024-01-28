@@ -10,4 +10,14 @@ trait HasEndorsement
     {
         return $this->hasMany(Endorsement::class, 'account_id');
     }
+
+    public function permanentEndorsements()
+    {
+        return $this->endorsements()->whereNull('expired_at');
+    }
+
+    public function temporaryEndorsements()
+    {
+        return $this->endorsements()->whereNotNull('expired_at');
+    }
 }

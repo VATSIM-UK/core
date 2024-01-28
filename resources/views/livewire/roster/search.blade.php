@@ -1,7 +1,7 @@
 <div class="flex w-screen h-screen items-center justify-center text-center bg-gray-200">
-    <div class="flex min-h-full w-1/2 flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="flex min-h-full w-full md:w-1/2 flex-col justify-center py-12 px-6 lg:px-8">
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-            <div class="bg-white px-6 py-12 shadow space-y-6 sm:rounded-lg sm:px-12">
+            <div class="bg-white px-6 py-12 shadow space-y-6 rounded-lg sm:px-12">
                 @if(! $account)
                     <form wire:submit="search" class="flex flex-col space-y-4">
                         <div>
@@ -24,37 +24,52 @@
                         <a wire:navigate href="{{ route('site.roster.index') }}" class="text-bold text-blue-500 hover:cursor-pointer">Go back</a>
                     </div>
                 @else
-                    <div class="flex flex-col items-center space-y-8">
-                        <span class="font-bold">{{ $account->id }}</span>
-                        <div class="flex flex-col items-center">
-                            <span>{{ $account->qualification_atc }}</span>
-                            <span>{{ $account->primary_state->name }} Member</span>
-                            <span>{{ $roster ? 'On Roster' : 'Not on Roster' }}</span>
+                	<header class="flex flex-col md:flex-row md:justify-between items-center">
+                        <div class="inline-flex flex-col md:items-start items-center">
+                            <span class="font-bold text-2xl">{{ $account->id }}</span>
+                            <div class="opacity-50">
+                                <span>{{ $account->qualification_atc }} - </span>
+                                <span>{{ $account->primary_state->name }} Member</span>
+                            </div>
                         </div>
-                        @if($account->endorsements->whereNull('expired_at')->isNotEmpty())
-                        	{{-- TODO: use relationsip or type --}}
-                            <div class="flex flex-col items-center">
-                                <span class="font-bold">Perm Endorsements</span>
-                                @foreach($account->endorsements->whereNull('expired_at') as $accountEndorsement)
+                        <div class="ml-2">
+                            @if($roster)
+                                <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-md font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Active</span>
+                            @else
+                                <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-md font-medium text-red-700 ring-1 ring-inset ring-red-600/20">Inactive</span>
+                            @endif
+                        </div>
+                    </header>
+                    <main>
+                    </main>
+                    <div class="flex flex-col space-y-8">
+                        @if($account->permanentEndorsements)
+                            <div class="flex flex-col items-start">
+                                <span class="font-bold">Additional endorsements</span>
+                                @foreach($account->permanentEndorsements as $accountEndorsement)
                                     <span>{{ $accountEndorsement->positionGroup->description }}</span>
-                                    @foreach($accountEndorsement->positionGroup->positions as $position)
-                                        <span>{{ $position->callsign }}</span>
-                                    @endforeach
+                                    <div class="text-xs opacity-50">
+                                        {{ implode(', ', $accountEndorsement->positionGroup->positions->map(
+                                            fn($position) => $position->callsign
+                                        )->toArray()
+                                        ) }}
+                                    </div>
+                                @endforeach
+                                @foreach($account->temporaryEndorsements as $accountEndorsement)
+                                	<div class="flex items-baseline">
+                                        <span class="italic">{{ $accountEndorsement->positionGroup->description }} </span>
+                                        <span class="ml-1 text-xs opacity-75">(Expires {{ $accountEndorsement->expired_at->toFormattedDateString() }})</span>
+                                    </div>
+                                    <div class="text-xs opacity-50">
+                                        {{ implode(', ', $accountEndorsement->positionGroup->positions->map(
+                                            fn($position) => $position->callsign
+                                        )->toArray()
+                                        ) }}
+                                    </div>
                                 @endforeach
                             </div>
                         @endif
 
-                        @if($account->endorsements->whereNotNull('expired_at')->isNotEmpty())
-                            <div class="flex flex-col items-center">
-                                <span class="font-bold">Temp Endorsements</span>
-                                @foreach($account->endorsements->whereNotNull('expired_at') as $accountEndorsement)
-                                    <span>{{ $accountEndorsement->positionGroup->description }}</span>
-                                    @foreach($accountEndorsement->positionGroup->positions as $position)
-                                        <span>{{ $position->callsign }}</span>
-                                    @endforeach
-                                @endforeach
-                            </div>
-                        @endif
                         <div>
                             <a class="text-bold text-blue-500 hover:cursor-pointer" wire:click="clear">Go back</a>
                         </div>
