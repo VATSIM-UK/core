@@ -54,7 +54,7 @@ class EndorsementsRelationManager extends RelationManager
                 // TODO: color on type
                 Tables\Columns\TextColumn::make('type')->label('Type')->badge(),
                 Tables\Columns\TextColumn::make('created_at')->label('Granted')->date(),
-                Tables\Columns\TextColumn::make('expired_at')->label('Expires')->date()->default('-'),
+                Tables\Columns\TextColumn::make('expired_at')->label('Expires')->date()->default(''),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->label('Add endorsement'),
