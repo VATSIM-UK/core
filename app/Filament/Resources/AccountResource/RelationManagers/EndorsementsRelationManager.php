@@ -15,7 +15,7 @@ class EndorsementsRelationManager extends RelationManager
 
     protected static ?string $inverseRelationship = 'account';
 
-    protected static ?string $recordTitleAttribute = 'positionGroup.name';
+    protected static ?string $recordTitleAttribute = 'endorsable.name';
 
     public function form(Form $form): Form
     {
@@ -48,9 +48,9 @@ class EndorsementsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitle(fn ($record) => "{$record->positionGroup->name} endorsement")
+            ->recordTitle(fn ($record) => "{$record->endorsable->name} endorsement")
             ->columns([
-                Tables\Columns\TextColumn::make('positionGroup.name')->label('Name'),
+                Tables\Columns\TextColumn::make('endorsable.name')->label('Name'),
                 // TODO: color on type
                 Tables\Columns\TextColumn::make('type')->label('Type')->badge(),
                 Tables\Columns\TextColumn::make('created_at')->label('Granted')->date(),

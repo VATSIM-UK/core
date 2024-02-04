@@ -28,6 +28,9 @@ class TrainingEventServiceProvider extends ServiceProvider
         \App\Events\Training\FlagAddedToWaitingList::class => [
             \App\Listeners\Training\WaitingList\CheckWaitingListFollowingFlagAddition::class,
         ],
+        \App\Events\Training\EndorsementRequestApproved::class => [
+            \App\Listeners\Training\Endorsement\CreateEndorsementFromApproval::class,
+        ],
     ];
 
     /**

@@ -2,7 +2,6 @@
 
 namespace App\Models\Mship\Account;
 
-use App\Models\Atc\PositionGroup;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -17,15 +16,15 @@ class Endorsement extends Model
 
     protected $guarded = [];
 
-    protected $with = ['positionGroup'];
+    protected $with = ['endorsable'];
 
     protected $casts = [
         'expired_at' => 'datetime',
     ];
 
-    public function positionGroup()
+    public function endorsable()
     {
-        return $this->belongsTo(PositionGroup::class);
+        return $this->morphTo();
     }
 
     public function account()
