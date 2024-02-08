@@ -12,16 +12,12 @@ class Search extends Component
 {
     public ?string $searchTerm;
 
-    public ?Account $account;
-
-    public ?Roster $roster;
-
     public function search()
     {
         try {
-            $this->account = Account::findOrFail($this->searchTerm);
-            $this->roster = Roster::where('account_id', $this->account->id)->first();
-            $this->searchTerm = null;
+            $account = Account::findOrFail($this->searchTerm);
+
+            $this->redirect(route('site.roster.show', ['account' => $account]), navigate: true);
         } catch (ModelNotFoundException $e) {
             $this->searchTerm = null;
 
@@ -29,18 +25,6 @@ class Search extends Component
                 ->title('No account found with that CID.')
                 ->send();
         }
-    }
-
-    // roster - CID, created, updated
-
-    // restrictions - mship_account_restrictions - account_id, string, deleted_at
-
-    // home member - RATING + other stuff
-    // visiting/transferring - other stuff
-
-    public function clear()
-    {
-        $this->account = null;
     }
 
     public function render()

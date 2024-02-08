@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 
 class Endorsement extends Model
 {
@@ -39,8 +40,19 @@ class Endorsement extends Model
         );
     }
 
+    public function expires(): bool
+    {
+        return isset($this->expires_at);
+    }
+
     public function hasExpired(): bool
     {
-        return ! is_null($this->expired_at) && $this->expired_at->isPast();
+        return ! is_null($this->expires_at) && $this->expires_at->isPast();
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->whereNull('expires_at')
+            ->orWhereDate('expires_at', '>=', now());
     }
 }
