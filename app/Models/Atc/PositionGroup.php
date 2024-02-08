@@ -5,9 +5,10 @@ namespace App\Models\Atc;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
-class PositionGroup extends Model
+class PositionGroup extends Model implements Endorseable
 {
     use HasFactory;
 
@@ -68,5 +69,17 @@ class PositionGroup extends Model
 
             return $positionGroupsAssigned;
         });
+    }
+
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function description(): string
+    {
+        return implode(', ', $this->positions->map(
+            fn($position) => $position->callsign
+        )->toArray());
     }
 }

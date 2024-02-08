@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Position extends Model
+class Position extends Model implements Endorseable
 {
     use HasFactory;
 
@@ -78,5 +78,15 @@ class Position extends Model
     public function scopeTemporarilyEndorsable(Builder $query): Builder
     {
         return $query->where('temporarily_endorsable', true);
+    }
+
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function description(): string
+    {
+        return $this->callsign;
     }
 }
