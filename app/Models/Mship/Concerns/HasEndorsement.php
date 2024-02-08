@@ -13,11 +13,11 @@ trait HasEndorsement
 
     public function permanentEndorsements()
     {
-        return $this->endorsements()->whereNull('expired_at');
+        return $this->endorsements()->whereNull('expires_at');
     }
 
     public function temporaryEndorsements()
     {
-        return $this->endorsements()->whereNotNull('expired_at');
+        return $this->endorsements()->whereNotNull('expires_at');
     }
 }

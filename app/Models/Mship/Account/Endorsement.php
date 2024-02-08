@@ -19,7 +19,7 @@ class Endorsement extends Model
     protected $with = ['endorsable'];
 
     protected $casts = [
-        'expired_at' => 'datetime',
+        'expires_at' => 'datetime',
     ];
 
     public function endorsable()
@@ -35,7 +35,7 @@ class Endorsement extends Model
     public function type(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => is_null($attributes['expired_at']) ? 'Permanent' : 'Temporary',
+            get: fn (mixed $value, array $attributes) => is_null($attributes['expires_at']) ? 'Permanent' : 'Temporary',
         );
     }
 

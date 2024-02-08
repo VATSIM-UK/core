@@ -19,7 +19,7 @@ class EndorsementFactory extends Factory
         return [
             'account_id' => \App\Models\Mship\Account::factory(),
             'position_group_id' => \App\Models\Atc\PositionGroup::factory(),
-            'expired_at' => null,
+            'expires_at' => null,
             'created_by' => \App\Models\Mship\Account::factory(),
         ];
     }

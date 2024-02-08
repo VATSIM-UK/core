@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('account_id');
             $table->morphs('endorsable');
-            $table->timestamp('endorsable_expired_at')->nullable();
+            $table->timestamp('endorsable_expires_at')->nullable();
             $table->unsignedInteger('requested_by');
             $table->timestamp('actioned_at')->nullable();
             $table->string('actioned_type')->nullable();

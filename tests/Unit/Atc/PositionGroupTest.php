@@ -52,7 +52,7 @@ class PositionGroupTest extends TestCase
         Endorsement::factory()->create([
             'account_id' => $account->id,
             'position_group_id' => $otherPositionGroup->id,
-            'expired_at' => now()->subDay(),
+            'expires_at' => now()->subDay(),
         ]);
 
         $result = $positionGroup->unassignedFor($account);
@@ -70,7 +70,7 @@ class PositionGroupTest extends TestCase
         Endorsement::factory()->create([
             'account_id' => $account->id,
             'position_group_id' => $otherPositionGroup->id,
-            'expired_at' => now()->addDay(),
+            'expires_at' => now()->addDay(),
         ]);
 
         $result = $positionGroup->unassignedFor($account);

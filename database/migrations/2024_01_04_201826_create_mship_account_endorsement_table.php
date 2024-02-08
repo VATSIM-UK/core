@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('account_id');
             $table->unsignedInteger('position_group_id');
-            $table->timestamp('expired_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->unsignedInteger('created_by');
             $table->timestamps();
             $table->softDeletes();

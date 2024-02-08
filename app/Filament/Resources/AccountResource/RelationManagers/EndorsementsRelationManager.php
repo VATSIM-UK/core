@@ -30,7 +30,7 @@ class EndorsementsRelationManager extends RelationManager
                     ->hiddenOn('edit'),
 
                 // TODO: determine maximum time in advance.
-                Forms\Components\DatePicker::make('expired_at')
+                Forms\Components\DatePicker::make('expires_at')
                     ->native(false)
                     ->label('Expires')
                     ->minDate(now()),
@@ -54,7 +54,7 @@ class EndorsementsRelationManager extends RelationManager
                 // TODO: color on type
                 Tables\Columns\TextColumn::make('type')->label('Type')->badge(),
                 Tables\Columns\TextColumn::make('created_at')->label('Granted')->date(),
-                Tables\Columns\TextColumn::make('expired_at')->label('Expires')->date()->default(''),
+                Tables\Columns\TextColumn::make('expires_at')->label('Expires')->date()->default(''),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->label('Add endorsement'),
@@ -75,7 +75,7 @@ class EndorsementsRelationManager extends RelationManager
         Endorsement::create([
             'account_id' => $livewire->ownerRecord->id,
             'position_group_id' => $data['position_group_id'],
-            'expired_at' => $data['expired_at'],
+            'expires_at' => $data['expires_at'],
             'created_by' => $creator->id,
         ]);
     }

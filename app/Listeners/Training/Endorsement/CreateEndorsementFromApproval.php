@@ -21,7 +21,7 @@ class CreateEndorsementFromApproval
             'created_by' => auth()->id(),
             'endorsable_type' => $endorsableEntity::class,
             'endorsable_id' => $endorsableEntity->id,
-            'expired_at' => $endorsementRequest->endorsable_expired_at ?? null,
+            'expires_at' => $endorsementRequest->endorsable_expires_at ?? null,
         ]);
     }
 }

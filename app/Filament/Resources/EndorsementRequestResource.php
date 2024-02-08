@@ -43,7 +43,7 @@ class EndorsementRequestResource extends Resource
                     Forms\Components\Select::make('endorsable_id')->label('Position')->options(function () {
                         return \App\Models\Atc\Position::temporarilyEndorsable()->pluck('callsign', 'id');
                     }),
-                    Forms\Components\DatePicker::make('endorsable_expired_at')->required(),
+                    Forms\Components\DatePicker::make('endorsable_expires_at')->required(),
                 ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\Position'),
 
                 Forms\Components\Section::make('Additional details')->schema([
