@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('positions', function (Blueprint $table) {
-            $table->boolean('temporarily_endorsable')->default(false);
+            $table->boolean('temporarily_endorsable')->default(false)->after('sub_station');
         });
     }
 

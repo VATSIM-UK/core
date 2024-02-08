@@ -26,8 +26,10 @@ return new class extends Migration
 
         Schema::table('mship_account_endorsement', function (Blueprint $table) {
             $table->dropColumn('position_group_id');
-            $table->morphs('endorsable');
-            $table->unsignedInteger('endorsement_request_id')->nullable();
+            $table->after('account_id', function (Blueprint $table) {
+                $table->morphs('endorsable');
+                $table->unsignedInteger('endorsement_request_id')->nullable();
+            });
         });
     }
 
