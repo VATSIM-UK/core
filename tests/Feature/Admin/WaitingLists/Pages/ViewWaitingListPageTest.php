@@ -10,7 +10,6 @@ use App\Models\Mship\State;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use App\Models\Training\WaitingList\WaitingListStatus;
-use App\Rules\HomeMemberId;
 use Filament\Tables\Actions\EditAction;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
@@ -111,7 +110,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
             ->callAction('add_student', data: [
                 'account_id' => $accountToAdd->id,
             ])
-            ->assertHasActionErrors(['account_id' => [HomeMemberId::class]]);
+            ->assertHasActionErrors(['account_id']);
 
         $this->assertNotContains($accountToAdd->id, $waitingList->fresh()->accounts->pluck('id'));
 

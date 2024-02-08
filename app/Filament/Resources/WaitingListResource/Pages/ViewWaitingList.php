@@ -7,13 +7,13 @@ use App\Filament\Resources\WaitingListResource\Widgets\IndividualWaitingListOver
 use App\Models\Atc\Endorsement;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListFlag;
-use App\Rules\HomeMemberId;
 use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 
 class ViewWaitingList extends ViewRecord
@@ -44,11 +44,22 @@ class ViewWaitingList extends ViewRecord
                 ->form([
                     TextInput::make('account_id')
                         ->label('Account CID')
-                        ->rules([new HomeMemberId, fn () => function ($attribute, $value, $fail) {
+                        ->rule(fn () => function ($attribute, $value, $fail) {
                             if ($this->record->accounts->contains('id', $value)) {
                                 $fail('This account is already in this waiting list.');
                             }
-                        }])
+                        })
+                        ->rule(fn () => function ($attribute, $value, $fail) {
+                            if ($this->record->home_members_only) {
+                                try {
+                                    if (! Account::findOrFail($value)->primary_state->isDivision) {
+                                        $fail('The specified member is not a home UK member.');
+                                    }
+                                } catch (ModelNotFoundException $e) {
+                                    $fail('The specified member was not found.');
+                                }
+                            }
+                        })
                         ->required(),
                     DatePicker::make('join_date')
                         ->visible(fn () => auth()->user()->can('addAccountsAdmin', $this->record))

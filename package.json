@@ -17,10 +17,10 @@
     "jvectormap": "^2.0.4",
     "laravel-vite-plugin": "^0.8.1",
     "less": "^4.2.0",
-    "less-loader": "^11.1.4",
+    "less-loader": "^12.2.0",
     "postcss": "^8.4",
-    "sass": "^1.69.7",
-    "sass-loader": "^13.3.3",
+    "sass": "^1.70.0",
+    "sass-loader": "^14.1.0",
     "vite": "^4.5.1",
     "vue": "^2.7.16",
     "vue-template-compiler": "^2.7.16"
