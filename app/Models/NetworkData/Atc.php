@@ -229,6 +229,11 @@ class Atc extends Model
         });
     }
 
+    public static function scopePositionIsWithinUK($query)
+    {
+        return $query->isUk();
+    }
+
     public function account()
     {
         return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');

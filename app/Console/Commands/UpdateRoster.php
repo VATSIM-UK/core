@@ -28,7 +28,7 @@ class UpdateRoster extends Command
             ->select(['networkdata_atc.account_id'])
             ->whereBetween('disconnected_at', [$this->fromDate, $this->toDate])
             ->accountIsPartOfUk()
-            ->isUk()
+            ->positionIsWithinUk()
             ->groupBy('account_id')
             ->havingRaw("SUM(minutes_online) / 60 > {$this->minimumHours}")
             ->pluck('account_id');
