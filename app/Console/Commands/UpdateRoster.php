@@ -45,5 +45,7 @@ class UpdateRoster extends Command
             $eligible->map(fn ($value) => ['account_id' => $value])->toArray(),
             ['account_id']
         );
+
+        $this->comment('✅ Roster updated!');
     }
 }

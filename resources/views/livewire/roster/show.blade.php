@@ -21,7 +21,7 @@
                         @endif
                     </div>
                 </header>
-                @if($account->endorsements()->active()->count())
+                @if($account->endorsements()->active()->count() && $roster)
                     <div class="flex flex-col space-y-8">
                         <div class="flex flex-col items-start space-y-1">
                             @foreach($account->endorsements()->active()->get()->groupBy('type') as $type => $endorsements)
