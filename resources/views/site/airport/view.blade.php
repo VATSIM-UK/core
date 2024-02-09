@@ -267,7 +267,7 @@
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="fa fa-map"></i> Charts</div>
                     <div class="text-summary panel-body">
-                        <iframe class="w-100" style="min-height:80vh;width:100%" src="https://api.chartfox.org/v2/interfaces/airports/{{ $airport->icao }}?token={{ config('services.chartfox.public_token') }}"></iframe>
+                        <iframe class="w-100" style="min-height:80vh;width:100%" src="https://api.chartfox.org/v2/interfaces/airport/{{ $airport->icao }}?token={{ config('services.chartfox.public_token') }}"></iframe>
                     </div>
                 </div>
 
