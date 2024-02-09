@@ -66,7 +66,6 @@ return [
     ],
 
     'chartfox' => [
-        'private_token' => env('CHARTFOX_PRIVATE_TOKEN'),
         'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
     ],
 
