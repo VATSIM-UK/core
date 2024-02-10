@@ -29,6 +29,9 @@ class Roster extends Model
 
     protected static function booted(): void
     {
+        // TODO: Will need to check those visiting/transferring
+        // have been given permission to be on the roster
+
         // Only return users that are on the roster
         // and are still within the UK.
         static::addGlobalScope('eligibleState', function (Builder $builder) {
@@ -85,6 +88,15 @@ class Roster extends Model
                 ->exists();
         }
 
+        // If they are not a home member of our division, they need to have been
+        // specifically given permission to control up to their rating
+        if ($this->account->primary_permanent_state->code != 'DIVISION') {
+            // TODO: Some sort of setting from admin panel to say that this person can control
+            // up to their rating
+        }
+
+        // They can control unrestricted up to their rating and
+        // the position isn't restricted by an endorsement
         return true;
     }
 }
