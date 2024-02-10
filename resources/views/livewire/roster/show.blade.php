@@ -41,6 +41,7 @@
                             </div>
                         </form>
                         @if($position)
+                            <!-- TODO: Improve styling and make this look a little nicer -->
                             <div>{{ $position->callsign }}</div>
                             <div>{{ $roster->accountCanControl($position) ? 'Can control!' : 'Cannot control..' }}</div>
                         @endif
