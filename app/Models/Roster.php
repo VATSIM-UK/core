@@ -51,6 +51,7 @@ class Roster extends Model
     public function remove()
     {
         // Notify that they were removed (database and email)
+        // Remove from waiting lists too
         $this->delete();
     }
 
