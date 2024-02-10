@@ -6268,21 +6268,20 @@
         },
         {
             "name": "ohdearapp/ohdear-php-sdk",
-            "version": "3.10.0",
+            "version": "3.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ohdearapp/ohdear-php-sdk.git",
-                "reference": "48b1bdd69fd5531db5026be2c353abb1da094c45"
+                "reference": "00e072f198942683bf2e230216d5c1ccc4679f44"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/48b1bdd69fd5531db5026be2c353abb1da094c45",
-                "reference": "48b1bdd69fd5531db5026be2c353abb1da094c45",
+                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/00e072f198942683bf2e230216d5c1ccc4679f44",
+                "reference": "00e072f198942683bf2e230216d5c1ccc4679f44",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.5.8|^7.5",
-                "nesbot/carbon": "^2.65.0",
                 "php": "^8.1"
             },
             "require-dev": {
@@ -6319,9 +6318,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ohdearapp/ohdear-php-sdk/issues",
-                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.10.0"
+                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.10.1"
             },
-            "time": "2023-12-05T16:10:52+00:00"
+            "time": "2024-02-03T10:01:00+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
