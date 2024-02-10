@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Atc\Position;
+use App\Models\Atc\PositionGroup;
+use App\Models\Atc\PositionGroupPosition;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,5 +49,42 @@ class Roster extends Model
     {
         // Notify that they were removed (database and email)
         $this->delete();
+    }
+
+    public function accountCanControl(Position $position)
+    {
+        // If the account is not on the roster,
+        // they cannot control.
+        if (! $this->account) {
+            return false;
+        }
+
+        // If the position is part of a group, do they have
+        // the endorsement for that group?
+        if($positionGroupPosition = PositionGroupPosition::where('position_id', $position->id)->first()) {
+            return $this->account
+                ->endorsements()
+                ->active()
+                ->whereHasMorph('endorsable',
+                    PositionGroup::class,
+                    fn($query) => $query->where('id', $positionGroupPosition->position_group_id)
+                )
+                ->exists();
+        }
+
+        // If the position is above their rating, do they
+        // have an active solo endorsement?
+        if($position->type > $this->account->qualification_atc) {
+            return $this->account
+                ->endorsements()
+                ->active()
+                ->whereHasMorph('endorsable',
+                    Position::class,
+                    fn($query) => $query->where('id', $position->id)
+                )
+                ->exists();
+        }
+
+        return true;
     }
 }
