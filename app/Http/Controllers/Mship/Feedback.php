@@ -199,4 +199,9 @@ class Feedback extends \App\Http\Controllers\BaseController
 
         return response()->json($this->returnList);
     }
+
+    public function redirectNewAtc(Request $request)
+    {
+        return redirect()->route('mship.feedback.new.form', array_merge(['atc'], $request->query->all()));
+    }
 }
