@@ -6,6 +6,7 @@ use App\Events\Mship\Feedback\NewFeedbackEvent;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Answer;
 use App\Models\Mship\Feedback\Form;
+use App\Models\Mship\Feedback\Question;
 use Illuminate\Http\Request;
 use Redirect;
 use Validator;
@@ -40,8 +41,13 @@ class Feedback extends \App\Http\Controllers\BaseController
         return Redirect::route('mship.feedback.new.form', [$request->input('feedback_type')]);
     }
 
-    public function getFeedback(Form $form)
+    public function getFeedback(Form $form, Request $request)
     {
+        // Get a list of "pre-fillable" questions from the request, based on question slug
+        // To allow direct links from e.g euroscope profiles via vats.im/atcfb?usercid=12345
+        $preFillable = $request->only(['usercid']);
+
+        /** @var Question[] $questions */
         $questions = $form->questions()->orderBy('sequence')->get();
         if (! $questions || ! $form->enabled) {
             // We have no questions to display!
@@ -69,7 +75,7 @@ class Feedback extends \App\Http\Controllers\BaseController
                 continue;
             }
 
-            $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug));
+            $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug, array_get($preFillable, $question->slug)));
         }
 
         return $this->viewMake('mship.feedback.form')->with(['form' => $form, 'questions' => $questions]);
