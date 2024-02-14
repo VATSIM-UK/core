@@ -53,7 +53,7 @@ class FeedbackTest extends TestCase
     public function testItFillsUserCidInAtcForm()
     {
         $form = Form::whereSlug('atc')->first();
-        if (!$form) {
+        if (! $form) {
             $this->markTestSkipped('could not find atc form');
         }
 
@@ -67,7 +67,7 @@ class FeedbackTest extends TestCase
     public function testItRedirectsToAtcFeedback()
     {
         $form = Form::whereSlug('atc')->first();
-        if (!$form) {
+        if (! $form) {
             $this->markTestSkipped('could not find atc form');
         }
 

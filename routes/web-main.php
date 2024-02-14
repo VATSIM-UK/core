@@ -99,7 +99,7 @@ Route::group([
 Route::get('atcfb', [
     'middleware' => 'auth_full_group',
     'as' => 'mship.feedback.atc-redirect',
-    'uses' => 'Mship\Feedback@redirectNewAtc'
+    'uses' => 'Mship\Feedback@redirectNewAtc',
 ]);
 
 // TeamSpeak
