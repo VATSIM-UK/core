@@ -46,6 +46,26 @@ class Position extends Model implements Endorseable
         return $this->belongsToMany(Airport::class, 'airport_positions');
     }
 
+    public function getMinimumVatsimQualificationAttribute()
+    {
+        switch ($this->type) {
+            case self::TYPE_GROUND:
+            case self::TYPE_DELIVERY:
+            case self::TYPE_ATIS:
+                return 2;
+            case self::TYPE_TOWER:
+                return 3;
+            case self::TYPE_APPROACH:
+                return 4;
+            case self::TYPE_FSS:
+            case self::TYPE_TERMINAL:
+            case self::TYPE_ENROUTE:
+                return 5;
+            default:
+                return 0;
+        }
+    }
+
     public function getTypeAttribute(int $type): string
     {
         switch ($type) {

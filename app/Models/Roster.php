@@ -66,6 +66,9 @@ class Roster extends Model
         // If the position is part of a group, do they have
         // the endorsement for that group?
         if($positionGroupPosition = PositionGroupPosition::where('position_id', $position->id)->first()) {
+            // TODO: Handle "max rating" for a group, because Gatwick S1
+            // won't work within this
+
             return $this->account
                 ->endorsements()
                 ->active()
@@ -78,7 +81,7 @@ class Roster extends Model
 
         // If the position is above their rating, do they
         // have an active solo endorsement?
-        if($position->type > $this->account->qualification_atc) {
+        if($position->getMinimumVatsimQualificationAttribute() > $this->account->qualification_atc->vatsim) {
             return $this->account
                 ->endorsements()
                 ->active()
@@ -91,6 +94,7 @@ class Roster extends Model
 
         // If they are not a home member of our division, they need to have been
         // specifically given permission to control up to their rating
+        // via a morph on mship_account_endorsement to their qualification
         if ($this->account->primary_permanent_state->code != 'DIVISION') {
             // TODO: Some sort of setting from admin panel to say that this person can control
             // up to their rating
