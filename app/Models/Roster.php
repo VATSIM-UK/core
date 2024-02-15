@@ -6,6 +6,8 @@ use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Atc\PositionGroupPosition;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -92,12 +94,18 @@ class Roster extends Model
                 ->exists();
         }
 
-        // If they are not a home member of our division, they need to have been
+        // If they are visiting or transferring, they need to have been
         // specifically given permission to control up to their rating
-        // via a morph on mship_account_endorsement to their qualification
-        if ($this->account->primary_permanent_state->code != 'DIVISION') {
-            // TODO: Some sort of setting from admin panel to say that this person can control
-            // up to their rating
+        if ($this->account->hasState('VISITING') || $this->account->hasState('TRANSFERRING')) {
+            return $this->account
+                    ->endorsements()
+                    ->active()
+                    ->whereHasMorph('endorsable',
+                        Qualification::class
+                    )
+                    ->get()
+                    ->sortByDesc('endorsable.vatsim')
+                    ->first()?->endorsable?->vatsim >= $position->getMinimumVatsimQualificationAttribute();
         }
 
         // They can control unrestricted up to their rating and

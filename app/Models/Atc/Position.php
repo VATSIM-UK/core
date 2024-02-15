@@ -48,22 +48,13 @@ class Position extends Model implements Endorseable
 
     public function getMinimumVatsimQualificationAttribute()
     {
-        switch ($this->type) {
-            case self::TYPE_GROUND:
-            case self::TYPE_DELIVERY:
-            case self::TYPE_ATIS:
-                return 2;
-            case self::TYPE_TOWER:
-                return 3;
-            case self::TYPE_APPROACH:
-                return 4;
-            case self::TYPE_FSS:
-            case self::TYPE_TERMINAL:
-            case self::TYPE_ENROUTE:
-                return 5;
-            default:
-                return 0;
-        }
+        return match ($this->type) {
+            'Ground', 'Delivery', 'ATIS' => 2,
+            'Tower' => 3,
+            'Approach/Radar' => 4,
+            'FSS', 'Terminal Control', 'Enroute' => 5,
+            default => 0,
+        };
     }
 
     public function getTypeAttribute(int $type): string
