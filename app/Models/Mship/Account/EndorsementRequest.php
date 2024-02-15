@@ -60,6 +60,18 @@ class EndorsementRequest extends Model
         );
     }
 
+    public function type(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return match ($this->getAttribute('endorsable_type')) {
+                    'App\Models\Atc\PositionGroup' => 'permanent',
+                    'App\Models\Atc\Position' => 'temporary',
+                };
+            },
+        );
+    }
+
     public function markApproved()
     {
         $this->update([

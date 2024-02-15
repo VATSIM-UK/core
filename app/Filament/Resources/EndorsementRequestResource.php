@@ -45,7 +45,6 @@ class EndorsementRequestResource extends Resource
                     Forms\Components\Select::make('endorsable_id')->label('Position')->options(function () {
                         return \App\Models\Atc\Position::temporarilyEndorsable()->pluck('callsign', 'id');
                     }),
-                    Forms\Components\DatePicker::make('endorsable_expires_at')->required(),
                 ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\Position'),
 
                 Forms\Components\Section::make('Additional details')->schema([
@@ -70,16 +69,31 @@ class EndorsementRequestResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('approve')
-                    ->requiresConfirmation()
-                    ->action(function (EndorsementRequest $endorsementRequest) {
-                        $endorsementRequest->markApproved();
+                    ->form([
+                        Forms\Components\TextInput::make('days')
+                            ->numeric()
+                            ->step(1)
+                            ->minValue(7)
+                            ->placeholder(7)
+                            ->maxValue(function (EndorsementRequest $endorsementRequest) {
+                                $account = $endorsementRequest->account;
+                                $maximumDays = 90;
 
-                        event(new \App\Events\Training\EndorsementRequestApproved($endorsementRequest));
+                                return $maximumDays - $account->daysSpentTemporarilyEndorsedOn($endorsementRequest->endorsable);
+                            })
+                            ->required(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->endorsable_type === 'App\Models\Atc\Position')
+                            ->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->endorsable_type === 'App\Models\Atc\Position'),
+
+                        Forms\Components\Placeholder::make('notes'),
+                    ])
+                    ->action(function (EndorsementRequest $endorsementRequest, array $data) {
+                        event(new \App\Events\Training\EndorsementRequestApproved($endorsementRequest, $data['days'] ?? null));
 
                         Notification::make()
                             ->title('Endorsement request approved')
                             ->success();
-                    })->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->status === 'Pending'),
+                    })->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->status === 'Pending' &&
+                            auth()->user()->can('approve', $endorsementRequest)),
             ])
             ->filters([
                 //

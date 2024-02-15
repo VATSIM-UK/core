@@ -62,4 +62,9 @@ class EndorsementRequestPolicy
     {
         return true;
     }
+
+    public function approve(Account $account, EndorsementRequest $endorsementRequest): bool
+    {
+        return $account->hasAnyPermission("endorsement-request.approve.{$endorsementRequest->type}");
+    }
 }

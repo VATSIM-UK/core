@@ -17,10 +17,10 @@ class PositionFactory extends Factory
     public function definition(): array
     {
         return [
-            'callsign' => strtoupper($this->faker->word).'_'.$this->faker->randomElement(['TWR', 'GND', 'DEL', 'APP', 'ATIS', 'CTR']),
-            'name' => ucfirst($this->faker->word).' '.$this->faker->randomElement(['Tower', 'Ground', 'Delivery', 'Approach', 'Information', 'Control']),
-            'frequency' => $this->faker->randomFloat(3, 0, 130),
-            'type' => $this->faker->numberBetween(1, 8),
+            'callsign' => strtoupper(fake()->word).'_'.fake()->randomElement(['TWR', 'GND', 'DEL', 'APP', 'ATIS', 'CTR']),
+            'name' => ucfirst(fake()->word).' '.fake()->randomElement(['Tower', 'Ground', 'Delivery', 'Approach', 'Information', 'Control']),
+            'frequency' => fake()->randomFloat(3, 0, 130),
+            'type' => fake()->numberBetween(1, 8),
             'sub_station' => false,
         ];
     }

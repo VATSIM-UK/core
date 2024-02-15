@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 abstract class BaseAdminTestCase extends TestCase
 {
-    protected $adminUser;
+    protected Account $adminUser;
 
     protected function setUp(): void
     {

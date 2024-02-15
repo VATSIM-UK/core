@@ -21,7 +21,9 @@ class CreateEndorsementFromApproval
             'created_by' => auth()->id(),
             'endorsable_type' => $endorsableEntity::class,
             'endorsable_id' => $endorsableEntity->id,
-            'expires_at' => $endorsementRequest->endorsable_expires_at ?? null,
+            'expired_at' => $event->getExpiryDate(),
         ]);
+
+        $endorsementRequest->markApproved();
     }
 }

@@ -15,12 +15,22 @@ class EndorsementRequestApproved
      * Create a new event instance.
      */
     public function __construct(
-        private EndorsementRequest $endorsementRequest
+        private EndorsementRequest $endorsementRequest,
+        private ?int $days
     ) {
     }
 
     public function getEndorsementRequest(): EndorsementRequest
     {
         return $this->endorsementRequest;
+    }
+
+    public function getExpiryDate()
+    {
+        if ($this->days === null) {
+            return null;
+        }
+
+        return now()->addDays($this->days)->endOfDay();
     }
 }

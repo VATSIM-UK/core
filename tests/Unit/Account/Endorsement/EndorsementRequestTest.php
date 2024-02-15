@@ -66,7 +66,7 @@ class EndorsementRequestTest extends TestCase
             'requested_by' => $this->privacc->id,
         ]);
 
-        $endorsementRequest->approve($this->privacc);
+        $endorsementRequest->markApproved($this->privacc);
 
         $this->assertNotNull($endorsementRequest->actioned_at);
         $this->assertEquals($this->privacc->id, $endorsementRequest->approved_by);
