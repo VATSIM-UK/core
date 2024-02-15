@@ -53,8 +53,9 @@ class EndorsementRequest extends Model
         return Attribute::make(
             get: function () {
                 return match ($this->getAttribute('endorsable_type')) {
-                    'App\Models\Atc\PositionGroup' => 'Endorsement',
-                    'App\Models\Atc\Position' => 'Temporary endorsement',
+                    'App\Models\Atc\PositionGroup' => 'Tier 1 Endorsement',
+                    'App\Models\Atc\Position' => 'Solo Endorsement',
+                    'App\Models\Mship\Qualification' => 'Rating Endorsement',
                 };
             },
         );
@@ -67,6 +68,7 @@ class EndorsementRequest extends Model
                 return match ($this->getAttribute('endorsable_type')) {
                     'App\Models\Atc\PositionGroup' => 'permanent',
                     'App\Models\Atc\Position' => 'temporary',
+                    'App\Models\Mship\Qualification' => 'permanent',
                 };
             },
         );

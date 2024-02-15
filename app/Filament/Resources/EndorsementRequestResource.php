@@ -10,6 +10,8 @@ use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class EndorsementRequestResource extends Resource
@@ -28,24 +30,31 @@ class EndorsementRequestResource extends Resource
                     Forms\Components\TextInput::make('account_id')->label('CID')->required(),
 
                     Forms\Components\Select::make('endorsable_type')->options([
-                        'App\Models\Atc\PositionGroup' => 'Endorsement',
-                        'App\Models\Atc\Position' => 'Position',
+                        'App\Models\Atc\PositionGroup' => 'Tier 1 Endorsements',
+                        'App\Models\Atc\Position' => 'Solo Endorsement',
+                        'App\Models\Mship\Qualification' => 'Rating Endorsement',
                     ])->required()->live(),
 
                     Forms\Components\Hidden::make('requested_by')->default(auth()->id()),
                 ]),
 
-                Forms\Components\Section::make('Endorsement')->schema([
-                    Forms\Components\Select::make('endorsable_id')->label('Endorsement')->options(function () {
+                Forms\Components\Section::make('Tier 1 Endorsement')->schema([
+                    Forms\Components\Select::make('endorsable_id')->label('Tier 1 Name')->options(function () {
                         return \App\Models\Atc\PositionGroup::all()->pluck('name', 'id');
                     })->required(),
                 ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\PositionGroup'),
 
-                Forms\Components\Section::make('Temporary Endorsement')->schema([
-                    Forms\Components\Select::make('endorsable_id')->label('Position')->options(function () {
-                        return \App\Models\Atc\Position::temporarilyEndorsable()->pluck('callsign', 'id');
+                Forms\Components\Section::make('Solo Endorsement')->schema([
+                    Forms\Components\Select::make('endorsable_id')->label('Endorsement Name')->options(function () {
+                        return \App\Models\Atc\PositionGroup::all()->pluck('name', 'id');
+                    })->required(),
+                ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\PositionGroup'),
+
+                Forms\Components\Section::make('Rating Endorsement')->schema([
+                    Forms\Components\Select::make('endorsable_id')->label('Rating')->options(function () {
+                        return \App\Models\Mship\Qualification::ofType('atc')->pluck('code', 'id');
                     }),
-                ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\Position'),
+                ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Mship\Qualification'),
 
                 Forms\Components\Section::make('Additional details')->schema([
                     Forms\Components\Textarea::make('notes'),
@@ -67,6 +76,7 @@ class EndorsementRequestResource extends Resource
                     default => 'warning',
                 }),
             ])
+            ->defaultSort('id', 'desc')
             ->actions([
                 Tables\Actions\Action::make('approve')
                     ->form([
