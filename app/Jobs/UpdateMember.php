@@ -7,6 +7,7 @@ use App\Events\Mship\AccountAltered;
 use App\Jobs\Middleware\RateLimited;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -79,6 +80,13 @@ class UpdateMember extends Job implements ShouldQueue
                 'cid' => $response['id'],
             ];
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e, function ($report) {
+                $report->setSeverity('error');
+                $report->setMetaData([
+                    'accountID' => $this->accountID,
+                ]);
+            });
+
             return;
         }
 
