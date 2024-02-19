@@ -68,7 +68,7 @@
                         </tr>
                         <tr>
                             <td>Aerodrome Operations Coordinator</td>
-                            <td>Adam Arkley</td>
+                            <td>Archie Middlefell</td>
                         </tr>
                         <tr>
                             <td>Aerodrome Operations Coordinator</td>
@@ -81,6 +81,10 @@
                         <tr>
                             <td>Sector File Coordinator</td>
                             <td>Peter Mooney</td>
+                        </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>Alice Ford</td>
                         </tr>
                         <tr>
                             <td>Operations Assistant</td>
@@ -177,7 +181,7 @@
                 <div class="panel-body">
                     <h4 class="text-center">Member Services Director (VATUK3)</h4><br />
                     <img src="{{ $teamPhotos[5660] }}" width=50px class="img-responsive center-block profile-picture" />
-                    <p class="text-center">John Batten</p>
+                    <p class="text-center">William Shaw</p>
                     <h4 class="text-center">Member Services Team</h4>
                     <table class="table">
                         <tr>
@@ -187,10 +191,6 @@
                         <tr>
                             <td>Member Services Assistant</td>
                             <td>William Brushfield</td>
-                        </tr>
-						<tr>
-                            <td>Member Services Assistant</td>
-                            <td>William Shaw</td>
                         </tr>
                     </table>
                 </div>
@@ -226,7 +226,8 @@
                         <h4 class="text-center">ATC Training Team</h4>
                         <table class="table">
                             <tr>
-                                <td>ATC Training Manager</td>
+                                <td>ATC Training Manager & <br />
+                                Division Instructor</td>
                                 <td>Will Jennings</td>
                             </tr>
                             <tr>
@@ -235,7 +236,15 @@
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
+                                <td>Adam Arkley</td>
+                            </tr>
+                            <tr>
+                                <td>Division Instructor</td>
                                 <td>Chris Pawley</td>
+                            </tr>
+                            <tr>
+                                <td>Division Instructor</td>
+                                <td>Fraser Cooper</td>
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
@@ -262,10 +271,6 @@
                                 <td>Stephen Lee</td>
                             </tr>
                             <tr>
-                                <td>TG Instructor (TWR)</td>
-                                <td>Daniel Blanco</td>
-                            </tr>
-                            <tr>
                                 <td>Lead Mentor (TWR)</td>
                                 <td>Will Hinshaw</td>
                             </tr>
@@ -274,8 +279,8 @@
                                 <td>Samuel Lefevre</td>
                             </tr>
                             <tr>
-                                <td>TG Instructor (ENR)</td>
-                                <td><em>Vacant</em></td>
+                                <td>Lead Mentor (ENR)</td>
+                                <td>Dave Woodward</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
