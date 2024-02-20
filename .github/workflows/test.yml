@@ -10,8 +10,27 @@ on:
   pull_request:
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Install PHP dependencies
+        uses: ramsey/composer-install@v2
+
+      - name: 'Lint PHP'
+        run: composer lint -- --test
+
   test:
     name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }}
+    needs: lint
     runs-on: ubuntu-latest
     concurrency:
       group: core-test-${{ github.ref }}
@@ -155,23 +174,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-
-      - name: Install PHP dependencies
-        uses: ramsey/composer-install@v2
-
-      - name: 'Lint PHP'
-        run: composer lint -- --test
 
 
   trigger-deploy:
