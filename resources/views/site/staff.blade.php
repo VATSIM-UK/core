@@ -180,7 +180,7 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Member Services Director (VATUK3)</h4><br />
-                    <img src="{{ $teamPhotos[5660] }}" width=50px class="img-responsive center-block profile-picture" />
+                    <img src="{{ $teamPhotos[7358] }}" width=50px class="img-responsive center-block profile-picture" />
                     <p class="text-center">William Shaw</p>
                     <h4 class="text-center">Member Services Team</h4>
                     <table class="table">

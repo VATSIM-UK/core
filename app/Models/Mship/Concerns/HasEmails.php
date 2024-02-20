@@ -76,7 +76,7 @@ trait HasEmails
     /**
      * Retrieve an email address for a given SSO service.
      *
-     * @param    $sso_account_id
+     * @param  $sso_account_id
      * @return string
      */
     public function getEmailForService($ssoAccountId)
