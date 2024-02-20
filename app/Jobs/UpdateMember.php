@@ -64,10 +64,16 @@ class UpdateMember extends Job implements ShouldQueue
                 'Authorization' => $token,
             ])->get($url)->json();
 
+            /**
+             * For non-division members fields pertaining to personal information
+             * such as name_first, name_last, and email are not returned.
+             * We should therefore handle the case they are not present in the response by
+             * falling back to none.
+             */
             $this->data = (object) [
-                'name_last' => $response['name_last'],
-                'name_first' => $response['name_first'],
-                'email' => $response['email'],
+                'name_last' => $response['name_last'] ?? null,
+                'name_first' => $response['name_first'] ?? null,
+                'email' => $response['email'] ?? null,
                 'rating' => (string) $response['rating'],
                 'regdate' => Carbon::parse($response['reg_date'])->toDateTimeString(),
                 'pilotrating' => (string) $response['pilotrating'],
