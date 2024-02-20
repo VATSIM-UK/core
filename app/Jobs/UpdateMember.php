@@ -11,6 +11,7 @@ use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -54,7 +55,13 @@ class UpdateMember extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $member = Account::firstOrNew([(new Account)->getKeyName() => $this->accountID]);
+        try {
+            $member = Account::findOrFail(['id' => $this->accountID])->first();
+        } catch (ModelNotFoundException $e) {
+            Log::info("Member {$this->accountID} not found in database. Auth needed to fetch data.");
+
+            return;
+        }
 
         $token = 'Token '.config('vatsim-api.key');
         $url = config('vatsim-api.base')."members/{$this->accountID}";
