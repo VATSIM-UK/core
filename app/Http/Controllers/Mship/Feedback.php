@@ -44,8 +44,9 @@ class Feedback extends \App\Http\Controllers\BaseController
     public function getFeedback(Form $form, Request $request)
     {
         // Get a list of "pre-fillable" questions from the request, based on question slug
-        // To allow direct links from e.g euroscope profiles via vats.im/atcfb?usercid=12345
-        $preFillable = $request->only(['usercid']);
+        // To allow direct links from e.g euroscope profiles via vatsim.uk/atcfb?cid=12345
+        $preFillable = $request->only(['cid']);
+        $preFilled = ['usercid' => array_get($preFillable, 'cid')];
 
         /** @var Question[] $questions */
         $questions = $form->questions()->orderBy('sequence')->get();
@@ -75,7 +76,8 @@ class Feedback extends \App\Http\Controllers\BaseController
                 continue;
             }
 
-            $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug, array_get($preFillable, $question->slug)));
+            $fromQuery = array_get($preFilled, $question->slug);
+            $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug, $fromQuery));
         }
 
         return $this->viewMake('mship.feedback.form')->with(['form' => $form, 'questions' => $questions]);
