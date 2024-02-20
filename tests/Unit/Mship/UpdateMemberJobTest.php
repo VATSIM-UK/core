@@ -32,7 +32,7 @@ class UpdateMemberJobTest extends TestCase
                 'division_id' => 'GBR',
                 'region_id' => 'EMEA',
                 'subdivision_id' => null,
-                "reg_date" => "2018-02-04T09:22:20Z",
+                'reg_date' => '2018-02-04T09:22:20Z',
             ]),
         ]);
 
@@ -40,10 +40,10 @@ class UpdateMemberJobTest extends TestCase
 
         $existingMember = $existingMember->refresh();
 
-        # test has updated the qualification of the member.
+        // test has updated the qualification of the member.
         $this->assertTrue($existingMember->hasQualification(Qualification::code('S3')->first()));
 
-        # test updates name attributes.
+        // test updates name attributes.
         $this->assertEquals('Test', $existingMember->name_first);
         $this->assertEquals('User', $existingMember->name_last);
 
@@ -71,7 +71,7 @@ class UpdateMemberJobTest extends TestCase
                 'division_id' => 'SEA',
                 'region_id' => 'APAC',
                 'subdivision_id' => null,
-                "reg_date" => "2018-02-04T09:22:20Z",
+                'reg_date' => '2018-02-04T09:22:20Z',
             ]),
         ]);
 
@@ -87,7 +87,7 @@ class UpdateMemberJobTest extends TestCase
         $this->assertEquals('APAC', $updatedMember->primary_permanent_state->pivot->region);
         $this->assertEquals('SEA', $updatedMember->primary_permanent_state->pivot->division);
 
-        # check we have not set the names or emails to null
+        // check we have not set the names or emails to null
         $this->assertEquals($existingMember->name_first, $updatedMember->name_first);
         $this->assertEquals($existingMember->name_last, $updatedMember->name_last);
         $this->assertEquals($existingMember->email, $updatedMember->email);
