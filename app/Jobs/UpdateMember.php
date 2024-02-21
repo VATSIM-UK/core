@@ -101,6 +101,7 @@ class UpdateMember extends Job implements ShouldQueue
             if ($e->response->status() === 404) {
                 Log::info("Member {$this->accountID} not found in VATSIM API. Deleting.");
                 $member->delete();
+
                 return;
             }
 
