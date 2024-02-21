@@ -97,4 +97,24 @@ class UpdateMemberJobTest extends TestCase
             'cert_checked_at' => Carbon::now()->toDateTimeString(),
         ]);
     }
+
+    public function test_should_delete_member_when_api_returns_404()
+    {
+        $existingMember = Account::factory()->create();
+        $existingMember->cert_checked_at = Carbon::now()->subDay();
+        $existingMember->addState(State::findByCode('DIVISION'));
+        $existingMember->addQualification(Qualification::code('S2')->first());
+        $existingMember->save();
+
+        $url = config('vatsim-api.base')."members/{$existingMember->id}";
+        Http::fake([
+            $url => Http::response('', 404),
+        ]);
+
+        UpdateMember::dispatchSync($existingMember->id);
+
+        $this->assertSoftDeleted('mship_account', [
+            'id' => $existingMember->id,
+        ]);
+    }
 }
