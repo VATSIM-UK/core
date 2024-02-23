@@ -13,6 +13,7 @@ use DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
@@ -69,7 +70,11 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $response = Http::withHeaders([
                 'Authorization' => $token,
-            ])->get($url)->json();
+            ])->get($url);
+
+            $response->throwIfStatus(404);
+
+            $response = $response->json();
 
             /**
              * For non-division members fields pertaining to personal information
@@ -92,6 +97,20 @@ class UpdateMember extends Job implements ShouldQueue
                 'pilottime' => (string) 0,
                 'cid' => $response['id'],
             ];
+        } catch (RequestException $e) {
+            if ($e->response->status() === 404) {
+                Log::info("Member {$this->accountID} not found in VATSIM API. Deleting.");
+                $member->delete();
+
+                return;
+            }
+
+            Bugsnag::notifyException($e, function ($report) {
+                $report->setSeverity('error');
+                $report->setMetaData([
+                    'accountID' => $this->accountID,
+                ]);
+            });
         } catch (\Exception $e) {
             Bugsnag::notifyException($e, function ($report) {
                 $report->setSeverity('error');
