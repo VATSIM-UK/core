@@ -98,4 +98,10 @@ return [
         'oauth_issuer_id' => env('MOODLE_OAUTH_ISSUER_ID'),
     ],
 
+    'vatsim-net' => [
+        'webhook' => [
+            'key' => env('VATSIM_NET_WEBHOOK_KEY'),
+        ],
+    ],
+
 ];
