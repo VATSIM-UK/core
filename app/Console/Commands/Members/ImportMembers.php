@@ -27,7 +27,8 @@ class ImportMembers extends Command
 
         $response = Http::withHeaders([
             'Authorization' => "Token {$apiToken}",
-        ])->get(config('vatsim-api.base').'orgs/division/GBR');
+        ])->withUserAgent('VATSIMUK')
+            ->get(config('vatsim-api.base').'orgs/division/GBR');
         $this->info("Total of {$response->collect()->get('count')} members to process.");
 
         foreach ($response->collect()->get('results') as $member) {

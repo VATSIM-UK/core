@@ -15,6 +15,7 @@
     <env name="SESSION_DRIVER" value="array"/>
     <env name="QUEUE_DRIVER" value="sync"/>
     <env name="MAIL_DRIVER" value="log"/>
+    <env name="VATSIM_API_BASE" value="https://test-vatsim-api.test/"/>
     <ini name="memory_limit" value="-1"/>
   </php>
   <source>

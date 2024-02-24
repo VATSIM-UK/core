@@ -49,6 +49,34 @@ class FeedbackTest extends TestCase
             ->assertSuccessful();
     }
 
+    /** @test */
+    public function testItFillsUserCidInAtcForm()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $request = $this->actingAs($this->user, 'web')
+            ->call('GET', route('mship.feedback.new.form', $form->slug), ['cid' => 'mycidishere']);
+
+        $request->assertSuccessful();
+        $request->assertSee('mycidishere');
+    }
+
+    public function testItRedirectsToAtcFeedback()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $request = $this->actingAs($this->user, 'web')
+            ->call('GET', route('mship.feedback.redirect.atc'), ['cid' => 'mycidishere']);
+
+        $request->assertRedirect(route('mship.feedback.new.form', [$form->slug, 'cid' => 'mycidishere']));
+    }
+
     //    /** @test */
     //    public function testItAllowsSubmission()
     //    {

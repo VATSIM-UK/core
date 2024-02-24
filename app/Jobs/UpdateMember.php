@@ -7,10 +7,13 @@ use App\Events\Mship\AccountAltered;
 use App\Jobs\Middleware\RateLimited;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
@@ -53,7 +56,13 @@ class UpdateMember extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $member = Account::firstOrNew([(new Account)->getKeyName() => $this->accountID]);
+        try {
+            $member = Account::findOrFail(['id' => $this->accountID])->first();
+        } catch (ModelNotFoundException $e) {
+            Log::info("Member {$this->accountID} not found in database. Auth needed to fetch data.");
+
+            return;
+        }
 
         $token = 'Token '.config('vatsim-api.key');
         $url = config('vatsim-api.base')."members/{$this->accountID}";
@@ -61,12 +70,27 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $response = Http::withHeaders([
                 'Authorization' => $token,
-            ])->get($url)->json();
+            ])->withUserAgent('VATSIMUK')->get($url);
 
+            if ($response->status() === 404) {
+                Log::info("Member {$this->accountID} not found in VATSIM API. Deleting.");
+                $member->delete();
+
+                return;
+            }
+
+            $response = $response->json();
+
+            /**
+             * For non-division members fields pertaining to personal information
+             * such as name_first, name_last, and email are not returned.
+             * We should therefore handle the case they are not present in the response by
+             * falling back to none.
+             */
             $this->data = (object) [
-                'name_last' => $response['name_last'],
-                'name_first' => $response['name_first'],
-                'email' => $response['email'],
+                'name_last' => $response['name_last'] ?? null,
+                'name_first' => $response['name_first'] ?? null,
+                'email' => $response['email'] ?? null,
                 'rating' => (string) $response['rating'],
                 'regdate' => Carbon::parse($response['reg_date'])->toDateTimeString(),
                 'pilotrating' => (string) $response['pilotrating'],
@@ -79,6 +103,13 @@ class UpdateMember extends Job implements ShouldQueue
                 'cid' => $response['id'],
             ];
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e, function ($report) {
+                $report->setSeverity('error');
+                $report->setMetaData([
+                    'accountID' => $this->accountID,
+                ]);
+            });
+
             return;
         }
 

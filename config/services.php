@@ -66,7 +66,6 @@ return [
     ],
 
     'chartfox' => [
-        'private_token' => env('CHARTFOX_PRIVATE_TOKEN'),
         'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
     ],
 
@@ -97,6 +96,12 @@ return [
     'moodle' => [
         'database' => env('MOODLE_DATABASE'),
         'oauth_issuer_id' => env('MOODLE_OAUTH_ISSUER_ID'),
+    ],
+
+    'vatsim-net' => [
+        'webhook' => [
+            'key' => env('VATSIM_NET_WEBHOOK_KEY'),
+        ],
     ],
 
 ];
