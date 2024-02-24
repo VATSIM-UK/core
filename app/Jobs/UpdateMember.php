@@ -70,7 +70,7 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $response = Http::withHeaders([
                 'Authorization' => $token,
-            ])->get($url);
+            ])->withUserAgent('VATSIMUK')->get($url);
 
             $response->throwIfStatus(404);
 
