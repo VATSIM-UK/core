@@ -10,7 +10,7 @@ Route::group([
         'as' => 'vatsim-net.',
     ], function () {
 
-        Route::get('webhook', function () {
+        Route::post('webhook', function () {
             return response()->json([
                 'status' => 'ok',
             ]);
