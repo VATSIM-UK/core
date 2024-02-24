@@ -95,6 +95,14 @@ Route::group([
     });
 });
 
+Route::get('atcfb', function () {
+    return redirect()
+        ->route('mship.feedback.new.form', [
+            'form' => 'atc',
+            'cid' => request()->get('cid')
+        ]);
+})->name('mship.feedback.redirect.atc');
+
 // TeamSpeak
 Route::group([
     'prefix' => 'mship/manage/teamspeak',
