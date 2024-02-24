@@ -72,7 +72,12 @@ class UpdateMember extends Job implements ShouldQueue
                 'Authorization' => $token,
             ])->withUserAgent('VATSIMUK')->get($url);
 
-            $response->throwIfStatus(404);
+            if ($response->status() === 404) {
+                Log::info("Member {$this->accountID} not found in VATSIM API. Deleting.");
+                $member->delete();
+
+                return;
+            }
 
             $response = $response->json();
 
@@ -97,20 +102,6 @@ class UpdateMember extends Job implements ShouldQueue
                 'pilottime' => (string) 0,
                 'cid' => $response['id'],
             ];
-        } catch (RequestException $e) {
-            if ($e->response->status() === 404) {
-                Log::info("Member {$this->accountID} not found in VATSIM API. Deleting.");
-                $member->delete();
-
-                return;
-            }
-
-            Bugsnag::notifyException($e, function ($report) {
-                $report->setSeverity('error');
-                $report->setMetaData([
-                    'accountID' => $this->accountID,
-                ]);
-            });
         } catch (\Exception $e) {
             Bugsnag::notifyException($e, function ($report) {
                 $report->setSeverity('error');
