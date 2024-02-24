@@ -95,12 +95,13 @@ Route::group([
     });
 });
 
-// Special short ATC feedback link
-Route::get('atcfb', [
-    'middleware' => 'auth_full_group',
-    'as' => 'mship.feedback.atc-redirect',
-    'uses' => 'Mship\Feedback@redirectNewAtc',
-]);
+Route::get('atcfb', function () {
+    return redirect()
+        ->route('mship.feedback.new.form', [
+            'form' => 'atc',
+            'cid' => request()->get('cid')
+        ]);
+})->name('mship.feedback.redirect.atc');
 
 // TeamSpeak
 Route::group([

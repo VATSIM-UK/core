@@ -72,7 +72,7 @@ class FeedbackTest extends TestCase
         }
 
         $request = $this->actingAs($this->user, 'web')
-            ->call('GET', route('mship.feedback.atc-redirect'), ['cid' => 'mycidishere']);
+            ->call('GET', route('mship.feedback.redirect.atc'), ['cid' => 'mycidishere']);
 
         $request->assertRedirect(route('mship.feedback.new.form', [$form->slug, 'cid' => 'mycidishere']));
     }

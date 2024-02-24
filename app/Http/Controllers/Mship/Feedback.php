@@ -41,13 +41,8 @@ class Feedback extends \App\Http\Controllers\BaseController
         return Redirect::route('mship.feedback.new.form', [$request->input('feedback_type')]);
     }
 
-    public function getFeedback(Form $form, Request $request)
+    public function getFeedback(Form $form)
     {
-        // Get a list of "pre-fillable" questions from the request, based on question slug
-        // To allow direct links from e.g euroscope profiles via vatsim.uk/atcfb?cid=12345
-        $preFillable = $request->only(['cid']);
-        $preFilled = ['usercid' => array_get($preFillable, 'cid')];
-
         /** @var Question[] $questions */
         $questions = $form->questions()->orderBy('sequence')->get();
         if (! $questions || ! $form->enabled) {
@@ -76,8 +71,11 @@ class Feedback extends \App\Http\Controllers\BaseController
                 continue;
             }
 
-            $fromQuery = array_get($preFilled, $question->slug);
-            $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug, $fromQuery));
+            $defaultValues = ['usercid' => request()->get('cid')];
+            $question->form_html .= sprintf($question->type->code,
+                $question->slug,
+                old($question->slug, array_get($defaultValues, $question->slug))
+            );
         }
 
         return $this->viewMake('mship.feedback.form')->with(['form' => $form, 'questions' => $questions]);
@@ -200,10 +198,5 @@ class Feedback extends \App\Http\Controllers\BaseController
         $matches = null;
 
         return response()->json($this->returnList);
-    }
-
-    public function redirectNewAtc(Request $request)
-    {
-        return redirect()->route('mship.feedback.new.form', array_merge(['atc'], $request->query->all()));
     }
 }
