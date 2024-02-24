@@ -79,6 +79,7 @@ class EndorsementRequest extends Model
         $this->update([
             'actioned_at' => now(),
             'actioned_type' => self::STATUS_APPROVED,
+            'actioned_by' => auth()->user()->id,
         ]);
     }
 }

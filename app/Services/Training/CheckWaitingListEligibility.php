@@ -4,7 +4,6 @@ namespace App\Services\Training;
 
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
-use App\Models\Roster;
 use App\Models\Training\WaitingList;
 use Carbon\Carbon;
 
@@ -15,13 +14,17 @@ class CheckWaitingListEligibility
     ) {
     }
 
-    public function checkRoster(WaitingList $waitingList)
+    public function checkBaseControllingHours(WaitingList $waitingList)
     {
-        if (! $waitingList->should_check_roster || $waitingList->department == WaitingList::PILOT_DEPARTMENT) {
+        if (! $waitingList->should_check_atc_hours || $waitingList->department == WaitingList::PILOT_DEPARTMENT) {
             return true;
         }
 
-        return Roster::where('account_id', $this->account->id)->exists();
+        $recentAtcMinutes = Atc::where('account_id', $this->account->id)
+            ->where('disconnected_at', '>=', Carbon::parse('3 months ago'))->isUk()
+            ->sum('minutes_online');
+
+        return $recentAtcMinutes >= 720;
     }
 
     /**
@@ -61,10 +64,10 @@ class CheckWaitingListEligibility
 
     public function getOverallEligibility(WaitingList $waitingList): bool
     {
-        $on_roster = $this->checkRoster($waitingList);
+        $base_hour_checks = $this->checkBaseControllingHours($waitingList);
         $flags_summary = $this->checkWaitingListFlags($waitingList);
 
-        return $on_roster && $flags_summary['overall'] && $this->checkAccountStatus($waitingList);
+        return $base_hour_checks && $flags_summary['overall'] && $this->checkAccountStatus($waitingList);
     }
 
     public function getWaitingListAccount(WaitingList $waitingList)

@@ -2,10 +2,13 @@
 
 namespace Database\Factories\Mship\Account;
 
+use App\Models\Atc\PositionGroup;
+use App\Models\Model;
+use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends Factory<Model>
  */
 class EndorsementFactory extends Factory
 {
@@ -17,10 +20,11 @@ class EndorsementFactory extends Factory
     public function definition(): array
     {
         return [
-            'account_id' => \App\Models\Mship\Account::factory(),
-            'position_group_id' => \App\Models\Atc\PositionGroup::factory(),
+            'account_id' => Account::factory(),
+            'endorsable_type' => PositionGroup::class,
+            'endorsable_id' => PositionGroup::factory(),
             'expires_at' => null,
-            'created_by' => \App\Models\Mship\Account::factory(),
+            'created_by' => Account::factory(),
         ];
     }
 

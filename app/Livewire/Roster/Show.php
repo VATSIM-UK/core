@@ -12,9 +12,11 @@ use Livewire\Component;
 class Show extends Component
 {
     public Account $account;
+
     public ?Roster $roster;
 
     public ?string $searchTerm = null;
+
     public Position $position;
 
     public function mount(Account $account)

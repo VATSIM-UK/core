@@ -56,6 +56,8 @@ class EndorsementRequestTest extends TestCase
 
     public function test_can_be_approved()
     {
+        $this->actingAs($this->privacc);
+
         $account = Account::factory()->create();
         $positionGroup = PositionGroup::factory()->create();
 
@@ -66,10 +68,10 @@ class EndorsementRequestTest extends TestCase
             'requested_by' => $this->privacc->id,
         ]);
 
-        $endorsementRequest->markApproved($this->privacc);
+        $endorsementRequest->markApproved();
 
         $this->assertNotNull($endorsementRequest->actioned_at);
-        $this->assertEquals($this->privacc->id, $endorsementRequest->approved_by);
+        $this->assertEquals($this->privacc->id, $endorsementRequest->actioned_by);
         $this->assertEquals(EndorsementRequest::STATUS_APPROVED, $endorsementRequest->actioned_type);
     }
 }

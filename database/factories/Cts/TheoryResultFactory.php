@@ -21,6 +21,9 @@ class TheoryResultFactory extends Factory
             'student_id' => factory(Member::class)->create()->id,
             'exam' => $this->faker->randomElement(['S1', 'S2', 'S3']),
             'pass' => 0,
+            'started' => now()->subMinutes(15),
+            'expires' => now()->addDays(7),
+            'submitted_time' => now(),
         ];
     }
 }

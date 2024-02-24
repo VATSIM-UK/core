@@ -20,7 +20,7 @@ class TemporaryEndorsementTimeframeTest extends TestCase
             'endorsable_id' => $position->id,
             'endorsable_type' => Position::class,
             'created_at' => now()->subDays(8),
-            'expired_at' => now()->subDays(1),
+            'expires_at' => now()->subDays(1),
             'created_by' => $this->privacc->id,
         ]);
 
@@ -30,13 +30,13 @@ class TemporaryEndorsementTimeframeTest extends TestCase
             'endorsable_id' => $position->id,
             'endorsable_type' => Position::class,
             'created_at' => now(),
-            'expired_at' => now()->addDays(2),
+            'expires_at' => now()->addDays(2),
             'created_by' => $this->privacc->id,
         ]);
 
         $result = $account->daysSpentTemporarilyEndorsedOn($position);
 
-        $this->assertEquals(8, $result);
+        $this->assertEquals(9, $result);
     }
 
     public function test_detects_when_no_days_on_position()

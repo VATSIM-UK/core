@@ -30,12 +30,12 @@ trait HasEndorsement
             ->get();
 
         $daysFromExpiredEndorsements = $positionTemporaryEndorsements
-            ->where('expired_at', '<', now())
-            ->sum(fn ($endorsement) => $endorsement->created_at->diffInDays($endorsement->expired_at));
+            ->where('expires_at', '<', now())
+            ->sum(fn ($endorsement) => $endorsement->created_at->startOfDay()->diffInDays($endorsement->expired_at));
 
         $daysFromActiveEndorsements = $positionTemporaryEndorsements
-            ->where('expired_at', '>=', now())
-            ->sum(fn ($endorsement) => $endorsement->created_at->diffInDays(now()) + 1);
+            ->where('expires_at', '>=', now())
+            ->sum(fn ($endorsement) => $endorsement->created_at->startOfDay()->diffInDays(now()) + 1);
 
         return $daysFromExpiredEndorsements + $daysFromActiveEndorsements;
     }

@@ -25,6 +25,32 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
         $this->actingAs($this->privacc);
     }
 
+    public function test_returns_false_if_basic_12_hour_check_fails()
+    {
+        factory(Atc::class)->create([
+            'account_id' => $this->user->id,
+            'minutes_online' => 60,
+            'disconnected_at' => now(),
+        ]);
+
+        $result = (new CheckWaitingListEligibility($this->user))->checkBaseControllingHours($this->waitingList);
+
+        $this->assertFalse($result);
+    }
+
+    public function test_returns_true_if_basic_12_hour_check_passes()
+    {
+        factory(Atc::class)->create([
+            'account_id' => $this->user->id,
+            'minutes_online' => 721,
+            'disconnected_at' => now(),
+        ]);
+
+        $result = (new CheckWaitingListEligibility($this->user))->checkBaseControllingHours($this->waitingList);
+
+        $this->assertTrue($result);
+    }
+
     public function test_returns_true_when_waiting_list_has_no_flags()
     {
         $waitingList = factory(WaitingList::class)->create();
@@ -171,6 +197,18 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $this->assertTrue($result['overall']);
         $this->assertEquals($result['summary'], [$flag1->name => true, $flag2->name => true]);
+    }
+
+    public function test_hour_check_is_true_when_feature_toggle_is_false()
+    {
+        $waitingList = factory(WaitingList::class)->create();
+        $waitingList->feature_toggles = ['check_atc_hours' => false];
+
+        $waitingList->addToWaitingList($this->user, $this->privacc);
+
+        $service = new CheckWaitingListEligibility($this->user);
+
+        $this->assertTrue($service->checkBaseControllingHours($waitingList));
     }
 
     private function createFlag($name, $waitingList, $defaultValue = false)

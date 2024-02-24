@@ -5,7 +5,6 @@ namespace App\Models\Atc;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class PositionGroup extends Model implements Endorseable
@@ -64,7 +63,8 @@ class PositionGroup extends Model implements Endorseable
             });
 
             $positionGroupsAssigned = $nonExpiredEndorsements->contains(function ($value, $key) use (&$positionGroup) {
-                return $value->position_group_id == $positionGroup->id;
+                return $value->endorsable_id == $positionGroup->id
+                    && $value->endorsable_type == PositionGroup::class;
             });
 
             return $positionGroupsAssigned;
@@ -79,7 +79,7 @@ class PositionGroup extends Model implements Endorseable
     public function description(): string
     {
         return implode(', ', $this->positions->map(
-            fn($position) => $position->callsign
+            fn ($position) => $position->callsign
         )->toArray());
     }
 }

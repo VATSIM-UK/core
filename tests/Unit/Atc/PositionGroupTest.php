@@ -18,7 +18,8 @@ class PositionGroupTest extends TestCase
         $positionGroup = PositionGroup::factory()->create();
         Endorsement::factory()->create([
             'account_id' => $account->id,
-            'position_group_id' => $positionGroup->id,
+            'endorsable_type' => PositionGroup::class,
+            'endorsable_id' => $positionGroup->id,
         ]);
 
         $result = $positionGroup->unassignedFor($account);
@@ -34,7 +35,8 @@ class PositionGroupTest extends TestCase
 
         Endorsement::factory()->create([
             'account_id' => $account->id,
-            'position_group_id' => $otherPositionGroup->id,
+            'endorsable_type' => PositionGroup::class,
+            'endorsable_id' => $otherPositionGroup->id,
         ]);
 
         $result = $positionGroup->unassignedFor($account);
@@ -51,7 +53,8 @@ class PositionGroupTest extends TestCase
 
         Endorsement::factory()->create([
             'account_id' => $account->id,
-            'position_group_id' => $otherPositionGroup->id,
+            'endorsable_type' => PositionGroup::class,
+            'endorsable_id' => $otherPositionGroup->id,
             'expires_at' => now()->subDay(),
         ]);
 
@@ -69,7 +72,8 @@ class PositionGroupTest extends TestCase
 
         Endorsement::factory()->create([
             'account_id' => $account->id,
-            'position_group_id' => $otherPositionGroup->id,
+            'endorsable_type' => PositionGroup::class,
+            'endorsable_id' => $otherPositionGroup->id,
             'expires_at' => now()->addDay(),
         ]);
 
