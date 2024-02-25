@@ -28,6 +28,8 @@ class Roster extends Model
 
     protected $table = 'roster';
 
+    protected $fillable = ['account_id'];
+
     protected static function booted(): void
     {
         // Only return users that are on the roster

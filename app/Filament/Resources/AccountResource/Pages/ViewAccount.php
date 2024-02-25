@@ -53,16 +53,16 @@ class ViewAccount extends BaseViewRecordPage
                     ->name($onRoster ? 'Remove from roster' : 'Add to roster')
                     ->modalHeading($onRoster ? 'Remove from roster' : 'Add to roster')
                     ->action(function () use ($onRoster) {
-                        if ($onRoster) {
-                            Roster::where('account_id', $this->record->id)->delete();
-                        } else {
-                            Roster::insert(['account_id' => $this->record->id]);
+                        Roster::withoutGlobalScopes()->where('account_id', $this->record->id)->delete();
+
+                        if (! $onRoster) {
+                            Roster::create(['account_id' => $this->record->id]);
                         }
 
                         $this->refreshFormData(['roster_status']);
                     })
                     ->requiresConfirmation()
-                    ->successNotificationTitle('Password removed'),
+                    ->successNotificationTitle('Roster status updated!'),
                 Actions\Action::make('remove_password')
                     ->visible(fn () => $this->record->hasPassword() && auth()->user()->can('removeSecondaryPassword', $this->record))
                     ->color('warning')
