@@ -2,10 +2,6 @@
 
 namespace App\Providers;
 
-use App\Livewire\Roster\Index;
-use App\Livewire\Roster\Renew;
-use App\Livewire\Roster\Search;
-use App\Livewire\Roster\Show;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Route;
