@@ -2,8 +2,11 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Models\Atc\Position;
+use App\Models\Atc\PositionGroup;
 use App\Models\Model;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,7 +39,14 @@ class Endorsement extends Model
     public function type(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => is_null($attributes['expires_at']) ? 'Permanent' : 'Temporary',
+            get: function (mixed $value, array $attributes) {
+                return match ($attributes['endorsable_type']) {
+                    PositionGroup::class => 'Tier 1 Endorsement',
+                    Position::class => 'Solo Endorsement',
+                    Qualification::class => 'Rating Endorsement',
+                    default => 'Unknown'
+                };
+            },
         );
     }
 

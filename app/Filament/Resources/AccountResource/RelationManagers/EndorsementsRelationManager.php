@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AccountResource\RelationManagers;
 
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\Endorsement;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -24,7 +25,7 @@ class EndorsementsRelationManager extends RelationManager
                 Forms\Components\Select::make('position_group_id')
                     ->label('Endorsement')
                     ->required()
-                    ->options(\App\Models\Atc\PositionGroup::unassignedFor($this->ownerRecord)->mapWithKeys(function (\App\Models\Atc\PositionGroup $model) {
+                    ->options(PositionGroup::unassignedFor($this->ownerRecord)->mapWithKeys(function (PositionGroup $model) {
                         return [$model->getKey() => str($model->name)];
                     }))
                     ->hiddenOn('edit'),
@@ -57,14 +58,14 @@ class EndorsementsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('expires_at')->label('Expires')->date()->default(''),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->label('Add endorsement'),
+                // Tables\Actions\CreateAction::make()->label('Add endorsement'),
             ])
             ->actions([
                 // TODO: define permissions for both actions
-                Tables\Actions\EditAction::make()
-                    ->visible(fn ($record) => $record->type == 'Temporary'),
-                Tables\Actions\DeleteAction::make()
-                    ->visible(fn ($record) => $record->type == 'Permanent'),
+//                Tables\Actions\EditAction::make()
+//                    ->visible(fn ($record) => $record->type == 'Temporary'),
+//                Tables\Actions\DeleteAction::make()
+//                    ->visible(fn ($record) => $record->type == 'Permanent'),
             ]);
     }
 
