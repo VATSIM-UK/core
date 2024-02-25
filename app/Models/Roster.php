@@ -30,15 +30,16 @@ class Roster extends Model
 
     protected static function booted(): void
     {
-        // TODO: Will need to check those visiting/transferring
-        // have been given permission to be on the roster
-
         // Only return users that are on the roster
-        // and are still within the UK.
+        // and have not changed state since
+        // joining the roster.
         static::addGlobalScope('eligibleState', function (Builder $builder) {
             $builder->whereHas('account', function ($query) {
                 $query->whereHas('states', function ($query) {
-                    $query->whereIn('mship_state.code', ['DIVISION', 'VISITING', 'TRANSFERRING']);
+                    $query
+                        ->join('roster', 'mship_account_state.account_id', '=', 'roster.account_id')
+                        ->whereIn('mship_state.code', ['DIVISION', 'VISITING', 'TRANSFERRING'])
+                        ->whereColumn('roster.created_at', '>', 'mship_account_state.start_at');
                 });
             });
         });
