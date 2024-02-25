@@ -57,10 +57,8 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->group(base_path('routes/web.php'));
 
-        Route::get('/roster', Index::class)->name('site.roster.index');
-        Route::get('/roster/renew', Renew::class)->name('site.roster.renew');
-        Route::get('/roster/search', Search::class)->name('site.roster.search');
-        Route::get('/roster/{account}', Show::class)->name('site.roster.show');
+        Route::middleware('web')
+            ->group(base_path('routes/web-livewire.php'));
     }
 
     /**
