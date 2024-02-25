@@ -62,6 +62,7 @@
                         <li class="col-sm-12">
                             <ul>
                                 <li>{!! link_to_route("site.atc.landing", "Welcome") !!}</li>
+                                <li>{!! link_to_route("site.roster.index", "Controller Roster") !!}</li>
                                 <li>{!! link_to_route("site.atc.newController", "New Controller (OBS)") !!}</li>
                                 <li>{!! link_to_route("site.atc.endorsements", "Endorsements") !!}</li>
                                 <li>{!! link_to_route("site.atc.mentor", "Becoming a Mentor") !!}</li>

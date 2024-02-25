@@ -141,6 +141,9 @@
                             <a class="nav-link" href="{{ route('site.atc.newController') }}">Become a Controller</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.roster.index') }}">Controller Roster</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="https://cts.vatsim.uk/home/solo.php">Solo Endorsements</a>
                         </li>
                         <li class="nav-item">
