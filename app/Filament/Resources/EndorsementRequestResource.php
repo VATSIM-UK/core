@@ -3,7 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EndorsementRequestResource\Pages;
+use App\Models\Atc\Position;
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\EndorsementRequest;
+use App\Models\Mship\Qualification;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -38,20 +41,20 @@ class EndorsementRequestResource extends Resource
 
                 Forms\Components\Section::make('Tier 1 Endorsement')->schema([
                     Forms\Components\Select::make('endorsable_id')->label('Tier 1 Name')->options(function () {
-                        return \App\Models\Atc\PositionGroup::all()->pluck('name', 'id');
-                    })->required(),
+                        return PositionGroup::orderBy('name')->pluck('name', 'id');
+                    })->required()->searchable(),
                 ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\PositionGroup'),
 
                 Forms\Components\Section::make('Solo Endorsement')->schema([
                     Forms\Components\Select::make('endorsable_id')->label('Endorsement Name')->options(function () {
-                        return \App\Models\Atc\PositionGroup::all()->pluck('name', 'id');
-                    })->required(),
-                ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\PositionGroup'),
+                        return Position::orderBy('callsign')->pluck('callsign', 'id');
+                    })->required()->searchable(),
+                ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\Position'),
 
                 Forms\Components\Section::make('Rating Endorsement')->schema([
                     Forms\Components\Select::make('endorsable_id')->label('Rating')->options(function () {
-                        return \App\Models\Mship\Qualification::ofType('atc')->pluck('code', 'id');
-                    }),
+                        return Qualification::ofType('atc')->orderBy('vatsim')->pluck('code', 'id');
+                    })->required()->searchable(),
                 ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Mship\Qualification'),
 
                 Forms\Components\Section::make('Additional details')->schema([
