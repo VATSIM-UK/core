@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Roster;
 
 use App\Models\NetworkData\Atc;
 use App\Models\Roster;
@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 
 class UpdateRoster extends Command
 {
-    protected $signature = 'app:update-roster {fromDate} {toDate}';
+    protected $signature = 'roster:update {fromDate} {toDate}';
 
     protected $description = 'Update the ATC roster based on ATC session data.';
 

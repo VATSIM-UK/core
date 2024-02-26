@@ -58,6 +58,10 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(15)
             ->graceTimeInMinutes(15);
 
+        $schedule->command('roster:gander')
+            ->hourlyAt(25)
+            ->graceTimeInMinutes(5);
+
         // === By Day === //
 
         $schedule->command('telescope:prune')
