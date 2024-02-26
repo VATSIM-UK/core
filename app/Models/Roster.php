@@ -68,12 +68,25 @@ class Roster extends Model
         }
 
         // If the position is part of a group,
-        // a) do they have the endorsement for that group or
-        // b) do they have a rating higher than the maximum rating for the group
+        // a) are they a home member with a rating above the position's maximum?
+        // b) are they a visiting or transferring member with an endorsement up to a rating above the position group's maximum?
+        // c) are they endorsed on this specific position group?
         if ($positionGroupPosition = PositionGroupPosition::where('position_id', $position->id)->first()) {
-            return $this->account->qualification_atc->vatsim
-                > $positionGroupPosition->positionGroup?->maximumAtcQualification?->vatsim
-            || $this->account
+            $isEntitledByHomeMemberRating = $this->account->hasState('DIVISION') &&
+                $this->account->qualification_atc->vatsim > $positionGroupPosition->positionGroup?->maximumAtcQualification?->vatsim;
+
+            $isEndorsedToRating = ($this->account->hasState('VISITING') || $this->account->hasState('TRANSFERRING'))
+                || $this->account
+                    ->endorsements()
+                    ->active()
+                    ->whereHasMorph('endorsable',
+                        Qualification::class
+                    )
+                    ->get()
+                    ->sortByDesc('endorsable.vatsim')
+                    ->first()?->endorsable?->vatsim > $positionGroupPosition->positionGroup?->maximumAtcQualification?->vatsim;
+
+            $hasEndorsementForPositionGroup = $this->account
                 ->endorsements()
                 ->active()
                 ->whereHasMorph('endorsable',
@@ -81,6 +94,8 @@ class Roster extends Model
                     fn ($query) => $query->where('id', $positionGroupPosition->position_group_id)
                 )
                 ->exists();
+
+            return  $isEntitledByHomeMemberRating || $isEndorsedToRating || $hasEndorsementForPositionGroup;
         }
 
         // If the position is above their rating, do they
@@ -108,6 +123,12 @@ class Roster extends Model
                 ->get()
                 ->sortByDesc('endorsable.vatsim')
                 ->first()?->endorsable?->vatsim >= $position->getMinimumVatsimQualificationAttribute();
+        }
+
+        // If they are in a region or international, they cannot control
+        // without one of the above conditions being met.
+        if ($this->account->hasState('REGION') || $this->account->hasState('INTERNATIONAL')) {
+            return false;
         }
 
         // They can control unrestricted up to their rating and
