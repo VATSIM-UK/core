@@ -70,10 +70,9 @@ class Roster extends Model
         // If the position is part of a group, do they have
         // the endorsement for that group?
         if ($positionGroupPosition = PositionGroupPosition::where('position_id', $position->id)->first()) {
-            // TODO: Handle "max rating" for a group, because Gatwick S1
-            // won't work within this
-
-            return $this->account
+            return $this->account->qualification_atc->vatsim
+                > $positionGroupPosition->positionGroup?->maximumAtcQualification?->vatsim
+            || $this->account
                 ->endorsements()
                 ->active()
                 ->whereHasMorph('endorsable',

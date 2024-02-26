@@ -3,6 +3,7 @@
 namespace App\Models\Atc;
 
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -28,6 +29,11 @@ class PositionGroup extends Model implements Endorseable
     public function endorsement()
     {
         return $this->belongsTo(Endorsement::class);
+    }
+
+    public function maximumAtcQualification()
+    {
+        return $this->belongsTo(Qualification::class);
     }
 
     public function conditionsMetForUser(Account $account): bool
