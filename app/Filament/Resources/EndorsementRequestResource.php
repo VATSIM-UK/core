@@ -40,14 +40,14 @@ class EndorsementRequestResource extends Resource
                 ]),
 
                 Forms\Components\Section::make('Tier 1 Endorsement')->schema([
-                    Forms\Components\Select::make('endorsable_id')->label('Tier 1 Name')->options(function () {
+                    Forms\Components\Select::make('endorsable_id')->label('Tier 1 / 2 Name')->options(function () {
                         return PositionGroup::orderBy('name')->pluck('name', 'id');
                     })->required()->searchable(),
                 ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\PositionGroup'),
 
                 Forms\Components\Section::make('Solo Endorsement')->schema([
                     Forms\Components\Select::make('endorsable_id')->label('Endorsement Name')->options(function () {
-                        return Position::orderBy('callsign')->pluck('callsign', 'id');
+                        return Position::temporarilyEndorsable()->orderBy('callsign')->pluck('callsign', 'id');
                     })->required()->searchable(),
                 ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\Position'),
 
@@ -76,6 +76,7 @@ class EndorsementRequestResource extends Resource
                     'Rejected' => 'danger',
                     default => 'warning',
                 }),
+                Tables\Columns\TextColumn::make('created_at')->label('Requested At')->isoDateTimeFormat('lll'),
             ])
             ->defaultSort('id', 'desc')
             ->actions([
@@ -105,18 +106,9 @@ class EndorsementRequestResource extends Resource
                             ->success();
                     })->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->status === 'Pending' &&
                             auth()->user()->can('approve', $endorsementRequest)),
-            ])
-            ->filters([
-                //
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
 
     public static function getPages(): array
     {

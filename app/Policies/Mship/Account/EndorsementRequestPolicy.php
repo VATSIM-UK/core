@@ -12,7 +12,7 @@ class EndorsementRequestPolicy
      */
     public function viewAny(Account $account): bool
     {
-        return true;
+        return $account->hasAnyPermission("endorsement-request.access");
     }
 
     /**
@@ -20,7 +20,7 @@ class EndorsementRequestPolicy
      */
     public function view(Account $account, EndorsementRequest $endorsementRequest): bool
     {
-        return true;
+        return $account->hasAnyPermission("endorsement-request.view.{$endorsementRequest->type}");
     }
 
     /**
@@ -28,7 +28,7 @@ class EndorsementRequestPolicy
      */
     public function create(Account $account): bool
     {
-        return true;
+        return $account->hasAnyPermission("endorsement-request.create.*");
     }
 
     /**
@@ -36,7 +36,7 @@ class EndorsementRequestPolicy
      */
     public function update(Account $account, EndorsementRequest $endorsementRequest): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -44,7 +44,7 @@ class EndorsementRequestPolicy
      */
     public function delete(Account $account, EndorsementRequest $endorsementRequest): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -52,7 +52,7 @@ class EndorsementRequestPolicy
      */
     public function restore(Account $account, EndorsementRequest $endorsementRequest): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -60,11 +60,16 @@ class EndorsementRequestPolicy
      */
     public function forceDelete(Account $account, EndorsementRequest $endorsementRequest): bool
     {
-        return true;
+        return false;
     }
 
     public function approve(Account $account, EndorsementRequest $endorsementRequest): bool
     {
         return $account->hasAnyPermission("endorsement-request.approve.{$endorsementRequest->type}");
+    }
+
+    public function reject(Account $account, EndorsementRequest $endorsementRequest): bool
+    {
+        return $account->hasAnyPermission("endorsement-request.reject.{$endorsementRequest->type}");
     }
 }

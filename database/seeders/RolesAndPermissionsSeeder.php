@@ -186,13 +186,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'endorsement.permanent.create.*',
             'endorsement.permanent.edit.*',
 
-            'endorsement-request.create.temporary',
-            'endorsement-request.create.permanent',
-
+            'endorsement-request.access',
+            'endorsement-request.create.*',
             'endorsement-request.view.*',
             'endorsement-request.approve.*',
-            'endorsement-request.approve.temporary',
-            'endorsement-request.approve.permanent',
+            'endorsement-request.reject.*',
         ];
 
         foreach ($permissions as $permission) {
