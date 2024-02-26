@@ -71,6 +71,9 @@
                         }}
                     </span>
                 @endif
+                @if(!$roster)
+                    <span>❌ {{ $account->id }} cannot control any UK positions.</span>
+                @endif
             </div>
         <div>
             <a class="text-bold text-blue-500 hover:cursor-pointer" wire:navigate

@@ -100,7 +100,7 @@
                                     Active
                                 </a>
                             @else
-                                <a href="{{ route('site.roster.renew', ['account' => $_account->id]) }}">
+                                <a href="{{ route('site.roster.index') }}">
                                     Inactive
                                 </a>
                             @endif
