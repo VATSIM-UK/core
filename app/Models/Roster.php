@@ -67,8 +67,9 @@ class Roster extends Model
             return false;
         }
 
-        // If the position is part of a group, do they have
-        // the endorsement for that group?
+        // If the position is part of a group,
+        // a) do they have the endorsement for that group or
+        // b) do they have a rating higher than the maximum rating for the group
         if ($positionGroupPosition = PositionGroupPosition::where('position_id', $position->id)->first()) {
             return $this->account->qualification_atc->vatsim
                 > $positionGroupPosition->positionGroup?->maximumAtcQualification?->vatsim
