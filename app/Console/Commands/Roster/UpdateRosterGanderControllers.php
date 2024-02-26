@@ -28,14 +28,21 @@ class UpdateRosterGanderControllers extends Command
                 ['account_id']
             );
 
-            Endorsement::upsert(
-                $gander->map(fn ($value) => [
+            $positionGroup = PositionGroup::where('name', 'Shanwick Oceanic (EGGX)')->firstOrFail();
+
+            $gander->reject(function ($value) use ($positionGroup) {
+                return Endorsement::where([
                     'account_id' => $value,
-                    'endorsable_id' => PositionGroup::where('name', 'Shanwick Oceanic (EGGX)')->firstOrFail()->id,
+                    'endorsable_id' => $positionGroup->id,
                     'endorsable_type' => PositionGroup::class,
-                ])->toArray(),
-                ['account_id', 'endorsable_id', 'endorsable_type']
-            );
+                ])->exists();
+            })->each(function ($value) use ($positionGroup) {
+                Endorsement::create([
+                    'account_id' => $value,
+                    'endorsable_id' => $positionGroup->id,
+                    'endorsable_type' => PositionGroup::class,
+                ]);
+            });
         });
     }
 }
