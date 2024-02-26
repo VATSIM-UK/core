@@ -95,7 +95,7 @@ class Roster extends Model
                 )
                 ->exists();
 
-            return  $isEntitledByHomeMemberRating || $isEndorsedToRating || $hasEndorsementForPositionGroup;
+            return $isEntitledByHomeMemberRating || $isEndorsedToRating || $hasEndorsementForPositionGroup;
         }
 
         // If the position is above their rating, do they
