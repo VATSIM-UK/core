@@ -21,10 +21,29 @@
             </div>
         </header>
 
-        <div class="flex flex-col space-y-8">
-            <div class="flex flex-col space-y-4">
+        <div class="flex flex-col space-y-2">
+            <div class="flex flex-col space-y-8">
+                <div class="flex flex-col items-start space-y-1">
+                    @foreach($account->endorsements()->active()->get()->groupBy('type') as $type => $endorsements)
+                        <span class="text-sm font-semibold">{{ $type }} Endorsements</span>
+                        @foreach($endorsements as $endorsement)
+                            <span>{{ $endorsement->endorsable->name() }}
+                                @if($endorsement->expires())
+                                    <span
+                                        class="text-xs opacity-75">Expires {{ $endorsement->expires_at->toFormattedDateString() }}</span>
+                                @endif
+                                        </span>
+                            <span
+                                class="text-xs text-left opacity-50">Covers: {{ $endorsement->endorsable->description() }}</span>
+                        @endforeach
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-4">
                 @if($roster)
-                    <form wire:submit="search" class="flex flex-col space-y-4">
+        <hr>
+                    <form wire:submit="search" class="flex flex-col mb-4 space-y-4">
                         <div>
                             <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Check
                                 Position</label>
@@ -45,31 +64,14 @@
                     </form>
                 @endif
                 @if($position)
-                    <!-- TODO: Improve styling and make this look a little nicer -->
-                    <div>{{ $position->callsign }}</div>
-                    <div>{{ $roster->accountCanControl($position) ? 'Can control!' : 'Cannot control..' }}</div>
+                    <span>
+                        {{ $roster->accountCanControl($position)
+                            ? "✅ $account->id can control $position->callsign."
+                            : "❌ $account->id cannot control $position->callsign."
+                        }}
+                    </span>
                 @endif
             </div>
-
-            <div class="flex flex-col space-y-8">
-                <div class="flex flex-col items-start space-y-1">
-                    @foreach($account->endorsements()->active()->get()->groupBy('type') as $type => $endorsements)
-                        <span class="text-sm font-semibold">{{ $type }} endorsements</span>
-                        @foreach($endorsements as $endorsement)
-                            <span>{{ $endorsement->endorsable->name() }}
-                                @if($endorsement->expires())
-                                    <span
-                                        class="text-xs opacity-75">Expires {{ $endorsement->expires_at->toFormattedDateString() }}</span>
-                                @endif
-                                        </span>
-                            <span
-                                class="text-xs opacity-50">Covers: {{ $endorsement->endorsable->description() }}</span>
-                        @endforeach
-                    @endforeach
-                </div>
-            </div>
-
-        </div>
         <div>
             <a class="text-bold text-blue-500 hover:cursor-pointer" wire:navigate
                href="{{ route('site.roster.search') }}">Go back</a>
