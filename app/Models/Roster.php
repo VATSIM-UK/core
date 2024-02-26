@@ -41,7 +41,7 @@ class Roster extends Model
                     $query
                         ->join('roster', 'mship_account_state.account_id', '=', 'roster.account_id')
                         ->whereIn('mship_state.code', ['DIVISION', 'VISITING', 'TRANSFERRING'])
-                        ->whereColumn('roster.created_at', '>', 'mship_account_state.start_at');
+                        ->orWhereColumn('roster.updated_at', '>', 'mship_account_state.start_at');
                 });
             });
         });
