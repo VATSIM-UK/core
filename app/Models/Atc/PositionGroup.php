@@ -7,11 +7,13 @@ use App\Models\Mship\Account\Endorsement as MshipEndorsement;
 use App\Models\Mship\Qualification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 
 class PositionGroup extends Model implements Endorseable
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
