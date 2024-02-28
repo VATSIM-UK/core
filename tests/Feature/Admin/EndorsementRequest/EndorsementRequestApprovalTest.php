@@ -21,7 +21,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => PositionGroup::factory()->create()->id,
         ]);
 
-        $this->adminUser->givePermissionTo('endorsement-request.approve.permanent');
+        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListEndorsementRequests::class)
@@ -44,7 +44,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => PositionGroup::factory()->create()->id,
         ]);
 
-        $this->adminUser->givePermissionTo('endorsement-request.approve.temporary');
+        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListEndorsementRequests::class)
@@ -72,7 +72,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => Position::factory()->create()->id,
         ]);
 
-        $this->adminUser->givePermissionTo('endorsement-request.approve.temporary');
+        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListEndorsementRequests::class)
@@ -97,7 +97,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => Position::factory()->create()->id,
         ]);
 
-        $this->adminUser->givePermissionTo('endorsement-request.approve.temporary');
+        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListEndorsementRequests::class)
@@ -133,7 +133,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => Position::factory()->create()->id,
         ]);
 
-        $this->adminUser->givePermissionTo('endorsement-request.approve.permanent');
+        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListEndorsementRequests::class)
