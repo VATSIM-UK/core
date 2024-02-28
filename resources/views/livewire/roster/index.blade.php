@@ -1,14 +1,14 @@
 <x-slot name="title">Roster</x-slot>
 <main>
 {{-- flash messages --}}
-@if (!session()->has('success'))
+@if (session()->has('success'))
     <div class="bg-green border-green-100 border-2 rounded mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
         <div class="shadow space-y-6 rounded-lg sm:px-4">
             <p class="text-black text-left py-4">🎉 {{ session('success') }}</p>
         </div>
     </div>
 @endif
-@if (!session()->has('error'))
+@if (session()->has('error'))
     <div class="bg-red-400 border-red-600 border-2 rounded mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
         <div class="shadow space-y-6 sm:rounded-lg sm:px-4">
             <p class="py-4 text-left">❌ {{session('error')}}</p>
