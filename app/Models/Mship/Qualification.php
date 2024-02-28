@@ -4,6 +4,7 @@ namespace App\Models\Mship;
 
 use App\Models\Atc\Endorseable;
 use App\Models\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -169,13 +170,18 @@ class Qualification extends Model implements Endorseable
         return $this->code == 'C3';
     }
 
-    public function name(): string
+
+    public function name(): Attribute
     {
-        return "{$this->name_long} ({$this->code})";
+        return Attribute::make(
+            get: fn() => "{$this->name_long} ({$this->code})"
+        );
     }
 
-    public function description(): string
+    public function description(): Attribute
     {
-        return "All standard positions at the {$this->code} level.";
+        return Attribute::make(
+            get: fn() => "All standard positions at the {$this->code} level."
+        );
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models\Atc;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement as MshipEndorsement;
 use App\Models\Mship\Qualification;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -85,15 +86,19 @@ class PositionGroup extends Model implements Endorseable
         });
     }
 
-    public function name(): string
+    public function name(): Attribute
     {
-        return $this->name;
+        return Attribute::make(
+            get: fn() => $this->getRawOriginal('name')
+        );
     }
 
-    public function description(): string
+    public function description(): Attribute
     {
-        return implode(', ', $this->positions->map(
-            fn ($position) => $position->callsign
-        )->toArray());
+        return Attribute::make(
+            get: fn() => implode(', ', $this->positions->map(
+                fn ($position) => $position->callsign
+            )->toArray())
+        );
     }
 }

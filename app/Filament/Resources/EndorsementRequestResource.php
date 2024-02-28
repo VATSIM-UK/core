@@ -31,7 +31,7 @@ class EndorsementRequestResource extends Resource
                     Forms\Components\TextInput::make('account_id')->label('CID')->required(),
 
                     Forms\Components\Select::make('endorsable_type')->options([
-                        'App\Models\Atc\PositionGroup' => 'Tier 1 Endorsements',
+                        'App\Models\Atc\PositionGroup' => 'Tier 1 / 2 Endorsements',
                         'App\Models\Atc\Position' => 'Solo Endorsement',
                         'App\Models\Mship\Qualification' => 'Rating Endorsement',
                     ])->required()->live(),
@@ -82,21 +82,35 @@ class EndorsementRequestResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('approve')
                     ->form([
+                        Forms\Components\Select::make('type')
+                            ->options([
+                                'Permanent' => 'Permanent',
+                                'Temporary' => 'Temporary',
+                            ])
+                            ->default('Temporary')
+                            ->live()
+                            ->required(),
+
                         Forms\Components\TextInput::make('days')
+                            ->label('Valid for (Days)')
                             ->numeric()
                             ->step(1)
                             ->minValue(7)
                             ->placeholder(7)
                             ->maxValue(function (EndorsementRequest $endorsementRequest) {
+                                if (! $endorsementRequest->endorsable instanceof Position) {
+                                    return 365;
+                                }
+
                                 $account = $endorsementRequest->account;
                                 $maximumDays = 90;
 
                                 return $maximumDays - $account->daysSpentTemporarilyEndorsedOn($endorsementRequest->endorsable);
                             })
-                            ->required(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->endorsable_type === 'App\Models\Atc\Position')
-                            ->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->endorsable_type === 'App\Models\Atc\Position'),
+                            ->required(fn (Get $get): bool => $get('type') === 'Temporary')
+                            ->visible(fn (Get $get): bool => $get('type') === 'Temporary'),
 
-                        Forms\Components\Placeholder::make('notes'),
+                        Forms\Components\Textarea::make('notes'),
                     ])
                     ->action(function (EndorsementRequest $endorsementRequest, array $data) {
                         event(new \App\Events\Training\EndorsementRequestApproved($endorsementRequest, $data['days'] ?? null));

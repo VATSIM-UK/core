@@ -2,9 +2,11 @@
 
 namespace App\Models\Atc;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 interface Endorseable
 {
-    public function name(): string;
+    public function name(): Attribute;
 
-    public function description(): string;
+    public function description(): Attribute;
 }

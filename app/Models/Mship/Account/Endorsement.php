@@ -41,7 +41,7 @@ class Endorsement extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return match ($attributes['endorsable_type']) {
-                    PositionGroup::class => 'Tier 1 Endorsement',
+                    PositionGroup::class => 'Tier Endorsement',
                     Position::class => 'Solo Endorsement',
                     Qualification::class => 'Rating Endorsement',
                     default => 'Unknown'

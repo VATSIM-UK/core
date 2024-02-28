@@ -4,6 +4,7 @@ namespace App\Models\Atc;
 
 use App\Models\Airport;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -91,13 +92,17 @@ class Position extends Model implements Endorseable
         return $query->where('temporarily_endorsable', true);
     }
 
-    public function name(): string
+    public function name(): Attribute
     {
-        return $this->name;
+        return Attribute::make(
+            get: fn() => $this->getRawOriginal('name')
+        );
     }
 
-    public function description(): string
+    public function description(): Attribute
     {
-        return $this->callsign;
+        return Attribute::make(
+            get: fn() => $this->callsign
+        );
     }
 }
