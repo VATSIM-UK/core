@@ -17,7 +17,7 @@ class PositionGroupResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'Permanent Endorsements';
+    protected static ?string $modelLabel = 'Tier Endorsements';
 
     protected static ?string $navigationGroup = 'Mentoring';
 
@@ -26,7 +26,6 @@ class PositionGroupResource extends Resource
         return $infolist
             ->schema([
                 Infolists\Components\TextEntry::make('name'),
-                Infolists\Components\TextEntry::make('description'),
                 Infolists\Components\TextEntry::make('positions.callsign'),
             ]);
     }
@@ -36,8 +35,9 @@ class PositionGroupResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->label('Name'),
-                Tables\Columns\TextColumn::make('description'),
-                Tables\Columns\TextColumn::make('membership_endorsement_count')->counts('membershipEndorsement'),
+                Tables\Columns\TextColumn::make('membership_endorsement_count')
+                    ->label('Endorsed')
+                    ->counts('membershipEndorsement'),
             ])
             ->defaultSort('name')
             ->actions([
