@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class WaitingListFlag extends Model
 {
     use SoftDeletes;
-    
+
     protected $guarded = [];
 
     protected $table = 'training_waiting_list_flags';
