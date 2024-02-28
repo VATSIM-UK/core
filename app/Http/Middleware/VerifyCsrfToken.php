@@ -22,5 +22,6 @@ class VerifyCsrfToken extends Middleware
         'webhook/*',
         'frame.php',
         'livewire/*',
+        'external/*',
     ];
 }
