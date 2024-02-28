@@ -95,14 +95,14 @@ class Position extends Model implements Endorseable
     public function name(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->getRawOriginal('name')
+            get: fn () => $this->getRawOriginal('name')
         );
     }
 
     public function description(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->callsign
+            get: fn () => $this->callsign
         );
     }
 }

@@ -170,18 +170,17 @@ class Qualification extends Model implements Endorseable
         return $this->code == 'C3';
     }
 
-
     public function name(): Attribute
     {
         return Attribute::make(
-            get: fn() => "{$this->name_long} ({$this->code})"
+            get: fn () => "{$this->name_long} ({$this->code})"
         );
     }
 
     public function description(): Attribute
     {
         return Attribute::make(
-            get: fn() => "All standard positions at the {$this->code} level."
+            get: fn () => "All standard positions at the {$this->code} level."
         );
     }
 }
