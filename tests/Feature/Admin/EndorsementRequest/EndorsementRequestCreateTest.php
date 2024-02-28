@@ -43,13 +43,13 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
 
         $this->actingAsAdminUser(['endorsement-request.access', 'endorsement-request.create.*']);
         Livewire::test(CreateEndorsementRequest::class)
-        	// check if the position group is visible
+            // check if the position group is visible
             ->set('data.endorsable_type', 'App\Models\Atc\PositionGroup')
             ->assertSee($positionGroup->name)
             ->fillForm([
                 'account_id' => $accountRequestingFor->id,
                 'endorsable_id' => $positionGroup->id,
-                'notes' => 'This is a test note'
+                'notes' => 'This is a test note',
             ])
             ->call('create');
 
@@ -57,7 +57,7 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
             'account_id' => $accountRequestingFor->id,
             'endorsable_id' => $positionGroup->id,
             'endorsable_type' => 'App\Models\Atc\PositionGroup',
-            'notes' => 'This is a test note'
+            'notes' => 'This is a test note',
         ]);
     }
 
@@ -72,13 +72,13 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(CreateEndorsementRequest::class)
-        	->set('data.endorsable_type', 'App\Models\Atc\Position')
+            ->set('data.endorsable_type', 'App\Models\Atc\Position')
             ->assertSee($position->name)
             ->assertDontSee($nonTemporarilyEndorsablePosition->name)
             ->fillForm([
                 'account_id' => $accountRequestingFor->id,
                 'endorsable_id' => $position->id,
-                'notes' => 'This is a test note'
+                'notes' => 'This is a test note',
             ])
             ->call('create');
 
@@ -86,7 +86,7 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
             'account_id' => $accountRequestingFor->id,
             'endorsable_id' => $position->id,
             'endorsable_type' => 'App\Models\Atc\Position',
-            'notes' => 'This is a test note'
+            'notes' => 'This is a test note',
         ]);
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Models\Atc;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Qualification;
 use App\Models\Mship\Account\Endorsement as MshipEndorsement;
+use App\Models\Mship\Qualification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;

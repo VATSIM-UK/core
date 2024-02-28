@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Account\Note;
@@ -14,6 +15,7 @@ use App\Policies\Mship\Account\BanPolicy;
 use App\Policies\Mship\Account\EndorsementRequestPolicy;
 use App\Policies\Mship\Account\NotePolicy;
 use App\Policies\PasswordPolicy;
+use App\Policies\PositionGroupPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\Smartcars\ExercisePolicy;
 use App\Policies\Smartcars\PirepPolicy;
@@ -46,6 +48,7 @@ class AuthServiceProvider extends ServiceProvider
         Qualification::class => QualificationPolicy::class,
         Feedback::class => FeedbackPolicy::class,
         EndorsementRequest::class => EndorsementRequestPolicy::class,
+        PositionGroup::class => PositionGroupPolicy::class,
 
         Ban::class => BanPolicy::class,
         Role::class => RolePolicy::class,

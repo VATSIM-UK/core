@@ -12,7 +12,7 @@ class EndorsementRequestPolicy
      */
     public function viewAny(Account $account): bool
     {
-        return $account->hasAnyPermission("endorsement-request.access");
+        return $account->hasAnyPermission('endorsement-request.access');
     }
 
     /**
@@ -28,7 +28,7 @@ class EndorsementRequestPolicy
      */
     public function create(Account $account): bool
     {
-        return $account->hasAnyPermission("endorsement-request.create.*");
+        return $account->hasAnyPermission('endorsement-request.create.*');
     }
 
     /**

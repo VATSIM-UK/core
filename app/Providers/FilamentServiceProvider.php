@@ -100,7 +100,7 @@ class FilamentServiceProvider extends ServiceProvider
             return $this->getStateUsing(fn ($record) => $record->{$this->getName()} !== null)->boolean();
         });
 
-        \Filament\Tables\Columns\TextColumn::macro('isoDateTimeFormat', function(string $format): \Filament\Tables\Columns\TextColumn {
+        \Filament\Tables\Columns\TextColumn::macro('isoDateTimeFormat', function (string $format): \Filament\Tables\Columns\TextColumn {
             /** @var \Filament\Tables\Columns\TextColumn $this */
             return $this->formatStateUsing(fn ($state) => $state->settings(['formatFunction' => 'isoFormat'])->format($format));
         });
