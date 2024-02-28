@@ -10,7 +10,7 @@ class EndorsementController extends BaseController
 {
     public function getGatwickGroundIndex()
     {
-        $endorsement = PositionGroup::with('conditions')->where('name', 'EGKK_GND')->first();
+        $endorsement = PositionGroup::with('conditions')->where('name', 'Gatwick S1 (DEL/GND)')->first();
 
         $hours = $endorsement->conditions->map(function ($condition) {
             return $condition->progressForUser($this->account);
