@@ -76,9 +76,10 @@ class EndorsementRequestResource extends Resource
                     'Rejected' => 'danger',
                     default => 'warning',
                 }),
-                Tables\Columns\TextColumn::make('created_at')->label('Requested At')->isoDateTimeFormat('lll'),
+                Tables\Columns\TextColumn::make('requester.name')->label('Requested By'),
+                Tables\Columns\TextColumn::make('created_at')->label('Requested')->isoDateTimeFormat('lll'),
             ])
-            ->defaultSort('id', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\Action::make('approve')
                     ->form([
@@ -117,6 +118,16 @@ class EndorsementRequestResource extends Resource
 
                         Notification::make()
                             ->title('Endorsement request approved')
+                            ->success();
+                    })->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->status === 'Pending' &&
+                            auth()->user()->can('approve', $endorsementRequest)),
+                Tables\Actions\Action::make('reject')
+                    ->requiresConfirmation()
+                    ->action(function (EndorsementRequest $endorsementRequest, array $data) {
+                        $endorsementRequest->markRejected();
+
+                        Notification::make()
+                            ->title('Endorsement request rejected')
                             ->success();
                     })->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->status === 'Pending' &&
                             auth()->user()->can('approve', $endorsementRequest)),

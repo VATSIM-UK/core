@@ -28,6 +28,11 @@ class EndorsementRequest extends Model
         return $this->belongsTo(Account::class);
     }
 
+    public function requester(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'requested_by');
+    }
+
     public function status(): Attribute
     {
         return Attribute::make(
@@ -79,6 +84,15 @@ class EndorsementRequest extends Model
         $this->update([
             'actioned_at' => now(),
             'actioned_type' => self::STATUS_APPROVED,
+            'actioned_by' => auth()->user()->id,
+        ]);
+    }
+
+    public function markRejected()
+    {
+        $this->update([
+            'actioned_at' => now(),
+            'actioned_type' => self::STATUS_REJECTED,
             'actioned_by' => auth()->user()->id,
         ]);
     }
