@@ -30,7 +30,7 @@
                             <span>{{ $endorsement->endorsable->name }}
                                 @if($endorsement->expires())
                                     <span
-                                        class="text-xs opacity-75">Expires {{ $endorsement->expires_at->toFormattedDateString() }}</span>
+                                        class="text-xs opacity-75">Expires {{ $endorsement->expired_at->toFormattedDateString() }}</span>
                                 @endif
                                         </span>
                             <span

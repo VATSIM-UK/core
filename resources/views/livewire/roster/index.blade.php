@@ -1,4 +1,15 @@
 <x-slot name="title">Roster</x-slot>
+<main>
+{{-- flash messages --}}
+@if (session()->has('success'))
+    <div class="bg-brand rounded mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
+        <div class=px-4 py-2 shadow space-y-6 sm:rounded-lg sm:px-12">
+            <div class="p-4 bg-green-50 rounded-lg">
+                <p class="text-white text-left">🎉 {{ session('success') }}</p>
+            </div>
+        </div>
+    </div>
+@endif
 <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
     <div class="bg-white px-6 py-12 shadow space-y-6 sm:rounded-lg sm:px-12">
         <div class="flex flex-col items-center space-y-8">
@@ -42,3 +53,4 @@
         </div>
     </div>
 </div>
+</main>
