@@ -13,6 +13,7 @@ use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class EndorsementRequestResource extends Resource
@@ -80,6 +81,19 @@ class EndorsementRequestResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->label('Requested')->isoDateTimeFormat('lll'),
             ])
             ->defaultSort('created_at', 'desc')
+            ->filters([
+                SelectFilter::make('account')
+                    ->label('CID')
+                    ->multiple()
+                    ->relationship('account', 'id'),
+                SelectFilter::make('actioned_type')
+                    ->label('Status')
+                    ->multiple()
+                    ->options([
+                        'approved' => 'Approved',
+                        'rejected' => 'Rejected',
+                    ]),
+            ])
             ->actions([
                 Tables\Actions\Action::make('approve')
                     ->form([
