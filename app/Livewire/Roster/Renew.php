@@ -15,6 +15,17 @@ class Renew extends Component
     public function mount()
     {
         $this->page = 1;
+
+        $userOnRoster = Roster::where('account_id', auth()->user()->id)->exists();
+
+        if ($userOnRoster) {
+            session()->flash('error', 'You are already on the roster!');
+            return redirect()->route('site.roster.index');
+        }
+
+        if (! auth()->user()->hasState('DIVISION') || ! auth()->user()->has_controller_rating) {
+            return redirect()->route('site.roster.index');
+        }
     }
 
     public function nextPage()
@@ -24,16 +35,6 @@ class Renew extends Component
 
     public function render(UKCP $ukcp)
     {
-        $userOnRoster = Roster::where('account_id', auth()->user()->id)->exists();
-
-        if ($userOnRoster) {
-            return redirect()->route('site.roster.index');
-        }
-
-        if (! auth()->user()->hasState('DIVISION') || ! auth()->user()->has_controller_rating) {
-            return redirect()->route('site.roster.index');
-        }
-
         $lastLogon = AtcNetworkdataService::getLatestNetworkdataForAccount(auth()->user())?->disconnected_at;
         $canReactivate = $lastLogon && Carbon::now()->diffInMonths($lastLogon) <= 18;
 

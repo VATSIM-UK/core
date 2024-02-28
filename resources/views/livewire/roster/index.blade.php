@@ -2,11 +2,16 @@
 <main>
 {{-- flash messages --}}
 @if (session()->has('success'))
-    <div class="bg-brand rounded mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
-        <div class=px-4 py-2 shadow space-y-6 sm:rounded-lg sm:px-12">
-            <div class="p-4 bg-green-50 rounded-lg">
-                <p class="text-white text-left">🎉 {{ session('success') }}</p>
-            </div>
+    <div class="bg-green border-green-100 border-2 rounded mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
+        <div class="shadow space-y-6 rounded-lg sm:px-4">
+            <p class="text-black text-left py-4">🎉 {{ session('success') }}</p>
+        </div>
+    </div>
+@endif
+@if (session()->has('error'))
+    <div class="bg-red-400 border-red-600 border-2 rounded mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
+        <div class="shadow space-y-6 sm:rounded-lg sm:px-4">
+            <p class="py-4 text-left">❌ {{session('error')}}</p>
         </div>
     </div>
 @endif

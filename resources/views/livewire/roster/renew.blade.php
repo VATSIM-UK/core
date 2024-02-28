@@ -22,7 +22,7 @@
         <div class="bg-white px-4 py-2 shadow space-y-6 sm:rounded-lg sm:px-12">
 
         <span class="text-2xl font-bold">Notifications</span>
-        <p>Got to write a shitty fucking endpoint for this stupid requirement. Which fucking berk came up with this idea</p>
+        <p>Someting polite about how I need to write an endpoint to do this.</p>
         </div>
     </div>
     <div class="mt-6">
