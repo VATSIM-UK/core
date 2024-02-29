@@ -58,7 +58,6 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result['overall']);
         $this->assertNull($result['summary']);
     }
 
@@ -77,7 +76,6 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result['overall']);
         $this->assertEquals($result['summary'], [$flag->name => true]);
     }
 
@@ -90,7 +88,6 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList);
 
-        $this->assertFalse($result['overall']);
         $this->assertEquals($result['summary'], [$flag->name => false]);
     }
 
@@ -113,7 +110,6 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertFalse($result['overall']);
         $this->assertEquals($result['summary'], [$flag->name => false]);
     }
 
@@ -136,7 +132,6 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result['overall']);
         $this->assertEquals($result['summary'], [$flag->name => true]);
     }
 
@@ -163,7 +158,6 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh());
 
-        $this->assertTrue($result['overall']);
         $this->assertEquals($result['summary'], [$flag1->name => false, $flag2->name => false, $flag3->name => true]);
     }
 
@@ -195,7 +189,6 @@ class WaitingListCheckEligibilityServiceTest extends TestCase
 
         $result = (new CheckWaitingListEligibility($this->user))->checkWaitingListFlags($waitingList->fresh(), 'all');
 
-        $this->assertTrue($result['overall']);
         $this->assertEquals($result['summary'], [$flag1->name => true, $flag2->name => true]);
     }
 

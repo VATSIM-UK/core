@@ -20,30 +20,16 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['added_by', 'deleted_at', 'notes', 'eligible', 'flags_status_summary', 'eligibility_summary'];
+    public $fillable = ['added_by', 'deleted_at', 'notes', 'flags_status_summary'];
 
-    protected $appends = ['atcHourCheck', 'theory_exam_passed'];
+    protected $appends = ['theory_exam_passed'];
 
     protected $casts = [
-        'eligible' => 'boolean',
-        'eligibility_summary' => 'array',
         'flags_status_summary' => 'array',
     ];
 
     // 24 hours
     protected $cacheTtl = 86400;
-
-    public function status()
-    {
-        return $this->belongsToMany(
-            WaitingListStatus::class,
-            'training_waiting_list_account_status',
-            'waiting_list_account_id',
-            'status_id'
-        )
-            ->withPivot(['start_at', 'end_at', 'id'])->using(WaitingListAccountStatus::class)
-            ->wherePivot('end_at', null);
-    }
 
     public function flags()
     {
@@ -63,29 +49,6 @@ class WaitingListAccount extends Pivot
     public function account()
     {
         return $this->belongsTo(Account::class, 'account_id');
-    }
-
-    public function addStatus(WaitingListStatus $listStatus)
-    {
-        $nonEnded = $this->status->reject(function ($value, $key) {
-            return ! is_null($value->pivot->end_at);
-        });
-
-        $nonEnded->each(function ($item, $key) {
-            $item->pivot->endStatus();
-        });
-
-        $this->status()->attach($listStatus, ['start_at' => now()]);
-
-        event(new AccountChangedStatusInWaitingList($this->account, $this->waitingList, auth()->user()));
-    }
-
-    /**
-     * @return int
-     */
-    public function removeStatus(WaitingListStatus $listStatus)
-    {
-        return $this->status()->detach($listStatus);
     }
 
     public function addFlag(WaitingListFlag $listFlag, $value = null)
@@ -125,57 +88,9 @@ class WaitingListAccount extends Pivot
         return $this->waitingList->accountPosition($this->account);
     }
 
-    public function recentATCMinutes()
-    {
-        $hourCheckKey = "{$this->cacheKey()}:recentAtcMins";
-
-        if (Cache::has($hourCheckKey)) {
-            return Cache::get($hourCheckKey);
-        }
-
-        // gather the sessions from the last 3 months in the UK (isUK scope)
-        $hours = Atc::where('account_id', $this->account_id)
-            ->whereDate('disconnected_at', '>=', Carbon::parse('3 months ago'))->isUk()->sum('minutes_online');
-        Cache::put($hourCheckKey, $hours, $this->cacheTtl);
-
-        return $hours;
-    }
-
-    public function atcHourCheck()
-    {
-        if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT) {
-            return true;
-        }
-
-        if (! $this->waitingList->should_check_atc_hours) {
-            return true;
-        }
-
-        // 12 hours is represented as 720 minutes
-        $minutesRequired = 720;
-
-        return $this->recentATCMinutes() >= $minutesRequired;
-    }
-
     public function getAtcHourCheckAttribute()
     {
         return $this->atcHourCheck();
-    }
-
-    public function allFlagsChecker()
-    {
-        if ($this->waitingList->flags_check == WaitingList::ALL_FLAGS) {
-            // iterate through each of the flags to see if they are true. If a false flag is detected, stop iterating.
-            return $this->flags->every(function ($model) {
-                return $model->pivot->value;
-            });
-        } elseif ($this->waitingList->flags_check == WaitingList::ANY_FLAGS && $this->flags->count() > 0) {
-            return $this->flags->some(function ($model) {
-                return $model->pivot->value;
-            });
-        }
-
-        return true;
     }
 
     public function theoryExamPassed(): Attribute

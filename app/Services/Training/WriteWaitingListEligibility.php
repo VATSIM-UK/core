@@ -12,12 +12,6 @@ class WriteWaitingListEligibility
 
         $waitingListAccount->update([
             'flags_status_summary' => $service->checkWaitingListFlags($waitingList),
-            'eligible' => $service->getOverallEligibility($waitingList),
-            'eligibility_summary' => [
-                'base_controlling_hours' => $service->checkBaseControllingHours($waitingList),
-                'flags' => $service->checkWaitingListFlags($waitingList),
-                'account_status' => $service->checkAccountStatus($waitingList),
-            ],
         ]);
     }
 }
