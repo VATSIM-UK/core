@@ -30,9 +30,6 @@
                             - <span class="fa fa-question-circle ml-2 text-info text-sm tooltip_displays" data-toggle="tooltip" data-placement="top" title="You might not have a position because you aren't meeting eligibility criteria. Once you are meeting the criteria, your position will be shown."></span>
                             @endif
                         </td> --}}
-                        <td>
-                            <x-boolean-indicator :value=" $waitingList->pivot->eligible" />
-                        </td>
                         <td>{{$waitingList->pivot->created_at->format('d M Y')}}</td>
                         <td><a href="{{route('mship.waiting-lists.view', ["waitingListId" => $waitingList->id])}}">View Details</a></td>
                     </tr>
