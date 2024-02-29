@@ -17,10 +17,6 @@
                         <th>Department</th>
                         <td>{{ $list->formatted_department }}</td>
                     </tr>
-                    <tr>
-                        <th>Your Status</th>
-                        <td>{{$list->pivot->current_status}}</td>
-                    </tr>
                     @if($list->pivot->position)
                     <tr>
                         <th>Your Position</th>

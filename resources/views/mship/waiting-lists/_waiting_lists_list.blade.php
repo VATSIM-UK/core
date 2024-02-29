@@ -29,7 +29,6 @@
                         <td>
                             <x-boolean-indicator :value=" $waitingList->pivot->eligible" />
                         </td>
-                        <td>{{$waitingList->pivot->current_status}}</td>
                         <td>{{$waitingList->pivot->created_at->format('d M Y')}}</td>
                         <td><a href="{{route('mship.waiting-lists.view', ["waitingListId" => $waitingList->id])}}">View Details</a></td>
                     </tr>

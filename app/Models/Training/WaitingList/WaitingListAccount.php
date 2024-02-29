@@ -74,11 +74,6 @@ class WaitingListAccount extends Pivot
         $flag->unMark();
     }
 
-    public function getCurrentStatusAttribute()
-    {
-        return $this->status()->first();
-    }
-
     public function getPositionAttribute()
     {
         return $this->waitingList->accountPosition($this->account);
