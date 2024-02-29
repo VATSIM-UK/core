@@ -8,7 +8,7 @@ $("body").scrollspy({
 
 $(".tooltip_displays").tooltip();
 
-import { Alpine } from "../../../vendor/livewire/livewire/dist/livewire.esm";
+import Alpine from 'alpinejs';
 import collapse from "@alpinejs/collapse";
 
 Alpine.plugin(collapse);
