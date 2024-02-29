@@ -21,15 +21,11 @@ class IndividualWaitingListOverview extends BaseWidget
 
         $averageWaitTime = $this->record->accounts->average(fn ($account) => $account->pivot->created_at->diffInDays(now()));
 
-        $deferredCount = $this->record->accounts->countBy(fn ($account) => $account->pivot->load('status')->currentStatus->id)[WaitingListStatus::DEFERRED] ?? 0;
-
         return [
             Stat::make('Total accounts', $totalAccounts),
             Stat::make('Eligible accounts', $eligibleAccounts),
             Stat::make('Ineligible accounts', $ineligibleAccounts),
             Stat::make('Average wait time', $averageWaitTime ? round($averageWaitTime).' days' : 'N/A'),
-            Stat::make('Deferred accounts', $deferredCount),
-            Stat::make('% eligible', ($totalAccounts ? round($eligibleAccounts / $totalAccounts * 100) : 100).'%'),
         ];
     }
 }

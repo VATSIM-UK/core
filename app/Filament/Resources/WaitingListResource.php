@@ -36,11 +36,6 @@ class WaitingListResource extends Resource
                     'atc' => 'ATC Training',
                     'pilot' => 'Pilot Training',
                 ])->required(),
-
-                Forms\Components\Select::make('flags_check')->options([
-                    'all' => 'ALL Flags',
-                    'any' => 'ANY Flags',
-                ])->required(),
             ]);
     }
 

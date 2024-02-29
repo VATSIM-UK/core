@@ -26,11 +26,6 @@ trait WaitingListTestHelper
         return $waitingList->fresh();
     }
 
-    protected function createStatus()
-    {
-        return factory(WaitingListStatus::class)->create();
-    }
-
     private function createAdminAccount()
     {
         return Account::factory()->create();

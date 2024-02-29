@@ -161,26 +161,6 @@ class WaitingListTest extends TestCase
     }
 
     /** @test */
-    public function itCanHaveABooleanFlag()
-    {
-        $flag = factory(WaitingListFlag::class)->create();
-        $this->waitingList->addFlag($flag);
-
-        $this->assertTrue($this->waitingList->flags->contains($flag));
-    }
-
-    /** @test */
-    public function itCanHaveFlagsRemoved()
-    {
-        $flag = factory(WaitingListFlag::class)->create();
-        $this->waitingList->addFlag($flag);
-
-        $this->waitingList->removeFlag($flag);
-
-        $this->assertFalse($this->waitingList->flags->contains($flag));
-    }
-
-    /** @test */
     public function itCanDetectWhetherToShowAtcHourCheck()
     {
         $this->waitingList->department = WaitingList::ATC_DEPARTMENT;

@@ -2,7 +2,9 @@
 
 namespace Tests\Unit\Training\WaitingList;
 
+use App\Models\Mship\State;
 use App\Models\NetworkData\Atc;
+use App\Models\Roster;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use App\Models\Training\WaitingList\WaitingListStatus;
@@ -33,7 +35,6 @@ class WaitingListWriteEligibilityTest extends TestCase
         $this->waitingList->refresh();
 
         $waitingListAccount = $this->waitingList->accounts()->where('account_id', $this->user->id)->first()->pivot;
-        $waitingListAccount->addStatus(WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS));
 
         $checkEligibility = new CheckWaitingListEligibility($this->user);
 
@@ -43,90 +44,22 @@ class WaitingListWriteEligibilityTest extends TestCase
     }
 
     /** @test */
-    public function itShouldWriteEligibilityTrueToWaitingListAccountWithNoFlags()
+    public function itShouldWriteEligibilityTrueToWaitingListAccountOnRoster()
     {
+        # make sure the user is on the roster global scope for home members
+        $this->user->addState(State::findByCode('DIVISION'));
+
         $this->waitingList->addToWaitingList($this->user, $this->privacc);
         $this->waitingList->refresh();
 
         $waitingListAccount = $this->waitingList->accounts()->where('account_id', $this->user->id)->first()->pivot;
-        $waitingListAccount->addStatus(WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS));
 
-        factory(Atc::class)->create([
-            'account_id' => $this->user->id,
-            'minutes_online' => 721,
-            'disconnected_at' => now(),
-        ]);
+        Roster::create(['account_id' => $this->user->id]);
 
         $checkEligibility = new CheckWaitingListEligibility($this->user);
 
         WriteWaitingListEligibility::handle($this->waitingList, $checkEligibility);
 
         $this->assertTrue($waitingListAccount->fresh()->eligible);
-
-        $this->assertEquals($waitingListAccount->fresh()->eligibility_summary,
-            [
-                'base_controlling_hours' => true,
-                'flags' => [
-                    'overall' => true,
-                    'summary' => null,
-                ],
-                'account_status' => true,
-            ]
-        );
-
-        $this->assertEquals($waitingListAccount->fresh()->flags_status_summary,
-            [
-                'overall' => true,
-                'summary' => null,
-            ]
-        );
-    }
-
-    /** @test */
-    public function itShouldWriteEligibilityWithPassingManualFlags()
-    {
-        $flag = factory(WaitingListFlag::class)->create();
-        $this->waitingList->addFlag($flag);
-
-        $this->waitingList->addToWaitingList($this->user, $this->privacc);
-        $this->waitingList->refresh();
-
-        $waitingListAccount = $this->waitingList->accounts()->where('account_id', $this->user->id)->first()->pivot;
-        $waitingListAccount->addStatus(WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS));
-        $waitingListAccount->markFlag($flag);
-
-        factory(Atc::class)->create([
-            'account_id' => $this->user->id,
-            'minutes_online' => 721,
-            'disconnected_at' => now(),
-        ]);
-
-        $checkEligibility = new CheckWaitingListEligibility($this->user);
-
-        WriteWaitingListEligibility::handle($this->waitingList, $checkEligibility);
-
-        $this->assertTrue($waitingListAccount->fresh()->eligible);
-
-        $this->assertEquals($waitingListAccount->fresh()->eligibility_summary,
-            [
-                'base_controlling_hours' => true,
-                'flags' => [
-                    'overall' => true,
-                    'summary' => [
-                        $flag->name => true,
-                    ],
-                ],
-                'account_status' => true,
-            ]
-        );
-
-        $this->assertEquals($waitingListAccount->fresh()->flags_status_summary,
-            [
-                'overall' => true,
-                'summary' => [
-                    $flag->name => true,
-                ],
-            ]
-        );
     }
 }
