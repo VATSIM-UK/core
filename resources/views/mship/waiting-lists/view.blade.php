@@ -70,40 +70,4 @@
     </div>
     @endif
 </div>
-@if($list->isATCList() || count($automaticFlags))
-<div class="alert alert-warning">
-    <strong>Important: </strong> Automated eligibility flags are only calculated every 24 hours, or after the end of an ATC session! If you have just completed
-    a network session, the flags shown above may not be accurate.
-</div>
-<div class="row">
-    @if($list->isATCList())
-    <div class="col-lg-6">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading">
-                <i class="fa fa-flag"></i> Hour Check
-            </div>
-            <div class="panel-body">
-                <p>
-                    Have at least <strong>12 hours</strong> on <strong>UK controller positions</strong> in the last <strong>3 months</strong>.
-                </p>
-                <small>NB: Only sessions with primary frequencies count (i.e. not mentoring)</small>
-                <x-progress-indicator max="12" :value="$list->pivot->recentATCMinutes() / 60" :text="number_format($list->pivot->recentATCMinutes() / 60, 1, null, '') . ' / 12 hours'" />
-            </div>
-        </div>
-    </div>
-    @endif
-    @foreach($automaticFlags as $flag)
-    <div class="col-lg-6">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading">
-                <i class="fa fa-flag"></i> {{$flag->name}}
-            </div>
-            <div class="panel-body">
-                @include('mship.waiting-lists._flag_breakdown', ["flag" => $flag, "user" => $list->pivot->account])
-            </div>
-        </div>
-    </div>
-    @endforeach
-</div>
-@endif
 @endsection
