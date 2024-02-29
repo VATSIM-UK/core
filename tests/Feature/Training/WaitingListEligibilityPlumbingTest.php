@@ -7,7 +7,6 @@ use App\Events\Training\FlagAddedToWaitingList;
 use App\Jobs\Training\UpdateAccountWaitingListEligibility;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
-use App\Models\Training\WaitingList\WaitingListStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;

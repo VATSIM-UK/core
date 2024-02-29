@@ -34,7 +34,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->callTableAction('approve', record: $endorsementRequest->id, data: [
-                'type' => 'Permanent'
+                'type' => 'Permanent',
             ])
             ->assertTableActionHidden('approve', $endorsementRequest->id);
 

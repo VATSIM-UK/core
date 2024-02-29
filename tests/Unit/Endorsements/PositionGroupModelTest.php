@@ -5,7 +5,6 @@ namespace Tests\Unit\Endorsements;
 use App\Models\Atc\PositionGroup;
 use App\Models\Atc\PositionGroupCondition;
 use App\Models\NetworkData\Atc;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;

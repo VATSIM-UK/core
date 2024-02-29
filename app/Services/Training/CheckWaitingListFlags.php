@@ -3,9 +3,7 @@
 namespace App\Services\Training;
 
 use App\Models\Mship\Account;
-use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
-use Carbon\Carbon;
 
 class CheckWaitingListFlags
 {

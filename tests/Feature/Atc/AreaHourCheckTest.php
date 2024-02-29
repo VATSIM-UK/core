@@ -31,7 +31,7 @@ class AreaHourCheckTest extends TestCase
     /** @test */
     public function testSuccessfulNavigationIfUserIsS3()
     {
-        $this->markTestSkipped("Page disabled.");
+        $this->markTestSkipped('Page disabled.');
         // create relevant endorsement.
         factory(PositionGroup::class)->create(['name' => 'LON_S_CTR']);
         $account = Account::factory()->create();
