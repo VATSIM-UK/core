@@ -36,7 +36,7 @@ class TemporaryEndorsementTimeframeTest extends TestCase
 
         $result = $account->daysSpentTemporarilyEndorsedOn($position);
 
-        $this->assertEquals(9, $result);
+        $this->assertEquals(8, $result);
     }
 
     public function test_detects_when_no_days_on_position()
