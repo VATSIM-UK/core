@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\WaitingListResource\RelationManagers;
 
+use App\Models\Roster;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -71,6 +72,7 @@ class AccountsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('pivot.position')->getStateUsing(fn ($record) => $record->pivot->position ?? '-')->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('pivot_created_at', $direction))->label('Position'),
                 Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
                 Tables\Columns\TextColumn::make('name')->label('Name')->searchable(['name_first', 'name_last']),
+                Tables\Columns\IconColumn::make('on_roster')->boolean()->label('On roster')->getStateUsing(fn ($record) => Roster::where('account_id', $record->id)->exists()),
                 Tables\Columns\TextColumn::make('pivot.created_at')->label('Added on')->dateTime('d/m/Y'),
                 Tables\Columns\IconColumn::make('pivot.cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn ($record) => $record->pivot->theory_exam_passed)->visible(fn ($record) => $record->waitingList->feature_toggles['check_cts_theory_exam'] ?? true),
             ])
