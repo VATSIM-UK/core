@@ -68,8 +68,8 @@ class EndorsementRequestResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
-                Tables\Columns\TextColumn::make('account.name')->label('Name')->searchable(),
+                Tables\Columns\TextColumn::make('account_id')->label('CID'),
+                Tables\Columns\TextColumn::make('account.name')->label('Name'),
                 Tables\Columns\TextColumn::make('typeForHumans')->label('Type'),
                 Tables\Columns\TextColumn::make('endorsable.name')->label('Position/Endorsement'),
                 Tables\Columns\TextColumn::make('status')->badge()->color(fn (EndorsementRequest $endorsementRequest) => match ($endorsementRequest->status) {
