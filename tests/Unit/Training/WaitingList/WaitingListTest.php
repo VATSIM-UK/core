@@ -81,7 +81,6 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->department = WaitingList::PILOT_DEPARTMENT;
         $this->waitingList->save();
-        factory(WaitingList\WaitingListStatus::class)->state('default')->create();
         $flag = $this->waitingList->addFlag(factory(WaitingListFlag::class)->create(['default_value' => false]));
 
         // Add to list

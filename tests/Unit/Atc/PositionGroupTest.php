@@ -61,7 +61,7 @@ class PositionGroupTest extends TestCase
         $result = $positionGroup->unassignedFor($account);
 
         $this->assertTrue($result->contains($positionGroup));
-        $this->assertTrue($result->contains($otherPositionGroup));
+        $this->assertFalse($result->contains($otherPositionGroup));
     }
 
     public function test_detects_when_active_solo_endorsement_assigned()

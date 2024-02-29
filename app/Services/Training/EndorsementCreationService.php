@@ -15,7 +15,7 @@ class EndorsementCreationService
             'created_by' => $creator->id,
             'endorsable_type' => $endorsable::class,
             'endorsable_id' => $endorsable->id,
-            'expired_at' => null,
+            'expires_at' => null,
             'endorsement_request_id' => null,
         ]);
     }

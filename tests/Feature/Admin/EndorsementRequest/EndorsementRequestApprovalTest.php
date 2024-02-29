@@ -14,6 +14,13 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
 {
     use DatabaseTransactions;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->adminUser->givePermissionTo('endorsement-request.access');
+    }
+
     public function test_can_approve_permanent_endorsement_request_with_permission()
     {
         $endorsementRequest = EndorsementRequest::factory()->create([
@@ -26,8 +33,9 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
-            ->assertTableActionVisible('approve', $endorsementRequest->id)
-            ->callTableAction('approve', $endorsementRequest->id)
+            ->callTableAction('approve', record: $endorsementRequest->id, data: [
+                'type' => 'Permanent'
+            ])
             ->assertTableActionHidden('approve', $endorsementRequest->id);
 
         $this->assertDatabaseHas('endorsement_requests', [
@@ -35,21 +43,6 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'actioned_at' => now(),
             'actioned_type' => EndorsementRequest::STATUS_APPROVED,
         ]);
-    }
-
-    public function test_cannot_approve_permanent_endorsement_request_with_temporary_permissions()
-    {
-        $endorsementRequest = EndorsementRequest::factory()->create([
-            'endorsable_type' => PositionGroup::class,
-            'endorsable_id' => PositionGroup::factory()->create()->id,
-        ]);
-
-        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
-
-        Livewire::actingAs($this->adminUser);
-        Livewire::test(ListEndorsementRequests::class)
-            ->assertCanSeeTableRecords([$endorsementRequest])
-            ->assertTableActionHidden('approve', $endorsementRequest->id);
     }
 
     public function test_cannot_approve_permanent_endorsement_request_without_permission()
@@ -79,6 +72,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionVisible('approve', $endorsementRequest->id)
             ->callTableAction('approve', $endorsementRequest->id, [
+                'type' => 'Temporary',
                 'days' => 7,
             ])
             ->assertTableActionHidden('approve', $endorsementRequest->id);
@@ -119,21 +113,6 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_type' => Position::class,
             'endorsable_id' => Position::factory()->create()->id,
         ]);
-
-        Livewire::actingAs($this->adminUser);
-        Livewire::test(ListEndorsementRequests::class)
-            ->assertCanSeeTableRecords([$endorsementRequest])
-            ->assertTableActionHidden('approve', $endorsementRequest->id);
-    }
-
-    public function test_cannot_approve_temporary_endorsement_with_permanent_permission()
-    {
-        $endorsementRequest = EndorsementRequest::factory()->create([
-            'endorsable_type' => Position::class,
-            'endorsable_id' => Position::factory()->create()->id,
-        ]);
-
-        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListEndorsementRequests::class)

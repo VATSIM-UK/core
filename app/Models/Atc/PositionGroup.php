@@ -77,12 +77,10 @@ class PositionGroup extends Model implements Endorseable
                 return $endorsement->hasExpired();
             });
 
-            $positionGroupsAssigned = $nonExpiredEndorsements->contains(function ($value, $key) use (&$positionGroup) {
+            return $nonExpiredEndorsements->contains(function ($value, $key) use (&$positionGroup) {
                 return $value->endorsable_id == $positionGroup->id
                     && $value->endorsable_type == PositionGroup::class;
             });
-
-            return $positionGroupsAssigned;
         });
     }
 

@@ -5,8 +5,8 @@ namespace Tests\Unit\Training\WaitingList;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
-use App\Services\Training\CheckWaitingListEligibility;
-use App\Services\Training\WriteWaitingListEligibility;
+use App\Services\Training\CheckWaitingListFlags;
+use App\Services\Training\WriteWaitingListFlagSummary;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -39,9 +39,9 @@ class WaitingListWriteEligibilityTest extends TestCase
             'disconnected_at' => now(),
         ]);
 
-        $checkEligibility = new CheckWaitingListEligibility($this->user);
+        $checkEligibility = new CheckWaitingListFlags($this->user);
 
-        WriteWaitingListEligibility::handle($this->waitingList, $checkEligibility);
+        WriteWaitingListFlagSummary::handle($this->waitingList, $checkEligibility);
 
         $this->assertEquals($waitingListAccount->fresh()->flags_status_summary,
             [
@@ -68,9 +68,9 @@ class WaitingListWriteEligibilityTest extends TestCase
             'disconnected_at' => now(),
         ]);
 
-        $checkEligibility = new CheckWaitingListEligibility($this->user);
+        $checkEligibility = new CheckWaitingListFlags($this->user);
 
-        WriteWaitingListEligibility::handle($this->waitingList, $checkEligibility);
+        WriteWaitingListFlagSummary::handle($this->waitingList, $checkEligibility);
 
         $this->assertEquals($waitingListAccount->fresh()->flags_status_summary,
             [

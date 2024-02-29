@@ -73,7 +73,7 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
         Livewire::test(CreateEndorsementRequest::class)
             ->set('data.endorsable_type', 'App\Models\Atc\Position')
-            ->assertSee($position->name)
+            ->assertSee($position->callsign)
             ->assertDontSee($nonTemporarilyEndorsablePosition->name)
             ->fillForm([
                 'account_id' => $accountRequestingFor->id,

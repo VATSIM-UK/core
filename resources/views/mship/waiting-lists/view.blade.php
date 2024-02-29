@@ -54,19 +54,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if($list->isATCList())
-                        <tr>
-                            <td colspan="2" class="text-center">
-                                The following hour check:
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Hour Check (Automatic)</td>
-                            <td>
-                                <x-boolean-indicator :value="$list->pivot->atc_hour_check" />
-                            </td>
-                        </tr>
-                        @endif
                         <tr>
                             <td colspan="2" class="text-center">{{$list->isATCList() ? ' and ': null}}
                                 <strong>{{$list->flags_check}}</strong> of the following:

@@ -4,9 +4,9 @@ namespace App\Services\Training;
 
 use App\Models\Training\WaitingList;
 
-class WriteWaitingListEligibility
+class WriteWaitingListFlagSummary
 {
-    public static function handle(WaitingList $waitingList, CheckWaitingListEligibility $service)
+    public static function handle(WaitingList $waitingList, CheckWaitingListFlags $service): void
     {
         $waitingListAccount = $service->getWaitingListAccount($waitingList);
 

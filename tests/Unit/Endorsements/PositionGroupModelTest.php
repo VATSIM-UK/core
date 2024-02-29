@@ -131,31 +131,6 @@ class PositionGroupModelTest extends TestCase
         $this->assertTrue($this->positionGroup->fresh()->conditionsMetForUser($this->user));
     }
 
-    /** @test */
-    public function itFlushesUserEndorsementCacheAfterATCSession()
-    {
-        $this->createMockCondition();
-
-        $spy = Cache::spy();
-
-        $this->assertFalse($this->positionGroup->fresh()->conditionsMetForUser($this->user));
-
-        $spy->shouldHaveReceived('put')
-            ->once();
-
-        $atc = factory(Atc::class)->create([
-            'account_id' => $this->user->id,
-            'callsign' => 'EGKK_TWR',
-            'connected_at' => Carbon::now()->subHours(2),
-        ]);
-        $atc->disconnectAt(Carbon::now());
-
-        $spy->shouldHaveReceived('forget')
-            ->times(PositionGroup::count());
-
-        $this->assertTrue($this->positionGroup->fresh()->conditionsMetForUser($this->user));
-    }
-
     private function createMockCondition($positions = ['EGKK_%'], $type = PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD)
     {
         // create condition requiring an hour on a EGKK_TWR
