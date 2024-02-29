@@ -75,6 +75,8 @@ class WaitingList extends Model
                 'notes',
                 'created_at',
                 'eligible',
+                'eligibility_summary',
+                'flags_status_summary',
             ])->wherePivot('deleted_at', null);
     }
 
@@ -99,6 +101,16 @@ class WaitingList extends Model
     }
 
     /**
+     * One WaitingList can have many flags associated with it.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function flags()
+    {
+        return $this->hasMany(WaitingListFlag::class, 'list_id');
+    }
+
+    /**
      * Get the position of an account in the eligible waiting list.
      *
      * @return int|null
@@ -110,6 +122,34 @@ class WaitingList extends Model
         });
 
         return ($key !== false) ? $key + 1 : null;
+    }
+
+    /**
+     * Associate a flag with a waiting list.
+     *
+     * @return mixed
+     */
+    public function addFlag(WaitingListFlag $flag)
+    {
+        $savedFlag = $this->flags()->save($flag);
+
+        $this->accounts()->each(function ($account) use ($flag) {
+            $account->pivot->flags()->attach($flag);
+        });
+
+        event(new FlagAddedToWaitingList($this));
+
+        return $savedFlag;
+    }
+
+    /**
+     * Remove a flag from a waiting list.
+     *
+     * @return mixed
+     */
+    public function removeFlag(WaitingListFlag $flag)
+    {
+        return $this->flags()->delete($flag);
     }
 
     /**
