@@ -49,9 +49,8 @@ class WaitingListEligibilityPlumbingTest extends TestCase
 
             $waitingListAccount = $waitingList->fresh()->accounts->first()->pivot;
 
-            // manually populate the status and flag as we are
+            // manually populate the flag as we are
             // deliberately supressing the added to waiting list event
-            $waitingListAccount->addStatus(WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS));
             $waitingListAccount->addFlag($flag);
 
             $waitingListAccount->fresh()->markFlag($flag);
