@@ -23,7 +23,6 @@ class Renew extends Component
         $userOnRoster = Roster::where('account_id', auth()->user()->id)->exists();
 
         $this->notifications = collect($ukcp->getUnreadNotificationsForUser(auth()->user()))->keyBy('id');
-        $this->notifications = collect();
 
         if ($userOnRoster) {
             session()->flash('error', 'You are already on the roster!');
