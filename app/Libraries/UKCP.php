@@ -121,6 +121,43 @@ class UKCP
         }
     }
 
+    public function getUnreadNotificationsForUser(Account $account)
+    {
+        try {
+            $url = config('services.ukcp.url')."/api/user/{$account->id}/notifications/unread";
+            $result = $this->client->get($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer '.$this->apiKey,
+                ],
+            ]);
+
+            return json_decode($result->getBody()->getContents(), true);
+        } catch (ClientException $e) {
+            Log::info("UKCP Client Exception {$e->getMessage()} when getting notifications");
+
+            return [];
+        }
+    }
+
+    public function markNotificationReadForUser(Account $account, int $notificationId)
+    {
+        try {
+            $url = config('services.ukcp.url')."/api/user/{$account->id}/notifications/read/{$notificationId}";
+            $this->client->put($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer '.$this->apiKey,
+                ],
+            ]);
+
+            return true;
+        } catch (ClientException $e) {
+            dd($e);
+            Log::info("UKCP Client Exception {$e->getMessage()} when marking notification read");
+
+            return [];
+        }
+    }
+
     private function getStandStatusCacheKey(string $airfieldIcao): string
     {
         return sprintf('UKCP_STAND_STATUS_%s', $airfieldIcao);

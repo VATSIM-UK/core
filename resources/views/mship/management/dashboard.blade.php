@@ -69,7 +69,7 @@
                             </div>
                         @endif
                         <div class="col-xs-4 pb-1">
-                            <b>STATUS: </b>
+                            <b>MEMBERSHIP:</b>
                             {{ $_account->status_string }} {{ !is_null($_account->primary_state) ? $_account->primary_state->name : 'unknown state' }}
                             Member
                         </div>
@@ -91,6 +91,19 @@
                             <a href="{{ route('mship.auth.invisibility') }}"
                                onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Disable' : 'Enable' }}</a>
                             {!! Form::close() !!}
+                        </div>
+
+                        <div class="col-xs-4">
+                            <strong>CONTROLLER ROSTER:</strong>
+                            @if($roster)
+                                <a href="{{ route('site.roster.show', ['account' => $_account->id]) }}">
+                                    Active
+                                </a>
+                            @else
+                                <a href="{{ route('site.roster.index') }}">
+                                    Inactive
+                                </a>
+                            @endif
                         </div>
                     </div>
                     <!-- Top Row [END] -->

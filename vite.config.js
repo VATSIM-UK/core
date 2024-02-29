@@ -7,6 +7,7 @@ export default defineConfig({
             input: [
                 'resources/assets/less/admin.less',
                 'resources/assets/sass/app.scss',
+                'resources/assets/css/tailwind.css',
                 'resources/assets/js/app.js',
                 'resources/assets/sass/home.scss',
                 'resources/assets/js/home.js',

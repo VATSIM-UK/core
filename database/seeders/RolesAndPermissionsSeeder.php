@@ -179,6 +179,21 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'discord.rostering',
             // 'discord.livestreaming',
             'discord.atc.student.obs',
+
+            'position-group.view.*',
+
+            'endorsement.temporary.create.*',
+            'endorsement.temporary.edit.*',
+
+            'endorsement.create.*',
+            'endorsement.create.permanent',
+            'endorsement.create.temporary',
+
+            'endorsement-request.access',
+            'endorsement-request.create.*',
+            'endorsement-request.view.*',
+            'endorsement-request.approve.*',
+            'endorsement-request.reject.*',
         ];
 
         foreach ($permissions as $permission) {

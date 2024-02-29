@@ -74,30 +74,7 @@ class WaitingList extends Model
                 'deleted_at',
                 'notes',
                 'created_at',
-                'eligible',
-                'eligibility_summary',
-                'flags_status_summary',
-            ])->wherePivot('deleted_at', null);
-    }
-
-    public function ineligibleAccounts(): BelongsToMany
-    {
-        return $this->accounts()
-            ->wherePivot('eligible', false);
-    }
-
-    public function eligibleAccounts(): BelongsToMany
-    {
-        return $this->accounts()
-            ->wherePivot('eligible', true);
-    }
-
-    public function accountsByEligibility($eligible = true)
-    {
-        return $this->accounts()
-            ->orderByPivot('created_at')
-            ->get()
-            ->filter(fn ($model) => $model->pivot->eligible == $eligible)->values();
+            ])->wherePivot('deleted_at', null)->orderByPivot('created_at');
     }
 
     /**
@@ -117,7 +94,7 @@ class WaitingList extends Model
      */
     public function accountPosition(Account $account)
     {
-        $key = $this->accountsByEligibility(true)->search(function ($accountItem) use ($account) {
+        $key = $this->accounts->search(function ($accountItem) use ($account) {
             return $accountItem->id == $account->id;
         });
 

@@ -119,7 +119,7 @@
                 <div class="panel-body">
                     Once you have completed the requirements above, you will be able to press the button below to request access to the Moodle course and progress to Step 2.
                     <br><br>
-                    @if($endorsment->conditionsMetForUser($_account))
+                    @if($positionGroup->conditionsMetForUser($_account))
                         <a href="mailto:atc-training@vatsim.uk?Subject=Gatwick%20Endorsement%20-%20Moodle%20Request&Body=Please%20grant%20me%20access%20to%20the%20Gatwick%20Endorsement%20exam%20on%20Moodle%20as%20I%20have%20now%20met%20the%20number%20of%20hours%20required%20across%20the%20three%20groups.%0A%0AGroup%201%3A%20{{ round($hours[0]->max(),1) }}%20hours%20on%20{{ $hours[0]->keys()->first() }}%20within%20the%20last%20three%20months.%0AGroup%202%3A%20{{ round($hours[1]->max(),1) }}%20hours%20on%20{{ $hours[1]->keys()->first() }}%20within%20the%20last%20three%20months.%0AGroup%203%3A%20{{ round($hours[2]->max(),1) }}%20hours%20on%20{{ $hours[2]->keys()->first() }}%20within%20the%20last%20three%20months.%0A%0AFull%20Name%3A%20{{ $_account->name }}%0AVATSIM%20CID%3A%20{{ $_account->id }}" style="text-decoration: none;">
                             <button class="btn btn-success center-block">Request Moodle Course</button>
                         </a>

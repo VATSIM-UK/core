@@ -4,7 +4,6 @@ namespace Tests\Feature\Account;
 
 use App\Events\Mship\AccountAltered;
 use App\Models\Training\WaitingList;
-use App\Services\Training\AddToWaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
@@ -49,26 +48,21 @@ class WaitingListsTest extends TestCase
     public function testViewATCWaitingListDetailsNoFlags()
     {
         $list = factory(WaitingList::class)->create(['name' => 'My List']);
-        handleService(new AddToWaitingList($list, $this->user, $this->privacc));
+        $list->addToWaitingList($this->user, $this->privacc);
 
         $this->actingAs($this->user)
             ->get(route('mship.waiting-lists.view', ['waitingListId' => $list->id]))
-            ->assertSee('My List')
-            ->assertSee('Hour Check (Automatic)')
-            ->assertSeeText('Have at least 12 hours on UK controller positions in the last 3 months')
-            ->assertSeeText('0.0 / 12 hours');
+            ->assertSee('My List');
     }
 
     /** @test */
     public function testViewPilotWaitingListDetailsNoFlags()
     {
         $list = factory(WaitingList::class)->create(['name' => 'My List', 'department' => WaitingList::PILOT_DEPARTMENT]);
-        handleService(new AddToWaitingList($list, $this->user, $this->privacc));
+        $list->addToWaitingList($this->user, $this->privacc);
 
-        $response = $this->actingAs($this->user)
+        $this->actingAs($this->user)
             ->get(route('mship.waiting-lists.view', ['waitingListId' => $list->id]))
-            ->assertSee('My List')
-            ->assertDontSee('Hour Check (Automatic)')
-            ->assertDontSeeText('Have at least 12 hours on UK controller positions in the last 3 months');
+            ->assertSee('My List');
     }
 }

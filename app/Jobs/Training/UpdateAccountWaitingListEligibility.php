@@ -3,8 +3,8 @@
 namespace App\Jobs\Training;
 
 use App\Models\Mship\Account;
-use App\Services\Training\CheckWaitingListEligibility;
-use App\Services\Training\WriteWaitingListEligibility;
+use App\Services\Training\CheckWaitingListFlags;
+use App\Services\Training\WriteWaitingListFlagSummary;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -31,12 +31,12 @@ class UpdateAccountWaitingListEligibility implements ShouldQueue
      */
     public function handle()
     {
-        $service = new CheckWaitingListEligibility($this->account);
+        $service = new CheckWaitingListFlags($this->account);
 
         $accountWaitingLists = $this->account->currentWaitingLists;
 
         foreach ($accountWaitingLists as $waitingList) {
-            WriteWaitingListEligibility::handle($waitingList, $service);
+            WriteWaitingListFlagSummary::handle($waitingList, $service);
         }
     }
 }

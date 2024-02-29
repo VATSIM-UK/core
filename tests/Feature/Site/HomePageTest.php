@@ -20,6 +20,7 @@ class HomePageTest extends TestCase
     /** @test */
     public function testItShowsLiveAtcBookingsOnTheHomepage()
     {
+        $this->withoutExceptionHandling();
         $booking = factory(Booking::class)->create([
             'date' => $this->knownDate->toDateString(),
             'position' => 'EGKK_APP',

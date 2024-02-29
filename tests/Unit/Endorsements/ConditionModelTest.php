@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Endorsements;
 
-use App\Models\Atc\Endorsement;
-use App\Models\Atc\Endorsement\Condition;
+use App\Models\Atc\PositionGroup;
+use App\Models\Atc\PositionGroupCondition;
 use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use Carbon\Carbon;
@@ -20,26 +20,26 @@ class ConditionModelTest extends TestCase
     {
         parent::setUp();
 
-        $this->condition = factory(Condition::class)->create();
+        $this->condition = factory(PositionGroupCondition::class)->create();
     }
 
     /** @test */
     public function itCanBeCreated()
     {
-        $condition = Condition::create([
-            'endorsement_id' => 100,
+        $condition = PositionGroupCondition::create([
+            'position_group_id' => 100,
             'positions' => ['EGLL_TWR', 'EGPH_%'],
             'required_hours' => 10,
-            'type' => Condition::TYPE_SUM_OF_AIRFIELDS,
+            'type' => PositionGroupCondition::TYPE_SUM_OF_AIRFIELDS,
             'within_months' => null,
         ]);
 
-        $this->assertDatabaseHas('endorsement_conditions', [
+        $this->assertDatabaseHas('position_group_conditions', [
             'id' => $condition->id,
-            'endorsement_id' => 100,
+            'position_group_id' => 100,
             'positions' => json_encode(['EGLL_TWR', 'EGPH_%']),
             'required_hours' => 10,
-            'type' => Condition::TYPE_SUM_OF_AIRFIELDS,
+            'type' => PositionGroupCondition::TYPE_SUM_OF_AIRFIELDS,
             'within_months' => null,
         ]);
     }
@@ -63,20 +63,20 @@ class ConditionModelTest extends TestCase
     /** @test */
     public function itCanBeAssociatedWithAEndorsement()
     {
-        $endorsement = factory(Endorsement::class)->create();
-        $condition = factory(Condition::class)->make(['endorsement_id' => null]);
+        $positionGroup = factory(PositionGroup::class)->create();
+        $condition = factory(PositionGroupCondition::class)->make(['position_group_id' => null]);
 
-        $this->assertNull($condition->endorsement);
-        $condition->endorsement()->associate($endorsement);
+        $this->assertNull($condition->positionGroup);
+        $condition->positionGroup()->associate($positionGroup);
         $condition->save();
 
-        $this->assertEquals($endorsement->id, $condition->fresh()->endorsement->id);
+        $this->assertEquals($positionGroup->id, $condition->fresh()->positionGroup->id);
     }
 
     /** @test */
     public function itCorrectlyReportsProgress()
     {
-        $condition = factory(Endorsement\Condition::class)->make(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD]);
+        $condition = factory(PositionGroupCondition::class)->make(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD]);
 
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
@@ -119,7 +119,7 @@ class ConditionModelTest extends TestCase
     /** @test */
     public function itCorrectlyReportsMetAndProgressForSingleAirfield()
     {
-        $condition = factory(Endorsement\Condition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD]);
+        $condition = factory(PositionGroupCondition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD]);
 
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
@@ -148,7 +148,7 @@ class ConditionModelTest extends TestCase
     /** @test */
     public function itCorrectlyReportsMetAndProgressForSum()
     {
-        $condition = factory(Endorsement\Condition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => Endorsement\Condition::TYPE_SUM_OF_AIRFIELDS]);
+        $condition = factory(PositionGroupCondition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => PositionGroupCondition::TYPE_SUM_OF_AIRFIELDS]);
 
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
@@ -179,11 +179,11 @@ class ConditionModelTest extends TestCase
     {
         $requiredQualification = Qualification::code('S3')->get()->first()->id;
 
-        $condition = factory(Endorsement\Condition::class)->create([
+        $condition = factory(PositionGroupCondition::class)->create([
             'positions' => ['ESSEX_APP'],
             'required_hours' => 10,
             'within_months' => 2,
-            'type' => Endorsement\Condition::TYPE_ON_SINGLE_AIRFIELD,
+            'type' => PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD,
             'required_qualification' => $requiredQualification,
         ]);
 

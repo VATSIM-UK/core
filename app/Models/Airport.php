@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Airport\Navaid;
 use App\Models\Airport\Procedure;
 use App\Models\Airport\Runway;
+use App\Models\Atc\Position;
 use App\Models\NetworkData\Atc;
 use App\Models\NetworkData\Pilot;
 
@@ -43,7 +44,7 @@ use App\Models\NetworkData\Pilot;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Navaid[] $navaids
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Procedure[] $procedures
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Runway[] $runways
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Station[] $stations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Atc\Position[] $positions
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport iCAO($icao)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport uK()
@@ -125,15 +126,15 @@ class Airport extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function stations()
+    public function positions()
     {
-        return $this->belongsToMany(Station::class, 'airport_stations');
+        return $this->belongsToMany(Position::class, 'airport_positions');
     }
 
     public function getControllersAttribute()
     {
-        if ($this->stations->count() > 0) {
-            return Atc::withCallsignIn($this->stations->pluck('callsign')->push('%'.$this->icao.'%')->all())->online()->with('account')->get();
+        if ($this->positions->count() > 0) {
+            return Atc::withCallsignIn($this->positions->pluck('callsign')->push('%'.$this->icao.'%')->all())->online()->with('account')->get();
         }
 
         return Atc::withCallsign('%'.$this->icao.'%')->online()->with('account')->get();

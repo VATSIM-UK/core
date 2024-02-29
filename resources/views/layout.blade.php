@@ -79,5 +79,6 @@
 @yield('scripts')
 @include('partials/_snow')
 @cookieconsentview
+@livewireScriptConfig
 </body>
 </html>

@@ -27,7 +27,7 @@ class AirportController extends BaseController
     {
         $airport->load(['navaids', 'runways', 'procedures', 'procedures.runway']);
 
-        $stations = $airport->stations()->orderByDesc('type')->get()->groupBy('type')->transform(function ($group) {
+        $positions = $airport->positions()->orderByDesc('type')->get()->groupBy('type')->transform(function ($group) {
             return $group->sortBy(function ($station) {
                 return strlen($station->callsign) * ($station->sub_station ? 2 : 1);
             });
@@ -37,7 +37,7 @@ class AirportController extends BaseController
             ->with(
                 [
                     'airport' => $airport,
-                    'stations' => $stations,
+                    'positions' => $positions,
                     'stands' => $this->ukcp->getStandStatus(Str::upper($airport->icao)),
                 ]
             );

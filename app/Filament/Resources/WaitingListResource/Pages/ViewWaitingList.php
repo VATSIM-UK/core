@@ -4,7 +4,7 @@ namespace App\Filament\Resources\WaitingListResource\Pages;
 
 use App\Filament\Resources\WaitingListResource;
 use App\Filament\Resources\WaitingListResource\Widgets\IndividualWaitingListOverview;
-use App\Models\Atc\Endorsement;
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
@@ -71,7 +71,7 @@ class ViewWaitingList extends ViewRecord
                 ->action(function ($data, $action) {
                     $flag = WaitingListFlag::create([
                         'name' => $data['name'],
-                        'endorsement_id' => $data['endorsement_id'],
+                        'position_group_id' => $data['position_group_id'],
                     ]);
 
                     $this->record->addFlag($flag);
@@ -82,7 +82,7 @@ class ViewWaitingList extends ViewRecord
                 ->form([
                     TextInput::make('name')->rules(['required', 'min:3', 'unique:training_waiting_list_flags,name']),
 
-                    Select::make('endorsement_id')->label('Endorsement')->options(fn () => Endorsement::all()->mapWithKeys(function ($item) {
+                    Select::make('position_group_id')->label('Position Group')->options(fn () => PositionGroup::all()->mapWithKeys(function ($item) {
                         return [$item['id'] => $item['name']];
                     }))->hint('If an option is chosen here, this will be an automated flag. This cannot be reversed.'),
                 ])

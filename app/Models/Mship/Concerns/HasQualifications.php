@@ -7,6 +7,7 @@ use App\Events\Mship\AccountAltered;
 use App\Events\Mship\Qualifications\QualificationAdded;
 use App\Models\Mship\AccountQualification;
 use App\Models\Mship\Qualification;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Log;
 
 trait HasQualifications
@@ -192,5 +193,12 @@ trait HasQualifications
         return $this->qualifications->filter(function ($qual) {
             return $qual->type == QualificationTypeEnum::Admin->value;
         });
+    }
+
+    public function hasControllerRating(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->qualification_atc->vatsim > 1,
+        );
     }
 }

@@ -13,11 +13,9 @@ class WaitingLists extends BaseController
         $atcWaitingLists = $request->user()->currentWaitingLists()
             ->withPivot([
                 'created_at',
-                'eligible',
             ])->where('department', WaitingList::ATC_DEPARTMENT)->get();
         $pilotWaitingLists = $request->user()->currentWaitingLists()->withPivot([
             'created_at',
-            'eligible',
         ])->where('department', WaitingList::PILOT_DEPARTMENT)->get();
 
         return view('mship.waiting-lists.index', [
@@ -31,11 +29,10 @@ class WaitingLists extends BaseController
     {
         $list = $request->user()->currentWaitingLists()->where('training_waiting_list.id', $waitingListId)->withPivot([
             'created_at',
-            'eligible',
         ])->firstOrFail();
 
         $automaticFlags = $list->pivot->flags->filter(function ($flag) {
-            return (bool) $flag->endorsement_id;
+            return (bool) $flag->position_group_id;
         });
 
         return view('mship.waiting-lists.view', ['list' => $list, 'automaticFlags' => $automaticFlags]);

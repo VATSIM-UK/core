@@ -4,7 +4,6 @@ namespace Tests\Unit\Training\WaitingList;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingList\WaitingListStatus;
 
 trait WaitingListTestHelper
 {
@@ -24,11 +23,6 @@ trait WaitingListTestHelper
         });
 
         return $waitingList->fresh();
-    }
-
-    protected function createStatus()
-    {
-        return factory(WaitingListStatus::class)->create();
     }
 
     private function createAdminAccount()

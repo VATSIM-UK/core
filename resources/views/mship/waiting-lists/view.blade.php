@@ -17,10 +17,6 @@
                         <th>Department</th>
                         <td>{{ $list->formatted_department }}</td>
                     </tr>
-                    <tr>
-                        <th>Your Status</th>
-                        <td>{{$list->pivot->current_status}}</td>
-                    </tr>
                     @if($list->pivot->position)
                     <tr>
                         <th>Your Position</th>
@@ -54,19 +50,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if($list->isATCList())
-                        <tr>
-                            <td colspan="2" class="text-center">
-                                The following hour check:
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Hour Check (Automatic)</td>
-                            <td>
-                                <x-boolean-indicator :value="$list->pivot->atc_hour_check" />
-                            </td>
-                        </tr>
-                        @endif
                         <tr>
                             <td colspan="2" class="text-center">{{$list->isATCList() ? ' and ': null}}
                                 <strong>{{$list->flags_check}}</strong> of the following:
@@ -74,7 +57,7 @@
                         </tr>
                         @foreach($list->pivot->flags as $flag)
                         <tr>
-                            <td>{{$flag->name}} ({{$flag->endorsement_id ? 'Automatic': 'Manual'}})</td>
+                            <td>{{$flag->name}} ({{$flag->position_group_id ? 'Automatic': 'Manual'}})</td>
                             <td>
                                 <x-boolean-indicator :value="$flag->pivot->value" />
                             </td>
@@ -87,40 +70,4 @@
     </div>
     @endif
 </div>
-@if($list->isATCList() || count($automaticFlags))
-<div class="alert alert-warning">
-    <strong>Important: </strong> Automated eligibility flags are only calculated every 24 hours, or after the end of an ATC session! If you have just completed
-    a network session, the flags shown above may not be accurate.
-</div>
-<div class="row">
-    @if($list->isATCList())
-    <div class="col-lg-6">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading">
-                <i class="fa fa-flag"></i> Hour Check
-            </div>
-            <div class="panel-body">
-                <p>
-                    Have at least <strong>12 hours</strong> on <strong>UK controller positions</strong> in the last <strong>3 months</strong>.
-                </p>
-                <small>NB: Only sessions with primary frequencies count (i.e. not mentoring)</small>
-                <x-progress-indicator max="12" :value="$list->pivot->recentATCMinutes() / 60" :text="number_format($list->pivot->recentATCMinutes() / 60, 1, null, '') . ' / 12 hours'" />
-            </div>
-        </div>
-    </div>
-    @endif
-    @foreach($automaticFlags as $flag)
-    <div class="col-lg-6">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading">
-                <i class="fa fa-flag"></i> {{$flag->name}}
-            </div>
-            <div class="panel-body">
-                @include('mship.waiting-lists._flag_breakdown', ["flag" => $flag, "user" => $list->pivot->account])
-            </div>
-        </div>
-    </div>
-    @endforeach
-</div>
-@endif
 @endsection

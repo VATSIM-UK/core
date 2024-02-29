@@ -6,7 +6,7 @@ use App\Models\Airport;
 use App\Models\Airport\Navaid;
 use App\Models\Airport\Procedure;
 use App\Models\Airport\Runway;
-use App\Models\Station;
+use App\Models\Atc\Position;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -62,16 +62,16 @@ class AirportTest extends TestCase
     }
 
     /** @test */
-    public function itHasWorkingStationsRelationship()
+    public function itHasWorkingPositionsRelationship()
     {
         $airport = factory(Airport::class)->create();
-        $station1 = factory(Station::class)->create();
-        $station2 = factory(Station::class)->create();
-        $airport->stations()->attach([$station1->id, $station2->id]);
+        $station1 = Position::factory()->create();
+        $station2 = Position::factory()->create();
+        $airport->positions()->attach([$station1->id, $station2->id]);
         $airport = $airport->fresh();
 
-        $this->assertInstanceOf(Station::class, $airport->stations->first());
-        $this->assertCount(2, $airport->stations);
+        $this->assertInstanceOf(Position::class, $airport->positions->first());
+        $this->assertCount(2, $airport->positions);
     }
 
     /** @test */

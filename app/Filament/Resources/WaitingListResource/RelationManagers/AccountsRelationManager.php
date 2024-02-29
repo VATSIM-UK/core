@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\WaitingListResource\RelationManagers;
 
-use App\Models\Training\WaitingList\WaitingListStatus;
+use App\Models\Roster;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -15,7 +15,7 @@ use Illuminate\Support\Arr;
 
 class AccountsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'eligibleAccounts';
+    protected static string $relationship = 'accounts';
 
     protected static ?string $recordTitleAttribute = 'id';
 
@@ -39,30 +39,6 @@ class AccountsRelationManager extends RelationManager
                             ->placeholder('Add notes here'),
 
                     ]),
-                Forms\Components\Fieldset::make('account_status_fieldset')
-                    ->label('Account Status')
-                    ->schema(function ($record) {
-                        return [
-                            Forms\Components\Radio::make('account_status')
-                                ->label('Status')
-                                ->options([
-                                    WaitingListStatus::DEFAULT_STATUS => 'Active',
-                                    WaitingListStatus::DEFERRED => 'Deferred',
-                                ])
-                                ->afterStateHydrated(fn ($component, $state) => $component->state($record->pivot->current_status->id)),
-                        ];
-                    }),
-                Forms\Components\Fieldset::make('automatic_flags')
-                    ->label('Automatic Flags')
-                    ->schema(function ($record) {
-                        return $record->pivot->flags->filter(fn ($flag) => $flag->endorsement_id != null)->map(function ($flag) {
-                            return Forms\Components\Toggle::make('flags.'.$flag->id)
-                                ->disabled()
-                                ->label($flag->name)
-                                ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $flag->pivot->value));
-                        })->all();
-                    })
-                    ->visible(fn ($record) => $record->pivot->flags->filter(fn ($flag) => $flag->endorsement_id != null)->isNotEmpty()),
 
                 Forms\Components\Fieldset::make('cts_theory_exam')
                     ->label('CTS Theory Exam')
@@ -79,34 +55,13 @@ class AccountsRelationManager extends RelationManager
                 Forms\Components\Fieldset::make('manual_flags')
                     ->label('Manual Flags')
                     ->schema(function ($record) {
-                        return $record->pivot->flags->filter(fn ($flag) => $flag->endorsement_id == null)->map(function ($flag) {
+                        return $record->pivot->flags->filter(fn ($flag) => $flag->position_group_id == null)->map(function ($flag) {
                             return Forms\Components\Toggle::make('flags.'.$flag->id)
                                 ->label($flag->name)
                                 ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $flag->pivot->value));
                         })->all();
                     })
                     ->visible(fn ($record) => $record->pivot->flags->isNotEmpty()),
-
-                Forms\Components\Fieldset::make('eligibility_summary')
-                    ->label('Eligibility Breakdown')
-                    ->schema(function ($record) {
-                        return [
-                            Forms\Components\Toggle::make('base_controlling_hours')
-                                ->label('Controlling Hours')
-                                ->disabled()
-                                ->afterStateHydrated(fn ($component, $state) => $component->state(Arr::get($record->pivot->eligibility_summary, 'base_controlling_hours'))),
-
-                            Forms\Components\Toggle::make('flags_check')
-                                ->label('Flags Check')
-                                ->disabled()
-                                ->afterStateHydrated(fn ($component, $state) => $component->state((bool) Arr::get($record->pivot->flags_status_summary, 'overall'))),
-
-                            Forms\Components\Toggle::make('status')
-                                ->label('Status')
-                                ->disabled()
-                                ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $record->pivot->current_status->name == 'Active')),
-                        ];
-                    }),
             ]);
     }
 
@@ -117,17 +72,9 @@ class AccountsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('pivot.position')->getStateUsing(fn ($record) => $record->pivot->position ?? '-')->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('pivot_created_at', $direction))->label('Position'),
                 Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
                 Tables\Columns\TextColumn::make('name')->label('Name')->searchable(['name_first', 'name_last']),
+                Tables\Columns\IconColumn::make('on_roster')->boolean()->label('On roster')->getStateUsing(fn ($record) => Roster::where('account_id', $record->id)->exists()),
                 Tables\Columns\TextColumn::make('pivot.created_at')->label('Added on')->dateTime('d/m/Y'),
                 Tables\Columns\IconColumn::make('pivot.cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn ($record) => $record->pivot->theory_exam_passed)->visible(fn ($record) => $record->waitingList->feature_toggles['check_cts_theory_exam'] ?? true),
-                Tables\Columns\IconColumn::make('pivot.atc_hour_check')->boolean()->label('Hour check')->getStateUsing(fn ($record) => Arr::get($record->pivot?->eligibility_summary, 'base_controlling_hours')),
-                Tables\Columns\IconColumn::make('pivot.flags_check')->boolean()->label('Flags check')->getStateUsing(fn ($record) => (bool) Arr::get($record->pivot?->flags_status_summary, 'overall')),
-                Tables\Columns\IconColumn::make('pivot.eligible')->boolean()->label('Eligible')->getStateUsing(fn ($record) => $record->pivot->eligible),
-                Tables\Columns\TextColumn::make('pivot.status')
-                    ->badge()
-                    ->getStateUsing(fn ($record) => $record->pivot->current_status->name)->colors([
-                        'success' => 'Active',
-                        'gray' => 'Deferred',
-                    ])->label('Status'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -136,13 +83,9 @@ class AccountsRelationManager extends RelationManager
                             'notes' => $data['notes'],
                         ]);
 
-                        $status = $data['account_status'] == WaitingListStatus::DEFAULT_STATUS ? WaitingListStatus::DEFAULT_STATUS : WaitingListStatus::DEFERRED;
-                        $status = WaitingListStatus::find($status);
-                        $record->pivot->addStatus($status);
-
                         $flagsById = collect(Arr::get($data, 'flags', []));
                         // only update manual flags
-                        $flagsToUpdate = $record->pivot->flags->filter(fn ($flag) => $flag->endorsement_id == null);
+                        $flagsToUpdate = $record->pivot->flags->filter(fn ($flag) => $flag->position_group_id == null);
                         $flagsToUpdate->each(fn ($flag) => $flagsById->get($flag->id) ? $flag->pivot->mark() : $flag->pivot->unMark());
 
                         $record->pivot->flags()->sync(

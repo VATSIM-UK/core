@@ -2,11 +2,14 @@
 
 namespace App\Models\Training\WaitingList;
 
-use App\Models\Atc\Endorsement;
+use App\Models\Atc\PositionGroup;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingListFlag extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = [];
 
     protected $table = 'training_waiting_list_flags';
@@ -30,8 +33,8 @@ class WaitingListFlag extends Model
         )->withPivot(['marked_at'])->using(WaitingListAccountFlag::class);
     }
 
-    public function endorsement()
+    public function positionGroup()
     {
-        return $this->belongsTo(Endorsement::class);
+        return $this->belongsTo(PositionGroup::class);
     }
 }

@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\WaitingListResource\Pages;
 use App\Filament\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
-use App\Filament\Resources\WaitingListResource\RelationManagers\IneligibleAccountsRelationManager;
 use App\Models\Training\WaitingList;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -36,11 +35,6 @@ class WaitingListResource extends Resource
                     'atc' => 'ATC Training',
                     'pilot' => 'Pilot Training',
                 ])->required(),
-
-                Forms\Components\Select::make('flags_check')->options([
-                    'all' => 'ALL Flags',
-                    'any' => 'ANY Flags',
-                ])->required(),
             ]);
     }
 
@@ -60,7 +54,6 @@ class WaitingListResource extends Resource
         return [
             RelationGroup::make('accounts', [
                 AccountsRelationManager::class,
-                IneligibleAccountsRelationManager::class,
             ]),
         ];
     }
