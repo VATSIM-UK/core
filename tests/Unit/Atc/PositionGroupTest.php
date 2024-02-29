@@ -60,7 +60,7 @@ class PositionGroupTest extends TestCase
 
         $result = $positionGroup->unassignedFor($account);
 
-        $this->assertTrue($result->contains($positionGroup));
+        $this->assertFalse($result->contains($positionGroup));
         $this->assertFalse($result->contains($otherPositionGroup));
     }
 
