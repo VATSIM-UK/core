@@ -76,8 +76,9 @@ class Roster extends Model
                 && $this->account->hasState('DIVISION') &&
                 $this->account->qualification_atc->vatsim > $positionGroupPosition->positionGroup?->maximumAtcQualification?->vatsim;
 
-            $isEndorsedToRating = ($this->account->hasState('VISITING') || $this->account->hasState('TRANSFERRING'))
-                || $this->account
+            $isEndorsedToRating = isset($positionGroupPosition->positionGroup?->maximumAtcQualification)
+                && ($this->account->hasState('VISITING') || $this->account->hasState('TRANSFERRING'))
+                && $this->account
                     ->endorsements()
                     ->active()
                     ->whereHasMorph('endorsable',
