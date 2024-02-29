@@ -8,7 +8,9 @@
                 <i class="fa fa-list"></i> Waiting List Details
             </div>
             <div class="panel-body">
-                <table class="table">
+                <p>Due to GCAP implementation this information is currently unavailable.
+                    We hope to be able to restore this functionality soon.</p>
+                {{-- <table class="table">
                     <tr>
                         <th>Name</th>
                         <td>{{$list->name}}</td>
@@ -31,7 +33,7 @@
                             {!! HTML::img("cross_mark_circle", "png", 20) !!}
                             @endif</td>
                     </tr>
-                </table>
+                </table> --}}
             </div>
         </div>
     </div>
