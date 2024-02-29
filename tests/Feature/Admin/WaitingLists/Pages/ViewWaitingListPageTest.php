@@ -9,7 +9,6 @@ use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
-use App\Models\Training\WaitingList\WaitingListStatus;
 use Filament\Tables\Actions\EditAction;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
