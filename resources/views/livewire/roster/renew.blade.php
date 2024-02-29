@@ -18,19 +18,43 @@
             @endif
         </div>
     </div>
+    @if ($canReactivate)
     <div class="mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
         <div class="bg-white px-4 py-2 shadow space-y-6 sm:rounded-lg sm:px-12">
 
         <span class="text-2xl font-bold">Notifications</span>
-        <p>Someting polite about how I need to write an endpoint to do this.</p>
+        <p>There have been a few changes since you have been gone! Please take the time
+            to read through the below notifications, acknowleding you have read them as you
+            read through them.</p>
+        <p>Click on the arrow or the title of the notification to see more and mark as read.</p>
+        <p>You have {{ count($notifications) }} notifications to read.</p>
+            <button x-bind:disabled="{{ $this->reactivateButtonDisabled }}" class="p-2 disabled:opacity-25 bg-brand text-white rounded-lg shadow" wire:click="nextPage">Reactivate</button>
+        </p>
+        @if ($notifications->count() > 0)
+        <div class="h-48 overflow-scroll">
+            @foreach ($notifications as $notification)
+                <div class="text-left" x-data="{ expanded: false }">
+                    <span x-on:click="expanded = ! expanded" class="text-md font-semibold hover:cursor-pointer">{{ $notification['title'] }}</span>
+                    <button x-on:click="expanded = ! expanded">⬇️</button>
+                    <div x-show="expanded" x-collapse>
+                        <p>{{ $notification['body'] }}</p>
+                        @if ($notification['link'])
+                            <a href="{{ $notification['link'] }}" target="_blank" lass="text-blue-500 hover:cursor-pointer">Read more</a>
+                        @endif
+                        <p class="text-blue-900 cursor-pointer" wire:click="markNotificationRead({{ $notification['id'] }}, {{ $notification['id'] }})">Mark read</p>
+                    </div>
+                </div>
+            @endforeach
+            </div>
         </div>
+        @endif
     </div>
     <div class="mt-6">
-        <button class="p-2 bg-brand text-white rounded-lg shadow" wire:click="nextPage">Reactivate</button>
+    @endif
     </div>
     @elseif ($page === 2)
         <div class="mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
-            <div class="bg-white px-4 py-2 shadow space-y-6 sm:rounded-lg sm:px-12">
+            <div class="bg-white px-4 py-2 shadow space-y-6 sm:rounded-lg">
 
             <span class="text-2xl font-bold">Reactivate</span>
             <div class="mt-6">

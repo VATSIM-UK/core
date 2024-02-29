@@ -10,7 +10,7 @@ Route::group([
     'prefix' => 'roster',
 ], function () {
     Route::get('/', Index::class)->name('index');
-    Route::get('/renew', Renew::class)->name('renew');
+    Route::get('/renew', Renew::class)->name('renew')->middleware('auth');
     Route::get('/search', Search::class)->name('search');
-    Route::get('/{account}', Show::class)->name('show');
+    Route::get('/{account}', Show::class)->name('show')->middleware('auth');
 });
