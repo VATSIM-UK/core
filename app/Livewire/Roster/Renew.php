@@ -20,6 +20,7 @@ class Renew extends Component
 
         if ($userOnRoster) {
             session()->flash('error', 'You are already on the roster!');
+
             return redirect()->route('site.roster.index');
         }
 

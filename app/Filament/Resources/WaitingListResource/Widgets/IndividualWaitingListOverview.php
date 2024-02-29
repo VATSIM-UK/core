@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\WaitingListResource\Widgets;
 
-use App\Models\Training\WaitingList\WaitingListStatus;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Database\Eloquent\Model;

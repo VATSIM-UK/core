@@ -2,17 +2,12 @@
 
 namespace Tests\Unit\Training\WaitingList;
 
-use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Listeners\Training\WaitingList\AssignFlags;
 use App\Models\Atc\PositionGroup;
-use App\Models\Atc\PositionGroupCondition;
 use App\Models\Mship\Account;
-use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
-use App\Models\Training\WaitingList\WaitingListStatus;
-use App\Services\Training\AddToWaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 

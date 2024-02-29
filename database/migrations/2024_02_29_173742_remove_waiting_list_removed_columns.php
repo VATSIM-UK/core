@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::drop("training_waiting_list_status");
-        Schema::drop("training_waiting_list_account_status");
-        Schema::table("training_waiting_list", function (Blueprint $table) {
-            $table->dropColumn("flags_check");
+        Schema::drop('training_waiting_list_status');
+        Schema::drop('training_waiting_list_account_status');
+        Schema::table('training_waiting_list', function (Blueprint $table) {
+            $table->dropColumn('flags_check');
         });
 
-        Schema::table("training_waiting_list_account", function (Blueprint $table) {
-            $table->dropColumn("eligible");
-            $table->dropColumn("eligibility_summary");
+        Schema::table('training_waiting_list_account', function (Blueprint $table) {
+            $table->dropColumn('eligible');
+            $table->dropColumn('eligibility_summary');
         });
     }
 

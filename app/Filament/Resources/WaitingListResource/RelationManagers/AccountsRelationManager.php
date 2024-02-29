@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\WaitingListResource\RelationManagers;
 
-use App\Models\Roster;
-use App\Models\Training\WaitingList\WaitingListStatus;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Forms;
 use Filament\Forms\Form;

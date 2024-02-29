@@ -5,7 +5,6 @@ namespace Tests\Unit\Training\WaitingList;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
-use App\Models\Training\WaitingList\WaitingListStatus;
 use App\Services\Training\CheckWaitingListEligibility;
 use App\Services\Training\WriteWaitingListEligibility;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
