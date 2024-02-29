@@ -30,10 +30,9 @@ class EndorsementsRelationManager extends RelationManager
                     }))
                     ->hiddenOn('edit'),
 
-                // TODO: determine maximum time in advance.
                 Forms\Components\DatePicker::make('expires_at')
                     ->native(false)
-                    ->label('Expires')
+                    ->label('Expiration')
                     ->minDate(now()),
 
                 Forms\Components\Hidden::make('created_by')
