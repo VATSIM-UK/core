@@ -26,5 +26,8 @@
     "tailwindcss": "^3.4.0",
     "vue": "^2.7.16",
     "vue-template-compiler": "^2.7.16"
+  },
+  "dependencies": {
+    "@alpinejs/collapse": "^3.13.5"
   }
 }

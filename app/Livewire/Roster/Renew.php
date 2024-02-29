@@ -6,17 +6,24 @@ use App\Libraries\UKCP;
 use App\Models\Roster;
 use App\Services\Networkdata\AtcNetworkdataService;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class Renew extends Component
 {
     public int $page;
 
-    public function mount()
+    public Collection $notifications;
+
+    public function mount(UKCP $ukcp)
     {
         $this->page = 1;
 
         $userOnRoster = Roster::where('account_id', auth()->user()->id)->exists();
+
+        $this->notifications = collect($ukcp->getUnreadNotificationsForUser(auth()->user()))->keyBy('id');
+        $this->notifications = collect();
 
         if ($userOnRoster) {
             session()->flash('error', 'You are already on the roster!');
@@ -40,7 +47,7 @@ class Renew extends Component
         $canReactivate = $lastLogon && Carbon::now()->diffInMonths($lastLogon) <= 18;
 
         return view('livewire.roster.renew', [
-            'notifications' => $ukcp->getNotifications(),
+            'notifications' => $this->notifications,
             'canReactivate' => $canReactivate,
             'lastLogon' => $lastLogon?->diffForHumans(),
             'page' => $this->page,
@@ -56,5 +63,20 @@ class Renew extends Component
         session()->flash('success', '✅ You have been reactivated on the roster! Welcome back!');
 
         return redirect()->route('site.roster.index');
+    }
+
+    public function markNotificationRead(UKCP $ukcp, int $notificationId, int $arrayIndex)
+    {
+        $result = $ukcp->markNotificationReadForUser(auth()->user(), $notificationId);
+
+        if ($result) {
+            $this->notifications->forget($notificationId);
+        }
+    }
+
+    #[Computed]
+    public function reactivateButtonDisabled()
+    {
+        return $this->notifications->isNotEmpty();
     }
 }
