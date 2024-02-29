@@ -72,7 +72,8 @@ class Roster extends Model
         // b) are they a visiting or transferring member with an endorsement up to a rating above the position group's maximum?
         // c) are they endorsed on this specific position group?
         if ($positionGroupPosition = PositionGroupPosition::where('position_id', $position->id)->first()) {
-            $isEntitledByHomeMemberRating = $this->account->hasState('DIVISION') &&
+            $isEntitledByHomeMemberRating = isset($positionGroupPosition->positionGroup?->maximumAtcQualification)
+                && $this->account->hasState('DIVISION') &&
                 $this->account->qualification_atc->vatsim > $positionGroupPosition->positionGroup?->maximumAtcQualification?->vatsim;
 
             $isEndorsedToRating = ($this->account->hasState('VISITING') || $this->account->hasState('TRANSFERRING'))
