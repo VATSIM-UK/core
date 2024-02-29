@@ -8,7 +8,7 @@ use App\Livewire\Roster\Show;
 Route::group([
     'as' => 'site.roster.',
     'prefix' => 'roster',
-    'middleware' => 'auth_full_group'
+    'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/', Index::class)->name('index');
     Route::get('/renew', Renew::class)->name('renew');
