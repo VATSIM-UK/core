@@ -23,7 +23,7 @@ class Endorsement extends Model
     protected $with = ['endorsable'];
 
     protected $casts = [
-        'expired_at' => 'datetime',
+        'expires_at' => 'datetime',
     ];
 
     public function endorsable()
@@ -52,17 +52,17 @@ class Endorsement extends Model
 
     public function expires(): bool
     {
-        return isset($this->expired_at);
+        return isset($this->expires_at);
     }
 
     public function hasExpired(): bool
     {
-        return ! is_null($this->expired_at) && $this->expired_at->isPast();
+        return ! is_null($this->expires_at) && $this->expires_at->isPast();
     }
 
     public function scopeActive(Builder $query)
     {
-        return $query->whereNull('expired_at')
-            ->orWhereDate('expired_at', '>=', now());
+        return $query->whereNull('expires_at')
+            ->orWhereDate('expires_at', '>=', now());
     }
 }
