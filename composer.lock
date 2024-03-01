@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "623bb9afb628f4200b98714c1924c58b",
+    "content-hash": "c93f40a16c3ee933c8e0c41424c63de2",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -9113,16 +9113,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v6.4.3",
+            "version": "v6.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "a9034bc119fab8238f76cf49c770f3135f3ead86"
+                "reference": "aa6281ddb3be1b3088f329307d05abfbbeb97649"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/a9034bc119fab8238f76cf49c770f3135f3ead86",
-                "reference": "a9034bc119fab8238f76cf49c770f3135f3ead86",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/aa6281ddb3be1b3088f329307d05abfbbeb97649",
+                "reference": "aa6281ddb3be1b3088f329307d05abfbbeb97649",
                 "shasum": ""
             },
             "require": {
@@ -9186,7 +9186,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v6.4.3"
+                "source": "https://github.com/symfony/http-client/tree/v6.4.4"
             },
             "funding": [
                 {
@@ -9202,7 +9202,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-29T15:01:07+00:00"
+            "time": "2024-02-14T16:28:12+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -15408,5 +15408,5 @@
     "platform-dev": {
         "ext-json": "*"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
