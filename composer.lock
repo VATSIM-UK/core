@@ -5184,16 +5184,16 @@
         },
         {
             "name": "lorisleiva/cron-translator",
-            "version": "v0.4.4",
+            "version": "v0.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lorisleiva/cron-translator.git",
-                "reference": "9c105af4f6b664a8e2f1293eb73139a3b63b1875"
+                "reference": "3c7d8e3984c845a33bc1ae3cdc36c0b38f4783e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lorisleiva/cron-translator/zipball/9c105af4f6b664a8e2f1293eb73139a3b63b1875",
-                "reference": "9c105af4f6b664a8e2f1293eb73139a3b63b1875",
+                "url": "https://api.github.com/repos/lorisleiva/cron-translator/zipball/3c7d8e3984c845a33bc1ae3cdc36c0b38f4783e9",
+                "reference": "3c7d8e3984c845a33bc1ae3cdc36c0b38f4783e9",
                 "shasum": ""
             },
             "require": {
@@ -5228,7 +5228,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lorisleiva/cron-translator/issues",
-                "source": "https://github.com/lorisleiva/cron-translator/tree/v0.4.4"
+                "source": "https://github.com/lorisleiva/cron-translator/tree/v0.4.5"
             },
             "funding": [
                 {
@@ -5236,7 +5236,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-08-18T08:28:30+00:00"
+            "time": "2024-02-02T10:51:56+00:00"
         },
         {
             "name": "maatwebsite/excel",
@@ -8444,16 +8444,16 @@
         },
         {
             "name": "spatie/laravel-schedule-monitor",
-            "version": "3.5.0",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-schedule-monitor.git",
-                "reference": "823455c409c7b48f332017e7269229b02e36cd5c"
+                "reference": "cec3acca2c48faa38fc20bc69538bce19606034f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-schedule-monitor/zipball/823455c409c7b48f332017e7269229b02e36cd5c",
-                "reference": "823455c409c7b48f332017e7269229b02e36cd5c",
+                "url": "https://api.github.com/repos/spatie/laravel-schedule-monitor/zipball/cec3acca2c48faa38fc20bc69538bce19606034f",
+                "reference": "cec3acca2c48faa38fc20bc69538bce19606034f",
                 "shasum": ""
             },
             "require": {
@@ -8511,7 +8511,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-schedule-monitor/issues",
-                "source": "https://github.com/spatie/laravel-schedule-monitor/tree/3.5.0"
+                "source": "https://github.com/spatie/laravel-schedule-monitor/tree/3.6.0"
             },
             "funding": [
                 {
@@ -8519,7 +8519,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-01-26T08:29:04+00:00"
+            "time": "2024-02-28T10:09:58+00:00"
         },
         {
             "name": "symfony/console",
