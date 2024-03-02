@@ -194,6 +194,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'endorsement-request.view.*',
             'endorsement-request.approve.*',
             'endorsement-request.reject.*',
+            'roster.manage',
         ];
 
         foreach ($permissions as $permission) {
