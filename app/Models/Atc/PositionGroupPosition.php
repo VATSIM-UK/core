@@ -2,9 +2,9 @@
 
 namespace App\Models\Atc;
 
-use App\Models\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class PositionGroupPosition extends Model
+class PositionGroupPosition extends Pivot
 {
     public function positionGroup()
     {

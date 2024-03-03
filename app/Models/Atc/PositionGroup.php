@@ -27,7 +27,7 @@ class PositionGroup extends Model implements Endorseable
 
     public function positions()
     {
-        return $this->belongsToMany(Position::class, 'position_group_positions', 'position_group_id', 'position_id');
+        return $this->belongsToMany(Position::class, 'position_group_positions', 'position_group_id', 'position_id')->using(PositionGroupPosition::class);
     }
 
     public function endorsement()
