@@ -9,13 +9,10 @@ use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Roster;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class AccountCanControlTest extends TestCase
 {
-    use DatabaseTransactions;
-
     public function test_detects_can_control_with_rating_when_home_member()
     {
         $qualification = Qualification::code('S2')->first();
@@ -32,6 +29,23 @@ class AccountCanControlTest extends TestCase
         ]);
 
         $this->assertTrue($roster->accountCanControl($position));
+    }
+
+    public function test_cannot_control_without_rating_when_home_member()
+    {
+        $account = Account::factory()->create();
+        $account->addState(State::findByCode('DIVISION'));
+        $account->addQualification(Qualification::code('S1')->first());
+
+        $position = Position::factory()->create([
+            'type' => Position::TYPE_TOWER,
+        ]);
+
+        $roster = Roster::create([
+            'account_id' => $account->id,
+        ]);
+
+        $this->assertFalse($roster->accountCanControl($position));
     }
 
     public function test_detects_cannot_control_with_rating_when_visiting_without_endorsement()
@@ -176,7 +190,7 @@ class AccountCanControlTest extends TestCase
             'account_id' => $this->user->id,
         ]);
 
-        $this->assertEquals($roster->accountCanControl($position), true);
+        $this->assertTrue($roster->accountCanControl($position));
     }
 
     public function test_detects_can_control_with_position_group_assigned()
@@ -196,7 +210,39 @@ class AccountCanControlTest extends TestCase
             'account_id' => $this->user->id,
         ]);
 
-        $this->assertEquals($roster->accountCanControl($position), true);
+        $this->assertTrue($roster->accountCanControl($position));
+    }
+
+    public function test_detects_cannot_control_with_position_group_not_assigned()
+    {
+        $position = Position::factory()->create();
+        $positionGroup = PositionGroup::factory()->create();
+        $positionGroup->positions()->attach($position);
+
+        $account = Account::factory()->create();
+        $account->addQualification(Qualification::code('S2')->first());
+        $account->addState(State::findByCode('DIVISION'));
+        $roster = Roster::create([
+            'account_id' => $account->id,
+        ]);
+
+        $this->assertFalse($roster->accountCanControl($position));
+    }
+
+    public function test_detects_cannot_control_with_position_group_not_assigned_if_rated()
+    {
+        $position = Position::factory()->create(['type' => Position::TYPE_TOWER]);
+        $positionGroup = PositionGroup::factory()->create();
+        $positionGroup->positions()->attach($position);
+
+        $account = Account::factory()->create();
+        $account->addState(State::findByCode('DIVISION'));
+        $account->addQualification(Qualification::code('S2')->first());
+        $roster = Roster::create([
+            'account_id' => $account->id,
+        ]);
+
+        $this->assertFalse($roster->accountCanControl($position));
     }
 
     public function test_detects_cannot_control_position_when_not_grated_to_user_as_visitor_even_if_rated()
@@ -213,7 +259,7 @@ class AccountCanControlTest extends TestCase
             'account_id' => $visitorAccount->id,
         ]);
 
-        $this->assertEquals($roster->accountCanControl($position), false);
+        $this->assertFalse($roster->accountCanControl($position));
     }
 
     public function test_detects_cannot_control_position_when_not_grated_to_user_as_transferring_even_if_rated()
@@ -230,7 +276,7 @@ class AccountCanControlTest extends TestCase
             'account_id' => $transferringAccount->id,
         ]);
 
-        $this->assertEquals($roster->accountCanControl($position), false);
+        $this->assertFalse($roster->accountCanControl($position));
     }
 
     public function test_detects_solo_endorsement_when_position_above_rating()

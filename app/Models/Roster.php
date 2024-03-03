@@ -132,6 +132,24 @@ class Roster extends Model
             );
         }
 
+        $unassignedPositionGroupsWithoutMaxRating = $unassignedPositionGroupsWithPosition->filter(fn ($positionGroup) => ! isset($positionGroup->maximumAtcQualification));
+        if ($unassignedPositionGroupsWithoutMaxRating->count() > 0) {
+            return $unassignedPositionGroupsWithoutMaxRating->some(
+                function (PositionGroup $positionGroup) use ($position) {
+                    $positionGroupPosition = $positionGroup->positions->where('id', $position->id)->first()->pivot;
+
+                    return $this->account
+                        ->endorsements()
+                        ->active()
+                        ->whereHasMorph('endorsable',
+                            PositionGroup::class,
+                            fn ($query) => $query->where('id', $positionGroupPosition->position_group_id)
+                        )
+                        ->exists();
+                }
+            );
+        }
+
         // If the position is above their rating, do they
         // have an active solo endorsement?
         if ($position->getMinimumVatsimQualificationAttribute() > $this->account->qualification_atc->vatsim) {
