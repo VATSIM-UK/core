@@ -6,6 +6,7 @@ use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Atc\PositionGroupPosition;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Qualification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -67,11 +68,20 @@ class Roster extends Model
             return false;
         }
 
-        // If the position is part of a group,
-        // a) are they a home member with a rating above the position's maximum?
-        // b) are they a visiting or transferring member with an endorsement up to a rating above the position group's maximum?
-        // c) are they endorsed on this specific position group?
-        if ($positionGroupPosition = PositionGroupPosition::where('position_id', $position->id)->first()) {
+        $assignedPositionGroupsWithPosition = Endorsement::where('account_id', $this->account->id)
+            ->whereHasMorph('endorsable', PositionGroup::class, fn ($query) => $query->whereHas('positions', fn ($query) => $query->where('positions.id', $position->id)))
+            ->get()
+            ->map(fn ($endorsement) => $endorsement->endorsable);
+
+        $unassignedPositionGroupsWithPosition = PositionGroup::whereHas('positions', fn ($query) => $query->where('positions.id', $position->id))
+            ->whereDoesntHave('membershipEndorsement', fn ($query) => $query->where('account_id', $this->account->id))
+            ->get();
+
+        $checkPositionForPositionGroup = function (PositionGroupPosition $positionGroupPosition) {
+            // If the position is part of a group,
+            // a) are they a home member with a rating above the position's maximum?
+            // b) are they a visiting or transferring member with an endorsement up to a rating above the position group's maximum?
+            // c) are they endorsed on this specific position group?
             $isEntitledByHomeMemberRating = isset($positionGroupPosition->positionGroup?->maximumAtcQualification)
                 && $this->account->hasState('DIVISION') &&
                 $this->account->qualification_atc->vatsim > $positionGroupPosition->positionGroup?->maximumAtcQualification?->vatsim;
@@ -98,6 +108,28 @@ class Roster extends Model
                 ->exists();
 
             return $isEntitledByHomeMemberRating || $isEndorsedToRating || $hasEndorsementForPositionGroup;
+        };
+
+        /** If there are a PositionGroup(s) which contain the specified position
+         * perform a series of checks to determine if the account is entitled to
+         * control the position */
+        if ($assignedPositionGroupsWithPosition->count() > 0) {
+            return $assignedPositionGroupsWithPosition->some(fn ($positionGroup) => $checkPositionForPositionGroup($positionGroup->positions->where('id', $position->id)->first()->pivot));
+        }
+
+        /** Check any unassigned position groups have a maximum atc qualification
+         * if so, check if the account has a rating above the maximum specified
+         * qualification and if so, they are entitled to control even if the
+         * position group hasn't been endorsed to that member. */
+        $unassignedPositionGroupsWithPositionWithMaxRating = $unassignedPositionGroupsWithPosition->filter(fn ($positionGroup) => isset($positionGroup->maximumAtcQualification));
+        if ($unassignedPositionGroupsWithPositionWithMaxRating->count() > 0) {
+            return $unassignedPositionGroupsWithPosition->some(
+                function (PositionGroup $positionGroup) use ($position) {
+                    $positionGroupPosition = $positionGroup->positions->where('id', $position->id)->first()->pivot;
+
+                    return $this->account->qualification_atc->vatsim > $positionGroupPosition->positionGroup->maximumAtcQualification->vatsim;
+                }
+            );
         }
 
         // If the position is above their rating, do they
