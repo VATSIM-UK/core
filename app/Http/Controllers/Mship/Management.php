@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mship;
 use App\Jobs\UpdateMember;
 use App\Libraries\UKCP as UKCPLibrary;
 use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Roster;
 use App\Models\Sys\Token as SystemToken;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -46,8 +47,11 @@ class Management extends \App\Http\Controllers\BaseController
         );
 
         $pluginKeys = $this->ukcp->getValidTokensFor(auth()->user());
+        $roster = Roster::where('account_id', auth()->user()->id)->exists();
 
-        return $this->viewMake('mship.management.dashboard')->with('pluginKeys', $pluginKeys);
+        return $this->viewMake('mship.management.dashboard')
+            ->with('pluginKeys', $pluginKeys)
+            ->with('roster', $roster);
     }
 
     public function postInvisibility()

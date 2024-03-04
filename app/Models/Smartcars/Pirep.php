@@ -39,20 +39,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereRoute($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Pirep extends Model
 {
     protected $table = 'smartcars_pirep';
+
     protected $fillable = [
         'bid_id',
         'flight_id',
     ];
-    protected $dates = [
-        'deleted_at',
-    ];
+
     protected $casts = [
         'passed' => 'boolean',
+        'deleted_at' => 'datetime',
     ];
 
     public function bid()

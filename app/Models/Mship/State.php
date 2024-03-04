@@ -35,13 +35,20 @@ namespace App\Models\Mship;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State whereRegion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class State extends \App\Models\Model
 {
     protected $table = 'mship_state';
+
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'deleted_at'];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     protected $hidden = ['id'];
 
     public static function findByCode($code)

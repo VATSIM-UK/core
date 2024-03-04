@@ -26,26 +26,5 @@
             {!! HTML::image("/images/error.jpg") !!}
         </p>
     @show
-
-    <h4>Error Detail</h4>
-    <pre>Error ID: {{ app('sentry')->getLastEventId() }}</pre>
 </p>
-
-@if(app()->bound('sentry') && app('sentry')->getLastEventId())
-    <script
-    src="https://browser.sentry-cdn.com/6.3.1/bundle.min.js"
-    integrity="sha384-Lmmo/x0L5f+PY37NWsRfDV4wUY7ZtKf6LuOumcdJzuA29Mmx62QZX2ceYDjXYtM6"
-    crossorigin="anonymous"
-    ></script>
-    <script>
-    Sentry.init({ dsn: 'https://b23b775aaa1a4698ad7649debb154e9a@o578372.ingest.sentry.io/5734564' });
-    Sentry.showReportDialog({
-        eventId: '{{ app('sentry')->getLastEventId() }}',
-        user: {
-            email: '{{ auth()->user()->email ?? '' }}',
-            name: '{{ auth()->user()->name ?? '' }}'
-            }
-        });
-    </script>
-@endif
 @stop

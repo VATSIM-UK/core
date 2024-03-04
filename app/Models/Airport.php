@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Airport\Navaid;
 use App\Models\Airport\Procedure;
 use App\Models\Airport\Runway;
+use App\Models\Atc\Position;
 use App\Models\NetworkData\Atc;
 use App\Models\NetworkData\Pilot;
 
@@ -23,6 +24,7 @@ use App\Models\NetworkData\Pilot;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereIdent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereLatitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereLongitude($value)
+ *
  * @mixin \Eloquent
  *
  * @property string|null $icao
@@ -42,7 +44,7 @@ use App\Models\NetworkData\Pilot;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Navaid[] $navaids
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Procedure[] $procedures
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Runway[] $runways
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Station[] $stations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Atc\Position[] $positions
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport iCAO($icao)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport uK()
@@ -62,6 +64,7 @@ use App\Models\NetworkData\Pilot;
 class Airport extends Model
 {
     public $table = 'airports';
+
     protected $fillable = [
         'icao',
         'iata',
@@ -83,6 +86,7 @@ class Airport extends Model
     ];
 
     const FIR_TYPE_EGTT = 1;
+
     const FIR_TYPE_EGPX = 2;
 
     public function scopeUK($query)
@@ -122,15 +126,15 @@ class Airport extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function stations()
+    public function positions()
     {
-        return $this->belongsToMany(Station::class, 'airport_stations');
+        return $this->belongsToMany(Position::class, 'airport_positions');
     }
 
     public function getControllersAttribute()
     {
-        if ($this->stations->count() > 0) {
-            return Atc::withCallsignIn($this->stations->pluck('callsign')->push('%'.$this->icao.'%')->all())->online()->with('account')->get();
+        if ($this->positions->count() > 0) {
+            return Atc::withCallsignIn($this->positions->pluck('callsign')->push('%'.$this->icao.'%')->all())->online()->with('account')->get();
         }
 
         return Atc::withCallsign('%'.$this->icao.'%')->online()->with('account')->get();
@@ -164,8 +168,6 @@ class Airport extends Model
     /**
      * Determines whether a set of given decimal coordinates are close to the airport.
      *
-     * @param $latitude
-     * @param $longitude
      * @return bool
      */
     public function containsCoordinates($latitude, $longitude)

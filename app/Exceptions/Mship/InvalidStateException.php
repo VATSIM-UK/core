@@ -8,7 +8,7 @@ class InvalidStateException extends \Exception
 {
     private $state;
 
-    public function __construct(State $state = null)
+    public function __construct(?State $state = null)
     {
         $this->state = $state;
     }

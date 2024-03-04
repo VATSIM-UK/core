@@ -1,13 +1,11 @@
 /node_modules
 /public/hot
 /public/storage
-/public/vendor/nova
 /public/vendor/horizon
 /storage/*.key
 /coverage
 /vendor
 /.idea
-/.vscode
 /.vagrant
 /laradock
 Homestead.json
@@ -16,15 +14,11 @@ npm-debug.log
 yarn-error.log
 .env
 .env.testing
-.phpunit.result.cache
+/.phpunit.cache
 auth.json
 
 _ide_helper.php
 .phpstorm.meta.php
 /build
 
-/_nova/*
-/nova/*
-!/nova/composer.json
-!/nova/src/NovaCoreServiceProvider.php
 .gitmodules

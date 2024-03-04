@@ -18,12 +18,15 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation wherePrivilegeKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation whereRegistrationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Confirmation extends Model
 {
     public $incrementing = false;
+
     protected $table = 'teamspeak_confirmation';
+
     protected $primaryKey = 'registration_id';
 
     public function registration()

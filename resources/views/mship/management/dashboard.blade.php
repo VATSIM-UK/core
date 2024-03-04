@@ -69,7 +69,7 @@
                             </div>
                         @endif
                         <div class="col-xs-4 pb-1">
-                            <b>STATUS: </b>
+                            <b>MEMBERSHIP:</b>
                             {{ $_account->status_string }} {{ !is_null($_account->primary_state) ? $_account->primary_state->name : 'unknown state' }}
                             Member
                         </div>
@@ -87,10 +87,23 @@
 
                         <div class="col-xs-4">
                             {!! Form::open(['route' => 'mship.auth.invisibility', 'id' => 'invisibility-form']) !!}
-                            <strong>INVISIBILITY:</strong>
+                            <strong>FORUM INVISIBILITY:</strong>
                             <a href="{{ route('mship.auth.invisibility') }}"
                                onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Disable' : 'Enable' }}</a>
                             {!! Form::close() !!}
+                        </div>
+
+                        <div class="col-xs-4">
+                            <strong>CONTROLLER ROSTER:</strong>
+                            @if($roster)
+                                <a href="{{ route('site.roster.show', ['account' => $_account->id]) }}">
+                                    Active
+                                </a>
+                            @else
+                                <a href="{{ route('site.roster.index') }}">
+                                    Inactive
+                                </a>
+                            @endif
                         </div>
                     </div>
                     <!-- Top Row [END] -->
@@ -287,7 +300,7 @@
                                 <div class="col-xs-6 col-lg-6 col-md-12 row-text-contain text-center">
                                     <b>PILOT QUALIFICATIONS</b>
                                     <br/>
-                                    <small>Showing all achieved</small>
+                                    <small>Showing all achieved including military</small>
                                 </div>
                                 <div class="col-xs-6 col-lg-6 col-md-12 text-center">
                                     @foreach($_account->qualifications_pilot as $qual)
@@ -306,6 +319,14 @@
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
                                            title="{{ $qual->pivot->created_at }}">
                                             <em>granted {{ $qual->pivot->created_at }}</em>
+                                        </a>
+                                        <br/>
+                                    @endforeach
+                                    @foreach($_account->qualifications_pilot_military as $qual)
+                                        {{ $qual }}
+                                        <a class="tooltip_displays" href="#" data-toggle="tooltip"
+                                        title="{{ $qual->pivot->created_at }}">
+                                            <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                         </a>
                                         <br/>
                                     @endforeach
@@ -432,11 +453,13 @@
                             <b>UK CONTROLLER<br/>PLUGIN KEYS</b>
                             @if(count($pluginKeys))
                                 <div class="text-center pt-4">
-                                    <a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.refresh') }}">
-                                        Refresh Token(s)
+                                    <a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.invalidate') }}">
+                                        Invalidate Token(s)
                                     </a>
                                     </br>
-                                    <small>Note: Will invalidate all current tokens</small>
+                                    <small>
+                                        Note: If you are currently online, some operations, such as squawk assignments, will fail.
+                                    </small>
                                 </div>
                             @endif
                         </div>
@@ -458,13 +481,10 @@
                                             <em>{{ \Carbon\Carbon::createFromTimeString($key->expires_at)->diffForHumans() }}</em>
                                         </a>
                                         <br/>
-                                        [ <a href="{{ route('ukcp.token.download', $key->id) }}">Download Key</a> ]
                                     </div>
                                 @empty
                                     <p>
                                         No keys found.</br>
-                                        <a class="btn btn-sm btn-info" href="{{ route('ukcp.token.refresh') }}">Create
-                                            UKCP Token</a>
                                     </p>
                                 @endforelse
                             </div>
@@ -476,6 +496,14 @@
                             The UK Controller Plugin uses a key to identify who is using the plugin. <br/><b>Do not
                                 share
                                 your keys</b> as actions taken with these keys are logged against your account.
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            When you start EuroScope, the plugin will automatically take you through the process
+                            to set up a new key, if required. You can find more information about this process in the
+                            UK Controller Plugin guide.
                         </div>
                     </div>
                 </div>

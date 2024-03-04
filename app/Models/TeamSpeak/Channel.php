@@ -19,14 +19,19 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Channel whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Channel whereParentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Channel whereProtected($value)
+ *
  * @mixin \Eloquent
  */
 class Channel extends Model
 {
     public $timestamps = false;
+
     public $incrementing = false;
+
     protected $table = 'teamspeak_channel';
+
     protected $primaryKey = 'id';
+
     protected $guarded = [];
 
     /**

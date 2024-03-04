@@ -40,6 +40,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Form whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Form withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Form withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Form extends Model
@@ -47,14 +48,16 @@ class Form extends Model
     use SoftDeletes;
 
     protected $table = 'mship_feedback_forms';
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
+
     protected $fillable = [
         'name',
         'slug',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function scopePublic($query)

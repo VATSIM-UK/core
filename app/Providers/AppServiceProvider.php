@@ -3,17 +3,24 @@
 namespace App\Providers;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
 use App\Libraries\Forum;
 use App\Libraries\UKCP;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use HTML;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\Telescope;
+use Whitecube\LaravelCookieConsent\Facades\Cookies;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +33,18 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+        Bugsnag::registerCallback(function ($report) {
+            if (Auth::check()) {
+                $user = Auth::user();
+
+                $report->setUser([
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                ]);
+            }
+        });
+
         if ($this->app->runningInConsole()) {
             URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
         }
@@ -36,6 +55,14 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layout*', function ($view) {
             $view->with('_bannerUrl', BaseController::generateBannerUrl());
         });
+
+        RateLimiter::for('discord-sync', function (object $job) {
+            return Limit::perHour(1)->by($job->getAccountId());
+        });
+
+        Cookies::essentials()
+            ->session()
+            ->csrf();
     }
 
     /**
@@ -51,6 +78,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(UKCP::class);
         $this->app->singleton(Discord::class);
         $this->app->singleton(Forum::class);
+        $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
     }
 
     public function registerHTMLComponents()

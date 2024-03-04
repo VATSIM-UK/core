@@ -11,7 +11,6 @@ class EvaluateFlightCriteria implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  BidCompleted  $event
      * @return void
      */
     public function handle(BidCompleted $event)
@@ -103,6 +102,6 @@ class EvaluateFlightCriteria implements ShouldQueue
     {
         $time = explode(':', $time);
 
-        return ($time[0] * 60) + ($time[1]) + ($time[2] / 60);
+        return ($time[0] * 60) + $time[1] + ($time[2] / 60);
     }
 }

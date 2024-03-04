@@ -48,7 +48,7 @@
                                 <tr>
                                     <th class="col-md-2">Applicant</th>
                                     <td>
-                                        @include("adm.partials._account_link", ["account" => $application->account])
+                                        {{ $application->account->name }} {{ $application->account->id }}
                                         ({{ $application->account->email }})
                                     </td>
                                 </tr>
@@ -137,8 +137,7 @@
                             <tr>
                                 <th class="col-md-2">Referee</th>
                                 <td>
-                                    @include("adm.partials._account_link", ["account" => $reference->account])
-                                    identified as
+                                    {{ $reference->account->name }} {{ $reference->account->id }} identified as
                                     {{ $reference->relationship }}
                                 </td>
                             </tr>

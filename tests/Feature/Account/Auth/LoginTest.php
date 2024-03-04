@@ -13,7 +13,7 @@ class LoginTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->account = factory(Account::class)->create();
+        $this->account = Account::factory()->create();
     }
 
     public function testItDirectsToVatsimSSO()

@@ -14,7 +14,6 @@ class CheckAdminPermissions
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -24,6 +23,7 @@ class CheckAdminPermissions
         }
 
         $routePermission = preg_replace('/[0-9]+/', '*', $request->decodedPath()); // Remove anything that looks like a number (its likely its an ID)
+        $routePermission = str_replace('admin-legacy', 'adm', $routePermission); // Account for change to admin-legacy
         $hasRoutePermission = $request->user()->can('use-permission', $routePermission); // Check for permission to use route
 
         if ($hasRoutePermission) {

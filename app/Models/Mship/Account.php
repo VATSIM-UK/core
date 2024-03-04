@@ -12,12 +12,12 @@ use App\Models\Mship\Concerns\HasBans;
 use App\Models\Mship\Concerns\HasCTSAccount;
 use App\Models\Mship\Concerns\HasDiscordAccount;
 use App\Models\Mship\Concerns\HasEmails;
+use App\Models\Mship\Concerns\HasEndorsement;
 use App\Models\Mship\Concerns\HasForumAccount;
 use App\Models\Mship\Concerns\HasHelpdeskAccount;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
 use App\Models\Mship\Concerns\HasNotifications;
-use App\Models\Mship\Concerns\HasNovaPermissions;
 use App\Models\Mship\Concerns\HasPassword;
 use App\Models\Mship\Concerns\HasQualifications;
 use App\Models\Mship\Concerns\HasRoles;
@@ -30,6 +30,8 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -79,6 +81,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read mixed $has_unread_notifications
  * @property-read mixed $is_banned
  * @property mixed $is_inactive
+ *
  * @propernty-read mixed $is_network_banned
  *
  * @property-read bool $is_on_network
@@ -157,32 +160,34 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use SoftDeletingTrait,
-        Rememberable,
-        Notifiable,
-        Authenticatable,
+    use Authenticatable,
         Authorizable,
-        HasNetworkData,
-        HasMoodleAccount,
-        HasHelpdeskAccount,
-        HasForumAccount,
-        HasCTSAccount,
-        HasVisitTransferApplications,
-        HasQualifications,
-        HasStates,
         HasBans,
-        HasTeamSpeakRegistrations,
-        HasPassword,
-        HasNotifications,
-        HasEmails,
-        HasRoles,
-        HasNovaPermissions,
+        HasCTSAccount,
         HasDiscordAccount,
-        HasWaitingLists;
+        HasEmails,
+        HasEndorsement,
+        HasFactory,
+        HasForumAccount,
+        HasHelpdeskAccount,
+        HasMoodleAccount,
+        HasNetworkData,
+        HasNotifications,
+        HasPassword,
+        HasQualifications,
+        HasRoles,
+        HasStates,
+        HasTeamSpeakRegistrations,
+        HasVisitTransferApplications,
+        HasWaitingLists,
+        Notifiable,
+        Rememberable,
+        SoftDeletingTrait;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
@@ -193,22 +198,16 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     protected $table = 'mship_account';
+
     protected $guard_name = ['web'];
+
     public $incrementing = false;
-    protected $dates = [
-        'last_login',
-        'joined_at',
-        'cert_checked_at',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'password_set_at',
-        'password_expires_at',
-    ];
+
     protected $fillable = [
         'id',
         'name_first',
         'name_last',
+        'nickname',
         'email',
         'password',
         'password_set_at',
@@ -216,17 +215,36 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'joined_at',
         'cert_checked_at',
     ];
+
     protected $attributes = [
-        'name_first'    => '',
-        'name_last'     => '',
-        'inactive'      => false,
+        'inactive' => false,
         'last_login_ip' => '0.0.0.0',
     ];
+
     protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
+
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
+
     protected $casts = [
         'inactive' => 'boolean',
         'discord_id' => 'int',
+        'last_login' => 'datetime',
+        'joined_at' => 'datetime',
+        'cert_checked_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'password_set_at' => 'datetime',
+        'password_expires_at' => 'datetime',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'discord_access_token',
+        'discord_refresh_token',
+        'vatsim_access_token',
+        'vatsim_refresh_token',
     ];
 
     protected static function boot()
@@ -244,8 +262,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     /**
      * @param  Account  $model
-     * @param  null  $extra
-     * @param  null  $data
      */
     public static function eventCreated($model, $extra = null, $data = null)
     {
@@ -257,7 +273,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     /**
      * Find an account by its ID or retrieve it from Cert. If false, user does not exist at VATSIM.NET.
      *
-     * @param $accountId
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|bool|static[]
      *
      * @throws InvalidCIDException
@@ -324,7 +339,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function addNote($noteType, $noteContent, $writer = null, $attachment = null)
     {
         if (is_string($noteType)) {
-            $noteType = Type::isShortCode('visittransfer')->first();
+            $noteType = Type::isShortCode($noteType)->first();
         }
         if (is_object($noteType) && $noteType->exists) {
             $noteType = $noteType->getKey();
@@ -344,7 +359,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $note->save();
 
         if (! is_null($attachment)) {
-            $note->attachment()->save($attachment);
+            $note->attachment()->associate($attachment)->save();
         }
 
         return $note;
@@ -409,9 +424,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      *
      * @return mixed|string
      */
-    public function getNameAttribute()
+    public function name(): Attribute
     {
-        return $this->name_preferred.' '.$this->name_last;
+        return Attribute::make(get: fn () => $this->name_preferred.' '.$this->name_last);
     }
 
     /**
@@ -525,9 +540,14 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $array['atc_rating'] = $this->qualification_atc;
         $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
         $array['pilot_rating'] = [];
+        // sort pilot ratings in order Pilot -> Military
         foreach ($this->qualifications_pilot as $rp) {
             $array['pilot_rating'][] = $rp->code;
         }
+        foreach ($this->qualifications_pilot_military as $rp) {
+            $array['pilot_rating'][] = $rp->code;
+        }
+
         $array['pilot_rating'] = implode(', ', $array['pilot_rating']);
 
         return $array;
@@ -536,5 +556,14 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function hiddenFeedbackUsers()
+    {
+        if ($this->can('use-permission', 'feedback/own') || $this->can('use-permission', 'feedback.view-own')) {
+            return [];
+        }
+
+        return [$this->id];
     }
 }

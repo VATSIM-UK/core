@@ -27,9 +27,7 @@
                             <tr>
                                 <td>{{ $flight->bid_id }}</td>
                                 <td>
-                                    <a href="{{ route('adm.mship.account.details', $flight->bid->account) }}">
-                                        {{ $flight->bid->account->name }} ({{ $flight->bid->account->id }})
-                                    </a>
+                                    {{ $flight->bid->account->name }} ({{ $flight->bid->account->id }})
                                 </td>
                                 </td>
                                 <td>

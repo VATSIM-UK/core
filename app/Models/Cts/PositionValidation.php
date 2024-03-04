@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PositionValidation extends Model
 {
     protected $connection = 'cts';
+
     protected $table = 'position_validations';
 
     public $timestamps = false;
@@ -24,5 +25,10 @@ class PositionValidation extends Model
     public function scopeMentors($query)
     {
         return $query->where('status', '=', 5);
+    }
+
+    public function scopeStudents($query)
+    {
+        return $query->where('status', 1);
     }
 }

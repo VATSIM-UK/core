@@ -4,24 +4,25 @@
 <div class="row">
     <div class="col-md-12">
         <h3>C1 Training Place - Hour Checker</h3>
-        <p>At least 12 hours on UK ATC positions in the three months before a place is offered</p>
-        <p>When a training place becomes available on a certain sector, the first eligible student who meets the requirements for that sector will be offered the place. You will only be offered a place on a sector for which you meet the requirements. You are not required to notify us when you meet the requirements for any of the above sectors.</p>
-        <p>Below you can view your progress towards, and an overview of the required criteria for each enroute sector.</p>
+        <p>You must have controlled at least 12 hours on UK ATC positions in the three months before a place is offered.</p>
+        <p>When a training place becomes available for a particular sector group, the first eligible student who meets the requirements for that sector group will be offered the place.
+        You will only be offered a place for a sector group for which you meet the requirements. You do not need to notify us when you meet the requirements.</p>
+        <p>Below you can view your progress towards the required criteria for each enroute sector group.</p>
     </div>
 </div>
 <div class="row">
-    @foreach ($endorsements as $endorsement)
+    @foreach ($positionGroups as $positionGroup)
         <div class="col-md-6">
             <div class="panel panel-ukblue">
                 <div class="panel-heading">
-                    <i class="fas fa-headset"></i>&nbsp;{{ $endorsement['name'] }}
+                    <i class="fas fa-headset"></i>&nbsp;{{ $positionGroup['name'] }}
                 </div>
                 <div class="panel-body">
                     <header>
                         <h4>Required Hours</h4>
                         <span>The following hours are required on the corresponding positions</span>
                         <ul>
-                            @foreach($endorsement['conditions'] as $condition)
+                            @foreach($positionGroup['conditions'] as $condition)
                                 <li>{{ $condition['position'] }} - {{ $condition['required_hours'] }} hours within the last {{ $condition['within_months'] }} months.</li>
                             @endforeach
                         </ul>
@@ -29,7 +30,7 @@
                     <main>
                         <h4>Your Progress</h4>
 
-                        @foreach($endorsement['conditions'] as $condition)
+                        @foreach($positionGroup['conditions'] as $condition)
                         {{ $condition['position'] }}
                         <div class="progress">
                             @if ($condition['complete'])

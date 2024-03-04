@@ -46,20 +46,24 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereTimeDeparture($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereTimeRemaining($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Posrep whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Posrep extends Model
 {
     protected $table = 'smartcars_posrep';
+
     protected $fillable = [
         'bid_id',
         'flight_id',
     ];
+
     public $timestamps = true;
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function bid()
@@ -75,7 +79,6 @@ class Posrep extends Model
     /**
      * Determine whether a posrep is valid against the provided criteria.
      *
-     * @param  FlightCriterion  $criterion
      * @return bool
      */
     public function positionIsValid(FlightCriterion $criterion)

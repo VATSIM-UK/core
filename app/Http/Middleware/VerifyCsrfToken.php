@@ -21,5 +21,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'webhook/*',
         'frame.php',
+        'livewire/*',
+        'external/*',
     ];
 }

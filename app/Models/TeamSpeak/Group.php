@@ -29,12 +29,15 @@ use Spatie\Permission\Models\Permission;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Group whereProtected($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Group whereQualificationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Group whereType($value)
+ *
  * @mixin \Eloquent
  */
 class Group extends Model
 {
     public $timestamps = false;
+
     protected $table = 'teamspeak_group';
+
     protected $primaryKey = 'id';
 
     /**

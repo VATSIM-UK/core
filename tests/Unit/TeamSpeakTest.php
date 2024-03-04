@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Mship\Qualification;
 use App\Models\TeamSpeak\Channel;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\ServerGroup;
@@ -14,7 +15,9 @@ class TeamSpeakTest extends TestCase
     use DatabaseTransactions;
 
     protected $channel;
+
     protected $channelGroups;
+
     protected $serverGroups;
 
     public function setUp(): void
@@ -32,7 +35,7 @@ class TeamSpeakTest extends TestCase
         $this->serverGroups = factory(ServerGroup::class, 5)->create();
         $this->channelGroups = factory(ChannelGroup::class, 5)->create();
 
-        $this->account = factory(\App\Models\Mship\Account::class)->create([
+        $this->account = \App\Models\Mship\Account::factory()->create([
             'name_first' => 'John',
             'name_last' => 'Doe',
             'email' => 'i_sleep@gmail.com',
@@ -92,7 +95,7 @@ class TeamSpeakTest extends TestCase
     public function testGroupQualification()
     {
         $group = $this->serverGroups->first();
-        $qualification = factory(\App\Models\Mship\Qualification::class)->create();
+        $qualification = Qualification::factory()->create();
         $group->qualification()->associate($qualification)->save();
         $group = $group->fresh(['qualification']);
         $this->assertEquals($group->qualification->id, $qualification->id);

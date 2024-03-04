@@ -2,13 +2,13 @@
 
 namespace App\Models\Training\WaitingList;
 
+use App\Models\Cts\TheoryResult;
 use App\Models\Mship\Account;
-use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Cache;
 
 class WaitingListAccount extends Pivot
 {
@@ -16,24 +16,16 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['added_by', 'deleted_at', 'notes'];
+    public $fillable = ['added_by', 'deleted_at', 'notes', 'flags_status_summary'];
 
-    protected $appends = ['atcHourCheck'];
+    protected $appends = ['theory_exam_passed'];
+
+    protected $casts = [
+        'flags_status_summary' => 'array',
+    ];
 
     // 24 hours
     protected $cacheTtl = 86400;
-
-    public function status()
-    {
-        return $this->belongsToMany(
-            WaitingListStatus::class,
-            'training_waiting_list_account_status',
-            'waiting_list_account_id',
-            'status_id'
-        )
-            ->withPivot(['start_at', 'end_at'])->using(WaitingListAccountStatus::class)
-            ->wherePivot('end_at', null);
-    }
 
     public function flags()
     {
@@ -55,31 +47,6 @@ class WaitingListAccount extends Pivot
         return $this->belongsTo(Account::class, 'account_id');
     }
 
-    /**
-     * @param  \App\Models\Training\WaitingList\WaitingListStatus  $listStatus
-     */
-    public function addStatus(WaitingListStatus $listStatus)
-    {
-        $nonEnded = $this->status->reject(function ($value, $key) {
-            return ! is_null($value->pivot->end_at);
-        });
-
-        $nonEnded->each(function ($item, $key) {
-            $item->pivot->endStatus();
-        });
-
-        return $this->status()->attach($listStatus, ['start_at' => now()]);
-    }
-
-    /**
-     * @param  \App\Models\Training\WaitingList\WaitingListStatus  $listStatus
-     * @return int
-     */
-    public function removeStatus(WaitingListStatus $listStatus)
-    {
-        return $this->status()->detach($listStatus);
-    }
-
     public function addFlag(WaitingListFlag $listFlag, $value = null)
     {
         return $this->flags()->attach($listFlag, ['marked_at' => $value]);
@@ -87,8 +54,6 @@ class WaitingListAccount extends Pivot
 
     /**
      * Mark a Flag as true.
-     *
-     * @param  WaitingListFlag  $listFlag
      */
     public function markFlag(WaitingListFlag $listFlag)
     {
@@ -109,42 +74,9 @@ class WaitingListAccount extends Pivot
         $flag->unMark();
     }
 
-    public function getCurrentStatusAttribute()
-    {
-        return $this->status()->first();
-    }
-
     public function getPositionAttribute()
     {
         return $this->waitingList->accountPosition($this->account);
-    }
-
-    public function recentATCMinutes()
-    {
-        $hourCheckKey = "{$this->cacheKey()}:recentAtcMins";
-
-        if (Cache::has($hourCheckKey)) {
-            return Cache::get($hourCheckKey);
-        }
-
-        // gather the sessions from the last 3 months in the UK (isUK scope)
-        $hours = Atc::where('account_id', $this->account_id)
-            ->whereDate('disconnected_at', '>=', Carbon::parse('3 months ago'))->isUk()->sum('minutes_online');
-        Cache::put($hourCheckKey, $hours, $this->cacheTtl);
-
-        return $hours;
-    }
-
-    public function atcHourCheck()
-    {
-        if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT) {
-            return true;
-        }
-
-        // 12 hours is represented as 720 minutes
-        $minutesRequired = 720;
-
-        return $this->recentATCMinutes() >= $minutesRequired;
     }
 
     public function getAtcHourCheckAttribute()
@@ -152,29 +84,47 @@ class WaitingListAccount extends Pivot
         return $this->atcHourCheck();
     }
 
-    public function allFlagsChecker()
+    public function theoryExamPassed(): Attribute
     {
-        if ($this->waitingList->flags_check == WaitingList::ALL_FLAGS) {
-            // iterate through each of the flags to see if they are true. If a false flag is detected, stop iterating.
-            return $this->flags->every(function ($model) {
-                return $model->pivot->value;
-            });
-        } elseif ($this->waitingList->flags_check == WaitingList::ANY_FLAGS && $this->flags->count() > 0) {
-            return $this->flags->some(function ($model) {
-                return $model->pivot->value;
-            });
+        $passed = false;
+
+        if ($this->waitingList->department === WaitingList::ATC_DEPARTMENT) {
+            try {
+                $result = TheoryResult::forAccount($this->account_id);
+            } catch (ModelNotFoundException) {
+                return Attribute::make(
+                    get: fn () => false,
+                );
+            }
+
+            if ($result && $result->count()) {
+                $passed = $result
+                    ->where('exam', $this->waitingList->cts_theory_exam_level)
+                    ->where('pass', true)->count() > 0;
+            }
         }
 
-        return true;
+        return Attribute::make(
+            get: fn () => $passed,
+        );
     }
 
-    public function getEligibilityAttribute()
-    {
-        // is the status of the account deferred
-        // are all the flags true
-        // and is the atc hour check true
-        return $this->atcHourCheck() && $this->allFlagsChecker() && $this->current_status->name == 'Active';
-    }
+    // public function getTheoryExamPassedAttribute(): ?bool
+    // {
+    //     if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT || ! $this->waitingList->cts_theory_exam_level) {
+    //         return null;
+    //     }
+
+    //     $result = TheoryResult::forAccount($this->account_id);
+
+    //     if (! $result || ! $result->count()) {
+    //         return null;
+    //     }
+
+    //     return $result
+    //         ->where('exam', $this->waitingList->cts_theory_exam_level)
+    //         ->where('pass', true)->count() > 0;
+    // }
 
     public function setNotesAttribute($value)
     {

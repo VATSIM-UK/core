@@ -13,7 +13,9 @@ class VisitTransferCleanupTest extends TestCase
     use DatabaseTransactions;
 
     public $newApplication;
+
     public $oldApplication;
+
     public $facility;
 
     public function setUp(): void
@@ -33,7 +35,7 @@ class VisitTransferCleanupTest extends TestCase
 
         // A draft application that was started 3 hours ago
         Carbon::setTestNow(Carbon::now()->subHours(3));
-        $user = factory(\App\Models\Mship\Account::class)->create();
+        $user = \App\Models\Mship\Account::factory()->create();
         $application = $user->createVisitingTransferApplication([
             'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
             'facility_id' => $this->facility->id,

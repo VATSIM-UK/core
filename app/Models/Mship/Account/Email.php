@@ -32,13 +32,21 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email whereVerifiedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Email extends Model
 {
     protected $table = 'mship_account_email';
-    protected $dates = ['verified_at', 'created_at', 'updated_at'];
+
+    protected $casts = [
+        'verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     protected $fillable = ['email'];
+
     protected $touches = ['account'];
 
     public function scopeEmailMatches($query, $email)

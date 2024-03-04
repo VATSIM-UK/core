@@ -29,11 +29,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereSurfaceType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereWidth($value)
+ *
  * @mixin \Eloquent
  */
 class Runway extends Model
 {
     protected $table = 'airport_runways';
+
     protected $fillable = [
         'ident',
         'heading',
@@ -43,9 +45,13 @@ class Runway extends Model
     ];
 
     const SURFACE_TYPE_ASPHALT = 1;
+
     const SURFACE_TYPE_GRASS = 2;
+
     const SURFACE_TYPE_CONCRETE = 3;
+
     const SURFACE_TYPE_SAND = 4;
+
     const SURFACE_TYPE_GRE = 5;
 
     /**
@@ -67,18 +73,18 @@ class Runway extends Model
     public function getSurfaceTypeAttribute($type)
     {
         switch ($type) {
-                case self::SURFACE_TYPE_ASPHALT:
-                    return 'Asphalt';
-                case self::SURFACE_TYPE_GRASS:
-                    return 'Grass';
-                case self::SURFACE_TYPE_CONCRETE:
-                    return 'Concrete';
-                case self::SURFACE_TYPE_SAND:
-                    return 'Sand';
-                case self::SURFACE_TYPE_GRE:
-                    return 'Graded/Rolled Earth';
-                default:
-                    return 'Unknown';
-            }
+            case self::SURFACE_TYPE_ASPHALT:
+                return 'Asphalt';
+            case self::SURFACE_TYPE_GRASS:
+                return 'Grass';
+            case self::SURFACE_TYPE_CONCRETE:
+                return 'Concrete';
+            case self::SURFACE_TYPE_SAND:
+                return 'Sand';
+            case self::SURFACE_TYPE_GRE:
+                return 'Graded/Rolled Earth';
+            default:
+                return 'Unknown';
+        }
     }
 }

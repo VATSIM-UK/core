@@ -16,7 +16,9 @@ class ImportMembers extends Command
     protected $description = 'Import VATSIM UK members from the VATSIM API.';
 
     protected int $countNewlyCreated = 0;
+
     protected int $countUpdated = 0;
+
     protected int $countSkipped = 0;
 
     public function handle()
@@ -25,7 +27,8 @@ class ImportMembers extends Command
 
         $response = Http::withHeaders([
             'Authorization' => "Token {$apiToken}",
-        ])->get(config('vatsim-api.base').'divisions/GBR/members/?paginated');
+        ])->withUserAgent('VATSIMUK')
+            ->get(config('vatsim-api.base').'orgs/division/GBR');
         $this->info("Total of {$response->collect()->get('count')} members to process.");
 
         foreach ($response->collect()->get('results') as $member) {

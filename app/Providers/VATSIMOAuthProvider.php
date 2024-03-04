@@ -18,14 +18,14 @@ class VATSIMOAuthProvider extends GenericProvider
     public function __construct()
     {
         parent::__construct([
-            'clientId'                => config('vatsim-connect.id'),
-            'clientSecret'            => config('vatsim-connect.secret'),
-            'redirectUri'             => route('login.post'),
-            'urlAuthorize'            => config('vatsim-connect.base').'/oauth/authorize',
-            'urlAccessToken'          => config('vatsim-connect.base').'/oauth/token',
+            'clientId' => config('vatsim-connect.id'),
+            'clientSecret' => config('vatsim-connect.secret'),
+            'redirectUri' => route('login.post'),
+            'urlAuthorize' => config('vatsim-connect.base').'/oauth/authorize',
+            'urlAccessToken' => config('vatsim-connect.base').'/oauth/token',
             'urlResourceOwnerDetails' => config('vatsim-connect.base').'/api/user',
-            'scopes'                  => config('vatsim-connect.scopes'),
-            'scopeSeparator'          => ' ',
+            'scopes' => config('vatsim-connect.scopes'),
+            'scopeSeparator' => ' ',
         ]);
     }
 
@@ -34,7 +34,6 @@ class VATSIMOAuthProvider extends GenericProvider
      *
      * @param  Token  $token
      * @return Token
-     * @return null
      */
     public static function updateToken($token)
     {

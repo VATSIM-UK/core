@@ -14,7 +14,6 @@ class FlightImage
     }
 
     /**
-     * @param $id
      * @return FlightImage|null
      */
     public static function find($id)

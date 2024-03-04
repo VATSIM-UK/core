@@ -118,7 +118,7 @@ class TestEmails extends Command
         ]);
 
         $this->log('testBan');
-        $testBan = factory(Ban::class)->create();
+        $testBan = Ban::factory()->create();
 
         $this->log('testFeedback');
         $testFeedback = factory(Feedback::class)->create();

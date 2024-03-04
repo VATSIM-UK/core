@@ -42,6 +42,7 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereSubmitterAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Feedback extends Model
@@ -49,16 +50,18 @@ class Feedback extends Model
     use Notifiable;
 
     protected $table = 'mship_feedback';
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'actioned_at',
-        'sent_at',
-    ];
+
     protected $fillable = [
         'account_id',
         'submitter_account_id',
         'form_id',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'actioned_at' => 'datetime',
+        'sent_at' => 'datetime',
     ];
 
     public function scopeATC($query)
@@ -105,6 +108,13 @@ class Feedback extends Model
     public function answers()
     {
         return $this->hasMany(\App\Models\Mship\Feedback\Answer::class);
+    }
+
+    public function position()
+    {
+        return $this->hasOne(\App\Models\Mship\Feedback\Answer::class)->whereHas('question', function ($query) {
+            $query->where('slug', ['callsign3', 'sessionposition2']);
+        });
     }
 
     public function account()

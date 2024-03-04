@@ -3,6 +3,7 @@
 namespace App\Models\Mship\Ban;
 
 use App\Models\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -33,16 +34,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Ban\Reason whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Reason extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
     protected $primaryKey = 'id';
+
     protected $table = 'mship_ban_reason';
+
     public $timestamps = true;
 
-    protected $dates = ['deleted_at'];
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
     public function bans()
     {

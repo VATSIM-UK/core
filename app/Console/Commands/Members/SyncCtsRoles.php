@@ -3,10 +3,12 @@
 namespace App\Console\Commands\Members;
 
 use App\Console\Commands\Command;
+use App\Models\Cts\ValidationPosition;
 use App\Models\Mship\Account;
 use App\Repositories\Cts\ExaminerRepository;
 use App\Repositories\Cts\MentorRepository;
 use App\Repositories\Cts\StudentRepository;
+use App\Repositories\Cts\ValidationPositionRepository;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Role;
 
@@ -33,20 +35,37 @@ class SyncCtsRoles extends Command
      */
     public function handle()
     {
+        // Sync Mentors
         $this->syncMentorsByRts(12, 35); // Heathrow
-        $this->syncMentorsByRts(13, 42); // Pilot
         $this->syncMentorsByRts(17, 34); // Enroute
         $this->syncMentorsByRts(18, 33); // Tower
         $this->syncMentorsByRts(19, 47); // Approach
-
         $this->syncMentorsByCallsign('OBS', 32); // OBS Mentors
         $this->syncMentorsByCallsign('EGKK_GND', 53); // Gatwick Mentors
         $this->syncMentorsByCallsign('TFP', 65); // PTD Flying Programme Mentors
+        $this->syncMentorsByCallsign('P1_PPL(A)', Role::findByName('P1 Mentor')->id); // P1 Mentors
+        $this->syncMentorsByCallsign('P2_SEIR(A)', Role::findByName('P2 Mentor')->id); // P2 Mentors
 
+        // Sync Students
         $this->syncPilotStudents(55); // Pilot Students
+        $this->syncStudentsByPosition('TFP_FLIGHT', Role::findByName('TFP Student')->id); // TFP Students
+        $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
+        // OBS Student
+        $this->syncStudentsByPositions(['OBS_CC_PT2', 'OBS_NX_PT2', 'OBS_PH_PT2', 'OBS_SS_PT2'], Role::findByName('OBS Students')->id);
 
-        $this->syncAtcExaminers(31);
-        $this->syncPilotExaminers(40);
+        $this->syncStudentsByRts(18, Role::findByName('ATC Students (TWR)')->id); // TWR Students
+        $this->syncStudentsByRts(19, Role::findByName('ATC Students (APP)')->id); // APP Students
+        $this->syncStudentsByRts(17, Role::findByName('ATC Students (ENR)')->id); // Enroute Students
+
+        // Sync Examiners
+        $this->syncAtcExaminers(31); // ATC
+        $this->syncPilotExaminers(40); // Pilot
+
+        // Sync Special Endorsements
+        $this->syncValidatedMembers(ValidationPosition::whereName('Shanwick Oceanic (EGGX)')->first(), Role::findByName('Shanwick Controller')->id);
+        $this->syncValidatedMembers(ValidationPosition::whereName('Heathrow (GND)')->first(), Role::findByName('Heathrow Endorsed Ground')->id);
+        $this->syncValidatedMembers(ValidationPosition::whereName('Heathrow (TWR)')->first(), Role::findByName('Heathrow Endorsed Tower')->id);
+        $this->syncValidatedMembers(ValidationPosition::whereName('Heathrow (APP)')->first(), Role::findByName('Heathrow Endorsed Approach')->id);
     }
 
     private function syncMentorsByRts(int $rtsId, int $roleId): void
@@ -81,6 +100,37 @@ class SyncCtsRoles extends Command
     {
         $hasRole = $this->getAccountsWithRoleId($roleId);
         $shouldHaveRole = (new StudentRepository)->getStudentsWithin(13);
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncStudentsByPosition(string $callsign, int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new StudentRepository)->getStudentsWithRequestPermissionsFor($callsign);
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncStudentsByPositions(array $callsigns, int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = collect();
+        foreach ($callsigns as $callsign) {
+            $shouldHaveRole = $shouldHaveRole->merge((new StudentRepository)->getStudentsWithRequestPermissionsFor($callsign));
+        }
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncStudentsByRts(int $rtsId, int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new StudentRepository)->getStudentsWithin($rtsId);
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncValidatedMembers(ValidationPosition $validationPosition, int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new ValidationPositionRepository)->getValidatedMembersFor($validationPosition)->map(fn ($item) => $item['id']);
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 

@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Smartcars\Bid withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Smartcars\Bid withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Bid extends Model
@@ -43,13 +44,15 @@ class Bid extends Model
     use SoftDeletingTrait;
 
     protected $table = 'smartcars_bid';
+
     protected $fillable = [
         'flight_id',
         'account_id',
     ];
-    protected $dates = [
-        'completed_at',
-        'deleted_at',
+
+    protected $casts = [
+        'completed_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function flight()

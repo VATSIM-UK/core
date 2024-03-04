@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
@@ -43,7 +42,6 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  Throwable  $e
      * @return void
      *
      * @throws Throwable $exception
@@ -56,17 +54,6 @@ class Handler extends ExceptionHandler
             }
         }
 
-        if (app()->bound('sentry') && $this->shouldReport($e)) {
-            \Sentry\configureScope(function (\Sentry\State\Scope $scope): void {
-                $scope->setUser([
-                    'id' => auth()->user() ? auth()->user()->id : 'Guest',
-                    'username' => auth()->user() ? auth()->user()->name : 'Guest',
-                    'email' => auth()->user() ? auth()->user()->email : 'Guest',
-                ]);
-            });
-            app('sentry')->captureException($e);
-        }
-
         parent::report($e);
     }
 
@@ -74,7 +61,6 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  Throwable  $e
      * @return \Illuminate\Http\Response
      */
     public function render($request, Throwable $e)

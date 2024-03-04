@@ -2,23 +2,28 @@
 
 namespace App\Jobs;
 
+use App\Enums\BanTypeEnum;
 use App\Events\Mship\AccountAltered;
 use App\Jobs\Middleware\RateLimited;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class UpdateMember extends Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
-    protected $accountID;
+    public $accountID;
+
     protected $data;
 
     /**
@@ -50,31 +55,60 @@ class UpdateMember extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $member = Account::firstOrNew([(new Account)->getKeyName() => $this->accountID]);
+        try {
+            $member = Account::findOrFail(['id' => $this->accountID])->first();
+        } catch (ModelNotFoundException $e) {
+            Log::info("Member {$this->accountID} not found in database. Auth needed to fetch data.");
+
+            return;
+        }
 
         $token = 'Token '.config('vatsim-api.key');
-        $url = config('vatsim-api.base')."ratings/{$this->accountID}";
+        $url = config('vatsim-api.base')."members/{$this->accountID}";
 
         try {
             $response = Http::withHeaders([
                 'Authorization' => $token,
-            ])->get($url)->json();
+            ])->withUserAgent('VATSIMUK')->get($url);
 
+            if ($response->status() === 404) {
+                Log::info("Member {$this->accountID} not found in VATSIM API. Deleting.");
+                $member->delete();
+
+                return;
+            }
+
+            $response = $response->json();
+
+            /**
+             * For non-division members fields pertaining to personal information
+             * such as name_first, name_last, and email are not returned.
+             * We should therefore handle the case they are not present in the response by
+             * falling back to none.
+             */
             $this->data = (object) [
-                'name_last' => $response['name_last'],
-                'name_first' => $response['name_first'],
-                'email' => $response['email'],
+                'name_last' => $response['name_last'] ?? null,
+                'name_first' => $response['name_first'] ?? null,
+                'email' => $response['email'] ?? null,
                 'rating' => (string) $response['rating'],
                 'regdate' => Carbon::parse($response['reg_date'])->toDateTimeString(),
                 'pilotrating' => (string) $response['pilotrating'],
-                'country' => $response['country'],
-                'region' => $response['region'],
-                'division' => $response['division'],
+                'militaryrating' => $response['militaryrating'],
+                'country' => null,
+                'region' => $response['region_id'],
+                'division' => $response['division_id'],
                 'atctime' => (string) 0,
                 'pilottime' => (string) 0,
                 'cid' => $response['id'],
             ];
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e, function ($report) {
+                $report->setSeverity('error');
+                $report->setMetaData([
+                    'accountID' => $this->accountID,
+                ]);
+            });
+
             return;
         }
 
@@ -102,6 +136,10 @@ class UpdateMember extends Job implements ShouldQueue
 
             if (! empty($this->data->name_last) && is_string($this->data->name_last)) {
                 $member->name_last = $this->data->name_last;
+            }
+
+            if (! empty($this->data->email) && is_string($this->data->email)) {
+                $member->email = $this->data->email;
             }
 
             $member->cert_checked_at = Carbon::now();
@@ -133,7 +171,7 @@ class UpdateMember extends Job implements ShouldQueue
         if ($this->data->rating == 0 && $member->is_network_banned === false) {
             // Add a ban.
             $newBan = new Account\Ban();
-            $newBan->type = Account\Ban::TYPE_NETWORK;
+            $newBan->type = BanTypeEnum::Network;
             $newBan->reason_extra = 'Network ban discovered via Cert update scripts.';
             $newBan->period_start = Carbon::now();
             $member->bans()->save($newBan);
@@ -193,6 +231,31 @@ class UpdateMember extends Job implements ShouldQueue
         foreach ($pilotRatings as $pr) {
             if (! $member->hasQualification($pr)) {
                 $member->addQualification($pr);
+                Log::debug("Added rating {$pr->code} to member {$member->id}");
+            }
+        }
+
+        // it is possible for members to now be assigned instructor/examiner ratings
+        // which implicitly remove their previous ratings. We need to check for this
+        // and remove any ratings that are no longer valid.
+        // If this rating is eventually revoked, the bitmask will be reset to their previous
+        // permanent rating, which the logic above handles.
+        $memberPilotRatings = $member->fresh()->qualifications_pilot;
+
+        $pilotRatingsCollection = collect($pilotRatings);
+        foreach ($memberPilotRatings as $mpr) {
+            Log::debug("Checking pilot rating {$mpr->code} for member {$member->id}");
+
+            if (! $pilotRatingsCollection->contains($mpr->code) && $mpr->code != 'P0') {
+                $member->removeQualification($mpr);
+            }
+        }
+
+        $militaryRatings = QualificationData::parseVatsimMilitaryPilotQualifications($this->data->militaryrating);
+        foreach ($militaryRatings as $militaryRating) {
+            if (! $member->hasQualification($militaryRating)) {
+                $member->addQualification($militaryRating);
+                Log::debug("Added military rating {$militaryRating->code} to member {$member->id}");
             }
         }
 

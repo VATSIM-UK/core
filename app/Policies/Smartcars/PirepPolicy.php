@@ -4,18 +4,15 @@ namespace App\Policies\Smartcars;
 
 use App\Models\Mship\Account;
 use App\Models\Smartcars\Pirep;
-use App\Policies\BasePolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PirepPolicy extends BasePolicy
+class PirepPolicy
 {
     use HandlesAuthorization;
 
     /**
      * Determine whether the user can view the pirep.
      *
-     * @param  Account  $account
-     * @param  Pirep  $pirep
      * @return bool
      */
     public function viewAccount(Account $account, Pirep $pirep)

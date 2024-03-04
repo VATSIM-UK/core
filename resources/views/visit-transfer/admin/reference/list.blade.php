@@ -40,7 +40,7 @@
                                     {{--{!! link_to_route('adm.visiting.application.view', $r->application_id, [$r->application_id]) !!}--}}
                                 {{--</td>--}}
                                 <td align="center">
-                                    @include("adm.partials._account_link", ["account" => $r->application->account])
+                                    {{ $account->name }} {{ $account->id }}
                                 </td><td align="center">
                                     {{ $r->application->account->qualification_atc }}
                                 </td>
@@ -48,7 +48,7 @@
                                     {{ $r->application->type_string }} - {{ $r->application->facility_name }}
                                 </td>
                                 <td align="center">
-                                    @include("adm.partials._account_link", ["account" => $r->account])
+                                    {{ $account->name }} {{ $account->id }}
                                 </td>
                                 <td align="center">
                                     {{ $r->account->qualification_atc }}

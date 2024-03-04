@@ -62,7 +62,7 @@ class Application extends AdmController
             ->with('applications', $applications)
             ->with('sortBy', $sortBy)
             ->with('sortDir', $sortDir)
-            ->with('sortDirSwitch', ($sortDir == 'DESC' ? 'ASC' : 'DESC'));
+            ->with('sortDirSwitch', $sortDir == 'DESC' ? 'ASC' : 'DESC');
     }
 
     public function getView(ApplicationModel $application)
@@ -97,7 +97,7 @@ class Application extends AdmController
         }
 
         return Redirect::back()
-            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' rejected &amp; candidate notified.');
+            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' rejected & candidate notified.');
     }
 
     public function postAccept(ApplicationAcceptRequest $request, ApplicationModel $application)
@@ -109,7 +109,7 @@ class Application extends AdmController
         }
 
         return Redirect::back()
-            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' accepted &amp; candidate notified.');
+            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' accepted & candidate notified.');
     }
 
     public function postComplete(ApplicationCompleteRequest $request, ApplicationModel $application)

@@ -54,7 +54,7 @@
                             target="_blank">a
                         package from Microsoft</a>. You can download that below too.
                     <br/>
-                    <a href="https://aka.ms/vs/15/release/VC_redist.x86.exe"
+                    <a href="https://aka.ms/vs/17/release/VC_redist.x86.exe"
                        target="_blank">
                         <br/>
                         <button class="btn btn-primary center-block">Download Visual C++ Redistributable Package
@@ -65,29 +65,20 @@
         </div>
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-download"></i> &thinsp; Step Two - Download Key
+                <div class="panel-heading"><i class="fa fa-cog"></i> &thinsp; Step Two - Install and Start EuroScope
+                    Plugin
                 </div>
                 <div class="panel-body">
-                    When loading the plugin into EuroScope for the first time, you will be asked to provide a key so
-                    that the plugin knows who is connecting.<br/>
-                    <br/>
-                    Please click the button below to download your key. <br/><br/><b>You should never share your key
-                        with
-                        anyone
-                        else.</b><br/>
-                    <br/>
-
-                    <a href="{{ route('ukcp.token.download', $newToken) }}">
-                        <button class="btn btn-primary center-block">Download My Key</button>
-                    </a><br/>
-
-                    If you would like to generate a fresh key, you may do so by clicking the button below. Note: Doing
-                    this will invalidate any existing keys that you may have.<br/><br/>
-
-                    <a href="{{ route('ukcp.token.refresh')}}">
-                        <button class="btn btn-warning center-block">Refresh My Key</button>
-                    </a>
-
+                    <ol>
+                        <li>Move the UKControllerPlugin.dll file (downloaded in Step One) to /Data/Plugins within
+                            your UK Sector File folder.
+                        </li>
+                        <li>Open EuroScope.</li>
+                        <li>Click Other Set, then Plugins.</li>
+                        <li>Click "Load" on the dialog that opens.</li>
+                        <li>Select the UKControllerPlugin.dll file from the /Data/Plugins directory.</li>
+                        <li>If this is your first time setting up the plugin, see the Step Three for configuring your personal credentials.</li>
+                    </ol>
                 </div>
             </div>
         </div>
@@ -104,29 +95,20 @@
 
     <div class="row equal">
         <div class="col-md-4 col-md-offset-4">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-cog"></i> &thinsp; Step Three - Install
-                    Plugin
+        <div class="panel panel-ukblue">
+            <div class="panel-heading"><i class="fa fa-download"></i> &thinsp; Step Three - First Time Credential Setup
                 </div>
                 <div class="panel-body">
-                    <ol>
-                        <li>Move the UKControllerPlugin.dll file (downloaded in Step One) to /Data/Plugins within
-                            your UK Sector File folder.
-                        </li>
-                        <li>Open EuroScope.</li>
-                        <li>Click Other Set, then Plugins.</li>
-                        <li>Click "Load" on the dialog that opens.</li>
-                        <li>Select the UKControllerPlugin.dll file from the /Data/Plugins directory.</li>
-                        <li>A warning will appear, press OK.</li>
-                        <li>The plugin will then ask you to find the key file that you downloaded in Step Two. Find it
-                            and click Open.
-                        </li>
-                        <li>Select the UK Controller Plugin from the list of plugins and move "Standard ES Radar Screen"
-                            from forbidden to allowed in the section below.
-                        </li>
-                        <li>Click close - the UK Controller Plugin has now been installed!</li>
-                    </ol>
+                    When loading the plugin into EuroScope for the first time, you will be asked to login to the VATSIM UK website.
+                    Doing this will allow the plugin to receive your personal plugin credentials, which are required to authenticate
+                    actions such as assigning squawk codes.<br/>
+                    <br/>
 
+                    If you would like to generate a fresh key, you may do so using the option in the "OP" menu on the bottom right of the
+                    EuroScope radar screen, once the plugin has loaded.<br/><br/>
+                    
+                    <p>The UK Controller Plugin should now be fully installed!</p>
+                    
                     <p>Feel free to check out the settings by clicking the toggle at the bottom right of your radar
                         screen. You may also wish to browse the <a
                                 href="https://github.com/VATSIM-UK/uk-controller-plugin/blob/develop/docs/README.md">full

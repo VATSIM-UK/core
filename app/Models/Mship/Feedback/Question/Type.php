@@ -23,23 +23,24 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereRequiresValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereRules($value)
+ *
  * @mixin \Eloquent
  */
 class Type extends Model
 {
     protected $table = 'mship_feedback_question_types';
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
+
     protected $fillable = [
         'name',
         'code',
         'max_uses',
         'requires_value',
     ];
+
     protected $casts = [
         'requires_value' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public $timestamps = false;

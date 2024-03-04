@@ -24,7 +24,7 @@ use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
-use App\Models\NetworkData\Atc;
+use App\Models\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
@@ -123,18 +123,23 @@ use Malahierba\PublicId\PublicId;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereWillAutoAccept($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Application withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Application withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Application extends Model
 {
-    use PublicId, SoftDeletes;
+    use HasStatus, PublicId, SoftDeletes;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
+
     protected static $public_id_min_length = 8;
+
     protected static $public_id_alphabet = 'upper_alphanumeric';
+
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
 
     protected $table = 'vt_application';
+
     protected $fillable = [
         'type',
         'training_team',
@@ -144,31 +149,42 @@ class Application extends Model
         'status',
         'expires_at',
     ];
+
     public $timestamps = true;
-    protected $dates = [
-        'expires_at',
-        'submitted_at',
-        'created_at',
-        'updated_at',
-    ];
+
     protected $casts = [
         'check_outcome_90_day' => 'boolean',
         'check_outcome_50_hours' => 'boolean',
+        'expires_at' => 'datetime',
+        'submitted_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     const TYPE_VISIT = 10;
+
     const TYPE_TRANSFER = 40;
 
     const STATUS_IN_PROGRESS = 10; // Member hasn't yet submitted application formally.
+
     const STATUS_WITHDRAWN = 15; // Application has been withdrawn.
+
     const STATUS_EXPIRED = 16; // Application expired after 1 hour.
+
     const STATUS_SUBMITTED = 30; // Member has formally submitted application.
+
     const STATUS_UNDER_REVIEW = 50; // References and checks have been completed.
+
     const STATUS_ACCEPTED = 60; // Application has been accepted by staff
+
     const STATUS_PENDING_CERT = 70; // Application has been completed, but is pending a cert update to be formally complete.
+
     const STATUS_COMPLETED = 90; // Application has been formally completed, visit/transfer complete.
+
     const STATUS_LAPSED = 93; // Application has lapsed.
+
     const STATUS_CANCELLED = 96; // Application has been cancelled
+
     const STATUS_REJECTED = 99; // Application has been rejected by staff
 
     public static $APPLICATION_IS_CONSIDERED_EDITABLE = [
@@ -509,21 +525,6 @@ class Application extends Model
     }
 
     /** Business logic. */
-    public function isStatus($status)
-    {
-        return $this->status == $status;
-    }
-
-    public function isStatusIn($stati)
-    {
-        return in_array($this->status, $stati);
-    }
-
-    public function isStatusNotIn($stati)
-    {
-        return ! $this->isStatusIn($stati);
-    }
-
     public function setFacility(Facility $facility)
     {
         $this->guardAgainstTransferringToANonTrainingFacility($facility);
@@ -635,7 +636,7 @@ class Application extends Model
         $this->facility->removeTrainingSpace();
     }
 
-    public function markAsUnderReview($staffReason = null, Account $actor = null)
+    public function markAsUnderReview($staffReason = null, ?Account $actor = null)
     {
         $this->attributes['status'] = self::STATUS_UNDER_REVIEW;
         $this->save();
@@ -650,7 +651,7 @@ class Application extends Model
         event(new ApplicationUnderReview($this));
     }
 
-    public function reject($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
+    public function reject($publicReason = 'No reason was provided.', $staffReason = null, ?Account $actor = null)
     {
         $this->guardAgainstNonRejectableApplication();
 
@@ -677,19 +678,17 @@ class Application extends Model
         }
     }
 
-    public function accept($staffComment = null, Account $actor = null)
+    public function accept($staffComment = null, ?Account $actor = null)
     {
         $this->guardAgainstUnAcceptableApplication();
 
         // Deal with refereneces
         foreach ($this->referees as $reference) {
-            switch ($reference->status) {
-                case Reference::STATUS_UNDER_REVIEW:
-                    $reference->cancel();
-                    break;
-                case Reference::STATUS_REQUESTED:
-                    $reference->accept(null, $actor);
-                    break;
+            if ($reference->isStatusIn(Reference::$REFERENCE_IS_PENDING)) {
+                $reference->cancel();
+            }
+            if ($reference->isStatus(Reference::STATUS_UNDER_REVIEW)) {
+                $reference->accept();
             }
         }
 
@@ -706,14 +705,14 @@ class Application extends Model
         event(new ApplicationAccepted($this));
     }
 
-    public function complete($staffComment = null, Account $actor = null)
+    public function complete($staffComment = null, ?Account $actor = null)
     {
         $this->guardAgainstNonAcceptedApplication();
         $this->changeStatus(self::STATUS_COMPLETED, null, $staffComment, $actor);
         event(new ApplicationCompleted($this));
     }
 
-    public function cancel($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
+    public function cancel($publicReason = 'No reason was provided.', $staffReason = null, ?Account $actor = null)
     {
         $this->guardAgainstNonAcceptedApplication();
         $this->changeStatus(self::STATUS_CANCELLED, $publicReason, $staffReason, $actor);
@@ -729,7 +728,7 @@ class Application extends Model
         event(new ApplicationCancelled($this));
     }
 
-    public function changeStatus($status, $publicReason = null, $staffReason = null, Account $actor = null)
+    public function changeStatus($status, $publicReason = null, $staffReason = null, ?Account $actor = null)
     {
         // Set the status
         $this->status = $status;

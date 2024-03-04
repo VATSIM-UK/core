@@ -63,6 +63,7 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereRoute($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot withinDivision()
+ *
  * @mixin \Eloquent
  */
 class Pilot extends Model
@@ -70,8 +71,17 @@ class Pilot extends Model
     use Rememberable;
 
     protected $table = 'networkdata_pilots';
+
     protected $primaryKey = 'id';
-    public $dates = ['departed_at', 'arrived_at', 'connected_at', 'disconnected_at', 'created_at', 'updated_at'];
+
+    protected $casts = [
+        'departed_at' => 'datetime',
+        'arrived_at' => 'datetime',
+        'connected_at' => 'datetime',
+        'disconnected_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     protected $fillable = [
         'account_id',
@@ -141,7 +151,7 @@ class Pilot extends Model
         return $this->attributes['disconnected_at'] === null;
     }
 
-    public function isAtAirport(Airport $airport = null)
+    public function isAtAirport(?Airport $airport = null)
     {
         if (is_null($airport)) {
             return false;

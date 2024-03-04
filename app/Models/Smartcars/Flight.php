@@ -54,11 +54,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight whereRoute($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight whereRouteDetails($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Flight extends Model
 {
     protected $table = 'smartcars_flight';
+
     protected $fillable = [
         'code',
         'name',

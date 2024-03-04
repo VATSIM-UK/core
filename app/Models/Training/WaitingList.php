@@ -2,12 +2,15 @@
 
 namespace App\Models\Training;
 
+use App\Events\Training\AccountAddedToWaitingList;
+use App\Events\Training\FlagAddedToWaitingList;
 use App\Events\Training\WaitingListCreated;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingList extends Model
@@ -25,13 +28,21 @@ class WaitingList extends Model
 
     public $table = 'training_waiting_list';
 
-    protected $dates = ['deleted_at'];
+    protected $fillable = ['name', 'slug', 'department', 'feature_toggles'];
 
     const ATC_DEPARTMENT = 'atc';
+
     const PILOT_DEPARTMENT = 'pilot';
 
     const ALL_FLAGS = 'all';
+
     const ANY_FLAGS = 'any';
+
+    protected $casts = [
+        'home_members_only' => 'boolean',
+        'feature_toggles' => 'array',
+        'deleted_at' => 'datetime',
+    ];
 
     /**
      * A Waiting List can be managed by many Staff Members (Accounts).
@@ -50,10 +61,8 @@ class WaitingList extends Model
 
     /**
      * Many WaitingLists can have many Accounts (pivot).
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function accounts()
+    public function accounts(): BelongsToMany
     {
         return $this->belongsToMany(
             Account::class,
@@ -65,17 +74,7 @@ class WaitingList extends Model
                 'deleted_at',
                 'notes',
                 'created_at',
-            ])->wherePivot('deleted_at', null);
-    }
-
-    public function accountsByEligibility($eligible = true)
-    {
-        return $this->accounts()
-            ->orderByPivot('created_at')
-            ->get()
-            ->filter(function ($model) use ($eligible) {
-                return $model->pivot->eligibility == $eligible;
-            })->values();
+            ])->wherePivot('deleted_at', null)->orderByPivot('created_at');
     }
 
     /**
@@ -91,12 +90,11 @@ class WaitingList extends Model
     /**
      * Get the position of an account in the eligible waiting list.
      *
-     * @param  Account  $account
      * @return int|null
      */
     public function accountPosition(Account $account)
     {
-        $key = $this->accountsByEligibility(true)->search(function ($accountItem) use ($account) {
+        $key = $this->accounts->search(function ($accountItem) use ($account) {
             return $accountItem->id == $account->id;
         });
 
@@ -106,7 +104,6 @@ class WaitingList extends Model
     /**
      * Associate a flag with a waiting list.
      *
-     * @param  WaitingListFlag  $flag
      * @return mixed
      */
     public function addFlag(WaitingListFlag $flag)
@@ -117,13 +114,14 @@ class WaitingList extends Model
             $account->pivot->flags()->attach($flag);
         });
 
+        event(new FlagAddedToWaitingList($this));
+
         return $savedFlag;
     }
 
     /**
      * Remove a flag from a waiting list.
      *
-     * @param  WaitingListFlag  $flag
      * @return mixed
      */
     public function removeFlag(WaitingListFlag $flag)
@@ -133,12 +131,8 @@ class WaitingList extends Model
 
     /**
      * Add an Account to a waiting list.
-     *
-     * @param  Account  $account
-     * @param  Account  $staffAccount
-     * @param  Carbon|null  $createdAt
      */
-    public function addToWaitingList(Account $account, Account $staffAccount, Carbon $createdAt = null)
+    public function addToWaitingList(Account $account, Account $staffAccount, ?Carbon $createdAt = null)
     {
         $timestamp = $createdAt != null ? $createdAt : Carbon::now();
         $this->accounts()->attach($account, ['added_by' => $staffAccount->id]);
@@ -148,12 +142,13 @@ class WaitingList extends Model
         $pivot = $this->accounts()->find($account->id)->pivot;
         $pivot->created_at = $timestamp;
         $pivot->save();
+
+        event(new AccountAddedToWaitingList($account, $this->fresh(), $staffAccount));
     }
 
     /**
      * Remove an Account from a waiting list.
      *
-     * @param  Account  $account
      * @return void
      */
     public function removeFromWaitingList(Account $account)
@@ -170,6 +165,33 @@ class WaitingList extends Model
     public function isPilotList()
     {
         return $this->department == self::PILOT_DEPARTMENT;
+    }
+
+    public function getFormattedDepartmentAttribute()
+    {
+        return match ($this->department) {
+            self::ATC_DEPARTMENT => 'ATC Training',
+            self::PILOT_DEPARTMENT => 'Pilot Training',
+            default => ucfirst($this->department),
+        };
+    }
+
+    public function getShouldCheckAtcHoursAttribute(): bool
+    {
+        return $this->feature_toggles['check_atc_hours'] ?? true;
+    }
+
+    public function getShouldCheckCtsTheoryExamAttribute(): bool
+    {
+        return $this->feature_toggles['check_cts_theory_exam'] ?? true;
+    }
+
+    public function getFeatureTogglesFormattedAttribute(): object
+    {
+        return (object) [
+            'check_atc_hours' => $this->getShouldCheckAtcHoursAttribute(),
+            'check_cts_theory_exam' => $this->getShouldCheckCtsTheoryExamAttribute(),
+        ];
     }
 
     public function __toString()

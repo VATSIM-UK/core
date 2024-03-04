@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 class HerokuPostDeploy extends Command
 {
     protected $signature = 'postdeploy:heroku';
+
     protected $description = 'Run post-deploy on Heroku';
 
     public function handle()
@@ -30,7 +31,6 @@ class HerokuPostDeploy extends Command
                 $this->call('migrate');
                 break;
             case 'development':
-                $this->call('nova:install');
                 $this->call('migrate:fresh');
                 $this->call('cts:migrate:fresh');
                 break;

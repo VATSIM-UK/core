@@ -10,25 +10,41 @@ on:
   pull_request:
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Install PHP dependencies
+        uses: ramsey/composer-install@v2
+
+      - name: 'Lint PHP'
+        run: composer lint -- --test
+
   test:
     name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }}
+    needs: lint
     runs-on: ubuntu-latest
     concurrency:
       group: core-test-${{ github.ref }}
       cancel-in-progress: true
     continue-on-error: ${{ matrix.experimental }}
-    env:
-      NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
-      NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.1']
+        php: ['8.2']
         composer: ['v2']
         experimental: [false]
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       #
       # ENVIRONMENT DEPENDENCIES SETUP
@@ -40,19 +56,10 @@ jobs:
           coverage: pcov
           tools: composer:${{ matrix.composer }}
 
-      - name: Setup Yarn
-        uses: actions/setup-node@v1
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: '12'
-
-      # Authenticate Nova
-      - name: Authenticate Nova Installation
-        env:
-          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
-          NOVA_PASSWORD: ${{ secrets.NOVA_PASSWORD }}
-        run: |
-          cp auth.json.example auth.json
-          composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_PASSWORD}
+          node-version: '20'
 
       # Start MySQL and Create Databases
       - name: Create Databases
@@ -77,7 +84,7 @@ jobs:
           echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Restore Composer Cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -85,7 +92,7 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Restore Vendor From Cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: vendor
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
@@ -96,63 +103,39 @@ jobs:
            composer install --no-interaction
            php artisan package:discover
 
-      - name: Install Nova & Waiting Lists
-        run: |
-          php artisan nova:install
-          cd nova-components/WaitingListsManager && composer install && cd ../../
-
       #
-      # YARN DEPENDENCIES
+      # NODE BUILD
       #
 
       # Restore Caches
-      - name: Get Yarn Cache Directory
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Get Node Cache Directory
+        id: node-cache-dir-path
+        run: echo "::set-output name=dir::$(node cache dir)"
 
-      - name: Restore Yarn Cache
-        uses: actions/cache@v1
-        id: yarn-cache
+      - name: Restore Node Cache
+        uses: actions/cache@v3
+        id: node-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.node-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-node-
 
-      # Install
-      - name: Install Core Assets
-        run: yarn
+      # Install node_modules
+      - name: Install Core assets
+        run: npm ci
 
-      - name: Compile Core Assets
-        run: yarn run prod
-
-      - name: Install Waiting Lists Manager Assets
-        run: cd nova-components/WaitingListsManager && yarn && cd ../../
-
-      - name: Compile Waiting Lists Manager Assets
-        run: cd nova-components/WaitingListsManager && yarn run prod && cd ../../
+      # Run Webpack
+      - name: Compile Core assets
+        run: npm run build
 
       #
       # APPLICATION SETUP
       #
 
       # Environment Configuration
-      - name: Create empty Environment File
-        run: touch .env
-
-      - name: Set Environment Variables
-        uses: allenevans/set-env@v2.0.0
-        with:
-          APP_ENV: testing
-          APP_KEY: base64:wx/g4ayECKlSzOYSguRFoCrsd+KSbAyEiy0J8zWxxyU=
-          APP_URL: 127.0.0.1
-          CACHE_DRIVER: array
-          DB_MYSQL_HOST: localhost
-          DB_MYSQL_PORT: 3306
-          DB_MYSQL_USER: root
-          DB_MYSQL_PASS: root
-          DB_MYSQL_NAME: core
-          CTS_DATABASE: cts
+      - name: Create Environment File
+        run: mv .env.ci .env
 
       # Publish Packages
       - name: Publish Horizon
@@ -162,8 +145,8 @@ jobs:
         run: php artisan telescope:publish
 
       # Run Database Migration
-      - name: Migrate Database
-        run: php artisan migrate
+      - name: Migrate & Seed Database
+        run: php artisan migrate && php artisan cts:migrate:fresh
 
       # Cache Setup
       - name: Cache Routes
@@ -186,12 +169,15 @@ jobs:
 
       # Run Coverage Suite
       - name: Upload Code Coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
-  trigger-release:
-    name: Trigger Release
+
+
+  trigger-deploy:
+    name: Trigger Deploy
     needs: test
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -199,8 +185,8 @@ jobs:
       #
       # RELEASE (main only)
       #
-      - name: Trigger release workflow
-        uses: peter-evans/repository-dispatch@v1
+      - name: Trigger deploy workflow
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.PAT }}
-          event-type: release-trigger
+          event-type: deploy-trigger

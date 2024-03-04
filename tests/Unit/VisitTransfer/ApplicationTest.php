@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ApplicationTest extends TestCase
@@ -73,7 +74,7 @@ class ApplicationTest extends TestCase
     {
         Mail::fake();
 
-        $this->user = factory(Account::class)->create();
+        $this->user = Account::factory()->create();
         $qual = Qualification::code('S2')->first();
         $this->user->addQualification($qual)->save();
 
@@ -137,7 +138,7 @@ class ApplicationTest extends TestCase
     /** @test */
     public function itCorrectlyReports90DayCheck()
     {
-        $this->user = factory(Account::class)->create();
+        $this->user = Account::factory()->create();
         $qual = Qualification::code('S2')->first();
         $this->user->addQualification($qual);
         $this->user->save();
@@ -182,7 +183,7 @@ class ApplicationTest extends TestCase
         });
     }
 
-    public function providerCancelTest()
+    public static function providerCancelTest()
     {
         // With another accepted visit application
         return [
@@ -191,10 +192,7 @@ class ApplicationTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider providerCancelTest
-     */
+    #[DataProvider('providerCancelTest')]
     public function itCanBeCancelled($with_another_application)
     {
         Notification::fake();

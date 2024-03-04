@@ -18,6 +18,7 @@ Route::group([
         Route::get('/')->uses('ATCPagesController@viewLanding')->name('landing');
         Route::get('/new-controller')->uses('ATCPagesController@viewNewController')->name('newController');
         Route::get('/endorsements')->uses('ATCPagesController@viewEndorsements')->name('endorsements');
+        Route::get('/heathrow')->uses('ATCPagesController@viewHeathrow')->name('heathrow');
         Route::get('/becoming-a-mentor')->uses('ATCPagesController@viewBecomingAMentor')->name('mentor');
         Route::get('/bookings')->uses('ATCPagesController@viewBookings')->name('bookings');
     });
@@ -30,6 +31,8 @@ Route::group([
         Route::get('/ratings')->uses('PilotPagesController@viewRatings')->name('ratings');
         Route::get('/becoming-a-mentor')->uses('PilotPagesController@viewBecomingAMentor')->name('mentor');
         Route::get('/oceanic')->uses('PilotPagesController@viewOceanic')->name('oceanic');
+        Route::get('/stand-guide')->uses('PilotPagesController@viewStandGuide')->name('stands');
+        Route::get('/the-flying-programme')->uses('PilotPagesController@viewTheFlyingProgramme')->name('tfp');
     });
 
     Route::group([

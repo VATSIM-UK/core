@@ -31,14 +31,24 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereNoteTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereWriterId($value)
+ *
  * @mixin \Eloquent
  */
 class Note extends Model
 {
     protected $table = 'mship_account_note';
+
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'updated_at'];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     protected $touches = ['account'];
+
+    protected $fillable = ['content'];
+
     protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     public function account()

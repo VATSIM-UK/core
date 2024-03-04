@@ -20,19 +20,22 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer whereQuestionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer whereResponse($value)
+ *
  * @mixin \Eloquent
  */
 class Answer extends Model
 {
     protected $table = 'mship_feedback_answers';
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
+
     protected $fillable = [
         'feedback_id',
         'question_id',
         'response',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public $timestamps = false;

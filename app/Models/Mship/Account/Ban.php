@@ -2,9 +2,11 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Enums\BanTypeEnum;
 use App\Events\Mship\Bans\BanUpdated;
 use App\Models\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\Mship\Account\Ban.
@@ -12,7 +14,7 @@ use Carbon\Carbon;
  * @property int $id
  * @property int $account_id
  * @property int|null $banned_by
- * @property int $type
+ * @property BanTypeEnum $type
  * @property int|null $reason_id
  * @property string $reason_extra
  * @property \Carbon\Carbon|null $period_start
@@ -52,32 +54,48 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereRepealedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Ban extends Model
 {
-    protected $table = 'mship_account_ban';
-    protected $primaryKey = 'id';
-    protected $dates = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];
-    protected $touches = ['account'];
-    protected $trackedEvents = ['created', 'updated', 'deleted'];
+    use HasFactory;
 
-    const TYPE_LOCAL = 80;
-    const TYPE_NETWORK = 90;
+    protected $table = 'mship_account_ban';
+
+    protected $primaryKey = 'id';
+
+    protected $casts = [
+        'period_start' => 'datetime',
+        'period_finish' => 'datetime',
+        'created_at' => 'datetime',
+        'repealed_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'type' => BanTypeEnum::class,
+    ];
+
+    protected $touches = ['account'];
+
+    protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     public static function scopeIsNetwork($query)
     {
-        return $query->where('type', '=', self::TYPE_NETWORK);
+        return $query->where('type', '=', BanTypeEnum::Network);
     }
 
     public static function scopeIsLocal($query)
     {
-        return $query->where('type', '=', self::TYPE_LOCAL);
+        return $query->where('type', '=', BanTypeEnum::Local);
     }
 
     public static function scopeIsActive($query)
     {
-        return $query->isNotRepealed()->where('period_finish', '>=', \Carbon\Carbon::now())->orWhereNull('period_finish');
+        return $query->isNotRepealed()->where(fn ($query) => $query->where('period_finish', '>=', \Carbon\Carbon::now())->orWhereNull('period_finish'));
+    }
+
+    public static function scopeIsInActive($query)
+    {
+        return $query->isHistoric()->orWhere(fn ($query) => $query->isRepealed());
     }
 
     public static function scopeIsHistoric($query)
@@ -124,12 +142,12 @@ class Ban extends Model
 
     public function getIsLocalAttribute()
     {
-        return $this->type == self::TYPE_LOCAL;
+        return $this->type == BanTypeEnum::Local;
     }
 
     public function getIsNetworkAttribute()
     {
-        return $this->type == self::TYPE_NETWORK;
+        return $this->type == BanTypeEnum::Network;
     }
 
     public function getIsRepealedAttribute()
@@ -143,7 +161,7 @@ class Ban extends Model
         $period_finish = $this->period_finish;
         $now = \Carbon\Carbon::now();
 
-        return ! $period_finish || ($now->between($period_start, $period_finish) && ! $this->is_repealed);
+        return ! $this->is_repealed && (! $period_finish || $now->between($period_start, $period_finish));
     }
 
     public function getIsExpiredAttribute()
@@ -153,17 +171,11 @@ class Ban extends Model
 
     public function getTypeStringAttribute()
     {
-        switch ($this->attributes['type']) {
-            case self::TYPE_LOCAL:
-                return trans('mship.ban.type.local');
-                break;
-            case self::TYPE_NETWORK:
-                return trans('mship.ban.type.network');
-                break;
-            default:
-                return trans('mship.ban.type.unknown');
-                break;
-        }
+        return match ($this->type) {
+            BanTypeEnum::Local => trans('mship.ban.type.local'),
+            BanTypeEnum::Network => trans('mship.ban.type.network'),
+            default => trans('mship.ban.type.unknown'),
+        };
     }
 
     public function getPeriodAmountStringAttribute()

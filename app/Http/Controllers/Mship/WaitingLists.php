@@ -32,7 +32,7 @@ class WaitingLists extends BaseController
         ])->firstOrFail();
 
         $automaticFlags = $list->pivot->flags->filter(function ($flag) {
-            return (bool) $flag->endorsement_id;
+            return (bool) $flag->position_group_id;
         });
 
         return view('mship.waiting-lists.view', ['list' => $list, 'automaticFlags' => $automaticFlags]);

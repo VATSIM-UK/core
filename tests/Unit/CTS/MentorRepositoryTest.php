@@ -26,7 +26,7 @@ class MentorRepositoryTest extends TestCase
     /** @test */
     public function itCanReturnAListOfMentorsOfAnRts()
     {
-        $position = factory(Position::class)->create(['rts_id' => 15]);
+        $position = Position::factory()->create(['rts_id' => 15]);
 
         $positionValidation = factory(PositionValidation::class)->create([
             'status' => 5,
@@ -41,7 +41,7 @@ class MentorRepositoryTest extends TestCase
     /** @test */
     public function itDoesNotReturnMentorsOfAnotherRts()
     {
-        $position = factory(Position::class)->create(['rts_id' => 15]);
+        $position = Position::factory()->create(['rts_id' => 15]);
 
         factory(PositionValidation::class)->create([
             'status' => 5,
@@ -58,8 +58,8 @@ class MentorRepositoryTest extends TestCase
     {
         $member = factory(Member::class)->create();
 
-        $positionOne = factory(Position::class)->create(['rts_id' => 15]);
-        $positionTwo = factory(Position::class)->create(['rts_id' => 15]);
+        $positionOne = Position::factory()->create(['rts_id' => 15]);
+        $positionTwo = Position::factory()->create(['rts_id' => 15]);
 
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
@@ -82,7 +82,7 @@ class MentorRepositoryTest extends TestCase
     public function itFormatsTheReturnDataForAnRtsCorrectly()
     {
         $member = factory(Member::class)->create();
-        $position = factory(Position::class)->create(['rts_id' => 15]);
+        $position = Position::factory()->create(['rts_id' => 15]);
 
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
@@ -98,7 +98,7 @@ class MentorRepositoryTest extends TestCase
     /** @test */
     public function itCanReturnAListOfMentorsOfAnAirport()
     {
-        $position = factory(Position::class)->create(['callsign' => 'EGKK_GND']);
+        $position = Position::factory()->create(['callsign' => 'EGKK_GND']);
 
         $positionValidation = factory(PositionValidation::class)->create([
             'status' => 5,
@@ -113,7 +113,7 @@ class MentorRepositoryTest extends TestCase
     /** @test */
     public function itCanReturnAListOfMentorsOfASpecificCallsign()
     {
-        $position = factory(Position::class)->create(['callsign' => 'EGKK_GND']);
+        $position = Position::factory()->create(['callsign' => 'EGKK_GND']);
 
         $positionValidation = factory(PositionValidation::class)->create([
             'status' => 5,
@@ -128,7 +128,7 @@ class MentorRepositoryTest extends TestCase
     /** @test */
     public function itDoesNotReturnMentorsWithoutPermissionToMentorAPosition()
     {
-        $position = factory(Position::class)->create(['callsign' => 'EGKK_APP']);
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
 
         factory(PositionValidation::class)->create([
             'status' => 5,
@@ -145,8 +145,8 @@ class MentorRepositoryTest extends TestCase
     {
         $member = factory(Member::class)->create();
 
-        $positionOne = factory(Position::class)->create(['callsign' => 'EGKK_APP']);
-        $positionTwo = factory(Position::class)->create(['callsign' => 'EGKK_TWR']);
+        $positionOne = Position::factory()->create(['callsign' => 'EGKK_APP']);
+        $positionTwo = Position::factory()->create(['callsign' => 'EGKK_TWR']);
 
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,
@@ -171,7 +171,7 @@ class MentorRepositoryTest extends TestCase
     public function itFormatsTheReturnDataForAirportOrPositionSearchesCorrectly()
     {
         $member = factory(Member::class)->create();
-        $position = factory(Position::class)->create(['callsign' => 'EGKK_APP']);
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
 
         factory(PositionValidation::class)->create([
             'member_id' => $member->id,

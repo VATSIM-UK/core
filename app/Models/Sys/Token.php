@@ -46,6 +46,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereUsedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Token extends Model
@@ -53,8 +54,17 @@ class Token extends Model
     use SoftDeletingTrait;
 
     protected $table = 'sys_token';
+
     protected $primaryKey = 'token_id';
-    protected $dates = ['created_at', 'updated_at', 'expires_at', 'used_at', 'deleted_at'];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'expires_at' => 'datetime',
+        'used_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     protected $hidden = ['token_id'];
 
     public function getRouteKeyName()

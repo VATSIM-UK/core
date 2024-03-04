@@ -14,6 +14,7 @@ class FeedbackSummary extends Notification implements ShouldQueue
     use Queueable;
 
     protected $feedback;
+
     protected $feedbackSince;
 
     /**

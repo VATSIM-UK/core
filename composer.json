@@ -56,69 +56,63 @@
         {
             "type": "vcs",
             "url": "https://github.com/VATSIM-UK/public-id"
-        },
-        {
-            "type": "composer",
-            "url": "https://nova.laravel.com"
-        },
-        {
-            "type": "path",
-            "url": "nova-components/WaitingListsManager"
         }
     ],
     "require": {
-        "php": ">=7.4|>=8.0",
+        "php": "^8.1.0",
         "alawrence/laravel-ipboard": "dev-main",
+        "axonc/filament-copyable-placeholder": "^0.3.0",
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^2.7",
-        "benjaminhirsch/nova-slug-field": "^1.2",
-        "cobaltgrid/vatsim-stand-status": "^2.1.1",
+        "bugsnag/bugsnag-laravel": "^2.0",
         "doctrine/dbal": "~3.3",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/framework": "^8.24.0",
+        "filament/filament": "^3.0-stable",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^10.0",
         "laravel/helpers": "^1.1",
         "laravel/horizon": "^5.0",
-        "laravel/nova": "^3.15",
-        "laravel/passport": "^10.0",
+        "laravel/passport": "^11.2",
         "laravel/telescope": "^4.0",
         "laravel/tinker": "^2.0",
-        "laravel/ui": "^3.0",
+        "laravel/ui": "^4.0",
         "laravelcollective/html": "^6.0",
         "league/csv": "^8.0",
         "league/oauth2-client": "^2.4",
+        "livewire/livewire": "^3.3",
         "maatwebsite/excel": "~3.1.17",
         "malahierba-lab/public-id": "dev-main",
         "ohdearapp/ohdear-php-sdk": "^3.0",
         "planetteamspeak/ts3-php-framework": "dev-master#9e987b61b8e559b4219d30b140b8edbeb94edece",
-        "predis/predis": "^1.1",
-        "pusher/pusher-php-server": "~6.0",
-        "sentry/sentry-laravel": "^2.4",
-        "sixlive/nova-text-copy-field": "^1.5",
-        "spatie/laravel-cookie-consent": "^2.4",
-        "spatie/laravel-permission": "^4.0",
-        "spatie/laravel-schedule-monitor": "^2.1",
-        "symfony/translation": "^5.0",
-        "titasgailius/search-relations": "^2.0",
+        "predis/predis": "^2.0",
+        "pusher/pusher-php-server": "~7.2",
+        "sentry/sentry-laravel": "^4.0",
+        "spatie/laravel-permission": "^5.5",
+        "spatie/laravel-schedule-monitor": "^3.0",
+        "symfony/http-client": "^6.1",
+        "symfony/mailgun-mailer": "^6.1",
+        "symfony/translation": "^6.1",
         "vatsim/sso": "3.0",
-        "vatsimuk/waiting-lists-manager": "@dev",
-        "vyuldashev/nova-permission": "^3.0",
-        "watson/rememberable": "^5.0",
+        "watson/rememberable": "^6.0",
+        "whitecube/laravel-cookie-consent": "^1.0.1",
         "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {
         "ext-json": "*",
         "codedungeon/phpunit-result-printer": "^0.32.0",
-        "facade/ignition": "^2.3.6",
-        "fakerphp/faker": "^1.13",
+        "fakerphp/faker": "^1.9.1",
+        "filament/upgrade": "^3.0-stable",
         "laracasts/generators": "^2.0",
-        "laravel/homestead": "^13.1.1",
+        "laravel/homestead": "^15.0.1",
         "laravel/legacy-factories": "^1.1",
-        "mockery/mockery": "1.5.*",
-        "phpunit/phpunit": "^9.4",
+        "laravel/pint": "^1.10",
+        "mockery/mockery": "1.6.*",
+        "nunomaduro/collision": "^7.0",
+        "phpunit/phpunit": "^10.0",
+        "spatie/laravel-ignition": "^2.0",
         "spatie/laravel-ray": "^1.23",
         "symfony/css-selector": "^4.0",
-        "symfony/dom-crawler": "^5.0",
-        "timacdonald/log-fake": "^1.2"
+        "symfony/dom-crawler": "^6.1",
+        "timacdonald/log-fake": "^2.0"
     },
     "autoload": {
         "files": [
@@ -150,21 +144,30 @@
         "post-create-project-cmd": [
             "@php artisan key:generate"
         ],
+        "post-update-cmd": [
+            "@php artisan horizon:publish",
+            "@php artisan telescope:publish",
+            "@php artisan filament:upgrade"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover"
+            "@php artisan package:discover",
+            "@php artisan filament:upgrade"
         ],
         "ide-helper": [
             "php artisan ide-helper:generate",
             "php artisan ide-helper:models -RW",
             "php artisan ide-helper:meta"
+        ],
+        "lint": [
+            "./vendor/bin/pint"
         ]
     },
     "config": {
-        "platform": {
-            "php": "7.4"
-        },
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }

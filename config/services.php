@@ -51,6 +51,7 @@ return [
         'redirect_uri' => env('DISCORD_REDIRECT_URI', null),
         'base_discord_uri' => env('DISCORD_API_BASE', 'https://discord.com/api/v6'),
         'suspended_member_role_id' => env('DISCORD_SUSPENDED_MEMBER_ROLE_ID', null),
+        'training_alerts_channel_id' => env('DISCORD_TRAINING_ALERTS_CHANNEL_ID', null),
     ],
 
     'google' => [
@@ -65,7 +66,6 @@ return [
     ],
 
     'chartfox' => [
-        'private_token' => env('CHARTFOX_PRIVATE_TOKEN'),
         'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
     ],
 
@@ -96,6 +96,12 @@ return [
     'moodle' => [
         'database' => env('MOODLE_DATABASE'),
         'oauth_issuer_id' => env('MOODLE_OAUTH_ISSUER_ID'),
+    ],
+
+    'vatsim-net' => [
+        'webhook' => [
+            'key' => env('VATSIM_NET_WEBHOOK_KEY'),
+        ],
     ],
 
 ];

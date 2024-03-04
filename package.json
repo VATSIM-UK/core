@@ -2,60 +2,33 @@
   "name": "vatsimukcore",
   "description": "VATSIM UK Core Framework",
   "license": "MIT",
-  "type": "project",
   "private": true,
   "scripts": {
-    "dev": "yarn run development",
-    "development": "mix",
-    "watch": "mix watch",
-    "watch-poll": "mix watch -- --watch-options-poll=1000",
-    "hot": "mix watch --hot",
-    "production": "mix --production",
-    "prod": "yarn run production",
-    "build-waiting-lists-manager-prod": "cd nova-components/WaitingListsManager && yarn && yarn run prod",
-    "build-waiting-lists-manager": "cd nova-components/WaitingListsManager && yarn && yarn run dev",
-    "heroku-postbuild": "yarn run prod && yarn run build-waiting-lists-manager-prod"
+    "dev": "vite",
+    "build": "vite build"
   },
-  "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.4",
-    "@sentry/browser": "^6.19.6",
-    "@sentry/tracing": "^6.19.6",
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
     "admin-lte": "2.4.18",
-    "axios": "^0.26",
-    "bootstrap": "^3.3.7",
+    "autoprefixer": "^10.4.16",
+    "bootstrap": "^5.3.3",
     "bootstrap-sass": "^3.4.3",
     "bootstrap-tour": "^0.12.0",
-    "cross-env": "^7.0.3",
-    "jquery": "^3.6.0",
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
-    "laravel-mix": "^6.0.34",
-    "less": "^4.1.2",
-    "less-loader": "^10.2.0",
-    "lodash": "^4.17.21",
-    "popper.js": "^1.16",
+    "laravel-vite-plugin": "^0.8.1",
+    "less": "^4.2.0",
+    "less-loader": "^12.2.0",
     "postcss": "^8.4",
-    "resolve-url-loader": "5.0.0",
-    "sass-loader": "^12.6.0",
-    "sass": "^1.50.0",
-    "vue": "^2.6.14",
-    "vue-template-compiler": "^2.6.14"
+    "postcss-nesting": "^12.0.2",
+    "tailwindcss": "^3.4.1",
+    "vue": "^2.7.16",
+    "vue-template-compiler": "^2.7.16"
   },
-  "release": {
-    "repositoryUrl": "https://github.com/VATSIM-UK/core",
-    "branches": [
-      "main"
-    ],
-    "plugins": [
-      "@semantic-release/npm",
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      [
-        "@semantic-release/github",
-        {
-          "releasedLabels": false
-        }
-      ]
-    ]
+  "dependencies": {
+    "@alpinejs/collapse": "^3.13.5",
+    "alpinejs": "^3.13.5"
   }
 }

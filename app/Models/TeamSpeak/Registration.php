@@ -43,6 +43,7 @@ use TeamSpeak3_Adapter_ServerQuery_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Registration whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Registration extends Model
@@ -50,10 +51,14 @@ class Registration extends Model
     use SoftDeletingTrait;
 
     protected $table = 'teamspeak_registration';
+
     protected $primaryKey = 'id';
+
     protected $fillable = ['*'];
+
     protected $attributes = ['registration_ip' => '0.0.0.0', 'last_ip' => '0.0.0.0'];
-    protected $dates = ['created_at', 'updated_at'];
+
+    protected $casts = ['created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function delete($tscon = null)
     {

@@ -61,19 +61,31 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withCallsignIn($callsigns)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Atc extends Model
 {
-    use PublicId, SoftDeletes, Rememberable;
+    use PublicId, Rememberable, SoftDeletes;
 
     protected static $public_id_salt = 'vatsim-uk-network-data-atc-sessions';
+
     protected static $public_id_min_length = 10;
+
     protected static $public_id_alphabet = 'upper_alphanumeric';
 
     protected $table = 'networkdata_atc';
+
     protected $primaryKey = 'id';
-    public $dates = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
+
+    protected $casts = [
+        'connected_at' => 'datetime',
+        'disconnected_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public $timestamps = true;
 
     protected $fillable = [
@@ -105,12 +117,19 @@ class Atc extends Model
     ];
 
     const TYPE_OBS = 1;
+
     const TYPE_DEL = 2;
+
     const TYPE_GND = 3;
+
     const TYPE_TWR = 4;
+
     const TYPE_APP = 5;
+
     const TYPE_DEP = 5;
+
     const TYPE_CTR = 6;
+
     const TYPE_FSS = 7;
 
     protected static function boot()
@@ -180,6 +199,18 @@ class Atc extends Model
         return $query->where('connected_at', '>=', $startOfYear);
     }
 
+    public function scopeAccountIsPartOfUk($query)
+    {
+        return $query->join('mship_account_state', function ($join) {
+            $join->on('mship_account_state.account_id', '=', 'networkdata_atc.account_id')
+                ->whereNull('mship_account_state.end_at');
+        })
+            ->join('mship_state', function ($join) {
+                $join->on('mship_state.id', '=', 'mship_account_state.state_id')
+                    ->whereIn('mship_state.code', ['DIVISION', 'VISITING', 'TRANSFERRING']);
+            });
+    }
+
     public static function scopeIsUK($query)
     {
         return $query->where(function ($subQuery) {
@@ -196,6 +227,11 @@ class Atc extends Model
                 ->orWhere('callsign', 'LIKE', 'ESSEX\_%')
                 ->orWhere('callsign', 'LIKE', 'SOLENT\_%');
         });
+    }
+
+    public static function scopePositionIsWithinUK($query)
+    {
+        return $query->isUk();
     }
 
     public function account()

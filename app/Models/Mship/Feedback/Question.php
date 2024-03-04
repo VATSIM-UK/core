@@ -44,6 +44,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Question extends Model
@@ -51,10 +52,7 @@ class Question extends Model
     use SoftDeletes;
 
     protected $table = 'mship_feedback_questions';
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
+
     protected $fillable = [
         'type_id',
         'slug',
@@ -62,10 +60,13 @@ class Question extends Model
         'options',
         'required',
     ];
+
     protected $casts = [
         'required' => 'boolean',
         'options' => 'array',
         'permanent' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function scopeNotPermanent($query)

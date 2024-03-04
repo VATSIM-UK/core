@@ -41,6 +41,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Type extends Model
@@ -48,9 +49,15 @@ class Type extends Model
     use SoftDeletingTrait;
 
     protected $table = 'mship_note_type';
+
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'deleted_at'];
+
     protected $fillable = ['name', 'short_code', 'is_available', 'is_default'];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public static function getNoteColourCodes()
     {

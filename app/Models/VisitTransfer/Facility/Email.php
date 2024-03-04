@@ -19,22 +19,25 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility\Email whereFacilityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility\Email whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility\Email whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Email extends Model
 {
     protected $table = 'vt_facility_email';
+
     protected $primaryKey = 'id';
 
     public $timestamps = true;
+
     public $fillable = [
         'facility_id',
         'email',
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function facility()

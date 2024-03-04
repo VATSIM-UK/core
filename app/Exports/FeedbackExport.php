@@ -11,10 +11,12 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class FeedbackExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize
+class FeedbackExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping
 {
     private $request;
+
     private $feedback;
+
     private $form;
 
     public function __construct(Request $request, $feedback, Form $form)
@@ -26,7 +28,6 @@ class FeedbackExport implements FromCollection, WithMapping, WithHeadings, Shoul
 
     /**
      * @param  mixed  $row
-     * @return array
      */
     public function map($feedback): array
     {
@@ -67,9 +68,6 @@ class FeedbackExport implements FromCollection, WithMapping, WithHeadings, Shoul
         return $rows;
     }
 
-    /**
-     * @return array
-     */
     public function headings(): array
     {
         $headers = [];

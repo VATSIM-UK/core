@@ -13,6 +13,7 @@ use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
 use App\Models\Sys\Token;
+use App\Models\Traits\HasStatus;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
@@ -72,14 +73,17 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Reference whereSubmittedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Reference withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Reference withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Reference extends Model
 {
-    use Notifiable, SoftDeletes;
+    use HasStatus, Notifiable, SoftDeletes;
 
     protected $table = 'vt_reference';
+
     protected $primaryKey = 'id';
+
     protected $fillable = [
         'application_id',
         'account_id',
@@ -88,17 +92,32 @@ class Reference extends Model
         'status',
         'status_note',
     ];
+
     protected $touches = ['application'];
-    protected $dates = ['contacted_at', 'reminded_at', 'submitted_at', 'deleted_at'];
+
+    protected $casts = [
+        'contacted_at' => 'datetime',
+        'reminded_at' => 'datetime',
+        'submitted_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public $timestamps = false;
+
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
 
     const STATUS_DRAFT = 10;
+
     const STATUS_REQUESTED = 30;
+
     const STATUS_UNDER_REVIEW = 50;
+
     const STATUS_ACCEPTED = 90;
+
     const STATUS_REJECTED = 95;
+
     const STATUS_CANCELLED = 100;
+
     const STATUS_DELETED = 101;
 
     public static $REFERENCE_IS_PENDING = [
@@ -256,7 +275,7 @@ class Reference extends Model
         event(new ReferenceUnderReview($this));
     }
 
-    public function reject($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
+    public function reject($publicReason = 'No reason was provided.', $staffReason = null, ?Account $actor = null)
     {
         $this->guardAgainstNonUnderReviewReference();
 
@@ -300,7 +319,7 @@ class Reference extends Model
         event(new ReferenceCancelled($this));
     }
 
-    public function accept($staffComment = null, Account $actor = null)
+    public function accept($staffComment = null, ?Account $actor = null)
     {
         $this->guardAgainstNonUnderReviewReference();
 

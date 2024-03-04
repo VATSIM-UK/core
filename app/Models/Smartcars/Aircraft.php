@@ -33,11 +33,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Aircraft whereRegistration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Aircraft whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Aircraft whereWeightKg($value)
+ *
  * @mixin \Eloquent
  */
 class Aircraft extends Model
 {
     protected $table = 'smartcars_aircraft';
+
     protected $fillable = [
         'icao',
         'name',
@@ -49,10 +51,12 @@ class Aircraft extends Model
         'max_passengers',
         'max_cargo_kg',
     ];
+
     public $timestamps = true;
-    protected $dates = [
-        'created_at',
-        'updated_at',
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public static function findByRegistration($reg)

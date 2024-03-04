@@ -25,11 +25,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Airport whereLongitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Airport whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Airport whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Airport extends Model
 {
     protected $table = 'smartcars_airport';
+
     protected $fillable = [
         'icao',
         'name',
@@ -37,10 +39,12 @@ class Airport extends Model
         'latitude',
         'longitude',
     ];
+
     public $timestamps = true;
-    protected $dates = [
-        'created_at',
-        'updated_at',
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public static function findByIcao($icao)

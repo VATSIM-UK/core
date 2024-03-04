@@ -22,13 +22,17 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereSsoAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Email extends Model
 {
     protected $table = 'mship_oauth_emails';
+
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'updated_at'];
+
+    protected $casts = ['created_at' => 'datetime', 'updated_at' => 'datetime'];
+
     protected $hidden = ['id'];
 
     public function email()

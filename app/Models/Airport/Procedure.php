@@ -36,11 +36,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereSTAR()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Procedure extends Model
 {
     protected $table = 'airport_procedures';
+
     protected $fillable = [
         'type',
         'ident',
@@ -51,6 +53,7 @@ class Procedure extends Model
     ];
 
     const TYPE_SID = 1;
+
     const TYPE_STAR = 2;
 
     public function scopeWhereSID($query)
@@ -82,12 +85,12 @@ class Procedure extends Model
     public function getProcedureTypeAttribute()
     {
         switch ($this->type) {
-                case self::TYPE_SID:
-                    return 'SID';
-                case self::TYPE_STAR:
-                    return 'STAR';
-                default:
-                    return '';
-            }
+            case self::TYPE_SID:
+                return 'SID';
+            case self::TYPE_STAR:
+                return 'STAR';
+            default:
+                return '';
+        }
     }
 }

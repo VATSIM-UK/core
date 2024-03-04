@@ -18,6 +18,7 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Contact whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Contact whereKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Contact whereName($value)
+ *
  * @mixin \Eloquent
  */
 class Contact extends Model
@@ -25,5 +26,6 @@ class Contact extends Model
     use Notifiable;
 
     protected $table = 'contacts';
+
     public $timestamps = false;
 }

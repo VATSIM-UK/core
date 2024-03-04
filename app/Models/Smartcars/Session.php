@@ -21,19 +21,23 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Session whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Session whereSessionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Session whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Session extends Model
 {
     protected $table = 'smartcars_session';
+
     protected $fillable = [
         'session_id',
         'account_id',
     ];
+
     public $timestamps = true;
-    protected $dates = [
-        'created_at',
-        'updated_at',
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public static function findBySessionId($sessionID)

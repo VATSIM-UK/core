@@ -2,20 +2,27 @@
 
 namespace Tests\Unit\Account\Relationships;
 
+use App\Models\Mship\State;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
-class AccountWaitingListsTests extends TestCase
+class AccountWaitingListsTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $oldWaitingList;
-    private $currentWaitingList;
+    private WaitingList $oldWaitingList;
+
+    private WaitingList $currentWaitingList;
 
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->actingAs($this->privacc);
+
+        // create as division member
+        $this->user->addState(State::findByCode('DIVISION'));
 
         $this->oldWaitingList = factory(WaitingList::class)->create();
         $this->currentWaitingList = factory(WaitingList::class)->create();
@@ -37,7 +44,7 @@ class AccountWaitingListsTests extends TestCase
     /** @test */
     public function itCanGetAllCurrentWaitingLists()
     {
-        $this->assertCount(1, $this->user->currentWaitingLists);
-        $this->assertContains($this->currentWaitingList->id, $this->user->currentWaitingLists->pluck('id'));
+        $this->assertCount(1, $this->user->fresh()->currentWaitingLists);
+        $this->assertContains($this->currentWaitingList->id, $this->user->fresh()->currentWaitingLists->pluck('id'));
     }
 }

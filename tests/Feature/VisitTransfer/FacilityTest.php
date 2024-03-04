@@ -13,6 +13,7 @@ class FacilityTest extends TestCase
     use DatabaseTransactions;
 
     private $internationalUser;
+
     private $divisionUser;
 
     public function setUp(): void
@@ -20,7 +21,7 @@ class FacilityTest extends TestCase
         parent::setUp();
 
         // Create international user
-        $this->internationalUser = factory(Account::class)->create();
+        $this->internationalUser = Account::factory()->create();
         $this->internationalUser->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'), 'USA', 'USA-N');
         $this->internationalUser = $this->internationalUser->fresh();
 

@@ -15,10 +15,9 @@ Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->name('banned
 
 // Password
 Route::group([
-    'as'     => 'password.',
+    'as' => 'password.',
     'prefix' => 'password',
 ], function () {
-
     // Reset
     Route::group([
         'middleware' => 'auth:vatsim-sso',
@@ -43,15 +42,14 @@ Route::group([
 
 // Members
 Route::group([
-    'prefix'     => 'mship',
-    'as'         => 'mship.',
-    'namespace'  => 'Mship',
+    'prefix' => 'mship',
+    'as' => 'mship.',
+    'namespace' => 'Mship',
     'middleware' => 'auth_full_group',
 ], function () {
-
     // Manage
     Route::group([
-        'as'     => 'manage.',
+        'as' => 'manage.',
         'prefix' => 'manage',
     ], function () {
         Route::get('dashboard')->uses('Management@getDashboard')->name('dashboard');
@@ -67,7 +65,7 @@ Route::group([
 
     // Feedback
     Route::group([
-        'as'     => 'feedback.',
+        'as' => 'feedback.',
         'prefix' => 'feedback',
     ], function () {
         Route::get('new')->uses('Feedback@getFeedbackFormSelect')->name('new');
@@ -80,7 +78,7 @@ Route::group([
 
     // Waiting Lists
     Route::group([
-        'as'     => 'waiting-lists.',
+        'as' => 'waiting-lists.',
         'prefix' => 'waiting-lists',
     ], function () {
         Route::get('')->uses('WaitingLists@index')->name('index');
@@ -97,10 +95,18 @@ Route::group([
     });
 });
 
+Route::get('atcfb', function () {
+    return redirect()
+        ->route('mship.feedback.new.form', [
+            'form' => 'atc',
+            'cid' => request()->get('cid'),
+        ]);
+})->name('mship.feedback.redirect.atc');
+
 // TeamSpeak
 Route::group([
-    'prefix'     => 'mship/manage/teamspeak',
-    'namespace'  => 'TeamSpeak',
+    'prefix' => 'mship/manage/teamspeak',
+    'namespace' => 'TeamSpeak',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
@@ -125,21 +131,20 @@ Route::group([
 
 // UKCP
 Route::group([
-    'as'         => 'ukcp.',
-    'prefix'     => 'ukcp',
-    'namespace'  => 'UKCP',
+    'as' => 'ukcp.',
+    'prefix' => 'ukcp',
+    'namespace' => 'UKCP',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/')->uses('Token@show')->name('guide');
-    Route::get('/token/refresh')->uses('Token@refresh')->name('token.refresh');
-    Route::get('token/{id}/download')->uses('Token@download')->name('token.download');
+    Route::get('/token/invalidate')->uses('Token@invalidate')->name('token.invalidate');
 });
 
 // Controllers
 Route::group([
-    'as'         => 'controllers.',
-    'prefix'     => 'controllers/',
-    'namespace'  => 'Atc',
+    'as' => 'controllers.',
+    'prefix' => 'controllers/',
+    'namespace' => 'Atc',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('endorsements/gatwick')->uses('EndorsementController@getGatwickGroundIndex')->name('endorsements.gatwick_ground');
@@ -148,9 +153,9 @@ Route::group([
 
 // Network data
 Route::group([
-    'as'         => 'networkdata.',
-    'prefix'     => 'network-data',
-    'namespace'  => 'NetworkData',
+    'as' => 'networkdata.',
+    'prefix' => 'network-data',
+    'namespace' => 'NetworkData',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('dashboard')->uses('MainController@getDashboard')->name('dashboard');
@@ -158,19 +163,18 @@ Route::group([
 });
 
 Route::group([
-    'as'         => 'visiting.',
-    'prefix'     => 'visit-transfer',
-    'namespace'  => 'VisitTransfer\Site',
+    'as' => 'visiting.',
+    'prefix' => 'visit-transfer',
+    'namespace' => 'VisitTransfer\Site',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/', ['as' => 'landing', 'uses' => 'Dashboard@getDashboard']);
 
     // Application
     Route::group([
-        'as'     => 'application.',
+        'as' => 'application.',
         'prefix' => 'application',
     ], function () {
-
         // Start
         Route::get('start/{type}/{team}')->uses('Application@getStart')->name('start')->where('type', "\d+");
         Route::post('start/{type}/{team}')->uses('Application@postStart')->name('start.post')->where('type', "\d+");
@@ -198,7 +202,7 @@ Route::group([
 
     // References
     Route::group([
-        'as'     => 'reference.',
+        'as' => 'reference.',
         'prefix' => 'reference',
     ], function () {
         Route::get('complete/{token}')->uses('Reference@getComplete')->name('complete');
@@ -211,9 +215,9 @@ Route::group([
 Route::any('frame.php', 'Smartcars\Api\Router@routeRequest');
 
 Route::group([
-    'as'         => 'fte.',
-    'prefix'     => 'fte',
-    'namespace'  => 'Smartcars',
+    'as' => 'fte.',
+    'prefix' => 'fte',
+    'namespace' => 'Smartcars',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('dashboard')->uses('SmartcarsController@getDashboard')->name('dashboard');

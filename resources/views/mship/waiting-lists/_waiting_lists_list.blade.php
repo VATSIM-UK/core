@@ -20,16 +20,16 @@
                     <tr>
                         <td>{{$waitingList->name}}</td>
                         <td>
+                            We cannot currently show you your position in the waiting list due to GCAP implementation.
+                            We expect this to very completed soon and the underlying data is still present i.e. your original position.
+                        </td>
+                        {{-- <td>
                             @if($waitingList->pivot->position)
                             {{$waitingList->pivot->position}}
                             @else
                             - <span class="fa fa-question-circle ml-2 text-info text-sm tooltip_displays" data-toggle="tooltip" data-placement="top" title="You might not have a position because you aren't meeting eligibility criteria. Once you are meeting the criteria, your position will be shown."></span>
                             @endif
-                        </td>
-                        <td>
-                            <x-boolean-indicator :value=" $waitingList->pivot->eligibility" />
-                        </td>
-                        <td>{{$waitingList->pivot->current_status}}</td>
+                        </td> --}}
                         <td>{{$waitingList->pivot->created_at->format('d M Y')}}</td>
                         <td><a href="{{route('mship.waiting-lists.view', ["waitingListId" => $waitingList->id])}}">View Details</a></td>
                     </tr>

@@ -17,7 +17,7 @@
                         Flying and controlling on the VATSIM network is a great way to enjoy the perks of an interactive
                         flight simulation session, and making new friends along the way. To fly online, all you need is
                         a
-                        copy of Flight Simulator or X Plane, and you're ready to go! For controlling, you don't need
+                        copy of Flight Simulator, Prepar3D or X Plane, and you're ready to go! For controlling, you don't need
                         anything except a working computer, all the software is provided free!
                     </p>
 
@@ -50,18 +50,19 @@
                 </div>
                 <div class="panel-body">
                     <h4>Step 1</h4>
-                    <p>Visit <a href="https://www.vatsim.net/join">VATSIM.net</a> and register for your ID and password. This is a very quick process and is
+                    <p>Visit <a href="https://my.vatsim.net/register">VATSIM.net</a> and register for your ID and password. This is a very quick process and is
                         completely FREE. Ensure you choose Europe as your region and the UK as your division.</p>
 
-                    <p>If you are already a member of VATSIM, visit VATSIM Member Services and use the <a
-                                href="https://cert.vatsim.net/vatsimnet/statcheck.html">ID status checker</a> to
+                    <p>If you are already a member of VATSIM, you can view your current region on your <a
+                                href="https://my.vatsim.net/profile">VATSIM.net Dashboard</a> to
                         verify
-                        whether your home region/division is set to 'Europe - United Kingdom'. If not, you will need
+                        that your home region/division is set to 'Europe - United Kingdom'. If not, you will need
                         to
                         make
-                        an application to change to the UK in order to become a controller with us. Visit our 'Visit
+                        an application to change to the UK in order to become a controller with us. Visit our <a
+                                href="https://www.vatsim.uk/community/vt-guide">'Visit
                         or
-                        Transfer' page for more information.</p>
+                        Transfer' page</a> for more information.</p>
 
                     <h4>Step 2</h4>
                     <p>Download a controller client such as EuroScope. You can use this to connect to VATSIM as an
@@ -84,7 +85,7 @@
                 </div>
                 <div class="panel-body">
                     <h4>Step 1</h4>
-                    <p>Visit <a href="https://www.vatsim.net/join">VATSIM.net</a> and register for your ID and password. This is a very quick process and is
+                    <p>Visit <a href="https://my.vatsim.net/register">VATSIM.net</a> and register for your ID and password. This is a very quick process and is
                         completely FREE. Feel free to use Europe as your region and the UK as your division,
                         although you
                         can fly wherever you want on VATSIM, regardless of which country you choose to join.</p>
@@ -95,13 +96,13 @@
                         your flight simulator to VATSIM.</p>
 
                     <h4>Step 3</h4>
-                    <p>Visit the <a href="https://www.vatsim.net/pilots/getting-started">Getting Started Guide</a> to get started as a pilot on the
+                    <p>Visit the <a href="https://vatsim.net/docs/basics/getting-started">Getting Started Guide</a> to get started as a pilot on the
                         network. For
                         flying in the UK, our own <a href="{{ route('site.airports') }}">airport pages</a> contain some great information and
                         resources.</p>
 
                     <h4>Step 4</h4>
-                    <p>Consider reviewing the <a href="https://my.vatsim.net/pilots/train">Pilot Training</a> are of the VATSIM.net Education Hub to enhance your pilot skills or join a
+                    <p>Consider reviewing the <a href="https://my.vatsim.net/pilots/train">Pilot Training</a> area of the VATSIM.net Education Hub to enhance your pilot skills or join a
                         distinguished
                         virtual airline like <a href="https://bavirtual.co.uk/">BAVirtual</a>. If you prefer GA flying, you might like to consider
                         visiting the

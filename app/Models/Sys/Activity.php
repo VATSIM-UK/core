@@ -29,6 +29,7 @@ use Request;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereSubjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereSubjectType($value)
+ *
  * @mixin \Eloquent
  */
 class Activity extends Model
@@ -36,8 +37,11 @@ class Activity extends Model
     use OverridesUpdatedAt;
 
     protected $table = 'sys_activity';
+
     protected $primaryKey = 'id';
-    protected $dates = ['created_at'];
+
+    protected $casts = ['created_at' => 'datetime'];
+
     protected $fillable = ['actor_id', 'subject_id', 'subject_type', 'action'];
 
     public function actor()

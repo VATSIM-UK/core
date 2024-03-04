@@ -34,6 +34,14 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
         return $this->viewMake('site.atc.endorsements');
     }
 
+    public function viewHeathrow()
+    {
+        $this->setTitle('Heathrow Endorsements');
+        $this->addBreadcrumb('Heathrow Endorsements', route('site.atc.heathrow'));
+
+        return $this->viewMake('site.atc.heathrow');
+    }
+
     public function viewBecomingAMentor()
     {
         $this->setTitle('Becoming a Mentor');

@@ -32,21 +32,31 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Notification whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Notification whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Notification withStatus($status)
+ *
  * @mixin \Eloquent
  */
 class Notification extends Model
 {
     protected $table = 'sys_notification';
+
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'updated_at', 'effective_at'];
+
+    protected $casts = ['created_at' => 'datetime', 'updated_at' => 'datetime', 'effective_at' => 'datetime'];
+
     protected $hidden = ['id'];
+
     protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     const STATUS_MUST_ACKNOWLEDGE = 99; // Will interrupt login process AND ban from services until acknowledged.
+
     const STATUS_IMPORTANT = 70; // Will interrupt login process.
+
     const STATUS_OPERATIONAL = 50; // Web services
+
     const STATUS_GENERAL = 30; // General messages, to be read at some point.
+
     const STATUS_USER = 10; // User specific
+
     const STATUS_UNPUBLISHED = 0; // Drafts.
 
     public function scopePublished($query)

@@ -6,6 +6,7 @@ use App\Events\Mship\Feedback\NewFeedbackEvent;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Answer;
 use App\Models\Mship\Feedback\Form;
+use App\Models\Mship\Feedback\Question;
 use Illuminate\Http\Request;
 use Redirect;
 use Validator;
@@ -42,6 +43,7 @@ class Feedback extends \App\Http\Controllers\BaseController
 
     public function getFeedback(Form $form)
     {
+        /** @var Question[] $questions */
         $questions = $form->questions()->orderBy('sequence')->get();
         if (! $questions || ! $form->enabled) {
             // We have no questions to display!
@@ -61,13 +63,19 @@ class Feedback extends \App\Http\Controllers\BaseController
                         }
                         $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug), $value, $value, $selected);
                     }
+
                     continue;
                 }
+
                 // No values, so we cant use it :/
                 continue;
             }
 
-            $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug));
+            $defaultValues = ['usercid' => request()->get('cid')];
+            $question->form_html .= sprintf($question->type->code,
+                $question->slug,
+                old($question->slug, array_get($defaultValues, $question->slug))
+            );
         }
 
         return $this->viewMake('mship.feedback.form')->with(['form' => $form, 'questions' => $questions]);
@@ -90,8 +98,8 @@ class Feedback extends \App\Http\Controllers\BaseController
 
                 if ($request->input($question->slug) == \Auth::user()->id) {
                     return Redirect::back()
-                       ->withError('You cannot leave feedback about yourself')
-                       ->withInput();
+                        ->withError('You cannot leave feedback about yourself')
+                        ->withInput();
                 }
             }
 

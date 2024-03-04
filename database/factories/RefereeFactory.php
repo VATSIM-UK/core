@@ -3,7 +3,7 @@
 $factory->define(\App\Models\VisitTransfer\Reference::class, function ($faker) {
     return [
         'account_id' => function () {
-            return factory(\App\Models\Mship\Account::class)->create()->id;
+            return \App\Models\Mship\Account::factory()->create()->id;
         },
         'application_id' => function () {
             return factory(\App\Models\VisitTransfer\Application::class)->create()->id;

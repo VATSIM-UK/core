@@ -10,7 +10,6 @@ class LogNoteChanged
     /**
      * Handle the event.
      *
-     * @param  AccountNoteChanged  $event
      * @return void
      */
     public function handle(AccountNoteChanged $event)

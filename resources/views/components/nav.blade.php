@@ -44,6 +44,7 @@
                                 <li>{!! link_to_route("site.pilots.ratings", "Ratings") !!}</li>
                                 <li>{!! link_to_route("site.pilots.mentor", "Becoming a Mentor") !!}</li>
                                 <li>{!! link_to_route("site.pilots.oceanic", "Oceanic Procedures") !!}</li>
+                                <li>{!! link_to_route("site.pilots.tfp", "Flying Programme") !!}</li>
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Flight Training Exercises</li>
                                 <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>
@@ -61,6 +62,7 @@
                         <li class="col-sm-12">
                             <ul>
                                 <li>{!! link_to_route("site.atc.landing", "Welcome") !!}</li>
+                                <li>{!! link_to_route("site.roster.index", "Controller Roster") !!}</li>
                                 <li>{!! link_to_route("site.atc.newController", "New Controller (OBS)") !!}</li>
                                 <li>{!! link_to_route("site.atc.endorsements", "Endorsements") !!}</li>
                                 <li>{!! link_to_route("site.atc.mentor", "Becoming a Mentor") !!}</li>
@@ -75,6 +77,7 @@
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Endorsements</li>
                                 <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
+                                <li>{!! link_to_route("site.atc.heathrow", "Heathrow") !!}</li>
                             </ul>
                         </li>
                         <li class="col-sm-12">
@@ -166,9 +169,9 @@
                         @endif
                     </a>
                 </li>
-                @if(Auth::user()->can('use-permission', 'adm'))
+                @if(Auth::user()->can('admin.access'))
                 <li class="dropdown dropdown-large">
-                    <a href="{{ route("adm.index") }}" title="Admin Dashboard">
+                    <a href="{{ route("filament.app.pages.dashboard") }}" title="Admin Dashboard">
                         <i class="fa fa-briefcase"></i>
                     </a>
                 </li>

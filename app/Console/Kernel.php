@@ -3,8 +3,10 @@
 namespace App\Console;
 
 use App\Console\Commands\Deployment\HerokuPostDeploy;
+use Bugsnag\BugsnagLaravel\Commands\DeployCommand as BugsnagDeployCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Spatie\ScheduleMonitor\Models\MonitoredScheduledTaskLogItem;
 
 class Kernel extends ConsoleKernel
 {
@@ -17,12 +19,12 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         HerokuPostDeploy::class,
+        BugsnagDeployCommand::class,
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
@@ -56,6 +58,10 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(15)
             ->graceTimeInMinutes(15);
 
+        $schedule->command('roster:gander')
+            ->hourlyAt(25)
+            ->graceTimeInMinutes(5);
+
         // === By Day === //
 
         $schedule->command('telescope:prune')
@@ -65,8 +71,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('sync:tg-forum-groups')
             ->dailyAt('04:30');
 
-        $schedule->command('schedule-monitor:clean')
+        $schedule->command('model:prune', ['--model' => MonitoredScheduledTaskLogItem::class])
             ->dailyAt('08:00');
+
+        $schedule->command('waiting-lists:check-eligibility')
+            ->dailyAt('08:30');
     }
 
     /**
@@ -77,5 +86,13 @@ class Kernel extends ConsoleKernel
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');
+    }
+
+    protected function bootstrappers()
+    {
+        return array_merge(
+            [\Bugsnag\BugsnagLaravel\OomBootstrapper::class],
+            parent::bootstrappers(),
+        );
     }
 }
