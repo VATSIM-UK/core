@@ -69,13 +69,16 @@ class Kernel extends ConsoleKernel
             ->doNotMonitor();
 
         $schedule->command('sync:tg-forum-groups')
-            ->dailyAt('04:30');
+            ->dailyAt('04:30')
+            ->doNotMonitor();
 
         $schedule->command('model:prune', ['--model' => MonitoredScheduledTaskLogItem::class])
-            ->dailyAt('08:00');
+            ->dailyAt('08:00')
+            ->doNotMonitor();
 
         $schedule->command('waiting-lists:check-eligibility')
-            ->dailyAt('08:30');
+            ->dailyAt('08:30')
+            ->doNotMonitor();
     }
 
     /**
