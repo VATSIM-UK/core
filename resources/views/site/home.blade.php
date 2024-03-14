@@ -358,7 +358,7 @@
         </p>
         <br>
 
-        <p class="text-right text-light">Chris Pawley <br/> VATSIM UK Division Director</p>
+        <p class="text-right text-light">Ben Wright <br/> VATSIM UK Division Director</p>
 
     <!-- UK Welcome [END] -->
 
