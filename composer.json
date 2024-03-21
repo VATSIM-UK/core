@@ -72,7 +72,7 @@
         "laravel/helpers": "^1.1",
         "laravel/horizon": "^5.0",
         "laravel/passport": "^11.2",
-        "laravel/telescope": "^4.0",
+        "laravel/telescope": "^5.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^4.0",
         "laravelcollective/html": "^6.0",
