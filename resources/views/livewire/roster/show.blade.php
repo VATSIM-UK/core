@@ -1,6 +1,6 @@
 <x-slot name="title">Roster for {{ $account->id }}</x-slot>
-<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-    <div class="bg-white px-6 py-12 shadow space-y-6 rounded-lg sm:px-12">
+<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px] h-full">
+    <div class="bg-white px-6 py-12 shadow space-y-6 rounded-lg sm:px-12 overflow-hidden flex flex-col max-h-full">
 
         <header class="flex flex-col md:flex-row md:justify-between items-center">
             <div class="inline-flex flex-col md:items-start items-center">
@@ -21,7 +21,7 @@
             </div>
         </header>
 
-        <div class="flex flex-col space-y-2">
+        <div class="space-y-2 overflow-auto">
             <div class="flex flex-col space-y-8">
                 <div class="flex flex-col items-start space-y-1">
                     @foreach($account->endorsements()->active()->get()->groupBy('type') as $type => $endorsements)
