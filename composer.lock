@@ -11484,21 +11484,21 @@
         },
         {
             "name": "watson/rememberable",
-            "version": "6.1.0",
+            "version": "6.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dwightwatson/rememberable.git",
-                "reference": "7a26c75e65df663087e8589f4991e60e0483346d"
+                "reference": "66da4bce189b6b598fb623fd57a73042eab393ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dwightwatson/rememberable/zipball/7a26c75e65df663087e8589f4991e60e0483346d",
-                "reference": "7a26c75e65df663087e8589f4991e60e0483346d",
+                "url": "https://api.github.com/repos/dwightwatson/rememberable/zipball/66da4bce189b6b598fb623fd57a73042eab393ca",
+                "reference": "66da4bce189b6b598fb623fd57a73042eab393ca",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "^8.0|^9.0|^10.0",
-                "illuminate/support": "^8.0|^9.0|^10.0",
+                "illuminate/database": "^8.0|^9.0|^10.0|^11.0",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0",
                 "php": "^8.0"
             },
             "type": "library",
@@ -11526,9 +11526,9 @@
             ],
             "support": {
                 "issues": "https://github.com/dwightwatson/rememberable/issues",
-                "source": "https://github.com/dwightwatson/rememberable/tree/6.1.0"
+                "source": "https://github.com/dwightwatson/rememberable/tree/6.2.0"
             },
-            "time": "2023-02-02T23:40:42+00:00"
+            "time": "2024-02-27T23:09:50+00:00"
         },
         {
             "name": "webmozart/assert",
