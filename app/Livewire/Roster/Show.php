@@ -17,7 +17,7 @@ class Show extends Component
 
     public ?string $searchTerm = null;
 
-    public Position $position;
+    public ?Position $position;
 
     public function mount(Account $account)
     {
@@ -31,9 +31,11 @@ class Show extends Component
             $this->position = Position::where('callsign', 'LIKE', "%{$this->searchTerm}%")->firstOrFail();
         } catch (ModelNotFoundException $e) {
             $this->searchTerm = null;
+            $this->position = null;
 
             Notification::make()
                 ->title('Position cannot be found.')
+                ->danger()
                 ->send();
         }
     }

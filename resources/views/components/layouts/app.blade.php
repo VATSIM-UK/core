@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
-    @vite('resources/assets/css/tailwind.css')
     @filamentStyles
+    @vite('resources/assets/css/tailwind.css')
 
     <title>{{ isset($title) ? "VATSIM UK | $title" : 'VATSIM UK' }}</title>
 </head>
@@ -18,10 +18,8 @@
                 <img width="200" src="{{ secure_asset('images/branding/vatsimuk_blackblue.png') }}" unselectable="on">
             </a>
         </div>
-        {{ $slot }}
     </div>
-</div>
+    @filamentScripts
+    @livewire('notifications')
 </body>
-@filamentScripts
-@livewire('notifications')
 </html>
