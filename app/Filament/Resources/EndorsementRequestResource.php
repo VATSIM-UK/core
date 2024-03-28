@@ -94,6 +94,7 @@ class EndorsementRequestResource extends Resource
                         'rejected' => 'Rejected',
                     ]),
             ])
+            ->paginated([10, 25, 50, 100])
             ->actions([
                 Tables\Actions\Action::make('approve')
                     ->form([

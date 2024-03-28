@@ -63,7 +63,7 @@
         "alawrence/laravel-ipboard": "dev-main",
         "axonc/filament-copyable-placeholder": "^0.3.0",
         "barryvdh/laravel-debugbar": "^3.3",
-        "barryvdh/laravel-ide-helper": "^2.7",
+        "barryvdh/laravel-ide-helper": "^3.0",
         "bugsnag/bugsnag-laravel": "^2.0",
         "doctrine/dbal": "~3.3",
         "filament/filament": "^3.2",
