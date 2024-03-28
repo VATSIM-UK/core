@@ -12375,16 +12375,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.13",
+            "version": "10.5.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "20a63fc1c6db29b15da3bd02d4b6cf59900088a7"
+                "reference": "86376e05e8745ed81d88232ff92fee868247b07b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/20a63fc1c6db29b15da3bd02d4b6cf59900088a7",
-                "reference": "20a63fc1c6db29b15da3bd02d4b6cf59900088a7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/86376e05e8745ed81d88232ff92fee868247b07b",
+                "reference": "86376e05e8745ed81d88232ff92fee868247b07b",
                 "shasum": ""
             },
             "require": {
@@ -12444,7 +12444,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.13"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.15"
             },
             "funding": [
                 {
@@ -12460,7 +12460,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-12T15:37:41+00:00"
+            "time": "2024-03-22T04:17:47+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -14179,32 +14179,32 @@
         },
         {
             "name": "timacdonald/log-fake",
-            "version": "2.1.0",
+            "version": "v2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/timacdonald/log-fake.git",
-                "reference": "70aaade5643e12c69556df307c817f5b2bcca8bf"
+                "reference": "8e82ba3516c0da5d2a028ff93250352cabdf637d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/timacdonald/log-fake/zipball/70aaade5643e12c69556df307c817f5b2bcca8bf",
-                "reference": "70aaade5643e12c69556df307c817f5b2bcca8bf",
+                "url": "https://api.github.com/repos/timacdonald/log-fake/zipball/8e82ba3516c0da5d2a028ff93250352cabdf637d",
+                "reference": "8e82ba3516c0da5d2a028ff93250352cabdf637d",
                 "shasum": ""
             },
             "require": {
-                "illuminate/collections": "^9.0 || ^10.0",
-                "illuminate/contracts": "^9.0 || ^10.0",
-                "illuminate/log": "^9.0 || ^10.0",
-                "illuminate/support": "^9.0 || ^10.0",
+                "illuminate/collections": "^9.0 || ^10.0 || ^11.0",
+                "illuminate/contracts": "^9.0 || ^10.0 || ^11.0",
+                "illuminate/log": "^9.0 || ^10.0 || ^11.0",
+                "illuminate/support": "^9.0 || ^10.0 || ^11.0",
                 "php": "^8.1",
-                "phpunit/phpunit": "^9.0 || ^10.0",
+                "phpunit/phpunit": "^9.0 || ^10.0 || ^11.0",
                 "psr/log": "^1.0 || ^2.0 || ^3.0",
-                "symfony/var-dumper": "^6.0"
+                "symfony/var-dumper": "^6.0 || ^7.0"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.4",
-                "illuminate/config": "^9.0 || ^10.0",
-                "illuminate/container": "^9.0 || ^10.0",
+                "illuminate/config": "^9.0 || ^10.0 || ^11.0",
+                "illuminate/container": "^9.0 || ^10.0 || ^11.0",
                 "timacdonald/callable-fake": "^1.5"
             },
             "type": "library",
@@ -14229,7 +14229,7 @@
                 "issues": "https://github.com/timacdonald/log-fake/issues",
                 "source": "https://github.com/timacdonald/log-fake/releases/latest"
             },
-            "time": "2023-02-17T00:42:43+00:00"
+            "time": "2024-03-16T00:23:40+00:00"
         },
         {
             "name": "zbateson/mail-mime-parser",
