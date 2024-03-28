@@ -1,23 +1,61 @@
-/** @type {import('tailwindcss').Config} */
-import preset from "./vendor/filament/support/tailwind.config.preset";
-const colors = require("tailwindcss/colors");
+import preset from './vendor/filament/support/tailwind.config.preset';
+
+const defaultTheme = require('tailwindcss/defaultTheme');
+const colors = require('tailwindcss/colors');
 
 module.exports = {
-    darkMode: "class",
-    preset: [preset],
-    content: [
-        "./app/Filament/**/*.php",
-        "./resources/**/*.blade.php",
-        "./resources/views/livewire/**/*.blade.php",
-        "./resources/views/filament/**/*.blade.php",
-        "./vendor/filament/**/*.blade.php",
-    ],
+    presets: [preset],
+    darkMode: 'class',
+    mode: 'jit',
     theme: {
-        extend: {
-            colors: {
-                brand: "#25ADE3",
-            },
-        },
+        colors: {
+            // Core
+            brand: '#25ADE3',
+            transparent: 'transparent',
+            black: colors.black,
+            white: colors.white,
+
+            // Filament
+            current: 'currentColor',
+            custom: colors.sky,
+            primary: colors.sky,
+            secondary: colors.slate,
+            positive: colors.green,
+            success: colors.green,
+            warning: colors.amber,
+            negative: colors.red,
+            danger: colors.red,
+            info: colors.teal,
+
+            // Named
+            blue: colors.sky,
+            gray: colors.slate,
+            neutral: colors.neutral,
+            green: colors.green,
+            red: colors.red,
+            amber: colors.amber,
+            teal: colors.teal,
+            orange: colors.orange,
+            yellow: colors.yellow,
+            lime: colors.lime,
+            emerald: colors.emerald,
+            cyan: colors.cyan,
+            indigo: colors.indigo,
+            violet: colors.violet,
+            purple: colors.purple,
+            fuchsia: colors.fuchsia,
+            pink: colors.pink,
+            rose: colors.rose,
+        }
+    }, content: {
+        files: [
+            './app/**/*.php',
+            './resources/*.php',
+            './resources/**/*.php',
+            "./resources/**/*.blade.php",
+            './vendor/filament/**/*.blade.php',
+            './storage/framework/views/*.php'
+        ]
     },
     plugins: [require("@tailwindcss/forms")],
 };
