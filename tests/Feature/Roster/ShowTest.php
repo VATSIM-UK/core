@@ -110,7 +110,7 @@ class ShowTest extends TestCase
             ->set('searchTerm', 'EGKK_APP')
             ->call('search')
             ->assertDontSee("{$account->id} can control {$uncontrollablePosition->callsign}")
-            ->set('searchTerm', "EGKK_DEP")
+            ->set('searchTerm', 'EGKK_DEP')
             ->call('search')
             ->assertSessionHas('filament.notifications', function ($value) {
                 return $value[0]['title'] == 'Position cannot be found.' && $value[0]['status'] == 'danger';
