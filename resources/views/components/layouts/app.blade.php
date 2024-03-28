@@ -18,6 +18,7 @@
                 <img width="200" src="{{ secure_asset('images/branding/vatsimuk_blackblue.png') }}" unselectable="on">
             </a>
         </div>
+        {{ $slot }}
     </div>
     @filamentScripts
     @livewire('notifications')
