@@ -217,6 +217,23 @@ class MockCtsDatabase
                 KEY `student_id` (`student_id`)
               );"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `practical_results` (
+                `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+                `examid` smallint unsigned NOT NULL DEFAULT '0',
+                `student_id` int unsigned NOT NULL DEFAULT '0',
+                `exam` enum('P1','P2','P3','P4','P5','P6','P7','P8','P9','OBS','TWR','APP','CTR','S3','C1','C3') NOT NULL DEFAULT 'TWR',
+                `notes` longtext,
+                `result` char(1) NOT NULL DEFAULT '',
+                `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                `cert_upgrade` tinyint unsigned DEFAULT '0',
+                `upgrade_by` int unsigned DEFAULT '0',
+                `upgrade_date` datetime DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                KEY `student_id` (`student_id`)
+              );"
+        );
     }
 
     public static function destroy()
