@@ -16,6 +16,7 @@ class AccountCanControlTest extends TestCase
 {
     public function setUp(): void
     {
+        parent::setUp();
         Event::fake();
     }
 
