@@ -14,6 +14,7 @@ class PracticalResult extends Model
     public $timestamps = false;
 
     public const PASSED = 'P';
+
     public const FAILED = 'F';
 
     protected $casts = [

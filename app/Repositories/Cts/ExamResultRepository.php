@@ -9,7 +9,7 @@ class ExamResultRepository
 {
     public function getPassedExamResultsOfTypeForMember(int $cid, string $type)
     {
-        $studentId = Member::where("cid", $cid)->firstOrFail()?->id;
+        $studentId = Member::where('cid', $cid)->firstOrFail()?->id;
 
         return PracticalResult::where('result', PracticalResult::PASSED)
             ->where('exam', $type)

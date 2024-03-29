@@ -277,5 +277,9 @@ class MockCtsDatabase
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `theory_results`;'
         );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `practical_results`;'
+        );
     }
 }
