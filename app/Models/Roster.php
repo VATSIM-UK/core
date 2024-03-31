@@ -10,7 +10,7 @@ use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Qualification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\Roster
@@ -57,7 +57,16 @@ class Roster extends Model
     {
         // Notify that they were removed (database and email)
         // Remove from waiting lists too
-        $this->delete();
+        DB::transaction(function () {
+            RosterHistory::create([
+                'account_id' => $this->account_id,
+                'original_created_at' => $this->created_at,
+                'original_updated_at' => $this->updated_at,
+                'removed_by' => auth()->user()?->getKey(),
+            ]);
+
+            $this->delete();
+        });
     }
 
     public function accountCanControl(Position $position)

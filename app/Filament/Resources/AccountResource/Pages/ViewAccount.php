@@ -53,7 +53,7 @@ class ViewAccount extends BaseViewRecordPage
                     ->name($onRoster ? 'Remove from roster' : 'Add to roster')
                     ->modalHeading($onRoster ? 'Remove from roster' : 'Add to roster')
                     ->action(function () use ($onRoster) {
-                        Roster::withoutGlobalScopes()->where('account_id', $this->record->id)->delete();
+                        Roster::withoutGlobalScopes()->where('account_id', $this->record->id)->get()->each->remove();
 
                         if (! $onRoster) {
                             Roster::create(['account_id' => $this->record->id]);
