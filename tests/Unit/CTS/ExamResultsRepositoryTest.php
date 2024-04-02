@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class ExamResultsRepositoryTest extends TestCase
 {
-    public function test_retrieves_passed_exam_results_of_type_for_member()
+    public function test_retrieves_passed_exam_results_of_type()
     {
         $account = Account::factory()->create(['id' => 1111111]);
         $member = factory(Member::class)->create([
@@ -21,38 +21,68 @@ class ExamResultsRepositoryTest extends TestCase
             'result' => PracticalResult::PASSED,
             'student_id' => $member->id,
             'exam' => 'OBS',
+            'date' => now()->subDays(1),
         ]);
 
         // ensure failed result isn't returned
-        PracticalResult::factory()->create([
+        $notSuccessfulPracticalResult = PracticalResult::factory()->create([
             'result' => PracticalResult::FAILED,
             'student_id' => $member->id,
             'exam' => 'OBS',
         ]);
 
         $repository = new ExamResultRepository();
-        $result = $repository->getPassedExamResultsOfTypeForMember($account->id, 'OBS');
+        $result = $repository->getRecentPassedExamsOfType('OBS');
 
-        $this->assertEquals($examResult->id, $result->id);
+        $this->assertNotNull($result->where('id', $examResult->id)->first());
+        $this->assertNull($result->where('id', $notSuccessfulPracticalResult->id)->first());
     }
 
-    public function test_does_not_retrieve_passed_exam_of_other_type()
+    public function test_doesnt_return_non_recent_exam_passes()
     {
         $account = Account::factory()->create(['id' => 1111111]);
         $member = factory(Member::class)->create([
             'cid' => $account->id,
         ]);
 
-        // ensure failed result isn't returned
-        PracticalResult::factory()->create([
+        $examResult = PracticalResult::factory()->create([
             'result' => PracticalResult::PASSED,
             'student_id' => $member->id,
             'exam' => 'OBS',
+            'date' => now()->subDays(4),
         ]);
 
         $repository = new ExamResultRepository();
-        $result = $repository->getPassedExamResultsOfTypeForMember($account->id, 'TWR');
+        $result = $repository->getRecentPassedExamsOfType('OBS');
 
-        $this->assertNull($result);
+        $this->assertNull($result->where('id', $examResult->id)->first());
+    }
+
+    public function test_only_returns_recent_successful_exams_of_specified_type()
+    {
+        $account = Account::factory()->create(['id' => 1111111]);
+        $member = factory(Member::class)->create([
+            'cid' => $account->id,
+        ]);
+
+        $examResult = PracticalResult::factory()->create([
+            'result' => PracticalResult::PASSED,
+            'student_id' => $member->id,
+            'exam' => 'TWR',
+            'date' => now()->subDays(1),
+        ]);
+
+        $notSuccessfulPracticalResult = PracticalResult::factory()->create([
+            'result' => PracticalResult::FAILED,
+            'student_id' => $member->id,
+            'exam' => 'OBS',
+            'date' => now()->subDays(1),
+        ]);
+
+        $repository = new ExamResultRepository();
+        $result = $repository->getRecentPassedExamsOfType('OBS');
+
+        $this->assertNull($result->where('id', $examResult->id)->first());
+        $this->assertNull($result->where('id', $notSuccessfulPracticalResult->id)->first());
     }
 }

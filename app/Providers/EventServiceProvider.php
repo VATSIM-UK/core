@@ -26,7 +26,6 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\Mship\Qualifications\QualificationAdded::class => [
             \App\Listeners\Mship\SendS1Email::class,
-            \App\Listeners\Mship\AddNewlyQualifiedS1ToRoster::class,
         ],
 
         \App\Events\Mship\Bans\BanUpdated::class => [
