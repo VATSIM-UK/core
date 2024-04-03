@@ -48,15 +48,9 @@ class CheckForNewS1ExamPasses extends Command
                 continue;
             }
 
-            $isAlreadyOnRoster = Roster::where('account_id', $coreAccount->id)->exists();
-            if (! $isAlreadyOnRoster) {
-                Roster::create([
-                    'account_id' => $coreAccount->id,
-                ]);
-                $this->info("Added account {$coreAccount->id} to the roster.");
+            Roster::upsert(['account_id' => $coreAccount->id], uniqueBy: ['account_id']);
 
-                return;
-            }
+            $this->info("Added account {$coreAccount->id} to the roster.");
         }
     }
 }
