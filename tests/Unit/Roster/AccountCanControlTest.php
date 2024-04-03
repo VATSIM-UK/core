@@ -9,10 +9,17 @@ use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Roster;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class AccountCanControlTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        Event::fake();
+    }
+
     public function test_detects_can_control_with_rating_when_home_member()
     {
         $qualification = Qualification::code('S2')->first();
