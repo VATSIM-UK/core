@@ -62,10 +62,6 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(25)
             ->graceTimeInMinutes(5);
 
-        $schedule->command('roster:check-new-s1-exams')
-            ->hourlyAt(30)
-            ->graceTimeInMinutes(5);
-
         // === By Day === //
 
         $schedule->command('telescope:prune')
