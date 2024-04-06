@@ -73,7 +73,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(TelescopeServiceProvider::class);
-        Telescope::ignoreMigrations();
 
         $this->app->singleton(UKCP::class);
         $this->app->singleton(Discord::class);
