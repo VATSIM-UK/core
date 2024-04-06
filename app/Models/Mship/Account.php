@@ -458,8 +458,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     private function allowedNames($includeATC = false, $withNumberWildcard = false)
     {
-        $wildcard = $withNumberWildcard ? "\d" : '';
-
         $allowedNames = collect();
 
         return $allowedNames->push($this->name)
@@ -470,8 +468,10 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
                 $allowedNames->each(function ($item) use (&$allowedNames) {
                     $allowedNames->push($item." - {$this->networkDataAtcCurrent->callsign}");
                 });
-            })->each(function ($item) use (&$allowedNames, $wildcard) {
-                $allowedNames->push($item.$wildcard);
+            })->when($withNumberWildcard, function (&$allowedNames) {
+                $allowedNames->each(function ($item) use (&$allowedNames) {
+                    $allowedNames->push($item . "\d");
+                });
             });
     }
 
