@@ -458,7 +458,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     private function allowedNames($includeATC = false, $withNumberWildcard = false)
     {
-        $wildcard = $withNumberWildcard ? "\d": '';
+        $wildcard = $withNumberWildcard ? "\d" : '';
 
         $allowedNames = collect();
 
