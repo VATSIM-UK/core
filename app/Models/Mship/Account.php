@@ -466,7 +466,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             ->push($this->real_name)
             ->each(function ($item) use (&$allowedNames) {
                 $allowedNames->push("{$item} {$this->id}");
-            })->when($includeATC, function (&$allowedNames) {
+            })->when($includeATC && $this->networkDataAtcCurrent, function (&$allowedNames) {
                 $allowedNames->each(function ($item) use (&$allowedNames) {
                     $allowedNames->push($item." - {$this->networkDataAtcCurrent->callsign}");
                 });
