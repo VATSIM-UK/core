@@ -29,6 +29,6 @@
   },
   "dependencies": {
     "@alpinejs/collapse": "^3.13.8",
-    "alpinejs": "^3.13.7"
+    "alpinejs": "^3.13.8"
   }
 }
