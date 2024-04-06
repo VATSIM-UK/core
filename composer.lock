@@ -11777,25 +11777,25 @@
         },
         {
             "name": "whitecube/laravel-cookie-consent",
-            "version": "v1.1.0",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/whitecube/laravel-cookie-consent.git",
-                "reference": "4899dc93551a62af2377c5682daa49b14e26b891"
+                "reference": "2a97ed46927252d653ec98527d52ce83962ed39d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/4899dc93551a62af2377c5682daa49b14e26b891",
-                "reference": "4899dc93551a62af2377c5682daa49b14e26b891",
+                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/2a97ed46927252d653ec98527d52ce83962ed39d",
+                "reference": "2a97ed46927252d653ec98527d52ce83962ed39d",
                 "shasum": ""
             },
             "require": {
-                "laravel/framework": "^9|^10",
+                "laravel/framework": "^9|^10|^11",
                 "php": ">=8.1"
             },
             "require-dev": {
                 "mockery/mockery": "^1.5",
-                "orchestra/testbench": "^8.5",
+                "orchestra/testbench": "^8.5|^9.0",
                 "pestphp/pest": "^2.6"
             },
             "type": "library",
@@ -11840,7 +11840,7 @@
             ],
             "support": {
                 "issues": "https://github.com/whitecube/laravel-cookie-consent/issues",
-                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.1.0"
+                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.2.0"
             },
             "funding": [
                 {
@@ -11848,7 +11848,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-12-21T14:29:54+00:00"
+            "time": "2024-03-28T18:02:22+00:00"
         },
         {
             "name": "wohali/oauth2-discord-new",
