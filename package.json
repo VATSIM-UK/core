@@ -23,7 +23,7 @@
     "less-loader": "^12.2.0",
     "postcss": "^8.4.38",
     "postcss-nesting": "^12.1.1",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^3.4.3",
     "vue": "^2.7.16",
     "vue-template-compiler": "^2.7.16"
   },
