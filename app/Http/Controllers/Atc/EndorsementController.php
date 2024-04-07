@@ -25,7 +25,7 @@ class EndorsementController extends BaseController
 
         // 50 hours on _GND or _DEL
         $minutesOnline = $this->account->networkDataAtc()
-            ->where('callsign', 'LIKE', 'EG%')
+            ->isUK()
             ->where(function (Builder $builder) {
                 $builder->where('facility_type', Atc::TYPE_GND)
                     ->orWhere('facility_type', Atc::TYPE_DEL);
