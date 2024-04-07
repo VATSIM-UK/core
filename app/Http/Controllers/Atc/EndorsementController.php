@@ -39,6 +39,7 @@ class EndorsementController extends BaseController
             ->with('totalHours', $totalHours)
             ->with('progress', ($totalHours / self::GATWICK_HOURS_REQUIREMENT) * 100)
             ->with('hoursMet', $hoursMet)
+            ->with('onRoster', $onRoster)
             ->with('conditionsMet', $hoursMet && $onRoster);
     }
 

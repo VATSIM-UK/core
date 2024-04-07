@@ -7,46 +7,91 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Gatwick Endorsement</div>
                 <div class="panel-body">
-                    Gatwick is one of the busiest airports on the VATSIM network. Before controlling it, we want to
-                    ensure you have the knowledge you need to provide a good service to pilots and get the most from
-                    your controlling session.<br>
-                    <br>
+                    <p>
+                        Gatwick is one of the busiest airports on the VATSIM network. Before controlling it, we want to
+                        ensure you have the knowledge you need to provide a good service to pilots and get the most from
+                        your controlling session.
+                    </p>
                     <h4>Step One</h4>
-                    In order to control Gatwick Ground as an S1, you will need to first meet the requirements outlined
-                    on this page.<br>
-                    You must be a home member of the UK, be rated as an S1 and have controlled for 50 hours on GMC or
-                    GMP positions.<br>
-                    <br>
+                    <p>
+                        In order to control Gatwick Ground as an S1, you will need to first meet the requirements
+                        outlined
+                        on this page.
+                    </p>
+                    <p>
+                        You must be a home member of the UK, be active on the controller roster, be rated as an S1
+                        and have controlled for 50 hours on UK GMC or GMP positions.
+                    </p>
                     <h4>Step Two</h4>
-                    You will be given access to the 'Gatwick ADC | S1 Endorsement' course. This Moodle course covers
-                    Gatwick specific procedures, radiotelephony, and local flight planning restrictions.
-                    There is a quiz at the end of the course with a pass mark of 90% - you must pass this quiz to
-                    proceed.
-                    If you do not pass the quiz on your first attempt, there is a study period of seven days for you to
-                    review the Moodle course and improve your knowledge before you try again.<br>
-                    When you have passed the quiz at the end of the Moodle course, you will be prompted to submit
-                    another ticket to ATC TRAINING.<br>
-                    <br>
+                    <p>
+                        You will be given access to the 'Gatwick ADC | S1 Endorsement' course. This Moodle course covers
+                        Gatwick specific procedures, radiotelephony, and local flight planning restrictions.
+                        There is a quiz at the end of the course with a pass mark of 90% - you must pass this quiz to
+                        proceed.
+                    </p>
+                    <p>
+                        If you do not pass the quiz on your first attempt, there is a study period of seven days for you to
+                        review the Moodle course and improve your knowledge before you try again.
+                    </p>
+                    <p>
+                        When you have passed the quiz at the end of the Moodle course, you will be prompted to submit
+                        another ticket to ATC TRAINING.
+                    </p>
                     <h4>Step Three</h4>
-                    One of our Gatwick mentors will take you onto the live network, on either EGKK_GND or EGKK_DEL, and
-                    offer you hints and tips as you control You will also have the chance to ask any questions that you
-                    have.<br>
-                    This is not a test and you will not pass or fail, rather it is an opportunity for you to practically
-                    apply the skills and knowledge which you have learned through completing the Moodle course.<br>
-                    You will do this until the mentor deems you ready for the Gatwick ground endorsement. Once granted
-                    the endorsement, you will be able to control EGKK_GND and EGKK_DEL on the live network without
-                    supervision.
+                    <p>
+                        One of our Gatwick mentors will take you onto the live network, on either EGKK_GND or EGKK_DEL, and
+                        offer you hints and tips as you control You will also have the chance to ask any questions that you have.
+                    </p>
+                    <p>
+                        This is not a test and you will not pass or fail, rather it is an opportunity for you to practically
+                        apply the skills and knowledge which you have learned through completing the Moodle course.<br>
+                        You will do this until the mentor deems you ready for the Gatwick ground endorsement. Once granted
+                        the endorsement, you will be able to control EGKK_GND and EGKK_DEL on the live network without
+                        supervision.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row">
+        <div class="col-md-4 col-md-offset-2">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Membership Status</div>
+                <div class="panel-body">
+                    @if($_account->primary_state?->isDivision)
+                        <p>You are a home member of the UK.</p>
+                    @else
+                        <p class="text-danger"><strong>You are not a home member of the UK Division. If you wish to hold
+                                a Gatwick endorsement, apply to transfer to the UK
+                                by {!! link_to_route("visiting.landing", "clicking here") !!}.</strong></p>
+                    @endif
+
+                    @if($onRoster)
+                        <p>You are active on the controller roster.</p>
+                    @else
+                        <p class="text-danger">You are not active on the controller roster. If you wish to hold a
+                            Gatwick endorsement you must be active on the roster.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-header"><i class="fa fa-info"></i> Control 50 Hours</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> 50 Hours Controlling as an S1</div>
                 <div class="panel-body">
                     <div class="progress" data-toggle="tooltip" title="Hours Controlling _DEL and _GND">
+                        @if($hoursMet)
+                            <div
+                                class="progress-bar progress-bar-success"
+                                role="progressbar"
+                                style="width: 100%"
+                                aria-valuemin="0"
+                                aria-valuemax="50">
+                                50+ Hrs
+                            </div>
+                        @endif
                         <div
                             class="progress-bar {{ $hoursMet ? 'progress-bar-success' : '' }}"
                             role="progressbar"
@@ -63,21 +108,8 @@
 
 
     <div class="row">
-        <div class="col-md-4 col-md-offset-2">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Membership Status</div>
-                <div class="panel-body">
-                    @if($_account->primary_state?->isDivision)
-                        You are a home member of the UK and no further action is required.
-                    @else
-                        <p class="text-danger"><strong>You are not a home member of the UK Division. If you wish to hold
-                                a Gatwick endorsement, apply to transfer to the UK
-                                by {!! link_to_route("visiting.landing", "clicking here") !!}.</strong></p>
-                    @endif
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
+
+        <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Request Moodle Course</div>
                 <div class="panel-body">
