@@ -40,26 +40,6 @@ class EndorsementController extends BaseController
             ->with('progress', ($totalHours / self::GATWICK_HOURS_REQUIREMENT) * 100)
             ->with('hoursMet', $hoursMet)
             ->with('conditionsMet', $hoursMet && $onRoster);
-
-        // S1
-        // active on roster
-        // 50 hours on _GND _DEL
-
-        //        $endorsement = PositionGroup::with('conditions')->where('name', 'Gatwick S1 (DEL/GND)')->first();
-        //
-        //        $hours = $endorsement->conditions->map(function ($condition) {
-        //            return $condition->progressForUser($this->account);
-        //        });
-        //
-        //        if (! $this->account->fully_defined || ! $this->account->qualificationAtc->isS1) {
-        //            return Redirect::route('mship.manage.dashboard')
-        //                ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
-        //        }
-        //
-        //        return $this->viewMake('controllers.endorsements.gatwick_ground')
-        //            ->with('endorsment', $endorsement)
-        //            ->with('conditions', $endorsement->conditions)
-        //            ->with('hours', $hours->all());
     }
 
     public function getAreaIndex()
