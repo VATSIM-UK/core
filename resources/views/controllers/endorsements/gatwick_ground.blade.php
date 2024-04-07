@@ -14,9 +14,8 @@
                     </p>
                     <h4>Step One</h4>
                     <p>
-                        In order to control Gatwick Ground as an S1, you will need to first meet the requirements
-                        outlined
-                        on this page.
+                        In order to control Gatwick Ground as an S1, you will need to first meet
+                        the requirements outlined on this page.
                     </p>
                     <p>
                         You must be a home member of the UK, be active on the controller roster, be rated as an S1
