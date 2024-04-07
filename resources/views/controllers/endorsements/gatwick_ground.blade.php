@@ -81,7 +81,7 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-info"></i> 50 Hours Controlling as an S1</div>
                 <div class="panel-body">
-                    <div class="progress" data-toggle="tooltip" title="Hours Controlling _DEL and _GND">
+                    <div class="progress" data-toggle="tooltip" title="Hours Controlling DEL and GND">
                         @if($hoursMet)
                             <div
                                 class="progress-bar progress-bar-success"
