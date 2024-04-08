@@ -34,15 +34,18 @@ class Registration extends \App\Http\Controllers\BaseController
             $confirmation = $registration->confirmation;
         }
 
-        $autoURL = 'ts3server://'.config('services.teamspeak.host').'?nickname='.$this->account->name_first.'%20';
-        $autoURL .= $this->account->name_last.'&token='.$confirmation->privilege_key;
+        $base = sprintf('%s%s%s', 'ts3server://', config('services.teamspeak.host'), '?');
+        $query = http_build_query([
+            'nickname' => sprintf('%s %s', $this->account->name, $this->account->id),
+            'token' => $confirmation->privilege_key,
+        ], encoding_type: PHP_QUERY_RFC3986);
 
         $this->pageTitle = 'New Registration';
         $view = $this->viewMake('teamspeak.new')
             ->withRegistration($registration)
             ->withConfirmation($confirmation)
             ->with('teamspeak_url', config('teamspeak.host'))
-            ->with('auto_url', $autoURL);
+            ->with('auto_url', sprintf('%s%s', $base, $query));
 
         return $view;
     }

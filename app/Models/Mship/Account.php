@@ -458,25 +458,21 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     private function allowedNames($includeATC = false, $withNumberWildcard = false)
     {
-        $wildcard = '';
-
-        if ($withNumberWildcard) {
-            $wildcard = "\d";
-        }
-
         $allowedNames = collect();
-        $allowedNames->push($this->name.$wildcard);
-        $allowedNames->push($this->real_name.$wildcard);
 
-        if ($includeATC && $this->networkDataAtcCurrent) {
-            $collect = collect();
-            foreach ($allowedNames as $name) {
-                $collect->push($name." - {$this->networkDataAtcCurrent->callsign}");
-            }
-            $allowedNames = $allowedNames->merge($collect);
-        }
-
-        return $allowedNames;
+        return $allowedNames->push($this->name)
+            ->push($this->real_name)
+            ->each(function ($item) use (&$allowedNames) {
+                $allowedNames->push("{$item} {$this->id}");
+            })->when($includeATC && $this->networkDataAtcCurrent, function (&$allowedNames) {
+                $allowedNames->each(function ($item) use (&$allowedNames) {
+                    $allowedNames->push($item." - {$this->networkDataAtcCurrent->callsign}");
+                });
+            })->when($withNumberWildcard, function (&$allowedNames) {
+                $allowedNames->each(function ($item) use (&$allowedNames) {
+                    $allowedNames->push($item."\d");
+                });
+            });
     }
 
     /**
