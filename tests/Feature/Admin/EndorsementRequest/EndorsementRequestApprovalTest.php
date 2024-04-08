@@ -6,7 +6,9 @@ use App\Filament\Resources\EndorsementRequestResource\Pages\ListEndorsementReque
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\EndorsementRequest;
+use App\Notifications\Mship\Endorsement\TierEndorsementNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
@@ -56,6 +58,35 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionHidden('approve', $endorsementRequest->id);
+    }
+
+    public function test_sends_notification_to_user_for_permanent_endorsement_when_approved()
+    {
+        Notification::fake();
+
+        $endorsementRequest = EndorsementRequest::factory()->create([
+            'endorsable_type' => PositionGroup::class,
+            'endorsable_id' => PositionGroup::factory()->create()->id,
+        ]);
+
+        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ListEndorsementRequests::class)
+            ->assertCanSeeTableRecords([$endorsementRequest])
+            ->callTableAction('approve', record: $endorsementRequest->id, data: [
+                'type' => 'Permanent',
+            ]);
+
+        $this->assertDatabaseHas('mship_account_endorsement', [
+            'account_id' => $endorsementRequest->account_id,
+            'endorsable_id' => $endorsementRequest->endorsable_id,
+            'endorsable_type' => $endorsementRequest->endorsable_type,
+        ]);
+
+        Notification::assertSentTo($endorsementRequest->account, TierEndorsementNotification::class, function ($notification) use ($endorsementRequest) {
+            return $notification->endorsement->endorsable->id === $endorsementRequest->endorsable_id;
+        });
     }
 
     public function test_can_approve_temporary_endorsement_with_days_input_with_permission()
