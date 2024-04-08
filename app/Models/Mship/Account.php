@@ -470,7 +470,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
                 });
             })->when($withNumberWildcard, function (&$allowedNames) {
                 $allowedNames->each(function ($item) use (&$allowedNames) {
-                    $allowedNames->push($item . "\d");
+                    $allowedNames->push($item."\d");
                 });
             });
     }
