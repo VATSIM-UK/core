@@ -4,30 +4,43 @@ namespace App\Http\Controllers\Atc;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Atc\PositionGroup;
+use App\Models\NetworkData\Atc;
+use App\Models\Roster;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Redirect;
 
 class EndorsementController extends BaseController
 {
+    const GATWICK_HOURS_REQUIREMENT = 50;
+
     public function getGatwickGroundIndex()
     {
-        return Redirect::route('mship.manage.dashboard')
-            ->withError("We're making some changes to this page, please check back later.");
+        if (! $this->account->fully_defined || ! $this->account->qualification_atc->isS1) {
+            return Redirect::route('mship.manage.dashboard')
+                ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
+        }
 
-        //        $endorsement = PositionGroup::with('conditions')->where('name', 'Gatwick S1 (DEL/GND)')->first();
-        //
-        //        $hours = $endorsement->conditions->map(function ($condition) {
-        //            return $condition->progressForUser($this->account);
-        //        });
-        //
-        //        if (! $this->account->fully_defined || ! $this->account->qualificationAtc->isS1) {
-        //            return Redirect::route('mship.manage.dashboard')
-        //                ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
-        //        }
-        //
-        //        return $this->viewMake('controllers.endorsements.gatwick_ground')
-        //            ->with('endorsment', $endorsement)
-        //            ->with('conditions', $endorsement->conditions)
-        //            ->with('hours', $hours->all());
+        // active on roster
+        $onRoster = Roster::where('account_id', $this->account->id)->exists();
+
+        // 50 hours on _GND or _DEL
+        $minutesOnline = $this->account->networkDataAtc()
+            ->isUK()
+            ->where(function (Builder $builder) {
+                $builder->where('facility_type', Atc::TYPE_GND)
+                    ->orWhere('facility_type', Atc::TYPE_DEL);
+            })
+            ->sum('minutes_online');
+
+        $totalHours = $minutesOnline / 60;
+        $hoursMet = $totalHours >= self::GATWICK_HOURS_REQUIREMENT;
+
+        return $this->viewMake('controllers.endorsements.gatwick_ground')
+            ->with('totalHours', $totalHours)
+            ->with('progress', ($totalHours / self::GATWICK_HOURS_REQUIREMENT) * 100)
+            ->with('hoursMet', $hoursMet)
+            ->with('onRoster', $onRoster)
+            ->with('conditionsMet', $hoursMet && $onRoster);
     }
 
     public function getAreaIndex()

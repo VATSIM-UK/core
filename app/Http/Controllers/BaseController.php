@@ -21,6 +21,7 @@ class BaseController extends \Illuminate\Routing\Controller
     }
     use DispatchesJobs, RedirectsUsers, ValidatesRequests;
 
+    /** @var Account */
     protected $account;
 
     protected $pageTitle;
