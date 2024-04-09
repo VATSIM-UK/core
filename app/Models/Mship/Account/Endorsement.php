@@ -7,11 +7,14 @@ use App\Models\Atc\PositionGroup;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Observers\EndorsementObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy([EndorsementObserver::class])]
 class Endorsement extends Model
 {
     use HasFactory, SoftDeletes;
