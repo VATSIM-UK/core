@@ -38,8 +38,9 @@
                     <h3>Background</h3>
 
                     <p>
-                        London Gatwick (EGKK) was the 2nd busiest airport on the VATSIM network in 2022 with over 84,000
-                        movements. Controlling at London Gatwick is restricted by the ATC Training Department to S2 rated
+                        London Gatwick (EGKK) is a Tier 1 aerodrome and was the 2nd busiest airport on the
+                        VATSIM network in 2022 with over 84,000 movements.
+                        Controlling at London Gatwick is restricted by the ATC Training Department to S2 rated
                         members, or S1s that hold a special endorsement. This restriction for S1s is in place to allow
                         members to gain experience in quieter environments and practice their skills before tackling
                         the workload at Gatwick.
@@ -61,6 +62,45 @@
                     <p>
                         The process for getting started with the Gatwick Ground endorsement can be found by <a
                             href="{{ route('controllers.endorsements.gatwick_ground') }}">clicking here</a>.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-ukblue">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#endorsement-heathrow-s1">
+                    <div class="panel-heading">
+                        <i class="fa fa-plane-departure" aria-hidden="true"></i> &thinsp; London Heathrow - GND (S1)
+                        <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
+                    </div>
+                </a>
+                <div id="endorsement-heathrow-s1" class="panel-collapse collapse panel-body">
+                    <h3>Background</h3>
+
+                    <p>
+                        London Heathrow (EGLL) is a Tier 1 aerodrome and the busiest airport on the VATSIM network.
+
+                        Controlling at London Heathrow is restricted by the ATC Training Department to S2 rated
+                        members, or S1s that hold a special endorsement. This restriction for S1s is in place to allow
+                        members to gain experience in quieter environments and practice their skills before tackling
+                        the workload at Heathrow.
+                    </p>
+
+                    <h3>Endorsement Process</h3>
+
+                    <p>
+                        View the requirements for the Heathrow Ground (S1) endorsement by <a
+                            href="{{ route('controllers.endorsements.heathrow_ground_s1') }}">clicking here</a>.
+                    <p>
+
+                    <h3>Get Started</h3>
+
+                    <p>
+                        The process for getting started with the Heathrow Ground (S1) endorsement can be found by <a
+                            href="{{ route('controllers.endorsements.heathrow_ground_s1') }}">clicking here</a>.
                     </p>
 
                 </div>
