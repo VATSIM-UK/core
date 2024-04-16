@@ -78,7 +78,6 @@ class HeathrowS1EndorsementTest extends TestCase
             ->assertViewHas('conditionsMet', false);
     }
 
-
     public function testItFailsFor55HoursPreEndorsementGatwick()
     {
         $account = $this->getS1Account();
@@ -89,7 +88,7 @@ class HeathrowS1EndorsementTest extends TestCase
             'callsign' => 'EGKK_T_GND',
             'minutes_online' => 55 * 60,
             'facility_type' => Atc::TYPE_DEL,
-            'connected_at' => Carbon::create(2024, 1, 1)
+            'connected_at' => Carbon::create(2024, 1, 1),
         ]);
 
         factory(Atc::class)->create([
@@ -97,7 +96,7 @@ class HeathrowS1EndorsementTest extends TestCase
             'callsign' => 'EGKK_GND',
             'minutes_online' => 55 * 60,
             'facility_type' => Atc::TYPE_DEL,
-            'connected_at' => Carbon::create(2024, 2, 1)
+            'connected_at' => Carbon::create(2024, 2, 1),
         ]);
 
         factory(Atc::class)->create([
@@ -105,7 +104,7 @@ class HeathrowS1EndorsementTest extends TestCase
             'callsign' => 'EGKK_GND',
             'minutes_online' => 25 * 60,
             'facility_type' => Atc::TYPE_GND,
-            'connected_at' => Carbon::create(2026, 1, 1)
+            'connected_at' => Carbon::create(2026, 1, 1),
         ]);
 
         $this->actingAs($account->fresh())
@@ -117,8 +116,6 @@ class HeathrowS1EndorsementTest extends TestCase
             ->assertViewHas('hasEgkkEndorsement', true)
             ->assertViewHas('conditionsMet', false);
     }
-
-
 
     public function testItDetectsNotOnRoster()
     {

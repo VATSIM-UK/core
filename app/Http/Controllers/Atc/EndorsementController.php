@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Redirect;
 class EndorsementController extends BaseController
 {
     const GATWICK_HOURS_REQUIREMENT = 50;
+
     const HEATHROW_S1_HOURS_REQUIREMENT = 50;
 
     public function getGatwickGroundIndex()
@@ -60,7 +61,7 @@ class EndorsementController extends BaseController
             });
         })->first();
 
-        $hasEgkkEndorsement = (bool)$egkkEndorsement;
+        $hasEgkkEndorsement = (bool) $egkkEndorsement;
 
         $minutesOnline = 0.0;
 
