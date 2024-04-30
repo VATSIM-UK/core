@@ -38,12 +38,9 @@
                     <h3>Background</h3>
 
                     <p>
-                        London Gatwick (EGKK) is a Tier 1 aerodrome and was the 2nd busiest airport on the
-                        VATSIM network in 2022 with over 84,000 movements.
-                        Controlling at London Gatwick is restricted by the ATC Training Department to S2 rated
-                        members, or S1s that hold a special endorsement. This restriction for S1s is in place to allow
-                        members to gain experience in quieter environments and practice their skills before tackling
-                        the workload at Gatwick.
+                        Controlling at London Gatwick is restricted to S2 rated members, or S1s that hold a special endorsement.
+                        This restriction for S1s is in place to allow members to gain experience in quieter environments
+                        and practice their skills before tackling the workload at Gatwick.
                     </p>
 
                     <p>
@@ -83,10 +80,12 @@
                     <p>
                         London Heathrow (EGLL) is a Tier 1 aerodrome and the busiest airport on the VATSIM network.
 
-                        Controlling at London Heathrow is restricted by the ATC Training Department to S2 rated
-                        members, or S1s that hold a special endorsement. This restriction for S1s is in place to allow
-                        members to gain experience in quieter environments and practice their skills before tackling
-                        the workload at Heathrow.
+                        Controlling at London Heathrow is restricted, members must hold a special endorsement.
+
+                        This restriction is in place to allow members to gain experience in quieter environments
+                        and practice their skills before tackling the workload at Heathrow.
+
+                        S1 rated members that hold a Gatwick Endorsement may train for a Heathrow Ground (S1) Endorsement.
                     </p>
 
                     <h3>Endorsement Process</h3>
@@ -239,7 +238,6 @@
                         <i class="fa fa-plane-departure" aria-hidden="true"></i> &thinsp; London Heathrow (S2+)
                         <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
-                </a>
                 </a>
                 <div id="endorsement-heathrow" class="panel-collapse collapse panel-body">
                     View the details for the Heathrow endorsements by <a class="nav-link" href="{{ route('site.atc.heathrow') }}">clicking here</a>.

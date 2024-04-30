@@ -8,11 +8,14 @@
                 <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Heathrow Ground Endorsement (S1)</div>
                 <div class="panel-body">
                     <p>
-                        Heathrow is a Tier 1 airport and one of the busiest airports in the VATSIM Network.
+                        Heathrow is one of the busiest airports on the VATSIM Network.
                     </p>
                     <p>
                         Before controlling at Heathrow, we want to ensure you have the knowledge you need
                         to provide a good service to pilots and get the most from your controlling session.
+                    </p>
+                    <p>
+                        S1 rated controllers must hold a Heathrow Endorsement in order to control EGLL_GND and ELL_DEL positions.
                     </p>
                     <h4>Step One</h4>
                     <p>

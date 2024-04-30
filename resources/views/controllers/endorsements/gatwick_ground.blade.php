@@ -8,16 +8,18 @@
                 <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Gatwick Endorsement (S1)</div>
                 <div class="panel-body">
                     <p>
-                        Gatwick is a Tier 1 airport and one of the busiest airports in the VATSIM Network.
+                        Gatwick is one of the busiest airports on the VATSIM Network.
                     </p>
                     <p>
                         Before controlling at Gatwick, we want to ensure you have the knowledge you need
                         to provide a good service to pilots and get the most from your controlling session.
                     </p>
+                    <p>
+                        S1 rated controllers must hold a Gatwick Endorsement in order to control EGKK_GND and EGKK_DEL.
+                    </p>
                     <h4>Step One</h4>
                     <p>
-                        In order to control Gatwick Ground as an S1, you will need to meet
-                        the following requirements:
+                        In order to begin training for your endorsement you must meet the following requirements:
                     </p>
                     <ul>
                         <li>
@@ -55,7 +57,9 @@
                     </p>
                     <p>
                         This is not a test and you will not pass or fail, rather it is an opportunity for you to practically
-                        apply the skills and knowledge which you have learned through completing the Moodle course.<br>
+                        apply the skills and knowledge which you have learned through completing the Moodle course.
+                    </p>
+                    <p>
                         You will do this until the mentor deems you ready for the Gatwick ground endorsement. Once granted
                         the endorsement, you will be able to control EGKK_GND and EGKK_DEL on the live network without
                         supervision.
