@@ -77,6 +77,7 @@
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Endorsements</li>
                                 <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
+                                <li>{!! link_to_route("controllers.endorsements.heathrow_ground_s1", "Heathrow Ground (S1)") !!}</li>
                                 <li>{!! link_to_route("site.atc.heathrow", "Heathrow") !!}</li>
                             </ul>
                         </li>

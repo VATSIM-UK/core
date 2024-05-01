@@ -5,21 +5,22 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Gatwick Endorsement (S1)</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Heathrow Ground Endorsement (S1)</div>
                 <div class="panel-body">
                     <p>
-                        Gatwick is one of the busiest airports on the VATSIM Network.
+                        Heathrow is one of the busiest airports on the VATSIM Network.
                     </p>
                     <p>
-                        Before controlling at Gatwick, we want to ensure you have the knowledge you need
+                        Before controlling at Heathrow, we want to ensure you have the knowledge you need
                         to provide a good service to pilots and get the most from your controlling session.
                     </p>
                     <p>
-                        S1 rated controllers must hold a Gatwick Endorsement in order to control EGKK_GND and EGKK_DEL.
+                        S1 rated controllers must hold a Heathrow Endorsement in order to control EGLL_GND and ELL_DEL positions.
                     </p>
                     <h4>Step One</h4>
                     <p>
-                        In order to begin training for your endorsement you must meet the following requirements:
+                        In order to control Heathrow Ground as an S1, you will need to meet
+                        the following requirements:
                     </p>
                     <ul>
                         <li>
@@ -32,18 +33,24 @@
                             You must be active on the controller roster
                         </li>
                         <li>
-                            You must have controlled for 50 hours at other UK aerodromes after acquiring your S1 rating.
+                            You must hold a Gatwick Endorsement
+                        </li>
+                        <li>
+                            You must have controlled for 50 hours at Gatwick after acquiring your endorsement
                         </li>
                     </ul>
                     <h4>Step Two</h4>
                     <p>
-                        You will be given access to the 'Gatwick ADC | S1 Endorsement' course. This Moodle course covers
-                        Gatwick specific procedures, radiotelephony, and local flight planning restrictions.
-                        There is a quiz at the end of the course with a pass mark of 90% - you must pass this quiz to
-                        proceed.
+                        You will be added to the waiting list for Heathrow training, and be
+                        given access to the 'Heathrow (S1) GMC' course. This Moodle course covers
+                        Heathrow specific procedures, radiotelephony, and local flight planning restrictions.
                     </p>
                     <p>
-                        If you do not pass the quiz on your first attempt, there is a study period of seven days for you to
+                        Once you are close to the top of the waiting list you will be given access to to the
+                        Moodle exam.
+                    </p>
+                    <p>
+                        If you do not pass the quiz on your first attempt, there is a study period of 72 hours for you to
                         review the Moodle course and improve your knowledge before you try again.
                     </p>
                     <p>
@@ -52,17 +59,7 @@
                     </p>
                     <h4>Step Three</h4>
                     <p>
-                        One of our Gatwick mentors will take you onto the live network, on either EGKK_GND or EGKK_DEL, and
-                        offer you hints and tips as you control You will also have the chance to ask any questions that you have.
-                    </p>
-                    <p>
-                        This is not a test and you will not pass or fail, rather it is an opportunity for you to practically
-                        apply the skills and knowledge which you have learned through completing the Moodle course.
-                    </p>
-                    <p>
-                        You will do this until the mentor deems you ready for the Gatwick ground endorsement. Once granted
-                        the endorsement, you will be able to control EGKK_GND and EGKK_DEL on the live network without
-                        supervision.
+                        Begin training toward your Heathrow Ground endorsement.
                     </p>
                 </div>
             </div>
@@ -88,13 +85,21 @@
                         <p class="text-danger">You are not active on the controller roster. If you wish to hold a
                             Gatwick endorsement you must be active on the roster.</p>
                     @endif
+
+                    @if($hasEgkkEndorsement)
+                        <p>You are endorsed to control Gatwick.</p>
+                    @else
+                        <p class="text-danger">You do not hold a Gatwick endorsement,
+                            you must <a href="{{ route('controllers.endorsements.heathrow_ground_s1') }}">complete this before</a>
+                            starting your Heathrow training.</p>
+                    @endif
                 </div>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-info"></i> 50 Hours Controlling as an S1</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> 50 Hours Controlling at Gatwick</div>
                 <div class="panel-body">
                     <div class="progress" data-toggle="tooltip" title="Hours Controlling DEL and GND">
                         @if($hoursMet)
@@ -128,14 +133,10 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Request Moodle Course</div>
                 <div class="panel-body">
-                    Once you have completed the requirements above, you will be able to press the button below to
-                    request access to the Moodle course and progress to Step 2.
-                    <br><br>
                     @if($conditionsMet)
-                        <a href="mailto:atc-training@vatsim.uk?Subject=Gatwick%20Endorsement%20-%20Moodle%20Request&Body=Please%20grant%20me%20access%20to%20the%20Gatwick%20Endorsement%20exam%20on%20Moodle%20as%20I%20have%20now%20met%20the%20number%20of%20hours%20required.%0A%0AFull%20Name%3A%20{{ $_account->name }}%0AVATSIM%20CID%3A%20{{ $_account->id }}"
-                           style="text-decoration: none;">
-                            <button class="btn btn-success center-block">Request Moodle Course</button>
-                        </a>
+                        <p>
+                            <a href="https://helpdesk.vatsim.uk/open.php">Open a ticket with ATC Training</a>
+                            to request access to the Moodle Course</p>
                     @else
                         <button class="btn btn-info center-block" disabled>Request Moodle Course</button>
                     @endif
