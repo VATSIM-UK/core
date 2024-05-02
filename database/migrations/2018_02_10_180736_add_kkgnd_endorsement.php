@@ -14,7 +14,7 @@ class AddKkgndEndorsement extends Migration
         DB::table('endorsements')
             ->insert([
                 [
-                    'endorsement' => 'EGKK_GND',
+                    'endorsement' => 'Gatwick S1 (DEL/GND)',
                     'required_airfields' => '["EGCC_%","EGPH_%","EGSS_%","EGGP_%"]',
                     'required_hours' => '10',
                     'hours_months' => '3',
@@ -22,7 +22,7 @@ class AddKkgndEndorsement extends Migration
                     'updated_at' => \Carbon\Carbon::now(),
                 ],
                 [
-                    'endorsement' => 'EGKK_GND',
+                    'endorsement' => 'Gatwick S1 (DEL/GND)',
                     'required_airfields' => '["EGPF_%","EGBB_%","EGGD_%","EGGW_%"]',
                     'required_hours' => '10',
                     'hours_months' => '3',
@@ -30,7 +30,7 @@ class AddKkgndEndorsement extends Migration
                     'updated_at' => \Carbon\Carbon::now(),
                 ],
                 [
-                    'endorsement' => 'EGKK_GND',
+                    'endorsement' => 'Gatwick S1 (DEL/GND)',
                     'required_airfields' => '["EGJJ_%","EGAA_%","EGNT_%","EGNX_%"]',
                     'required_hours' => '5',
                     'hours_months' => '3',

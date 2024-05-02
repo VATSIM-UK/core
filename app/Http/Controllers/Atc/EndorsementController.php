@@ -15,6 +15,8 @@ class EndorsementController extends BaseController
 
     const HEATHROW_S1_HOURS_REQUIREMENT = 50;
 
+    const GATWICK_ENDORSEMENT_NAME = 'Gatwick S1 (DEL/GND)';
+
     public function getGatwickGroundIndex()
     {
         if (! $this->account->fully_defined || ! $this->account->qualification_atc->isS1) {
@@ -57,7 +59,7 @@ class EndorsementController extends BaseController
 
         $egkkEndorsement = $this->account->endorsements()->where(function (Builder $builder) {
             $builder->whereHasMorph('endorsable', [PositionGroup::class], function (Builder $builder) {
-                $builder->where('name', 'EGKK_GND');
+                $builder->where('name', self::GATWICK_ENDORSEMENT_NAME);
             });
         })->first();
 

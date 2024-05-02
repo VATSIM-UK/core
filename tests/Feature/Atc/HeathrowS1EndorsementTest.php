@@ -26,7 +26,7 @@ class HeathrowS1EndorsementTest extends TestCase
         factory(Atc::class)->create([
             'account_id' => $account->id,
             'callsign' => 'EGKK_DEL',
-            'minutes_online' => 25 * 60,
+            'minutes_online' => 10 * 60,
             'facility_type' => Atc::TYPE_DEL,
         ]);
         factory(Atc::class)->create([
@@ -38,7 +38,7 @@ class HeathrowS1EndorsementTest extends TestCase
         factory(Atc::class)->create([
             'account_id' => $account->id,
             'callsign' => 'EGKK__GND',
-            'minutes_online' => 5 * 60,
+            'minutes_online' => 30 * 60,
             'facility_type' => Atc::TYPE_GND,
         ]);
 
@@ -186,7 +186,7 @@ class HeathrowS1EndorsementTest extends TestCase
 
     public function endorseForEgkk(Account $account, Carbon $from): void
     {
-        $positionGroup = PositionGroup::where('name', 'EGKK_GND')->firstOrFail();
+        $positionGroup = PositionGroup::where('name', 'Gatwick S1 (DEL/GND)')->firstOrFail();
         Account\Endorsement::create([
             'account_id' => $account->id,
             'endorsable_id' => $positionGroup->id,
