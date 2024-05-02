@@ -53,7 +53,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          coverage: pcov
           tools: composer:${{ matrix.composer }}
 
       - name: Setup Node
@@ -164,17 +163,8 @@ jobs:
       #
 
       # Run Tests
-      - name: Execute PHPUnit Tests With Coverage
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml
-
-      # Run Coverage Suite
-      - name: Upload Code Coverage
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-
-
+      - name: Execute PHPUnit Tests
+        run: vendor/bin/phpunit
 
   trigger-deploy:
     name: Trigger Deploy
