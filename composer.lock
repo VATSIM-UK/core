@@ -6373,27 +6373,27 @@
         },
         {
             "name": "ohdearapp/ohdear-php-sdk",
-            "version": "3.10.1",
+            "version": "3.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ohdearapp/ohdear-php-sdk.git",
-                "reference": "00e072f198942683bf2e230216d5c1ccc4679f44"
+                "reference": "f7874c6b7381271f5ecb8a6c05b8ba437f426921"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/00e072f198942683bf2e230216d5c1ccc4679f44",
-                "reference": "00e072f198942683bf2e230216d5c1ccc4679f44",
+                "url": "https://api.github.com/repos/ohdearapp/ohdear-php-sdk/zipball/f7874c6b7381271f5ecb8a6c05b8ba437f426921",
+                "reference": "f7874c6b7381271f5ecb8a6c05b8ba437f426921",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^6.5.8|^7.5",
+                "guzzlehttp/guzzle": "^6.5.8|^7.8.1",
                 "php": "^8.1"
             },
             "require-dev": {
-                "laravel/pint": "^1.13",
-                "pestphp/pest": "^2.8.3",
-                "psalm/plugin-laravel": "^2.5",
-                "vlucas/phpdotenv": "^5.5"
+                "laravel/pint": "^1.15.1",
+                "orchestra/testbench": "^8.0|^9.0",
+                "pestphp/pest": "^2.34.7",
+                "vlucas/phpdotenv": "^5.6"
             },
             "type": "library",
             "autoload": {
@@ -6423,9 +6423,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ohdearapp/ohdear-php-sdk/issues",
-                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.10.1"
+                "source": "https://github.com/ohdearapp/ohdear-php-sdk/tree/3.10.2"
             },
-            "time": "2024-02-03T10:01:00+00:00"
+            "time": "2024-04-08T08:09:34+00:00"
         },
         {
             "name": "openspout/openspout",
