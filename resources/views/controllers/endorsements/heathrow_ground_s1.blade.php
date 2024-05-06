@@ -15,7 +15,7 @@
                         to provide a good service to pilots and get the most from your controlling session.
                     </p>
                     <p>
-                        S1 rated controllers must hold a Heathrow Endorsement in order to control EGLL_GND and ELL_DEL positions.
+                        S1 rated controllers must hold a Heathrow Endorsement in order to control EGLL_GND and EGLL_DEL positions.
                     </p>
                     <h4>Step One</h4>
                     <p>
