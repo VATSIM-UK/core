@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Events\Training\EndorsementRequestCreated;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +18,10 @@ class EndorsementRequest extends Model
     const STATUS_APPROVED = 'approved';
 
     const STATUS_REJECTED = 'rejected';
+
+    protected $dispatchesEvents = [
+        'created' => EndorsementRequestCreated::class,
+    ];
 
     public function endorsable()
     {
