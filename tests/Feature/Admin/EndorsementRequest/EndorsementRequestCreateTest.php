@@ -7,7 +7,9 @@ use App\Filament\Resources\EndorsementRequestResource\Pages\ListEndorsementReque
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
-use Livewire;
+use App\Notifications\Mship\Endorsement\EndorsementRequestCreated;
+use Illuminate\Support\Facades\Notification;
+use Livewire\Livewire;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
 class EndorsementRequestCreateTest extends BaseAdminTestCase
@@ -88,5 +90,34 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
             'endorsable_type' => 'App\Models\Atc\Position',
             'notes' => 'This is a test note',
         ]);
+    }
+
+    public function test_sends_notifications_to_all_with_permission_when_request_created()
+    {
+        Notification::fake();
+
+        $accountRequestingFor = Account::factory()->create();
+        $positionGroup = PositionGroup::factory()->create();
+
+        $otherUserWithPermission = Account::factory()->create();
+        $otherUserWithPermission->givePermissionTo('endorsement-request.access');
+        $otherUserWithPermission->givePermissionTo('endorsement-request.approve.*');
+
+        $userWithoutPermission = Account::factory()->create();
+
+        $this->actingAsAdminUser(['endorsement-request.access', 'endorsement-request.create.*', 'endorsement-request.approve.*']);
+
+        Livewire::test(CreateEndorsementRequest::class)
+            ->set('data.endorsable_type', 'App\Models\Atc\PositionGroup')
+            ->fillForm([
+                'account_id' => $accountRequestingFor->id,
+                'endorsable_id' => $positionGroup->id,
+                'notes' => 'This is a test note',
+            ])
+            ->call('create');
+
+        Notification::assertSentTo($otherUserWithPermission, EndorsementRequestCreated::class);
+        Notification::assertSentTo($this->adminUser, EndorsementRequestCreated::class);
+        Notification::assertNotSentTo($userWithoutPermission, EndorsementRequestCreated::class);
     }
 }
