@@ -9,7 +9,7 @@
             @if (!$canReactivate)
                 <span>As it has been 18 months since your last ATC session you cannot automatically reactivate your roster membership.
                     <br>
-                    Please <a class="text-blue-500 hover:cursor-pointer" href="mailto:member-services@vatsim.uk">contact Member Services</a>.
+                    Please <a class="text-blue-500 hover:cursor-pointer" href="mailto:atc-training@vatsim.uk">contact ATC Training</a>.
                 </span>
             @else
                 <p>It has been a while! Our records show it has {{ $lastLogon }} since your last controlling session.</p>
