@@ -16,7 +16,8 @@ class EndorsementRequestCreated extends Notification implements ShouldQueue
      * Create a new notification instance.
      */
     public function __construct(private EndorsementRequest $endorsementRequest)
-    {}
+    {
+    }
 
     /**
      * Get the notification's delivery channels.
@@ -34,14 +35,14 @@ class EndorsementRequestCreated extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
-                    ->subject('Endorsement Request Created')
-                    ->view('emails.mship.endorsement.endorsement_request_created', [
-                        'recipient' => $notifiable,
-                        'requestIndexUrl' => url("/admin/endorsement-requests"),
-                        'endorsementRequest' => $this->endorsementRequest,
-                        'requester' => $this->endorsementRequest->requester,
-                        'account' => $this->endorsementRequest->account,
-                    ]);
+            ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
+            ->subject('Endorsement Request Created')
+            ->view('emails.mship.endorsement.endorsement_request_created', [
+                'recipient' => $notifiable,
+                'requestIndexUrl' => url('/admin/endorsement-requests'),
+                'endorsementRequest' => $this->endorsementRequest,
+                'requester' => $this->endorsementRequest->requester,
+                'account' => $this->endorsementRequest->account,
+            ]);
     }
 }

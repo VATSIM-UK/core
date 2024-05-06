@@ -6,8 +6,6 @@ use App\Events\Training\EndorsementRequestCreated as EndorsementRequestCreatedEv
 use App\Models\Mship\Account;
 use App\Notifications\Mship\Endorsement\EndorsementRequestCreated as EndorsementRequestCreatedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Notification;
 
 class NotifyEndorsementRequestCreated implements ShouldQueue
 {
@@ -18,6 +16,6 @@ class NotifyEndorsementRequestCreated implements ShouldQueue
     {
         $accountsToNotify = Account::permission('endorsement-request.approve.*')->get();
 
-        $accountsToNotify->each(fn(Account $account) => $account->notify(new EndorsementRequestCreatedNotification($event->getEndorsementRequest())));
+        $accountsToNotify->each(fn (Account $account) => $account->notify(new EndorsementRequestCreatedNotification($event->getEndorsementRequest())));
     }
 }
