@@ -19,10 +19,8 @@
                 </div>
                 <div class="panel-body">
                     <p>
-                        The operations department has responsibility for creating, updating and maintaining software,
-                        documentation and other resources to support the division. Broadly, most resources which fall
-                        outside of either the ATC or pilot training systems are the responsibility of the Operations
-                        Department.
+                        The Operations Department has responsibility for creating, updating and maintaining software,
+                        documentation and other resources to support the Division Air Traffic Controllers. 
                     </p>
 
                     <p>
@@ -30,12 +28,20 @@
                         Controller Pack and many items of documentation or parts of the website. In addition to this, we
                         negotiate new cross-border procedures via Letters of Agreements (LoAs), propose and implement
                         changes to ATC procedures domestically as well as support the other departments in the division
-                        in executing their jobs.
+                        in executing their jobs. 
                     </p>
 
                     <p>
-                        In addition, this department is responsible for preparing the Region report and currently is
-                        responsible for our Data related monitoring and compliance with relevant legislation.
+                        A large proportion of our work includes documenting the procedures for controllers into 'vMATS Part 2'
+                        (virtual Manual of Air Traffic Services) documents, or 'ACB' (Airfield Controller Briefs). These are 
+                        published for <a href="https://community.vatsim.uk/files/downloads/category/7-enroute-atc-documentation/">Enroute sectors</a> and 
+                        <a href="https://community.vatsim.uk/files/downloads/category/10-aerodrome-atc-documentation/"> Aerodromes</a> in
+                        our community download center. 
+                    </p>
+
+                    <p>
+                        Most updates are posted via our <a href="https://community.vatsim.uk/">Forum</a> and notified in
+                        Discord. We encourage you to subscribe to our forum channels to receive emails when procedures change.
                     </p>
                 </div>
             </div>
