@@ -73,7 +73,7 @@
                     </p>
                     <p>
                         To request a stand, make sure that you're logged into the VATSIM network and have filed your flightplan.
-                        Once you've done this, please fill in the <strong><a href="https://ukcp.vatsim.uk/admin/request-a-stand">stand request form</a></strong>.
+                        Once you've done this, please fill in the <strong><a href="https://ukcp.vatsim.uk/request-a-stand">stand request form</a></strong>.
                     </p>
                     <p>
                         Please note that stand requests <strong>are not a reservation</strong> and do not give you exclusive use of a stand.
