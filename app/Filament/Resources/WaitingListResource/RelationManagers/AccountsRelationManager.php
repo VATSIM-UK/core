@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\WaitingListResource\RelationManagers;
 
-use App\Models\Mship\Account;
-use App\Models\Roster;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
@@ -14,11 +12,10 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 
 /**
- * @property  WaitingList $ownerRecord
+ * @property WaitingList $ownerRecord
  */
 class AccountsRelationManager extends RelationManager
 {
@@ -47,8 +44,8 @@ class AccountsRelationManager extends RelationManager
                             ->label('Position')
                             ->content(function (WaitingListAccount $record) {
                                 return sprintf(
-                                    "%s of %d",
-                                    $this->ownerRecord->positionOf($record) ?? "-",
+                                    '%s of %d',
+                                    $this->ownerRecord->positionOf($record) ?? '-',
                                     $this->ownerRecord->waitingListAccounts->count()
                                 );
                             }),
@@ -88,7 +85,7 @@ class AccountsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(["account", "account.roster", "waitingList"]))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'account.roster', 'waitingList']))
             ->columns([
                 Tables\Columns\TextColumn::make('position')->getStateUsing(fn (WaitingListAccount $record) => $this->ownerRecord->positionOf($record) ?? '-')->label('Position'),
                 Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),

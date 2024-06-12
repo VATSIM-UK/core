@@ -37,6 +37,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $staff_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListAccount> $waitingListAccounts
  * @property-read int|null $waiting_list_accounts_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingList newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingList newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingList onlyTrashed()
@@ -53,6 +54,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingList withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingList withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class WaitingList extends Model
@@ -105,6 +107,7 @@ class WaitingList extends Model
      * Many WaitingLists can have many Accounts (pivot).
      *
      * @fixme remove when no longer used in filament stuff, use `waitingListAccounts` instead.
+     *
      * @deprecated using a pivot here creates a bunch of N+1 problems for filament
      */
     public function accounts(): BelongsToMany
@@ -125,8 +128,6 @@ class WaitingList extends Model
     /**
      * Instead of using the pivot table as a pivot, go through two sets of joins to get to the account
      * This is to avoid N+1 problems in filament tables
-     *
-     * @return HasMany
      */
     public function waitingListAccounts(): HasMany
     {
@@ -163,9 +164,6 @@ class WaitingList extends Model
 
     /**
      * Alternative to accountPosition for use with filament, beware N+1 issues
-     *
-     * @param WaitingListAccount $waitingListAccount
-     * @return int|null
      */
     public function positionOf(WaitingListAccount $waitingListAccount): ?int
     {

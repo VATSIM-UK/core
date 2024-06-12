@@ -175,6 +175,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $visit_transfer_referee_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList> $waitingLists
  * @property-read int|null $waiting_lists_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Account banned()
  * @method static \Database\Factories\Mship\AccountFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Account newModelQuery()
@@ -214,6 +215,7 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereVatsimTokenExpires($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Account withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
@@ -420,7 +422,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     public function roster(): HasOne
     {
-        return $this->hasOne(Roster::class, "account_id", "id");
+        return $this->hasOne(Roster::class, 'account_id', 'id');
     }
 
     public function onRoster(): bool
