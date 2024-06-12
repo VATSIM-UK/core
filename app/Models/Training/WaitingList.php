@@ -11,8 +11,50 @@ use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property string $department
+ * @property bool $home_members_only
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property string|null $cts_theory_exam_level
+ * @property array|null $feature_toggles
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Account> $accounts
+ * @property-read int|null $accounts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListFlag> $flags
+ * @property-read int|null $flags_count
+ * @property-read object $feature_toggles_formatted
+ * @property-read mixed $formatted_department
+ * @property-read bool $should_check_atc_hours
+ * @property-read bool $should_check_cts_theory_exam
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Account> $staff
+ * @property-read int|null $staff_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListAccount> $waitingListAccounts
+ * @property-read int|null $waiting_list_accounts_count
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList query()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereCtsTheoryExamLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereDepartment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereFeatureToggles($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereHomeMembersOnly($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList withoutTrashed()
+ * @mixin \Eloquent
+ */
 class WaitingList extends Model
 {
     use SoftDeletes;
@@ -61,6 +103,9 @@ class WaitingList extends Model
 
     /**
      * Many WaitingLists can have many Accounts (pivot).
+     *
+     * @fixme remove when no longer used in filament stuff, use `waitingListAccounts` instead.
+     * @deprecated using a pivot here creates a bunch of N+1 problems for filament
      */
     public function accounts(): BelongsToMany
     {
@@ -75,6 +120,21 @@ class WaitingList extends Model
                 'notes',
                 'created_at',
             ])->wherePivot('deleted_at', null)->orderByPivot('created_at');
+    }
+
+    /**
+     * Instead of using the pivot table as a pivot, go through two sets of joins to get to the account
+     * This is to avoid N+1 problems in filament tables
+     *
+     * @return HasMany
+     */
+    public function waitingListAccounts(): HasMany
+    {
+        return $this->hasMany(
+            WaitingListAccount::class,
+            'list_id',
+            'id'
+        )->where('deleted_at', null)->orderBy('created_at');
     }
 
     /**
@@ -97,6 +157,19 @@ class WaitingList extends Model
         $key = $this->accounts->search(function ($accountItem) use ($account) {
             return $accountItem->id == $account->id;
         });
+
+        return ($key !== false) ? $key + 1 : null;
+    }
+
+    /**
+     * Alternative to accountPosition for use with filament, beware N+1 issues
+     *
+     * @param WaitingListAccount $waitingListAccount
+     * @return int|null
+     */
+    public function positionOf(WaitingListAccount $waitingListAccount): ?int
+    {
+        $key = $this->waitingListAccounts->search(fn (WaitingListAccount $listAccount) => $waitingListAccount->id === $listAccount->id);
 
         return ($key !== false) ? $key + 1 : null;
     }

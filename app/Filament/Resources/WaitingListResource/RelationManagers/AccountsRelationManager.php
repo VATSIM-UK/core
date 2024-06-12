@@ -2,7 +2,10 @@
 
 namespace App\Filament\Resources\WaitingListResource\RelationManagers;
 
+use App\Models\Mship\Account;
 use App\Models\Roster;
+use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\WaitingListAccount;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,13 +14,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 
+/**
+ * @property  WaitingList $ownerRecord
+ */
 class AccountsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'accounts';
-
-    protected static ?string $recordTitleAttribute = 'id';
+    protected static string $relationship = 'waitingListAccounts';
 
     protected $listeners = ['refreshWaitingList' => '$refresh'];
 
@@ -30,8 +35,23 @@ class AccountsRelationManager extends RelationManager
                     ->schema([
                         CopyablePlaceholder::make('id')
                             ->label('CID')
-                            ->content(fn ($record) => $record->id)
+                            ->content(fn (WaitingListAccount $record) => $record->account_id)
                             ->iconOnly(),
+
+                        CopyablePlaceholder::make('name')
+                            ->label('Name')
+                            ->content(fn (WaitingListAccount $record) => $record->account->name)
+                            ->iconOnly(),
+
+                        Forms\Components\Placeholder::make('position')
+                            ->label('Position')
+                            ->content(function (WaitingListAccount $record) {
+                                return sprintf(
+                                    "%s of %d",
+                                    $this->ownerRecord->positionOf($record) ?? "-",
+                                    $this->ownerRecord->waitingListAccounts->count()
+                                );
+                            }),
 
                         Forms\Components\Textarea::make('notes')
                             ->label('Notes')
@@ -42,11 +62,11 @@ class AccountsRelationManager extends RelationManager
 
                 Forms\Components\Fieldset::make('cts_theory_exam')
                     ->label('CTS Theory Exam')
-                    ->schema(function ($record) {
+                    ->schema(function (WaitingListAccount $record) {
                         return [
                             Forms\Components\Toggle::make('cts_theory_exam')
                                 ->label('Passed')
-                                ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $record->pivot->theory_exam_passed))
+                                ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $record->theory_exam_passed))
                                 ->disabled(),
                         ];
                     })
@@ -54,41 +74,42 @@ class AccountsRelationManager extends RelationManager
 
                 Forms\Components\Fieldset::make('manual_flags')
                     ->label('Manual Flags')
-                    ->schema(function ($record) {
-                        return $record->pivot->flags->filter(fn ($flag) => $flag->position_group_id == null)->map(function ($flag) {
+                    ->schema(function (WaitingListAccount $record) {
+                        return $record->flags->filter(fn ($flag) => $flag->position_group_id == null)->map(function ($flag) {
                             return Forms\Components\Toggle::make('flags.'.$flag->id)
                                 ->label($flag->name)
                                 ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $flag->pivot->value));
                         })->all();
                     })
-                    ->visible(fn ($record) => $record->pivot->flags->isNotEmpty()),
+                    ->visible(fn (WaitingListAccount $record) => $record->flags->isNotEmpty()),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(["account", "account.roster", "waitingList"]))
             ->columns([
-                Tables\Columns\TextColumn::make('pivot.position')->getStateUsing(fn ($record) => $record->pivot->position ?? '-')->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('pivot_created_at', $direction))->label('Position'),
+                Tables\Columns\TextColumn::make('position')->getStateUsing(fn (WaitingListAccount $record) => $this->ownerRecord->positionOf($record) ?? '-')->label('Position'),
                 Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
-                Tables\Columns\TextColumn::make('name')->label('Name')->searchable(['name_first', 'name_last']),
-                Tables\Columns\IconColumn::make('on_roster')->boolean()->label('On roster')->getStateUsing(fn ($record) => Roster::where('account_id', $record->id)->exists()),
-                Tables\Columns\TextColumn::make('pivot.created_at')->label('Added on')->dateTime('d/m/Y'),
-                Tables\Columns\IconColumn::make('pivot.cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn ($record) => $record->pivot->theory_exam_passed)->visible(fn ($record) => $record->waitingList->feature_toggles['check_cts_theory_exam'] ?? true),
+                Tables\Columns\TextColumn::make('account.name')->label('Name')->searchable(['name_first', 'name_last']),
+                Tables\Columns\IconColumn::make('on_roster')->boolean()->label('On Roster')->getStateUsing(fn (WaitingListAccount $record) => $record->account->onRoster()),
+                Tables\Columns\TextColumn::make('created_at')->label('Added On')->dateTime('d/m/Y H:i:s'),
+                Tables\Columns\IconColumn::make('cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn (WaitingListAccount $record) => $record->theory_exam_passed)->visible(fn ($record) => $record->waitingList->feature_toggles['check_cts_theory_exam'] ?? true),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->using(function ($record, $data, $livewire) {
-                        $record->pivot->update([
+                    ->using(function (WaitingListAccount $record, $data, $livewire) {
+                        $record->update([
                             'notes' => $data['notes'],
                         ]);
 
                         $flagsById = collect(Arr::get($data, 'flags', []));
                         // only update manual flags
-                        $flagsToUpdate = $record->pivot->flags->filter(fn ($flag) => $flag->position_group_id == null);
+                        $flagsToUpdate = $record->flags->filter(fn ($flag) => $flag->position_group_id == null);
                         $flagsToUpdate->each(fn ($flag) => $flagsById->get($flag->id) ? $flag->pivot->mark() : $flag->pivot->unMark());
 
-                        $record->pivot->flags()->sync(
+                        $record->flags()->sync(
                             $flagsById->mapWithKeys(fn ($value, $key) => [$key => ['marked_at' => $value ? now() : null]])->all(),
                         );
 
@@ -96,14 +117,14 @@ class AccountsRelationManager extends RelationManager
 
                         return $record;
                     })
-                    ->visible(fn ($record) => $this->can('updateAccounts', $record->pivot->waitingList)),
+                    ->visible(fn ($record) => $this->can('updateAccounts', $record->waitingList)),
 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\DetachAction::make()
                     ->label('Remove')
-                    ->using(fn ($record, $livewire) => $livewire->ownerRecord->removeFromWaitingList($record))
+                    ->using(fn ($record, $livewire) => $livewire->ownerRecord->removeFromWaitingList($record->account))
                     ->successNotificationTitle('User removed from waiting list'),
-            ])->defaultSort('pivot_created_at', 'asc')->persistSearchInSession()->defaultPaginationPageOption(25);
+            ])->defaultSort('created_at', 'asc')->persistSearchInSession()->defaultPaginationPageOption(25);
     }
 
     public function isReadOnly(): bool

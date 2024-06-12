@@ -11,8 +11,11 @@ use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use HTML;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
@@ -62,6 +65,10 @@ class AppServiceProvider extends ServiceProvider
         Cookies::essentials()
             ->session()
             ->csrf();
+
+        DB::listen(function (QueryExecuted $query) {
+            Log::debug($query->sql, $query->bindings);
+        });
     }
 
     /**
