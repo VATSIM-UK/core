@@ -8,10 +8,11 @@ are aware of the rules of this validation.
 
 <p>
 This validation allows you to control <strong>{{ $endorsement_callsign }}</strong> solo, without a mentor present from now until {{ $endorsement_expiry }}.
-When logging onto a position, you must include "Solo Endorsement"; in your controller text ATIS.
+When logging onto a position, you must include "Solo Endorsement"; in your controller information.
 The purpose of this validation is to allow you to practice prior to your exam.
 Please take the opportunity to log on at times when you are comfortable with the traffic levels to gain this experience.
 Should you end up in situations you are unable to cope with, seek help and consider logging off until you can receive help from a mentor.
+The maximum total time a Solo Endorsement can be granted to a member on a single position is 90 days, so their use should be maximised.
 </p>
 
 <h2>Exams</h2>
