@@ -2,9 +2,12 @@
 
 namespace App\Observers;
 
+use App\Events\Mship\Endorsement\PositionEndorsementAdded;
 use App\Events\Mship\Endorsement\TierEndorsementAdded;
+use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\Endorsement;
+use App\Models\Mship\State;
 
 class EndorsementObserver
 {
@@ -19,6 +22,13 @@ class EndorsementObserver
             event(new TierEndorsementAdded($endorsement, $endorsement->account));
 
             return;
+        }
+
+        // Position endorsements can be granted to visitors, so this is targeting
+        // specifically home members
+        $accountIsHomeMember = $endorsement->account->hasState(State::findByCode('DIVISION'));
+        if ($endorsement->endorsable_type == Position::class && $accountIsHomeMember) {
+            event(new PositionEndorsementAdded($endorsement, $endorsement->account));
         }
     }
 
