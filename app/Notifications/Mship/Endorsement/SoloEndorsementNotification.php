@@ -4,7 +4,6 @@ namespace App\Notifications\Mship\Endorsement;
 
 use App\Models\Mship\Account\Endorsement;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
