@@ -202,6 +202,7 @@ class WaitingList extends Model
 
     /**
      * Add an Account to a waiting list.
+     *
      * @fixme don't use pivot here, add the WaitingListAccount explicitly
      */
     public function addToWaitingList(Account $account, Account $staffAccount, ?Carbon $createdAt = null)

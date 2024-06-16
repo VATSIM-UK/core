@@ -121,9 +121,9 @@ class WaitingListTest extends TestCase
 
         $this->waitingList = $this->waitingList->fresh();
 
-        $findWaitingListAccount = function(Account $account) {
+        $findWaitingListAccount = function (Account $account) {
             return WaitingList\WaitingListAccount::whereAccountId($account->id)
-                ->where("list_id", $this->waitingList->id)
+                ->where('list_id', $this->waitingList->id)
                 ->firstOrFail();
         };
 
