@@ -65,10 +65,6 @@ class AppServiceProvider extends ServiceProvider
         Cookies::essentials()
             ->session()
             ->csrf();
-
-        DB::listen(function (QueryExecuted $query) {
-            Log::debug($query->sql, $query->bindings);
-        });
     }
 
     /**
