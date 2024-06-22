@@ -57,7 +57,7 @@
                     </p>
                     <p>
                         To enable this feature, please visit
-                        the <strong><a href="https://ukcp.vatsim.uk/admin/my-preferences">UK Controller Plugin preferences page</a></strong> and select your preffered options.
+                        the <strong><a href="https://ukcp.vatsim.uk/my-preferences">UK Controller Plugin preferences page</a></strong> and select your preffered options.
                     </p>
                 </div>
             </div>
