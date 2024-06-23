@@ -27,7 +27,7 @@ class EndorsementObserver
         // Position endorsements can be granted to visitors, so this is targeting
         // specifically home members
         $accountIsHomeMember = $endorsement->account->hasState(State::findByCode('DIVISION'));
-        if ($endorsement->endorsable_type == Position::class && $accountIsHomeMember) {
+        if ($endorsement->endorsable_type == Position::class && $accountIsHomeMember && $endorsement->expires()) {
             event(new PositionEndorsementAdded($endorsement, $endorsement->account));
         }
     }
