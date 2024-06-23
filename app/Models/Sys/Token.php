@@ -159,7 +159,5 @@ class Token extends Model
         return array_get($this->attributes, 'code', 'NoValue');
     }
 
-    public function getDisplayValueAttribute()
-    {
-    }
+    public function getDisplayValueAttribute() {}
 }

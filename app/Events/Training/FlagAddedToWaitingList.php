@@ -16,9 +16,7 @@ class FlagAddedToWaitingList
      *
      * @return void
      */
-    public function __construct(private WaitingList $waitingList)
-    {
-    }
+    public function __construct(private WaitingList $waitingList) {}
 
     public function getWaitingList(): WaitingList
     {

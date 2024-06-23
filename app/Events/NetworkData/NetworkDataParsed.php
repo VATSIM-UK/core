@@ -14,7 +14,5 @@ class NetworkDataParsed extends Event
      *
      * There's little to construct at the minute as it's simply a notification!
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 }

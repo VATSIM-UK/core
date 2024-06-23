@@ -15,9 +15,7 @@ class EndorsementRequestCreated extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(private EndorsementRequest $endorsementRequest)
-    {
-    }
+    public function __construct(private EndorsementRequest $endorsementRequest) {}
 
     /**
      * Get the notification's delivery channels.

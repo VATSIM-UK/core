@@ -14,9 +14,7 @@ class EndorsementRequestCreated
     /**
      * Create a new event instance.
      */
-    public function __construct(private EndorsementRequest $endorsementRequest)
-    {
-    }
+    public function __construct(private EndorsementRequest $endorsementRequest) {}
 
     public function getEndorsementRequest(): EndorsementRequest
     {

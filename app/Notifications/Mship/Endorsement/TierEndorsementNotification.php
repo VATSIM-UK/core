@@ -14,9 +14,7 @@ class TierEndorsementNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(public Endorsement $endorsement)
-    {
-    }
+    public function __construct(public Endorsement $endorsement) {}
 
     /**
      * Get the notification's delivery channels.
