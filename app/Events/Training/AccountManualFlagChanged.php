@@ -21,8 +21,7 @@ class AccountManualFlagChanged implements AccountCentricEvent
     public function __construct(
         private Account $account,
         private WaitingList $waitingList,
-    ) {
-    }
+    ) {}
 
     public function getAccount(): Account
     {

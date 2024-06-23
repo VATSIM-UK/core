@@ -10,7 +10,7 @@ class IndividualWaitingListOverview extends BaseWidget
 {
     public ?Model $record = null;
 
-    protected static ?string $pollingInterval = '1m';
+    protected static ?string $pollingInterval = null;
 
     protected function getStats(): array
     {

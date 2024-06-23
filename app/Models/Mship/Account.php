@@ -26,6 +26,7 @@ use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Concerns\HasWaitingLists;
 use App\Models\Mship\Note\Type;
+use App\Models\Roster;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -33,6 +34,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
@@ -44,50 +46,62 @@ use Watson\Rememberable\Rememberable;
  * App\Models\Mship\Account.
  *
  * @property int $id
- * @property int|null $discord_id
- * @property int|null $discord_access_token
- * @property int|null $discord_refresh_token
  * @property string $name_first
  * @property string $name_last
  * @property string|null $nickname
  * @property string|null $email
  * @property string|null $password
- * @property \Carbon\Carbon|null $password_set_at
- * @property \Carbon\Carbon|null $password_expires_at
- * @property \Carbon\Carbon|null $last_login
+ * @property \Illuminate\Support\Carbon|null $password_set_at
+ * @property \Illuminate\Support\Carbon|null $password_expires_at
+ * @property \Illuminate\Support\Carbon|null $last_login
  * @property string $last_login_ip
  * @property string|null $remember_token
+ * @property int|null $discord_id
+ * @property string|null $discord_access_token
+ * @property string|null $discord_refresh_token
+ * @property string|null $vatsim_access_token
+ * @property string|null $vatsim_refresh_token
+ * @property int|null $vatsim_token_expires
  * @property string|null $gender
  * @property string|null $experience
  * @property int $age
  * @property bool $inactive
  * @property int $is_invisible
  * @property int $debug
- * @property \Carbon\Carbon|null $joined_at
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \Carbon\Carbon|null $cert_checked_at
- * @property \Carbon\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Activity[] $activityRecent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bans
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bansAsInstigator
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Feedback[] $feedback
+ * @property \Illuminate\Support\Carbon|null $joined_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $cert_checked_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Activity> $activityRecent
+ * @property-read int|null $activity_recent_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Account\Ban> $bans
+ * @property-read int|null $bans_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Account\Ban> $bansAsInstigator
+ * @property-read int|null $bans_as_instigator_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\Client> $clients
+ * @property-read int|null $clients_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Data\Change> $dataChanges
+ * @property-read int|null $data_changes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Account\Endorsement> $endorsements
+ * @property-read int|null $endorsements_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Feedback\Feedback> $feedback
+ * @property-read int|null $feedback_count
  * @property-read mixed $active_qualifications
+ * @property-read mixed $discord_name
+ * @property-read \App\Models\Mship\RestCord/Model/User/User $discord_user
  * @property-read mixed $full_name
+ * @property-read mixed $fully_defined
  * @property-read mixed $has_unread_important_notifications
  * @property-read mixed $has_unread_must_acknowledge_notifications
  * @property-read mixed $has_unread_notifications
  * @property-read mixed $is_banned
  * @property mixed $is_inactive
- *
- * @propernty-read mixed $is_network_banned
- *
+ * @property-read mixed $is_network_banned
  * @property-read bool $is_on_network
  * @property-read mixed $is_system_banned
  * @property-read bool $mandatory_password
- * @property-read mixed|string $name
+ * @property-read mixed|string $name_preferred
  * @property-read mixed $network_ban
  * @property-read mixed $new_ts_registration
  * @property-read int $password_lifetime
@@ -95,10 +109,13 @@ use Watson\Rememberable\Rememberable;
  * @property-read mixed $primary_permanent_state
  * @property-read mixed $primary_state
  * @property-read mixed $qualification_atc
+ * @property-read mixed $qualification_pilot
+ * @property-read mixed $qualification_pilot_military
  * @property-read mixed $qualifications_admin
  * @property-read mixed $qualifications_atc
  * @property-read mixed $qualifications_atc_training
  * @property-read mixed $qualifications_pilot
+ * @property-read mixed $qualifications_pilot_military
  * @property-read mixed $qualifications_pilot_string
  * @property-read mixed $qualifications_pilot_training
  * @property-read string $real_name
@@ -112,54 +129,92 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Support\Collection $verified_secondary_emails
  * @property-read mixed $visit_transfer_current
  * @property-read mixed $visit_transfer_referee_pending
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Atc[] $networkDataAtc
- * @property-read \App\Models\NetworkData\Atc $networkDataAtcCurrent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Pilot[] $networkDataPilot
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $noteWriter
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $oAuthClients
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $oAuthTokens
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\Pirep[] $pireps
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Qualification[] $qualifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Notification[] $readSystemNotifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Role[] $roles
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Email[] $secondaryEmails
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\State[] $states
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\State[] $statesHistory
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Registration[] $teamspeakRegistrations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $visitTransferApplications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $visitTransferReferee
+ * @property-read mixed $has_controller_rating
+ * @property-read mixed $name
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NetworkData\Atc> $networkDataAtc
+ * @property-read int|null $network_data_atc_count
+ * @property-read \App\Models\NetworkData\Atc|null $networkDataAtcCurrent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NetworkData\Pilot> $networkDataPilot
+ * @property-read int|null $network_data_pilot_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, AccountNoteData> $noteWriter
+ * @property-read int|null $note_writer_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, AccountNoteData> $notes
+ * @property-read int|null $notes_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\Client> $oAuthClients
+ * @property-read int|null $o_auth_clients_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\Token> $oAuthTokens
+ * @property-read int|null $o_auth_tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Smartcars\Pirep> $pireps
+ * @property-read int|null $pireps_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Qualification> $qualifications
+ * @property-read int|null $qualifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Notification> $readSystemNotifications
+ * @property-read int|null $read_system_notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read Roster|null $roster
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Account\Email> $secondaryEmails
+ * @property-read int|null $secondary_emails_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sso\Email> $ssoEmails
+ * @property-read int|null $sso_emails_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\State> $states
+ * @property-read int|null $states_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\State> $statesHistory
+ * @property-read int|null $states_history_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TeamSpeak\Registration> $teamspeakRegistrations
+ * @property-read int|null $teamspeak_registrations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Token> $tokens
+ * @property-read int|null $tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Application> $visitTransferApplications
+ * @property-read int|null $visit_transfer_applications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Reference> $visitTransferReferee
+ * @property-read int|null $visit_transfer_referee_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList> $waitingLists
+ * @property-read int|null $waiting_lists_count
  *
- * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account onlyTrashed()
- * @method static bool|null restore()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereAge($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereCertCheckedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereDebug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereExperience($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereGender($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereInactive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereIsInvisible($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereJoinedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereLastLogin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereLastLoginIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereNameFirst($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereNameLast($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereNickname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account wherePasswordExpiresAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account wherePasswordSetAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withTrashed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account banned()
+ * @method static \Database\Factories\Mship\AccountFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Account newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account notBanned()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account permission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account role($roles, $guard = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereAge($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereCertCheckedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereDebug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereDiscordAccessToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereDiscordId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereDiscordRefreshToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereExperience($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereGender($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereInactive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereIsInvisible($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereJoinedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereLastLogin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereLastLoginIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereNameFirst($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereNameLast($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereNickname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account wherePasswordExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account wherePasswordSetAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereVatsimAccessToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereVatsimRefreshToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereVatsimTokenExpires($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account withoutTrashed()
  *
  * @mixin \Eloquent
  */
@@ -363,6 +418,16 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         }
 
         return $note;
+    }
+
+    public function roster(): HasOne
+    {
+        return $this->hasOne(Roster::class, 'account_id', 'id');
+    }
+
+    public function onRoster(): bool
+    {
+        return $this->roster?->account_id == $this->id;
     }
 
     public function getIsInactiveAttribute()

@@ -45,11 +45,7 @@ class PirepPolicy
         // TODO: Implement forceDelete() method.
     }
 
-    public function view(Account $account)
-    {
-    }
+    public function view(Account $account) {}
 
-    public function viewAny(Account $account)
-    {
-    }
+    public function viewAny(Account $account) {}
 }

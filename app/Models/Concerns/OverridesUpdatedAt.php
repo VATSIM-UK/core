@@ -12,7 +12,5 @@ trait OverridesUpdatedAt
         // do nothing
     }
 
-    public function getUpdatedAtColumn()
-    {
-    }
+    public function getUpdatedAtColumn() {}
 }
