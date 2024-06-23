@@ -9,8 +9,7 @@ class CheckWaitingListFlags
 {
     public function __construct(
         private Account $account
-    ) {
-    }
+    ) {}
 
     /**
      * Check the waiting list flags defined in the waiting list

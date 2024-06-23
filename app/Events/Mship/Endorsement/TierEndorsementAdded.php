@@ -15,9 +15,7 @@ class TierEndorsementAdded
     /**
      * Create a new event instance.
      */
-    public function __construct(private Endorsement $endorsement, private Account $account)
-    {
-    }
+    public function __construct(private Endorsement $endorsement, private Account $account) {}
 
     public function getAccount()
     {

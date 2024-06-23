@@ -99,8 +99,7 @@ class CreateForeignKeys extends Migration
         });
 
         DB::statement('delete from mship_oauth_emails where sso_account_id not in (select id from oauth_clients)');
-        Schema::table('mship_oauth_emails', function (Blueprint $table) {
-        });
+        Schema::table('mship_oauth_emails', function (Blueprint $table) {});
 
         Schema::table('mship_permission_role', function (Blueprint $table) {
             $table->foreign('permission_id')->references('id')->on('mship_permission')->onDelete('cascade');

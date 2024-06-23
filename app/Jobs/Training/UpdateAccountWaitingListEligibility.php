@@ -20,9 +20,7 @@ class UpdateAccountWaitingListEligibility implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public Account $account)
-    {
-    }
+    public function __construct(public Account $account) {}
 
     /**
      * Execute the job.
