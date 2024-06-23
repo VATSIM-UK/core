@@ -737,16 +737,16 @@
         },
         {
             "name": "bugsnag/bugsnag-laravel",
-            "version": "v2.27.0",
+            "version": "v2.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bugsnag/bugsnag-laravel.git",
-                "reference": "b1d31a4ed2433cf7a067a13fe0d68d0f6d9d3558"
+                "reference": "71bd75b022b32e45bf26712fb643e4f50182ff5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bugsnag/bugsnag-laravel/zipball/b1d31a4ed2433cf7a067a13fe0d68d0f6d9d3558",
-                "reference": "b1d31a4ed2433cf7a067a13fe0d68d0f6d9d3558",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-laravel/zipball/71bd75b022b32e45bf26712fb643e4f50182ff5a",
+                "reference": "71bd75b022b32e45bf26712fb643e4f50182ff5a",
                 "shasum": ""
             },
             "require": {
@@ -794,9 +794,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bugsnag/bugsnag-laravel/issues",
-                "source": "https://github.com/bugsnag/bugsnag-laravel/tree/v2.27.0"
+                "source": "https://github.com/bugsnag/bugsnag-laravel/tree/v2.28.0"
             },
-            "time": "2024-03-13T09:45:57+00:00"
+            "time": "2024-06-03T09:01:13+00:00"
         },
         {
             "name": "bugsnag/bugsnag-psr-logger",
