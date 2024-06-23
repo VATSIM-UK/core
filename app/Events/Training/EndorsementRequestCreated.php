@@ -7,29 +7,17 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class EndorsementRequestApproved
+class EndorsementRequestCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        private EndorsementRequest $endorsementRequest,
-        private ?int $days
-    ) {}
+    public function __construct(private EndorsementRequest $endorsementRequest) {}
 
     public function getEndorsementRequest(): EndorsementRequest
     {
-        return $this->endorsementRequest;
-    }
-
-    public function getExpiryDate()
-    {
-        if ($this->days === null) {
-            return null;
-        }
-
-        return now()->addDays($this->days)->endOfDay();
+        return $this->endorsementRequest->load(['requester', 'endorsable', 'account']);
     }
 }

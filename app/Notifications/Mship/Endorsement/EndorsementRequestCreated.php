@@ -2,19 +2,20 @@
 
 namespace App\Notifications\Mship\Endorsement;
 
-use App\Models\Mship\Account\Endorsement;
+use App\Models\Mship\Account\EndorsementRequest;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TierEndorsementNotification extends Notification
+class EndorsementRequestCreated extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public Endorsement $endorsement) {}
+    public function __construct(private EndorsementRequest $endorsementRequest) {}
 
     /**
      * Get the notification's delivery channels.
@@ -31,11 +32,15 @@ class TierEndorsementNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $positions = $this->endorsement->load('endorsable')->endorsable->positions->map(fn ($position) => "$position->name ($position->description)");
-
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
-            ->subject('Tier Endorsement Granted')
-            ->view('emails.mship.endorsement.tier_endorsement_granted', ['recipient' => $notifiable, 'positions' => $positions, 'endorsement_name' => $this->endorsement->endorsable->name]);
+            ->subject('Endorsement Request Created')
+            ->view('emails.mship.endorsement.endorsement_request_created', [
+                'recipient' => $notifiable,
+                'requestIndexUrl' => url('/admin/endorsement-requests'),
+                'endorsementRequest' => $this->endorsementRequest,
+                'requester' => $this->endorsementRequest->requester,
+                'account' => $this->endorsementRequest->account,
+            ]);
     }
 }

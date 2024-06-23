@@ -8,22 +8,25 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TierEndorsementAdded
+class PositionEndorsementAdded
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(private Endorsement $endorsement, private Account $account) {}
+    public function __construct(private Endorsement $endorsement, private Account $account)
+    {
+        //
+    }
 
     public function getAccount()
     {
-        return $this->account;
+        return $this->account->load('states');
     }
 
     public function getEndorsement()
     {
-        return $this->endorsement;
+        return $this->endorsement->load('endorsable');
     }
 }

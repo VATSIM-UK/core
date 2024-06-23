@@ -16,9 +16,7 @@ class AccountAddedToWaitingList implements AccountCentricEvent
     /**
      * Create a new event instance.
      */
-    public function __construct(public Account $account, public WaitingList $waitingList, public Account $staffAccount)
-    {
-    }
+    public function __construct(public Account $account, public WaitingList $waitingList, public Account $staffAccount) {}
 
     public function getAccount(): Account
     {

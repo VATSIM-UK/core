@@ -2,7 +2,10 @@
 
 namespace Tests\Unit\Account;
 
+use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
+use App\Models\Roster;
 use App\Notifications\Mship\EmailVerification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -551,5 +554,24 @@ class AccountModelTest extends TestCase
         $this->user->save();
 
         $this->assertTrue($this->user->is_inactive);
+    }
+
+    /** @test */
+    public function itDetectsOnRoster()
+    {
+        $account = Account::factory()->create();
+        $divisionState = State::findByCode('DIVISION')->firstOrFail();
+        $account->addState($divisionState, 'EUR', 'GBR');
+        $r1 = Roster::create(['account_id' => $account->id])->save();
+        $r = Roster::firstOrFail();
+        $account->refresh();
+
+        $this->assertTrue($account->onRoster());
+    }
+
+    /** @test */
+    public function itDetectsNotOnRoster()
+    {
+        $this->assertFalse($this->user->onRoster());
     }
 }

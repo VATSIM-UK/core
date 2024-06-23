@@ -13,7 +13,7 @@ class WaitingListTest extends TestCase
 {
     use DatabaseTransactions, WaitingListTestHelper;
 
-    private $waitingList;
+    private WaitingList $waitingList;
 
     private $staffUser;
 
@@ -95,6 +95,41 @@ class WaitingListTest extends TestCase
         $this->assertEquals(1, $this->waitingList->accountPosition($accounts[0])); // First user is oldest, should be number 1
         $this->assertEquals(3, $this->waitingList->accountPosition($accounts[1])); // Second user is newest, should be number 3
         $this->assertEquals(2, $this->waitingList->accountPosition($accounts[2]));
+    }
+
+    /**
+     * @test
+     * replacing accountPosition with positionOf
+     */
+    public function itCanFindPositionOfAccount()
+    {
+        $accounts_added_at = [Carbon::now()->subDays(10), Carbon::now()->subDays(1), Carbon::now()->subDays(4)];
+        $accounts = [];
+        foreach ($accounts_added_at as $date) {
+            $accounts[] = Account::factory()->create();
+        }
+
+        $this->waitingList->department = WaitingList::PILOT_DEPARTMENT;
+        $this->waitingList->save();
+        $flag = $this->waitingList->addFlag(factory(WaitingListFlag::class)->create(['default_value' => false]));
+
+        // Add to list
+        foreach ($accounts as $i => $account) {
+            $this->waitingList->addToWaitingList($account, $this->privacc, $accounts_added_at[$i]);
+            WaitingList\WaitingListAccount::where('account_id', $account->id)->first()->markFlag($flag);
+        }
+
+        $this->waitingList = $this->waitingList->fresh();
+
+        $findWaitingListAccount = function (Account $account) {
+            return WaitingList\WaitingListAccount::whereAccountId($account->id)
+                ->where('list_id', $this->waitingList->id)
+                ->firstOrFail();
+        };
+
+        $this->assertEquals(1, $this->waitingList->positionOf($findWaitingListAccount($accounts[0]))); // First user is oldest, should be number 1
+        $this->assertEquals(3, $this->waitingList->positionOf($findWaitingListAccount($accounts[1]))); // Second user is newest, should be number 3
+        $this->assertEquals(2, $this->waitingList->positionOf($findWaitingListAccount($accounts[2])));
     }
 
     /** @test * */
