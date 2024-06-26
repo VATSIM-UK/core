@@ -110,13 +110,13 @@ class DiscordRoleRule extends Model
         if ($this->endorsable instanceof PositionGroup) {
             return Roster::where('account_id', $account->getKey())->exists()
                 && $account
-                ->endorsements()
-                ->active()
-                ->whereHasMorph('endorsable',
-                    PositionGroup::class,
-                    fn ($query) => $query->where('id', $this->endorsable->getKey())
-                )
-                ->exists();
+                    ->endorsements()
+                    ->active()
+                    ->whereHasMorph('endorsable',
+                        PositionGroup::class,
+                        fn ($query) => $query->where('id', $this->endorsable->getKey())
+                    )
+                    ->exists();
         }
 
         return false;
