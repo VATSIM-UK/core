@@ -138,6 +138,11 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                     ->trueColor('danger')
                     ->tooltip(fn ($record) => $record->is_banned ? ($record->is_network_banned ? 'Banned on VATSIM.NET' : ('Banned locally for another '.now()->diffForHumans($record->system_ban->period_finish, CarbonInterface::DIFF_ABSOLUTE))) : null),
             ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('state')
+                    ->relationship('states', 'name')
+                    ->label('State'),
+            ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),

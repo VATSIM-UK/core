@@ -173,9 +173,19 @@ class Roster extends Model
         }
 
         // If they are visiting or transferring, they need to have been
-        // specifically given permission to control up to their rating
+        // specifically given permission to control up to their rating or
+        // for this specific position.
         if ($this->account->hasState('VISITING') || $this->account->hasState('TRANSFERRING')) {
-            return $this->account
+            $endorsedForPosition = $this->account
+                ->endorsements()
+                ->active()
+                ->whereHasMorph('endorsable',
+                    Position::class,
+                    fn ($query) => $query->where('id', $position->id)
+                )
+                ->exists();
+
+            $endorsedToRating = $this->account
                 ->endorsements()
                 ->active()
                 ->whereHasMorph('endorsable',
@@ -184,6 +194,8 @@ class Roster extends Model
                 ->get()
                 ->sortByDesc('endorsable.vatsim')
                 ->first()?->endorsable?->vatsim >= $position->getMinimumVatsimQualificationAttribute();
+
+            return $endorsedForPosition || $endorsedToRating;
         }
 
         // If they are in a region or international, they cannot control

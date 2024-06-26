@@ -34,7 +34,7 @@
                         You are currently <span class="font-bold">active</span> on the VATSIM UK roster and can control any positions
                         <a class="text-blue-500 hover:cursor-pointer" href="{{ route('site.roster.show', ['account' => auth()->user()]) }}">listed on your roster page</a>.
                     </span>
-                @elseif(auth()->user()->hasState('DIVISION'))
+                @elseif(auth()->user()->hasState('DIVISION') && auth()->user()->has_controller_rating)
                     <span>
                         You are currently <span class="font-bold">inactive</span> on the VATSIM UK roster, and cannot control any UK positions until you
                         <a class="text-blue-500 hover:cursor-pointer" href="{{ route('site.roster.renew') }}">renew your currency</a>.
@@ -48,7 +48,7 @@
                 @endif
             </div>
             <div class="flex flex-col">
-                @if(!$roster && auth()->user()->hasState('DIVISION'))
+                @if(!$roster && auth()->user()->hasState('DIVISION') && auth()->user()->has_controller_rating)
                     <a wire:navigate href="{{ route('site.roster.renew') }}"
                        class="text-bold text-blue-500 hover:cursor-pointer">Renew my currency</a>
                 @endif
