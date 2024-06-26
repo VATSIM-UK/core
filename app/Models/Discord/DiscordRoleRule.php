@@ -119,6 +119,6 @@ class DiscordRoleRule extends Model
                     ->exists();
         }
 
-        return false;
+        return true;
     }
 }
