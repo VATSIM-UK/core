@@ -45,6 +45,7 @@ class Kernel extends ConsoleKernel
             ->doNotMonitor();
 
         $schedule->command('visit-transfer:cleanup')
+            ->doNotMonitor()
             ->everyTenMinutes();
 
         // === By Hour === //
