@@ -56,7 +56,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('discord-sync', function (object $job) {
-            return Limit::perHour(1)->by($job->getAccountId());
+            return Limit::perMinute(100)
+                ->perHour(1000)
+                ->by('discord-api-call');
         });
 
         Cookies::essentials()

@@ -171,7 +171,7 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['high', 'default'],
+                'queue' => ['high', 'default', 'discord'],
                 'balance' => 'auto',
                 'min-processes' => 2,
                 'max-processes' => 14,
@@ -184,7 +184,7 @@ return [
         'local' => [
             '1' => [
                 'connection' => 'redis',
-                'queue' => ['high', 'default'],
+                'queue' => ['high', 'default', 'discord'],
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 10,
