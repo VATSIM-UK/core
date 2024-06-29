@@ -8,6 +8,7 @@ use App\Models\Atc\PositionGroupPosition;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Qualification;
+use App\Notifications\Roster\RemovedFromRoster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
@@ -55,8 +56,6 @@ class Roster extends Model
 
     public function remove()
     {
-        // Notify that they were removed (database and email)
-        // Remove from waiting lists too
         DB::transaction(function () {
             RosterHistory::create([
                 'account_id' => $this->account_id,
@@ -66,6 +65,8 @@ class Roster extends Model
             ]);
 
             $this->delete();
+
+            $this->account->notify(new RemovedFromRoster());
         });
     }
 
