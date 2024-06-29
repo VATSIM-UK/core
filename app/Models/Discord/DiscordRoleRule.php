@@ -2,11 +2,14 @@
 
 namespace App\Models\Discord;
 
+use App\Models\Atc\Position;
+use App\Models\Atc\PositionGroup;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Permission;
+use App\Models\Roster;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -51,6 +54,11 @@ class DiscordRoleRule extends Model
         return $this->belongsTo(State::class);
     }
 
+    public function endorsable()
+    {
+        return $this->morphTo();
+    }
+
     /**
      * Determine if account satifies the requirements for the role.
      */
@@ -59,7 +67,8 @@ class DiscordRoleRule extends Model
         return $this->accountSatisfiesPermissionRequirement($account)
             && $this->accountSatisfiesQualificationRequirement($account)
             && $this->accountSatisfiesStateRequirement($account)
-            && $this->accountSatisfiesCTSMayControlRequirement($account);
+            && $this->accountSatisfiesCTSMayControlRequirement($account)
+            && $this->accountSatisfiesCanControlOnRosterRequirement($account);
     }
 
     protected function accountSatisfiesPermissionRequirement(Account $account): bool
@@ -89,5 +98,27 @@ class DiscordRoleRule extends Model
         }
 
         return Str::contains($ctsMember->visit_may_control, $this->cts_may_control_contains);
+    }
+
+    protected function accountSatisfiesCanControlOnRosterRequirement(Account $account): bool
+    {
+        if ($this->endorsable instanceof Position) {
+            return Roster::firstWhere('account_id', $account->getKey())
+                ?->accountCanControl($this->endorsable);
+        }
+
+        if ($this->endorsable instanceof PositionGroup) {
+            return Roster::where('account_id', $account->getKey())->exists()
+                && $account
+                    ->endorsements()
+                    ->active()
+                    ->whereHasMorph('endorsable',
+                        PositionGroup::class,
+                        fn ($query) => $query->where('id', $this->endorsable->getKey())
+                    )
+                    ->exists();
+        }
+
+        return true;
     }
 }
