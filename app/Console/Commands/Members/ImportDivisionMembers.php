@@ -9,11 +9,15 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
-class ImportMembers extends Command
+class ImportDivisionMembers extends Command
 {
-    protected $signature = 'Members:CertImport';
+    protected $signature = 'import:division-members';
 
-    protected $description = 'Import VATSIM UK members from the VATSIM API.';
+    protected $description = 'Import VATSIM UK division members from the VATSIM API.';
+
+    protected int $limit = 1000;
+
+    protected int $offset = 0;
 
     protected int $countNewlyCreated = 0;
 
@@ -23,27 +27,22 @@ class ImportMembers extends Command
 
     public function handle()
     {
-        $apiToken = config('vatsim-api.key');
+        while ($response = $this->getMembersFromVatsim()) {
+            if ($response->collect('items')->isEmpty()) {
+                $this->info('No more users to process.');
 
-        $response = Http::withHeaders([
-            'Authorization' => "Token {$apiToken}",
-        ])->withUserAgent('VATSIMUK')
-            ->get(config('vatsim-api.base').'orgs/division/GBR');
-        $this->info("Total of {$response->collect()->get('count')} members to process.");
+                return;
+            }
 
-        foreach ($response->collect()->get('results') as $member) {
-            $this->process($member);
-        }
+            $this->info("Processing offset $this->offset containing {$response->collect('items')->count()} users out of {$response->json('count')}.");
 
-        // Process paginated results
-        while ($response->successful() && $response->collect()->get('next') != null) {
-            $response = Http::withHeaders([
-                'Authorization' => "Token {$apiToken}",
-            ])->get($response->collect()->get('next'));
-
-            foreach ($response->collect()->get('results') as $member) {
+            foreach ($response->collect('items') as $member) {
                 $this->process($member);
             }
+
+            $this->offset += $this->limit;
+
+            $this->info("Finished offset $this->offset. New: $this->countNewlyCreated, updated: $this->countUpdated, skipped: $this->countSkipped.");
         }
 
         $this->info("Successfully created {$this->countNewlyCreated} new, updated {$this->countUpdated} and skipped {$this->countSkipped} members.");
@@ -59,8 +58,8 @@ class ImportMembers extends Command
             'name_last' => 'required|string',
             'email' => 'required|email',
             'reg_date' => 'required|date',
-            'region' => 'required|string',
-            'division' => 'required|string',
+            'region_id' => 'required|string',
+            'division_id' => 'required|string',
         ]);
 
         return $validator->fails() ? $this->countSkipped++ : $this->update($member);
@@ -81,9 +80,22 @@ class ImportMembers extends Command
         );
 
         $account->updateVatsimRatings($member['rating'], $member['pilotrating']);
-        $account->updateDivision($member['division'], $member['region']);
+        $account->updateDivision($member['division_id'], $member['region_id']);
 
         $account->wasRecentlyCreated ?? $account->notify(new WelcomeMember());
         $account->wasRecentlyCreated ? $this->countNewlyCreated++ : $this->countUpdated++;
+    }
+
+    private function getMembersFromVatsim()
+    {
+        $token = config('vatsim-api.key');
+
+        return Http::withHeaders([
+            'Authorization' => "Token $token",
+        ])->withUserAgent('VATSIMUK')
+            ->get(config('vatsim-api.base').'orgs/division/GBR', [
+                'limit' => $this->limit,
+                'offset' => $this->offset,
+            ]);
     }
 }
