@@ -82,7 +82,7 @@ class ImportDivisionMembers extends Command
         $account->updateVatsimRatings($member['rating'], $member['pilotrating']);
         $account->updateDivision($member['division_id'], $member['region_id']);
 
-        $account->wasRecentlyCreated ?? $account->notify(new WelcomeMember());
+        // $account->wasRecentlyCreated ?? $account->notify(new WelcomeMember());
         $account->wasRecentlyCreated ? $this->countNewlyCreated++ : $this->countUpdated++;
     }
 
