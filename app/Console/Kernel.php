@@ -30,7 +30,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // === By Minute === //
-
         $schedule->command('teaman:runner', ['-v'])
             ->everyMinute()
             ->withoutOverlapping();
@@ -49,11 +48,6 @@ class Kernel extends ConsoleKernel
             ->everyTenMinutes();
 
         // === By Hour === //
-
-        $schedule->command('members:certupdate')
-            ->hourlyAt(10)
-            ->graceTimeInMinutes(15);
-
         $schedule->command('sync:cts-roles')
             ->hourlyAt(15)
             ->graceTimeInMinutes(15);
@@ -67,7 +61,6 @@ class Kernel extends ConsoleKernel
             ->graceTimeInMinutes(5);
 
         // === By Day === //
-
         $schedule->command('telescope:prune')
             ->dailyAt('03:30')
             ->doNotMonitor();
@@ -83,6 +76,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('waiting-lists:check-eligibility')
             ->dailyAt('08:30')
             ->doNotMonitor();
+
+        $schedule->command('import:division-members')
+            ->twiceDaily(2, 14)
+            ->graceTimeInMinutes(15);
     }
 
     /**
