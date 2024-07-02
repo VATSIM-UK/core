@@ -9,9 +9,9 @@
                     <tr>
                         <th class="text-center">Waiting List</th>
                         <th class="text-center">Position</th>
-                        <th class="text-center">Meeting Criteria</th>
-                        <th class="text-center">Status</th>
                         <th class="text-center">Joined List</th>
+                        <th class="text-center">On Roster</th>
+                        <th class="text-center">Theory Exam Passed</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -20,18 +20,31 @@
                     <tr>
                         <td>{{$waitingList->name}}</td>
                         <td>
-                            We cannot currently show you your position in the waiting list due to GCAP implementation.
-                            We expect this to very completed soon and the underlying data is still present i.e. your original position.
-                        </td>
-                        {{-- <td>
                             @if($waitingList->pivot->position)
                             {{$waitingList->pivot->position}}
                             @else
-                            - <span class="fa fa-question-circle ml-2 text-info text-sm tooltip_displays" data-toggle="tooltip" data-placement="top" title="You might not have a position because you aren't meeting eligibility criteria. Once you are meeting the criteria, your position will be shown."></span>
+                            -
                             @endif
-                        </td> --}}
+                        </td>
                         <td>{{$waitingList->pivot->created_at->format('d M Y')}}</td>
-                        <td><a href="{{route('mship.waiting-lists.view', ["waitingListId" => $waitingList->id])}}">View Details</a></td>
+                        <td>
+                            @if ($waitingList->isAtcList() && $waitingList->pivot->account->onRoster())
+                                {!! HTML::img("tick_mark_circle", "png", 20) !!}
+                            @elseif($waitingList->isAtcList())
+                                {!! HTML::img("cross_mark_circle", "png", 20) !!}
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        <td>
+                            @if (($record->waitingList->feature_toggles['check_cts_theory_exam'] ?? false) && $waitingList->pivot->theory_exam_passed)
+                                {!! HTML::img("tick_mark_circle", "png", 20) !!}
+                            @elseif($record->waitingList->feature_toggles['check_cts_theory_exam'] ?? false)
+                                {!! HTML::img("cross_mark_circle", "png", 20) !!}
+                            @else
+                                N/A
+                            @endif
+                        </td>
                     </tr>
                     @endforeach
                     @if(count($waitingLists) == 0)

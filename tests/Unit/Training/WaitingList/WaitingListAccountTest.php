@@ -63,4 +63,14 @@ class WaitingListAccountTest extends TestCase
             'created_at' => $date,
         ]);
     }
+
+    /** @test */
+    public function itShouldKnowItsPosition()
+    {
+        /** @var Account $account */
+        $account = Account::factory()->create();
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertEquals(1, $account->currentWaitingLists()->first()->pivot->position);
+    }
 }

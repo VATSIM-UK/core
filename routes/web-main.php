@@ -82,7 +82,6 @@ Route::group([
         'prefix' => 'waiting-lists',
     ], function () {
         Route::get('')->uses('WaitingLists@index')->name('index');
-        Route::get('{waitingListId}')->uses('WaitingLists@view')->name('view');
     });
 
     // Other

@@ -24,17 +24,4 @@ class WaitingLists extends BaseController
             'pilotLists' => $pilotWaitingLists,
         ]);
     }
-
-    public function view(Request $request, $waitingListId)
-    {
-        $list = $request->user()->currentWaitingLists()->where('training_waiting_list.id', $waitingListId)->withPivot([
-            'created_at',
-        ])->firstOrFail();
-
-        $automaticFlags = $list->pivot->flags->filter(function ($flag) {
-            return (bool) $flag->position_group_id;
-        });
-
-        return view('mship.waiting-lists.view', ['list' => $list, 'automaticFlags' => $automaticFlags]);
-    }
 }
