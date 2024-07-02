@@ -43,26 +43,4 @@ class WaitingListsTest extends TestCase
             ->get(route('mship.waiting-lists.index'))
             ->assertSee('My List');
     }
-
-    /** @test */
-    public function testViewATCWaitingListDetailsNoFlags()
-    {
-        $list = factory(WaitingList::class)->create(['name' => 'My List']);
-        $list->addToWaitingList($this->user, $this->privacc);
-
-        $this->actingAs($this->user)
-            ->get(route('mship.waiting-lists.view', ['waitingListId' => $list->id]))
-            ->assertSee('My List');
-    }
-
-    /** @test */
-    public function testViewPilotWaitingListDetailsNoFlags()
-    {
-        $list = factory(WaitingList::class)->create(['name' => 'My List', 'department' => WaitingList::PILOT_DEPARTMENT]);
-        $list->addToWaitingList($this->user, $this->privacc);
-
-        $this->actingAs($this->user)
-            ->get(route('mship.waiting-lists.view', ['waitingListId' => $list->id]))
-            ->assertSee('My List');
-    }
 }

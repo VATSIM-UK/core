@@ -221,12 +221,15 @@ class WaitingList extends Model
 
     /**
      * Remove an Account from a waiting list.
-     *
-     * @return void
      */
-    public function removeFromWaitingList(Account $account)
+    public function removeFromWaitingList(Account $account): void
     {
-        $waitingListAccount = $this->accounts()->where('account_id', $account->id)->first()->pivot;
+        $waitingListAccount = $this->waitingListAccounts()->where('account_id', $account->id)->first();
+
+        if (! $waitingListAccount) {
+            return;
+        }
+
         $waitingListAccount->delete();
     }
 

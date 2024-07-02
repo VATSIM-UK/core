@@ -111,12 +111,11 @@ class WaitingListAccount extends Pivot
         $flag->unMark();
     }
 
-    /**
-     * @deprecated use alternatives on the waitingList
-     */
-    public function getPositionAttribute()
+    public function position(): Attribute
     {
-        return $this->waitingList->accountPosition($this->account);
+        return Attribute::make(
+            get: fn () => $this->waitingList->positionOf($this)
+        );
     }
 
     public function getAtcHourCheckAttribute()
