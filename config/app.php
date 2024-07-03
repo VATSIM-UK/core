@@ -55,7 +55,7 @@ return [
     */
 
     'protocol' => env('APP_PROTOCOL', 'https'),
-    'url' => env('APP_URL'),
+    'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
