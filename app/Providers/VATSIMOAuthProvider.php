@@ -18,13 +18,13 @@ class VATSIMOAuthProvider extends GenericProvider
     public function __construct()
     {
         parent::__construct([
-            'clientId' => config('vatsim-connect.id'),
-            'clientSecret' => config('vatsim-connect.secret'),
+            'clientId' => config('services.vatsim-net.connect.id'),
+            'clientSecret' => config('services.vatsim-net.connect.secret'),
             'redirectUri' => route('login.post'),
-            'urlAuthorize' => config('vatsim-connect.base').'/oauth/authorize',
-            'urlAccessToken' => config('vatsim-connect.base').'/oauth/token',
-            'urlResourceOwnerDetails' => config('vatsim-connect.base').'/api/user',
-            'scopes' => config('vatsim-connect.scopes'),
+            'urlAuthorize' => config('services.vatsim-net.connect.base').'/oauth/authorize',
+            'urlAccessToken' => config('services.vatsim-net.connect.base').'/oauth/token',
+            'urlResourceOwnerDetails' => config('services.vatsim-net.connect.base').'/api/user',
+            'scopes' => config('services.vatsim-net.connect.scopes'),
             'scopeSeparator' => ' ',
         ]);
     }

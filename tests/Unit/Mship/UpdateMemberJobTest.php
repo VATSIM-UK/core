@@ -20,7 +20,7 @@ class UpdateMemberJobTest extends TestCase
         $existingMember->addQualification(Qualification::code('S2')->first());
         $existingMember->save();
 
-        $url = config('vatsim-api.base')."members/{$existingMember->id}";
+        $url = config('services.vatsim-net.api.base')."members/{$existingMember->id}";
         Http::fake([
             $url => Http::response([
                 'id' => $existingMember->id,
@@ -61,7 +61,7 @@ class UpdateMemberJobTest extends TestCase
         $existingMember->addQualification(Qualification::code('S2')->first());
         $existingMember->save();
 
-        $url = config('vatsim-api.base')."members/{$existingMember->id}";
+        $url = config('services.vatsim-net.api.base')."members/{$existingMember->id}";
         Http::fake([
             $url => Http::response([
                 'id' => $existingMember->id,
@@ -106,7 +106,7 @@ class UpdateMemberJobTest extends TestCase
         $existingMember->addQualification(Qualification::code('S2')->first());
         $existingMember->save();
 
-        $url = config('vatsim-api.base')."members/{$existingMember->id}";
+        $url = config('services.vatsim-net.api.base')."members/{$existingMember->id}";
         Http::fake([
             $url => Http::response('', 404),
         ]);
