@@ -66,10 +66,6 @@ class Kernel extends ConsoleKernel
             ->dailyAt('03:30')
             ->doNotMonitor();
 
-        $schedule->command('sync:tg-forum-groups')
-            ->dailyAt('04:30')
-            ->doNotMonitor();
-
         $schedule->command('model:prune', ['--model' => MonitoredScheduledTaskLogItem::class])
             ->dailyAt('08:00')
             ->doNotMonitor();
