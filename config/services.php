@@ -91,7 +91,7 @@ return [
             'id' => env('VATSIM_OAUTH_CLIENT'),
             'secret' => env('VATSIM_OAUTH_SECRET'),
             'scopes' => explode(',', env('VATSIM_OAUTH_SCOPES')),
-        ]
+        ],
     ],
 
     /*
