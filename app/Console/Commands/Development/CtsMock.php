@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Development;
 
 use Illuminate\Console\Command;
 use Tests\Database\MockCtsDatabase;
