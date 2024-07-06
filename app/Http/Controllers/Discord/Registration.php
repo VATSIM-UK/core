@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Discord;
 
 use App\Events\Discord\DiscordLinked;
 use App\Events\Discord\DiscordUnlinked;
+use App\Exceptions\Discord\DiscordUserInviteException;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Mship\Account\DiscordRegistration;
 use App\Models\Mship\Account;
@@ -13,20 +14,9 @@ use Wohali\OAuth2\Client\Provider\Discord;
 
 class Registration extends BaseController
 {
-    /**
-     * @var Discord
-     */
-    private $provider;
-
-    public function __construct()
+    public function __construct(private Discord $provider)
     {
         parent::__construct();
-
-        $this->provider = new Discord([
-            'clientId' => config('services.discord.client_id'),
-            'clientSecret' => config('services.discord.client_secret'),
-            'redirectUri' => config('services.discord.redirect_uri'),
-        ]);
     }
 
     public function show()
@@ -62,7 +52,11 @@ class Registration extends BaseController
             return $this->error('This Discord account is already linked to a VATSIM UK account. Please contact Web Services.');
         }
 
-        event(new DiscordLinked($request->user(), $discordUser, $token));
+        try {
+            event(new DiscordLinked($request->user(), $discordUser, $token));
+        } catch (DiscordUserInviteException $e) {
+            return $this->error($e->getMessage());
+        }
 
         return redirect()->route('mship.manage.dashboard')->withSuccess('Your Discord account has been linked and you will be able to access our Discord server shortly, go to Discord to see!');
     }

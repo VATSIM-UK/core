@@ -4,13 +4,10 @@ namespace App\Exceptions\Discord;
 
 use App\Models\Mship\Account;
 
-class InvalidDiscordRemovalException extends \Exception
+class InvalidDiscordRemovalException extends GenericDiscordException
 {
-    private $account;
-
-    public function __construct(Account $account)
+    public function __construct(private Account $account)
     {
-        $this->account = $account;
         $this->message = 'There was an error removing '.$account->name.' from Discord.';
     }
 
