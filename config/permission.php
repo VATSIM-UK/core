@@ -99,4 +99,6 @@ return [
     'display_permission_in_exception' => false,
 
     'enable_wildcard_permission' => true,
+
+    'register_permission_check_method' => false,
 ];
