@@ -24,8 +24,10 @@ use App\Policies\Training\WaitingListPolicy;
 use App\Policies\VisitTransfer\ApplicationPolicy;
 use App\Policies\VisitTransfer\ReferencePolicy;
 use App\Registrars\PermissionRegistrar as RegistrarsPermissionRegistrar;
-use Gate;
+use Illuminate\Contracts\Auth\Access\Gate as AccessGate;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -60,11 +62,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
-        // Custom spatie permissions override
-        $this->app->singleton(PermissionRegistrar::class, RegistrarsPermissionRegistrar::class);
-    }
+    public function register() {}
 
     /**
      * Register any authentication / authorization services.
@@ -74,6 +72,16 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        // Custom spatie permissions override
+        $this->app->singleton(PermissionRegistrar::class, RegistrarsPermissionRegistrar::class);
+
+        $this->callAfterResolving(AccessGate::class, function (AccessGate $gate, Application $app) {
+            /** @var PermissionRegistrar $permissionLoader */
+            $permissionLoader = $app->get(PermissionRegistrar::class);
+            $permissionLoader->clearPermissionsCollection();
+            $permissionLoader->registerPermissions($gate);
+        });
 
         // TODO: Remove use-permission
         Gate::define('use-permission', function ($user, $permission) {
