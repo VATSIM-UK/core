@@ -67,9 +67,9 @@
                 @if($positions)
                     @if(count($positions) == 1)
                     <span>
-                        {{ $roster->accountCanControl($position)
-                            ? "✅ $account->id can control $position->callsign."
-                            : "❌ $account->id cannot control $position->callsign."
+                        {{ $roster->accountCanControl($positions[0])
+                            ? "✅ $account->id can control " .$positions[0]->callsign."."
+                            : "❌ $account->id cannot control " .$positions[0]->callsign."."
                         }}
                     </span>
                     @else
@@ -91,6 +91,7 @@
                     <span>❌ {{ $account->id }} cannot control any UK positions.</span>
                 @endif
             </div>
+            
             <div>
                 <a class="text-bold text-blue-500 hover:cursor-pointer" wire:navigate
                 href="{{ route('site.roster.search') }}">Go back</a>
