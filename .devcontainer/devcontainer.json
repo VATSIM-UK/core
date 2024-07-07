@@ -24,5 +24,6 @@
 	"forwardPorts": [
 		8080,
 		3306
-	]
+	],
+	"postAttachCommand": "composer install && php artisan migrate && php artisan db:seed"
 }
