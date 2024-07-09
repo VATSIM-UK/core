@@ -8,7 +8,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Roster;
-use Livewire;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class ShowTest extends TestCase
@@ -31,7 +31,7 @@ class ShowTest extends TestCase
                 return $value[0]['title'] == 'Position cannot be found.' && $value[0]['status'] == 'danger';
             })
             // ensure the position is cleared from any previous searches
-            ->assertSet('position', null)
+            ->assertSet('positions', null)
             ->assertSet('searchTerm', null);
     }
 
@@ -118,5 +118,32 @@ class ShowTest extends TestCase
             ->assertDontSee("{$account->id} can control {$uncontrollablePosition->callsign}")
             ->assertSet('position', null)
             ->assertSet('searchTerm', null);
+    }
+
+    public function test_shows_multiple_search_results()
+    {
+        $account = Account::factory()->create();
+        $qualification = Qualification::code('S2')->first();
+        $account->addState(State::findByCode('DIVISION'));
+        $account->addQualification($qualification);
+
+        Roster::create([
+            'account_id' => $account->id,
+        ]);
+
+        Position::factory()->create([
+            'callsign' => 'EGKK_TWR',
+            'type' => Position::TYPE_TOWER,
+        ]);
+
+        Position::factory()->create([
+            'callsign' => 'EGKK_APP',
+            'type' => Position::TYPE_APPROACH,
+        ]);
+
+        Livewire::test(Show::class, ['account' => $account])
+            ->set('searchTerm', 'EGKK')
+            ->call('search')
+            ->assertSeeTextInOrder(['EGKK_TWR', '\u2705', 'EGKK_APP', '\u274c']);
     }
 }
