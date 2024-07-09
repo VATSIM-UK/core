@@ -79,6 +79,13 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(Discord::class);
         $this->app->singleton(Forum::class);
         $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
+        $this->app->singleton(\Wohali\OAuth2\Client\Provider\Discord::class, function () {
+            return new \Wohali\OAuth2\Client\Provider\Discord([
+                'clientId' => Config::get('services.discord.client_id'),
+                'clientSecret' => Config::get('services.discord.client_secret'),
+                'redirectUri' => Config::get('services.discord.redirect_uri'),
+            ]);
+        });
     }
 
     public function registerHTMLComponents()
