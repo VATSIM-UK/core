@@ -46,7 +46,7 @@ class ProcessNetworkData extends Command
      */
     public function handle()
     {
-        $this->networkData = Http::get(config('vatsim-data-feed.base'));
+        $this->networkData = Http::get(config('services.vatsim-net.datafeed.base'));
         $this->info('Getting network data from VATSIM.');
 
         if ($this->networkData->failed() || ! $this->networkData->json()) {

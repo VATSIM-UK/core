@@ -63,8 +63,8 @@ class UpdateMember extends Job implements ShouldQueue
             return;
         }
 
-        $token = 'Token '.config('vatsim-api.key');
-        $url = config('vatsim-api.base')."members/{$this->accountID}";
+        $token = 'Token '.config('services.vatsim-net.api.key');
+        $url = config('services.vatsim-net.api.base')."members/{$this->accountID}";
 
         try {
             $response = Http::withHeaders([
