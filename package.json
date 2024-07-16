@@ -18,7 +18,7 @@
     "bootstrap-tour": "^0.12.0",
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
-    "laravel-vite-plugin": "^1.0.4",
+    "laravel-vite-plugin": "^1.0.5",
     "less": "^4.2.0",
     "less-loader": "^12.2.0",
     "postcss": "^8.4.39",
