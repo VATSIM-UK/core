@@ -90,6 +90,7 @@
                 @if(!$roster)
                     <span>❌ {{ $account->id }} cannot control any UK positions.</span>
                 @endif
+                
             </div>
             
             <div>
