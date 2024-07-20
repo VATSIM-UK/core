@@ -18,7 +18,7 @@
                 <img width="200" src="{{ asset('images/branding/vatsimuk_blackblue.png') }}" unselectable="on">
             </a>
         </div>
-        <div class="flex justify-center overflow-hidden">
+        <div class="flex justify-center overflow-y-auto">
         {{ $slot }}
         </div>
     </div>
