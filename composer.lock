@@ -12133,7 +12133,7 @@
         },
         {
             "name": "filament/upgrade",
-            "version": "v3.2.93",
+            "version": "v3.2.95",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/upgrade.git",
