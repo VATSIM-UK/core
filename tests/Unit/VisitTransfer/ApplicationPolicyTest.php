@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\VisitTransfer;
+namespace Tests\Unit\VisitTransferLegacy;
 
-use App\Models\VisitTransfer\Application;
-use App\Models\VisitTransfer\Reference;
+use App\Models\VisitTransferLegacy\Application;
+use App\Models\VisitTransferLegacy\Reference;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Unit\VisitTransfer;
+namespace Tests\Unit\VisitTransferLegacy;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
-use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransferLegacy\Application;
 use App\Notifications\ApplicationAccepted;
 use App\Notifications\ApplicationStatusChanged;
 use Carbon\Carbon;
@@ -40,7 +40,7 @@ class ApplicationTest extends TestCase
     /** @test */
     public function itThrowsAnExceptionWhenAttemptingToCreateADuplicateApplication()
     {
-        $this->expectException(\App\Exceptions\VisitTransfer\Application\DuplicateApplicationException::class);
+        $this->expectException(\App\Exceptions\VisitTransferLegacy\Application\DuplicateApplicationException::class);
 
         $this->user->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
 
@@ -58,7 +58,7 @@ class ApplicationTest extends TestCase
     /** @test */
     public function itThrowsAnExceptionWhenAttemptingToCreateAnApplicationForADivisionMember()
     {
-        $this->expectException(\App\Exceptions\VisitTransfer\Application\AlreadyADivisionMemberException::class);
+        $this->expectException(\App\Exceptions\VisitTransferLegacy\Application\AlreadyADivisionMemberException::class);
 
         $this->user->addState(\App\Models\Mship\State::findByCode('DIVISION'));
 
@@ -162,7 +162,7 @@ class ApplicationTest extends TestCase
 
         $this->user->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
 
-        $facility = factory(\App\Models\VisitTransfer\Facility::class, 'atc_visit')->create();
+        $facility = factory(\App\Models\VisitTransferLegacy\Facility::class, 'atc_visit')->create();
 
         $application = $this->user->fresh()->createVisitingTransferApplication([
             'type' => Application::TYPE_VISIT,

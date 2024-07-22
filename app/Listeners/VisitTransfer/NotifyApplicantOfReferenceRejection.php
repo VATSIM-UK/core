@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\VisitTransfer;
+namespace App\Listeners\VisitTransferLegacy;
 
-use App\Events\VisitTransfer\ReferenceRejected;
+use App\Events\VisitTransferLegacy\ReferenceRejected;
 use App\Notifications\ApplicationReferenceRejected;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

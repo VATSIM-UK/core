@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions\VisitTransfer\Application;
+namespace App\Exceptions\VisitTransferLegacy\Application;
 
 use App\Models\Mship\Account;
 

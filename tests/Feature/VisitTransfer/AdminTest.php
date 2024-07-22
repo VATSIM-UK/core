@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\VisitTransfer;
+namespace Tests\Feature\VisitTransferLegacy;
 
-use App\Models\VisitTransfer\Application;
-use App\Models\VisitTransfer\Facility;
-use App\Models\VisitTransfer\Reference;
+use App\Models\VisitTransferLegacy\Application;
+use App\Models\VisitTransferLegacy\Facility;
+use App\Models\VisitTransferLegacy\Reference;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Mail;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit\VisitTransfer;
+namespace Tests\Unit\VisitTransferLegacy;
 
-use App\Exceptions\VisitTransfer\Reference\ReferenceNotRequestedException;
-use App\Exceptions\VisitTransfer\Reference\ReferenceNotUnderReviewException;
-use App\Models\VisitTransfer\Reference;
+use App\Exceptions\VisitTransferLegacy\Reference\ReferenceNotRequestedException;
+use App\Exceptions\VisitTransferLegacy\Reference\ReferenceNotUnderReviewException;
+use App\Models\VisitTransferLegacy\Reference;
 use Faker\Provider\Base;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;

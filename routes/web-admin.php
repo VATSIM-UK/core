@@ -27,7 +27,7 @@ Route::group([
     Route::group([
         'as' => 'visiting.',
         'prefix' => 'visit-transfer',
-        'namespace' => 'VisitTransfer',
+        'namespace' => 'VisitTransferLegacy',
     ], function () {
         Route::get('/facility')->uses('Facility@getList')->name('facility');
         Route::get('/facility/create')->uses('Facility@getCreate')->name('facility.create');

@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Models\VisitTransfer;
+namespace App\Models\VisitTransferLegacy;
 
-use App\Events\VisitTransfer\ApplicationAccepted;
-use App\Events\VisitTransfer\ApplicationCancelled;
-use App\Events\VisitTransfer\ApplicationCompleted;
-use App\Events\VisitTransfer\ApplicationExpired;
-use App\Events\VisitTransfer\ApplicationRejected;
-use App\Events\VisitTransfer\ApplicationSubmitted;
-use App\Events\VisitTransfer\ApplicationUnderReview;
-use App\Events\VisitTransfer\ApplicationWithdrawn;
-use App\Exceptions\VisitTransfer\Application\ApplicationAlreadySubmittedException;
-use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
-use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeWithdrawnException;
-use App\Exceptions\VisitTransfer\Application\ApplicationNotAcceptedException;
-use App\Exceptions\VisitTransfer\Application\ApplicationNotRejectableException;
-use App\Exceptions\VisitTransfer\Application\ApplicationNotUnderReviewException;
-use App\Exceptions\VisitTransfer\Application\AttemptingToTransferToNonTrainingFacilityException;
-use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
-use App\Exceptions\VisitTransfer\Application\DuplicateRefereeException;
-use App\Exceptions\VisitTransfer\Application\FacilityHasNoCapacityException;
-use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
+use App\Events\VisitTransferLegacy\ApplicationAccepted;
+use App\Events\VisitTransferLegacy\ApplicationCancelled;
+use App\Events\VisitTransferLegacy\ApplicationCompleted;
+use App\Events\VisitTransferLegacy\ApplicationExpired;
+use App\Events\VisitTransferLegacy\ApplicationRejected;
+use App\Events\VisitTransferLegacy\ApplicationSubmitted;
+use App\Events\VisitTransferLegacy\ApplicationUnderReview;
+use App\Events\VisitTransferLegacy\ApplicationWithdrawn;
+use App\Exceptions\VisitTransferLegacy\Application\ApplicationAlreadySubmittedException;
+use App\Exceptions\VisitTransferLegacy\Application\ApplicationCannotBeExpiredException;
+use App\Exceptions\VisitTransferLegacy\Application\ApplicationCannotBeWithdrawnException;
+use App\Exceptions\VisitTransferLegacy\Application\ApplicationNotAcceptedException;
+use App\Exceptions\VisitTransferLegacy\Application\ApplicationNotRejectableException;
+use App\Exceptions\VisitTransferLegacy\Application\ApplicationNotUnderReviewException;
+use App\Exceptions\VisitTransferLegacy\Application\AttemptingToTransferToNonTrainingFacilityException;
+use App\Exceptions\VisitTransferLegacy\Application\CheckOutcomeAlreadySetException;
+use App\Exceptions\VisitTransferLegacy\Application\DuplicateRefereeException;
+use App\Exceptions\VisitTransferLegacy\Application\FacilityHasNoCapacityException;
+use App\Exceptions\VisitTransferLegacy\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Cache;
 use Malahierba\PublicId\PublicId;
 
 /**
- * App\Models\VisitTransfer\Application.
+ * App\Models\VisitTransferLegacy\Application.
  *
  * @property int $id
  * @property int $type
@@ -55,7 +55,7 @@ use Malahierba\PublicId\PublicId;
  * @property string|null $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
- * @property-read \App\Models\VisitTransfer\Facility|null $facility
+ * @property-read \App\Models\VisitTransferLegacy\Facility|null $facility
  * @property-read mixed $facility_name
  * @property-read mixed $is_accepted
  * @property-read mixed $is_atc
@@ -85,44 +85,44 @@ use Malahierba\PublicId\PublicId;
  * @property-read mixed $status_string
  * @property-read mixed $type_string
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $referees
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransferLegacy\Reference[] $referees
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application closed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application closed()
  * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application notStatus($status)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application ofType($type)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Application onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application open()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application notStatus($status)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransferLegacy\Application onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application open()
  * @method static bool|null restore()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application status($status)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application statusIn($stati)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application statusNotIn($stati)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application submitted()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application transfer()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application underReview()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application visit()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereAccountId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereCheckOutcome50Hours($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereCheckOutcome90Day($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereExpiresAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereFacilityId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereReferencesRequired($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereShouldPerformChecks($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereStatement($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereStatementRequired($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereStatusNote($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereSubmittedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereTrainingRequired($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereTrainingTeam($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereWillAutoAccept($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Application withTrashed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Application withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application status($status)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application statusIn($stati)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application statusNotIn($stati)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application submitted()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application transfer()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application underReview()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application visit()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereCheckOutcome50Hours($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereCheckOutcome90Day($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereFacilityId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereReferencesRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereShouldPerformChecks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereStatement($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereStatementRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereStatusNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereSubmittedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereTrainingRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereTrainingTeam($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransferLegacy\Application whereWillAutoAccept($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransferLegacy\Application withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransferLegacy\Application withoutTrashed()
  *
  * @mixin \Eloquent
  */
@@ -300,12 +300,12 @@ class Application extends Model
 
     public function facility()
     {
-        return $this->belongsTo(\App\Models\VisitTransfer\Facility::class);
+        return $this->belongsTo(\App\Models\VisitTransferLegacy\Facility::class);
     }
 
     public function referees()
     {
-        return $this->hasMany(\App\Models\VisitTransfer\Reference::class);
+        return $this->hasMany(\App\Models\VisitTransferLegacy\Reference::class);
     }
 
     public function notes()
@@ -643,7 +643,7 @@ class Application extends Model
 
         if ($staffReason) {
             $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was progressed to 'Under Review'.\n".$staffReason;
-            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
+            $note = $this->account->addNote('VisitTransferLegacy', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
@@ -661,7 +661,7 @@ class Application extends Model
 
         if ($staffReason) {
             $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was rejected.\n".$staffReason;
-            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
+            $note = $this->account->addNote('VisitTransferLegacy', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
@@ -741,7 +741,7 @@ class Application extends Model
         }
 
         // Add a note
-        $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
+        $note = $this->account->addNote('VisitTransferLegacy', $noteContent, $actor, $this);
         $this->notes()->save($note);
     }
 

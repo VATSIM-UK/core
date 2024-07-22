@@ -9,21 +9,23 @@
 
                     <p>
                         Choosing the right facility
-                        to {{ $application->status == \App\Models\VisitTransfer\Application::TYPE_VISIT ? "visit" : "transfer to" }}
+                        to {{ $application->status == \App\Models\VisitTransferLegacy\Application::TYPE_VISIT ? "visit" : "transfer to" }}
                         is crucial
                         to your application progressing quickly.
                     </p>
 
-                    @if($application->status == \App\Models\VisitTransfer\Application::TYPE_VISIT)
+                    @if($application->status == \App\Models\VisitTransferLegacy\Application::TYPE_VISIT)
                         <p>
                             You can choose from all available facilities below.
                         <ul>
-                            <li>Should you apply to a facility where <span class="label label-warning" id="labelTrainingHelp">TRAINING IS REQUIRED</span>
+                            <li>Should you apply to a facility where <span class="label label-warning"
+                                                                           id="labelTrainingHelp">TRAINING IS REQUIRED</span>
                                 your visiting status can only be fully granted once your induction training has been
                                 completed.
                             </li>
                             <li>When applying to a facility labelled as
-                                <span class="label label-success" id="labelNoTrainingHelp">NO TRAINING REQUIRED</span>, your visitor status will
+                                <span class="label label-success" id="labelNoTrainingHelp">NO TRAINING REQUIRED</span>,
+                                your visitor status will
                                 be automatically granted
                                 once staff have accepted it.
                             </li>
@@ -48,13 +50,13 @@
                         Enter in the code below.
                     </p>
                     <p>
-                      {!! Form::label("Facility Code:") !!}
-                      {!! Form::open(["route" => ["visiting.application.facility.manual.post", $application->public_id], "method" => "POST", "class" => "form-inline"]) !!}
-                        <div class="form-group">
-                          {!! Form::text("facility-code") !!}
-                        </div>
+                    {!! Form::label("Facility Code:") !!}
+                    {!! Form::open(["route" => ["visiting.application.facility.manual.post", $application->public_id], "method" => "POST", "class" => "form-inline"]) !!}
+                    <div class="form-group">
+                        {!! Form::text("facility-code") !!}
+                    </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
-                      {!! Form::close() !!}
+                    {!! Form::close() !!}
                     </p>
 
                 </div>
@@ -62,9 +64,9 @@
             </div>
             {!! HTML::panelClose() !!}
         </div>
-      </div>
+    </div>
 
-      <div class="row">
+    <div class="row">
         @foreach($facilities as $facility)
             <div class="col-md-3">
                 {!! HTML::panelOpen($facility->name, ["type" => "vuk", "key" => "letter-".strtolower($facility->name[0])], ["style" => "min-height: 220px;"]) !!}
@@ -78,7 +80,8 @@
                             @if($facility->training_required)
                                 <span class="label label-warning">TRAINING IS REQUIRED</span>
                                 <br/>
-                                PLACES AVAILABLE: {!! ($facility->training_spaces === null ? "&infin;" : $facility->training_spaces) !!}
+                                PLACES
+                                AVAILABLE: {!! ($facility->training_spaces === null ? "&infin;" : $facility->training_spaces) !!}
                             @else
                                 <span class="label label-success">NO TRAINING REQUIRED</span>
                             @endif

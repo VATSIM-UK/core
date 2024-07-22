@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\VisitTransfer;
+namespace App\Listeners\VisitTransferLegacy;
 
-use App\Events\VisitTransfer\ApplicationUnderReview;
+use App\Events\VisitTransferLegacy\ApplicationUnderReview;
 use App\Models\Mship\Account;
 use App\Notifications\ApplicationReview;
 use Illuminate\Contracts\Queue\ShouldQueue;

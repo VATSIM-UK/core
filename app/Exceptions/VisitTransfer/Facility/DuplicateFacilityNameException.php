@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions\VisitTransfer\Facility;
+namespace App\Exceptions\VisitTransferLegacy\Facility;
 
 class DuplicateFacilityNameException extends \Exception
 {

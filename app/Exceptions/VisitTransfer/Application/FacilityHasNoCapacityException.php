@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Exceptions\VisitTransfer\Application;
+namespace App\Exceptions\VisitTransferLegacy\Application;
 
-use App\Models\VisitTransfer\Facility;
+use App\Models\VisitTransferLegacy\Facility;
 
 class FacilityHasNoCapacityException extends \Exception
 {

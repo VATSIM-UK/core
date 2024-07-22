@@ -82,7 +82,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('sysNotification', \App\Models\Sys\Notification::class);
 
         Route::bind('applicationByPublicId', function ($value) {
-            return \App\Models\VisitTransfer\Application::findByPublicId($value);
+            return \App\Models\VisitTransferLegacy\Application::findByPublicId($value);
         });
 
         Route::bind('ukAirportByICAO', function ($value) {

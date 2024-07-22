@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\VisitTransfer;
+namespace App\Listeners\VisitTransferLegacy;
 
-use App\Events\VisitTransfer\ReferenceCancelled;
+use App\Events\VisitTransferLegacy\ReferenceCancelled;
 use App\Notifications\ApplicationReferenceNoLongerNeeded;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

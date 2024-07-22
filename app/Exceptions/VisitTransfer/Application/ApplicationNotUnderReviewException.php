@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Exceptions\VisitTransfer\Application;
+namespace App\Exceptions\VisitTransferLegacy\Application;
 
-use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransferLegacy\Application;
 
 class ApplicationNotUnderReviewException extends \Exception
 {
