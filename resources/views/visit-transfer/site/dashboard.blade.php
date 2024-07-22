@@ -4,8 +4,8 @@
     <div class="row">
         <div class="hidden-xs" id="visitingBoxes">
             <div class="col-md-4 hidden-xs">
-            {!! HTML::panelOpen("Visiting ATC", ["type" => "vuk", "key" => "letter-v"]) !!}
-            <!-- Content Of Panel [START] -->
+                {!! HTML::panelOpen("Visiting ATC", ["type" => "vuk", "key" => "letter-v"]) !!}
+                <!-- Content Of Panel [START] -->
                 <!-- Top Row [START] -->
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1">
@@ -20,24 +20,28 @@
 
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        @if(!\App\Models\VisitTransfer\Facility::isPossibleToVisitAtc())
-                            <button class="btn btn-danger" disabled="disabled">{{ trans("application.dashboard.apply.atc.visit.no_places") }}</button>
+                        @if(!\App\Models\VisitTransferLegacy\Facility::isPossibleToVisitAtc())
+                            <button class="btn btn-danger"
+                                    disabled="disabled">{{ trans("application.dashboard.apply.atc.visit.no_places") }}</button>
                         @else
-                            @can("create", new \App\Models\VisitTransfer\Application)
+                            @can("create", new \App\Models\VisitTransferLegacy\Application)
 
                                 @if($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
                                     <a href="{{ route('visiting.application.continue', [$currentVisitApplication->public_id]) }}">
-                                        <button class="btn btn-primary" href="">{{ "X".trans('application.continue') }}</button>
+                                        <button class="btn btn-primary"
+                                                href="">{{ "X".trans('application.continue') }}</button>
                                     </a>
                                 @elseif($currentTransferApplication)
-                                    <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.xfer_open') }}</button>
+                                    <button class="btn btn-danger"
+                                            disabled="disabled">{{ trans('application.dashboard.apply.xfer_open') }}</button>
                                 @else
-                                    <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, "atc"]) }}">
+                                    <a href="{{ route('visiting.application.start', [\App\Models\VisitTransferLegacy\Application::TYPE_VISIT, "atc"]) }}">
                                         <button class="btn btn-success">{{ trans('application.dashboard.apply.atc.visit.start') }}</button>
                                     </a>
                                 @endif
                             @else
-                                <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.unable')}}</button>
+                                <button class="btn btn-danger"
+                                        disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.unable')}}</button>
                             @endcan
                         @endif
                     </div>
@@ -47,8 +51,8 @@
             </div>
 
             <div class="col-md-4 hidden-xs">
-            {!! HTML::panelOpen("What about pilots?", ["type" => "vuk", "key" => "letter-p"]) !!}
-            <!-- Content Of Panel [START] -->
+                {!! HTML::panelOpen("What about pilots?", ["type" => "vuk", "key" => "letter-p"]) !!}
+                <!-- Content Of Panel [START] -->
                 <!-- Top Row [START] -->
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1">
@@ -68,11 +72,12 @@
 
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        @if(!\App\Models\VisitTransfer\Facility::isPossibleToVisitPilot())
-                            <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.pilot.visit.no_places') }}</button>
+                        @if(!\App\Models\VisitTransferLegacy\Facility::isPossibleToVisitPilot())
+                            <button class="btn btn-danger"
+                                    disabled="disabled">{{ trans('application.dashboard.apply.pilot.visit.no_places') }}</button>
                         @else
-                            @can("create", new \App\Models\VisitTransfer\Application)
-                                <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, 'pilot']) }}">
+                            @can("create", new \App\Models\VisitTransferLegacy\Application)
+                                <a href="{{ route('visiting.application.start', [\App\Models\VisitTransferLegacy\Application::TYPE_VISIT, 'pilot']) }}">
                                     <button class="btn btn-success">{{ trans('application.dashboard.apply.pilot.visit.start') }}</button>
                                 </a>
                             @elseif($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
@@ -80,9 +85,11 @@
                                     <button class="btn btn-primary" href="">{{ trans('application.continue') }}</button>
                                 </a>
                             @elseif($currentTransferApplication)
-                                <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.xfer_open') }}</button>
+                                <button class="btn btn-danger"
+                                        disabled="disabled">{{ trans('application.dashboard.apply.xfer_open') }}</button>
                             @else
-                                <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.pilot.visit.unable') }}</button>
+                                <button class="btn btn-danger"
+                                        disabled="disabled">{{ trans('application.dashboard.apply.pilot.visit.unable') }}</button>
                             @endcan
                         @endif
                     </div>
@@ -93,8 +100,8 @@
         </div>
 
         <div class="col-md-4 hidden-xs" id="transferringAtcBox">
-        {!! HTML::panelOpen("Transferring ATC", ["type" => "vuk", "key" => "letter-t"]) !!}
-        <!-- Content Of Panel [START] -->
+            {!! HTML::panelOpen("Transferring ATC", ["type" => "vuk", "key" => "letter-t"]) !!}
+            <!-- Content Of Panel [START] -->
             <!-- Top Row [START] -->
             <div class="row">
                 <div class="col-md-10 col-xs-offset-1">
@@ -114,21 +121,25 @@
 
             <div class="row">
                 <div class="col-xs-12 text-center">
-                    @if(!\App\Models\VisitTransfer\Facility::isPossibleToTransfer())
-                        <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.transfer.no_places') }}</button>
+                    @if(!\App\Models\VisitTransferLegacy\Facility::isPossibleToTransfer())
+                        <button class="btn btn-danger"
+                                disabled="disabled">{{ trans('application.dashboard.apply.atc.transfer.no_places') }}</button>
                     @else
-                        @can("create", new \App\Models\VisitTransfer\Application)
-                            <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_TRANSFER, 'atc']) }}">
-                                <button class="btn btn-success" href="">{{ trans('application.dashboard.apply.atc.transfer.start') }}</button>
+                        @can("create", new \App\Models\VisitTransferLegacy\Application)
+                            <a href="{{ route('visiting.application.start', [\App\Models\VisitTransferLegacy\Application::TYPE_TRANSFER, 'atc']) }}">
+                                <button class="btn btn-success"
+                                        href="">{{ trans('application.dashboard.apply.atc.transfer.start') }}</button>
                             </a>
                         @elseif($currentTransferApplication)
                             <a href="{{ route('visiting.application.continue', [$currentTransferApplication->public_id]) }}">
                                 <button class="btn btn-primary">{{ trans('application.continue') }}</button>
                             </a>
                         @elseif($currentVisitApplication)
-                            <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.visit_open') }}</button>
+                            <button class="btn btn-danger"
+                                    disabled="disabled">{{ trans('application.dashboard.apply.visit_open') }}</button>
                         @else
-                            <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.transfer.unable') }}</button>
+                            <button class="btn btn-danger"
+                                    disabled="disabled">{{ trans('application.dashboard.apply.atc.transfer.unable') }}</button>
                         @endcan
                     @endif
                 </div>
@@ -194,7 +205,8 @@
                                     </td>
                                     <td class="text-center">
                                         @if($application->is_in_progress)
-                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#withdrawModal">
+                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal"
+                                                    data-target="#withdrawModal">
                                                 WITHDRAW
                                             </button>
                                             <div class="modal fade" role="dialog" id="withdrawModal">
@@ -204,11 +216,14 @@
                                                             Withdraw Application
                                                         </div>
                                                         <div class="modal-body">
-                                                            If you wish to withdraw your application (without penalty) you can do so by clicking the button below.
+                                                            If you wish to withdraw your application (without penalty)
+                                                            you can do so by clicking the button below.
                                                         </div>
                                                         <div class="modal-footer">
                                                             {{ Form::open(array("url" => URL::route("visiting.application.withdraw.post", [$application->public_id]))) }}
-                                                            <button type="submit" class="btn btn-danger">WITHDRAW APPLICATION - THIS CANNOT BE UNDONE</button>
+                                                            <button type="submit" class="btn btn-danger">WITHDRAW
+                                                                APPLICATION - THIS CANNOT BE UNDONE
+                                                            </button>
                                                             {{ Form::close() }}
                                                         </div>
                                                     </div>
@@ -273,9 +288,9 @@
                                         </td>
                                         <td class="text-center">
                                             @if ($reference->token)
-                                              {!! link_to_route("visiting.reference.complete", "Complete", [$reference->token->code]) !!}
+                                                {!! link_to_route("visiting.reference.complete", "Complete", [$reference->token->code]) !!}
                                             @else
-                                              <i>This reference has expired</i>
+                                                <i>This reference has expired</i>
                                             @endif
 
                                         </td>
@@ -296,46 +311,48 @@
 @section("scripts")
     @parent
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tour/0.11.0/js/bootstrap-tour.min.js" integrity="sha384-vzCaHnPHCvqX/NZEoFP8o6Kl3oz4t69lFsHpZ8uIzr+NURIp0PoavFo0OXXchs3V" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tour/0.11.0/js/bootstrap-tour.min.js"
+            integrity="sha384-vzCaHnPHCvqX/NZEoFP8o6Kl3oz4t69lFsHpZ8uIzr+NURIp0PoavFo0OXXchs3V"
+            crossorigin="anonymous"></script>
     <script type="text/javascript">
         var tour = new Tour({
             name: "VT-Dashboard",
             steps: [
                     @if($pendingReferences->count() > 0)
-                    {
-                        element: "#pendingReferences",
-                        title: "Pending References",
-                        content: "You have pending references that require completion here.  This list will be updated automatically.",
-                        backdrop: true,
-                        placement: "top"
-                    },
-                @endif
+                {
+                    element: "#pendingReferences",
+                    title: "Pending References",
+                    content: "You have pending references that require completion here.  This list will be updated automatically.",
+                    backdrop: true,
+                    placement: "top"
+                },
+                    @endif
 
-                @if($allApplications->count() > 0)
-                    {
-                        element: "#applicationHistory",
-                        title: "Application History",
-                        content: "You can view any open, or historic, applications here.",
-                        backdrop: true,
-                        placement: "top"
-                    },
-                @endif
+                    @if($allApplications->count() > 0)
+                {
+                    element: "#applicationHistory",
+                    title: "Application History",
+                    content: "You can view any open, or historic, applications here.",
+                    backdrop: true,
+                    placement: "top"
+                },
+                    @endif
 
-                @can("create", new \App\Models\VisitTransfer\Application)
-                    {
-                        element: "#visitingBoxes",
-                        title: "Visiting the UK",
-                        content: "If you wish to visit with your Controller rating or to gain a pilot rating, you should visit the UK.",
-                        backdrop: true,
-                        placement: "top"
-                    },
-                    {
-                        element: "#transferringAtcBox",
-                        title: "Transferring ATC",
-                        content: "If you wish to transfer to the UK as a controller, start your application here.",
-                        backdrop: true,
-                        placement: "top"
-                    },
+                    @can("create", new \App\Models\VisitTransferLegacy\Application)
+                {
+                    element: "#visitingBoxes",
+                    title: "Visiting the UK",
+                    content: "If you wish to visit with your Controller rating or to gain a pilot rating, you should visit the UK.",
+                    backdrop: true,
+                    placement: "top"
+                },
+                {
+                    element: "#transferringAtcBox",
+                    title: "Transferring ATC",
+                    content: "If you wish to transfer to the UK as a controller, start your application here.",
+                    backdrop: true,
+                    placement: "top"
+                },
                 @endcan
             ]
         });

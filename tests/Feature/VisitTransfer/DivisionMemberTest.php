@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Feature\VisitTransfer;
+namespace Tests\Feature\VisitTransferLegacy;
 
-use App\Models\VisitTransfer\Facility;
+use App\Models\VisitTransferLegacy\Facility;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 

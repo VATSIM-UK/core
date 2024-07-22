@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Exceptions\VisitTransfer\Reference;
+namespace App\Exceptions\VisitTransferLegacy\Reference;
 
-use App\Models\VisitTransfer\Reference;
+use App\Models\VisitTransferLegacy\Reference;
 
 class ReferenceNotUnderReviewException extends \Exception
 {

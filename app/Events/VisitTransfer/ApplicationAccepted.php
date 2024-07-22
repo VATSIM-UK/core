@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Events\VisitTransfer;
+namespace App\Events\VisitTransferLegacy;
 
-use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransferLegacy\Application;
 use Illuminate\Queue\SerializesModels;
 
 class ApplicationAccepted extends ApplicationStatusChanged

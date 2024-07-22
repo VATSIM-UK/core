@@ -11,11 +11,11 @@ class VisitingTransferInitialSetup extends Migration
         //
         Schema::create('vt_application', function (Blueprint $table) {
             $table->increments('id');
-            $table->smallInteger('type')->default(\App\Models\VisitTransfer\Application::TYPE_VISIT);
+            $table->smallInteger('type')->default(\App\Models\VisitTransferLegacy\Application::TYPE_VISIT);
             $table->integer('account_id')->unsigned();
             $table->integer('facility_id')->unsigned()->nullable();
             $table->text('statement')->nullable();
-            $table->smallInteger('status')->default(\App\Models\VisitTransfer\Application::STATUS_IN_PROGRESS);
+            $table->smallInteger('status')->default(\App\Models\VisitTransferLegacy\Application::STATUS_IN_PROGRESS);
             $table->text('status_note');
             $table->timestamp('submitted_at')->nullable();
             $table->timestamps();
@@ -29,7 +29,7 @@ class VisitingTransferInitialSetup extends Migration
             $table->string('email', 85)->nullable();
             $table->string('relationship', 85)->nullable();
             $table->text('reference')->nullable();
-            $table->smallInteger('status')->default(\App\Models\VisitTransfer\Reference::STATUS_DRAFT);
+            $table->smallInteger('status')->default(\App\Models\VisitTransferLegacy\Reference::STATUS_DRAFT);
             $table->text('status_note');
             $table->timestamp('contacted_at')->nullable();
             $table->timestamp('reminded_at')->nullable();
@@ -54,7 +54,7 @@ class VisitingTransferInitialSetup extends Migration
         });
 
         DB::table('mship_note_type')->insert([
-            ['name' => 'Visiting &amp; Transfer', 'short_code' => 'visittransfer', 'is_available' => 1, 'is_system' => 1, 'is_default' => 0, 'colour_code' => 'info', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'Visiting &amp; Transfer', 'short_code' => 'VisitTransferLegacy', 'is_available' => 1, 'is_system' => 1, 'is_default' => 0, 'colour_code' => 'info', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
 
         ]);
 

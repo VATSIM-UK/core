@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Exceptions\VisitTransfer\Application\DuplicateApplicationException;
-use App\Models\VisitTransfer\Application;
+use App\Exceptions\VisitTransferLegacy\Application\DuplicateApplicationException;
+use App\Models\VisitTransferLegacy\Application;
 
 trait HasVisitTransferApplications
 {
@@ -14,7 +14,7 @@ trait HasVisitTransferApplications
      */
     public function visitTransferApplications()
     {
-        return $this->hasMany(\App\Models\VisitTransfer\Application::class)->orderBy('created_at', 'DESC');
+        return $this->hasMany(\App\Models\VisitTransferLegacy\Application::class)->orderBy('created_at', 'DESC');
     }
 
     public function visitApplications()
@@ -45,7 +45,7 @@ trait HasVisitTransferApplications
     private function guardAgainstDivisionMemberVisitingTransferApplication()
     {
         if ($this->hasState('DIVISION')) {
-            throw new \App\Exceptions\VisitTransfer\Application\AlreadyADivisionMemberException($this);
+            throw new \App\Exceptions\VisitTransferLegacy\Application\AlreadyADivisionMemberException($this);
         }
     }
 
@@ -61,14 +61,14 @@ trait HasVisitTransferApplications
         return $this->visitTransferApplications->contains(function ($application, $key) {
             return in_array(
                 $application->status,
-                \App\Models\VisitTransfer\Application::$APPLICATION_IS_CONSIDERED_OPEN
+                \App\Models\VisitTransferLegacy\Application::$APPLICATION_IS_CONSIDERED_OPEN
             );
         });
     }
 
     public function visitTransferReferee()
     {
-        return $this->hasMany(\App\Models\VisitTransfer\Reference::class);
+        return $this->hasMany(\App\Models\VisitTransferLegacy\Reference::class);
     }
 
     public function getVisitTransferRefereePendingAttribute()

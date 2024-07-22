@@ -29,7 +29,7 @@
                         <span>All Applications</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-blue">{!! \App\Models\VisitTransfer\Application::statisticTotal() !!}</small>
+                            <small class="label pull-right bg-blue">{!! \App\Models\VisitTransferLegacy\Application::statisticTotal() !!}</small>
                         </span>
                     </a>
                 </li>
@@ -40,7 +40,7 @@
                         <span>Open Applications</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-green">{!! \App\Models\VisitTransfer\Application::statisticOpenNotInProgress() !!}</small>
+                            <small class="label pull-right bg-green">{!! \App\Models\VisitTransferLegacy\Application::statisticOpenNotInProgress() !!}</small>
                         </span>
                     </a>
                 </li>
@@ -51,7 +51,7 @@
                         <span>Review Applications</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-green">{!! \App\Models\VisitTransfer\Application::statisticUnderReview()!!}</small>
+                            <small class="label pull-right bg-green">{!! \App\Models\VisitTransferLegacy\Application::statisticUnderReview()!!}</small>
                         </span>
                     </a>
                 </li>
@@ -62,7 +62,7 @@
                         <span>Accepted Applications</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-green">{!! \App\Models\VisitTransfer\Application::statisticAccepted() !!}</small>
+                            <small class="label pull-right bg-green">{!! \App\Models\VisitTransferLegacy\Application::statisticAccepted() !!}</small>
                         </span>
                     </a>
                 </li>
@@ -73,7 +73,7 @@
                         <span>Closed Applications</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-red">{!! \App\Models\VisitTransfer\Application::statisticClosed() !!}</small>
+                            <small class="label pull-right bg-red">{!! \App\Models\VisitTransferLegacy\Application::statisticClosed() !!}</small>
                         </span>
                     </a>
                 </li>
@@ -96,7 +96,7 @@
                         <span>All References</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-blue">{!! \App\Models\VisitTransfer\Reference::statisticTotal() !!}</small>
+                            <small class="label pull-right bg-blue">{!! \App\Models\VisitTransferLegacy\Reference::statisticTotal() !!}</small>
                         </span>
                     </a>
                 </li>
@@ -107,7 +107,7 @@
                         <span>Pending Submission</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-orange">{!! \App\Models\VisitTransfer\Reference::statisticRequested() !!}</small>
+                            <small class="label pull-right bg-orange">{!! \App\Models\VisitTransferLegacy\Reference::statisticRequested() !!}</small>
                         </span>
                     </a>
                 </li>
@@ -118,7 +118,7 @@
                         <span>Submitted References</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-blue">{!! \App\Models\VisitTransfer\Reference::statisticSubmitted() !!}</small>
+                            <small class="label pull-right bg-blue">{!! \App\Models\VisitTransferLegacy\Reference::statisticSubmitted() !!}</small>
                         </span>
                     </a>
                 </li>
@@ -129,7 +129,7 @@
                         <span>Under Review</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-orange">{!! \App\Models\VisitTransfer\Reference::statisticUnderReview() !!}</small>
+                            <small class="label pull-right bg-orange">{!! \App\Models\VisitTransferLegacy\Reference::statisticUnderReview() !!}</small>
                         </span>
 
                     </a>
@@ -141,7 +141,7 @@
                         <span>Accepted</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-green">{!! \App\Models\VisitTransfer\Reference::statisticAccepted() !!}</small>
+                            <small class="label pull-right bg-green">{!! \App\Models\VisitTransferLegacy\Reference::statisticAccepted() !!}</small>
                         </span>
 
                     </a>
@@ -153,7 +153,7 @@
                         <span>Rejected</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-red">{!! \App\Models\VisitTransfer\Reference::statisticRejected() !!}</small>
+                            <small class="label pull-right bg-red">{!! \App\Models\VisitTransferLegacy\Reference::statisticRejected() !!}</small>
                         </span>
 
                     </a>

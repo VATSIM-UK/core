@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Listeners\VisitTransfer;
+namespace App\Listeners\VisitTransferLegacy;
 
-use App\Events\VisitTransfer\ApplicationSubmitted;
-use App\Models\VisitTransfer\Reference;
+use App\Events\VisitTransferLegacy\ApplicationSubmitted;
+use App\Models\VisitTransferLegacy\Reference;
 use App\Notifications\ApplicationReferenceRequest;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;

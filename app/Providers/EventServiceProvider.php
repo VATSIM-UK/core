@@ -42,61 +42,61 @@ class EventServiceProvider extends ServiceProvider
             FlushEndorsementCache::class,
         ],
 
-        \App\Events\VisitTransfer\ApplicationSubmitted::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
-            \App\Listeners\VisitTransfer\NotifyAllReferees::class,
+        \App\Events\VisitTransferLegacy\ApplicationSubmitted::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfStatusChange::class,
+            \App\Listeners\VisitTransferLegacy\NotifyAllReferees::class,
         ],
 
-        \App\Events\VisitTransfer\ApplicationUnderReview::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
-            \App\Listeners\VisitTransfer\NotifyCommunityOfUnderReviewApplication::class,
+        \App\Events\VisitTransferLegacy\ApplicationUnderReview::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfStatusChange::class,
+            \App\Listeners\VisitTransferLegacy\NotifyCommunityOfUnderReviewApplication::class,
         ],
 
-        \App\Events\VisitTransfer\ApplicationRejected::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        \App\Events\VisitTransferLegacy\ApplicationRejected::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfStatusChange::class,
         ],
 
-        \App\Events\VisitTransfer\ApplicationAccepted::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
-            \App\Listeners\VisitTransfer\NotifyTrainingDepartmentOfAcceptedApplication::class,
-            \App\Listeners\VisitTransfer\SyncVisitingControllerToCts::class,
+        \App\Events\VisitTransferLegacy\ApplicationAccepted::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfStatusChange::class,
+            \App\Listeners\VisitTransferLegacy\NotifyTrainingDepartmentOfAcceptedApplication::class,
+            \App\Listeners\VisitTransferLegacy\SyncVisitingControllerToCts::class,
         ],
 
-        \App\Events\VisitTransfer\ApplicationCompleted::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        \App\Events\VisitTransferLegacy\ApplicationCompleted::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfStatusChange::class,
         ],
 
-        \App\Events\VisitTransfer\ApplicationCancelled::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        \App\Events\VisitTransferLegacy\ApplicationCancelled::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfStatusChange::class,
         ],
 
-        \App\Events\VisitTransfer\ApplicationWithdrawn::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        \App\Events\VisitTransferLegacy\ApplicationWithdrawn::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfStatusChange::class,
         ],
 
-        \App\Events\VisitTransfer\ApplicationStatusChanged::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        \App\Events\VisitTransferLegacy\ApplicationStatusChanged::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfStatusChange::class,
         ],
 
-        \App\Events\VisitTransfer\ReferenceCancelled::class => [
-            \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceCancellation::class,
+        \App\Events\VisitTransferLegacy\ReferenceCancelled::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyRefereeOfReferenceCancellation::class,
         ],
 
-        \App\Events\VisitTransfer\ReferenceUnderReview::class => [
-            \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceCompletion::class,
-            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceCompletion::class,
+        \App\Events\VisitTransferLegacy\ReferenceUnderReview::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyRefereeOfReferenceCompletion::class,
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfReferenceCompletion::class,
         ],
 
-        \App\Events\VisitTransfer\ReferenceAccepted::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceAcceptance::class,
+        \App\Events\VisitTransferLegacy\ReferenceAccepted::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfReferenceAcceptance::class,
         ],
 
-        \App\Events\VisitTransfer\ReferenceRejected::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceRejection::class,
+        \App\Events\VisitTransferLegacy\ReferenceRejected::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyApplicantOfReferenceRejection::class,
         ],
 
-        \App\Events\VisitTransfer\ReferenceDeleted::class => [
-            \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceDeletion::class,
+        \App\Events\VisitTransferLegacy\ReferenceDeleted::class => [
+            \App\Listeners\VisitTransferLegacy\NotifyRefereeOfReferenceDeletion::class,
         ],
 
         BidCompleted::class => [

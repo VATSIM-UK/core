@@ -165,7 +165,7 @@ Route::group([
 Route::group([
     'as' => 'visiting.',
     'prefix' => 'visit-transfer',
-    'namespace' => 'VisitTransfer\Site',
+    'namespace' => 'VisitTransferLegacy\Site',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/', ['as' => 'landing', 'uses' => 'Dashboard@getDashboard']);

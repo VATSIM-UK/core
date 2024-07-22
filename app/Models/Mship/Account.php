@@ -169,9 +169,9 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $teamspeak_registrations_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Token> $tokens
  * @property-read int|null $tokens_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Application> $visitTransferApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransferLegacy\Application> $visitTransferApplications
  * @property-read int|null $visit_transfer_applications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Reference> $visitTransferReferee
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransferLegacy\Reference> $visitTransferReferee
  * @property-read int|null $visit_transfer_referee_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList> $waitingLists
  * @property-read int|null $waiting_lists_count

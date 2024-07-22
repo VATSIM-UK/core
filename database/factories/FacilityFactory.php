@@ -1,6 +1,6 @@
 <?php
 
-$factory->define(\App\Models\VisitTransfer\Facility::class, function ($faker) {
+$factory->define(\App\Models\VisitTransferLegacy\Facility::class, function ($faker) {
     return [
         'name' => $faker->name,
         'training_team' => 'atc',
@@ -9,8 +9,8 @@ $factory->define(\App\Models\VisitTransfer\Facility::class, function ($faker) {
     ];
 });
 
-$factory->state(\App\Models\VisitTransfer\Facility::class, 'atc_visit', function ($faker) use ($factory) {
-    $facility = $factory->raw(\App\Models\VisitTransfer\Facility::class);
+$factory->state(\App\Models\VisitTransferLegacy\Facility::class, 'atc_visit', function ($faker) use ($factory) {
+    $facility = $factory->raw(\App\Models\VisitTransferLegacy\Facility::class);
 
     return array_merge($facility, [
         'can_visit' => true,
@@ -18,8 +18,8 @@ $factory->state(\App\Models\VisitTransfer\Facility::class, 'atc_visit', function
     ]);
 });
 
-$factory->state(\App\Models\VisitTransfer\Facility::class, 'pilot_visit', function ($faker) use ($factory) {
-    $facility = $factory->raw(\App\Models\VisitTransfer\Facility::class);
+$factory->state(\App\Models\VisitTransferLegacy\Facility::class, 'pilot_visit', function ($faker) use ($factory) {
+    $facility = $factory->raw(\App\Models\VisitTransferLegacy\Facility::class);
 
     return array_merge($facility, [
         'can_visit' => true,
@@ -27,8 +27,8 @@ $factory->state(\App\Models\VisitTransfer\Facility::class, 'pilot_visit', functi
     ]);
 });
 
-$factory->state(\App\Models\VisitTransfer\Facility::class, 'atc_transfer', function ($faker) use ($factory) {
-    $facility = $factory->raw(\App\Models\VisitTransfer\Facility::class);
+$factory->state(\App\Models\VisitTransferLegacy\Facility::class, 'atc_transfer', function ($faker) use ($factory) {
+    $facility = $factory->raw(\App\Models\VisitTransferLegacy\Facility::class);
 
     return array_merge($facility, [
         'can_transfer' => true,

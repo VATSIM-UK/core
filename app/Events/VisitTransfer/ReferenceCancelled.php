@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Events\VisitTransfer;
+namespace App\Events\VisitTransferLegacy;
 
-use App\Models\VisitTransfer\Reference;
+use App\Models\VisitTransferLegacy\Reference;
 use Illuminate\Queue\SerializesModels;
 
 class ReferenceCancelled

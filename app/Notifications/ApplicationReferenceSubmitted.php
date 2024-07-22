@@ -3,7 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Mship\Account;
-use App\Models\VisitTransfer\Reference;
+use App\Models\VisitTransferLegacy\Reference;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;

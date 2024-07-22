@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\VisitTransfer;
+namespace Tests\Feature\VisitTransferLegacy;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
-use App\Models\VisitTransfer\Application;
-use App\Models\VisitTransfer\Facility;
+use App\Models\VisitTransferLegacy\Application;
+use App\Models\VisitTransferLegacy\Facility;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;

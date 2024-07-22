@@ -9,7 +9,7 @@ use App\Models\Mship\Account\Note;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Smartcars;
 use App\Models\Training\WaitingList;
-use App\Models\VisitTransfer;
+use App\Models\VisitTransferLegacy;
 use App\Policies\FeedbackPolicy;
 use App\Policies\Mship\Account\BanPolicy;
 use App\Policies\Mship\Account\EndorsementRequestPolicy;
@@ -21,8 +21,8 @@ use App\Policies\Smartcars\ExercisePolicy;
 use App\Policies\Smartcars\PirepPolicy;
 use App\Policies\Training\WaitingListFlagsPolicy;
 use App\Policies\Training\WaitingListPolicy;
-use App\Policies\VisitTransfer\ApplicationPolicy;
-use App\Policies\VisitTransfer\ReferencePolicy;
+use App\Policies\VisitTransferLegacy\ApplicationPolicy;
+use App\Policies\VisitTransferLegacy\ReferencePolicy;
 use App\Registrars\PermissionRegistrar as RegistrarsPermissionRegistrar;
 use Illuminate\Contracts\Auth\Access\Gate as AccessGate;
 use Illuminate\Contracts\Foundation\Application;
@@ -43,8 +43,8 @@ class AuthServiceProvider extends ServiceProvider
         'password' => PasswordPolicy::class,
         Smartcars\Flight::class => ExercisePolicy::class,
         Smartcars\Pirep::class => PirepPolicy::class,
-        VisitTransfer\Application::class => ApplicationPolicy::class,
-        VisitTransfer\Reference::class => ReferencePolicy::class,
+        VisitTransferLegacy\Application::class => ApplicationPolicy::class,
+        VisitTransferLegacy\Reference::class => ReferencePolicy::class,
         WaitingList::class => WaitingListPolicy::class,
         WaitingList\WaitingListFlag::class => WaitingListFlagsPolicy::class,
         Qualification::class => QualificationPolicy::class,

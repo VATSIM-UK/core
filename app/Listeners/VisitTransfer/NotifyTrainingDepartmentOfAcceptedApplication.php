@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\VisitTransfer;
+namespace App\Listeners\VisitTransferLegacy;
 
-use App\Events\VisitTransfer\ApplicationAccepted;
+use App\Events\VisitTransferLegacy\ApplicationAccepted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyTrainingDepartmentOfAcceptedApplication implements ShouldQueue

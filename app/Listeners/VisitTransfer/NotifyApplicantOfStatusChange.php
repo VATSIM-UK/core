@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\VisitTransfer;
+namespace App\Listeners\VisitTransferLegacy;
 
-use App\Events\VisitTransfer\ApplicationStatusChanged as ApplicationStatusChangedEvent;
+use App\Events\VisitTransferLegacy\ApplicationStatusChanged as ApplicationStatusChangedEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyApplicantOfStatusChange implements ShouldQueue
