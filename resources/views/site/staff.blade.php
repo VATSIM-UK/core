@@ -162,6 +162,10 @@
                             <td>Developer</td>
                             <td>Dave Etheridge</td>
                         </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Max Brokman</td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -192,6 +196,10 @@
                         <tr>
                             <td>Member Services Assistant</td>
                             <td>William Brushfield</td>
+                        </tr>
+                        <tr>
+                            <td>Member Services Assistant</td>
+                            <td>Dylan Parkes</td>
                         </tr>
                     </table>
                 </div>
