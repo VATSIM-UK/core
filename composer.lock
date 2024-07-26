@@ -8701,16 +8701,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v6.4.9",
+            "version": "v6.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "6edb5363ec0c78ad4d48c5128ebf4d083d89d3a9"
+                "reference": "504974cbe43d05f83b201d6498c206f16fc0cdbc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/6edb5363ec0c78ad4d48c5128ebf4d083d89d3a9",
-                "reference": "6edb5363ec0c78ad4d48c5128ebf4d083d89d3a9",
+                "url": "https://api.github.com/repos/symfony/console/zipball/504974cbe43d05f83b201d6498c206f16fc0cdbc",
+                "reference": "504974cbe43d05f83b201d6498c206f16fc0cdbc",
                 "shasum": ""
             },
             "require": {
@@ -8775,7 +8775,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v6.4.9"
+                "source": "https://github.com/symfony/console/tree/v6.4.10"
             },
             "funding": [
                 {
@@ -8791,7 +8791,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-28T09:49:33+00:00"
+            "time": "2024-07-26T12:30:32+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -10976,16 +10976,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v7.1.2",
+            "version": "v7.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "14221089ac66cf82e3cf3d1c1da65de305587ff8"
+                "reference": "ea272a882be7f20cad58d5d78c215001617b7f07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/14221089ac66cf82e3cf3d1c1da65de305587ff8",
-                "reference": "14221089ac66cf82e3cf3d1c1da65de305587ff8",
+                "url": "https://api.github.com/repos/symfony/string/zipball/ea272a882be7f20cad58d5d78c215001617b7f07",
+                "reference": "ea272a882be7f20cad58d5d78c215001617b7f07",
                 "shasum": ""
             },
             "require": {
@@ -11043,7 +11043,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v7.1.2"
+                "source": "https://github.com/symfony/string/tree/v7.1.3"
             },
             "funding": [
                 {
@@ -11059,7 +11059,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-28T09:27:18+00:00"
+            "time": "2024-07-22T10:25:37+00:00"
         },
         {
             "name": "symfony/translation",
@@ -12133,7 +12133,7 @@
         },
         {
             "name": "filament/upgrade",
-            "version": "v3.2.95",
+            "version": "v3.2.96",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/upgrade.git",
@@ -13076,16 +13076,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.11.7",
+            "version": "1.11.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "52d2bbfdcae7f895915629e4694e9497d0f8e28d"
+                "reference": "6adbd118e6c0515dd2f36b06cde1d6da40f1b8ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/52d2bbfdcae7f895915629e4694e9497d0f8e28d",
-                "reference": "52d2bbfdcae7f895915629e4694e9497d0f8e28d",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/6adbd118e6c0515dd2f36b06cde1d6da40f1b8ec",
+                "reference": "6adbd118e6c0515dd2f36b06cde1d6da40f1b8ec",
                 "shasum": ""
             },
             "require": {
@@ -13130,7 +13130,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-06T11:17:41+00:00"
+            "time": "2024-07-24T07:01:22+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -13556,16 +13556,16 @@
         },
         {
             "name": "rector/rector",
-            "version": "1.2.1",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "b38a3eed3ce2046f40c001255e2fec9d2746bacf"
+                "reference": "044e6364017882d1e346da8690eeabc154da5495"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/b38a3eed3ce2046f40c001255e2fec9d2746bacf",
-                "reference": "b38a3eed3ce2046f40c001255e2fec9d2746bacf",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/044e6364017882d1e346da8690eeabc154da5495",
+                "reference": "044e6364017882d1e346da8690eeabc154da5495",
                 "shasum": ""
             },
             "require": {
@@ -13603,7 +13603,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/1.2.1"
+                "source": "https://github.com/rectorphp/rector/tree/1.2.2"
             },
             "funding": [
                 {
@@ -13611,7 +13611,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-16T00:22:54+00:00"
+            "time": "2024-07-25T07:44:34+00:00"
         },
         {
             "name": "sebastian/cli-parser",
