@@ -320,6 +320,10 @@
                                 <td>IFR Flight Instructor</td>
                                 <td>Firas Bashee</td>
                             </tr>
+                            <tr>
+                                <td>Advanced Flight Instructor</td>
+                                <td>Tarik Merrylees</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
