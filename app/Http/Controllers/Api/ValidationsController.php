@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\CTS;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Atc\Position;
 use App\Models\Roster;
