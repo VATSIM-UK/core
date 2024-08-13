@@ -31,7 +31,7 @@ class SyncTGMembersToForumGroups implements ShouldQueue
      */
     public function handle()
     {
-        $membershipRepository = new MembershipRepository();
+        $membershipRepository = new MembershipRepository;
 
         $members = $membershipRepository->getMembersOf($this->rtsId);
 

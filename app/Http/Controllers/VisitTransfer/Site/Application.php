@@ -26,7 +26,7 @@ class Application extends BaseController
 {
     public function getStart($applicationType, $trainingTeam = 'atc')
     {
-        $this->authorize('create', new \App\Models\VisitTransfer\Application());
+        $this->authorize('create', new \App\Models\VisitTransfer\Application);
 
         if ($trainingTeam == 'pilot') {
             try {

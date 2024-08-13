@@ -64,7 +64,7 @@ class IssueSecondaryForumGroup implements ShouldQueue
             return;
         }
 
-        $ipboard = new Ipboard();
+        $ipboard = new Ipboard;
         $ipboardUser = $ipboard->getMemberById($ipsAccount->member_id);
 
         $currentPrimaryGroup = [$ipboardUser->primaryGroup->id];
