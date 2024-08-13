@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Development;
 
 use App\Models\Mship\Account;
 use Illuminate\Console\Command;

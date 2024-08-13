@@ -88,12 +88,12 @@ class ImportDivisionMembers extends Command
 
     private function getMembersFromVatsim()
     {
-        $token = config('vatsim-api.key');
+        $token = config('services.vatsim-net.api.key');
 
         return Http::withHeaders([
             'Authorization' => "Token $token",
         ])->withUserAgent('VATSIMUK')
-            ->get(config('vatsim-api.base').'orgs/division/GBR', [
+            ->get(config('services.vatsim-net.api.base').'orgs/division/GBR', [
                 'limit' => $this->limit,
                 'offset' => $this->offset,
             ]);

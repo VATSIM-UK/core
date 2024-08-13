@@ -303,10 +303,10 @@ class AccountModelTest extends TestCase
         $this->assertEquals($this->user->qualification_pilot->id, $mockP2Qual->id);
         $this->assertEqualsCanonicalizing([$mockP1Qual->id, $mockP2Qual->id], $this->user->qualifications_pilot->map(function ($qual) {
             return $qual->id;
-        })->all());
+        })->values()->toArray());
         $this->assertEqualsCanonicalizing([$mockS2Qual->id, $mockP2Qual->id, $pilotMilitary->id], $this->user->active_qualifications->map(function ($qual) {
             return $qual->id;
-        })->all());
+        })->values()->toArray());
 
         Carbon::setTestNow();
     }
