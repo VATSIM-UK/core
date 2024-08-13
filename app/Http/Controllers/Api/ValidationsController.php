@@ -11,7 +11,7 @@ class ValidationsController
 {
     public function view(Request $request)
     {
-        if (!$request->get('position')) {
+        if (! $request->get('position')) {
             return response()->json([
                 'status' => '400',
                 'message' => 'No position was supplied.',
