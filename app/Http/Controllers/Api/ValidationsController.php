@@ -30,7 +30,9 @@ class ValidationsController
         $validatedMembers = cache()->remember("validation_members_{$position->id}", now()->addMinutes(30), function () use ($position) {
             return Roster::all()->filter(function (Roster $roster) use ($position) {
                 return $roster->accountCanControl($position);
-            })->pluck('account_id');
+            })->map(function (Roster $roster) {
+               return ['id' => $roster->account_id];
+            });
         });
 
         return response()->json([
