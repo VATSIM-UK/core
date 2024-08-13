@@ -61,7 +61,7 @@ class AirportController extends Controller
     {
         $this->authorize('use-permission', 'adm/smartcars/airports/create');
 
-        return $this->viewMake('adm.smartcars.airport-form')->with('airport', new Airport());
+        return $this->viewMake('adm.smartcars.airport-form')->with('airport', new Airport);
     }
 
     /**

@@ -131,7 +131,7 @@ class Flight extends Model
 
     public function image()
     {
-        return new FteStorageWrapper();
+        return new FteStorageWrapper;
     }
 
     public function getImageAttribute($value)

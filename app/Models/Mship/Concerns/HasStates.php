@@ -53,7 +53,7 @@ trait HasStates
         } elseif ($search instanceof State) {
             return $this->states->contains('id', $search->id);
         } else {
-            throw new InvalidStateException();
+            throw new InvalidStateException;
         }
     }
 

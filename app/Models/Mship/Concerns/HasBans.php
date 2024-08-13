@@ -45,7 +45,7 @@ trait HasBans
         $note = $this->addNote(Type::isShortCode('discipline')->first(), $banNote, $writerId);
 
         // Make a ban.
-        $ban = new Ban();
+        $ban = new Ban;
         $ban->account_id = $this->id;
         $ban->banned_by = $writerId;
         $ban->type = $type;
@@ -100,7 +100,7 @@ trait HasBans
     public function addNetworkBan($reason = 'Network ban discovered.')
     {
         if ($this->is_network_banned === false) {
-            $ban = new \App\Models\Mship\Account\Ban();
+            $ban = new \App\Models\Mship\Account\Ban;
             $ban->type = BanTypeEnum::Network;
             $ban->reason_extra = $reason;
             $ban->period_start = Carbon::now();

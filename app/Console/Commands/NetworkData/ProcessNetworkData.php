@@ -56,10 +56,10 @@ class ProcessNetworkData extends Command
         }
 
         $this->setLastUpdatedTimestamp();
-        event(new NetworkDataDownloaded());
+        event(new NetworkDataDownloaded);
         $this->processATC();
         // $this->processPilots();
-        event(new NetworkDataParsed());
+        event(new NetworkDataParsed);
 
         $this->info('Network data updated.');
     }

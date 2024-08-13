@@ -335,7 +335,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public static function findOrRetrieve($accountId)
     {
         if (! is_numeric($accountId)) {
-            throw new InvalidCIDException();
+            throw new InvalidCIDException;
         }
 
         try {
@@ -347,7 +347,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
             if (! $account) {
                 // User doesn't exist at VATSIM.NET
-                throw new InvalidCIDException();
+                throw new InvalidCIDException;
             }
 
             return $account;
@@ -406,7 +406,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             $writer = $writer->getKey();
         }
 
-        $note = new AccountNoteData();
+        $note = new AccountNoteData;
         $note->account_id = $this->id;
         $note->writer_id = $writer;
         $note->note_type_id = $noteType;

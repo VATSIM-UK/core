@@ -35,7 +35,7 @@ class StaffPageController extends \App\Http\Controllers\BaseController
             ]
         );
 
-        $ipboard = new Ipboard();
+        $ipboard = new Ipboard;
 
         return $teamPhotos->map(function ($value, $key) use ($ipboard) {
             try {
