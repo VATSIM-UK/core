@@ -1,6 +1,6 @@
 <?php
 
-Route::get('validations')->uses('Api\CTS\ValidationsController@view')->name('api.validations');
+Route::get('validations')->uses('Api\ValidationsController@view')->name('api.validations');
 Route::get('metar/{airportIcao}')->uses('Site\MetarController@get')->name('api.metar');
 
 Route::group([
