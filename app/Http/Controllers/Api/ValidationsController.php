@@ -31,7 +31,7 @@ class ValidationsController
             return Roster::all()->filter(function (Roster $roster) use ($position) {
                 return $roster->accountCanControl($position);
             })->map(function (Roster $roster) {
-               return ['id' => $roster->account_id];
+                return ['id' => $roster->account_id];
             });
         });
 

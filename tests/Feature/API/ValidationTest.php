@@ -64,7 +64,7 @@ class ValidationTest extends TestCase
                 'validated_members' => [
                     [
                         'id' => $endorsement->account_id,
-                    ]
+                    ],
                 ],
             ]);
     }
