@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\CTS;
 
-use App\Models\Cts\ValidationPosition;
-use App\Repositories\Cts\ValidationPositionRepository;
+use App\Models\Atc\Position;
+use App\Models\Roster;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -11,7 +11,7 @@ class ValidationsController
 {
     public function view(Request $request)
     {
-        if (! $request->get('position')) {
+        if (!$request->get('position')) {
             return response()->json([
                 'status' => '400',
                 'message' => 'No position was supplied.',
@@ -19,32 +19,23 @@ class ValidationsController
         }
 
         try {
-            $position = (new ValidationPositionRepository)->findByPosition($request->get('position'));
+            $position = Position::where('callsign', $request->get('position'))->firstOrFail();
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => '404',
-                'message' => 'Position could not be found.',
+                'message' => 'Position not found.',
             ], 404);
         }
 
+        $validatedMembers = cache()->remember("validation_members_{$position->id}", now()->addMinutes(30), function () use ($position) {
+            return Roster::all()->filter(function (Roster $roster) use ($position) {
+                return $roster->accountCanControl($position);
+            })->pluck('account_id');
+        });
+
         return response()->json([
-            'status' => ['position' => $position->position],
-            'validated_members' => $this->getValidatedMembers($position),
+            'status' => ['position' => $position->name],
+            'validated_members' => $validatedMembers,
         ]);
-    }
-
-    private function getValidatedMembers(ValidationPosition $position)
-    {
-        $cacheKey = "validation_members_{$position->id}";
-
-        if (cache($cacheKey)) {
-            return cache($cacheKey);
-        }
-
-        $members = (new ValidationPositionRepository)->getValidatedMembersFor($position);
-
-        cache([$cacheKey, $members], now()->addMinutes(30));
-
-        return $members;
     }
 }
