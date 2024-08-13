@@ -162,6 +162,10 @@
                             <td>Developer</td>
                             <td>Dave Etheridge</td>
                         </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Max Brokman</td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -192,6 +196,10 @@
                         <tr>
                             <td>Member Services Assistant</td>
                             <td>William Brushfield</td>
+                        </tr>
+                        <tr>
+                            <td>Member Services Assistant</td>
+                            <td>Dylan Parkes</td>
                         </tr>
                     </table>
                 </div>
@@ -311,6 +319,10 @@
                             <tr>
                                 <td>IFR Flight Instructor</td>
                                 <td>Firas Bashee</td>
+                            </tr>
+                            <tr>
+                                <td>Advanced Flight Instructor</td>
+                                <td>Tarik Merrylees</td>
                             </tr>
                         </table>
                     </div>
