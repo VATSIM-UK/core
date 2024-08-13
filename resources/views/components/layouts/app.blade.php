@@ -12,13 +12,15 @@
 </head>
 <body>
 <div class="flex w-screen h-screen items-center justify-center text-center bg-gray-100 overflow-y-hidden">
-    <div class="flex h-screen w-full md:w-2/3 flex-col justify-center py-12 px-6 lg:px-8">
+    <div class="flex flex-col h-screen justify-center lg:px-8 md:w-2/3 px-6 py-12 w-full">
             <div class="flex justify-center mb-2">
             <a href="{{ route('site.home') }}">
-                <img width="200" src="{{ secure_asset('images/branding/vatsimuk_blackblue.png') }}" unselectable="on">
+                <img width="200" src="{{ asset('images/branding/vatsimuk_blackblue.png') }}" unselectable="on">
             </a>
         </div>
+        <div class="flex justify-center overflow-y-auto">
         {{ $slot }}
+        </div>
     </div>
     @filamentScripts
     @livewire('notifications')

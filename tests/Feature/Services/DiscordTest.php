@@ -3,7 +3,12 @@
 namespace Tests\Feature\Services;
 
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
+use League\OAuth2\Client\Token\AccessToken;
+use Mockery;
+use Mockery\MockInterface;
 use Tests\TestCase;
+use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
 
 class DiscordTest extends TestCase
 {
@@ -90,5 +95,27 @@ class DiscordTest extends TestCase
             ->assertSessionHasErrors('code');
         $nullCode->assertRedirect(route('discord.show'))
             ->assertSessionHasErrors('code');
+    }
+
+    /** @test */
+    public function testItReportsWhenUserInTooManyServers()
+    {
+        $this->instance(\Wohali\OAuth2\Client\Provider\Discord::class, Mockery::mock(\Wohali\OAuth2\Client\Provider\Discord::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getAccessToken')->andReturn(new AccessToken(['access_token' => '123456', 'scope' => 'identify guilds.join']));
+            $mock->shouldReceive('getResourceOwner')->andReturn(new DiscordResourceOwner([
+                'id' => '123456789',
+            ]));
+        }));
+
+        Http::fake([
+            'discord.com/api/v6/guilds//members/123456789' => Http::response(['message' => 'You are at the 100 server limit.', 'code' => 30001], 304),
+        ]);
+
+        $this->actingAs($this->user)
+            ->get(route('discord.store', [
+                'code' => '123456789',
+            ]))
+            ->assertRedirect(route('discord.show'))
+            ->assertSessionHas('error', 'You have reached your Discord server limit! You must leave a server before you can join another one');
     }
 }

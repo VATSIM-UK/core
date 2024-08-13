@@ -23,10 +23,14 @@
         <div class="bg-white px-4 py-2 shadow space-y-6 sm:rounded-lg sm:px-12">
 
         <span class="text-2xl font-bold">Notifications</span>
-        <p>There have been a few changes since you have been gone! Please take the time
-            to read through the below notifications, acknowleding you have read them as you
-            read through them.</p>
-        <p>Click on the arrow or the title of the notification to see more and mark as read.</p>
+        
+        @if ($notifications->count() > 0)
+            <p>There have been a few changes since you have been gone! Please take the time
+                to read through the below notifications, acknowledging as you
+                read through them.</p>
+            <p>Click on the arrow or the title of the notification to see more and mark as read.</p>
+        @endif
+
         <p>You have {{ count($notifications) }} notifications to read.</p>
             <button x-bind:disabled="{{ $this->reactivateButtonDisabled }}" class="p-2 disabled:opacity-25 bg-brand text-white rounded-lg shadow" wire:click="nextPage">Reactivate</button>
         </p>

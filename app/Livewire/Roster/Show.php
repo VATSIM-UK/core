@@ -6,7 +6,6 @@ use App\Models\Atc\Position;
 use App\Models\Mship\Account;
 use App\Models\Roster;
 use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Component;
 
 class Show extends Component
@@ -17,7 +16,10 @@ class Show extends Component
 
     public ?string $searchTerm = null;
 
-    public ?Position $position;
+    /**
+     * @var Position[]|null
+     */
+    public ?array $positions = null;
 
     public function mount(Account $account)
     {
@@ -27,11 +29,11 @@ class Show extends Component
 
     public function search()
     {
-        try {
-            $this->position = Position::where('callsign', 'LIKE', "%{$this->searchTerm}%")->firstOrFail();
-        } catch (ModelNotFoundException $e) {
+        $this->positions = Position::where('callsign', 'LIKE', "%{$this->searchTerm}%")->take(10)->get()->all();
+
+        if (! $this->positions) {
             $this->searchTerm = null;
-            $this->position = null;
+            $this->positions = null;
 
             Notification::make()
                 ->title('Position cannot be found.')

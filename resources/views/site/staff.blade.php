@@ -37,10 +37,15 @@
                 </div>
                 <div class="panel-body">
 
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <h4 class="text-center">Division Director (VATUK1)</h4><br />
                         <img src="{{ $teamPhotos[7103] }}" width=50px class="img-responsive center-block profile-picture" />
                         <p class="text-center">Ben Wright</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="text-center">Deputy Division Director (VATUK2)</h4><br />
+                        <img src="{{ $teamPhotos[6102] }}" width=50px class="img-responsive center-block profile-picture" />
+                        <p class="text-center">Nick Marinov</p>
                     </div>
                 </div>
             </div>
@@ -69,10 +74,6 @@
                         <tr>
                             <td>Aerodrome Operations Coordinator</td>
                             <td>Archie Middlefell</td>
-                        </tr>
-                        <tr>
-                            <td>Aerodrome Operations Coordinator</td>
-                            <td>Kye Taylor</td>
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
