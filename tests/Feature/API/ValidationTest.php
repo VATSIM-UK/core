@@ -1,10 +1,13 @@
 <?php
 
-namespace Tests\Feature\CTS;
+namespace Tests\Feature\API;
 
-use App\Models\Cts\Member;
-use App\Models\Cts\Validation;
-use App\Models\Cts\ValidationPosition;
+use App\Models\Atc\Position;
+use App\Models\Mship\Account;
+use App\Models\Mship\Account\Endorsement;
+use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
+use App\Models\Roster;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -35,23 +38,32 @@ class ValidationTest extends TestCase
     /** @test */
     public function itReturnsAJsonResponse()
     {
-        $member = factory(Member::class)->create();
-        $position = factory(ValidationPosition::class)->create();
-        $validation = factory(Validation::class)->create([
-            'member_id' => $member,
-            'position_id' => $position,
+        $qualification = Qualification::code('S2')->first();
+        $account = Account::factory()->create();
+        $account->addQualification($qualification);
+        $account->addState(State::findByCode('DIVISION'));
+        $position = Position::factory()->create([
+            'type' => Position::TYPE_TOWER,
+        ]);
+        Roster::create([
+            'account_id' => $account->id,
         ]);
 
-        $this->call('GET', route('api.validations'), ['position' => $position->position])
+        $endorsement = Endorsement::factory()->create([
+            'account_id' => $account,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $position,
+        ]);
+
+        $this->call('GET', route('api.validations'), ['position' => $position->callsign])
             ->assertStatus(200)
             ->assertExactJson([
                 'status' => [
-                    'position' => $position->position,
+                    'position' => $position->name,
                 ],
                 'validated_members' => [
                     [
-                        'id' => $member->cid,
-                        'name' => $member->name,
+                        'id' => $endorsement->account_id,
                     ],
                 ],
             ]);
