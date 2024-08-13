@@ -66,7 +66,7 @@ class Roster extends Model
 
             $this->delete();
 
-            $this->account->notify(new RemovedFromRoster());
+            $this->account->notify(new RemovedFromRoster);
         });
     }
 

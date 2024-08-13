@@ -88,7 +88,7 @@ class TestEmails extends Command
                 $id++;
             }
         }
-        $testAccount = new Account();
+        $testAccount = new Account;
         $testAccount->id = $id;
         $testAccount->name_first = 'Test';
         $testAccount->name_last = 'Account';
@@ -96,7 +96,7 @@ class TestEmails extends Command
         $testAccount->save();
 
         $this->log('testEmail');
-        $testEmail = new Account\Email();
+        $testEmail = new Account\Email;
         $testEmail->account_id = $testAccount->id;
         $testEmail->email = 'test-email@example.com';
         $testEmail->save();
@@ -137,11 +137,11 @@ class TestEmails extends Command
         sleep(1);
         $testAccount->notify(new FeedbackReceived($testFeedback));
         sleep(1);
-        $testAccount->notify(new WelcomeMember());
+        $testAccount->notify(new WelcomeMember);
         sleep(1);
         $testAccount->notify(new ForgottenPasswordLink($testTokenSecurityReset));
         sleep(1);
-        $testAccount->notify(new S1TrainingOpportunities());
+        $testAccount->notify(new S1TrainingOpportunities);
         sleep(1);
 
         // visiting/transfer

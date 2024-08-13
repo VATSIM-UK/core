@@ -57,6 +57,6 @@ class ApplicationStartRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows('create', new Application());
+        return Gate::allows('create', new Application);
     }
 }

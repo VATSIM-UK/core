@@ -73,7 +73,7 @@ class ExerciseController extends Controller
     {
         $this->authorize('use-permission', 'adm/smartcars/exercises/create');
 
-        return $this->viewMake('adm.smartcars.exercise-form')->with('exercise', new Flight());
+        return $this->viewMake('adm.smartcars.exercise-form')->with('exercise', new Flight);
     }
 
     /**
@@ -89,7 +89,7 @@ class ExerciseController extends Controller
 
         $this->validate($request, $this->rules());
 
-        $exercise = new Flight();
+        $exercise = new Flight;
         $exercise->fill(array_filter($request->except('image')));
         $exercise->featured = $request->input('featured') ? true : false;
         $exercise->enabled = $request->input('enabled') ? true : false;

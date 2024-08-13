@@ -19,7 +19,7 @@ class ValidationsController
         }
 
         try {
-            $position = (new ValidationPositionRepository())->findByPosition($request->get('position'));
+            $position = (new ValidationPositionRepository)->findByPosition($request->get('position'));
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => '404',
@@ -41,7 +41,7 @@ class ValidationsController
             return cache($cacheKey);
         }
 
-        $members = (new ValidationPositionRepository())->getValidatedMembersFor($position);
+        $members = (new ValidationPositionRepository)->getValidatedMembersFor($position);
 
         cache([$cacheKey, $members], now()->addMinutes(30));
 

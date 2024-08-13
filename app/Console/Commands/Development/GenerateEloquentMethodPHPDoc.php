@@ -109,7 +109,7 @@ class GenerateEloquentMethodPHPDoc extends Command
      */
     protected function getMethodDefinition($method, $tags)
     {
-        $definition = new stdClass();
+        $definition = new stdClass;
         $definition->params = [];
         $definition->return = '';
 

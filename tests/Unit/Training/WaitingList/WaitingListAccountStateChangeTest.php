@@ -50,7 +50,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $account->addState(State::findByCode($state));
 
         $event = new AccountAltered($account->refresh());
-        (new CheckWaitingListAccountMshipState())->handle($event);
+        (new CheckWaitingListAccountMshipState)->handle($event);
 
         $this->assertFalse($this->waitingList->accounts->contains($account));
 
@@ -69,7 +69,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $account->addState(State::findByCode($state));
 
         $event = new AccountAltered($account->refresh());
-        (new CheckWaitingListAccountMshipState())->handle($event);
+        (new CheckWaitingListAccountMshipState)->handle($event);
 
         $this->assertTrue($this->nonHomeMembersOnlyWaitingList->accounts->contains($account));
     }
@@ -93,7 +93,7 @@ class WaitingListAccountStateChangeTest extends TestCase
 
         // fresh call to retrieve the account from the database with the new state assigned.
         $event = new AccountAltered($account->fresh());
-        (new CheckWaitingListAccountMshipState())->handle($event);
+        (new CheckWaitingListAccountMshipState)->handle($event);
 
         $this->assertTrue($this->waitingList->accounts->contains($account));
 
@@ -107,7 +107,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $account->addState(State::findByCode('DIVISION'));
 
         $event = new AccountAltered($account);
-        (new CheckWaitingListAccountMshipState())->handle($event);
+        (new CheckWaitingListAccountMshipState)->handle($event);
 
         $this->assertFalse($this->waitingList->accounts->contains($account));
 
@@ -127,7 +127,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $account->save();
 
         $event = new AccountAltered($account->fresh());
-        (new CheckWaitingListAccountInactivity())->handle($event);
+        (new CheckWaitingListAccountInactivity)->handle($event);
 
         $this->assertFalse($this->waitingList->accounts->contains($account));
 
@@ -142,7 +142,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $account->save();
 
         $event = new AccountAltered($account->fresh());
-        (new CheckWaitingListAccountInactivity())->handle($event);
+        (new CheckWaitingListAccountInactivity)->handle($event);
 
         Notification::assertNotSentTo($account, RemovedFromWaitingListInactiveAccount::class);
     }

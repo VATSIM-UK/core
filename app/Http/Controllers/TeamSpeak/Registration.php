@@ -78,7 +78,7 @@ class Registration extends \App\Http\Controllers\BaseController
     // create a new registration model
     protected function createRegistration($accountID, $registrationIP)
     {
-        $_registration = new RegistrationModel();
+        $_registration = new RegistrationModel;
         $_registration->account_id = $accountID;
         $_registration->registration_ip = $registrationIP;
         $_registration->save();
@@ -91,7 +91,7 @@ class Registration extends \App\Http\Controllers\BaseController
     {
         $key_description = 'CID:'.$accountID.' RegID:'.$registrationID;
         $key_custominfo = 'ident=registration_id value='.$registrationID;
-        $_confirmation = new ConfirmationModel();
+        $_confirmation = new ConfirmationModel;
         $_confirmation->registration_id = $registrationID;
         $_confirmation->privilege_key = \App\Libraries\TeamSpeak::run()
             ->serverGroupGetByName('New')

@@ -124,8 +124,8 @@ class UpdateMember extends Job implements ShouldQueue
 
         // if member no longer exists, delete
         // else process update
-        if ($member && $this->data->name_first == new \stdClass()
-            && $this->data->name_last == new \stdClass()
+        if ($member && $this->data->name_first == new \stdClass
+            && $this->data->name_last == new \stdClass
             && $this->data->email == '[hidden]'
         ) {
             $member->delete();
@@ -170,7 +170,7 @@ class UpdateMember extends Job implements ShouldQueue
         // if their network ban needs adding
         if ($this->data->rating == 0 && $member->is_network_banned === false) {
             // Add a ban.
-            $newBan = new Account\Ban();
+            $newBan = new Account\Ban;
             $newBan->type = BanTypeEnum::Network;
             $newBan->reason_extra = 'Network ban discovered via Cert update scripts.';
             $newBan->period_start = Carbon::now();

@@ -31,7 +31,7 @@ class ExamResultsRepositoryTest extends TestCase
             'exam' => 'OBS',
         ]);
 
-        $repository = new ExamResultRepository();
+        $repository = new ExamResultRepository;
         $result = $repository->getRecentPassedExamsOfType('OBS');
 
         $this->assertNotNull($result->where('id', $examResult->id)->first());
@@ -52,7 +52,7 @@ class ExamResultsRepositoryTest extends TestCase
             'date' => now()->subDays(4),
         ]);
 
-        $repository = new ExamResultRepository();
+        $repository = new ExamResultRepository;
         $result = $repository->getRecentPassedExamsOfType('OBS');
 
         $this->assertNull($result->where('id', $examResult->id)->first());
@@ -79,7 +79,7 @@ class ExamResultsRepositoryTest extends TestCase
             'date' => now()->subDays(1),
         ]);
 
-        $repository = new ExamResultRepository();
+        $repository = new ExamResultRepository;
         $result = $repository->getRecentPassedExamsOfType('OBS');
 
         $this->assertNull($result->where('id', $examResult->id)->first());
