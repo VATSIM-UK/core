@@ -3660,16 +3660,16 @@
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.25.0",
+            "version": "v5.27.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "81e62cee5b3feaf169d683b8890e33bf454698ab"
+                "reference": "184449be3eb296ab16c13a69ce22049f32d0fc2c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/81e62cee5b3feaf169d683b8890e33bf454698ab",
-                "reference": "81e62cee5b3feaf169d683b8890e33bf454698ab",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/184449be3eb296ab16c13a69ce22049f32d0fc2c",
+                "reference": "184449be3eb296ab16c13a69ce22049f32d0fc2c",
                 "shasum": ""
             },
             "require": {
@@ -3733,9 +3733,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.25.0"
+                "source": "https://github.com/laravel/horizon/tree/v5.27.1"
             },
-            "time": "2024-07-05T16:46:31+00:00"
+            "time": "2024-08-05T14:23:30+00:00"
         },
         {
             "name": "laravel/passport",
