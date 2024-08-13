@@ -63,8 +63,8 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Operations Director (VATUK9)</h4><br />
-                    <img src="{{ $teamPhotos[4078] }}" width=50px class="img-responsive center-block profile-picture" />
-                    <p class="text-center">Kieran Hardern</p>
+                    <img src="{{ $teamPhotos[1] }}" width=50px class="img-responsive center-block profile-picture" />
+                    <p class="text-center"><em>Vacant</em></p>
                     <h4 class="text-center">Operations Team</h4>
                     <table class="table">
                         <tr>
@@ -162,6 +162,10 @@
                             <td>Developer</td>
                             <td>Dave Etheridge</td>
                         </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Max Brokman</td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -192,6 +196,10 @@
                         <tr>
                             <td>Member Services Assistant</td>
                             <td>William Brushfield</td>
+                        </tr>
+                        <tr>
+                            <td>Member Services Assistant</td>
+                            <td>Dylan Parkes</td>
                         </tr>
                     </table>
                 </div>
@@ -311,6 +319,10 @@
                             <tr>
                                 <td>IFR Flight Instructor</td>
                                 <td>Firas Bashee</td>
+                            </tr>
+                            <tr>
+                                <td>Advanced Flight Instructor</td>
+                                <td>Tarik Merrylees</td>
                             </tr>
                         </table>
                     </div>
