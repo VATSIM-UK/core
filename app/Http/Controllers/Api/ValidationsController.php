@@ -27,10 +27,10 @@ class ValidationsController
             ], 404);
         }
 
-        $validatedMembers = cache()->remember("validation_members_{$position->id}", now()->addMinutes(30), function () use ($position) {
+        $validatedMembers = cache()->remember("validation_members_{$position->id}", now()->addDay(), function () use ($position) {
             return Roster::all()->filter(function (Roster $roster) use ($position) {
                 return $roster->accountCanControl($position);
-            })->map(function (Roster $roster) {
+            })->values()->map(function (Roster $roster) {
                 return ['id' => $roster->account_id];
             });
         });
