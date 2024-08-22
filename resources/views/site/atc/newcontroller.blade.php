@@ -2,8 +2,8 @@
 
 @section('content')
 	<div class="alert alert-danger">
-		<h3 style="margin-top: 0">Long Waiting Times - 6 months to 1 year to begin ATC Training</h3>
-		<p>Please note that there is currently a very long waiting list to begin ATC training. You should expect to wait at least 6-12 months to receive an invitation email for an Introduction to ATC group session. Thank you for your patience – our team are doing their very best to train students as quickly as possible.</p>
+		<h3 style="margin-top: 0">Very long waiting times - in excess of 1 year to begin ATC Training</h3>
+		<p>Please note that the average time frame for observers joining our waiting list and being offered a training place exceeds one year. You should be prepared for this wait -  the division is working hard to improve training times, but demand is high. Thank you for your patience.</p>
 	</div>
     <div class="row">
 
