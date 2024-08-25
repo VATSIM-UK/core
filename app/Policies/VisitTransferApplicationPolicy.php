@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Mship\Account;
 use App\Models\TVCP\VisitTransferApplication;
-use Illuminate\Auth\Access\Response;
 
 class VisitTransferApplicationPolicy
 {
