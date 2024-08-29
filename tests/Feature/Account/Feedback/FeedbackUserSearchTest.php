@@ -20,10 +20,21 @@ class FeedbackUserSearchTest extends TestCase
     }
 
     /** @test */
-    public function testItReturnsAnotherUser()
+    public function testItReturnsAnotherUserByName()
     {
         $searchQuery = $this->actingAs($this->user)
             ->get(route('mship.feedback.usersearch', $this->otherUser->real_name))
+            ->getContent();
+
+        $this->assertStringContainsString(e($this->otherUser->real_name), $searchQuery);
+        $this->assertStringContainsString((string) $this->otherUser->id, $searchQuery);
+    }
+
+    /** @test */
+    public function testItReturnsAnotherUserById()
+    {
+        $searchQuery = $this->actingAs($this->user)
+            ->get(route('mship.feedback.usersearch', $this->otherUser->id))
             ->getContent();
 
         $this->assertStringContainsString(e($this->otherUser->real_name), $searchQuery);
