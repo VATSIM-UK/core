@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Roster;
 
 use App\Models\Atc\PositionGroup;
+use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
 use App\Models\Roster;
 use Illuminate\Console\Command;
@@ -23,6 +24,15 @@ class UpdateRosterGanderControllers extends Command
             ->pluck('cid');
 
         DB::transaction(function () use ($gander) {
+            Account::upsert(
+                $gander->map(fn ($value) => [
+                    'id' => $value,
+                    'name_first' => 'Unknown',
+                    'name_last' => 'Unknown',
+                ])->toArray(),
+                ['id']
+            );
+
             Roster::upsert(
                 $gander->map(fn ($value) => ['account_id' => $value])->toArray(),
                 ['account_id']
