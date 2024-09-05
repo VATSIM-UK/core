@@ -18,14 +18,29 @@ class UpdateRosterGanderControllers extends Command
 
     public function handle()
     {
-        $gander = Http::get('https://ganderoceanic.ca/api/roster')
+        $ganderValidatedAccountIds = Http::get('https://ganderoceanic.ca/api/roster')
             ->collect()
             ->where('active', true)
             ->pluck('cid');
 
-        DB::transaction(function () use ($gander) {
+        DB::transaction(function () use ($ganderValidatedAccountIds) {
+            /**
+             * Ensure each account on the Gander roster exists in the database
+             * in the event they do not, create them with default values.
+             * These accounts have not signed into our system before
+             * and because we don't have their name, we'll use 'Unknown'
+             * When they sign in, we will receive their name and update it
+             * from VATSIM Connect.
+             **/
+            $ganderValidatedAccountIds->each(function ($accountCid) {
+                Account::firstOrCreate(['id' => $accountCid], [
+                    'name_first' => 'Unknown',
+                    'name_last' => 'Unknown',
+                ]);
+            });
+
             Account::upsert(
-                $gander->map(fn ($value) => [
+                $ganderValidatedAccountIds->map(fn ($value) => [
                     'id' => $value,
                     'name_first' => 'Unknown',
                     'name_last' => 'Unknown',
@@ -34,13 +49,13 @@ class UpdateRosterGanderControllers extends Command
             );
 
             Roster::upsert(
-                $gander->map(fn ($value) => ['account_id' => $value])->toArray(),
+                $ganderValidatedAccountIds->map(fn ($value) => ['account_id' => $value])->toArray(),
                 ['account_id']
             );
 
             $positionGroup = PositionGroup::where('name', 'Shanwick Oceanic (EGGX)')->firstOrFail();
 
-            $gander->reject(function ($value) use ($positionGroup) {
+            $ganderValidatedAccountIds->reject(function ($value) use ($positionGroup) {
                 return Endorsement::where([
                     'account_id' => $value,
                     'endorsable_id' => $positionGroup->id,
