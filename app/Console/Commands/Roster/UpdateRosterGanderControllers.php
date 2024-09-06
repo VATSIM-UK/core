@@ -39,15 +39,6 @@ class UpdateRosterGanderControllers extends Command
                 ]);
             });
 
-            Account::upsert(
-                $ganderValidatedAccountIds->map(fn ($value) => [
-                    'id' => $value,
-                    'name_first' => 'Unknown',
-                    'name_last' => 'Unknown',
-                ])->toArray(),
-                ['id']
-            );
-
             Roster::upsert(
                 $ganderValidatedAccountIds->map(fn ($value) => ['account_id' => $value])->toArray(),
                 ['account_id']
