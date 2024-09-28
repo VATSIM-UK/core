@@ -27,19 +27,24 @@
                             @endif
                         </td>
                         <td>{{$waitingList->pivot->created_at->format('d M Y')}}</td>
-                        <td>
-                            @if ($waitingList->isAtcList() && $waitingList->pivot->account->onRoster())
-                                {!! HTML::img("tick_mark_circle", "png", 20) !!}
-                            @elseif($waitingList->isAtcList())
-                                {!! HTML::img("cross_mark_circle", "png", 20) !!}
-                            @else
+
+                        @if($waitingList->isAtcList())
+                            <td>
+                                @if ($waitingList->pivot->account->onRoster())
+                                    {!! HTML::img("tick_mark_circle", "png", 20) !!}
+                                @else
+                                    {!! HTML::img("cross_mark_circle", "png", 20) !!}
+                                @endif
+                            </td>
+                        @else
+                            <td>
                                 N/A
-                            @endif
-                        </td>
+                            </td>
+                        @endif
                         <td>
-                            @if (($record->waitingList->feature_toggles['check_cts_theory_exam'] ?? false) && $waitingList->pivot->theory_exam_passed)
+                            @if (($waitingList->feature_toggles['check_cts_theory_exam'] ?? true) && $waitingList->pivot->theory_exam_passed)
                                 {!! HTML::img("tick_mark_circle", "png", 20) !!}
-                            @elseif($record->waitingList->feature_toggles['check_cts_theory_exam'] ?? false)
+                            @elseif($waitingList->feature_toggles['check_cts_theory_exam'] ?? true)
                                 {!! HTML::img("cross_mark_circle", "png", 20) !!}
                             @else
                                 N/A

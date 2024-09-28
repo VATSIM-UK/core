@@ -43,6 +43,12 @@ php artisan migrate
 php artisan cts:migrate:fresh # Optional if you require a CTS db for tests
 ```
 
+For local dev you may need to run
+```shell
+php artisan db:seed # sets up the roles and permissions
+php artisan grant:superman <CID> # makes a test account an admin
+```
+
 ### Compiling Frontend Assets
 Install all required dependencies
 ```shell
