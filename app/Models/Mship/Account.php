@@ -150,6 +150,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Smartcars\Pirep> $pireps
  * @property-read int|null $pireps_count
+ * @property-read \App\Models\Training\WaitingList\WaitingListAccount $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Qualification> $qualifications
  * @property-read int|null $qualifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Notification> $readSystemNotifications
@@ -175,16 +176,15 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $visit_transfer_referee_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList> $waitingLists
  * @property-read int|null $waiting_lists_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder|Account banned()
  * @method static \Database\Factories\Mship\AccountFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Account newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Account newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Account notBanned()
  * @method static \Illuminate\Database\Eloquent\Builder|Account onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Account permission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account permission($permissions, $without = false)
  * @method static \Illuminate\Database\Eloquent\Builder|Account query()
- * @method static \Illuminate\Database\Eloquent\Builder|Account role($roles, $guard = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account role($roles, $guard = null, $without = false)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereAge($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereCertCheckedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereCreatedAt($value)
@@ -214,8 +214,9 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereVatsimRefreshToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereVatsimTokenExpires($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account withoutPermission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account withoutRole($roles, $guard = null)
  * @method static \Illuminate\Database\Eloquent\Builder|Account withoutTrashed()
- *
  * @mixin \Eloquent
  */
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
