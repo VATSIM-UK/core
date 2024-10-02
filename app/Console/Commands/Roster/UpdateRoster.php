@@ -4,6 +4,8 @@ namespace App\Console\Commands\Roster;
 
 use App\Models\NetworkData\Atc;
 use App\Models\Roster;
+use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\WaitingListAccount;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -49,6 +51,14 @@ class UpdateRoster extends Command
             ->get()
             ->each
             ->remove();
+
+        // On an ATC waiting list, not on the roster, need to be removed...
+        WaitingListAccount::whereIn('list_id',
+            WaitingList::where('department', WaitingList::ATC_DEPARTMENT)->get('id')
+        )->whereNotIn('account_id', $eligible->flatten())
+            ->get()
+            ->each
+            ->delete();
 
         // Not on the roster, need to be on...
         Roster::upsert(
