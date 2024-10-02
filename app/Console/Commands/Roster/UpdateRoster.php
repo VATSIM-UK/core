@@ -6,6 +6,7 @@ use App\Models\NetworkData\Atc;
 use App\Models\Roster;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class UpdateRoster extends Command
 {
@@ -33,16 +34,25 @@ class UpdateRoster extends Command
             ->havingRaw("SUM(minutes_online) / 60 > {$this->minimumHours}")
             ->pluck('account_id');
 
+        // Automatically mark those on the Gander Oceanic roster as eligible
+        $eligible->push(
+            Http::get(config('services.gander-oceanic.api.base').'/roster')
+                ->collect()
+                ->where('active', true)
+                ->pluck('cid')
+                ->toArray()
+        );
+
         // On the roster, do not need to be on...
         Roster::withoutGlobalScopes()
-            ->whereNotIn('account_id', $eligible)
+            ->whereNotIn('account_id', $eligible->flatten())
             ->get()
             ->each
             ->remove();
 
         // Not on the roster, need to be on...
         Roster::upsert(
-            $eligible->map(fn ($value) => ['account_id' => $value])->toArray(),
+            $eligible->flatten()->map(fn ($value) => ['account_id' => $value])->toArray(),
             ['account_id']
         );
 

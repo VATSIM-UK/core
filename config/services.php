@@ -94,6 +94,12 @@ return [
         ],
     ],
 
+    'gander-oceanic' => [
+        'api' => [
+            'base' => env('GANDER_OCEANIC_API_BASE', 'https://ganderoceanic.ca/api'),
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | VATSIM UK Hosted Services
