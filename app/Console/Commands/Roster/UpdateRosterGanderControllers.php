@@ -18,7 +18,7 @@ class UpdateRosterGanderControllers extends Command
 
     public function handle()
     {
-        $ganderValidatedAccountIds = Http::get('https://ganderoceanic.ca/api/roster')
+        $ganderValidatedAccountIds = Http::get(config('services.gander-oceanic.api.base').'/roster')
             ->collect()
             ->where('active', true)
             ->pluck('cid');
