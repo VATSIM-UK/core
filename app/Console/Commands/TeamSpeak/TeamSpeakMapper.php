@@ -39,9 +39,9 @@ class TeamSpeakMapper extends Command
         $this->warn('You should check this command is up-to-date with the current TeamSpeak configuration before continuing.');
         if ($this->confirm('Do you wish to continue?')) {
             $tscon = TeamSpeak::run('VATSIM UK Mapper');
-            $this->importGroups($tscon);
+            // $this->importGroups($tscon);
             $this->importChannels($tscon);
-            $this->mapChannelGroups();
+            // $this->mapChannelGroups();
             $this->info('Tables mapped successfully.');
         } else {
             $this->error('Aborting.');
