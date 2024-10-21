@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -11,9 +10,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement('UPDATE mship_feedback_questions
-            SET question="Do you have any further comments? Please make comments detailed, specific and avoid identifying yourself"
-            WHERE form_id IN (1,2) and slug="report9"');
+        $affected = DB::table('mship_feedback_questions')
+                ->where('slug', 'report9')
+                ->update(['question'=>'Do you have any further comments? Please make comments detailed, specific and avoid identifying yourself']);
     }
 
     /**
