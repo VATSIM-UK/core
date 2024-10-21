@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection SpellCheckingInspection */
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -10,9 +10,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $affected = DB::table('mship_feedback_questions')
-                ->where('slug', 'report9')
-                ->update(['question'=>'Do you have any further comments? Please make comments detailed, specific and avoid identifying yourself']);
+        DB::table('mship_feedback_questions')
+            ->where('slug', 'report9')
+            ->update(['question' => 'Do you have any further comments? Please make comments detailed, specific and avoid identifying yourself']);
     }
 
     /**
