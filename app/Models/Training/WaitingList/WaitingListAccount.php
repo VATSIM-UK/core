@@ -3,6 +3,7 @@
 namespace App\Models\Training\WaitingList;
 
 use App\Models\Cts\TheoryResult;
+use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -12,8 +13,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * 
- *
  * @property int $id
  * @property int $list_id
  * @property int $account_id
@@ -31,6 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read mixed $position
  * @property-read mixed $theory_exam_passed
  * @property-read WaitingList|null $waitingList
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount onlyTrashed()
@@ -46,9 +46,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount withoutTrashed()
+ *
  * @mixin \Eloquent
  */
-class WaitingListAccount extends Pivot
+class WaitingListAccount extends Model
 {
     use SoftDeletes;
 

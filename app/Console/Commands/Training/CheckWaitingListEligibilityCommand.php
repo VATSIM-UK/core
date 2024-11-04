@@ -44,8 +44,8 @@ class CheckWaitingListEligibilityCommand extends Command
         }
 
         if ($this->argument('account')) {
-            $activeWaitingLists = $activeWaitingLists->filter(function ($waitingList) {
-                return $waitingList->accounts->contains($this->argument('account'));
+            $activeWaitingLists = $activeWaitingLists->filter(function (WaitingList $waitingList) {
+                return $waitingList->includesAccount($this->argument('account'));
             });
 
             if ($activeWaitingLists->isEmpty()) {
@@ -56,8 +56,8 @@ class CheckWaitingListEligibilityCommand extends Command
         }
 
         foreach ($activeWaitingLists as $waitingList) {
-            foreach ($waitingList->accounts as $account) {
-                UpdateAccountWaitingListEligibility::dispatch($account);
+            foreach ($waitingList->waitingListAccounts as $waitingListAccount) {
+                UpdateAccountWaitingListEligibility::dispatch($waitingListAccount->account);
             }
         }
 

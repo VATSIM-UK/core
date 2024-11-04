@@ -4,6 +4,7 @@ namespace App\Listeners\Training\WaitingList;
 
 use App\Events\Mship\AccountAltered;
 use App\Models\Mship\State;
+use App\Models\Training\WaitingList;
 use App\Notifications\Training\RemovedFromWaitingListNonHomeMember;
 use Illuminate\Support\Facades\Log;
 
@@ -20,7 +21,7 @@ class CheckWaitingListAccountMshipState
         // ensure we have the latest data
         $account = $event->account->refresh();
 
-        $accountsWaitingList = $account->currentWaitingLists->filter(function ($waitingList) {
+        $accountsWaitingList = $account->currentWaitingLists()->filter(function (WaitingList $waitingList) {
             return $waitingList->home_members_only;
         });
 

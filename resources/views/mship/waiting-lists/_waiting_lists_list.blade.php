@@ -10,49 +10,54 @@
                         <th class="text-center">Waiting List</th>
                         <th class="text-center">Position</th>
                         <th class="text-center">Joined List</th>
-                        <th class="text-center">On Roster</th>
-                        <th class="text-center">Theory Exam Passed</th>
+
+                        @if($department === \App\Models\Training\WaitingList::ATC_DEPARTMENT)
+                            <th class="text-center">On Roster</th>
+                            <th class="text-center">Theory Exam Passed</th>
+                        @endif
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($waitingLists as $waitingList)
+                    @foreach($waitingListAccounts as $waitingListAccount)
                     <tr>
-                        <td>{{$waitingList->name}}</td>
+                        <td>{{$waitingListAccount->waitingList->name}}</td>
                         <td>
-                            @if($waitingList->pivot->position)
-                            {{$waitingList->pivot->position}}
+                            @if($waitingListAccount->position)
+                            {{$waitingListAccount->position}}
                             @else
                             -
                             @endif
                         </td>
-                        <td>{{$waitingList->pivot->created_at->format('d M Y')}}</td>
+                        <td>{{$waitingListAccount->created_at->format('d M Y')}}</td>
 
-                        @if($waitingList->isAtcList())
+                        @if($department === \App\Models\Training\WaitingList::ATC_DEPARTMENT)
+                            @if($waitingListAccount->waitingList->isAtcList())
+                                <td>
+                                    @if ($waitingListAccount->account->onRoster())
+                                        {!! HTML::img("tick_mark_circle", "png", 20) !!}
+                                    @else
+                                        {!! HTML::img("cross_mark_circle", "png", 20) !!}
+                                    @endif
+                                </td>
+                            @else
+                                <td>
+                                    N/A
+                                </td>
+                            @endif
                             <td>
-                                @if ($waitingList->pivot->account->onRoster())
+                                @if ($waitingList->should_check_cts_theory_exam && $waitingListAccount->theory_exam_passed)
                                     {!! HTML::img("tick_mark_circle", "png", 20) !!}
-                                @else
+                                @elseif($waitingList->should_check_cts_theory_exam)
                                     {!! HTML::img("cross_mark_circle", "png", 20) !!}
+                                @else
+                                    N/A
                                 @endif
                             </td>
-                        @else
-                            <td>
-                                N/A
-                            </td>
                         @endif
-                        <td>
-                            @if (($waitingList->feature_toggles['check_cts_theory_exam'] ?? true) && $waitingList->pivot->theory_exam_passed)
-                                {!! HTML::img("tick_mark_circle", "png", 20) !!}
-                            @elseif($waitingList->feature_toggles['check_cts_theory_exam'] ?? true)
-                                {!! HTML::img("cross_mark_circle", "png", 20) !!}
-                            @else
-                                N/A
-                            @endif
-                        </td>
                     </tr>
                     @endforeach
-                    @if(count($waitingLists) == 0)
+                    @if(count($waitingListAccounts) == 0)
                     <tr>
                         <td colspan="6">You aren't in any waiting lists at the moment.</td>
                     </tr>

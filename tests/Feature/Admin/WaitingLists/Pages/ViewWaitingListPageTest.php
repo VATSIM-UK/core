@@ -63,8 +63,6 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
                 'account_id' => $accountToAdd->id,
             ]);
 
-        $this->assertContains($accountToAdd->id, $waitingList->fresh()->accounts->pluck('id'));
-
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $waitingList->id,
             'account_id' => $accountToAdd->id,
@@ -135,6 +133,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_admin_can_add_student_with_join_date_if_specified()
     {
+        /** @var WaitingList $waitingList */
         $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
@@ -151,7 +150,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
                 'join_date' => '2020-01-01',
             ]);
 
-        $this->assertContains($accountToAdd->id, $waitingList->fresh()->accounts->pluck('id'));
+        $this->assertTrue($waitingList->includesAccount($accountToAdd->id));
 
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $waitingList->id,
@@ -254,13 +253,14 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList, 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts()->first()])
-            ->assertTableActionVisible('view', record: $waitingList->accounts->first());
+            ->assertTableActionVisible('view', record: $waitingList->waitingListAccounts()->first());
     }
 
     public function test_cannot_edit_account_in_waiting_list_without_permission()
     {
         Livewire::actingAs($this->adminUser);
 
+        /** @var WaitingList $waitingList */
         $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
@@ -271,13 +271,14 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList, 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
-            ->assertTableActionHidden('edit', record: $waitingList->accounts->first());
+            ->assertTableActionHidden('edit', record: $waitingList->waitingListAccounts->first());
     }
 
     public function test_can_open_edit_action_with_permission()
     {
         Livewire::actingAs($this->adminUser);
 
+        /** @var WaitingList $waitingList */
         $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
@@ -289,7 +290,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList, 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
-            ->assertTableActionVisible('edit', record: $waitingList->accounts->first());
+            ->assertTableActionVisible('edit', record: $waitingList->waitingListAccounts->first());
     }
 
     public function test_notes_can_be_added_to_waiting_list_account()
@@ -352,6 +353,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_can_modify_manual_flag_to_false()
     {
+        /** @var WaitingList $waitingList */
         $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
@@ -359,14 +361,14 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
             'list_id' => $waitingList->id,
             'name' => 'Test Manual Flag',
         ]);
-        $waitingList->addToWaitingList($account, $this->adminUser);
+        $waitingListAccount = $waitingList->addToWaitingList($account, $this->adminUser);
 
         $this->adminUser->givePermissionTo('waiting-lists.view.atc');
         $this->adminUser->givePermissionTo('waiting-lists.access');
         $this->adminUser->givePermissionTo('waiting-lists.update-accounts.*');
 
         // set flag to true
-        $waitingList->accounts->find($account->id)->pivot->flags()->sync($manualFlag->id, [
+        $waitingListAccount->flags()->sync($manualFlag->id, [
             'marked_at' => now(),
         ]);
 

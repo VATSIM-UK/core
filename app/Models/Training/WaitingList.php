@@ -112,6 +112,8 @@ class WaitingList extends Model
      */
     public function accounts(): BelongsToMany
     {
+        // this aint gonna work because the waitinglistaccount is no longer a pivot!
+
         return $this->belongsToMany(
             Account::class,
             'training_waiting_list_account',
@@ -149,21 +151,7 @@ class WaitingList extends Model
     }
 
     /**
-     * Get the position of an account in the eligible waiting list.
-     *
-     * @return int|null
-     */
-    public function accountPosition(Account $account)
-    {
-        $key = $this->accounts->search(function ($accountItem) use ($account) {
-            return $accountItem->id == $account->id;
-        });
-
-        return ($key !== false) ? $key + 1 : null;
-    }
-
-    /**
-     * Alternative to accountPosition for use with filament, beware N+1 issues
+     * Find the position of a WaitingListAccount on this waiting list.
      */
     public function positionOf(WaitingListAccount $waitingListAccount): ?int
     {
@@ -181,8 +169,8 @@ class WaitingList extends Model
     {
         $savedFlag = $this->flags()->save($flag);
 
-        $this->accounts()->each(function ($account) use ($flag) {
-            $account->pivot->flags()->attach($flag);
+        $this->waitingListAccounts()->each(function (WaitingListAccount $listAccount) use ($flag) {
+            $listAccount->flags()->attach($flag);
         });
 
         event(new FlagAddedToWaitingList($this));
@@ -202,21 +190,44 @@ class WaitingList extends Model
 
     /**
      * Add an Account to a waiting list.
-     *
-     * @fixme don't use pivot here, add the WaitingListAccount explicitly
      */
-    public function addToWaitingList(Account $account, Account $staffAccount, ?Carbon $createdAt = null)
+    public function addToWaitingList(Account $account, Account $staffAccount, ?Carbon $createdAt = null): WaitingListAccount
     {
         $timestamp = $createdAt != null ? $createdAt : Carbon::now();
-        $this->accounts()->attach($account, ['added_by' => $staffAccount->id]);
+
+        $waitingListAccount = new WaitingListAccount;
+        $waitingListAccount->account_id = $account->id;
+        $waitingListAccount->added_by = $staffAccount->id;
+
+        $waitingListAccount = $this->waitingListAccounts()->save($waitingListAccount);
 
         // the following code is required as the timestamp for created_at gets overridden during the creation
         // process, despite being disabled on the pivot!!
-        $pivot = $this->accounts()->find($account->id)->pivot;
-        $pivot->created_at = $timestamp;
-        $pivot->save();
+        $waitingListAccount->created_at = $timestamp;
+        $waitingListAccount->save();
 
-        event(new AccountAddedToWaitingList($account, $this->fresh(), $staffAccount));
+        event(new AccountAddedToWaitingList($account, $this->fresh(), $staffAccount, $waitingListAccount));
+
+        return $waitingListAccount;
+    }
+
+    public function includesAccount(int|Account $accountId): bool
+    {
+        if ($accountId instanceof Account) {
+            $accountId = $accountId->id;
+        }
+
+        return $this->waitingListAccounts()->where('account_id', $accountId)->exists();
+    }
+
+    public function findWaitingListAccount(int|Account $accountId): ?WaitingListAccount
+    {
+        if ($accountId instanceof Account) {
+            $accountId = $accountId->id;
+        }
+
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->waitingListAccounts()->where('account_id', $accountId)->first();
     }
 
     /**

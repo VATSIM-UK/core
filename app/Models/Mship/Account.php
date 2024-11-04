@@ -176,6 +176,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $visit_transfer_referee_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList> $waitingLists
  * @property-read int|null $waiting_lists_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Account banned()
  * @method static \Database\Factories\Mship\AccountFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Account newModelQuery()
@@ -217,6 +218,7 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|Account withoutPermission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|Account withoutRole($roles, $guard = null)
  * @method static \Illuminate\Database\Eloquent\Builder|Account withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract

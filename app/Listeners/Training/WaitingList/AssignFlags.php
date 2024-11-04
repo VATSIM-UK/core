@@ -26,7 +26,7 @@ class AssignFlags
     public function handle(AccountAddedToWaitingList $event)
     {
         /** @var WaitingListAccount $waitingList */
-        $waitingListAccount = $event->waitingList->accounts()->findOrFail($event->account->id)->pivot;
+        $waitingListAccount = $event->waitingListAccount;
 
         $flags = $event->waitingList->flags();
 
