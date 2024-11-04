@@ -46,9 +46,9 @@
                                 </td>
                             @endif
                             <td>
-                                @if ($waitingList->should_check_cts_theory_exam && $waitingListAccount->theory_exam_passed)
+                                @if ($waitingListAccount->waitingList->should_check_cts_theory_exam && $waitingListAccount->theory_exam_passed)
                                     {!! HTML::img("tick_mark_circle", "png", 20) !!}
-                                @elseif($waitingList->should_check_cts_theory_exam)
+                                @elseif($waitingListAccount->waitingList->should_check_cts_theory_exam)
                                     {!! HTML::img("cross_mark_circle", "png", 20) !!}
                                 @else
                                     N/A
