@@ -167,11 +167,15 @@
                             <td>William Brushfield</td>
                         </tr>
                         <tr>
-                            <td>TV Coordinator</td>
+                            <td>TV Assistant</td>
                             <td>Dylan Parkes</td>
                         </tr>
                         <tr>
-                            <td>Outreach Coordinator</td>
+                            <td>Outreach Manager</td>
+                            <td>Vacant</td>
+                        </tr>
+                        <tr>
+                            <td>Outreach Assistant</td>
                             <td>Thomas Hallam</td>
                         </tr>
                     </table>
