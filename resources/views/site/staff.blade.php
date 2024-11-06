@@ -63,8 +63,8 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Operations Director (VATUK9)</h4><br />
-                    <img src="{{ $teamPhotos[1] }}" width=50px class="img-responsive center-block profile-picture" />
-                    <p class="text-center"><em>Vacant</em></p>
+                    <img src="{{ $teamPhotos[8856] }}" width=50px class="img-responsive center-block profile-picture" />
+                    <p class="text-center">Dave Woodward</p>
                     <h4 class="text-center">Operations Team</h4>
                     <table class="table">
                         <tr>
@@ -84,6 +84,10 @@
                             <td>Peter Mooney</td>
                         </tr>
                         <tr>
+                            <td>Events Manager</td>
+                            <td>Luke Thompson</td>
+                        </tr>
+                        <tr>
                             <td>Operations Assistant</td>
                             <td>Alice Ford</td>
                         </tr>
@@ -100,48 +104,20 @@
             </div>
         </div>
         <!-- End Operations -->
-        <!-- Marketing -->
-        <div class="col-md-4">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Marketing
-                </div>
-                <div class="panel-body">
-                    <h4 class="text-center">Marketing Director (VATUK4)</h4><br />
-                    <img src="{{ $teamPhotos[1] }}" width=50px class="img-responsive center-block profile-picture" />
-                    <p class="text-center"><em>Vacant</em></p>
-                    <h4 class="text-center">Marketing Team</h4>
-                    <table class="table">
-                        <tr>
-                            <td>Marketing General Manager</td>
-                            <td><em>Vacant</em></td>
-                        </tr>
-                        <tr>
-                            <td>Events Manager</td>
-                            <td>Luke Thompson</td>
-                        </tr>
-                        <tr>
-                            <td>Media Manager</td>
-                            <td>Thomas Hallam</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- End Marketing -->
         <!-- Web Services -->
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Web Services
+                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Technology
                 </div>
                 <div class="panel-body">
-                    <h4 class="text-center">Web Services Director (VATUK8)</h4><br />
+                    <h4 class="text-center">Technology Director (VATUK8)</h4><br />
                     <img src="{{ $teamPhotos[5125] }}" class="img-responsive center-block profile-picture" />
                     <p class="text-center">Calum Tοwers</p>
 
-                    <h4 class="text-center">Web Services Team</h4>
+                    <h4 class="text-center">Technology Team</h4>
                     <table class="table">
                         <tr>
-                            <td>Web Services Manager<br />
+                            <td>Technology Manager<br />
                                 Developer
                             </td>
                             <td>1169992</td>
@@ -171,39 +147,49 @@
             </div>
         </div>
         <!-- End Web Services -->
+        <!-- Community -->
+        <div class="col-md-4">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Community
+                </div>
+                <div class="panel-body">
+                    <h4 class="text-center">Community Director (VATUK3)</h4><br />
+                    <img src="{{ $teamPhotos[7358] }}" width=50px class="img-responsive center-block profile-picture" />
+                    <p class="text-center">William Shaw</p>
+                    <h4 class="text-center">Community Team</h4>
+                    <table class="table">
+                        <tr>
+                            <td>Community Assistant</td>
+                            <td>James Thomas</td>
+                        </tr>
+                        <tr>
+                            <td>Community Assistant</td>
+                            <td>William Brushfield</td>
+                        </tr>
+                        <tr>
+                            <td>TV Assistant</td>
+                            <td>Dylan Parkes</td>
+                        </tr>
+                        <tr>
+                            <td>Outreach Manager</td>
+                            <td>Vacant</td>
+                        </tr>
+                        <tr>
+                            <td>Outreach Assistant</td>
+                            <td>Thomas Hallam</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- End Community -->
     </div>
     <!-- End Row One -->
 </div>
 <div class="container">
     <!-- Row Two -->
     <div class="row">
-        <!-- 1 Column for Two -->
         <div class="col-md-4">
-            <!-- Member Services -->
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Member Services
-                </div>
-                <div class="panel-body">
-                    <h4 class="text-center">Member Services Director (VATUK3)</h4><br />
-                    <img src="{{ $teamPhotos[7358] }}" width=50px class="img-responsive center-block profile-picture" />
-                    <p class="text-center">William Shaw</p>
-                    <h4 class="text-center">Member Services Team</h4>
-                    <table class="table">
-                        <tr>
-                            <td>Member Services Assistant</td>
-                            <td>James Thomas</td>
-                        </tr>
-                        <tr>
-                            <td>Member Services Assistant</td>
-                            <td>William Brushfield</td>
-                        </tr>
-                        <tr>
-                            <td>Member Services Assistant</td>
-                            <td>Dylan Parkes</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
             <!-- Other Roles -->
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Other Roles
@@ -221,7 +207,6 @@
             </div>
             <!-- End Other Roles -->
         </div>
-        <!-- End 1 Column for Two -->
         <!-- Training -->
         <div class="col-md-8">
             <div class="panel panel-ukblue">
@@ -272,16 +257,12 @@
                                 <td>James Taylor</td>
                             </tr>
                             <tr>
-                                <td>TG Instructor (New Controller)</td>
-                                <td>John Batten</td>
-                            </tr>
-                            <tr>
                                 <td>Lead Mentor (New Controller)</td>
                                 <td>Stephen Lee</td>
                             </tr>
                             <tr>
-                                <td>Lead Mentor (TWR)</td>
-                                <td>Will Hinshaw</td>
+                                <td>TG Instructor (TWR)</td>
+                                <td>Reece Buckley</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
@@ -315,6 +296,10 @@
                             <tr>
                                 <td>VFR Flight Instructor</td>
                                 <td>Benjamin Arrowsmith</td>
+                            </tr>
+                            <tr>
+                                <td>VFR Flight Instructor</td>
+                                <td>Vacant</td>
                             </tr>
                             <tr>
                                 <td>IFR Flight Instructor</td>
