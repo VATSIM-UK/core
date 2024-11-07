@@ -63,8 +63,8 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Operations Director (VATUK9)</h4><br />
-                    <img src="{{ $teamPhotos[8856] }}" width=50px class="img-responsive center-block profile-picture" />
-                    <p class="text-center">Dave Woodward</p>
+                    <img src="{{ $teamPhotos[1] }}" width=50px class="img-responsive center-block profile-picture" />
+                    <p class="text-center"><em>Vacant</em></p>
                     <h4 class="text-center">Operations Team</h4>
                     <table class="table">
                         <tr>
@@ -270,7 +270,7 @@
                             </tr>
                             <tr>
                                 <td>Lead Mentor (ENR)</td>
-                                <td>Dave Woodward</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
