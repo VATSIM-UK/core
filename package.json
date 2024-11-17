@@ -18,20 +18,20 @@
     "bootstrap-tour": "^0.12.0",
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
-    "laravel-vite-plugin": "^1.0.5",
+    "laravel-vite-plugin": "^1.0.6",
     "less": "^4.2.0",
     "less-loader": "^12.2.0",
-    "postcss": "^8.4.47",
+    "postcss": "^8.4.49",
     "postcss-nesting": "^13.0.1",
-    "sass": "^1.79.3",
+    "sass": "^1.81.0",
     "tailwindcss": "^3.4.13",
-    "vite": "^5.4.8",
+    "vite": "^5.4.11",
     "vue": "^2.7.16",
     "vue-template-compiler": "^2.7.16"
   },
   "dependencies": {
     "@alpinejs/collapse": "^3.14.1",
-    "alpinejs": "^3.14.1"
+    "alpinejs": "^3.14.3"
   },
   "type": "module"
 }
