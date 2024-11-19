@@ -45,6 +45,12 @@ trait HasWaitingLists
         $waitingLists = collect();
         foreach ($waitingListAccounts as $waitingListAccount) {
             $waitingList = $waitingListAccount->waitingList;
+
+            if (empty($waitingList)) {
+                // Waiting list has likely been soft deleted, we don't want to retrieve it here
+                continue;
+            }
+
             $waitingLists->put($waitingList->id, $waitingList);
         }
 
