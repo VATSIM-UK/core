@@ -36,15 +36,15 @@ class AccountWaitingListsTest extends TestCase
     /** @test */
     public function itCanGetAllWaitingLists()
     {
-        $this->assertCount(2, $this->user->waitingLists);
-        $this->assertContains($this->oldWaitingList->id, $this->user->waitingLists->pluck('id'));
-        $this->assertContains($this->currentWaitingList->id, $this->user->waitingLists->pluck('id'));
+        $this->assertCount(2, $this->user->waitingLists());
+        $this->assertContains($this->oldWaitingList->id, $this->user->waitingLists()->pluck('id'));
+        $this->assertContains($this->currentWaitingList->id, $this->user->waitingLists()->pluck('id'));
     }
 
     /** @test */
     public function itCanGetAllCurrentWaitingLists()
     {
-        $this->assertCount(1, $this->user->fresh()->currentWaitingLists);
-        $this->assertContains($this->currentWaitingList->id, $this->user->fresh()->currentWaitingLists->pluck('id'));
+        $this->assertCount(1, $this->user->fresh()->currentWaitingLists());
+        $this->assertContains($this->currentWaitingList->id, $this->user->fresh()->currentWaitingLists()->pluck('id'));
     }
 }

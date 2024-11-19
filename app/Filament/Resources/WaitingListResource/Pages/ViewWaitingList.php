@@ -6,6 +6,7 @@ use App\Filament\Resources\WaitingListResource;
 use App\Filament\Resources\WaitingListResource\Widgets\IndividualWaitingListOverview;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
+use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
 use Filament\Actions;
@@ -16,6 +17,9 @@ use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 
+/**
+ * @property WaitingList $record
+ */
 class ViewWaitingList extends ViewRecord
 {
     protected static string $resource = WaitingListResource::class;
@@ -45,7 +49,7 @@ class ViewWaitingList extends ViewRecord
                     TextInput::make('account_id')
                         ->label('Account CID')
                         ->rule(fn () => function ($attribute, $value, $fail) {
-                            if ($this->record->accounts->contains('id', $value)) {
+                            if ($this->record->includesAccount($value)) {
                                 $fail('This account is already in this waiting list.');
                             }
                         })
