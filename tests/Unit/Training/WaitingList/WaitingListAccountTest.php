@@ -27,11 +27,7 @@ class WaitingListAccountTest extends TestCase
     {
         $account = Account::factory()->create();
 
-        $this->waitingList->addToWaitingList($account, $this->privacc);
-
-        // grab the pivot model
-        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
-
+        $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->privacc);
         $waitingListAccount->notes = 'This is a note';
 
         $this->assertEquals('This is a note', $waitingListAccount->notes);
@@ -69,8 +65,8 @@ class WaitingListAccountTest extends TestCase
     {
         /** @var Account $account */
         $account = Account::factory()->create();
-        $this->waitingList->addToWaitingList($account, $this->privacc);
+        $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->privacc);
 
-        $this->assertEquals(1, $account->currentWaitingLists()->first()->pivot->position);
+        $this->assertEquals(1, $waitingListAccount->position);
     }
 }

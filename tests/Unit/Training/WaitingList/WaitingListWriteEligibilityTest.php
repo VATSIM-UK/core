@@ -28,10 +28,8 @@ class WaitingListWriteEligibilityTest extends TestCase
     /** @test */
     public function itShouldWriteEligibilityTrueToWaitingListAccountWithNoFlags()
     {
-        $this->waitingList->addToWaitingList($this->user, $this->privacc);
+        $waitingListAccount = $this->waitingList->addToWaitingList($this->user, $this->privacc);
         $this->waitingList->refresh();
-
-        $waitingListAccount = $this->waitingList->accounts()->where('account_id', $this->user->id)->first()->pivot;
 
         factory(Atc::class)->create([
             'account_id' => $this->user->id,
@@ -56,10 +54,9 @@ class WaitingListWriteEligibilityTest extends TestCase
         $flag = factory(WaitingListFlag::class)->create();
         $this->waitingList->addFlag($flag);
 
-        $this->waitingList->addToWaitingList($this->user, $this->privacc);
+        $waitingListAccount = $this->waitingList->addToWaitingList($this->user, $this->privacc);
         $this->waitingList->refresh();
 
-        $waitingListAccount = $this->waitingList->accounts()->where('account_id', $this->user->id)->first()->pivot;
         $waitingListAccount->markFlag($flag);
 
         factory(Atc::class)->create([

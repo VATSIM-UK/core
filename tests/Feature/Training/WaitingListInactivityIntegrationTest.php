@@ -74,10 +74,11 @@ class WaitingListInactivityIntegrationTest extends TestCase
         $account->addState(State::findByCode('DIVISION'));
         $account->refresh();
 
+        /** @var WaitingList $waitingList */
         $waitingList = factory(WaitingList::class)->create();
         $waitingList->addToWaitingList($account, $this->privacc);
 
-        $this->assertTrue($waitingList->accounts->contains($account));
+        $this->assertTrue($waitingList->includesAccount($account));
 
         $account->addState(State::findByCode('REGION'));
 

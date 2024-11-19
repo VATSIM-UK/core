@@ -3,6 +3,7 @@
 namespace App\Models\Training\WaitingList;
 
 use App\Models\Cts\TheoryResult;
+use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property array|null $flags_status_summary
  * @property-read Account|null $account
+ * @property-read \App\Models\Training\WaitingList\WaitingListAccountFlag $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList\WaitingListFlag> $flags
  * @property-read int|null $flags_count
  * @property-read mixed $atc_hour_check
@@ -47,7 +49,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @mixin \Eloquent
  */
-class WaitingListAccount extends Pivot
+class WaitingListAccount extends Model
 {
     use SoftDeletes;
 
