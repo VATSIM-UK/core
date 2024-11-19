@@ -14,7 +14,17 @@
     </div>
 @endif
 
-@include('mship.waiting-lists._waiting_lists_list', ["title"=> "ATC Waiting Lists", "icon" => "fa-headset", "waitingLists" => $atcLists])
+@include('mship.waiting-lists._waiting_lists_list', [
+    "title"=> "ATC Waiting Lists",
+    "icon" => "fa-headset",
+    "waitingListAccounts" => $atcWaitingListAccounts,
+    "department" => \App\Models\Training\WaitingList::ATC_DEPARTMENT,
+])
 
-@include('mship.waiting-lists._waiting_lists_list', ["title"=> "Pilot Waiting Lists", "icon" => "fa-plane", "waitingLists" => $pilotLists])
+@include('mship.waiting-lists._waiting_lists_list', [
+    "title"=> "Pilot Waiting Lists",
+    "icon" => "fa-plane",
+    "waitingListAccounts" => $pilotWaitingListAccounts,
+    "department" => \App\Models\Training\WaitingList::PILOT_DEPARTMENT,
+])
 @endsection

@@ -2,11 +2,10 @@
 
 namespace Tests\Unit\Training\WaitingList;
 
-use App\Events\Training\AccountAddedToWaitingList;
-use App\Listeners\Training\WaitingList\AssignFlags;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -15,14 +14,13 @@ class WaitingListFlagTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @var WaitingListFlag */
-    private $flag;
+    private WaitingListFlag $flag;
 
-    /** @var WaitingList */
-    private $waitingList;
+    private WaitingList $waitingList;
 
-    /** @var PositionGroup */
-    private $positionGroup;
+    private WaitingListAccount $waitingListAccount;
+
+    private PositionGroup $positionGroup;
 
     protected function setUp(): void
     {
@@ -34,7 +32,7 @@ class WaitingListFlagTest extends TestCase
 
         $this->waitingList = factory(WaitingList::class)->create();
         $this->waitingList->addFlag($this->flag);
-        $this->waitingList->addToWaitingList($this->privacc, $this->privacc);
+        $this->waitingListAccount = $this->waitingList->addToWaitingList($this->privacc, $this->privacc);
 
         $this->positionGroup = factory(PositionGroup::class)->create();
 
@@ -47,13 +45,13 @@ class WaitingListFlagTest extends TestCase
         // tests the flag has been deleted
         $this->assertFalse($this->waitingList->flags()->exists());
         // tests that the data surrounding tha assignment of flags have been deleted on the pivot model.
-        $this->assertFalse($this->waitingList->accounts()->first()->pivot->flags()->exists());
+        $this->assertFalse($this->waitingListAccount->flags()->exists());
     }
 
     /** @test */
     public function itCanBeMarked()
     {
-        $waitingListAccount = $this->waitingList->accounts()->first()->pivot;
+        $waitingListAccount = $this->waitingListAccount;
         $waitingListAccount->addFlag($this->flag);
 
         $waitingListAccount->fresh()->markFlag($this->flag);
@@ -65,7 +63,7 @@ class WaitingListFlagTest extends TestCase
     /** @test */
     public function itCanBeUnMarked()
     {
-        $waitingListAccount = $this->waitingList->accounts()->first()->pivot;
+        $waitingListAccount = $this->waitingListAccount;
         $waitingListAccount->addFlag($this->flag);
 
         $waitingListAccount->fresh()->unMarkFlag($this->flag);
@@ -77,7 +75,7 @@ class WaitingListFlagTest extends TestCase
     /** @test */
     public function itCantBeUnMarkedWhenAlreadyUnMarked()
     {
-        $waitingListAccount = $this->waitingList->accounts()->first()->pivot;
+        $waitingListAccount = $this->waitingListAccount;
         $waitingListAccount->addFlag($this->flag);
 
         $waitingListAccount->fresh()->unMarkFlag($this->flag);
@@ -91,13 +89,7 @@ class WaitingListFlagTest extends TestCase
     {
         $account = Account::factory()->create();
 
-        $this->waitingList->addToWaitingList($account, $this->privacc);
-
-        $listener = app()->make(AssignFlags::class);
-        $event = \Mockery::mock(AccountAddedToWaitingList::class, [$account, $this->waitingList->fresh(), $this->privacc]);
-        $listener->handle($event);
-
-        $waitingListAccount = $this->waitingList->fresh()->accounts()->find($account->id)->pivot;
+        $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->privacc);
 
         // checks that flags have been assigned.
         $this->assertTrue($waitingListAccount->flags()->exists());
@@ -117,8 +109,8 @@ class WaitingListFlagTest extends TestCase
         $this->waitingList->addFlag($flag);
 
         // assert that the flag which has been added is related to all the accounts which exists in the waiting list.
-        $this->assertTrue($this->waitingList->accounts()->each(function ($account) use ($flag) {
-            $this->assertTrue($account->pivot->flags->contains($flag));
+        $this->assertTrue($this->waitingList->waitingListAccounts()->each(function (WaitingListAccount $waitingListAccount) use ($flag) {
+            $this->assertTrue($waitingListAccount->flags->contains($flag));
         }));
     }
 }
