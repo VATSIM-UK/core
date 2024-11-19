@@ -30,7 +30,7 @@
     "vue-template-compiler": "^2.7.16"
   },
   "dependencies": {
-    "@alpinejs/collapse": "^3.14.1",
+    "@alpinejs/collapse": "^3.14.3",
     "alpinejs": "^3.14.3"
   },
   "type": "module"
