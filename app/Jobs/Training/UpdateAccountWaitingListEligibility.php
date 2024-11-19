@@ -31,7 +31,7 @@ class UpdateAccountWaitingListEligibility implements ShouldQueue
     {
         $service = new CheckWaitingListFlags($this->account);
 
-        $accountWaitingLists = $this->account->currentWaitingLists;
+        $accountWaitingLists = $this->account->currentWaitingLists();
 
         foreach ($accountWaitingLists as $waitingList) {
             WriteWaitingListFlagSummary::handle($waitingList, $service);

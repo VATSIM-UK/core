@@ -95,7 +95,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $event = new AccountAltered($account->fresh());
         (new CheckWaitingListAccountMshipState)->handle($event);
 
-        $this->assertTrue($this->waitingList->accounts->contains($account));
+        $this->assertTrue($this->waitingList->includesAccount($account));
 
         Notification::assertNotSentTo($account, RemovedFromWaitingListNonHomeMember::class);
     }
@@ -129,7 +129,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $event = new AccountAltered($account->fresh());
         (new CheckWaitingListAccountInactivity)->handle($event);
 
-        $this->assertFalse($this->waitingList->accounts->contains($account));
+        $this->assertFalse($this->waitingList->includesAccount($account));
 
         Notification::assertSentTo($account, RemovedFromWaitingListInactiveAccount::class);
     }

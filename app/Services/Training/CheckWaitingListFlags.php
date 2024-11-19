@@ -4,6 +4,7 @@ namespace App\Services\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\WaitingListAccount;
 
 class CheckWaitingListFlags
 {
@@ -19,7 +20,7 @@ class CheckWaitingListFlags
      */
     public function checkWaitingListFlags(WaitingList $waitingList): array
     {
-        $waitingListAccount = $waitingList->accounts()->where('account_id', $this->account->id)->first()->pivot;
+        $waitingListAccount = $this->getWaitingListAccount($waitingList);
 
         if ($waitingList->flags()->doesntExist()) {
             return ['summary' => null];
@@ -32,8 +33,9 @@ class CheckWaitingListFlags
         return ['summary' => $summaryByFlag->toArray()];
     }
 
-    public function getWaitingListAccount(WaitingList $waitingList)
+    public function getWaitingListAccount(WaitingList $waitingList): WaitingListAccount
     {
-        return $waitingList->accounts()->where('account_id', $this->account->id)->first()->pivot;
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $waitingList->findWaitingListAccount($this->account);
     }
 }
