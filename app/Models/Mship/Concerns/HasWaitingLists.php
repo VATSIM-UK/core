@@ -20,13 +20,13 @@ trait HasWaitingLists
      */
     public function waitingLists()
     {
-        return $this->waitingListAccounts()
+        // waiting list accounts soft delete so this will exclude them
+        $waitingListAccounts = $this->waitingListAccounts()
             ->withTrashed()
-            ->get()
-            ->mapWithKeys(function (WaitingListAccount $waitingListAccount) {
-                return [$waitingListAccount->waitingList->id => $waitingListAccount->waitingList];
-            })
-            ->values();
+            ->with('waitingList')
+            ->get();
+
+        return $this->extractListsFromWaitingListAccounts($waitingListAccounts);
     }
 
     /**
@@ -41,7 +41,15 @@ trait HasWaitingLists
             ->with('waitingList')
             ->get();
 
-        // @fixme maybe replace with mapWithKeys
+        return $this->extractListsFromWaitingListAccounts($waitingListAccounts);
+    }
+
+    /**
+     * @param  Collection<WaitingListAccount>  $waitingListAccounts
+     * @return Collection<WaitingList>
+     */
+    private function extractListsFromWaitingListAccounts(Collection $waitingListAccounts): Collection
+    {
         $waitingLists = collect();
         foreach ($waitingListAccounts as $waitingListAccount) {
             $waitingList = $waitingListAccount->waitingList;
