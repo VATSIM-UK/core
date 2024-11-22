@@ -47,4 +47,16 @@ class AccountWaitingListsTest extends TestCase
         $this->assertCount(1, $this->user->fresh()->currentWaitingLists());
         $this->assertContains($this->currentWaitingList->id, $this->user->fresh()->currentWaitingLists()->pluck('id'));
     }
+
+    /** @test */
+    public function itCanHandleTrashedWaitingLists()
+    {
+        $trashed = factory(WaitingList::class)->create();
+        $trashed->addToWaitingList($this->user, $this->privacc);
+        $trashed->delete();
+        $trashed->save();
+
+        $this->assertCount(1, $this->user->fresh()->currentWaitingLists());
+        $this->assertCount(2, $this->user->fresh()->waitingLists());
+    }
 }
