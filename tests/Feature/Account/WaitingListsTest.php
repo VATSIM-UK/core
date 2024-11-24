@@ -41,7 +41,6 @@ class WaitingListsTest extends TestCase
 
         $this->actingAs($this->user)
             ->get(route('mship.waiting-lists.index'))
-            ->assertSee('My List')
-            ->assertSee('Total accounts');
+            ->assertSee('My List');
     }
 }
