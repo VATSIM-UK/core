@@ -250,10 +250,6 @@
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
-                                <td>Mike Pike</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
                                 <td>Fergus Walsh</td>
                             </tr>
                             <tr>
