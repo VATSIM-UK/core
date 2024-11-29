@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@alpinejs/collapse": "^3.14.3",
-    "alpinejs": "^3.14.3"
+    "alpinejs": "^3.14.5"
   },
   "type": "module"
 }
