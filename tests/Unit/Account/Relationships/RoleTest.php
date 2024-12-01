@@ -16,7 +16,7 @@ class RoleTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function itStoresRoleDetails()
+    public function it_stores_role_details()
     {
         $role = factory(Role::class)->create();
 
@@ -26,7 +26,7 @@ class RoleTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyDeterminesIfThePasswordIsMandatory()
+    public function it_correctly_determines_if_the_password_is_mandatory()
     {
         $role = factory(Role::class)->create(['password_mandatory' => true]);
 
@@ -34,7 +34,7 @@ class RoleTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyDeterminesIfAPasswordLifetimeExists()
+    public function it_correctly_determines_if_a_password_lifetime_exists()
     {
         $role = factory(Role::class)->create(['password_lifetime' => 30]);
 
@@ -42,7 +42,7 @@ class RoleTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyDeterminesThatTheRoleHasASessionTimeout()
+    public function it_correctly_determines_that_the_role_has_a_session_timeout()
     {
         $role = factory(Role::class)->create(['session_timeout' => 60]);
 
@@ -50,7 +50,7 @@ class RoleTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyDeterminesThatThisRoleHasASpecificPermission()
+    public function it_correctly_determines_that_this_role_has_a_specific_permission()
     {
         $role = factory(Role::class)->create();
         $permission = factory(Permission::class)->create(['name' => 'adm/visit-transfer/dashboard']);
@@ -66,7 +66,7 @@ class RoleTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyDeterminesThatThisRoleDoesNotHaveASpecificPermission()
+    public function it_correctly_determines_that_this_role_does_not_have_a_specific_permission()
     {
         $role = factory(Role::class)->create();
         $permissionA = factory(Permission::class)->create(['name' => 'adm/visit-transfer/dashboard']);
@@ -89,7 +89,7 @@ class RoleTest extends TestCase
     }
 
     /** @test */
-    public function itFiresEventsWhenARoleIsAssignedAndRemoved()
+    public function it_fires_events_when_a_role_is_assigned_and_removed()
     {
         Event::fake();
 

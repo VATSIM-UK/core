@@ -15,7 +15,7 @@ class FTEWebInterfaceTest extends TestCase
 
     private $pirep;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->exercise = factory(Flight::class)->create();
@@ -23,14 +23,14 @@ class FTEWebInterfaceTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsFromDashboardAsGuest()
+    public function test_it_redirects_from_dashboard_as_guest()
     {
         $this->get(route('fte.dashboard'))
             ->assertRedirect(route('landing'));
     }
 
     /** @test */
-    public function testItLoadsTheDashboardAndExerciseButton()
+    public function test_it_loads_the_dashboard_and_exercise_button()
     {
         $this->actingAs($this->user, 'web')
             ->get(route('fte.dashboard'))
@@ -39,7 +39,7 @@ class FTEWebInterfaceTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsWhenNoExercisesAvailable()
+    public function test_it_redirects_when_no_exercises_available()
     {
         $this->exercise->enabled = false;
         $this->pirep->bid->flight->enabled = false;
@@ -54,14 +54,14 @@ class FTEWebInterfaceTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsFromGuideAsGuest()
+    public function test_it_redirects_from_guide_as_guest()
     {
         $this->get(route('fte.guide'))
             ->assertRedirect(route('landing'));
     }
 
     /** @test */
-    public function testItLoadsTheGuide()
+    public function test_it_loads_the_guide()
     {
         $this->actingAs($this->user, 'web')
             ->get(route('fte.guide'))
@@ -69,14 +69,14 @@ class FTEWebInterfaceTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsFromExerciseIndexAsGuest()
+    public function test_it_redirects_from_exercise_index_as_guest()
     {
         $this->get(route('fte.exercises'))
             ->assertRedirect(route('landing'));
     }
 
     /** @test */
-    public function testItLoadsTheExerciseIndex()
+    public function test_it_loads_the_exercise_index()
     {
         $this->actingAs($this->user, 'web')
             ->get(route('fte.exercises'))
@@ -84,14 +84,14 @@ class FTEWebInterfaceTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsFromExerciseAsGuest()
+    public function test_it_redirects_from_exercise_as_guest()
     {
         $this->get(route('fte.exercises', $this->exercise))
             ->assertRedirect(route('landing'));
     }
 
     /** @test */
-    public function testItLoadsTheExercise()
+    public function test_it_loads_the_exercise()
     {
         $this->actingAs($this->user, 'web')
             ->get(route('fte.exercises', $this->exercise))
@@ -99,14 +99,14 @@ class FTEWebInterfaceTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsFromHistoryAsGuest()
+    public function test_it_redirects_from_history_as_guest()
     {
         $this->get(route('fte.history'))
             ->assertRedirect(route('landing'));
     }
 
     /** @test */
-    public function testItLoadsHistory()
+    public function test_it_loads_history()
     {
         $this->actingAs($this->user, 'web')
             ->get(route('fte.history'))
@@ -114,14 +114,14 @@ class FTEWebInterfaceTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsFromPirepAsGuest()
+    public function test_it_redirects_from_pirep_as_guest()
     {
         $this->get(route('fte.history', $this->pirep->id))
             ->assertRedirect(route('landing'));
     }
 
     /** @test */
-    public function testItLoadsPirep()
+    public function test_it_loads_pirep()
     {
         $this->actingAs($this->pirep->bid->account, 'web')
             ->get(route('fte.history', $this->pirep->id))
@@ -129,7 +129,7 @@ class FTEWebInterfaceTest extends TestCase
     }
 
     /** @test */
-    public function testItDoesntLoadPirepForWrongUser()
+    public function test_it_doesnt_load_pirep_for_wrong_user()
     {
         $this->actingAs($this->user, 'web')
             ->get(route('fte.history', $this->pirep->id))

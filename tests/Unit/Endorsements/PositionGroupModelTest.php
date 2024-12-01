@@ -23,7 +23,7 @@ class PositionGroupModelTest extends TestCase
     }
 
     /** @test */
-    public function itCanBeCreated()
+    public function it_can_be_created()
     {
         $positionGroup = PositionGroup::create([
             'name' => 'My First Endorsement',
@@ -33,7 +33,7 @@ class PositionGroupModelTest extends TestCase
     }
 
     /** @test */
-    public function itCanBeAssociatedWithACondition()
+    public function it_can_be_associated_with_a_condition()
     {
         $condition = factory(PositionGroupCondition::class)->make(['position_group_id' => null]);
 
@@ -49,7 +49,7 @@ class PositionGroupModelTest extends TestCase
     }
 
     /** @test */
-    public function itWillReportConditionsMetWhenAllAreMetForSingleAirfield()
+    public function it_will_report_conditions_met_when_all_are_met_for_single_airfield()
     {
         $this->createMockCondition();
 
@@ -64,7 +64,7 @@ class PositionGroupModelTest extends TestCase
     }
 
     /** @test */
-    public function itWillReportConditionsNotMetWhenNetworkDataNotPresentForSingleAirfield()
+    public function it_will_report_conditions_not_met_when_network_data_not_present_for_single_airfield()
     {
         $this->createMockCondition();
 
@@ -73,7 +73,7 @@ class PositionGroupModelTest extends TestCase
     }
 
     /** @test */
-    public function itWillReportConditionsMetForMultipleAirfieldsWhenNetworkDataPresent()
+    public function it_will_report_conditions_met_for_multiple_airfields_when_network_data_present()
     {
         $this->createMockCondition(['EGKK_%', 'EGLL_%'], PositionGroupCondition::TYPE_SUM_OF_AIRFIELDS);
 
@@ -94,7 +94,7 @@ class PositionGroupModelTest extends TestCase
     }
 
     /** @test */
-    public function itWillReportConditionsNotMetForMultipleAirfieldsWhenRequiredTimeIsntMet()
+    public function it_will_report_conditions_not_met_for_multiple_airfields_when_required_time_isnt_met()
     {
         $this->createMockCondition(['EGKK_%', 'EGLL_%'], PositionGroupCondition::TYPE_SUM_OF_AIRFIELDS);
 
@@ -114,7 +114,7 @@ class PositionGroupModelTest extends TestCase
     }
 
     /** @test */
-    public function itShouldReturnValueFromCacheDuringConditionTest()
+    public function it_should_return_value_from_cache_during_condition_test()
     {
         $this->createMockCondition();
 

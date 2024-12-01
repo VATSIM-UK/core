@@ -18,7 +18,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
     private Account $account;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -48,7 +48,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     }
 
     /** @test */
-    public function itShouldDetectWhenTheoryExamPassed()
+    public function it_should_detect_when_theory_exam_passed()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
         $this->createTheoryResult('S3', true);
@@ -57,7 +57,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     }
 
     /** @test */
-    public function itShouldDetectWhenTheoryExamFailed()
+    public function it_should_detect_when_theory_exam_failed()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
         $this->createTheoryResult('S3', false);
@@ -66,7 +66,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     }
 
     /** @test */
-    public function itShouldReturnFalseWhenPilotWaitingList()
+    public function it_should_return_false_when_pilot_waiting_list()
     {
         $waitingListAccount = $this->setupWaitingList(null, WaitingList::PILOT_DEPARTMENT);
 
@@ -74,7 +74,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     }
 
     /** @test */
-    public function itShouldReturnNullWhenNoExamConfigured()
+    public function it_should_return_null_when_no_exam_configured()
     {
         $waitingListAccount = $this->setupWaitingList(null);
         $this->createTheoryResult('S3', true);
@@ -83,7 +83,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     }
 
     /** @test */
-    public function itShouldReturnNullWhenNoTheoryResultFound()
+    public function it_should_return_null_when_no_theory_result_found()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
         // note no exam pass
@@ -92,7 +92,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     }
 
     /** @test */
-    public function itShouldOnlyDetectPassesAtTheConfiguredExamLevel()
+    public function it_should_only_detect_passes_at_the_configured_exam_level()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
         $this->createTheoryResult('S2', true);
@@ -101,7 +101,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     }
 
     /** @test */
-    public function itShouldDisregardMultipleFailuresAtConfiguredLevel()
+    public function it_should_disregard_multiple_failures_at_configured_level()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
         $this->createTheoryResult('S3', false);
@@ -111,7 +111,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     }
 
     /** @test */
-    public function itShouldDisplayPassedWithPreviousFailuresAndThenPass()
+    public function it_should_display_passed_with_previous_failures_and_then_pass()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
         $this->createTheoryResult('S3', false);

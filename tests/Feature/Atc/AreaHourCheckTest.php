@@ -15,7 +15,7 @@ class AreaHourCheckTest extends TestCase
     protected $hourCheckRoute = 'controllers.hour_check.area';
 
     /** @test */
-    public function testRedirectsAwayIfUserNotS3()
+    public function test_redirects_away_if_user_not_s3()
     {
         $account = Account::factory()->create();
 
@@ -29,7 +29,7 @@ class AreaHourCheckTest extends TestCase
     }
 
     /** @test */
-    public function testSuccessfulNavigationIfUserIsS3()
+    public function test_successful_navigation_if_user_is_s3()
     {
         $this->markTestSkipped('Page disabled.');
         // create relevant endorsement.
@@ -46,7 +46,7 @@ class AreaHourCheckTest extends TestCase
     }
 
     /** @test */
-    public function testRedirectsAwayIfNoRelevantEndorsementsCreated()
+    public function test_redirects_away_if_no_relevant_endorsements_created()
     {
         $account = Account::factory()->create();
 

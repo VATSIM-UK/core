@@ -16,7 +16,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
 
     private WaitingList $waitingList;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -12,7 +12,7 @@ class FeedbackTest extends TestCase
 
     private $form;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -20,14 +20,14 @@ class FeedbackTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsFromFeedbackFormSelectorAsGuest()
+    public function test_it_redirects_from_feedback_form_selector_as_guest()
     {
         $this->get(route('mship.feedback.new'))
             ->assertRedirect(route('landing'));
     }
 
     /** @test */
-    public function testItLoadsTheFeedbackFormSelector()
+    public function test_it_loads_the_feedback_form_selector()
     {
         $this->actingAs($this->user, 'web')
             ->get(route('mship.feedback.new'))
@@ -35,14 +35,14 @@ class FeedbackTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsFromFeedbackFormAsGuest()
+    public function test_it_redirects_from_feedback_form_as_guest()
     {
         $this->get(route('mship.feedback.new.form', $this->form->slug))
             ->assertRedirect(route('landing'));
     }
 
     /** @test */
-    public function testItLoadsTheFeedbackForm()
+    public function test_it_loads_the_feedback_form()
     {
         $this->actingAs($this->user, 'web')
             ->get(route('mship.feedback.new.form', $this->form->slug))
@@ -50,7 +50,7 @@ class FeedbackTest extends TestCase
     }
 
     /** @test */
-    public function testItFillsUserCidInAtcForm()
+    public function test_it_fills_user_cid_in_atc_form()
     {
         $form = Form::whereSlug('atc')->first();
         if (! $form) {
@@ -64,7 +64,7 @@ class FeedbackTest extends TestCase
         $request->assertSee('mycidishere');
     }
 
-    public function testItRedirectsToAtcFeedback()
+    public function test_it_redirects_to_atc_feedback()
     {
         $form = Form::whereSlug('atc')->first();
         if (! $form) {

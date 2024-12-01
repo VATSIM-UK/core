@@ -14,7 +14,7 @@ class AirfieldInformationTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function testItLoadsTheAirportPage()
+    public function test_it_loads_the_airport_page()
     {
         $airport = factory(Airport::class)->create();
 

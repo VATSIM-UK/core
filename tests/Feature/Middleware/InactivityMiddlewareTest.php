@@ -13,7 +13,7 @@ class InactivityMiddlewareTest extends TestCase
 
     private $role;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,7 +23,7 @@ class InactivityMiddlewareTest extends TestCase
     }
 
     /** @test */
-    public function testAUserIsNotLoggedOutBeforeSessionEnds()
+    public function test_a_user_is_not_logged_out_before_session_ends()
     {
         $this->actingAs($this->user)
             ->get(route('mship.manage.dashboard'))
@@ -37,7 +37,7 @@ class InactivityMiddlewareTest extends TestCase
     }
 
     /** @test */
-    public function testAUserIsLoggedOutAfterSessionEnds()
+    public function test_a_user_is_logged_out_after_session_ends()
     {
         $this->actingAs($this->user)
             ->get(route('mship.manage.dashboard'))
@@ -50,7 +50,7 @@ class InactivityMiddlewareTest extends TestCase
     }
 
     /** @test */
-    public function testAUserIsntRedirectedToLoginFromPublicPageAfterSessionTimeout()
+    public function test_a_user_isnt_redirected_to_login_from_public_page_after_session_timeout()
     {
         $this->actingAs($this->user)
             ->get(route('site.home'))

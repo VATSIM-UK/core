@@ -16,14 +16,14 @@ class ReferenceTest extends TestCase
 {
     use DatabaseTransactions, WithFaker;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Mail::fake();
     }
 
     /** @test */
-    public function itCantSubmitItselfWhenNotRequested()
+    public function it_cant_submit_itself_when_not_requested()
     {
         $this->expectException(ReferenceNotRequestedException::class);
         $reference = factory(Reference::class)->create();
@@ -32,7 +32,7 @@ class ReferenceTest extends TestCase
     }
 
     /** @test */
-    public function itCanSubmitItself()
+    public function it_can_submit_itself()
     {
         $reference = factory(Reference::class)->create(['status' => Reference::STATUS_REQUESTED]);
         $text = $this->faker->realText;
@@ -43,7 +43,7 @@ class ReferenceTest extends TestCase
     }
 
     /** @test */
-    public function itCanDeleteItself()
+    public function it_can_delete_itself()
     {
         $reference = factory(Reference::class)->create();
         $reference->delete();
@@ -52,7 +52,7 @@ class ReferenceTest extends TestCase
     }
 
     /** @test */
-    public function itCantRejectItselfWhenNotUnderReview()
+    public function it_cant_reject_itself_when_not_under_review()
     {
         $this->expectException(ReferenceNotUnderReviewException::class);
         $reference = factory(Reference::class)->create();
@@ -60,7 +60,7 @@ class ReferenceTest extends TestCase
     }
 
     /** @test */
-    public function itCanRejectItself()
+    public function it_can_reject_itself()
     {
         $reference = factory(Reference::class)->create(['status' => Reference::STATUS_UNDER_REVIEW]);
         $reference->reject();
@@ -68,7 +68,7 @@ class ReferenceTest extends TestCase
     }
 
     /** @test */
-    public function itReportsStatisticsCorrectly()
+    public function it_reports_statistics_correctly()
     {
         $referenceTypes = [
             'statisticTotal' => collect(Reference::$REFERENCE_IS_PENDING)->merge(Reference::$REFERENCE_IS_SUBMITTED)->unique()->all(),

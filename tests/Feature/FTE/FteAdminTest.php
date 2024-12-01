@@ -14,7 +14,7 @@ class FteAdminTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function testExerciseCanBeCreated()
+    public function test_exercise_can_be_created()
     {
         Storage::fake('public');
 
@@ -33,7 +33,7 @@ class FteAdminTest extends TestCase
     }
 
     /** @test */
-    public function testExerciseCanBeDeleted()
+    public function test_exercise_can_be_deleted()
     {
         $file = CoreUploadedFile::fake()->image('testing.png');
         $name = sha1("{$file->getClientOriginalName()}.{$file->getClientOriginalExtension()}");
