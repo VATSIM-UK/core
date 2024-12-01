@@ -7,19 +7,19 @@ use Tests\TestCase;
 class CommunityPagesTest extends TestCase
 {
     /** @test */
-    public function testItLoadsTheVtGuide()
+    public function test_it_loads_the_vt_guide()
     {
         $this->get(route('site.community.vt-guide'))->assertOk();
     }
 
     /** @test */
-    public function testItLoadTheTerms()
+    public function test_it_load_the_terms()
     {
         $this->get(route('site.community.terms'))->assertOk();
     }
 
     /** @test */
-    public function testItLoadsTeamSpeak()
+    public function test_it_loads_team_speak()
     {
         $this->get(route('site.community.teamspeak'))->assertOk();
     }

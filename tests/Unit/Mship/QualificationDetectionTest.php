@@ -12,7 +12,7 @@ class QualificationDetectionTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function itHandlesMinus1ByNotAssigningPilotRatings()
+    public function it_handles_minus1_by_not_assigning_pilot_ratings()
     {
         $qualifications = Qualification::parseVatsimPilotQualifications(-1);
 
@@ -20,7 +20,7 @@ class QualificationDetectionTest extends TestCase
     }
 
     /** @test */
-    public function itHandlesFlightInstructorRating()
+    public function it_handles_flight_instructor_rating()
     {
         $flightInstructorQualification = Qualification::where('code', 'FI')->first();
 
@@ -30,7 +30,7 @@ class QualificationDetectionTest extends TestCase
     }
 
     /** @test */
-    public function itHandlesFlightExaminerRating()
+    public function it_handles_flight_examiner_rating()
     {
         $flightExaminerQualification = Qualification::where('code', 'FE')->first();
 

@@ -12,14 +12,14 @@ class FeedbackModelTest extends TestCase
 
     private $feedback;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->feedback = factory(Feedback::class)->create();
     }
 
     /** @test */
-    public function itMarksTheFeedbackAsActioned()
+    public function it_marks_the_feedback_as_actioned()
     {
         $this->assertNull($this->feedback->actioned_at);
         $this->assertNull($this->feedback->actioned_comment);
@@ -33,7 +33,7 @@ class FeedbackModelTest extends TestCase
     }
 
     /** @test */
-    public function itMarksTheFeedbackAsUnActioned()
+    public function it_marks_the_feedback_as_un_actioned()
     {
         $this->feedback->markActioned($this->privacc);
 
@@ -45,7 +45,7 @@ class FeedbackModelTest extends TestCase
     }
 
     /** @test */
-    public function itMarksTheFeedbackAsSent()
+    public function it_marks_the_feedback_as_sent()
     {
         $comment = 'Test';
 
@@ -69,7 +69,7 @@ class FeedbackModelTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsTheSender()
+    public function it_returns_the_sender()
     {
         $feedback = factory(Feedback::class)->create([
             'sent_by_id' => $this->privacc->id,
@@ -79,7 +79,7 @@ class FeedbackModelTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyReturnsSentScope()
+    public function it_correctly_returns_sent_scope()
     {
         $this->feedback->markSent($this->privacc);
 
@@ -90,7 +90,7 @@ class FeedbackModelTest extends TestCase
     }
 
     /** @test */
-    public function itCalculatesActionedAtCorrectly()
+    public function it_calculates_actioned_at_correctly()
     {
         $this->assertFalse($this->feedback->actioned);
 

@@ -12,7 +12,7 @@ class WaitingListsTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,7 +23,7 @@ class WaitingListsTest extends TestCase
     }
 
     /** @test */
-    public function testIndexWithNoWaitingListAccounts()
+    public function test_index_with_no_waiting_list_accounts()
     {
         factory(WaitingList::class)->create(['name' => 'My List']);
 
@@ -34,7 +34,7 @@ class WaitingListsTest extends TestCase
     }
 
     /** @test */
-    public function testIndexWithAWaitingListAccounts()
+    public function test_index_with_a_waiting_list_accounts()
     {
         $list = factory(WaitingList::class)->create(['name' => 'My List']);
         $list->addToWaitingList($this->user, $this->privacc);

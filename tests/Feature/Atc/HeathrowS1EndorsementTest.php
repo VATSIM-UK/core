@@ -18,7 +18,7 @@ class HeathrowS1EndorsementTest extends TestCase
 
     private const ROUTE = 'controllers.endorsements.heathrow_ground_s1';
 
-    public function testItPassesFor55Hours()
+    public function test_it_passes_for55_hours()
     {
         $account = $this->getS1Account();
         $this->endorseForEgkk($account, Carbon::create(2000, 1, 1));
@@ -51,7 +51,7 @@ class HeathrowS1EndorsementTest extends TestCase
             ->assertViewHas('conditionsMet', true);
     }
 
-    public function testItFailsFor55HoursNonGatwick()
+    public function test_it_fails_for55_hours_non_gatwick()
     {
         $account = $this->getS1Account();
         $this->endorseForEgkk($account, Carbon::create(2000, 1, 1));
@@ -78,7 +78,7 @@ class HeathrowS1EndorsementTest extends TestCase
             ->assertViewHas('conditionsMet', false);
     }
 
-    public function testItFailsFor55HoursPreEndorsementGatwick()
+    public function test_it_fails_for55_hours_pre_endorsement_gatwick()
     {
         $account = $this->getS1Account();
         $this->endorseForEgkk($account, Carbon::create(2025, 1, 1));
@@ -117,7 +117,7 @@ class HeathrowS1EndorsementTest extends TestCase
             ->assertViewHas('conditionsMet', false);
     }
 
-    public function testItDetectsNotOnRoster()
+    public function test_it_detects_not_on_roster()
     {
         $account = $this->getS1AccountNotOnRoster();
 
@@ -147,7 +147,7 @@ class HeathrowS1EndorsementTest extends TestCase
             ->assertViewHas('conditionsMet', false);
     }
 
-    public function testItRedirectsForNonS1()
+    public function test_it_redirects_for_non_s1()
     {
         $account = Account::factory()->create();
 
@@ -156,7 +156,7 @@ class HeathrowS1EndorsementTest extends TestCase
             ->assertRedirect(route('mship.manage.dashboard'));
     }
 
-    public function testItRedirectsForS2()
+    public function test_it_redirects_for_s2()
     {
         $account = Account::factory()->create();
 

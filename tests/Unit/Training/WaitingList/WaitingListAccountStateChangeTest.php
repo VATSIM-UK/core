@@ -24,7 +24,7 @@ class WaitingListAccountStateChangeTest extends TestCase
 
     private WaitingList $nonHomeMembersOnlyWaitingList;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -84,7 +84,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     }
 
     /** @test */
-    public function itShouldNotRemoveFromListWhenDivisionStateDoesNotChange()
+    public function it_should_not_remove_from_list_when_division_state_does_not_change()
     {
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
@@ -101,7 +101,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     }
 
     /** @test */
-    public function itShouldNotSendNotificationWhenNotOnListButStateChanged()
+    public function it_should_not_send_notification_when_not_on_list_but_state_changed()
     {
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
@@ -115,7 +115,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     }
 
     /** @test */
-    public function itShouldRemoveFromListWhenUserBecomesInactiveWhenAltered()
+    public function it_should_remove_from_list_when_user_becomes_inactive_when_altered()
     {
         $account = Account::factory()->create();
         $account->inactive = false;
@@ -135,7 +135,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     }
 
     /** @test */
-    public function itShouldNotNotifyInactiveAccountNotOnList()
+    public function it_should_not_notify_inactive_account_not_on_list()
     {
         $account = Account::factory()->create();
         $account->inactive = true;

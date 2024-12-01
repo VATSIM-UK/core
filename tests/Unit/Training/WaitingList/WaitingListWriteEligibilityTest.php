@@ -16,7 +16,7 @@ class WaitingListWriteEligibilityTest extends TestCase
 
     public WaitingList $waitingList;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -26,7 +26,7 @@ class WaitingListWriteEligibilityTest extends TestCase
     }
 
     /** @test */
-    public function itShouldWriteEligibilityTrueToWaitingListAccountWithNoFlags()
+    public function it_should_write_eligibility_true_to_waiting_list_account_with_no_flags()
     {
         $waitingListAccount = $this->waitingList->addToWaitingList($this->user, $this->privacc);
         $this->waitingList->refresh();
@@ -49,7 +49,7 @@ class WaitingListWriteEligibilityTest extends TestCase
     }
 
     /** @test */
-    public function itShouldWriteEligibilityWithPassingManualFlags()
+    public function it_should_write_eligibility_with_passing_manual_flags()
     {
         $flag = factory(WaitingListFlag::class)->create();
         $this->waitingList->addFlag($flag);

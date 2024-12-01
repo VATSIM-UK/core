@@ -19,7 +19,7 @@ class DiscordRoleRuleTest extends TestCase
     use DatabaseTransactions;
 
     #[DataProvider('providerTestData')]
-    public function testItReportsAccountSatisfiesCorrectly($permSetup, $stateSetup, $qualSetup, $ctsControlSetup, $endorsableSetup, $expected)
+    public function test_it_reports_account_satisfies_correctly($permSetup, $stateSetup, $qualSetup, $ctsControlSetup, $endorsableSetup, $expected)
     {
         $state = State::first();
 

@@ -23,7 +23,7 @@ class WaitingListAccountTest extends TestCase
     }
 
     /** @test */
-    public function itCanHaveNotesAdded()
+    public function it_can_have_notes_added()
     {
         $account = Account::factory()->create();
 
@@ -34,7 +34,7 @@ class WaitingListAccountTest extends TestCase
     }
 
     /** @test */
-    public function itShouldDefaultCreatedAtToNowIfNotProvided()
+    public function it_should_default_created_at_to_now_if_not_provided()
     {
         $account = Account::factory()->create();
         $this->waitingList->addToWaitingList($account, $this->privacc);
@@ -47,7 +47,7 @@ class WaitingListAccountTest extends TestCase
     }
 
     /** @test */
-    public function itShouldSetCreatedAtToGivenDateIfProvided()
+    public function it_should_set_created_at_to_given_date_if_provided()
     {
         $date = Carbon::parse('2020-01-01 12:00:00');
         $account = Account::factory()->create();
@@ -61,7 +61,7 @@ class WaitingListAccountTest extends TestCase
     }
 
     /** @test */
-    public function itShouldKnowItsPosition()
+    public function it_should_know_its_position()
     {
         /** @var Account $account */
         $account = Account::factory()->create();

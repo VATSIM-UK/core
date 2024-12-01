@@ -12,7 +12,7 @@ class FeedbackUserSearchTest extends TestCase
 
     private $otherUser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -20,7 +20,7 @@ class FeedbackUserSearchTest extends TestCase
     }
 
     /** @test */
-    public function testItReturnsAnotherUserByName()
+    public function test_it_returns_another_user_by_name()
     {
         $searchQuery = $this->actingAs($this->user)
             ->get(route('mship.feedback.usersearch', $this->otherUser->real_name))
@@ -31,7 +31,7 @@ class FeedbackUserSearchTest extends TestCase
     }
 
     /** @test */
-    public function testItReturnsAnotherUserById()
+    public function test_it_returns_another_user_by_id()
     {
         $searchQuery = $this->actingAs($this->user)
             ->get(route('mship.feedback.usersearch', $this->otherUser->id))
@@ -42,7 +42,7 @@ class FeedbackUserSearchTest extends TestCase
     }
 
     /** @test */
-    public function testItDoesNotReturnCurrentUser()
+    public function test_it_does_not_return_current_user()
     {
         $searchQuery = $this->actingAs($this->user)
             ->get(route('mship.feedback.usersearch', $this->user->real_name))

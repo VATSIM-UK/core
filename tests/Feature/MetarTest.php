@@ -10,7 +10,7 @@ class MetarTest extends \Tests\TestCase
         \Illuminate\Support\Facades\Cache::flush();
     }
 
-    public function testItReturnsMetar()
+    public function test_it_returns_metar()
     {
         $metar = 'EGKK 122050Z 21004KT CAVOK 09/02 Q1017';
         Http::fake([
@@ -21,7 +21,7 @@ class MetarTest extends \Tests\TestCase
         $this->assertEquals($metar, $response);
     }
 
-    public function testItHandlesDowntimeGracefully()
+    public function test_it_handles_downtime_gracefully()
     {
         Http::fake([
             'http://metar.vatsim.net/*' => Http::response('', 502),

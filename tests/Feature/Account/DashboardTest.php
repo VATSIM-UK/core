@@ -10,7 +10,7 @@ class DashboardTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function testItRedirectsToDashboard()
+    public function test_it_redirects_to_dashboard()
     {
         Notification::query()->delete();
 
