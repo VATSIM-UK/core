@@ -12,7 +12,7 @@ class NotificationTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function itCanAssociateReadNotifications()
+    public function it_can_associate_read_notifications()
     {
         $notification = factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
         $this->assertCount(0, $this->user->readSystemNotifications);
@@ -22,7 +22,7 @@ class NotificationTest extends TestCase
     }
 
     /** @test */
-    public function itCanReportANotificationIsRead()
+    public function it_can_report_a_notification_is_read()
     {
         $notification1 = factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
         $notification2 = factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
@@ -33,7 +33,7 @@ class NotificationTest extends TestCase
     }
 
     /** @test */
-    public function itCanShowsUnreadNotifications()
+    public function it_can_shows_unread_notifications()
     {
         factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
         $this->assertCount(1, $this->user->unread_notifications);

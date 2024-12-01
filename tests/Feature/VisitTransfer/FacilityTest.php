@@ -16,7 +16,7 @@ class FacilityTest extends TestCase
 
     private $divisionUser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -38,7 +38,7 @@ class FacilityTest extends TestCase
         factory(Facility::class)->states('pilot_visit')->create();
     }
 
-    public function testNoOptionToApplyWithNoFacilities()
+    public function test_no_option_to_apply_with_no_facilities()
     {
         $this->actingAs($this->internationalUser)
             ->get(route('visiting.landing'))
@@ -47,7 +47,7 @@ class FacilityTest extends TestCase
             ->assertSee(trans('application.dashboard.apply.atc.transfer.no_places'));
     }
 
-    public function testNoOptionToApplyWithNoOpenFacilities()
+    public function test_no_option_to_apply_with_no_open_facilities()
     {
         factory(Facility::class, 'atc_visit')->create(['open' => false]);
 
@@ -58,7 +58,7 @@ class FacilityTest extends TestCase
             ->assertSee(trans('application.dashboard.apply.atc.transfer.no_places'));
     }
 
-    public function testOptionToApplyWithHiddenFacilities()
+    public function test_option_to_apply_with_hidden_facilities()
     {
         factory(Facility::class)->states('atc_visit')->create(['public' => false]);
 
@@ -69,7 +69,7 @@ class FacilityTest extends TestCase
             ->assertSee(trans('application.dashboard.apply.atc.transfer.no_places'));
     }
 
-    public function testOptionToApplyWithFacilities()
+    public function test_option_to_apply_with_facilities()
     {
         $this->insertFacilities();
 
@@ -80,7 +80,7 @@ class FacilityTest extends TestCase
             ->assertSee(trans('application.dashboard.apply.atc.transfer.start'));
     }
 
-    public function testNoOptionToApplyWhenDivisionMember()
+    public function test_no_option_to_apply_when_division_member()
     {
         $this->insertFacilities();
 
@@ -91,7 +91,7 @@ class FacilityTest extends TestCase
             ->assertSee(trans('application.dashboard.apply.atc.transfer.unable'));
     }
 
-    public function testNoOptionToApplyWhenHasOpenApplication()
+    public function test_no_option_to_apply_when_has_open_application()
     {
         $this->insertFacilities();
         $this->internationalUser->createVisitingTransferApplication([
@@ -105,7 +105,7 @@ class FacilityTest extends TestCase
             ->assertSee(trans('application.dashboard.apply.visit_open'));
     }
 
-    public function testHasOptionToContinueWhenHasOpenApplication()
+    public function test_has_option_to_continue_when_has_open_application()
     {
         $this->insertFacilities();
         $this->internationalUser->createVisitingTransferApplication([

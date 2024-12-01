@@ -83,8 +83,9 @@ class AuthServiceProvider extends ServiceProvider
             $permissionLoader->registerPermissions($gate);
         });
 
-        // TODO: Remove use-permission
+        // TODO: Remove 'use-permission' across codebase - use user()->can instead
         Gate::define('use-permission', function ($user, $permission) {
+            // Superadmin override
             if ($user->hasRole('privacc') && config()->get('app.env') != 'production') {
                 return true;
             }

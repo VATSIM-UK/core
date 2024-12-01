@@ -18,7 +18,7 @@ class EmailAssignmentTest extends TestCase
 
     private $emailOther;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -31,7 +31,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testUserCanAccessEmailAddForm()
+    public function test_user_can_access_email_add_form()
     {
         $this->actingAs($this->user)
             ->get(route('mship.manage.email.add'))
@@ -39,7 +39,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testRedirectOnInvalidEmail()
+    public function test_redirect_on_invalid_email()
     {
         $data = [
             'new_email' => 'not_an_email.com',
@@ -53,7 +53,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testRedirectOnNonMatchingEmail()
+    public function test_redirect_on_non_matching_email()
     {
         $data = [
             'new_email' => 'matching.email@example.com',
@@ -67,7 +67,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testSuccessfulPostEmail()
+    public function test_successful_post_email()
     {
         $data = [
             'new_email' => 'email@example.com',
@@ -81,7 +81,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testDuplicateEmailOnPost()
+    public function test_duplicate_email_on_post()
     {
         $this->user->secondaryEmails()->create(['email' => 'email2@example.com']);
 
@@ -97,7 +97,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testRedirectOnSecondaryEmailDeleted()
+    public function test_redirect_on_secondary_email_deleted()
     {
         $account = $this->user->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
 
@@ -112,7 +112,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testSuccessfulSecondaryEmailAddViaGetHasRelevantData()
+    public function test_successful_secondary_email_add_via_get_has_relevant_data()
     {
         $account = $this->user->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
 
@@ -126,7 +126,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testAssignmentsEmailsPassedToView()
+    public function test_assignments_emails_passed_to_view()
     {
         $verifiedEmailAddress = 'my-verified-email@foo.com';
         $unverifiedEmailAddress = 'my-unverified-email@bar.com';
@@ -150,7 +150,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testUserCannotDeleteOtherUsersEmail()
+    public function test_user_cannot_delete_other_users_email()
     {
         $emailInstance = $this->userOther->secondaryEmails()->create(['email' => $this->emailOther]);
 
@@ -159,7 +159,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testUserCannotDeleteOtherUsersEmailOnPost()
+    public function test_user_cannot_delete_other_users_email_on_post()
     {
         $emailInstance = $this->userOther->secondaryEmails()->create(['email' => $this->emailOther]);
 
@@ -168,7 +168,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testExistingAuthenticatedUserCanVerifyEmailViaGet()
+    public function test_existing_authenticated_user_can_verify_email_via_get()
     {
         $email = factory(Email::class)->states('unverified')->create();
 
@@ -179,7 +179,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testItTriggersAnUpdateWhenAssigningSSOEmail()
+    public function test_it_triggers_an_update_when_assigning_sso_email()
     {
         $sso_client = factory(\Laravel\Passport\Client::class)->create();
         $email = factory(Email::class)->create(['account_id' => $this->user->id]);
@@ -195,7 +195,7 @@ class EmailAssignmentTest extends TestCase
     }
 
     /** @test */
-    public function testItTriggersAnUpdateWhenUnAssigningSSOEmail()
+    public function test_it_triggers_an_update_when_un_assigning_sso_email()
     {
         $sso_email = factory(\App\Models\Sso\Email::class)->create();
 

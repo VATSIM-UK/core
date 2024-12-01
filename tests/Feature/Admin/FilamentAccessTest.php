@@ -12,7 +12,7 @@ class FilamentAccessTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function itAllowsPrivaccToAccessFilament()
+    public function it_allows_privacc_to_access_filament()
     {
         $this->actingAs($this->privacc);
 
@@ -25,7 +25,7 @@ class FilamentAccessTest extends TestCase
     }
 
     /** @test */
-    public function itReturns403WhenNavigatingToUrlWithoutRole()
+    public function it_returns403_when_navigating_to_url_without_role()
     {
         $account = Account::factory()->create();
 
@@ -35,7 +35,7 @@ class FilamentAccessTest extends TestCase
     }
 
     /** @test */
-    public function itReturns200WhenNavigatingToUrlWithRole()
+    public function it_returns200_when_navigating_to_url_with_role()
     {
         $account = Account::factory()->create();
 

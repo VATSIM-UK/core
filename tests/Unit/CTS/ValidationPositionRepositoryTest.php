@@ -24,7 +24,7 @@ class ValidationPositionRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanFindAPositionById()
+    public function it_can_find_a_position_by_id()
     {
         $position = factory(ValidationPosition::class)->create();
         $search = $this->subjectUnderTest->findByPositionId($position->id);
@@ -33,7 +33,7 @@ class ValidationPositionRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanFindAPositionByCallsign()
+    public function it_can_find_a_position_by_callsign()
     {
         $position = factory(ValidationPosition::class)->create([
             'position' => 'Shanwick (EGGX_FSS)',
@@ -45,7 +45,7 @@ class ValidationPositionRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsValidatedMembers()
+    public function it_returns_validated_members()
     {
         $position = factory(ValidationPosition::class)->create();
 
@@ -57,7 +57,7 @@ class ValidationPositionRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itFormatsValidatedMembers()
+    public function it_formats_validated_members()
     {
         $position = factory(ValidationPosition::class)->create();
         $member = factory(Member::class)->create();

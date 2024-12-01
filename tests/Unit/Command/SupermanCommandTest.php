@@ -11,14 +11,14 @@ class SupermanCommandTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function itReportsToConsoleWhenSuccessful()
+    public function it_reports_to_console_when_successful()
     {
         $this->artisan('grant:superman', ['cid' => $this->user->id])
             ->expectsOutput('Account added to the superman role!');
     }
 
     /** @test */
-    public function itReportsToConsoleWhenRoleAlreadyFound()
+    public function it_reports_to_console_when_role_already_found()
     {
         $this->user->assignRole(Role::findByName('privacc'));
 
@@ -27,14 +27,14 @@ class SupermanCommandTest extends TestCase
     }
 
     /** @test */
-    public function itReportsToConsoleWhenTheCIDIsNotFound()
+    public function it_reports_to_console_when_the_cid_is_not_found()
     {
         $this->artisan('grant:superman', ['cid' => 0000000])
             ->expectsOutput('The specific CID was not found.');
     }
 
     /** @test */
-    public function itAttachesRoleSuccessfully()
+    public function it_attaches_role_successfully()
     {
         $this->artisan('grant:superman', ['cid' => $this->user->id])
             ->expectsOutput('Account added to the superman role!');

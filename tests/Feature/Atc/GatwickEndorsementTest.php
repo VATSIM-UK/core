@@ -16,7 +16,7 @@ class GatwickEndorsementTest extends TestCase
 
     private const ROUTE = 'controllers.endorsements.gatwick_ground';
 
-    public function testItPassesFor55Hours()
+    public function test_it_passes_for55_hours()
     {
         $account = $this->getS1Account();
 
@@ -48,7 +48,7 @@ class GatwickEndorsementTest extends TestCase
 
     }
 
-    public function testItFailsFor30Hours()
+    public function test_it_fails_for30_hours()
     {
         $account = $this->getS1Account();
 
@@ -73,7 +73,7 @@ class GatwickEndorsementTest extends TestCase
             ->assertViewHas('conditionsMet', false);
     }
 
-    public function testItFailsForHoursNonUK()
+    public function test_it_fails_for_hours_non_uk()
     {
         $account = $this->getS1Account();
 
@@ -102,7 +102,7 @@ class GatwickEndorsementTest extends TestCase
             ->assertViewHas('hoursMet', false);
     }
 
-    public function testItDetectsNotOnRoster()
+    public function test_it_detects_not_on_roster()
     {
         $account = $this->getS1AccountNotOnRoster();
 
@@ -133,7 +133,7 @@ class GatwickEndorsementTest extends TestCase
             ->assertViewHas('conditionsMet', false);
     }
 
-    public function testItRedirectsForNonS1()
+    public function test_it_redirects_for_non_s1()
     {
         $account = Account::factory()->create();
 
@@ -142,7 +142,7 @@ class GatwickEndorsementTest extends TestCase
             ->assertRedirect(route('mship.manage.dashboard'));
     }
 
-    public function testItRedirectsForS2()
+    public function test_it_redirects_for_s2()
     {
         $account = Account::factory()->create();
 

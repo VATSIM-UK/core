@@ -13,7 +13,7 @@ class AtcSessionTest extends TestCase
 
     private $atcSession;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -21,7 +21,7 @@ class AtcSessionTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsAMessageForAFacility()
+    public function it_returns_a_message_for_a_facility()
     {
         tap(factory(Atc::class)->make(['facility_type' => 1]), function ($model) {
             $this->assertEquals('Observer', $model->type);
@@ -57,7 +57,7 @@ class AtcSessionTest extends TestCase
     }
 
     /** @test */
-    public function itDetectsWhetherASessionIsWithinTheUK()
+    public function it_detects_whether_a_session_is_within_the_uk()
     {
         tap(factory(Atc::class)->create(['callsign' => 'EGGD_APP']), function ($model) {
             $this->assertEquals(true, $model->uk_session);
@@ -69,7 +69,7 @@ class AtcSessionTest extends TestCase
     }
 
     /** @test */
-    public function itOnlyReturnsUkSessionDataOnRelationship()
+    public function it_only_returns_uk_session_data_on_relationship()
     {
         tap(factory(Atc::class)->create(['callsign' => 'EGGD_APP']), function ($model) {
             factory(Atc::class)->create(['callsign' => 'LFMN_APP', 'account_id' => $model->account_id]);

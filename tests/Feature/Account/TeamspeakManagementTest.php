@@ -13,7 +13,7 @@ class TeamspeakManagementTest extends TestCase
     private $registration;
 
     /** @test */
-    public function testUserCanDeleteOwnRegistration()
+    public function test_user_can_delete_own_registration()
     {
         $this->followingRedirects()->actingAs($this->registration->account)
             ->get(route('teamspeak.delete', $this->registration))
@@ -21,7 +21,7 @@ class TeamspeakManagementTest extends TestCase
     }
 
     /** @test */
-    public function testUserCantDeleteOthersRegistration()
+    public function test_user_cant_delete_others_registration()
     {
         $this->followingRedirects()->actingAs($this->user)
             ->get(route('teamspeak.delete', $this->registration))
@@ -29,7 +29,7 @@ class TeamspeakManagementTest extends TestCase
     }
 
     /** @test */
-    public function testCanGetStatusOfOwnRegistration()
+    public function test_can_get_status_of_own_registration()
     {
         $this->followingRedirects()->actingAs($this->registration->account)
             ->post(route('teamspeak.status', $this->registration))
@@ -37,7 +37,7 @@ class TeamspeakManagementTest extends TestCase
     }
 
     /** @test */
-    public function testCantGetStatusOfOthersRegistration()
+    public function test_cant_get_status_of_others_registration()
     {
         $this->followingRedirects()->actingAs($this->user)
             ->post(route('teamspeak.status', $this->registration))

@@ -9,13 +9,13 @@ use Tests\TestCase;
 class SitePageLoadTest extends TestCase
 {
     /** @test */
-    public function testItLoadsTheJoinUsPage()
+    public function test_it_loads_the_join_us_page()
     {
         $this->get(route('site.join'))->assertOk();
     }
 
     /** @test */
-    public function testItLoadsTheStaffPageRegardlessOfIPBKey()
+    public function test_it_loads_the_staff_page_regardless_of_ipb_key()
     {
         Config::set([
             'ipboard.api_key' => 'Invalid_API_Key',
@@ -25,7 +25,7 @@ class SitePageLoadTest extends TestCase
     }
 
     /** @test */
-    public function testItRetrievesURLFromCache()
+    public function test_it_retrieves_url_from_cache()
     {
         Cache::put(54, 'test.url', 1440 * 60);
 

@@ -28,7 +28,7 @@ class AccountSyncTest extends TestCase
     }
 
     /** @test */
-    public function itTriggersWhenEmailChanged()
+    public function it_triggers_when_email_changed()
     {
         $this->user->email = 'joe@example.org';
 
@@ -36,7 +36,7 @@ class AccountSyncTest extends TestCase
     }
 
     /** @test */
-    public function itTriggersWhenBanned()
+    public function it_triggers_when_banned()
     {
         $reason = Reason::factory()->create();
         $banner = Account::factory()->create();
@@ -47,7 +47,7 @@ class AccountSyncTest extends TestCase
     }
 
     /** @test */
-    public function itTriggersWhenUnBanned()
+    public function it_triggers_when_un_banned()
     {
         $ban = Ban::factory()->create();
         $ban->repeal();
@@ -56,7 +56,7 @@ class AccountSyncTest extends TestCase
     }
 
     /** @test */
-    public function itDoesntTriggerWhenUntrackedValuesChanged()
+    public function it_doesnt_trigger_when_untracked_values_changed()
     {
         $this->user->last_login = Carbon::now();
         $this->user->updated_at = Carbon::now();

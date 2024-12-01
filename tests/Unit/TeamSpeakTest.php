@@ -20,7 +20,7 @@ class TeamSpeakTest extends TestCase
 
     protected $serverGroups;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -42,14 +42,14 @@ class TeamSpeakTest extends TestCase
         ]);
     }
 
-    public function testChannelParent()
+    public function test_channel_parent()
     {
         $parent = $this->channel->parent;
         $this->assertEquals($parent->id, $this->channel->parent_id);
         $this->assertNull($parent->parent);
     }
 
-    public function testChannelChildren()
+    public function test_channel_children()
     {
         $children = $this->channel->children;
         $this->assertEquals(3, count($children));
@@ -58,7 +58,7 @@ class TeamSpeakTest extends TestCase
         $this->assertEmpty($child->children);
     }
 
-    public function testChannelProtection()
+    public function test_channel_protection()
     {
         $this->assertFalse($this->channel->protected);
         $this->channel->update(['protected' => 0]);
@@ -71,19 +71,19 @@ class TeamSpeakTest extends TestCase
         $this->assertTrue($this->channel->children->first()->protected);
     }
 
-    public function testChannelGroupDoesntRetrieveServerGroups()
+    public function test_channel_group_doesnt_retrieve_server_groups()
     {
         $groups = ChannelGroup::where('type', 's')->get();
         $this->assertEquals(0, count($groups));
     }
 
-    public function testServerGroupDoesntRetrieveChannelGroups()
+    public function test_server_group_doesnt_retrieve_channel_groups()
     {
         $groups = ServerGroup::where('type', 'c')->get();
         $this->assertEquals(0, count($groups));
     }
 
-    public function testGroupPermission()
+    public function test_group_permission()
     {
         $group = $this->serverGroups->first();
         $permission = factory(Permission::class)->create();
@@ -92,7 +92,7 @@ class TeamSpeakTest extends TestCase
         $this->assertEquals($group->permission->id, $permission->id);
     }
 
-    public function testGroupQualification()
+    public function test_group_qualification()
     {
         $group = $this->serverGroups->first();
         $qualification = Qualification::factory()->create();
@@ -101,31 +101,31 @@ class TeamSpeakTest extends TestCase
         $this->assertEquals($group->qualification->id, $qualification->id);
     }
 
-    public function testValidDisplayName()
+    public function test_valid_display_name()
     {
         $validDisplayName = 'John Doe';
         $this->assertEquals(true, $this->account->isValidDisplayName($validDisplayName));
     }
 
-    public function testInvalidDisplayName()
+    public function test_invalid_display_name()
     {
         $invalidDisplayName = 'John Do';
         $this->assertFalse($this->account->isValidDisplayName($invalidDisplayName));
     }
 
-    public function testPartiallyValidDisplayName()
+    public function test_partially_valid_display_name()
     {
         $validDisplayName = 'John Doe - EGKK_TWR';
         $this->assertTrue($this->account->isPartiallyValidDisplayName($validDisplayName));
     }
 
-    public function testNotPartiallyValidDisplayName()
+    public function test_not_partially_valid_display_name()
     {
         $validDisplayName = 'John Do - EGKK_TWR';
         $this->assertFalse($this->account->isPartiallyValidDisplayName($validDisplayName));
     }
 
-    public function testAllowedDuplicates()
+    public function test_allowed_duplicates()
     {
         $this->assertFalse($this->account->isDuplicateDisplayName('John Do1'));
         $this->assertTrue($this->account->isDuplicateDisplayName('John Doe1'));

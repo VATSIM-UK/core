@@ -19,7 +19,7 @@ class ApplicationCleanUpTest extends TestCase
 
     public $application;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Mail::fake();
@@ -54,7 +54,7 @@ class ApplicationCleanUpTest extends TestCase
     }
 
     /** @test */
-    public function testItWillSet50HourCheckAsPassed()
+    public function test_it_will_set50_hour_check_as_passed()
     {
         $this->assertNull($this->application->check_outcome_50_hours);
         Artisan::call('visit-transfer:cleanup');
@@ -62,7 +62,7 @@ class ApplicationCleanUpTest extends TestCase
     }
 
     /** @test */
-    public function testItWillSet90DayCheckAsPassed()
+    public function test_it_will_set90_day_check_as_passed()
     {
         $this->assertNull($this->application->check_outcome_90_day);
         Artisan::call('visit-transfer:cleanup');
