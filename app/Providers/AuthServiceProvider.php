@@ -28,7 +28,6 @@ use Illuminate\Contracts\Auth\Access\Gate as AccessGate;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -83,17 +82,11 @@ class AuthServiceProvider extends ServiceProvider
             $permissionLoader->registerPermissions($gate);
         });
 
-        // TODO: Remove use-permission
-        Gate::define('use-permission', function ($user, $permission) {
-            if ($user->hasRole('privacc') && config()->get('app.env') != 'production') {
-                return true;
-            }
-
-            try {
-                return auth()->user()->hasPermissionTo($permission);
-            } catch (PermissionDoesNotExist $e) {
-                return false;
-            }
-        });
+        if (config()->get('app.env') != 'production') {
+            // Allow for a global superadmin role on non-production environments
+            Gate::before(function ($user, $abilityOrPermission) {
+                return $user->hasRole('privacc') ?? null;
+            });
+        }
     }
 }
