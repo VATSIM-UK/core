@@ -11708,16 +11708,16 @@
         },
         {
             "name": "whitecube/laravel-cookie-consent",
-            "version": "v1.2.4",
+            "version": "v1.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/whitecube/laravel-cookie-consent.git",
-                "reference": "3ed05b03237bfbc8b5fc0f34ed04b1bf8787b2eb"
+                "reference": "2d92077a2ec3591075750dd3eb20b226dd7d6165"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/3ed05b03237bfbc8b5fc0f34ed04b1bf8787b2eb",
-                "reference": "3ed05b03237bfbc8b5fc0f34ed04b1bf8787b2eb",
+                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/2d92077a2ec3591075750dd3eb20b226dd7d6165",
+                "reference": "2d92077a2ec3591075750dd3eb20b226dd7d6165",
                 "shasum": ""
             },
             "require": {
@@ -11732,12 +11732,12 @@
             "type": "library",
             "extra": {
                 "laravel": {
-                    "providers": [
-                        "Whitecube\\LaravelCookieConsent\\ServiceProvider"
-                    ],
                     "aliases": {
                         "Cookies": "Whitecube\\LaravelCookieConsent\\Facades\\Cookies"
-                    }
+                    },
+                    "providers": [
+                        "Whitecube\\LaravelCookieConsent\\ServiceProvider"
+                    ]
                 }
             },
             "autoload": {
@@ -11771,7 +11771,7 @@
             ],
             "support": {
                 "issues": "https://github.com/whitecube/laravel-cookie-consent/issues",
-                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.2.4"
+                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.2.5"
             },
             "funding": [
                 {
@@ -11779,7 +11779,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-10-28T10:01:42+00:00"
+            "time": "2024-11-29T15:29:29+00:00"
         },
         {
             "name": "wohali/oauth2-discord-new",
