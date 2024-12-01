@@ -18,7 +18,7 @@ class VisitTransferCleanupTest extends TestCase
 
     public $facility;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -45,7 +45,7 @@ class VisitTransferCleanupTest extends TestCase
     }
 
     /** @test */
-    public function itOnlyCancelsOldApplications()
+    public function it_only_cancels_old_applications()
     {
         Artisan::call('visit-transfer:cleanup');
 
@@ -54,7 +54,7 @@ class VisitTransferCleanupTest extends TestCase
     }
 
     /** @test */
-    public function itLapsesApplicationsForOldContactedReferees()
+    public function it_lapses_applications_for_old_contacted_referees()
     {
         Mail::fake();
 
@@ -79,7 +79,7 @@ class VisitTransferCleanupTest extends TestCase
     }
 
     /** @test */
-    public function itWontIncorrectlyLapseApplications()
+    public function it_wont_incorrectly_lapse_applications()
     {
         // A submitted application with a requested (contacted & pending) reference that is not old
         $application1 = factory(\App\Models\VisitTransfer\Application::class)->create([

@@ -11,7 +11,7 @@ class AtcSessionModelTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,7 +23,7 @@ class AtcSessionModelTest extends TestCase
     }
 
     /** @test */
-    public function itCanCreateAnAtcSession()
+    public function it_can_create_an_atc_session()
     {
         $qualification = Qualification::inRandomOrder()->first();
         $atcSession = factory(\App\Models\NetworkData\Atc::class)->make();
@@ -38,7 +38,7 @@ class AtcSessionModelTest extends TestCase
     }
 
     /** @test */
-    public function itCanCreateAnAtcSessionAndMarkAsDisconnected()
+    public function it_can_create_an_atc_session_and_mark_as_disconnected()
     {
         $qualification = Qualification::inRandomOrder()->first();
         $atcSession = factory(\App\Models\NetworkData\Atc::class)->make();
@@ -57,7 +57,7 @@ class AtcSessionModelTest extends TestCase
     }
 
     /** @test */
-    public function itUpdatesMinutesOnlineWhenASessionIsMarkedAsDisconnected()
+    public function it_updates_minutes_online_when_a_session_is_marked_as_disconnected()
     {
         $qualification = Qualification::inRandomOrder()->first();
         $atcSession = factory(\App\Models\NetworkData\Atc::class)->make();
@@ -75,7 +75,7 @@ class AtcSessionModelTest extends TestCase
     }
 
     /** @test */
-    public function itTriggersAnEventWhenAnAtcSessionIsDeleted()
+    public function it_triggers_an_event_when_an_atc_session_is_deleted()
     {
         $qualification = Qualification::inRandomOrder()->first();
         $atcSession = factory(\App\Models\NetworkData\Atc::class)->make();

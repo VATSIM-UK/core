@@ -10,7 +10,7 @@ class DivisionMemberTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -20,13 +20,13 @@ class DivisionMemberTest extends TestCase
         $this->actingAs($this->user);
     }
 
-    public function testItLoadsOk()
+    public function test_it_loads_ok()
     {
         $this->get(route('visiting.landing'))
             ->assertSuccessful();
     }
 
-    public function testItDoesntAllowMemberToStartVisitingAtcApplication()
+    public function test_it_doesnt_allow_member_to_start_visiting_atc_application()
     {
         factory(Facility::class)->states('atc_visit')->create();
 
@@ -34,7 +34,7 @@ class DivisionMemberTest extends TestCase
             ->assertSeeText(trans('application.dashboard.apply.atc.visit.unable'));
     }
 
-    public function testItDoesntAllowMemberToStartTransferringAtcApplication()
+    public function test_it_doesnt_allow_member_to_start_transferring_atc_application()
     {
         factory(Facility::class)->states('atc_transfer')->create();
 
@@ -42,7 +42,7 @@ class DivisionMemberTest extends TestCase
             ->assertSeeText(trans('application.dashboard.apply.atc.transfer.unable'));
     }
 
-    public function testItDoesntDisplayReferencesTableIfNotAReferee()
+    public function test_it_doesnt_display_references_table_if_not_a_referee()
     {
         $this->get(route('visiting.landing'))
             ->assertDontSeeText('Pending References');

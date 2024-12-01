@@ -12,13 +12,13 @@ class HomePageTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function testItLoadsTheHomepage()
+    public function test_it_loads_the_homepage()
     {
         $this->get(route('site.home'))->assertOk();
     }
 
     /** @test */
-    public function testItShowsLiveAtcBookingsOnTheHomepage()
+    public function test_it_shows_live_atc_bookings_on_the_homepage()
     {
         $this->withoutExceptionHandling();
         $booking = factory(Booking::class)->create([
@@ -39,7 +39,7 @@ class HomePageTest extends TestCase
     }
 
     /** @test */
-    public function testItDoesntShowExamCandidatesOnTheHomepage()
+    public function test_it_doesnt_show_exam_candidates_on_the_homepage()
     {
         $booking = factory(Booking::class)->create([
             'date' => $this->knownDate->toDateString(),
@@ -54,7 +54,7 @@ class HomePageTest extends TestCase
     }
 
     /** @test */
-    public function testItDoesntShowPilotOrSweatboxBookingsOnTheHomepage()
+    public function test_it_doesnt_show_pilot_or_sweatbox_bookings_on_the_homepage()
     {
         $pilot = factory(Booking::class)->create([
             'date' => $this->knownDate->toDateString(),

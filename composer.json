@@ -79,7 +79,7 @@
         "laravelcollective/html": "^6.0",
         "league/csv": "^9.0",
         "league/oauth2-client": "^2.4",
-        "livewire/livewire": "^3.3",
+        "livewire/livewire": "^3.5",
         "maatwebsite/excel": "~3.1.17",
         "malahierba-lab/public-id": "dev-main",
         "ohdearapp/ohdear-php-sdk": "^3.0",
@@ -146,7 +146,6 @@
             "@php artisan key:generate"
         ],
         "post-update-cmd": [
-            "@php artisan horizon:publish",
             "@php artisan telescope:publish",
             "@php artisan filament:upgrade"
         ],

@@ -12,7 +12,7 @@ class SendingFeedbackTest extends TestCase
 
     private $feedback;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,7 +23,7 @@ class SendingFeedbackTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsMemberIfThereIsNoSentFeedback()
+    public function test_it_redirects_member_if_there_is_no_sent_feedback()
     {
         $this->actingAs($this->user)
             ->get(route('mship.feedback.view'))
@@ -31,7 +31,7 @@ class SendingFeedbackTest extends TestCase
     }
 
     /** @test */
-    public function testItAllowsViewingIfThereIsSentFeedback()
+    public function test_it_allows_viewing_if_there_is_sent_feedback()
     {
         $this->feedback->markSent($this->privacc);
 

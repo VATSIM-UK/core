@@ -24,7 +24,7 @@ class StudentRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnAListOfStudentsOfAnRts()
+    public function it_can_return_a_list_of_students_of_an_rts()
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
@@ -39,7 +39,7 @@ class StudentRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itDoesNotReturnStudentsOfAnotherRts()
+    public function it_does_not_return_students_of_another_rts()
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
@@ -54,7 +54,7 @@ class StudentRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itOnlyReturnsAStudentsOnceWithinAnRts()
+    public function it_only_returns_a_students_once_within_an_rts()
     {
         $member = factory(Member::class)->create();
 
@@ -79,7 +79,7 @@ class StudentRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itFormatsTheReturnDataForAnRtsCorrectly()
+    public function it_formats_the_return_data_for_an_rts_correctly()
     {
         $member = factory(Member::class)->create();
         $position = Position::factory()->create(['rts_id' => 15]);
@@ -96,7 +96,7 @@ class StudentRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itDoesNotReturnMentorsAsStudents()
+    public function it_does_not_return_mentors_as_students()
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 

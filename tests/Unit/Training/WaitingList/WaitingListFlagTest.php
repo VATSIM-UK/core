@@ -39,7 +39,7 @@ class WaitingListFlagTest extends TestCase
     }
 
     /** @test */
-    public function itCanBeDeleted()
+    public function it_can_be_deleted()
     {
         $this->flag->delete();
         // tests the flag has been deleted
@@ -49,7 +49,7 @@ class WaitingListFlagTest extends TestCase
     }
 
     /** @test */
-    public function itCanBeMarked()
+    public function it_can_be_marked()
     {
         $waitingListAccount = $this->waitingListAccount;
         $waitingListAccount->addFlag($this->flag);
@@ -61,7 +61,7 @@ class WaitingListFlagTest extends TestCase
     }
 
     /** @test */
-    public function itCanBeUnMarked()
+    public function it_can_be_un_marked()
     {
         $waitingListAccount = $this->waitingListAccount;
         $waitingListAccount->addFlag($this->flag);
@@ -73,7 +73,7 @@ class WaitingListFlagTest extends TestCase
     }
 
     /** @test */
-    public function itCantBeUnMarkedWhenAlreadyUnMarked()
+    public function it_cant_be_un_marked_when_already_un_marked()
     {
         $waitingListAccount = $this->waitingListAccount;
         $waitingListAccount->addFlag($this->flag);
@@ -85,7 +85,7 @@ class WaitingListFlagTest extends TestCase
     }
 
     /** @test */
-    public function itAssignsDefaultFlagsOnAddingAccountToList()
+    public function it_assigns_default_flags_on_adding_account_to_list()
     {
         $account = Account::factory()->create();
 
@@ -98,7 +98,7 @@ class WaitingListFlagTest extends TestCase
     }
 
     /** @test */
-    public function itIsPropagatedToExistingAccountsWhenAFlagIsAdded()
+    public function it_is_propagated_to_existing_accounts_when_a_flag_is_added()
     {
         $account = Account::factory()->create();
         // null list represents a flag which hasn't yet been assigned to list.

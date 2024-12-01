@@ -17,7 +17,7 @@ class SSOEmailTest extends TestCase
 
     private $secondEmail;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -27,7 +27,7 @@ class SSOEmailTest extends TestCase
     }
 
     /** @test */
-    public function itCanAssignSSOEmail()
+    public function it_can_assign_sso_email()
     {
         $this->assertEquals(0, \App\Models\Sso\Email::count());
 
@@ -36,7 +36,7 @@ class SSOEmailTest extends TestCase
     }
 
     /** @test */
-    public function itCanChangeAssignment()
+    public function it_can_change_assignment()
     {
         $this->email->assignToSso($this->ssoService);
         $this->assertEquals(1, \App\Models\Sso\Email::count());

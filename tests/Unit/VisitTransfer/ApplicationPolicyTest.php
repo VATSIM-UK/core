@@ -27,7 +27,7 @@ class ApplicationPolicyTest extends TestCase
     }
 
     #[DataProvider('providerApplicationState')]
-    public function testActionsPolicy($status, $num_accepted_references, $num_pending_references, $checks_met, $can_accept, $can_reject, $can_complete)
+    public function test_actions_policy($status, $num_accepted_references, $num_pending_references, $checks_met, $can_accept, $can_reject, $can_complete)
     {
         $application = factory(Application::class)->create([
             'status' => $status,

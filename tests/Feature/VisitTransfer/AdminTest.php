@@ -22,7 +22,7 @@ class AdminTest extends TestCase
 
     public $user;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Mail::fake();
@@ -34,7 +34,7 @@ class AdminTest extends TestCase
     }
 
     /** @test */
-    public function testThatItDisplaysCheckOutcomes()
+    public function test_that_it_displays_check_outcomes()
     {
         $this->application->status = Application::STATUS_SUBMITTED;
         $this->application->submitted_at = Carbon::now();
@@ -58,7 +58,7 @@ class AdminTest extends TestCase
     }
 
     /** @test */
-    public function testThatItShowsBothReferences()
+    public function test_that_it_shows_both_references()
     {
         $this->actingAs($this->privacc, 'web')
             ->get(route('adm.visiting.application.view', $this->application->id))
@@ -67,7 +67,7 @@ class AdminTest extends TestCase
     }
 
     /** @test */
-    public function testThatItDoesntShowDeletedReferences()
+    public function test_that_it_doesnt_show_deleted_references()
     {
         $this->ref1->delete();
         $this->actingAs($this->privacc, 'web')
@@ -78,7 +78,7 @@ class AdminTest extends TestCase
     }
 
     /** @test */
-    public function testInfinitePlacesCanBeSelectedForAFacility()
+    public function test_infinite_places_can_be_selected_for_a_facility()
     {
         $this->actingAs($this->privacc, 'web')
             ->post(route('adm.visiting.facility.create.post'), $this->createTestPostData())
@@ -87,7 +87,7 @@ class AdminTest extends TestCase
     }
 
     /** @test */
-    public function testTrainingSpacesHasToBePresent()
+    public function test_training_spaces_has_to_be_present()
     {
         $array = $this->createTestPostData();
 
@@ -99,7 +99,7 @@ class AdminTest extends TestCase
     }
 
     /** @test */
-    public function testNumberOfPlacesCanBeSelectedForAFacility()
+    public function test_number_of_places_can_be_selected_for_a_facility()
     {
         $this->actingAs($this->privacc, 'web')
             ->post(route('adm.visiting.facility.create.post'), array_replace($this->createTestPostData(), ['training_spaces' => 0]))

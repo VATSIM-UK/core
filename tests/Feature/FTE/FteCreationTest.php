@@ -13,7 +13,7 @@ class FteCreationTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function testExerciseCanBeCreated()
+    public function test_exercise_can_be_created()
     {
         Storage::fake('public');
 

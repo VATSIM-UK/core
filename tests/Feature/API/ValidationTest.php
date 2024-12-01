@@ -16,7 +16,7 @@ class ValidationTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function itReturns400WhenPositionNotSupplied()
+    public function it_returns400_when_position_not_supplied()
     {
         $this->call('GET', route('api.validations'), ['position' => ''])
             ->assertStatus(400)
@@ -26,7 +26,7 @@ class ValidationTest extends TestCase
     }
 
     /** @test */
-    public function itReturns404WhenPositionDoesNotExist()
+    public function it_returns404_when_position_does_not_exist()
     {
         $this->call('GET', route('api.validations'), ['position' => 'EGKK'])
             ->assertStatus(404)
@@ -36,7 +36,7 @@ class ValidationTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsAJsonResponse()
+    public function it_returns_a_json_response()
     {
         $qualification = Qualification::code('S2')->first();
         $account = Account::factory()->create();

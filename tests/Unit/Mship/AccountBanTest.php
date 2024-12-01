@@ -22,7 +22,7 @@ class AccountBanTest extends TestCase
     /** @var Account */
     protected $account;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,7 +34,7 @@ class AccountBanTest extends TestCase
     }
 
     /** @test */
-    public function bannedScopesWork()
+    public function banned_scopes_work()
     {
         $bannedAccount = Account::factory()->has(Ban::factory())->create();
         $activeAcount = Account::factory()->create();
@@ -44,7 +44,7 @@ class AccountBanTest extends TestCase
     }
 
     /** @test */
-    public function itDispatchesEventOnBanSave()
+    public function it_dispatches_event_on_ban_save()
     {
         $reason = Reason::factory()->create();
 
@@ -56,7 +56,7 @@ class AccountBanTest extends TestCase
     }
 
     /** @test */
-    public function itAppliesLocalBansCorrectlyViaService()
+    public function it_applies_local_bans_correctly_via_service()
     {
         $reason = Reason::factory()->create();
 
@@ -75,7 +75,7 @@ class AccountBanTest extends TestCase
     }
 
     /** @test */
-    public function itRepealsLocalBansCorrectlyViaService()
+    public function it_repeals_local_bans_correctly_via_service()
     {
         $reason = Reason::factory()->create();
 

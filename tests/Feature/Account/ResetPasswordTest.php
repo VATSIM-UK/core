@@ -13,7 +13,7 @@ class ResetPasswordTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function testUserCanRequestPasswordReset()
+    public function test_user_can_request_password_reset()
     {
         $this->actingAs($this->user, 'vatsim-sso')
             ->get(route('auth-secondary'));
@@ -25,7 +25,7 @@ class ResetPasswordTest extends TestCase
     }
 
     /** @test */
-    public function testPasswordResetUpdatesCorrectly()
+    public function test_password_reset_updates_correctly()
     {
         $this->user->password = 'Testing123';
 

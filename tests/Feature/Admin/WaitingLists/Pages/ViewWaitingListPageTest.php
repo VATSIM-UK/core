@@ -18,7 +18,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

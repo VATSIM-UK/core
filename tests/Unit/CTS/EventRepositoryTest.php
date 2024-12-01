@@ -23,7 +23,7 @@ class EventRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnTodaysEvents()
+    public function it_can_return_todays_events()
     {
         factory(Event::class, 2)->create(['date' => Carbon::now()->addDays(5)->toDateString()]);
 

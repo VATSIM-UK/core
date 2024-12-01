@@ -12,7 +12,7 @@ class NotificationTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function testLoggedInUserTakenToCompulsoryNotification()
+    public function test_logged_in_user_taken_to_compulsory_notification()
     {
         factory(Notification::class)->create(['status' => Notification::STATUS_MUST_ACKNOWLEDGE]);
 
@@ -22,7 +22,7 @@ class NotificationTest extends TestCase
     }
 
     /** @test */
-    public function testLoggedInUserNotForcedToNonCompulsoryNotification()
+    public function test_logged_in_user_not_forced_to_non_compulsory_notification()
     {
         factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
 
@@ -32,7 +32,7 @@ class NotificationTest extends TestCase
     }
 
     /** @test */
-    public function testLoggedInUserCanReadNotification()
+    public function test_logged_in_user_can_read_notification()
     {
         $notification = factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
 
@@ -42,7 +42,7 @@ class NotificationTest extends TestCase
     }
 
     /** @test */
-    public function testUserCantDoubleReadNotification()
+    public function test_user_cant_double_read_notification()
     {
         $notification = factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
 
@@ -55,7 +55,7 @@ class NotificationTest extends TestCase
     }
 
     /** @test */
-    public function testNotificationBannerDoesntShowOnSecondaryLogin()
+    public function test_notification_banner_doesnt_show_on_secondary_login()
     {
         factory(Notification::class)->create();
         $this->user->password = '123';
