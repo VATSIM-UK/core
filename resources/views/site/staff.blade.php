@@ -63,10 +63,14 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Operations Director (VATUK9)</h4><br />
-                    <img src="{{ $teamPhotos[1] }}" width=50px class="img-responsive center-block profile-picture" />
-                    <p class="text-center"><em>Vacant</em></p>
+                    <img src="{{ $teamPhotos[7072] }}" width=50px class="img-responsive center-block profile-picture" />
+                    <p class="text-center">Jack Edwards</p>
                     <h4 class="text-center">Operations Team</h4>
                     <table class="table">
+                        <tr>
+                            <td>Deputy Operations Director</td>
+                            <td>Peter Mooney</td>
+                        </tr>
                         <tr>
                             <td>Enroute Operations Coordinator</td>
                             <td><em>Vacant</em></td>
@@ -80,10 +84,6 @@
                             <td>Luke Brown</td>
                         </tr>
                         <tr>
-                            <td>Sector File Coordinator</td>
-                            <td>Peter Mooney</td>
-                        </tr>
-                        <tr>
                             <td>Events Manager</td>
                             <td>Luke Thompson</td>
                         </tr>
@@ -94,6 +94,10 @@
                         <tr>
                             <td>Operations Assistant</td>
                             <td>Chad Byworth</td>
+                        </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>Kieran Hardern</td>
                         </tr>
                         <tr>
                             <td>Operations Assistant</td>
@@ -243,10 +247,6 @@
                             <tr>
                                 <td>Division Instructor</td>
                                 <td>Henry Cleaver</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
-                                <td>Mike Pike</td>
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
