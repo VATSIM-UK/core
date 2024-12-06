@@ -16,6 +16,8 @@ class UpdateRosterGanderControllers extends Command
 
     protected $description = 'Update the ATC roster based on those within the Gander roster.';
 
+    protected int $ganderServiceAccount = 2;
+
     public function handle()
     {
         $ganderValidatedAccountIds = Http::get(config('services.gander-oceanic.api.base').'/roster')
@@ -57,8 +59,17 @@ class UpdateRosterGanderControllers extends Command
                     'account_id' => $value,
                     'endorsable_id' => $positionGroup->id,
                     'endorsable_type' => PositionGroup::class,
+                    'created_by' => $this->ganderServiceAccount,
                 ]);
             });
+
+            // Remove accounts added by the service account
+            // that are no longer in the API feed.
+            Endorsement::where([
+                'endorsable_id' => $positionGroup->id,
+                'endorsable_type' => PositionGroup::class,
+                'created_by' => $this->ganderServiceAccount,
+            ])->whereNotIn('account_id', $ganderValidatedAccountIds)->delete();
         });
     }
 }
