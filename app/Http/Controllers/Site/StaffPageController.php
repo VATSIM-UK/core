@@ -21,14 +21,10 @@ class StaffPageController extends \App\Http\Controllers\BaseController
         $teamPhotos = collect(
             [
                 1 => null,
-                91 => null,
                 2308 => null,
-                2311 => null,
-                4078 => null,
-                4366 => null,
                 5125 => null,
                 6102 => null,
-                6738 => null,
+                7072 => null,
                 7103 => null,
                 7203 => null,
                 7358 => null,
