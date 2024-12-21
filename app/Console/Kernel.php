@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use Bugsnag\BugsnagLaravel\Commands\DeployCommand as BugsnagDeployCommand;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Spatie\ScheduleMonitor\Models\MonitoredScheduledTaskLogItem;
@@ -75,6 +76,14 @@ class Kernel extends ConsoleKernel
         $schedule->command('import:division-members')
             ->twiceDaily(2, 14)
             ->graceTimeInMinutes(15);
+
+        // === By Quarter === //
+        $schedule->command('roster:update', [
+            Carbon::now()->subMonths(3),
+            Carbon::now()
+        ])
+            ->quarterly()
+            ->doNotMonitor();
     }
 
     /**
