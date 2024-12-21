@@ -80,7 +80,7 @@ class Kernel extends ConsoleKernel
         // === By Quarter === //
         $schedule->command('roster:update', [
             Carbon::now()->subMonths(3),
-            Carbon::now()
+            Carbon::now(),
         ])
             ->quarterly()
             ->doNotMonitor();
