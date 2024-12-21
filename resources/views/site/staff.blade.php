@@ -176,7 +176,7 @@
                         </tr>
                         <tr>
                             <td>Outreach Manager</td>
-                            <td>Vacant</td>
+                            <td>Kye Taylor</td>
                         </tr>
                         <tr>
                             <td>Outreach Assistant</td>
