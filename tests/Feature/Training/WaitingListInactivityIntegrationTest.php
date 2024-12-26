@@ -15,7 +15,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -25,7 +25,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
     }
 
     /** @test */
-    public function itShouldReactToRealAccountAlteredEventForInactivity()
+    public function it_should_react_to_real_account_altered_event_for_inactivity()
     {
         $this->markTestSkipped('The event is not fired as it is currently disabled.');
 
@@ -47,7 +47,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
     }
 
     /** @test */
-    public function itShouldReactToRealAccountAlteredEventForInactivityNotOnList()
+    public function it_should_react_to_real_account_altered_event_for_inactivity_not_on_list()
     {
         $this->markTestSkipped('The event is not fired as it is currently disabled.');
 
@@ -68,16 +68,17 @@ class WaitingListInactivityIntegrationTest extends TestCase
     /** @test
      * @group test1
      */
-    public function itShouldReactToRealAccountAlteredEventForStateChanged()
+    public function it_should_react_to_real_account_altered_event_for_state_changed()
     {
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
         $account->refresh();
 
+        /** @var WaitingList $waitingList */
         $waitingList = factory(WaitingList::class)->create();
         $waitingList->addToWaitingList($account, $this->privacc);
 
-        $this->assertTrue($waitingList->accounts->contains($account));
+        $this->assertTrue($waitingList->includesAccount($account));
 
         $account->addState(State::findByCode('REGION'));
 
@@ -86,7 +87,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
     }
 
     /** @test */
-    public function itShouldReactToRealAccountAlteredEventForMshipStateNotOnList()
+    public function it_should_react_to_real_account_altered_event_for_mship_state_not_on_list()
     {
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));

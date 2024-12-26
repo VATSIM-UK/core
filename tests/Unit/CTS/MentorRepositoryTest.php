@@ -24,7 +24,7 @@ class MentorRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnAListOfMentorsOfAnRts()
+    public function it_can_return_a_list_of_mentors_of_an_rts()
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
@@ -39,7 +39,7 @@ class MentorRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itDoesNotReturnMentorsOfAnotherRts()
+    public function it_does_not_return_mentors_of_another_rts()
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
@@ -54,7 +54,7 @@ class MentorRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itOnlyReturnsAMentorOnceWithinAnRts()
+    public function it_only_returns_a_mentor_once_within_an_rts()
     {
         $member = factory(Member::class)->create();
 
@@ -79,7 +79,7 @@ class MentorRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itFormatsTheReturnDataForAnRtsCorrectly()
+    public function it_formats_the_return_data_for_an_rts_correctly()
     {
         $member = factory(Member::class)->create();
         $position = Position::factory()->create(['rts_id' => 15]);
@@ -96,7 +96,7 @@ class MentorRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnAListOfMentorsOfAnAirport()
+    public function it_can_return_a_list_of_mentors_of_an_airport()
     {
         $position = Position::factory()->create(['callsign' => 'EGKK_GND']);
 
@@ -111,7 +111,7 @@ class MentorRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnAListOfMentorsOfASpecificCallsign()
+    public function it_can_return_a_list_of_mentors_of_a_specific_callsign()
     {
         $position = Position::factory()->create(['callsign' => 'EGKK_GND']);
 
@@ -126,7 +126,7 @@ class MentorRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itDoesNotReturnMentorsWithoutPermissionToMentorAPosition()
+    public function it_does_not_return_mentors_without_permission_to_mentor_a_position()
     {
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
 
@@ -141,7 +141,7 @@ class MentorRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itOnlyReturnsAMentorOnceOnAirportOrCallsignSearches()
+    public function it_only_returns_a_mentor_once_on_airport_or_callsign_searches()
     {
         $member = factory(Member::class)->create();
 
@@ -168,7 +168,7 @@ class MentorRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itFormatsTheReturnDataForAirportOrPositionSearchesCorrectly()
+    public function it_formats_the_return_data_for_airport_or_position_searches_correctly()
     {
         $member = factory(Member::class)->create();
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);

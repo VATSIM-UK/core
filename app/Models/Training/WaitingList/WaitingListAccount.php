@@ -3,14 +3,53 @@
 namespace App\Models\Training\WaitingList;
 
 use App\Models\Cts\TheoryResult;
+use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class WaitingListAccount extends Pivot
+/**
+ * @property int $id
+ * @property int $list_id
+ * @property int $account_id
+ * @property int|null $added_by
+ * @property string|null $notes
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property array|null $flags_status_summary
+ * @property-read Account|null $account
+ * @property-read \App\Models\Training\WaitingList\WaitingListAccountFlag $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList\WaitingListFlag> $flags
+ * @property-read int|null $flags_count
+ * @property-read mixed $atc_hour_check
+ * @property-read mixed $position
+ * @property-read mixed $theory_exam_passed
+ * @property-read WaitingList|null $waitingList
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount query()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereFlagsStatusSummary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereListId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount withoutTrashed()
+ *
+ * @mixin \Eloquent
+ */
+class WaitingListAccount extends Model
 {
     use SoftDeletes;
 
@@ -37,12 +76,12 @@ class WaitingListAccount extends Pivot
         )->withPivot(['marked_at', 'id'])->using(WaitingListAccountFlag::class);
     }
 
-    public function waitingList()
+    public function waitingList(): BelongsTo
     {
         return $this->belongsTo(WaitingList::class, 'list_id');
     }
 
-    public function account()
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class, 'account_id');
     }
@@ -74,9 +113,11 @@ class WaitingListAccount extends Pivot
         $flag->unMark();
     }
 
-    public function getPositionAttribute()
+    public function position(): Attribute
     {
-        return $this->waitingList->accountPosition($this->account);
+        return Attribute::make(
+            get: fn () => $this->waitingList->positionOf($this)
+        );
     }
 
     public function getAtcHourCheckAttribute()
@@ -88,7 +129,7 @@ class WaitingListAccount extends Pivot
     {
         $passed = false;
 
-        if ($this->waitingList->department === WaitingList::ATC_DEPARTMENT) {
+        if ($this->waitingList?->department === WaitingList::ATC_DEPARTMENT) {
             try {
                 $result = TheoryResult::forAccount($this->account_id);
             } catch (ModelNotFoundException) {
@@ -108,23 +149,6 @@ class WaitingListAccount extends Pivot
             get: fn () => $passed,
         );
     }
-
-    // public function getTheoryExamPassedAttribute(): ?bool
-    // {
-    //     if ($this->waitingList->department === WaitingList::PILOT_DEPARTMENT || ! $this->waitingList->cts_theory_exam_level) {
-    //         return null;
-    //     }
-
-    //     $result = TheoryResult::forAccount($this->account_id);
-
-    //     if (! $result || ! $result->count()) {
-    //         return null;
-    //     }
-
-    //     return $result
-    //         ->where('exam', $this->waitingList->cts_theory_exam_level)
-    //         ->where('pass', true)->count() > 0;
-    // }
 
     public function setNotesAttribute($value)
     {

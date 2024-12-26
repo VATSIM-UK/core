@@ -2,6 +2,7 @@
 
 namespace App\Libraries;
 
+use App\Exceptions\Discord\DiscordUserInviteException;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Exceptions\Discord\GenericDiscordException;
 use App\Models\Mship\Account;
@@ -101,6 +102,10 @@ class Discord
             ->put("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}", [
                 'access_token' => $account->discord_access_token,
             ]);
+
+        if ($response->status() > 300 && $response->json()['code'] == 30001) {
+            throw new DiscordUserInviteException($response, 'You have reached your Discord server limit! You must leave a server before you can join another one');
+        }
 
         return $this->result($response);
     }

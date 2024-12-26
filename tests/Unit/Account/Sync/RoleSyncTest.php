@@ -37,7 +37,7 @@ class RoleSyncTest extends TestCase
     }
 
     /** @test */
-    public function itTriggersEvent()
+    public function it_triggers_event()
     {
         Event::fake();
 
@@ -49,7 +49,7 @@ class RoleSyncTest extends TestCase
     }
 
     /** @test */
-    public function itTriggersJobsWhenARoleIsAssigned()
+    public function it_triggers_jobs_when_a_role_is_assigned()
     {
         Queue::fake();
 
@@ -63,7 +63,7 @@ class RoleSyncTest extends TestCase
     }
 
     /** @test */
-    public function itTriggersJobsWhenARoleIsRemoved()
+    public function it_triggers_jobs_when_a_role_is_removed()
     {
         Queue::fake();
 

@@ -12,7 +12,7 @@ class BannedMiddlewareTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function testNetworkBannedUserIsRedirectedToCorrectRoute()
+    public function test_network_banned_user_is_redirected_to_correct_route()
     {
         $account = Account::factory()->create();
 
@@ -26,7 +26,7 @@ class BannedMiddlewareTest extends TestCase
     }
 
     /** @test */
-    public function testLocalBannedUserIsRedirectedToCorrectRoute()
+    public function test_local_banned_user_is_redirected_to_correct_route()
     {
         $account = Account::factory()->create();
         $banReason = Reason::factory()->create();

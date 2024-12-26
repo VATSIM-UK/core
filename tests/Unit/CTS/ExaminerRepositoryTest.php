@@ -23,7 +23,7 @@ class ExaminerRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnAListOfAtcExaminers()
+    public function it_can_return_a_list_of_atc_examiners()
     {
         $examiner = factory(ExaminerSettings::class)->create([
             'S1' => 1,
@@ -35,7 +35,7 @@ class ExaminerRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnAListOfPilotExaminers()
+    public function it_can_return_a_list_of_pilot_examiners()
     {
         $examiner = factory(ExaminerSettings::class)->create([
             'P1' => 1,
@@ -47,7 +47,7 @@ class ExaminerRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itDoesNotReturnAnExaminerIfNotSetAsExaminerOnMembersTable()
+    public function it_does_not_return_an_examiner_if_not_set_as_examiner_on_members_table()
     {
         factory(ExaminerSettings::class)->create([
             'memberID' => factory(Member::class)->create(['examiner' => 0]),

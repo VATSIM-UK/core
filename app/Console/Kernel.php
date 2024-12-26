@@ -2,8 +2,8 @@
 
 namespace App\Console;
 
-use App\Console\Commands\Deployment\HerokuPostDeploy;
 use Bugsnag\BugsnagLaravel\Commands\DeployCommand as BugsnagDeployCommand;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Spatie\ScheduleMonitor\Models\MonitoredScheduledTaskLogItem;
@@ -18,7 +18,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        HerokuPostDeploy::class,
         BugsnagDeployCommand::class,
     ];
 
@@ -30,7 +29,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // === By Minute === //
-
         $schedule->command('teaman:runner', ['-v'])
             ->everyMinute()
             ->withoutOverlapping();
@@ -46,14 +44,10 @@ class Kernel extends ConsoleKernel
             ->doNotMonitor();
 
         $schedule->command('visit-transfer:cleanup')
+            ->doNotMonitor()
             ->everyTenMinutes();
 
         // === By Hour === //
-
-        $schedule->command('members:certupdate')
-            ->hourlyAt(10)
-            ->graceTimeInMinutes(15);
-
         $schedule->command('sync:cts-roles')
             ->hourlyAt(15)
             ->graceTimeInMinutes(15);
@@ -62,20 +56,34 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(25)
             ->graceTimeInMinutes(5);
 
-        // === By Day === //
+        $schedule->command('roster:check-new-s1-exams')
+            ->hourlyAt(30)
+            ->graceTimeInMinutes(5);
 
+        // === By Day === //
         $schedule->command('telescope:prune')
             ->dailyAt('03:30')
             ->doNotMonitor();
 
-        $schedule->command('sync:tg-forum-groups')
-            ->dailyAt('04:30');
-
         $schedule->command('model:prune', ['--model' => MonitoredScheduledTaskLogItem::class])
-            ->dailyAt('08:00');
+            ->dailyAt('08:00')
+            ->doNotMonitor();
 
         $schedule->command('waiting-lists:check-eligibility')
-            ->dailyAt('08:30');
+            ->dailyAt('08:30')
+            ->doNotMonitor();
+
+        $schedule->command('import:division-members')
+            ->twiceDaily(2, 14)
+            ->graceTimeInMinutes(15);
+
+        // === By Quarter === //
+        $schedule->command('roster:update', [
+            Carbon::now()->subMonths(3),
+            Carbon::now(),
+        ])
+            ->quarterly()
+            ->doNotMonitor();
     }
 
     /**

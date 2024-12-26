@@ -15,7 +15,7 @@ class FormModelTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function itCreatesAFeedbackForm()
+    public function it_creates_a_feedback_form()
     {
         $form = [
             'name' => 'My New Feedback Form',
@@ -30,7 +30,7 @@ class FormModelTest extends TestCase
     }
 
     /** @test */
-    public function itCreatesAQuestionType()
+    public function it_creates_a_question_type()
     {
         $code = '<input name="%1" type="radio" style="margin-left: 20px;" value="%4" id="%1" %5> %3';
 
@@ -47,7 +47,7 @@ class FormModelTest extends TestCase
     }
 
     /** @test */
-    public function itCreatesAQuestion()
+    public function it_creates_a_question()
     {
         $question = [
             'type_id' => factory(Type::class)->create()->id,
@@ -67,7 +67,7 @@ class FormModelTest extends TestCase
     }
 
     /** @test */
-    public function itSavesTheQuestionsForAForm()
+    public function it_saves_the_questions_for_a_form()
     {
         $form = factory(Form::class)->create();
 
@@ -79,7 +79,7 @@ class FormModelTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsThePublicScope()
+    public function it_returns_the_public_scope()
     {
         $notPublic = factory(Form::class)->create([
             'public' => 0,
@@ -94,7 +94,7 @@ class FormModelTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsAContactForAForm()
+    public function it_returns_a_contact_for_a_form()
     {
         $contact = factory(Contact::class)->create([
             'key' => 'KEY_DEPARTMENT',
@@ -109,7 +109,7 @@ class FormModelTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsResponsesToForms()
+    public function it_returns_responses_to_forms()
     {
         $form = factory(Form::class)->create();
 

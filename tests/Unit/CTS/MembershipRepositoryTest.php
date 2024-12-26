@@ -22,7 +22,7 @@ class MembershipRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnAListOfMembersOfAnRts()
+    public function it_can_return_a_list_of_members_of_an_rts()
     {
         $membership = factory(Membership::class)->create();
 

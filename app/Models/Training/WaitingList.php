@@ -11,8 +11,52 @@ use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property string $department
+ * @property bool $home_members_only
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property string|null $cts_theory_exam_level
+ * @property array|null $feature_toggles
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Account> $accounts
+ * @property-read int|null $accounts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListFlag> $flags
+ * @property-read int|null $flags_count
+ * @property-read object $feature_toggles_formatted
+ * @property-read mixed $formatted_department
+ * @property-read bool $should_check_atc_hours
+ * @property-read bool $should_check_cts_theory_exam
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Account> $staff
+ * @property-read int|null $staff_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListAccount> $waitingListAccounts
+ * @property-read int|null $waiting_list_accounts_count
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList query()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereCtsTheoryExamLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereDepartment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereFeatureToggles($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereHomeMembersOnly($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList withoutTrashed()
+ *
+ * @mixin \Eloquent
+ */
 class WaitingList extends Model
 {
     use SoftDeletes;
@@ -61,9 +105,15 @@ class WaitingList extends Model
 
     /**
      * Many WaitingLists can have many Accounts (pivot).
+     *
+     * @fixme remove when no longer used in filament stuff, use `waitingListAccounts` instead.
+     *
+     * @deprecated using a pivot here creates a bunch of N+1 problems for filament
      */
     public function accounts(): BelongsToMany
     {
+        // this aint gonna work because the waitinglistaccount is no longer a pivot!
+
         return $this->belongsToMany(
             Account::class,
             'training_waiting_list_account',
@@ -78,6 +128,19 @@ class WaitingList extends Model
     }
 
     /**
+     * Instead of using the pivot table as a pivot, go through two sets of joins to get to the account
+     * This is to avoid N+1 problems in filament tables
+     */
+    public function waitingListAccounts(): HasMany
+    {
+        return $this->hasMany(
+            WaitingListAccount::class,
+            'list_id',
+            'id'
+        )->where('deleted_at', null)->orderBy('created_at');
+    }
+
+    /**
      * One WaitingList can have many flags associated with it.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -88,15 +151,11 @@ class WaitingList extends Model
     }
 
     /**
-     * Get the position of an account in the eligible waiting list.
-     *
-     * @return int|null
+     * Find the position of a WaitingListAccount on this waiting list.
      */
-    public function accountPosition(Account $account)
+    public function positionOf(WaitingListAccount $waitingListAccount): ?int
     {
-        $key = $this->accounts->search(function ($accountItem) use ($account) {
-            return $accountItem->id == $account->id;
-        });
+        $key = $this->waitingListAccounts->search(fn (WaitingListAccount $listAccount) => $waitingListAccount->id === $listAccount->id);
 
         return ($key !== false) ? $key + 1 : null;
     }
@@ -110,8 +169,8 @@ class WaitingList extends Model
     {
         $savedFlag = $this->flags()->save($flag);
 
-        $this->accounts()->each(function ($account) use ($flag) {
-            $account->pivot->flags()->attach($flag);
+        $this->waitingListAccounts()->each(function (WaitingListAccount $listAccount) use ($flag) {
+            $listAccount->flags()->attach($flag);
         });
 
         event(new FlagAddedToWaitingList($this));
@@ -132,28 +191,56 @@ class WaitingList extends Model
     /**
      * Add an Account to a waiting list.
      */
-    public function addToWaitingList(Account $account, Account $staffAccount, ?Carbon $createdAt = null)
+    public function addToWaitingList(Account $account, Account $staffAccount, ?Carbon $createdAt = null): WaitingListAccount
     {
         $timestamp = $createdAt != null ? $createdAt : Carbon::now();
-        $this->accounts()->attach($account, ['added_by' => $staffAccount->id]);
+
+        $waitingListAccount = new WaitingListAccount;
+        $waitingListAccount->account_id = $account->id;
+        $waitingListAccount->added_by = $staffAccount->id;
+
+        $waitingListAccount = $this->waitingListAccounts()->save($waitingListAccount);
 
         // the following code is required as the timestamp for created_at gets overridden during the creation
         // process, despite being disabled on the pivot!!
-        $pivot = $this->accounts()->find($account->id)->pivot;
-        $pivot->created_at = $timestamp;
-        $pivot->save();
+        $waitingListAccount->created_at = $timestamp;
+        $waitingListAccount->save();
 
-        event(new AccountAddedToWaitingList($account, $this->fresh(), $staffAccount));
+        event(new AccountAddedToWaitingList($account, $this->fresh(), $staffAccount, $waitingListAccount));
+
+        return $waitingListAccount;
+    }
+
+    public function includesAccount(int|Account $accountId): bool
+    {
+        if ($accountId instanceof Account) {
+            $accountId = $accountId->id;
+        }
+
+        return $this->waitingListAccounts()->where('account_id', $accountId)->exists();
+    }
+
+    public function findWaitingListAccount(int|Account $accountId): ?WaitingListAccount
+    {
+        if ($accountId instanceof Account) {
+            $accountId = $accountId->id;
+        }
+
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->waitingListAccounts()->where('account_id', $accountId)->first();
     }
 
     /**
      * Remove an Account from a waiting list.
-     *
-     * @return void
      */
-    public function removeFromWaitingList(Account $account)
+    public function removeFromWaitingList(Account $account): void
     {
-        $waitingListAccount = $this->accounts()->where('account_id', $account->id)->first()->pivot;
+        $waitingListAccount = $this->waitingListAccounts()->where('account_id', $account->id)->first();
+
+        if (! $waitingListAccount) {
+            return;
+        }
+
         $waitingListAccount->delete();
     }
 

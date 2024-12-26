@@ -9,32 +9,55 @@
                     <tr>
                         <th class="text-center">Waiting List</th>
                         <th class="text-center">Position</th>
-                        <th class="text-center">Meeting Criteria</th>
-                        <th class="text-center">Status</th>
                         <th class="text-center">Joined List</th>
+
+                        @if($department === \App\Models\Training\WaitingList::ATC_DEPARTMENT)
+                            <th class="text-center">On Roster</th>
+                            <th class="text-center">Theory Exam Passed</th>
+                        @endif
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($waitingLists as $waitingList)
+                    @foreach($waitingListAccounts as $waitingListAccount)
                     <tr>
-                        <td>{{$waitingList->name}}</td>
+                        <td>{{$waitingListAccount->waitingList->name}}</td>
                         <td>
-                            We cannot currently show you your position in the waiting list due to GCAP implementation.
-                            We expect this to very completed soon and the underlying data is still present i.e. your original position.
-                        </td>
-                        {{-- <td>
-                            @if($waitingList->pivot->position)
-                            {{$waitingList->pivot->position}}
+                            @if($waitingListAccount->position)
+                            {{$waitingListAccount->position}}
                             @else
-                            - <span class="fa fa-question-circle ml-2 text-info text-sm tooltip_displays" data-toggle="tooltip" data-placement="top" title="You might not have a position because you aren't meeting eligibility criteria. Once you are meeting the criteria, your position will be shown."></span>
+                            -
                             @endif
-                        </td> --}}
-                        <td>{{$waitingList->pivot->created_at->format('d M Y')}}</td>
-                        <td><a href="{{route('mship.waiting-lists.view', ["waitingListId" => $waitingList->id])}}">View Details</a></td>
+                        </td>
+                        <td>{{$waitingListAccount->created_at->format('d M Y')}}</td>
+
+                        @if($department === \App\Models\Training\WaitingList::ATC_DEPARTMENT)
+                            @if($waitingListAccount->waitingList->isAtcList())
+                                <td>
+                                    @if ($waitingListAccount->account->onRoster())
+                                        {!! HTML::img("tick_mark_circle", "png", 20) !!}
+                                    @else
+                                        {!! HTML::img("cross_mark_circle", "png", 20) !!}
+                                    @endif
+                                </td>
+                            @else
+                                <td>
+                                    N/A
+                                </td>
+                            @endif
+                            <td>
+                                @if ($waitingListAccount->waitingList->should_check_cts_theory_exam && $waitingListAccount->theory_exam_passed)
+                                    {!! HTML::img("tick_mark_circle", "png", 20) !!}
+                                @elseif($waitingListAccount->waitingList->should_check_cts_theory_exam)
+                                    {!! HTML::img("cross_mark_circle", "png", 20) !!}
+                                @else
+                                    N/A
+                                @endif
+                            </td>
+                        @endif
                     </tr>
                     @endforeach
-                    @if(count($waitingLists) == 0)
+                    @if(count($waitingListAccounts) == 0)
                     <tr>
                         <td colspan="6">You aren't in any waiting lists at the moment.</td>
                     </tr>

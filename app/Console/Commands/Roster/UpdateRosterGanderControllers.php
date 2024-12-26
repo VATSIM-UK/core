@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Roster;
 
 use App\Models\Atc\PositionGroup;
+use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
 use App\Models\Roster;
 use Illuminate\Console\Command;
@@ -15,22 +16,39 @@ class UpdateRosterGanderControllers extends Command
 
     protected $description = 'Update the ATC roster based on those within the Gander roster.';
 
+    protected int $ganderServiceAccount = 2;
+
     public function handle()
     {
-        $gander = Http::get('https://ganderoceanic.ca/api/roster')
+        $ganderValidatedAccountIds = Http::get(config('services.gander-oceanic.api.base').'/roster')
             ->collect()
             ->where('active', true)
             ->pluck('cid');
 
-        DB::transaction(function () use ($gander) {
+        DB::transaction(function () use ($ganderValidatedAccountIds) {
+            /**
+             * Ensure each account on the Gander roster exists in the database
+             * in the event they do not, create them with default values.
+             * These accounts have not signed into our system before
+             * and because we don't have their name, we'll use 'Unknown'
+             * When they sign in, we will receive their name and update it
+             * from VATSIM Connect.
+             **/
+            $ganderValidatedAccountIds->each(function ($accountCid) {
+                Account::firstOrCreate(['id' => $accountCid], [
+                    'name_first' => 'Unknown',
+                    'name_last' => 'Unknown',
+                ]);
+            });
+
             Roster::upsert(
-                $gander->map(fn ($value) => ['account_id' => $value])->toArray(),
+                $ganderValidatedAccountIds->map(fn ($value) => ['account_id' => $value])->toArray(),
                 ['account_id']
             );
 
             $positionGroup = PositionGroup::where('name', 'Shanwick Oceanic (EGGX)')->firstOrFail();
 
-            $gander->reject(function ($value) use ($positionGroup) {
+            $ganderValidatedAccountIds->reject(function ($value) use ($positionGroup) {
                 return Endorsement::where([
                     'account_id' => $value,
                     'endorsable_id' => $positionGroup->id,
@@ -41,8 +59,17 @@ class UpdateRosterGanderControllers extends Command
                     'account_id' => $value,
                     'endorsable_id' => $positionGroup->id,
                     'endorsable_type' => PositionGroup::class,
+                    'created_by' => $this->ganderServiceAccount,
                 ]);
             });
+
+            // Remove accounts added by the service account
+            // that are no longer in the API feed.
+            Endorsement::where([
+                'endorsable_id' => $positionGroup->id,
+                'endorsable_type' => PositionGroup::class,
+                'created_by' => $this->ganderServiceAccount,
+            ])->whereNotIn('account_id', $ganderValidatedAccountIds)->delete();
         });
     }
 }

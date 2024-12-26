@@ -60,11 +60,9 @@ class EndorsementsRelationManager extends RelationManager
                 // Tables\Actions\CreateAction::make()->label('Add endorsement'),
             ])
             ->actions([
-                // TODO: define permissions for both actions
-                //                Tables\Actions\EditAction::make()
-                //                    ->visible(fn ($record) => $record->type == 'Temporary'),
-                //                Tables\Actions\DeleteAction::make()
-                //                    ->visible(fn ($record) => $record->type == 'Permanent'),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn ($record) => $record->expires_at),
+                Tables\Actions\DeleteAction::make(),
             ]);
     }
 

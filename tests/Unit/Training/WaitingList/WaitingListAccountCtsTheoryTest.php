@@ -18,7 +18,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
     private Account $account;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -31,137 +31,93 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         $this->actingAs($this->privacc);
     }
 
-    /** @test */
-    public function itShouldDetectWhenTheoryExamPassed()
+    private function setupWaitingList(?string $ctsLevel, ?string $department = WaitingList::ATC_DEPARTMENT): WaitingList\WaitingListAccount
     {
-        $waitingList = factory(WaitingList::class)->create([
-            'cts_theory_exam_level' => 'S3',
-        ]);
-        $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
+        $waitingList = factory(WaitingList::class)->create(['cts_theory_exam_level' => $ctsLevel, 'department' => $department]);
 
+        return $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
+    }
+
+    private function createTheoryResult(string $ctsLevel, bool $pass)
+    {
         TheoryResult::factory()->create([
             'student_id' => $this->member->id,
-            'exam' => 'S3',
-            'pass' => true,
+            'exam' => $ctsLevel,
+            'pass' => $pass,
         ]);
-
-        $this->assertTrue($waitingList->fresh()->accounts->find($this->account->id)->pivot->theoryExamPassed);
     }
 
     /** @test */
-    public function itShouldDetectWhenTheoryExamFailed()
+    public function it_should_detect_when_theory_exam_passed()
     {
-        $waitingList = factory(WaitingList::class)->create([
-            'cts_theory_exam_level' => 'S3',
-        ]);
-        $waitingList->addToWaitingList($this->account, $this->privacc);
+        $waitingListAccount = $this->setupWaitingList('S3');
+        $this->createTheoryResult('S3', true);
 
-        TheoryResult::factory()->create([
-            'student_id' => $this->member->id,
-            'exam' => 'S3',
-            'pass' => false,
-        ]);
-
-        $this->assertFalse($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);
+        $this->assertTrue($waitingListAccount->theoryExamPassed);
     }
 
     /** @test */
-    public function itShouldReturnFalseWhenPilotWaitingList()
+    public function it_should_detect_when_theory_exam_failed()
     {
-        $waitingList = factory(WaitingList::class)->create([
-            'cts_theory_exam_level' => null,
-            'department' => WaitingList::PILOT_DEPARTMENT,
-        ]);
+        $waitingListAccount = $this->setupWaitingList('S3');
+        $this->createTheoryResult('S3', false);
 
-        $waitingList->addToWaitingList($this->account, $this->privacc);
-
-        $this->assertFalse($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);
+        $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
     /** @test */
-    public function itShouldReturnNullWhenNoExamConfigured()
+    public function it_should_return_false_when_pilot_waiting_list()
     {
-        $waitingList = factory(WaitingList::class)->create([
-            'cts_theory_exam_level' => null,
-        ]);
+        $waitingListAccount = $this->setupWaitingList(null, WaitingList::PILOT_DEPARTMENT);
 
-        $waitingList->addToWaitingList($this->account, $this->privacc);
-
-        $this->assertFalse($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);
+        $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
     /** @test */
-    public function itShouldReturnNullWhenNoTheoryResultFound()
+    public function it_should_return_null_when_no_exam_configured()
     {
-        $waitingList = factory(WaitingList::class)->create([
-            'cts_theory_exam_level' => 'S3',
-        ]);
+        $waitingListAccount = $this->setupWaitingList(null);
+        $this->createTheoryResult('S3', true);
 
-        $waitingList->addToWaitingList($this->account, $this->privacc);
-
-        $this->assertFalse($waitingList->accounts->find($this->account->id)->pivot->theoryExamPassed);
+        $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
     /** @test */
-    public function itShouldOnlyDetectPassesAtTheConfiguredExamLevel()
+    public function it_should_return_null_when_no_theory_result_found()
     {
-        $waitingList = factory(WaitingList::class)->create([
-            'cts_theory_exam_level' => 'S3',
-        ]);
-        $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
+        $waitingListAccount = $this->setupWaitingList('S3');
+        // note no exam pass
 
-        TheoryResult::factory()->create([
-            'student_id' => $this->member->id,
-            'exam' => 'S2',
-            'pass' => true,
-        ]);
-
-        $this->assertFalse($waitingList->fresh()->accounts->find($this->account->id)->pivot->theoryExamPassed);
+        $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
     /** @test */
-    public function itShouldDisregardMultipleFailuresAtConfiguredLevel()
+    public function it_should_only_detect_passes_at_the_configured_exam_level()
     {
-        $waitingList = factory(WaitingList::class)->create([
-            'cts_theory_exam_level' => 'S3',
-        ]);
-        $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
+        $waitingListAccount = $this->setupWaitingList('S3');
+        $this->createTheoryResult('S2', true);
 
-        TheoryResult::factory()->create([
-            'student_id' => $this->member->id,
-            'exam' => 'S3',
-            'pass' => false,
-        ]);
-
-        TheoryResult::factory()->create([
-            'student_id' => $this->member->id,
-            'exam' => 'S3',
-            'pass' => false,
-        ]);
-
-        $this->assertFalse($waitingList->fresh()->accounts->find($this->account->id)->pivot->theoryExamPassed);
+        $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
     /** @test */
-    public function itShouldDisplayPassedWithPreviousFailuresAndThenPass()
+    public function it_should_disregard_multiple_failures_at_configured_level()
     {
-        $waitingList = factory(WaitingList::class)->create([
-            'cts_theory_exam_level' => 'S3',
-        ]);
-        $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
+        $waitingListAccount = $this->setupWaitingList('S3');
+        $this->createTheoryResult('S3', false);
+        $this->createTheoryResult('S3', false);
 
-        TheoryResult::factory()->create([
-            'student_id' => $this->member->id,
-            'exam' => 'S3',
-            'pass' => false,
-        ]);
+        $this->assertFalse($waitingListAccount->theoryExamPassed);
+    }
 
-        TheoryResult::factory()->create([
-            'student_id' => $this->member->id,
-            'exam' => 'S3',
-            'pass' => true,
-        ]);
+    /** @test */
+    public function it_should_display_passed_with_previous_failures_and_then_pass()
+    {
+        $waitingListAccount = $this->setupWaitingList('S3');
+        $this->createTheoryResult('S3', false);
+        $this->createTheoryResult('S3', false);
+        $this->createTheoryResult('S3', true);
 
-        $this->assertTrue($waitingList->fresh()->accounts->find($this->account->id)->pivot->theoryExamPassed);
+        $this->assertTrue($waitingListAccount->theoryExamPassed);
     }
 }

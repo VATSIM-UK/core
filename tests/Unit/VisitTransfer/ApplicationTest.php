@@ -23,7 +23,7 @@ class ApplicationTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function itCanCreateANewApplicationForAUser()
+    public function it_can_create_a_new_application_for_a_user()
     {
         $this->user->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
 
@@ -38,7 +38,7 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function itThrowsAnExceptionWhenAttemptingToCreateADuplicateApplication()
+    public function it_throws_an_exception_when_attempting_to_create_a_duplicate_application()
     {
         $this->expectException(\App\Exceptions\VisitTransfer\Application\DuplicateApplicationException::class);
 
@@ -56,7 +56,7 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function itThrowsAnExceptionWhenAttemptingToCreateAnApplicationForADivisionMember()
+    public function it_throws_an_exception_when_attempting_to_create_an_application_for_a_division_member()
     {
         $this->expectException(\App\Exceptions\VisitTransfer\Application\AlreadyADivisionMemberException::class);
 
@@ -70,7 +70,7 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyReports50HourCheck()
+    public function it_correctly_reports50_hour_check()
     {
         Mail::fake();
 
@@ -107,7 +107,7 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function itDisregardsAtcOfDifferentQualificationFor50HourCheck()
+    public function it_disregards_atc_of_different_qualification_for50_hour_check()
     {
         Mail::fake();
 
@@ -136,7 +136,7 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyReports90DayCheck()
+    public function it_correctly_reports90_day_check()
     {
         $this->user = Account::factory()->create();
         $qual = Qualification::code('S2')->first();
@@ -156,7 +156,7 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function itSendsAcceptanceEmailToTrainingTeam()
+    public function it_sends_acceptance_email_to_training_team()
     {
         Notification::fake();
 
@@ -212,7 +212,7 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function itReportsStatisticsCorrectly()
+    public function it_reports_statistics_correctly()
     {
         $openNotInProgressApplications = collect(Application::$APPLICATION_IS_CONSIDERED_OPEN)->search(function ($status) {
             return $status == Application::STATUS_IN_PROGRESS;

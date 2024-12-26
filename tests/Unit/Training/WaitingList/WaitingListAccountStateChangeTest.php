@@ -24,7 +24,7 @@ class WaitingListAccountStateChangeTest extends TestCase
 
     private WaitingList $nonHomeMembersOnlyWaitingList;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -50,7 +50,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $account->addState(State::findByCode($state));
 
         $event = new AccountAltered($account->refresh());
-        (new CheckWaitingListAccountMshipState())->handle($event);
+        (new CheckWaitingListAccountMshipState)->handle($event);
 
         $this->assertFalse($this->waitingList->accounts->contains($account));
 
@@ -69,7 +69,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         $account->addState(State::findByCode($state));
 
         $event = new AccountAltered($account->refresh());
-        (new CheckWaitingListAccountMshipState())->handle($event);
+        (new CheckWaitingListAccountMshipState)->handle($event);
 
         $this->assertTrue($this->nonHomeMembersOnlyWaitingList->accounts->contains($account));
     }
@@ -84,7 +84,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     }
 
     /** @test */
-    public function itShouldNotRemoveFromListWhenDivisionStateDoesNotChange()
+    public function it_should_not_remove_from_list_when_division_state_does_not_change()
     {
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
@@ -93,21 +93,21 @@ class WaitingListAccountStateChangeTest extends TestCase
 
         // fresh call to retrieve the account from the database with the new state assigned.
         $event = new AccountAltered($account->fresh());
-        (new CheckWaitingListAccountMshipState())->handle($event);
+        (new CheckWaitingListAccountMshipState)->handle($event);
 
-        $this->assertTrue($this->waitingList->accounts->contains($account));
+        $this->assertTrue($this->waitingList->includesAccount($account));
 
         Notification::assertNotSentTo($account, RemovedFromWaitingListNonHomeMember::class);
     }
 
     /** @test */
-    public function itShouldNotSendNotificationWhenNotOnListButStateChanged()
+    public function it_should_not_send_notification_when_not_on_list_but_state_changed()
     {
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
         $event = new AccountAltered($account);
-        (new CheckWaitingListAccountMshipState())->handle($event);
+        (new CheckWaitingListAccountMshipState)->handle($event);
 
         $this->assertFalse($this->waitingList->accounts->contains($account));
 
@@ -115,7 +115,7 @@ class WaitingListAccountStateChangeTest extends TestCase
     }
 
     /** @test */
-    public function itShouldRemoveFromListWhenUserBecomesInactiveWhenAltered()
+    public function it_should_remove_from_list_when_user_becomes_inactive_when_altered()
     {
         $account = Account::factory()->create();
         $account->inactive = false;
@@ -127,22 +127,22 @@ class WaitingListAccountStateChangeTest extends TestCase
         $account->save();
 
         $event = new AccountAltered($account->fresh());
-        (new CheckWaitingListAccountInactivity())->handle($event);
+        (new CheckWaitingListAccountInactivity)->handle($event);
 
-        $this->assertFalse($this->waitingList->accounts->contains($account));
+        $this->assertFalse($this->waitingList->includesAccount($account));
 
         Notification::assertSentTo($account, RemovedFromWaitingListInactiveAccount::class);
     }
 
     /** @test */
-    public function itShouldNotNotifyInactiveAccountNotOnList()
+    public function it_should_not_notify_inactive_account_not_on_list()
     {
         $account = Account::factory()->create();
         $account->inactive = true;
         $account->save();
 
         $event = new AccountAltered($account->fresh());
-        (new CheckWaitingListAccountInactivity())->handle($event);
+        (new CheckWaitingListAccountInactivity)->handle($event);
 
         Notification::assertNotSentTo($account, RemovedFromWaitingListInactiveAccount::class);
     }

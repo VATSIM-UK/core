@@ -8,9 +8,9 @@ use Spatie\Permission\PermissionRegistrar as PermissionPermissionRegistrar;
 
 class PermissionRegistrar extends PermissionPermissionRegistrar
 {
-    public function registerPermissions(): bool
+    public function registerPermissions(Gate $gate): bool
     {
-        app(Gate::class)->before(function (Authorizable $user, string $ability, $arguments) {
+        $gate->before(function (Authorizable $user, string $ability, $arguments) {
             // Modification here to only check permissions when arguments (i.e. typically a modal instance) are **not** passed.
             // This prevents a wildcard permission (e.g. *) from returning true to ANY policy ->can() call
 

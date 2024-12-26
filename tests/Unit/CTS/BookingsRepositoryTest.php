@@ -33,7 +33,7 @@ class BookingsRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnAListOfTodaysBookingsWithOwnerAndType()
+    public function it_can_return_a_list_of_todays_bookings_with_owner_and_type()
     {
         factory(Booking::class, 2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
 
@@ -85,7 +85,7 @@ class BookingsRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itHidesMemberDetailsOnExamBooking()
+    public function it_hides_member_details_on_exam_booking()
     {
         $normalBooking = factory(Booking::class)->create(['date' => $this->today, 'from' => '17:00', 'type' => 'BK']);
         factory(Booking::class)->create(['date' => $this->today, 'from' => '18:00', 'type' => 'EX']);
@@ -104,7 +104,7 @@ class BookingsRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnAListOfTodaysLiveAtcBookings()
+    public function it_can_return_a_list_of_todays_live_atc_bookings()
     {
         factory(Booking::class)->create(['date' => $this->today, 'position' => 'EGKK_APP']); // Live ATC booking today
         factory(Booking::class)->create(['date' => $this->today, 'position' => 'EGKK_SBAT']); // Sweatbox ATC booking today
@@ -119,7 +119,7 @@ class BookingsRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itCanReturnABookingWithoutAKnownMember()
+    public function it_can_return_a_booking_without_a_known_member()
     {
         factory(Booking::class)->create(['date' => $this->today, 'member_id' => 0, 'type' => 'BK']);
 
@@ -129,7 +129,7 @@ class BookingsRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsBookingsInStartTimeOrder()
+    public function it_returns_bookings_in_start_time_order()
     {
         $afternoon = factory(Booking::class)->create(['date' => $this->today, 'from' => '16:00', 'to' => '17:00', 'type' => 'BK']);
         $morning = factory(Booking::class)->create(['date' => $this->today, 'from' => '09:00', 'to' => '11:00', 'type' => 'BK']);

@@ -13,7 +13,7 @@ class PirepModelTest extends TestCase
 
     private $pirep;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,7 +23,7 @@ class PirepModelTest extends TestCase
         ]);
     }
 
-    public function testItCanBeMarkedPassed()
+    public function test_it_can_be_marked_passed()
     {
         $this->pirep->markPassed();
         $this->pirep->save();
@@ -38,7 +38,7 @@ class PirepModelTest extends TestCase
         ]);
     }
 
-    public function testItCanBeMarkedFailedWithoutPosrep()
+    public function test_it_can_be_marked_failed_without_posrep()
     {
         $this->pirep->markFailed('It went wrong');
         $this->pirep->save();
@@ -53,7 +53,7 @@ class PirepModelTest extends TestCase
         ]);
     }
 
-    public function testItCanBeMarkedFailedWithPosrep()
+    public function test_it_can_be_marked_failed_with_posrep()
     {
         $posrep = factory(Posrep::class)->create([
             'bid_id' => $this->pirep->bid->id,

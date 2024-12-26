@@ -166,10 +166,12 @@ class Feedback extends \App\Http\Controllers\BaseController
             ->withSuccess('Your feedback has been recorded. Thank you!');
     }
 
-    public function getUserSearch($name, Request $request)
+    public function getUserSearch($search, Request $request)
     {
-        $matches = Account::whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE \"%".$name.'%"')
-            ->where('id', '!=', \Auth::user()->id)
+        $matches = Account::where(function ($query) use ($search) {
+            return $query->whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE \"%".$search.'%"')
+                ->orWhere('id', $search);
+        })->where('id', '!=', \Auth::user()->id)
             ->limit(5)
             ->with(['states'])
             ->get(['id', 'name_first', 'name_last']);

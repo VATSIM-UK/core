@@ -21,6 +21,7 @@ class BaseController extends \Illuminate\Routing\Controller
     }
     use DispatchesJobs, RedirectsUsers, ValidatesRequests;
 
+    /** @var Account */
     protected $account;
 
     protected $pageTitle;
@@ -38,7 +39,7 @@ class BaseController extends \Illuminate\Routing\Controller
                 $this->account = Auth::user();
                 $this->account->load('roles', 'roles.permissions');
             } else {
-                $this->account = new Account();
+                $this->account = new Account;
             }
 
             return $next($request);

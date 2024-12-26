@@ -4,7 +4,7 @@ use Carbon\Carbon;
 
 class SnowTest extends \Tests\TestCase
 {
-    public function testSnowDuringPeriod()
+    public function test_snow_during_period()
     {
         \Carbon\Carbon::setTestNow(new Carbon('1st December 2019'));
 
@@ -23,7 +23,7 @@ class SnowTest extends \Tests\TestCase
         $this->assertTrue((bool) preg_match('/snow-.*\.js/', $main));
     }
 
-    public function testNoSnowOutsidePeriod()
+    public function test_no_snow_outside_period()
     {
         \Carbon\Carbon::setTestNow(new Carbon('10th January 2020'));
 

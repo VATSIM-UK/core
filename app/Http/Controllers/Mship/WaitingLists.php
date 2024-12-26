@@ -4,37 +4,34 @@ namespace App\Http\Controllers\Mship;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\WaitingListAccount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class WaitingLists extends BaseController
 {
     public function index(Request $request)
     {
-        $atcWaitingLists = $request->user()->currentWaitingLists()
-            ->withPivot([
-                'created_at',
-            ])->where('department', WaitingList::ATC_DEPARTMENT)->get();
-        $pilotWaitingLists = $request->user()->currentWaitingLists()->withPivot([
-            'created_at',
-        ])->where('department', WaitingList::PILOT_DEPARTMENT)->get();
+        /** @var Collection<WaitingListAccount> $waitingListAccounts */
+        $waitingListAccounts = $request->user()->waitingListAccounts;
+
+        $atcWaitingListAccounts = collect();
+        $pilotWaitingListAccounts = collect();
+
+        foreach ($waitingListAccounts as $waitingListAccount) {
+            if ($waitingListAccount->waitingList->department == WaitingList::ATC_DEPARTMENT) {
+                $atcWaitingListAccounts->push($waitingListAccount);
+            }
+
+            if ($waitingListAccount->waitingList->department == WaitingList::PILOT_DEPARTMENT) {
+                $pilotWaitingListAccounts->push($waitingListAccount);
+            }
+        }
 
         return view('mship.waiting-lists.index', [
             'isOBS' => $request->user()->qualification_atc->is_o_b_s,
-            'atcLists' => $atcWaitingLists,
-            'pilotLists' => $pilotWaitingLists,
+            'atcWaitingListAccounts' => $atcWaitingListAccounts,
+            'pilotWaitingListAccounts' => $pilotWaitingListAccounts,
         ]);
-    }
-
-    public function view(Request $request, $waitingListId)
-    {
-        $list = $request->user()->currentWaitingLists()->where('training_waiting_list.id', $waitingListId)->withPivot([
-            'created_at',
-        ])->firstOrFail();
-
-        $automaticFlags = $list->pivot->flags->filter(function ($flag) {
-            return (bool) $flag->position_group_id;
-        });
-
-        return view('mship.waiting-lists.view', ['list' => $list, 'automaticFlags' => $automaticFlags]);
     }
 }

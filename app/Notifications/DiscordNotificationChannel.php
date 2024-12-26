@@ -10,7 +10,7 @@ class DiscordNotificationChannel
     {
         $messageContents = $notification->toDiscord($notifiable);
 
-        $discordClient = new Discord();
+        $discordClient = new Discord;
         $discordClient->sendMessageToChannel($notification->getChannel(), $messageContents);
     }
 }

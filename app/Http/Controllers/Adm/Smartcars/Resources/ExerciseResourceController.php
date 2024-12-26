@@ -45,7 +45,7 @@ class ExerciseResourceController extends Controller
     {
         return $this->viewMake('adm.smartcars.exercise-resources.create')
             ->with('flight', $exercise)
-            ->with('resource', new FlightResource());
+            ->with('resource', new FlightResource);
     }
 
     /**

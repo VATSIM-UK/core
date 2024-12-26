@@ -43,8 +43,7 @@ abstract class TestCase extends BaseTestCase
         $this->seed();
 
         // Force regeneration of permissions cache
-        app()['cache']->forget('spatie.permission.cache');
-        $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->registerPermissions();
+        $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         \Illuminate\Support\Facades\Notification::fake();
     }

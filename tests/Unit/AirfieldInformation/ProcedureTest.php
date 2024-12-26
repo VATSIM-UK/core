@@ -13,7 +13,7 @@ class ProcedureTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function itCanCreateANewProcedure()
+    public function it_can_create_a_new_procedure()
     {
         $procedure = factory(Procedure::class)->create();
         $this->assertInstanceOf(Procedure::class, $procedure);
@@ -21,21 +21,21 @@ class ProcedureTest extends TestCase
     }
 
     /** @test */
-    public function itHasWorkingAirportRelationship()
+    public function it_has_working_airport_relationship()
     {
         $procedure = factory(Procedure::class)->create();
         $this->assertInstanceOf(Airport::class, $procedure->airport);
     }
 
     /** @test */
-    public function itHasWorkingRunwayRelationship()
+    public function it_has_working_runway_relationship()
     {
         $procedure = factory(Procedure::class)->create();
         $this->assertInstanceOf(Runway::class, $procedure->runway);
     }
 
     /** @test */
-    public function itReturnsProcedureType()
+    public function it_returns_procedure_type()
     {
         $procedure = factory(Procedure::class)->create(['type' => Procedure::TYPE_SID]);
         $this->assertEquals('SID', $procedure->procedure_type);

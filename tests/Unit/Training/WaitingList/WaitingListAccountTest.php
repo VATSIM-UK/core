@@ -23,22 +23,18 @@ class WaitingListAccountTest extends TestCase
     }
 
     /** @test */
-    public function itCanHaveNotesAdded()
+    public function it_can_have_notes_added()
     {
         $account = Account::factory()->create();
 
-        $this->waitingList->addToWaitingList($account, $this->privacc);
-
-        // grab the pivot model
-        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
-
+        $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->privacc);
         $waitingListAccount->notes = 'This is a note';
 
         $this->assertEquals('This is a note', $waitingListAccount->notes);
     }
 
     /** @test */
-    public function itShouldDefaultCreatedAtToNowIfNotProvided()
+    public function it_should_default_created_at_to_now_if_not_provided()
     {
         $account = Account::factory()->create();
         $this->waitingList->addToWaitingList($account, $this->privacc);
@@ -51,7 +47,7 @@ class WaitingListAccountTest extends TestCase
     }
 
     /** @test */
-    public function itShouldSetCreatedAtToGivenDateIfProvided()
+    public function it_should_set_created_at_to_given_date_if_provided()
     {
         $date = Carbon::parse('2020-01-01 12:00:00');
         $account = Account::factory()->create();
@@ -62,5 +58,15 @@ class WaitingListAccountTest extends TestCase
             'list_id' => $this->waitingList->id,
             'created_at' => $date,
         ]);
+    }
+
+    /** @test */
+    public function it_should_know_its_position()
+    {
+        /** @var Account $account */
+        $account = Account::factory()->create();
+        $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertEquals(1, $waitingListAccount->position);
     }
 }

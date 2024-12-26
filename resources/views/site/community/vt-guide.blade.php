@@ -2,12 +2,6 @@
 
 @section('content')
 
-    <div class="alert alert-danger">
-		<h3 style="margin-top: 0">S2 and S3 Visiting and Transfers on Hold</h3>
-		<p>Please note we are not currently accepting any applications for visiting or transferring S2 and S3 controllers. This is due to changes in policies and while we redesign the training process for visiting and transferring controllers.</p>
-        <p>C1 visiting and transferring training materials are now completed and applications are now open. S1 and OBS rated members remain unaffected by this.</p>
-	</div>
-    
     <div class="col-md-9">
 
         <div class="row">
@@ -93,10 +87,7 @@
                     </div>
                     <div class="panel-body">
                         <p>
-                            Please note that as per section 5.3 of division policy,&nbsp;VATSIM UK <strong>does not
-                                accept visiting applications from S1 rated controllers</strong>, however you are welcome
-                            to apply for full transfer (see below).
-                        </p>
+                            Please note that as per the Transfer and Visiting Controller Policy, VATSIM UK does not accept visiting applications from S1 or S2 rated controllers, however you are welcome to apply for full transfer (see below)                        </p>
 
                         <p>
                             Visiting controllers are able to select one of the Visiting Groups from the list
@@ -160,21 +151,12 @@
             </div>
             <div class="panel-body">
                 <p>
-                    <strong>Aerodrome Visiting Group (ADC VG)</strong>
-                </p>
-
-                <p>
-                    All UK TWR/GND/DEL positions with the exception of EGLL
-                    Military Aerodrome endorsement available on request. 
-                </p>
-
-                <p>
                     <strong>Approach Visiting Group (APP VG)</strong>
                 </p>
 
                 <p>
                     All UK APP + ADC VG positions with the exception of EGLL
-                    Military Approach endorsement available on request. 
+                    Military Approach endorsement available on request.
                 </p>
 
                 <p>
@@ -183,7 +165,7 @@
 
                 <p>
                     All UK CTR + ADC VG + APP VG positions with the exception of LON_S including splits.
-                    Military Area endorsement available on request. 
+                    Military Area endorsement available on request.
                 </p>
 
                 <p>
@@ -191,9 +173,9 @@
                 </p>
 
                 <p>
-                    Shanwick Oceanic Positions 
+                    Shanwick Oceanic Positions
                 </p>
-                
+
                 <p>
                     <strong>Legacy Visiting Groups are listed in the Visiting and Transferring Controller Policy</strong>
                 </p>

@@ -46,7 +46,7 @@ class ProcessNetworkData extends Command
      */
     public function handle()
     {
-        $this->networkData = Http::get(config('vatsim-data-feed.base'));
+        $this->networkData = Http::get(config('services.vatsim-net.datafeed.url'));
         $this->info('Getting network data from VATSIM.');
 
         if ($this->networkData->failed() || ! $this->networkData->json()) {
@@ -56,10 +56,10 @@ class ProcessNetworkData extends Command
         }
 
         $this->setLastUpdatedTimestamp();
-        event(new NetworkDataDownloaded());
+        event(new NetworkDataDownloaded);
         $this->processATC();
         // $this->processPilots();
-        event(new NetworkDataParsed());
+        event(new NetworkDataParsed);
 
         $this->info('Network data updated.');
     }

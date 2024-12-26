@@ -78,6 +78,16 @@ class AccountPolicy
     }
 
     /**
+     * Whether the user can unlink another user's Discount account
+     *
+     * @return void
+     */
+    public function unlinkDiscordAccount(Account $actor, Account $subject)
+    {
+        return $actor->can("account.unlink-discord.{$subject->id}");
+    }
+
+    /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\Mship\Account  $account

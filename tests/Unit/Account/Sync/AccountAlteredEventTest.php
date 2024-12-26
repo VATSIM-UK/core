@@ -31,7 +31,7 @@ class AccountAlteredEventTest extends TestCase
     }
 
     /** @test */
-    public function itTriggersEvent()
+    public function it_triggers_event()
     {
         Event::fake();
         event(new AccountAltered($this->user));
@@ -39,7 +39,7 @@ class AccountAlteredEventTest extends TestCase
     }
 
     /** @test */
-    public function itTriggersJobs()
+    public function it_triggers_jobs()
     {
         Queue::fake();
         event(new AccountAltered($this->user));
@@ -66,7 +66,7 @@ class AccountAlteredEventTest extends TestCase
     }
 
     /** @test */
-    public function itWontTriggerWithSemiDefinedAccounts()
+    public function it_wont_trigger_with_semi_defined_accounts()
     {
         Queue::fake();
 
@@ -81,7 +81,7 @@ class AccountAlteredEventTest extends TestCase
     }
 
     /** @test */
-    public function itWontTriggerDiscordWithoutADiscordId()
+    public function it_wont_trigger_discord_without_a_discord_id()
     {
         Queue::fake();
 

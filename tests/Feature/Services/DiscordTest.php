@@ -3,12 +3,17 @@
 namespace Tests\Feature\Services;
 
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
+use League\OAuth2\Client\Token\AccessToken;
+use Mockery;
+use Mockery\MockInterface;
 use Tests\TestCase;
+use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
 
 class DiscordTest extends TestCase
 {
     /** @test */
-    public function testItShowsRegistrationPage()
+    public function test_it_shows_registration_page()
     {
         $this->actingAs($this->user)
             ->get(route('discord.show'))
@@ -17,7 +22,7 @@ class DiscordTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsToOAuth()
+    public function test_it_redirects_to_o_auth()
     {
         $response = $this->actingAs($this->user)
             ->get(route('discord.create'))
@@ -30,7 +35,7 @@ class DiscordTest extends TestCase
     }
 
     /** @test */
-    public function testItPassesParamatersToOAuth()
+    public function test_it_passes_paramaters_to_o_auth()
     {
         Config::set('services.discord.redirect_uri', 'https://example.com/store');
         Config::set('services.discord.client_id', 123456789);
@@ -64,7 +69,7 @@ class DiscordTest extends TestCase
     }
 
     /** @test */
-    public function testItRedirectsWhenCodeMissing()
+    public function test_it_redirects_when_code_missing()
     {
         $emptyString = $this->actingAs($this->user)
             ->from(route('discord.show'))
@@ -90,5 +95,27 @@ class DiscordTest extends TestCase
             ->assertSessionHasErrors('code');
         $nullCode->assertRedirect(route('discord.show'))
             ->assertSessionHasErrors('code');
+    }
+
+    /** @test */
+    public function test_it_reports_when_user_in_too_many_servers()
+    {
+        $this->instance(\Wohali\OAuth2\Client\Provider\Discord::class, Mockery::mock(\Wohali\OAuth2\Client\Provider\Discord::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getAccessToken')->andReturn(new AccessToken(['access_token' => '123456', 'scope' => 'identify guilds.join']));
+            $mock->shouldReceive('getResourceOwner')->andReturn(new DiscordResourceOwner([
+                'id' => '123456789',
+            ]));
+        }));
+
+        Http::fake([
+            'discord.com/api/v6/guilds//members/123456789' => Http::response(['message' => 'You are at the 100 server limit.', 'code' => 30001], 304),
+        ]);
+
+        $this->actingAs($this->user)
+            ->get(route('discord.store', [
+                'code' => '123456789',
+            ]))
+            ->assertRedirect(route('discord.show'))
+            ->assertSessionHas('error', 'You have reached your Discord server limit! You must leave a server before you can join another one');
     }
 }

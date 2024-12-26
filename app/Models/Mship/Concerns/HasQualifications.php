@@ -198,7 +198,7 @@ trait HasQualifications
     public function hasControllerRating(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->qualification_atc->vatsim > 1,
+            get: fn () => $this->qualification_atc && $this->qualification_atc->vatsim > 1,
         );
     }
 }

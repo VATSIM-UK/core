@@ -16,7 +16,7 @@ class LoginTest extends TestCase
         $this->account = Account::factory()->create();
     }
 
-    public function testItDirectsToVatsimSSO()
+    public function test_it_directs_to_vatsim_sso()
     {
         config()->set('vatsim-connect.base', 'https://my-oauth-url.com');
         config()->set('vatsim-connect.id', 12345);
@@ -32,15 +32,15 @@ class LoginTest extends TestCase
         $redirectUrl = $this->get(route('login'))
             ->headers->get('location');
 
-        $this->assertStringContainsString(config('vatsim-connect.base'), $redirectUrl);
+        $this->assertStringContainsString(config('services.vatsim-net.connect.base'), $redirectUrl);
         $this->assertStringContainsString('state', $redirectUrl);
-        $this->assertStringContainsString('scope='.implode('%20', config('vatsim-connect.scopes')), $redirectUrl);
+        $this->assertStringContainsString('scope='.implode('%20', config('services.vatsim-net.connect.scopes')), $redirectUrl);
         $this->assertStringContainsString('response_type=code', $redirectUrl);
         $this->assertStringContainsString('redirect_uri='.urlencode(route('login.post')), $redirectUrl);
-        $this->assertStringContainsString('client_id='.config('vatsim-connect.id'), $redirectUrl);
+        $this->assertStringContainsString('client_id='.config('services.vatsim-net.connect.id'), $redirectUrl);
     }
 
-    public function testItRedirectsWithoutVatsimSSOOnSecondaryLogin()
+    public function test_it_redirects_without_vatsim_sso_on_secondary_login()
     {
         $this->assertFalse(Auth::guard('vatsim-sso')->check());
         $this->post(route('auth-secondary'))
@@ -49,7 +49,7 @@ class LoginTest extends TestCase
             ->assertRedirect(route('landing'));
     }
 
-    public function testItLogsAUserOut()
+    public function test_it_logs_a_user_out()
     {
         $this->actingAs($this->account);
         $this->assertAuthenticatedAs($this->account);
@@ -59,7 +59,7 @@ class LoginTest extends TestCase
         $this->assertGuest();
     }
 
-    public function testItLogsAUserOutOfTheVatsimSSOGuard()
+    public function test_it_logs_a_user_out_of_the_vatsim_sso_guard()
     {
         $this->actingAs($this->account, 'vatsim-sso');
         $this->assertAuthenticatedAs($this->account, 'vatsim-sso');

@@ -15,7 +15,7 @@ class AccountWaitingListsTest extends TestCase
 
     private WaitingList $currentWaitingList;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,17 +34,29 @@ class AccountWaitingListsTest extends TestCase
     }
 
     /** @test */
-    public function itCanGetAllWaitingLists()
+    public function it_can_get_all_waiting_lists()
     {
-        $this->assertCount(2, $this->user->waitingLists);
-        $this->assertContains($this->oldWaitingList->id, $this->user->waitingLists->pluck('id'));
-        $this->assertContains($this->currentWaitingList->id, $this->user->waitingLists->pluck('id'));
+        $this->assertCount(2, $this->user->waitingLists());
+        $this->assertContains($this->oldWaitingList->id, $this->user->waitingLists()->pluck('id'));
+        $this->assertContains($this->currentWaitingList->id, $this->user->waitingLists()->pluck('id'));
     }
 
     /** @test */
-    public function itCanGetAllCurrentWaitingLists()
+    public function it_can_get_all_current_waiting_lists()
     {
-        $this->assertCount(1, $this->user->fresh()->currentWaitingLists);
-        $this->assertContains($this->currentWaitingList->id, $this->user->fresh()->currentWaitingLists->pluck('id'));
+        $this->assertCount(1, $this->user->fresh()->currentWaitingLists());
+        $this->assertContains($this->currentWaitingList->id, $this->user->fresh()->currentWaitingLists()->pluck('id'));
+    }
+
+    /** @test */
+    public function it_can_handle_trashed_waiting_lists()
+    {
+        $trashed = factory(WaitingList::class)->create();
+        $trashed->addToWaitingList($this->user, $this->privacc);
+        $trashed->delete();
+        $trashed->save();
+
+        $this->assertCount(1, $this->user->fresh()->currentWaitingLists());
+        $this->assertCount(2, $this->user->fresh()->waitingLists());
     }
 }

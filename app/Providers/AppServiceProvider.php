@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Telescope\Telescope;
 use Whitecube\LaravelCookieConsent\Facades\Cookies;
 
 class AppServiceProvider extends ServiceProvider
@@ -57,7 +56,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('discord-sync', function (object $job) {
-            return Limit::perHour(1)->by($job->getAccountId());
+            return Limit::perMinute(100)
+                ->perHour(1000)
+                ->by('discord-api-call');
         });
 
         Cookies::essentials()
@@ -73,12 +74,18 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(TelescopeServiceProvider::class);
-        Telescope::ignoreMigrations();
 
         $this->app->singleton(UKCP::class);
         $this->app->singleton(Discord::class);
         $this->app->singleton(Forum::class);
         $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
+        $this->app->singleton(\Wohali\OAuth2\Client\Provider\Discord::class, function () {
+            return new \Wohali\OAuth2\Client\Provider\Discord([
+                'clientId' => Config::get('services.discord.client_id'),
+                'clientSecret' => Config::get('services.discord.client_secret'),
+                'redirectUri' => Config::get('services.discord.redirect_uri'),
+            ]);
+        });
     }
 
     public function registerHTMLComponents()

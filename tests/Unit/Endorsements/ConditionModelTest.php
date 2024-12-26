@@ -24,7 +24,7 @@ class ConditionModelTest extends TestCase
     }
 
     /** @test */
-    public function itCanBeCreated()
+    public function it_can_be_created()
     {
         $condition = PositionGroupCondition::create([
             'position_group_id' => 100,
@@ -45,13 +45,13 @@ class ConditionModelTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsAnArrayOfPositions()
+    public function it_returns_an_array_of_positions()
     {
         $this->assertTrue(is_array($this->condition->positions));
     }
 
     /** @test */
-    public function itReturnsAListOfHumanPositions()
+    public function it_returns_a_list_of_human_positions()
     {
         $this->condition->positions = ['EGKK_%', 'EGLL_%'];
         $this->condition->save();
@@ -61,7 +61,7 @@ class ConditionModelTest extends TestCase
     }
 
     /** @test */
-    public function itCanBeAssociatedWithAEndorsement()
+    public function it_can_be_associated_with_a_endorsement()
     {
         $positionGroup = factory(PositionGroup::class)->create();
         $condition = factory(PositionGroupCondition::class)->make(['position_group_id' => null]);
@@ -74,7 +74,7 @@ class ConditionModelTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyReportsProgress()
+    public function it_correctly_reports_progress()
     {
         $condition = factory(PositionGroupCondition::class)->make(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD]);
 
@@ -117,7 +117,7 @@ class ConditionModelTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyReportsMetAndProgressForSingleAirfield()
+    public function it_correctly_reports_met_and_progress_for_single_airfield()
     {
         $condition = factory(PositionGroupCondition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD]);
 
@@ -146,7 +146,7 @@ class ConditionModelTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyReportsMetAndProgressForSum()
+    public function it_correctly_reports_met_and_progress_for_sum()
     {
         $condition = factory(PositionGroupCondition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => PositionGroupCondition::TYPE_SUM_OF_AIRFIELDS]);
 
@@ -175,7 +175,7 @@ class ConditionModelTest extends TestCase
     }
 
     /** @test */
-    public function itCorrectlyChecksForQualificationWhenPresent()
+    public function it_correctly_checks_for_qualification_when_present()
     {
         $requiredQualification = Qualification::code('S3')->get()->first()->id;
 

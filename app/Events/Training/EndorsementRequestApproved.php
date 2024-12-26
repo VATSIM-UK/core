@@ -17,8 +17,7 @@ class EndorsementRequestApproved
     public function __construct(
         private EndorsementRequest $endorsementRequest,
         private ?int $days
-    ) {
-    }
+    ) {}
 
     public function getEndorsementRequest(): EndorsementRequest
     {

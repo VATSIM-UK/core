@@ -75,6 +75,31 @@ return [
         'password' => env('VATSIM_CERT_AT_PASS'),
     ],
 
+    'vatsim-net' => [
+        'webhook' => [
+            'key' => env('VATSIM_NET_WEBHOOK_KEY'),
+        ],
+        'api' => [
+            'base' => env('VATSIM_API_BASE', 'https://api.vatsim.net/api/'),
+            'key' => env('VATSIM_API_KEY', ''),
+        ],
+        'datafeed' => [
+            'url' => env('VATSIM_DATA_FEED', 'https://data.vatsim.net/v3/vatsim-data.json'),
+        ],
+        'connect' => [
+            'base' => env('VATSIM_OAUTH_BASE', 'https://auth.vatsim.net'),
+            'id' => env('VATSIM_OAUTH_CLIENT'),
+            'secret' => env('VATSIM_OAUTH_SECRET'),
+            'scopes' => explode(',', env('VATSIM_OAUTH_SCOPES')),
+        ],
+    ],
+
+    'gander-oceanic' => [
+        'api' => [
+            'base' => env('GANDER_OCEANIC_API_BASE', 'https://ganderoceanic.ca/api'),
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | VATSIM UK Hosted Services
@@ -96,12 +121,6 @@ return [
     'moodle' => [
         'database' => env('MOODLE_DATABASE'),
         'oauth_issuer_id' => env('MOODLE_OAUTH_ISSUER_ID'),
-    ],
-
-    'vatsim-net' => [
-        'webhook' => [
-            'key' => env('VATSIM_NET_WEBHOOK_KEY'),
-        ],
     ],
 
 ];

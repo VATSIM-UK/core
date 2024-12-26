@@ -8,9 +8,10 @@ use App\Models\Atc\PositionGroupPosition;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Qualification;
+use App\Notifications\Roster\RemovedFromRoster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\Roster
@@ -55,9 +56,18 @@ class Roster extends Model
 
     public function remove()
     {
-        // Notify that they were removed (database and email)
-        // Remove from waiting lists too
-        $this->delete();
+        DB::transaction(function () {
+            RosterHistory::create([
+                'account_id' => $this->account_id,
+                'original_created_at' => $this->created_at,
+                'original_updated_at' => $this->updated_at,
+                'removed_by' => auth()->user()?->getKey(),
+            ]);
+
+            $this->delete();
+
+            $this->account->notify(new RemovedFromRoster);
+        });
     }
 
     public function accountCanControl(Position $position)
@@ -164,9 +174,19 @@ class Roster extends Model
         }
 
         // If they are visiting or transferring, they need to have been
-        // specifically given permission to control up to their rating
+        // specifically given permission to control up to their rating or
+        // for this specific position.
         if ($this->account->hasState('VISITING') || $this->account->hasState('TRANSFERRING')) {
-            return $this->account
+            $endorsedForPosition = $this->account
+                ->endorsements()
+                ->active()
+                ->whereHasMorph('endorsable',
+                    Position::class,
+                    fn ($query) => $query->where('id', $position->id)
+                )
+                ->exists();
+
+            $endorsedToRating = $this->account
                 ->endorsements()
                 ->active()
                 ->whereHasMorph('endorsable',
@@ -175,6 +195,8 @@ class Roster extends Model
                 ->get()
                 ->sortByDesc('endorsable.vatsim')
                 ->first()?->endorsable?->vatsim >= $position->getMinimumVatsimQualificationAttribute();
+
+            return $endorsedForPosition || $endorsedToRating;
         }
 
         // If they are in a region or international, they cannot control

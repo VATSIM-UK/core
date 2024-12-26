@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AccountResource\Pages;
 
+use App\Events\Discord\DiscordUnlinked;
 use App\Filament\Helpers\Pages\BaseViewRecordPage;
 use App\Filament\Helpers\Pages\LogPageAccess;
 use App\Filament\Resources\AccountResource;
@@ -49,11 +50,11 @@ class ViewAccount extends BaseViewRecordPage
                 Actions\Action::make('toggle_roster_status')
                     ->visible(fn () => auth()->user()->can('roster.manage'))
                     ->color($onRoster ? 'danger' : 'success')
-                    ->icon('heroicon-o-key')
+                    ->icon('heroicon-o-list-bullet')
                     ->name($onRoster ? 'Remove from roster' : 'Add to roster')
                     ->modalHeading($onRoster ? 'Remove from roster' : 'Add to roster')
                     ->action(function () use ($onRoster) {
-                        Roster::withoutGlobalScopes()->where('account_id', $this->record->id)->delete();
+                        Roster::withoutGlobalScopes()->where('account_id', $this->record->id)->get()->each->remove();
 
                         if (! $onRoster) {
                             Roster::create(['account_id' => $this->record->id]);
@@ -74,6 +75,17 @@ class ViewAccount extends BaseViewRecordPage
                     })
                     ->requiresConfirmation()
                     ->successNotificationTitle('Password removed'),
+                Actions\Action::make('unlink_discord')
+                    ->label('Unlink Discord')
+                    ->visible(fn () => $this->record->discord_id && auth()->user()->can('unlinkDiscordAccount', $this->record))
+                    ->color('warning')
+                    ->icon('heroicon-o-link')
+                    ->modalHeading('Unlink Discord Account')
+                    ->action(function () {
+                        event(new DiscordUnlinked($this->record));
+                    })
+                    ->requiresConfirmation()
+                    ->successNotificationTitle('Discord account unlinked'),
                 Actions\EditAction::make()->visible(auth()->user()->can('update', $this->record)),
             ]),
         ];

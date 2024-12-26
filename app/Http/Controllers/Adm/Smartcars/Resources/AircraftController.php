@@ -73,7 +73,7 @@ class AircraftController extends Controller
     {
         $this->authorize('use-permission', 'adm/smartcars/aircraft/create');
 
-        return $this->viewMake('adm.smartcars.aircraft-form')->with('aircraft', new Aircraft());
+        return $this->viewMake('adm.smartcars.aircraft-form')->with('aircraft', new Aircraft);
     }
 
     /**

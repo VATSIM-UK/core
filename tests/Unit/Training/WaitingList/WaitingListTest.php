@@ -13,11 +13,11 @@ class WaitingListTest extends TestCase
 {
     use DatabaseTransactions, WaitingListTestHelper;
 
-    private $waitingList;
+    private WaitingList $waitingList;
 
     private $staffUser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -27,20 +27,20 @@ class WaitingListTest extends TestCase
     }
 
     /** @test * */
-    public function itDisplaysNameOnToString()
+    public function it_displays_name_on_to_string()
     {
         $this->assertEquals($this->waitingList->name, $this->waitingList);
     }
 
     /** @test * */
-    public function itHasAName()
+    public function it_has_a_name()
     {
         $this->assertNotNull($this->waitingList->name);
         $this->assertNotNull($this->waitingList->slug);
     }
 
     /** @test * */
-    public function itDetectsIfAtcList()
+    public function it_detects_if_atc_list()
     {
         $atcList = factory(WaitingList::class)->create(['department' => 'atc']);
 
@@ -49,7 +49,7 @@ class WaitingListTest extends TestCase
     }
 
     /** @test * */
-    public function itDetectsIfPilotList()
+    public function it_detects_if_pilot_list()
     {
         $atcList = factory(WaitingList::class)->create(['department' => 'pilot']);
 
@@ -58,20 +58,20 @@ class WaitingListTest extends TestCase
     }
 
     /** @test * */
-    public function itCanHaveStudents()
+    public function it_can_have_students()
     {
         $account = Account::factory()->make();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
-        $this->assertCount(1, $this->waitingList->accounts);
+        $this->assertCount(1, $this->waitingList->waitingListAccounts);
 
         $this->assertDatabaseHas('training_waiting_list_account',
             ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
     }
 
-    /** @test * */
-    public function itCanFindAccountPosition()
+    /** @test */
+    public function it_can_find_position_of_account()
     {
         $accounts_added_at = [Carbon::now()->subDays(10), Carbon::now()->subDays(1), Carbon::now()->subDays(4)];
         $accounts = [];
@@ -91,14 +91,19 @@ class WaitingListTest extends TestCase
 
         $this->waitingList = $this->waitingList->fresh();
 
-        $this->assertNull($this->waitingList->accountPosition(Account::factory()->create())); // A user not in the list should return null
-        $this->assertEquals(1, $this->waitingList->accountPosition($accounts[0])); // First user is oldest, should be number 1
-        $this->assertEquals(3, $this->waitingList->accountPosition($accounts[1])); // Second user is newest, should be number 3
-        $this->assertEquals(2, $this->waitingList->accountPosition($accounts[2]));
+        $findWaitingListAccount = function (Account $account) {
+            return WaitingList\WaitingListAccount::whereAccountId($account->id)
+                ->where('list_id', $this->waitingList->id)
+                ->firstOrFail();
+        };
+
+        $this->assertEquals(1, $this->waitingList->positionOf($findWaitingListAccount($accounts[0]))); // First user is oldest, should be number 1
+        $this->assertEquals(3, $this->waitingList->positionOf($findWaitingListAccount($accounts[1]))); // Second user is newest, should be number 3
+        $this->assertEquals(2, $this->waitingList->positionOf($findWaitingListAccount($accounts[2])));
     }
 
     /** @test * */
-    public function itCanRemoveUsers()
+    public function it_can_remove_users()
     {
         $account = Account::factory()->make();
 
@@ -116,7 +121,7 @@ class WaitingListTest extends TestCase
     }
 
     /** @test * */
-    public function itUpdatesPositionsOnWaitingListRemoval()
+    public function it_updates_positions_on_waiting_list_removal()
     {
         $accounts = Account::factory(3)->create()->each(function ($account) {
             $this->waitingList->addToWaitingList($account, $this->privacc);
@@ -131,7 +136,7 @@ class WaitingListTest extends TestCase
     }
 
     /** @test */
-    public function itCanHaveABooleanFlag()
+    public function it_can_have_a_boolean_flag()
     {
         $flag = factory(WaitingListFlag::class)->create();
         $this->waitingList->addFlag($flag);
@@ -140,7 +145,7 @@ class WaitingListTest extends TestCase
     }
 
     /** @test */
-    public function itCanHaveFlagsRemoved()
+    public function it_can_have_flags_removed()
     {
         $flag = factory(WaitingListFlag::class)->create();
         $this->waitingList->addFlag($flag);
@@ -151,7 +156,7 @@ class WaitingListTest extends TestCase
     }
 
     /** @test */
-    public function itCanDetectWhetherToShowAtcHourCheck()
+    public function it_can_detect_whether_to_show_atc_hour_check()
     {
         $this->waitingList->department = WaitingList::ATC_DEPARTMENT;
         $this->waitingList->feature_toggles = null;
@@ -172,7 +177,7 @@ class WaitingListTest extends TestCase
     }
 
     /** @test */
-    public function itCanDetectWhetherToCheckForCtsTheoryExam()
+    public function it_can_detect_whether_to_check_for_cts_theory_exam()
     {
         $this->waitingList->feature_toggles = null;
         $this->waitingList->save();
@@ -192,7 +197,7 @@ class WaitingListTest extends TestCase
     }
 
     /** @test */
-    public function itReturnsFeatureTogglesFormattedInArray()
+    public function it_returns_feature_toggles_formatted_in_array()
     {
         $this->waitingList->feature_toggles = null;
         $this->waitingList->save();

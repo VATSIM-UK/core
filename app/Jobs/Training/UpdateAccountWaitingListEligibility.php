@@ -20,9 +20,7 @@ class UpdateAccountWaitingListEligibility implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public Account $account)
-    {
-    }
+    public function __construct(public Account $account) {}
 
     /**
      * Execute the job.
@@ -33,7 +31,7 @@ class UpdateAccountWaitingListEligibility implements ShouldQueue
     {
         $service = new CheckWaitingListFlags($this->account);
 
-        $accountWaitingLists = $this->account->currentWaitingLists;
+        $accountWaitingLists = $this->account->currentWaitingLists();
 
         foreach ($accountWaitingLists as $waitingList) {
             WriteWaitingListFlagSummary::handle($waitingList, $service);

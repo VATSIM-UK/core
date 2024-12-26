@@ -19,6 +19,10 @@ class SyncToDiscord extends Job implements ShouldQueue
 
     public $tries = 3;
 
+    public $backoff = 60;
+
+    public $queue = 'discord';
+
     public function __construct(Account $account)
     {
         $this->account = $account;

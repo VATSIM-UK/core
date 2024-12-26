@@ -16,7 +16,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
 
     private WaitingList $waitingList;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -28,7 +28,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
     public function test_passes_checks_when_manual_flag_is_true_in_all_flags_config()
     {
         $waitingList = factory(WaitingList::class)->create();
-        $waitingList->addToWaitingList($this->user, $this->privacc);
+        $waitingListAccount = $waitingList->addToWaitingList($this->user, $this->privacc);
 
         $flag = factory(WaitingListFlag::class)->create([
             'name' => 'manual',
@@ -36,7 +36,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
             'default_value' => false,
         ]);
         $waitingList->addFlag($flag);
-        $waitingList->accounts()->first()->pivot->markFlag($flag);
+        $waitingListAccount->markFlag($flag);
 
         $result = (new CheckWaitingListFlags($this->user))->checkWaitingListFlags($waitingList->fresh());
 

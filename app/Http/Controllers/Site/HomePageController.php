@@ -60,7 +60,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
     private function todaysLiveAtcBookings()
     {
         return Cache::remember('home.mship.atc.bookings', now()->addMinutes(30), function () {
-            $bookings = new BookingRepository();
+            $bookings = new BookingRepository;
 
             return $bookings->getTodaysLiveAtcBookingsWithoutEvents();
         });
@@ -69,7 +69,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
     private function todaysEvents()
     {
         return Cache::remember('home.mship.events', now()->addHour(), function () {
-            $bookings = new EventRepository();
+            $bookings = new EventRepository;
 
             return $bookings->getTodaysEvents();
         });

@@ -32,7 +32,7 @@ class SendS1Email
         $isDivisionMember = $account->hasState('DIVISION');
         $noTempStates = $account->states->where('type', 'temp')->count() === 0;
         if ($isS1Qual && $isDivisionMember && $noTempStates) {
-            $account->notify(new S1TrainingOpportunities());
+            $account->notify(new S1TrainingOpportunities);
         }
     }
 }

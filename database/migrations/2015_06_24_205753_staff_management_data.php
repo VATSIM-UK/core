@@ -11,7 +11,7 @@ class StaffManagementData extends Migration
      */
     public function up()
     {
-        $date = new DateTime();
+        $date = new DateTime;
 
         $department_management = DB::table('staff_positions')->insertGetId(['name' => 'Management', 'type' => 'D', 'created_at' => $date, 'updated_at' => $date]);
         $department_community = DB::table('staff_positions')->insertGetId(['parent_id' => $department_management, 'name' => 'Community', 'type' => 'D', 'created_at' => $date, 'updated_at' => $date]);

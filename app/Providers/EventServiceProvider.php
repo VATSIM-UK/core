@@ -110,6 +110,12 @@ class EventServiceProvider extends ServiceProvider
         DiscordUnlinked::class => [
             RemoveDiscordUser::class,
         ],
+        \App\Events\Mship\Endorsement\TierEndorsementAdded::class => [
+            \App\Listeners\Mship\Endorsement\NotifyOfTierEndorsement::class,
+        ],
+        \App\Events\Mship\Endorsement\PositionEndorsementAdded::class => [
+            \App\Listeners\Mship\Endorsement\NotifyOfPositionEndorsement::class,
+        ],
     ];
 
     /**

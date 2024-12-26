@@ -14,20 +14,20 @@ use Tests\TestCase;
 
 class UKCPLibraryTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Carbon::setTestNow(Carbon::now()->addMinutes(30));
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         Cache::forget('UKCP_STAND_STATUS_EGLL');
         parent::tearDown();
     }
 
     /** @test */
-    public function itCanDeleteTokens()
+    public function it_can_delete_tokens()
     {
         $currentTokenID = '1234567891234abcd';
 
@@ -40,14 +40,14 @@ class UKCPLibraryTest extends TestCase
         $this->assertTrue($ukcp->deleteToken($currentTokenID, $this->user));
     }
 
-    public function testItReturnsCachedStandStatus()
+    public function test_it_returns_cached_stand_status()
     {
         $ukcp = $this->app->get(UKCP::class);
         Cache::put('UKCP_STAND_STATUS_EGLL', ['stands' => ['foo' => 'bar']], 60);
         $this->assertEquals(['foo' => 'bar'], $ukcp->getStandStatus('EGLL'));
     }
 
-    public function testItCachesSortedStandStatus()
+    public function test_it_caches_sorted_stand_status()
     {
         $expiry = Carbon::now()->addMinutes(5);
         $this->mock(Client::class, function (MockInterface $mock) use ($expiry) {
@@ -91,7 +91,7 @@ class UKCPLibraryTest extends TestCase
         $this->assertEquals($expectedData, Cache::get('UKCP_STAND_STATUS_EGLL'));
     }
 
-    public function testItReturnsEmptyIfClientThrows()
+    public function test_it_returns_empty_if_client_throws()
     {
         $this->mock(Client::class, function (MockInterface $mock) {
             $mock->shouldReceive('get')
