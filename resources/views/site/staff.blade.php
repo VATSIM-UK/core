@@ -132,14 +132,6 @@
                         </tr>
                         <tr>
                             <td>Developer</td>
-                            <td>Andy Ford</td>
-                        </tr>
-                        <tr>
-                            <td>Developer</td>
-                            <td>Ben Esen</td>
-                        </tr>
-                        <tr>
-                            <td>Developer</td>
                             <td>Dave Etheridge</td>
                         </tr>
                         <tr>
@@ -163,24 +155,24 @@
                     <h4 class="text-center">Community Team</h4>
                     <table class="table">
                         <tr>
-                            <td>Community Assistant</td>
-                            <td>James Thomas</td>
-                        </tr>
-                        <tr>
-                            <td>Community Assistant</td>
-                            <td>William Brushfield</td>
-                        </tr>
-                        <tr>
-                            <td>TV Assistant</td>
-                            <td>Dylan Parkes</td>
-                        </tr>
-                        <tr>
                             <td>Outreach Manager</td>
                             <td>Kye Taylor</td>
                         </tr>
                         <tr>
                             <td>Outreach Assistant</td>
                             <td>Thomas Hallam</td>
+                        </tr>
+                        <tr>
+                            <td>Outreach Assistant</td>
+                            <td><em>Vacant</em></td>
+                        </tr>
+                        <tr>
+                            <td>Community Assistant</td>
+                            <td>William Brushfield</td>
+                        </tr>
+                        <tr>
+                            <td>VT Assistant</td>
+                            <td>Dylan Parkes</td>
                         </tr>
                     </table>
                 </div>
@@ -238,10 +230,6 @@
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
-                                <td>Chris Pawley</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
                                 <td>Fraser Cooper</td>
                             </tr>
                             <tr>
@@ -269,8 +257,9 @@
                                 <td>Samuel Lefevre</td>
                             </tr>
                             <tr>
-                                <td>Lead Mentor (ENR)</td>
-                                <td><em>Vacant</em></td>
+                                <td>TG Instructor (ENR) & <br />
+                                Division Instructor</td>
+                                <td>Kye Taylor</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
