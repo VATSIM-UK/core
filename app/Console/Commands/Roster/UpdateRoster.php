@@ -27,7 +27,7 @@ class UpdateRoster extends Command
         $this->fromDate = Carbon::parse($this->argument('fromDate'))->startOfDay();
         $this->toDate = Carbon::parse($this->argument('toDate'))->endOfDay();
 
-        $eligible = Atc::with(['account.states'])
+        $meetHourRequirement = Atc::with(['account.states'])
             ->select(['networkdata_atc.account_id'])
             ->whereBetween('disconnected_at', [$this->fromDate, $this->toDate])
             ->accountIsPartOfUk()
@@ -37,17 +37,17 @@ class UpdateRoster extends Command
             ->pluck('account_id');
 
         // Automatically mark those on the Gander Oceanic roster as eligible
-        $eligible->push(
+        $eligible = $meetHourRequirement->merge(
             Http::get(config('services.gander-oceanic.api.base').'/roster')
                 ->collect()
                 ->where('active', true)
                 ->pluck('cid')
-                ->toArray()
-        );
+                ->flatten()
+        )->unique();
 
         // On the roster, do not need to be on...
         Roster::withoutGlobalScopes()
-            ->whereNotIn('account_id', $eligible->flatten())
+            ->whereNotIn('account_id', $eligible)
             ->get()
             ->each
             ->remove();
@@ -55,14 +55,14 @@ class UpdateRoster extends Command
         // On an ATC waiting list, not on the roster, need to be removed...
         WaitingListAccount::whereIn('list_id',
             WaitingList::where('department', WaitingList::ATC_DEPARTMENT)->get('id')
-        )->whereNotIn('account_id', $eligible->flatten())
+        )->whereNotIn('account_id', $eligible)
             ->get()
             ->each
             ->delete();
 
         // Not on the roster, need to be on...
         Roster::upsert(
-            $eligible->flatten()->map(fn ($value) => ['account_id' => $value])->toArray(),
+            $eligible->map(fn ($value) => ['account_id' => $value])->toArray(),
             ['account_id']
         );
 
