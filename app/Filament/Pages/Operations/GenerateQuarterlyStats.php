@@ -3,7 +3,9 @@
 namespace App\Filament\Pages\Operations;
 
 use App\Filament\Helpers\Pages\BasePage;
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Endorsement;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -65,7 +67,13 @@ class GenerateQuarterlyStats extends BasePage
             ['name' => 'Members Becoming Inactive', 'value' => $this->membersBecomingInactive($startDate, $endDate)],
             ['name' => 'Visiting Controllers Above S1', 'value' => $this->visitingControllersAboveS1($startDate, $endDate)],
             ['name' => 'Completed Transfer (Ex OBS)', 'value' => $this->completedTransfersExObs($startDate, $endDate)],
-        ]);
+        ])->merge(collect(['OBS', 'TWR', 'APP', 'CTR'])->map(function ($value) use ($startDate, $endDate) {
+            return ['name' => "Completed 121 Mentoring Sessions - {$value}", 'value' => $this->completedMentoringSessions($startDate, $endDate, $value)];
+        }))->merge(collect(['TWR', 'APP', 'CTR'])->map(function ($value) use ($startDate, $endDate) {
+            return ['name' => "Exam Pass - {$value}", 'value' => $this->examPasses($startDate, $endDate, $value)];
+        })->merge(collect(['GND', 'TWR', 'APP'])->map(function ($value) use ($startDate, $endDate) {
+            return ['name' => "Issued Heathrow Endorsement - {$value}", 'value' => $this->issuedHeathrowEndorsements($startDate, $endDate, $value)];
+        })));
     }
 
     protected static function canUse(): bool
@@ -137,5 +145,47 @@ class GenerateQuarterlyStats extends BasePage
         })->whereHas('qualifications', function ($q) {
             $q->whereBetween('mship_qualification.id', [3, 10]);
         })->count();
+    }
+
+    private function completedMentoringSessions(Carbon $startDate, Carbon $endDate, string $type)
+    {
+        $studentRating = match ($type) {
+            'OBS' => 1,
+            'TWR' => 2,
+            'APP' => 3,
+            'CTR' => 4
+        };
+
+        return DB::connection('cts')
+            ->table('sessions')
+            ->whereBetween('taken_date', [$startDate, $endDate])
+            ->whereNull('cancelled_datetime')
+            ->where('position', 'LIKE', "%$type%")
+            ->where('student_rating', '=', $studentRating)
+            ->count();
+    }
+
+    private function issuedHeathrowEndorsements(Carbon $startDate, Carbon $endDate, string $type)
+    {
+        $positionGroup = match ($type) {
+            'GND' => 18,
+            'TWR' => 10,
+            'APP' => 11
+        };
+
+        return Endorsement::whereBetween('created_at', [$startDate, $endDate])
+            ->whereEndorsableType(PositionGroup::class)
+            ->whereEndorsableId($positionGroup)
+            ->count();
+    }
+
+    private function examPasses(Carbon $startDate, Carbon $endDate, string $type)
+    {
+        return DB::connection('cts')
+            ->table('practical_results')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->where('result', '=', 'P')
+            ->where('exam', '=', $type)
+            ->count();
     }
 }
