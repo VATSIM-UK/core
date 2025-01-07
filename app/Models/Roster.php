@@ -54,14 +54,15 @@ class Roster extends Model
         return $this->belongsTo(Account::class);
     }
 
-    public function remove()
+    public function remove(?RosterUpdate $update = null)
     {
-        DB::transaction(function () {
+        DB::transaction(function () use ($update) {
             RosterHistory::create([
                 'account_id' => $this->account_id,
                 'original_created_at' => $this->created_at,
                 'original_updated_at' => $this->updated_at,
                 'removed_by' => auth()->user()?->getKey(),
+                'roster_update_id' => $update?->id,
             ]);
 
             $this->delete();
