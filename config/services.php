@@ -1,5 +1,8 @@
 <?php
 
+use App\Jobs\ExternalServices\VatsimNet\Webhooks\MemberChangedAction;
+use App\Jobs\ExternalServices\VatsimNet\Webhooks\MemberCreatedAction;
+
 return [
 
     /*
@@ -78,6 +81,10 @@ return [
     'vatsim-net' => [
         'webhook' => [
             'key' => env('VATSIM_NET_WEBHOOK_KEY'),
+            'jobs' => [
+                'member_created_action' => MemberCreatedAction::class,
+                'member_changed_action' => MemberChangedAction::class,
+            ],
         ],
         'api' => [
             'base' => env('VATSIM_API_BASE', 'https://api.vatsim.net/api/'),
