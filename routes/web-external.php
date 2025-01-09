@@ -11,6 +11,12 @@ Route::group([
     ], function () {
 
         Route::post('webhook', function () {
+            Log::info(print_r([
+                'Authorization' => request()->header('Authorization'),
+                'User-Agent' => request()->header('User-Agent'),
+                'Body' => request()->all(),
+            ], true));
+
             return response()->json([
                 'status' => 'ok',
             ]);

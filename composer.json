@@ -80,6 +80,7 @@
         "league/csv": "^9.0",
         "league/oauth2-client": "^2.4",
         "livewire/livewire": "^3.5",
+        "logtail/monolog-logtail": "^3.2",
         "maatwebsite/excel": "~3.1.17",
         "malahierba-lab/public-id": "dev-main",
         "ohdearapp/ohdear-php-sdk": "^3.0",

@@ -58,7 +58,7 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $member = Account::findOrFail(['id' => $this->accountID])->first();
         } catch (ModelNotFoundException $e) {
-            Log::info("Member {$this->accountID} not found in database. Auth needed to fetch data.");
+            Log::debug("Member {$this->accountID} not found in database. Auth needed to fetch data.");
 
             return;
         }
