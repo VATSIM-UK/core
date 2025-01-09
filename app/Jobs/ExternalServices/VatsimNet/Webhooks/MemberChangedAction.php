@@ -30,7 +30,7 @@ class MemberChangedAction implements ShouldQueue
                 'id', 'name_first', 'name_last', 'email', 'reg_date' => $this->processAccountChange($delta['field'], $delta['after']),
                 'rating' => $this->processAtcRatingChange($delta['after']),
                 'pilotrating' => $this->processPilotRatingChange($delta['after']),
-                'division_id', 'region_id' => $this->processStateChange($delta['after']),
+                'division_id', 'region_id' => $this->processStateChange(),
                 default => null
             };
         }
@@ -53,10 +53,9 @@ class MemberChangedAction implements ShouldQueue
         Account::firstWhere('id', $this->memberId)->updateVatsimRatings(pilotRating: $value);
     }
 
-    private function processStateChange(mixed $value): void
+    private function processStateChange(): void
     {
-        // if both a division and region is changed in the deltas
-        // this will run twice, which is not ideal
+        dump('processing state change');
 
         $account = Account::with('states')->firstWhere('id', $this->memberId);
 

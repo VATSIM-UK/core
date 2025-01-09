@@ -15,7 +15,8 @@ class ProcessVatsimNetWebhook extends BaseController
         }
 
         foreach (request()->json('actions') as $action) {
-            if (class_exists($class = config("services.vatsim-net.webhook.jobs.{$action['action']}"))) {
+            $class = config("services.vatsim-net.webhook.jobs.{$action['action']}");
+            if ($class && class_exists($class)) {
                 dispatch(new $class(request()->json('resource'), $action));
                 //                    ->afterResponse();
             }
