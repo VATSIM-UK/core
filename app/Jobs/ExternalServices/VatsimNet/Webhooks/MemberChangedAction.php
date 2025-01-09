@@ -15,6 +15,7 @@ class MemberChangedAction implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected Account $account;
+
     protected Collection $data;
 
     public function __construct(int $memberId, array $data)
