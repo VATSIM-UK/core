@@ -8,24 +8,24 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 class MemberChangedAction implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected int $memberId;
-
-    protected array $data;
+    protected Account $account;
+    protected Collection $data;
 
     public function __construct(int $memberId, array $data)
     {
-        $this->memberId = $memberId;
-        $this->data = $data;
+        $this->account = Account::with('states', 'qualifications')->findOrFail($memberId);
+        $this->data = collect($data);
     }
 
     public function handle()
     {
-        foreach ($this->data['deltas'] as $delta) {
+        foreach ($this->data->get('deltas') as $delta) {
             match ($delta['field']) {
                 'id', 'name_first', 'name_last', 'email', 'reg_date' => $this->processAccountChange($delta['field'], $delta['after']),
                 'rating' => $this->processAtcRatingChange($delta['after']),
@@ -38,34 +38,30 @@ class MemberChangedAction implements ShouldQueue
 
     private function processAccountChange(string $field, mixed $value): void
     {
-        Account::firstWhere('id', $this->memberId)->update([
+        $this->account->update([
             $field => $value,
         ]);
     }
 
     private function processAtcRatingChange(mixed $value): void
     {
-        Account::firstWhere('id', $this->memberId)->updateVatsimRatings(atcRating: $value);
+        $this->account->updateVatsimRatings(atcRating: $value);
     }
 
     private function processPilotRatingChange(mixed $value): void
     {
-        Account::firstWhere('id', $this->memberId)->updateVatsimRatings(pilotRating: $value);
+        $this->account->updateVatsimRatings(pilotRating: $value);
     }
 
     private function processStateChange(): void
     {
-        dump('processing state change');
-
-        $account = Account::with('states')->firstWhere('id', $this->memberId);
-
-        $currentRegion = $account->primary_permanent_state->pivot->region;
-        $currentDivision = $account->primary_permanent_state->pivot->division;
+        $currentRegion = $this->account->primary_permanent_state->pivot->region;
+        $currentDivision = $this->account->primary_permanent_state->pivot->division;
 
         $regionChange = collect($this->data['deltas'])->firstWhere('field', 'region_id');
         $divisionChange = collect($this->data['deltas'])->firstWhere('field', 'division_id');
 
-        $account->updateDivision(
+        $this->account->updateDivision(
             division: is_null($divisionChange) ? $currentDivision : $divisionChange['after'],
             region: is_null($regionChange) ? $currentRegion : $regionChange['after'],
         );
