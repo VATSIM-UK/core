@@ -274,6 +274,30 @@ class MockCtsDatabase
               KEY `mentor_id` (`mentor_id`)
             ) ENGINE=InnoDB AUTO_INCREMENT=62862 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `rts` (
+              `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+              `forum_mentor_group` int NOT NULL,
+              `name` varchar(30) NOT NULL DEFAULT '',
+              `helpdesk` tinyint(1) NOT NULL,
+              `email` varchar(50) DEFAULT NULL,
+              `opened_by` int unsigned NOT NULL DEFAULT '0',
+              `opened_date` date NOT NULL DEFAULT '0000-00-00',
+              `edit_by` int unsigned DEFAULT NULL,
+              `edit_date` datetime DEFAULT NULL,
+              `full` smallint NOT NULL DEFAULT '0',
+              `cfg_sequence` tinyint(1) NOT NULL,
+              `allow_home` tinyint(1) NOT NULL DEFAULT '1',
+              `allow_visit` tinyint(1) NOT NULL DEFAULT '0',
+              `min_home_rating` tinyint NOT NULL,
+              `allow_area` tinyint(1) NOT NULL DEFAULT '0',
+              `min_area_rating` tinyint NOT NULL DEFAULT '12',
+              `min_visit_rating` tinyint NOT NULL DEFAULT '0',
+              `start_count` smallint NOT NULL DEFAULT '0',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
     }
 
     public static function destroy()
@@ -324,6 +348,10 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `sessions`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `rts`;'
         );
     }
 }
