@@ -234,6 +234,70 @@ class MockCtsDatabase
                 KEY `student_id` (`student_id`)
               );"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `sessions` (
+              `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+              `rts_id` smallint unsigned NOT NULL DEFAULT '0',
+              `position` varchar(20) NOT NULL DEFAULT '',
+              `progress_sheet_id` mediumint NOT NULL,
+              `student_id` int unsigned NOT NULL DEFAULT '0',
+              `student_rating` tinyint unsigned NOT NULL DEFAULT '0',
+              `date_1` date DEFAULT NULL,
+              `from_1` time DEFAULT NULL,
+              `to_1` time DEFAULT NULL,
+              `date_2` date DEFAULT NULL,
+              `from_2` time DEFAULT NULL,
+              `to_2` time DEFAULT NULL,
+              `date_3` date DEFAULT NULL,
+              `from_3` time DEFAULT NULL,
+              `to_3` time DEFAULT NULL,
+              `taken` tinyint unsigned DEFAULT '0',
+              `mentor_id` int unsigned DEFAULT NULL,
+              `mentor_rating` tinyint unsigned DEFAULT NULL,
+              `taken_date` date DEFAULT NULL,
+              `taken_from` time DEFAULT NULL,
+              `taken_to` time DEFAULT NULL,
+              `request_time` datetime DEFAULT NULL,
+              `taken_time` datetime DEFAULT NULL,
+              `book_done` tinyint unsigned DEFAULT '0',
+              `session_done` tinyint unsigned DEFAULT '0',
+              `noShow` int NOT NULL DEFAULT '0',
+              `cancelled_datetime` datetime DEFAULT NULL,
+              `no_avail_count` smallint NOT NULL DEFAULT '0',
+              `filed` datetime DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `rts_id` (`rts_id`),
+              KEY `position` (`position`),
+              KEY `progress_sheet_id` (`progress_sheet_id`),
+              KEY `student_id` (`student_id`),
+              KEY `mentor_id` (`mentor_id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=62862 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `rts` (
+              `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+              `forum_mentor_group` int NOT NULL,
+              `name` varchar(30) NOT NULL DEFAULT '',
+              `helpdesk` tinyint(1) NOT NULL,
+              `email` varchar(50) DEFAULT NULL,
+              `opened_by` int unsigned NOT NULL DEFAULT '0',
+              `opened_date` date NOT NULL DEFAULT '0000-00-00',
+              `edit_by` int unsigned DEFAULT NULL,
+              `edit_date` datetime DEFAULT NULL,
+              `full` smallint NOT NULL DEFAULT '0',
+              `cfg_sequence` tinyint(1) NOT NULL,
+              `allow_home` tinyint(1) NOT NULL DEFAULT '1',
+              `allow_visit` tinyint(1) NOT NULL DEFAULT '0',
+              `min_home_rating` tinyint NOT NULL,
+              `allow_area` tinyint(1) NOT NULL DEFAULT '0',
+              `min_area_rating` tinyint NOT NULL DEFAULT '12',
+              `min_visit_rating` tinyint NOT NULL DEFAULT '0',
+              `start_count` smallint NOT NULL DEFAULT '0',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
     }
 
     public static function destroy()
@@ -280,6 +344,14 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `practical_results`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `sessions`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `rts`;'
         );
     }
 }

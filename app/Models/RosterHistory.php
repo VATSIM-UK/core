@@ -11,5 +11,5 @@ class RosterHistory extends Model
 
     protected $table = 'roster_history';
 
-    protected $fillable = ['account_id', 'original_created_at', 'original_updated_at', 'removed_by'];
+    protected $fillable = ['account_id', 'original_created_at', 'original_updated_at', 'removed_by', 'roster_update_id'];
 }
