@@ -30,7 +30,7 @@ class ProcessVatsimNetWebhook extends BaseController
                 continue;
             }
 
-            dispatch(new $class(request()->json('resource'), $action))->afterResponse();
+            dispatch(new $class(request()->json('resource'), $action));
         }
 
         return response()->json([
