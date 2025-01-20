@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\External\VatsimNet;
 
 use App\Http\Controllers\BaseController;
+use App\Jobs\ExternalServices\VatsimNet\Webhooks\MemberChangedAction;
+use App\Jobs\ExternalServices\VatsimNet\Webhooks\MemberCreatedAction;
+use Illuminate\Support\Facades\Log;
 
 class ProcessVatsimNetWebhook extends BaseController
 {
@@ -15,10 +18,19 @@ class ProcessVatsimNetWebhook extends BaseController
         }
 
         foreach (request()->json('actions') as $action) {
-            $class = config("services.vatsim-net.webhook.jobs.{$action['action']}");
-            if ($class && class_exists($class)) {
-                dispatch(new $class(request()->json('resource'), $action))->afterResponse();
+            $class = match ($action['action']) {
+                'member_created_action' => MemberCreatedAction::class,
+                'member_changed_action' => MemberChangedAction::class,
+                default => null,
+            };
+
+            if (! $class) {
+                Log::error("Unhandled webhook from VATSIM.net: {$action['action']}");
+
+                continue;
             }
+
+            dispatch(new $class(request()->json('resource'), $action))->afterResponse();
         }
 
         return response()->json([
