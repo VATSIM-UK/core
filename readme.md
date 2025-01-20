@@ -20,6 +20,9 @@ Click "Open in Dev Container" when prompted, or run the task from the F1 menu.
 
 A docker-compose file is provided in `.devcontainer/docker-compose.yml`.
 
+On Windows you may wish to use Laravel Herd instead, 
+you will need to run MySQL and create `core` and `cts` databases separately.
+
 ### Setup
 Generally, this project follows the [standard installation instructions](https://laravel.com/docs/10.x/installation)
 relating to Laravel.
@@ -57,8 +60,27 @@ npm install
 
 Compile the assets.
 ```shell
-npm run dev
+npm run build
+npm run dev # if you need hot reload etc
 ```
+
+### Configure
+
+Set your `APP_URL` to where you are running Core, e.g `core.test`. 
+**Important:** do not include any trailing slashes in the url
+
+In order to log in to Core you need Vatsim Connect set up. See docs [here](https://vatsim.dev/services/connect/sandbox)
+for information on what usernames and passwords this supports.
+
+When running core as `core.test` you may use the following env settings (in .env)
+
+```
+VATSIM_OAUTH_BASE=https://auth-dev.vatsim.net
+VATSIM_OAUTH_CLIENT=958
+VATSIM_OAUTH_SECRET=l2JVotx1SsHY0ufTXDW1TVskUKm4UiZCpxFHiFwD
+VATSIM_OAUTH_SCOPES=full_name,email,vatsim_details,country
+```
+
 
 ### Run Tests
 
