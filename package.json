@@ -19,7 +19,7 @@
     "jquery-datetimepicker": "^2.5.20",
     "jvectormap": "^2.0.4",
     "laravel-vite-plugin": "^1.1.1",
-    "less": "^4.2.1",
+    "less": "^4.2.2",
     "less-loader": "^12.2.0",
     "postcss": "^8.5.1",
     "postcss-nesting": "^13.0.1",
