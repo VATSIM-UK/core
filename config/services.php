@@ -1,3 +1,4 @@
+
 <?php
 
 return [
@@ -90,7 +91,7 @@ return [
             'base' => env('VATSIM_OAUTH_BASE', 'https://auth.vatsim.net'),
             'id' => env('VATSIM_OAUTH_CLIENT'),
             'secret' => env('VATSIM_OAUTH_SECRET'),
-            'scopes' => explode(',', env('VATSIM_OAUTH_SCOPES')),
+            'scopes' => explode(',', env('VATSIM_OAUTH_SCOPES', '')),
         ],
     ],
 
