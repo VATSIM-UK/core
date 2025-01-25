@@ -111,6 +111,10 @@ return [
         'database' => env('COMMUNITY_DATABASE'),
     ],
 
+    'docs' => [
+        'url' => 'https://docs.vatsim.uk',
+    ],
+
     'cts' => [
         'database' => env('CTS_DATABASE'),
     ],
