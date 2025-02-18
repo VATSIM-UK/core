@@ -4,4 +4,5 @@
 /js
 /fonts
 mix-manifest.json
+!vendor/telescope/mix-manifest.json
 /images/vendor
