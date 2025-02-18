@@ -23,7 +23,7 @@
     "less-loader": "^12.2.0",
     "postcss": "^8.5.2",
     "postcss-nesting": "^13.0.1",
-    "sass": "^1.83.4",
+    "sass": "^1.85.0",
     "tailwindcss": "^3.4.17",
     "vite": "^6.1.0",
     "vue": "^2.7.16",
