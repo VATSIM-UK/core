@@ -189,6 +189,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'endorsement.create.*',
             'endorsement.create.permanent',
             'endorsement.create.temporary',
+            'endorsement.view.*',
+            'endorsement.view.solo',
 
             'endorsement-request.access',
             'endorsement-request.create.*',

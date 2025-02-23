@@ -34,11 +34,11 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
-            //\App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
+            // \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
 
         AtcSessionEnded::class => [
-            //AtcSessionRecordedSuccessNotification::class, // temporarily disabled
+            // AtcSessionRecordedSuccessNotification::class,
             FlushEndorsementCache::class,
         ],
 

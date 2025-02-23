@@ -37,7 +37,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['daily', 'bugsnag'],
+            'channels' => ['daily', 'bugsnag', 'betterstack'],
         ],
 
         'training' => [
@@ -57,7 +57,7 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
+            'days' => 10,
         ],
 
         'slack' => [
@@ -113,6 +113,15 @@ return [
 
         'bugsnag' => [
             'driver' => 'bugsnag',
+        ],
+
+        'betterstack' => [
+            'driver' => 'monolog',
+            'level' => env('BETTERSTACK_LOG_LEVEL', 'debug'),
+            'handler' => Logtail\Monolog\LogtailHandler::class,
+            'with' => [
+                'sourceToken' => env('BETTERSTACK_SOURCE_TOKEN'),
+            ],
         ],
     ],
 
