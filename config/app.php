@@ -156,7 +156,6 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
-        Collective\Html\HtmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Alawrence\Ipboard\ServiceProvider::class,
@@ -234,8 +233,6 @@ return [
         /*
          * Third Party Aliases
          */
-        'HTML' => Collective\Html\HtmlFacade::class,
-        'Form' => Collective\Html\FormFacade::class,
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'IPBoard' => Alawrence\Ipboard\Facades\Ipboard::class,
