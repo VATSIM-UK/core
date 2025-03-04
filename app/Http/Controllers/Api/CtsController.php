@@ -10,6 +10,8 @@ use App\Repositories\Cts\BookingRepository;
 
 class CtsController
 {
+    public static $MAX_PER_PAGE = 50;
+
     private $bookingRepository;
 
     public function __construct(BookingRepository $bookingRepository)
@@ -17,9 +19,17 @@ class CtsController
         $this->bookingRepository = $bookingRepository;
     }
 
-    public function getBookings()
+    public static function normalizePageResultCount($perPage)
     {
-        $bookings = $this->bookingRepository->getBookings();
+        return min($perPage, CtsController::$MAX_PER_PAGE);
+    }
+
+
+    public function getBookings(Request $request)
+    {
+        $perPage = self::normalizePageResultCount($request->query('count', 30));
+
+        $bookings = $this->bookingRepository->getBookings($perPage);
 
         return response()->json($bookings);
     }
