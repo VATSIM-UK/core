@@ -19,7 +19,7 @@ class CtsController
 
     public function getBookings()
     {
-        $bookings = $this->bookingRepository->getBookings(15);
+        $bookings = $this->bookingRepository->getBookings();
 
         return response()->json($bookings);
     }
