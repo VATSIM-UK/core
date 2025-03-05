@@ -21,6 +21,10 @@ class CtsController
     {
         $bookings = $this->bookingRepository->getBookings(50);
 
+        if ($bookings->isEmpty()) {
+            return response()->json(['message' => 'No bookings found'], 404);
+        }
+
         $fromDate = $bookings->first()->date;
         $toDate = $bookings->last()->date;
 
