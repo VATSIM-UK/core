@@ -9,10 +9,8 @@ use App\Http\Controllers\Api\CtsController;
 
 class BookingRepository
 {
-    public function getBookings($perPage = 30)
+    public function getBookings($perPage = 50)
     {
-        $perPage = CtsController::normalizePageResultCount($perPage);
-
         return Booking::orderBy('date', 'desc')->paginate($perPage);
     }
 
