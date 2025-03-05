@@ -5,7 +5,6 @@ namespace App\Repositories\Cts;
 use App\Models\Cts\Booking;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use App\Http\Controllers\Api\CtsController;
 
 class BookingRepository
 {

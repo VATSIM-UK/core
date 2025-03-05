@@ -1,12 +1,9 @@
 <?php
 
-
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Session;
 use App\Repositories\Cts\BookingRepository;
+use Illuminate\Http\Request;
 
 class CtsController
 {
@@ -34,9 +31,9 @@ class CtsController
             'meta' => [
                 'dateRange' => [
                     'from' => $fromDate,
-                    'to' => $toDate
-                ]
-            ]
+                    'to' => $toDate,
+                ],
+            ],
         ]);
     }
 }
