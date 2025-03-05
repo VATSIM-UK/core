@@ -33,6 +33,21 @@ class BookingsRepositoryTest extends TestCase
     }
 
     /** @test */
+    public function it_can_return_a_list_of_bookings()
+    {
+        factory(Booking::class, 30)->create();
+
+        $bookings = $this->subjectUnderTest->getBookings();
+
+        $this->assertInstanceOf(\Illuminate\Pagination\LengthAwarePaginator::class, $bookings);
+        $this->assertCount(30, $bookings->items());
+
+        $bookingsCollection = collect($bookings->items());
+        $this->assertInstanceOf(Collection::class, $bookingsCollection);
+        $this->assertCount(30, $bookingsCollection);
+    }
+
+    /** @test */
     public function it_can_return_a_list_of_todays_bookings_with_owner_and_type()
     {
         factory(Booking::class, 2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
