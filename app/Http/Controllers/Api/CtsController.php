@@ -25,6 +25,7 @@ class CtsController
             return response()->json(['message' => 'No bookings found'], 404);
         }
 
+        // Not all bookings from the min/max date may be returned if the pagination limit is reached
         $fromDate = $bookings->first()->date;
         $toDate = $bookings->last()->date;
 
