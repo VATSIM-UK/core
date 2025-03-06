@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "Running pre-commit lint hook"
+
+files=$(git diff --cached --name-only --diff-filter=ACM)
+files=$(echo "$files" | grep "\.php$")
+
+composer lint $files
