@@ -1,0 +1,37 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass root
+    environment:
+      - REDIS_PASSWORD=root
+
+
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./mysql_init:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: core
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+
+  pma:
+    image: phpmyadmin
+    ports:
+      - "8090:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    depends_on:
+      - mysql
+
+
+volumes:
+  db-data:
