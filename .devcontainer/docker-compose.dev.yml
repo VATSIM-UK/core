@@ -5,7 +5,7 @@ services:
       - "6379:6379"
     command: redis-server --requirepass root
     environment:
-      - REDIS_PASSWORD=root
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
 
 
   mysql:
@@ -14,10 +14,10 @@ services:
       - db-data:/var/lib/mysql
       - ./mysql_init:/docker-entrypoint-initdb.d
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: core
+      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASS}
+      MYSQL_DATABASE: ${DB_MYSQL_NAME}
     ports:
-      - "3306:3306"
+      - ${DB_MYSQL_PORT}:3306
     expose:
       - "3306"
 
@@ -28,7 +28,7 @@ services:
     environment:
       - PMA_ARBITRARY=1
       - PMA_HOST=mysql
-      - PMA_PORT=3306
+      - PMA_PORT=${DB_MYSQL_PORT}
     depends_on:
       - mysql
 
