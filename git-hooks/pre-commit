@@ -1,10 +1,15 @@
 #!/bin/bash
 
+# This script is a pre-commit hook that runs PHP linting on all PHP files that are about to be committed.
+
 echo "Running pre-commit lint hook"
 
 files=$(git diff --cached --name-only --diff-filter=ACM)
 files=$(echo "$files" | grep "\.php$")
 
-echo "Running lint on the following files: $files"
+if [ -z "$files" ]; then
+    echo "No PHP files to lint"
+    exit 0
+fi
 
 composer lint $files
