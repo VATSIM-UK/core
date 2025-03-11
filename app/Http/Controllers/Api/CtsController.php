@@ -9,10 +9,8 @@ class CtsController
 {
     private $bookingRepository;
 
-    public function __construct(BookingRepository $bookingRepository)
-    {
-        $this->bookingRepository = $bookingRepository;
-    }
+    public function __construct(private BookingRepository $bookingRepository)
+    {}
 
     public function getBookings(Request $request)
     {
