@@ -1,3 +1,5 @@
+# Usage: .devcontainer/load-dotenv.sh docker-compose -f .devcontainer/docker-compose.dev.yml up
+
 services:
   redis:
     image: redis:7-alpine
