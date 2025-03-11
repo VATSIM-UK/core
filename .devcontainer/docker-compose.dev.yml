@@ -1,0 +1,39 @@
+# Usage: .devcontainer/load-dotenv.sh docker-compose -f .devcontainer/docker-compose.dev.yml up
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass root
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./mysql_init:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASS}
+      MYSQL_DATABASE: ${DB_MYSQL_NAME}
+    ports:
+      - ${DB_MYSQL_PORT}:3306
+    expose:
+      - "3306"
+
+  pma:
+    image: phpmyadmin
+    ports:
+      - "8090:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_PORT=${DB_MYSQL_PORT}
+    depends_on:
+      - mysql
+
+
+volumes:
+  db-data:
