@@ -52,7 +52,9 @@ class CtsController
         $bookings = $this->bookingRepository->getBookings($date);
 
         return response()->json([
-            'bookings' => $bookings,
+            'bookings' => $bookings->map(function ($booking) {
+                return collect($booking)->except(['member'])->toArray();
+            }),
             'date' => $date->toDateString(),
             'count' => $bookings->count(),
             'next_page_url' => $this->generateNextPageUrl($date),
