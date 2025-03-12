@@ -28,23 +28,20 @@ class BookingsRepositoryTest extends TestCase
         parent::setUp();
 
         $this->subjectUnderTest = resolve(BookingRepository::class);
-        $this->today = $this->knownDate->toDateString();
-        $this->tomorrow = $this->knownDate->copy()->addDay()->toDateString();
+        $this->today = $this->knownDate->copy();
+        $this->tomorrow = $this->knownDate->copy()->addDay();
     }
 
     /** @test */
-    public function it_can_return_a_list_of_bookings()
+    public function it_can_return_a_list_of_bookings_for_today()
     {
-        factory(Booking::class, 30)->create();
+        factory(Booking::class, 10)->create(['date' => $this->today->toDateString()]);
 
-        $bookings = $this->subjectUnderTest->getBookings();
+        $bookings = $this->subjectUnderTest->getBookings($this->today);
 
-        $this->assertInstanceOf(\Illuminate\Pagination\LengthAwarePaginator::class, $bookings);
-        $this->assertCount(30, $bookings->items());
-
-        $bookingsCollection = collect($bookings->items());
-        $this->assertInstanceOf(Collection::class, $bookingsCollection);
-        $this->assertCount(30, $bookingsCollection);
+        $this->assertInstanceOf(Collection::class, $bookings);
+        $this->assertCount(10, $bookings);
+        $this->assertInstanceOf(Booking::class, $bookings->first());
     }
 
     /** @test */
