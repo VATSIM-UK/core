@@ -8,19 +8,19 @@ use Illuminate\Support\Collection;
 
 class BookingRepository
 {
-    public function getBookings($perPage = 50)
+    public function getBookings(Carbon $date)
     {
-        return Booking::orderBy('date', 'desc')->paginate($perPage);
-    }
-
-    public function getTodaysBookings()
-    {
-        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
+        $bookings = Booking::where('date', '=', $date->toDateString())
             ->with('member')
             ->orderBy('from')
             ->get();
 
         return $this->formatBookings($bookings);
+    }
+
+    public function getTodaysBookings()
+    {
+        return $this->getBookings(Carbon::now());
     }
 
     public function getTodaysLiveAtcBookings()

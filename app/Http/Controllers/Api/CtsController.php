@@ -3,46 +3,76 @@
 namespace App\Http\Controllers\Api;
 
 use App\Repositories\Cts\BookingRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\RateLimiter;
 
 class CtsController
 {
-    public function __construct(private BookingRepository $bookingRepository)
-    {}
+    public function __construct(private BookingRepository $bookingRepository) {}
 
     public function getBookings(Request $request)
     {
         if (app()->environment() !== 'development' && RateLimiter::tooManyAttempts('get-bookings:'.$request->ip(), 1)) {
             $seconds = RateLimiter::availableIn('get-bookings:'.$request->ip());
+
             return response()->json([
-            'message' => 'Too many requests. Please try again after '.$seconds.' seconds.'
+                'message' => 'Too many requests. Please try again after '.$seconds.' seconds.',
             ], Response::HTTP_TOO_MANY_REQUESTS)
-            ->header('Retry-After', $seconds)
-            ->header('X-RateLimit-Reset', now()->addSeconds($seconds)->getTimestamp());
+                ->header('Retry-After', $seconds)
+                ->header('X-RateLimit-Reset', now()->addSeconds($seconds)->getTimestamp());
         }
 
         RateLimiter::hit('get-bookings:'.$request->ip(), 300); // 5 minutes
 
-        $bookings = $this->bookingRepository->getBookings(50);
+        $date = $request->get('date', null);
 
-        if ($bookings->isEmpty()) {
-            return response()->json(['message' => 'No bookings found'], 404);
+        // Validate date, default to today
+        if ($date) {
+            try {
+                $date = Carbon::parse($date);
+
+                if ($date->isPast() && $date->diffInDays(Carbon::now()) > 30) {
+                    return response()->json([
+                        'message' => 'Date is too far in the past. Please use a date within the last 30 days. Oldest date allowed: '.Carbon::now()->subDays(30)->toDateString(),
+                    ], Response::HTTP_BAD_REQUEST);
+                }
+
+            } catch (\Carbon\Exceptions\InvalidFormatException $e) {
+                return response()->json([
+                    'message' => 'Invalid date format. Please use YYYY-MM-DD.',
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+        } else {
+            $date = Carbon::now()->startOfDay();
         }
 
-        // Not all bookings from the min/max date may be returned if the pagination limit is reached
-        $fromDate = $bookings->first()->date;
-        $toDate = $bookings->last()->date;
+        $bookings = $this->bookingRepository->getBookings($date);
 
         return response()->json([
             'bookings' => $bookings,
-            'meta' => [
-                'dateRange' => [
-                    'from' => $fromDate,
-                    'to' => $toDate,
-                ],
-            ],
+            'date' => $date->toDateString(),
+            'count' => $bookings->count(),
+            'next_page_url' => $this->generateNextPageUrl($date),
+            'previous_page_url' => $this->generatePreviousPageUrl($date),
         ]);
+    }
+
+    private function generateNextPageUrl(Carbon $date): string
+    {
+        return route('api.cts.bookings').'?date='.$date->copy()->addDay()->toDateString();
+    }
+
+    private function generatePreviousPageUrl(Carbon $date): ?string
+    {
+        $previousDate = $date->copy()->subDay();
+
+        if ($previousDate->diffInDays(Carbon::now()) > 30 && $previousDate->isPast()) {
+            return null;
+        }
+
+        return route('api.cts.bookings').'?date='.$previousDate->toDateString();
     }
 }
