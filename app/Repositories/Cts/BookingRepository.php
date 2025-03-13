@@ -20,7 +20,12 @@ class BookingRepository
 
     public function getTodaysBookings()
     {
-        return $this->getBookings(Carbon::now());
+        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
+            ->with('member')
+            ->orderBy('from')
+            ->get();
+
+        return $this->formatBookings($bookings);
     }
 
     public function getTodaysLiveAtcBookings()
