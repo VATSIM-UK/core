@@ -95,7 +95,8 @@ class FeedbackResource extends Resource
 
                                 CopyablePlaceholder::make('response')
                                     ->label('Answer')
-                                    ->extraAttributes(['class' => 'whitespace-pre-line'])
+                                    // FIXME: Tailwind classes defined in filament php files aren't being added to stylesheet.
+                                    ->extraAttributes(['style' => 'white-space: pre-line;'])
                                     ->content(fn ($record) => $record->response)
                                     ->iconOnly(),
                             ]),
