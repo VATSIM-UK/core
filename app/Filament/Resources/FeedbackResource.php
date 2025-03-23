@@ -95,6 +95,7 @@ class FeedbackResource extends Resource
 
                                 CopyablePlaceholder::make('response')
                                     ->label('Answer')
+                                    ->extraAttributes(['class' => 'whitespace-pre-line'])
                                     ->content(fn ($record) => $record->response)
                                     ->iconOnly(),
                             ]),
