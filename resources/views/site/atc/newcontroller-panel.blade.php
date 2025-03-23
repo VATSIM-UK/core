@@ -18,7 +18,7 @@ If you need to make a change, this may take up to 24 hours to process.
 
 ### EuroScope and the UK Controller Pack
 VATSIM as a whole endorses several controller clients for use on the network, but the UK division only provides training using the EuroScope client.
-Installation instructions for this are available on the [EuroScope website](http://euroscope.hu/).
+Installation instructions for this are available on the [EuroScope website](https://euroscope.hu/).
 
 Our Operations Department produces and maintains a controller pack, which provides EuroScope with data on the UK’s airspace structure to display on your screen.
 You can download the [UK Controller Pack](https://community.vatsim.uk/files/downloads/file/61-uk-controller-pack/) from the downloads section of our website: be sure to precisely follow the instructions in the README.pdf file provided.
