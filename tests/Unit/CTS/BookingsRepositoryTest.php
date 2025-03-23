@@ -28,16 +28,16 @@ class BookingsRepositoryTest extends TestCase
         parent::setUp();
 
         $this->subjectUnderTest = resolve(BookingRepository::class);
-        $this->today = $this->knownDate->copy();
-        $this->tomorrow = $this->knownDate->copy()->addDay();
+        $this->today = $this->knownDate->toDateString();
+        $this->tomorrow = $this->knownDate->copy()->addDay()->toDateString();
     }
 
     /** @test */
     public function it_can_return_a_list_of_bookings_for_today()
     {
-        factory(Booking::class, 10)->create(['date' => $this->today->toDateString()]);
+        factory(Booking::class, 10)->create(['date' => Carbon::now()]);
 
-        $bookings = $this->subjectUnderTest->getBookings($this->today);
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
 
         $this->assertInstanceOf(Collection::class, $bookings);
         $this->assertCount(10, $bookings);
