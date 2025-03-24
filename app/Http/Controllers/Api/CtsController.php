@@ -52,6 +52,7 @@ class CtsController
 
         return response()->json([
             'bookings' => $bookings->map(function ($booking) {
+                // we exclude the member object to avoid exposing personal data
                 return collect($booking)->except(['member'])->toArray();
             }),
             'date' => $date->toDateString(),
