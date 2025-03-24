@@ -48,7 +48,6 @@ class AppServiceProvider extends ServiceProvider
             URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
         }
 
-        $this->registerHTMLComponents();
         $this->registerValidatorExtensions();
 
         View::composer('layout*', function ($view) {
@@ -86,15 +85,6 @@ class AppServiceProvider extends ServiceProvider
                 'redirectUri' => Config::get('services.discord.redirect_uri'),
             ]);
         });
-    }
-
-    public function registerHTMLComponents()
-    {
-        HTML::component('icon', 'components.html.icon', ['type', 'key']);
-        HTML::component('img', 'components.html.img', ['key', 'ext' => 'png', 'width' => null, 'height' => null, 'alt' => null]);
-        HTML::component('panelOpen', 'components.html.panel_open', ['title', 'icon' => [], 'attr' => []]);
-        HTML::component('panelClose', 'components.html.panel_close', []);
-        HTML::component('fuzzyDate', 'components.html.fuzzy_date', ['timestamp']);
     }
 
     public function registerValidatorExtensions()
