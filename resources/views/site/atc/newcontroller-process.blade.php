@@ -28,15 +28,18 @@ In order to be invited to an OBS_PT1 Group Session you must have completed the C
 When we are planning the next OBS_PT1 Group Session we will identify the top 30 people on the waiting list that have completed the theory exam and they will receive an invitation via a Helpdesk Ticket.
 
 If you receive an invitation you must reply ASAP and comply with the instructions that are in that ticket to confirm your place on the Group Session. If you are unable to attend this session due to real life circumstances, please reply to that ticket and we will invite you to the next session we run.
+Due to the enormous demand for ATC Training in VATSIM UK, and the comparatively small training capacity, we use a 'strike' system to ensure that our newest members are fully engaged with the training process.
+Members will receive a strike for:
+- failing to respond to the first invitation
+- failing to have completed the CTS theory exam, if you are in the top 30 on the list who are eligible for the seminar
 
-Failure to respond to this invitation will result in you receiving a strike.
-If you fail to respond to two group session invitations you will be removed from the waiting list.
-Should you wish to rejoin the list, you must complete Step 1 again.
+Members will be advised of the strike via email.
 
-During the process to find the top 30 people on the waiting list who have completed the CTS Theory Exam you have been identified as having **NOT** completed the theory exam, you will receive a strike via a Helpdesk Ticket.
+Members will be removed from the waiting list for 'failure to engage' which constitutes:
+- failure to respond to 2 seminar invitations
+- failure to complete the CTS theory, at the time of 2nd invitation
 
-If by the time we are planning a new Group Session you have still not completed this theory exam, you will be removed from the waiting list.
-Should you wish to rejoin the list, you must complete Step 1 again.
+Members will be informed of the removal, and must then complete Step 1 again.
 
 ### Step 3 - Group seminar
 If you are invited and you accept a place on a group seminar, you will be invited to join the VATSIM UK Teamspeak and VATSIM UK Discord for a short presentation by members of the New Controller Training Team.
@@ -58,9 +61,11 @@ This session will include a screenshare which will:
 Before the session ends you will be assigned your training aerodrome and will be granted access to complete the aerodrome-specific Moodle exam.
 
 This exam must be completed within 30 days of you attending a group seminar.
-If you fail to do so you will be contacted by the training team who will issue you further instructions.
-If you fail to comply with those instructions you will be removed from the training and the waiting list.
-Should you wish to rejoin you will have to complete Step 1 again.
+Should it not be completed, ATC Training Staff will make contact to ensure you are aware of the requirement to complete the exam.
+If no response is received, this will constitute 'failure to engage' and you will be removed from the waiting list and will have to complete Step 1 again.
+
+However, we understand that you may have extenuating circumstances prohibiting you from completing the exam.
+We don't want to remove anyone after coming this far, so please do make contact with ATC Training Staff and we will accommodate as best we can.
 
 ### Step 4 - Theory training
 _All of the theory content of your training is available through our Moodle platform. All of our courses are available to any VATSIM UK member, so if you wish you can start covering theory content before your Introduction to ATC group session: the relevant course is the ‘S1 Aerodrome Control’ course._
@@ -68,8 +73,7 @@ _All of the theory content of your training is available through our Moodle plat
 At the end of the Introduction to ATC group session, we’ll assign you one of three training aerodromes: Edinburgh, Manchester or Stansted. This will be where you complete your training, however after completing training and getting your rating, you’ll be free to control almost anywhere in the UK.
 
 These courses are designed to be comprehensive.
-Completion of both will take most students around a week’s study to complete, however we acknowledge that people learn at different paces, but we do expect the exams to be within 30 days of the seminar.
-Failure to do this, without communication, may result in your training place being reallocated.
+Completion of both will take most students around a week’s study to complete, however we acknowledge that people learn at different paces, but we do expect the exams to be completed within 30 days of the seminar.
 We recommend that you work through each section in a separate ‘study session’ rather than working through everything in one sitting, as this will improve your retention of what you learn.
 
 Once you have completed the aerodrome specific Moodle exam, please let us know by creating a ticket on the [VATSIM UK Helpdesk](https://helpdesk.vatsim.uk/).
@@ -79,7 +83,7 @@ We aim to keep this wait under one month by only running seminars when this ‘b
 
 ### Step 5 - Practical training
 
-Where applicable, eligibility criteria are defined in the relevant sections of this handbook.
+Where applicable, eligibility criteria are defined in the relevant sections of the [ATC Training Handbook](https://community.vatsim.uk/files/downloads/file/230-atc-training-handbook/).
 Once a training place is available, training staff will offer it to you by email/ticket.
 You will have 84 hours (3.5 days) to respond before the place is offered to the next eligible student on the waiting list.
 Places may be offered on any of the UK’s training aerodromes.
@@ -92,16 +96,15 @@ The amount of time you’ll need to spend doing this depends on your learning st
 As a general ‘rule of thumb’ we expect you to commit roughly ‘time twice’: if you have a two-hour mentoring session, spend around two hours after the session consolidating your knowledge.
 - To maintain a session request and availability in the CT system while you have a training place.
 - To turn up to your mentoring sessions on time, or where required, cancel your sessions with as much advance notice as possible.
-- To arrive at each session with the attitude to learn and more importantly to have fun.
+- To arrive at each session with the attitude to learn and more importantly to **have fun**.
 
 What will we provide you?
 - Time to discuss areas of the theory that you struggle with or could not understand from your self study.
 - One to One mentoring with our amazing mentoring team. We aim to cover the practical parts of the syllabus over a course of 3 to 4 mentoring sessions conducted on the VATSIM sweatbox simulation server.
 - Where required, an individual training plan created by the New Controller Training Group Instructors so we can guide your training to what suits you best.
 
-Your training is in your hands.
-If you don’t put the effort into your training our mentors will cancel a session and inform the Training Team.
-This may result in your removal from training if you are not putting the effort in.
+We believe that your training is in your hands.
+We want our students to be as engaged as possible with the training process, and our mentors expect you to come to sessions prepared.
 
 ### Step 6 - Practical exam
 Your exam will include around an hour of controlling, some questions, and a comprehensive debrief in which your examiner will explain what you’ve done well and what you need to improve upon.
