@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Repositories\Cts\BookingRepository;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\RateLimiter;
-use Carbon\Exceptions\InvalidFormatException;
 
 class CtsController
 {
@@ -27,12 +27,13 @@ class CtsController
 
         RateLimiter::hit('get-bookings:'.$request->ip(), 300); // 5 minutes
 
-        $date = $request->get('date', null);
+        $date = Carbon::now()->startOfDay();
+        $requestedDate = $request->get('date', null);
 
         // Validate date, default to today
-        if ($date) {
+        if ($requestedDate) {
             try {
-                $date = Carbon::parse($date);
+                $date = Carbon::parse($requestedDate);
 
                 if ($date->isPast() && $date->diffInDays(Carbon::now()) > 30) {
                     return response()->json([
@@ -45,9 +46,6 @@ class CtsController
                     'message' => 'Invalid date format. Please use YYYY-MM-DD.',
                 ], Response::HTTP_BAD_REQUEST);
             }
-
-        } else {
-            $date = Carbon::now()->startOfDay();
         }
 
         $bookings = $this->bookingRepository->getBookings($date);
