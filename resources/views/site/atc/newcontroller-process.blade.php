@@ -27,7 +27,8 @@ In order to be invited to an OBS_PT1 Group Session you must have completed the C
 
 When we are planning the next OBS_PT1 Group Session we will identify the top 30 people on the waiting list that have completed the theory exam and they will receive an invitation via a Helpdesk Ticket.
 
-If you receive an invitation you must reply ASAP and comply with the instructions that are in that ticket to confirm your place on the Group Session. If you are unable to attend this session due to real life circumstances, please reply to that ticket and we will invite you to the next session we run.
+Upon receiving an invitation, please respond to it at your earliest convenience and take care to read and follow the instructions contained within.
+If you are unable to attend this session due to real life circumstances, please reply to that ticket and we will invite you to the next session we run.
 Due to the enormous demand for ATC Training in VATSIM UK, and the comparatively small training capacity, we use a 'strike' system to ensure that our newest members are fully engaged with the training process.
 Members will receive a strike for:
 - failing to respond to the first invitation
