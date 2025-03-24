@@ -34,7 +34,7 @@ jobs:
       # DEPLOYMENT PARAMETERS
       #
       - name: Set additional deployment variables
-        uses: allenevans/set-env@v2.0.0
+        uses: allenevans/set-env@v4.0.0
         with:
           APP_URL: https://www.vatsim.uk
           APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
