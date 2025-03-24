@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\RateLimiter;
+use Carbon\Exceptions\InvalidFormatException;
 
 class CtsController
 {
@@ -39,7 +40,7 @@ class CtsController
                     ], Response::HTTP_BAD_REQUEST);
                 }
 
-            } catch (\Carbon\Exceptions\InvalidFormatException $e) {
+            } catch (InvalidFormatException $e) {
                 return response()->json([
                     'message' => 'Invalid date format. Please use YYYY-MM-DD.',
                 ], Response::HTTP_BAD_REQUEST);
