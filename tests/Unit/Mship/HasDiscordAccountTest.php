@@ -42,7 +42,7 @@ class HasDiscordAccountTest extends TestCase
     public function test_includes_cid_in_name()
     {
         $user = Account::factory()->create([
-            'name_first' => "Test",
+            'name_first' => 'Test',
             'name_last' => 'Name',
             'id' => 123456789,
         ]);
@@ -53,13 +53,13 @@ class HasDiscordAccountTest extends TestCase
     public function test_include_cid_in_name_when_name_too_long()
     {
         $user = Account::factory()->create([
-            'name_first' => "Test",
+            'name_first' => 'Test',
             'name_last' => 'Name',
             'id' => 123456789,
         ]);
 
         $user->name_last = 'This is a very long name that is over 32 characters long';
-        # takes first character of last name
+        // takes first character of last name
         $this->assertEquals('Test T - 123456789', $user->discordName);
         $this->assertLessThanOrEqual(32, strlen($user->discordName));
     }
