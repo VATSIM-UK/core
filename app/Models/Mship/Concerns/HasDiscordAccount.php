@@ -18,6 +18,7 @@ trait HasDiscordAccount
     {
         if (Str::length($this->name) >= 32) {
             $firstLetterOfLastName = substr($this->name_last, 0, 1);
+
             return "{$this->name_preferred} {$firstLetterOfLastName} - {$this->id}";
         }
 
