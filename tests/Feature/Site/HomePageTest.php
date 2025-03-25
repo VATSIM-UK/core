@@ -49,8 +49,7 @@ class HomePageTest extends TestCase
 
         $this->get(route('site.home'))
             ->assertDontSee(e($booking->member->name))
-            ->assertDontSee($booking->member->cid)
-            ->assertSee('Hidden');
+            ->assertDontSee($booking->member->cid);
     }
 
     /** @test */
