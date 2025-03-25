@@ -4,6 +4,7 @@ namespace Tests\Unit\Mship;
 
 use App\Libraries\Discord;
 use App\Models\Discord\DiscordRoleRule;
+use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Mockery\MockInterface;
@@ -36,5 +37,30 @@ class HasDiscordAccountTest extends TestCase
         $this->user->givePermissionTo($permissionHas);
 
         $this->user->syncToDiscord();
+    }
+
+    public function test_includes_cid_in_name()
+    {
+        $user = Account::factory()->create([
+            'name_first' => "Test",
+            'name_last' => 'Name',
+            'id' => 123456789,
+        ]);
+
+        $this->assertEquals('Test Name - 123456789', $user->discordName);
+    }
+
+    public function test_include_cid_in_name_when_name_too_long()
+    {
+        $user = Account::factory()->create([
+            'name_first' => "Test",
+            'name_last' => 'Name',
+            'id' => 123456789,
+        ]);
+
+        $user->name_last = 'This is a very long name that is over 32 characters long';
+        # takes first character of last name
+        $this->assertEquals('Test T - 123456789', $user->discordName);
+        $this->assertLessThanOrEqual(32, strlen($user->discordName));
     }
 }
