@@ -34,7 +34,7 @@ class HomePageTest extends TestCase
             ->assertSee($booking->position)
             ->assertSee(Carbon::parse($booking->from)->format('H:i'))
             ->assertSee(Carbon::parse($booking->to)->format('H:i'))
-            ->assertSee(e($booking->member->name))
+            ->assertDontSee(e($booking->member->name))
             ->assertSee($booking->member->cid);
     }
 
