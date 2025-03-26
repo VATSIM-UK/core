@@ -25,5 +25,6 @@
 		8080,
 		3306
 	],
+	"postCreateCommand": "sh .devcontainer/initialSetup.sh",
 	"postAttachCommand": "composer install && php artisan migrate && php artisan db:seed"
 }

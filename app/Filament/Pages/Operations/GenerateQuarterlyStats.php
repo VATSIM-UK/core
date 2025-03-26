@@ -3,7 +3,6 @@
 namespace App\Filament\Pages\Operations;
 
 use App\Filament\Helpers\Pages\BasePage;
-use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
 use Carbon\Carbon;
@@ -61,19 +60,18 @@ class GenerateQuarterlyStats extends BasePage
         $endDate = $startDate->copy()->addMonths(3);
 
         $this->statistics = collect([
-            ['name' => 'Left Division', 'value' => $this->membersLeftDivision($startDate, $endDate)],
-            ['name' => 'Pilots Visiting', 'value' => $this->pilotsVisiting($startDate, $endDate)],
-            ['name' => 'New Joiners as First Division', 'value' => $this->newJoinersAsFirstDivision($startDate, $endDate)],
-            ['name' => 'Members Becoming Inactive', 'value' => $this->membersBecomingInactive($startDate, $endDate)],
-            ['name' => 'Visiting Controllers Above S1', 'value' => $this->visitingControllersAboveS1($startDate, $endDate)],
-            ['name' => 'Completed Transfer (Ex OBS)', 'value' => $this->completedTransfersExObs($startDate, $endDate)],
-        ])->merge(collect(['OBS', 'TWR', 'APP', 'CTR'])->map(function ($value) use ($startDate, $endDate) {
-            return ['name' => "Completed 121 Mentoring Sessions - {$value}", 'value' => $this->completedMentoringSessions($startDate, $endDate, $value)];
-        }))->merge(collect(['TWR', 'APP', 'CTR'])->map(function ($value) use ($startDate, $endDate) {
-            return ['name' => "Exam Pass - {$value}", 'value' => $this->examPasses($startDate, $endDate, $value)];
-        })->merge(collect(['GND', 'TWR', 'APP'])->map(function ($value) use ($startDate, $endDate) {
-            return ['name' => "Issued Heathrow Endorsement - {$value}", 'value' => $this->issuedHeathrowEndorsements($startDate, $endDate, $value)];
-        })));
+            'Division Membership' => [
+                ['name' => 'Left Division', 'value' => $this->membersLeftDivision($startDate, $endDate)],
+                ['name' => 'Pilots Visiting', 'value' => $this->pilotsVisiting($startDate, $endDate)],
+                ['name' => 'New Joiners as First Division', 'value' => $this->newJoinersAsFirstDivision($startDate, $endDate)],
+                ['name' => 'Members Becoming Inactive', 'value' => $this->membersBecomingInactive($startDate, $endDate)],
+                ['name' => 'Visiting Controllers Above S1', 'value' => $this->visitingControllersAboveS1($startDate, $endDate)],
+                ['name' => 'Completed Transfer (Ex OBS)', 'value' => $this->completedTransfersExObs($startDate, $endDate)],
+            ],
+            'Completed Mentoring Sessions' => $this->completedMentoringSessions($startDate, $endDate),
+            'Exam Passes' => $this->examPasses($startDate, $endDate),
+            'Issued Position Group Endorsements' => $this->issuedPositionGroupEndorsements($startDate, $endDate),
+        ]);
     }
 
     protected static function canUse(): bool
@@ -147,45 +145,43 @@ class GenerateQuarterlyStats extends BasePage
         })->count();
     }
 
-    private function completedMentoringSessions(Carbon $startDate, Carbon $endDate, string $type)
+    private function completedMentoringSessions(Carbon $startDate, Carbon $endDate)
     {
-        $studentRating = match ($type) {
-            'OBS' => 1,
-            'TWR' => 2,
-            'APP' => 3,
-            'CTR' => 4
-        };
-
         return DB::connection('cts')
             ->table('sessions')
+            ->select('rts.name', DB::raw('count(*) as total'))
+            ->join('rts', 'sessions.rts_id', '=', 'rts.id')
             ->whereBetween('taken_date', [$startDate, $endDate])
             ->whereNull('cancelled_datetime')
-            ->where('position', 'LIKE', "%$type%")
-            ->where('student_rating', '=', $studentRating)
-            ->count();
+            ->where('noShow', '=', 0)
+            ->groupBy('rts_id')
+            ->get()
+            ->flatMap(fn ($value) => [['name' => $value->name, 'value' => $value->total]])
+            ->toArray();
     }
 
-    private function issuedHeathrowEndorsements(Carbon $startDate, Carbon $endDate, string $type)
+    private function issuedPositionGroupEndorsements(Carbon $startDate, Carbon $endDate)
     {
-        $positionGroup = match ($type) {
-            'GND' => 18,
-            'TWR' => 10,
-            'APP' => 11
-        };
-
-        return Endorsement::whereBetween('created_at', [$startDate, $endDate])
-            ->whereEndorsableType(PositionGroup::class)
-            ->whereEndorsableId($positionGroup)
-            ->count();
+        return Endorsement::with('endorsable')
+            ->whereBetween('mship_account_endorsement.created_at', [$startDate, $endDate])
+            ->join('position_groups', 'position_groups.id', 'mship_account_endorsement.endorsable_id')
+            ->groupBy('position_groups.id', 'position_groups.name')
+            ->select(['position_groups.name', 'position_groups.id', DB::raw('count(*) as total')])
+            ->get()
+            ->flatMap(fn ($value) => [['name' => $value->name, 'value' => $value->total]])
+            ->toArray();
     }
 
-    private function examPasses(Carbon $startDate, Carbon $endDate, string $type)
+    private function examPasses(Carbon $startDate, Carbon $endDate)
     {
         return DB::connection('cts')
             ->table('practical_results')
+            ->select('exam', DB::raw('count(*) as total'))
             ->whereBetween('date', [$startDate, $endDate])
             ->where('result', '=', 'P')
-            ->where('exam', '=', $type)
-            ->count();
+            ->groupBy('exam')
+            ->get()
+            ->flatMap(fn ($value) => [['name' => $value->exam, 'value' => $value->total]])
+            ->toArray();
     }
 }

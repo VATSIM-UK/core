@@ -141,14 +141,10 @@
                             <a class="nav-link" href="{{ route('site.atc.newController') }}">Become a Controller</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ config('services.docs.url') }}">Documentation</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('site.roster.index') }}">Controller Roster</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://cts.vatsim.uk/home/solo.php">Solo Endorsements</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://cts.vatsim.uk/home/validations.php">Special
-                                Endorsements</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('site.atc.heathrow') }}">Heathrow Endorsements</a>
@@ -267,9 +263,8 @@
                                             (M)
                                         @endif
                                     </b><br/>
-                                    {{ e($booking['member']['name']) }}
                                     @if($booking['member']['id'])
-                                        ({{ $booking['member']['id'] }})
+                                        {{ $booking['member']['id'] }}
                                     @endif
                                     <br/>
                                     {{$booking['from']}}z - {{$booking['to']}}z<br/>
@@ -344,17 +339,27 @@
         <h1 class="text-primary">Welcome!</h1><br>
 
         <p>
-            VATSIM UK is the community for pilots and controllers who partake in the VATSIM network within the United
-            Kingdom. We work hard in the provision of training for air traffic controllers and pilots as well as resources
-            for all members who want to fly and control in the UK. Our outstanding community is what makes VATSIM UK such
-            a great place to be. We welcome members from all around the world to get involved flying, controlling or even
-            development of software!
+            VATSIM UK is the place to be for any members who regularly fly or wish to control on the VATSIM Network in
+            the United Kingdom. We are known across the virtual globe for the quality of our ATC training, and our
+            airports consistently rank amongst the busiest of those on the Network. We have developed a close-knit
+            community of flight simulation enthusiasts - whether you are a student longing for a career in aviation, a
+            retired professional looking for a new hobby or simply someone who loves flying and wants to meet other
+            like-minded individuals, I am sure you will feel at home within our Division.
         </p>
 
         <p>
-            To join the division, we have made an easy to follow guide at our Join Us page. Whether as a pilot, controller
-            or both, you will receive a warm welcome by our community and we hope that this will be the first step to
-            finding many new friends within the hobby.
+            I would encourage all members, particularly those at the beginning of their VATSIM journey, to join our
+            Discord server and take advantage of the wealth of knowledge within our community. We also offer a bespoke
+            ‘Flying Programme’ as a natural successor to the P0 rating, where newer members are able to receive
+            one-on-one, live training with our experienced flight instructors. For members interested in becoming a
+            virtual air traffic controller, our website contains a useful guide to help you understand the training
+            process and requirements.
+        </p>
+
+        <p>
+            Joining VATSIM UK has given me everything from new friends and memorable trips, to career advice and flying
+            tips. I hope that everyone is able to benefit from our incredible community just as much as I have and I can
+            guarantee that, regardless of your reason for joining VATSIM UK, you will be met with a warm welcome.
         </p>
         <br>
 

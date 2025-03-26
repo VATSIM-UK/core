@@ -81,11 +81,23 @@
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
-                            <td>Luke Brown</td>
+                            <td>1116943</td>
+                        </tr>
+                        <tr>
+                            <td>Sector File Coordinator</td>
+                            <td>Ben Walker</td>
                         </tr>
                         <tr>
                             <td>Events Manager</td>
                             <td>Luke Thompson</td>
+                        </tr>
+                        <tr>
+                            <td>Events Assistant</td>
+                            <td>Mohamed Ouahchia</td>
+                        </tr>
+                        <tr>
+                            <td>Events Assistant</td>
+                            <td>James Bayliss-de-Gruchy</td>
                         </tr>
                         <tr>
                             <td>Operations Assistant</td>
