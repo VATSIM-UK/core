@@ -24,10 +24,6 @@ class EndorsementRequestResource extends Resource
 
     protected static ?string $navigationGroup = 'Mentoring';
 
-    protected int $minimumDays = 7;
-
-    protected int $maximumDays = 90;
-
     public static function form(Form $form): Form
     {
         return $form
@@ -115,10 +111,10 @@ class EndorsementRequestResource extends Resource
                             ->label('Valid for (Days)')
                             ->numeric()
                             ->step(1)
-                            ->minValue(function (EndorsementRequest $endorsementRequest) {
+                            ->minValue(function () {
                                 return auth()->user()->can('endorsement.bypass.minimumdays')
                                     ? null
-                                    : $this->minimumDays;
+                                    : 7;
                             })
                             ->placeholder(7)
                             ->maxValue(function (EndorsementRequest $endorsementRequest) {
@@ -128,7 +124,7 @@ class EndorsementRequestResource extends Resource
 
                                 return auth()->user()->can('endorsement.bypass.maximumdays')
                                     ? null
-                                    : $this->maximumDays - $endorsementRequest->account->daysSpentTemporarilyEndorsedOn($endorsementRequest->endorsable);
+                                    : 90 - $endorsementRequest->account->daysSpentTemporarilyEndorsedOn($endorsementRequest->endorsable);
                             })
                             ->required(fn (Get $get): bool => $get('type') === 'Temporary')
                             ->visible(fn (Get $get): bool => $get('type') === 'Temporary'),
