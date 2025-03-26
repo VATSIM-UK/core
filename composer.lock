@@ -11944,26 +11944,26 @@
         },
         {
             "name": "whitecube/laravel-cookie-consent",
-            "version": "v1.2.6",
+            "version": "v1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/whitecube/laravel-cookie-consent.git",
-                "reference": "7f2df9798bf6b33a3c35fafdfe6c40f9e3df9fdd"
+                "reference": "262fe800dc1efd0aac10f0209466f7dd718d8add"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/7f2df9798bf6b33a3c35fafdfe6c40f9e3df9fdd",
-                "reference": "7f2df9798bf6b33a3c35fafdfe6c40f9e3df9fdd",
+                "url": "https://api.github.com/repos/whitecube/laravel-cookie-consent/zipball/262fe800dc1efd0aac10f0209466f7dd718d8add",
+                "reference": "262fe800dc1efd0aac10f0209466f7dd718d8add",
                 "shasum": ""
             },
             "require": {
-                "laravel/framework": "^9|^10|^11",
+                "laravel/framework": "^9|^10|^11|^12",
                 "php": ">=8.1"
             },
             "require-dev": {
                 "mockery/mockery": "^1.5",
-                "orchestra/testbench": "^8.5|^9.0",
-                "pestphp/pest": "^2.6"
+                "orchestra/testbench": "^8.5|^9.0|^10.0",
+                "pestphp/pest": "^2.0|^3.7"
             },
             "type": "library",
             "extra": {
@@ -12007,7 +12007,7 @@
             ],
             "support": {
                 "issues": "https://github.com/whitecube/laravel-cookie-consent/issues",
-                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.2.6"
+                "source": "https://github.com/whitecube/laravel-cookie-consent/tree/v1.3.2"
             },
             "funding": [
                 {
@@ -12015,7 +12015,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-02-12T09:19:56+00:00"
+            "time": "2025-03-24T18:04:16+00:00"
         },
         {
             "name": "wohali/oauth2-discord-new",
