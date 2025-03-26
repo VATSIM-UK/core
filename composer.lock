@@ -674,16 +674,16 @@
         },
         {
             "name": "bugsnag/bugsnag",
-            "version": "v3.29.2",
+            "version": "v3.29.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bugsnag/bugsnag-php.git",
-                "reference": "437ac553e3dfb546b93a7191e031643b00da20f2"
+                "reference": "9d9aa665f5e9d24f45aad5114dbd2d861119febb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bugsnag/bugsnag-php/zipball/437ac553e3dfb546b93a7191e031643b00da20f2",
-                "reference": "437ac553e3dfb546b93a7191e031643b00da20f2",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-php/zipball/9d9aa665f5e9d24f45aad5114dbd2d861119febb",
+                "reference": "9d9aa665f5e9d24f45aad5114dbd2d861119febb",
                 "shasum": ""
             },
             "require": {
@@ -731,35 +731,35 @@
             ],
             "support": {
                 "issues": "https://github.com/bugsnag/bugsnag-php/issues",
-                "source": "https://github.com/bugsnag/bugsnag-php/tree/v3.29.2"
+                "source": "https://github.com/bugsnag/bugsnag-php/tree/v3.29.3"
             },
-            "time": "2025-01-13T16:29:41+00:00"
+            "time": "2025-03-06T12:03:07+00:00"
         },
         {
             "name": "bugsnag/bugsnag-laravel",
-            "version": "v2.28.1",
+            "version": "v2.29.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bugsnag/bugsnag-laravel.git",
-                "reference": "9c34a060595814b7a140e4d5a63fd197d2485c8f"
+                "reference": "5066f0aa068f12a555ce26c2d311b133cc06bdb7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bugsnag/bugsnag-laravel/zipball/9c34a060595814b7a140e4d5a63fd197d2485c8f",
-                "reference": "9c34a060595814b7a140e4d5a63fd197d2485c8f",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-laravel/zipball/5066f0aa068f12a555ce26c2d311b133cc06bdb7",
+                "reference": "5066f0aa068f12a555ce26c2d311b133cc06bdb7",
                 "shasum": ""
             },
             "require": {
                 "bugsnag/bugsnag": "^3.29.0",
                 "bugsnag/bugsnag-psr-logger": "^1.4|^2.0",
-                "illuminate/contracts": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
-                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "illuminate/contracts": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
                 "monolog/monolog": "^1.12|^2.0|^3.0",
                 "php": ">=5.5"
             },
             "require-dev": {
-                "orchestra/testbench": "^3.1|^4.0|^5.0|^6.0|^7.0|^8.0|^9.0",
-                "phpunit/phpunit": "^4.8.36|^6.3.1|^7.5.15|^8.3.5|^9.3.10|^10.0"
+                "orchestra/testbench": "^3.1|^4.0|^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^4.8.36|^6.3.1|^7.5.15|^8.3.5|^9.3.10|^10.0|^11.0"
             },
             "type": "library",
             "extra": {
@@ -794,9 +794,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bugsnag/bugsnag-laravel/issues",
-                "source": "https://github.com/bugsnag/bugsnag-laravel/tree/v2.28.1"
+                "source": "https://github.com/bugsnag/bugsnag-laravel/tree/v2.29.0"
             },
-            "time": "2025-01-13T16:35:27+00:00"
+            "time": "2025-02-26T15:15:21+00:00"
         },
         {
             "name": "bugsnag/bugsnag-psr-logger",
@@ -926,16 +926,16 @@
         },
         {
             "name": "composer/ca-bundle",
-            "version": "1.5.5",
+            "version": "1.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "08c50d5ec4c6ced7d0271d2862dec8c1033283e6"
+                "reference": "f65c239c970e7f072f067ab78646e9f0b2935175"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/08c50d5ec4c6ced7d0271d2862dec8c1033283e6",
-                "reference": "08c50d5ec4c6ced7d0271d2862dec8c1033283e6",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/f65c239c970e7f072f067ab78646e9f0b2935175",
+                "reference": "f65c239c970e7f072f067ab78646e9f0b2935175",
                 "shasum": ""
             },
             "require": {
@@ -982,7 +982,7 @@
             "support": {
                 "irc": "irc://irc.freenode.org/composer",
                 "issues": "https://github.com/composer/ca-bundle/issues",
-                "source": "https://github.com/composer/ca-bundle/tree/1.5.5"
+                "source": "https://github.com/composer/ca-bundle/tree/1.5.6"
             },
             "funding": [
                 {
@@ -998,7 +998,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-08T16:17:16+00:00"
+            "time": "2025-03-06T14:30:56+00:00"
         },
         {
             "name": "composer/class-map-generator",
