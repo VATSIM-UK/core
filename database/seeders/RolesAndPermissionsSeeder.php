@@ -185,6 +185,8 @@ class RolesAndPermissionsSeeder extends Seeder
 
             'endorsement.temporary.create.*',
             'endorsement.temporary.edit.*',
+            'endorsement.bypass.minimumdays',
+            'endorsement.bypass.maximumdays',
 
             'endorsement.create.*',
             'endorsement.create.permanent',
