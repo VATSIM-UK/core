@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Roster;
 
+use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Roster;
 use App\Models\RosterUpdate;
@@ -33,23 +34,41 @@ class UpdateRoster extends Command
             'period_end' => $this->toDate,
         ]);
 
-        $meetHourRequirement = Atc::with(['account.states'])
-            ->select(['networkdata_atc.account_id'])
-            ->whereBetween('disconnected_at', [$this->fromDate, $this->toDate])
-            ->accountIsPartOfUk()
-            ->positionIsWithinUk()
-            ->groupBy('account_id')
-            ->havingRaw("SUM(minutes_online) / 60 > {$this->minimumHours}")
-            ->pluck('account_id');
+        $eligible = collect();
+
+        $eligible->push(
+            $meetHourRequirement = Atc::with(['account.states'])
+                ->select(['networkdata_atc.account_id'])
+                ->whereBetween('disconnected_at', [$this->fromDate, $this->toDate])
+                ->accountIsPartOfUk()
+                ->positionIsWithinUk()
+                ->groupBy('account_id')
+                ->havingRaw("SUM(minutes_online) / 60 > {$this->minimumHours}")
+                ->pluck('account_id')
+        );
+
+        // Add newly rated S1 home members to the roster, even if they do not meet the hour requirement
+        $eligible->push(
+            $newS1Members = Account::whereHas('qualifications', function ($query) {
+                $query->where('code', 'S1')
+                    ->whereBetween('mship_account_qualification.created_at', [now()->subMonths(3), now()]);
+            })
+                ->whereHas('states', function ($query) {
+                    return $query->where('mship_state.code', 'DIVISION');
+                })
+                ->pluck('id')
+        );
 
         // Automatically mark those on the Gander Oceanic roster as eligible
-        $eligible = $meetHourRequirement->merge(
+        $eligible->push(
             $ganderControllers = Http::get(config('services.gander-oceanic.api.base').'/roster')
                 ->collect()
                 ->where('active', true)
                 ->pluck('cid')
                 ->flatten()
-        )->unique();
+        );
+
+        $eligible = $eligible->flatten()->unique();
 
         // On the roster, do not need to be on...
         $removeFromRoster = Roster::withoutGlobalScopes()
@@ -95,6 +114,7 @@ class UpdateRoster extends Command
         $rosterUpdate->update([
             'data' => [
                 'meetHourRequirement' => $meetHourRequirement->count(),
+                'newS1Members' => $newS1Members->count(),
                 'ganderControllers' => $ganderControllers->count(),
                 'eligible' => $eligible->count(),
                 'removeFromRoster' => $removeFromRoster->count(),
