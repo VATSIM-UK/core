@@ -25,6 +25,7 @@ class EndorsementRequestResource extends Resource
     protected static ?string $navigationGroup = 'Mentoring';
 
     protected int $minimumDays = 7;
+
     protected int $maximumDays = 90;
 
     public static function form(Form $form): Form
