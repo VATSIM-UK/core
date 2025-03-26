@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('mship_account_endorsement', function (Blueprint $table) {
-            $table->smallInteger('duration')->after('expires_at')->virtualAs("TIMESTAMPDIFF(DAY, created_at, expires_at)");
+            $table->smallInteger('duration')->after('expires_at')->virtualAs('TIMESTAMPDIFF(DAY, created_at, expires_at)');
         });
     }
 

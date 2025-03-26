@@ -7,17 +7,13 @@ use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Qualification;
 use Filament\Forms;
-use Filament\Forms\Components\MorphToSelect;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Sum;
-use Filament\Tables\Columns\Summarizers\Summarizer;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class EndorsementsRelationManager extends RelationManager
 {
@@ -62,7 +58,7 @@ class EndorsementsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('created_at')->label('Granted')->date(),
                 Tables\Columns\TextColumn::make('expires_at')->label('Expires')->date()->default(''),
                 Tables\Columns\TextColumn::make('duration')->label('Duration (Days)')
-                    ->summarize(Sum::make()->label('Days')->numeric())
+                    ->summarize(Sum::make()->label('Days')->numeric()),
             ])
             ->headerActions([
                 // Tables\Actions\CreateAction::make()->label('Add endorsement'),
@@ -73,7 +69,7 @@ class EndorsementsRelationManager extends RelationManager
                     ->getTitleFromRecordUsing(fn ($record): string => "$record->type - {$record->endorsable->name}")
                     ->groupQueryUsing(fn (\Illuminate\Database\Query\Builder $query) => $query->groupByRaw("CONCAT(endorsable_type,'::',endorsable_id)"))
                     ->getKeyFromRecordUsing(fn (Endorsement $record): string => "$record->endorsable_type::$record->endorsable_id")
-                    ->titlePrefixedWithLabel(false)
+                    ->titlePrefixedWithLabel(false),
             ])
             ->defaultGroup('endorsable_id')
             ->groupingSettingsHidden()
@@ -90,7 +86,7 @@ class EndorsementsRelationManager extends RelationManager
                         Position::class => 'Solo Endorsement',
                         Qualification::class => 'Rating Endorsement',
                     ])
-                    ->multiple()
+                    ->multiple(),
             ]);
     }
 
