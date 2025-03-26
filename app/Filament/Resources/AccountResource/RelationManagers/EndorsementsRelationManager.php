@@ -62,11 +62,7 @@ class EndorsementsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('created_at')->label('Granted')->date(),
                 Tables\Columns\TextColumn::make('expires_at')->label('Expires')->date()->default(''),
                 Tables\Columns\TextColumn::make('duration')->label('Duration (Days)')
-                    ->summarize(
-                        Sum::make()
-                            ->label('Days')
-                            ->hidden(fn (Builder $query): bool => $query->whereNull('expires_at')->exists())
-                    )
+                    ->summarize(Sum::make()->label('Days')->numeric())
             ])
             ->headerActions([
                 // Tables\Actions\CreateAction::make()->label('Add endorsement'),
@@ -75,10 +71,9 @@ class EndorsementsRelationManager extends RelationManager
                 Group::make('endorsable_id')
                     ->label('Name')
                     ->getTitleFromRecordUsing(fn ($record): string => "$record->type - {$record->endorsable->name}")
+                    ->groupQueryUsing(fn (\Illuminate\Database\Query\Builder $query) => $query->groupByRaw("CONCAT(endorsable_type,'::',endorsable_id)"))
+                    ->getKeyFromRecordUsing(fn (Endorsement $record): string => "$record->endorsable_type::$record->endorsable_id")
                     ->titlePrefixedWithLabel(false)
-                    ->groupQueryUsing(function (\Illuminate\Database\Query\Builder $query) {
-                        return $query->groupBy('endorsable_id');
-                    })
             ])
             ->defaultGroup('endorsable_id')
             ->groupingSettingsHidden()
