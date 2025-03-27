@@ -12,6 +12,7 @@ class Session extends Model
     protected $connection = 'cts';
 
     public $timestamps = false;
+
     public $incrementing = false;
 
     public function mentor()

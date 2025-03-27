@@ -23,7 +23,7 @@ class SessionFactory extends Factory
             'student_id' => factory(Member::class)->create()->id,
             'student_rating' => 5,
             'request_time' => now(),
-            'progress_sheet_id' => 0
+            'progress_sheet_id' => 0,
         ];
     }
 
