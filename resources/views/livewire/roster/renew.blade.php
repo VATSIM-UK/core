@@ -2,7 +2,7 @@
 <main>
     @if ($page == 1)
     <div class="mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
-        <div class="bg-white px-4 py-2 shadow space-y-6 sm:rounded-lg sm:px-12">
+        <div class="bg-white px-4 py-2 shadow-sm space-y-6 sm:rounded-lg sm:px-12">
             <div>
                 <span class="text-2xl font-bold">👋 Hello, {{ auth()->user()->name_first }}!</span>
             </div>
@@ -20,7 +20,7 @@
     </div>
     @if ($canReactivate)
     <div class="mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
-        <div class="bg-white px-4 py-2 shadow space-y-6 sm:rounded-lg sm:px-12">
+        <div class="bg-white px-4 py-2 shadow-sm space-y-6 sm:rounded-lg sm:px-12">
 
         <span class="text-2xl font-bold">Notifications</span>
         
@@ -32,7 +32,7 @@
         @endif
 
         <p>You have {{ count($notifications) }} notifications to read.</p>
-            <button x-bind:disabled="{{ $this->reactivateButtonDisabled }}" class="p-2 disabled:opacity-25 bg-brand text-white rounded-lg shadow" wire:click="nextPage">Reactivate</button>
+            <button x-bind:disabled="{{ $this->reactivateButtonDisabled }}" class="p-2 disabled:opacity-25 bg-brand text-white rounded-lg shadow-sm" wire:click="nextPage">Reactivate</button>
         </p>
         @if ($notifications->count() > 0)
         <div class="h-48 overflow-scroll">
@@ -58,14 +58,14 @@
     </div>
     @elseif ($page === 2)
         <div class="mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
-            <div class="bg-white px-4 py-2 shadow space-y-6 sm:rounded-lg">
+            <div class="bg-white px-4 py-2 shadow-sm space-y-6 sm:rounded-lg">
 
             <span class="text-2xl font-bold">Reactivate</span>
             <div class="mt-6">
                 <p>Once you are added back onto the roster you must maintain a minimum of 3 hours controlling any UK position
                     within a calendar quarter e.g. January -> March.</p>
                 <p>Click the button below to add yourself back onto the roster.</p>
-                <button class="mt-2 p-2 bg-brand text-white rounded-lg shadow" x-on:click="$wire.reactivate()">Add to roster</button>
+                <button class="mt-2 p-2 bg-brand text-white rounded-lg shadow-sm" x-on:click="$wire.reactivate()">Add to roster</button>
             </div>
             </div>
         </div>

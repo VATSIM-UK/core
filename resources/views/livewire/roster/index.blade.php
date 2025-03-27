@@ -2,21 +2,21 @@
 <main>
 {{-- flash messages --}}
 @if (session()->has('success'))
-    <div class="bg-green-50 ring-1 ring-inset ring-green-600/20 border-green-100 border-2 rounded mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
-        <div class="shadow space-y-6 rounded-lg sm:px-4">
+    <div class="bg-green-50 ring-1 ring-inset ring-green-600/20 border-green-100 border-2 rounded-sm mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
+        <div class="shadow-sm space-y-6 rounded-lg sm:px-4">
             <p class="text-green-700 text-left py-4">🎉 {{ session('success') }}</p>
         </div>
     </div>
 @endif
 @if (session()->has('error'))
-    <div class="bg-red-50 border-red-600 border-2 rounded mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
-        <div class="shadow space-y-6 sm:rounded-lg sm:px-4">
+    <div class="bg-red-50 border-red-600 border-2 rounded-sm mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
+        <div class="shadow-sm space-y-6 sm:rounded-lg sm:px-4">
             <p class="py-4 text-left">❌ {{session('error')}}</p>
         </div>
     </div>
 @endif
 <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-    <div class="bg-white px-6 py-12 shadow space-y-6 sm:rounded-lg sm:px-12">
+    <div class="bg-white px-6 py-12 shadow-sm space-y-6 sm:rounded-lg sm:px-12">
         <div class="flex flex-col items-center space-y-8">
             <div class="flex flex-col items-center space-y-4">
                 <span class="text-2xl font-bold">👋 Hello, {{ auth()->user()->name_first }}!</span>
