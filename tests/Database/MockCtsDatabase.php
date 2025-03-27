@@ -298,6 +298,46 @@ class MockCtsDatabase
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `sessions` (
+            `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+            `rts_id` smallint unsigned NOT NULL DEFAULT '0',
+            `position` varchar(20) NOT NULL DEFAULT '',
+            `progress_sheet_id` mediumint NOT NULL,
+            `student_id` int unsigned NOT NULL DEFAULT '0',
+            `student_rating` tinyint unsigned NOT NULL DEFAULT '0',
+            `date_1` date DEFAULT NULL,
+            `from_1` time DEFAULT NULL,
+            `to_1` time DEFAULT NULL,
+            `date_2` date DEFAULT NULL,
+            `from_2` time DEFAULT NULL,
+            `to_2` time DEFAULT NULL,
+            `date_3` date DEFAULT NULL,
+            `from_3` time DEFAULT NULL,
+            `to_3` time DEFAULT NULL,
+            `taken` tinyint unsigned DEFAULT '0',
+            `mentor_id` int unsigned DEFAULT NULL,
+            `mentor_rating` tinyint unsigned DEFAULT NULL,
+            `taken_date` date DEFAULT NULL,
+            `taken_from` time DEFAULT NULL,
+            `taken_to` time DEFAULT NULL,
+            `request_time` datetime DEFAULT NULL,
+            `taken_time` datetime DEFAULT NULL,
+            `book_done` tinyint unsigned DEFAULT '0',
+            `session_done` tinyint unsigned DEFAULT '0',
+            `noShow` int NOT NULL DEFAULT '0',
+            `cancelled_datetime` datetime DEFAULT NULL,
+            `no_avail_count` smallint NOT NULL DEFAULT '0',
+            `filed` datetime DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            KEY `rts_id` (`rts_id`),
+            KEY `position` (`position`),
+            KEY `progress_sheet_id` (`progress_sheet_id`),
+            KEY `student_id` (`student_id`),
+            KEY `mentor_id` (`mentor_id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=63506 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
     }
 
     public static function destroy()
