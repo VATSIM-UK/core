@@ -180,6 +180,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'discord.rostering',
             // 'discord.livestreaming',
             'discord.atc.student.obs',
+            'discord.atc.student.heathrow',
 
             'position-group.view.*',
 
