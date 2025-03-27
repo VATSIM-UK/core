@@ -2,12 +2,17 @@
 
 namespace App\Filament\Resources\AccountResource\RelationManagers;
 
+use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\Endorsement;
+use App\Models\Mship\Qualification;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 
 class EndorsementsRelationManager extends RelationManager
@@ -50,19 +55,38 @@ class EndorsementsRelationManager extends RelationManager
         return $table
             ->recordTitle(fn ($record) => "{$record->endorsable->name} endorsement")
             ->columns([
-                Tables\Columns\TextColumn::make('endorsable.name')->label('Name'),
-                // TODO: color on type
-                Tables\Columns\TextColumn::make('type')->label('Type')->badge(),
                 Tables\Columns\TextColumn::make('created_at')->label('Granted')->date(),
                 Tables\Columns\TextColumn::make('expires_at')->label('Expires')->date()->default(''),
+                Tables\Columns\TextColumn::make('duration')->label('Duration (Days)')
+                    ->summarize(Sum::make()->label('Days')->numeric()),
             ])
             ->headerActions([
                 // Tables\Actions\CreateAction::make()->label('Add endorsement'),
             ])
+            ->groups([
+                Group::make('endorsable_id')
+                    ->label('Name')
+                    ->getTitleFromRecordUsing(fn ($record): string => "$record->type - {$record->endorsable->name}")
+                    ->groupQueryUsing(fn (\Illuminate\Database\Query\Builder $query) => $query->groupByRaw("CONCAT(endorsable_type,'::',endorsable_id)"))
+                    ->getKeyFromRecordUsing(fn (Endorsement $record): string => "$record->endorsable_type::$record->endorsable_id")
+                    ->titlePrefixedWithLabel(false),
+            ])
+            ->defaultGroup('endorsable_id')
+            ->groupingSettingsHidden()
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->visible(fn ($record) => $record->expires_at),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->filters([
+                SelectFilter::make('endorsable_type')
+                    ->label('Type')
+                    ->options([
+                        PositionGroup::class => 'Tier Endorsement',
+                        Position::class => 'Solo Endorsement',
+                        Qualification::class => 'Rating Endorsement',
+                    ])
+                    ->multiple(),
             ]);
     }
 
