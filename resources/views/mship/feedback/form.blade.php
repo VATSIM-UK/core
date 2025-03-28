@@ -5,106 +5,11 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $('.datetimepickercustom').datetimepicker();
-
-    // Member search hook
-
-    var searchInput = $('#member-search-name');
-    var timeout;
-
-    // Bind input change for serch input
-    searchInput.bind("input", function(event){
-
-        $('#memberSearchSpinner').show();
-        $('#memberSearchNoResults').hide();
-        $('#memberSearchResults').hide();
-
-        clearTimeout(timeout);
-        timeout = window.setTimeout(function(){
-          $.get('{{route('mship.feedback.usersearch', "")}}/' + $('#member-search-name').val(), function(response){
-              $('#memberSearchSpinner').hide();
-              if(response == ""){
-                $('#memberSearchNoResults').show();
-                $('#memberSearchResults').html('<a href="https://stats.vatsim.net/search_name.php?name='+searchInput.val()+'" target="_blank">Search VATSIM Statistics for user</a>');
-                $('#memberSearchResults').show();
-              }else{
-                var htmlString;
-                htmlString = "<div class='row'>";
-                  htmlString += "<div class='col-md-12'><ul class='nav nav-pills nav-stacked'>";
-                  response.forEach( function(member){
-                    htmlString += "<li><a href='#' class='memberSearchMemberItem' data-cid='"+member.cid+"'><b>"+member.name+" ("+member.cid+")</b> - "+member.status+"</a></li>";
-                  });
-                  htmlString += "</ul></div>";
-                htmlString += "</div>";
-                $('#memberSearchResults').html(htmlString);
-                $('#memberSearchResults').show();
-              }
-
-              $('.memberSearchMemberItem').click(function(){
-                console.log("Click")
-                if(formUserSelectorInput){
-                  formUserSelectorInput.val($(this).data("cid"));
-                }
-                $('#memberSearchDialog').modal('toggle');
-              });
-          });
-        }, 2000);
-
-        if ($('#member-search-name').val() == "") {
-            clearTimeout(timeout);
-            $('#memberSearchSpinner').hide();
-            $('#memberSearchResults').hide();
-        }
-       }
-     );
-
-    var formUserSelectorInput;
-    if($('#formUserLookupFieldContainer').length){
-      formUserSelectorInput = $('#formUserLookupFieldContainer').find('input');
-    }
   });
 </script>
 @endsection
 
 @section('content')
-  <!-- Modal -->
-<div id="memberSearchDialog" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content panel-ukblue">
-      <div class="modal-header panel-heading">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Search for a member</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-            <div class="col-md-12">
-              {{ Form::label('name', 'Member\'s Name') }}
-              {{ Form::text('name', null, ['id' => 'member-search-name', 'class' => 'form-control']) }}
-            </div>
-        </div>
-        <hr>
-        <div class="row" style="margin-top:20px">
-            <div class="col-md-12 text-center">
-              <p id="memberSearchSpinner" style="display:none">
-                  <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
-              </p>
-              <p id="memberSearchNoResults" style="display:none">
-                  No Results Found. Try looking here:
-              </p>
-              <p id="memberSearchResults" style="display:none">
-              </p>
-            </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
 <div class="panel panel-ukblue">
 	<div class="panel-heading">Submit Feedback</div>
 	<div class="panel-body">
@@ -147,19 +52,9 @@
         @foreach ($questions as $question)
             <div class="form-group{{ $errors->has($question->slug) ? " has-error" : "" }}">
               {{ Form::label($question->slug, $question->question . ($question->required ? "" : " (optional)")) }} </br>
-              @if ($question->type->name == "userlookup")
-                <span id="formUserLookupFieldContainer">
-                  <div class="input-group">
-                    <span class="input-group-btn"><button type="button" class="btn btn-info" data-toggle="modal" data-target="#memberSearchDialog">Search <i class="fa fa-search"></i></button></span>
-                    {!! $question->form_html !!}
-                  </div>
-                </span>
-              @else
-                {!! $question->form_html !!}
-              @endif
-
+              {!! $question->form_html !!}
             </div>
-  				@endforeach
+        @endforeach
           <div class="form-group">
             <button type="submit" class="btn btn-success">Submit</button>
           </div>
