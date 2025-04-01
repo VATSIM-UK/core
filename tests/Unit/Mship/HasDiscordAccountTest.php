@@ -63,4 +63,16 @@ class HasDiscordAccountTest extends TestCase
         $this->assertEquals('Test T - 123456789', $user->discordName);
         $this->assertLessThanOrEqual(32, strlen($user->discordName));
     }
+
+    public function test_longer_names_with_middle_name()
+    {
+        $user = Account::factory()->create([
+            'name_first' => 'The Peoples Front',
+            'name_last' => 'Judea',
+            'id' => 123456789,
+        ]);
+
+        $this->assertEquals('The Peoples Front J - 123456789', $user->discordName);
+        $this->assertLessThanOrEqual(32, strlen($user->discordName));
+    }
 }
