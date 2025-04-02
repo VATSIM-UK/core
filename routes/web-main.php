@@ -158,7 +158,6 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('dashboard')->uses('MainController@getDashboard')->name('dashboard');
-    Route::get('online')->uses('Online@getOnline')->name('online');
 });
 
 Route::group([
