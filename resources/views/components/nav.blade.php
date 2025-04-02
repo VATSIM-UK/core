@@ -144,7 +144,6 @@
                             <ul>
                                 <li class="dropdown-header">Network Statistics</li>
                                 <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
-                                <li>{!! link_to_route("networkdata.online", "Online Users") !!}</li>
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Waiting Lists</li>
                                 <li>{!! link_to_route("mship.waiting-lists.index", "My Waiting Lists") !!}</li>
