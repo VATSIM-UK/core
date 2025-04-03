@@ -98,7 +98,7 @@ class UpdateRoster extends Command
 
         // On an ATC waiting list, not on the roster, need to be removed...
         $removeFromWaitingList = WaitingListAccount::with('waitingList')
-            ->whereIn('list_id', WaitingList::where('department', WaitingList::ATC_DEPARTMENT)->get('id'))
+            ->whereIn('list_id', WaitingList::where('department', WaitingList::ATC_DEPARTMENT)->where('requires_roster_membership', true)->get('id'))
             ->whereNotIn('account_id', $eligible)
             ->get();
         $removeFromWaitingList
