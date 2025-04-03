@@ -32,7 +32,7 @@
                         <td>{{$waitingListAccount->created_at->format('d M Y')}}</td>
 
                         @if($department === \App\Models\Training\WaitingList::ATC_DEPARTMENT)
-                            @if($waitingListAccount->waitingList->isAtcList())
+                            @if($waitingListAccount->waitingList->isAtcList() && ($waitingListAccount->waitingList->feature_toggles["display_on_roster"] ?? true))
                                 <td>
                                     @if ($waitingListAccount->account->onRoster())
                                         {!! HTML::img("tick_mark_circle", "png", 20) !!}
