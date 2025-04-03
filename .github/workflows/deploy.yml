@@ -13,7 +13,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout Codes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.client_payload.ref }}
@@ -34,7 +34,7 @@ jobs:
       # DEPLOYMENT PARAMETERS
       #
       - name: Set additional deployment variables
-        uses: allenevans/set-env@v2.0.0
+        uses: allenevans/set-env@v4.0.0
         with:
           APP_URL: https://www.vatsim.uk
           APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
@@ -207,7 +207,7 @@ jobs:
           envs: RELEASE_DIRECTORY,SHARED_DIRECTORY,APPLICATION_ROOT
 
       - name: Trigger Forge Deployment
-        uses: jbrooksuk/laravel-forge-action@v1.0.3
+        uses: jbrooksuk/laravel-forge-action@v1.0.4
         with:
           trigger_url: ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
 
@@ -216,7 +216,7 @@ jobs:
       # Create a Sentry release
       #
       - name: Create Sentry release
-        uses: getsentry/action-release@v1
+        uses: getsentry/action-release@v3
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: vatsim-uk

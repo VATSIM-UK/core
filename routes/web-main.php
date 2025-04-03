@@ -72,7 +72,6 @@ Route::group([
         Route::post('new')->uses('Feedback@postFeedbackFormSelect')->name('new.post');
         Route::get('new/{form}')->uses('Feedback@getFeedback')->name('new.form');
         Route::post('new/{form}')->uses('Feedback@postFeedback')->name('new.form.post');
-        Route::get('users/search/{name}')->uses('Feedback@getUserSearch')->name('usersearch');
         Route::get('view')->uses('Feedback\ViewFeedbackController@show')->name('view');
     });
 
@@ -159,7 +158,6 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('dashboard')->uses('MainController@getDashboard')->name('dashboard');
-    Route::get('online')->uses('Online@getOnline')->name('online');
 });
 
 Route::group([
