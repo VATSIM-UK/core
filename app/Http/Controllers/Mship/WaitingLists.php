@@ -29,7 +29,6 @@ class WaitingLists extends BaseController
         }
 
         return view('mship.waiting-lists.index', [
-            'isOBS' => $request->user()->qualification_atc->is_o_b_s,
             'atcWaitingListAccounts' => $atcWaitingListAccounts,
             'pilotWaitingListAccounts' => $pilotWaitingListAccounts,
         ]);
