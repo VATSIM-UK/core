@@ -107,7 +107,7 @@ What will we provide you?
 We believe that your training is in your hands.
 We want our students to be as engaged as possible with the training process, and our mentors expect you to come to sessions prepared.
 
-### Step 6 - Practical exam
+### Step 6 - Practical exam
 Your exam will include around an hour of controlling, some questions, and a comprehensive debrief in which your examiner will explain what you’ve done well and what you need to improve upon.
 If you meet the standard to be awarded a rating, they will request your rating to be upgraded to S1!
 This is manually processed, so may take up to around 72 hours from the point at which your exam report is filed.
