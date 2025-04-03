@@ -47,7 +47,7 @@ class WaitingListsTest extends TestCase
     /** @test */
     public function test_does_not_show_on_roster_icon_when_not_configured_for_list()
     {
-        $list = factory(WaitingList::class)->create(['name' => 'My List', 'feature_toggles' => ["display_on_roster" => false]]);
+        $list = factory(WaitingList::class)->create(['name' => 'My List', 'feature_toggles' => ['display_on_roster' => false]]);
         $list->addToWaitingList($this->user, $this->privacc);
 
         $this->actingAs($this->user)
