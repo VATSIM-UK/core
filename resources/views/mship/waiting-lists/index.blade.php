@@ -8,12 +8,6 @@
 </div>
 
 
-@if($isOBS)
-    <div class="alert alert-info">
-        <p>Note: If you are in the OBS->S1 waiting list, this will <strong>not</strong> be shown here as it uses a different system.</p>
-    </div>
-@endif
-
 @include('mship.waiting-lists._waiting_lists_list', [
     "title"=> "ATC Waiting Lists",
     "icon" => "fa-headset",
