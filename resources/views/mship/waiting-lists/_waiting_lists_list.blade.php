@@ -64,6 +64,40 @@
                     @endempty
                 </tbody>
             </table>
+
+            @if ($department === \App\Models\Training\WaitingList::ATC_DEPARTMENT)
+            <div>
+                <h3>Self-enrolment</h3>
+                <p>Some waiting lists have the ability to 'self-enrol' without having to contact the Training team.
+                    If you are eligible to self-enrol, you will see a button below. Please note that this is only available for some waiting lists.</p>
+
+                <table class="table text-center">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Waiting List</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($selfEnrolWaitingLists as $waitingList)
+                        <tr>
+                            <td>{{$waitingList->name}}</td>
+                            <td>
+                                <form action="{{route('mship.waiting-lists.self-enrol', ['waitingList' => $waitingList])}}" method="POST">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <button class="btn btn-primary" type="submit">Self Enrol</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                        @empty($waitingList)
+                        <tr>
+                            <td colspan="2">You are not eligible to self-enrol on any waiting lists.</td>
+                        @endempty
+                    </tbody>
+                </table>
+            </div>
+            @endif
         </div>
     </div>
 </div>
