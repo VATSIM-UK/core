@@ -14,17 +14,15 @@ class WaitingListSelfEnrolment
         Account $account,
         WaitingList $waitingList
     ): bool {
-        if ($waitingList->includesAccount($account)) {
-            return false;
-        }
-
         if (! $waitingList->self_enrolment_enabled) {
             return false;
         }
 
-        $requiresRosterMembership = $waitingList->requires_roster_membership;
-        $accountIsNotOnRoster = ! $account->onRoster();
-        if ($requiresRosterMembership && $accountIsNotOnRoster) {
+        if ($waitingList->includesAccount($account)) {
+            return false;
+        }
+
+        if ($waitingList->requires_roster_membership && ! $account->onRoster()) {
             return false;
         }
 

@@ -69,7 +69,7 @@
             <div>
                 <h3>Self-enrolment</h3>
                 <p>Some waiting lists have the ability to 'self-enrol' without having to contact the Training team.
-                    If you are eligible to self-enrol, you will see a button below. Please note that this is only available for some waiting lists.</p>
+                    If you are eligible to self-enrol, you will see a button below.</p>
 
                 <table class="table text-center">
                     <thead>

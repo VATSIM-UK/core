@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('training_waiting_list', function (Blueprint $table) {
             $table->boolean('self_enrolment_enabled')->default(false);
-            $table->unsignedInteger('self_enrolment_maximum_qualification_id')->nullable();
             $table->unsignedInteger('self_enrolment_minimum_qualification_id')->nullable();
+            $table->unsignedInteger('self_enrolment_maximum_qualification_id')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
     {
         Schema::table('training_waiting_list', function (Blueprint $table) {
             $table->dropColumn('self_enrolment_enabled');
-            $table->dropColumn('self_enrolment_maximum_qualification_id');
             $table->dropColumn('self_enrolment_minimum_qualification_id');
+            $table->dropColumn('self_enrolment_maximum_qualification_id');
         });
     }
 };
