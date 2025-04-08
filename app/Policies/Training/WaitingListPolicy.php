@@ -4,6 +4,7 @@ namespace App\Policies\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
+use App\Services\Training\WaitingListSelfEnrolment;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Arr;
 
@@ -59,6 +60,11 @@ class WaitingListPolicy
     public function create(Account $account)
     {
         return $account->hasAnyPermission(['waiting-lists.create']);
+    }
+
+    public function selfEnrol(Account $account, WaitingList $waitingList)
+    {
+        return WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList);
     }
 
     /**

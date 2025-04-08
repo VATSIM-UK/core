@@ -3,6 +3,9 @@
 namespace Tests\Feature\Account;
 
 use App\Events\Mship\AccountAltered;
+use App\Models\Mship\Account;
+use App\Models\Mship\State;
+use App\Models\Roster;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
@@ -54,5 +57,44 @@ class WaitingListsTest extends TestCase
             ->get(route('mship.waiting-lists.index'))
             ->assertSee('My List')
             ->assertSee('N/A');
+    }
+
+    public function test_can_successfully_self_enrol_when_eligible_home_member_roster()
+    {
+        $account = Account::factory()->create();
+        $list = factory(WaitingList::class)->create(['name' => 'My List', 'self_enrolment_enabled' => true, 'home_members_only' => true, 'requires_roster_membership' => true]);
+
+        $account->addState(State::findByCode('DIVISION'));
+        Roster::create(['account_id' => $account->id]);
+        $account->refresh();
+
+        $this->actingAs($account)
+            ->get(route('mship.waiting-lists.index'))
+            ->assertSee('My List')
+            ->assertDontSee('You are not eligible to self-enrol on any waiting lists.');
+
+        $this->actingAs($account)
+            ->post(route('mship.waiting-lists.self-enrol', $list->id))
+            ->assertRedirect(route('mship.waiting-lists.index'))
+            ->assertSessionHas('success', 'You have been added to the waiting list.');
+
+        $this->assertTrue($list->includesAccount($account));
+    }
+
+    public function test_does_not_display_self_enrol_option_when_not_eligible()
+    {
+        $accountNotDivisionMember = Account::factory()->create();
+        $accountNotDivisionMember->addState(State::findByCode('VISITING'));
+        $accountNotDivisionMember->refresh();
+        $list = factory(WaitingList::class)->create(['name' => 'My List', 'self_enrolment_enabled' => true, 'home_members_only' => true]);
+
+        $this->actingAs($accountNotDivisionMember)
+            ->get(route('mship.waiting-lists.index'))
+            ->assertDontSee('My List')
+            ->assertSee('You are not eligible to self-enrol on any waiting lists.');
+
+        $this->actingAs($accountNotDivisionMember)
+            ->post(route('mship.waiting-lists.self-enrol', $list->id))
+            ->assertForbidden();
     }
 }
