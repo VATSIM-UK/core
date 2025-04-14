@@ -81,6 +81,7 @@ Route::group([
         'prefix' => 'waiting-lists',
     ], function () {
         Route::get('')->uses('WaitingLists@index')->name('index');
+        Route::post('self-enrol/{waitingList}')->uses('WaitingLists@selfEnrol')->name('self-enrol');
     });
 
     // Other

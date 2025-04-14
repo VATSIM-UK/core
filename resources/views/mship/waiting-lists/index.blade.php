@@ -13,6 +13,7 @@
     "icon" => "fa-headset",
     "waitingListAccounts" => $atcWaitingListAccounts,
     "department" => \App\Models\Training\WaitingList::ATC_DEPARTMENT,
+    'selfEnrolWaitingLists' => $atcSelfEnrolmentLists,
 ])
 
 @include('mship.waiting-lists._waiting_lists_list', [
@@ -20,5 +21,6 @@
     "icon" => "fa-plane",
     "waitingListAccounts" => $pilotWaitingListAccounts,
     "department" => \App\Models\Training\WaitingList::PILOT_DEPARTMENT,
+    "selfEnrolWaitingLists" => []
 ])
 @endsection
