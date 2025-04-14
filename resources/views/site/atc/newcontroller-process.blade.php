@@ -7,7 +7,7 @@
 ### Step 1 - Join the Waiting List
 In order to join the New Controller waiting list:
 
-- Navigate to [Waiting Lists](https://vukcore.test/mship/waiting-lists)
+- Navigate to [Waiting Lists](https://vatsim.uk/mship/waiting-lists)
 - Click on the 'Self Enrol' button on the 'OBS -> S1' waiting list.
 <img class="img-responsive center-block" src="/images/obss1selfenrol.png" alt="TGNC ScreenShot 1">
 
