@@ -148,4 +148,24 @@ class WaitingListSelfEnrolmentServiceTest extends TestCase
 
         $this->assertTrue(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
     }
+
+    public function test_cannot_enrol_when_active_qualification_not_maximum()
+    {
+        $account = Account::factory()->create();
+        $account->addState(State::findByCode('DIVISION'));
+
+        $qualification = Qualification::code('OBS')->first();
+        $account->addQualification($qualification);
+
+        $qualification = Qualification::code('S1')->first();
+        $account->addQualification($qualification);
+
+        $waitingList = factory(WaitingList::class)->create([
+            'self_enrolment_enabled' => true,
+            'home_members_only' => false,
+            'self_enrolment_maximum_qualification_id' => Qualification::code('OBS')->first()->id,
+        ]);
+
+        $this->assertFalse(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
+    }
 }

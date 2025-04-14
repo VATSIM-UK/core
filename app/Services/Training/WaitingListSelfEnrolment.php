@@ -37,7 +37,7 @@ class WaitingListSelfEnrolment
                 $waitingList->self_enrolment_maximum_qualification_id
             );
 
-            if (! $account->hasQualification($requiredQualification)) {
+            if (! $account->hasActiveQualification($requiredQualification)) {
                 return false;
             }
         }
