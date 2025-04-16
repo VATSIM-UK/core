@@ -38,6 +38,13 @@ trait HasQualifications
         })->count() > 0;
     }
 
+    public function hasActiveQualification(Qualification $qualification)
+    {
+        return $this->active_qualifications->filter(function ($q) use ($qualification) {
+            return $q->id == $qualification->id;
+        })->count() > 0;
+    }
+
     /**
      * Add a qualification to the current member account.
      *

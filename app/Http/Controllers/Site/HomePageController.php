@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Site;
 
 use App\Models\Mship\State;
-use App\Repositories\Cts\BookingRepository;
 use App\Repositories\Cts\EventRepository;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +15,6 @@ class HomePageController extends \App\Http\Controllers\BaseController
         return $this->viewMake('site.home')
             ->with('nextEvent', $this->nextEvent())
             ->with('stats', $this->stats())
-            ->with('bookings', $this->todaysLiveAtcBookings())
             ->with('events', $this->todaysEvents());
     }
 
@@ -54,15 +52,6 @@ class HomePageController extends \App\Http\Controllers\BaseController
                 ->count();
 
             return $stat;
-        });
-    }
-
-    private function todaysLiveAtcBookings()
-    {
-        return Cache::remember('home.mship.atc.bookings', now()->addMinutes(30), function () {
-            $bookings = new BookingRepository;
-
-            return $bookings->getTodaysLiveAtcBookingsWithoutEvents();
         });
     }
 

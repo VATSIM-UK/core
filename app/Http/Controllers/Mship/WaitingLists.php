@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mship;
 use App\Http\Controllers\BaseController;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Services\Training\WaitingListSelfEnrolment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -29,9 +30,20 @@ class WaitingLists extends BaseController
         }
 
         return view('mship.waiting-lists.index', [
-            'isOBS' => $request->user()->qualification_atc->is_o_b_s,
             'atcWaitingListAccounts' => $atcWaitingListAccounts,
+            'atcSelfEnrolmentLists' => WaitingListSelfEnrolment::getListsAccountCanSelfEnrol($request->user()),
             'pilotWaitingListAccounts' => $pilotWaitingListAccounts,
         ]);
+    }
+
+    public function selfEnrol(WaitingList $waitingList, Request $request)
+    {
+        $this->authorize('selfEnrol', $waitingList);
+
+        $waitingList->addToWaitingList($request->user(), $request->user());
+
+        return redirect()
+            ->route('mship.waiting-lists.index')
+            ->with('success', 'You have been added to the waiting list.');
     }
 }

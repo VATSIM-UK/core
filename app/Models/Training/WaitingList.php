@@ -86,6 +86,8 @@ class WaitingList extends Model
         'home_members_only' => 'boolean',
         'feature_toggles' => 'array',
         'deleted_at' => 'datetime',
+        'requires_roster_membership' => 'boolean',
+        'self_enrolment_enabled' => 'boolean',
     ];
 
     /**
