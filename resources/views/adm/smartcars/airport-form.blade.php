@@ -9,9 +9,12 @@
                 </div>
                 <div class="box-body">
                     @if(!$airport->exists)
-                        {!! Form::open(['method'  => 'post', 'route' => ['adm.smartcars.airports.store']]) !!}
+                        <form method="POST" action="{{ route('adm.smartcars.airports.store') }}">
+                            @csrf
                     @else
-                        {!! Form::open(['method'  => 'put', 'route' => ['adm.smartcars.airports.update', $airport]]) !!}
+                                <form method="POST" action="{{ route('adm.smartcars.airports.update', $airport) }}">
+                                    @csrf
+                                    @method('PUT')
                     @endif
 
                     <div class="form-group">
@@ -47,7 +50,7 @@
                     <input class="btn btn-primary" type="submit" value="Submit">
                     <a class="btn btn-default" href="{{ route('adm.smartcars.airports.index') }}">Cancel</a>
 
-                    {!! Form::close() !!}
+                                </form>
                 </div>
             </div>
         </div>

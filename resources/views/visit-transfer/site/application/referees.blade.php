@@ -31,7 +31,9 @@
                 <div class="col-md-6">
                     <div class="row">
                         @if($application->number_references_required_relative > 0)
-                            {!! Form::open(["route" => ["visiting.application.referees.post", $application->public_id], "method" => "POST"]) !!}
+                            <form action="{{ route('visiting.application.referees.post', $application->public_id) }}"
+                                  method="POST">
+                                @csrf
 
                             <div class="col-md-6">
                                 <div id="refereeCidHelp">
@@ -70,7 +72,7 @@
                                 </div>
                             </div>
 
-                            {!! Form::close() !!}
+                            </form>
                         @else
                             <div class="col-md-12 text-center">
                                 <p>You cannot add any additional referees at this time.</p>
@@ -98,9 +100,12 @@
                                 <td>{{ $referee->email }}</td>
                                 <td>{{ $referee->relationship }}</td>
                                 <td>
-                                    {!! Form::open(["route" => ["visiting.application.referees.delete.post", $application->public_id, $referee->id], "method" => "POST"]) !!}
+                                    <form
+                                        action="{{ route('visiting.application.referees.delete.post', [$application->public_id, $referee->id]) }}"
+                                        method="POST">
+                                        @csrf
                                     <button type="submit" class="btn btn-danger btn-xs">DELETE</button>
-                                    {!! Form::close() !!}
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach

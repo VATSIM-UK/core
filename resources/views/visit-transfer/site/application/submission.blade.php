@@ -13,7 +13,8 @@
 
                 </div>
 
-                {!! Form::open(["route" => ["visiting.application.submit.post", $application->public_id], "method" => "POST"]) !!}
+                <form action="{{ route('visiting.application.submit.post', $application->public_id) }}" method="POST">
+                    @csrf
                     <div class="col-md-10 col-md-offset-1 text-center">
                         <div class="form-group row">
                             {!! Form::label("submission_terms", "I confirm that the details within this application are correct to the best of my knowledge and that my application will be rejected if any details are inaccurate. I understand that after I submit this application I will not be able to amend any details (e.g. referee details) and in the event of any details being incorrect, I will need to start a new application.&nbsp;&nbsp;"),
@@ -24,7 +25,7 @@
                     <div class="col-md-10 col-md-offset-1 text-center">
                         <button type="submit" class="btn btn-success">SUBMIT APPLICATION</button>
                     </div>
-                {!! Form::close() !!}
+                </form>
 
             </div>
             {!! HTML::panelClose() !!}

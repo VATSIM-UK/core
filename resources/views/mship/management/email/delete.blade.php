@@ -19,12 +19,13 @@
             </div>
         </p>
       @endif
-      {!! Form::open(["route" => ["mship.manage.email.delete.post", $email->id], "class" => "form-horizontal"]) !!}
+        <form action="{{ route('mship.manage.email.delete.post', $email->id) }}" class="form-horizontal" method="POST">
+            @csrf
       <div class="form-group">
         <button type="submit" class="btn btn-danger" name=""
         value="delete_email">Delete</button>
       </div>
-      {!! Form::close() !!}
+        </form>
       <!-- Content Of Panel [END] -->
     </div>
   </div>

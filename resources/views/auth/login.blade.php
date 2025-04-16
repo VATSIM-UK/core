@@ -21,7 +21,8 @@
                 </div>
 
                 <div class="col-md-8 col-md-offset-2">
-                    {!! Form::open(["route" => 'auth-secondary.post', "method" => "POST", 'class' => 'form-horizontal']) !!}
+                    <form action="{{ route('auth-secondary.post') }}" method="POST" class="form-horizontal">
+                        @csrf
                     <input name="remember" type="hidden" value="true">
 
                     <div class='form-group'>
@@ -49,7 +50,7 @@
                             <input class="btn btn-default" type="submit" value="Login">
                         </div>
                     </div>
-                    {!! Form::close() !!}
+                    </form>
                 </div>
             </div>
             {!! HTML::panelClose() !!}

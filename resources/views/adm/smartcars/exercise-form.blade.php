@@ -8,9 +8,14 @@
                     <h3 class="box-title">smartCARS Exercise</h3>
                 </div>
                     @if(!$exercise->exists)
-                        {!! Form::open(['method'  => 'post', 'route' => ['adm.smartcars.exercises.store'], 'files' => true]) !!}
+                    <form method="POST" action="{{ route('adm.smartcars.exercises.store') }}"
+                          enctype="multipart/form-data">
+                        @csrf
                     @else
-                        {!! Form::open(['method'  => 'put', 'route' => ['adm.smartcars.exercises.update', $exercise], 'files' => true]) !!}
+                            <form method="POST" action="{{ route('adm.smartcars.exercises.update', $exercise) }}"
+                                  enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
                     @endif
 
                 <div class="box-body">
@@ -148,7 +153,7 @@
                     <input class="btn btn-primary" type="submit" value="Submit">
                     <a class="btn btn-default" href="{{ route('adm.smartcars.exercises.index') }}">Cancel</a>
 
-                    {!! Form::close() !!}
+                    </form>
                 </div>
             </div>
         </div>

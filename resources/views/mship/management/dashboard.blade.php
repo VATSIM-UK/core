@@ -86,11 +86,12 @@
                         </div>
 
                         <div class="col-xs-4">
-                            {!! Form::open(['route' => 'mship.auth.invisibility', 'id' => 'invisibility-form']) !!}
+                            <form action="{{ route('mship.auth.invisibility') }}" id="invisibility-form" method="POST">
+                                @csrf
                             <strong>FORUM INVISIBILITY:</strong>
                             <a href="{{ route('mship.auth.invisibility') }}"
                                onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Disable' : 'Enable' }}</a>
-                            {!! Form::close() !!}
+                            </form>
                         </div>
 
                         <div class="col-xs-4">

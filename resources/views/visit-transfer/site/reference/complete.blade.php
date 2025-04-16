@@ -8,11 +8,12 @@
               <p class="text-center">
                 <b>Do you know {{ $application->account->name }}?</b></br>
                 If you don't know the applicant, please press the button below. This will cancel your reference, and the application will be reviewed by Community staff.</br>
-                {!! Form::open(["route" => ["visiting.reference.complete.cancel", $token->code], "method" => "POST"]) !!}
+                <form action="{{ route('visiting.reference.complete.cancel', $token->code) }}" method="POST">
+                    @csrf
 
                 {{ Form::submit('I do not know the applicant', ["class" => "btn btn-danger"]) }}
 
-                {!! Form::close() !!}
+                </form>
               </p>
             </div>
             {!! HTML::panelClose() !!}
@@ -32,7 +33,8 @@
 
                 </div>
 
-                {!! Form::open(["route" => ["visiting.reference.complete.post", $token->code], "method" => "POST"]) !!}
+                <form action="{{ route('visiting.reference.complete.post', $token->code) }}" method="POST">
+                    @csrf
                 <div class="container-fluid">
                   <div class="col-xs-11 col-xs-offset-1 col-md-10 col-md-offset-2">
                     <div class="row">
@@ -95,7 +97,7 @@
 
                 {!! Form::hidden("application_type", $application->type) !!}
 
-                {!! Form::close() !!}
+                </form>
 
             </div>
             {!! HTML::panelClose() !!}
