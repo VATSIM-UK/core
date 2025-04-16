@@ -4,7 +4,8 @@
     <div class="row" id="statementHelp">
         <div class="col-md-12">
             {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
-            {!! Form::open(["route" => ["visiting.application.statement.post", $application->public_id], "method" => "POST"]) !!}
+            <form action="{{ route('visiting.application.statement.post', $application->public_id) }}" method="POST">
+                @csrf
             <div class="row">
                 <div class="col-md-6 col-md-offset-3">
 
@@ -28,7 +29,7 @@
                 </div>
 
             </div>
-            {!! Form::close() !!}
+            </form>
             {!! HTML::panelClose() !!}
         </div>
     </div>

@@ -18,7 +18,8 @@
 			expires (or becomes unverified after a period of time) we will default back to your primary email.
 		</p>
 
-		{!! Form::open(["route" => ["mship.manage.email.assignments"], "class" => "form-horizontal"]) !!}
+        <form action="{{ route('mship.manage.email.assignments') }}" method="POST" class="form-horizontal">
+            @csrf
 		<table class="table table-striped table-bordered">
 			<thead>
 				<tr>
@@ -71,7 +72,7 @@
 			</div>
 		</div>
 
-		{!! Form::close() !!}
+        </form>
 		<!-- Content Of Panel [END] -->
 	</div>
 </div>

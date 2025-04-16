@@ -11,7 +11,9 @@
                         {!! link_to("https://www.vatsim.net/docs/policy/transfer-and-visiting-controller-policy", "The VTCP can be located on the VATSIM.net website", ["target" => "_blank"]) !!}
                     </p>
 
-                {!! Form::open(["route" => ["visiting.application.start.post", $applicationType, $trainingTeam], "method" => "POST"]) !!}
+                <form action="{{ route('visiting.application.start.post', [$applicationType, $trainingTeam]) }}"
+                      method="POST">
+                    @csrf
                     <div class="col-md-10 col-md-offset-1">
                         <div class="form-group">
                             <input id="terms_read" name="terms_read" type="checkbox" value="1">
@@ -65,7 +67,7 @@
                 {!! Form::hidden("application_type", $applicationType) !!}
                 {!! Form::hidden("training_team", $trainingTeam) !!}
 
-                {!! Form::close() !!}
+                </form>
 
             </div>
             {!! HTML::panelClose() !!}

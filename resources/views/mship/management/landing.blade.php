@@ -9,9 +9,10 @@
                         to log you in.
                         After clicking the button below, you will be taken there to login.
                     </p>
-                    {!! Form::open(['route' => 'login', 'class' => 'form-horizontal']) !!}
+                    <form action="{{ route('login') }}" class="form-horizontal" method="POST">
+                        @csrf
                     <p style="text-align: center;"><button type="submit" class="btn btn-lg btn-primary">Login</button></p>
-                    {!! Form::close() !!}
+                    </form>
                 </div>
             </div>
         {!! HTML::panelClose() !!}

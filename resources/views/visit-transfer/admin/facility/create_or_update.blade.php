@@ -13,7 +13,8 @@
                     @if(isset($facility) && $facility->exists)
                         {!! Form::model($facility, ['route' => ['adm.visiting.facility.update.post', $facility->id]]) !!}
                     @else
-                        {!! Form::open(["route" => "adm.visiting.facility.create.post"]) !!}
+                        <form method="POST" action="{{ route('adm.visiting.facility.create.post') }}">
+                            @csrf
                     @endif
 
                     <div class="row">
@@ -163,7 +164,7 @@
                         </div>
                     </div>
 
-                    {!! Form::close() !!}
+                    </form>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div>

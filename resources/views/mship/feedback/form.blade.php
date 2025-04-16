@@ -19,7 +19,8 @@
 
 			<div class="col-md-7 col-md-offset-2">
         @if (!isset($form))
-          {!! Form::open(["route" => ["mship.feedback.new"]]) !!}
+                    <form method="POST" action="{{ route('mship.feedback.new') }}">
+                        @csrf
             <p>
                 {{Form::label('feedback_type', 'What kind of feedback would you like to leave?')}}
                 {{Form::select('feedback_type', $feedbackForms, [], ['class' => 'form-control']) }}
@@ -27,9 +28,10 @@
             <p class="text-center">
                 <button type="submit" class="btn btn-primary">Next <i class="fa fa-arrow-right"></i></button>
             </p>
-          {!! Form::close() !!}
+                    </form>
         @else
-          {!! Form::open(["route" => ["mship.feedback.new.form.post", $form], "autocomplete" => 'off']) !!}
+                    <form method="POST" action="{{ route('mship.feedback.new.form.post', $form) }}" autocomplete="off">
+                        @csrf
         <p>
         @if($form->targeted)
           Here you can submit anonymous feedback about a <b>UK</b> division member.
@@ -58,7 +60,7 @@
           <div class="form-group">
             <button type="submit" class="btn btn-success">Submit</button>
           </div>
-          {!! Form::close() !!}
+                    </form>
         @endif
 			</div>
 		</div>

@@ -59,9 +59,12 @@
                                     <a href="{{ route('adm.smartcars.exercises.edit', $exercise->id) }}" class="btn btn-xs btn-warning">Edit</a>
                                 </td>
                                 <td>
-                                    {!! Form::open(['id' => "delete-$exercise->id", 'method'  => 'delete', 'route' => ['adm.smartcars.exercises.destroy', $exercise->id]]) !!}
+                                    <form id="delete-{{ $exercise->id }}" method="POST"
+                                          action="{{ route('adm.smartcars.exercises.destroy', $exercise->id) }}">
+                                        @csrf
+                                        @method('DELETE')
                                     <button class="btn btn-xs btn-danger" data-toggle="confirmation">Delete</button>
-                                    {!! Form::close() !!}
+                                    </form>
                                 </td>
                                 <td>
                                     <a href="{{ route('adm.smartcars.exercises.resources.index', $exercise) }}" class="btn btn-xs btn-primary">Resources</a>

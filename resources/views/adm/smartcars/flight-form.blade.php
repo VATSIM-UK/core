@@ -8,7 +8,9 @@
                     <h3 class="box-title">Edit Member's Flight</h3>
                 </div>
                 <div class="box-body">
-                    {!! Form::open(['method' => 'put', 'route' => ['adm.smartcars.flights.update', $pirep]]) !!}
+                    <form method="POST" action="{{ route('adm.smartcars.flights.update', $pirep) }}">
+                        @csrf
+                        @method('PUT')
 
                     <label>Pass/Fail<i class="fa fa-asterisk text-danger"></i></label>
                     <div class="radio" style="margin-top: 0;">

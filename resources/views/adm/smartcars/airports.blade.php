@@ -31,9 +31,12 @@
                                     <a href="{{ route('adm.smartcars.airports.edit', $airport->id) }}" class="btn btn-xs btn-warning">Edit</a>
                                 </td>
                                 <td>
-                                    {!! Form::open(['id' => "delete-$airport->id", 'method'  => 'delete', 'route' => ['adm.smartcars.airports.destroy', $airport->id]]) !!}
+                                    <form id="delete-{{ $airport->id }}" method="POST"
+                                          action="{{ route('adm.smartcars.airports.destroy', $airport->id) }}">
+                                        @csrf
+                                        @method('DELETE')
                                     <button class="btn btn-xs btn-danger" data-toggle="confirmation">Delete</button>
-                                    {!! Form::close() !!}
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach

@@ -272,34 +272,49 @@
                                         -
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
+                                        <form
+                                            action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}"
+                                            method="POST">
+                                            @csrf
                                         <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                         {!! Form::hidden("setting", "training_required") !!}
-                                        {!! Form::close() !!}
+                                        </form>
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
+                                        <form
+                                            action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}"
+                                            method="POST">
+                                            @csrf
                                         <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                         {!! Form::hidden("setting", "statement_required") !!}
-                                        {!! Form::close() !!}
+                                        </form>
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
+                                        <form
+                                            action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}"
+                                            method="POST">
+                                            @csrf
                                         <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                         {!! Form::hidden("setting", "references_required") !!}
-                                        {!! Form::close() !!}
+                                        </form>
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
+                                        <form
+                                            action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}"
+                                            method="POST">
+                                            @csrf
                                         <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                         {!! Form::hidden("setting", "should_perform_checks") !!}
-                                        {!! Form::close() !!}
+                                        </form>
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
+                                        <form
+                                            action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}"
+                                            method="POST">
+                                            @csrf
                                         <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                         {!! Form::hidden("setting", "will_auto_accept") !!}
-                                        {!! Form::close() !!}
+                                        </form>
                                     </td>
                                 </tr>
                                 @endcan
@@ -582,7 +597,8 @@
 
 @if($unacceptedReferences->count() == 0)
 <div class="modal fade" id="modalApplicationReject" tabindex="-1" role="dialog" aria-labelledby="Reject Application" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.application.reject.post", $application->id))) !!}
+    <form action="{{ route('adm.visiting.application.reject.post', $application->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -629,11 +645,12 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 
 <div class="modal fade" id="modalApplicationAccept" tabindex="-1" role="dialog" aria-labelledby="Accept Application" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.application.accept.post", $application->id))) !!}
+    <form action="{{ route('adm.visiting.application.accept.post', $application->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -686,11 +703,12 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 
 <div class="modal fade" id="modalApplicationComplete" tabindex="-1" role="dialog" aria-labelledby="Complete Application" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.application.complete.post", $application->id))) !!}
+    <form action="{{ route('adm.visiting.application.complete.post', $application->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -724,12 +742,13 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 
 
 <div class="modal fade" id="modalApplicationCancel" tabindex="-1" role="dialog" aria-labelledby="Cancel Application" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.application.cancel.post", $application->id))) !!}
+    <form action="{{ route('adm.visiting.application.cancel.post', $application->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -770,13 +789,14 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 @endif
 
 @foreach($application->referees as $reference)
 <div class="modal fade" id="modalReferenceReject{{ $reference->id }}" tabindex="-1" role="dialog" aria-labelledby="Reject Reference" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.reference.reject.post", $reference->id))) !!}
+    <form action="{{ route('adm.visiting.reference.reject.post', $reference->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -821,11 +841,12 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 
 <div class="modal fade" id="modalReferenceAccept{{ $reference->id }}" tabindex="-1" role="dialog" aria-labelledby="Accept Reference" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.reference.accept.post", $reference->id))) !!}
+    <form action="{{ route('adm.visiting.reference.accept.post', $reference->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -856,7 +877,7 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 @endforeach
 @stop

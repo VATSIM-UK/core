@@ -49,12 +49,14 @@
                     </p>
                     <p>
                       {!! Form::label("Facility Code:") !!}
-                      {!! Form::open(["route" => ["visiting.application.facility.manual.post", $application->public_id], "method" => "POST", "class" => "form-inline"]) !!}
+                    <form action="{{ route('visiting.application.facility.manual.post', $application->public_id) }}"
+                          method="POST" class="form-inline">
+                        @csrf
                         <div class="form-group">
                           {!! Form::text("facility-code") !!}
                         </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
-                      {!! Form::close() !!}
+                    </form>
                     </p>
 
                 </div>
@@ -83,7 +85,9 @@
                                 <span class="label label-success">NO TRAINING REQUIRED</span>
                             @endif
                         </p>
-                        {!! Form::open(["route" => ["visiting.application.facility.post", $application->public_id], "method" => "POST"]) !!}
+                        <form action="{{ route('visiting.application.facility.post', $application->public_id) }}"
+                              method="POST">
+                            @csrf
 
                         <p class="text-center">
                             @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
@@ -94,7 +98,7 @@
                         </p>
 
                         {!! Form::hidden("facility_id", $facility->id) !!}
-                        {!! Form::close() !!}
+                        </form>
                     </div>
 
                 </div>
