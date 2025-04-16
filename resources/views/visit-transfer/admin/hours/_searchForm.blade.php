@@ -13,23 +13,25 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                {!! Form::label("startDate","Start Date",['class' => 'control-label']),
-                Form::text("startDate", isset($startDate) ? $startDate : '', ['class' => 'form-control', 'id' => 'startDate']) !!}
+                <label for="startDate" class="control-label">Start Date</label>
+                <input type="text" name="startDate" id="startDate" value="{{ isset($startDate) ? $startDate : '' }}"
+                       class="form-control">
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                {!! Form::label("endDate","End Date",['class' => 'control-label']),
-                Form::text("endDate", isset($endDate) ? $endDate : '', ['class' => 'form-control', 'id' => 'endDate']) !!}
+                <label for="endDate" class="control-label">End Date</label>
+                <input type="text" name="endDate" id="endDate" value="{{ isset($endDate) ? $endDate : '' }}"
+                       class="form-control">
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-8">
             <div class="form-group">
-                {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
+                <button type="submit" class="btn btn-primary">Search</button>
             </div>
         </div>
     </div>

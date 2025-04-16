@@ -11,7 +11,8 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     @if(isset($facility) && $facility->exists)
-                        {!! Form::model($facility, ['route' => ['adm.visiting.facility.update.post', $facility->id]]) !!}
+                        <form method="POST" action="{{ route('adm.visiting.facility.update.post', $facility->id) }}">
+                            @csrf
                     @else
                         <form method="POST" action="{{ route('adm.visiting.facility.create.post') }}">
                             @csrf

@@ -3,7 +3,13 @@
 @section('vt-content')
     <div class="row">
         <div class="col-md-8">
-            {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-question"></i> Choose your Facility
+                    </h3>
+                </div>
+                <div class="panel-body">
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
 
@@ -34,11 +40,17 @@
                 </div>
 
             </div>
-            {!! HTML::panelClose() !!}
+        </div>
         </div>
 
         <div class="col-md-4">
-            {!! HTML::panelOpen("Facility Code", ["type" => "fa", "key" => "question"]) !!}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-question"></i> Facility Code
+                    </h3>
+                </div>
+                <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
                     <p>
@@ -48,12 +60,12 @@
                         Enter in the code below.
                     </p>
                     <p>
-                      {!! Form::label("Facility Code:") !!}
+                        <label for="facility-code">Facility Code:</label>
                     <form action="{{ route('visiting.application.facility.manual.post', $application->public_id) }}"
                           method="POST" class="form-inline">
                         @csrf
                         <div class="form-group">
-                          {!! Form::text("facility-code") !!}
+                            <input type="text" name="facility-code" class="form-control">
                         </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -62,7 +74,7 @@
                 </div>
 
             </div>
-            {!! HTML::panelClose() !!}
+        </div>
         </div>
       </div>
 

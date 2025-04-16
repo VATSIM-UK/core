@@ -1,6 +1,6 @@
 <div class="form-group">
-    {{ Form::label($name, null, ['class' => 'control-label']) }}
-    {{ Form::password($name, array_merge_concat(['class' => 'form-control'], $attributes)) }}
+    <label for="{{ $name }}" class="control-label">{{ $name }}</label>
+    <input type="password" name="{{ $name }}" id="{{ $name }}" class="form-control" {{ $attributes }}>
 
     @if(count($hint) > 0)
         {{ Form::hint($hint['text'], array_get($hint, "link", [])) }}

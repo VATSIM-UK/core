@@ -3,7 +3,12 @@
 @section('vt-content')
     <div class="row">
         <div class="col-md-12">
-            {!! HTML::panelOpen("References &amp; Referees", ["type" => "fa", "key" => "comment-o"]) !!}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-comment-o"></i> References &amp; Referees
+                    </h3>
+                </div>
             <div class="row">
 
                 <div class="col-md-6 col-md-offset-3">
@@ -37,33 +42,36 @@
 
                             <div class="col-md-6">
                                 <div id="refereeCidHelp">
-                                    {!! Form::label("referee_cid","Referee CID"),
-                                    Form::text("referee_cid", '', ['class' => 'form-control']) !!}
+                                    <label for="referee_cid">Referee CID</label>
+                                    <input type="text" name="referee_cid" id="referee_cid" value=""
+                                           class="form-control">
                                     <small class="form-text text-muted">Please ensure this is correct.</small>
                                 </div>
 
                                 <div id="refereePositionHelp">
-                                    {!! Form::label("referee_relationship","Staff Position"),
-                                        Form::select("referee_relationship", [
-                                            "Region Director"               => "Region Director",
-                                            "Region Staff"                  => "Region Staff",
+                                    <label for="referee_relationship">Staff Position</label>
+                                    <select name="referee_relationship" id="referee_relationship" class="form-control">
+                                        <option value="Region Director">Region Director</option>
+                                        <option value="Region Staff">Region Staff</option>
 
-                                            "Division Director"             => "Division Director",
-                                            "Division Training Director"    => "Division Training Director",
-                                            "Division Staff"                => "Division Staff",
+                                        <option value="Division Director">Division Director</option>
+                                        <option value="Division Training Director">Division Training Director</option>
+                                        <option value="Division Staff">Division Staff</option>
 
-                                            "VACC/ARTCC Director"           => "VACC/ARTCC Director",
-                                            "VACC/ARTCC Training Director"  => "VACC/ARTCC Training Director",
-                                            "VACC/ARTCC Staff"              => "VACC/ARTCC Staff",
-                                        ], '', ['class' => 'form-control']) !!}
+                                        <option value="VACC/ARTCC Director">VACC/ARTCC Director</option>
+                                        <option value="VACC/ARTCC Training Director">VACC/ARTCC Training Director
+                                        </option>
+                                        <option value="VACC/ARTCC Staff">VACC/ARTCC Staff</option>
+                                    </select>
                                 </div>
 
                             </div>
 
                             <div class="col-md-6">
                                 <div id="refereeEmail">
-                                    {!! Form::label("referee_email", "Email Address"),
-                                    Form::text("referee_email", '', ['class' => 'form-control']) !!}
+                                    <label for="referee_email">Email Address</label>
+                                    <input type="text" name="referee_email" id="referee_email" value=""
+                                           class="form-control">
                                     <small class="form-text text-muted">This should be the member's staff email address.</small>
                                 </div>
 
@@ -114,7 +122,7 @@
                 </div>
 
             </div>
-            {!! HTML::panelClose() !!}
+            </div>
         </div>
     </div>
 @stop
