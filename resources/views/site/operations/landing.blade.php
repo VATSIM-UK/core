@@ -34,9 +34,8 @@
                     <p>
                         A large proportion of our work includes documenting the procedures for controllers into 'vMATS Part 2'
                         (virtual Manual of Air Traffic Services) documents, or 'ACB' (Airfield Controller Briefs). These are 
-                        published for <a href="https://community.vatsim.uk/files/downloads/category/7-enroute-atc-documentation/">Enroute sectors</a> and 
-                        <a href="https://community.vatsim.uk/files/downloads/category/10-aerodrome-atc-documentation/"> Aerodromes</a> in
-                        our community download center. 
+                        published for <a href="https://docs.vatsim.uk/Enroute/">Enroute sectors</a> and 
+                        <a href="https://docs.vatsim.uk/Aerodrome/"> Aerodromes</a> on our docs site. 
                     </p>
 
                     <p>

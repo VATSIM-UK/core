@@ -180,11 +180,14 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'discord.rostering',
             // 'discord.livestreaming',
             'discord.atc.student.obs',
+            'discord.atc.student.heathrow',
 
             'position-group.view.*',
 
             'endorsement.temporary.create.*',
             'endorsement.temporary.edit.*',
+            'endorsement.bypass.minimumdays',
+            'endorsement.bypass.maximumdays',
 
             'endorsement.create.*',
             'endorsement.create.permanent',

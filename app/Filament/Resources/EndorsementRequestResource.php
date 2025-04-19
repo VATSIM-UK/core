@@ -111,17 +111,20 @@ class EndorsementRequestResource extends Resource
                             ->label('Valid for (Days)')
                             ->numeric()
                             ->step(1)
-                            ->minValue(7)
+                            ->minValue(function () {
+                                return auth()->user()->can('endorsement.bypass.minimumdays')
+                                    ? null
+                                    : 7;
+                            })
                             ->placeholder(7)
                             ->maxValue(function (EndorsementRequest $endorsementRequest) {
                                 if (! $endorsementRequest->endorsable instanceof Position) {
                                     return 365;
                                 }
 
-                                $account = $endorsementRequest->account;
-                                $maximumDays = 90;
-
-                                return $maximumDays - $account->daysSpentTemporarilyEndorsedOn($endorsementRequest->endorsable);
+                                return auth()->user()->can('endorsement.bypass.maximumdays')
+                                    ? null
+                                    : 90 - $endorsementRequest->account->daysSpentTemporarilyEndorsedOn($endorsementRequest->endorsable);
                             })
                             ->required(fn (Get $get): bool => $get('type') === 'Temporary')
                             ->visible(fn (Get $get): bool => $get('type') === 'Temporary'),
