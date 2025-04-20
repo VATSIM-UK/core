@@ -13,6 +13,7 @@ $factory->define(App\Models\Training\WaitingList::class, function (Faker $faker)
         'feature_toggles' => [
             'check_atc_hours' => true,
         ],
+        'requires_roster_membership' => false,
     ];
 });
 

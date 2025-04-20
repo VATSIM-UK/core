@@ -5,16 +5,13 @@
 <img class="img-responsive center-block" src="/images/obs_s1_process.png" alt="TGNC Flow Diagram">
 
 ### Step 1 - Join the Waiting List
-In order to join the 'New Controller TG'
+In order to join the New Controller waiting list:
 
-- Login to the [Central Training System](https://cts.vatsim.uk) (CTS) via VATSIM SSO (Single Sign-On);
-<img class="img-responsive center-block" src="/images/TGNC_ScreenShot_1.png" alt="TGNC ScreenShot 1">
-- In the ‘Students’ menu, under the blue bar labelled ‘Group’ select ‘Choose Home’ (for some members, this may show as ‘Transfer’).
-<img class="img-responsive center-block" src="/images/TGNC_ScreenShot_2.png" alt="TGNC ScreenShot 2">
-- Select ‘New Controller’ and click ‘Request’. Once your request has been processed, you’ll receive an automated email from the CT System.
-<img class="img-responsive center-block" src="/images/TGNC_ScreenShot_3.png" alt="TGNC ScreenShot 3">
+- Navigate to [Waiting Lists](https://vatsim.uk/mship/waiting-lists)
+- Click on the 'Self Enrol' button on the 'OBS -> S1' waiting list.
+<img class="img-responsive center-block" src="/images/obss1selfenrol.png" alt="TGNC ScreenShot 1">
 
-Joining the New Controller TG will automatically place you on the waiting list for an Introduction to ATC (OBS_PT1) group session.
+Joining the New Controller waiting list will automatically place you on the waiting list for an Introduction to ATC (OBS_PT1) group session.
 The group sessions are run as and when training capacity allows for new students to enter the system.
 This may be once per month however we may delay this subject to the availability of our mentors throughout the year.
 To be eligible for an invite for the seminar, you MUST complete the [OBS > S1 CTS Theory Exam](https://cts.vatsim.uk/theory/setup.php).
@@ -32,6 +29,7 @@ If you are unable to attend this session due to real life circumstances, please 
 Due to the enormous demand for ATC Training in VATSIM UK, and the comparatively small training capacity, we use a 'strike' system to ensure that our newest members are fully engaged with the training process.
 Members will receive a strike for:
 - failing to respond to the first invitation
+- failing to join the New Controller Training Group in CTS
 - failing to have completed the CTS theory exam, if you are in the top 30 on the list who are eligible for the seminar
 
 Members will be advised of the strike via email.
@@ -39,6 +37,7 @@ Members will be advised of the strike via email.
 Members will be removed from the waiting list for 'failure to engage' which constitutes:
 - failure to respond to 2 seminar invitations
 - failure to complete the CTS theory, at the time of 2nd invitation
+- failure to join the New Controller training group after two invitations
 
 Members will be informed of the removal, and must then complete Step 1 again.
 
