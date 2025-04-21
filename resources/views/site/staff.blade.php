@@ -63,8 +63,8 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Operations Director (VATUK9)</h4><br />
-                    <img src="{{ $teamPhotos[7072] }}" width=50px class="img-responsive center-block profile-picture" />
-                    <p class="text-center">Jack Edwards</p>
+                    <img src="{{ $teamPhotos[8978] }}" width=50px class="img-responsive center-block profile-picture" />
+                    <p class="text-center">Archie Middlefell</p>
                     <h4 class="text-center">Operations Team</h4>
                     <table class="table">
                         <tr>
@@ -77,7 +77,7 @@
                         </tr>
                         <tr>
                             <td>Aerodrome Operations Coordinator</td>
-                            <td>Archie Middlefell</td>
+                            <td><em>Vacant</em></td>
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
@@ -114,6 +114,10 @@
                         <tr>
                             <td>Operations Assistant</td>
                             <td>1237658</td>
+                        </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>Jack Edwards</td>
                         </tr>
                     </table>
                 </div>
