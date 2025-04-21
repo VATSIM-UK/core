@@ -48,10 +48,9 @@ class WaitingListSelfEnrolment
                 $waitingList->self_enrolment_hours_at_qualification_id
             );
 
-            $atcSessionsAtQualificationsHours = Atc::where('account_id',$account->id)
+            $atcSessionsAtQualificationsHours = Atc::where('account_id', $account->id)
                 ->where('qualification_id', $requiredQualification->id)
                 ->sum('minutes_online') / 60;
-
 
             if ($atcSessionsAtQualificationsHours < $waitingList->self_enrolment_hours_at_qualification_minimum_hours) {
                 return false;
