@@ -65,7 +65,6 @@
                 </tbody>
             </table>
 
-            @if ($department === \App\Models\Training\WaitingList::ATC_DEPARTMENT)
             <div>
                 <h3>Self-enrolment</h3>
                 <p>Some waiting lists have the ability to 'self-enrol' without having to contact the Training team.
@@ -97,7 +96,6 @@
                     </tbody>
                 </table>
             </div>
-            @endif
         </div>
     </div>
 </div>
