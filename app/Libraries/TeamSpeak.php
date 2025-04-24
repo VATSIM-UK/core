@@ -15,6 +15,7 @@ use DB;
 use TeamSpeak3;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 use TeamSpeak3_Node_Client;
+use TeamSpeak3_Node_Server;
 
 /**
  * Provides static methods for managing TeamSpeak.
@@ -484,5 +485,22 @@ class TeamSpeak
         $client->deleteDb();
         self::getActiveRegistration($client)->delete($client->getParent());
         throw new ClientKickedFromServerException;
+    }
+
+    public static function checkClientCallsignGroups(TeamSpeak3_Node_Server $server, TeamSpeak3_Node_Client $client, Account $member)
+    {
+        if ($member->networkDataAtcCurrent) {
+            $gid = static::createTemporaryServerGroup($server, $member->networkDataAtcCurrent->callsign);
+            $server->serverGroupPermAssign($gid, 'i_group_show_name_in_tree', 2);
+            $server->serverGroupClientAdd($gid, $client['client_database_id']);
+        }
+    }
+
+    public static function createTemporaryServerGroup(TeamSpeak3_Node_Server $server, string $name): int
+    {
+        $gid = $server->serverGroupCreate($name, TeamSpeak3::GROUP_DBTYPE_REGULAR);
+        $server->serverGroupPermAssign($gid, 'b_group_is_permanent', 0);
+
+        return $gid;
     }
 }
