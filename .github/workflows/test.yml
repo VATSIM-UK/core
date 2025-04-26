@@ -58,7 +58,31 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+
+      - name: Composer Cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ hashFiles('**/composer.lock') }}
+            composer-
+
+      - name: Node Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            public/build
+            public/css
+            public/fonts
+            public/js
+            public/mix-manifest.json
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ hashFiles('**/package-lock.json') }}
+            npm-
 
       # Start MySQL and Create Databases
       - name: Create Databases
@@ -75,26 +99,6 @@ jobs:
       # Add GitHub Auth to Composer
       - name: Add Composer GitHub Token
         run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
-
-      # Restore Caches
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Restore Composer Cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-
-      - name: Restore Vendor From Cache
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
 
       # Install
       - name: Install Composer Dependencies
