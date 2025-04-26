@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 /public/vendor/horizon
+/public/vendor/livewire
 /storage/*.key
 /coverage
 /vendor

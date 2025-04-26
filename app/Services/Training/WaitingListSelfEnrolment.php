@@ -5,6 +5,7 @@ namespace App\Services\Training;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
+use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -38,6 +39,20 @@ class WaitingListSelfEnrolment
             );
 
             if (! $account->hasActiveQualification($requiredQualification)) {
+                return false;
+            }
+        }
+
+        if ($waitingList->self_enrolment_hours_at_qualification_id) {
+            $requiredQualification = Qualification::find(
+                $waitingList->self_enrolment_hours_at_qualification_id
+            );
+
+            $atcSessionsAtQualificationsHours = Atc::where('account_id', $account->id)
+                ->where('qualification_id', $requiredQualification->id)
+                ->sum('minutes_online') / 60;
+
+            if ($atcSessionsAtQualificationsHours < $waitingList->self_enrolment_hours_at_qualification_minimum_hours) {
                 return false;
             }
         }
