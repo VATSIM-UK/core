@@ -88,6 +88,7 @@
         "predis/predis": "^2.0",
         "pusher/pusher-php-server": "~7.2",
         "sentry/sentry-laravel": "^4.0",
+        "spatie/laravel-markdown": "^2.7",
         "spatie/laravel-permission": "^6.9",
         "spatie/laravel-schedule-monitor": "^3.0",
         "symfony/http-client": "^7.0",
@@ -153,6 +154,7 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover",
+            "@php artisan vendor:publish --force --tag=livewire:assets --ansi",
             "@php artisan filament:upgrade"
         ],
         "ide-helper": [
