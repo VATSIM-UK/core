@@ -20,7 +20,7 @@
     "jvectormap": "^2.0.4",
     "laravel-vite-plugin": "^1.2.0",
     "less": "^4.3.0",
-    "less-loader": "^12.2.0",
+    "less-loader": "^12.3.0",
     "postcss": "^8.5.3",
     "postcss-nesting": "^13.0.1",
     "sass": "^1.87.0",
