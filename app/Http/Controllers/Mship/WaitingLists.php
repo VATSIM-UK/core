@@ -31,7 +31,8 @@ class WaitingLists extends BaseController
 
         return view('mship.waiting-lists.index', [
             'atcWaitingListAccounts' => $atcWaitingListAccounts,
-            'atcSelfEnrolmentLists' => WaitingListSelfEnrolment::getListsAccountCanSelfEnrol($request->user()),
+            'atcSelfEnrolmentLists' => WaitingListSelfEnrolment::getListsAccountCanSelfEnrol($request->user())->where('department', WaitingList::ATC_DEPARTMENT),
+            'pilotSelfEnrolmentLists' => WaitingListSelfEnrolment::getListsAccountCanSelfEnrol($request->user())->where('department', WaitingList::PILOT_DEPARTMENT),
             'pilotWaitingListAccounts' => $pilotWaitingListAccounts,
         ]);
     }

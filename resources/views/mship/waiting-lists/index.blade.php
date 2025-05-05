@@ -21,6 +21,6 @@
     "icon" => "fa-plane",
     "waitingListAccounts" => $pilotWaitingListAccounts,
     "department" => \App\Models\Training\WaitingList::PILOT_DEPARTMENT,
-    "selfEnrolWaitingLists" => []
+    "selfEnrolWaitingLists" => $pilotSelfEnrolmentLists,
 ])
 @endsection
