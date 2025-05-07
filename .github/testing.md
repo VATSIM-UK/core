@@ -1,5 +1,5 @@
 ### Development Environment
-This repository targets PHP 8.1 and Node JS 20.x.
+This repository targets PHP 8.2 and Node JS 20.x.
 
 If you use VS Code and Docker, our repository contains a dev container configuration that will 
 automatically launch a ready-to-go development environment (including databases).
