@@ -1,5 +1,5 @@
 ### Development Environment
-This repository targets PHP 8.2 and Node JS 20.x.
+This repository uses [NodeJS](https://github.com/VATSIM-UK/core/blob/main/package.json) and [PHP](https://github.com/VATSIM-UK/core/blob/main/composer.json)
 
 If you use VS Code and Docker, our repository contains a dev container configuration that will 
 automatically launch a ready-to-go development environment (including databases).
