@@ -8,7 +8,7 @@ By submitting code as an individual you agree that VATSIM UK can use your amendm
 # Helping others
 Please help other contributors wherever you can (everybody starts somewhere).  If you require assistance (or wish to provide additional assistance) you can find our contributors in the VATSIM UK Discord.
 
-To access Discord, you can visit https://www.vatsim.uk/discord and follow the registration instructions.  Once you've logged in, find the channel "#sector_file_development".
+To access Discord, you can visit https://www.vatsim.uk/discord and follow the registration instructions. 
 
 # I want to contribute!
 
