@@ -33,6 +33,18 @@ class BookingsRepositoryTest extends TestCase
     }
 
     /** @test */
+    public function it_can_return_a_list_of_bookings_for_today()
+    {
+        factory(Booking::class, 10)->create(['date' => Carbon::now()]);
+
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+
+        $this->assertInstanceOf(Collection::class, $bookings);
+        $this->assertCount(10, $bookings);
+        $this->assertInstanceOf(Booking::class, $bookings->first());
+    }
+
+    /** @test */
     public function it_can_return_a_list_of_todays_bookings_with_owner_and_type()
     {
         factory(Booking::class, 2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);

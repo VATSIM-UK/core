@@ -2,6 +2,7 @@
 
 Route::get('validations')->uses('Api\ValidationsController@view')->name('api.validations');
 Route::get('metar/{airportIcao}')->uses('Site\MetarController@get')->name('api.metar');
+Route::get('/cts/bookings')->uses('Api\CtsController@getBookings')->name('api.cts.bookings');
 
 Route::group([
     'middleware' => 'api_auth',
