@@ -1,6 +1,6 @@
 # Welcome 
 
-Welcome to the Vatsim UK Core repository, VATSIM UK has a dedicated team who are members of the VATSIM UK staff team who are ultimately responsible for the upkeep and development of VATSIM UK systems. The team maintains a backlog of work outside of this repository, but issues of which open-source contributions are welcomed will be added under 'Issues' in this repository.
+Welcome to the VATSIM UK Core repository. VATSIM UK has a dedicated team who are members of the VATSIM UK staff team who are ultimately responsible for the upkeep and development of VATSIM UK systems. The team maintains a backlog of work outside of this repository, but issues of which open-source contributions are welcomed will be added under 'Issues' in this repository.
 
 # Contributor license agreement
 By submitting code as an individual you agree that VATSIM UK can use your amendments, fixes, patches, changes, modifications, submissions and creations in the production of the UK Core and that the ownership of your submissions transfers to VATSIM UK in their entirety.
