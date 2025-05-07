@@ -20,44 +20,45 @@ When you find an issue that you'd like to do, leave a comment on the issue askin
 # Fork the project
 
 Go to https://github.com/VATSIM-UK/core, and at the top-right find 'Fork'.
-![enter image description here](https://user-images.githubusercontent.com/14115426/101282830-2c8b0b80-37cf-11eb-9ec4-62f486547d1d.png)![enter image description here](https://user-images.githubusercontent.com/14115426/101282843-3dd41800-37cf-11eb-9b2c-74289e61c9cd.png)
+![image](https://github.com/user-attachments/assets/ae0ffcc9-edb0-49f7-ba2d-bcea3411c625)
+![image](https://github.com/user-attachments/assets/99f623b2-d9d6-42b2-ad36-14575399a175)
 
 > **What's a fork?** A fork is a personal copy of a repository that you can make changes to.
 
 # Download the GitHub desktop client
 
 Visit [https://desktop.github.com/] and download the client relevant to your OS. Install it and follow the on-screen instructions to connect your GitHub account.
-UK-Sector-File should appear in the list of repositories. Click 'clone'.
+core should appear in the list of repositories. Click 'clone'.
 If it isn't there, click 'Clone a repository from the Internet'.
 ![](https://user-images.githubusercontent.com/14115426/104220684-c3cf2880-5437-11eb-81a7-f0b62372369e.png)
 
 Click URL and enter the link to your fork - it'll look like 'https://github.com/**USERNAME**/core'. Click Clone.
 
-![](https://user-images.githubusercontent.com/14115426/104221090-58d22180-5438-11eb-96da-0847a4baa8b6.png)
+![image](https://github.com/user-attachments/assets/c4453fac-96b1-4bc1-888f-ee289d94a695)
 
 Select 'to contribute to the parent project'.
 
-![](https://user-images.githubusercontent.com/14115426/104220782-e5c8ab00-5437-11eb-9894-6e6eb28045cf.png)
+![image](https://github.com/user-attachments/assets/80f24b7b-fa84-428c-aa3d-658be0972429)
 
 # Setup the desktop client
 
 In the GitHub desktop client, under 'current repository', under your username, select core.
 
-![enter image description here](https://user-images.githubusercontent.com/14115426/101283451-5b56b100-37d2-11eb-95e6-dfeb70865cc8.png)
+![image](https://github.com/user-attachments/assets/49d8f32a-1a03-431a-8c24-1c090e8f7e02)
 
 Under 'Current branch' ensure 'main' (may also be titled 'master') is selected.
 
-![enter image description here](https://user-images.githubusercontent.com/14115426/101282290-4119d480-37cc-11eb-950a-b5eb7dde9f13.png)
+![image](https://github.com/user-attachments/assets/709ddaef-c300-4ee3-87a1-f2657d9631a9)
 
 Click 'fetch origin'.
 Once this has completed, under 'Current branch' click 'New branch'.
 
- ![enter image description here](https://user-images.githubusercontent.com/14115426/101282299-49720f80-37cc-11eb-959d-9b74fa0d20a0.png)
+![image](https://github.com/user-attachments/assets/6630f55a-f332-4b6d-be26-4854940c8cb1)
 
 This should be titled as `issue-{issue number}`, e.g. `issue-1234`.
 Click 'create branch'.
 
-![](https://user-images.githubusercontent.com/14115426/182425566-3b4655c7-017f-47e1-acea-1efe982dd8a7.png)
+![image](https://github.com/user-attachments/assets/57c5a2fb-8d85-4b3b-a68e-2a0aa0b71e10)
 
 This should be done automatically, but ensure the branch you just created is selected under 'Current Branch'
 
@@ -65,8 +66,7 @@ This should be done automatically, but ensure the branch you just created is sel
 
 When this is done, click the blue 'Publish branch' button or click the 'Publish branch to GitHub' along the top. They do the same thing.
 
-![enter image description here](https://user-images.githubusercontent.com/14115426/101282146-3579de00-37cb-11eb-8b33-63e7edce47a4.png)
-![enter image description here](https://user-images.githubusercontent.com/14115426/101282190-7f62c400-37cb-11eb-9aca-7b034d66e25b.png)
+![image](https://github.com/user-attachments/assets/bcde387f-bd5e-4c4d-8df6-3b72117ad446)
 
 You are now ready to make the changes. **Leave the GitHub Desktop Client open.**
 
@@ -75,7 +75,7 @@ You are now ready to make the changes. **Leave the GitHub Desktop Client open.**
 Enter your computer's local Documents folder. Inside there will be a GitHub folder (`Documents/GitHub`). Inside that will be a 'core' folder (`Documents/GitHub/core`). Inside this is the repository's files.
 Your navigation bar will look like this:
 
-![enter image description here](https://user-images.githubusercontent.com/14115426/101294555-fb7efb00-380f-11eb-9b43-b39a47ad53b3.png)
+![image](https://github.com/user-attachments/assets/0c3e2e81-735d-48db-970b-b6650d61dd23)
 
 Go onto the GitHub website, and find the issue you have been assigned to. At the bottom of the issue's description will be a section titled 'Affected areas of the sector file'. You'll see it'll link to either a specific file or folder:
 
