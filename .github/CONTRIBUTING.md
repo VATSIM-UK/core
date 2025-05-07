@@ -6,7 +6,7 @@ Welcome to the VATSIM UK Core repository. VATSIM UK has a dedicated team who are
 By submitting code as an individual you agree that VATSIM UK can use your amendments, fixes, patches, changes, modifications, submissions and creations in the production of the UK Core and that the ownership of your submissions transfers to VATSIM UK in their entirety.
 
 # Helping others
-Please help other UK Sector File users wherever you can (everybody starts somewhere).  If you require assistance (or wish to provide additional assistance) you can find our contributors in the VATSIM UK Discord.
+Please help other contributors wherever you can (everybody starts somewhere).  If you require assistance (or wish to provide additional assistance) you can find our contributors in the VATSIM UK Discord.
 
 To access Discord, you can visit https://www.vatsim.uk/discord and follow the registration instructions.  Once you've logged in, find the channel "#sector_file_development".
 
