@@ -11,7 +11,7 @@ On Windows you may wish to use Laravel Herd instead,
 you will need to run MySQL and create `core` and `cts` databases separately.
 
 ### Setup
-Generally, this project follows the [standard installation instructions](https://laravel.com/docs/10.x/installation)
+Generally, this project follows the [standard installation instructions](https://laravel.com/docs/installation)
 relating to Laravel.
 The following is an abbreviated guide to get started quickly.
 
