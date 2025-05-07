@@ -11,6 +11,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class WaitingListSelfEnrolment
 {
+    /**
+     * Check if an account can self-enrol on a waiting list.
+     *
+     * For rating checks, the VATSIM bitmask is used to determine
+     * the hierarchy for each type of rating i.e. between ATC and Pilot ratings.
+     */
     public static function canAccountEnrolOnList(
         Account $account,
         WaitingList $waitingList
@@ -27,18 +33,37 @@ class WaitingListSelfEnrolment
             return false;
         }
 
-        $onlyAcceptsHomeMembers = $waitingList->home_members_only;
         $accountIsNotHomeMember = ! $account->hasState(State::findByCode('DIVISION'));
-        if ($onlyAcceptsHomeMembers && $accountIsNotHomeMember) {
+        if ($waitingList->home_members_only && $accountIsNotHomeMember) {
             return false;
         }
 
+        if ($waitingList->self_enrolment_minimum_qualification_id) {
+            $activeQualification = self::getActiveQualificationForAccountOnList(
+                $account,
+                $waitingList
+            );
+
+            $minimumQualification = Qualification::find(
+                $waitingList->self_enrolment_minimum_qualification_id
+            );
+
+            if ($minimumQualification && $activeQualification?->vatsim < $minimumQualification->vatsim) {
+                return false;
+            }
+        }
+
         if ($waitingList->self_enrolment_maximum_qualification_id) {
-            $requiredQualification = Qualification::find(
+            $activeQualification = self::getActiveQualificationForAccountOnList(
+                $account,
+                $waitingList
+            );
+
+            $maximumQualification = Qualification::find(
                 $waitingList->self_enrolment_maximum_qualification_id
             );
 
-            if (! $account->hasActiveQualification($requiredQualification)) {
+            if ($maximumQualification && $activeQualification?->vatsim > $maximumQualification->vatsim) {
                 return false;
             }
         }
@@ -67,5 +92,14 @@ class WaitingListSelfEnrolment
             ->filter(
                 fn (WaitingList $waitingList) => self::canAccountEnrolOnList($account, $waitingList)
             );
+    }
+
+    private static function getActiveQualificationForAccountOnList(
+        Account $account,
+        WaitingList $waitingList
+    ): ?Qualification {
+        return $waitingList->department == WaitingList::ATC_DEPARTMENT
+            ? $account->qualification_atc
+            : $account->qualification_pilot;
     }
 }

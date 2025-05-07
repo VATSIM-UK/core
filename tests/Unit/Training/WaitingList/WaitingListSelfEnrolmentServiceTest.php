@@ -125,7 +125,7 @@ class WaitingListSelfEnrolmentServiceTest extends TestCase
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
-        $qualification = Qualification::code('OBS')->first();
+        $qualification = Qualification::code('S2')->first();
         $account->addQualification($qualification);
 
         $waitingList = factory(WaitingList::class)->create([
@@ -245,5 +245,37 @@ class WaitingListSelfEnrolmentServiceTest extends TestCase
         ]);
 
         $this->assertFalse(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
+    }
+
+    public function test_can_enrol_when_higher_than_minimum_but_not_lower_than_max()
+    {
+        $account = Account::factory()->create();
+
+        $waitingList = factory(WaitingList::class)->create([
+            'department' => WaitingList::ATC_DEPARTMENT,
+            'self_enrolment_enabled' => true,
+            'self_enrolment_minimum_qualification_id' => Qualification::code('S1')->first()->id,
+            'self_enrolment_maximum_qualification_id' => Qualification::code('S2')->first()->id,
+        ]);
+
+        $account->addQualification(Qualification::code('S1')->first());
+
+        $this->assertTrue(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
+    }
+
+    public function test_can_enrol_with_minimum_but_not_maximum()
+    {
+        $account = Account::factory()->create();
+
+        $waitingList = factory(WaitingList::class)->create([
+            'department' => WaitingList::ATC_DEPARTMENT,
+            'self_enrolment_enabled' => true,
+            'self_enrolment_minimum_qualification_id' => Qualification::code('S1')->first()->id,
+            'self_enrolment_maximum_qualification_id' => null,
+        ]);
+
+        $account->addQualification(Qualification::code('S1')->first());
+
+        $this->assertTrue(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
     }
 }
