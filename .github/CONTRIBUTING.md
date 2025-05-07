@@ -12,7 +12,7 @@ To access Discord, you can visit https://www.vatsim.uk/discord and follow the re
 
 # I want to contribute!
 
-If you wish to contribute to the Vatsim UK Core project, there are many ways in which you can help out.
+If you wish to contribute to the VATSIM UK Core project, there are many ways in which you can help out.
 
 ## Contributing to the data
 
