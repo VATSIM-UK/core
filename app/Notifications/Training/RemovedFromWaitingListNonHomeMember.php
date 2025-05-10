@@ -41,7 +41,7 @@ class RemovedFromWaitingListNonHomeMember extends Notification implements Discor
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->from('support@vatsim.uk', 'VATSIM UK - Member Services')
+            ->from('support@vatsim.uk', 'VATSIM UK - Community')
             ->subject('UK Training Waiting List Removal')
             ->view('emails.training.waiting_list_non_home_removal', ['recipient' => $notifiable]);
     }
