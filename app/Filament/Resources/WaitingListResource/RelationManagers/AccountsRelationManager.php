@@ -117,11 +117,43 @@ class AccountsRelationManager extends RelationManager
                     ->visible(fn ($record) => $this->can('updateAccounts', $record->waitingList)),
 
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\DetachAction::make()
+                Tables\Actions\DetachAction::make('detachWithReason')
                     ->label('Remove')
-                    ->using(fn ($record, $livewire) => $livewire->ownerRecord->removeFromWaitingList($record->account))
-                    ->successNotificationTitle('User removed from waiting list'),
-            ])->defaultSort('created_at', 'asc')->persistSearchInSession()->defaultPaginationPageOption(25);
+                    ->form([
+                        Forms\Components\Select::make('reason')
+                            ->label('Reason for removal')
+                            ->options([
+                                'awarded_training_place' => 'Member awarded training place',
+                                'user_request' => 'Member requested removal',
+                                'other' => 'Other (specify below)',
+                            ])
+                            ->required()
+                            ->reactive(),
+                        
+                            Forms\Components\Textarea::make('custom_reason')
+                            ->label('Custom reason')
+                            ->rows(3)
+                            ->required()
+                            ->visible(fn (callable $get) => $get('reason') === 'other'),
+                    ])
+                    ->action(function (WaitingListAccount $record, array $data, $livewire) {
+                        $removal_reason = $data['reason'] === 'other' ? $data['custom_reason'] : $data['reason']; //if its other set the $removal_reason as the custom value (instead of 'other (specify below)')
+                        $record->update([
+                            'removal_reason' => $removal_reason,
+                            'removed_by' => auth()->user()->id,
+                        ]);
+
+                    $livewire->ownerRecord->removeFromWaitingList($record->account);
+                    $livewire->dispatch('refreshWaitingList');
+                })
+                ->successNotificationTitle('User removed from waiting list')
+                ->modalHeading('Remove from Waiting List')
+                ->modalDescription('Please provide a reason for removing this user.')
+                ->modalSubmitActionLabel('Remove')
+                ->modalCancelActionLabel('Cancel')
+                ->visible(fn ($record) => $this->can('removeAccounts', $record->waitingList)),
+            ])
+            ->defaultSort('created_at', 'asc')->persistSearchInSession()->defaultPaginationPageOption(25);
     }
 
     public function isReadOnly(): bool
