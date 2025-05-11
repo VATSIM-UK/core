@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\WaitingListResource\RelationManagers;
 
+use App\Models\Mship\Note\Type;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
@@ -120,13 +121,9 @@ class AccountsRelationManager extends RelationManager
                 Tables\Actions\DetachAction::make('detachWithReason')
                     ->label('Remove')
                     ->form([
-                        Forms\Components\Select::make('reason')
+                        Forms\Components\Select::make('reason_type')
                             ->label('Reason for removal')
-                            ->options([
-                                'awarded_training_place' => 'Member awarded training place',
-                                'user_request' => 'Member requested removal',
-                                'other' => 'Other (specify below)',
-                            ])
+                            ->options(self::removalReasonOptions())
                             ->required()
                             ->reactive(),
 
@@ -134,14 +131,22 @@ class AccountsRelationManager extends RelationManager
                             ->label('Custom reason')
                             ->rows(3)
                             ->required()
-                            ->visible(fn (callable $get) => $get('reason') === 'other'),
+                            ->visible(fn (callable $get) => $get('reason_type') === 'other'),
                     ])
                     ->action(function (WaitingListAccount $record, array $data, $livewire) {
-                        $removal_reason = $data['reason'] === 'other' ? $data['custom_reason'] : $data['reason']; // if its other set the $removal_reason as the custom value (instead of 'other (specify below)')
+                        $removal_type = $data['reason_type'];
+                        $removal_reasons = self::removalReasonOptions();
+                        $waitingListName = $record->waitingList->name;
+
+                        $removal_comment = $data['reason_type'] === 'other' ? $data['custom_reason'] : ($removal_reasons[$data['reason_type']] ?? 'Unknown reason'); // if its other set the $removal_comment as the custom value (instead of 'other (specify below)')
+
                         $record->update([
-                            'removal_reason' => $removal_reason,
+                            'removal_type' => $removal_type,
                             'removed_by' => auth()->user()->id,
                         ]);
+
+                        // add note to users account when removed from waiting list
+                        $record->account->addNote(Type::isShortCode('training')->first(), "Removed from {$waitingListName} Waiting List: $removal_comment", auth()->user()->id);
 
                         $livewire->ownerRecord->removeFromWaitingList($record->account);
                         $livewire->dispatch('refreshWaitingList');
@@ -179,5 +184,14 @@ class AccountsRelationManager extends RelationManager
     protected function canDetach(Model $record): bool
     {
         return $this->can('removeAccount', $this->getOwnerRecord());
+    }
+
+    public static function removalReasonOptions(): array
+    {
+        return [
+            'awarded_training_place' => 'Member awarded training place',
+            'user_request' => 'Member requested removal',
+            'other' => 'Other (specify below)',
+        ];
     }
 }

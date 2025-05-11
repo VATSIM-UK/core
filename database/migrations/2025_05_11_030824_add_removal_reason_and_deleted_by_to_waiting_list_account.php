@@ -12,9 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('training_waiting_list_account', function (Blueprint $table) {
-            $table->unsignedInteger('removed_by')->nullable();
-            $table->text('removal_reason')->nullable();
+            $table->unsignedInteger('removed_by')->nullable()->after('deleted_at');
+            $table->string('removal_type')->nullable()->after('removed_by');
         });
+        //Insert new note type
+        DB::table('mship_note_type')->insert([
+            'name' => 'Training',
+            'short_code' => 'training',
+            'is_available' => true,
+            'is_system' => true,
+            'is_default' => false,
+            'colour_code' => 'info',
+        ]);
     }
 
     /**
@@ -24,7 +33,9 @@ return new class extends Migration
     {
         Schema::table('training_waiting_list_account', function (Blueprint $table) {
             $table->dropColumn('removed_by');
-            $table->dropColumn('removal_reason');
+            $table->dropColumn('removal_type');
         });
+        //Removes note type
+        DB::table('mship_note_type')->where('short_code', 'training')->delete();
     }
 };

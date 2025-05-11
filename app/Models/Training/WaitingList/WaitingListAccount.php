@@ -55,7 +55,7 @@ class WaitingListAccount extends Model
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['added_by', 'deleted_at', 'notes', 'flags_status_summary', 'removed_by', 'removal_reason'];
+    public $fillable = ['added_by', 'deleted_at', 'notes', 'flags_status_summary', 'removed_by', 'removal_type'];
 
     protected $appends = ['theory_exam_passed'];
 
