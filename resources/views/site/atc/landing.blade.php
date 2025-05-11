@@ -27,7 +27,7 @@
                     <p>
                         The ATC Training department is structured into &quot;Training Groups&quot;, each of which deal
                         with specific types of training at various facilities. The administrative aspect of Training 
-                        Groups are handled by the team of ATC Training and Member Services staff; please always use the 
+                        Groups are handled by the team of ATC Training and Community staff; please always use the 
                         <a href="https://helpdesk.vatsim.uk/">Helpdesk</a> for queries related to ATC Training. Each 
                         Training Group has a number of Training Group Instructors (TGI), who are responsible for 
                         overseeing training in their respective groups - ensuring suitable progression and maintaining 
