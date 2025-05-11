@@ -15,7 +15,7 @@ return new class extends Migration
             $table->unsignedInteger('removed_by')->nullable()->after('deleted_at');
             $table->string('removal_type')->nullable()->after('removed_by');
         });
-        //Insert new note type
+        // Insert new note type
         DB::table('mship_note_type')->insert([
             'name' => 'Training',
             'short_code' => 'training',
@@ -35,7 +35,7 @@ return new class extends Migration
             $table->dropColumn('removed_by');
             $table->dropColumn('removal_type');
         });
-        //Removes note type
+        // Removes note type
         DB::table('mship_note_type')->where('short_code', 'training')->delete();
     }
 };
