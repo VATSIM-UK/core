@@ -403,14 +403,18 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $this->adminUser->givePermissionTo('waiting-lists.remove-accounts.*');
         $this->adminUser->givePermissionTo('waiting-lists.access');
 
+        $removalReason = 'Test Removal';
+
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
-            ->callTableAction('detach', record: $waitingList->waitingListAccounts->first());
+            ->callTableAction('detach', record: $waitingList->waitingListAccounts->first(), data: ['removal_reason' => $removalReason]);
 
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $waitingList->id,
             'account_id' => $account->id,
             'deleted_at' => now(),
+            'deleted_by' => $this->adminUser->id,
+            'removal_reason' => $removalReason,
         ]);
     }
 }
