@@ -12,7 +12,6 @@ use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -56,6 +55,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingList withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingList withoutTrashed()
+ *
+ * @property bool $requires_roster_membership
+ * @property bool $self_enrolment_enabled
+ * @property int|null $self_enrolment_minimum_qualification_id
+ * @property int|null $self_enrolment_maximum_qualification_id
+ * @property int|null $self_enrolment_hours_at_qualification_id
+ * @property int|null $self_enrolment_hours_at_qualification_minimum_hours
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereRequiresRosterMembership($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereSelfEnrolmentEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereSelfEnrolmentHoursAtQualificationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereSelfEnrolmentHoursAtQualificationMinimumHours($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereSelfEnrolmentMaximumQualificationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingList whereSelfEnrolmentMinimumQualificationId($value)
  *
  * @mixin \Eloquent
  */
@@ -105,30 +118,6 @@ class WaitingList extends Model
             'list_id',
             'account_id'
         )->withTimestamps();
-    }
-
-    /**
-     * Many WaitingLists can have many Accounts (pivot).
-     *
-     * @fixme remove when no longer used in filament stuff, use `waitingListAccounts` instead.
-     *
-     * @deprecated using a pivot here creates a bunch of N+1 problems for filament
-     */
-    public function accounts(): BelongsToMany
-    {
-        // this aint gonna work because the waitinglistaccount is no longer a pivot!
-
-        return $this->belongsToMany(
-            Account::class,
-            'training_waiting_list_account',
-            'list_id'
-        )->using(WaitingListAccount::class)
-            ->withPivot([
-                'id',
-                'deleted_at',
-                'notes',
-                'created_at',
-            ])->wherePivot('deleted_at', null)->orderByPivot('created_at');
     }
 
     /**
