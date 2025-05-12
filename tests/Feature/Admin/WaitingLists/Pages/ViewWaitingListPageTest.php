@@ -421,4 +421,36 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
             'removal_type' => $removal_type,
         ]);
     }
+
+    public function test_account_can_be_removed_with_other_reason()
+    {
+        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $account = Account::factory()->create();
+        $account->addState(State::findByCode('DIVISION'));
+        $waitingList->addToWaitingList($account, $this->adminUser);
+
+        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
+        $this->adminUser->givePermissionTo('waiting-lists.remove-accounts.*');
+        $this->adminUser->givePermissionTo('waiting-lists.access');
+
+        $removal_type = WaitingList\RemovalReason::Other->value;
+        $other_reason = 'for testing';
+
+        Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
+            ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
+            ->mountTableAction('detachWithReason', record: $waitingList->waitingListAccounts->first())
+            ->assertSee('Remove from Waiting List')
+            ->setTableActionData(['reason_type' => $removal_type, 'custom_reason' => $other_reason])
+            ->callMountedTableAction()
+            ->assertHasNoActionErrors();
+
+        $this->assertDatabaseHas('training_waiting_list_account', [
+            'list_id' => $waitingList->id,
+            'account_id' => $account->id,
+            'deleted_at' => now(),
+            'removed_by' => $this->adminUser->id,
+            'removal_type' => $removal_type,
+            'removal_comment' => $other_reason,
+        ]);
+    }
 }

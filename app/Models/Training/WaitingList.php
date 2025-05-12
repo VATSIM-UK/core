@@ -246,6 +246,7 @@ class WaitingList extends Model
         }
 
         $waitingListAccount->removal_type = $removal->reason;
+        $waitingListAccount->removal_comment = $removal->otherReason;
         $waitingListAccount->removed_by = $removal->removedBy;
 
         $noteType = Type::isShortCode('training')->firstOrFail();
