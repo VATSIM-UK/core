@@ -407,7 +407,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
-            ->callTableAction('detachWithReason', record: $waitingList->waitingListAccounts->first(), data: ['removal_reason' => $removalReason]);
+            ->callTableAction('detachWithReason', record: $waitingList->waitingListAccounts->first(), data: ['removal_type' => $removal_type]);
 
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $waitingList->id,
