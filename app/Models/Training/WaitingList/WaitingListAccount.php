@@ -61,6 +61,7 @@ class WaitingListAccount extends Model
 
     protected $casts = [
         'flags_status_summary' => 'array',
+        'removal_type' => RemovalReason::class,
     ];
 
     // 24 hours

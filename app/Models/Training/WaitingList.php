@@ -6,6 +6,8 @@ use App\Events\Training\AccountAddedToWaitingList;
 use App\Events\Training\FlagAddedToWaitingList;
 use App\Events\Training\WaitingListCreated;
 use App\Models\Mship\Account;
+use App\Models\Mship\Note\Type;
+use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
@@ -235,7 +237,7 @@ class WaitingList extends Model
     /**
      * Remove an Account from a waiting list.
      */
-    public function removeFromWaitingList(Account $account): void
+    public function removeFromWaitingList(Account $account, Removal $removal): void
     {
         $waitingListAccount = $this->waitingListAccounts()->where('account_id', $account->id)->first();
 
@@ -243,6 +245,16 @@ class WaitingList extends Model
             return;
         }
 
+        $waitingListAccount->removal_type = $removal->reason;
+        $waitingListAccount->removed_by = $removal->removedBy;
+
+        $noteType = Type::isShortCode('training')->firstOrFail();
+        $account->addNote(
+            $noteType,
+            "Removed from {$this->name} Waiting List: {$removal->comment()}",
+            $removal->removedBy);
+
+        $waitingListAccount->save();
         $waitingListAccount->delete();
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\WaitingListResource\RelationManagers;
 
-use App\Models\Mship\Note\Type;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
@@ -135,20 +134,10 @@ class AccountsRelationManager extends RelationManager
                     ])
                     ->action(function (WaitingListAccount $record, array $data, $livewire) {
                         $removal_type = $data['reason_type'];
-                        $removal_reasons = self::removalReasonOptions();
-                        $waitingListName = $record->waitingList->name;
 
-                        $removal_comment = $data['reason_type'] === 'other' ? $data['custom_reason'] : ($removal_reasons[$data['reason_type']] ?? 'Unknown reason'); // if its other set the $removal_comment as the custom value (instead of 'other (specify below)')
+                        $removal = new WaitingList\Removal(WaitingList\RemovalReason::from($removal_type), auth()->user()->id, $data['custom_reason'] ?? '');
 
-                        $record->update([
-                            'removal_type' => $removal_type,
-                            'removed_by' => auth()->user()->id,
-                        ]);
-
-                        // add note to users account when removed from waiting list
-                        $record->account->addNote(Type::isShortCode('training')->first(), "Removed from {$waitingListName} Waiting List: $removal_comment", auth()->user()->id);
-
-                        $livewire->ownerRecord->removeFromWaitingList($record->account);
+                        $livewire->ownerRecord->removeFromWaitingList($record->account, $removal);
                         $livewire->dispatch('refreshWaitingList');
                     })
                     ->successNotificationTitle('User removed from waiting list')
@@ -188,10 +177,6 @@ class AccountsRelationManager extends RelationManager
 
     public static function removalReasonOptions(): array
     {
-        return [
-            'awarded_training_place' => 'Member awarded training place',
-            'user_request' => 'Member requested removal',
-            'other' => 'Other (specify below)',
-        ];
+        return WaitingList\RemovalReason::formOptions();
     }
 }

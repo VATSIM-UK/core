@@ -403,7 +403,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $this->adminUser->givePermissionTo('waiting-lists.remove-accounts.*');
         $this->adminUser->givePermissionTo('waiting-lists.access');
 
-        $removal_type = 'test';
+        $removal_type = WaitingList\RemovalReason::Request->value;
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
