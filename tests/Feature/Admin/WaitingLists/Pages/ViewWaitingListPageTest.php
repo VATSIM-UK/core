@@ -107,7 +107,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
             ])
             ->assertHasActionErrors(['account_id']);
 
-        $this->assertNotContains($accountToAdd->id, $waitingList->fresh()->accounts->pluck('id'));
+        $this->assertNotContains($accountToAdd->id, $waitingList->fresh()->waitingListAccounts->pluck('account_id'));
 
         $this->assertDatabaseMissing('training_waiting_list_account', [
             'list_id' => $waitingList->id,
