@@ -71,7 +71,7 @@
                 <div class="panel-body">
                     <ol>
                         <li>
-                            Express your interest <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noopener noreferrer">here</a> - you will then be added to the waiting list.
+                            Join the waiting list <a href="{{ route('mship.waiting-lists.index') }}" target="_blank" rel="noopener noreferrer">here</a>
                         </li>
                         <li>
                             Sign up to the P1 PPL(A) moodle course <a href="https://moodle.vatsim.uk/course/view.php?id=51" target="_blank" rel="noopener noreferrer">here</a>.
@@ -98,7 +98,7 @@
                 <div class="panel-body">
                     <ol>
                         <li>
-                            <a href="{{ route('visiting.landing') }}" rel="noreferrer noopener">Apply to visit as a Pilot</a>
+                            <a href="{{ route('visiting.landing') }}" rel="noreferrer noopener">Apply to visit as a Pilot</a> not seeing the option you want? Submit a ticket <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noreferrer noopener">here</a>
                         </li>
                         <li>
                             When your V/T application has been accepted you will be added to the waiting list.
