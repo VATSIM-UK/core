@@ -62,7 +62,7 @@ Click 'create branch'.
 
 This should be done automatically, but ensure the branch you just created is selected under 'Current Branch'
 
-> **What is a branch?** A branch is like a split from the main set of files in order to make changes to achieve a specific purpose - here it's to delete Luton.
+> **What is a branch?** A branch is like a split from the main set of files in order to make changes to achieve a specific purpose - here it's to conver a page to markdown.
 
 When this is done, click the blue 'Publish branch' button or click the 'Publish branch to GitHub' along the top. They do the same thing.
 
@@ -77,11 +77,11 @@ Your navigation bar will look like this:
 
 ![image](https://github.com/user-attachments/assets/0c3e2e81-735d-48db-970b-b6650d61dd23)
 
-Go onto the GitHub website, and find the issue you have been assigned to. At the bottom of the issue's description will be a section titled 'Affected areas of the sector file'. You'll see it'll link to either a specific file or folder:
+Go onto the GitHub website, and find the issue you have been assigned to. At the bottom of the issue's description will be a section titled 'Affected areas of the Core Project (if known)'. You'll see it'll link to either a specific file or folder:
 
-![enter image description here](https://user-images.githubusercontent.com/14115426/101294600-67f9fa00-3810-11eb-96bc-5d83a01e054d.png)
+![image](https://github.com/user-attachments/assets/8294f3ff-f405-4c0a-855f-9a29f103e02e)
 
-In your local file explorer, navigate to the file(s) specified by the issue. This is where you will make the changes required by the issue. If you have questions about what this involves, feel free to leave a comment on the issue itself or in the #sector_file_development channel on the VATSIM UK Discord.
+In your local file explorer, navigate to the file(s) specified by the issue. This is where you will make the changes required by the issue. If you have questions about what this involves, feel free to leave a comment on the issue itself or in the VATSIM UK Discord.
 
 You should test the changes before you commit them - follow [this](https://github.com/VATSIM-UK/core/blob/main/.github/testing.md) guide to understand how to test the UK core, which enables you to validate the files locally.
 
@@ -89,14 +89,14 @@ You should test the changes before you commit them - follow [this](https://githu
 
 Click back into the GitHub Desktop Client - you will see that it displays a screen similar to this:
 
-![enter image description here](https://user-images.githubusercontent.com/14115426/101294874-1d797d00-3812-11eb-826f-d807bb440d97.png)
+![image](https://github.com/user-attachments/assets/51415634-0fb7-4ac6-9616-d341a80cc9eb)
 
 At the bottom left, you will see the commit title (currently filled in with grey writing saying 'Update ....txt'). Have a look at the [commit message section of the Style Guide](https://github.com/VATSIM-UK/core/blob/main/.github/Style%20Guide.md#commits) to understand how this should be formatted.
 
 If you've edited multiple files, you can set the files you want to commit individually - try to commit sets of changes relating to the same thing together.
 Click the blue 'Commit to [branch name]' button.
 
-Assuming this is all the changes you wish to make, move onto the next section. If you need to make more changes, continue to change, save, commit, as needed.
+Assuming this is all the changes you wish to make, move on to the next section. If you need to make more changes, continue to change, save, commit as needed.
 Most importantly, try to make only one set of changes in one commit - this makes it easier to review later.
 
 # Pushing
@@ -110,12 +110,12 @@ Click 'Create Pull Request'. This will open a window in your browser.
 Title the pull request - see the [PR title section of the Style Guide](https://github.com/VATSIM-UK/core/blob/main/.github/Style%20Guide.md#prs) of what to enter here.
 E.g. 'Fixes #1234 - Converted XYZ to Markdown'
 You can find further examples at [https://github.com/VATSIM-UK/core/pulls](https://github.com/VATSIM-UK/core/pulls)
-From there follow the format given in the pull request template.
+From there, follow the format given in the pull request template.
 Keep 'allow edits by maintainers' checked.
 
 When this is done, click 'Create pull request'.
 
-> **What's a pull request?** For our purposes, it's a request to make changes to the UK Sector File repository.
+> **What's a pull request?** For our purposes, it's a request to make changes to the VATSIM UK core application repository.
 
 # And now you wait
 
@@ -128,7 +128,7 @@ We'll make a small change that makes your life easier.
 Head to your fork's settings - found here: https://github.com/YOUR_USERNAME/core/settings (replacing the username with yours).
 Scroll till you find a section called 'Merge button'.
 Tick the option to 'Automatically delete head branches'.
-This means that when you complete the issue, and we have merged it into the sector file, the new branch you created at the beginning will be deleted. This is useful as it means that if you do a number of issues, you don't have to remember to manually delete them.
+This means that when you complete the issue, and we have merged it into the core application, the new branch you created at the beginning will be deleted. This is useful as it means that if you do a number of issues, you don't have to remember to manually delete them.
 
 ![enter image description here](https://user-images.githubusercontent.com/14115426/101295367-261f8280-3815-11eb-8c31-2a3b2ebb8503.png)
 
