@@ -43,7 +43,7 @@
                     <span>
                         You are currently <span class="font-bold">inactive</span> on the VATSIM UK roster, and cannot control any UK positions.
                         <br>
-                        Please <a class="text-blue-500 hover:cursor-pointer" href="mailto:member-services@vatsim.uk">contact Member Services</a> if you believe this is incorrect.
+                        Please <a class="text-blue-500 hover:cursor-pointer" href="mailto:community@vatsim.uk">contact Community</a> if you believe this is incorrect.
                     </span>
                 @endif
             </div>

@@ -71,7 +71,7 @@ class WaitingListsTest extends TestCase
         $this->actingAs($account)
             ->get(route('mship.waiting-lists.index'))
             ->assertSee('My List')
-            ->assertDontSee('You are not eligible to self-enrol on any waiting lists.');
+            ->assertSee($list->name);
 
         $this->actingAs($account)
             ->post(route('mship.waiting-lists.self-enrol', $list->id))

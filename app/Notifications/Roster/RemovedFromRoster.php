@@ -31,7 +31,7 @@ class RemovedFromRoster extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->from('support@vatsim.uk', 'VATSIM UK - Member Services')
+            ->from('support@vatsim.uk', 'VATSIM UK - Community')
             ->subject('Removed from VATSIM UK Controlling Roster')
             ->view('emails.roster.removal', ['recipient' => $notifiable]);
     }
