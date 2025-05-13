@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\External\VatsimNet\ProcessVatsimNetWebhook;
+
 Route::group([
     'prefix' => 'external',
     'as' => 'external.',
@@ -9,19 +11,7 @@ Route::group([
         'prefix' => 'vatsim-net',
         'as' => 'vatsim-net.',
     ], function () {
-
-        Route::post('webhook', function () {
-            Log::info(print_r([
-                'Authorization' => request()->header('Authorization'),
-                'User-Agent' => request()->header('User-Agent'),
-                'Body' => request()->all(),
-            ], true));
-
-            return response()->json([
-                'status' => 'ok',
-            ]);
-        })->name('webhook');
-
+        Route::post('webhook', ProcessVatsimNetWebhook::class)->name('webhook');
     });
 
 });
