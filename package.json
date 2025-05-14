@@ -3,6 +3,9 @@
   "description": "VATSIM UK Core Framework",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0 <24.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build"
