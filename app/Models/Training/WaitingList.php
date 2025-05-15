@@ -72,7 +72,7 @@ class WaitingList extends Model
 
     public $table = 'training_waiting_list';
 
-    protected $fillable = ['name', 'slug', 'department', 'feature_toggles'];
+    protected $fillable = ['name', 'slug', 'department', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours'];
 
     const ATC_DEPARTMENT = 'atc';
 
@@ -88,6 +88,10 @@ class WaitingList extends Model
         'deleted_at' => 'datetime',
         'requires_roster_membership' => 'boolean',
         'self_enrolment_enabled' => 'boolean',
+        'self_enrolment_minimum_qualification_id' => 'integer', 
+        'self_enrolment_maximum_qualification_id' => 'integer', 
+        'self_enrolment_hours_at_qualification_id' => 'integer', 
+        'self_enrolment_hours_at_qualification_minimum_hours' => 'integer',
     ];
 
     /**
@@ -282,6 +286,20 @@ class WaitingList extends Model
             'check_cts_theory_exam' => $this->getShouldCheckCtsTheoryExamAttribute(),
         ];
     }
+
+    public function minimumQualification() 
+    {
+        return $this->belongsTo(\App\Models\Mship\Qualification::class, 'self_enrolment_minimum_qualification_id');
+    }
+    public function maximumQualification() 
+    {
+        return $this->belongsTo(\App\Models\Mship\Qualification::class, 'self_enrolment_maximum_qualification_id');
+    }
+    public function hoursAtQualification() 
+    {
+        return $this->belongsTo(\App\Models\Mship\Qualification::class, 'self_enrolment_hours_at_qualification_id');
+    }
+
 
     public function __toString()
     {

@@ -35,6 +35,50 @@ class WaitingListResource extends Resource
                     'atc' => 'ATC Training',
                     'pilot' => 'Pilot Training',
                 ])->required(),
+
+                Forms\Components\Fieldset::make("Additional Settings")
+                ->schema([
+                    Forms\Components\Toggle::make('feature_toggles.check_atc_hours')
+                    ->label('Check ATC Hours')
+                    ->default(true),
+
+                    Forms\Components\Toggle::make('feature_toggles.check_cts_theory_exam')
+                    ->label('Enable CTS Theory Exam')
+                    ->default(true),
+
+                    Forms\Components\Toggle::make('requires_roster_membership')
+                    ->label('Requires Roster Membership')
+                    ->default(true),
+                    
+                    Forms\Components\Toggle::make('self_enrolment_enabled')
+                    ->label('Enable Self-Enrolment')
+                    ->default(false)
+                    ->live(),
+
+                ]),
+                
+                Forms\Components\Fieldset::make("Self-Enrolment Requirements")
+                ->schema([
+                    Forms\Components\Select::make('self_enrolment_minimum_qualification_id')
+                    ->label('Minimum Qualification ID')
+                    ->relationship('minimumQualification', 'name_long')
+                    ->searchable()
+                    ->preload(),
+                    Forms\Components\Select::make('self_enrolment_maximum_qualification_id')
+                    ->label('Maximum Qualification ID')
+                    ->relationship('maximumQualification', 'name_long')
+                    ->searchable()
+                    ->preload(),
+                    Forms\Components\Select::make('self_enrolment_hours_at_qualification_id')
+                    ->label('Qualification ID (for Hours Requirement)')
+                    ->relationship('hoursAtQualification', 'name_long')
+                    ->searchable()
+                    ->preload(),
+                    Forms\Components\TextInput::make('self_enrolment_hours_at_qualification_minimum_hours')
+                    ->label('Minimum hours at Qualification')
+                    ->integer()
+                    ->minValue(0),
+                ])->visible(fn (callable $get) => $get('self_enrolment_enabled') === true),
             ]);
     }
 
