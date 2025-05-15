@@ -93,7 +93,15 @@ class AccountsRelationManager extends RelationManager
                 Tables\Columns\IconColumn::make('on_roster')->boolean()->label('On Roster')->getStateUsing(fn (WaitingListAccount $record) => $record->account->onRoster())->visible(fn () => $this->ownerRecord->feature_toggles['display_on_roster'] ?? true),
                 Tables\Columns\TextColumn::make('created_at')->label('Added On')->dateTime('d/m/Y H:i:s'),
                 Tables\Columns\IconColumn::make('cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn (WaitingListAccount $record) => $record->theory_exam_passed)->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
-            ])
+            
+            ...$this->ownerRecord->flags()
+            ->where('display_in_table', true)
+            ->get()
+            ->map(function ($flag) {
+                return Tables\Columns\IconColumn::make("flag_{$flag->id}")->label($flag->name)->boolean()->getStateUsing(fn (WaitingListAccount $record) =>
+                    optional($record->flags->firstWhere('id', $flag->id)?->pivot)->marked_at !==null); //checks marked_at in training_waiting_list_account_flag table - if its not null the user has the flag
+                })->all(),
+        ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->using(function (WaitingListAccount $record, $data, $livewire) {
