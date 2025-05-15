@@ -70,17 +70,17 @@ class WaitingListResource extends Resource
                     ->schema([
                         Select::make('self_enrolment_minimum_qualification_id')
                             ->label('Minimum Qualification ID')
-                            ->relationship('minimumQualification', 'name_long')
+                            ->relationship('minimumQualification', 'code')
                             ->searchable()
                             ->preload(),
                         Select::make('self_enrolment_maximum_qualification_id')
                             ->label('Maximum Qualification ID')
-                            ->relationship('maximumQualification', 'name_long')
+                            ->relationship('maximumQualification', 'code')
                             ->searchable()
                             ->preload(),
                         Select::make('self_enrolment_hours_at_qualification_id')
                             ->label('Qualification ID (for Hours Requirement)')
-                            ->relationship('hoursAtQualification', 'name_long')
+                            ->relationship('hoursAtQualification', 'code')
                             ->searchable()
                             ->preload(),
                         TextInput::make('self_enrolment_hours_at_qualification_minimum_hours')
