@@ -88,9 +88,9 @@ class WaitingList extends Model
         'deleted_at' => 'datetime',
         'requires_roster_membership' => 'boolean',
         'self_enrolment_enabled' => 'boolean',
-        'self_enrolment_minimum_qualification_id' => 'integer', 
-        'self_enrolment_maximum_qualification_id' => 'integer', 
-        'self_enrolment_hours_at_qualification_id' => 'integer', 
+        'self_enrolment_minimum_qualification_id' => 'integer',
+        'self_enrolment_maximum_qualification_id' => 'integer',
+        'self_enrolment_hours_at_qualification_id' => 'integer',
         'self_enrolment_hours_at_qualification_minimum_hours' => 'integer',
     ];
 
@@ -287,19 +287,20 @@ class WaitingList extends Model
         ];
     }
 
-    public function minimumQualification() 
+    public function minimumQualification()
     {
         return $this->belongsTo(\App\Models\Mship\Qualification::class, 'self_enrolment_minimum_qualification_id');
     }
-    public function maximumQualification() 
+
+    public function maximumQualification()
     {
         return $this->belongsTo(\App\Models\Mship\Qualification::class, 'self_enrolment_maximum_qualification_id');
     }
-    public function hoursAtQualification() 
+
+    public function hoursAtQualification()
     {
         return $this->belongsTo(\App\Models\Mship\Qualification::class, 'self_enrolment_hours_at_qualification_id');
     }
-
 
     public function __toString()
     {

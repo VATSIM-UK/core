@@ -93,8 +93,8 @@ class ViewWaitingList extends ViewRecord
                     }))->hint('If an option is chosen here, this will be an automated flag. This cannot be reversed.'),
 
                     Toggle::make('display_in_table')
-                    ->label('Display in Waiting List Table')
-                    ->default(false),
+                        ->label('Display in Waiting List Table')
+                        ->default(false),
                 ])
                 ->visible(fn () => auth()->user()->can('addFlags', $this->record)),
         ];
