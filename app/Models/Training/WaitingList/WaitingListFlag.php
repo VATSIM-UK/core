@@ -14,6 +14,10 @@ class WaitingListFlag extends Model
 
     protected $table = 'training_waiting_list_flags';
 
+    protected $casts = [
+        'display_in_table' => 'boolean',
+    ];
+
     protected static function boot()
     {
         parent::boot();
