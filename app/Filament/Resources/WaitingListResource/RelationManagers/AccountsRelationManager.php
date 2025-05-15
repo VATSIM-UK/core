@@ -85,7 +85,7 @@ class AccountsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'account.roster', 'waitingList']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'account.roster', 'waitingList', 'flags']))
             ->columns([
                 Tables\Columns\TextColumn::make('position')->getStateUsing(fn (WaitingListAccount $record) => $this->ownerRecord->positionOf($record) ?? '-')->label('Position'),
                 Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
@@ -93,13 +93,7 @@ class AccountsRelationManager extends RelationManager
                 Tables\Columns\IconColumn::make('on_roster')->boolean()->label('On Roster')->getStateUsing(fn (WaitingListAccount $record) => $record->account->onRoster())->visible(fn () => $this->ownerRecord->feature_toggles['display_on_roster'] ?? true),
                 Tables\Columns\TextColumn::make('created_at')->label('Added On')->dateTime('d/m/Y H:i:s'),
                 Tables\Columns\IconColumn::make('cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn (WaitingListAccount $record) => $record->theory_exam_passed)->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
-
-                ...$this->ownerRecord->flags()
-                    ->where('display_in_table', true)
-                    ->get()
-                    ->map(function ($flag) {
-                        return Tables\Columns\IconColumn::make("flag_{$flag->id}")->label($flag->name)->boolean()->getStateUsing(fn (WaitingListAccount $record) => optional($record->flags->firstWhere('id', $flag->id)?->pivot)->marked_at !== null); // checks marked_at in training_waiting_list_account_flag table - if its not null the user has the flag
-                    })->all(),
+                ...$this->getFlagColumns(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -154,5 +148,23 @@ class AccountsRelationManager extends RelationManager
     protected function canDetach(Model $record): bool
     {
         return $this->can('removeAccount', $this->getOwnerRecord());
+    }
+
+    // Display All Manual Flags where display option is enabled
+    protected function getFlagColumns(): array
+    {
+        return $this->ownerRecord->flags()
+            ->where('display_in_table', true)
+            ->get()
+            ->map(function ($flag) {
+                return Tables\Columns\IconColumn::make("flag_{$flag->id}")
+                    ->label($flag->name)
+                    ->boolean()
+                    ->getStateUsing(function (WaitingListAccount $record) use ($flag) {
+                        $flagRecord = $record->flags->firstWhere('id', $flag->id);
+
+                        return $flagRecord?->pivot?->marked_at !== null;
+                    });
+            })->all();
     }
 }

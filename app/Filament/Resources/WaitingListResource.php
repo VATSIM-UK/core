@@ -5,7 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\WaitingListResource\Pages;
 use App\Filament\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
 use App\Models\Training\WaitingList;
-use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
@@ -27,58 +30,64 @@ class WaitingListResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->autofocus()->required()->live(onBlur: true)
+                TextInput::make('name')->autofocus()->required()->live(onBlur: true)
                     ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
-                Forms\Components\TextInput::make('slug')->required(),
+                TextInput::make('slug')->required(),
 
-                Forms\Components\Select::make('department')->options([
+                Select::make('department')->options([
                     'atc' => 'ATC Training',
                     'pilot' => 'Pilot Training',
                 ])->required(),
 
-                Forms\Components\Fieldset::make('Additional Settings')
+                Section::make('Additional Settings')
                     ->schema([
-                        Forms\Components\Toggle::make('feature_toggles.check_atc_hours')
+                        Toggle::make('feature_toggles.check_atc_hours')
                             ->label('Check ATC Hours')
                             ->default(true),
 
-                        Forms\Components\Toggle::make('feature_toggles.check_cts_theory_exam')
-                            ->label('Enable CTS Theory Exam')
+                        Toggle::make('feature_toggles.display_on_roster')
+                            ->label('Display Roster Membership')
                             ->default(true),
 
-                        Forms\Components\Toggle::make('requires_roster_membership')
-                            ->label('Requires Roster Membership')
+                        Toggle::make('feature_toggles.check_cts_theory_exam')
+                            ->label('Display CTS Theory Exam')
                             ->default(true),
 
-                        Forms\Components\Toggle::make('self_enrolment_enabled')
+                        Toggle::make('requires_roster_membership')
+                            ->label('Require Roster Membership')
+                            ->default(true),
+
+                        Toggle::make('self_enrolment_enabled')
                             ->label('Enable Self-Enrolment')
                             ->default(false)
                             ->live(),
 
-                    ]),
+                    ])
+                    ->collapsible()
+                    ->collapsed(),
 
-                Forms\Components\Fieldset::make('Self-Enrolment Requirements')
+                Section::make('Self-Enrolment Requirements')
                     ->schema([
-                        Forms\Components\Select::make('self_enrolment_minimum_qualification_id')
+                        Select::make('self_enrolment_minimum_qualification_id')
                             ->label('Minimum Qualification ID')
                             ->relationship('minimumQualification', 'name_long')
                             ->searchable()
                             ->preload(),
-                        Forms\Components\Select::make('self_enrolment_maximum_qualification_id')
+                        Select::make('self_enrolment_maximum_qualification_id')
                             ->label('Maximum Qualification ID')
                             ->relationship('maximumQualification', 'name_long')
                             ->searchable()
                             ->preload(),
-                        Forms\Components\Select::make('self_enrolment_hours_at_qualification_id')
+                        Select::make('self_enrolment_hours_at_qualification_id')
                             ->label('Qualification ID (for Hours Requirement)')
                             ->relationship('hoursAtQualification', 'name_long')
                             ->searchable()
                             ->preload(),
-                        Forms\Components\TextInput::make('self_enrolment_hours_at_qualification_minimum_hours')
+                        TextInput::make('self_enrolment_hours_at_qualification_minimum_hours')
                             ->label('Minimum hours at Qualification')
                             ->integer()
                             ->minValue(0),
-                    ])->visible(fn (callable $get) => $get('self_enrolment_enabled') === true),
+                    ])->collapsible()->collapsed()->visible(fn (callable $get) => $get('self_enrolment_enabled') === true),
             ]);
     }
 
