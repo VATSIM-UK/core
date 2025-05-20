@@ -8,6 +8,16 @@ use Illuminate\Support\Collection;
 
 class BookingRepository
 {
+    public function getBookings(Carbon $date)
+    {
+        $bookings = Booking::where('date', '=', $date->toDateString())
+            ->with('member')
+            ->orderBy('from')
+            ->get();
+
+        return $this->formatBookings($bookings);
+    }
+
     public function getTodaysBookings()
     {
         $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
