@@ -23,7 +23,7 @@
 </p>
 @elseif($application->is_accepted)
 <p>
-    Your application has been accepted by the Member Services department. It is important to note that <strong>this does not</strong> mean you
+    Your application has been accepted by the Community department. It is important to note that <strong>this does not</strong> mean you
     have completed your application, it simply means the details of your application have been checked and deemed valid.
     You will be informed when your application is <strong>completed</strong>.
 </p>

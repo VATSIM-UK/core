@@ -142,6 +142,7 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover",
+            "@php artisan vendor:publish --force --tag=livewire:assets --ansi",
             "@php artisan filament:upgrade"
         ],
         "ide-helper": [

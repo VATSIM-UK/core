@@ -8,5 +8,5 @@
     <p>{{ $ban->period_start->toDayDateTimeString() }} ({{ $ban->period_start->diffForHumans() }}).</p>
     <h3>Expiry</h2>
     <p>Your ban is due to expire on {{ $ban->period_finish->toDayDateTimeString() }} UTC ({{ $ban->period_finish->diffForHumans() }})</p>
-    <p>If you believe this to be an error, please contact the VATSIM UK Membership Services team at <a href="https://helpdesk.vatsim.uk">https://helpdesk.vatsim.uk</a> who will be able to assist further.</p>
+    <p>If you believe this to be an error, please contact the VATSIM UK Community team at <a href="https://helpdesk.vatsim.uk">https://helpdesk.vatsim.uk</a> who will be able to assist further.</p>
 @stop
