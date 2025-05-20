@@ -59,7 +59,7 @@
         }
     ],
     "require": {
-        "php": "^8.2.0",
+        "php": "^8.4.0",
         "alawrence/laravel-ipboard": "dev-main",
         "axonc/filament-copyable-placeholder": "^0.3.0",
         "barryvdh/laravel-debugbar": "^3.3",
@@ -68,7 +68,7 @@
         "filament/filament": "^3.2",
         "filament/notifications": "^3.2",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^12.0",
         "laravel/helpers": "^1.1",
         "laravel/horizon": "^5.0",
         "laravel/passport": "^12.0",
@@ -92,7 +92,7 @@
         "symfony/http-client": "^7.0",
         "symfony/mailgun-mailer": "^7.0",
         "symfony/translation": "^6.1",
-        "watson/rememberable": "^6.0",
+        "watson/rememberable": "^7.0",
         "whitecube/laravel-cookie-consent": "^1.0.1",
         "wohali/oauth2-discord-new": "^1.0"
     },
@@ -104,7 +104,7 @@
         "laravel/pint": "^1.10",
         "mockery/mockery": "1.6.*",
         "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^10.0",
+        "phpunit/phpunit": "^11.0",
         "spatie/laravel-ignition": "^2.0",
         "spatie/laravel-ray": "^1.23",
         "symfony/css-selector": "^4.0",
