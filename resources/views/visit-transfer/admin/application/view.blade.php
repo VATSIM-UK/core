@@ -674,10 +674,11 @@
                                                     Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.
                                                 </div>
                                                 <div class="modal-footer">
-                                                    {{ Form::open(array("url" => URL::route("adm.visiting.application.check.met.post", $application->id))) }}
-                                                    <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
-                                                    {{ Form::hidden("check", "50_hours") }}
-                                                    {{ Form::close() }}
+                                                    <form action="{{ route('adm.visiting.application.check.met.post', $application->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="50_hours">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
