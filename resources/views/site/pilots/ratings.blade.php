@@ -115,7 +115,7 @@
                             <li>
                                 Once your mentoring permissions have been assigned navigate to our <a
                                         href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
-                                    (CTS</a>.
+                                    (CTS)</a>.
                             </li>
                             <li>
                                 Sign into the CTS using our SSO.
