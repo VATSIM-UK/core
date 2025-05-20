@@ -9,7 +9,6 @@ use App\Libraries\Forum;
 use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
-use HTML;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
