@@ -1,3 +1,6 @@
+@props([
+    'attr' => []
+])
 <div class="panel panel-ukblue">
     <div class="panel-heading">
         @if($icon)
