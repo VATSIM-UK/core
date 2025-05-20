@@ -5,7 +5,6 @@
         @include('components.html.panel_open', [
             'title' => 'Single Sign-On',
             'icon' => null,
-            'attr' => []
         ])
             <div class="row">
                 <div class="col-md-12" style="text-align: center;">

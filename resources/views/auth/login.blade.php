@@ -6,7 +6,6 @@
             @include('components.html.panel_open', [
                 'title' => 'Secondary Authentication',
                 'icon' => ['type' => 'fa', 'key' => 'fa-key'],
-                'attr' => []
             ])
             <div class="row">
                 <div class="col-md-12">
