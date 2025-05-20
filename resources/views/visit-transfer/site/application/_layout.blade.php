@@ -7,80 +7,88 @@
             <div class="row">
                 <div class="col-md-3 hidden-xs" id="navBarHelp">
                     @if($application->exists)
-                        {!! HTML::panelOpen($application->type_string. " Application #".$application->public_id.($application->facility ? " - ".$application->facility->name : ""), ["type" => "fa", "key" => "list"]) !!}
+                        @include('components.html.panel_open', [
+                            'title' => $application->type_string. ' Application #'.$application->public_id.($application->facility ? ' - '.$application->facility->name : ''),
+                            'icon' => ['type' => 'fa', 'key' => 'list'],
+                            'attr' => []
+                        ])
                     @else
-                        {!! HTML::panelOpen("New Application", ["type" => "fa", "key" => "list"]) !!}
+                        @include('components.html.panel_open', [
+                            'title' => 'New Application',
+                            'icon' => ['type' => 'fa', 'key' => 'list'],
+                            'attr' => []
+                        ])
                     @endif
                     <ul class="nav nav-pills nav-stacked">
                         <li role="presentation">
-                            {{ link_to_route("visiting.landing", "Dashboard") }}
+                            <a href="{{ route('visiting.landing') }}">Dashboard</a>
                         </li>
 
                         @if($application)
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "Stage 1 - T&amp;C Acceptance", [(isset($applicationType) ? $applicationType : $application->type)]) }}
+                                <a href="#">Stage 1 - T&amp;C Acceptance</a>
                             </li>
                         @else
                             <li role="presentation" class="active">
-                                {{ link_to_route("visiting.application.start", "Stage 1 - T&amp;C Acceptance", [(isset($applicationType) ? $applicationType : $application->type)]) }}
+                                <a href="{{ route('visiting.application.start', [(isset($applicationType) ? $applicationType : $application->type)]) }}">Stage 1 - T&amp;C Acceptance</a>
                             </li>
                         @endif
 
 
                         @can("select-facility", $application)
-                            <li role="presentation" {!! (Route::is("visiting.application.facility") ? 'class="active"' : "") !!}>
-                                {{ link_to_route("visiting.application.facility", "Stage 2 - Facility Selection", [$application->public_id]) }}
+                            <li role="presentation" {!! (Route::is('visiting.application.facility') ? 'class="active"' : '') !!}>
+                                <a href="{{ route('visiting.application.facility', [$application->public_id]) }}">Stage 2 - Facility Selection</a>
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "Stage 2 - Facility Selection") }}
+                                <a href="#">Stage 2 - Facility Selection</a>
                             </li>
                         @endif
 
 
                         @can("add-statement", $application)
-                            <li role="presentation" {!! (Route::is("visiting.application.statement") ? 'class="active"' : "") !!}>
-                                {{ link_to_route("visiting.application.statement", "Stage 3 - Personal Statement".($application->statement_required ? "" : " (Not Required)"), [$application->public_id]) }}
+                            <li role="presentation" {!! (Route::is('visiting.application.statement') ? 'class="active"' : '') !!}>
+                                <a href="{{ route('visiting.application.statement', [$application->public_id]) }}">Stage 3 - Personal Statement{{ $application->statement_required ? '' : ' (Not Required)' }}</a>
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "Stage 3 - Personal Statement".($application->statement_required ? "" : " (Not Required)")) }}
+                                <a href="#">Stage 3 - Personal Statement{{ $application->statement_required ? '' : ' (Not Required)' }}</a>
                             </li>
                         @endif
 
                         @can("add-referee", $application)
-                            <li role="presentation" {!! (Route::is("visiting.application.referees") ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.referees", "Stage 4 - Referees".($application->references_required > 0 ? "" : " (Not Required)"), [$application->public_id]) }}
+                            <li role="presentation" {!! (Route::is('visiting.application.referees') ? "class='active'" : '') !!}>
+                                <a href="{{ route('visiting.application.referees', [$application->public_id]) }}">Stage 4 - Referees{{ $application->references_required > 0 ? '' : ' (Not Required)' }}</a>
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "Stage 4 - Referees".($application->references_required > 0 ? "" : " (Not Required)")) }}
+                                <a href="#">Stage 4 - Referees{{ $application->references_required > 0 ? '' : ' (Not Required)' }}</a>
                             </li>
                         @endcan
 
                         @can("submit-application", $application)
-                            <li role="presentation" {!! (Route::is("visiting.application.submit") ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.submit", "Stage 5 - Submission", [$application->public_id]) }}
+                            <li role="presentation" {!! (Route::is('visiting.application.submit') ? "class='active'" : '') !!}>
+                                <a href="{{ route('visiting.application.submit', [$application->public_id]) }}">Stage 5 - Submission</a>
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "Stage 5 - Submission") }}
+                                <a href="#">Stage 5 - Submission</a>
                             </li>
                         @endif
 
                         @can("view", $application)
-                            <li role="presentation" {!! (Route::is("visiting.application.view") ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.view", "View Full Application", [$application->public_id], ["class" => (Route::is("visiting.application.referees") ? "active" : "")]) }}
+                            <li role="presentation" {!! (Route::is('visiting.application.view') ? "class='active'" : '') !!}>
+                                <a href="{{ route('visiting.application.view', [$application->public_id]) }}" class="{{ Route::is('visiting.application.referees') ? 'active' : '' }}">View Full Application</a>
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "View Full Application") }}
+                                <a href="#">View Full Application</a>
                             </li>
                         @endif
 
                         @can("withdraw-application", $application)
-                            <li role="presentation" class="text-center" {!! (Route::is("visiting.application.withdraw") ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.withdraw", "Withdraw Application", [$application->public_id], ["class" => "label label-danger label-md"]) }}
+                            <li role="presentation" class="text-center" {!! (Route::is('visiting.application.withdraw') ? "class='active'" : '') !!}>
+                                <a href="{{ route('visiting.application.withdraw', [$application->public_id]) }}" class="label label-danger label-md">Withdraw Application</a>
                             </li>
                         @endif
 
@@ -92,7 +100,7 @@
                             </li>
                         @endif
                     </ul>
-                    {!! HTML::panelClose() !!}
+                    @include('components.html.panel_close')
                 </div>
                 <div class="col-md-9 hidden-xs">
                     @yield("vt-content")

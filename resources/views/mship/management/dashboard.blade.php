@@ -229,18 +229,18 @@
                         </div>
                         @if($_account->password)
                             <div class="col-xs-4">
-                                {!! HTML::link(route('password.change'), "Click to Modify") !!}
+                                <a href="{{ route('password.change') }}">Click to Modify</a>
                             </div>
                             <div class="col-xs-4">
                                 @if(!$_account->mandatory_password)
-                                    {!! HTML::link(route('password.delete'), "Click to Disable") !!}
+                                    <a href="{{ route('password.delete') }}">Click to Disable</a>
                                 @else
                                     Cannot be disabled.
                                 @endif
                             </div>
                         @else
                             <div class="col-xs-4">
-                                {!! HTML::link(route('password.create'), "Click to Enable") !!}
+                                <a href="{{ route('password.create') }}">Click to Enable</a>
                             </div>
                         @endif
                     </div>
@@ -381,14 +381,14 @@
                                             <br/>
                                             @if (is_null($tsreg->dbid))
                                                 <strong>STATUS</strong>
-                                                : {!! link_to_route('teamspeak.new', 'New Registration') !!}<br/>
+                                                : <a href="{{ route('teamspeak.new') }}">New Registration</a><br/>
                                             @elseif (!is_null($tsreg->dbid))
                                                 <strong>UNIQUE ID</strong>: {{ $tsreg->uid }}<br/>
                                                 <strong>LAST IP</strong>: {{ $tsreg->last_ip }}<br/>
                                                 <strong>LAST LOGIN</strong>: {{ $tsreg->last_login }}<br/>
                                                 <strong>OPERATING SYSTEM</strong>: {{ $tsreg->last_os }}<br/>
                                             @endif
-                                            [ {!! link_to_route("teamspeak.delete", "Remove Registration", [$tsreg->id]) !!}
+                                            [ <a href="{{ route('teamspeak.delete', [$tsreg->id]) }}">Remove Registration</a>
                                             ]<br/>&nbsp;
                                         </div>
                                     @endforeach
@@ -428,7 +428,7 @@
                                 <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
                             @else
                                 You are not yet
-                                registered.  {!! link_to_route("discord.create", "Click here to register.") !!}
+                                registered.  <a href="{{ route('discord.create') }}">Click here to register.</a>
                             @endif
                         </div>
                     </div>

@@ -3,7 +3,11 @@
 @section('vt-content')
     <div class="row">
         <div class="col-md-12">
-            {!! HTML::panelOpen("Application #".$application->public_id." - ".$application->type_string." ".$application->facility_name, ["type" => "fa", "key" => "question"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Application #'.$application->public_id.' - '.$application->type_string.' '.$application->facility_name,
+                'icon' => ['type' => 'fa', 'key' => 'question'],
+                'attr' => []
+            ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
 
@@ -146,9 +150,9 @@
                 <div class="col-md-10 col-md-offset-1">
                     <h3>Withdraw Application</h3>
                     <p>If you wish to withdraw your application, please click below.</p>
-                    {{ link_to_route("visiting.application.withdraw", "Withdraw Application", [$application->public_id], ["class" => "label label-danger label-md"]) }}
+                    <a href="{{ route('visiting.application.withdraw', [$application->public_id]) }}" class="label label-danger label-md">Withdraw Application</a>
                 </div>
                 @endif
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
     </div>
 @stop

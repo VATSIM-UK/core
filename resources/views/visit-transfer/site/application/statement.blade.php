@@ -3,7 +3,11 @@
 @section('vt-content')
     <div class="row" id="statementHelp">
         <div class="col-md-12">
-            {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Choose your Facility',
+                'icon' => ['type' => 'fa', 'key' => 'question'],
+                'attr' => []
+            ])
             <form action="{{ route('visiting.application.statement.post', $application->public_id) }}" method="POST">
                 @csrf
             <div class="row">
@@ -18,7 +22,7 @@
                 <div class="clear-both"></div>
 
                 <div class="col-md-10 col-md-offset-1">
-                    {!! Form::textarea("statement", $application->statement, ['class' => 'form-control']) !!}
+                    <textarea name="statement" class="form-control">{{ old('statement', $application->statement) }}</textarea>
                 </div>
 
                 <div class="clear-both"></div>
@@ -30,7 +34,7 @@
 
             </div>
             </form>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
     </div>
 @stop

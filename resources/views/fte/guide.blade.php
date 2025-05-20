@@ -11,7 +11,7 @@
                     <div class="text-center">
                         You’ve made it!<br>
                         Here is a basic guide on what you need to do to get started with Flight Training Exercises.<br>
-                        If you have any other questions then please {!! HTML::link('https://helpdesk.vatsim.uk', 'contact us via our Helpdesk', array("target"=>"_blank")) !!}.
+                        If you have any other questions then please <a href="https://helpdesk.vatsim.uk" target="_blank" rel="noopener noreferrer">contact us via our Helpdesk</a>.
                     </div>
                 </div>
             </div>
@@ -35,14 +35,14 @@
                     <ol>
                         <li>
                             Download the smartCARS application
-                            by {{ HTML::link('https://vats.im/smartcars', 'clicking here', array("target"=>"_blank")) }}.
+                            by <a href="https://vats.im/smartcars" target="_blank" rel="noopener noreferrer">clicking here</a>.
                         </li>
                         <li>
                             Install the smartCARS application by following the simple on-screen instructions.
                         </li>
                         <li>
                             We need a way to authenticate you. To do this, setup a secondary password by
-                            {!! link_to_route("password.create", "clicking here") !!}.
+                            <a href="{{ route('password.create') }}">clicking here</a>.
                         </li>
                         <li>
                             The setup is now complete and you are ready to book an exercise and use the application.
@@ -69,10 +69,10 @@
                 <div class="panel-body">
                     <ol>
                         <li>
-                            Navigate to the {!! link_to_route("fte.dashboard", "Pilots >> Dashboard") !!}.
+                            Navigate to the <a href="{{ route('fte.dashboard') }}">Pilots &gt;&gt; Dashboard</a>.
                             <ul>
                                 <li>Featured exercises will be displayed on the dashboard. A full list of exercises can be found by going to
-                                    {!! link_to_route("fte.exercises", "Pilots >> Exercises") !!}.</li>
+                                    <a href="{{ route('fte.exercises') }}">Pilots &gt;&gt; Exercises</a>.</li>
                             </ul>
                         </li>
                         <li>
@@ -160,17 +160,17 @@
                 </div>
                 <div class="panel-body">
                     Congratulations!<br>
-                    Feel free to review your flight on the {!! link_to_route('fte.history', 'flight history') !!} page.<br>
+                    Feel free to review your flight on the <a href="{{ route('fte.history') }}">flight history</a> page.<br>
                     <br>
                     Soon, completing Flight Training Exercises will earn you community points, awards and enter you into exclusive prize draws.
-                    Keep an eye on our {!! HTML::link('https://community.vatsim.uk', 'community forum') !!} for the latest news.<br>
+                    Keep an eye on our <a href="https://community.vatsim.uk" target="_blank" rel="noopener noreferrer">community forum</a> for the latest news.<br>
                     <br>
                     You are free to complete exercises as many times as you want, in whichever order you wish.<br>
                     <br>
                     Got feedback? Let us know...
                     <ul>
-                        <li>On our {!! HTML::link('https://community.vatsim.uk', 'Community Forum') !!}.</li>
-                        <li>Directly to us via {!! HTML::link('https://helpdesk.vatsim.uk', 'our Helpdesk') !!}.</li>
+                        <li>On our <a href="https://community.vatsim.uk" target="_blank" rel="noopener noreferrer">Community Forum</a>.</li>
+                        <li>Directly to us via <a href="https://helpdesk.vatsim.uk" target="_blank" rel="noopener noreferrer">our Helpdesk</a>.</li>
                     </ul>
                 </div>
             </div>
@@ -193,7 +193,7 @@
                         <li>You use time acceleration on your simulator,</li>
                         <li>If you do not complete the exercise on the VATSIM network.</li>
                     </ul>
-                    Make sure you review your attempt on the {!! link_to_route('fte.history', 'flight history') !!} page.<br>
+                    Make sure you review your attempt on the <a href="{{ route('fte.history') }}">flight history</a> page.<br>
                     You are welcome to attempt the exercise again, just go ahead and make another booking!
                 </div>
             </div>

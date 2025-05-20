@@ -3,7 +3,11 @@
 @section('vt-content')
     <div class="row">
         <div class="col-md-8">
-            {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Choose your Facility',
+                'icon' => ['type' => 'fa', 'key' => 'question'],
+                'attr' => []
+            ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
 
@@ -34,11 +38,15 @@
                 </div>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
 
         <div class="col-md-4">
-            {!! HTML::panelOpen("Facility Code", ["type" => "fa", "key" => "question"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Facility Code',
+                'icon' => ['type' => 'fa', 'key' => 'question'],
+                'attr' => []
+            ])
             <div class="row">
                 <div class="col-md-12">
                     <p>
@@ -48,12 +56,12 @@
                         Enter in the code below.
                     </p>
                     <p>
-                      {!! Form::label("Facility Code:") !!}
+                      <label for="facility-code">Facility Code:</label>
                     <form action="{{ route('visiting.application.facility.manual.post', $application->public_id) }}"
                           method="POST" class="form-inline">
                         @csrf
                         <div class="form-group">
-                          {!! Form::text("facility-code") !!}
+                          <input type="text" name="facility-code" id="facility-code">
                         </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -62,14 +70,18 @@
                 </div>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
       </div>
 
       <div class="row">
         @foreach($facilities as $facility)
             <div class="col-md-3">
-                {!! HTML::panelOpen($facility->name, ["type" => "vuk", "key" => "letter-".strtolower($facility->name[0])], ["style" => "min-height: 220px;"]) !!}
+                @include('components.html.panel_open', [
+                    'title' => $facility->name,
+                    'icon' => ['type' => 'vuk', 'key' => 'letter-'.strtolower($facility->name[0])],
+                    'attr' => ['style' => 'min-height: 220px;']
+                ])
                 <div class="row">
                     <div class="col-md-12">
 
@@ -97,12 +109,12 @@
                             @endif
                         </p>
 
-                        {!! Form::hidden("facility_id", $facility->id) !!}
+                        <input type="hidden" name="facility_id" value="{{ $facility->id }}">
                         </form>
                     </div>
 
                 </div>
-                {!! HTML::panelClose() !!}
+                @include('components.html.panel_close')
             </div>
         @endforeach
     </div>

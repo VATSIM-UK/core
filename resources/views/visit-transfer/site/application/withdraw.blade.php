@@ -3,7 +3,11 @@
 @section('vt-content')
     <div class="row" id="submissionHelp">
         <div class="col-md-12">
-            {!! HTML::panelOpen("Withdraw", ["type" => "fa", "key" => "tick"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Withdraw',
+                'icon' => ['type' => 'fa', 'key' => 'tick'],
+                'attr' => []
+            ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <p>
@@ -19,7 +23,7 @@
                 </form>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
     </div>
 @stop

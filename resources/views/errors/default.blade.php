@@ -17,7 +17,7 @@
     <p>
         If you keep experiencing this issue, please let the Technology team know by emailing <a href="mailto:technology-support@vatsim.uk">technology-support@vatsim.uk</a>.
         @if(Auth::check())
-             Meanwhile, you may {{ link_to("/mship/manage/dashboard", "return to the dashboard") }}.
+             Meanwhile, you may <a href="/mship/manage/dashboard">return to the dashboard</a>.
         @endif
     </p>
 

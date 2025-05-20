@@ -35,9 +35,9 @@
                             @if($waitingListAccount->waitingList->isAtcList() && ($waitingListAccount->waitingList->feature_toggles["display_on_roster"] ?? true))
                                 <td>
                                     @if ($waitingListAccount->account->onRoster())
-                                        {!! HTML::img("tick_mark_circle", "png", 20) !!}
+                                        <img src="{{ asset('images/tick_mark_circle.png') }}" width="20" alt="Tick">
                                     @else
-                                        {!! HTML::img("cross_mark_circle", "png", 20) !!}
+                                        <img src="{{ asset('images/cross_mark_circle.png') }}" width="20" alt="Cross">
                                     @endif
                                 </td>
                             @else
@@ -47,9 +47,9 @@
                             @endif
                             <td>
                                 @if ($waitingListAccount->waitingList->should_check_cts_theory_exam && $waitingListAccount->theory_exam_passed)
-                                    {!! HTML::img("tick_mark_circle", "png", 20) !!}
+                                    <img src="{{ asset('images/tick_mark_circle.png') }}" width="20" alt="Tick">
                                 @elseif($waitingListAccount->waitingList->should_check_cts_theory_exam)
-                                    {!! HTML::img("cross_mark_circle", "png", 20) !!}
+                                    <img src="{{ asset('images/cross_mark_circle.png') }}" width="20" alt="Cross">
                                 @else
                                     N/A
                                 @endif

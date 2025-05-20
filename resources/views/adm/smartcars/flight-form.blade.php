@@ -33,7 +33,7 @@
                     <input class="btn btn-primary" type="submit" value="Submit">
                     <a class="btn btn-default" href="{{ route('adm.smartcars.flights.index') }}">Cancel</a>
 
-                    {!! Form::close() !!}
+                    </form>
                 </div>
             </div>
         </div>

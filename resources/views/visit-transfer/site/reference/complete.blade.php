@@ -3,28 +3,35 @@
 @section('vt-content')
     <div class="row">
         <div class="col-md-12">
-            {!! HTML::panelOpen("Reference Relationship", ["type" => "fa", "key" => "question-circle"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Reference Relationship',
+                'icon' => ['type' => 'fa', 'key' => 'question-circle'],
+                'attr' => []
+            ])
             <div class="text-center">
               <p class="text-center">
                 <b>Do you know {{ $application->account->name }}?</b></br>
                 If you don't know the applicant, please press the button below. This will cancel your reference, and the application will be reviewed by Community staff.</br>
                 <form action="{{ route('visiting.reference.complete.cancel', $token->code) }}" method="POST">
                     @csrf
-
-                {{ Form::submit('I do not know the applicant', ["class" => "btn btn-danger"]) }}
-
+                    <button type="submit" class="btn btn-danger">I do not know the applicant</button>
                 </form>
               </p>
             </div>
-            {!! HTML::panelClose() !!}
-            {!! HTML::panelOpen("Reference Content", ["type" => "fa", "key" => "list"]) !!}
+
+            @include('components.html.panel_close')
+            @include('components.html.panel_open', [
+                'title' => 'Reference Content',
+                'icon' => ['type' => 'fa', 'key' => 'list'],
+                'attr' => []
+            ])
             <div id="vt_referee_reference_content" class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <p>
                         You are completing a reference for {{ $application->account->name }}'s {{ $application->type_string }} application for {{ $application->facility->name }}.
                         This application is bound by the Visiting &amp; Transferring Controller Policy (VTCP).
                         <br />
-                        {!! link_to("https://www.vatsim.net/documents/transfer-and-visiting-controller-policy", "The VTCP can be located on the VATSIM.net website", ["target" => "_blank"]) !!}
+                        <a href="https://www.vatsim.net/documents/transfer-and-visiting-controller-policy" target="_blank">The VTCP can be located on the VATSIM.net website</a>
                     </p>
 
                     <p>
@@ -38,33 +45,51 @@
                 <div class="container-fluid">
                   <div class="col-xs-11 col-xs-offset-1 col-md-10 col-md-offset-2">
                     <div class="row">
-                        <div class="col-xs-9 col-lg-8">{{Form::label("reference_relationship", "I am ".$application->account->name."'s '".$reference->relationship."'&nbsp;&nbsp;")}}</div>
+                        <div class="col-xs-9 col-lg-8">
+                            <label for="reference_relationship">I am {{$application->account->name}}'s '{{$reference->relationship}}'&nbsp;&nbsp;</label>
+                        </div>
                         <div class="col-xs-3">
-                          <label class="btn btn-xs btn-danger checkbox-button {{old("reference_relationship") ? "active" : ""}}" data-toggle="buttons">{{Form::checkbox("reference_relationship", true, false)}}<span class="fa fa-check"></span></label>
+                          <label class="btn btn-xs btn-danger checkbox-button {{old('reference_relationship') ? 'active' : ''}}" data-toggle="buttons">
+                            <input type="checkbox" name="reference_relationship" value="1" {{ old('reference_relationship') ? 'checked' : '' }}>
+                            <span class="fa fa-check"></span>
+                          </label>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-9 col-lg-8">{{Form::label("reference_hours_minimum", $application->account->name." has consolidated their current controller rating as per the V&amp;T policy&nbsp;&nbsp;")}}<br />
-                        <small class="form-text text-muted">A rating that has not been consolidated cannot be considered for a visit or transfer.</small></div>
+                        <div class="col-xs-9 col-lg-8">
+                            <label for="reference_hours_minimum">{{$application->account->name}} has consolidated their current controller rating as per the V&amp;T policy&nbsp;&nbsp;</label><br />
+                            <small class="form-text text-muted">A rating that has not been consolidated cannot be considered for a visit or transfer.</small>
+                        </div>
                         <div class="col-xs-3">
-                          <label class="btn btn-xs btn-danger checkbox-button {{old("reference_hours_minimum") ? "active" : ""}}" data-toggle="buttons">{{Form::checkbox("reference_hours_minimum", true, false)}}<span class="fa fa-check"></span></label>
+                          <label class="btn btn-xs btn-danger checkbox-button {{old('reference_hours_minimum') ? 'active' : ''}}" data-toggle="buttons">
+                            <input type="checkbox" name="reference_hours_minimum" value="1" {{ old('reference_hours_minimum') ? 'checked' : '' }}>
+                            <span class="fa fa-check"></span>
+                          </label>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-9 col-lg-8">{{Form::label("reference_recent_transfer", $application->account->name." last transferred region, division or VACC in excess of 90 days prior to ".$application->created_at->toDateString()."&nbsp;&nbsp;")}}<br />
-                            <small class="form-text text-muted">Applicants may only transfer regions, divisions or VACCs once every 90 days.</small></div>
+                        <div class="col-xs-9 col-lg-8">
+                            <label for="reference_recent_transfer">{{$application->account->name}} last transferred region, division or VACC in excess of 90 days prior to {{$application->created_at->toDateString()}}&nbsp;&nbsp;</label><br />
+                            <small class="form-text text-muted">Applicants may only transfer regions, divisions or VACCs once every 90 days.</small>
+                        </div>
                         <div class="col-xs-3">
-                          <label class="btn btn-xs btn-danger checkbox-button {{old("reference_recent_transfer") ? "active" : ""}}" data-toggle="buttons">{{Form::checkbox("reference_recent_transfer", true, false)}}<span class="fa fa-check"></span></label>
+                          <label class="btn btn-xs btn-danger checkbox-button {{old('reference_recent_transfer') ? 'active' : ''}}" data-toggle="buttons">
+                            <input type="checkbox" name="reference_recent_transfer" value="1" {{ old('reference_recent_transfer') ? 'checked' : '' }}>
+                            <span class="fa fa-check"></span>
+                          </label>
                         </div>
                     </div>
-
-
                     @if($application->type == \App\Models\VisitTransfer\Application::TYPE_TRANSFER)
                         <div class="row">
-                            <div class="col-xs-9 col-lg-8">{{Form::label("reference_not_staff", $application->account->name." will not hold a staff position in their home division if their application is successful&nbsp;&nbsp;")}}<br />
-                            <small class="form-text text-muted">Members may only hold a staff position in their home division.</small></div>
+                            <div class="col-xs-9 col-lg-8">
+                                <label for="reference_not_staff">{{$application->account->name}} will not hold a staff position in their home division if their application is successful&nbsp;&nbsp;</label><br />
+                                <small class="form-text text-muted">Members may only hold a staff position in their home division.</small>
+                            </div>
                             <div class="col-xs-3">
-                              <label class="btn btn-xs btn-danger checkbox-button {{old("reference_not_staff") ? "active" : ""}}" data-toggle="buttons">{{Form::checkbox("reference_not_staff", true, false)}}<span class="fa fa-check"></span></label>
+                              <label class="btn btn-xs btn-danger checkbox-button {{old('reference_not_staff') ? 'active' : ''}}" data-toggle="buttons">
+                                <input type="checkbox" name="reference_not_staff" value="1" {{ old('reference_not_staff') ? 'checked' : '' }}>
+                                <span class="fa fa-check"></span>
+                              </label>
                             </div>
                         </div>
                     @endif
@@ -85,7 +110,7 @@
                 <div class="clear-both"></div>
 
                 <div class="col-md-10 col-md-offset-1">
-                    {!! Form::textarea("reference", '', ['class' => 'form-control']) !!}
+                    <textarea name="reference" class="form-control"></textarea>
                 </div>
 
                 <div class="clear-both"></div>
@@ -95,12 +120,12 @@
                     <button type="submit" class="btn btn-success">SUBMIT REFERENCE</button>
                 </div>
 
-                {!! Form::hidden("application_type", $application->type) !!}
+                <input type="hidden" name="application_type" value="{{ $application->type }}">
 
                 </form>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
     </div>
 @stop

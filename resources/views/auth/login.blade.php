@@ -3,7 +3,11 @@
 @section('content')
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            {!! HTML::panelOpen("Secondary Authentication", ["type" => "fa", "key" => "fa-key"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Secondary Authentication',
+                'icon' => ['type' => 'fa', 'key' => 'fa-key'],
+                'attr' => []
+            ])
             <div class="row">
                 <div class="col-md-12">
                     <p>
@@ -53,14 +57,14 @@
                     </form>
                 </div>
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
         <div class="col-md-2">
             <div class="panel panel-uk-danger">
               <div class="panel-heading"><i class="fa fa-exclamation-circle"></i> Having issues?</div>
               <div class="panel-body">
                 Use your primary email address (*****<b>{{"@" . explode("@", Auth::user()->email)[1]}}</b>) to send an email to
-                <p>{{ HTML::mailto("web-support@vatsim.uk")}}</p>
+                <p><a href="mailto:web-support@vatsim.uk">web-support@vatsim.uk</a></p>
               </div>
             </div>
         </div>

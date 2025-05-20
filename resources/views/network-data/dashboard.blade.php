@@ -3,7 +3,11 @@
 @section('content')
     <div class="row">
         <div class="col-md-6">
-            {!! HTML::panelOpen('My ATC Sessions', ['type' => 'vuk', 'key' => 'letter-a']) !!}
+            @include('components.html.panel_open', [
+                'title' => 'My ATC Sessions',
+                'icon' => ['type' => 'vuk', 'key' => 'letter-a'],
+                'attr' => []
+            ])
             <div class="row">
                 <div class="col-md-12" style="margin-bottom: 15px;">
                     <table class="table table-striped tabled-bordered table-hover">
@@ -45,11 +49,15 @@
                     </table>
                 </div>
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
 
         <div class="col-md-6">
-            {!! HTML::panelOpen('My Pilot Sessions', ['type' => 'vuk', 'key' => 'letter-p']) !!}
+            @include('components.html.panel_open', [
+                'title' => 'My Pilot Sessions',
+                'icon' => ['type' => 'vuk', 'key' => 'letter-p'],
+                'attr' => []
+            ])
             <div class="row">
                 <div class="col-md-12" style="margin-bottom: 15px;">
                     <table class="table table-striped tabled-bordered table-hover">
@@ -93,7 +101,7 @@
                 </div>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
     </div>
 @stop

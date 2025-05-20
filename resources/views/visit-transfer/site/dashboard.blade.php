@@ -4,7 +4,11 @@
     <div class="row">
         <div class="hidden-xs" id="visitingBoxes">
             <div class="col-md-4 hidden-xs">
-            {!! HTML::panelOpen("Visiting ATC", ["type" => "vuk", "key" => "letter-v"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Visiting ATC',
+                'icon' => ['type' => 'vuk', 'key' => 'letter-v'],
+                'attr' => []
+            ])
             <!-- Content Of Panel [START] -->
                 <!-- Top Row [START] -->
                 <div class="row">
@@ -43,11 +47,15 @@
                     </div>
                 </div>
 
-                {!! HTML::panelClose() !!}
+                @include('components.html.panel_close')
             </div>
 
             <div class="col-md-4 hidden-xs">
-            {!! HTML::panelOpen("What about pilots?", ["type" => "vuk", "key" => "letter-p"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'What about pilots?',
+                'icon' => ['type' => 'vuk', 'key' => 'letter-p'],
+                'attr' => []
+            ])
             <!-- Content Of Panel [START] -->
                 <!-- Top Row [START] -->
                 <div class="row">
@@ -88,12 +96,16 @@
                     </div>
                 </div>
 
-                {!! HTML::panelClose() !!}
+                @include('components.html.panel_close')
             </div>
         </div>
 
         <div class="col-md-4 hidden-xs" id="transferringAtcBox">
-        {!! HTML::panelOpen("Transferring ATC", ["type" => "vuk", "key" => "letter-t"]) !!}
+        @include('components.html.panel_open', [
+            'title' => 'Transferring ATC',
+            'icon' => ['type' => 'vuk', 'key' => 'letter-t'],
+            'attr' => []
+        ])
         <!-- Content Of Panel [START] -->
             <!-- Top Row [START] -->
             <div class="row">
@@ -134,19 +146,27 @@
                 </div>
             </div>
 
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
 
         <div class="col-xs-12 visible-xs">
-            {!! HTML::panelOpen("Start a new Application", ["type" => "fa", "key" => "exclamation"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Start a new Application',
+                'icon' => ['type' => 'fa', 'key' => 'exclamation'],
+                'attr' => []
+            ])
             <p class="text-center">You can only complete your application and references on a non-mobile device.</p>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12" id="applicationHistory">
-            {!! HTML::panelOpen("Application History", ["type" => "fa", "key" => "list-alt"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Application History',
+                'icon' => ['type' => 'fa', 'key' => 'list-alt'],
+                'attr' => []
+            ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
 
@@ -171,9 +191,9 @@
                                 <tr>
                                     <td>
                                         @if($application->is_in_progress)
-                                            {{ link_to_route('visiting.application.continue', $application->public_id, [$application->public_id]) }}
+                                            <a href="{{ route('visiting.application.continue', [$application->public_id]) }}">{{ $application->public_id }}</a>
                                         @else
-                                            {{ link_to_route('visiting.application.view', $application->public_id, [$application->public_id]) }}
+                                            <a href="{{ route('visiting.application.view', [$application->public_id]) }}">{{ $application->public_id }}</a>
                                         @endif
                                     </td>
                                     <td>
@@ -207,9 +227,10 @@
                                                             If you wish to withdraw your application (without penalty) you can do so by clicking the button below.
                                                         </div>
                                                         <div class="modal-footer">
-                                                            {{ Form::open(array("url" => URL::route("visiting.application.withdraw.post", [$application->public_id]))) }}
-                                                            <button type="submit" class="btn btn-danger">WITHDRAW APPLICATION - THIS CANNOT BE UNDONE</button>
-                                                            {{ Form::close() }}
+                                                            <form action="{{ route('visiting.application.withdraw.post', [$application->public_id]) }}" method="POST">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-danger">WITHDRAW APPLICATION - THIS CANNOT BE UNDONE</button>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -226,14 +247,18 @@
                 </div>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
     </div>
 
     @if($pendingReferences->count() > 0)
         <div class="row" id="pendingReferences">
             <div class="col-md-12">
-                {!! HTML::panelOpen("Pending References", ["type" => "fa", "key" => "list-alt"]) !!}
+                @include('components.html.panel_open', [
+                    'title' => 'Pending References',
+                    'icon' => ['type' => 'fa', 'key' => 'list-alt'],
+                    'attr' => []
+                ])
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1">
 
@@ -273,7 +298,7 @@
                                         </td>
                                         <td class="text-center">
                                             @if ($reference->token)
-                                              {!! link_to_route("visiting.reference.complete", "Complete", [$reference->token->code]) !!}
+                                              <a href="{{ route('visiting.reference.complete', [$reference->token->code]) }}">Complete</a>
                                             @else
                                               <i>This reference has expired</i>
                                             @endif
@@ -287,7 +312,7 @@
                     </div>
 
                 </div>
-                {!! HTML::panelClose() !!}
+                @include('components.html.panel_close')
             </div>
         </div>
     @endif
@@ -344,3 +369,4 @@
         tour.start();
     </script>
 @stop
+

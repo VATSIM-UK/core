@@ -11,7 +11,7 @@
         @if ($replyAllowed === true)
             You can reply directly to this email.
         @else
-            To reply, please visit {{link_to_route('mship.email')}}.
+            To reply, please visit <a href="{{ route('mship.email') }}">this page</a>.
         @endif
     </p>
 

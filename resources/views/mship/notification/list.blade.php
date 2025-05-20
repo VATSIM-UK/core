@@ -6,7 +6,7 @@
         All current notifications are listed below. We have separated them into "Unread" and "read".
 
         @if($allowedToLeave)
-            {!! link_to_route("mship.manage.dashboard", "Once finished you can return to the dashboard.") !!}
+            <a href="{{ route('mship.manage.dashboard') }}">Once finished you can return to the dashboard.</a>
         @endif
     </p>
 

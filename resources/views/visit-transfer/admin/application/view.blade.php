@@ -215,54 +215,54 @@
                                 <tr>
                                     <td class="text-center">
                                         @if($application->facility)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
-                                        {!! HTML::img("vertical_mark", "png", 24, 32) !!}
+                                            <img src="{{ asset('images/vertical_mark.png') }}" width="24" height="32" alt="Vertical Mark">
                                         @elseif($application->training_required)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
-                                        {!! HTML::img("vertical_mark", "png", 24, 32) !!}
+                                            <img src="{{ asset('images/vertical_mark.png') }}" width="24" height="32" alt="Vertical Mark">
                                         @elseif($application->statement_required)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
-                                        {!! HTML::img("vertical_mark", "png", 24, 32) !!}
+                                            <img src="{{ asset('images/vertical_mark.png') }}" width="24" height="32" alt="Vertical Mark">
                                         @elseif($application->references_required > 0)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
-                                        {!! HTML::img("vertical_mark", "png", 24, 32) !!}
+                                            <img src="{{ asset('images/vertical_mark.png') }}" width="24" height="32" alt="Vertical Mark">
                                         @elseif($application->should_perform_checks)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
-                                        {!! HTML::img("vertical_mark", "png", 24, 32) !!}
+                                            <img src="{{ asset('images/vertical_mark.png') }}" width="24" height="32" alt="Vertical Mark">
                                         @elseif($application->will_auto_accept)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                 </tr>
@@ -272,48 +272,38 @@
                                         -
                                     </td>
                                     <td class="text-center">
-                                        <form
-                                            action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}"
-                                            method="POST">
+                                        <form action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}" method="POST">
                                             @csrf
-                                        <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
-                                        {!! Form::hidden("setting", "training_required") !!}
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
+                                            <input type="hidden" name="setting" value="training_required">
                                         </form>
                                     </td>
                                     <td class="text-center">
-                                        <form
-                                            action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}"
-                                            method="POST">
+                                        <form action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}" method="POST">
                                             @csrf
-                                        <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
-                                        {!! Form::hidden("setting", "statement_required") !!}
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
+                                            <input type="hidden" name="setting" value="statement_required">
                                         </form>
                                     </td>
                                     <td class="text-center">
-                                        <form
-                                            action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}"
-                                            method="POST">
+                                        <form action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}" method="POST">
                                             @csrf
-                                        <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
-                                        {!! Form::hidden("setting", "references_required") !!}
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
+                                            <input type="hidden" name="setting" value="references_required">
                                         </form>
                                     </td>
                                     <td class="text-center">
-                                        <form
-                                            action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}"
-                                            method="POST">
+                                        <form action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}" method="POST">
                                             @csrf
-                                        <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
-                                        {!! Form::hidden("setting", "should_perform_checks") !!}
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
+                                            <input type="hidden" name="setting" value="should_perform_checks">
                                         </form>
                                     </td>
                                     <td class="text-center">
-                                        <form
-                                            action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}"
-                                            method="POST">
+                                        <form action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}" method="POST">
                                             @csrf
-                                        <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
-                                        {!! Form::hidden("setting", "will_auto_accept") !!}
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
+                                            <input type="hidden" name="setting" value="will_auto_accept">
                                         </form>
                                     </td>
                                 </tr>
@@ -361,6 +351,124 @@
 
                                     @can("check-outcome", $application)
                                     <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#90DayNotMet">
+                                        MARK THIS CHECK AS 'NOT MET'
+                                    </button>
+                                    <div class="modal fade" role="dialog" id="90DayNotMet">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    Mark 90 Day Qualification Check as 'NOT MET'?
+                                                </div>
+                                                <div class="modal-body">
+                                                    Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form action="{{ route('adm.visiting.application.check.notmet.post', $application->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="90_day">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endcan
+
+                                    @elseif($application->check_outcome_90_day === null)
+                                    <strong class="text-danger">Data unavailable</strong> - manual check
+                                    required.<br />
+
+                                    @can("check-outcome", $application)
+                                    <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#90DayNotMet">
+                                        MARK THIS CHECK AS 'NOT MET'
+                                    </button>
+                                    <div class="modal fade" role="dialog" id="90DayNotMet">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    Mark 90 Day Qualification Check as 'NOT MET'?
+                                                </div>
+                                                <div class="modal-body">
+                                                    Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form action="{{ route('adm.visiting.application.check.notmet.post', $application->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="90_day">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#90DayMet">
+                                        MARK THIS CHECK AS 'MET'
+                                    </button>
+                                    <div class="modal fade" role="dialog" id="90DayMet">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    Mark 90 Day Qualification Check as 'MET'?
+                                                </div>
+                                                <div class="modal-body">
+                                                    Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form action="{{ route('adm.visiting.application.check.met.post', $application->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="90_day">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endcan
+
+                                    @elseif(!$application->check_outcome_90_day)
+                                    Qualification awarded <strong class="text-danger">within</strong> 90 days
+                                    prior to application submission.<br />
+
+                                    @can("check-outcome", $application)
+                                    <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#90DayMet">
+                                        MARK THIS CHECK AS 'MET'
+                                    </button>
+                                    <div class="modal fade" role="dialog" id="90DayMet">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    Mark 90 Day Qualification Check as 'MET'?
+                                                </div>
+                                                <div class="modal-body">
+                                                    Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form action="{{ route('adm.visiting.application.check.met.post', $application->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="90_day">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endcan
+                                    @endif
+                                </th>
+                            </tr>
+                            <tr class="bg-{{ $application->check_outcome_50_hours ? "success" : "danger" }}">
+                                <th>
+                                    50 Hour Check
+                                </th>
+                                <th>
+                                    @if(!$application->submitted_at)
+                                    Application not submitted, so this cannot be checked.
+                                    @elseif($application->check_outcome_50_hours)
+                                    Applicant has <strong class="text-danger">in excess</strong> of 50 hours at their present qualified level and has ratified their rating.<br />
+
+                                    @can("check-outcome", $application)
+                                    <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#50HourNotMet">
                                         MARK THIS CHECK AS 'NOT MET'
                                     </button>
                                     <div class="modal fade" role="dialog" id="90DayNotMet">

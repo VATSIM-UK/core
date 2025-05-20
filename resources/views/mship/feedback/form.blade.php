@@ -22,8 +22,12 @@
                     <form method="POST" action="{{ route('mship.feedback.new') }}">
                         @csrf
             <p>
-                {{Form::label('feedback_type', 'What kind of feedback would you like to leave?')}}
-                {{Form::select('feedback_type', $feedbackForms, [], ['class' => 'form-control']) }}
+                <label for="feedback_type">What kind of feedback would you like to leave?</label>
+                <select name="feedback_type" id="feedback_type" class="form-control">
+                    @foreach($feedbackForms as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
             </p>
             <p class="text-center">
                 <button type="submit" class="btn btn-primary">Next <i class="fa fa-arrow-right"></i></button>
@@ -53,7 +57,7 @@
         <hr>
         @foreach ($questions as $question)
             <div class="form-group{{ $errors->has($question->slug) ? " has-error" : "" }}">
-              {{ Form::label($question->slug, $question->question . ($question->required ? "" : " (optional)")) }} </br>
+              <label for="{{ $question->slug }}">{!! $question->question . ($question->required ? '' : ' (optional)') !!}</label> </br>
               {!! $question->form_html !!}
             </div>
         @endforeach

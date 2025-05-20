@@ -27,7 +27,7 @@
                         You can find details on how to start mentoring below.
                     @else
                         You will need to be a member of VATSIM to become a mentor.<br/>
-                        Already a member? {!! HTML::link(route('login'), "Click here to login") !!} and find out which
+                        Already a member? <a href="{{ route('login') }}">Click here to login</a> and find out which
                         route is the most applicable to you.
                     @endif
                 </div>
@@ -125,3 +125,4 @@
     </div>
 
 @stop
+

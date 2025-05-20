@@ -6,21 +6,25 @@
 
             <div class="row">
                 <div class="col-md-3">
-                    {!! HTML::panelOpen("Applications", ["type" => "fa", "key" => "list"]) !!}
+                    @include('components.html.panel_open', [
+                        'title' => 'Applications',
+                        'icon' => ['type' => 'fa', 'key' => 'list'],
+                        'attr' => []
+                    ])
                     <ul class="nav nav-pills nav-stacked">
                         <li role="presentation">
-                            {{ link_to_route("visiting.landing", "Dashboard") }}
+                            <a href="{{ route('visiting.landing') }}">Dashboard</a>
                         </li>
 
                         @foreach(Auth::user()->visitTransferApplications as $app)
 
                             <li role="presentation" {!! (Route::is("visiting.application.view") && $application->id == $app->id ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.view", "#".$app->public_id." - ".$app->type_string." ".$app->facility_name, [$app->public_id], ["class" => (Route::is("visiting.application.view")  && $application->id == $app->id ? "active" : "")]) }}
+                                <a href="{{ route('visiting.application.view', [$app->public_id]) }}" class="{{ (Route::is('visiting.application.view')  && $application->id == $app->id ? 'active' : '') }}">#{{ $app->public_id }} - {{ $app->type_string }} {{ $app->facility_name }}</a>
                             </li>
 
                         @endforeach
                     </ul>
-                    {!! HTML::panelClose() !!}
+                    @include('components.html.panel_close')
                 </div>
                 <div class="col-md-9">
                     @yield("vt-content")
