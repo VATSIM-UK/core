@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af555d12f8185c2c2eacf5a1e85e5785",
+    "content-hash": "41ef2748f7cd1a08ee8782f188358129",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -575,43 +575,6 @@
                 }
             ],
             "time": "2025-02-13T20:35:06+00:00"
-        },
-        {
-            "name": "bonroyage/oauth",
-            "version": "1.0.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bonroyage/OAuth.git",
-                "reference": "2451a4d42f5c37060bc117c650553955955d10a7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bonroyage/OAuth/zipball/2451a4d42f5c37060bc117c650553955955d10a7",
-                "reference": "2451a4d42f5c37060bc117c650553955955d10a7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "eher/phpunit": "1.6"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Eher\\OAuth": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "OAuth 1 PHP Library",
-            "support": {
-                "source": "https://github.com/bonroyage/OAuth/tree/master"
-            },
-            "abandoned": true,
-            "time": "2014-06-25T21:04:29+00:00"
         },
         {
             "name": "brick/math",
@@ -11296,59 +11259,6 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/v2.2.7"
             },
             "time": "2023-12-08T13:03:43+00:00"
-        },
-        {
-            "name": "vatsim/sso",
-            "version": "3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/KHardern/VatsimSSO.git",
-                "reference": "157ca96d4a37be83165d72cec1428f64c6e37d5b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/KHardern/VatsimSSO/zipball/157ca96d4a37be83165d72cec1428f64c6e37d5b",
-                "reference": "157ca96d4a37be83165d72cec1428f64c6e37d5b",
-                "shasum": ""
-            },
-            "require": {
-                "bonroyage/oauth": "1.*",
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Vatsim\\OAuth\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Kieran Hardern",
-                    "email": "kieran@hardern.net"
-                },
-                {
-                    "name": "Roy de Vos Burchart",
-                    "email": "dev@bonroyage.com",
-                    "homepage": "http://www.bonroyage.com"
-                }
-            ],
-            "description": "VATSIM OAuth",
-            "keywords": [
-                "SSO",
-                "oauth",
-                "vatsim"
-            ],
-            "support": {
-                "issues": "https://github.com/KHardern/VatsimSSO/issues",
-                "source": "https://github.com/KHardern/VatsimSSO/tree/3.0",
-                "wiki": "https://github.com/KHardern/VatsimSSO/wiki"
-            },
-            "abandoned": "vatsim/oauth2-vatsim",
-            "time": "2017-02-22T13:24:17+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

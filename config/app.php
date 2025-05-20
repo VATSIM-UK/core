@@ -233,7 +233,6 @@ return [
         /*
          * Third Party Aliases
          */
-        'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'IPBoard' => Alawrence\Ipboard\Facades\Ipboard::class,
     ],
