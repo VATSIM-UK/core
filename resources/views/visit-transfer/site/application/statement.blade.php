@@ -5,8 +5,7 @@
         <div class="col-md-12">
             @include('components.html.panel_open', [
                 'title' => 'Choose your Facility',
-                'icon' => ['type' => 'fa', 'key' => 'question'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'question']
             ])
             <form action="{{ route('visiting.application.statement.post', $application->public_id) }}" method="POST">
                 @csrf

@@ -5,8 +5,7 @@
         <div class="col-md-12">
             @include('components.html.panel_open', [
                 'title' => 'Application #'.$application->public_id.' - '.$application->type_string.' '.$application->facility_name,
-                'icon' => ['type' => 'fa', 'key' => 'question'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'question']
             ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">

@@ -5,8 +5,7 @@
         <div class="col-md-12">
             @include('components.html.panel_open', [
                 'title' => 'Withdraw',
-                'icon' => ['type' => 'fa', 'key' => 'tick'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'tick']
             ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">

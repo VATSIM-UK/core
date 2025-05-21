@@ -5,8 +5,7 @@
         <div class="col-md-12">
             @include('components.html.panel_open', [
                 'title' => 'Terms & Conditions',
-                'icon' => ['type' => 'fa', 'key' => 'list'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'list']
             ])
             <div class="hidden-xs">
                     <p>

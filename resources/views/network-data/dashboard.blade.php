@@ -5,8 +5,7 @@
         <div class="col-md-6">
             @include('components.html.panel_open', [
                 'title' => 'My ATC Sessions',
-                'icon' => ['type' => 'vuk', 'key' => 'letter-a'],
-                'attr' => []
+                'icon' => ['type' => 'vuk', 'key' => 'letter-a']
             ])
             <div class="row">
                 <div class="col-md-12" style="margin-bottom: 15px;">
@@ -55,8 +54,7 @@
         <div class="col-md-6">
             @include('components.html.panel_open', [
                 'title' => 'My Pilot Sessions',
-                'icon' => ['type' => 'vuk', 'key' => 'letter-p'],
-                'attr' => []
+                'icon' => ['type' => 'vuk', 'key' => 'letter-p']
             ])
             <div class="row">
                 <div class="col-md-12" style="margin-bottom: 15px;">

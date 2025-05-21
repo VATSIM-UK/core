@@ -15,8 +15,7 @@
         <div class="col-md-8 col-md-offset-2">
             @include('components.html.panel_open', [
                 'title' => 'Automatic Registration',
-                'icon' => ['type' => 'fa', 'key' => 'phone'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'phone']
             ])
                 <div class="row">
                     <div class="col-md-12">
@@ -36,8 +35,7 @@
         <div class="col-md-8 col-md-offset-2">
             @include('components.html.panel_open', [
                 'title' => 'Manual Registration',
-                'icon' => ['type' => 'fa', 'key' => 'phone'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'phone']
             ])
                 <div class="row">
                     <div class="col-md-6 col-xs-12 col-sm-12">

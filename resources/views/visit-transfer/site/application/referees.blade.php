@@ -5,8 +5,7 @@
         <div class="col-md-12">
             @include('components.html.panel_open', [
                 'title' => 'References & Referees',
-                'icon' => ['type' => 'fa', 'key' => 'comment-o'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'comment-o']
             ])
             <div class="row">
 

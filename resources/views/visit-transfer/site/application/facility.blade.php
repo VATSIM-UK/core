@@ -5,8 +5,7 @@
         <div class="col-md-8">
             @include('components.html.panel_open', [
                 'title' => 'Choose your Facility',
-                'icon' => ['type' => 'fa', 'key' => 'question'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'question']
             ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
@@ -44,8 +43,7 @@
         <div class="col-md-4">
             @include('components.html.panel_open', [
                 'title' => 'Facility Code',
-                'icon' => ['type' => 'fa', 'key' => 'question'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'question']
             ])
             <div class="row">
                 <div class="col-md-12">

@@ -5,8 +5,7 @@
         <div class="col-md-12">
             @include('components.html.panel_open', [
                 'title' => 'Reference Relationship',
-                'icon' => ['type' => 'fa', 'key' => 'question-circle'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'question-circle']
             ])
             <div class="text-center">
               <p class="text-center">
@@ -22,8 +21,7 @@
             @include('components.html.panel_close')
             @include('components.html.panel_open', [
                 'title' => 'Reference Content',
-                'icon' => ['type' => 'fa', 'key' => 'list'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'list']
             ])
             <div id="vt_referee_reference_content" class="row">
                 <div class="col-md-10 col-md-offset-1">

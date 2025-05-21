@@ -6,8 +6,7 @@
             <div class="col-md-4 hidden-xs">
             @include('components.html.panel_open', [
                 'title' => 'Visiting ATC',
-                'icon' => ['type' => 'vuk', 'key' => 'letter-v'],
-                'attr' => []
+                'icon' => ['type' => 'vuk', 'key' => 'letter-v']
             ])
             <!-- Content Of Panel [START] -->
                 <!-- Top Row [START] -->
@@ -53,8 +52,7 @@
             <div class="col-md-4 hidden-xs">
             @include('components.html.panel_open', [
                 'title' => 'What about pilots?',
-                'icon' => ['type' => 'vuk', 'key' => 'letter-p'],
-                'attr' => []
+                'icon' => ['type' => 'vuk', 'key' => 'letter-p']
             ])
             <!-- Content Of Panel [START] -->
                 <!-- Top Row [START] -->
@@ -103,8 +101,7 @@
         <div class="col-md-4 hidden-xs" id="transferringAtcBox">
         @include('components.html.panel_open', [
             'title' => 'Transferring ATC',
-            'icon' => ['type' => 'vuk', 'key' => 'letter-t'],
-            'attr' => []
+            'icon' => ['type' => 'vuk', 'key' => 'letter-t']
         ])
         <!-- Content Of Panel [START] -->
             <!-- Top Row [START] -->
@@ -152,8 +149,7 @@
         <div class="col-xs-12 visible-xs">
             @include('components.html.panel_open', [
                 'title' => 'Start a new Application',
-                'icon' => ['type' => 'fa', 'key' => 'exclamation'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'exclamation']
             ])
             <p class="text-center">You can only complete your application and references on a non-mobile device.</p>
             @include('components.html.panel_close')
@@ -164,8 +160,7 @@
         <div class="col-md-12" id="applicationHistory">
             @include('components.html.panel_open', [
                 'title' => 'Application History',
-                'icon' => ['type' => 'fa', 'key' => 'list-alt'],
-                'attr' => []
+                'icon' => ['type' => 'fa', 'key' => 'list-alt']
             ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
@@ -256,8 +251,7 @@
             <div class="col-md-12">
                 @include('components.html.panel_open', [
                     'title' => 'Pending References',
-                    'icon' => ['type' => 'fa', 'key' => 'list-alt'],
-                    'attr' => []
+                    'icon' => ['type' => 'fa', 'key' => 'list-alt']
                 ])
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1">

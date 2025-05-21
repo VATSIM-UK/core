@@ -9,14 +9,12 @@
                     @if($application->exists)
                         @include('components.html.panel_open', [
                             'title' => $application->type_string. ' Application #'.$application->public_id.($application->facility ? ' - '.$application->facility->name : ''),
-                            'icon' => ['type' => 'fa', 'key' => 'list'],
-                            'attr' => []
+                            'icon' => ['type' => 'fa', 'key' => 'list']
                         ])
                     @else
                         @include('components.html.panel_open', [
                             'title' => 'New Application',
-                            'icon' => ['type' => 'fa', 'key' => 'list'],
-                            'attr' => []
+                            'icon' => ['type' => 'fa', 'key' => 'list']
                         ])
                     @endif
                     <ul class="nav nav-pills nav-stacked">

@@ -8,8 +8,7 @@
                 <div class="col-md-3">
                     @include('components.html.panel_open', [
                         'title' => 'Applications',
-                        'icon' => ['type' => 'fa', 'key' => 'list'],
-                        'attr' => []
+                        'icon' => ['type' => 'fa', 'key' => 'list']
                     ])
                     <ul class="nav nav-pills nav-stacked">
                         <li role="presentation">
