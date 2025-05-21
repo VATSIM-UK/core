@@ -25,26 +25,38 @@
                                 <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $facility->name) }}">
                             </div>
                             <div class="form-group">
-                                {!! Form::label('open', 'Open for applications?'),
-                                    Form::select("open", ["1" => "YES", "0" => "NO"], Request::old("open", $facility->open), ['class' => 'form-control']) !!}
+                                <label for="open">Open for applications?</label>
+                                <select name="open" id="open" class="form-control">
+                                    <option value="1" {{ old('open', $facility->open) == '1' ? 'selected' : '' }}>YES</option>
+                                    <option value="0" {{ old('open', $facility->open) == '0' ? 'selected' : '' }}>NO</option>
+                                </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 25px;">
-                                {!! Form::label('description', 'Description:'),
-                                Form::textarea('description', Request::old("description", $facility->description), ["rows" => 9, "class" => "form-control"]) !!}
+                                <label for="description">Description:</label>
+                                <textarea name="description" id="description" rows="9" class="form-control">{{ old('description', $facility->description) }}</textarea>
 
                                 <div class="form-group">
-                                    {!! Form::label('training_team', 'Which team are they part of?'),
-                                    Form::select("training_team", ['atc' => "ATC Training", "pilot" => "Pilot Training"], Request::old("training_team", $facility->training_team), ['class' => 'form-control']) !!}
+                                    <label for="training_team">Which team are they part of?</label>
+                                    <select name="training_team" id="training_team" class="form-control">
+                                        <option value="atc" {{ old('training_team', $facility->training_team) == 'atc' ? 'selected' : '' }}>ATC Training</option>
+                                        <option value="pilot" {{ old('training_team', $facility->training_team) == 'pilot' ? 'selected' : '' }}>Pilot Training</option>
+                                    </select>
                                 </div>
 
                                 <div class="form-group">
-                                    {!! Form::label('can_visit', 'Can people VISIT this facility?'),
-                                    Form::select("can_visit", ["1" => "YES", "0" => "NO"], Request::old("can_visit", $facility->can_visit), ['class' => 'form-control']) !!}
+                                    <label for="can_visit">Can people VISIT this facility?</label>
+                                    <select name="can_visit" id="can_visit" class="form-control">
+                                        <option value="1" {{ old('can_visit', $facility->can_visit) == '1' ? 'selected' : '' }}>YES</option>
+                                        <option value="0" {{ old('can_visit', $facility->can_visit) == '0' ? 'selected' : '' }}>NO</option>
+                                    </select>
                                 </div>
 
                                 <div class="form-group">
-                                    {!! Form::label('can_transfer', 'Can people TRANSFER TO this facility?'),
-                                    Form::select("can_transfer", ["1" => "YES", "0" => "NO"], Request::old("can_transfer", $facility->can_transfer), ['class' => 'form-control']) !!}
+                                    <label for="can_transfer">Can people TRANSFER TO this facility?</label>
+                                    <select name="can_transfer" id="can_transfer" class="form-control">
+                                        <option value="1" {{ old('can_transfer', $facility->can_transfer) == '1' ? 'selected' : '' }}>YES</option>
+                                        <option value="0" {{ old('can_transfer', $facility->can_transfer) == '0' ? 'selected' : '' }}>NO</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -57,8 +69,11 @@
                                     <div class="col-md-12">
                                  @endif
                                     <div class="form-group">
-                                        {!! Form::label('public', 'Should this facility be displayed as an option for every applicant?'),
-                                        Form::select("public", [0 => "No", 1 => "Yes"], Request::old("public", $facility->public), ['class' => 'form-control']) !!}
+                                        <label for="public">Should this facility be displayed as an option for every applicant?</label>
+                                        <select name="public" id="public" class="form-control">
+                                            <option value="0" {{ old('public', $facility->public) == '0' ? 'selected' : '' }}>No</option>
+                                            <option value="1" {{ old('public', $facility->public) == '1' ? 'selected' : '' }}>Yes</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -83,38 +98,62 @@
                             </div>
 
                             <div class="form-group">
-                                {!! Form::label('training_required', 'Is training required?'),
-                                Form::select("training_required", [0 => "No", 1 => "Yes"], Request::old("training_required", $facility->training_required), ['class' => 'form-control']) !!}
+                                <label for="training_required">Is training required?</label>
+                                <select name="training_required" id="training_required" class="form-control">
+                                    <option value="0" {{ old('training_required', $facility->training_required) == '0' ? 'selected' : '' }}>No</option>
+                                    <option value="1" {{ old('training_required', $facility->training_required) == '1' ? 'selected' : '' }}>Yes</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
-                                {!! Form::label('training_spaces', 'How many training places are available?'),
-                                Form::select("training_spaces", [null => "Infinite", 0,1,2,3,4,5,6,7,8,9,10], Request::old("training_spaces", ($facility->training_spaces === null ? "null" : $facility->training_spaces)), ['class' => 'form-control']) !!}
+                                <label for="training_spaces">How many training places are available?</label>
+                                <select name="training_spaces" id="training_spaces" class="form-control">
+                                    <option value="" {{ old('training_spaces', $facility->training_spaces) === null ? 'selected' : '' }}>Infinite</option>
+                                    @for($i = 0; $i <= 10; $i++)
+                                        <option value="{{ $i }}" {{ old('training_spaces', $facility->training_spaces) == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                    @endfor
+                                </select>
                             </div>
 
                             <div class="form-group">
-                                {!!Form::label('stage_statement_enabled', 'Is a statement required?'),
-                                Form::select("stage_statement_enabled", [0 => "No", 1 => "Yes"], Request::old("stage_statement_enabled", $facility->stage_statement_enabled), ['class' => 'form-control']) !!}
+                                <label for="stage_statement_enabled">Is a statement required?</label>
+                                <select name="stage_statement_enabled" id="stage_statement_enabled" class="form-control">
+                                    <option value="0" {{ old('stage_statement_enabled', $facility->stage_statement_enabled) == '0' ? 'selected' : '' }}>No</option>
+                                    <option value="1" {{ old('stage_statement_enabled', $facility->stage_statement_enabled) == '1' ? 'selected' : '' }}>Yes</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
-                                {!!Form::label('stage_reference_enabled', 'Are references required?'),
-                                Form::select("stage_reference_enabled", [0 => "No", 1 => "Yes"], Request::old("stage_reference_enabled", $facility->stage_reference_enabled), ['class' => 'form-control']) !!}
+                                <label for="stage_reference_enabled">Are references required?</label>
+                                <select name="stage_reference_enabled" id="stage_reference_enabled" class="form-control">
+                                    <option value="0" {{ old('stage_reference_enabled', $facility->stage_reference_enabled) == '0' ? 'selected' : '' }}>No</option>
+                                    <option value="1" {{ old('stage_reference_enabled', $facility->stage_reference_enabled) == '1' ? 'selected' : '' }}>Yes</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
-                                {!! Form::label('stage_reference_quantity', 'How many references are required?'),
-                                Form::select("stage_reference_quantity", [0,1,2,3,4,5,6,7,8,9,10], Request::old("stage_reference_quantity", $facility->stage_reference_quantity), ['class' => 'form-control']) !!}
+                                <label for="stage_reference_quantity">How many references are required?</label>
+                                <select name="stage_reference_quantity" id="stage_reference_quantity" class="form-control">
+                                    @for($i = 0; $i <= 10; $i++)
+                                        <option value="{{ $i }}" {{ old('stage_reference_quantity', $facility->stage_reference_quantity) == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                    @endfor
+                                </select>
                             </div>
 
                             <div class="form-group">
-                                {!! Form::label('stage_checks', 'Do you want the automated checks to run?'),
-                                Form::select("stage_checks", [0 => "No", 1 => "Yes"], Request::old("stage_checks", $facility->stage_checks), ['class' => 'form-control']) !!}
+                                <label for="stage_checks">Do you want the automated checks to run?</label>
+                                <select name="stage_checks" id="stage_checks" class="form-control">
+                                    <option value="0" {{ old('stage_checks', $facility->stage_checks) == '0' ? 'selected' : '' }}>No</option>
+                                    <option value="1" {{ old('stage_checks', $facility->stage_checks) == '1' ? 'selected' : '' }}>Yes</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
-                                {!! Form::label('auto_acceptance', 'Automatically accept all applicants?'),
-                                Form::select("auto_acceptance", [0 => "No", 1 => "Yes"], Request::old("auto_acceptance", $facility->auto_acceptance), ['class' => 'form-control']) !!}
+                                <label for="auto_acceptance">Automatically accept all applicants?</label>
+                                <select name="auto_acceptance" id="auto_acceptance" class="form-control">
+                                    <option value="0" {{ old('auto_acceptance', $facility->auto_acceptance) == '0' ? 'selected' : '' }}>No</option>
+                                    <option value="1" {{ old('auto_acceptance', $facility->auto_acceptance) == '1' ? 'selected' : '' }}>Yes</option>
+                                </select>
                             </div>
                         </div>
 
@@ -165,7 +204,7 @@
                         </div>
                     </div>
 
-                    {!! Form::close() !!}
+                    </form>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div>
