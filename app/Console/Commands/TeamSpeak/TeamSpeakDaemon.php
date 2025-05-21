@@ -4,17 +4,18 @@ namespace App\Console\Commands\TeamSpeak;
 
 use App\Libraries\TeamSpeak;
 use Exception;
-use TeamSpeak3_Adapter_ServerQuery_Event;
-use TeamSpeak3_Adapter_ServerQuery_Exception;
-use TeamSpeak3_Helper_Signal;
-use TeamSpeak3_Node_Host;
-use TeamSpeak3_Node_Server;
-use TeamSpeak3_Transport_Exception;
+use PlanetTeamSpeak\TeamSpeak3Framework\Adapter\ServerQuery\Event;
+use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
+use PlanetTeamSpeak\TeamSpeak3Framework\Exception\TeamSpeak3Exception;
+use PlanetTeamSpeak\TeamSpeak3Framework\Exception\TransportException;
+use PlanetTeamSpeak\TeamSpeak3Framework\Helper\Signal;
+use PlanetTeamSpeak\TeamSpeak3Framework\Node\Host;
+use PlanetTeamSpeak\TeamSpeak3Framework\Node\Server;
 
 class TeamSpeakDaemon extends TeamSpeakCommand
 {
     /**
-     * @var TeamSpeak3_Node_Server The TeamSpeak server connection.
+     * @var Server The TeamSpeak server connection.
      */
     protected static $connection;
 
@@ -48,15 +49,15 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             try {
                 self::$connection->getAdapter()->wait();
                 $connectionFailures = 0;
-            } catch (TeamSpeak3_Transport_Exception $e) {
+            } catch (TransportException $e) {
                 try {
                     self::$connection = $this->establishConnection();
                     $connectionFailures = 0;
-                } catch (TeamSpeak3_Transport_Exception $e) {
+                } catch (TransportException $e) {
                     // Connection failed, let the loop restart and try again
                     $connectionFailures++;
                     if ($connectionFailures == 3) {
-                        throw new TeamSpeak3_Transport_Exception('TeamSpeak Daemon failed to connect 3 times.');
+                        throw new TeamSpeak3Exception('TeamSpeak Daemon failed to connect 3 times.');
                     }
                     $this->log('TeamSpeak connection failed: '.$e->getMessage().'. Trying again in 15 seconds...');
                     sleep(15);
@@ -69,9 +70,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
      * Handle a client joining the server.
      *
      *
-     * @throws TeamSpeak3_Adapter_ServerQuery_Exception
+     * @throws ServerQueryException
      */
-    public static function clientJoinedEvent(TeamSpeak3_Adapter_ServerQuery_Event $event, TeamSpeak3_Node_Host $host)
+    public static function clientJoinedEvent(Event $event, Host $host)
     {
         if ($event['client_type'] != 0) {
             return;
@@ -95,7 +96,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
                 TeamSpeak::checkClientServerGroups($client, $member);
                 TeamSpeak::checkClientChannelGroups($client, $member);
             }
-        } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+        } catch (ServerQueryException $e) {
             self::handleServerQueryException($e);
         } catch (Exception $e) {
             self::handleException($e);
@@ -105,7 +106,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     /**
      * Handle a client leaving the server.
      */
-    public static function clientLeftEvent(TeamSpeak3_Adapter_ServerQuery_Event $event, TeamSpeak3_Node_Host $host)
+    public static function clientLeftEvent(Event $event, Host $host)
     {
         if (isset(self::$connectedClients[$event->clid])) {
             unset(self::$connectedClients[$event->clid]);
@@ -116,11 +117,6 @@ class TeamSpeakDaemon extends TeamSpeakCommand
      * Attempt to establish a connection to the TeamSpeak server.
      *
      * @param  int  $attempt
-     * @return mixed|\TeamSpeak3_Adapter_Abstract
-     *
-     * @throws \App\Exceptions\TeamSpeak\MaxConnectionAttemptsExceededException
-     * @throws \TeamSpeak3_Adapter_ServerQuery_Exception
-     * @throws \TeamSpeak3_Transport_Exception
      */
     protected function establishConnection($attempt = 1)
     {
@@ -130,13 +126,14 @@ class TeamSpeakDaemon extends TeamSpeakCommand
 
             // register for events
             $connection->notifyRegister('server');
-            TeamSpeak3_Helper_Signal::getInstance()
+
+            Signal::getInstance()
                 ->subscribe('notifyCliententerview', self::class.'::clientJoinedEvent');
-            TeamSpeak3_Helper_Signal::getInstance()
+            Signal::getInstance()
                 ->subscribe('notifyClientleftview', self::class.'::clientLeftEvent');
 
             return $connection;
-        } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+        } catch (ServerQueryException $e) {
             if ($e->getCode() === TeamSpeak::CLIENT_NICKNAME_INUSE) {
                 $this->log("Nickname in use, attempt $attempt");
                 sleep(15);
@@ -145,7 +142,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             } else {
                 throw $e;
             }
-        } catch (TeamSpeak3_Transport_Exception $e) {
+        } catch (TransportException $e) {
             $exceptionCode = $e->getCode();
             if ($exceptionCode === TeamSpeak::CONNECTION_TIMED_OUT || $exceptionCode === TeamSpeak::CONNECTION_REFUSED) {
                 $this->log("Connection timed out/refused, attempt $attempt");
