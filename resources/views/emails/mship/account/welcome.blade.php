@@ -34,12 +34,12 @@
 <h2>✈️️ Training</h2>
 <p>
     If you're interested in flying, VATSIM UK offers multiple pilot training courses. Browse our current offering at
-    <a href="{{ route('site.pilots.landing') }}">site.pilots.landing</a>.
+    <a href="{{ route('site.pilots.landing') }}">{{ route('site.pilots.landing') }}</a>.
 </p>
 
 <p>
     If you're interested in learning about Air Traffic Control, with the goal of controlling on the VATSIM network, check out
-    <a href="{{ route('site.atc.newController') }}">site.atc.newController</a>.
+    <a href="{{ route('site.atc.newController') }}">{{ route('site.atc.newController') }}</a>.
 </p>
 
 <h2>❓ Getting help</h2>
