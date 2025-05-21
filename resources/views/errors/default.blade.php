@@ -15,15 +15,15 @@
         </p>
     @show
     <p>
-        If you keep experiencing this issue, please let the Technology team know by emailing {!! HTML::mailto('technology-support@vatsim.uk') !!}.
+        If you keep experiencing this issue, please let the Technology team know by emailing <a href="mailto:technology-support@vatsim.uk">technology-support@vatsim.uk</a>.
         @if(Auth::check())
-             Meanwhile, you may {{ link_to("/mship/manage/dashboard", "return to the dashboard") }}.
+             Meanwhile, you may <a href="/mship/manage/dashboard">return to the dashboard</a>.
         @endif
     </p>
 
     @section('error_image')
         <p align='center'>
-            {!! HTML::image("/images/error.jpg") !!}
+            <img src="{{ asset('/images/error.jpg') }}" alt="Error Image">
         </p>
     @show
 </p>

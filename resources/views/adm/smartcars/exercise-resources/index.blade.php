@@ -27,9 +27,12 @@
                                     <a href="{{ route('adm.smartcars.exercises.resources.edit', [$flight, $resource]) }}" class="btn btn-xs btn-warning">Edit</a>
                                 </td>
                                 <td>
-                                    {!! Form::open(['id' => "delete-$resource->id", 'method'  => 'delete', 'route' => ['adm.smartcars.exercises.resources.destroy', $flight, $resource]]) !!}
+                                    <form id="delete-{{ $resource->id }}" method="POST"
+                                          action="{{ route('adm.smartcars.exercises.resources.destroy', [$flight, $resource]) }}">
+                                        @csrf
+                                        @method('DELETE')
                                     <button class="btn btn-xs btn-danger" data-toggle="confirmation">Delete</button>
-                                    {!! Form::close() !!}
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach

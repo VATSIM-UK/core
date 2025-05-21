@@ -11,7 +11,7 @@
 </p>
 
 <p>
-    You can complete the reference by {!! link_to(route("visiting.reference.complete", [$token->code]), "visiting the VT website") !!}.
+    You can complete the reference by <a href="{{ route('visiting.reference.complete', [$token->code]) }}">visiting the VT website</a>.
     Alternatively, copy the link below into your browser:</p>
 
 <p>

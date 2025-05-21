@@ -7,7 +7,8 @@
             <div class="panel-body">
                 <p>You may use this to email division, visiting and transferring members. You may not use this form to
                     email other regional or international members, or inactive members.</p>
-                {!! Form::open(['route' => ['mship.email.post'], 'class' => 'form-horizontal']) !!}
+                <form action="{{ route('mship.email.post') }}" method="POST" class="form-horizontal">
+                    @csrf
                 <input name="recipient" id="recipient" type="hidden">
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Recipient</label>
@@ -46,7 +47,7 @@
                         <button type="submit" class="btn btn-default" id="send">Send</button>
                     </div>
                 </div>
-                {!! Form::close() !!}
+                </form>
             </div>
         </div>
     </div>

@@ -3,7 +3,10 @@
 @section('vt-content')
     <div class="row">
         <div class="col-md-8">
-            {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Choose your Facility',
+                'icon' => ['type' => 'fa', 'key' => 'question']
+            ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
 
@@ -34,11 +37,14 @@
                 </div>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
 
         <div class="col-md-4">
-            {!! HTML::panelOpen("Facility Code", ["type" => "fa", "key" => "question"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Facility Code',
+                'icon' => ['type' => 'fa', 'key' => 'question']
+            ])
             <div class="row">
                 <div class="col-md-12">
                     <p>
@@ -48,26 +54,32 @@
                         Enter in the code below.
                     </p>
                     <p>
-                      {!! Form::label("Facility Code:") !!}
-                      {!! Form::open(["route" => ["visiting.application.facility.manual.post", $application->public_id], "method" => "POST", "class" => "form-inline"]) !!}
+                      <label for="facility-code">Facility Code:</label>
+                    <form action="{{ route('visiting.application.facility.manual.post', $application->public_id) }}"
+                          method="POST" class="form-inline">
+                        @csrf
                         <div class="form-group">
-                          {!! Form::text("facility-code") !!}
+                          <input type="text" name="facility-code" id="facility-code">
                         </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
-                      {!! Form::close() !!}
+                    </form>
                     </p>
 
                 </div>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
       </div>
 
       <div class="row">
         @foreach($facilities as $facility)
             <div class="col-md-3">
-                {!! HTML::panelOpen($facility->name, ["type" => "vuk", "key" => "letter-".strtolower($facility->name[0])], ["style" => "min-height: 220px;"]) !!}
+                @include('components.html.panel_open', [
+                    'title' => $facility->name,
+                    'icon' => ['type' => 'vuk', 'key' => 'letter-'.strtolower($facility->name[0])],
+                    'attr' => ['style' => 'min-height: 220px;']
+                ])
                 <div class="row">
                     <div class="col-md-12">
 
@@ -83,7 +95,9 @@
                                 <span class="label label-success">NO TRAINING REQUIRED</span>
                             @endif
                         </p>
-                        {!! Form::open(["route" => ["visiting.application.facility.post", $application->public_id], "method" => "POST"]) !!}
+                        <form action="{{ route('visiting.application.facility.post', $application->public_id) }}"
+                              method="POST">
+                            @csrf
 
                         <p class="text-center">
                             @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
@@ -93,12 +107,12 @@
                             @endif
                         </p>
 
-                        {!! Form::hidden("facility_id", $facility->id) !!}
-                        {!! Form::close() !!}
+                        <input type="hidden" name="facility_id" value="{{ $facility->id }}">
+                        </form>
                     </div>
 
                 </div>
-                {!! HTML::panelClose() !!}
+                @include('components.html.panel_close')
             </div>
         @endforeach
     </div>
