@@ -401,39 +401,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @endcan
-
-                                    @elseif($application->check_outcome_90_day === null)
-                                    <strong class="text-danger">Data unavailable</strong> - manual check
-                                    required.<br />
-
-                                    @can("check-outcome", $application)
-                                    <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#90DayNotMet">
-                                        MARK THIS CHECK AS 'NOT MET'
-                                    </button>
-                                    <div class="modal fade" role="dialog" id="90DayNotMet">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    Mark 90 Day Qualification Check as 'NOT MET'?
-                                                </div>
-                                                <div class="modal-body">
-                                                    Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <form
-                                                        action="{{ route('adm.visiting.application.check.notmet.post', $application->id) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-danger">MARK THIS CHECK AS
-                                                            'NOT MET' - THIS CANNOT BE UNDONE
-                                                        </button>
-                                                        <input type="hidden" name="check" value="90_day">
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#90DayMet">
                                         MARK THIS CHECK AS 'MET'
