@@ -28,27 +28,27 @@
                             <th class="col-md-1">
                                 @if($sortBy == "id")
                                     @if($sortDir == "ASC")
-                                        {!! link_to_route("adm.visiting.application.list", "ID", ["sort_by" => "id", "sort_dir" => "DESC"]) !!}
+                                        <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'id', 'sort_dir' => 'DESC']) }}">ID</a>
                                         <small><i class="ion ion-arrow-up-b"></i></small>
                                     @else
-                                        {!! link_to_route("adm.visiting.application.list", "ID", ["sort_by" => "id", "sort_dir" => "ASC"]) !!}
+                                        <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'id', 'sort_dir' => 'ASC']) }}">ID</a>
                                         <small><i class="ion ion-arrow-down-b"></i></small>
                                     @endif
                                 @else
-                                    {!! link_to_route("adm.visiting.application.list", "ID", ["sort_by" => "id", "sort_dir" => "ASC"]) !!}
+                                    <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'id', 'sort_dir' => 'ASC']) }}">ID</a>
                                 @endif
                             </th>
                             <th class="col-md-1">
                                 @if($sortBy == "account_id")
                                     @if($sortDir == "ASC")
-                                        {!! link_to_route("adm.visiting.application.list", "Applicant ID", ["sort_by" => "account_id", "sort_dir" => "DESC"]) !!}
+                                        <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'account_id', 'sort_dir' => 'DESC']) }}">Applicant ID</a>
                                         <small><i class="ion ion-arrow-up-b"></i></small>
                                     @else
-                                        {!! link_to_route("adm.visiting.application.list", "Applicant ID", ["sort_by" => "account_id", "sort_dir" => "ASC"]) !!}
+                                        <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'account_id', 'sort_dir' => 'ASC']) }}">Applicant ID</a>
                                         <small><i class="ion ion-arrow-down-b"></i></small>
                                     @endif
                                 @else
-                                    {!! link_to_route("adm.visiting.application.list", "Applicant ID", ["sort_by" => "account_id", "sort_dir" => "ASC"]) !!}
+                                    <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'account_id', 'sort_dir' => 'ASC']) }}">Applicant ID</a>
                                 @endif
                             </th>
                             <th>Name</th>
@@ -57,27 +57,27 @@
                             <th class="col-md-1 text-center">
                                 @if($sortBy == "created_at")
                                     @if($sortDir == "ASC")
-                                        {!! link_to_route("adm.visiting.application.list", "Created", ["sort_by" => "created_at", "sort_dir" => "DESC"]) !!}
+                                        <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'created_at', 'sort_dir' => 'DESC']) }}">Created</a>
                                         <small><i class="ion ion-arrow-up-b"></i></small>
                                     @else
-                                        {!! link_to_route("adm.visiting.application.list", "Created", ["sort_by" => "created_at", "sort_dir" => "ASC"]) !!}
+                                        <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'created_at', 'sort_dir' => 'ASC']) }}">Created</a>
                                         <small><i class="ion ion-arrow-down-b"></i></small>
                                     @endif
                                 @else
-                                    {!! link_to_route("adm.visiting.application.list", "Created", ["sort_by" => "created_at", "sort_dir" => "ASC"]) !!}
+                                    <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'created_at', 'sort_dir' => 'ASC']) }}">Created</a>
                                 @endif
                             </th>
                             <th class="col-md-1 text-center">
                                 @if($sortBy == "created_at")
                                     @if($sortDir == "ASC")
-                                        {!! link_to_route("adm.visiting.application.list", "Updated", ["sort_by" => "updated_at", "sort_dir" => "DESC"]) !!}
+                                        <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'updated_at', 'sort_dir' => 'DESC']) }}">Updated</a>
                                         <small><i class="ion ion-arrow-up-b"></i></small>
                                     @else
-                                        {!! link_to_route("adm.visiting.application.list", "Updated", ["sort_by" => "updated_at", "sort_dir" => "ASC"]) !!}
+                                        <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'updated_at', 'sort_dir' => 'ASC']) }}">Updated</a>
                                         <small><i class="ion ion-arrow-down-b"></i></small>
                                     @endif
                                 @else
-                                    {!! link_to_route("adm.visiting.application.list", "Updated", ["sort_by" => "updated_at", "sort_dir" => "ASC"]) !!}
+                                    <a href="{{ route('adm.visiting.application.list', ['sort_by' => 'updated_at', 'sort_dir' => 'ASC']) }}">Updated</a>
                                 @endif
                             </th>
                             <th class="col-md-1 text-center">Status</th>
@@ -86,16 +86,16 @@
                         <tbody>
                         @forelse($applications as $a)
                             <tr>
-                                <td>{!! link_to_route('adm.visiting.application.view', $a->public_id, [$a->id]) !!}</td>
+                                <td><a href="{{ route('adm.visiting.application.view', [$a->id]) }}">{{ $a->public_id }}</a></td>
                                 <td>{{ $a->account_id }}</td>
                                 <td>{{ $a->account->name  }}</td>
                                 <td>{{ $_account->can('use-permission', "adm/mship/account/email/view") ? $a->account->email : "[ No Permission ]" }}</td>
                                 <td>{{ $a->type_string }} - {{ $a->facility_name }}</td>
                                 <td class="text-center">
-                                    {!! HTML::fuzzyDate($a->created_at) !!}
+                                    {{ $a->created_at->diffForHumans() }}
                                 </td>
                                 <td class="text-center">
-                                    {!! HTML::fuzzyDate($a->updated_at) !!}
+                                    {{ $a->updated_at->diffForHumans() }}
                                 </td>
                                 <td class="text-center">
                                     @include("visit-transfer.partials.application_status", ["application" => $a])

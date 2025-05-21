@@ -1,3 +1,5 @@
 <div class="form-group text-center">
-    {{ Form::button($value, array_merge_concat(['class' => 'btn btn-default'], $options)) }}
+    <button type="button" class="btn btn-default {{ $options['class'] ?? '' }}" @if(isset($options['id'])) id="{{ $options['id'] }}" @endif @if(isset($options['name'])) name="{{ $options['name'] }}" @endif>
+        {{ $value }}
+    </button>
 </div>

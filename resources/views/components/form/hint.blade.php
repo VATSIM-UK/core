@@ -1,7 +1,8 @@
 <span class="help">
     @if($link)
-        {{ link_to(array_get($link, "url", "#"), $text, array_get($link, "attributes", [])) }}
+        <a href="{{ array_get($link, 'url', '#') }}" @foreach(array_get($link, 'attributes', []) as $attr => $val) {{ $attr }}="{{ $val }}" @endforeach>{{ $text }}</a>
     @else
         {{ $text }}
     @endif
 </span>
+

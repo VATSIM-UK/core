@@ -33,12 +33,12 @@
                         <tbody>
                         @forelse($references as $r)
                             <tr>
-                                {{--<td align="center">--}}
-                                    {{--{!! link_to_route('adm.visiting.reference.view', $r->id, [$r->id]) !!}--}}
-                                {{--</td>--}}
-                                {{--<td align="center">--}}
-                                    {{--{!! link_to_route('adm.visiting.application.view', $r->application_id, [$r->application_id]) !!}--}}
-                                {{--</td>--}}
+{{--                                <td align="center">--}}
+{{--                                    <a href="{{ route('adm.visiting.reference.view', [$r->id]) }}">{{ $r->id }}</a>--}}
+{{--                                </td>--}}
+{{--                                <td align="center">--}}
+{{--                                    <a href="{{ route('adm.visiting.application.view', [$r->application_id]) }}">{{ $r->application_id }}</a>--}}
+{{--                                </td>--}}
                                 <td align="center">
                                     {{ $account->name }} {{ $account->id }}
                                 </td><td align="center">

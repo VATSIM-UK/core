@@ -10,7 +10,7 @@
 </p>
 
 <p>
-    To verify this account, please {!! link_to_route("mship.manage.email.verify", "click here", ["code" => $token->code]) !!}.  Alternatively, copy the link below into your browser:
+    To verify this account, please <a href="{{ route('mship.manage.email.verify', ['code' => $token->code]) }}">click here</a>.  Alternatively, copy the link below into your browser:
 </p>
 
 <p>
