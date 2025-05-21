@@ -4,7 +4,7 @@ namespace App\Console\Commands\TeamSpeak;
 
 use App\Libraries\TeamSpeak;
 use Exception;
-use TeamSpeak3_Adapter_ServerQuery_Exception;
+use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
 
 class TeamSpeakManager extends TeamSpeakCommand
 {
@@ -56,13 +56,13 @@ class TeamSpeakManager extends TeamSpeakCommand
                         TeamSpeak::checkClientChannelGroups($client, $member);
                         TeamSpeak::checkClientIdleTime($client, $member);
                     }
-                } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+                } catch (ServerQueryException $e) {
                     self::handleServerQueryException($e, $member);
                 } catch (Exception $e) {
                     self::handleException($e);
                 }
             }
-        } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+        } catch (ServerQueryException $e) {
             self::handleServerQueryException($e);
         } catch (Exception $e) {
             self::handleException($e);
