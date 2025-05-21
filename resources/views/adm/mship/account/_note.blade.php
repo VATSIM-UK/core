@@ -16,5 +16,26 @@
 
                         &nbsp;&nbsp;&nbsp;
                     @endif
+                    <i class="fa fa-user"></i>
 
-                    <i class="fa fa-user
+                    @if (is_null($note->writer))
+                      Unknown/System
+                    @else
+                      {{$note->writer->name}}
+                      {{$note->writer_id}}
+                    @endif
+
+
+                    &nbsp;&nbsp;&nbsp;
+
+                    <i class="fa fa-clock-o"></i>
+                    {{ $note->created_at->diffForHumans() }}
+                    , {{ $note->created_at->toDateTimeString() }}
+                </small>
+            </span>
+        </h3>
+    </div>
+    <div class="panel-body">
+        {!! nl2br($note->content) !!}
+    </div>
+</div>
