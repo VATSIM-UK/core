@@ -21,7 +21,7 @@ class IndividualWaitingListOverview extends BaseWidget
 
         return [
             Stat::make('Total accounts', $totalAccounts),
-            Stat::make('Longest wait time', $longestWaitTime ? round($longestWaitTime).'days' : 'N/A'),
+            Stat::make('Longest wait time', $longestWaitTime ? round($longestWaitTime).' days' : 'N/A'),
             Stat::make('Average wait time', $averageWaitTime ? round($averageWaitTime).' days' : 'N/A'),
         ];
     }
