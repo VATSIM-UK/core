@@ -10,35 +10,17 @@ use PlanetTeamSpeak\TeamSpeak3Framework\Exception\TeamSpeak3Exception;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\TransportException;
 use PlanetTeamSpeak\TeamSpeak3Framework\Helper\Signal;
 use PlanetTeamSpeak\TeamSpeak3Framework\Node\Host;
-use PlanetTeamSpeak\TeamSpeak3Framework\Node\Server;
 
 class TeamSpeakDaemon extends TeamSpeakCommand
 {
-    /**
-     * @var Server The TeamSpeak server connection.
-     */
     protected static $connection;
 
-    /**
-     * @var array The connected clients, in the format[clid] = dbid;
-     */
     protected static $connectedClients = [];
 
-    /**
-     * @var string The name and signature of the console command.
-     */
     protected $signature = 'teaman:daemon';
 
-    /**
-     * @var string The console command description.
-     */
     protected $description = 'TeamSpeak Management Daemon (TeaManD)';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         self::$connection = $this->establishConnection();
@@ -66,12 +48,6 @@ class TeamSpeakDaemon extends TeamSpeakCommand
         }
     }
 
-    /**
-     * Handle a client joining the server.
-     *
-     *
-     * @throws ServerQueryException
-     */
     public static function clientJoinedEvent(Event $event, Host $host)
     {
         if ($event['client_type'] != 0) {
@@ -103,9 +79,6 @@ class TeamSpeakDaemon extends TeamSpeakCommand
         }
     }
 
-    /**
-     * Handle a client leaving the server.
-     */
     public static function clientLeftEvent(Event $event, Host $host)
     {
         if (isset(self::$connectedClients[$event->clid])) {
@@ -113,11 +86,6 @@ class TeamSpeakDaemon extends TeamSpeakCommand
         }
     }
 
-    /**
-     * Attempt to establish a connection to the TeamSpeak server.
-     *
-     * @param  int  $attempt
-     */
     protected function establishConnection($attempt = 1)
     {
         try {
