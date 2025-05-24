@@ -91,7 +91,7 @@
         "spatie/laravel-schedule-monitor": "^3.0",
         "symfony/http-client": "^7.0",
         "symfony/mailgun-mailer": "^7.0",
-        "symfony/translation": "^6.1",
+        "symfony/translation": "^7.2",
         "watson/rememberable": "^7.0",
         "whitecube/laravel-cookie-consent": "^1.0.1",
         "wohali/oauth2-discord-new": "^1.0"
