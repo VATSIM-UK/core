@@ -50,13 +50,15 @@ class SyncCtsRoles extends Command
         $this->syncPilotStudents(55); // Pilot Students
         $this->syncStudentsByPosition('TFP_FLIGHT', Role::findByName('TFP Student')->id); // TFP Students
         $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
+        $this->syncStudentsByPosition('EGLL_2_GND', Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Ground Students
+        $this->syncStudentsByPosition('EGLL_S_TWR', Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Tower Students
+        $this->syncStudentsByPosition('EGLL_N_APP', Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Approach Students
         // OBS Student
         $this->syncStudentsByPositions(['OBS_CC_PT2', 'OBS_NX_PT2', 'OBS_PH_PT2', 'OBS_SS_PT2'], Role::findByName('OBS Students')->id);
 
         $this->syncStudentsByRts(18, Role::findByName('ATC Students (TWR)')->id); // TWR Students
         $this->syncStudentsByRts(19, Role::findByName('ATC Students (APP)')->id); // APP Students
         $this->syncStudentsByRts(17, Role::findByName('ATC Students (ENR)')->id); // Enroute Students
-        $this->syncStudentsByRts(12, Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Students
 
         // Sync Examiners
         $this->syncAtcExaminers(31); // ATC
