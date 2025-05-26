@@ -50,7 +50,7 @@ class SyncCtsRoles extends Command
         $this->syncPilotStudents(55); // Pilot Students
         $this->syncStudentsByPosition('TFP_FLIGHT', Role::findByName('TFP Student')->id); // TFP Students
         $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
-        $this->syncStudentsByPosition('EGLL_2_GND',Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Ground Students
+        $this->syncStudentsByPosition('EGLL_2_GND', Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Ground Students
         $this->syncStudentsByPosition('EGLL_S_TWR', Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Tower Students
         $this->syncStudentsByPosition('EGLL_N_APP', Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Approach Students
         // OBS Student
