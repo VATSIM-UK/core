@@ -5,7 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\WaitingListResource\Pages;
 use App\Filament\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
 use App\Models\Training\WaitingList;
-use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
@@ -27,14 +30,68 @@ class WaitingListResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->autofocus()->required()->live(onBlur: true)
+                TextInput::make('name')->autofocus()->required()->live(onBlur: true)
                     ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
-                Forms\Components\TextInput::make('slug')->required(),
+                TextInput::make('slug')->required(),
 
-                Forms\Components\Select::make('department')->options([
+                Select::make('department')->options([
                     'atc' => 'ATC Training',
                     'pilot' => 'Pilot Training',
                 ])->required(),
+
+                Section::make('Additional Settings')
+                    ->schema([
+                        Toggle::make('feature_toggles.check_atc_hours')
+                            ->label('Check ATC Hours')
+                            ->default(true),
+
+                        Toggle::make('feature_toggles.display_on_roster')
+                            ->label('Display Roster Membership')
+                            ->default(true),
+
+                        Toggle::make('feature_toggles.check_cts_theory_exam')
+                            ->label('Display CTS Theory Exam')
+                            ->default(true),
+
+                        Toggle::make('requires_roster_membership')
+                            ->label('Require Roster Membership')
+                            ->default(true),
+
+                        Toggle::make('self_enrolment_enabled')
+                            ->label('Enable Self-Enrolment')
+                            ->default(false)
+                            ->live(),
+
+                    ])
+                    ->collapsible()
+                    ->collapsed(),
+
+                Section::make('Self-Enrolment Requirements')
+                    ->schema([
+                        Select::make('self_enrolment_minimum_qualification_id')
+                            ->label('Minimum Rating')
+                            ->helperText('If the member has a rating lower than this, they cannot self-enrol.')
+                            ->relationship('minimumQualification', 'code')
+                            ->searchable()
+                            ->preload(),
+                        Select::make('self_enrolment_maximum_qualification_id')
+                            ->label('Maximum Rating')
+                            ->helperText('If the member has a rating higher than this, they cannot self-enrol.')
+                            ->relationship('maximumQualification', 'code')
+                            ->searchable()
+                            ->preload(),
+                        Select::make('self_enrolment_hours_at_qualification_id')
+                            ->label('Rating for Hour Check')
+                            ->helperText('Check if the member has a certain number of hours at this rating.')
+                            ->relationship('hoursAtQualification', 'code')
+                            ->searchable()
+                            ->preload(),
+                        TextInput::make('self_enrolment_hours_at_qualification_minimum_hours')
+                            ->label('Minimum Hours')
+                            ->helperText('Minimum hours required at the above rating to self-enrol.')
+                            ->integer()
+                            ->minValue(0),
+                    ])->collapsible()->collapsed()->visible(fn (callable $get) => $get('self_enrolment_enabled') === true),
             ]);
     }
 

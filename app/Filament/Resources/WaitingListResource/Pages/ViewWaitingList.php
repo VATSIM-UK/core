@@ -13,6 +13,7 @@ use Filament\Actions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
@@ -76,6 +77,7 @@ class ViewWaitingList extends ViewRecord
                     $flag = WaitingListFlag::create([
                         'name' => $data['name'],
                         'position_group_id' => $data['position_group_id'],
+                        'display_in_table' => $data['display_in_table'] ?? false,
                     ]);
 
                     $this->record->addFlag($flag);
@@ -89,6 +91,10 @@ class ViewWaitingList extends ViewRecord
                     Select::make('position_group_id')->label('Position Group')->options(fn () => PositionGroup::all()->mapWithKeys(function ($item) {
                         return [$item['id'] => $item['name']];
                     }))->hint('If an option is chosen here, this will be an automated flag. This cannot be reversed.'),
+
+                    Toggle::make('display_in_table')
+                        ->label('Display in Waiting List Table')
+                        ->default(false),
                 ])
                 ->visible(fn () => auth()->user()->can('addFlags', $this->record)),
         ];
