@@ -69,22 +69,26 @@ class WaitingListResource extends Resource
                 Section::make('Self-Enrolment Requirements')
                     ->schema([
                         Select::make('self_enrolment_minimum_qualification_id')
-                            ->label('Minimum Qualification ID')
+                            ->label('Minimum Rating')
+                            ->helperText('If the member has a rating lower than this, they cannot self-enrol.')
                             ->relationship('minimumQualification', 'code')
                             ->searchable()
                             ->preload(),
                         Select::make('self_enrolment_maximum_qualification_id')
-                            ->label('Maximum Qualification ID')
+                            ->label('Maximum Rating')
+                            ->helperText('If the member has a rating higher than this, they cannot self-enrol.')
                             ->relationship('maximumQualification', 'code')
                             ->searchable()
                             ->preload(),
                         Select::make('self_enrolment_hours_at_qualification_id')
-                            ->label('Qualification ID (for Hours Requirement)')
+                            ->label('Rating for Hour Check')
+                            ->helperText('Check if the member has a certain number of hours at this rating.')
                             ->relationship('hoursAtQualification', 'code')
                             ->searchable()
                             ->preload(),
                         TextInput::make('self_enrolment_hours_at_qualification_minimum_hours')
-                            ->label('Minimum hours at Qualification')
+                            ->label('Minimum Hours')
+                            ->helperText('Minimum hours required at the above rating to self-enrol.')
                             ->integer()
                             ->minValue(0),
                     ])->collapsible()->collapsed()->visible(fn (callable $get) => $get('self_enrolment_enabled') === true),
