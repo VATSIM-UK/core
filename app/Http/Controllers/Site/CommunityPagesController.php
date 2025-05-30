@@ -35,7 +35,7 @@ class CommunityPagesController extends \App\Http\Controllers\BaseController
         return $this->viewMake('site.community.terms');
     }
 
-    public function viewTerms()
+    public function viewPrivacy()
     {
         $this->setTitle('Privacy Policy');
         $this->addBreadcrumb('Privacy Policy', route('site.community.privacy'));
