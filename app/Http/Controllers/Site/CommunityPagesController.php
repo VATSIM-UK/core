@@ -26,12 +26,4 @@ class CommunityPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.community.teamspeak');
     }
-
-    public function viewTerms()
-    {
-        $this->setTitle('Terms & Conditions');
-        $this->addBreadcrumb('Terms & Conditions', route('site.community.terms'));
-
-        return $this->viewMake('site.community.terms');
-    }
 }

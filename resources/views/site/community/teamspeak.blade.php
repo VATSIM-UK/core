@@ -56,7 +56,7 @@
                                     Agreement</a>;
                             </li>
                             <li>
-                                <a href="{{ route('site.community.terms') }}" rel="">VATSIM UK Terms
+                                <a href="{{ route('site.policy.terms') }}" rel="">VATSIM UK Terms
                                     and Conditions</a>.
                             </li>
                         </ul>
