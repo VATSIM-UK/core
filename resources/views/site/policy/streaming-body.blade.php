@@ -69,7 +69,6 @@ Please take care to ensure you don’t reveal any sensitive information such as 
 
 ### 2.3.2 Setting Up the Stream
 
-
 Once you have set up the display, you will then need to add the stream details into OBS. Click File, then Preferences, then Stream. Then, you should input the following settings:
 
 Stream Type: Streaming Services

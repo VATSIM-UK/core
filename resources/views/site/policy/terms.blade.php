@@ -3,17 +3,16 @@
 @section('content')
 
     <div class="row">
-
-<div class="col-md-12">
+        <div class="col-md-12">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-exclamation"></i> &thinsp; Terms &amp Conditions
+                <div class="panel-heading">
+                    <i class="fa fa-exclamation"></i> &thinsp; Terms &amp Conditions
                 </div>
                 <div class="panel-body">
-                @include("site.policy.terms-body")
-
+                    @include("site.policy.terms-body")
                 </div>
             </div>
         </div>
     </div>
 
-@stop
+@endsection
