@@ -282,8 +282,4 @@ Includes:
 
 Review must begin by 24 Nov 2020 and complete by 24 May 2021.
 
----
-
-_End of document._
-
 </x-markdown>

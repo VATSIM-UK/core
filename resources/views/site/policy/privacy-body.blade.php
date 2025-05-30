@@ -107,8 +107,4 @@ Questions: [privacy@vatsim.uk](mailto:privacy@vatsim.uk)
 This policy is reviewed at least every 24 months by relevant staff.  
 **Next review due:** Before 21st July 2020
 
----
-
-_End of document._
-
 </x-markdown>
