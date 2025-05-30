@@ -50,6 +50,7 @@ Route::group([
         Route::get('/vt-guide')->uses('CommunityPagesController@viewVtGuide')->name('vt-guide');
         Route::get('/terms-and-conditions')->uses('CommunityPagesController@viewTerms')->name('terms');
         Route::get('/privacy-policy')->uses('CommunityPagesController@viewPrivacy')->name('privacy');
+        Route::get('/data-protection-policy')->uses('CommunityPagesController@viewDPP')->name('data-protection');
         Route::get('/teamspeak')->uses('CommunityPagesController@viewTeamspeak')->name('teamspeak');
     });
 

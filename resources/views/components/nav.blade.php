@@ -122,6 +122,7 @@
                                 <li class="dropdown-header">Policies</li>
                                 <li><a href="{{ route('site.community.terms') }}">Terms & Conditions</a></li>
                                 <li><a href="{{ route('site.community.privacy') }}">Privacy Policy</a></li>
+                                <li><a href="{{ route('site.community.data-protection') }}">Data Protection Policy</a></li>
                             </ul>
                         </li>
                     </ul>

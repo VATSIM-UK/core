@@ -42,4 +42,12 @@ class CommunityPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.community.privacy');
     }
+
+    public function viewDPP()
+    {
+        $this->setTitle('Data Protection & Handling Policy');
+        $this->addBreadcrumb('Data Protection & Handling Policy', route('site.community.data-protection'));
+
+        return $this->viewMake('site.community.data-protection');
+    }
 }
