@@ -9,7 +9,7 @@
                 <div class="panel-heading"><i class="fa fa-exclamation"></i> &thinsp; Streaming Guidelines
                 </div>
                 <div class="panel-body">
-                @include("site.policy.streaming")
+                @include("site.policy.streaming-body")
 
                 </div>
             </div>
