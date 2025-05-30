@@ -26,7 +26,7 @@ document. Any member in breach of any policy may be subject to disciplinary acti
 
 ---
 
-## Section 1 Controller Policy
+## Section 1 | Additional Ratings and Endorsements Policy
 
 ### 1.1 C3 Rating
 
@@ -78,8 +78,6 @@ To be eligible for Heathrow Training, S1 members must:
 - Not have significant negative feedback;
 - Hold a Gatwick ground endorsement with 50 hours on EGKK positions, post-endorsement award.
 
-
-[Comments]^
 
 ### 1.5 Heathrow DEL/GND (S2+)
 
@@ -151,7 +149,7 @@ To be eligible for the AC South-Central or TC Bandbox endorsement, C1+ members m
 - Have controlled a minimum of 50hrs in both the South and Central LAGs respectively;
 - Hold a Heathrow Director Endorsement.
 
-## Section 2 Student Policy
+## Section 2 | Student Policy
 
 ### 2.1 Joining a Waiting List (S2 Training and Beyond)
 
@@ -223,7 +221,7 @@ limited to:
 - Following disciplinary action;
 - Following repeated adverse feedback whilst controlling positions with ratings they may already hold.
 
-## Section 3 Mentor Policy
+## Section 3 | Mentoring Policy
 
 ### 3.1 Eligibility
 
@@ -263,7 +261,7 @@ reasons including (but not limited to) serious breaches of VATSIM.net, VATEMEA, 
 repeated misconduct, or serious misconduct. This decision will be made by the ATC Training Management
 team and communicated clearly to the mentor in question.
 
-## Section 4 Examiner Policy
+## Section 4 | Examinations Policy
 
 ### 4.1 Eligibility
 
@@ -277,7 +275,7 @@ reasons including (but not limited to) serious breaches of VATSIM.net, VATEMEA, 
 repeated misconduct, or serious misconduct. This decision will be made by the ATC Training Management
 team and communicated clearly to the examiner in question.
 
-### 4.3 Conduct [Comments]
+### 4.3 Conduct
 
 S2 and above exams shall be conducted on the live network and may either be pre-arranged or
 spontaneous. Spontaneous exams may only be conducted with the explicit approval, in advance, of the ATC
@@ -302,7 +300,7 @@ All ATC exams, either pre-arranged or spontaneous, must have an exam report file
 - **Incomplete** (direct continuation at a later date)
 - **Fail - Resubmit** (where the exam has been assessed as a failure but the student requires no further
 training)
-- **Fail** – (further training required in accordance with Examiner-TG remedial training plan)
+- **Fail** (further training required in accordance with Examiner-TG remedial training plan)
 
 **Individual criteria will be assessed as follows:**
 
@@ -322,7 +320,7 @@ An exam will not be marked as a pass if:
     or
 - 3 or more competencies are marked as Partly competent.
 
-## Section 5 Staff Policy
+## Section 5 | Staff Policy
 
 ### 5.1 Vacancy
 
@@ -342,7 +340,7 @@ consultation with the ATC Training Manager.
 
 ### 5.3 Eligibility
 
-The following section outlines the eligibility criteria for roles within the ATC Training Department.
+This section sets out the eligibility criteria for roles within the ATC Training Department.
 
 #### 5.3.1 ATC Training Director
 
