@@ -133,9 +133,9 @@ class AccountsRelationManager extends RelationManager
                             ->visible(fn (callable $get) => $get('reason_type') === 'other'),
                     ])
                     ->action(function (WaitingListAccount $record, array $data, $livewire) {
-                        $removal_type = $data['reason_type'];
+                        $removalType = $data['reason_type'];
 
-                        $removal = new WaitingList\Removal(WaitingList\RemovalReason::from($removal_type), auth()->user()->id, $data['custom_reason'] ?? '');
+                        $removal = new WaitingList\Removal(WaitingList\RemovalReason::from($removalType), auth()->user()->id, $data['custom_reason'] ?? '');
 
                         $livewire->ownerRecord->removeFromWaitingList($record->account, $removal);
                         $livewire->dispatch('refreshWaitingList');
