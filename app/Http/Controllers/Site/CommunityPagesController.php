@@ -26,5 +26,4 @@ class CommunityPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.community.teamspeak');
     }
-
 }

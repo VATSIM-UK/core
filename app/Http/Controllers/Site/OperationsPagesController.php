@@ -25,5 +25,4 @@ class OperationsPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.operations.sectors');
     }
-
 }
