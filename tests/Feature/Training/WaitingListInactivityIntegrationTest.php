@@ -82,7 +82,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
 
         $account->addState(State::findByCode('REGION'));
 
-        $this->assertFalse($waitingList->fresh()->accounts->contains($account));
+        $this->assertFalse($waitingList->fresh()->includesAccount($account));
         Notification::assertSentToTimes($account, RemovedFromWaitingListNonHomeMember::class, 1);
     }
 
@@ -94,12 +94,12 @@ class WaitingListInactivityIntegrationTest extends TestCase
 
         $waitingList = factory(WaitingList::class)->create();
 
-        $this->assertFalse($waitingList->accounts->contains($account));
+        $this->assertFalse($waitingList->includesAccount($account));
 
         $account->updateDivision('EUD', 'EUR');
         $account->refresh();
 
-        $this->assertFalse($waitingList->fresh()->accounts->contains($account));
+        $this->assertFalse($waitingList->includesAccount($account));
         Notification::assertNothingSentTo($account, RemovedFromWaitingListNonHomeMember::class);
     }
 }
