@@ -119,7 +119,9 @@
                                 <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
                                 <li><a href="{{ route('discord.show') }}">Discord</a></li>
                                 <li class="divider"></li>
+                                <li class="dropdown-header">Policies</li>
                                 <li><a href="{{ route('site.community.terms') }}">Terms & Conditions</a></li>
+                                <li><a href="{{ route('site.community.privacy') }}">Privacy Policy</a></li>
                             </ul>
                         </li>
                     </ul>
