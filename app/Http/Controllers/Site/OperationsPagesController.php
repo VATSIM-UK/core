@@ -25,4 +25,12 @@ class OperationsPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.operations.sectors');
     }
+
+    public function viewBranding()
+    {
+        $this->setTitle('Branding Guidelines');
+        $this->addBreadcrumb('Branding Guidelines', route('site.operations.branding'));
+
+        return $this->viewMake('site.operations.branding');
+    }
 }

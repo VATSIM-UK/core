@@ -101,6 +101,7 @@
                                 <li><a href="{{ route('site.airports') }}">Airfield Information</a></li>
                                 <li><a href="{{ route('site.operations.sectors') }}">Area Sectors</a></li>
                                 <li><a href="https://community.vatsim.uk/forum/166-atc-procedure-changes/">Procedure Changes</a></li>
+                                <li><a href="{{ route('site.operations.branding') }}">Branding Guidelines</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -118,22 +119,20 @@
                                 <li class="dropdown-header">Third-Party Services</li>
                                 <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
                                 <li><a href="{{ route('discord.show') }}">Discord</a></li>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Policies</li>
-                                <li><a href="{{ route('site.community.terms') }}">Terms & Conditions</a></li>
-                                <li><a href="{{ route('site.community.privacy') }}">Privacy Policy</a></li>
-                                <li><a href="{{ route('site.community.data-protection') }}">Data Protection Policy</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
 
                 <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Marketing <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Policy <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
-                                <li><a href="{{ route('site.marketing.branding') }}">Branding Guidelines</a></li>
+                                <li class="dropdown-header">Policies</li>
+                                <li><a href="{{ route('site.policy.terms') }}">Terms & Conditions</a></li>
+                                <li><a href="{{ route('site.policy.privacy') }}">Privacy Policy</a></li>
+                                <li><a href="{{ route('site.policy.data-protection') }}">Data Protection Policy</a></li>
                             </ul>
                         </li>
                     </ul>
