@@ -160,9 +160,6 @@ only accessible to those who have been explicitly granted access. Only those peo
 to perform a specific job (including, but not limited to, instructors, division staff, and administrative assistants)
 are granted access to personally identifiable information.
 
-
-21st July 2018
-
 The VATSIM UK Data Protection and Handling Policy and the VATSIM UK Collective Responsibility Agreement
 details the circumstances and the manner under which those authorised to see and access your data may do
 so.
@@ -186,9 +183,6 @@ this from the individual themselves or a parent/guardian).
 
 Where there is reasonable doubt that legitimate consent has been received, individuals will have access to
 VATSIM UK services restricted until clarity is sought.
-
-
-21st July 2018
 
 ## Section 3 | Changes to This Policy
 
