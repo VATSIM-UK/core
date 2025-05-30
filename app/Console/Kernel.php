@@ -73,6 +73,10 @@ class Kernel extends ConsoleKernel
             ->twiceDaily(2, 14)
             ->graceTimeInMinutes(15);
 
+        $schedule->command('import:stale-members')
+            ->daily()
+            ->graceTimeInMinutes(15);
+
         // === By Quarter === //
         $schedule->command('roster:update', [
             Carbon::now()->subMonths(3),
