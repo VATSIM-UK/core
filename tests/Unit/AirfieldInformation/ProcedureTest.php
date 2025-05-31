@@ -6,13 +6,14 @@ use App\Models\Airport;
 use App\Models\Airport\Procedure;
 use App\Models\Airport\Runway;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ProcedureTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_can_create_a_new_procedure()
     {
         $procedure = factory(Procedure::class)->create();
@@ -20,21 +21,21 @@ class ProcedureTest extends TestCase
         $this->assertInstanceOf(Procedure::class, Procedure::find($procedure->id));
     }
 
-    /** @test */
+    #[Test]
     public function it_has_working_airport_relationship()
     {
         $procedure = factory(Procedure::class)->create();
         $this->assertInstanceOf(Airport::class, $procedure->airport);
     }
 
-    /** @test */
+    #[Test]
     public function it_has_working_runway_relationship()
     {
         $procedure = factory(Procedure::class)->create();
         $this->assertInstanceOf(Runway::class, $procedure->runway);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_procedure_type()
     {
         $procedure = factory(Procedure::class)->create(['type' => Procedure::TYPE_SID]);

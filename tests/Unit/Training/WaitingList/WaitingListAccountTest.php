@@ -5,6 +5,7 @@ namespace Tests\Unit\Training\WaitingList;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WaitingListAccountTest extends TestCase
@@ -22,7 +23,7 @@ class WaitingListAccountTest extends TestCase
         $this->actingAs($this->privacc);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_have_notes_added()
     {
         $account = Account::factory()->create();
@@ -33,7 +34,7 @@ class WaitingListAccountTest extends TestCase
         $this->assertEquals('This is a note', $waitingListAccount->notes);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_default_created_at_to_now_if_not_provided()
     {
         $account = Account::factory()->create();
@@ -46,7 +47,7 @@ class WaitingListAccountTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_set_created_at_to_given_date_if_provided()
     {
         $date = Carbon::parse('2020-01-01 12:00:00');
@@ -60,7 +61,7 @@ class WaitingListAccountTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_know_its_position()
     {
         /** @var Account $account */
