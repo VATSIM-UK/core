@@ -1,5 +1,7 @@
 <x-markdown>
-Always contact **local ATC** (DEL/GND/TWR/APP) where it is online. There are many APP positions that cover more than one airfield top-down:
+Always contact **local ATC** (DEL/GND/TWR/APP) where it is online.
+
+Some APP positions cover more than one airfield top-down:
 
 - **EGAA_APP** – Belfast/Aldergrove (EGAA) and Belfast/City (EGAC)
 - **EGGP_APP** – Liverpool (EGGP) and Hawarden (EGNR)
@@ -13,15 +15,15 @@ Always contact **local ATC** (DEL/GND/TWR/APP) where it is online. There are man
 
 ### What is top-down?
 
-In the absence of local ATC, area controllers provide a top-down service at airfields in their sectors. Request clearance, pushback, taxi, etc., as if there were an aerodrome controller online.
+In the absence of local ATC, area and approach controllers provide a top-down service at airfields in their area of responsibility. You should request clearance, pushback, taxi, etc., as if there were an aerodrome controller online.
 
 ### Are all airfields covered top-down?
 
-Controllers provide top-down service at all airfields with a permanent Tower or Approach facility in the real world, including airports [outside controlled airspace](https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification.).
+Controllers provide top-down service at all airfields with a permanent Tower or Approach facility in the real world, including airports [outside of controlled airspace](https://www.skybrary.aero/index.php/Controlled_Airspace#:~:text=SKYbrary%20Wiki,-If%20you%20wish&text=Controlled%20airspace%20is%20an%20airspace,accordance%20with%20the%20airspace%20classification.).
 
 When busy, controllers may downgrade service at quieter airfields. You **must** contact the controller before departure to check the service provided.
 
-If departing outside controlled airspace and joining it en route, ensure you obtain clearance beforehand.
+If you are departing from an airfield outside of controlled airspace and intending to join in-flight, ensure you obtain a joining clearance beforehand.
 
 ### How do I know who to call?
 
