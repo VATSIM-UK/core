@@ -221,7 +221,7 @@ class StateTest extends TestCase
     }
 
     #[Test]
-    public function itRemainsIdempotentWhenTryingToRemoveAStateThatIsntSet()
+    public function it_remains_idempotent_when_trying_to_remove_a_state_that_isnt_set()
     {
         $regionState = \App\Models\Mship\State::findByCode('REGION');
 
