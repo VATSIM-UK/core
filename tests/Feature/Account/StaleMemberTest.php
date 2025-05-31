@@ -79,10 +79,10 @@ class StaleMemberTest extends TestCase
 
     public function test_handles_missing_members()
     {
-        // @fixme how to exclude from future updates? consult with Axon
         $account = Account::factory()->create([
             'cert_checked_at' => '2000-01-01 00:00:00',
         ]);
+        $account->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
         $waitingList = $this->createList();
         $waitingList->addToWaitingList($account, $this->privacc);
 
@@ -93,6 +93,7 @@ class StaleMemberTest extends TestCase
         ]);
 
         $this->artisan('import:stale-members')->assertOk();
+        $this->assertFalse($waitingList->includesAccount($account));
     }
 
     public function test_ignores_international_members()

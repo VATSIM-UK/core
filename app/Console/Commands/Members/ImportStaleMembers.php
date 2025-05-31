@@ -3,6 +3,8 @@
 namespace App\Console\Commands\Members;
 
 use App\Models\Mship\Account;
+use App\Models\Training\WaitingList\Removal;
+use App\Models\Training\WaitingList\RemovalReason;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
@@ -42,7 +44,8 @@ class ImportStaleMembers extends Command
         foreach ($accountIds as $accountId) {
             $vAccount = $this->fetchAccount($accountId);
             if (empty($vAccount) || ! $this->validate($vAccount)) {
-                $this->info("Could not retrieve {$accountId} from .net");
+                $this->info("Could not retrieve {$accountId} from .net, they will be removed from waiting lists");
+                $this->removeFromAllLists($accountId);
                 $skippedCount++;
 
                 continue;
@@ -111,5 +114,13 @@ class ImportStaleMembers extends Command
             ->select('id')
             ->get()
             ->pluck('id');
+    }
+
+    private function removeFromAllLists(int $accountId): void
+    {
+        $account = Account::findOrFail($accountId);
+        foreach ($account->currentWaitingLists() as $list) {
+            $list->removeFromWaitingList($account, new Removal(RemovalReason::Other, null, '[system] could not find in core api'));
+        }
     }
 }
