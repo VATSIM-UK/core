@@ -106,6 +106,7 @@ class ImportStaleMembers extends Command
             ->whereHas('states', function ($q) {
                 $q->where('code', 'DIVISION');
             })
+            ->whereHas('waitingListAccounts')
             ->limit(1000)
             ->select('id')
             ->get()
