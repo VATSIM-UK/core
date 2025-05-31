@@ -4,6 +4,7 @@ namespace Tests\Feature\Account;
 
 use App\Models\TeamSpeak\Registration;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class TeamspeakManagementTest extends TestCase
@@ -12,7 +13,7 @@ class TeamspeakManagementTest extends TestCase
 
     private $registration;
 
-    /** @test */
+    #[Test]
     public function test_user_can_delete_own_registration()
     {
         $this->followingRedirects()->actingAs($this->registration->account)
@@ -20,7 +21,7 @@ class TeamspeakManagementTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_user_cant_delete_others_registration()
     {
         $this->followingRedirects()->actingAs($this->user)
@@ -28,7 +29,7 @@ class TeamspeakManagementTest extends TestCase
             ->assertNotFound();
     }
 
-    /** @test */
+    #[Test]
     public function test_can_get_status_of_own_registration()
     {
         $this->followingRedirects()->actingAs($this->registration->account)
@@ -36,7 +37,7 @@ class TeamspeakManagementTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_cant_get_status_of_others_registration()
     {
         $this->followingRedirects()->actingAs($this->user)

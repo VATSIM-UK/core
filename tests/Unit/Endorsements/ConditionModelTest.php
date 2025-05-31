@@ -8,6 +8,7 @@ use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ConditionModelTest extends TestCase
@@ -23,7 +24,7 @@ class ConditionModelTest extends TestCase
         $this->condition = factory(PositionGroupCondition::class)->create();
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_created()
     {
         $condition = PositionGroupCondition::create([
@@ -44,13 +45,13 @@ class ConditionModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_an_array_of_positions()
     {
         $this->assertTrue(is_array($this->condition->positions));
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_a_list_of_human_positions()
     {
         $this->condition->positions = ['EGKK_%', 'EGLL_%'];
@@ -60,7 +61,7 @@ class ConditionModelTest extends TestCase
         $this->assertEquals(['EGKK_XXX', 'EGLL_XXX'], $this->condition->fresh()->human_positions);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_associated_with_a_endorsement()
     {
         $positionGroup = factory(PositionGroup::class)->create();
@@ -73,7 +74,7 @@ class ConditionModelTest extends TestCase
         $this->assertEquals($positionGroup->id, $condition->fresh()->positionGroup->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_reports_progress()
     {
         $condition = factory(PositionGroupCondition::class)->make(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD]);
@@ -116,7 +117,7 @@ class ConditionModelTest extends TestCase
         $this->assertEquals(['EGLL' => 2, 'ESSEX' => 2], $data->all());
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_reports_met_and_progress_for_single_airfield()
     {
         $condition = factory(PositionGroupCondition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD]);
@@ -145,7 +146,7 @@ class ConditionModelTest extends TestCase
         $this->assertEquals(10, $condition->fresh()->overallProgressForUser($this->user));
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_reports_met_and_progress_for_sum()
     {
         $condition = factory(PositionGroupCondition::class)->create(['positions' => ['EGLL_%', 'ESSEX_APP'], 'required_hours' => 10, 'within_months' => 2, 'type' => PositionGroupCondition::TYPE_SUM_OF_AIRFIELDS]);
@@ -174,7 +175,7 @@ class ConditionModelTest extends TestCase
         $this->assertEquals(10, $condition->fresh()->overallProgressForUser($this->user));
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_checks_for_qualification_when_present()
     {
         $requiredQualification = Qualification::code('S3')->get()->first()->id;

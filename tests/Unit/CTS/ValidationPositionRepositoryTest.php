@@ -7,6 +7,7 @@ use App\Models\Cts\Validation;
 use App\Models\Cts\ValidationPosition;
 use App\Repositories\Cts\ValidationPositionRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ValidationPositionRepositoryTest extends TestCase
@@ -23,7 +24,7 @@ class ValidationPositionRepositoryTest extends TestCase
         $this->subjectUnderTest = resolve(ValidationPositionRepository::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_find_a_position_by_id()
     {
         $position = factory(ValidationPosition::class)->create();
@@ -32,7 +33,7 @@ class ValidationPositionRepositoryTest extends TestCase
         $this->assertEquals($position->id, $search->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_find_a_position_by_callsign()
     {
         $position = factory(ValidationPosition::class)->create([
@@ -44,7 +45,7 @@ class ValidationPositionRepositoryTest extends TestCase
         $this->assertEquals($position->id, $search->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_validated_members()
     {
         $position = factory(ValidationPosition::class)->create();
@@ -56,7 +57,7 @@ class ValidationPositionRepositoryTest extends TestCase
         $this->assertCount(10, $position->members);
     }
 
-    /** @test */
+    #[Test]
     public function it_formats_validated_members()
     {
         $position = factory(ValidationPosition::class)->create();
