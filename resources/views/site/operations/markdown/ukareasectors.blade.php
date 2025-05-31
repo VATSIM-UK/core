@@ -1,7 +1,7 @@
 <x-markdown>
 ### Introduction
 
-This page explains the basics of the En Route (CTR) sectors in the UK. The information is split into sections for different stages of flight.
+This page explains the basics of the Enroute (CTR) sectors in the UK. The information is split into sections for different stages of flight.
 
 If you are ever unsure who to call, please message one of our controllers. They will be more than happy to help!
 

@@ -100,24 +100,4 @@
 
     </div>
 
-    <div class="row equal">
-
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-ukblue">
-                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#sectors-controller-info">
-                    <div class="panel-heading">
-                        <i class="fa fa-info-circle" aria-hidden="true"></i> &thinsp; Controller Information
-                        <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
-                    </div>
-                </a>
-                <div id="sectors-controller-info" class="panel-collapse collapse panel-body">
-
-                @include("site.operations.markdown.controller")
-
-                </div>
-            </div>
-        </div>
-
-    </div>
-
 @stop
