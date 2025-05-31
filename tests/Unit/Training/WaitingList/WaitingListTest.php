@@ -113,7 +113,7 @@ class WaitingListTest extends TestCase
         $this->assertDatabaseHas('training_waiting_list_account',
             ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
 
-        $this->waitingList->removeFromWaitingList($account);
+        $this->waitingList->removeFromWaitingList($account, new WaitingList\Removal(WaitingList\RemovalReason::Other, null));
 
         $this->assertDatabaseHas('training_waiting_list_account',
             [
@@ -128,7 +128,7 @@ class WaitingListTest extends TestCase
             $this->waitingList->addToWaitingList($account, $this->privacc);
         });
 
-        $this->waitingList->removeFromWaitingList($accounts[1]);
+        $this->waitingList->removeFromWaitingList($accounts[1], new WaitingList\Removal(WaitingList\RemovalReason::Other, null));
 
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $this->waitingList->id,

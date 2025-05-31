@@ -31,7 +31,7 @@ class AccountWaitingListsTest extends TestCase
         $this->oldWaitingList->addToWaitingList($this->user, $this->privacc);
         $this->currentWaitingList->addToWaitingList($this->user, $this->privacc);
 
-        $this->oldWaitingList->removeFromWaitingList($this->user);
+        $this->oldWaitingList->removeFromWaitingList($this->user, new WaitingList\Removal(WaitingList\RemovalReason::Other, null, null));
     }
 
     #[Test]
