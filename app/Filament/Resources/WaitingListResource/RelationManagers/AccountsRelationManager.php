@@ -147,7 +147,10 @@ class AccountsRelationManager extends RelationManager
                     ->modalCancelActionLabel('Cancel')
                     ->visible(fn ($record) => $this->can('removeAccounts', $record->waitingList)),
             ])
-            ->defaultSort('created_at', 'asc')->persistSearchInSession()->defaultPaginationPageOption(25);
+            ->defaultSort('created_at', 'asc')
+            ->persistSearchInSession()
+            ->paginated(['25', '50', '100'])
+            ->defaultPaginationPageOption(25);
     }
 
     public function isReadOnly(): bool
