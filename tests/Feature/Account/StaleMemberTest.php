@@ -7,6 +7,8 @@ use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Sleep;
 use Tests\TestCase;
 use Tests\Unit\Training\WaitingList\WaitingListTestHelper;
 
@@ -94,6 +96,61 @@ class StaleMemberTest extends TestCase
 
         $this->artisan('import:stale-members')->assertOk();
         $this->assertFalse($waitingList->includesAccount($account));
+    }
+
+    public function test_handles_rate_limit_problems()
+    {
+        $account = Account::factory()->create([
+            'cert_checked_at' => '2000-01-01 00:00:00',
+        ]);
+        $account->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
+        $waitingList = $this->createList();
+        $waitingList->addToWaitingList($account, $this->privacc);
+
+        Http::fake([
+            config('services.vatsim-net.api.base')."members/{$account->id}" => Http::sequence()
+                ->pushStatus(429)
+                ->push([
+                    'region_id' => 'EMEA',
+                    'division_id' => 'EUD',
+                ], 200),
+        ]);
+
+        Sleep::fake();
+        $this->artisan('import:stale-members')->assertOk();
+        Sleep::assertSequence([
+            Sleep::for(60)->seconds(),
+        ]);
+    }
+
+    public function test_rate_limits()
+    {
+        $waitingList = $this->createList();
+        $accounts = Account::factory()->count(10)->create([
+            'cert_checked_at' => '2000-01-01 00:00:00',
+        ]);
+        foreach ($accounts as $account) {
+            $account->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
+            $waitingList->addToWaitingList($account, $this->privacc);
+        }
+
+        $this->assertCount(10, ImportStaleMembers::getAccountIds());
+
+        Http::fake([
+            config('services.vatsim-net.api.base').'members/*' => Http::response([
+                'region_id' => 'EUR', // @fixme our tests / seeding data seem to rely on this being EUR, it is actually EMA
+                'division_id' => 'GBR',
+            ], 200),
+        ]);
+
+        Sleep::fake();
+        Sleep::whenFakingSleep(function () {
+            RateLimiter::clear(ImportStaleMembers::RATE_LIMIT_KEY);
+        });
+        $this->artisan('import:stale-members')->assertOk();
+        Sleep::assertSequence([
+            Sleep::for(60)->seconds(),
+        ]);
     }
 
     public function test_ignores_international_members()

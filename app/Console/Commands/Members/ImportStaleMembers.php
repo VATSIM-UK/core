@@ -8,9 +8,13 @@ use App\Models\Training\WaitingList\RemovalReason;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Sleep;
 
 class ImportStaleMembers extends Command
 {
+    const RATE_LIMIT_KEY = 'vatsim-api:member-details';
+
     /**
      * The name and signature of the console command.
      *
@@ -42,7 +46,7 @@ class ImportStaleMembers extends Command
         $this->info("Found {$accountCount} stale accounts to update.");
 
         foreach ($accountIds as $accountId) {
-            $vAccount = $this->fetchAccount($accountId);
+            $vAccount = $this->fetchAccountRateLimited($accountId);
             if (empty($vAccount) || ! $this->validate($vAccount)) {
                 $this->info("Could not retrieve {$accountId} from .net, they will be removed from waiting lists");
                 $this->removeFromAllLists($accountId);
@@ -58,7 +62,22 @@ class ImportStaleMembers extends Command
         $this->info("Updated {$updatedCount} accounts, skipped {$skippedCount}.");
     }
 
-    private function fetchAccount(int $cid): ?array
+    private function fetchAccountRateLimited(int $cid): ?array
+    {
+        if (RateLimiter::tooManyAttempts(self::RATE_LIMIT_KEY, $perMinute = 5)) {
+            Sleep::for(60)->seconds();
+
+            return $this->fetchAccountRateLimited($cid);
+        }
+
+        $member = $this->fetchAccount($cid);
+
+        RateLimiter::increment(self::RATE_LIMIT_KEY);
+
+        return $member;
+    }
+
+    private function fetchAccount(int $cid, bool $alreadySlept = false): ?array
     {
         $token = config('services.vatsim-net.api.key');
 
@@ -70,6 +89,16 @@ class ImportStaleMembers extends Command
 
         if ($response->notFound()) {
             return null;
+        }
+
+        if ($response->tooManyRequests()) {
+            if ($alreadySlept) {
+                throw new \RuntimeException('could not recover from rate limiting');
+            }
+
+            Sleep::for(60)->seconds();
+
+            return $this->fetchAccount($cid, true);
         }
 
         if (! $response->ok()) {
@@ -110,7 +139,7 @@ class ImportStaleMembers extends Command
                 $q->where('code', 'DIVISION');
             })
             ->whereHas('waitingListAccounts')
-            ->limit(1000)
+            ->limit(50) // limit to 50 accounts to allow 10 mins run time at 5 req/min
             ->select('id')
             ->get()
             ->pluck('id');
