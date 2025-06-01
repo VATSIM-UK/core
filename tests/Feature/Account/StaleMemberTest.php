@@ -134,7 +134,7 @@ class StaleMemberTest extends TestCase
             $waitingList->addToWaitingList($account, $this->privacc);
         }
 
-        $this->assertCount(10, ImportStaleMembers::getAccountIds());
+        $this->assertCount(10, ImportStaleMembers::findHomeAccountsWithStaleChecks());
 
         Http::fake([
             config('services.vatsim-net.api.base').'members/*' => Http::response([
@@ -169,7 +169,7 @@ class StaleMemberTest extends TestCase
         $waitingList->addToWaitingList($account, $this->privacc);
         $waitingList->addToWaitingList($internationalAccount, $this->privacc);
 
-        $ids = ImportStaleMembers::getAccountIds();
+        $ids = ImportStaleMembers::findHomeAccountsWithStaleChecks();
 
         $this->assertCount(1, $ids);
         $this->assertContains($account->id, $ids);
@@ -183,7 +183,7 @@ class StaleMemberTest extends TestCase
         ]);
         $account->addState(State::findByCode('DIVISION'), 'GBR', 'EUR');
 
-        $ids = ImportStaleMembers::getAccountIds();
+        $ids = ImportStaleMembers::findHomeAccountsWithStaleChecks();
         $this->assertCount(0, $ids);
     }
 }

@@ -34,20 +34,16 @@ class ImportStaleMembers extends Command
      */
     public function handle()
     {
-        // find members with a cert_checked_at not not within the past week
-        // run an api request for each
-        // stick through normal update procedure, this will remove from lists etc if necessary
-        $accountIds = $this->getAccountIds();
+        $accountIds = $this->findHomeAccountsWithStaleChecks();
 
-        $accountCount = $accountIds->count();
-        $updatedCount = 0;
-        $skippedCount = 0;
+        $updatedCount = $skippedCount = 0;
 
-        $this->info("Found {$accountCount} stale accounts to update.");
+        $this->info("Found {$accountIds->count()} stale accounts to update.");
 
         foreach ($accountIds as $accountId) {
-            $vAccount = $this->fetchAccountRateLimited($accountId);
-            if (empty($vAccount) || ! $this->validate($vAccount)) {
+            $vAccount = $this->fetchDetailsRateLimit($accountId);
+
+            if ($vAccount === null || ! $this->validateAccountApiResponse($vAccount)) {
                 $this->info("Could not retrieve {$accountId} from .net, they will be removed from waiting lists");
                 $this->removeFromAllLists($accountId);
                 $skippedCount++;
@@ -62,22 +58,26 @@ class ImportStaleMembers extends Command
         $this->info("Updated {$updatedCount} accounts, skipped {$skippedCount}.");
     }
 
-    private function fetchAccountRateLimited(int $cid): ?array
+    private function fetchDetailsRateLimit(int $cid, bool $alreadySlept = false): ?array
     {
         if (RateLimiter::tooManyAttempts(self::RATE_LIMIT_KEY, $perMinute = 5)) {
-            Sleep::for(60)->seconds();
+            if ($alreadySlept) {
+                throw new \RuntimeException('could not recover from rate limiting');
+            }
 
-            return $this->fetchAccountRateLimited($cid);
+            $this->sleep();
+
+            return $this->fetchDetailsRateLimit($cid, true);
         }
 
-        $member = $this->fetchAccount($cid);
+        $member = $this->fetchDetails($cid);
 
         RateLimiter::increment(self::RATE_LIMIT_KEY);
 
         return $member;
     }
 
-    private function fetchAccount(int $cid, bool $alreadySlept = false): ?array
+    private function fetchDetails(int $cid, bool $alreadySlept = false): ?array
     {
         $token = config('services.vatsim-net.api.key');
 
@@ -91,14 +91,15 @@ class ImportStaleMembers extends Command
             return null;
         }
 
+        // .net applies somewhat variable rate limits, so we can't rely on throttling ourselves
+        if ($response->tooManyRequests() && $alreadySlept) {
+            throw new \RuntimeException('could not recover from rate limiting');
+        }
+
         if ($response->tooManyRequests()) {
-            if ($alreadySlept) {
-                throw new \RuntimeException('could not recover from rate limiting');
-            }
+            $this->sleep();
 
-            Sleep::for(60)->seconds();
-
-            return $this->fetchAccount($cid, true);
+            return $this->fetchDetails($cid, true);
         }
 
         if (! $response->ok()) {
@@ -108,31 +109,27 @@ class ImportStaleMembers extends Command
         return $response->json();
     }
 
-    private function validate(array $vAccount): bool
-    {
-        $validator = \Validator::make($vAccount, [
-            'region_id' => 'required|string',
-            'division_id' => 'required|string',
-        ]);
-
-        return $validator->passes();
-    }
-
     private function update(int $cid, array $vMember): void
     {
         $account = Account::findOrFail($cid);
         $account->cert_checked_at = now();
 
-        // There's some gnarly-ness here, if we don't have before updating divison
-        // the update division log will bounce the cert_checked_at time back to its non-dirty state
-        // side effects!
+        // Update division logic refreshes the account, so any unsaved changes before calling it will be lost!
         $account->save();
-        $account->refresh();
 
+        // This will trigget e.g waiting list removals for leavers
         $account->updateDivision($vMember['division_id'], $vMember['region_id']);
     }
 
-    public static function getAccountIds(): Collection
+    /**
+     * Find division members, who are on waiting lists, who have not been seen in div members API for 2 days.
+     * A maximum of 50 accounts will be returned for timing reasons, the API needed to check details is heavily rate limited.
+     *
+     * Returns a collection of account ids.
+     *
+     * @return Collection<int, int>
+     */
+    public static function findHomeAccountsWithStaleChecks(): Collection
     {
         return Account::where('cert_checked_at', '<', now()->addDays(-2))
             ->whereHas('states', function ($q) {
@@ -151,5 +148,20 @@ class ImportStaleMembers extends Command
         foreach ($account->currentWaitingLists() as $list) {
             $list->removeFromWaitingList($account, new Removal(RemovalReason::Other, null, '[system] could not find in core api'));
         }
+    }
+
+    private function validateAccountApiResponse(array $vAccount): bool
+    {
+        $validator = \Validator::make($vAccount, [
+            'region_id' => 'required|string',
+            'division_id' => 'required|string',
+        ]);
+
+        return $validator->passes();
+    }
+
+    public function sleep(): void
+    {
+        Sleep::for(60)->seconds();
     }
 }
