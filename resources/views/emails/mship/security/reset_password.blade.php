@@ -14,6 +14,6 @@
 </p>
 
 <p>
-    <strong>If you did not request this password</strong> {!! HTML::mailto("community@vatsim.uk", "let us know") !!}!
+    <strong>If you did not request this password</strong> <a href="mailto:community@vatsim.uk">let us know</a>!
 </p>
 @stop

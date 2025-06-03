@@ -1,7 +1,8 @@
 <div>
     @if ($value)
-    {!! HTML::img("tick_mark_circle", "png", 20) !!}
+        <img src="{{ asset('images/tick_mark_circle.png') }}" width="20" alt="Tick">
     @else
-    {!! HTML::img("cross_mark_circle", "png", 20) !!}
+        <img src="{{ asset('images/cross_mark_circle.png') }}" width="20" alt="Cross">
     @endif
 </div>
+

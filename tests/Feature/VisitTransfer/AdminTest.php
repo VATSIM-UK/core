@@ -8,6 +8,7 @@ use App\Models\VisitTransfer\Reference;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Mail;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AdminTest extends TestCase
@@ -33,7 +34,7 @@ class AdminTest extends TestCase
         $this->application = $this->application->fresh();
     }
 
-    /** @test */
+    #[Test]
     public function test_that_it_displays_check_outcomes()
     {
         $this->application->status = Application::STATUS_SUBMITTED;
@@ -57,7 +58,7 @@ class AdminTest extends TestCase
             ->assertSeeTextInOrder(['90 Day Check', 'within 90 days', '50 Hour Check', 'in excess of 50 hours']);
     }
 
-    /** @test */
+    #[Test]
     public function test_that_it_shows_both_references()
     {
         $this->actingAs($this->privacc, 'web')
@@ -66,7 +67,7 @@ class AdminTest extends TestCase
             ->assertSee('Reference 2 - '.e($this->ref2->account->real_name), false);
     }
 
-    /** @test */
+    #[Test]
     public function test_that_it_doesnt_show_deleted_references()
     {
         $this->ref1->delete();
@@ -77,7 +78,7 @@ class AdminTest extends TestCase
             ->assertSee('Application has system deleted references in addition to the below:');
     }
 
-    /** @test */
+    #[Test]
     public function test_infinite_places_can_be_selected_for_a_facility()
     {
         $this->actingAs($this->privacc, 'web')
@@ -86,7 +87,7 @@ class AdminTest extends TestCase
             ->assertSessionHas('success');
     }
 
-    /** @test */
+    #[Test]
     public function test_training_spaces_has_to_be_present()
     {
         $array = $this->createTestPostData();
@@ -98,7 +99,7 @@ class AdminTest extends TestCase
             ->assertRedirect()->assertSessionHas('errors');
     }
 
-    /** @test */
+    #[Test]
     public function test_number_of_places_can_be_selected_for_a_facility()
     {
         $this->actingAs($this->privacc, 'web')

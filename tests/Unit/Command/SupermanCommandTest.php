@@ -3,6 +3,7 @@
 namespace Tests\Unit\Command;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -10,14 +11,14 @@ class SupermanCommandTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_reports_to_console_when_successful()
     {
         $this->artisan('grant:superman', ['cid' => $this->user->id])
             ->expectsOutput('Account added to the superman role!');
     }
 
-    /** @test */
+    #[Test]
     public function it_reports_to_console_when_role_already_found()
     {
         $this->user->assignRole(Role::findByName('privacc'));
@@ -26,14 +27,14 @@ class SupermanCommandTest extends TestCase
             ->expectsOutput('The specified account already has the "superman" role.');
     }
 
-    /** @test */
+    #[Test]
     public function it_reports_to_console_when_the_cid_is_not_found()
     {
         $this->artisan('grant:superman', ['cid' => 0000000])
             ->expectsOutput('The specific CID was not found.');
     }
 
-    /** @test */
+    #[Test]
     public function it_attaches_role_successfully()
     {
         $this->artisan('grant:superman', ['cid' => $this->user->id])

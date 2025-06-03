@@ -6,21 +6,24 @@
 
             <div class="row">
                 <div class="col-md-3">
-                    {!! HTML::panelOpen("Pending References", ["type" => "fa", "key" => "list"]) !!}
+                    @include('components.html.panel_open', [
+                        'title' => 'Pending References',
+                        'icon' => ['type' => 'fa', 'key' => 'list']
+                    ])
                     <ul class="nav nav-pills nav-stacked">
                         <li role="presentation">
-                            {{ link_to_route("visiting.landing", "Dashboard") }}
+                            <a href="{{ route('visiting.landing') }}">Dashboard</a>
                         </li>
 
                         @foreach(Auth::user()->visit_transfer_referee_pending as $ref)
 
                             <li role="presentation" {!! (Route::is("visiting.reference.complete") && $reference->id == $ref->id ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.reference.complete", $ref->application->account->name." - ".$ref->application->type_string." ".$ref->application->facility->name, [$ref->token->code], ["class" => (Route::is("visiting.reference.complete")  && $reference->id == $ref->id ? "active" : "")]) }}
+                                <a href="{{ route('visiting.reference.complete', [$ref->token->code]) }}" class="{{ (Route::is('visiting.reference.complete')  && $reference->id == $ref->id ? 'active' : '') }}">{{ $ref->application->account->name." - ".$ref->application->type_string." ".$ref->application->facility->name }}</a>
                             </li>
 
                         @endforeach
                     </ul>
-                    {!! HTML::panelClose() !!}
+                    @include('components.html.panel_close')
                 </div>
                 <div class="col-md-9">
                     @yield("vt-content")

@@ -215,54 +215,54 @@
                                 <tr>
                                     <td class="text-center">
                                         @if($application->facility)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
-                                        {!! HTML::img("vertical_mark", "png", 24, 32) !!}
+                                            <img src="{{ asset('images/vertical_mark.png') }}" width="24" height="32" alt="Vertical Mark">
                                         @elseif($application->training_required)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
-                                        {!! HTML::img("vertical_mark", "png", 24, 32) !!}
+                                            <img src="{{ asset('images/vertical_mark.png') }}" width="24" height="32" alt="Vertical Mark">
                                         @elseif($application->statement_required)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
-                                        {!! HTML::img("vertical_mark", "png", 24, 32) !!}
+                                            <img src="{{ asset('images/vertical_mark.png') }}" width="24" height="32" alt="Vertical Mark">
                                         @elseif($application->references_required > 0)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
-                                        {!! HTML::img("vertical_mark", "png", 24, 32) !!}
+                                            <img src="{{ asset('images/vertical_mark.png') }}" width="24" height="32" alt="Vertical Mark">
                                         @elseif($application->should_perform_checks)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if(!$application->facility)
-                                        {!! HTML::img("vertical_mark", "png", 24, 32) !!}
+                                            <img src="{{ asset('images/vertical_mark.png') }}" width="24" height="32" alt="Vertical Mark">
                                         @elseif($application->will_auto_accept)
-                                        {!! HTML::img("tick_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/tick_mark_circle.png') }}" width="24" alt="Tick">
                                         @else
-                                        {!! HTML::img("cross_mark_circle", "png", 24) !!}
+                                            <img src="{{ asset('images/cross_mark_circle.png') }}" width="24" alt="Cross">
                                         @endif
                                     </td>
                                 </tr>
@@ -272,34 +272,39 @@
                                         -
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
-                                        <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
-                                        {!! Form::hidden("setting", "training_required") !!}
-                                        {!! Form::close() !!}
+                                        <form action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
+                                            <input type="hidden" name="setting" value="training_required">
+                                        </form>
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
-                                        <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
-                                        {!! Form::hidden("setting", "statement_required") !!}
-                                        {!! Form::close() !!}
+                                        <form action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
+                                            <input type="hidden" name="setting" value="statement_required">
+                                        </form>
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
-                                        <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
-                                        {!! Form::hidden("setting", "references_required") !!}
-                                        {!! Form::close() !!}
+                                        <form action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
+                                            <input type="hidden" name="setting" value="references_required">
+                                        </form>
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
-                                        <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
-                                        {!! Form::hidden("setting", "should_perform_checks") !!}
-                                        {!! Form::close() !!}
+                                        <form action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
+                                            <input type="hidden" name="setting" value="should_perform_checks">
+                                        </form>
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
-                                        <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
-                                        {!! Form::hidden("setting", "will_auto_accept") !!}
-                                        {!! Form::close() !!}
+                                        <form action="{{ route('adm.visiting.application.setting.toggle.post', $application->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
+                                            <input type="hidden" name="setting" value="will_auto_accept">
+                                        </form>
                                     </td>
                                 </tr>
                                 @endcan
@@ -358,10 +363,11 @@
                                                     Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.
                                                 </div>
                                                 <div class="modal-footer">
-                                                    {{ Form::open(array("url" => URL::route("adm.visiting.application.check.notmet.post", $application->id))) }}
-                                                    <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
-                                                    {{ Form::hidden("check", "90_day") }}
-                                                    {{ Form::close() }}
+                                                    <form action="{{ route('adm.visiting.application.check.notmet.post', $application->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="90_day">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -386,10 +392,11 @@
                                                     Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.
                                                 </div>
                                                 <div class="modal-footer">
-                                                    {{ Form::open(array("url" => URL::route("adm.visiting.application.check.notmet.post", $application->id))) }}
+                                                    <form action="{{ route('adm.visiting.application.check.notmet.post', $application->id) }}" method="POST">
+                                                        @csrf
                                                     <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
-                                                    {{ Form::hidden("check", "90_day") }}
-                                                    {{ Form::close() }}
+                                                        <input type="hidden" name="check" value="90_day">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -408,10 +415,13 @@
                                                     Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.
                                                 </div>
                                                 <div class="modal-footer">
-                                                    {{ Form::open(array("url" => URL::route("adm.visiting.application.check.met.post", $application->id))) }}
-                                                    <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
-                                                    {{ Form::hidden("check", "90_day") }}
-                                                    {{ Form::close() }}
+                                                    <form
+                                                        action="{{ route('adm.visiting.application.check.met.post', $application->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="90_day">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -436,10 +446,13 @@
                                                     Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.
                                                 </div>
                                                 <div class="modal-footer">
-                                                    {{ Form::open(array("url" => URL::route("adm.visiting.application.check.met.post", $application->id))) }}
-                                                    <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
-                                                    {{ Form::hidden("check", "90_day") }}
-                                                    {{ Form::close() }}
+                                                    <form
+                                                        action="{{ route('adm.visiting.application.check.met.post', $application->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="90_day">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -472,10 +485,11 @@
                                                     Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.
                                                 </div>
                                                 <div class="modal-footer">
-                                                    {{ Form::open(array("url" => URL::route("adm.visiting.application.check.notmet.post", $application->id))) }}
-                                                    <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
-                                                    {{ Form::hidden("check", "50_hours") }}
-                                                    {{ Form::close() }}
+                                                    <form action="{{ route('adm.visiting.application.check.notmet.post', $application->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="50_hours">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -499,10 +513,11 @@
                                                     Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.
                                                 </div>
                                                 <div class="modal-footer">
-                                                    {{ Form::open(array("url" => URL::route("adm.visiting.application.check.notmet.post", $application->id))) }}
-                                                    <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
-                                                    {{ Form::hidden("check", "50_hours") }}
-                                                    {{ Form::close() }}
+                                                    <form action="{{ route('adm.visiting.application.check.notmet.post', $application->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="50_hours">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -521,10 +536,11 @@
                                                     Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.
                                                 </div>
                                                 <div class="modal-footer">
-                                                    {{ Form::open(array("url" => URL::route("adm.visiting.application.check.met.post", $application->id))) }}
-                                                    <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
-                                                    {{ Form::hidden("check", "50_hours") }}
-                                                    {{ Form::close() }}
+                                                    <form action="{{ route('adm.visiting.application.check.met.post', $application->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="50_hours">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -548,10 +564,11 @@
                                                     Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.
                                                 </div>
                                                 <div class="modal-footer">
-                                                    {{ Form::open(array("url" => URL::route("adm.visiting.application.check.met.post", $application->id))) }}
-                                                    <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
-                                                    {{ Form::hidden("check", "50_hours") }}
-                                                    {{ Form::close() }}
+                                                    <form action="{{ route('adm.visiting.application.check.met.post', $application->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                        <input type="hidden" name="check" value="50_hours">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -582,7 +599,8 @@
 
 @if($unacceptedReferences->count() == 0)
 <div class="modal fade" id="modalApplicationReject" tabindex="-1" role="dialog" aria-labelledby="Reject Application" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.application.reject.post", $application->id))) !!}
+    <form action="{{ route('adm.visiting.application.reject.post', $application->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -629,11 +647,12 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 
 <div class="modal fade" id="modalApplicationAccept" tabindex="-1" role="dialog" aria-labelledby="Accept Application" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.application.accept.post", $application->id))) !!}
+    <form action="{{ route('adm.visiting.application.accept.post', $application->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -686,11 +705,12 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 
 <div class="modal fade" id="modalApplicationComplete" tabindex="-1" role="dialog" aria-labelledby="Complete Application" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.application.complete.post", $application->id))) !!}
+    <form action="{{ route('adm.visiting.application.complete.post', $application->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -724,12 +744,13 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 
 
 <div class="modal fade" id="modalApplicationCancel" tabindex="-1" role="dialog" aria-labelledby="Cancel Application" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.application.cancel.post", $application->id))) !!}
+    <form action="{{ route('adm.visiting.application.cancel.post', $application->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -770,13 +791,14 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 @endif
 
 @foreach($application->referees as $reference)
 <div class="modal fade" id="modalReferenceReject{{ $reference->id }}" tabindex="-1" role="dialog" aria-labelledby="Reject Reference" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.reference.reject.post", $reference->id))) !!}
+    <form action="{{ route('adm.visiting.reference.reject.post', $reference->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -821,11 +843,12 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 
 <div class="modal fade" id="modalReferenceAccept{{ $reference->id }}" tabindex="-1" role="dialog" aria-labelledby="Accept Reference" aria-hidden="true">
-    {!! Form::open(array("url" => URL::route("adm.visiting.reference.accept.post", $reference->id))) !!}
+    <form action="{{ route('adm.visiting.reference.accept.post', $reference->id) }}" method="POST">
+        @csrf
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -856,7 +879,7 @@
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 @endforeach
 @stop

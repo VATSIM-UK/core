@@ -5,6 +5,7 @@ namespace Tests\Unit\NetworkData;
 use App\Models\Mship\Qualification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AtcSessionModelTest extends TestCase
@@ -22,7 +23,7 @@ class AtcSessionModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_an_atc_session()
     {
         $qualification = Qualification::inRandomOrder()->first();
@@ -37,7 +38,7 @@ class AtcSessionModelTest extends TestCase
         Event::assertDispatched(\App\Events\NetworkData\AtcSessionStarted::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_an_atc_session_and_mark_as_disconnected()
     {
         $qualification = Qualification::inRandomOrder()->first();
@@ -56,7 +57,7 @@ class AtcSessionModelTest extends TestCase
         Event::assertDispatched(\App\Events\NetworkData\AtcSessionEnded::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_updates_minutes_online_when_a_session_is_marked_as_disconnected()
     {
         $qualification = Qualification::inRandomOrder()->first();
@@ -74,7 +75,7 @@ class AtcSessionModelTest extends TestCase
             "NetworkData::AtcSession hasn't calculated minutes online.");
     }
 
-    /** @test */
+    #[Test]
     public function it_triggers_an_event_when_an_atc_session_is_deleted()
     {
         $qualification = Qualification::inRandomOrder()->first();

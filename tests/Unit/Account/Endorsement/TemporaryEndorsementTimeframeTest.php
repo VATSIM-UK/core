@@ -19,8 +19,8 @@ class TemporaryEndorsementTimeframeTest extends TestCase
             'account_id' => $account->id,
             'endorsable_id' => $position->id,
             'endorsable_type' => Position::class,
-            'created_at' => now()->subDays(8),
-            'expires_at' => now()->subDays(1),
+            'created_at' => now()->subDays(8)->startOfDay(),
+            'expires_at' => now()->subDays(1)->startOfDay(),
             'created_by' => $this->privacc->id,
         ]);
 
@@ -29,8 +29,8 @@ class TemporaryEndorsementTimeframeTest extends TestCase
             'account_id' => $account->id,
             'endorsable_id' => $position->id,
             'endorsable_type' => Position::class,
-            'created_at' => now(),
-            'expires_at' => now()->addDays(2),
+            'created_at' => now()->startOfDay(),
+            'expires_at' => now()->addDays(2)->startOfDay(),
             'created_by' => $this->privacc->id,
         ]);
 

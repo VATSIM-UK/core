@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -36,7 +37,7 @@ class RoleSyncTest extends TestCase
         Cache::flush(); // Remove time lockout cache
     }
 
-    /** @test */
+    #[Test]
     public function it_triggers_event()
     {
         Event::fake();
@@ -48,7 +49,7 @@ class RoleSyncTest extends TestCase
         Event::assertDispatched(RoleRemoved::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_triggers_jobs_when_a_role_is_assigned()
     {
         Queue::fake();
@@ -62,7 +63,7 @@ class RoleSyncTest extends TestCase
         Queue::assertPushed(SyncToForums::class, 1);
     }
 
-    /** @test */
+    #[Test]
     public function it_triggers_jobs_when_a_role_is_removed()
     {
         Queue::fake();

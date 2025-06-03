@@ -5,7 +5,7 @@
 <div class="row">
     @if (array_get($_SERVER, 'REMOTE_ADDR') != $registration->registration_ip)
         <div class="alert alert-danger" role="alert"><strong>Warning!</strong> Your current IP address ({{ array_get($_SERVER, 'REMOTE_ADDR') }}) is different to the IP address you used to create this registration ({{ $registration->registration_ip }}).<br>
-            To successfully register, your current IP address must be identical to the one you used to create this registration. <strong>{!! link_to_route('teamspeak.delete', 'Click here', [$registration->id], ['class' => 'alert-link']) !!}</strong> to start a new registration.</div>
+            To successfully register, your current IP address must be identical to the one you used to create this registration. <strong><a href="{{ route('teamspeak.delete', [$registration->id]) }}" class="alert-link">Click here</a></strong> to start a new registration.</div>
     @endif
 
     <div class="alert alert-danger" role="alert" id="helpmessage" style="display:none">
@@ -13,7 +13,10 @@
     </div>
 
         <div class="col-md-8 col-md-offset-2">
-            {!! HTML::panelOpen("Automatic Registration", ["type" => "fa", "key" => "phone"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Automatic Registration',
+                'icon' => ['type' => 'fa', 'key' => 'phone']
+            ])
                 <div class="row">
                     <div class="col-md-12">
                         <p>
@@ -26,11 +29,14 @@
                         <a class="btn btn-primary" href="{{ $auto_url }}">Connect to TeamSpeak</a>
                     </div>
                 </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
 
         <div class="col-md-8 col-md-offset-2">
-            {!! HTML::panelOpen("Manual Registration", ["type" => "fa", "key" => "phone"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Manual Registration',
+                'icon' => ['type' => 'fa', 'key' => 'phone']
+            ])
                 <div class="row">
                     <div class="col-md-6 col-xs-12 col-sm-12">
                         <p>
@@ -52,7 +58,7 @@
                         <img src="{{ asset('images/ts_connect.png') }}" alt="Connection Screenshot" class="img-responsive img-rounded"/>
                     </div>
                 </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
 
 <script type="text/javascript">

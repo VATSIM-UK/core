@@ -5,13 +5,14 @@ namespace Tests\Feature\Account;
 use App\Models\Sys\Notification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class NotificationTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function test_logged_in_user_taken_to_compulsory_notification()
     {
         factory(Notification::class)->create(['status' => Notification::STATUS_MUST_ACKNOWLEDGE]);
@@ -21,7 +22,7 @@ class NotificationTest extends TestCase
             ->assertRedirect(route('mship.notification.list'));
     }
 
-    /** @test */
+    #[Test]
     public function test_logged_in_user_not_forced_to_non_compulsory_notification()
     {
         factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
@@ -31,7 +32,7 @@ class NotificationTest extends TestCase
             ->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_logged_in_user_can_read_notification()
     {
         $notification = factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
@@ -41,7 +42,7 @@ class NotificationTest extends TestCase
             ->assertRedirect(route('mship.notification.list'));
     }
 
-    /** @test */
+    #[Test]
     public function test_user_cant_double_read_notification()
     {
         $notification = factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
@@ -54,7 +55,7 @@ class NotificationTest extends TestCase
             ->assertRedirect(route('mship.manage.dashboard'));
     }
 
-    /** @test */
+    #[Test]
     public function test_notification_banner_doesnt_show_on_secondary_login()
     {
         factory(Notification::class)->create();

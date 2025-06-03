@@ -8,6 +8,7 @@ use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WaitingListFlagTest extends TestCase
@@ -38,7 +39,7 @@ class WaitingListFlagTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_deleted()
     {
         $this->flag->delete();
@@ -48,7 +49,7 @@ class WaitingListFlagTest extends TestCase
         $this->assertFalse($this->waitingListAccount->flags()->exists());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_marked()
     {
         $waitingListAccount = $this->waitingListAccount;
@@ -60,7 +61,7 @@ class WaitingListFlagTest extends TestCase
         $this->assertTrue($waitingListAccount->flags()->first()->pivot->value);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_un_marked()
     {
         $waitingListAccount = $this->waitingListAccount;
@@ -72,7 +73,7 @@ class WaitingListFlagTest extends TestCase
         $this->assertFalse($waitingListAccount->flags()->first()->pivot->value);
     }
 
-    /** @test */
+    #[Test]
     public function it_cant_be_un_marked_when_already_un_marked()
     {
         $waitingListAccount = $this->waitingListAccount;
@@ -84,7 +85,7 @@ class WaitingListFlagTest extends TestCase
         $this->assertFalse($waitingListAccount->flags()->first()->pivot->value);
     }
 
-    /** @test */
+    #[Test]
     public function it_assigns_default_flags_on_adding_account_to_list()
     {
         $account = Account::factory()->create();
@@ -97,7 +98,7 @@ class WaitingListFlagTest extends TestCase
         $this->assertTrue($waitingListAccount->flags()->find($this->flag->id)->pivot->value);
     }
 
-    /** @test */
+    #[Test]
     public function it_is_propagated_to_existing_accounts_when_a_flag_is_added()
     {
         $account = Account::factory()->create();

@@ -8,10 +8,11 @@
 
             <div class="row">
                 <div class="col-md-7 col-md-offset-2">
-                    {!! Form::open(['route' => 'password.delete', 'class' => 'form-horizontal']) !!}
+                    <form action="{{ route('password.delete') }}" class="form-horizontal" method="POST">
+                    @csrf
                     @include('auth.passwords.partials._old')
                     @include('auth.passwords.partials._submit')
-                    {{ Form::close() }}
+                    </form>
                 </div>
             </div>
         </div>

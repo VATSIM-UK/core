@@ -40,7 +40,7 @@ class CheckWaitingListAccountMshipState
         foreach ($accountsWaitingList as $waitingList) {
             Log::info("Account {$account->id} is in waiting list {$waitingList->id}, with non-home member state - removing from waiting list");
 
-            $waitingList->removeFromWaitingList($account);
+            $waitingList->removeFromWaitingList($account, new WaitingList\Removal(WaitingList\RemovalReason::NonHome, null));
         }
 
         Log::info("Account {$account->id} is in waiting lists {$accountsWaitingList->pluck('id')->join(', ')}, with non-home member state - notifying account");

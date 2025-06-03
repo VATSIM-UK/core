@@ -2,41 +2,42 @@
 
 namespace Tests\Feature\Site;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ATCPagesTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function test_it_loads_the_landing_page()
     {
         $this->get(route('site.atc.landing'))->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_new_controller_page()
     {
         $this->get(route('site.atc.newController'))->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_endorsements_page()
     {
         $this->get(route('site.atc.endorsements'))->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_heathrow_page()
     {
         $this->get(route('site.atc.heathrow'))->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_becoming_a_mentor_page()
     {
         $this->get(route('site.atc.mentor'))->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_bookings_page()
     {
         $this->get(route('site.atc.bookings'))->assertOk();

@@ -3,7 +3,10 @@
 @section('vt-content')
     <div class="row" id="submissionHelp">
         <div class="col-md-12">
-            {!! HTML::panelOpen("Withdraw", ["type" => "fa", "key" => "tick"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Withdraw',
+                'icon' => ['type' => 'fa', 'key' => 'tick']
+            ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <p>
@@ -11,14 +14,15 @@
                         You <strong>will</strong> be able to open another application following this.
                 </div>
 
-                {!! Form::open(["route" => ["visiting.application.withdraw.post", $application->public_id], "method" => "POST"]) !!}
+                <form action="{{ route('visiting.application.withdraw.post', $application->public_id) }}" method="POST">
+                    @csrf
                     <div class="col-md-6 col-md-offset-3 text-center">
                         <button type="submit" class="btn btn-danger">WITHDRAW APPLICATION</button>
                     </div>
-                {!! Form::close() !!}
+                </form>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
     </div>
 @stop

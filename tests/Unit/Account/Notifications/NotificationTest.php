@@ -5,13 +5,14 @@ namespace Tests\Unit\Account\Notifications;
 use App\Models\Sys\Notification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class NotificationTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_can_associate_read_notifications()
     {
         $notification = factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
@@ -21,7 +22,7 @@ class NotificationTest extends TestCase
         $this->assertCount(1, $this->user->fresh()->readSystemNotifications);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_report_a_notification_is_read()
     {
         $notification1 = factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);
@@ -32,7 +33,7 @@ class NotificationTest extends TestCase
         $this->assertFalse($this->user->hasReadNotification($notification2));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_shows_unread_notifications()
     {
         factory(Notification::class)->create(['status' => Notification::STATUS_GENERAL]);

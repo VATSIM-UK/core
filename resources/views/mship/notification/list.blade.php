@@ -6,7 +6,7 @@
         All current notifications are listed below. We have separated them into "Unread" and "read".
 
         @if($allowedToLeave)
-            {!! link_to_route("mship.manage.dashboard", "Once finished you can return to the dashboard.") !!}
+            <a href="{{ route('mship.manage.dashboard') }}">Once finished you can return to the dashboard.</a>
         @endif
     </p>
 
@@ -52,7 +52,9 @@
                                           <div class="panel-body">
                                               {!! nl2br($notice->content) !!}
 
-                                              {!! Form::open(["route" => ["mship.notification.acknowledge", $notice->id], "class" => "form-horizontal"]) !!}
+                                              <form action="{{ route('mship.notification.acknowledge', $notice->id) }}"
+                                                    method="POST" class="form-horizontal">
+                                                  @csrf
                                               @if($notice->status == \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE)
                                                   <div class="form-group">
                                                       <div class="col-sm-offset-5 col-sm-7">
@@ -72,7 +74,7 @@
                                                       </div>
                                                   </div>
                                               @endif
-                                              {!! Form::close() !!}
+                                              </form>
                                           </div>
                                       </div>
                                   </div>

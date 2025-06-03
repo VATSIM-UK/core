@@ -8,6 +8,7 @@ use App\Models\Training\WaitingList\WaitingListFlag;
 use App\Services\Training\CheckWaitingListFlags;
 use App\Services\Training\WriteWaitingListFlagSummary;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WaitingListWriteEligibilityTest extends TestCase
@@ -25,7 +26,7 @@ class WaitingListWriteEligibilityTest extends TestCase
         $this->actingAs($this->privacc);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_write_eligibility_true_to_waiting_list_account_with_no_flags()
     {
         $waitingListAccount = $this->waitingList->addToWaitingList($this->user, $this->privacc);
@@ -48,7 +49,7 @@ class WaitingListWriteEligibilityTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_should_write_eligibility_with_passing_manual_flags()
     {
         $flag = factory(WaitingListFlag::class)->create();

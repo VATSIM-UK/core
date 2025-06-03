@@ -19,17 +19,23 @@
 
 			<div class="col-md-7 col-md-offset-2">
         @if (!isset($form))
-          {!! Form::open(["route" => ["mship.feedback.new"]]) !!}
+                    <form method="POST" action="{{ route('mship.feedback.new') }}">
+                        @csrf
             <p>
-                {{Form::label('feedback_type', 'What kind of feedback would you like to leave?')}}
-                {{Form::select('feedback_type', $feedbackForms, [], ['class' => 'form-control']) }}
+                <label for="feedback_type">What kind of feedback would you like to leave?</label>
+                <select name="feedback_type" id="feedback_type" class="form-control">
+                    @foreach($feedbackForms as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
             </p>
             <p class="text-center">
                 <button type="submit" class="btn btn-primary">Next <i class="fa fa-arrow-right"></i></button>
             </p>
-          {!! Form::close() !!}
+                    </form>
         @else
-          {!! Form::open(["route" => ["mship.feedback.new.form.post", $form], "autocomplete" => 'off']) !!}
+                    <form method="POST" action="{{ route('mship.feedback.new.form.post', $form) }}" autocomplete="off">
+                        @csrf
         <p>
         @if($form->targeted)
           Here you can submit anonymous feedback about a <b>UK</b> division member.
@@ -51,14 +57,14 @@
         <hr>
         @foreach ($questions as $question)
             <div class="form-group{{ $errors->has($question->slug) ? " has-error" : "" }}">
-              {{ Form::label($question->slug, $question->question . ($question->required ? "" : " (optional)")) }} </br>
+              <label for="{{ $question->slug }}">{!! $question->question . ($question->required ? '' : ' (optional)') !!}</label> </br>
               {!! $question->form_html !!}
             </div>
         @endforeach
           <div class="form-group">
             <button type="submit" class="btn btn-success">Submit</button>
           </div>
-          {!! Form::close() !!}
+                    </form>
         @endif
 			</div>
 		</div>
