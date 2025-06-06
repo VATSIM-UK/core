@@ -118,11 +118,40 @@ class AccountsRelationManager extends RelationManager
                     ->visible(fn ($record) => $this->can('updateAccounts', $record->waitingList)),
 
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\DetachAction::make()
+                Tables\Actions\DetachAction::make('detachWithReason')
                     ->label('Remove')
-                    ->using(fn ($record, $livewire) => $livewire->ownerRecord->removeFromWaitingList($record->account))
-                    ->successNotificationTitle('User removed from waiting list'),
-            ])->defaultSort('created_at', 'asc')->persistSearchInSession()->defaultPaginationPageOption(25);
+                    ->form([
+                        Forms\Components\Select::make('reason_type')
+                            ->label('Reason for removal')
+                            ->options(self::removalReasonOptions())
+                            ->required()
+                            ->reactive(),
+
+                        Forms\Components\Textarea::make('custom_reason')
+                            ->label('Custom reason')
+                            ->rows(3)
+                            ->required()
+                            ->visible(fn (callable $get) => $get('reason_type') === 'other'),
+                    ])
+                    ->action(function (WaitingListAccount $record, array $data, $livewire) {
+                        $removalType = $data['reason_type'];
+
+                        $removal = new WaitingList\Removal(WaitingList\RemovalReason::from($removalType), auth()->user()->id, $data['custom_reason'] ?? '');
+
+                        $livewire->ownerRecord->removeFromWaitingList($record->account, $removal);
+                        $livewire->dispatch('refreshWaitingList');
+                    })
+                    ->successNotificationTitle('User removed from waiting list')
+                    ->modalHeading('Remove from Waiting List')
+                    ->modalDescription('Please provide a reason for removing this user.')
+                    ->modalSubmitActionLabel('Remove')
+                    ->modalCancelActionLabel('Cancel')
+                    ->visible(fn ($record) => $this->can('removeAccounts', $record->waitingList)),
+            ])
+            ->defaultSort('created_at', 'asc')
+            ->persistSearchInSession()
+            ->paginated(['25', '50', '100'])
+            ->defaultPaginationPageOption(25);
     }
 
     public function isReadOnly(): bool
@@ -148,6 +177,11 @@ class AccountsRelationManager extends RelationManager
     protected function canDetach(Model $record): bool
     {
         return $this->can('removeAccount', $this->getOwnerRecord());
+    }
+
+    public static function removalReasonOptions(): array
+    {
+        return WaitingList\RemovalReason::formOptions();
     }
 
     // Display All Manual Flags where display option is enabled

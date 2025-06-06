@@ -3,15 +3,18 @@
 @section('vt-content')
     <div class="row" id="termsBoxHelp">
         <div class="col-md-12">
-            {!! HTML::panelOpen("Terms & Conditions", ["type" => "fa", "key" => "list"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Terms & Conditions',
+                'icon' => ['type' => 'fa', 'key' => 'list']
+            ])
             <div class="hidden-xs">
                     <p>
                         Before you can start your application, you must first read and agree to the terms and conditions of the
                         Visiting &amp; Transferring Controller Policy (VTCP).
-                        {!! link_to("https://www.vatsim.net/docs/policy/transfer-and-visiting-controller-policy", "The VTCP can be located on the VATSIM.net website", ["target" => "_blank"]) !!}
+                        <a href="https://www.vatsim.net/docs/policy/transfer-and-visiting-controller-policy" target="_blank">The VTCP can be located on the VATSIM.net website.</a>
                     </p>
 
-                {!! Form::open(["route" => ["visiting.application.start.post", $applicationType, $trainingTeam], "method" => "POST"]) !!}
+                <form action="{{ route('visiting.application.start.post', [$applicationType, $trainingTeam]) }}" method="POST">
                     <div class="col-md-10 col-md-offset-1">
                         <div class="form-group">
                             <input id="terms_read" name="terms_read" type="checkbox" value="1">
@@ -62,13 +65,13 @@
                         <button type="submit" class="btn btn-success">Submit</button>
                     </div>
 
-                {!! Form::hidden("application_type", $applicationType) !!}
-                {!! Form::hidden("training_team", $trainingTeam) !!}
+                    <input type="hidden" name="application_type" value="{{ $applicationType }}">
+                    <input type="hidden" name="training_team" value="{{ $trainingTeam }}">
 
-                {!! Form::close() !!}
+                </form>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
     </div>
 @stop

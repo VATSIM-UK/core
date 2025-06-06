@@ -1,8 +1,8 @@
 <x-markdown>
-Military airfields are **not** covered *top-down* by the civilian En Route Control positions.
+Military airfields are **not** covered *top-down* by the civilian Area (CTR) Control positions.
 
 If local military ATC is online, you should contact them on the ground or if you are inbound.  
-Otherwise, if **Swanwick Mil** is online, they cover all airspace and airports.
+Otherwise, if **Swanwick Mil** is online, they can provide a service in all UK airspace and at military airports.
 
 > **EGVV_CTR** (133.900) – "Swanwick Mil"  
 > Covers **EGTT and EGPX FIR** airspace and airports for military operations.

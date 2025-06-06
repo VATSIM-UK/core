@@ -53,7 +53,7 @@
                         You can find details on how to sign up for training in the UK below.
                     @else
                         You will need to be a VATSIM member to sign up for our training courses.<br />
-                        Already a member? {!! HTML::link(route('login'), "Click here to login") !!} and find out which route is the most applicable to you.
+                        Already a member? <a href="{{ route('login') }}">Click here to login</a> and find out which route is the most applicable to you.
                     @endif
                 </div>
             </div>

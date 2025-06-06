@@ -29,10 +29,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // === By Minute === //
-        $schedule->command('teaman:runner', ['-v'])
-            ->everyMinute()
-            ->withoutOverlapping();
-
         $schedule->command('networkdata:download')
             ->everyTwoMinutes()
             ->withoutOverlapping(5)
@@ -81,8 +77,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('roster:update', [
             Carbon::now()->subMonths(3),
             Carbon::now(),
-        ])
-            ->quarterly()
+        ])->quarterly()
             ->doNotMonitor();
     }
 

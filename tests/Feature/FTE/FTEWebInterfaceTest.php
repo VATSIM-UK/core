@@ -5,6 +5,7 @@ namespace Tests\Feature\FTE;
 use App\Models\Smartcars\Flight;
 use App\Models\Smartcars\Pirep;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class FTEWebInterfaceTest extends TestCase
@@ -22,14 +23,14 @@ class FTEWebInterfaceTest extends TestCase
         $this->pirep = factory(Pirep::class)->create();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_from_dashboard_as_guest()
     {
         $this->get(route('fte.dashboard'))
             ->assertRedirect(route('landing'));
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_dashboard_and_exercise_button()
     {
         $this->actingAs($this->user, 'web')
@@ -38,7 +39,7 @@ class FTEWebInterfaceTest extends TestCase
             ->assertSeeText('View All Exercises');
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_when_no_exercises_available()
     {
         $this->exercise->enabled = false;
@@ -53,14 +54,14 @@ class FTEWebInterfaceTest extends TestCase
             ->assertSessionHas('error', 'There are no exercises available at the moment.');
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_from_guide_as_guest()
     {
         $this->get(route('fte.guide'))
             ->assertRedirect(route('landing'));
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_guide()
     {
         $this->actingAs($this->user, 'web')
@@ -68,14 +69,14 @@ class FTEWebInterfaceTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_from_exercise_index_as_guest()
     {
         $this->get(route('fte.exercises'))
             ->assertRedirect(route('landing'));
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_exercise_index()
     {
         $this->actingAs($this->user, 'web')
@@ -83,14 +84,14 @@ class FTEWebInterfaceTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_from_exercise_as_guest()
     {
         $this->get(route('fte.exercises', $this->exercise))
             ->assertRedirect(route('landing'));
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_exercise()
     {
         $this->actingAs($this->user, 'web')
@@ -98,14 +99,14 @@ class FTEWebInterfaceTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_from_history_as_guest()
     {
         $this->get(route('fte.history'))
             ->assertRedirect(route('landing'));
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_history()
     {
         $this->actingAs($this->user, 'web')
@@ -113,14 +114,14 @@ class FTEWebInterfaceTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_from_pirep_as_guest()
     {
         $this->get(route('fte.history', $this->pirep->id))
             ->assertRedirect(route('landing'));
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_pirep()
     {
         $this->actingAs($this->pirep->bid->account, 'web')
@@ -128,7 +129,7 @@ class FTEWebInterfaceTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_doesnt_load_pirep_for_wrong_user()
     {
         $this->actingAs($this->user, 'web')

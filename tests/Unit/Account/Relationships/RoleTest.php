@@ -7,6 +7,7 @@ use App\Events\Mship\Roles\RoleRemoved;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -15,7 +16,7 @@ class RoleTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_stores_role_details()
     {
         $role = factory(Role::class)->create();
@@ -25,7 +26,7 @@ class RoleTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_determines_if_the_password_is_mandatory()
     {
         $role = factory(Role::class)->create(['password_mandatory' => true]);
@@ -33,7 +34,7 @@ class RoleTest extends TestCase
         $this->assertTrue($role->password_mandatory);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_determines_if_a_password_lifetime_exists()
     {
         $role = factory(Role::class)->create(['password_lifetime' => 30]);
@@ -41,7 +42,7 @@ class RoleTest extends TestCase
         $this->assertEquals($role->password_lifetime, 30);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_determines_that_the_role_has_a_session_timeout()
     {
         $role = factory(Role::class)->create(['session_timeout' => 60]);
@@ -49,7 +50,7 @@ class RoleTest extends TestCase
         $this->assertEquals($role->session_timeout, 60);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_determines_that_this_role_has_a_specific_permission()
     {
         $role = factory(Role::class)->create();
@@ -65,7 +66,7 @@ class RoleTest extends TestCase
         $this->assertTrue($role->fresh()->hasPermissionTo($permission));
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_determines_that_this_role_does_not_have_a_specific_permission()
     {
         $role = factory(Role::class)->create();
@@ -88,7 +89,7 @@ class RoleTest extends TestCase
         $this->assertFalse($role->fresh()->hasPermissionTo($permissionB));
     }
 
-    /** @test */
+    #[Test]
     public function it_fires_events_when_a_role_is_assigned_and_removed()
     {
         Event::fake();

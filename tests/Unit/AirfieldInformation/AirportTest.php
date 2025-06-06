@@ -8,13 +8,14 @@ use App\Models\Airport\Procedure;
 use App\Models\Airport\Runway;
 use App\Models\Atc\Position;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AirportTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_can_create_a_new_airport()
     {
         $airport = factory(Airport::class)->create();
@@ -22,7 +23,7 @@ class AirportTest extends TestCase
         $this->assertInstanceOf(Airport::class, Airport::find($airport->id));
     }
 
-    /** @test */
+    #[Test]
     public function it_has_working_navaids_relationship()
     {
         $airport = factory(Airport::class)->create();
@@ -35,7 +36,7 @@ class AirportTest extends TestCase
         $this->assertCount(2, $airport->fresh()->navaids);
     }
 
-    /** @test */
+    #[Test]
     public function it_has_working_procedures_relationship()
     {
         $airport = factory(Airport::class)->create();
@@ -48,7 +49,7 @@ class AirportTest extends TestCase
         $this->assertCount(2, $airport->fresh()->procedures);
     }
 
-    /** @test */
+    #[Test]
     public function it_has_working_runways_relationship()
     {
         $airport = factory(Airport::class)->create();
@@ -61,7 +62,7 @@ class AirportTest extends TestCase
         $this->assertCount(2, $airport->fresh()->runways);
     }
 
-    /** @test */
+    #[Test]
     public function it_has_working_positions_relationship()
     {
         $airport = factory(Airport::class)->create();
@@ -74,14 +75,14 @@ class AirportTest extends TestCase
         $this->assertCount(2, $airport->positions);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_fir_type()
     {
         $airport = factory(Airport::class)->create(['fir_type' => Airport::FIR_TYPE_EGTT]);
         $this->assertEquals('EGTT', $airport->fir_type);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_if_it_has_basic_procedures_correctly()
     {
         $airport = factory(Airport::class)->create(['departure_procedures' => null, 'arrival_procedures' => null, 'vfr_procedures' => null]);

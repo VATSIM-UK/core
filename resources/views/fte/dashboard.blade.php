@@ -7,8 +7,8 @@
                 <div class="panel-heading"><i class="fa fa-book"></i> &thinsp; Getting Started
                 </div>
                 <div class="panel-body text-center">
-                    <a href="{{route("fte.guide")}}" style="text-decoration: none;">
-                        {{ HTML::image('/images/book.png', 'world', array( 'width' => 80, 'height' => 80 )) }}
+                    <a href="{{route('fte.guide')}}" style="text-decoration: none;">
+                        <img src="{{ asset('images/book.png') }}" alt="world" width="80" height="80">
                     </a>
                     <br><br>
                     Check out this guide for how to get started.
@@ -25,9 +25,9 @@
                         way to learn and have fun!<br/><br/>
                         Choose any one of our exercises and take flight, discovering the South East of the UK
                         and much more.<br>
-                        To get started check out {!! link_to_route('fte.guide', 'our guide here') !!}.<br/><br/>
+                        To get started check out <a href="{{ route('fte.guide') }}">our guide here</a>.<br/><br/>
                         If you have any questions please contact the Pilot Training Department via the Helpdesk
-                        ({{ HTML::link('https://helpdesk.vatsim.uk/','click here',array("target"=>"_blank")) }}).<br><br>
+                        (<a href="https://helpdesk.vatsim.uk/" target="_blank" rel="noopener noreferrer">click here</a>).<br><br>
                         <button type="button" id="restart_tour" class="btn btn-success center-block">Take a Tour</button>
                 </div>
             </div>
@@ -37,8 +37,8 @@
                 <div class="panel-heading"><i class="fa fa-clock"></i> &thinsp; Past Flights
                 </div>
                 <div class="panel-body text-center">
-                    <a href="{{route("fte.history")}}" style="text-decoration: none;">
-                        {{ HTML::image('/images/history.png', 'history', array( 'width' => 80, 'height' => 80 )) }}
+                    <a href="{{route('fte.history')}}" style="text-decoration: none;">
+                        <img src="{{ asset('images/history.png') }}" alt="history" width="80" height="80">
                     </a>
                     <br><br>
                     View flight history.

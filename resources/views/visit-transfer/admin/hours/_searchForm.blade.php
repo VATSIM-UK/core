@@ -8,30 +8,30 @@
                 range in the UK, rather than in their home division.</p>
         </div>
     </div>
-    {!! Form::open(['route' => 'adm.visiting.hours.search', 'method' => 'get', 'autocomplete' => 'off']) !!}
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                {!! Form::label("startDate","Start Date",['class' => 'control-label']),
-                Form::text("startDate", isset($startDate) ? $startDate : '', ['class' => 'form-control', 'id' => 'startDate']) !!}
+    <form action="{{ route('adm.visiting.hours.search') }}" method="GET" autocomplete="off">
+        @csrf
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="startDate" class="control-label">Start Date</label>
+                    <input type="text" name="startDate" id="startDate" class="form-control" value="{{ isset($startDate) ? $startDate : '' }}">
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                {!! Form::label("endDate","End Date",['class' => 'control-label']),
-                Form::text("endDate", isset($endDate) ? $endDate : '', ['class' => 'form-control', 'id' => 'endDate']) !!}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="endDate" class="control-label">End Date</label>
+                    <input type="text" name="endDate" id="endDate" class="form-control" value="{{ isset($endDate) ? $endDate : '' }}">
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="form-group">
-                {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
             </div>
         </div>
-    </div>
-
-    {!! Form::close() !!}
+    </form>
 </div>

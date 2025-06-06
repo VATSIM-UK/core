@@ -9,9 +9,9 @@ use App\Libraries\TeamSpeak;
 use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Registration;
 use Exception;
+use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TeamSpeak3_Adapter_ServerQuery_Exception;
 
 abstract class TeamSpeakCommand extends Command
 {
@@ -41,7 +41,7 @@ abstract class TeamSpeakCommand extends Command
     /**
      * Handling for a serverquery exception thrown by the TeamSpeak framework.
      */
-    protected static function handleServerQueryException(TeamSpeak3_Adapter_ServerQuery_Exception $e, ?Account $account = null)
+    protected static function handleServerQueryException(ServerQueryException $e, ?Account $account = null)
     {
         if ($e->getCode() === TeamSpeak::CLIENT_INVALID_ID) {
             self::$command->log('Invalid client ID.');

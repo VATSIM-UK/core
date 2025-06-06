@@ -57,7 +57,7 @@
                 You can find details on how to sign up for training in the UK below.
             @else
                 You will need to be a member of VATSIM to sign up to our training courses.<br />
-                Already a member? {!! HTML::link(route('login'), "Click here to login") !!} and find out which route is the most applicable to you.
+                Already a member? <a href="{{ route('login') }}">Click here to login</a> and find out which route is the most applicable to you.
             @endif
         </div>
     </div>
@@ -115,7 +115,7 @@
                             <li>
                                 Once your mentoring permissions have been assigned navigate to our <a
                                         href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
-                                    (CTS</a>).
+                                    (CTS)</a>.
                             </li>
                             <li>
                                 Sign into the CTS using our SSO.

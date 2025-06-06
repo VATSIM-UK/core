@@ -29,7 +29,6 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\Mship\Bans\BanUpdated::class => [
-            \App\Listeners\Sync\Bans\SyncBanToTs::class,
             \App\Listeners\Sync\Bans\SyncBanToForum::class,
         ],
 

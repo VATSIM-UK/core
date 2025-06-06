@@ -8,13 +8,14 @@ use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
 use App\Models\Mship\Feedback\Question\Type;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class FormModelTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_creates_a_feedback_form()
     {
         $form = [
@@ -29,7 +30,7 @@ class FormModelTest extends TestCase
         $this->assertDatabaseHas('mship_feedback_forms', $form);
     }
 
-    /** @test */
+    #[Test]
     public function it_creates_a_question_type()
     {
         $code = '<input name="%1" type="radio" style="margin-left: 20px;" value="%4" id="%1" %5> %3';
@@ -46,7 +47,7 @@ class FormModelTest extends TestCase
         $this->assertDatabaseHas('mship_feedback_question_types', $questionType);
     }
 
-    /** @test */
+    #[Test]
     public function it_creates_a_question()
     {
         $question = [
@@ -66,7 +67,7 @@ class FormModelTest extends TestCase
         $this->assertDatabaseHas('mship_feedback_questions', $question);
     }
 
-    /** @test */
+    #[Test]
     public function it_saves_the_questions_for_a_form()
     {
         $form = factory(Form::class)->create();
@@ -78,7 +79,7 @@ class FormModelTest extends TestCase
         $this->assertEquals(3, $form->questions->count());
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_the_public_scope()
     {
         $notPublic = factory(Form::class)->create([
@@ -93,7 +94,7 @@ class FormModelTest extends TestCase
         $this->assertFalse(Form::public()->get()->contains($notPublic));
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_a_contact_for_a_form()
     {
         $contact = factory(Contact::class)->create([
@@ -108,7 +109,7 @@ class FormModelTest extends TestCase
         $this->assertEquals('Department', $form->contact->name);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_responses_to_forms()
     {
         $form = factory(Form::class)->create();

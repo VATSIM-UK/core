@@ -4,6 +4,7 @@ namespace Tests\Unit\Account\Feedback;
 
 use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class FeedbackModelTest extends TestCase
@@ -18,7 +19,7 @@ class FeedbackModelTest extends TestCase
         $this->feedback = factory(Feedback::class)->create();
     }
 
-    /** @test */
+    #[Test]
     public function it_marks_the_feedback_as_actioned()
     {
         $this->assertNull($this->feedback->actioned_at);
@@ -32,7 +33,7 @@ class FeedbackModelTest extends TestCase
         $this->assertEquals($this->privacc->id, $this->feedback->actioned_by_id);
     }
 
-    /** @test */
+    #[Test]
     public function it_marks_the_feedback_as_un_actioned()
     {
         $this->feedback->markActioned($this->privacc);
@@ -44,7 +45,7 @@ class FeedbackModelTest extends TestCase
         $this->assertNull($this->feedback->actioned_by_id);
     }
 
-    /** @test */
+    #[Test]
     public function it_marks_the_feedback_as_sent()
     {
         $comment = 'Test';
@@ -68,7 +69,7 @@ class FeedbackModelTest extends TestCase
         $this->assertEquals($this->privacc->id, $this->feedback->actioned_by_id);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_the_sender()
     {
         $feedback = factory(Feedback::class)->create([
@@ -78,7 +79,7 @@ class FeedbackModelTest extends TestCase
         $this->assertEquals($this->privacc->id, $feedback->sender->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_returns_sent_scope()
     {
         $this->feedback->markSent($this->privacc);
@@ -89,7 +90,7 @@ class FeedbackModelTest extends TestCase
         $this->assertFalse(Feedback::sent()->get()->contains($unsentFeedback));
     }
 
-    /** @test */
+    #[Test]
     public function it_calculates_actioned_at_correctly()
     {
         $this->assertFalse($this->feedback->actioned);
