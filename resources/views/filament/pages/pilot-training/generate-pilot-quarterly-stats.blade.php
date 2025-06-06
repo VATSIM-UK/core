@@ -27,5 +27,30 @@
                 </tbody>
             </table>
         </x-filament::card>
+                    <x-filament::button
+                wire:click="exportCsv"
+                color="secondary"
+                class="mt-4"
+            >Export CSV</x-filament::button>
     @endif
+
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            window.addEventListener('download-csv', event => {
+                const csv = event.detail.csv;
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'pilot-quarterly-stats.csv');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                URL.revokeObjectURL(url);
+            });
+        });
+    </script>
 </x-filament::page>

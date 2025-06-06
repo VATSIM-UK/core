@@ -83,6 +83,13 @@ class GeneratePilotQuarterlyStats extends BasePage
         ]);
     }
 
+    #[Js]
+    public function exportCsv(): void
+    {
+        $dummyCsv = "Name,Value\nExample,123\nTest,456";
+        $this->dispatch('download-csv', csv: $dummyCsv);
+    }
+
     private function SessionCount(Carbon $startDate, Carbon $endDate, string $position)
     {
         return DB::connection('cts')
