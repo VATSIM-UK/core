@@ -9,6 +9,8 @@ use App\Notifications\Training\RemovedFromWaitingListInactiveAccount;
 use App\Notifications\Training\RemovedFromWaitingListNonHomeMember;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WaitingListInactivityIntegrationTest extends TestCase
@@ -24,7 +26,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
         $this->actingAs($this->privacc);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_react_to_real_account_altered_event_for_inactivity()
     {
         $this->markTestSkipped('The event is not fired as it is currently disabled.');
@@ -46,7 +48,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
         Notification::assertSentToTimes($account, RemovedFromWaitingListInactiveAccount::class, 1);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_react_to_real_account_altered_event_for_inactivity_not_on_list()
     {
         $this->markTestSkipped('The event is not fired as it is currently disabled.');
@@ -65,9 +67,8 @@ class WaitingListInactivityIntegrationTest extends TestCase
         Notification::assertNothingSentTo($account, RemovedFromWaitingListInactiveAccount::class);
     }
 
-    /** @test
-     * @group test1
-     */
+    #[Test]
+    #[Group('test1')]
     public function it_should_react_to_real_account_altered_event_for_state_changed()
     {
         $account = Account::factory()->create();
@@ -82,11 +83,11 @@ class WaitingListInactivityIntegrationTest extends TestCase
 
         $account->addState(State::findByCode('REGION'));
 
-        $this->assertFalse($waitingList->fresh()->accounts->contains($account));
+        $this->assertFalse($waitingList->fresh()->includesAccount($account));
         Notification::assertSentToTimes($account, RemovedFromWaitingListNonHomeMember::class, 1);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_react_to_real_account_altered_event_for_mship_state_not_on_list()
     {
         $account = Account::factory()->create();
@@ -94,12 +95,12 @@ class WaitingListInactivityIntegrationTest extends TestCase
 
         $waitingList = factory(WaitingList::class)->create();
 
-        $this->assertFalse($waitingList->accounts->contains($account));
+        $this->assertFalse($waitingList->includesAccount($account));
 
         $account->updateDivision('EUD', 'EUR');
         $account->refresh();
 
-        $this->assertFalse($waitingList->fresh()->accounts->contains($account));
+        $this->assertFalse($waitingList->includesAccount($account));
         Notification::assertNothingSentTo($account, RemovedFromWaitingListNonHomeMember::class);
     }
 }

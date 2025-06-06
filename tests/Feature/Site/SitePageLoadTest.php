@@ -4,17 +4,18 @@ namespace Tests\Feature\Site;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class SitePageLoadTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function test_it_loads_the_join_us_page()
     {
         $this->get(route('site.join'))->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_staff_page_regardless_of_ipb_key()
     {
         Config::set([
@@ -24,7 +25,7 @@ class SitePageLoadTest extends TestCase
         $this->get(route('site.staff'))->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_retrieves_url_from_cache()
     {
         Cache::put(54, 'test.url', 1440 * 60);

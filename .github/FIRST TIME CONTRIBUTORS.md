@@ -1,6 +1,6 @@
 # Introduction
 
-This guide is intended for first time contributors, but should be followed alongside the [General Contributing Guide](https://github.com/VATSIM-UK/core/blob/main/.github/Contributing.md).
+This guide is intended for first time contributors, but should be followed alongside the [General Contributing Guide](https://github.com/VATSIM-UK/core/blob/main/.github/CONTRIBUTING.md).
 
 As well as this textual guide, there is a [YouTube video](https://www.youtube.com/watch?v=FDddSD34f1o) which explains the GitHub system and process using a worked example.
 

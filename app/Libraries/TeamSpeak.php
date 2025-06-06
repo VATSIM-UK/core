@@ -125,7 +125,7 @@ class TeamSpeak
      *
      * @return null|Registration
      *
-     * @throws ServerQueryException
+     * @throws TeamSpeak3Exception
      */
     public static function getNewRegistration(Client $client)
     {
@@ -338,7 +338,7 @@ class TeamSpeak
      * Check the client is in the appropriate channel groups.
      *
      *
-     * @throws \TeamSpeak3_Adapter_ServerQuery_Exception
+     * @throws ServerQueryException
      */
     public static function checkClientChannelGroups(Client $client, Account $member)
     {
@@ -354,7 +354,7 @@ class TeamSpeak
                 } else {
                     $currentGroup = $current[0]['cgid'];
                 }
-            } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+            } catch (ServerQueryException $e) {
                 if ($e->getCode() == self::DATABASE_EMPTY_RESULT_SET) {
                     $currentGroup = $defaultGroup->dbid;
                 } else {

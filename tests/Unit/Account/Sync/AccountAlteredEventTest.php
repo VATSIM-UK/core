@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AccountAlteredEventTest extends TestCase
@@ -30,7 +31,7 @@ class AccountAlteredEventTest extends TestCase
         Cache::flush(); // Remove time lockout cache
     }
 
-    /** @test */
+    #[Test]
     public function it_triggers_event()
     {
         Event::fake();
@@ -38,7 +39,7 @@ class AccountAlteredEventTest extends TestCase
         Event::assertDispatched(AccountAltered::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_triggers_jobs()
     {
         Queue::fake();
@@ -65,7 +66,7 @@ class AccountAlteredEventTest extends TestCase
         Queue::assertPushed(SyncToForums::class, 1);
     }
 
-    /** @test */
+    #[Test]
     public function it_wont_trigger_with_semi_defined_accounts()
     {
         Queue::fake();
@@ -80,7 +81,7 @@ class AccountAlteredEventTest extends TestCase
         Queue::assertNotPushed(SyncToForums::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_wont_trigger_discord_without_a_discord_id()
     {
         Queue::fake();

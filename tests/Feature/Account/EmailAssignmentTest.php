@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class EmailAssignmentTest extends TestCase
@@ -30,7 +31,7 @@ class EmailAssignmentTest extends TestCase
         $this->emailOther = 'email@otheruser.co.uk';
     }
 
-    /** @test */
+    #[Test]
     public function test_user_can_access_email_add_form()
     {
         $this->actingAs($this->user)
@@ -38,7 +39,7 @@ class EmailAssignmentTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_redirect_on_invalid_email()
     {
         $data = [
@@ -52,7 +53,7 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('error', 'You have entered an invalid email address.');
     }
 
-    /** @test */
+    #[Test]
     public function test_redirect_on_non_matching_email()
     {
         $data = [
@@ -66,7 +67,7 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('error', 'Emails entered are different.  You need to enter the same email, twice.');
     }
 
-    /** @test */
+    #[Test]
     public function test_successful_post_email()
     {
         $data = [
@@ -80,7 +81,7 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('success');
     }
 
-    /** @test */
+    #[Test]
     public function test_duplicate_email_on_post()
     {
         $this->user->secondaryEmails()->create(['email' => 'email2@example.com']);
@@ -96,7 +97,7 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('error', 'This email has already been added to your account.');
     }
 
-    /** @test */
+    #[Test]
     public function test_redirect_on_secondary_email_deleted()
     {
         $account = $this->user->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
@@ -111,7 +112,7 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('success', 'Your secondary email ('.$account->email.') has been removed!');
     }
 
-    /** @test */
+    #[Test]
     public function test_successful_secondary_email_add_via_get_has_relevant_data()
     {
         $account = $this->user->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
@@ -125,7 +126,7 @@ class EmailAssignmentTest extends TestCase
             ->assertSee($account->email);
     }
 
-    /** @test */
+    #[Test]
     public function test_assignments_emails_passed_to_view()
     {
         $verifiedEmailAddress = 'my-verified-email@foo.com';
@@ -149,7 +150,7 @@ class EmailAssignmentTest extends TestCase
             ->assertDontSee($unverifiedEmailAddress);
     }
 
-    /** @test */
+    #[Test]
     public function test_user_cannot_delete_other_users_email()
     {
         $emailInstance = $this->userOther->secondaryEmails()->create(['email' => $this->emailOther]);
@@ -158,7 +159,7 @@ class EmailAssignmentTest extends TestCase
             ->assertRedirect(route('mship.manage.dashboard'));
     }
 
-    /** @test */
+    #[Test]
     public function test_user_cannot_delete_other_users_email_on_post()
     {
         $emailInstance = $this->userOther->secondaryEmails()->create(['email' => $this->emailOther]);
@@ -167,7 +168,7 @@ class EmailAssignmentTest extends TestCase
             ->assertRedirect(route('mship.manage.dashboard'));
     }
 
-    /** @test */
+    #[Test]
     public function test_existing_authenticated_user_can_verify_email_via_get()
     {
         $email = factory(Email::class)->states('unverified')->create();
@@ -178,7 +179,7 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('success', 'Your new email address ('.$email->email.') has been verified!');
     }
 
-    /** @test */
+    #[Test]
     public function test_it_triggers_an_update_when_assigning_sso_email()
     {
         $sso_client = factory(\Laravel\Passport\Client::class)->create();
@@ -194,7 +195,7 @@ class EmailAssignmentTest extends TestCase
         Event::assertDispatched(AccountAltered::class);
     }
 
-    /** @test */
+    #[Test]
     public function test_it_triggers_an_update_when_un_assigning_sso_email()
     {
         $sso_email = factory(\App\Models\Sso\Email::class)->create();

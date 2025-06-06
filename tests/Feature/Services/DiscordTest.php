@@ -7,12 +7,13 @@ use Illuminate\Support\Facades\Http;
 use League\OAuth2\Client\Token\AccessToken;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
 
 class DiscordTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function test_it_shows_registration_page()
     {
         $this->actingAs($this->user)
@@ -21,7 +22,7 @@ class DiscordTest extends TestCase
             ->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_to_o_auth()
     {
         $response = $this->actingAs($this->user)
@@ -34,7 +35,7 @@ class DiscordTest extends TestCase
         $this->assertEquals($expectedUrl, $redirectUrl);
     }
 
-    /** @test */
+    #[Test]
     public function test_it_passes_paramaters_to_o_auth()
     {
         Config::set('services.discord.redirect_uri', 'https://example.com/store');
@@ -68,7 +69,7 @@ class DiscordTest extends TestCase
         $this->assertEquals($parameters->except('state')->toArray(), $expected);
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_when_code_missing()
     {
         $emptyString = $this->actingAs($this->user)
@@ -97,7 +98,7 @@ class DiscordTest extends TestCase
             ->assertSessionHasErrors('code');
     }
 
-    /** @test */
+    #[Test]
     public function test_it_reports_when_user_in_too_many_servers()
     {
         $this->instance(\Wohali\OAuth2\Client\Provider\Discord::class, Mockery::mock(\Wohali\OAuth2\Client\Provider\Discord::class, function (MockInterface $mock) {
