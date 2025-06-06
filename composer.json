@@ -87,7 +87,7 @@
         "malahierba-lab/public-id": "dev-main",
         "ohdearapp/ohdear-php-sdk": "^3.0",
         "planetteamspeak/ts3-php-framework": "dev-master",
-        "predis/predis": "^2.0",
+        "predis/predis": "^3.0",
         "pusher/pusher-php-server": "~7.2",
         "sentry/sentry-laravel": "^4.0",
         "spatie/laravel-markdown": "^2.7",
