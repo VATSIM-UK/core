@@ -67,32 +67,92 @@ class GeneratePilotQuarterlyStats extends BasePage
         $endDate = $startDate->copy()->addMonths(3);
 
         $this->statistics = collect([
-            'Division Membership' => [
-                ['name' => 'P1 Sessions', 'value' => $this->P1SessionCount($startDate, $endDate)],
+            'P1' => [
+                ['name' => 'P1 Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)')],
+                ['name' => 'P1 Mentoring Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)_MEN')],
+                ['name' => 'P1 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P1_PPL(A)', false) . ' / ' . $this->ExamCount($startDate, $endDate, 'P1_PPL(A)', true)],
             ],
-            /*
-                ['name' => 'Pilots Visiting', 'value' => $this->pilotsVisiting($startDate, $endDate)],
-                ['name' => 'New Joiners as First Division', 'value' => $this->newJoinersAsFirstDivision($startDate, $endDate)],
-                ['name' => 'Members Becoming Inactive', 'value' => $this->membersBecomingInactive($startDate, $endDate)],
-                ['name' => 'Visiting Controllers Above S1', 'value' => $this->visitingControllersAboveS1($startDate, $endDate)],
-                ['name' => 'Completed Transfer (Ex OBS)', 'value' => $this->completedTransfersExObs($startDate, $endDate)],
+            'P2' => [
+                ['name' => 'P2 Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_PPL(A)')],
+                ['name' => 'P2 Mentoring Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_SEIR(A)_MEN')],
+                ['name' => 'P2 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P2_PPL(A)', false) . ' / ' . $this->ExamCount($startDate, $endDate, 'P2_PPL(A)', true)],
             ],
-            'Completed Mentoring Sessions' => $this->completedMentoringSessions($startDate, $endDate),
-            'Exam Passes' => $this->examPasses($startDate, $endDate),
-            'Issued Position Group Endorsements' => $this->issuedPositionGroupEndorsements($startDate, $endDate),
-            */
+            'General' => [
+                ['name' => 'Unique Students', 'value' => $this->StudentCount($startDate, $endDate)],
+            ],
         ]);
     }
 
-    private function P1SessionCount(Carbon $startDate, Carbon $endDate)
+    private function SessionCount(Carbon $startDate, Carbon $endDate, string $position)
     {
-
         return DB::connection('cts')
             ->table('sessions')
             ->whereBetween('taken_date', [$startDate, $endDate])
-            ->where('position', '=', 'P1_PPL(A)')
+            ->where('position', '=', $position)
             ->whereNull('cancelled_datetime')
             ->where('noShow', '=', 0)
             ->count();
+    }
+
+    private function GetSessions(Carbon $startDate, Carbon $endDate, string $position)
+    {
+        return DB::connection('cts')
+            ->table('sessions')
+            ->whereBetween('taken_date', [$startDate, $endDate])
+            ->where('position', '=', $position)
+            ->whereNull('cancelled_datetime')
+            ->where('noShow', '=', 0)
+            ->get();
+    }
+
+    private function ExamCount(Carbon $startDate, Carbon $endDate, string $position, bool $passesOnly = false)
+    {
+        $query = DB::connection('cts')
+            ->table('practical_results')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->where('exam', '=', $position);
+
+        if ($passesOnly) {
+            $query->where('result', '=', 'P');
+        }
+
+        return $query->count();
+    }
+
+    private function StudentCount(Carbon $startDate, Carbon $endDate)
+    {
+        $sessionStudents = DB::connection('cts')
+            ->table('sessions')
+            ->whereBetween('taken_date', [$startDate, $endDate])
+            ->whereNull('cancelled_datetime')
+            ->pluck('student_id')
+            ->toArray();
+
+        $examStudents = DB::connection('cts')
+            ->table('practical_results')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->pluck('student_id')
+            ->toArray();
+
+        return count(array_unique(array_merge($sessionStudents, $examStudents)));
+    }
+
+    private function MentorCount(Carbon $startDate, Carbon $endDate, string $position)
+    {
+        $sessionMentors = DB::connection('cts')
+            ->table('sessions')
+            ->whereBetween('taken_date', [$startDate, $endDate])
+            ->where('position', '=', $position)
+            ->whereNull('cancelled_datetime')
+            ->where('noShow', '=', 0)
+            ->distinct('mentor_id')
+            ->count('mentor_id');
+
+        $examMentors = DB::connection('cts')
+            ->table('practical_results')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->where('exam', '=', $position)
+            ->distinct('mentor_id')
+            ->count('mentor_id');
     }
 }
