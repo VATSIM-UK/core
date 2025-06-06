@@ -18,8 +18,6 @@ class GeneratePilotQuarterlyStats extends BasePage
 
     protected static ?string $navigationLabel = 'Quarterly Stats';
 
-    protected static ?string $slug = 'test2';
-
     public $quarter = null;
 
     public $year = null;
@@ -84,10 +82,30 @@ class GeneratePilotQuarterlyStats extends BasePage
     }
 
     #[Js]
-    public function exportCsv(): void
+    public function exportSessionsCsv(): void
     {
-        $dummyCsv = "Name,Value\nExample,123\nTest,456";
-        $this->dispatch('download-csv', csv: $dummyCsv);
+        $this->validate();
+
+        $startDate = Carbon::parse($this->year . '-' . $this->quarter);
+        $endDate = $startDate->copy()->addMonths(3);
+
+        $sessions = DB::connection('cts')
+            ->table('sessions')
+            ->whereBetween('taken_date', [$startDate, $endDate])
+            ->whereNull('cancelled_datetime')
+            ->where('noShow', '=', 0)
+            ->get(['position as session_type', 'taken_date as date', 'student_id as student_cid', 'mentor_id as mentor_cid']);
+
+        $csvData = "session_type,date,student_cid,mentor_cid\n";
+
+        foreach ($sessions as $session) {
+            $csvData .= "{$session->session_type}," .
+                        Carbon::parse($session->date)->format('d/m/Y') . "," .
+                        "{$session->student_cid}," .
+                        "{$session->mentor_cid}\n";
+        }
+
+        $this->dispatch('download-csv', csv: $csvData);
     }
 
     private function SessionCount(Carbon $startDate, Carbon $endDate, string $position)

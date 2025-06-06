@@ -27,11 +27,11 @@
                 </tbody>
             </table>
         </x-filament::card>
-                    <x-filament::button
-                wire:click="exportCsv"
-                color="secondary"
-                class="mt-4"
-            >Export CSV</x-filament::button>
+            <x-filament::button
+                wire:click="exportSessionsCsv"
+                type="submit">
+                Export Session CSV
+            </x-filament::button>
     @endif
 
 
