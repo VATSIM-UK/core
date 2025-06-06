@@ -68,12 +68,12 @@ class GeneratePilotQuarterlyStats extends BasePage
             'P1' => [
                 ['name' => 'P1 Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)')],
                 ['name' => 'P1 Mentoring Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)_MEN')],
-                ['name' => 'P1 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P1_PPL(A)', false) . ' / ' . $this->ExamCount($startDate, $endDate, 'P1_PPL(A)', true)],
+                ['name' => 'P1 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P1_PPL(A)', false).' / '.$this->ExamCount($startDate, $endDate, 'P1_PPL(A)', true)],
             ],
             'P2' => [
                 ['name' => 'P2 Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_PPL(A)')],
                 ['name' => 'P2 Mentoring Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_SEIR(A)_MEN')],
-                ['name' => 'P2 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P2_PPL(A)', false) . ' / ' . $this->ExamCount($startDate, $endDate, 'P2_PPL(A)', true)],
+                ['name' => 'P2 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P2_PPL(A)', false).' / '.$this->ExamCount($startDate, $endDate, 'P2_PPL(A)', true)],
             ],
             'General' => [
                 ['name' => 'Unique Students', 'value' => $this->StudentCount($startDate, $endDate)],
@@ -86,7 +86,7 @@ class GeneratePilotQuarterlyStats extends BasePage
     {
         $this->validate();
 
-        $startDate = Carbon::parse($this->year . '-' . $this->quarter);
+        $startDate = Carbon::parse($this->year.'-'.$this->quarter);
         $endDate = $startDate->copy()->addMonths(3);
 
         $sessions = DB::connection('cts')
@@ -99,9 +99,9 @@ class GeneratePilotQuarterlyStats extends BasePage
         $csvData = "session_type,date,student_cid,mentor_cid\n";
 
         foreach ($sessions as $session) {
-            $csvData .= "{$session->session_type}," .
-                        Carbon::parse($session->date)->format('d/m/Y') . "," .
-                        "{$session->student_cid}," .
+            $csvData .= "{$session->session_type},".
+                        Carbon::parse($session->date)->format('d/m/Y').','.
+                        "{$session->student_cid},".
                         "{$session->mentor_cid}\n";
         }
 
