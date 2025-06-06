@@ -68,12 +68,12 @@ class GeneratePilotQuarterlyStats extends BasePage
             'P1' => [
                 ['name' => 'P1 Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)')],
                 ['name' => 'P1 Mentoring Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)_MEN')],
-                ['name' => 'P1 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P1_PPL(A)', false).' / '.$this->ExamCount($startDate, $endDate, 'P1_PPL(A)', true)],
+                ['name' => 'P1 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P1_PPL(A)')],
             ],
             'P2' => [
                 ['name' => 'P2 Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_PPL(A)')],
                 ['name' => 'P2 Mentoring Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_SEIR(A)_MEN')],
-                ['name' => 'P2 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P2_PPL(A)', false).' / '.$this->ExamCount($startDate, $endDate, 'P2_PPL(A)', true)],
+                ['name' => 'P2 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P2_PPL(A)')],
             ],
             'General' => [
                 ['name' => 'Unique Students', 'value' => $this->StudentCount($startDate, $endDate)],
@@ -119,29 +119,19 @@ class GeneratePilotQuarterlyStats extends BasePage
             ->count();
     }
 
-    private function GetSessions(Carbon $startDate, Carbon $endDate, string $position)
+    private function ExamCount(Carbon $startDate, Carbon $endDate, string $position)
     {
-        return DB::connection('cts')
-            ->table('sessions')
-            ->whereBetween('taken_date', [$startDate, $endDate])
-            ->where('position', '=', $position)
-            ->whereNull('cancelled_datetime')
-            ->where('noShow', '=', 0)
-            ->get();
-    }
-
-    private function ExamCount(Carbon $startDate, Carbon $endDate, string $position, bool $passesOnly = false)
-    {
-        $query = DB::connection('cts')
+        $result = DB::connection('cts')
             ->table('practical_results')
+            ->selectRaw("
+                COUNT(*) as total,
+                COALESCE(SUM(CASE WHEN result = 'P' THEN 1 ELSE 0 END), 0) as passes
+            ")
             ->whereBetween('date', [$startDate, $endDate])
-            ->where('exam', '=', $position);
+            ->where('exam', '=', $position)
+            ->first();
 
-        if ($passesOnly) {
-            $query->where('result', '=', 'P');
-        }
-
-        return $query->count();
+        return "{$result->total} / {$result->passes}";
     }
 
     private function StudentCount(Carbon $startDate, Carbon $endDate)
