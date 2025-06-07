@@ -66,22 +66,28 @@ class GeneratePilotQuarterlyStats extends BasePage
 
         $this->statistics = collect([
             'P1' => [
-                ['name' => 'P1 Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)')],
-                ['name' => 'P1 OTS Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)_MEN')],
-                ['name' => 'P1 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P1_PPL(A)')],
+                ['name' => 'P1 Sessions', 'value' => $this->sessionCount($startDate, $endDate, 'P1_PPL(A)')],
+                ['name' => 'P1 OTS Sessions', 'value' => $this->sessionCount($startDate, $endDate, 'P1_PPL(A)_MEN')],
+                ['name' => 'P1 Exams (total / passes)', 'value' => $this->examCount($startDate, $endDate, 'P1_PPL(A)')],
             ],
             'P2' => [
-                ['name' => 'P2 Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_PPL(A)')],
-                ['name' => 'P2 OTS Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_SEIR(A)_MEN')],
-                ['name' => 'P2 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P2_PPL(A)')],
+                ['name' => 'P2 Sessions', 'value' => $this->sessionCount($startDate, $endDate, 'P2_SEIR(A)')],
+                ['name' => 'P2 OTS Sessions', 'value' => $this->sessionCount($startDate, $endDate, 'P2_SEIR(A)_MEN')],
+                ['name' => 'P2 Exams (total / passes)', 'value' => $this->examCount($startDate, $endDate, 'P2_SEIR(A)')],
             ],
             'TFP' => [
-                ['name' => 'TFP Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'TFP_FLIGHT')],
+                ['name' => 'TFP Sessions', 'value' => $this->sessionCount($startDate, $endDate, 'TFP_FLIGHT')],
             ],
             'General' => [
-                ['name' => 'Unique Students', 'value' => $this->StudentCount($startDate, $endDate)],
-                ['name' => 'Unique Mentors', 'value' => $this->MentorCount($startDate, $endDate)],
+                ['name' => 'Unique Students', 'value' => $this->studentCount($startDate, $endDate)],
+                ['name' => 'Unique Mentors', 'value' => $this->mentorCount($startDate, $endDate)],
             ],
+            'Mentor Session Count' => $this->mentorStats($startDate, $endDate)->map(function ($mentor) {
+                return [
+                    'name' => "{$mentor['name']} ({$mentor['cid']})",
+                    'value' => $mentor['session_count'],
+                ];
+            })->values()->toArray(),
         ]);
     }
 
@@ -119,7 +125,7 @@ class GeneratePilotQuarterlyStats extends BasePage
         $this->dispatch('download-csv', csv: $csvData);
     }
 
-    private function SessionCount(Carbon $startDate, Carbon $endDate, string $position)
+    private function sessionCount(Carbon $startDate, Carbon $endDate, string $position)
     {
         return DB::connection('cts')
             ->table('sessions')
@@ -130,7 +136,7 @@ class GeneratePilotQuarterlyStats extends BasePage
             ->count();
     }
 
-    private function ExamCount(Carbon $startDate, Carbon $endDate, string $position)
+    private function examCount(Carbon $startDate, Carbon $endDate, string $position)
     {
         $result = DB::connection('cts')
             ->table('practical_results')
@@ -145,40 +151,55 @@ class GeneratePilotQuarterlyStats extends BasePage
         return "{$result->total} / {$result->passes}";
     }
 
-    private function StudentCount(Carbon $startDate, Carbon $endDate)
+    private function studentCount(Carbon $startDate, Carbon $endDate)
     {
         $sessionStudents = DB::connection('cts')
             ->table('sessions')
             ->whereBetween('taken_date', [$startDate, $endDate])
             ->whereNull('cancelled_datetime')
-            ->pluck('student_id')
-            ->toArray();
+            ->distinct()
+            ->pluck('student_id');
 
         $examStudents = DB::connection('cts')
             ->table('practical_results')
             ->whereBetween('date', [$startDate, $endDate])
-            ->pluck('student_id')
-            ->toArray();
+            ->distinct()
+            ->pluck('student_id');
 
-        return count(array_unique(array_merge($sessionStudents, $examStudents)));
+        return $sessionStudents->merge($examStudents)->unique()->count();
     }
 
-    private function MentorCount(Carbon $startDate, Carbon $endDate)
+    private function mentorCount(Carbon $startDate, Carbon $endDate)
     {
-        $sessionMentors = DB::connection('cts')
+        return DB::connection('cts')
             ->table('sessions')
             ->whereBetween('taken_date', [$startDate, $endDate])
             ->whereNull('cancelled_datetime')
             ->where('noShow', '=', 0)
             ->distinct('mentor_id')
             ->count('mentor_id');
+    }
 
-        $examMentors = DB::connection('cts')
-            ->table('practical_results')
-            ->whereBetween('date', [$startDate, $endDate])
-            ->distinct('examid')
-            ->count('examid');
-
-        return $sessionMentors + $examMentors;
+    private function mentorStats(Carbon $startDate, Carbon $endDate)
+    {
+        return DB::connection('cts')
+            ->table('sessions')
+            ->join('members', 'sessions.mentor_id', '=', 'members.id')
+            ->select('mentor_id', 'members.cid', 'members.name', DB::raw('COUNT(*) as session_count'))
+            ->whereBetween('taken_date', [$startDate, $endDate])
+            ->whereNull('cancelled_datetime')
+            ->where('noShow', '=', 0)
+            ->whereIn('position', ['P1_PPL(A)', 'P2_SEIR(A)', 'TFP_FLIGHT'])
+            ->groupBy('mentor_id', 'members.cid', 'members.name')
+            ->orderByDesc('session_count')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->mentor_id => [
+                    'cid' => $item->cid,
+                    'name' => $item->name,
+                    'session_count' => $item->session_count,
+                ]];
+            });
     }
 }
+
