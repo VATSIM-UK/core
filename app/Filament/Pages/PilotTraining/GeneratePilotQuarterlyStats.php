@@ -76,19 +76,19 @@ class GeneratePilotQuarterlyStats extends BasePage
                 ['name' => 'Unique Students', 'value' => $this->studentCount($startDate, $endDate)],
                 ['name' => 'Unique Mentors', 'value' => $this->mentorCount($startDate, $endDate)],
             ],
-            'P1 Mentor Session Count' => $this->mentorStats($startDate, $endDate, "P1_PPL(A)")->map(function ($mentor) {
+            'P1 Mentor Session Count' => $this->mentorStats($startDate, $endDate, 'P1_PPL(A)')->map(function ($mentor) {
                 return [
                     'name' => "{$mentor['name']} ({$mentor['cid']})",
                     'value' => $mentor['session_count'],
                 ];
             })->values()->toArray(),
-            'P2 Mentor Session Count' => $this->mentorStats($startDate, $endDate, "P2_SEIR(A)")->map(function ($mentor) {
+            'P2 Mentor Session Count' => $this->mentorStats($startDate, $endDate, 'P2_SEIR(A)')->map(function ($mentor) {
                 return [
                     'name' => "{$mentor['name']} ({$mentor['cid']})",
                     'value' => $mentor['session_count'],
                 ];
             })->values()->toArray(),
-            'TFP Mentor Session Count' => $this->mentorStats($startDate, $endDate, "TFP_FLIGHT")->map(function ($mentor) {
+            'TFP Mentor Session Count' => $this->mentorStats($startDate, $endDate, 'TFP_FLIGHT')->map(function ($mentor) {
                 return [
                     'name' => "{$mentor['name']} ({$mentor['cid']})",
                     'value' => $mentor['session_count'],
