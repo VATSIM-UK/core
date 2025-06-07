@@ -78,25 +78,25 @@ class FeedbackTest extends TestCase
         $request->assertRedirect(route('mship.feedback.new.form', [$form->slug, 'cid' => 'mycidishere']));
     }
 
-    //    /** @test */
+    //    #[Test]
     //    public function testItAllowsSubmission()
     //    {
     //        //
     //    }
     //
-    //    /** @test */
+    //    #[Test]
     //    public function testItAllowsCreationOfFormWithPermission()
     //    {
     //        //
     //    }
     //
-    //    /** @test */
+    //    #[Test]
     //    public function testItAllowsViewingOfSubmissionWithPermission()
     //    {
     //        //
     //    }
     //
-    //    /** @test */
+    //    #[Test]
     //    public function testItDoesNotAllowViewingOfSubmissionWithoutPermission()
     //    {
     //        //
