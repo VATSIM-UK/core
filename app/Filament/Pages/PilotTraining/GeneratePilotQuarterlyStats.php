@@ -107,10 +107,10 @@ class GeneratePilotQuarterlyStats extends BasePage
             ->whereNull('cancelled_datetime')
             ->where('noShow', '=', 0)
             ->get([
-            'position as session_type',
-            'taken_date as date',
-            'students.cid as student_cid',
-            'mentors.cid as mentor_cid'
+                'position as session_type',
+                'taken_date as date',
+                'students.cid as student_cid',
+                'mentors.cid as mentor_cid',
             ]);
 
         $csvData = "session_type,date,student_cid,mentor_cid\n";
@@ -202,4 +202,3 @@ class GeneratePilotQuarterlyStats extends BasePage
             });
     }
 }
-
