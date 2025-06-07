@@ -32,12 +32,6 @@ class GeneratePilotQuarterlyStats extends BasePage
         $this->form->fill();
     }
 
-    protected static function canUse(): bool
-    {
-        return true;
-        // return auth()->user()->can('operations.access');
-    }
-
     protected function getFormSchema(): array
     {
         $yearOptions = range(now()->year, 2016, -1);
@@ -82,7 +76,19 @@ class GeneratePilotQuarterlyStats extends BasePage
                 ['name' => 'Unique Students', 'value' => $this->studentCount($startDate, $endDate)],
                 ['name' => 'Unique Mentors', 'value' => $this->mentorCount($startDate, $endDate)],
             ],
-            'Mentor Session Count' => $this->mentorStats($startDate, $endDate)->map(function ($mentor) {
+            'P1 Mentor Session Count' => $this->mentorStats($startDate, $endDate, "P1_PPL(A)")->map(function ($mentor) {
+                return [
+                    'name' => "{$mentor['name']} ({$mentor['cid']})",
+                    'value' => $mentor['session_count'],
+                ];
+            })->values()->toArray(),
+            'P2 Mentor Session Count' => $this->mentorStats($startDate, $endDate, "P2_SEIR(A)")->map(function ($mentor) {
+                return [
+                    'name' => "{$mentor['name']} ({$mentor['cid']})",
+                    'value' => $mentor['session_count'],
+                ];
+            })->values()->toArray(),
+            'TFP Mentor Session Count' => $this->mentorStats($startDate, $endDate, "TFP_FLIGHT")->map(function ($mentor) {
                 return [
                     'name' => "{$mentor['name']} ({$mentor['cid']})",
                     'value' => $mentor['session_count'],
@@ -180,7 +186,7 @@ class GeneratePilotQuarterlyStats extends BasePage
             ->count('mentor_id');
     }
 
-    private function mentorStats(Carbon $startDate, Carbon $endDate)
+    private function mentorStats(Carbon $startDate, Carbon $endDate, string $position)
     {
         return DB::connection('cts')
             ->table('sessions')
@@ -189,7 +195,7 @@ class GeneratePilotQuarterlyStats extends BasePage
             ->whereBetween('taken_date', [$startDate, $endDate])
             ->whereNull('cancelled_datetime')
             ->where('noShow', '=', 0)
-            ->whereIn('position', ['P1_PPL(A)', 'P2_SEIR(A)', 'TFP_FLIGHT'])
+            ->where('position', '=', $position)
             ->groupBy('mentor_id', 'members.cid', 'members.name')
             ->orderByDesc('session_count')
             ->get()
