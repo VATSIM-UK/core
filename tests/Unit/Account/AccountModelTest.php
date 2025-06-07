@@ -10,6 +10,7 @@ use App\Notifications\Mship\EmailVerification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -30,7 +31,7 @@ class AccountModelTest extends TestCase
         Notification::fake();
     }
 
-    /** @test */
+    #[Test]
     public function it_stores_basic_member_data()
     {
         $this->assertDatabaseHas('mship_account', [
@@ -42,7 +43,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->exists);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_formats_names()
     {
         $this->user->update([
@@ -60,13 +61,13 @@ class AccountModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_determines_if_the_member_name_is_a_valid_display_name()
     {
         $this->assertTrue($this->user->isValidDisplayName($this->user->real_name));
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_determines_if_the_nickname_is_a_valid_display_name()
     {
         $this->user->nickname = 'Delboy';
@@ -81,7 +82,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->isValidDisplayName($fullNickname));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_valid_incremented_nicknames()
     {
         $this->assertTrue($this->user->isDuplicateDisplayName("{$this->user->name_first} {$this->user->name_last}1"));
@@ -89,7 +90,7 @@ class AccountModelTest extends TestCase
         $this->assertFalse($this->user->isDuplicateDisplayName("Joe {$this->user->name_last}5"));
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_that_a_name_is_still_valid_even_with_a_nickname_set()
     {
         $this->user->nickname = 'Delboy';
@@ -103,7 +104,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->isValidDisplayName($this->user->real_name));
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_when_there_is_an_invalid_display_name()
     {
         $this->user->nickname = 'Delboy';
@@ -121,7 +122,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->isValidDisplayName('Delboy Trotter'));
     }
 
-    /** @test */
+    #[Test]
     public function it_stores_primary_emails_within_the_account_model()
     {
         $this->assertEquals('i_sleep@gmail.com', $this->user->email);
@@ -132,7 +133,7 @@ class AccountModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_if_the_given_email_exists_on_the_account()
     {
         $verified = true;
@@ -141,7 +142,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->fresh()->hasEmail($email->email));
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_if_the_given_email_exists_on_the_account_as_a_secondary_email()
     {
         $verified = true;
@@ -151,13 +152,13 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->fresh()->hasEmail($email->email, $checkPrimaryEmail));
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_if_the_given_email_already_exists_on_the_account_as_a_primary_email()
     {
         $this->assertTrue($this->user->fresh()->hasEmail('i_sleep@gmail.com'));
     }
 
-    /** @test */
+    #[Test]
     public function it_doesnt_permit_storing_of_primary_email_as_secondary()
     {
         $verified = true;
@@ -170,7 +171,7 @@ class AccountModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_secondary_emails_to_be_stored()
     {
         $verified = false;
@@ -187,7 +188,7 @@ class AccountModelTest extends TestCase
         Notification::assertSentTo($this->user, EmailVerification::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_doesnt_list_new_secondary_emails_as_verified()
     {
         $verified = false;
@@ -199,7 +200,7 @@ class AccountModelTest extends TestCase
         Notification::assertSentTo($this->user, EmailVerification::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_lists_secondary_emails_as_verified()
     {
         $verified = true;
@@ -208,7 +209,7 @@ class AccountModelTest extends TestCase
         $this->assertContains($email->id, $this->user->fresh()->verified_secondary_emails->pluck('id'));
     }
 
-    /** @test */
+    #[Test]
     public function it_deletes_email_from_db()
     {
         $verified = true;
@@ -222,7 +223,7 @@ class AccountModelTest extends TestCase
         $this->assertNotContains($email->id, $this->user->fresh()->secondaryEmails->pluck('id'));
     }
 
-    /** @test */
+    #[Test]
     public function it_upgrades_email_from_secondary_to_primary()
     {
         $verified = true;
@@ -237,7 +238,7 @@ class AccountModelTest extends TestCase
         $this->assertEquals('sauron@gmail.com', $this->user->fresh()->email);
     }
 
-    /** @test */
+    #[Test]
     public function it_touches_account_updated_at_when_adding_an_email()
     {
         $originalUpdatedAt = $this->user->updated_at;
@@ -252,7 +253,7 @@ class AccountModelTest extends TestCase
         $this->assertNotEquals($originalUpdatedAt, $this->user->fresh()->updated_at);
     }
 
-    /** @test */
+    #[Test]
     public function it_stores_qualifications()
     {
         $qualification = Qualification::factory()->create();
@@ -268,7 +269,7 @@ class AccountModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_reports_qualifications()
     {
         Carbon::setTestNow(Carbon::now()); // Check this works even when the timestamps are the same
@@ -311,7 +312,7 @@ class AccountModelTest extends TestCase
         Carbon::setTestNow();
     }
 
-    /** @test */
+    #[Test]
     public function it_touches_account_updated_at_when_adding_a_qualification()
     {
         $originalUpdatedAt = $this->user->updated_at;
@@ -325,7 +326,7 @@ class AccountModelTest extends TestCase
         $this->assertNotEquals($originalUpdatedAt, $this->user->fresh()->updated_at);
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_that_password_is_not_set()
     {
         $this->assertFalse($this->user->hasPassword());
@@ -338,7 +339,7 @@ class AccountModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_stores_a_hashed_password()
     {
         $this->mockAuth();
@@ -367,7 +368,7 @@ class AccountModelTest extends TestCase
         \Auth::shouldReceive('id')->andReturn($this->user->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_that_password_is_set()
     {
         $this->mockAuth();
@@ -389,7 +390,7 @@ class AccountModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_that_password_has_expired()
     {
         $temporary = true;
@@ -401,7 +402,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->hasPasswordExpired());
     }
 
-    /** @test */
+    #[Test]
     public function it_overwrites_old_password_and_modifies_the_timestamps()
     {
         $this->mockAuth();
@@ -430,7 +431,7 @@ class AccountModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_adds_role_to_account()
     {
         $role = factory(Role::class)->create();
@@ -445,7 +446,7 @@ class AccountModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_if_the_account_has_a_given_role()
     {
         $role = factory(Role::class)->create();
@@ -455,7 +456,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->fresh()->hasRole($role));
     }
 
-    /** @test */
+    #[Test]
     public function it_removes_role_from_account()
     {
         $role = factory(Role::class)->create();
@@ -477,13 +478,13 @@ class AccountModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_that_password_is_not_mandatory()
     {
         $this->assertFalse($this->user->mandatory_password);
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_that_password_is_mandatory()
     {
         $role = factory(Role::class)->create(['password_mandatory' => true]);
@@ -495,7 +496,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->mandatory_password);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_an_infinite_session_timeout()
     {
         $roleWithInfiniteTimeout = factory(Role::class)->create([
@@ -507,7 +508,7 @@ class AccountModelTest extends TestCase
         $this->assertEquals(0, $this->user->fresh()->session_timeout);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_a_non_infinite_session_timeout()
     {
         $roleWithInfiniteTimeout = factory(Role::class)->create([
@@ -524,7 +525,7 @@ class AccountModelTest extends TestCase
         $this->assertEquals(10, $this->user->fresh()->session_timeout);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_reports_fully_defined()
     {
         $this->assertTrue($this->user->fully_defined);
@@ -535,7 +536,7 @@ class AccountModelTest extends TestCase
         $this->assertFalse($this->user->fully_defined);
     }
 
-    /** @test */
+    #[Test]
     public function it_correctly_reports_fully_defined_with_no_atc_qualification()
     {
         $this->user->qualifications()->sync([]);
@@ -545,7 +546,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->fresh()->fully_defined);
     }
 
-    /** @test */
+    #[Test]
     public function it_sets_and_returns_a_users_active_status()
     {
         $this->assertFalse($this->user->is_inactive);
@@ -556,7 +557,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($this->user->is_inactive);
     }
 
-    /** @test */
+    #[Test]
     public function it_detects_on_roster()
     {
         $account = Account::factory()->create();
@@ -569,7 +570,7 @@ class AccountModelTest extends TestCase
         $this->assertTrue($account->onRoster());
     }
 
-    /** @test */
+    #[Test]
     public function it_detects_not_on_roster()
     {
         $this->assertFalse($this->user->onRoster());

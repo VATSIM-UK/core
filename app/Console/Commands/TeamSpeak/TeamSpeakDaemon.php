@@ -73,8 +73,10 @@ class TeamSpeakDaemon extends TeamSpeakCommand
                 TeamSpeak::checkClientChannelGroups($client, $member);
             }
         } catch (ServerQueryException $e) {
+            report($e);
             self::handleServerQueryException($e);
         } catch (Exception $e) {
+            report($e);
             self::handleException($e);
         }
     }

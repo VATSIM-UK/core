@@ -9,6 +9,7 @@ use App\Models\Roster;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WaitingListsTest extends TestCase
@@ -25,7 +26,7 @@ class WaitingListsTest extends TestCase
         $this->actingAs($this->privacc);
     }
 
-    /** @test */
+    #[Test]
     public function test_index_with_no_waiting_list_accounts()
     {
         factory(WaitingList::class)->create(['name' => 'My List']);
@@ -36,7 +37,7 @@ class WaitingListsTest extends TestCase
             ->assertDontSee('My List');
     }
 
-    /** @test */
+    #[Test]
     public function test_index_with_a_waiting_list_accounts()
     {
         $list = factory(WaitingList::class)->create(['name' => 'My List']);
@@ -47,7 +48,7 @@ class WaitingListsTest extends TestCase
             ->assertSee('My List');
     }
 
-    /** @test */
+    #[Test]
     public function test_does_not_show_on_roster_icon_when_not_configured_for_list()
     {
         $list = factory(WaitingList::class)->create(['name' => 'My List', 'feature_toggles' => ['display_on_roster' => false]]);

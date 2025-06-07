@@ -85,7 +85,7 @@ class AccountsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'account.roster', 'waitingList']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'account.roster', 'waitingList', 'flags']))
             ->columns([
                 Tables\Columns\TextColumn::make('position')->getStateUsing(fn (WaitingListAccount $record) => $this->ownerRecord->positionOf($record) ?? '-')->label('Position'),
                 Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
@@ -93,6 +93,7 @@ class AccountsRelationManager extends RelationManager
                 Tables\Columns\IconColumn::make('on_roster')->boolean()->label('On Roster')->getStateUsing(fn (WaitingListAccount $record) => $record->account->onRoster())->visible(fn () => $this->ownerRecord->feature_toggles['display_on_roster'] ?? true),
                 Tables\Columns\TextColumn::make('created_at')->label('Added On')->dateTime('d/m/Y H:i:s'),
                 Tables\Columns\IconColumn::make('cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn (WaitingListAccount $record) => $record->theory_exam_passed)->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
+                ...$this->getFlagColumns(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -147,7 +148,10 @@ class AccountsRelationManager extends RelationManager
                     ->modalCancelActionLabel('Cancel')
                     ->visible(fn ($record) => $this->can('removeAccounts', $record->waitingList)),
             ])
-            ->defaultSort('created_at', 'asc')->persistSearchInSession()->defaultPaginationPageOption(25);
+            ->defaultSort('created_at', 'asc')
+            ->persistSearchInSession()
+            ->paginated(['25', '50', '100'])
+            ->defaultPaginationPageOption(25);
     }
 
     public function isReadOnly(): bool
@@ -178,5 +182,23 @@ class AccountsRelationManager extends RelationManager
     public static function removalReasonOptions(): array
     {
         return WaitingList\RemovalReason::formOptions();
+    }
+
+    // Display All Manual Flags where display option is enabled
+    protected function getFlagColumns(): array
+    {
+        return $this->ownerRecord->flags()
+            ->where('display_in_table', true)
+            ->get()
+            ->map(function ($flag) {
+                return Tables\Columns\IconColumn::make("flag_{$flag->id}")
+                    ->label($flag->name)
+                    ->boolean()
+                    ->getStateUsing(function (WaitingListAccount $record) use ($flag) {
+                        $flagRecord = $record->flags->firstWhere('id', $flag->id);
+
+                        return $flagRecord?->pivot?->marked_at !== null;
+                    });
+            })->all();
     }
 }

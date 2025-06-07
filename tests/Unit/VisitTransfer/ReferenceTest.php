@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ReferenceTest extends TestCase
@@ -22,7 +23,7 @@ class ReferenceTest extends TestCase
         Mail::fake();
     }
 
-    /** @test */
+    #[Test]
     public function it_cant_submit_itself_when_not_requested()
     {
         $this->expectException(ReferenceNotRequestedException::class);
@@ -31,7 +32,7 @@ class ReferenceTest extends TestCase
         $reference->submit($text);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_submit_itself()
     {
         $reference = factory(Reference::class)->create(['status' => Reference::STATUS_REQUESTED]);
@@ -42,7 +43,7 @@ class ReferenceTest extends TestCase
         $this->assertNotNull($reference->fresh()->submitted_at);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_delete_itself()
     {
         $reference = factory(Reference::class)->create();
@@ -51,7 +52,7 @@ class ReferenceTest extends TestCase
         $this->assertNotNull($reference->fresh()->deleted_at);
     }
 
-    /** @test */
+    #[Test]
     public function it_cant_reject_itself_when_not_under_review()
     {
         $this->expectException(ReferenceNotUnderReviewException::class);
@@ -59,7 +60,7 @@ class ReferenceTest extends TestCase
         $reference->reject();
     }
 
-    /** @test */
+    #[Test]
     public function it_can_reject_itself()
     {
         $reference = factory(Reference::class)->create(['status' => Reference::STATUS_UNDER_REVIEW]);
@@ -67,7 +68,7 @@ class ReferenceTest extends TestCase
         $this->assertEquals(Reference::STATUS_REJECTED, $reference->fresh()->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_reports_statistics_correctly()
     {
         $referenceTypes = [

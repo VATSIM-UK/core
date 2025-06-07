@@ -13,6 +13,7 @@ use App\Services\Mship\RepealBan;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AccountBanTest extends TestCase
@@ -33,7 +34,7 @@ class AccountBanTest extends TestCase
         Notification::fake();
     }
 
-    /** @test */
+    #[Test]
     public function banned_scopes_work()
     {
         $bannedAccount = Account::factory()->has(Ban::factory())->create();
@@ -43,7 +44,7 @@ class AccountBanTest extends TestCase
         $this->assertEquals([$activeAcount->id], Account::notBanned()->whereIn('id', [$bannedAccount->id, $activeAcount->id])->pluck('id')->all());
     }
 
-    /** @test */
+    #[Test]
     public function it_dispatches_event_on_ban_save()
     {
         $reason = Reason::factory()->create();
@@ -55,7 +56,7 @@ class AccountBanTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_applies_local_bans_correctly_via_service()
     {
         $reason = Reason::factory()->create();
@@ -74,7 +75,7 @@ class AccountBanTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_repeals_local_bans_correctly_via_service()
     {
         $reason = Reason::factory()->create();

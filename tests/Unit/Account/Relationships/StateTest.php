@@ -4,13 +4,14 @@ namespace Tests\Unit\Account\Relationships;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class StateTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_adds_a_state()
     {
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
@@ -24,7 +25,7 @@ class StateTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_invalid_exception_when_searching_for_invalid_state()
     {
         $this->expectException(\App\Exceptions\Mship\InvalidStateException::class);
@@ -32,7 +33,7 @@ class StateTest extends TestCase
         $this->user->fresh()->hasState($this->user);
     }
 
-    /** @test */
+    #[Test]
     public function it_deletes_old_permanent_state()
     {
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
@@ -66,7 +67,7 @@ class StateTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_deletes_old_permanent_states()
     {
         // Setup
@@ -120,7 +121,7 @@ class StateTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function it_keeps_current_temporary_state()
     {
         $visitorState = \App\Models\Mship\State::findByCode('VISITING');
@@ -149,7 +150,7 @@ class StateTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_deletes_temporary_states_when_delete_all_temps_state_is_added()
     {
         $visitorState = \App\Models\Mship\State::findByCode('VISITING');
@@ -183,7 +184,7 @@ class StateTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_correct_primary_state_when_only_one_exists()
     {
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
@@ -193,7 +194,7 @@ class StateTest extends TestCase
         $this->assertEquals($divisionState->id, $this->user->fresh()->primary_state->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_correct_primary_state_when_temporary_overrides()
     {
         $regionState = \App\Models\Mship\State::findByCode('REGION');
@@ -205,7 +206,7 @@ class StateTest extends TestCase
         $this->assertEquals($visitorState->id, $this->user->fresh()->primary_state->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_correct_primary_state_when_temporary_overrides_and_multiple_temporary()
     {
         $regionState = \App\Models\Mship\State::findByCode('REGION');
@@ -219,8 +220,8 @@ class StateTest extends TestCase
         $this->assertEquals($transferringState->id, $this->user->fresh()->primary_state->id);
     }
 
-    /* @test */
-    public function itRemainsIdempotentWhenTryingToRemoveAStateThatIsntSet()
+    #[Test]
+    public function it_remains_idempotent_when_trying_to_remove_a_state_that_isnt_set()
     {
         $regionState = \App\Models\Mship\State::findByCode('REGION');
 
