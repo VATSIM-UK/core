@@ -67,16 +67,20 @@ class GeneratePilotQuarterlyStats extends BasePage
         $this->statistics = collect([
             'P1' => [
                 ['name' => 'P1 Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)')],
-                ['name' => 'P1 Mentoring Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)_MEN')],
+                ['name' => 'P1 OTS Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P1_PPL(A)_MEN')],
                 ['name' => 'P1 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P1_PPL(A)')],
             ],
             'P2' => [
                 ['name' => 'P2 Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_PPL(A)')],
-                ['name' => 'P2 Mentoring Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_SEIR(A)_MEN')],
+                ['name' => 'P2 OTS Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'P2_SEIR(A)_MEN')],
                 ['name' => 'P2 Exams (total / passes)', 'value' => $this->ExamCount($startDate, $endDate, 'P2_PPL(A)')],
+            ],
+            'TFP' => [
+                ['name' => 'TFP Sessions', 'value' => $this->SessionCount($startDate, $endDate, 'TFP_FLIGHT')],
             ],
             'General' => [
                 ['name' => 'Unique Students', 'value' => $this->StudentCount($startDate, $endDate)],
+                ['name' => 'Unique Mentors', 'value' => $this->MentorCount($startDate, $endDate)],
             ],
         ]);
     }
@@ -91,10 +95,17 @@ class GeneratePilotQuarterlyStats extends BasePage
 
         $sessions = DB::connection('cts')
             ->table('sessions')
+            ->join('members as students', 'sessions.student_id', '=', 'students.id')
+            ->join('members as mentors', 'sessions.mentor_id', '=', 'mentors.id')
             ->whereBetween('taken_date', [$startDate, $endDate])
             ->whereNull('cancelled_datetime')
             ->where('noShow', '=', 0)
-            ->get(['position as session_type', 'taken_date as date', 'student_id as student_cid', 'mentor_id as mentor_cid']);
+            ->get([
+            'position as session_type',
+            'taken_date as date',
+            'students.cid as student_cid',
+            'mentors.cid as mentor_cid'
+            ]);
 
         $csvData = "session_type,date,student_cid,mentor_cid\n";
 
@@ -152,12 +163,11 @@ class GeneratePilotQuarterlyStats extends BasePage
         return count(array_unique(array_merge($sessionStudents, $examStudents)));
     }
 
-    private function MentorCount(Carbon $startDate, Carbon $endDate, string $position)
+    private function MentorCount(Carbon $startDate, Carbon $endDate)
     {
         $sessionMentors = DB::connection('cts')
             ->table('sessions')
             ->whereBetween('taken_date', [$startDate, $endDate])
-            ->where('position', '=', $position)
             ->whereNull('cancelled_datetime')
             ->where('noShow', '=', 0)
             ->distinct('mentor_id')
@@ -166,8 +176,9 @@ class GeneratePilotQuarterlyStats extends BasePage
         $examMentors = DB::connection('cts')
             ->table('practical_results')
             ->whereBetween('date', [$startDate, $endDate])
-            ->where('exam', '=', $position)
-            ->distinct('mentor_id')
-            ->count('mentor_id');
+            ->distinct('examid')
+            ->count('examid');
+
+        return $sessionMentors + $examMentors;
     }
 }
