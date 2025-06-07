@@ -3,7 +3,6 @@
 namespace Tests\Feature\Admin\Pages\PilotTraining;
 
 use App\Filament\Pages\PilotTraining\GeneratePilotQuarterlyStats;
-use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use Livewire\Livewire;
 use Tests\Feature\Admin\BaseAdminTestCase;
