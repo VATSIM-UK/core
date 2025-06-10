@@ -30,10 +30,8 @@ class GenerateQuarterlyPilotStatsPageTest extends BaseAdminTestCase
     public function test_it_returns_session_count()
     {
         Session::factory()->create([
-            'date_1' => '2020-01-15',
-            'from_1' => '10:00:00',
-            'to_1' => '12:00:00',
             'position' => 'P1_PPL(A)',
+            'taken_date' => '2020-02-01',
         ]);
 
         $this->actingAsSuperUser();

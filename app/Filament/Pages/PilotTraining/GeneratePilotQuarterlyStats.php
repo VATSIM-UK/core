@@ -3,13 +3,17 @@
 namespace App\Filament\Pages\PilotTraining;
 
 use App\Filament\Helpers\Pages\BasePage;
+use App\Models\Cts\Session;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Concerns\InteractsWithForms;
 use Illuminate\Support\Facades\DB;
 
 class GeneratePilotQuarterlyStats extends BasePage
 {
+    use InteractsWithForms;
+
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     protected static ?string $navigationGroup = 'Pilot Training';
@@ -52,7 +56,6 @@ class GeneratePilotQuarterlyStats extends BasePage
 
     public function submit(): void
     {
-
         $this->validate();
 
         $startDate = Carbon::parse($this->year.'-'.$this->quarter);
