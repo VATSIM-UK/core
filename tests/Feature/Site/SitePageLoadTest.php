@@ -14,6 +14,16 @@ class SitePageLoadTest extends TestCase
     {
         $this->get(route('site.join'))->assertOk();
     }
+    
+    #[Test]
+    public function test_it_loads_the_staff_page_regardless_of_ipb_key()
+    {
+        Config::set([
+            'ipboard.api_key' => 'Invalid_API_Key',
+        ]);
+
+        $this->get(route('site.staff'))->assertOk();
+    }
 
     #[Test]
     public function test_it_retrieves_url_from_cache()
