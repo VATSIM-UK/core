@@ -34,6 +34,7 @@
 
     <script>
         document.addEventListener('alpine:init', () => {
+            // Dispatched from GeneratePilotQuarterlyStats.exportSessionsCsv() to format raw data into a CSV file
             window.addEventListener('download-csv', event => {
                 const csv = event.detail.csv;
                 const filename = event.detail.filename;
