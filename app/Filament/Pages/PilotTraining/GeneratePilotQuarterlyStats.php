@@ -84,16 +84,34 @@ class GeneratePilotQuarterlyStats extends BasePage
                     'value' => $mentor['session_count'],
                 ];
             })->values()->toArray(),
+            'P1 Student Session Count' => $this->studentStats($startDate, $endDate, 'P1_PPL(A)')->map(function ($student) {
+                return [
+                    'name' => "{$student['name']} ({$student['cid']})",
+                    'value' => $student['session_count'],
+                ];
+            })->values()->toArray(),
             'P2 Mentor Session Count' => $this->mentorStats($startDate, $endDate, 'P2_SEIR(A)')->map(function ($mentor) {
                 return [
                     'name' => "{$mentor['name']} ({$mentor['cid']})",
                     'value' => $mentor['session_count'],
                 ];
             })->values()->toArray(),
+            'P2 Student Session Count' => $this->studentStats($startDate, $endDate, 'P2_SEIR(A)')->map(function ($student) {
+                return [
+                    'name' => "{$student['name']} ({$student['cid']})",
+                    'value' => $student['session_count'],
+                ];
+            })->values()->toArray(),
             'TFP Mentor Session Count' => $this->mentorStats($startDate, $endDate, 'TFP_FLIGHT')->map(function ($mentor) {
                 return [
                     'name' => "{$mentor['name']} ({$mentor['cid']})",
                     'value' => $mentor['session_count'],
+                ];
+            })->values()->toArray(),
+            'TFP Student Session Count' => $this->studentStats($startDate, $endDate, 'TFP_FLIGHT')->map(function ($student) {
+                return [
+                    'name' => "{$student['name']} ({$student['cid']})",
+                    'value' => $student['session_count'],
                 ];
             })->values()->toArray(),
         ]);
@@ -204,6 +222,28 @@ class GeneratePilotQuarterlyStats extends BasePage
             ->get()
             ->mapWithKeys(function ($item) {
                 return [$item->mentor_id => [
+                    'cid' => $item->cid,
+                    'name' => $item->name,
+                    'session_count' => $item->session_count,
+                ]];
+            });
+    }
+
+    private function studentStats(Carbon $startDate, Carbon $endDate, string $position)
+    {
+        return DB::connection('cts')
+            ->table('sessions')
+            ->join('members', 'sessions.student_id', '=', 'members.id')
+            ->select('student_id', 'members.cid', 'members.name', DB::raw('COUNT(*) as session_count'))
+            ->whereBetween('taken_date', [$startDate, $endDate])
+            ->whereNull('cancelled_datetime')
+            ->where('noShow', '=', 0)
+            ->where('position', '=', $position)
+            ->groupBy('student_id', 'members.cid', 'members.name')
+            ->orderByDesc('session_count')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->student_id => [
                     'cid' => $item->cid,
                     'name' => $item->name,
                     'session_count' => $item->session_count,
