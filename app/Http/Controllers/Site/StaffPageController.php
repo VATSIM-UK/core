@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Site;
 
-
 class StaffPageController extends \App\Http\Controllers\BaseController
 {
     public function __construct()
