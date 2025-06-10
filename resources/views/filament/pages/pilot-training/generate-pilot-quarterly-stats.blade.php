@@ -36,7 +36,7 @@
         document.addEventListener('alpine:init', () => {
             window.addEventListener('download-csv', event => {
                 const csv = event.detail.csv;
-                const filename = event.detail.filename || 'pilot-quarterly-stats.csv';
+                const filename = event.detail.filename;
                 const blob = new Blob([csv], {
                     type: 'text/csv'
                 });
