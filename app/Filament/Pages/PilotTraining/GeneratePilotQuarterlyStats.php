@@ -3,7 +3,6 @@
 namespace App\Filament\Pages\PilotTraining;
 
 use App\Filament\Helpers\Pages\BasePage;
-use App\Models\Cts\Session;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -65,12 +64,12 @@ class GeneratePilotQuarterlyStats extends BasePage
             'P1' => [
                 ['name' => 'P1 Sessions', 'value' => $this->sessionCount($startDate, $endDate, 'P1_PPL(A)')],
                 ['name' => 'P1 OTS Sessions', 'value' => $this->sessionCount($startDate, $endDate, 'P1_PPL(A)_MEN')],
-                ['name' => 'P1 Exams (total / passes)', 'value' => $this->examCount($startDate, $endDate, 'P1_PPL(A)')],
+                ['name' => 'P1 Exams (total / passes)', 'value' => $this->examCount($startDate, $endDate, 'P1')],
             ],
             'P2' => [
                 ['name' => 'P2 Sessions', 'value' => $this->sessionCount($startDate, $endDate, 'P2_SEIR(A)')],
                 ['name' => 'P2 OTS Sessions', 'value' => $this->sessionCount($startDate, $endDate, 'P2_SEIR(A)_MEN')],
-                ['name' => 'P2 Exams (total / passes)', 'value' => $this->examCount($startDate, $endDate, 'P2_SEIR(A)')],
+                ['name' => 'P2 Exams (total / passes)', 'value' => $this->examCount($startDate, $endDate, 'P2')],
             ],
             'TFP' => [
                 ['name' => 'TFP Sessions', 'value' => $this->sessionCount($startDate, $endDate, 'TFP_FLIGHT')],
@@ -131,7 +130,8 @@ class GeneratePilotQuarterlyStats extends BasePage
                         "{$session->mentor_cid}\n";
         }
 
-        $this->dispatch('download-csv', csv: $csvData);
+        $quarter = $this->quarterMappings[$this->quarter];
+        $this->dispatch('download-csv', filename: "pilot-training_{$this->year}_{$quarter}.csv", csv: $csvData);
     }
 
     private function sessionCount(Carbon $startDate, Carbon $endDate, string $position)
