@@ -21,11 +21,11 @@ class GeneratePilotQuarterlyStats extends BasePage
 
     protected static ?string $navigationLabel = 'Quarterly Stats';
 
-    public $quarter = null;
+    public ?string $quarter = null;
 
-    public $year = null;
+    public ?string $year = null;
 
-    public $statistics = null;
+    public ?string $statistics = null;
 
     private $quarterMappings = ['01-01' => 'Q1', '04-01' => 'Q2', '07-01' => 'Q3', '10-01' => 'Q4'];
 
