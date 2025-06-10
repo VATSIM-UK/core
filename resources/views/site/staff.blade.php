@@ -28,7 +28,6 @@
     </div>
 </div>
 
-
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -36,7 +35,6 @@
                 <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Management
                 </div>
                 <div class="panel-body">
-
                     <div class="col-md-6">
                         <h4 class="text-center">Division Director (VATUK1)</h4><br />
                         <p class="text-center">Ben Wright</p>
