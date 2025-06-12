@@ -28,7 +28,6 @@
     </div>
 </div>
 
-
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -36,15 +35,12 @@
                 <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Management
                 </div>
                 <div class="panel-body">
-
                     <div class="col-md-6">
                         <h4 class="text-center">Division Director (VATUK1)</h4><br />
-                        <img src="{{ $teamPhotos[7103] }}" width=50px class="img-responsive center-block profile-picture" />
                         <p class="text-center">Ben Wright</p>
                     </div>
                     <div class="col-md-6">
                         <h4 class="text-center">Deputy Division Director (VATUK2)</h4><br />
-                        <img src="{{ $teamPhotos[6102] }}" width=50px class="img-responsive center-block profile-picture" />
                         <p class="text-center">Nick Marinov</p>
                     </div>
                 </div>
@@ -63,7 +59,6 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Operations Director (VATUK9)</h4><br />
-                    <img src="{{ $teamPhotos[8978] }}" width=50px class="img-responsive center-block profile-picture" />
                     <p class="text-center">Archie Middlefell</p>
                     <h4 class="text-center">Operations Team</h4>
                     <table class="table">
@@ -131,7 +126,6 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Technology Director (VATUK8)</h4><br />
-                    <img src="{{ $teamPhotos[5125] }}" class="img-responsive center-block profile-picture" />
                     <p class="text-center">Calum Tοwers</p>
 
                     <h4 class="text-center">Technology Team</h4>
@@ -166,7 +160,6 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Community Director (VATUK3)</h4><br />
-                    <img src="{{ $teamPhotos[7358] }}" width=50px class="img-responsive center-block profile-picture" />
                     <p class="text-center">William Shaw</p>
                     <h4 class="text-center">Community Team</h4>
                     <table class="table">
@@ -227,7 +220,6 @@
                 <div class="panel-body">
                     <div class="col-md-6">
                         <h4 class="text-center">ATC Training Director (VATUK5)</h4><br />
-                        <img src="{{ $teamPhotos[2308] }}" width=50px class="img-responsive center-block profile-picture" />
                         <p class="text-center">Adam Arkley</p>
                         <h4 class="text-center">ATC Training Team</h4>
                         <table class="table">
@@ -286,7 +278,6 @@
 
                     <div class="col-md-6">
                         <h4 class="text-center">Pilot Training Director (VATUK6)</h4><br />
-                        <img src="{{ $teamPhotos[7203] }}" width=50px class="img-responsive center-block profile-picture" />
                         <p class="text-center">Darren Hill</p>
                         <h4 class="text-center">Pilot Training Team</h4>
                         <table class="table">
