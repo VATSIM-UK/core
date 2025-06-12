@@ -1,12 +1,12 @@
 @extends('layout')
 
 @section('content')
-
+    
 
     <div class="col-md-8 col-md-offset-2 ">
         <div class="alert alert-danger">
-		    <h3 style="margin-top: 0">Very long waiting times - in excess of 18 months to begin Pilot Training</h3>
-		    <p>Please note that the average time frame for users joining our waiting list and being offered a training place exceeds 18 months. You should be prepared for this wait - the division is working hard to improve training times, but demand is high. Thank you for your patience.</p>
+		    <h3 style="margin-top: 0">Very long waiting times - in excess of 1 year to begin Pilot Training</h3>
+		    <p>Please note that the average time frame for new pilots joining our waiting list and being offered a training place exceeds one year. You should be prepared for this wait - the division is working hard to improve training times, but demand is high. Thank you for your patience.</p>
 	    </div>
         
         <div class="row">
