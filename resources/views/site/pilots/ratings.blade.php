@@ -3,9 +3,13 @@
 @section('content')
 
 
-    <div class="row">
-
     <div class="col-md-8 col-md-offset-2 ">
+        <div class="alert alert-danger">
+		    <h3 style="margin-top: 0">Very long waiting times - in excess of 18 months to begin Pilot Training</h3>
+		    <p>Please note that the average time frame for users joining our waiting list and being offered a training place exceeds 18 months. You should be prepared for this wait - the division is working hard to improve training times, but demand is high. Thank you for your patience.</p>
+	    </div>
+        
+        <div class="row">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-plane"></i> &thinsp; P1 (Online Pilot) Rating
                 </div>
