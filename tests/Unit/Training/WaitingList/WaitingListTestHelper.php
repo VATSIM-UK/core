@@ -7,7 +7,7 @@ use App\Models\Training\WaitingList;
 
 trait WaitingListTestHelper
 {
-    protected function createList(array $overrides = [])
+    protected function createList(array $overrides = []): WaitingList
     {
         return factory(WaitingList::class)->create($overrides);
     }
