@@ -50,11 +50,15 @@ class TeamSpeakDaemon extends TeamSpeakCommand
 
     public static function clientJoinedEvent(Event $event, Host $host)
     {
+        \Log::info("TeamSpeak: clientJoinedEvent");
+
         if ($event['client_type'] != 0) {
             return;
         }
 
         try {
+            \Log::info("TeamSpeak: clientJoinedEvent", ['clid' => $event->clid]);
+
             $client = $host->serverGetSelected()->clientGetById($event->clid);
             self::$command->currentMember = $client['client_database_id'];
 
