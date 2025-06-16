@@ -12,6 +12,7 @@ use App\Models\TeamSpeak\ServerGroup;
 use Cache;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Support\Facades\Log;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\TeamSpeak3Exception;
 use PlanetTeamSpeak\TeamSpeak3Framework\Node\Client;
@@ -73,6 +74,8 @@ class TeamSpeak
         try {
             $factory = TeamSpeak3::factory($connectionUrl);
         } catch (ServerQueryException $e) {
+            Log::error('TeamSpeak connection failed: '.$e->getMessage());
+
             if (stripos($e->getMessage(), 'nickname is already in use')) {
                 // Try again in 3 seconds
                 sleep(3);
