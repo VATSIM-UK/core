@@ -63,7 +63,7 @@
         }
     ],
     "require": {
-        "php": "^8.4.0",
+        "php": "^8.3.0",
         "alawrence/laravel-ipboard": "dev-main",
         "axonc/filament-copyable-placeholder": "^0.3.0",
         "barryvdh/laravel-debugbar": "^3.3",
