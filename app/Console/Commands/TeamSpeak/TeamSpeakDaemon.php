@@ -4,6 +4,7 @@ namespace App\Console\Commands\TeamSpeak;
 
 use App\Libraries\TeamSpeak;
 use Exception;
+use PlanetTeamSpeak\TeamSpeak3Framework\Adapter\ServerQuery;
 use PlanetTeamSpeak\TeamSpeak3Framework\Adapter\ServerQuery\Event;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\TeamSpeak3Exception;
@@ -13,6 +14,8 @@ use PlanetTeamSpeak\TeamSpeak3Framework\Node\Host;
 
 class TeamSpeakDaemon extends TeamSpeakCommand
 {
+    const int KEEP_ALIVE_SECONDS = 240;
+
     protected static $connection;
 
     protected static $connectedClients = [];
@@ -92,19 +95,31 @@ class TeamSpeakDaemon extends TeamSpeakCommand
         }
     }
 
+    public function serverQueryWaitTimeout(int $time, ServerQuery $adapter): void
+    {
+        if ($adapter->getQueryLastTimestamp() < time() - self::KEEP_ALIVE_SECONDS) {
+            $this->log('TeamSpeak: serverQueryWaitTimeout/keepAlive');
+
+            // Connection keep alive
+            $adapter->request('clientupdate');
+        }
+    }
+
     protected function establishConnection($attempt = 1)
     {
         try {
+            $id = uniqid();
             // establish connection
-            $connection = TeamSpeak::run('VATSIM UK Management Daemon', true);
+            $connection = TeamSpeak::run("teaman $id", true);
 
             // register for events
             $connection->notifyRegister('server');
 
-            Signal::getInstance()
-                ->subscribe('notifyCliententerview', self::class.'::clientJoinedEvent');
-            Signal::getInstance()
-                ->subscribe('notifyClientleftview', self::class.'::clientLeftEvent');
+            // Signal is a singleton used for message passing
+            $signalInstance = Signal::getInstance();
+            $signalInstance->subscribe('notifyCliententerview', self::class.'::clientJoinedEvent');
+            $signalInstance->subscribe('notifyClientleftview', self::class.'::clientLeftEvent');
+            $signalInstance->subscribe('serverqueryWaitTimeout', self::class.'::serverQueryWaitTimeout');
 
             return $connection;
         } catch (ServerQueryException $e) {
