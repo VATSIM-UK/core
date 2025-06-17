@@ -95,10 +95,10 @@ class TeamSpeakDaemon extends TeamSpeakCommand
         }
     }
 
-    public function serverQueryWaitTimeout(int $time, ServerQuery $adapter): void
+    public static function serverQueryWaitTimeout(int $time, ServerQuery $adapter): void
     {
         if ($adapter->getQueryLastTimestamp() < time() - self::KEEP_ALIVE_SECONDS) {
-            $this->log('TeamSpeak: serverQueryWaitTimeout/keepAlive');
+            \Log::info('TeamSpeak: serverQueryWaitTimeout/keepAlive');
 
             // Connection keep alive
             $adapter->request('clientupdate');
