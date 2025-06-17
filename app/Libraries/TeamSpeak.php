@@ -308,9 +308,11 @@ class TeamSpeak
             $alreadyInGroup = in_array($group->dbid, $currentGroups);
 
             if ($qualifiesForGroup && ! $alreadyInGroup) {
-                $client->addServerGroup($group->dbid);
+                \Log::info("servergroupaddclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
+                $client->request("servergroupaddclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
             } elseif (! $group->default && $alreadyInGroup && ! $qualifiesForGroup) {
-                $client->remServerGroup($group->dbid);
+                \Log::info("servergroupdelclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
+                $client->request("servergroupdelclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
             }
         }
     }
