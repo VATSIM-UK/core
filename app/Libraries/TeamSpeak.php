@@ -12,7 +12,6 @@ use App\Models\TeamSpeak\ServerGroup;
 use Cache;
 use Carbon\Carbon;
 use DB;
-use Illuminate\Support\Facades\Log;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\TeamSpeak3Exception;
 use PlanetTeamSpeak\TeamSpeak3Framework\Node\Client;
@@ -49,14 +48,7 @@ class TeamSpeak
         return config('services.teamspeak.host') && config('services.teamspeak.username') && config('services.teamspeak.password') && config('services.teamspeak.port') && config('services.teamspeak.query_port');
     }
 
-    /**
-     * Connect to the TeamSpeak server.
-     *
-     * @param  string  $nickname
-     * @param  bool  $nonBlocking
-     * @return Server
-     */
-    public static function run($nickname = 'VATSIM UK TeamSpeak Bot', $nonBlocking = false)
+    public static function run($nickname = 'VATSIM UK TeamSpeak Bot', $nonBlocking = false): Server
     {
         $connectionUrl = sprintf(
             'serverquery://%s:%s@%s:%s/?nickname=%s&server_port=%s%s#no_query_clients',
@@ -69,21 +61,7 @@ class TeamSpeak
             $nonBlocking ? '&blocking=0' : ''
         );
 
-        $factory = null;
-
-        try {
-            $factory = TeamSpeak3::factory($connectionUrl);
-        } catch (ServerQueryException $e) {
-            Log::error('TeamSpeak connection failed: '.$e->getMessage());
-
-            if (stripos($e->getMessage(), 'nickname is already in use')) {
-                // Try again in 3 seconds
-                sleep(3);
-                $factory = TeamSpeak3::factory($connectionUrl);
-            }
-        }
-
-        return $factory;
+        return TeamSpeak3::factory($connectionUrl);
     }
 
     /**

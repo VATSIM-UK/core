@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "219d87ae610b4e9fd6adcd09697f0a5a",
+    "content-hash": "f5718e05796ac577dddfdd0fd4e13368",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -6776,16 +6776,16 @@
         },
         {
             "name": "planetteamspeak/ts3-php-framework",
-            "version": "dev-master",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/VATSIM-UK/ts3phpframework.git",
-                "reference": "85dfd50a6a38a04677fede4f503ddbb3ec2bde5b"
+                "reference": "b3629a35a5ec0eb093128ec688a10486125cf1ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VATSIM-UK/ts3phpframework/zipball/85dfd50a6a38a04677fede4f503ddbb3ec2bde5b",
-                "reference": "85dfd50a6a38a04677fede4f503ddbb3ec2bde5b",
+                "url": "https://api.github.com/repos/VATSIM-UK/ts3phpframework/zipball/b3629a35a5ec0eb093128ec688a10486125cf1ae",
+                "reference": "b3629a35a5ec0eb093128ec688a10486125cf1ae",
                 "shasum": ""
             },
             "require": {
@@ -6805,7 +6805,6 @@
                 "squizlabs/php_codesniffer": "^3.6",
                 "symfony/yaml": "^6.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6856,9 +6855,9 @@
                 "email": "info@planetteamspeak.com",
                 "issues": "https://github.com/planetteamspeak/ts3phpframework/issues",
                 "docs": "https://docs.planetteamspeak.com/ts3/php/framework",
-                "source": "https://github.com/VATSIM-UK/ts3phpframework/tree/master"
+                "source": "https://github.com/VATSIM-UK/ts3phpframework/tree/1.3.0"
             },
-            "time": "2025-06-02T16:39:41+00:00"
+            "time": "2024-06-01T15:08:04+00:00"
         },
         {
             "name": "predis/predis",
@@ -15050,8 +15049,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "alawrence/laravel-ipboard": 20,
-        "malahierba-lab/public-id": 20,
-        "planetteamspeak/ts3-php-framework": 20
+        "malahierba-lab/public-id": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
