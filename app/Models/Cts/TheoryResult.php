@@ -2,11 +2,13 @@
 
 namespace App\Models\Cts;
 
+use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
+use App\Models\Cts\Member;
 
 class TheoryResult extends Model
 {
@@ -34,5 +36,19 @@ class TheoryResult extends Model
         // return the first part of a query to get results for a given member.
         // providing a member_id is found, otherwise return null.
         return self::where('student_id', $memberId)->get();
+    }
+
+    public function getNameAttribute()
+    {
+        try {
+            $member = Member::where('id', $this->student_id)->firstOrFail();
+            $account = Account::find($member->cid);
+
+            return $account?->name ?? 'Unknown';
+        } catch (ModelNotFoundException) {
+            // Log::warning("No member found for account_id {$student_id}. Likely sync problems.");
+
+            return 'Unknown fail';
+        }
     }
 }
