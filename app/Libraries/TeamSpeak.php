@@ -48,14 +48,7 @@ class TeamSpeak
         return config('services.teamspeak.host') && config('services.teamspeak.username') && config('services.teamspeak.password') && config('services.teamspeak.port') && config('services.teamspeak.query_port');
     }
 
-    /**
-     * Connect to the TeamSpeak server.
-     *
-     * @param  string  $nickname
-     * @param  bool  $nonBlocking
-     * @return Server
-     */
-    public static function run($nickname = 'VATSIM UK TeamSpeak Bot', $nonBlocking = false)
+    public static function run($nickname = 'VATSIM UK TeamSpeak Bot', $nonBlocking = false): Server
     {
         $connectionUrl = sprintf(
             'serverquery://%s:%s@%s:%s/?nickname=%s&server_port=%s%s#no_query_clients',
@@ -68,19 +61,7 @@ class TeamSpeak
             $nonBlocking ? '&blocking=0' : ''
         );
 
-        $factory = null;
-
-        try {
-            $factory = TeamSpeak3::factory($connectionUrl);
-        } catch (ServerQueryException $e) {
-            if (stripos($e->getMessage(), 'nickname is already in use')) {
-                // Try again in 3 seconds
-                sleep(3);
-                $factory = TeamSpeak3::factory($connectionUrl);
-            }
-        }
-
-        return $factory;
+        return TeamSpeak3::factory($connectionUrl);
     }
 
     /**
@@ -327,9 +308,11 @@ class TeamSpeak
             $alreadyInGroup = in_array($group->dbid, $currentGroups);
 
             if ($qualifiesForGroup && ! $alreadyInGroup) {
-                $client->addServerGroup($group->dbid);
+                \Log::info("servergroupaddclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
+                $client->request("servergroupaddclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
             } elseif (! $group->default && $alreadyInGroup && ! $qualifiesForGroup) {
-                $client->remServerGroup($group->dbid);
+                \Log::info("servergroupdelclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
+                $client->request("servergroupdelclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
             }
         }
     }
