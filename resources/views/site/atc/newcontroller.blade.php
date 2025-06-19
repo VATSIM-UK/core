@@ -47,7 +47,7 @@
                             An installed version of <a href="http://www.euroscope.hu/" rel="external nofollow">Euroscope</a>
                         </li>
                         <li>
-                            <a href="https://community.vatsim.uk/files/downloads/file/61-uk-controller-pack/" rel="">UK Controller Pack</a>
+                            <a href="https://docs.vatsim.uk/General/Software%20Downloads/Controller%20Pack%20%26%20Sector%20File/" rel="">UK Controller Pack</a>
                         </li>
 						<li>
 							<a href="https://vatsim.uk/ukcp" rel="external nofollow">UK Controller Plugin</a>

@@ -21,7 +21,7 @@ VATSIM as a whole endorses several controller clients for use on the network, bu
 Installation instructions for this are available on the [EuroScope website](https://euroscope.hu/).
 
 Our Operations Department produces and maintains a controller pack, which provides EuroScope with data on the UK’s airspace structure to display on your screen.
-You can download the [UK Controller Pack](https://community.vatsim.uk/files/downloads/file/61-uk-controller-pack/) from the downloads section of our website: be sure to precisely follow the instructions in the README.pdf file provided.
+You can download the [UK Controller Pack](https://docs.vatsim.uk/General/Software%20Downloads/Controller%20Pack%20%26%20Sector%20File/) from the downloads section of our website: be sure to precisely follow the instructions in the README.pdf file provided.
 
 ### Audio for VATSIM
 [Audio for VATSIM](https://audio.vatsim.net/docs/2.0/atc/euroscope) is the programme we utilise to transmit and receive on ATC frequencies.
