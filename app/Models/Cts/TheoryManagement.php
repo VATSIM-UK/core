@@ -27,4 +27,8 @@ class TheoryManagement extends Model
      protected $fillable = [
         'temp'
      ];
+
+     public function questions() {
+        return $this->hasMany(TheoryQuestion::class, 'level', 'rating');
+     }
 }

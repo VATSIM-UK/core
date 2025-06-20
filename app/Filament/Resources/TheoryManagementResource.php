@@ -3,10 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TheoryManagementResource\Pages;
+use App\Filament\Resources\TheoryManagementResource\RelationManagers\TheoryQuestionsManager;
 use App\Models\Cts\TheoryManagement;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -50,22 +50,12 @@ class TheoryManagementResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('type')
-                ->label('Type')
-                ->options([
-                    0 => 'ATC',
-                    1 => 'Pilot',
-                ])
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+                    ->label('Type')
+                    ->options([
+                        0 => 'ATC',
+                        1 => 'Pilot',
+                    ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
@@ -73,7 +63,14 @@ class TheoryManagementResource extends Resource
         return [
             'index' => Pages\ListTheoryManagement::route('/'),
             // 'create' => Pages\CreateTheoryManagement::route('/create'),
-            // 'edit' => Pages\EditTheoryManagement::route('/{record}/edit'),
+            'edit' => Pages\EditTheoryManagement::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            TheoryQuestionsManager::class,
         ];
     }
 }
