@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\EditAction;
 
 class TheoryManagementResource extends Resource
 {
@@ -36,6 +37,7 @@ class TheoryManagementResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('rating')->label('Rating'),
                 TextColumn::make('questions')->label('No. Questions'),
@@ -55,6 +57,10 @@ class TheoryManagementResource extends Resource
                         0 => 'ATC',
                         1 => 'Pilot',
                     ]),
+
+            ])
+            ->actions([
+                EditAction::make()->label('Questions'),
             ]);
     }
 
