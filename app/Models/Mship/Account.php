@@ -148,8 +148,6 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $o_auth_tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Smartcars\Pirep> $pireps
- * @property-read int|null $pireps_count
  * @property-read \App\Models\Training\WaitingList\WaitingListAccount $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Qualification> $qualifications
  * @property-read int|null $qualifications_count
@@ -382,11 +380,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function activityRecent()
     {
         return $this->hasMany(\App\Models\Sys\Activity::class, 'actor_id');
-    }
-
-    public function pireps()
-    {
-        return $this->hasManyThrough(\App\Models\Smartcars\Pirep::class, \App\Models\Smartcars\Bid::class, 'account_id', 'bid_id', 'id');
     }
 
     public function feedback()
