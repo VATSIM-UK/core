@@ -49,7 +49,7 @@ class WaitingListPolicy
 
     public function update(Account $account, WaitingList $waitingList)
     {
-        return false;
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.admin.%s']);
     }
 
     public function delete(Account $account, WaitingList $waitingList)
