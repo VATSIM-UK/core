@@ -6,7 +6,7 @@ Route::group([
 ], function () {
     Route::get('/')->uses('HomePageController')->name('home');
     Route::get('/join')->uses('JoinPageController')->name('join');
-    Route::get('/staff')->uses('StaffPageController')->name('staff');
+    Route::get('/staff')->uses('StaffPageController@staff')->name('staff');
     Route::get('/airports')->uses('AirportController@index')->name('airports');
     Route::get('/airports/{ukAirportByICAO}')->uses('AirportController@show')->name('airport.view');
     Route::get('/VATSIM_UK_Sector_Provider.txt')->uses('EuroScopeSectorProvider');
