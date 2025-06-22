@@ -30,14 +30,14 @@ class WaitingListResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->autofocus()->required()->live(onBlur: true)
+                TextInput::make('name')->autofocus()->required()->live(onBlur: true)->disabledOn('edit')
                     ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
-                TextInput::make('slug')->required(),
+                TextInput::make('slug')->disabledOn('edit')->required(),
 
                 Select::make('department')->options([
                     'atc' => 'ATC Training',
                     'pilot' => 'Pilot Training',
-                ])->required(),
+                ])->disabledOn('edit')->required(),
 
                 Section::make('Additional Settings')
                     ->schema([
@@ -120,6 +120,7 @@ class WaitingListResource extends Resource
         return [
             'index' => Pages\ListWaitingLists::route('/'),
             'create' => Pages\CreateWaitingList::route('/create'),
+            'edit' => Pages\EditWaitingList::route('/{record}/edit'),
             'view' => Pages\ViewWaitingList::route('/{record}'),
         ];
     }

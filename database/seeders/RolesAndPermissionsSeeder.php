@@ -88,6 +88,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'waiting-lists.add-flags.*',
             'waiting-lists.delete.*',
             'waiting-lists.create',
+            'waiting-lists.admin.*',
+            'waiting-lists.admin.atc',
+            'waiting-lists.admin.pilot',
 
             // // Feedback System Permissions
             'feedback.access',

@@ -97,6 +97,7 @@ class ViewWaitingList extends ViewRecord
                         ->default(false),
                 ])
                 ->visible(fn () => auth()->user()->can('addFlags', $this->record)),
+            Actions\EditAction::make()->label('Edit settings')->visible(fn () => auth()->user()->can('update', $this->record)),
         ];
     }
 }
