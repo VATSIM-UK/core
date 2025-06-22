@@ -192,7 +192,6 @@
                         <li>Old Warden (EGTH)</li>
                         <li>Penzance (EGHK)</li>
                         <li>Perth (EGPT)</li>
-                        <li>Peterborough/Conington (EGSF)</li>
                         <li>Portland (EGDP)</li>
                         <li>Rochester (EGTO)</li>
                         <li>Sandtoft (EGCF)</li>
