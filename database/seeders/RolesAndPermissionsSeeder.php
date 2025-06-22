@@ -106,23 +106,6 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'feedback.form.create',
             // 'feedback.form.configure.*',
 
-            // // SmartCars System Permissions
-            // 'smartcars.access',
-            // 'smartcars.aircraft.view.*',
-            // 'smartcars.aircraft.create',
-            // 'smartcars.aircraft.update.*',
-            // 'smartcars.aircraft.delete.*',
-            // 'smartcars.airport.view.*',
-            // 'smartcars.airport.create',
-            // 'smartcars.airport.update.*',
-            // 'smartcars.airport.delete.*',
-            // 'smartcars.exercie.view.*',
-            // 'smartcars.exercie.create',
-            // 'smartcars.exercie.update.*',
-            // 'smartcars.exercie.delete.*',
-            // 'smartcars.flight.view.*',
-            // 'smartcars.flight.edit.*',
-
             // // Endorsement System Permissions
             // 'atc.endorsement.access',
 

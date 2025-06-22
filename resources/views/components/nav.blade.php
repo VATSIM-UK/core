@@ -46,11 +46,6 @@
                                 <li><a href="{{ route('site.pilots.oceanic') }}">Oceanic Procedures</a></li>
                                 <li><a href="{{ route('site.pilots.tfp') }}">Flying Programme</a></li>
                                 <li class="divider"></li>
-                                <li class="dropdown-header">Flight Training Exercises</li>
-                                <li><a href="{{ route('fte.dashboard') }}">Dashboard</a></li>
-                                <li><a href="{{ route('fte.guide') }}">Guide</a></li>
-                                <li><a href="{{ route('fte.exercises') }}">Exercises</a></li>
-                                <li><a href="{{ route('fte.history') }}">Flight History</a></li>
                             </ul>
                         </li>
                     </ul>
