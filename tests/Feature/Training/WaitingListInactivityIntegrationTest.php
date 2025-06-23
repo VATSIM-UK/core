@@ -34,7 +34,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
         $account = Account::factory()->create(['inactive' => false]);
         $account->addState(State::findByCode('DIVISION'));
 
-        $waitingList = factory(WaitingList::class)->create();
+        $waitingList = WaitingList::factory()->create();
         $waitingList->addToWaitingList($account, $this->privacc);
 
         $this->assertTrue($waitingList->accounts->contains($account));
@@ -56,7 +56,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
-        $waitingList = factory(WaitingList::class)->create();
+        $waitingList = WaitingList::factory()->create();
 
         $this->assertFalse($waitingList->accounts->contains($account));
 
@@ -76,7 +76,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
         $account->refresh();
 
         /** @var WaitingList $waitingList */
-        $waitingList = factory(WaitingList::class)->create();
+        $waitingList = WaitingList::factory()->create();
         $waitingList->addToWaitingList($account, $this->privacc);
 
         $this->assertTrue($waitingList->includesAccount($account));
@@ -93,7 +93,7 @@ class WaitingListInactivityIntegrationTest extends TestCase
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
-        $waitingList = factory(WaitingList::class)->create();
+        $waitingList = WaitingList::factory()->create();
 
         $this->assertFalse($waitingList->includesAccount($account));
 

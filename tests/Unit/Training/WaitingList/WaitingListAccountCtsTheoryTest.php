@@ -25,7 +25,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
         // create the member first as for some reason the CID is not overwritten
         // when using a factory
-        $this->member = factory(Member::class)->create();
+        $this->member = WaitingList::factory()->create();
         $this->account = Account::factory()->create(['id' => $this->member->cid]);
         $this->account->addState(State::findByCode('DIVISION'));
 
@@ -34,7 +34,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
     private function setupWaitingList(?string $ctsLevel, ?string $department = WaitingList::ATC_DEPARTMENT): WaitingList\WaitingListAccount
     {
-        $waitingList = factory(WaitingList::class)->create(['cts_theory_exam_level' => $ctsLevel, 'department' => $department]);
+        $waitingList = WaitingList::factory()->create(['cts_theory_exam_level' => $ctsLevel, 'department' => $department]);
 
         return $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
     }

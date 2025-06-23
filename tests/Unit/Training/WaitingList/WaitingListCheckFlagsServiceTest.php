@@ -20,14 +20,14 @@ class WaitingListCheckFlagsServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->waitingList = factory(WaitingList::class)->create();
+        $this->waitingList = WaitingList::factory()->create();
 
         $this->actingAs($this->privacc);
     }
 
     public function test_passes_checks_when_manual_flag_is_true_in_all_flags_config()
     {
-        $waitingList = factory(WaitingList::class)->create();
+        $waitingList = WaitingList::factory()->create();
         $waitingListAccount = $waitingList->addToWaitingList($this->user, $this->privacc);
 
         $flag = factory(WaitingListFlag::class)->create([
@@ -45,7 +45,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
 
     public function test_fails_checks_when_manual_flag_is_false_in_all_flags_config()
     {
-        $waitingList = factory(WaitingList::class)->create();
+        $waitingList = WaitingList::factory()->create();
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
         $flag = $this->createFlag('manual', $waitingList, false);
@@ -57,7 +57,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
 
     public function test_fails_check_when_endorsement_linked_flag_is_false()
     {
-        $waitingList = factory(WaitingList::class)->create();
+        $waitingList = WaitingList::factory()->create();
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 35]);
@@ -79,7 +79,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
 
     public function test_pass_check_when_endorsement_linked_flag_is_true()
     {
-        $waitingList = factory(WaitingList::class)->create();
+        $waitingList = WaitingList::factory()->create();
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 65]);
@@ -101,7 +101,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
 
     public function test_pass_check_on_all_with_all_passing_automated_flags()
     {
-        $waitingList = factory(WaitingList::class)->create();
+        $waitingList = WaitingList::factory()->create();
         $waitingList->addToWaitingList($this->user, $this->privacc);
 
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 65]);

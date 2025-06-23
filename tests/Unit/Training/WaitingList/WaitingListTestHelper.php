@@ -9,7 +9,7 @@ trait WaitingListTestHelper
 {
     protected function createList(array $overrides = [])
     {
-        return factory(WaitingList::class)->create($overrides);
+        return WaitingList::factory()->create($overrides);
     }
 
     protected function createPopulatedList(array $overrides = [], $accounts = 5)

@@ -31,7 +31,7 @@ class WaitingListFlagTest extends TestCase
 
         $this->actingAs($this->privacc);
 
-        $this->waitingList = factory(WaitingList::class)->create();
+        $this->waitingList = WaitingList::factory()->create();
         $this->waitingList->addFlag($this->flag);
         $this->waitingListAccount = $this->waitingList->addToWaitingList($this->privacc, $this->privacc);
 
