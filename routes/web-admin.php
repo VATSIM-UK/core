@@ -10,19 +10,6 @@ Route::group([
     // Main
     Route::get('/')->uses('Dashboard@index')->name('index');
 
-    // smartCARS
-    Route::group([
-        'prefix' => 'smartcars',
-        'namespace' => 'Smartcars\Resources',
-        'as' => 'smartcars.',
-    ], function () {
-        Route::resource('configure/aircraft', 'AircraftController')->except('show');
-        Route::resource('configure/airports', 'AirportController')->except('show');
-        Route::resource('configure/exercises', 'ExerciseController')->except('show');
-        Route::resource('exercises.resources', 'ExerciseResourceController')->except('show');
-        Route::resource('flights', 'FlightController')->only('index', 'edit', 'update');
-    });
-
     // Visiting/Transferring
     Route::group([
         'as' => 'visiting.',

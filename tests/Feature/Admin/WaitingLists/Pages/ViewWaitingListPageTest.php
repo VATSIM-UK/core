@@ -453,4 +453,30 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
             'removal_comment' => $other_reason,
         ]);
     }
+
+    public function test_cannot_see_edit_button_when_not_admin()
+    {
+        $userWithoutPermission = Account::factory()->create();
+
+        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+
+        $userWithoutPermission->givePermissionTo('waiting-lists.view.atc');
+        $userWithoutPermission->givePermissionTo('waiting-lists.access');
+
+        Livewire::actingAs($userWithoutPermission)->test(ViewWaitingList::class, ['record' => $waitingList->id])
+            ->assertDontSee('Edit settings');
+    }
+
+    public function test_can_see_edit_button_when_admin()
+    {
+        $userWithPermission = Account::factory()->create();
+        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+
+        $userWithPermission->givePermissionTo('waiting-lists.view.atc');
+        $userWithPermission->givePermissionTo('waiting-lists.access');
+        $userWithPermission->givePermissionTo('waiting-lists.admin.atc');
+
+        Livewire::actingAs($userWithPermission)->test(ViewWaitingList::class, ['record' => $waitingList->id])
+            ->assertSee('Edit settings');
+    }
 }

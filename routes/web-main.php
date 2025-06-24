@@ -209,21 +209,3 @@ Route::group([
         Route::post('complete/{token}/cancel')->uses('Reference@postCancel')->name('complete.cancel');
     });
 });
-
-// SmartCARS
-Route::any('frame.php', 'Smartcars\Api\Router@routeRequest');
-
-Route::group([
-    'as' => 'fte.',
-    'prefix' => 'fte',
-    'namespace' => 'Smartcars',
-    'middleware' => 'auth_full_group',
-], function () {
-    Route::get('dashboard')->uses('SmartcarsController@getDashboard')->name('dashboard');
-    Route::get('map')->uses('SmartcarsController@getMap')->name('map');
-    Route::get('exercises/{exercise?}')->uses('SmartcarsController@getExercise')->name('exercises');
-    Route::post('exercises/{exercise}/book')->uses('SmartcarsController@bookExercise')->name('exercise.book');
-    Route::post('exercises/{exercise}/cancel')->uses('SmartcarsController@cancelExercise')->name('exercise.cancel');
-    Route::get('history/{pirep?}')->uses('SmartcarsController@getHistory')->name('history');
-    Route::get('guide')->uses('SmartcarsController@getGuide')->name('guide');
-});
