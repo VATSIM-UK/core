@@ -83,7 +83,7 @@
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('password.email') }}">
                         {{ csrf_field() }}
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger" id="confirm">Confirm</button>
+                        <button type="submit" class="btn btn-danger" id="confirmPasswordReset">Confirm</button>
                     </form>
                 </div>
             </div><!-- /.modal-content -->
@@ -103,7 +103,7 @@
                 <div class="modal-footer">
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('logout') }}">
                         {{ csrf_field() }}
-                        <button type="submit" class="btn btn-danger" id="confirm">Logout</button>
+                        <button type="submit" class="btn btn-danger" id="confirmLogout">Logout</button>
                     </form>
                 </div>
             </div><!-- /.modal-content -->
