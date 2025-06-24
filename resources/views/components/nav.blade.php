@@ -113,19 +113,28 @@
                                 <li class="dropdown-header">Third-Party Services</li>
                                 <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
                                 <li><a href="{{ route('discord.show') }}">Discord</a></li>
-                                <li class="divider"></li>
-                                <li><a href="{{ route('site.community.terms') }}">Terms & Conditions</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
 
                 <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Marketing <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Policy <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
-                                <li><a href="{{ route('site.marketing.branding') }}">Branding Guidelines</a></li>
+                                <li><a href="{{ route('site.policy.division') }}">Division Policy</a></li>
+                                <li><a href="{{ route('site.policy.atc-training') }}">ATC Training Policy</a></li>
+                                <li><a href="{{ route('site.policy.visiting-and-transferring') }}">Visiting & Transferring Policy</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown-header">Web Policy</li>
+                                <li><a href="{{ route('site.policy.terms') }}">Terms & Conditions</a></li>
+                                <li><a href="{{ route('site.policy.privacy') }}">Privacy Policy</a></li>
+                                <li><a href="{{ route('site.policy.data-protection') }}">Data Protection Policy</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown-header">Guidelines</li>
+                                <li><a href="{{ route('site.policy.branding') }}">Branding Guidelines</a></li>
+                                <li><a href="{{ route('site.policy.streaming') }}">Streaming Guidelines</a></li>
                             </ul>
                         </li>
                     </ul>
