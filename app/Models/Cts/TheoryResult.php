@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
-use App\Models\Cts\Member;
 
 class TheoryResult extends Model
 {
@@ -50,5 +49,15 @@ class TheoryResult extends Model
 
             return 'Unknown fail';
         }
+    }
+
+    public function scopeTheoryPassed($query)
+    {
+        return $query->whereColumn('correct', '>=', 'passmark');
+    }
+
+    public function scopeTheoryFailed($query)
+    {
+        return $query->whereColumn('correct', '<', 'passmark');
     }
 }

@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class TheoryResultResource extends Resource
@@ -50,10 +51,6 @@ class TheoryResultResource extends Resource
                             ->label('Time (mins)')
                             ->content(fn ($record) => $record->time_mins),
 
-                        /* Forms\Components\Placeholder::make('correct')
-                            ->label('Correct Answers')
-                            ->content(fn ($record) => $record->correct), */
-
                         Forms\Components\Placeholder::make('passmark')
                             ->label('Passmark')
                             ->content(fn ($record) => $record->passmark),
@@ -82,14 +79,9 @@ class TheoryResultResource extends Resource
     {
         return $table
             ->columns([
-                // TextColumn::make('id')->label('ID')->sortable()->searchable(),
-                TextColumn::make('exam')->label('Exam')->sortable()->searchable(),
-                TextColumn::make('student_id')->label('CID')->sortable()->searchable(),
-                TextColumn::make('name')->label('Name')->sortable()->searchable(),
-                // TextColumn::make('questions')->label('CID')->sortable()->searchable(),
-                // TextColumn::make('time_mins')->label('Time (mins)')->sortable(),
-                // TextColumn::make('correct')->label('Correct')->sortable(),
-                // TextColumn::make('passmark')->label('Passmark')->sortable(),
+                TextColumn::make('exam')->label('Exam')->searchable(),
+                TextColumn::make('student_id')->label('CID')->searchable(),
+                TextColumn::make('name')->label('Name'), // ->searchable(),
                 TextColumn::make('pass_status')
                     ->label('Result')
                     ->badge()
@@ -98,12 +90,26 @@ class TheoryResultResource extends Resource
                         true => 'success',
                         false => 'danger',
                         default => 'warning',
-                    })->sortable(),
+                    }),
             ])
             ->filters([
-                /*Tables\Filters\SelectFilter::make('exam')
-                ->label('Exam')
-                ->options(fn () => self::$model::query()->distinct()->pluck('exam', 'exam')->toArray()),*/
+                SelectFilter::make('exam')
+                    ->label('Exam')
+                    ->options(fn () => self::$model::query()->distinct()->pluck('exam', 'exam')->toArray()),
+
+                SelectFilter::make('pass_status')
+                    ->label('Result')
+                    ->options([
+                        'passed' => 'Passed',
+                        'failed' => 'Failed',
+                    ])
+                    ->query(function ($query, $data) {
+                        return match ($data['value'] ?? null) {
+                            'passed' => $query->theoryPassed(),
+                            'failed' => $query->theoryFailed(),
+                            default => $query,
+                        };
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

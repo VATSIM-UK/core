@@ -31,6 +31,11 @@ class TheoryQuestionsManager extends RelationManager
             ->columns([
                 TextColumn::make('id')->searchable(),
                 TextColumn::make('question')->searchable(),
+                TextColumn::make('deleted')->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state == 0 ? 'Enabled' : 'Disabled')
+                    ->color((fn ($state) => $state == 0 ? 'success' : 'danger'))
+                    ->toggleable(),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
@@ -65,7 +70,13 @@ class TheoryQuestionsManager extends RelationManager
                                 '3' => 'Option 3',
                                 '4' => 'Option 4',
                             ])->label('Correct Answer')->required(),
-                        Toggle::make('status')->label('Enabled')->onColor('success')->offColor('danger')->inline(false),
+                        Toggle::make('deleted')->label('Enabled')
+                            ->onColor('success')
+                            ->offColor('danger')
+                            ->inline(false)
+                            ->afterStateHydrated(function ($component, $state) {
+                                $component->state($state == 0);
+                            })->dehydrateStateUsing(fn ($state) => $state ? 0 : 1),
                     ]),
                 ]),
 
