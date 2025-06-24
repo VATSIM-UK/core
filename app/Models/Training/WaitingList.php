@@ -11,10 +11,10 @@ use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
