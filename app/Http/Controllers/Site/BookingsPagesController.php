@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Site;
 
-use Carbon\Carbon;
-use App\Repositories\Cts\BookingRepository;
 use App\Models\Cts\Booking;
+use App\Repositories\Cts\BookingRepository;
+use Carbon\Carbon;
 
 class BookingsPagesController extends \App\Http\Controllers\BaseController
 {
@@ -17,21 +17,22 @@ class BookingsPagesController extends \App\Http\Controllers\BaseController
 
     public function show($id)
     {
-    $booking = Booking::findOrFail($id);
+        $booking = Booking::findOrFail($id);
 
-    return response()->json([
-        'id' => $booking->id,
-        'position' => $booking->position,
-        'controller_name' => $booking->member_id,
-        'start_time' => $booking->from,
-        'end_time' => $booking->to,
-    ]);
+        return response()->json([
+            'id' => $booking->id,
+            'position' => $booking->position,
+            'controller_name' => $booking->member_id,
+            'start_time' => $booking->from,
+            'end_time' => $booking->to,
+        ]);
     }
+
     /**
      * Display the bookings calendar for a given month and year.
      *
-     * @param int|null $year
-     * @param int|null $month
+     * @param  int|null  $year
+     * @param  int|null  $month
      * @return \Illuminate\View\View
      */
     public function index($year = null, $month = null)
@@ -55,7 +56,7 @@ class BookingsPagesController extends \App\Http\Controllers\BaseController
                 });
 
                 $week[] = [
-                    'date' =>$current->copy(),
+                    'date' => $current->copy(),
                     'bookings' => $dayBookings,
                 ];
                 $current->addDay();
