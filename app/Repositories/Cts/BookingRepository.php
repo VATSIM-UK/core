@@ -8,15 +8,14 @@ use Illuminate\Support\Collection;
 
 class BookingRepository
 {
-
     public function getBookingsBetween($startDate, $endDate)
-{
-    return Booking::with('member')
-        ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
-        ->get()->each(function ($booking) {
+    {
+        return Booking::with('member')
+            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
+            ->get()->each(function ($booking) {
                 $booking->date = Carbon::parse($booking->date);
             });
-}
+    }
 
     public function getBookings(Carbon $date)
     {
