@@ -63,6 +63,7 @@ Route::group([
         'as' => 'bookings.',
         'prefix' => 'bookings',
     ], function () {
-        Route::get('/calendar/{year?}/{month?}')->uses('BookingsPagesController@index')->name('calendar');
+        Route::get('calendar/{year?}/{month?}')->uses('BookingsPagesController@index')->name('index');
+        Route::get('/{id}')->uses('BookingsPagesController@show')->name('bookings.show');
     });
 });

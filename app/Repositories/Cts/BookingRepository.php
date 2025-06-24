@@ -4,10 +4,22 @@ namespace App\Repositories\Cts;
 
 use App\Models\Cts\Booking;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Support\Collection;
 
 class BookingRepository
 {
+    public function getBookingsBetween($startDate, $endDate)
+    {
+        $bookings = Booking::whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
+        ->get()
+        ->each(function ($booking) {
+            $booking->date = Carbon::parse($booking->date);
+        });
+        
+        return $this->formatBookings($bookings);
+    }
+
     public function getBookings(Carbon $date)
     {
         $bookings = Booking::where('date', '=', $date->toDateString())
