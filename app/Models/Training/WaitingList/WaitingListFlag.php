@@ -3,11 +3,13 @@
 namespace App\Models\Training\WaitingList;
 
 use App\Models\Atc\PositionGroup;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingListFlag extends Model
 {
+    use hasFactory;
     use SoftDeletes;
 
     protected $guarded = [];
