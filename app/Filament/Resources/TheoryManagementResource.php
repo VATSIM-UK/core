@@ -17,8 +17,6 @@ class TheoryManagementResource extends Resource
 
     protected static ?string $pluralLabel = 'Theory Management';
 
-    protected static ?string $navigatonLabel = 'Theory Management';
-
     protected static ?string $navigationGroup = 'Mentoring';
 
     public static function getPages(): array

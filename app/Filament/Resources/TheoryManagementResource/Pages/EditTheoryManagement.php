@@ -15,15 +15,10 @@ class EditTheoryManagement extends EditRecord
         return [];
     }
 
-    public function getTitle(): string {
+    public function getTitle(): string
+    {
         $level = strtoupper(str_replace('theory_', '', $this->record->item));
+
         return "Edit {$level} Questions";
     }
-
-    /*protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }*/
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TheoryManagementResource\RelationManagers;
 
+use App\Models\Cts\TheoryQuestion;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
@@ -10,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 
 class TheoryQuestionsManager extends RelationManager
@@ -18,18 +20,17 @@ class TheoryQuestionsManager extends RelationManager
 
     protected function getTableQuery(): Builder
     {
-        $item = $this->ownerRecord->item;
-        $level = str_replace('theory_', '', $item);
+        $level = str_replace('theory_', '', $this->ownerRecord->item);
 
-        return \App\Models\Cts\TheoryQuestion::query()->where('level', $level);
+        return TheoryQuestion::query()->where('level', $level);
     }
 
     public function table(Tables\Table $table): Tables\Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->searchable(),
-                Tables\Columns\TextColumn::make('question')->searchable(),
+                TextColumn::make('id')->searchable(),
+                TextColumn::make('question')->searchable(),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()

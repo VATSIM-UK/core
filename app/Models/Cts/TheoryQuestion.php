@@ -21,18 +21,18 @@ class TheoryQuestion extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            $model->level = 'S1';
-            $model->add_by = auth()->id();
-            $model->add_date = now();
-            $model->edit_by = auth()->id();
-            $model->edit_date = now();
+            $userId = auth()->id();
 
+            $model->level = 'S1';
+            $model->add_by = $userId;
+            $model->add_date = now();
+            $model->edit_by = $userId;
+            $model->edit_date = now();
         });
 
         static::updating(function ($model) {
             $model->edit_by = auth()->id();
             $model->edit_date = now();
-
         });
 
     }

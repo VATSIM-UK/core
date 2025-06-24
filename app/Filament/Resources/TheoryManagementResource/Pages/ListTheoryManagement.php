@@ -4,6 +4,7 @@ namespace App\Filament\Resources\TheoryManagementResource\Pages;
 
 use App\Filament\Resources\TheoryManagementResource;
 use App\Models\Cts\TheoryManagement;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\Action;
@@ -23,6 +24,12 @@ class ListTheoryManagement extends Page implements HasTable
 
     protected static string $view = 'filament.pages.training.theory-management';
 
+    protected const GENERAL_ITEMS = [
+        'theory_questions' => 'Number of Questions',
+        'theory_minutes' => 'Time Allowed (minutes)',
+        'theory_passmark' => 'Passmark',
+    ];
+
     public function table(): Table
     {
         return Table::make($this)
@@ -30,35 +37,16 @@ class ListTheoryManagement extends Page implements HasTable
             ->columns([
                 TextColumn::make('item')
                     ->label('Setting')
-                    ->formatStateUsing(function ($state) {
-                        return match ($state) {
-                            'theory_questions' => 'Number of Questions',
-                            'theory_minutes' => 'Time Allowed (minutes)',
-                            'theory_passmark' => 'Passmark',
-                            default => strtoupper(str_replace('theory_', '', $state)),
-                        };
-                    }),
+                    ->formatStateUsing(fn ($state) => $this->formatItemLabel($state)),
 
                 TextColumn::make('setting')
                     ->label('Value')
                     ->formatStateUsing(function ($state, $record) {
-                        $generalItems = ['theory_questions', 'theory_passmark', 'theory_minutes'];
-
-                        if (in_array($record->item, $generalItems)) {
-                            return $state; // Show value with no changes for general items
-                        }
-
-                        return $state == 1 ? 'Enabled' : 'Disabled';
+                        return array_key_exists($record->item, self::GENERAL_ITEMS) ? $state : ($state ? 'Enabled' : 'Disabled');
                     })
                     ->badge()
                     ->color(function ($state, $record) {
-                        $generalItems = ['theory_questions', 'theory_passmark', 'theory_minutes'];
-
-                        if (in_array($record->item, $generalItems)) {
-                            return null; // No badge color for general items
-                        }
-
-                        return $state == 1 ? 'success' : 'danger';
+                        return array_key_exists($record->item, self::GENERAL_ITEMS) ? null : ($state ? 'success' : 'danger');
                     }),
             ])
             ->filters([
@@ -69,39 +57,24 @@ class ListTheoryManagement extends Page implements HasTable
                     ])
                     ->default('other')
                     ->query(function (Builder $query, array $data): Builder {
-                        if (empty($data['value'])) {
-                            return $query; // No filter selected
-                        }
-
-                        $generalItems = ['theory_questions', 'theory_minutes', 'theory_passmark'];
-
-                        if ($data['value'] === 'general') {
-                            return $query->whereIn('item', $generalItems);
-                        } elseif ($data['value'] === 'other') {
-                            return $query->whereNotIn('item', $generalItems);
-                        }
-
-                        return $query;
+                        return match ($data['value'] ?? null) {
+                            'general' => $query->whereIn('item', array_keys(self::GENERAL_ITEMS)),
+                            'other' => $query->whereNotIn('item', array_keys(self::GENERAL_ITEMS)),
+                            default => $query,
+                        };
                     }),
             ])
             ->actions([
                 // Show Edit only for general items
                 EditAction::make()
-                    ->visible(fn ($record) => in_array($record->item, ['theory_questions', 'theory_passmark', 'theory_minutes']))
+                    ->visible(fn ($record) => $this->isGeneralItem($record->item))
                     ->form([
-                        \Filament\Forms\Components\TextInput::make('setting')
+                        TextInput::make('setting')
                             ->label('Value')
                             ->numeric()
                             ->required(),
                     ])
-                    ->modalHeading(function ($record) {
-                        return match ($record->item) {
-                            'theory_questions' => 'Edit Number of Questions',
-                            'theory_minutes' => 'Edit Time Allowed (minutes)',
-                            'theory_passmark' => 'Edit Passmark',
-                            default => 'Edit Setting',
-                        };
-                    })
+                    ->modalHeading(fn ($record) => $this->formatItemLabel($record->item))
                     ->modalButton('Save')
                     ->successNotificationTitle('Setting updated'),
 
@@ -111,26 +84,33 @@ class ListTheoryManagement extends Page implements HasTable
                     ->label(fn ($record) => $record->setting ? 'Disable' : 'Enable')
                     ->icon(fn ($record) => $record->setting ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
                     ->color(fn ($record) => $record->setting ? 'danger' : 'success')
-                    ->visible(fn ($record) => ! in_array($record->item, ['theory_questions', 'theory_passmark', 'theory_minutes']))
+                    ->visible(fn ($record) => ! $this->isGeneralItem($record->item))
                     ->action(function ($record) {
-                        $record->setting = $record->setting ? 0 : 1;
+                        $record->setting = ! $record->setting;
                         $record->save();
 
                         return Notification::make()
-                            ->title('Status Changed')
-                            ->success()
+                            ->title($record->setting ? 'Enabled' : 'Disabled')
+                            ->icon($record->setting ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+                            ->{ $record->setting ? 'success' : 'danger'}()
                             ->send();
                     })
                     ->requiresConfirmation(),
 
                 EditAction::make('questions')
                     ->label('Questions')
-                    ->visible(fn ($record) => ! in_array($record->item, ['theory_questions', 'theory_passmark', 'theory_minutes']))
-                    ->url(fn ($record) => route('filament.app.resources.theory-managements.edit', [
-                        'record' => $record->id,
-                    ])),
-
+                    ->visible(fn ($record) => ! $this->isGeneralItem($record->item))
+                    ->url(fn ($record) => route('filament.app.resources.theory-managements.edit', ['record' => $record->id])),
             ]);
+    }
 
+    protected function isGeneralItem(string $item): bool
+    {
+        return array_key_exists($item, self::GENERAL_ITEMS);
+    }
+
+    protected function formatItemLabel(string $item): string
+    {
+        return self::GENERAL_ITEMS[$item] ?? strtoupper(str_replace('theory_', '', $item));
     }
 }
