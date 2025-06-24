@@ -27,7 +27,7 @@ class WaitingListFlagTest extends TestCase
     {
         parent::setUp();
 
-        $this->flag = factory(WaitingListFlag::class)->create();
+        $this->flag = WaitingListFlag::factory()->create();
 
         $this->actingAs($this->privacc);
 

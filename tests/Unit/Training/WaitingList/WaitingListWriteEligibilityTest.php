@@ -52,7 +52,7 @@ class WaitingListWriteEligibilityTest extends TestCase
     #[Test]
     public function it_should_write_eligibility_with_passing_manual_flags()
     {
-        $flag = factory(WaitingListFlag::class)->create();
+        $flag = WaitingListFlag::factory()->create();
         $this->waitingList->addFlag($flag);
 
         $waitingListAccount = $this->waitingList->addToWaitingList($this->user, $this->privacc);

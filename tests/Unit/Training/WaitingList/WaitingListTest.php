@@ -139,7 +139,7 @@ class WaitingListTest extends TestCase
     #[Test]
     public function it_can_have_a_boolean_flag()
     {
-        $flag = factory(WaitingListFlag::class)->create();
+        $flag = WaitingListFlag::factory()->create();
         $this->waitingList->addFlag($flag);
 
         $this->assertTrue($this->waitingList->flags->contains($flag));
@@ -148,7 +148,7 @@ class WaitingListTest extends TestCase
     #[Test]
     public function it_can_have_flags_removed()
     {
-        $flag = factory(WaitingListFlag::class)->create();
+        $flag = WaitingListFlag::factory()->create();
         $this->waitingList->addFlag($flag);
 
         $this->waitingList->removeFlag($flag);
