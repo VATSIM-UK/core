@@ -53,18 +53,12 @@ data:
     and process your data (we do this via this Privacy Policy). Members with access to your data are
     bound by our Data Protection and Handling Policy, which details and controls how we do this.
 2. VATSIM UK has a responsibility to only collect, store, and process your data on a lawful basis. VATSIM
-    UK asserts it has a legitimate interest to do so in order to ensure the smooth functioning of the
-
-
-21st July 2018
-
-```
-division and to ensure interactions between members and our services conform to the applicable
-VATSIM and VATSIM UK policies. The legitimate interest constitutes a lawful basis for data collection,
-storage, and processing. Your consent will be sought in changes to our privacy policy (this document);
-where this consent cannot be asserted in a timely manner, we will assume you are exercising your
-right to object and restrict access to our services as necessary.
-```
+    UK asserts it has a legitimate interest to do so in order to ensure the smooth functioning of the 
+    division and to ensure interactions between members and our services conform to the applicable
+    VATSIM and VATSIM UK policies. The legitimate interest constitutes a lawful basis for data collection,
+    storage, and processing. Your consent will be sought in changes to our privacy policy (this document);
+    where this consent cannot be asserted in a timely manner, we will assume you are exercising your
+    right to object and restrict access to our services as necessary.
 3. VATSIM UK has a responsibility to ensure that data protection is managed in accordance with our
     Data Protection and Handling Policy.
 4. VATSIM UK has a responsibility to report any data breaches to the appropriate authorities and will do
@@ -106,9 +100,6 @@ VATSIM UK uses cookies on its site. A cookie is a piece of data stored on your h
 you through our site and for system security. In addition to cookies placed by VATSIM UK, cookies may be
 created and accessed by additional services, such as Google Analytics and live chat software implemented by
 VATSIM UK.
-
-
-21st July 2018
 
 ### 2.5 Log Files
 

@@ -220,53 +220,60 @@ As this represents a substantial change to the visiting and transferring procedu
 
 The Legacy Visiting Groups are listed below as reference:
 
-```
-Legacy Visiting Group 1 (VG1) Newquay (EGHQ)
-Cardiff (EGFF)
-Jersey (EGJJ)
-Guernsey (EGJB)
-Bournemouth (EGHH)
-Southampton (EGHI)
-Exeter (EGTE)
-```
-```
-Legacy Visiting Group 2 (VG2) East Midlands (EGNX)
-Cambridge (EGSC)
-Norwich (EGSH)
-London City (EGLC)
-Biggin Hill (EGKB)
-Southend-on-Sea (EGMC)
-```
-```
-Legacy Visiting Group 3 (VG3) Leeds Bradford (EGNM)
-Doncaster Sheffield (EGCN)
-Humberside (EGNJ)
-Newcastle (EGNT)
-Durham Tees Valley (EGNV)
-Carlisle (EGNC)
-```
-```
-Legacy Visiting Group 4 (VG4) Blackpool (EGNH)
-Isle of Man Ronaldsway (EGNS)
-Belfast Aldergrove (EGAA)
-Aberdeen (EGPD)
-Inverness (EGPE)
-Prestwick (EGPK)
-```
-```
-Legacy Visiting Group 5 (VG5) London Control (LON_W_CTR)
-Scottish Control (SCO_CTR)
-VG1/2/3/4 facilities
-```
-```
-Legacy Visiting Group 6 (VG6) All UK mainland military airfields
-Gibraltar (LXGB)
-RAF Akrotiri (LCRA)
-RAF Mount Pleasent (EGYP)
-RAF Ascension Island (FHAW)
-```
-```
-Legacy Visiting Group 7 (VG7) EGGX (Shanwick Oceanic)
-```
+**Legacy Visiting Group 1 (VG1)**
+
+- Newquay (EGHQ)
+- Cardiff (EGFF)
+- Jersey (EGJJ)
+- Guernsey (EGJB)
+- Bournemouth (EGHH)
+- Southampton (EGHI)
+- Exeter (EGTE)
+
+**Legacy Visiting Group 2 (VG2)**
+
+- East Midlands (EGNX)
+- Cambridge (EGSC)
+- Norwich (EGSH)
+- London City (EGLC)
+- Biggin Hill (EGKB)
+- Southend-on-Sea (EGMC)
+
+**Legacy Visiting Group 3 (VG3)**
+
+- Leeds Bradford (EGNM)
+- Doncaster Sheffield (EGCN)
+- Humberside (EGNJ)
+- Newcastle (EGNT)
+- Durham Tees Valley (EGNV)
+- Carlisle (EGNC)
+
+**Legacy Visiting Group 4 (VG4)**
+
+- Blackpool (EGNH)
+- Isle of Man Ronaldsway (EGNS)
+- Belfast Aldergrove (EGAA)
+- Aberdeen (EGPD)
+- Inverness (EGPE)
+- Prestwick (EGPK)
+
+**Legacy Visiting Group 5 (VG5)**
+
+- London Control (LON_W_CTR)
+- Scottish Control (SCO_CTR)
+- VG1/2/3/4 facilities
+
+**Legacy Visiting Group 6 (VG6)**
+
+- All UK mainland military airfields
+- Gibraltar (LXGB)
+- RAF Akrotiri (LCRA)
+- RAF Mount Pleasent (EGYP)
+- RAF Ascension Island (FHAW)
+
+**Legacy Visiting Group 7 (VG7)**
+
+- EGGX (Shanwick Oceanic)
+
 
 </x-markdown>
