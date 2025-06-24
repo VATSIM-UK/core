@@ -16,7 +16,11 @@ class TheoryManagement extends Model
 
     protected $connection = 'cts';
 
+    protected $table = 'theory_settings';
+
     public $timestamps = false;
+    
+    protected $fillable = ['item', 'setting'];
 
     /**
      * Get result for the internal Core account_id, also their CId
@@ -24,11 +28,9 @@ class TheoryManagement extends Model
      * of the account_id in Core.
      */
     
-     protected $fillable = [
-        'temp'
-     ];
+
 
      public function questions() {
-        return $this->hasMany(TheoryQuestion::class, 'level', 'rating');
+        return $this->hasMany(\App\Models\Cts\TheoryQuestion::class, 'level', 'level');
      }
 }
