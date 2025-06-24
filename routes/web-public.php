@@ -58,4 +58,11 @@ Route::group([
     ], function () {
         Route::get('/branding')->uses('MarketingPagesController@viewBranding')->name('branding');
     });
+
+    Route::group([
+        'as' => 'bookings.',
+        'prefix' => 'bookings',
+    ], function () {
+        Route::get('/calendar/{year?}/{month?}')->uses('BookingsPagesController@index')->name('calendar');
+    });
 });
