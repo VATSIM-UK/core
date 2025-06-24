@@ -88,6 +88,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'waiting-lists.add-flags.*',
             'waiting-lists.delete.*',
             'waiting-lists.create',
+            'waiting-lists.admin.*',
+            'waiting-lists.admin.atc',
+            'waiting-lists.admin.pilot',
 
             // // Feedback System Permissions
             'feedback.access',
@@ -102,23 +105,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'feedback.action',
             // 'feedback.form.create',
             // 'feedback.form.configure.*',
-
-            // // SmartCars System Permissions
-            // 'smartcars.access',
-            // 'smartcars.aircraft.view.*',
-            // 'smartcars.aircraft.create',
-            // 'smartcars.aircraft.update.*',
-            // 'smartcars.aircraft.delete.*',
-            // 'smartcars.airport.view.*',
-            // 'smartcars.airport.create',
-            // 'smartcars.airport.update.*',
-            // 'smartcars.airport.delete.*',
-            // 'smartcars.exercie.view.*',
-            // 'smartcars.exercie.create',
-            // 'smartcars.exercie.update.*',
-            // 'smartcars.exercie.delete.*',
-            // 'smartcars.flight.view.*',
-            // 'smartcars.flight.edit.*',
 
             // // Endorsement System Permissions
             // 'atc.endorsement.access',

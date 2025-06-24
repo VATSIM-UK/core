@@ -6,9 +6,7 @@ use Closure;
 
 class CheckAdminPermissions
 {
-    protected $except = [
-        'adm/smartcars',
-    ];
+    protected $except = [];
 
     /**
      * Handle an incoming request.
