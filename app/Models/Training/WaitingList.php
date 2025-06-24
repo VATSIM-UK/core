@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illumintate\Database\Eloquent\HasFactory;
 
 /**
  * @property int $id
@@ -74,6 +75,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class WaitingList extends Model
 {
+    use HasFactory;
     use SoftDeletes;
 
     protected static function boot()
