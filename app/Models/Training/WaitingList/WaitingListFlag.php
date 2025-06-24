@@ -2,7 +2,6 @@
 
 namespace App\Models\Training\WaitingList;
 
-use Database\Factories\Training\WaitingList\WaitingListFlagFactory;
 use App\Models\Atc\PositionGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
