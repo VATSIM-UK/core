@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingListFlag extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 
