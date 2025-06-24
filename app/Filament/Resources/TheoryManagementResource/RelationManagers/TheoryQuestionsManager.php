@@ -18,7 +18,10 @@ class TheoryQuestionsManager extends RelationManager
 
     protected function getTableQuery(): Builder
     {
-        return $this->ownerRecord->questions()->getQuery()->where('deleted', 0);
+        $item = $this->ownerRecord->item;
+        $level = str_replace('theory_', '', $item);
+
+        return \App\Models\Cts\TheoryQuestion::query()->where('level', $level);
     }
 
     public function table(Tables\Table $table): Tables\Table
@@ -69,10 +72,10 @@ class TheoryQuestionsManager extends RelationManager
             Section::make('Additional Details')
                 ->schema([
                     Grid::make(2)->schema([
-                        TextInput::make('add_by')->required()->label('Added By')->disabled(),
-                        DatePicker::make('add_date')->required()->label('Added Date')->disabled(),
-                        TextInput::make('edit_by')->required()->label('Edited By')->disabled(),
-                        DatePicker::make('edit_date')->required()->label('Edited Date')->disabled(),
+                        TextInput::make('add_by')->label('Added By')->disabled(),
+                        DatePicker::make('add_date')->label('Added Date')->disabled(),
+                        TextInput::make('edit_by')->label('Edited By')->disabled(),
+                        DatePicker::make('edit_date')->label('Edited Date')->disabled(),
                     ]),
                 ])
                 ->collapsible()
