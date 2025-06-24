@@ -2,6 +2,7 @@
 
 namespace App\Models\Training\WaitingList;
 
+use Database\Factories\Training\WaitingList\WaitingListFlagFactory;
 use App\Models\Atc\PositionGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingListFlag extends Model
 {
-    use hasFactory;
+    use HasFactory;
     use SoftDeletes;
 
     protected $guarded = [];

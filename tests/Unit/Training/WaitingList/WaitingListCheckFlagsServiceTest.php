@@ -30,7 +30,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
         $waitingList = WaitingList::factory()->create();
         $waitingListAccount = $waitingList->addToWaitingList($this->user, $this->privacc);
 
-        $flag = factory(WaitingListFlag::class)->create([
+        $flag = WaitingListFlag::factory()->create([
             'name' => 'manual',
             'list_id' => $waitingList->id,
             'default_value' => false,
@@ -63,7 +63,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 35]);
         $condition = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
-        $flag = factory(WaitingListFlag::class)->create([
+        $flag = WaitingListFlag::factory()->create([
             'name' => 'endorsement',
             'list_id' => $waitingList->id,
             'default_value' => false,
@@ -85,7 +85,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
         factory(Atc::class)->create(['account_id' => $this->user->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 65]);
         $condition = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
 
-        $flag = factory(WaitingListFlag::class)->create([
+        $flag = WaitingListFlag::factory()->create([
             'name' => 'endorsement',
             'list_id' => $waitingList->id,
             'default_value' => false,
@@ -109,13 +109,13 @@ class WaitingListCheckFlagsServiceTest extends TestCase
         $condition = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
         $conditionSecond = factory(PositionGroupCondition::class)->create(['required_hours' => 1, 'positions' => ['EGNX_APP']]);
 
-        $flag1 = factory(WaitingListFlag::class)->create([
+        $flag1 = WaitingListFlag::factory()->create([
             'name' => 'endorsement',
             'list_id' => $waitingList->id,
             'default_value' => false,
             'position_group_id' => $condition->positionGroup->id,
         ]);
-        $flag2 = factory(WaitingListFlag::class)->create([
+        $flag2 = WaitingListFlag::factory()->create([
             'name' => 'endorsement',
             'list_id' => $waitingList->id,
             'default_value' => false,
@@ -132,7 +132,7 @@ class WaitingListCheckFlagsServiceTest extends TestCase
 
     private function createFlag($name, $waitingList, $defaultValue = false)
     {
-        $flag = factory(WaitingListFlag::class)->create([
+        $flag = WaitingListFlag::factory()->create([
             'name' => $name,
             'list_id' => $waitingList->id,
             'default_value' => $defaultValue,

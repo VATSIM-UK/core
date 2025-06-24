@@ -82,7 +82,7 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->department = WaitingList::PILOT_DEPARTMENT;
         $this->waitingList->save();
-        $flag = $this->waitingList->addFlag(factory(WaitingListFlag::class)->create(['default_value' => false]));
+        $flag = $this->waitingList->addFlag(WaitingListFlag::factory()->create(['default_value' => false]));
 
         // Add to list
         foreach ($accounts as $i => $account) {

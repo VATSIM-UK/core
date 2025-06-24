@@ -188,7 +188,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $this->adminUser->givePermissionTo('waiting-lists.access');
         $this->adminUser->givePermissionTo('waiting-lists.add-flags.*');
 
-        $flag = factory(WaitingListFlag::class)->create([
+        $flag = WaitingListFlag::factory()->create([
             'list_id' => $waitingList->id,
             'name' => 'test',
         ]);
@@ -324,7 +324,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
-        $manualFlag = factory(WaitingListFlag::class)->create([
+        $manualFlag = WaitingListFlag::factory()->create([
             'list_id' => $waitingList->id,
             'name' => 'Test Manual Flag',
         ]);
@@ -357,7 +357,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
-        $manualFlag = factory(WaitingListFlag::class)->create([
+        $manualFlag = WaitingListFlag::factory()->create([
             'list_id' => $waitingList->id,
             'name' => 'Test Manual Flag',
         ]);

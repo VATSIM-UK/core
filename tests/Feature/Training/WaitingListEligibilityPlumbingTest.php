@@ -65,7 +65,7 @@ class WaitingListEligibilityPlumbingTest extends TestCase
 
             Bus::fake();
 
-            $flag = factory(WaitingListFlag::class)->create([
+            $flag = WaitingListFlag::factory()->create([
                 'list_id' => $waitingList->id,
                 'default_value' => false,
             ]);
