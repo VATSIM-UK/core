@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Factories\Training\WaitingList;
 
 use App\Models\Training\WaitingList\WaitingListStatus;

@@ -2,8 +2,8 @@
 
 namespace Database\Factories\Training\WaitingList;
 
-use App\Models\Training\WaitingList\WaitingListFlag;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\WaitingListFlag;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WaitingListFlagFactory extends Factory
