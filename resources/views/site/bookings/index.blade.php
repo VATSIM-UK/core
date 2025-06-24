@@ -70,7 +70,7 @@
                                         @foreach($day['bookings'] as $booking)
                                         <div
                                         class="text-xs mt-1 cursor-pointer text-blue-600 hover:underline"
-                                        title="👤 {{ $booking->member_id }} | ⏰ {{ \Carbon\Carbon::parse($booking->from)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->to)->format('H:i') }}"
+                                        title="👤 {{ $booking->member->name ?? 'Unknown' }} | ⏰ {{ \Carbon\Carbon::parse($booking->from)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->to)->format('H:i') }}"
                                         onclick="openBookingModal({{ $booking->id }})"
                                         style="font-size: 12px; margin-top: 5px;">
                                         📌 {{ strtoupper($booking->position) ?? 'Booking' }}
@@ -128,10 +128,14 @@
         document.getElementById('booking-modal').classList.add('hidden');
         document.getElementById('booking-modal').classList.remove('flex');
     }
-
+    
     function formatTime(timeStr) {
-        const time = new Date('1970-01-01T' + timeStr + 'Z');
-        return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        // Assumes timeStr is in "HH:mm" or "HH:mm:ss" and UTC
+        const [hour, minute] = timeStr.split(':');
+        // Create a UTC date
+        const date = new Date(Date.UTC(1970, 0, 1, hour, minute));
+        // Format as HH:mmZ
+        return date.toISOString().substr(11, 5) + 'Z';  
     }
 </script>
 @stop

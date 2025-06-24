@@ -22,9 +22,9 @@ class BookingsPagesController extends \App\Http\Controllers\BaseController
         return response()->json([
             'id' => $booking->id,
             'position' => $booking->position,
-            'controller_name' => $booking->member_id,
-            'start_time' => $booking->from,
-            'end_time' => $booking->to,
+            'controller_name' => $booking->member->name ?? 'Unknown',
+            'from' => $booking->from,
+            'to' => $booking->to,
         ]);
     }
 
