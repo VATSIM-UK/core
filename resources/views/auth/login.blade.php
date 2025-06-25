@@ -63,7 +63,7 @@
               <div class="panel-heading"><i class="fa fa-exclamation-circle"></i> Having issues?</div>
               <div class="panel-body">
                 Use your primary email address (*****<b>{{"@" . explode("@", Auth::user()->email)[1]}}</b>) to send an email to
-                <p><a href="mailto:web-support@vatsim.uk">web-support@vatsim.uk</a></p>
+                <p><a href="mailto:technology-support@vatsim.uk">technology-support@vatsim.uk</a></p>
               </div>
             </div>
         </div>
