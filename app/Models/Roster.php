@@ -7,6 +7,7 @@ use App\Models\Atc\PositionGroup;
 use App\Models\Atc\PositionGroupPosition;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
+use App\Models\Mship\Account\Note;
 use App\Models\Mship\Qualification;
 use App\Notifications\Roster\RemovedFromRoster;
 use Illuminate\Database\Eloquent\Builder;
@@ -52,6 +53,11 @@ class Roster extends Model
     public function account()
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function restrictionNote()
+    {
+        return $this->belongsTo(Note::class, 'restriction_note_id');
     }
 
     public function remove(?RosterUpdate $update = null)
