@@ -24,7 +24,7 @@ class Show extends Component
     public function mount(Account $account)
     {
         $this->account = $account;
-        $this->roster = Roster::where('account_id', $this->account->id)->with("restrictionNote")->first();
+        $this->roster = Roster::where('account_id', $this->account->id)->with('restrictionNote')->first();
     }
 
     public function search()

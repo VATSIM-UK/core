@@ -31,7 +31,7 @@ class Roster extends Model
 
     protected $table = 'roster';
 
-    protected $fillable = ['account_id'];
+    protected $fillable = ['account_id', 'restriction_note_id'];
 
     protected static function booted(): void
     {

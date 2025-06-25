@@ -188,6 +188,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'endorsement-request.reject.*',
             'roster.manage',
             'roster.restriction.create',
+            'roster.restriction.remove',
         ];
 
         foreach ($permissions as $permission) {

@@ -33,12 +33,11 @@ class ViewAccount extends BaseViewRecordPage
 
     protected function getHeaderActions(): array
     {
-        $roster = Roster::where('account_id', $this->record->id)->first();
-        $onRoster = $roster->exists();
-        $hasRosterRestriction = (bool) $this->record->roster?->restrictionNote;
+        $roster = $this->record->roster;
+        $onRoster = $this->record->onRoster();
+        $hasRosterRestriction = (bool) $roster?->restrictionNote;
 
         return [
-
             Actions\Action::make('request_central_update')
                 ->color('gray')
                 ->icon('heroicon-o-cloud-arrow-down')
@@ -67,48 +66,7 @@ class ViewAccount extends BaseViewRecordPage
                     })
                     ->requiresConfirmation()
                     ->successNotificationTitle('Roster status updated!'),
-                Actions\Action::make('roster_restriction')
-                    ->visible(fn () => auth()->user()->can('roster.restriction.create') && $onRoster)
-                    ->color('warning')
-                    ->icon('heroicon-o-exclamation-triangle')
-                    ->name($hasRosterRestriction ? 'Edit roster restriction' : 'Add roster restriction')
-                    ->modalHeading($hasRosterRestriction ? 'Edit Roster Restriction' : 'Add Roster Restriction')
-                    ->form([
-                        Textarea::make('restriction_note')
-                            ->label('Restriction Note')
-                            ->required()
-                            ->default(fn () => $this->record->roster?->restrictionNote?->content ?? '')
-                            ->helperText('This note will be displayed on the roster and in the user\'s profile on record so please ensure it is appropriate for public display.'),
-                    ])
-                    ->action(function (array $data) use ($roster) {
-                        $note = $roster->account->addNote(Type::isShortCode('roster')->first(), $data['restriction_note'], auth()->user());
-                        $roster->restriction_note_id = $note->id;
-                        $roster->save();
-
-                        $this->dispatch('refreshNotes');
-                    })
-                    ->requiresConfirmation(),
-
-                Actions\Action::make('roster_restriction_remove')
-                    ->visible(fn () => $hasRosterRestriction && auth()->user()->can('roster.restriction.remove'))
-                    ->color('danger')
-                    ->icon('heroicon-o-trash')
-                    ->modalHeading('Remove Roster Restriction')
-                    ->form([
-                        Textarea::make('restriction_removal_note')
-                            ->label('Removal Note')
-                            ->required()
-                            ->helperText('This note will be displayed on the members profile on record.'),
-                    ])
-                    ->action(function ($data) use ($roster) {
-                        $roster->account->addNote(Type::isShortCode('roster')->first(), $data['restriction_removal_note'], auth()->user());
-                        $roster->restriction_note_id = null;
-                        $roster->save();
-
-                        $this->dispatch('refreshNotes');
-                    })
-                    ->requiresConfirmation()
-                    ->successNotificationTitle('Roster restriction removed'),
+                ...$this->getRosterRestrictionActions($roster, $onRoster, $hasRosterRestriction),
                 Actions\Action::make('remove_password')
                     ->visible(fn () => $this->record->hasPassword() && auth()->user()->can('removeSecondaryPassword', $this->record))
                     ->color('warning')
@@ -163,5 +121,54 @@ class ViewAccount extends BaseViewRecordPage
 
                 Redirect::to(URL::route('mship.manage.dashboard'))->with('success', 'You are now impersonating this user - your reason has been logged. Be good!');
             });
+    }
+
+    protected function getRosterRestrictionActions(?Roster $roster, bool $onRoster, bool $hasRosterRestriction): array
+    {
+        // dd(auth()->user()->can('roster.restriction.create'), $onRoster);
+        return [
+            Actions\Action::make('roster_restriction')
+                ->visible(fn () => auth()->user()->can('roster.restriction.create') && $onRoster)
+                ->color('warning')
+                ->icon('heroicon-o-exclamation-triangle')
+                ->name($hasRosterRestriction ? 'Edit roster restriction' : 'Add roster restriction')
+                ->modalHeading($hasRosterRestriction ? 'Edit Roster Restriction' : 'Add Roster Restriction')
+                ->form([
+                    Textarea::make('restriction_note')
+                        ->label('Restriction Note')
+                        ->required()
+                        ->default(fn () => $this->record->roster?->restrictionNote?->content ?? '')
+                        ->helperText('This note will be displayed on the roster and in the user\'s profile on record so please ensure it is appropriate for public display.'),
+                ])
+                ->action(function (array $data) use ($roster) {
+                    $note = $roster->account->addNote(Type::isShortCode('roster')->first(), $data['restriction_note'], auth()->user());
+                    $roster->restriction_note_id = $note->id;
+                    $roster->save();
+
+                    $this->dispatch('refreshNotes');
+                })
+                ->requiresConfirmation(),
+
+            Actions\Action::make('roster_restriction_remove')
+                ->visible(fn () => $hasRosterRestriction && auth()->user()->can('roster.restriction.remove'))
+                ->color('danger')
+                ->icon('heroicon-o-trash')
+                ->modalHeading('Remove Roster Restriction')
+                ->form([
+                    Textarea::make('restriction_removal_note')
+                        ->label('Removal Note')
+                        ->required()
+                        ->helperText('This note will be displayed on the members profile on record.'),
+                ])
+                ->action(function ($data) use ($roster) {
+                    $roster->account->addNote(Type::isShortCode('roster')->first(), $data['restriction_removal_note'], auth()->user());
+                    $roster->restriction_note_id = null;
+                    $roster->save();
+
+                    $this->dispatch('refreshNotes');
+                })
+                ->requiresConfirmation()
+                ->successNotificationTitle('Roster restriction removed'),
+        ];
     }
 }
