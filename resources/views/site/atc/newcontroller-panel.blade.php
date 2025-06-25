@@ -18,13 +18,13 @@ If you need to make a change, this may take up to 24 hours to process.
 
 ### EuroScope and the UK Controller Pack
 VATSIM as a whole endorses several controller clients for use on the network, but the UK division only provides training using the EuroScope client.
-Installation instructions for this are available on the [EuroScope website](https://www.euroscope.hu/wp/installation/). VATSIM UK recommends the use of v3.2.3.2, which can be downloaded from [here](https://euroscope.hu/install/EuroScopeSetup.3.2.3.2.msi).
+Installation instructions for this are available on the [EuroScope website](https://www.euroscope.hu/wp/installation/). The Division recommends the use of v3.2.3.2, which can be downloaded from [here](https://euroscope.hu/install/EuroScopeSetup.3.2.3.2.msi)
 
 Our Operations Department produces and maintains a controller pack, which provides EuroScope with data on the UK’s airspace structure to display on your screen.
 You can download the [UK Controller Pack](https://docs.vatsim.uk/General/Software%20Downloads/Controller%20Pack%20%26%20Sector%20File/) from the downloads section of our website. You can find install instructions for the Controller Pack on our [documentation website](https://docs.vatsim.uk/General/Use%20of%20Software/EuroScope%20Setup%20Guide/), be sure to follow the instructions carefully.
 
-### Audio for VATSIM
-[Audio for VATSIM](https://audio.vatsim.net/docs/2.0/atc/euroscope) is the programme we utilise to transmit and receive on ATC frequencies.
+### Track Audio
+[Track Audio](https://github.com/pierr3/TrackAudio/releases) is a programme we utilise to transmit and receive on ATC frequencies.
 This software will allow you to connect and observe current controllers on frequency.
 
 ### TeamSpeak
