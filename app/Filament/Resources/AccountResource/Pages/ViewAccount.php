@@ -125,7 +125,6 @@ class ViewAccount extends BaseViewRecordPage
 
     protected function getRosterRestrictionActions(?Roster $roster, bool $onRoster, bool $hasRosterRestriction): array
     {
-        // dd(auth()->user()->can('roster.restriction.create'), $onRoster);
         return [
             Actions\Action::make('roster_restriction')
                 ->visible(fn () => auth()->user()->can('roster.restriction.create') && $onRoster)
