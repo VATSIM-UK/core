@@ -3,12 +3,14 @@
 namespace App\Providers;
 
 use App\Models\Atc\PositionGroup;
+use App\Models\Cts\TheoryQuestion;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Training\WaitingList;
 use App\Models\VisitTransfer;
+use App\Policies\Training\TheoryExamPolicy;
 use App\Policies\FeedbackPolicy;
 use App\Policies\Mship\Account\BanPolicy;
 use App\Policies\Mship\Account\EndorsementRequestPolicy;
@@ -50,6 +52,7 @@ class AuthServiceProvider extends ServiceProvider
         Ban::class => BanPolicy::class,
         Role::class => RolePolicy::class,
         Note::class => NotePolicy::class,
+        TheoryQuestion::class => TheoryExamPolicy::class,
     ];
 
     /**

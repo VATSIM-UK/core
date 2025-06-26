@@ -19,6 +19,11 @@ class TheoryManagementResource extends Resource
 
     protected static ?string $navigationGroup = 'Mentoring';
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('theory-exams.access');
+    }
+
     public static function getPages(): array
     {
         return [

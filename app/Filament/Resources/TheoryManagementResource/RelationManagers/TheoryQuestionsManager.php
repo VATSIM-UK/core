@@ -18,6 +18,31 @@ class TheoryQuestionsManager extends RelationManager
 {
     protected static string $relationship = 'questions';
 
+    public static function canViewForRecord($ownerRecord, string $pageClass): bool
+    {
+        return auth()->user()->can('theory-exams.questions.view.*');
+    }
+
+    protected function canViewTable(): bool
+    {
+        return auth()->user()->can('theory-exams.questions.view.*');
+    }
+
+    protected function canCreate(): bool
+    {
+        return auth()->user()->can('theory-exams.questions.create.*');
+    }
+
+    protected function canEdit($record): bool
+    {
+        return auth()->user()->can('theory-exams.questions.edit.*');
+    }
+
+    protected function canDelete($record): bool
+    {
+        return auth()->user()->can('theory-exams.questions.delete.*');
+    }
+
     protected function getTableQuery(): Builder
     {
         $level = str_replace('theory_', '', $this->ownerRecord->item);

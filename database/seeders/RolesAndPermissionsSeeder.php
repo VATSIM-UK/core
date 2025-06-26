@@ -92,6 +92,26 @@ class RolesAndPermissionsSeeder extends Seeder
             'waiting-lists.admin.atc',
             'waiting-lists.admin.pilot',
 
+            // Theory Exam System Permissions
+            'theory-exams.access',
+            'theory-exams.settings.edit.*',
+            'theory-exams.questions.view.*',
+            'theory-exams.questions.view.atc',
+            'theory-exams.questions.view.pilot',
+            'theory-exams.questions.edit.*',
+            'theory-exams.questions.edit.atc',
+            'theory-exams.questions.edit.pilot',
+            'theory-exams.questions.create.*',
+            'theory-exams.questions.create.atc',
+            'theory-exams.questions.create.pilot',
+            'theory-exams.questions.delete.*',
+            'theory-exams.questions.delete.atc',
+            'theory-exams.questions.delete.pilot',
+            'theory-exams.results.view.*',
+            'theory-exams.results.view.atc',
+            'theory-exams.results.view.pilot',
+
+
             // // Feedback System Permissions
             'feedback.access',
             'feedback.view-submitter',

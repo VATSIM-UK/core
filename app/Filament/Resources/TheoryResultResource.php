@@ -20,6 +20,11 @@ class TheoryResultResource extends Resource
 
     protected static ?string $navigationGroup = 'Mentoring';
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('theory-exams.results.view.*');
+    }
+
     public static function form(Form $form): Form
     {
         return $form

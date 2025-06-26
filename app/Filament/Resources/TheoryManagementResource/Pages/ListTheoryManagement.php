@@ -67,7 +67,7 @@ class ListTheoryManagement extends Page implements HasTable
             ->actions([
                 // Show Edit only for general items
                 EditAction::make()
-                    ->visible(fn ($record) => $this->isGeneralItem($record->item))
+                    ->visible(fn ($record) => $this->isGeneralItem($record->item) && auth()->user()->can('theory-exams.settings.edit.*'))
                     ->form([
                         TextInput::make('setting')
                             ->label('Value')
@@ -84,7 +84,7 @@ class ListTheoryManagement extends Page implements HasTable
                     ->label(fn ($record) => $record->setting ? 'Disable' : 'Enable')
                     ->icon(fn ($record) => $record->setting ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
                     ->color(fn ($record) => $record->setting ? 'danger' : 'success')
-                    ->visible(fn ($record) => ! $this->isGeneralItem($record->item))
+                    ->visible(fn ($record) => ! $this->isGeneralItem($record->item) && auth()->user()->can('theory-exams.settings.edit.*'))
                     ->action(function ($record) {
                         $record->setting = ! $record->setting;
                         $record->save();
