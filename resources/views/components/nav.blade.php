@@ -155,7 +155,6 @@
                                 <li><a href="https://events.vatsim.uk/">Event Bookings</a></li>
                                 <li><a href="https://github.com/VATSIM-UK">Github</a></li>
                                 <li><a href="https://community.vatsim.uk/">Forum</a></li>
-                                https://github.com/VATSIM-UK
                                 <li><a href="https://moodle.vatsim.uk/">Moodle</a></li>
                             </ul>
                         </li>
