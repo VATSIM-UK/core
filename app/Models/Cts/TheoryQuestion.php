@@ -23,7 +23,6 @@ class TheoryQuestion extends Model
         static::creating(function ($model) {
             $userId = auth()->id();
 
-            $model->level = 'S1';
             $model->add_by = $userId;
             $model->add_date = now();
             $model->edit_by = $userId;

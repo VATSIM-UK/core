@@ -86,7 +86,12 @@ class TheoryQuestionsManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->form($this->getQuestionFormSchema()),
+                    ->form($this->getQuestionFormSchema())
+                    ->using(function (array $data) {
+                        $data['level'] = str_replace('theory_', '', $this->getOwnerRecord()->item);
+
+                        return TheoryQuestion::create($data);
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
