@@ -115,54 +115,25 @@
                 </li>
 
                 <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Operations <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li><a href="{{ route('site.operations.landing') }}">Welcome</a></li>
-                                <li><a href="{{ config('services.docs.url') }}">Documentation</a></li>
-                                <li><a href="{{ route('site.airports') }}">Airfield Information</a></li>
-                                <li><a href="{{ route('site.operations.sectors') }}">Area Sectors</a></li>
-                                <li><a href="https://community.vatsim.uk/forum/166-atc-procedure-changes/">Procedure Changes</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Community <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li class="dropdown-header">Visit / Transfer</li>
-                                <li><a href="{{ route('site.community.vt-guide') }}">Guide</a></li>
-                                <li><a href="{{ route('visiting.landing') }}">Dashboard</a></li>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Third-Party Services</li>
-                                <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
-                                <li><a href="{{ route('discord.show') }}">Discord</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Policy <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
+                                <li class="dropdown-header">Policies</li>
                                 <li><a href="{{ route('site.policy.division') }}">Division Policy</a></li>
                                 <li><a href="{{ route('site.policy.atc-training') }}">ATC Training Policy</a></li>
                                 <li><a href="{{ route('site.policy.visiting-and-transferring') }}">Visiting & Transferring Policy</a></li>
                                 <li class="divider"></li>
-                                <li class="dropdown-header">Web Policy</li>
+
+                                <li class="dropdown-header">Protecting You</li>
                                 <li><a href="{{ route('site.policy.terms') }}">Terms & Conditions</a></li>
                                 <li><a href="{{ route('site.policy.privacy') }}">Privacy Policy</a></li>
                                 <li><a href="{{ route('site.policy.data-protection') }}">Data Protection Policy</a></li>
                                 <li class="divider"></li>
+
                                 <li class="dropdown-header">Guidelines</li>
-                                <li><a href="{{ route('site.policy.branding') }}">Branding Guidelines</a></li>
-                                <li><a href="{{ route('site.policy.streaming') }}">Streaming Guidelines</a></li>
+                                <li><a href="{{ route('site.policy.branding') }}">Branding</a></li>
+                                <li><a href="{{ route('site.policy.streaming') }}">Streaming</a></li>
                             </ul>
                         </li>
                     </ul>
