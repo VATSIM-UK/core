@@ -55,7 +55,6 @@
                                 <li><a href="https://chartfox.org/">Chartfox</a></li>
                                 <li><a href="{{ route('site.airports') }}">Airfield Information</a></li>
                                 <li><a href="{{ route('site.operations.sectors') }}">UK Area Sectors</a></li>
-
                                 <li class="divider"></li>
 
                                 <li>Pilot Training</li>
@@ -74,31 +73,21 @@
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
-                                <li><a href="{{ route('site.atc.landing') }}">Welcome</a></li>
+                                <li><a href="{{ route('site.atc.newController') }}">Become a controller</a></li>
                                 <li><a href="{{ route('site.roster.index') }}">Controller Roster</a></li>
-                                <li><a href="{{ route('site.atc.newController') }}">New Controller (OBS)</a></li>
-                                <li><a href="{{ route('site.atc.endorsements') }}">Endorsements</a></li>
+                                <li class="divider"></li>
+
+                                <li>Operations</li>
+                                <li><a href="https://docs.vatsim.uk/">ATC Documentation</a></li>
+                                <li><a href="https://community.vatsim.uk/forum/166-atc-procedure-changes/">ATC Procedure Changes</a></li>
+                                <li><a href="https://docs.vatsim.uk/">ATC Software</a></li>
+
+                                <li>ATC Training</li>
+                                <li><a href="{{ route('site.atc.landing') }}">Welcome</a></li>
+                                <li><a href="{{ route('site.atc.newController') }}">New Controller</a></li>
+                                <li><a href="{{ route('site.atc.endorsements') }}">Raiting Endorsements</a></li>
+                                <li><a href="https://moodle.vatsim.uk/course/index.php?categoryid=3">eLearning</a></li>
                                 <li><a href="{{ route('site.atc.mentor') }}">Become a Mentor</a></li>
-                                <li><a href="{{ route('site.atc.bookings') }}">Bookings</a></li>
-                                @if(currentUserHasAuth())
-                                <li><a href="{{ route('ukcp.guide') }}">UK Controller Plugin</a></li>
-                                @endif
-                            </ul>
-                        </li>
-                        <li class="col-sm-12">
-                            <ul>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Endorsements</li>
-                                <li><a href="{{ route('controllers.endorsements.gatwick_ground') }}">Gatwick Ground</a></li>
-                                <li><a href="{{ route('controllers.endorsements.heathrow_ground_s1') }}">Heathrow Ground (S1)</a></li>
-                                <li><a href="{{ route('site.atc.heathrow') }}">Heathrow</a></li>
-                            </ul>
-                        </li>
-                        <li class="col-sm-12">
-                            <ul>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Hour Checker</li>
-                                <li><a href="{{ route('controllers.hour_check.area') }}">C1 Training Place</a></li>
                             </ul>
                         </li>
                     </ul>
