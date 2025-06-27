@@ -50,14 +50,14 @@
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
-                                <li>Resources</li>
+                                <li class="dropdown-header">Resources</li>
                                 <li><a href="https://ukcp.vatsim.uk/request-a-stand">Request a stand</a></li>
                                 <li><a href="https://chartfox.org/">Chartfox</a></li>
                                 <li><a href="{{ route('site.airports') }}">Airfield Information</a></li>
                                 <li><a href="{{ route('site.operations.sectors') }}">UK Area Sectors</a></li>
                                 <li class="divider"></li>
 
-                                <li>Pilot Training</li>
+                                <li class="dropdown-header">Pilot Training</li>
                                 <li><a href="{{ route('site.pilots.landing') }}">Welcome</a></li>
                                 <li><a href="{{ route('site.pilots.ratings') }}">Rating Training</a></li>
                                 <li><a href="{{ route('site.pilots.tfp') }}">The Flying Programme</a></li>
@@ -77,12 +77,13 @@
                                 <li><a href="{{ route('site.roster.index') }}">Controller Roster</a></li>
                                 <li class="divider"></li>
 
-                                <li>Operations</li>
+                                <li class="dropdown-header">Operations</li>
                                 <li><a href="https://docs.vatsim.uk/">ATC Documentation</a></li>
                                 <li><a href="https://community.vatsim.uk/forum/166-atc-procedure-changes/">ATC Procedure Changes</a></li>
                                 <li><a href="https://docs.vatsim.uk/">ATC Software</a></li>
+                                <li class="divider"></li>
 
-                                <li>ATC Training</li>
+                                <li class="dropdown-header">ATC Training</li>
                                 <li><a href="{{ route('site.atc.landing') }}">Welcome</a></li>
                                 <li><a href="{{ route('site.atc.newController') }}">New Controller</a></li>
                                 <li><a href="{{ route('site.atc.endorsements') }}">Raiting Endorsements</a></li>
