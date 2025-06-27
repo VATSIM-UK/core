@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TheoryResultResource extends Resource
 {
@@ -20,10 +21,41 @@ class TheoryResultResource extends Resource
 
     protected static ?string $navigationGroup = 'Mentoring';
 
+    // Permissions
+
     public static function canViewAny(): bool
     {
-        return auth()->user()->can('theory-exams.results.view.*');
+        return auth()->user()->can('theory-exams.access');
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (auth()->user()->can('theory-exams.results.view.*')) {
+            return $query;
+        }
+
+        $allowedCategories = collect(['atc', 'pilot'])
+            ->filter(fn ($category) => auth()->user()->can("theory-exams.results.view.$category"));
+
+        if ($allowedCategories->isEmpty()) {
+            return $query->whereRaw('1=0');
+        }
+
+        return $query->where(function ($q) use ($allowedCategories) {
+            foreach ($allowedCategories as $category) {
+                match ($category) {
+                    'atc' => $q->orWhere(function ($sub) {
+                        $sub->where('exam', 'like', 'S%')
+                            ->orWhere('exam', 'like', 'C%');
+                    }),
+                    'pilot' => $q->orWhere('exam', 'like', 'P%')
+                };
+            }
+        });
+    }
+    // Permissions End
 
     public static function form(Form $form): Form
     {

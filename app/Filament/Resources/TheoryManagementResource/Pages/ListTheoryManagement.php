@@ -35,12 +35,16 @@ class ListTheoryManagement extends Page implements HasTable
         return Table::make($this)
             ->query(TheoryManagement::query())
             ->columns([
+                TextColumn::make('category')
+                    ->label('Category')
+                    ->getStateUsing(fn ($record) => $this->getCategory($record->item)),
+
                 TextColumn::make('item')
-                    ->label('Setting')
+                    ->label('Setting / Exam')
                     ->formatStateUsing(fn ($state) => $this->formatItemLabel($state)),
 
                 TextColumn::make('setting')
-                    ->label('Value')
+                    ->label('Value / Status')
                     ->formatStateUsing(function ($state, $record) {
                         return array_key_exists($record->item, self::GENERAL_ITEMS) ? $state : ($state ? 'Enabled' : 'Disabled');
                     })
@@ -52,14 +56,14 @@ class ListTheoryManagement extends Page implements HasTable
             ->filters([
                 SelectFilter::make('Type')
                     ->options([
-                        'general' => 'General',
-                        'other' => 'Other',
+                        'settings' => 'Settings',
+                        'exams' => 'Exams',
                     ])
-                    ->default('other')
+                    ->default('exams')
                     ->query(function (Builder $query, array $data): Builder {
                         return match ($data['value'] ?? null) {
-                            'general' => $query->whereIn('item', array_keys(self::GENERAL_ITEMS)),
-                            'other' => $query->whereNotIn('item', array_keys(self::GENERAL_ITEMS)),
+                            'settings' => $query->whereIn('item', array_keys(self::GENERAL_ITEMS)),
+                            'exams' => $query->whereNotIn('item', array_keys(self::GENERAL_ITEMS)),
                             default => $query,
                         };
                     }),
@@ -99,7 +103,15 @@ class ListTheoryManagement extends Page implements HasTable
 
                 EditAction::make('questions')
                     ->label('Questions')
-                    ->visible(fn ($record) => ! $this->isGeneralItem($record->item))
+                    ->visible(function ($record) {
+                        if ($this->isGeneralItem($record->item)) {
+                            return false;
+                        }
+                        $category = strtolower($this->getCategory($record->item));
+                        $permission = "theory-exams.questions.view.$category";
+
+                        return auth()->user()->can($permission);
+                    })
                     ->url(fn ($record) => route('filament.app.resources.theory-managements.edit', ['record' => $record->id])),
             ]);
     }
@@ -112,5 +124,20 @@ class ListTheoryManagement extends Page implements HasTable
     protected function formatItemLabel(string $item): string
     {
         return self::GENERAL_ITEMS[$item] ?? strtoupper(str_replace('theory_', '', $item));
+    }
+
+    protected function getCategory(string $item): string
+    {
+        if ($this->isGeneralItem($item)) {
+            return 'Settings';
+        }
+
+        $item = strtoupper(str_replace('theory_', '', $item));
+
+        return match (true) {
+            str_starts_with($item, 'S') || str_starts_with($item, 'C') => 'ATC',
+            str_starts_with($item, 'P') => 'Pilot',
+            default => 'Other',
+        };
     }
 }

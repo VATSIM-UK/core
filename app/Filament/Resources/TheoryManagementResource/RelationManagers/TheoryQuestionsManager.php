@@ -18,30 +18,52 @@ class TheoryQuestionsManager extends RelationManager
 {
     protected static string $relationship = 'questions';
 
+    // Permissions
     public static function canViewForRecord($ownerRecord, string $pageClass): bool
     {
-        return auth()->user()->can('theory-exams.questions.view.*');
+        $category = self::getCategoryFromItem($ownerRecord->item);
+
+        return self::hasPermissionForItem($ownerRecord->item, 'view');
     }
 
     protected function canViewTable(): bool
     {
-        return auth()->user()->can('theory-exams.questions.view.*');
+        return $this->hasPermission('view');
+    }
+
+    protected function canView($record): bool
+    {
+        return $this->hasPermission('view');
     }
 
     protected function canCreate(): bool
     {
-        return auth()->user()->can('theory-exams.questions.create.*');
+        return $this->hasPermission('create');
     }
 
     protected function canEdit($record): bool
     {
-        return auth()->user()->can('theory-exams.questions.edit.*');
+        return $this->hasPermission('edit');
     }
 
     protected function canDelete($record): bool
     {
-        return auth()->user()->can('theory-exams.questions.delete.*');
+        return $this->hasPermission('delete');
     }
+
+    protected function hasPermission(string $action): bool
+    {
+        return self::hasPermissionForItem($this->ownerRecord->item, $action);
+    }
+
+    protected static function hasPermissionForItem(string $item, string $action): bool
+    {
+        $category = self::getCategoryFromItem($item);
+
+        return auth()->user()->can("theory-exams.questions.$action.*") || auth()->user()->can("theory-exams.questions.$action.$category");
+    }
+
+    // Permissions End
 
     protected function getTableQuery(): Builder
     {
@@ -119,5 +141,16 @@ class TheoryQuestionsManager extends RelationManager
                 ->collapsed(),
 
         ];
+    }
+
+    protected static function getCategoryFromItem(string $item): string
+    {
+        $item = strtoupper(str_replace('theory_', '', $item));
+
+        return match (true) {
+            str_starts_with($item, 'S') || str_starts_with($item, 'C') => 'atc',
+            str_starts_with($item, 'P') => 'pilot',
+            default => 'Other',
+        };
     }
 }
