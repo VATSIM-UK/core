@@ -138,23 +138,24 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item"><a href="https://community.vatsim.uk/downloads">Downloads</a></li>
 
                 <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other Services <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Our Services <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
-                                <li class="dropdown-header">Network Statistics</li>
-                                <li><a href="{{ route('networkdata.dashboard') }}">My Statistics</a></li>
+                                <li class="dropdown-header">Communications</li>
+                                <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
+                                <li><a href="{{ route('discord.show') }}">Discord</a></li>
                                 <li class="divider"></li>
-                                <li class="dropdown-header">Waiting Lists</li>
-                                <li><a href="{{ route('mship.waiting-lists.index') }}">My Waiting Lists</a></li>
-                                <li class="divider"></li>
-                                <li><a href="https://cts.vatsim.uk/">CTS</a></li>
+                                <li><a href="https://cts.vatsim.uk/">Training System</a></li>
+                                <li><a href="https://docs.vatsim.uk/">Docs Site</a></li>
+                                <li><a href="https://moodle.vatsim.uk/">eLearning</a></li>
                                 <li><a href="https://helpdesk.vatsim.uk/">Helpdesk</a></li>
+                                <li><a href="https://events.vatsim.uk/">Event Bookings</a></li>
+                                <li><a href="https://github.com/VATSIM-UK">Github</a></li>
                                 <li><a href="https://community.vatsim.uk/">Forum</a></li>
-                                <li><a href="https://events.vatsim.uk/">Events</a></li>
+                                https://github.com/VATSIM-UK
                                 <li><a href="https://moodle.vatsim.uk/">Moodle</a></li>
                             </ul>
                         </li>
