@@ -33,8 +33,8 @@ class WaitingListAccountStateChangeTest extends TestCase
 
         Notification::fake();
 
-        $this->waitingList = factory(WaitingList::class)->create();
-        $this->nonHomeMembersOnlyWaitingList = factory(WaitingList::class)->create();
+        $this->waitingList = WaitingList::factory()->create();
+        $this->nonHomeMembersOnlyWaitingList = WaitingList::factory()->create();
         $this->nonHomeMembersOnlyWaitingList->home_members_only = 0;
         $this->nonHomeMembersOnlyWaitingList->save();
     }
