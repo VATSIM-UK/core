@@ -324,7 +324,7 @@ class WaitingList extends Model
 
     public function isAtCapacity(): bool
     {
-        if (!$this->hasCapacityLimit()) {
+        if (! $this->hasCapacityLimit()) {
             return false;
         }
 
@@ -333,12 +333,12 @@ class WaitingList extends Model
 
     public function hasSpaceAvailable(): bool
     {
-        return !$this->isAtCapacity();
+        return ! $this->isAtCapacity();
     }
 
     public function getRemainingCapacity(): ?int
     {
-        if (!$this->hasCapacityLimit()) {
+        if (! $this->hasCapacityLimit()) {
             return null;
         }
 
