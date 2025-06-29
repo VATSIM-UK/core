@@ -174,6 +174,11 @@ class AccountsRelationManager extends RelationManager
         return $this->can('updateAccounts', $this->getOwnerRecord());
     }
 
+    protected function canAttach(): bool
+    {
+        return $this->can('addAccounts', $this->getOwnerRecord());
+    }
+
     protected function canDetach(Model $record): bool
     {
         return $this->can('removeAccount', $this->getOwnerRecord());

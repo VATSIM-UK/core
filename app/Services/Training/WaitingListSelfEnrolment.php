@@ -29,6 +29,11 @@ class WaitingListSelfEnrolment
             return false;
         }
 
+        // Check if the waiting list is at capacity
+        if ($waitingList->isAtCapacity()) {
+            return false;
+        }
+
         if ($waitingList->requires_roster_membership && ! $account->onRoster()) {
             return false;
         }
