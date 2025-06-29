@@ -123,7 +123,7 @@ class WaitingListSelfEnrolmentCapacityTest extends TestCase
 
         // Remove one user to free up space
         $removal = new \App\Models\Training\WaitingList\Removal(
-            \App\Models\Training\WaitingList\RemovalReason::TRANSFERRED_TO_TRAINING,
+            \App\Models\Training\WaitingList\RemovalReason::TrainingPlace,
             $this->privacc->id
         );
         $waitingList->removeFromWaitingList($account1, $removal);
