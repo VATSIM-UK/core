@@ -62,6 +62,12 @@ class WaitingListResource extends Resource
                             ->default(false)
                             ->live(),
 
+                        TextInput::make('max_capacity')
+                            ->label('Maximum Capacity')
+                            ->helperText('Leave empty for unlimited capacity. Set a number to limit how many users can be on this waiting list.')
+                            ->integer()
+                            ->minValue(1),
+
                     ])
                     ->collapsible()
                     ->collapsed(),
