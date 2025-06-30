@@ -4,9 +4,12 @@ namespace App\Models\Cts;
 
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ValidationPosition extends Model
 {
+    use HasFactory;
+    
     protected $connection = 'cts';
 
     protected $table = 'validations_p';
