@@ -50,7 +50,7 @@ class ValidationPositionRepositoryTest extends TestCase
     {
         $position = ValidationPosition::Factory()->create();
 
-        factory(Validation::class, 10)->create([
+        Validation::factory()->count(10)->create([
             'position_id' => $position->id,
         ]);
 

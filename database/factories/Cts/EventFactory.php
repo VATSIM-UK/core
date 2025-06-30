@@ -41,7 +41,7 @@ class EventFactory extends Factory
             'from' => $from,
             'to' => Carbon::createFromTimeString($from)->addHours(rand(1, 4))->toTimeString(),
             'add_by' => Member::factory(),
-            'text' => $this->faker->paragraph->create()->id,
+            'text' => $this->faker->paragraph,
             'thread' => $this->faker->url,
         ];
     }

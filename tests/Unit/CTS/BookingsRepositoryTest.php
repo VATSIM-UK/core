@@ -36,7 +36,7 @@ class BookingsRepositoryTest extends TestCase
     #[Test]
     public function it_can_return_a_list_of_bookings_for_today()
     {
-        factory(Booking::class, 10)->create(['date' => Carbon::now()]);
+        Booking::factory()->count(10)->create(['date' => Carbon::now()]);
 
         $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
 
@@ -48,7 +48,7 @@ class BookingsRepositoryTest extends TestCase
     #[Test]
     public function it_can_return_a_list_of_todays_bookings_with_owner_and_type()
     {
-        factory(Booking::class, 2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
+        Booking::factory()->count(2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
 
         $bookingTodayOne = Booking::Factory()->create([
             'id' => '96155',
