@@ -21,11 +21,10 @@
 
 namespace Database\Factories\Cts;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Cts\Member;
 use App\Models\Cts\Event;
+use App\Models\Cts\Member;
 use Carbon\Carbon;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EventFactory extends Factory
 {
@@ -44,6 +43,6 @@ class EventFactory extends Factory
             'add_by' => Member::factory(),
             'text' => $this->faker->paragraph->create()->id,
             'thread' => $this->faker->url,
-            ];
+        ];
     }
 }

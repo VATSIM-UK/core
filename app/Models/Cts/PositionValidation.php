@@ -2,13 +2,13 @@
 
 namespace App\Models\Cts;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class PositionValidation extends Model
 {
     use HasFactory;
-    
+
     protected $connection = 'cts';
 
     protected $table = 'position_validations';

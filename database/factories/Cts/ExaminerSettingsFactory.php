@@ -32,8 +32,8 @@
 
 namespace Database\Factories\Cts;
 
-use App\Models\Cts\Member;
 use App\Models\Cts\ExaminerSettings;
+use App\Models\Cts\Member;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -43,7 +43,7 @@ class ExaminerSettingsFactory extends Factory
 
     public function definition(): array
     {
-       return [
+        return [
             'memberID' => Member::factory()->create(['examiner' => 1])->id,
             'OBS' => rand(0, 1),
             'S1' => rand(0, 1),
@@ -65,6 +65,6 @@ class ExaminerSettingsFactory extends Factory
             'P5train' => str(rand(0, 1)),
             'lastUpdated' => Carbon::createFromFormat('Y-m-d H:i:s', now())->toDateTimeString(),
             'updatedBy' => 1111111,
-            ]; 
+        ];
     }
 }

@@ -2,8 +2,6 @@
 
 // use App\Models\Cts\Member;
 
-
-
 // $factory->define(App\Models\Cts\Booking::class, function (Faker $faker) {
 //     $from = $faker->time();
 
@@ -18,6 +16,7 @@
 // });
 
 namespace Database\Factories\Cts;
+
 use App\Models\Cts\Booking;
 use App\Models\Cts\Member;
 use Carbon\Carbon;
@@ -38,6 +37,6 @@ class BookingFactory extends Factory
             'position' => $this->faker->randomElement(['EGKK_APP', 'EGCC_APP', 'LON_SC_CTR', 'EGGP_GND']),
             'member_id' => Member::Factory()->create()->id,
             'type' => $this->faker->randomElement(['BK', 'EX', 'ME', 'EV']),
-            ]; 
+        ];
     }
 }

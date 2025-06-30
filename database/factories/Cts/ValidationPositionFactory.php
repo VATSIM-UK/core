@@ -12,8 +12,8 @@
 
 namespace Database\Factories\Cts;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Cts\ValidationPosition;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ValidationPositionFactory extends Factory
 {

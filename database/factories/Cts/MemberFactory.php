@@ -18,9 +18,8 @@
 namespace Database\Factories\Cts;
 
 use App\Models\Cts\Member;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\Carbon;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MemberFactory extends Factory
 {
@@ -31,11 +30,11 @@ class MemberFactory extends Factory
         $joined = Carbon::now();
 
         return [
-        'id' => rand(810000, 1400000),
-        'cid' => rand(810000, 1400000),
-        'name' => $this->faker->name,
-        'joined' => $joined,
-        'joined_div' => $joined->addDays(rand(-240, 0)),
+            'id' => rand(810000, 1400000),
+            'cid' => rand(810000, 1400000),
+            'name' => $this->faker->name,
+            'joined' => $joined,
+            'joined_div' => $joined->addDays(rand(-240, 0)),
         ];
     }
 }

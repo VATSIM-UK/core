@@ -3,13 +3,13 @@
 namespace App\Models\Cts;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory
 
 class Event extends Model
 {
     use HasFactory;
-    
+
     protected $connection = 'cts';
 
     protected $guarded = [];

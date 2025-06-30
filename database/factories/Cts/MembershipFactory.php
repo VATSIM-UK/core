@@ -21,8 +21,8 @@
 
 namespace Database\Factories\Cts;
 
-use App\Models\Cts\Membership;
 use App\Models\Cts\Member;
+use App\Models\Cts\Membership;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MembershipFactory extends Factory
