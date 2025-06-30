@@ -19,7 +19,7 @@ namespace Database\Factories\Cts;
 
 use App\Models\Cts\Member;
 use App\Models\Cts\Position;
-use App\Models\PositionValidation;
+use App\Models\Cts\PositionValidation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
