@@ -34,7 +34,8 @@ class PositionGroupResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Name'),
+                Tables\Columns\TextColumn::make('name')->label('Name')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('membership_endorsement_count')
                     ->label('Endorsed')
                     ->counts('membershipEndorsement'),
@@ -42,7 +43,8 @@ class PositionGroupResource extends Resource
             ->defaultSort('name')
             ->actions([
                 Tables\Actions\ViewAction::make(),
-            ]);
+            ])
+            ->defaultSort('name', 'desc');
     }
 
     public static function getRelations(): array
