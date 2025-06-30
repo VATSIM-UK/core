@@ -13,7 +13,7 @@
 //         'date' => $faker->dateTimeInInterval('+1 YEAR')->format('Y-m-d'),
 //         'from' => $from,
 //         'to' => Carbon::createFromTimeString($from)->addHours(rand(1, 4))->toTimeString(),
-//         'add_by' => factory(Member::class)->create()->id,
+//         'add_by' => Member::Factory()->create()->id,
 //         'text' => $faker->paragraph,
 //         'thread' => $faker->url,
 //     ];

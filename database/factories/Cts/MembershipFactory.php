@@ -6,7 +6,7 @@
 // $factory->define(App\Models\Cts\Membership::class, function (Faker $faker) {
 //     return [
 //         'rts_id' => 1,
-//         'member_id' => factory(Member::class)->create(),
+//         'member_id' => Member::Factory()->create(),
 //         'type' => 'H',
 //         'rtsm' => 0,
 //         'rtsi' => 0,

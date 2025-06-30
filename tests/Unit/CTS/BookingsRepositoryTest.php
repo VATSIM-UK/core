@@ -54,7 +54,7 @@ class BookingsRepositoryTest extends TestCase
             'id' => '96155',
             'date' => $this->today,
             'from' => '17:00',
-            'member_id' => factory(Member::class)->create()->id,
+            'member_id' => Member::Factory()->create()->id,
             'type' => 'BK',
         ]);
 
@@ -62,7 +62,7 @@ class BookingsRepositoryTest extends TestCase
             'id' => '96156',
             'date' => $this->today,
             'from' => '18:00',
-            'member_id' => factory(Member::class)->create()->id,
+            'member_id' => Member::Factory()->create()->id,
             'type' => 'ME',
         ]);
 

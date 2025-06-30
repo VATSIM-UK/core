@@ -7,7 +7,7 @@
 
 // $factory->define(App\Models\Cts\PositionValidation::class, function (Faker $faker) {
 //     return [
-//         'member_id' => factory(Member::class)->create()->id,
+//         'member_id' => Member::Factory()->create()->id,
 //         'position_id' => Position::factory()->create()->id,
 //         'status' => rand(1, 5),
 //         'changed_by' => 1111111,

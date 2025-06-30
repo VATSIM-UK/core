@@ -12,7 +12,7 @@
 //         'from' => $from,
 //         'to' => Carbon::createFromTimeString($from)->addHours(rand(1, 4))->toTimeString(),
 //         'position' => $faker->randomElement(['EGKK_APP', 'EGCC_APP', 'LON_SC_CTR', 'EGGP_GND']),
-//         'member_id' => factory(Member::class)->create()->id,
+//         'member_id' => Member::Factory()->create()->id,
 //         'type' => $faker->randomElement(['BK', 'EX', 'ME', 'EV']),
 //     ];
 // });
@@ -36,7 +36,7 @@ class BookingFactory extends Factory
             'from' => $from,
             'to' => Carbon::createFromTimeString($from)->addHours(rand(1, 4))->toTimeString(),
             'position' => $this->faker->randomElement(['EGKK_APP', 'EGCC_APP', 'LON_SC_CTR', 'EGGP_GND']),
-            'member_id' => factory(Member::class)->create()->id,
+            'member_id' => Member::Factory()->create()->id,
             'type' => $this->faker->randomElement(['BK', 'EX', 'ME', 'EV']),
             ]; 
     }

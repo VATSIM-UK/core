@@ -6,7 +6,7 @@
 
 // $factory->define(App\Models\Cts\ExaminerSettings::class, function (Faker $faker) {
 //     return [
-//         'memberID' => factory(Member::class)->create(['examiner' => 1])->id,
+//         'memberID' => Member::Factory()->create(['examiner' => 1])->id,
 //         'OBS' => rand(0, 1),
 //         'S1' => rand(0, 1),
 //         'S2' => rand(0, 1),

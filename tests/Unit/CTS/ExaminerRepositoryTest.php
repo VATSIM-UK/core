@@ -51,7 +51,7 @@ class ExaminerRepositoryTest extends TestCase
     public function it_does_not_return_an_examiner_if_not_set_as_examiner_on_members_table()
     {
         factory(ExaminerSettings::class)->create([
-            'memberID' => factory(Member::class)->create(['examiner' => 0]),
+            'memberID' => Member::Factory()->create(['examiner' => 0]),
             'S1' => 1,
             'P1' => 1,
         ]);
