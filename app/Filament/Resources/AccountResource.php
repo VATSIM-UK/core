@@ -14,6 +14,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
@@ -79,10 +80,13 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                     Forms\Components\Placeholder::make('roster_status')->label('Roster Status')->content(fn ($record) => Roster::where('account_id', $record->id)->exists() ? 'Active' : 'Inactive'),
 
                     Forms\Components\Fieldset::make('Emails')->schema([
-                        Forms\Components\TextInput::make('email')
+                        CopyablePlaceholder::make('email')
                             ->label('Primary Email')
-                            ->required()
-                            ->disabled(),
+                            ->iconOnly()
+                            ->content(fn ($record) => $record->email)
+                            ->extraAttributes([
+                                'class' => 'flex items-center space-x-2',
+                            ]),
 
                         Forms\Components\Repeater::make('secondaryEmails')
                             ->relationship()
