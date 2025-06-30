@@ -11,6 +11,7 @@ use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -74,6 +75,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class WaitingList extends Model
 {
+    use HasFactory;
     use SoftDeletes;
 
     protected static function boot()
@@ -87,7 +89,7 @@ class WaitingList extends Model
 
     public $table = 'training_waiting_list';
 
-    protected $fillable = ['name', 'slug', 'department', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours'];
+    protected $fillable = ['name', 'slug', 'department', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours', 'max_capacity'];
 
     const ATC_DEPARTMENT = 'atc';
 
@@ -107,6 +109,7 @@ class WaitingList extends Model
         'self_enrolment_maximum_qualification_id' => 'integer',
         'self_enrolment_hours_at_qualification_id' => 'integer',
         'self_enrolment_hours_at_qualification_minimum_hours' => 'integer',
+        'max_capacity' => 'integer',
     ];
 
     /**
@@ -190,6 +193,11 @@ class WaitingList extends Model
      */
     public function addToWaitingList(Account $account, Account $staffAccount, ?Carbon $createdAt = null): WaitingListAccount
     {
+        // Check if the waiting list is at capacity
+        if ($this->isAtCapacity()) {
+            throw new \InvalidArgumentException("Cannot add account to waiting list '{$this->name}' as it has reached its maximum capacity of {$this->max_capacity} users.");
+        }
+
         $timestamp = $createdAt != null ? $createdAt : Carbon::now();
 
         $waitingListAccount = new WaitingListAccount;
@@ -302,6 +310,39 @@ class WaitingList extends Model
     public function hoursAtQualification()
     {
         return $this->belongsTo(\App\Models\Mship\Qualification::class, 'self_enrolment_hours_at_qualification_id');
+    }
+
+    public function hasCapacityLimit(): bool
+    {
+        return $this->max_capacity !== null;
+    }
+
+    public function getCurrentCapacity(): int
+    {
+        return $this->waitingListAccounts()->count();
+    }
+
+    public function isAtCapacity(): bool
+    {
+        if (! $this->hasCapacityLimit()) {
+            return false;
+        }
+
+        return $this->getCurrentCapacity() >= $this->max_capacity;
+    }
+
+    public function hasSpaceAvailable(): bool
+    {
+        return ! $this->isAtCapacity();
+    }
+
+    public function getRemainingCapacity(): ?int
+    {
+        if (! $this->hasCapacityLimit()) {
+            return null;
+        }
+
+        return max(0, $this->max_capacity - $this->getCurrentCapacity());
     }
 
     public function __toString()

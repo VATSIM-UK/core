@@ -4,6 +4,9 @@ namespace Tests\Feature\Admin\Account\Pages;
 
 use App\Filament\Resources\AccountResource\Pages\ViewAccount;
 use App\Jobs\UpdateMember;
+use App\Models\Mship\Note\Type;
+use App\Models\Mship\State;
+use App\Models\Roster;
 use Illuminate\Support\Facades\Bus;
 use Livewire\Livewire;
 use Tests\Feature\Admin\BaseAdminTestCase;
@@ -113,5 +116,87 @@ class ViewAccountPageTest extends BaseAdminTestCase
             'loggable_id' => $this->privacc->id,
             'loggable_type' => get_class($this->privacc),
         ]);
+    }
+
+    public function test_can_apply_roster_restriction_when_permitted()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('roster.restriction.create');
+
+        // Ensure on roster and has a division state
+        $this->privacc->addState(State::findByCode('DIVISION'));
+        Roster::create(['account_id' => $this->privacc->getKey()]);
+
+        Livewire::actingAs($this->user)
+            ->test(ViewAccount::class, ['record' => $this->privacc->refresh()->getKey()])
+            ->callAction('Add roster restriction', ['restriction_note' => 'Test restriction']);
+
+        $note = $this->privacc->roster->restrictionNote;
+
+        $this->assertDatabaseHas('roster', [
+            'account_id' => $this->privacc->id,
+            'restriction_note_id' => $note->id,
+        ]);
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'note_type_id' => Type::isShortCode('roster')->first()->id,
+            'account_id' => $this->privacc->id,
+            'writer_id' => $this->user->id,
+            'content' => 'Test restriction',
+        ]);
+    }
+
+    public function test_cant_apply_roster_restriction_when_not_permitted()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+
+        // Ensure on roster and has a division state
+        $this->privacc->addState(State::findByCode('DIVISION'));
+        Roster::create(['account_id' => $this->privacc->getKey()]);
+
+        Livewire::actingAs($this->user)
+            ->test(ViewAccount::class, ['record' => $this->privacc->refresh()->getKey()])
+            ->assertActionHidden('Add roster restriction');
+    }
+
+    public function test_can_remove_roster_restriction_when_permitted()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('roster.restriction.remove');
+
+        // Ensure on roster and has a division state
+        $this->privacc->addState(State::findByCode('DIVISION'));
+        $existingNote = $this->privacc->addNote(Type::isShortCode('roster')->first(), 'Test restriction', $this->user);
+        $roster = Roster::create(['account_id' => $this->privacc->getKey(), 'restriction_note_id' => $existingNote->id]);
+
+        Livewire::actingAs($this->user)
+            ->test(ViewAccount::class, ['record' => $this->privacc->refresh()->getKey()])
+            ->callAction('roster_restriction_remove', ['restriction_removal_note' => 'Test removal note']);
+
+        $this->assertDatabaseHas('roster', [
+            'account_id' => $this->privacc->id,
+            'restriction_note_id' => null,
+        ]);
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'note_type_id' => Type::isShortCode('roster')->first()->id,
+            'account_id' => $this->privacc->id,
+            'writer_id' => $this->user->id,
+            'content' => 'Test removal note',
+        ]);
+    }
+
+    public function test_cant_remove_roster_restriction_when_not_permitted()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+
+        // Ensure on roster and has a division state
+        $this->privacc->addState(State::findByCode('DIVISION'));
+        $existingNote = $this->privacc->addNote(Type::isShortCode('roster')->first(), 'Test restriction', $this->user);
+        Roster::create(['account_id' => $this->privacc->getKey(), 'restriction_note_id' => $existingNote->id]);
+
+        Livewire::actingAs($this->user)
+            ->test(ViewAccount::class, ['record' => $this->privacc->refresh()->getKey()])
+            ->assertActionHidden('roster_restriction_remove');
     }
 }

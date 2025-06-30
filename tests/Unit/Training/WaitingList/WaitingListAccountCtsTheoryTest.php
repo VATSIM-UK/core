@@ -34,7 +34,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
     private function setupWaitingList(?string $ctsLevel, ?string $department = WaitingList::ATC_DEPARTMENT): WaitingList\WaitingListAccount
     {
-        $waitingList = factory(WaitingList::class)->create(['cts_theory_exam_level' => $ctsLevel, 'department' => $department]);
+        $waitingList = WaitingList::factory()->create(['cts_theory_exam_level' => $ctsLevel, 'department' => $department]);
 
         return $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
     }

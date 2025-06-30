@@ -43,7 +43,7 @@ class WaitingListTest extends TestCase
     #[Test]
     public function it_detects_if_atc_list()
     {
-        $atcList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $atcList = WaitingList::factory()->create(['department' => 'atc']);
 
         $this->assertTrue($atcList->isAtcList());
         $this->assertFalse($atcList->isPilotList());
@@ -52,7 +52,7 @@ class WaitingListTest extends TestCase
     #[Test]
     public function it_detects_if_pilot_list()
     {
-        $atcList = factory(WaitingList::class)->create(['department' => 'pilot']);
+        $atcList = WaitingList::factory()->create(['department' => 'pilot']);
 
         $this->assertTrue($atcList->isPilotList());
         $this->assertFalse($atcList->isAtcList());
@@ -82,7 +82,7 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->department = WaitingList::PILOT_DEPARTMENT;
         $this->waitingList->save();
-        $flag = $this->waitingList->addFlag(factory(WaitingListFlag::class)->create(['default_value' => false]));
+        $flag = $this->waitingList->addFlag(WaitingListFlag::factory()->create(['default_value' => false]));
 
         // Add to list
         foreach ($accounts as $i => $account) {
@@ -139,7 +139,7 @@ class WaitingListTest extends TestCase
     #[Test]
     public function it_can_have_a_boolean_flag()
     {
-        $flag = factory(WaitingListFlag::class)->create();
+        $flag = WaitingListFlag::factory()->create();
         $this->waitingList->addFlag($flag);
 
         $this->assertTrue($this->waitingList->flags->contains($flag));
@@ -148,7 +148,7 @@ class WaitingListTest extends TestCase
     #[Test]
     public function it_can_have_flags_removed()
     {
-        $flag = factory(WaitingListFlag::class)->create();
+        $flag = WaitingListFlag::factory()->create();
         $this->waitingList->addFlag($flag);
 
         $this->waitingList->removeFlag($flag);

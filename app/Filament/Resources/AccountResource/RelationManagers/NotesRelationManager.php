@@ -27,6 +27,15 @@ class NotesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'id';
 
+    /**
+     * The listeners for the relation manager.
+     * Allows actions against a resource to trigger a refresh of the relation manager.
+     *
+     * Current usages:
+     * - Roster restrictions refreshing the notes relation manager when a roster restriction is added or removed.
+     */
+    protected $listeners = ['refreshNotes' => '$refresh'];
+
     public function isReadOnly(): bool
     {
         return false;

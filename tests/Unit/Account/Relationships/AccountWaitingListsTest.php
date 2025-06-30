@@ -25,8 +25,8 @@ class AccountWaitingListsTest extends TestCase
         // create as division member
         $this->user->addState(State::findByCode('DIVISION'));
 
-        $this->oldWaitingList = factory(WaitingList::class)->create();
-        $this->currentWaitingList = factory(WaitingList::class)->create();
+        $this->oldWaitingList = WaitingList::factory()->create();
+        $this->currentWaitingList = WaitingList::factory()->create();
 
         $this->oldWaitingList->addToWaitingList($this->user, $this->privacc);
         $this->currentWaitingList->addToWaitingList($this->user, $this->privacc);
@@ -52,7 +52,7 @@ class AccountWaitingListsTest extends TestCase
     #[Test]
     public function it_can_handle_trashed_waiting_lists()
     {
-        $trashed = factory(WaitingList::class)->create();
+        $trashed = WaitingList::factory()->create();
         $trashed->addToWaitingList($this->user, $this->privacc);
         $trashed->delete();
         $trashed->save();
