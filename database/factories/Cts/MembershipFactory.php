@@ -33,7 +33,7 @@ class MembershipFactory extends Factory
     {
         return [
             'rts_id' => 1,
-            'member_id' => Member::Factory()->create(),
+            'member_id' => Member::factory()->create()->id,
             'type' => 'H',
             'rtsm' => 0,
             'rtsi' => 0,
