@@ -110,6 +110,8 @@ class FeedbackResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('form.name')->label('Feedback Type')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('account.name')->label('Subject')->searchable(['name_first', 'name_last']),
                 Tables\Columns\TextColumn::make('submitter.name')->label('Submitted By')->visible(self::canSeeSubmitter()),
                 Tables\Columns\TextColumn::make('created_at')
