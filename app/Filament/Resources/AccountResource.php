@@ -79,13 +79,17 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                     Forms\Components\Placeholder::make('roster_status')->label('Roster Status')->content(fn ($record) => Roster::where('account_id', $record->id)->exists() ? 'Active' : 'Inactive'),
 
                     Forms\Components\Fieldset::make('Emails')->schema([
-                        CopyablePlaceholder::make('email')
-                            ->label('Primary Email')
-                            ->iconOnly()
-                            ->content(fn ($record) => $record->email)
-                            ->extraAttributes([
-                                'class' => 'flex items-center space-x-2',
-                            ]),
+                        Forms\Components\TextInput::make('email')
+            ->label('Primary Email')
+            ->disabled()
+            ->suffixAction(
+                Forms\Components\Actions\Action::make('copy')
+                    ->icon('heroicon-m-clipboard')
+                    ->tooltip('Copy')
+                    ->action(fn ($record, $livewire) => 
+                        $livewire->js('navigator.clipboard.writeText("'.$record->email.'")')
+                    )
+            ),
 
                         Forms\Components\Repeater::make('secondaryEmails')
                             ->relationship()
