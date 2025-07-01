@@ -14,6 +14,7 @@ use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
+use Illuminate\Database\Query\Builder;
 
 class EndorsementsRelationManager extends RelationManager
 {
@@ -58,7 +59,8 @@ class EndorsementsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('created_at')->label('Granted')->date(),
                 Tables\Columns\TextColumn::make('expires_at')->label('Expires')->date()->default(''),
                 Tables\Columns\TextColumn::make('duration')->label('Duration (Days)')
-                    ->summarize(Sum::make()->label('Days')->numeric()),
+                    ->summarize(Sum::make()->hidden(fn (\Illuminate\Database\Eloquent\Builder $query): bool => ! $query->exists())
+                    ->label('Total Duration')),
             ])
             ->headerActions([
                 // Tables\Actions\CreateAction::make()->label('Add endorsement'),
