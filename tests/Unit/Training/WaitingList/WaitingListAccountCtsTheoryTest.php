@@ -25,7 +25,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
         // create the member first as for some reason the CID is not overwritten
         // when using a factory
-        $this->member = factory(Member::class)->create();
+        $this->member = Member::Factory()->create();
         $this->account = Account::factory()->create(['id' => $this->member->cid]);
         $this->account->addState(State::findByCode('DIVISION'));
 

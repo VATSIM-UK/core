@@ -27,7 +27,7 @@ class ValidationPositionRepositoryTest extends TestCase
     #[Test]
     public function it_can_find_a_position_by_id()
     {
-        $position = factory(ValidationPosition::class)->create();
+        $position = ValidationPosition::Factory()->create();
         $search = $this->subjectUnderTest->findByPositionId($position->id);
 
         $this->assertEquals($position->id, $search->id);
@@ -36,7 +36,7 @@ class ValidationPositionRepositoryTest extends TestCase
     #[Test]
     public function it_can_find_a_position_by_callsign()
     {
-        $position = factory(ValidationPosition::class)->create([
+        $position = ValidationPosition::Factory()->create([
             'position' => 'Shanwick (EGGX_FSS)',
         ]);
 
@@ -48,9 +48,9 @@ class ValidationPositionRepositoryTest extends TestCase
     #[Test]
     public function it_returns_validated_members()
     {
-        $position = factory(ValidationPosition::class)->create();
+        $position = ValidationPosition::Factory()->create();
 
-        factory(Validation::class, 10)->create([
+        Validation::factory()->count(10)->create([
             'position_id' => $position->id,
         ]);
 
@@ -60,10 +60,10 @@ class ValidationPositionRepositoryTest extends TestCase
     #[Test]
     public function it_formats_validated_members()
     {
-        $position = factory(ValidationPosition::class)->create();
-        $member = factory(Member::class)->create();
+        $position = ValidationPosition::Factory()->create();
+        $member = Member::Factory()->create();
 
-        factory(Validation::class)->create([
+        Validation::Factory()->create([
             'position_id' => $position->id,
             'member_id' => $member->id,
         ]);

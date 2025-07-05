@@ -155,11 +155,11 @@ class PilotTrainingStatsTest extends TestCase
     #[Test]
     public function it_counts_mentor_stats()
     {
-        factory(Member::class)->create([
+        Member::Factory()->create([
             'id' => 1,
             'cid' => '123456',
         ]);
-        factory(Member::class)->create([
+        Member::Factory()->create([
             'id' => 2,
             'cid' => '654321',
         ]);
@@ -196,17 +196,17 @@ class PilotTrainingStatsTest extends TestCase
     public function it_counts_student_stats()
     {
         // Create students
-        factory(Member::class)->create([
+        Member::Factory()->create([
             'id' => 1,
             'cid' => '111111',
             'name' => 'Student One',
         ]);
-        factory(Member::class)->create([
+        Member::Factory()->create([
             'id' => 2,
             'cid' => '222222',
             'name' => 'Student Two',
         ]);
-        factory(Member::class)->create([
+        Member::Factory()->create([
             'id' => 3,
             'cid' => '333333',
             'name' => 'Student Three',
