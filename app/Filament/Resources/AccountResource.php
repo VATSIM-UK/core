@@ -81,8 +81,14 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                     Forms\Components\Fieldset::make('Emails')->schema([
                         Forms\Components\TextInput::make('email')
                             ->label('Primary Email')
-                            ->required()
-                            ->disabled(),
+                            ->disabled()
+                            ->suffixAction(
+                                Forms\Components\Actions\Action::make('copy')
+                                    ->icon('heroicon-m-clipboard')
+                                    ->tooltip('Copy')
+                                    ->action(fn ($record, $livewire) => $livewire->js('navigator.clipboard.writeText("'.$record->email.'")')
+                                    )
+                            ),
 
                         Forms\Components\Repeater::make('secondaryEmails')
                             ->relationship()
