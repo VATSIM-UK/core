@@ -354,7 +354,7 @@ class MockCtsDatabase
             ) ENGINE=InnoDB AUTO_INCREMENT=247 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
 
-        DB:connection('cts')->statement(
+        DB::connection('cts')->statement(
             "CREATE TABLE `practical_criteria_assess` (
               `id` mediumint unsigned NOT NULL AUTO_INCREMENT,
               `examid` smallint unsigned NOT NULL DEFAULT '0',
