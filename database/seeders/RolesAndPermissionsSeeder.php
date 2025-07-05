@@ -32,6 +32,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'horizon.access',
             'telescope.access',
 
+            // Training Panel Permissions
+            'training.access',
+
             // Account Permissions
             'account.self',
             'account.view-insensitive.*',

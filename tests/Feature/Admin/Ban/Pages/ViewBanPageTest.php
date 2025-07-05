@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Account\Pages;
 
-use App\Filament\Resources\BanResource\Pages\ViewBan;
+use App\Filament\Admin\Resources\BanResource\Pages\ViewBan;
 use App\Models\Mship\Account\Ban;
 use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
