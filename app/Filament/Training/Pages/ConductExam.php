@@ -72,9 +72,10 @@ class ConductExam extends Page implements HasForms
                         RichEditor::make("form.{$criteria->id}.comments")
                             ->label('Comments')
                             ->default('')
-                            ->required()
                             ->columnSpan(9)
-                            ->disableToolbarButtons(['attachFiles', 'blockquote']),
+                            ->disableToolbarButtons(['attachFiles', 'blockquote'])
+                            ->live(debounce: 1000)
+                            ->afterStateUpdated(fn () => $this->save()),
                         Select::make("form.{$criteria->id}.grade")
                             ->label('Grade')
                             ->options([
@@ -86,7 +87,9 @@ class ConductExam extends Page implements HasForms
                             ])
                             ->default('N')
                             ->columnSpan(3)
-                            ->required(),
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(fn () => $this->save()),
                     ])->columns(12);
             }
         );
@@ -103,15 +106,14 @@ class ConductExam extends Page implements HasForms
         $formData = collect($this->form->getState())['form'];
 
         $flattenedFormData = collect($formData)->map(
-                fn($item, $key) => [
-                    "criteria_id" => $key,
-                    "grade" => $item["grade"],
-                    "comments" => $item["comments"]
-                ]
-            )
+            fn ($item, $key) => [
+                'criteria_id' => $key,
+                'grade' => $item['grade'],
+                'comments' => $item['comments'],
+            ]
+        )
             ->values()
             ->all();
-
 
         collect($flattenedFormData)->each(
             function ($item) {
