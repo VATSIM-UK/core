@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Admin\Account\RelationManagers;
 
-use App\Filament\Resources\AccountResource\Pages\ViewAccount;
-use App\Filament\Resources\AccountResource\RelationManagers\FeedbackRelationManager;
+use App\Filament\Admin\Resources\AccountResource\Pages\ViewAccount;
+use App\Filament\Admin\Resources\AccountResource\RelationManagers\FeedbackRelationManager;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use Livewire\Livewire;

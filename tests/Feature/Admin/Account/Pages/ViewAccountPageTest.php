@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Account\Pages;
 
-use App\Filament\Resources\AccountResource\Pages\ViewAccount;
+use App\Filament\Admin\Resources\AccountResource\Pages\ViewAccount;
 use App\Jobs\UpdateMember;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\State;

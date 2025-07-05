@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Pages\Operations;
 
-use App\Filament\Pages\Operations\GenerateQuarterlyStats;
+use App\Filament\Admin\Pages\Operations\GenerateQuarterlyStats;
 use Livewire\Livewire;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
