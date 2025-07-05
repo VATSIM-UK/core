@@ -343,6 +343,16 @@ class MockCtsDatabase
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB AUTO_INCREMENT=3010 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `exam_criteria` (
+            `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+            `exam` enum('OBS','TWR','APP','CTR','P1','P2','P3','P4','P5','P6','P7','P8','P9') NOT NULL DEFAULT 'TWR',
+            `criteria` longtext NOT NULL,
+            `deleted` tinyint unsigned DEFAULT '0',
+            PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=247 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
     }
 
     public static function destroy()
@@ -405,6 +415,10 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `practical_examiners`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `exam_criteria`;'
         );
     }
 }
