@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Resources\SoloEndorsementResource\Pages;
 use App\Models\Atc\Position;
 use App\Models\Mship\Account\Endorsement;
 use Filament\Resources\Resource;

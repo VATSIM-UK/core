@@ -21,7 +21,7 @@ class AdminPanelAccessTest extends TestCase
     }
 
     #[Test]
-    public function itRedirectsToLoginWhenUnauthenticated()
+    public function it_redirects_to_login_when_unauthenticated()
     {
         $this->get('/admin')->assertRedirect('/login');
     }

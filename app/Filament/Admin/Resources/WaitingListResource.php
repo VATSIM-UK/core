@@ -3,7 +3,6 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
-use App\Filament\Resources\WaitingListResource\Pages;
 use App\Models\Training\WaitingList;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;

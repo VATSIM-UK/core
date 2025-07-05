@@ -4,8 +4,6 @@ namespace App\Filament\Admin\Resources;
 
 use App\Enums\QualificationTypeEnum;
 use App\Filament\Admin\Helpers\Resources\DefinesGatedAttributes;
-use App\Filament\Resources\AccountResource\Pages;
-use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Mship\Account;
 use App\Models\Roster;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
