@@ -16,6 +16,7 @@ trait HasCTSAccount
      */
     public function generateCTSInternalID(int $cid): int // NOSONAR
     {
+
         if ($cid < 800000) {
             return $cid + 2000000;
         } elseif ($cid < 1323000) {

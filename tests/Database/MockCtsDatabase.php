@@ -332,6 +332,17 @@ class MockCtsDatabase
           PRIMARY KEY (`id`),
           KEY `student_id` (`student_id`)
         ) ENGINE=InnoDB AUTO_INCREMENT=2739 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;");
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `practical_examiners` (
+              `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+              `examid` smallint unsigned NOT NULL DEFAULT '0',
+              `senior` int unsigned NOT NULL DEFAULT '0',
+              `other` int unsigned DEFAULT '0',
+              `trainee` int unsigned DEFAULT '0',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=3010 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
     }
 
     public static function destroy()
@@ -390,6 +401,10 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `exam_book`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `practical_examiners`;'
         );
     }
 }
