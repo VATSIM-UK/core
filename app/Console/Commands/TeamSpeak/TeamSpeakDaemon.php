@@ -109,7 +109,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     {
         try {
             // establish connection
-            $connection = TeamSpeak::run("vUK Management Bot", true);
+            $connection = TeamSpeak::run('vUK Management Bot', true);
 
             // register for events
             $connection->notifyRegister('server');
