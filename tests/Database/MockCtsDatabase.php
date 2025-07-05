@@ -353,6 +353,18 @@ class MockCtsDatabase
             PRIMARY KEY (`id`)
             ) ENGINE=InnoDB AUTO_INCREMENT=247 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
+
+        DB:connection('cts')->statement(
+            "CREATE TABLE `practical_criteria_assess` (
+              `id` mediumint unsigned NOT NULL AUTO_INCREMENT,
+              `examid` smallint unsigned NOT NULL DEFAULT '0',
+              `criteria_id` smallint unsigned NOT NULL DEFAULT '0',
+              `result` char(1) NOT NULL DEFAULT '',
+              `addnotes` tinyint unsigned DEFAULT '0',
+              `notes` longtext NOT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=38933 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
     }
 
     public static function destroy()
@@ -419,6 +431,10 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `exam_criteria`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `practical_criteria_assess`;'
         );
     }
 }

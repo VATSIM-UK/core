@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Pages;
 
 use App\Models\Cts\ExamCriteria;
+use App\Models\Cts\ExamCriteriaAssessment;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\RichEditor;
@@ -10,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 
 class ConductExam extends Page implements HasForms
@@ -26,9 +28,27 @@ class ConductExam extends Page implements HasForms
 
     public ?array $data = [];
 
+    public ?int $examId = null;
+
     public function mount(): void
     {
-        $this->form->fill();
+        $this->examId = request()->route('id');
+
+        $existingAssessmentData = ExamCriteriaAssessment::where('examid', $this->examId)
+            ->get()
+            ->mapWithKeys(
+                function ($item) {
+                    return [
+                        $item->criteria_id => [
+                            'grade' => $item->result,
+                            'comments' => $item->notes,
+                        ],
+                    ];
+                }
+            )
+            ->toArray();
+
+        $this->form->fill(['form' => $existingAssessmentData]);
     }
 
     protected function getHeaderActions(): array
@@ -80,6 +100,40 @@ class ConductExam extends Page implements HasForms
 
     public function save(): void
     {
-        dd($this->form->getState());
+        $formData = collect($this->form->getState())['form'];
+
+        $flattenedFormData = collect($formData)->map(
+                fn($item, $key) => [
+                    "criteria_id" => $key,
+                    "grade" => $item["grade"],
+                    "comments" => $item["comments"]
+                ]
+            )
+            ->values()
+            ->all();
+
+
+        collect($flattenedFormData)->each(
+            function ($item) {
+                ExamCriteriaAssessment::updateOrCreate(
+                    [
+                        'examid' => $this->examId,
+                        'criteria_id' => $item['criteria_id'],
+                    ],
+                    [
+                        'examid' => $this->examId,
+                        'criteria_id' => $item['criteria_id'],
+                        'result' => $item['grade'],
+                        'notes' => $item['comments'],
+                        'addnotes' => $item['comments'] ? true : false,
+                    ],
+                );
+            }
+        );
+
+        Notification::make()
+            ->title('Exam report saved')
+            ->success()
+            ->send();
     }
 }
