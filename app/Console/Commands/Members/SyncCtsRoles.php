@@ -10,6 +10,7 @@ use App\Repositories\Cts\MentorRepository;
 use App\Repositories\Cts\StudentRepository;
 use App\Repositories\Cts\ValidationPositionRepository;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 class SyncCtsRoles extends Command
@@ -133,6 +134,8 @@ class SyncCtsRoles extends Command
 
     private function syncRoles(Collection $hasRole, Collection $shouldHaveRole, $roleId): void
     {
+        Log::info("Syncing role {$roleId} with ".$shouldHaveRole->count().' members.');
+
         // Users that have the role, but should not have the role
         $removeRole = $hasRole->filter(function ($value) use ($shouldHaveRole) {
             return ! $shouldHaveRole->contains($value);
