@@ -10,7 +10,6 @@ use App\Repositories\Cts\MentorRepository;
 use App\Repositories\Cts\StudentRepository;
 use App\Repositories\Cts\ValidationPositionRepository;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 class SyncCtsRoles extends Command
@@ -51,9 +50,13 @@ class SyncCtsRoles extends Command
         $this->syncPilotStudents(55); // Pilot Students
         $this->syncStudentsByPosition('TFP_FLIGHT', Role::findByName('TFP Student')->id); // TFP Students
         $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
-        $this->syncStudentsByPosition('EGLL_2_GND', Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Ground Students
-        $this->syncStudentsByPosition('EGLL_S_TWR', Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Tower Students
-        $this->syncStudentsByPosition('EGLL_N_APP', Role::findByName('ATC Students (Heathrow)')->id); // Heathrow Approach Students
+
+        /**
+         * If you wish to do multiple positions for the same rule, don't do what I did and separate them into different
+         * calls. If you duplicate the role ID it will succeed on the first, but the next one will remove it.
+         */
+        // Heathrow students
+        $this->syncStudentsByPositions(['EGLL_2_GND', 'EGLL_S_TWR', 'EGLL_N_APP'], Role::findByName('ATC Students (Heathrow)')->id);
         // OBS Student
         $this->syncStudentsByPositions(['OBS_CC_PT2', 'OBS_NX_PT2', 'OBS_PH_PT2', 'OBS_SS_PT2'], Role::findByName('OBS Students')->id);
 
@@ -134,8 +137,6 @@ class SyncCtsRoles extends Command
 
     private function syncRoles(Collection $hasRole, Collection $shouldHaveRole, $roleId): void
     {
-        Log::info("Syncing role {$roleId} with ".$shouldHaveRole->count().' members.');
-
         // Users that have the role, but should not have the role
         $removeRole = $hasRole->filter(function ($value) use ($shouldHaveRole) {
             return ! $shouldHaveRole->contains($value);
