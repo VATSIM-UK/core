@@ -2,6 +2,8 @@
 
 namespace App\Models\Cts;
 
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -24,6 +26,11 @@ class ExamBooking extends Model
         return $this->belongsTo(Member::class, 'student_id', 'id');
     }
 
+    public function studentAccount()
+    {
+        return Account::find($this->student->cid);
+    }
+
     public function examiners(): HasOne
     {
         return $this->hasOne(PracticalExaminers::class, 'examid', 'id');
@@ -33,6 +40,20 @@ class ExamBooking extends Model
     {
         return Attribute::make(
             get: fn ($value) => Carbon::parse("{$this->taken_date} {$this->taken_from}")->format('Y-m-d H:i'),
+        );
+    }
+
+    public function endDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse("{$this->taken_date} {$this->taken_to}")->format('Y-m-d H:i'),
+        );
+    }
+
+    public function studentQualification(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Qualification::ofType('atc')->where('vatsim', $this->student_rating)->first()
         );
     }
 

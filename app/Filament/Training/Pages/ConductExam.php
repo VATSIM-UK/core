@@ -2,8 +2,10 @@
 
 namespace App\Filament\Training\Pages;
 
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
+use Faker\Provider\Text;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\RichEditor;
@@ -11,12 +13,17 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 
-class ConductExam extends Page implements HasForms
+class ConductExam extends Page implements HasForms, HasInfolists
 {
-    use InteractsWithForms;
+    use InteractsWithForms, InteractsWithInfolists;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
@@ -30,9 +37,13 @@ class ConductExam extends Page implements HasForms
 
     public ?int $examId = null;
 
+    private ExamBooking $examBooking;
+
     public function mount(): void
     {
         $this->examId = request()->route('id');
+
+        $this->examBooking = ExamBooking::findOrFail($this->examId);
 
         $existingAssessmentData = ExamCriteriaAssessment::where('examid', $this->examId)
             ->get()
@@ -58,6 +69,36 @@ class ConductExam extends Page implements HasForms
                 ->label('Save')
                 ->icon('heroicon-o-check'),
         ];
+    }
+
+    public function examDetailsInfoList(Infolist $infolist)
+    {
+        return $infolist
+            ->record($this->examBooking)
+            ->schema([
+                Section::make('Exam Details')->schema([
+                    TextEntry::make('Student')->getStateUsing(fn () => "{$this->examBooking->studentAccount()->name} ({$this->examBooking->studentAccount()->id})"),
+                    TextEntry::make('Student Rating')->getStateUsing(fn () => $this->examBooking->studentQualification->name),
+                    TextEntry::make('position_1')->label('Position'),
+                    TextEntry::make('Exam Start')->getStateUsing(fn () => $this->examBooking->startDate),
+                    TextEntry::make('Exam End')->getStateUsing(fn () => $this->examBooking->endDate),
+                    TextEntry::make('Exam Accepted At')->getStateUsing(fn () => $this->examBooking->time_taken),
+                ])
+                ->columns(3),
+                Section::make('Examiner Details')->schema([
+                    TextEntry::make('Primary Examiner')
+                        ->getStateUsing(function ()  {
+                            $examiner = $this->examBooking->examiners->primaryExaminer;
+                            return "{$examiner->account->name} ({$examiner->account->id})";
+                        }),
+                    TextEntry::make('Secondary Examiner')
+                        ->getStateUsing(function ()  {
+                            $examiner = $this->examBooking->examiners->secondaryExaminer;
+                            return $examiner ? "{$examiner->account->name} ({$examiner->account->id})" : 'N/A';
+                        }),
+                ])
+                ->columns(2),
+            ]);
     }
 
     public function form(Form $form): Form

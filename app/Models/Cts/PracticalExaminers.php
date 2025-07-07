@@ -17,4 +17,9 @@ class PracticalExaminers extends Model
     {
         return $this->belongsTo(ExamBooking::class, 'examid', 'id');
     }
+
+    public function primaryExaminer(): BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'senior', 'id');
+    }
 }
