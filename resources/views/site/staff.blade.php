@@ -134,10 +134,6 @@
                             <td>Technology Manager<br />
                                 Developer
                             </td>
-                            <td>VACANT</td>
-                        </tr>
-                        <tr>
-                            <td>Developer</td>
                             <td>Calum Tοwers</td>
                         </tr>
                         <tr>
