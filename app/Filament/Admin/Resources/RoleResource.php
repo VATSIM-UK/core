@@ -43,13 +43,13 @@ class RoleResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('syncDiscord')
-                ->label('Sync Discord')
-                ->action(function (Role $record) {
-                    \App\Services\Admin\DiscordRoleSync::syncRole($record);
-                    filament()->notify('success', 'Discord roles synced!');
-                })
-                ->icon('heroicon-o-arrow-path')
-                ->requiresConfirmation(),
+                    ->label('Sync Discord')
+                    ->action(function (Role $record) {
+                        \App\Services\Admin\DiscordRoleSync::syncRole($record);
+                        filament()->notify('success', 'Discord roles synced!');
+                    })
+                    ->icon('heroicon-o-arrow-path')
+                    ->requiresConfirmation(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

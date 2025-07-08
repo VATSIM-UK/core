@@ -22,7 +22,7 @@ class DiscordRoleSync
 
         foreach ($users as $user) {
             Http::withToken(config('services.discord.token'))
-                ->put("https://discord.com/api/guilds/" . config('services.discord.guild_id') . "/members/{$user->discord_id}/roles/{$discordRoleId}");
+                ->put('https://discord.com/api/guilds/'.config('services.discord.guild_id')."/members/{$user->discord_id}/roles/{$discordRoleId}");
         }
     }
 }
