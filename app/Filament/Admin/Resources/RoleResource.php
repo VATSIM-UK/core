@@ -26,6 +26,7 @@ class RoleResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')->required()->unique(ignorable: fn ($record) => $record),
+                Forms\Components\TextInput::make('discord_role_id')->label('Discord Role ID')->nullable(),
                 Forms\Components\TextInput::make('guard_name')->default('web')->in(array_keys(config('auth.guards'))),
                 Grid::make(1)->schema([
                     CheckboxList::make('permissions')->relationship('permissions', 'name')->columns(3)->searchable()->bulkToggleable(),
@@ -41,6 +42,14 @@ class RoleResource extends Resource
                 Tables\Columns\BadgeColumn::make('users_count')->counts('users')->label('Assigned Users'),
             ])
             ->actions([
+                Tables\Actions\Action::make('syncDiscord')
+                ->label('Sync Discord')
+                ->action(function (Role $record) {
+                    \App\Services\Admin\DiscordRoleSync::syncRole($record);
+                    filament()->notify('success', 'Discord roles synced!');
+                })
+                ->icon('heroicon-o-arrow-path')
+                ->requiresConfirmation(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
