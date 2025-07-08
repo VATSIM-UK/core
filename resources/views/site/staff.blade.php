@@ -126,7 +126,7 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Technology Director (VATUK8)</h4><br />
-                    <p class="text-center">Calum Tοwers</p>
+                    <p class="text-center">1169992</p>
 
                     <h4 class="text-center">Technology Team</h4>
                     <table class="table">
@@ -134,7 +134,11 @@
                             <td>Technology Manager<br />
                                 Developer
                             </td>
-                            <td>1169992</td>
+                            <td>VACANT</td>
+                        </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Calum Tοwers</td>
                         </tr>
                         <tr>
                             <td>Developer</td>
