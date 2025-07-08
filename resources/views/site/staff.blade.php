@@ -138,7 +138,7 @@
                         </tr>
                         <tr>
                             <td>Developer</td>
-                            <td>Alex Toff</td>
+                            <td>Kristián Kunc</td>
                         </tr>
                         <tr>
                             <td>Developer</td>
