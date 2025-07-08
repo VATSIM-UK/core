@@ -53,7 +53,7 @@ class ImportCtsMembershipChecks extends Command
         date_clicked 	timestamp 	YES 		NULL
         date_expires 	timestamp 	YES 		NULL
         expired_email 	tinyint(1) 	NO 		NULL
-        status 	enum('A','E','U') 	NO 		NULL
+        status 	enum('A','E','U') 	NO 		NULL (active, expired, used)
         */
 
         // get member_id is primary key to cts.members.id, we will use the corresponding cid field as the waiting_list_account_id{
@@ -77,12 +77,26 @@ class ImportCtsMembershipChecks extends Command
             ->get();
 
         foreach ($records as $record) {
+            switch ($record->status) {
+                case 'A':
+                    $newStatus = 'pending';
+                    break;
+                case 'U':
+                    $newStatus = 'used';
+                    break;
+                case 'E':
+                    $newStatus = 'expired';
+                    break;
+                default:
+                    $newStatus = $record->status; // fallback, should not happen
+            }
+
             DB::table('training_waiting_list_retention_checks')->insert([
                 'waiting_list_account_id' => $record->cid,
                 'token' => $record->code,
                 'expires_at' => $record->date_expires,
                 'response_at' => $record->date_clicked,
-                'status' => $record->status,
+                'status' => $newStatus,
                 'email_sent_at' => $record->date_requested,
                 'removal_actioned_at' => null,
                 'created_at' => now(),

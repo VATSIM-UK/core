@@ -12,7 +12,7 @@ class WaitingListRetentionChecks extends Model
     protected $table = 'training_waiting_list_retention_checks';
 
     const STATUS_PENDING = 'pending';
-    const STATUS_USED = 'userd';
+    const STATUS_USED = 'used';
     const STATUS_EXPIRED = 'expired';
 
     protected $fillable = [
