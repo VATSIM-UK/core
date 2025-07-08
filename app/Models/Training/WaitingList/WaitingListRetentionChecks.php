@@ -11,6 +11,10 @@ class WaitingListRetentionChecks extends Model
 
     protected $table = 'training_waiting_list_retention_checks';
 
+    const STATUS_PENDING = 'pending';
+    const STATUS_USED = 'userd';
+    const STATUS_EXPIRED = 'expired';
+
     protected $fillable = [
         'waiting_list_account_id',
         'token',

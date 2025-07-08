@@ -8,6 +8,7 @@ use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Services\Training\WaitingListSelfEnrolment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use App\Models\Training\WaitingList\WaitingListRetentionChecks;
 
 class WaitingLists extends BaseController
 {
@@ -46,5 +47,24 @@ class WaitingLists extends BaseController
         return redirect()
             ->route('mship.waiting-lists.index')
             ->with('success', 'You have been added to the waiting list.');
+    }
+
+    public function getRetentionWithToken() {
+        $token = request()->query('token');
+
+        if (!$token) {
+            return abort(404, 'No code provided');
+        }
+
+
+        $retentionCheck = WaitingListRetentionChecks::where('token', $token)->first();
+
+        if ($retentionCheck->exists() || $retentionCheck->status !== WaitingListRetentionChecks::STATUS_PENDING) {
+            return abort(404, 'Invalid or expired code');
+        }
+
+        $retentionCheck->response_at = now();
+        $retentionCheck->status = WaitingListRetentionChecks::STATUS_USED;
+        $retentionCheck->save();
     }
 }
