@@ -68,6 +68,7 @@ class ImportCtsMembershipChecks extends Command
                 'membership_checks.date_requested',
                 'members.cid as cid',
             ])
+            ->where('membership_checks.status', '!=', 'E')
             ->whereIn('members.cid', function ($query) {
                 $query->select('account_id')
                     ->from('training_waiting_list_accounts')
