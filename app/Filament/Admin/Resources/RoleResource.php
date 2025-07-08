@@ -45,8 +45,16 @@ class RoleResource extends Resource
                 Tables\Actions\Action::make('syncDiscord')
                     ->label('Sync Discord')
                     ->action(function (Role $record) {
-                        \App\Services\Admin\DiscordRoleSync::syncRole($record);
-                        filament()->notify('success', 'Discord roles synced!');
+                        try {
+                            $result = \App\Services\Admin\DiscordRoleSync::syncRole($record);
+                            if ($result === 'background') {
+                                filament()->notify('info', 'Syncing a large number of users. This will continue in the background. You will not be able to sync again until it is complete.');
+                            } else {
+                                filament()->notify('success', 'Discord roles synced!');
+                            }
+                        } catch (\Exception $e) {
+                            filament()->notify('danger', $e->getMessage());
+                        }
                     })
                     ->icon('heroicon-o-arrow-path')
                     ->requiresConfirmation(),
