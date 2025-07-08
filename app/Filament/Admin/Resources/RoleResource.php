@@ -44,17 +44,16 @@ class RoleResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('syncDiscord')
                     ->label('Sync Discord')
+                    ->visible(fn () => auth()->user()?->can('syncDiscord'))
                     ->action(function (Role $record) {
-                        try {
-                            $result = \App\Services\Admin\DiscordRoleSync::syncRole($record);
-                            if ($result === 'background') {
-                                filament()->notify('info', 'Syncing a large number of users. This will continue in the background. You will not be able to sync again until it is complete.');
-                            } else {
-                                filament()->notify('success', 'Discord roles synced!');
-                            }
-                        } catch (\Exception $e) {
-                            filament()->notify('danger', $e->getMessage());
+                        // Get all user IDs for this role
+                        $userIds = \DB::table('mship_account_role')
+                            ->where('role_id', $record->id)
+                            ->pluck('model_id');
+                        foreach ($userIds as $userId) {
+                            \App\Jobs\UpdateMember::dispatch($userId);
                         }
+                        filament()->notify('success', 'Central details refresh & service sync queued for all users with this role.');
                     })
                     ->icon('heroicon-o-arrow-path')
                     ->requiresConfirmation(),
