@@ -14,18 +14,4 @@ class ListAccounts extends BaseListRecordsPage
     {
         return [];
     }
-
-    public function updatedTableSearch(): void
-    {
-        $search = $this->getTableSearch();
-
-        $match = Account::query()
-            ->where('id', 'like', "%{$search}%")
-            ->limit(2)
-            ->get();
-
-        if ($match->count() === 1) {
-            $this->redirect(AccountResource::getUrl('view', ['record' => $match->first()]));
-        }
-    }
 }
