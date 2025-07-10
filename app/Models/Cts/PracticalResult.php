@@ -20,4 +20,6 @@ class PracticalResult extends Model
     protected $casts = [
         'date' => 'datetime',
     ];
+
+    public $guarded = [];
 }

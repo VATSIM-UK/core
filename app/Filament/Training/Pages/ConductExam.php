@@ -5,6 +5,7 @@ namespace App\Filament\Training\Pages;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
+use App\Models\Cts\PracticalResult;
 use Faker\Provider\Text;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Actions;
@@ -22,6 +23,7 @@ use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Enums\Alignment;
+use Livewire\Attributes\Session;
 
 class ConductExam extends Page implements HasForms, HasInfolists
 {
@@ -33,15 +35,19 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     protected static string $view = 'filament.training.pages.conduct-exam';
 
-    protected static ?string $slug = 'exams/conduct/{id?}';
+    protected static ?string $slug = 'exams/conduct/{examId}';
+
 
     public ?array $data = [];
 
     public ?array $examResultData = [];
 
-    public ?int $examId = null;
+    public int $examId;
 
     public ExamBooking $examBooking;
+
+    #[Session('additionalComments.{examId}')]
+    public ?string $additionalComments = '';
 
     protected function getForms(): array
     {
@@ -53,8 +59,6 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function mount(): void
     {
-        $this->examId = request()->route('id');
-
         $this->examBooking = ExamBooking::findOrFail($this->examId);
 
         $existingExamCriteriaAssessmentById = ExamCriteriaAssessment::where('examid', $this->examId)->get()
@@ -112,6 +116,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     TextEntry::make('Exam Start')->getStateUsing(fn () => $this->examBooking->startDate),
                     TextEntry::make('Exam End')->getStateUsing(fn () => $this->examBooking->endDate),
                     TextEntry::make('Exam Accepted At')->getStateUsing(fn () => $this->examBooking->time_taken),
+                    TextEntry::make('aditional_comments')->getStateUsing(fn () => $this->additionalComments)
                 ])
                 ->columns(3),
                 Section::make('Examiner Details')->schema([
@@ -172,15 +177,15 @@ class ConductExam extends Page implements HasForms, HasInfolists
         $additionalCommentsComponents = Fieldset::make('form.additional_comments')
             ->label('Exam Result')
             ->schema([
-                RichEditor::make('form.additional_comments.comments')
+                RichEditor::make('additional_comments')
                     ->label('Additional Comments')
-                    ->default('')
                     ->disableToolbarButtons(['attachFiles', 'blockquote'])
-                    ->live(debounce: 1000)
                     ->columnSpan(9)
-                    ->afterStateUpdated(fn() => $this->save()),
+                    ->live(debounce: 1000)
+                    ->afterStateHydrated(fn ($component) => $component->state($this->additionalComments))
+                    ->afterStateUpdated(fn ($state, $livewire) => ($this->additionalComments = $state)),
 
-                Select::make('form.exam_result.result')
+                Select::make('exam_result')
                     ->label('Result')
                     ->options([
                         'P' => 'Pass',
@@ -188,11 +193,10 @@ class ConductExam extends Page implements HasForms, HasInfolists
                         'N' => 'Incomplete',
                     ])
                     ->columnSpan(3)
-                    ->required()
-                    ->live(),
+                    ->required(),
 
                 Actions::make([
-                    Actions\Action::make("Submit Report")->action(fn() => var_dump("test"))->extraAttributes(['class' => 'w-full'])
+                    Actions\Action::make("Submit Report")->action(fn() => $this->completeExam())->extraAttributes(['class' => 'w-full'])
                         ->label('Submit Report')
                         ->icon('heroicon-o-check')
                         ->requiresConfirmation()
@@ -206,7 +210,23 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ])->statePath('examResultData');
     }
 
-    public function save(): void
+    public function completeExam()
+    {
+        $examResultFormData = $this->examResultForm->getState();
+
+        $this->save(withNotification: false);
+
+        PracticalResult::create([
+            'examid' => $this->examId,
+            'student_id' => $this->examBooking->student_id,
+            'result' => $examResultFormData['exam_result'],
+            'notes' => $examResultFormData['additional_comments'] ?? '',
+            'date' => now(),
+            'exam' => $this->examBooking->exam,
+        ]);
+    }
+
+    public function save($withNotification = true): void
     {
         $formData = collect($this->form->getState())['form'];
 
@@ -238,9 +258,11 @@ class ConductExam extends Page implements HasForms, HasInfolists
             }
         );
 
-        Notification::make()
-            ->title('Exam report saved')
-            ->success()
-            ->send();
+        if ($withNotification) {
+            Notification::make()
+                ->title('Exam report saved')
+                ->success()
+                ->send();
+        }
     }
 }
