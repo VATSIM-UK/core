@@ -7,6 +7,7 @@ use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
 use Faker\Provider\Text;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -20,6 +21,7 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Support\Enums\Alignment;
 
 class ConductExam extends Page implements HasForms, HasInfolists
 {
@@ -158,32 +160,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
             }
         );
 
-        $additionalCommentsComponents = Fieldset::make('form.additional_comments')
-            ->label('Additional Comments')
-            ->schema([
-                RichEditor::make('form.additional_comments.comments')
-                    ->label('Comments')
-                    ->default('')
-                    ->disableToolbarButtons(['attachFiles', 'blockquote'])
-                    ->live(debounce: 1000)
-                    ->columnSpan(9)
-                    ->afterStateUpdated(fn () => $this->save()),
-
-                Select::make('form.exam_result.result')
-                    ->label('Result')
-                    ->options([
-                        'P' => 'Pass',
-                        'F' => 'Fail',
-                        'N' => 'Incomplete',
-                    ])
-                    ->columnSpan(3)
-                    ->live()
-            ])->columns(12);
-
         return $form
             ->schema([
                 ...$criteriaComponents,
-                $additionalCommentsComponents,
             ])
             ->statePath('data');
     }
@@ -191,15 +170,15 @@ class ConductExam extends Page implements HasForms, HasInfolists
     public function examResultForm(Form $form): Form
     {
         $additionalCommentsComponents = Fieldset::make('form.additional_comments')
-            ->label('Additional Comments')
+            ->label('Exam Result')
             ->schema([
                 RichEditor::make('form.additional_comments.comments')
-                    ->label('Comments')
+                    ->label('Additional Comments')
                     ->default('')
                     ->disableToolbarButtons(['attachFiles', 'blockquote'])
                     ->live(debounce: 1000)
                     ->columnSpan(9)
-                    ->afterStateUpdated(fn () => $this->save()),
+                    ->afterStateUpdated(fn() => $this->save()),
 
                 Select::make('form.exam_result.result')
                     ->label('Result')
@@ -209,7 +188,16 @@ class ConductExam extends Page implements HasForms, HasInfolists
                         'N' => 'Incomplete',
                     ])
                     ->columnSpan(3)
-                    ->live()
+                    ->required()
+                    ->live(),
+
+                Actions::make([
+                    Actions\Action::make("Submit Report")->action(fn() => var_dump("test"))->extraAttributes(['class' => 'w-full'])
+                        ->label('Submit Report')
+                        ->icon('heroicon-o-check')
+                        ->requiresConfirmation()
+                        ->color('primary'),
+                ])->alignment(Alignment::End)->columnSpan(12)
             ])->columns(12);
 
         return $form
