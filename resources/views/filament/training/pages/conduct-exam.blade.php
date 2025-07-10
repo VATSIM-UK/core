@@ -2,4 +2,6 @@
     {{ $this->examDetailsInfoList }}
 
     {{ $this->form }}
+
+    {{ $this->examResultForm }}
 </x-filament-panels::page>

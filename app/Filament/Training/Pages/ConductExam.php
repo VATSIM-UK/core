@@ -35,9 +35,19 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public ?array $data = [];
 
+    public ?array $examResultData = [];
+
     public ?int $examId = null;
 
     public ExamBooking $examBooking;
+
+    protected function getForms(): array
+    {
+        return [
+            'form',
+            'examResultForm'
+        ];
+    }
 
     public function mount(): void
     {
@@ -45,7 +55,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
         $this->examBooking = ExamBooking::findOrFail($this->examId);
 
-        $examCriteriaAssessmentById = ExamCriteriaAssessment::where('examid', $this->examId)->get()
+        $existingExamCriteriaAssessmentById = ExamCriteriaAssessment::where('examid', $this->examId)->get()
             ->mapWithKeys(
                 function ($item) {
                     return [
@@ -60,24 +70,20 @@ class ConductExam extends Page implements HasForms, HasInfolists
         $existingAssessmentData = ExamCriteria::byType($this->examBooking->exam)
             ->get()
             ->mapWithKeys(
-                function ($item) use ($examCriteriaAssessmentById) {
-                    $existingAssessment = $examCriteriaAssessmentById->get($item->id);
+                function ($item) use ($existingExamCriteriaAssessmentById) {
+                    $existingAssessment = $existingExamCriteriaAssessmentById->get($item->id);
                     return [
-                        $item->critera_id => [
+                        $item->id => [
                             'grade' => $existingAssessment['grade'] ?? 'N',
-                            'comments' => $examCriteriaAssessmentById->get($item->criteria_id)['comments'] ?? '',
+                            'comments' => $existingAssessment['comments'] ?? '',
                         ],
                     ];
                 }
             );
 
         $this->form->fill(['form' => $existingAssessmentData]);
-        dd($this->form->getState());
-//        if (!$existingAssessmentData){
-//            $this->form->fill();
-//        } else {
-//            $this->form->fill(['form' => $existingAssessmentData]);
-//        }
+
+        $this->examResultForm->fill();
     }
 
     protected function getHeaderActions(): array
@@ -91,6 +97,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function examDetailsInfoList(Infolist $infolist)
     {
+        $examinerFormat = function ($examiner) {
+            return $examiner ? "{$examiner->account->name} ({$examiner->account->id})" : 'N/A';
+        };
         return $infolist
             ->record($this->examBooking)
             ->schema([
@@ -101,25 +110,15 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     TextEntry::make('Exam Start')->getStateUsing(fn () => $this->examBooking->startDate),
                     TextEntry::make('Exam End')->getStateUsing(fn () => $this->examBooking->endDate),
                     TextEntry::make('Exam Accepted At')->getStateUsing(fn () => $this->examBooking->time_taken),
-                    TextEntry::make('data')->getStateUsing(fn () => json_encode($this->data)),
                 ])
                 ->columns(3),
                 Section::make('Examiner Details')->schema([
                     TextEntry::make('Primary Examiner')
-                        ->getStateUsing(function ()  {
-                            $examiner = $this->examBooking->examiners->primaryExaminer;
-                            return "{$examiner->account->name} ({$examiner->account->id})";
-                        }),
+                        ->getStateUsing($examinerFormat($this->examBooking->examiners->primaryExaminer)),
                     TextEntry::make('Secondary Examiner')
-                        ->getStateUsing(function ()  {
-                            $examiner = $this->examBooking->examiners->secondaryExaminer;
-                            return $examiner ? "{$examiner->account->name} ({$examiner->account->id})" : 'N/A';
-                        }),
+                        ->getStateUsing($examinerFormat($this->examBooking->examiners->secondaryExaminer)),
                     TextEntry::make('Trainee Examiner')
-                        ->getStateUsing(function ()  {
-                            $examiner = $this->examBooking->examiners->traineeExaminer;
-                            return $examiner ? "{$examiner->account->name} ({$examiner->account->id})" : 'N/A';
-                        }),
+                        ->getStateUsing($examinerFormat($this->examBooking->examiners->traineeExaminer)),
                 ])
                 ->columns(3),
             ]);
@@ -167,13 +166,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->default('')
                     ->disableToolbarButtons(['attachFiles', 'blockquote'])
                     ->live(debounce: 1000)
-                    ->columnSpan(12)
+                    ->columnSpan(9)
                     ->afterStateUpdated(fn () => $this->save()),
-            ])->columns(12);
 
-        $examResultComponents = Fieldset::make('form.exam_result')
-            ->label('Exam Result')
-            ->schema([
                 Select::make('form.exam_result.result')
                     ->label('Result')
                     ->options([
@@ -181,8 +176,6 @@ class ConductExam extends Page implements HasForms, HasInfolists
                         'F' => 'Fail',
                         'N' => 'Incomplete',
                     ])
-                    ->default('N')
-                    ->required()
                     ->columnSpan(3)
                     ->live()
             ])->columns(12);
@@ -191,9 +184,38 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ->schema([
                 ...$criteriaComponents,
                 $additionalCommentsComponents,
-                $examResultComponents,
             ])
             ->statePath('data');
+    }
+
+    public function examResultForm(Form $form): Form
+    {
+        $additionalCommentsComponents = Fieldset::make('form.additional_comments')
+            ->label('Additional Comments')
+            ->schema([
+                RichEditor::make('form.additional_comments.comments')
+                    ->label('Comments')
+                    ->default('')
+                    ->disableToolbarButtons(['attachFiles', 'blockquote'])
+                    ->live(debounce: 1000)
+                    ->columnSpan(9)
+                    ->afterStateUpdated(fn () => $this->save()),
+
+                Select::make('form.exam_result.result')
+                    ->label('Result')
+                    ->options([
+                        'P' => 'Pass',
+                        'F' => 'Fail',
+                        'N' => 'Incomplete',
+                    ])
+                    ->columnSpan(3)
+                    ->live()
+            ])->columns(12);
+
+        return $form
+            ->schema([
+                $additionalCommentsComponents,
+            ])->statePath('examResultData');
     }
 
     public function save(): void
