@@ -20,6 +20,11 @@ class AccountPolicy
         return $actor->canAny(['account.view-insensitive.*', 'account.view-sensitive.*']);
     }
 
+    public function syncDiscord(Account $actor)
+    {
+        return $actor->canAny(['account.view-insensitive.*']);
+    }
+
     /**
      * Determine whether the user can view the model.
      *
