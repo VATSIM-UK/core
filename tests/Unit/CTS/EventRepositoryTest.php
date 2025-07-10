@@ -26,14 +26,14 @@ class EventRepositoryTest extends TestCase
     #[Test]
     public function it_can_return_todays_events()
     {
-        factory(Event::class, 2)->create(['date' => Carbon::now()->addDays(5)->toDateString()]);
+        Event::factory()->count(2)->create(['date' => Carbon::now()->addDays(5)->toDateString()]);
 
-        $eventTodayOne = factory(Event::class)->create([
+        $eventTodayOne = Event::Factory()->create([
             'date' => Carbon::now()->toDateString(),
             'from' => Carbon::now()->addSecond()->toTimeString(),
         ]);
 
-        $eventTodayTwo = factory(Event::class)->create([
+        $eventTodayTwo = Event::Factory()->create([
             'date' => Carbon::now()->toDateString(),
             'from' => Carbon::now()->addSecond()->toTimeString(),
         ]);

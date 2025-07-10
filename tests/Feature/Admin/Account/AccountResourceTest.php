@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Account;
 
-use App\Filament\Resources\AccountResource;
+use App\Filament\Admin\Resources\AccountResource;
 use App\Policies\AccountPolicy;
 use Tests\Feature\Admin\BaseAdminResourceTestCase;
 

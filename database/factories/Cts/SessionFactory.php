@@ -20,7 +20,7 @@ class SessionFactory extends Factory
         return [
             'rts_id' => 1,
             'position' => 'EGLL_APP',
-            'student_id' => factory(Member::class)->create()->id,
+            'student_id' => Member::Factory()->create()->id,
             'student_rating' => 5,
             'request_time' => now(),
             'progress_sheet_id' => 0,
@@ -30,7 +30,7 @@ class SessionFactory extends Factory
     public function accepted(): Factory
     {
         return $this->state([
-            'mentor_id' => factory(Member::class)->create()->id,
+            'mentor_id' => Member::Factory()->create()->id,
             'mentor_rating' => 5,
             'taken_time' => now(),
             'taken_date' => now(),

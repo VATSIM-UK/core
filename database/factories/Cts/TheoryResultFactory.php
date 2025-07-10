@@ -18,7 +18,7 @@ class TheoryResultFactory extends Factory
     public function definition()
     {
         return [
-            'student_id' => factory(Member::class)->create()->id,
+            'student_id' => Member::Factory()->create()->id,
             'exam' => $this->faker->randomElement(['S1', 'S2', 'S3']),
             'pass' => 0,
             'started' => now()->subMinutes(15),

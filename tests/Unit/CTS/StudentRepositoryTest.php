@@ -29,7 +29,7 @@ class StudentRepositoryTest extends TestCase
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        $positionValidation = factory(PositionValidation::class)->create([
+        $positionValidation = PositionValidation::Factory()->create([
             'status' => 1,
             'position_id' => $position->id,
         ]);
@@ -44,7 +44,7 @@ class StudentRepositoryTest extends TestCase
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'status' => 1,
             'position_id' => $position->id,
         ]);
@@ -57,18 +57,18 @@ class StudentRepositoryTest extends TestCase
     #[Test]
     public function it_only_returns_a_students_once_within_an_rts()
     {
-        $member = factory(Member::class)->create();
+        $member = Member::Factory()->create();
 
         $positionOne = Position::factory()->create(['rts_id' => 15]);
         $positionTwo = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 1,
             'position_id' => $positionOne->id,
         ]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 1,
             'position_id' => $positionTwo->id,
@@ -82,10 +82,10 @@ class StudentRepositoryTest extends TestCase
     #[Test]
     public function it_formats_the_return_data_for_an_rts_correctly()
     {
-        $member = factory(Member::class)->create();
+        $member = Member::Factory()->create();
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 1,
             'position_id' => $position->id,
@@ -101,7 +101,7 @@ class StudentRepositoryTest extends TestCase
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'status' => 5,
             'position_id' => $position->id,
         ]);

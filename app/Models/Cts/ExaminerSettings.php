@@ -2,10 +2,13 @@
 
 namespace App\Models\Cts;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ExaminerSettings extends Model
 {
+    use HasFactory;
+
     protected $connection = 'cts';
 
     protected $table = 'examinerSettings';

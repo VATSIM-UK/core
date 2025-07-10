@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Admin\WaitingLists;
 
-use App\Filament\Resources\WaitingListResource\Pages\ViewWaitingList;
-use App\Filament\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
+use App\Filament\Admin\Resources\WaitingListResource\Pages\ViewWaitingList;
+use App\Filament\Admin\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
