@@ -56,7 +56,6 @@ class ImportCtsMembershipChecks extends Command
         status 	enum('A','E','U') 	NO 		NULL (active, expired, used)
         */
 
-        // get member_id is primary key to cts.members.id, we will use the corresponding cid field as the waiting_list_account_id{
         $records = DB::connection('cts')
             ->table('membership_checks')
             ->join('members', 'membership_checks.member_id', '=', 'members.id')
