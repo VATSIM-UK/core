@@ -12,7 +12,7 @@ class ImportCtsMembershipChecks extends Command
      *
      * @var string
      */
-    protected $signature = 'app:import-cts-membership-checks';
+    protected $signature = 'waiting-lists:import-cts-membership-checks';
 
     /**
      * The console command description.
