@@ -59,7 +59,7 @@ class WaitingLists extends BaseController
 
         $retentionCheck = WaitingListRetentionChecks::where('token', $token)->first();
 
-        if ($retentionCheck->exists() || $retentionCheck->status !== WaitingListRetentionChecks::STATUS_PENDING) {
+        if ($retentionCheck == null || $retentionCheck->exists() || $retentionCheck->status !== WaitingListRetentionChecks::STATUS_PENDING) {
             return abort(404, 'Invalid or expired code');
         }
 
