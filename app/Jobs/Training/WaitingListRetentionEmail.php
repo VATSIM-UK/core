@@ -5,6 +5,7 @@ namespace App\Jobs\Training;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListRetentionChecks;
+use App\Notifications\Training\WaitinglistRetentionCheck;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -35,7 +36,7 @@ class WaitingListRetentionEmail implements ShouldQueue
         $waitingListAccount = WaitingList::findWaitingListAccount($record->waiting_list_account_id);
         $account = Account::find($waitingListAccount->account_id);
 
-        account->notify(new WaitingListRetentionChecks($record, $verifyToken));
+        $account->notify(new WaitinglistRetentionCheck($record, $verifyToken));
 
         $record->status = WaitingListRetentionChecks::STATUS_PENDING;
         $record->token = $verifyToken;
