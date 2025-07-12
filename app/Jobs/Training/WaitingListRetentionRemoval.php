@@ -4,7 +4,9 @@ namespace App\Jobs\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListRetentionChecks;
+use App\Notifications\Training\RemovedFromWaitingListFailedRetention;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -29,12 +31,15 @@ class WaitingListRetentionRemoval implements ShouldQueue
      */
     public function handle()
     {
-        $record = $this->retentionCheck;
-        $record->status = WaitingListRetentionChecks::STATUS_EXPIRED;
-        $record->removal_actioned_at = now();
-        $record->save();
+        $waitingListAccount = WaitingList::findWaitingListAccount($this->retentionCheck->waiting_list_account_id);
+        $account = Account::find($waitingListAccount->account_id);
 
-        $waitingListAccount = WaitingList::findWaitingListAccount($record->waiting_list_account_id);
+        $this->retentionCheck->status = WaitingListRetentionChecks::STATUS_EXPIRED;
+        $this->retentionCheck->removal_actioned_at = now();
+        $this->retentionCheck->save();
+
+        $account->notify(new RemovedFromWaitingListFailedRetention($this->retentionCheck));
+
         if ($waitingListAccount) {
             WaitingList::removeAccountFromWaitingList($waitingListAccount->account, 'Expired retention check');
         }

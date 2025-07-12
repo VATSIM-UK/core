@@ -32,7 +32,11 @@ class WaitingListRetentionEmail implements ShouldQueue
         $record = $this->retentionCheck;
         $verifyToken = bin2hex(random_bytes(16));
 
-        // TODO: send email
+        $waitingListAccount = WaitingList::findWaitingListAccount($record->waiting_list_account_id);
+        $account = Account::find($waitingListAccount->account_id);
+
+        account->notify(new WaitingListRetentionChecks($record, $verifyToken));
+
         $record->status = WaitingListRetentionChecks::STATUS_PENDING;
         $record->token = $verifyToken;
         $record->expires_at = now()->addDays(7);
