@@ -4,7 +4,6 @@ namespace App\Jobs\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListRetentionChecks;
 use App\Notifications\Training\RemovedFromWaitingListFailedRetention;
 use Illuminate\Bus\Queueable;

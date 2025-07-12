@@ -3,11 +3,9 @@
 namespace App\Console\Commands\Training;
 
 use App\Jobs\Training\WaitingListRetentionEmail;
-use App\Models\Training\WaitingList;
+use App\Jobs\Training\WaitingListRetentionRemoval;
 use App\Models\Training\WaitingList\WaitingListRetentionChecks as WaitingListWaitingListRetentionChecks;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use App\Jobs\Training\WaitingListRetentionRemoval;
 
 class WaitingListRetentionChecks extends Command
 {

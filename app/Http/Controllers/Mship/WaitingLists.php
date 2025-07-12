@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Mship;
 use App\Http\Controllers\BaseController;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Models\Training\WaitingList\WaitingListRetentionChecks;
 use App\Services\Training\WaitingListSelfEnrolment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use App\Models\Training\WaitingList\WaitingListRetentionChecks;
 
 class WaitingLists extends BaseController
 {
@@ -49,13 +49,13 @@ class WaitingLists extends BaseController
             ->with('success', 'You have been added to the waiting list.');
     }
 
-    public function getRetentionWithToken() {
+    public function getRetentionWithToken()
+    {
         $token = request()->query('token');
 
-        if (!$token) {
+        if (! $token) {
             return abort(404, 'No code provided');
         }
-
 
         $retentionCheck = WaitingListRetentionChecks::where('token', $token)->first();
 

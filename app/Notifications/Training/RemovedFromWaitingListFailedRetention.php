@@ -5,13 +5,9 @@ namespace App\Notifications\Training;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListRetentionChecks;
-use App\Notifications\DiscordNotification;
-use App\Notifications\DiscordNotificationChannel;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Collection;
 
 class RemovedFromWaitingListFailedRetention implements Notification
 {
