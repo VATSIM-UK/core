@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mship;
 use App\Http\Controllers\BaseController;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Models\Training\WaitingList\WaitingListRetentionChecks;
 use App\Services\Training\WaitingListSelfEnrolment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -46,5 +47,24 @@ class WaitingLists extends BaseController
         return redirect()
             ->route('mship.waiting-lists.index')
             ->with('success', 'You have been added to the waiting list.');
+    }
+
+    public function getRetentionWithToken()
+    {
+        $token = request()->query('token');
+
+        if (! $token) {
+            return abort(404, 'No code provided');
+        }
+
+        $retentionCheck = WaitingListRetentionChecks::where('token', $token)->first();
+
+        if ($retentionCheck == null || $retentionCheck->exists() || $retentionCheck->status !== WaitingListRetentionChecks::STATUS_PENDING) {
+            return abort(404, 'Invalid or expired code');
+        }
+
+        $retentionCheck->response_at = now();
+        $retentionCheck->status = WaitingListRetentionChecks::STATUS_USED;
+        $retentionCheck->save();
     }
 }
