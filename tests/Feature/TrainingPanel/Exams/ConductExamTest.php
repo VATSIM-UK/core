@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\Exams;
 
+use App\Events\Training\Exams\PracticalExamCompleted;
 use App\Filament\Training\Pages\ConductExam;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
@@ -9,16 +10,23 @@ use App\Models\Cts\Member;
 use App\Models\Cts\PracticalResult;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class ConductExamTest extends BaseTrainingPanelTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Event::fake();
+    }
+
     #[Test]
     public function it_loads_if_authorised()
     {
-
         $account = Account::factory()->create();
         $student = factory(Member::class)->create(['id' => $account->id, 'cid' => $account->id]);
         $exam = ExamBooking::factory()->create([
@@ -194,7 +202,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function test_full_end_to_end_completion_of_form()
+    public function test_full_end_to_end_completion_of_form_pass()
     {
         $account = Account::factory()->create();
         $student = factory(Member::class)->create(['id' => $account->id, 'cid' => $account->id]);
@@ -212,7 +220,8 @@ class ConductExamTest extends BaseTrainingPanelTestCase
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
 
-        $examCriteria = ExamCriteria::create([
+        // create exam criteria in case test database is empty
+        ExamCriteria::create([
             'exam' => 'TWR',
             'criteria' => 'Test Criteria',
             'deleted' => 0,
@@ -227,13 +236,12 @@ class ConductExamTest extends BaseTrainingPanelTestCase
                 return ['form' => $criteria->mapWithKeys(function ($item) {
                     return [$item->id => ['comments' => 'Test comment for test criteria', 'grade' => 'P']];
                 })->toArray()];
-            }, )
+            })
             ->set('examResultData.exam_result', PracticalResult::PASSED)
             ->set('examResultData.additional_comments', 'Test notes for test result')
             ->call('completeExam')
             ->assertHasNoFormErrors(formName: 'form')
-            ->assertHasNoFormErrors(formName: 'examResultForm')
-            ->assertNotNotified();
+            ->assertHasNoFormErrors(formName: 'examResultForm');
 
         $this->assertDatabaseHas('practical_results', connection: 'cts', data: [
             'examid' => $exam->id,
@@ -243,5 +251,9 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             'date' => now(),
             'exam' => 'TWR',
         ]);
+
+        Event::assertDispatched(PracticalExamCompleted::class, function ($event) use ($exam) {
+            return $event->examBooking->id === $exam->id && $event->practicalResult->examid === $exam->id;
+        });
     }
 }

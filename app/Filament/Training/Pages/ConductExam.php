@@ -6,6 +6,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\PracticalResult;
+use App\Repositories\Cts\ExamAssessmentRepository;
 use App\Repositories\Cts\ExamResultRepository;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Actions;
@@ -195,6 +196,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->disableToolbarButtons(['attachFiles', 'blockquote'])
                     ->columnSpan(9)
                     ->live(debounce: 1000)
+                    // save additional comments in session to persist in session in case navigation occurs
                     ->afterStateHydrated(fn ($component) => $component->state($this->additionalComments))
                     ->afterStateUpdated(fn ($state, $livewire) => ($this->additionalComments = $state)),
 
@@ -250,7 +252,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
         $this->redirect(Exams::getUrl());
     }
 
-    public function validateGradesBeforeSubmission(string $result)
+    public function validateGradesBeforeSubmission(string $result): bool
     {
         $formData = collect($this->form->getState())['form'];
 
@@ -300,21 +302,12 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ->all();
 
         collect($flattenedFormData)->each(
-            function ($item) {
-                ExamCriteriaAssessment::updateOrCreate(
-                    [
-                        'examid' => $this->examId,
-                        'criteria_id' => $item['criteria_id'],
-                    ],
-                    [
-                        'examid' => $this->examId,
-                        'criteria_id' => $item['criteria_id'],
-                        'result' => $item['grade'],
-                        'notes' => $item['comments'] ?? '',
-                        'addnotes' => $item['comments'] ? true : false,
-                    ],
-                );
-            }
+            fn ($item) => (new ExamAssessmentRepository)->upsertExamCriteriaAssessment(
+                examId: $this->examId,
+                criteriaId: $item['criteria_id'],
+                grade: $item['grade'],
+                comments: $item['comments'] ?? null,
+            )
         );
 
         if ($withNotification) {
