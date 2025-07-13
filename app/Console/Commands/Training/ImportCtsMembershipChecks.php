@@ -19,7 +19,7 @@ class ImportCtsMembershipChecks extends Command
      *
      * @var string
      */
-    protected $description = 'Import membership_chesk from CTS db to training_waiting_list_retention_checks';
+    protected $description = 'Import membership_checks from CTS db to training_waiting_list_retention_checks';
 
     /**
      * Execute the console command.
