@@ -29,10 +29,14 @@ class Exams extends Page implements HasTable
         $table->description('Exams that are currently accepted and you are assigned to conduct will be
         displayed here.');
         $table->query(ExamBooking::query()
-            ->with('student', 'examiners')
-            ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->with(['student', 'examiners'])
+            ->conductable()
             ->whereHas('examiners', function ($query) {
-                return $query->where('senior', auth()->user()->member->id);
+                $accountMemberId = auth()->user()->member->id;
+
+                return $query->where('senior', $accountMemberId)
+                    ->orWhere('other', $accountMemberId)
+                    ->orWhere('trainee', $accountMemberId);
             }));
 
         $table->columns([

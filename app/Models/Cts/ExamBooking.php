@@ -68,6 +68,6 @@ class ExamBooking extends Model
     protected function conductable()
     {
         return $this->where('taken', 1)
-            ->where('finished', 0);
+            ->where('finished', self::NOT_FINISHED_FLAG);
     }
 }

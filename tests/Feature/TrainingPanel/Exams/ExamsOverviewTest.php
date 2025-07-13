@@ -35,7 +35,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function test_can_see_exam_when_assigned_as_examiner()
+    public function test_can_see_exam_when_assigned_as_primary_examiner()
     {
         $this->panelUser->givePermissionTo('training.exams.access');
 
@@ -46,6 +46,50 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $exam->examiners()->create([
             'examid' => $exam->id,
             'senior' => $this->panelUser->id,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(Exams::class)
+            ->assertSuccessful()
+            ->assertSee($exam->student->cid)
+            ->assertSee($exam->position_1)
+            ->assertTableActionEnabled('Conduct', $exam);
+    }
+
+    #[Test]
+    public function test_can_see_exam_when_assigned_as_other_examiner()
+    {
+        $this->panelUser->givePermissionTo('training.exams.access');
+
+        $student = Account::factory()->create();
+        factory(Member::class)->create(['id' => $student->id, 'cid' => $student->id]);
+
+        $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $student->id]);
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'other' => $this->panelUser->id,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(Exams::class)
+            ->assertSuccessful()
+            ->assertSee($exam->student->cid)
+            ->assertSee($exam->position_1)
+            ->assertTableActionEnabled('Conduct', $exam);
+    }
+
+    #[Test]
+    public function test_can_see_exam_when_assigned_as_trainee_examiner()
+    {
+        $this->panelUser->givePermissionTo('training.exams.access');
+
+        $student = Account::factory()->create();
+        factory(Member::class)->create(['id' => $student->id, 'cid' => $student->id]);
+
+        $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $student->id]);
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'trainee' => $this->panelUser->id,
         ]);
 
         Livewire::actingAs($this->panelUser)
