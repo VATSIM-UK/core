@@ -5,6 +5,7 @@ namespace App\Filament\Training\Pages;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
+use App\Models\Cts\PracticalResult;
 use App\Repositories\Cts\ExamResultRepository;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Actions;
@@ -22,6 +23,7 @@ use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Enums\Alignment;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Session;
 
@@ -60,11 +62,20 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function mount(): void
     {
-        $this->examBooking = ExamBooking::findOrFail($this->examId);
+        $exitErrorMessage = 'You do not have permission to conduct this exam.';
+        try {
+            $this->examBooking = ExamBooking::findOrFail($this->examId);
+        } catch (ModelNotFoundException) {
+            abort(403, $exitErrorMessage);
+        }
 
         $permissionSafeExam = Str::lower($this->examBooking->exam);
         if (! auth()->user()->can("training.exams.conduct.{$permissionSafeExam}")) {
-            abort(403, 'You do not have permission to conduct this exam.');
+            abort(403, $exitErrorMessage);
+        }
+
+        if ($this->examBooking->finished == ExamBooking::FINISHED_FLAG || $this->examBooking->taken == 0) {
+            abort(403, $exitErrorMessage);
         }
 
         $existingExamCriteriaAssessmentById = ExamCriteriaAssessment::where('examid', $this->examId)->get()
@@ -156,14 +167,8 @@ class ConductExam extends Page implements HasForms, HasInfolists
                             ->afterStateUpdated(fn () => $this->save()),
                         Select::make("form.{$criteria->id}.grade")
                             ->label('Grade')
-                            ->options([
-                                'P' => 'Fully Competent',
-                                'M' => 'Mostly Competent',
-                                'R' => 'Partially Competent',
-                                'N' => 'Not Assessed',
-                                'F' => 'Fail',
-                            ])
-                            ->default('N')
+                            ->options(ExamCriteriaAssessment::gradeDropdownOptions())
+                            ->default(ExamCriteriaAssessment::NOT_ASSESSED)
                             ->columnSpan(3)
                             ->required()
                             ->live()
@@ -223,6 +228,10 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
         $this->save(withNotification: false);
 
+        if (! $this->validateGradesBeforeSubmission($examResultFormData['exam_result'])) {
+            return;
+        }
+
         (new ExamResultRepository)->createPracticalResult(
             examBooking: $this->examBooking,
             result: $examResultFormData['exam_result'],
@@ -235,6 +244,39 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ->send();
 
         $this->redirect(Exams::getUrl());
+    }
+
+    public function validateGradesBeforeSubmission(string $result)
+    {
+        $formData = collect($this->form->getState())['form'];
+
+        $hasNotAssessed = collect($formData)->contains(
+            fn ($item) => $item['grade'] === ExamCriteriaAssessment::NOT_ASSESSED
+        );
+
+        if ($result == PracticalResult::PASSED && $hasNotAssessed) {
+            Notification::make()
+                ->title('Cannot submit exam report')
+                ->body('You cannot submit a pass result if there are criteria that have not been assessed.')
+                ->danger()
+                ->send();
+
+            return false;
+        }
+
+        $hasFailedGrades = collect($formData)->contains(
+            fn ($item) => $item['grade'] === ExamCriteriaAssessment::FAIL
+        );
+
+        if ($result == PracticalResult::PASSED && $hasFailedGrades) {
+            Notification::make()
+                ->title('Cannot submit exam report')
+                ->body('You cannot submit a pass result if there are criteria that have failed.')
+                ->danger()
+                ->send();
+
+            return false;
+        }
     }
 
     public function save($withNotification = true): void
