@@ -26,6 +26,7 @@ class TrainingEventServiceProvider extends ServiceProvider
         \App\Events\Training\EndorsementRequestCreated::class => [
             \App\Listeners\Training\Endorsement\NotifyEndorsementRequestCreated::class,
         ],
+        \App\Events\Training\Exams\PracticalExamCompleted::class => [],
     ];
 
     /**

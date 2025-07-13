@@ -5,7 +5,7 @@ namespace App\Filament\Training\Pages;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
-use App\Models\Cts\PracticalResult;
+use App\Repositories\Cts\ExamResultRepository;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Fieldset;
@@ -223,16 +223,11 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
         $this->save(withNotification: false);
 
-        PracticalResult::create([
-            'examid' => $this->examId,
-            'student_id' => $this->examBooking->student_id,
-            'result' => $examResultFormData['exam_result'],
-            'notes' => $examResultFormData['additional_comments'] ?? '',
-            'date' => now(),
-            'exam' => $this->examBooking->exam,
-        ]);
-
-        $this->examBooking->update(['finished' => 1]);
+        (new ExamResultRepository)->createPracticalResult(
+            examBooking: $this->examBooking,
+            result: $examResultFormData['exam_result'],
+            additionalComments: $examResultFormData['additional_comments'] ?? ''
+        );
 
         Notification::make()
             ->title('Exam report submitted')

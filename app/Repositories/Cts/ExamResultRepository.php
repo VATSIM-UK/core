@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Cts;
 
+use App\Events\Training\Exams\PracticalExamCompleted;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\PracticalResult;
 use Illuminate\Support\Collection;
 
@@ -13,5 +15,20 @@ class ExamResultRepository
             ->where('exam', $type)
             ->where('date', '>=', now()->subDays($daysConsideredRecent))
             ->get();
+    }
+
+    public function createPracticalResult(ExamBooking $examBooking, string $result, ?string $additionalComments)
+    {
+        $practicalResult = PracticalResult::create([
+            'examid' => $examBooking->id,
+            'result' => $result,
+            'notes' => $additionalComments ?? '',
+            'date' => now(),
+            'exam' => $examBooking->exam,
+        ]);
+
+        $examBooking->update(['finished' => ExamBooking::FINISHED_FLAG]);
+
+        event(new PracticalExamCompleted($examBooking, $practicalResult));
     }
 }
