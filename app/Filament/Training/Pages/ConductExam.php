@@ -15,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -186,7 +187,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function examResultForm(Form $form): Form
     {
-        $additionalCommentsComponents = Fieldset::make('form.additional_comments')
+        $completionComponents = Fieldset::make('completion')
             ->label('Exam Result')
             ->schema([
                 RichEditor::make('additional_comments')
@@ -204,21 +205,24 @@ class ConductExam extends Page implements HasForms, HasInfolists
                         'F' => 'Fail',
                         'N' => 'Incomplete',
                     ])
+                    ->live()
                     ->columnSpan(3)
                     ->required(),
 
                 Actions::make([
-                    Actions\Action::make('Submit Report')->action(fn () => $this->completeExam())->extraAttributes(['class' => 'w-full'])
+                    Actions\Action::make('submit_report')->action(fn () => $this->completeExam())
+                        ->extraAttributes(['class' => 'w-full'])
                         ->label('Submit Report')
                         ->icon('heroicon-o-check')
+                        ->disabled(fn (Get $get) => $get('exam_result') == null)
                         ->requiresConfirmation()
                         ->color('primary'),
-                ])->alignment(Alignment::End)->columnSpan(12),
+                ])->id('submit_report_action')->alignment(Alignment::End)->columnSpan(12),
             ])->columns(12);
 
         return $form
             ->schema([
-                $additionalCommentsComponents,
+                $completionComponents,
             ])->statePath('examResultData');
     }
 
@@ -277,13 +281,15 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
             return false;
         }
+
+        return true;
     }
 
     public function save($withNotification = true): void
     {
         $formData = collect($this->form->getState())['form'];
 
-        $flattenedFormData = collect($formData)->except(['additional_comments', 'exam_result'])->map(
+        $flattenedFormData = collect($formData)->map(
             fn ($item, $key) => [
                 'criteria_id' => $key,
                 'grade' => $item['grade'],

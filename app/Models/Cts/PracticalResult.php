@@ -17,6 +17,8 @@ class PracticalResult extends Model
 
     public const FAILED = 'F';
 
+    public const INCOMPLETE = 'N';
+
     protected $casts = [
         'date' => 'datetime',
     ];

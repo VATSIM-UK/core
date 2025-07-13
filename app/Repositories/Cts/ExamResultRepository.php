@@ -21,6 +21,7 @@ class ExamResultRepository
     {
         $practicalResult = PracticalResult::create([
             'examid' => $examBooking->id,
+            'student_id' => $examBooking->student->id,
             'result' => $result,
             'notes' => $additionalComments ?? '',
             'date' => now(),
