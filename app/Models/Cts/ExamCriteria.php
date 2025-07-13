@@ -14,6 +14,8 @@ class ExamCriteria extends Model
 
     public $timestamps = false;
 
+    protected $guarded = [];
+
     #[Scope]
     protected function byType(Builder $query, string $exam)
     {

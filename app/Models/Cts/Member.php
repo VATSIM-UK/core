@@ -18,7 +18,6 @@ class Member extends Model
 
     public $incrementing = false;
 
-
     public function account(): Attribute
     {
         return Attribute::make(

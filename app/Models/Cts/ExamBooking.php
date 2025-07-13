@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ExamBooking extends Model
@@ -21,7 +22,13 @@ class ExamBooking extends Model
 
     public $timestamps = false;
 
-    public function student()
+    public $guarded = [];
+
+    public final const int FINISHED_FLAG = 1;
+
+    public final const int NOT_FINISHED_FLAG = 0;
+
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Member::class, 'student_id', 'id');
     }

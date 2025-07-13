@@ -13,6 +13,8 @@ class PracticalExaminers extends Model
 
     public $timestamps = false;
 
+    protected $guarded = [];
+
     public function exam(): BelongsTo
     {
         return $this->belongsTo(ExamBooking::class, 'examid', 'id');

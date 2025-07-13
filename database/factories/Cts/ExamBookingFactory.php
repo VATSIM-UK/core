@@ -3,6 +3,8 @@
 namespace Database\Factories\Cts;
 
 use App\Models\Cts\ExamBooking;
+use App\Models\Cts\Member;
+use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +22,11 @@ class ExamBookingFactory extends Factory
      */
     public function definition(): array
     {
+        $account = Account::factory()->create();
+        $studentMember = factory(Member::class)->create(
+            ['id' => $account->id, 'cid' => $account->id]
+        );
+
         return [
             'position_1' => 'EGKK_TWR',
             'taken' => 1,
@@ -27,6 +34,8 @@ class ExamBookingFactory extends Factory
             'taken_date' => Carbon::parse('2026-01-01')->format('Y-m-d'),
             'taken_from' => Carbon::parse('2026-01-01 12:00:00')->format('H:i:s'),
             'taken_to' => Carbon::parse('2026-01-01 13:00:00')->format('H:i:s'),
+            'student_rating' => 1,
+            'student_id' => $studentMember->id,
         ];
     }
 }
