@@ -32,6 +32,7 @@ class WaitingListRetentionChecks extends Model
             'expires_at' => 'datetime',
             'response_at' => 'datetime',
             'email_sent_at' => 'datetime',
+            'removal_actioned_at' => 'datetime',
         ];
     }
 

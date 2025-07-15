@@ -10,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class WaitinglistRetentionCheck extends Notification implements ShouldQueue
+class WaitinglistRetentionCheckNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -18,10 +18,9 @@ class WaitinglistRetentionCheck extends Notification implements ShouldQueue
 
     private $verifyToken;
 
-    public function __construct(WaitingListRetentionChecks $retentionCheck, $verifyToken)
+    public function __construct(WaitingListRetentionChecks $retentionCheck)
     {
         $this->retentionCheck = $retentionCheck;
-        $this->verifyToken = $verifyToken;
     }
 
     /**
@@ -49,7 +48,7 @@ class WaitinglistRetentionCheck extends Notification implements ShouldQueue
         $account = Account::find($waitingListAccount->account_id);
 
         $retentionCheckUrl = route('training.retention.token', [
-            'token' => $this->verifyToken,
+            'token' => $this->retentionCheck->token,
         ]);
 
         return (new MailMessage)

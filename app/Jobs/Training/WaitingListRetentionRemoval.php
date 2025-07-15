@@ -2,8 +2,8 @@
 
 namespace App\Jobs\Training;
 
-use App\Models\Mship\Account;
-use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\Removal;
+use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListRetentionChecks;
 use App\Notifications\Training\RemovedFromWaitingListFailedRetention;
 use Illuminate\Bus\Queueable;
@@ -30,17 +30,17 @@ class WaitingListRetentionRemoval implements ShouldQueue
      */
     public function handle()
     {
-        $waitingListAccount = WaitingList::findWaitingListAccount($this->retentionCheck->waiting_list_account_id);
-        $account = Account::find($waitingListAccount->account_id);
 
         $this->retentionCheck->status = WaitingListRetentionChecks::STATUS_EXPIRED;
         $this->retentionCheck->removal_actioned_at = now();
         $this->retentionCheck->save();
 
-        $account->notify(new RemovedFromWaitingListFailedRetention($this->retentionCheck));
+        $this->retentionCheck->waitingListAccount->account->notify(new RemovedFromWaitingListFailedRetention($this->retentionCheck));
 
-        if ($waitingListAccount) {
-            WaitingList::removeAccountFromWaitingList($waitingListAccount->account, 'Expired retention check');
-        }
+        $account = $this->retentionCheck->waitingListAccount->account;
+
+        $this->retentionCheck->waitingListAccount->waitingList->removeFromWaitingList($account, new Removal(RemovalReason::FailedRetention, null));
+        \Log::info("Member {$account->id} was removed from waiting list  {$this->retentionCheck->waitingListAccount->waiting_list_id} due to failed retention check {$this->retentionCheck->id}
+        ");
     }
 }

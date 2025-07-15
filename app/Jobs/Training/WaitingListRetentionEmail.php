@@ -2,10 +2,8 @@
 
 namespace App\Jobs\Training;
 
-use App\Models\Mship\Account;
-use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListRetentionChecks;
-use App\Notifications\Training\WaitinglistRetentionCheck;
+use App\Notifications\Training\WaitinglistRetentionCheckNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -23,6 +21,15 @@ class WaitingListRetentionEmail implements ShouldQueue
      */
     public function __construct(public WaitingListRetentionChecks $retentionCheck) {}
 
+    private function generateToken(): string
+    {
+        do {
+            $token = bin2hex(random_bytes(16));
+        } while (WaitingListRetentionChecks::where('token', $token)->exists());
+
+        return $token;
+    }
+
     /**
      * Execute the job.
      *
@@ -30,18 +37,17 @@ class WaitingListRetentionEmail implements ShouldQueue
      */
     public function handle()
     {
-        $record = $this->retentionCheck;
-        $verifyToken = bin2hex(random_bytes(16));
+        $oldRecord = $this->retentionCheck;
+        $verifyToken = $this->generateToken();
 
-        $waitingListAccount = WaitingList::findWaitingListAccount($record->waiting_list_account_id);
-        $account = Account::find($waitingListAccount->account_id);
+        $record = WaitingListRetentionChecks::create([
+            'waiting_list_account_id' => $oldRecord->waitingListAccount->id,
+            'status' => WaitingListRetentionChecks::STATUS_PENDING,
+            'token' => $verifyToken,
+            'expires_at' => now()->addDays(7),
+            'email_sent_at' => now(),
+        ]);
 
-        $account->notify(new WaitinglistRetentionCheck($record, $verifyToken));
-
-        $record->status = WaitingListRetentionChecks::STATUS_PENDING;
-        $record->token = $verifyToken;
-        $record->expires_at = now()->addDays(7);
-        $record->email_sent_at = now();
-        $record->save();
+        $this->retentionCheck->waitingListAccount->account->notify(new WaitinglistRetentionCheckNotification($record, $verifyToken));
     }
 }
