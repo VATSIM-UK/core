@@ -59,7 +59,8 @@ class WaitingLists extends BaseController
 
         $retentionCheck = WaitingListRetentionChecks::where('token', $token)->first();
 
-        if ($retentionCheck == null || $retentionCheck->exists() || $retentionCheck->status !== WaitingListRetentionChecks::STATUS_PENDING) {
+        // Only the scheduled command will change the status so we need to check the expires_at timestamp as well
+        if ($retentionCheck == null || $retentionCheck->status !== WaitingListRetentionChecks::STATUS_PENDING || $retentionCheck->expires_at < now()) {
             return abort(404, 'Invalid or expired code');
         }
 

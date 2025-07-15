@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Command;
 
+use App\Console\Commands\Training\WaitingListRetentionChecks as CommandWaitingListRetentionChecks;
+use App\Jobs\Training\WaitingListRetentionEmail;
+use App\Jobs\Training\WaitingListRetentionRemoval;
+use App\Models\Training\WaitingList\WaitingListRetentionChecks as RetentionChecksModel;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Bus;
-use App\Console\Commands\Training\WaitingListRetentionChecks as CommandWaitingListRetentionChecks;
-use App\Jobs\Training\WaitingListRetentionRemoval;
-use App\Jobs\Training\WaitingListRetentionEmail;
-use App\Models\Training\WaitingList\WaitingListRetentionChecks as RetentionChecksModel;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -31,7 +31,7 @@ class RetentionCollectionCheckTest extends TestCase
             'email_sent_at' => now()->subMonths(4),
         ]);
 
-        $command = new CommandWaitingListRetentionChecks();
+        $command = new CommandWaitingListRetentionChecks;
         $command->handle();
 
         Bus::assertDispatched(WaitingListRetentionRemoval::class, function ($job) use ($removeRecord) {

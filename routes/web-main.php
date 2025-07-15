@@ -2,9 +2,6 @@
 
 // Dashboard
 
-use App\Models\Training\WaitingList\WaitingListRetentionChecks;
-use App\Notifications\Training\RemovedFromWaitingListFailedRetention;
-
 Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('landing');
 
 // Authentication
