@@ -6,10 +6,11 @@ use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListRetentionChecks;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class RemovedFromWaitingListFailedRetention implements Notification
+class RemovedFromWaitingListFailedRetention extends Notification implements ShouldQueue
 {
     use Queueable;
 
