@@ -15,6 +15,7 @@
                     </p>
 
                 <form action="{{ route('visiting.application.start.post', [$applicationType, $trainingTeam]) }}" method="POST">
+                    @csrf
                     <div class="col-md-10 col-md-offset-1">
                         <div class="form-group">
                             <input id="terms_read" name="terms_read" type="checkbox" value="1">
