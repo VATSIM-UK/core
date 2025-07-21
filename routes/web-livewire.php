@@ -4,6 +4,8 @@ use App\Livewire\Roster\Index;
 use App\Livewire\Roster\Renew;
 use App\Livewire\Roster\Search;
 use App\Livewire\Roster\Show;
+use App\Livewire\RetentionChecks\Success;
+
 
 Route::group([
     'as' => 'site.roster.',
@@ -15,3 +17,5 @@ Route::group([
     Route::get('/search', Search::class)->name('search');
     Route::get('/{account}', Show::class)->name('show');
 });
+
+Route::get('mship/waiting-lists/retention/success', Success::class)->name('mship.waiting-lists.retention.success');

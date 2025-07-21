@@ -71,9 +71,4 @@ class WaitingLists extends BaseController
         return redirect()
             ->route('mship.waiting-lists.retention.success');
     }
-
-    public function getRetentionSuccess()
-    {
-        return view('mship.waiting-lists.retention-success');
-    }
 }

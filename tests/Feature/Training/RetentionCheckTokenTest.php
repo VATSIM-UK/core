@@ -56,7 +56,7 @@ class RetentionCheckTokenTest extends TestCase
     }
 
     #[Test]
-    public function it_processes_valid_token_request()
+    public function it_processes_and_redirects_valid_token_request()
     {
         WaitingListRetentionChecks::factory()->create([
             'token' => 'valid-token',
@@ -66,7 +66,8 @@ class RetentionCheckTokenTest extends TestCase
 
         $this->actingAs($this->user)
             ->get(route('mship.waiting-lists.retention.token', ['token' => 'valid-token']))
-            ->assertStatus(200);
+            ->assertStatus(302)
+            ->assertRedirect(route('mship.waiting-lists.retention.success'));
 
         $this->assertDatabaseHas((new WaitingListRetentionChecks)->getTable(), [
             'token' => 'valid-token',
