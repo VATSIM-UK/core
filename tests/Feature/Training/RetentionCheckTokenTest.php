@@ -12,23 +12,25 @@ class RetentionCheckTokenTest extends TestCase
     use DatabaseTransactions;
 
     #[Test]
-    public function it_returns_404_with_no_token()
+    public function it_redirects_to_fail_with_no_token()
     {
         $this->actingAs($this->user)
             ->get(route('mship.waiting-lists.retention.token'))
-            ->assertStatus(404);
+            ->assertStatus(302)
+            ->assertRedirect(route('mship.waiting-lists.retention.fail'));
     }
 
     #[Test]
-    public function it_returns_404_with_invalid_token()
+    public function it_redirects_to_fail_with_invalid_token()
     {
         $this->actingAs($this->user)
             ->get(route('mship.waiting-lists.retention.token', ['token' => 'invalid']))
-            ->assertStatus(404);
+            ->assertStatus(302)
+            ->assertRedirect(route('mship.waiting-lists.retention.fail'));
     }
 
     #[Test]
-    public function it_returns_404_with_processed_expired_token()
+    public function it_redirects_to_fail_with_processed_expired_token()
     {
         WaitingListRetentionChecks::factory()->create([
             'token' => 'expired-token',
@@ -38,11 +40,12 @@ class RetentionCheckTokenTest extends TestCase
 
         $this->actingAs($this->user)
             ->get(route('mship.waiting-lists.retention.token', ['token' => 'expired-token']))
-            ->assertStatus(404);
+            ->assertStatus(302)
+            ->assertRedirect(route('mship.waiting-lists.retention.fail'));
     }
 
     #[Test]
-    public function it_returns_404_with_unprocessed_expired_token()
+    public function it_redirects_to_fail_with_unprocessed_expired_token()
     {
         WaitingListRetentionChecks::factory()->create([
             'token' => 'expired-token',
@@ -52,7 +55,8 @@ class RetentionCheckTokenTest extends TestCase
 
         $this->actingAs($this->user)
             ->get(route('mship.waiting-lists.retention.token', ['token' => 'expired-token']))
-            ->assertStatus(404);
+            ->assertStatus(302)
+            ->assertRedirect(route('mship.waiting-lists.retention.fail'));
     }
 
     #[Test]

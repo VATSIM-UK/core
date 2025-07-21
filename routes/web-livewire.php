@@ -5,6 +5,7 @@ use App\Livewire\Roster\Renew;
 use App\Livewire\Roster\Search;
 use App\Livewire\Roster\Show;
 use App\Livewire\RetentionChecks\Success;
+use App\Livewire\RetentionChecks\Fail;
 
 
 Route::group([
@@ -19,3 +20,4 @@ Route::group([
 });
 
 Route::get('mship/waiting-lists/retention/success', Success::class)->name('mship.waiting-lists.retention.success');
+Route::get('mship/waiting-lists/retention/fail', Fail::class)->name('mship.waiting-lists.retention.fail');

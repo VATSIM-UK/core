@@ -53,15 +53,19 @@ class WaitingLists extends BaseController
     {
         $token = request()->query('token');
 
-        if (! $token) {
-            return abort(404, 'No code provided');
+        if (!$token || empty($token)) {
+            return redirect()
+                ->route('mship.waiting-lists.retention.fail')
+                ->with('failReason', 'No token provided');
         }
 
         $retentionCheck = WaitingListRetentionChecks::where('token', $token)->first();
 
         // Only the scheduled command will change the status so we need to check the expires_at timestamp as well
         if ($retentionCheck == null || $retentionCheck->status !== WaitingListRetentionChecks::STATUS_PENDING || $retentionCheck->expires_at < now()) {
-            return abort(404, 'Invalid or expired code');
+            return redirect()
+                ->route('mship.waiting-lists.retention.fail')
+                ->with('failReason', 'Invalid or expired token');
         }
 
         $retentionCheck->response_at = now();
