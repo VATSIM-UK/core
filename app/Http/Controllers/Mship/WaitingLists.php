@@ -53,7 +53,7 @@ class WaitingLists extends BaseController
     {
         $token = request()->query('token');
 
-        if (!$token || empty($token)) {
+        if (! $token || empty($token)) {
             return redirect()
                 ->route('mship.waiting-lists.retention.fail')
                 ->with('failReason', 'No token provided');

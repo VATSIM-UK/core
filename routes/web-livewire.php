@@ -1,12 +1,11 @@
 <?php
 
+use App\Livewire\RetentionChecks\Fail;
+use App\Livewire\RetentionChecks\Success;
 use App\Livewire\Roster\Index;
 use App\Livewire\Roster\Renew;
 use App\Livewire\Roster\Search;
 use App\Livewire\Roster\Show;
-use App\Livewire\RetentionChecks\Success;
-use App\Livewire\RetentionChecks\Fail;
-
 
 Route::group([
     'as' => 'site.roster.',
