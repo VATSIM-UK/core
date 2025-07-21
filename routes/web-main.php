@@ -84,6 +84,7 @@ Route::group([
         Route::get('')->uses('WaitingLists@index')->name('index');
         Route::post('self-enrol/{waitingList}')->uses('WaitingLists@selfEnrol')->name('self-enrol');
         Route::get('retention')->uses('WaitingLists@getRetentionWithToken')->name('retention.token');
+        Route::get('retention/success')->uses('WaitingLists@getRetentionSuccess')->name('retention.success');
     });
 
     // Other

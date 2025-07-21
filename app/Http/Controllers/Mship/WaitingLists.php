@@ -67,5 +67,13 @@ class WaitingLists extends BaseController
         $retentionCheck->response_at = now();
         $retentionCheck->status = WaitingListRetentionChecks::STATUS_USED;
         $retentionCheck->save();
+
+        return redirect()
+            ->route('mship.waiting-lists.retention.success');
+    }
+
+    public function getRetentionSuccess()
+    {
+        return view('mship.waiting-lists.retention-success');
     }
 }
