@@ -5,11 +5,9 @@ namespace App\Providers;
 use App\Events\Discord\DiscordLinked;
 use App\Events\Discord\DiscordUnlinked;
 use App\Events\NetworkData\AtcSessionEnded;
-use App\Events\Smartcars\BidCompleted;
 use App\Listeners\Discord\RemoveDiscordUser;
 use App\Listeners\Discord\SetupDiscordUser;
 use App\Listeners\NetworkData\FlushEndorsementCache;
-use App\Listeners\Smartcars\EvaluateFlightCriteria;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -29,7 +27,6 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\Mship\Bans\BanUpdated::class => [
-            \App\Listeners\Sync\Bans\SyncBanToTs::class,
             \App\Listeners\Sync\Bans\SyncBanToForum::class,
         ],
 
@@ -97,10 +94,6 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\VisitTransfer\ReferenceDeleted::class => [
             \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceDeletion::class,
-        ],
-
-        BidCompleted::class => [
-            EvaluateFlightCriteria::class,
         ],
 
         DiscordLinked::class => [

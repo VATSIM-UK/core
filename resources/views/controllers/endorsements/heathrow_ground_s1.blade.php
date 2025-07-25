@@ -76,7 +76,7 @@
                     @else
                         <p class="text-danger"><strong>You are not a home member of the UK Division. If you wish to hold
                                 a Gatwick endorsement, apply to transfer to the UK
-                                by {!! link_to_route("visiting.landing", "clicking here") !!}.</strong></p>
+                                by <a href="{{ route('visiting.landing') }}">clicking here</a>.</strong></p>
                     @endif
 
                     @if($onRoster)

@@ -4,6 +4,7 @@ namespace Tests\Feature\Middleware;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -22,7 +23,7 @@ class InactivityMiddlewareTest extends TestCase
         $this->user->assignRole($this->role);
     }
 
-    /** @test */
+    #[Test]
     public function test_a_user_is_not_logged_out_before_session_ends()
     {
         $this->actingAs($this->user)
@@ -36,20 +37,21 @@ class InactivityMiddlewareTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_a_user_is_logged_out_after_session_ends()
     {
         $this->actingAs($this->user)
             ->get(route('mship.manage.dashboard'))
             ->assertSuccessful();
 
-        Carbon::setTestNow(Carbon::now()->addMinutes($this->role->session_timeout));
+        Carbon::setTestNow(Carbon::now()->addMinutes($this->role->session_timeout + 1));
+
         $this->actingAs($this->user)
             ->get(route('mship.manage.dashboard'))
             ->assertRedirect('/dashboard');
     }
 
-    /** @test */
+    #[Test]
     public function test_a_user_isnt_redirected_to_login_from_public_page_after_session_timeout()
     {
         $this->actingAs($this->user)

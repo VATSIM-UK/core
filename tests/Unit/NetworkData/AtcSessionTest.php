@@ -5,6 +5,7 @@ namespace Tests\Unit\NetworkData;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AtcSessionTest extends TestCase
@@ -20,7 +21,7 @@ class AtcSessionTest extends TestCase
         $this->atcSession = factory(Atc::class)->create();
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_a_message_for_a_facility()
     {
         tap(factory(Atc::class)->make(['facility_type' => 1]), function ($model) {
@@ -56,7 +57,7 @@ class AtcSessionTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_detects_whether_a_session_is_within_the_uk()
     {
         tap(factory(Atc::class)->create(['callsign' => 'EGGD_APP']), function ($model) {
@@ -68,7 +69,7 @@ class AtcSessionTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_only_returns_uk_session_data_on_relationship()
     {
         tap(factory(Atc::class)->create(['callsign' => 'EGGD_APP']), function ($model) {

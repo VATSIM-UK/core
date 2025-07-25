@@ -50,6 +50,13 @@ class SyncCtsRoles extends Command
         $this->syncPilotStudents(55); // Pilot Students
         $this->syncStudentsByPosition('TFP_FLIGHT', Role::findByName('TFP Student')->id); // TFP Students
         $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
+
+        /**
+         * If you wish to do multiple positions for the same rule, don't do what I did and separate them into different
+         * calls. If you duplicate the role ID it will succeed on the first, but the next one will remove it.
+         */
+        // Heathrow students
+        $this->syncStudentsByPositions(['EGLL_2_GND', 'EGLL_S_TWR', 'EGLL_N_APP'], Role::findByName('ATC Students (Heathrow)')->id);
         // OBS Student
         $this->syncStudentsByPositions(['OBS_CC_PT2', 'OBS_NX_PT2', 'OBS_PH_PT2', 'OBS_SS_PT2'], Role::findByName('OBS Students')->id);
 

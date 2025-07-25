@@ -4,6 +4,7 @@ namespace Tests\Feature\Account\Feedback;
 
 use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class SendingFeedbackTest extends TestCase
@@ -22,7 +23,7 @@ class SendingFeedbackTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_member_if_there_is_no_sent_feedback()
     {
         $this->actingAs($this->user)
@@ -30,7 +31,7 @@ class SendingFeedbackTest extends TestCase
             ->assertRedirect(route('mship.manage.dashboard'));
     }
 
-    /** @test */
+    #[Test]
     public function test_it_allows_viewing_if_there_is_sent_feedback()
     {
         $this->feedback->markSent($this->privacc);

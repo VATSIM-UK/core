@@ -6,8 +6,8 @@ use App\Libraries\TeamSpeak;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use TeamSpeak3;
-use TeamSpeak3_Adapter_ServerQuery_Exception;
+use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
+use PlanetTeamSpeak\TeamSpeak3Framework\TeamSpeak3;
 
 /**
  * App\Models\TeamSpeak\Registration.
@@ -70,7 +70,7 @@ class Registration extends Model
             if ($this->confirmation) {
                 try {
                     $tscon->privilegeKeyDelete($this->confirmation->privilege_key);
-                } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+                } catch (ServerQueryException $e) {
                     if ($e->getMessage() === 'ok') {
                         $this->confirmation->delete();
                     }

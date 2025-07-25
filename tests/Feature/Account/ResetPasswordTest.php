@@ -6,13 +6,14 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ResetPasswordTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function test_user_can_request_password_reset()
     {
         $this->actingAs($this->user, 'vatsim-sso')
@@ -24,7 +25,7 @@ class ResetPasswordTest extends TestCase
             ->assertSessionHas('status');
     }
 
-    /** @test */
+    #[Test]
     public function test_password_reset_updates_correctly()
     {
         $this->user->password = 'Testing123';

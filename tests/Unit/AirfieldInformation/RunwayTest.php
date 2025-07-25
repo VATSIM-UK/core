@@ -6,13 +6,14 @@ use App\Models\Airport;
 use App\Models\Airport\Procedure;
 use App\Models\Airport\Runway;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class RunwayTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_can_create_a_new_runway()
     {
         $runway = factory(Runway::class)->create();
@@ -20,14 +21,14 @@ class RunwayTest extends TestCase
         $this->assertInstanceOf(Runway::class, Runway::find($runway->id));
     }
 
-    /** @test */
+    #[Test]
     public function it_has_working_airport_relationship()
     {
         $runway = factory(Runway::class)->create();
         $this->assertInstanceOf(Airport::class, $runway->airport);
     }
 
-    /** @test */
+    #[Test]
     public function it_has_working_procedures_relationship()
     {
         $runway = factory(Runway::class)->create();
@@ -35,7 +36,7 @@ class RunwayTest extends TestCase
         $this->assertInstanceOf(Procedure::class, $runway->fresh()->procedures->first());
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_surface_type()
     {
         $runway = factory(Runway::class)->create(['surface_type' => Runway::SURFACE_TYPE_CONCRETE]);

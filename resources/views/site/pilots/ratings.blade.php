@@ -3,9 +3,13 @@
 @section('content')
 
 
-    <div class="row">
-
     <div class="col-md-8 col-md-offset-2 ">
+        <div class="alert alert-danger">
+		    <h3 style="margin-top: 0">Very long waiting times - in excess of 1 year to begin Pilot Training</h3>
+		    <p>Please note that the average time frame for new pilots joining our waiting list and being offered a training place exceeds one year. You should be prepared for this wait - the division is working hard to improve training times, but demand is high. Thank you for your patience.</p>
+	    </div>
+
+        <div class="row">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-plane"></i> &thinsp; P1 (Online Pilot) Rating
                 </div>
@@ -29,8 +33,8 @@
                             <strong>Practical Phase</strong><br>
                             During the practical phase you will complete 22 practical lessons. These lessons are either one-to-one mentoring sessions or online video lessons.<br><br>
                             One-to-one mentoring sessions take place on the VATSIM UK TeamSpeak server which can be booked via the <a href="https://cts.vatsim.uk" rel="external nofollow">CTS</a>.<br><br>
-                            Online video lessons are marked in brackets with (Online) next to the lesson title. These lessons require you to read the associate briefing, watch the online video lesson, and then practise the contents of the lesson yourself. You are required to log onto the network with a pilot training callsign G-PTDA, G-PTDB... and log the flight on our <a href="{{ route('fte.guide') }}" rel="external nofollow">smartCARS</a>. The lesson can be booked via our exercises page <a href="{{ route('fte.exercises') }}" rel="external nofollow">here</a>. Once you have completed the flight, simply submit the PIREP on the smartACARS client and your flight will be logged.<br><br>
-                            The next lesson will come available when you have completed the previous lesson. One-to-one mentoring sessions will be marked as completed by your mentor, and online video lessons will be automatically marked as complete when you have read the briefing and watched the video for that lesson. Your lesson will be marked as completed even if you haven’t completed the flight on the network using our smartCARS client, but a mentor will check at the start of your next one-to-one lesson that all online lessons and associated PIREPs have been filed.<br><br>
+                            Online video lessons are marked in brackets with (Online) next to the lesson title. These lessons require you to read the associate briefing, watch the online video lesson, and then practise the contents of the lesson yourself.<br><br>
+                            The next lesson will come available when you have completed the previous lesson. One-to-one mentoring sessions will be marked as completed by your mentor, and online video lessons will be automatically marked as complete when you have read the briefing and watched the video for that lesson.<br><br>
                         </li>
                         <li>
                             <strong>License Skills Test</strong><br>
@@ -57,7 +61,7 @@
                 You can find details on how to sign up for training in the UK below.
             @else
                 You will need to be a member of VATSIM to sign up to our training courses.<br />
-                Already a member? {!! HTML::link(route('login'), "Click here to login") !!} and find out which route is the most applicable to you.
+                Already a member? <a href="{{ route('login') }}">Click here to login</a> and find out which route is the most applicable to you.
             @endif
         </div>
     </div>
@@ -115,7 +119,7 @@
                             <li>
                                 Once your mentoring permissions have been assigned navigate to our <a
                                         href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
-                                    (CTS</a>).
+                                    (CTS)</a>.
                             </li>
                             <li>
                                 Sign into the CTS using our SSO.

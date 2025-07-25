@@ -7,13 +7,14 @@ use App\Models\Airport;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Str;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AirfieldInformationTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_airport_page()
     {
         $airport = factory(Airport::class)->create();

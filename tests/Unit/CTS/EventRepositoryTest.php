@@ -7,6 +7,7 @@ use App\Repositories\Cts\EventRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class EventRepositoryTest extends TestCase
@@ -22,17 +23,17 @@ class EventRepositoryTest extends TestCase
         $this->repository = resolve(EventRepository::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_todays_events()
     {
-        factory(Event::class, 2)->create(['date' => Carbon::now()->addDays(5)->toDateString()]);
+        Event::factory()->count(2)->create(['date' => Carbon::now()->addDays(5)->toDateString()]);
 
-        $eventTodayOne = factory(Event::class)->create([
+        $eventTodayOne = Event::Factory()->create([
             'date' => Carbon::now()->toDateString(),
             'from' => Carbon::now()->addSecond()->toTimeString(),
         ]);
 
-        $eventTodayTwo = factory(Event::class)->create([
+        $eventTodayTwo = Event::Factory()->create([
             'date' => Carbon::now()->toDateString(),
             'from' => Carbon::now()->addSecond()->toTimeString(),
         ]);

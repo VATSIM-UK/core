@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WaitingListAccountStateChangeTest extends TestCase
@@ -32,8 +33,8 @@ class WaitingListAccountStateChangeTest extends TestCase
 
         Notification::fake();
 
-        $this->waitingList = factory(WaitingList::class)->create();
-        $this->nonHomeMembersOnlyWaitingList = factory(WaitingList::class)->create();
+        $this->waitingList = WaitingList::factory()->create();
+        $this->nonHomeMembersOnlyWaitingList = WaitingList::factory()->create();
         $this->nonHomeMembersOnlyWaitingList->home_members_only = 0;
         $this->nonHomeMembersOnlyWaitingList->save();
     }
@@ -83,7 +84,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         ];
     }
 
-    /** @test */
+    #[Test]
     public function it_should_not_remove_from_list_when_division_state_does_not_change()
     {
         $account = Account::factory()->create();
@@ -100,7 +101,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         Notification::assertNotSentTo($account, RemovedFromWaitingListNonHomeMember::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_not_send_notification_when_not_on_list_but_state_changed()
     {
         $account = Account::factory()->create();
@@ -109,12 +110,12 @@ class WaitingListAccountStateChangeTest extends TestCase
         $event = new AccountAltered($account);
         (new CheckWaitingListAccountMshipState)->handle($event);
 
-        $this->assertFalse($this->waitingList->accounts->contains($account));
+        $this->assertFalse($this->waitingList->includesAccount($account));
 
         Notification::assertNotSentTo($account, RemovedFromWaitingListNonHomeMember::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_remove_from_list_when_user_becomes_inactive_when_altered()
     {
         $account = Account::factory()->create();
@@ -134,7 +135,7 @@ class WaitingListAccountStateChangeTest extends TestCase
         Notification::assertSentTo($account, RemovedFromWaitingListInactiveAccount::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_not_notify_inactive_account_not_on_list()
     {
         $account = Account::factory()->create();

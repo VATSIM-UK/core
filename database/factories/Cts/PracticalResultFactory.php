@@ -19,7 +19,7 @@ class PracticalResultFactory extends Factory
     {
         return [
             'examid' => $this->faker->randomNumber(3),
-            'student_id' => factory(Member::class)->create()->id,
+            'student_id' => Member::Factory()->create()->id,
             'exam' => $this->faker->randomElement(['OBS', 'TWR', 'APP', 'CTR']),
             'result' => $this->faker->randomElement(['P', 'F']),
             'date' => $this->faker->dateTime(),

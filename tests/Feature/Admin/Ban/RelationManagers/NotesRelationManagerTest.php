@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Ban\RelationManagers;
 
-use App\Filament\Resources\BanResource\RelationManagers\NotesRelationManager;
+use App\Filament\Admin\Resources\BanResource\RelationManagers\NotesRelationManager;
 use App\Models\Mship\Account\Ban;
 use Filament\Resources\Pages\ViewRecord;
 use Livewire\Livewire;

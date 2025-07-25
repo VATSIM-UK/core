@@ -7,6 +7,7 @@ use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Repositories\Cts\MentorRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MentorRepositoryTest extends TestCase
@@ -23,12 +24,12 @@ class MentorRepositoryTest extends TestCase
         $this->subjectUnderTest = resolve(MentorRepository::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_a_list_of_mentors_of_an_rts()
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        $positionValidation = factory(PositionValidation::class)->create([
+        $positionValidation = PositionValidation::Factory()->create([
             'status' => 5,
             'position_id' => $position->id,
         ]);
@@ -38,12 +39,12 @@ class MentorRepositoryTest extends TestCase
         $this->assertEquals($mentors->first(), $positionValidation->member->cid);
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_return_mentors_of_another_rts()
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'status' => 5,
             'position_id' => $position->id,
         ]);
@@ -53,21 +54,21 @@ class MentorRepositoryTest extends TestCase
         $this->assertNull($mentors->first());
     }
 
-    /** @test */
+    #[Test]
     public function it_only_returns_a_mentor_once_within_an_rts()
     {
-        $member = factory(Member::class)->create();
+        $member = Member::Factory()->create();
 
         $positionOne = Position::factory()->create(['rts_id' => 15]);
         $positionTwo = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 5,
             'position_id' => $positionOne->id,
         ]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 5,
             'position_id' => $positionTwo->id,
@@ -78,13 +79,13 @@ class MentorRepositoryTest extends TestCase
         $this->assertCount(1, $rts);
     }
 
-    /** @test */
+    #[Test]
     public function it_formats_the_return_data_for_an_rts_correctly()
     {
-        $member = factory(Member::class)->create();
+        $member = Member::Factory()->create();
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 5,
             'position_id' => $position->id,
@@ -95,12 +96,12 @@ class MentorRepositoryTest extends TestCase
         $this->assertEquals($return, collect($member->cid));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_a_list_of_mentors_of_an_airport()
     {
         $position = Position::factory()->create(['callsign' => 'EGKK_GND']);
 
-        $positionValidation = factory(PositionValidation::class)->create([
+        $positionValidation = PositionValidation::Factory()->create([
             'status' => 5,
             'position_id' => $position->id,
         ]);
@@ -110,12 +111,12 @@ class MentorRepositoryTest extends TestCase
         $this->assertEquals($mentors->first(), $positionValidation->member->cid);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_a_list_of_mentors_of_a_specific_callsign()
     {
         $position = Position::factory()->create(['callsign' => 'EGKK_GND']);
 
-        $positionValidation = factory(PositionValidation::class)->create([
+        $positionValidation = PositionValidation::Factory()->create([
             'status' => 5,
             'position_id' => $position->id,
         ]);
@@ -125,12 +126,12 @@ class MentorRepositoryTest extends TestCase
         $this->assertEquals($mentors->first(), $positionValidation->member->cid);
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_return_mentors_without_permission_to_mentor_a_position()
     {
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'status' => 5,
             'position_id' => $position->id,
         ]);
@@ -140,21 +141,21 @@ class MentorRepositoryTest extends TestCase
         $this->assertNull($mentors->first());
     }
 
-    /** @test */
+    #[Test]
     public function it_only_returns_a_mentor_once_on_airport_or_callsign_searches()
     {
-        $member = factory(Member::class)->create();
+        $member = Member::Factory()->create();
 
         $positionOne = Position::factory()->create(['callsign' => 'EGKK_APP']);
         $positionTwo = Position::factory()->create(['callsign' => 'EGKK_TWR']);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 5,
             'position_id' => $positionOne->id,
         ]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 5,
             'position_id' => $positionTwo->id,
@@ -167,13 +168,13 @@ class MentorRepositoryTest extends TestCase
         $this->assertCount(1, $position);
     }
 
-    /** @test */
+    #[Test]
     public function it_formats_the_return_data_for_airport_or_position_searches_correctly()
     {
-        $member = factory(Member::class)->create();
+        $member = Member::Factory()->create();
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 5,
             'position_id' => $position->id,

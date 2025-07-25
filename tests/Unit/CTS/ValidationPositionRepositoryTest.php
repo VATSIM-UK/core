@@ -7,6 +7,7 @@ use App\Models\Cts\Validation;
 use App\Models\Cts\ValidationPosition;
 use App\Repositories\Cts\ValidationPositionRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ValidationPositionRepositoryTest extends TestCase
@@ -23,19 +24,19 @@ class ValidationPositionRepositoryTest extends TestCase
         $this->subjectUnderTest = resolve(ValidationPositionRepository::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_find_a_position_by_id()
     {
-        $position = factory(ValidationPosition::class)->create();
+        $position = ValidationPosition::Factory()->create();
         $search = $this->subjectUnderTest->findByPositionId($position->id);
 
         $this->assertEquals($position->id, $search->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_find_a_position_by_callsign()
     {
-        $position = factory(ValidationPosition::class)->create([
+        $position = ValidationPosition::Factory()->create([
             'position' => 'Shanwick (EGGX_FSS)',
         ]);
 
@@ -44,25 +45,25 @@ class ValidationPositionRepositoryTest extends TestCase
         $this->assertEquals($position->id, $search->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_validated_members()
     {
-        $position = factory(ValidationPosition::class)->create();
+        $position = ValidationPosition::Factory()->create();
 
-        factory(Validation::class, 10)->create([
+        Validation::factory()->count(10)->create([
             'position_id' => $position->id,
         ]);
 
         $this->assertCount(10, $position->members);
     }
 
-    /** @test */
+    #[Test]
     public function it_formats_validated_members()
     {
-        $position = factory(ValidationPosition::class)->create();
-        $member = factory(Member::class)->create();
+        $position = ValidationPosition::Factory()->create();
+        $member = Member::Factory()->create();
 
-        factory(Validation::class)->create([
+        Validation::Factory()->create([
             'position_id' => $position->id,
             'member_id' => $member->id,
         ]);

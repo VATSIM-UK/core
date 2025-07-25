@@ -13,7 +13,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout Codes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.client_payload.ref }}
@@ -30,25 +30,19 @@ jobs:
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-      #
-      # DEPLOYMENT PARAMETERS
-      #
       - name: Set additional deployment variables
-        uses: allenevans/set-env@v2.0.0
+        uses: allenevans/set-env@v4.0.0
         with:
           APP_URL: https://www.vatsim.uk
           APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
           RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.COMMIT }}
           SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
-          PHP_PATH: /bin/php8.2
+          PHP_PATH: /bin/php8.4
           VERSIONS_TO_KEEP: 5
           DISCORD_TRAINING_ALERTS_CHANNEL_ID: ${{ secrets.DISCORD_TRAINING_ALERTS_CHANNEL_ID }}
 
-      #
-      # DISCORD NOTIFICATION JOB START
-      #
       - name: Discord Notification (Start)
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v2
         with:
             severity: warn
             description: ${{ format('Starting Deployment of **{0}**', github.repository) }}
@@ -57,9 +51,6 @@ jobs:
             footer: ${{ format('https://{0}/actions/runs/{1}', github.repository, github.run_id) }}
             webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 
-      #
-      # GITHUB DEPLOYMENT JOB START
-      #
       - uses: chrnorm/deployment-action@v2
         name: Create GitHub Deployment
         id: github_deployment
@@ -69,91 +60,48 @@ jobs:
           environment: production
           ref: ${{ github.event.client_payload.ref }}
 
-      #
-      # BUILD DEPENDENCIES SETUP
-      #
+      - name: Configure PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:${{ matrix.composer }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
-      - name: Configure PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-          coverage: pcov
-          tools: composer:v2
-
-      # Add GitHub Auth to Composer
-      - name: Add Composer GitHub Token
-        run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
-
-      # Restore Caches
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Restore Composer Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-
-      - name: Restore Vendor From Cache
-        uses: actions/cache@v3
+      - name: Composer Cache
+        uses: actions/cache@v4
         with:
           path: vendor
-          key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
-
-      # Install
-      - name: Install Composer Dependencies
-        run: |
-           composer install --no-interaction
-           php artisan package:discover
-
-      #
-      # NODE BUILD
-      # Install node_modules and run webpack
-      #
-
-      # Restore Caches
-      - name: Get Node Cache Directory
-        id: node-cache-dir-path
-        run: echo "::set-output name=dir::$(node cache dir)"
-
-      - name: Restore Node Cache
-        uses: actions/cache@v3
-        id: node-cache
-        with:
-          path: ${{ steps.node-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            composer-${{ hashFiles('**/composer.lock') }}
+            composer-
 
-      # Install node_modules
-      - name: Install Core assets
-        run: npm ci
+      - name: Node Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            public/build
+            public/css
+            public/js
+            public/mix-manifest.json
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ hashFiles('**/package-lock.json') }}
+            npm-
 
-      # Run Webpack
-      - name: Compile Core assets
-        run: npm run build
-
-      # Not required for deployment
       - name: Remove node_modules
-        run: 'rm -rf node_modules'
+        run: rm -rf node_modules
 
       - name: Remove vendor for NPM build.
-        run: 'rm -rf vendor'
+        run: rm -rf vendor
 
-      #
-      # DEPLOYMENT
-      # Prepare remote environment and deploy application
-      #
-      - name: Deploy application
+
+      - name: Deploy Application
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -163,10 +111,6 @@ jobs:
           source: "."
           target: ${{ env.RELEASE_DIRECTORY }}
 
-      #
-      # REMOTE POST-DEPLOYMENT ACTIONS
-      # Conduct server-side post-deployment tasks and make application version live.
-      #
       - name: (Remote) Setup .env & install composer dependencies
         uses: appleboy/ssh-action@master
         with:
@@ -207,16 +151,12 @@ jobs:
           envs: RELEASE_DIRECTORY,SHARED_DIRECTORY,APPLICATION_ROOT
 
       - name: Trigger Forge Deployment
-        uses: jbrooksuk/laravel-forge-action@v1.0.3
+        uses: jbrooksuk/laravel-forge-action@v1.0.4
         with:
           trigger_url: ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
 
-      #
-      # SENTRY
-      # Create a Sentry release
-      #
       - name: Create Sentry release
-        uses: getsentry/action-release@v1
+        uses: getsentry/action-release@v3
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: vatsim-uk
@@ -225,10 +165,6 @@ jobs:
           environment: production
           version: ${{ github.sha }}
 
-      #
-      # HOUSEKEEPING
-      # Perform post-deployment housekeeping actions (release history)
-      #
       - name: Housekeeping
         uses: appleboy/ssh-action@master
         with:
@@ -253,9 +189,6 @@ jobs:
             fi
           envs: APPLICATION_ROOT,VERSIONS_TO_KEEP
 
-      #
-      # GITHUB DEPLOYMENT JOB END
-      #
       - name: Update Deployment Status (Failed)
         if: failure()
         uses: chrnorm/deployment-status@releases/v1
@@ -274,12 +207,9 @@ jobs:
           state: "success"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
 
-      #
-      # DISCORD NOTIFICATIONS JOB END
-      #
       - name: Discord Notification (Failed)
         if: failure()
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v2
         with:
             severity: error
             description: ${{ format('Deployment **FAILED** of **{0}**', github.repository) }}
@@ -290,7 +220,7 @@ jobs:
 
       - name: Discord Notification (Success)
         if: success()
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v2
         with:
             severity: info
             description: ${{ format('Deployment **SUCCEEDED** of **{0}**', github.repository) }}

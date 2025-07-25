@@ -9,62 +9,6 @@
     <title>VATSIM United Kingdom Division</title>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script>
-        var touchsupport = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
-
-        function updateClock() {
-            var today = new Date();
-            var h = today.getUTCHours();
-            var m = today.getUTCMinutes();
-            var s = today.getSeconds();
-            if (h < 10) {
-                h = "0" + h
-            }
-            if (m < 10) {
-                m = "0" + m;
-            }
-            if (s < 10) {
-                s = "0" + s;
-            }
-
-            $("#clock").text(h + ":" + m + ":" + s + 'Z');
-        }
-
-        function removeAnimations(element) {
-            $(element).css("-webkit-animation", "none");
-            $(element).css("-moz-animation", "none");
-            $(element).css("-ms-animation", "none");
-            $(element).css("animation", "none");
-        }
-
-        function toggleActive() {
-            if ($(".sidebar").hasClass("active")) {
-                $(".sidebar").removeClass("active");
-            } else {
-                $(".sidebar").addClass("active");
-                removeAnimations(".sidebar")
-            }
-        }
-
-        $(function () {
-            $("#bookingsbutton").click(() => {
-                toggleActive()
-            })
-
-            if (!touchsupport) {
-                $(".popout-button").addClass("has-hover");
-            }
-
-            setInterval('updateClock()', 1000);
-        });
-
-        $(document).keyup(function (e) {
-            if (e.keyCode === 27 && $('.sidebar').hasClass("active")) $('.sidebar').removeClass("active");
-            if (e.keyCode === 37 && !$(".sidebar").hasClass("active")) toggleActive();
-            if (e.keyCode === 39 && $(".sidebar").hasClass("active")) toggleActive();
-            if (e.keyCode === 66) toggleActive();
-        });
-    </script>
     <script src="https://slug.vatsim.uk/script.js" data-site="HQWHPBQX" data-included-domains="vatsim.uk,www.vatsim.uk" defer></script>
 
     <!-- Styles -->
@@ -98,8 +42,7 @@
                             <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link"
-                               href="https://community.vatsim.uk/files/downloads/category/4-policy-documents/">Policies</a>
+                            <a class="nav-link" href="{{ route('site.policy.division') }}">Policies</a>
                         </li>
                     </ul>
                 </li>
@@ -205,98 +148,6 @@
     </div>
 </nav>
 <!-- UK TopNav [END] -->
-
-<!-- Sidebar Content [START] -->
-<div class="sidebar">
-    <div class="window">
-        <div class="content">
-            <div class="header">
-                <h2>Today's Bookings</h2>
-                <p>All times are represented in Zulu. (Currently <b><span id="clock"></span></b> )</p>
-            </div>
-            <div class="data">
-                <ul>
-                    @foreach($events as $event)
-                        <li class='booking event-booking'>
-                            @if($event->thread)
-                                <a href="{{$event->thread}}"
-                                   target="_blank">
-                            @else
-                                <span>
-                            @endif
-                                <div class="icon">
-                                    <i class="fas fa-calendar"></i>
-                                </div>
-                                <div>
-                                    <b>{{$event->event}}</b>
-                                    <br/>
-                                    {{$event->from}}z - {{$event->to}}z<br/>
-                                </div>
-                            @if($event->thread)
-                                </a>
-                            @else
-                                </span>
-                            @endif
-                        </li>
-                        @if($loop->last)
-                            <hr class="mt-2 mb-2">
-                        @endif
-                    @endforeach
-                    @foreach ($bookings as $booking)
-                        <li class='booking'>
-                            <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking->id }}"
-                               target="_blank">
-                                <div class="icon">
-                                    @if($booking->isExam())
-                                        <i class="fas fa-exclamation"></i>
-                                    @elseif($booking->isMentoring())
-                                        <i class="fas fa-chalkboard-teacher"></i>
-                                    @elseif($booking->isMemberBooking())
-                                        <i class="fas fa-headset"></i>
-                                    @endif
-                                </div>
-                                <div>
-                                    <b>{{ $booking['position'] }}
-                                        @if($booking->isExam())
-                                            (E)
-                                        @elseif($booking->isMentoring())
-                                            (M)
-                                        @endif
-                                    </b><br/>
-                                    {{ e($booking['member']['name']) }}
-                                    @if($booking['member']['id'])
-                                        ({{ $booking['member']['id'] }})
-                                    @endif
-                                    <br/>
-                                    {{$booking['from']}}z - {{$booking['to']}}z<br/>
-                                </div>
-                            </a>
-                        </li>
-                    @endforeach
-                    @if($bookings->count() == 0 && $events->count() == 0)
-                        <li>There are no bookings today. <i class="far fa-tired"></i></li>
-                    @endif
-                </ul>
-                <div class="spacer"></div>
-            </div>
-            <div class="footer">
-                @if (count($bookings) > 10)
-                    <span><i>Keep Scrolling</i></span>
-                @else
-                    <span>&nbsp;</span>
-                @endif
-                <a class="btn btn-l btn-round btn-primary px-7" href="https://cts.vatsim.uk/bookings/calendar.php">View
-                    Full Calendar</a>
-            </div>
-        </div>
-    </div>
-    <div class="icons">
-        <div class="icon popout-button">
-            <span id="bookingsbutton"><i class="fas fa-headset"></i></span>
-        </div>
-    </div>
-</div>
-<!-- Sidebar Content [END] -->
 
 <!-- UK Header [START] -->
 <header class="header text-white h-fullscreen pb-5" data-jarallax-video="mp4:videos/ctp.mp4" data-overlay="5">

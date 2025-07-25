@@ -8,6 +8,7 @@ use App\Repositories\Cts\BookingRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class BookingsRepositoryTest extends TestCase
@@ -32,24 +33,36 @@ class BookingsRepositoryTest extends TestCase
         $this->tomorrow = $this->knownDate->copy()->addDay()->toDateString();
     }
 
-    /** @test */
+    #[Test]
+    public function it_can_return_a_list_of_bookings_for_today()
+    {
+        Booking::factory()->count(10)->create(['date' => Carbon::now()]);
+
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+
+        $this->assertInstanceOf(Collection::class, $bookings);
+        $this->assertCount(10, $bookings);
+        $this->assertInstanceOf(Booking::class, $bookings->first());
+    }
+
+    #[Test]
     public function it_can_return_a_list_of_todays_bookings_with_owner_and_type()
     {
-        factory(Booking::class, 2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
+        Booking::factory()->count(2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
 
-        $bookingTodayOne = factory(Booking::class)->create([
+        $bookingTodayOne = Booking::Factory()->create([
             'id' => '96155',
             'date' => $this->today,
             'from' => '17:00',
-            'member_id' => factory(Member::class)->create()->id,
+            'member_id' => Member::Factory()->create()->id,
             'type' => 'BK',
         ]);
 
-        $bookingTodayTwo = factory(Booking::class)->create([
+        $bookingTodayTwo = Booking::Factory()->create([
             'id' => '96156',
             'date' => $this->today,
             'from' => '18:00',
-            'member_id' => factory(Member::class)->create()->id,
+            'member_id' => Member::Factory()->create()->id,
             'type' => 'ME',
         ]);
 
@@ -84,11 +97,11 @@ class BookingsRepositoryTest extends TestCase
         ], $bookings->get(1)->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_hides_member_details_on_exam_booking()
     {
-        $normalBooking = factory(Booking::class)->create(['date' => $this->today, 'from' => '17:00', 'type' => 'BK']);
-        factory(Booking::class)->create(['date' => $this->today, 'from' => '18:00', 'type' => 'EX']);
+        $normalBooking = Booking::Factory()->create(['date' => $this->today, 'from' => '17:00', 'type' => 'BK']);
+        Booking::Factory()->create(['date' => $this->today, 'from' => '18:00', 'type' => 'EX']);
 
         $bookings = $this->subjectUnderTest->getTodaysBookings();
 
@@ -103,14 +116,14 @@ class BookingsRepositoryTest extends TestCase
         ], $bookings->get(1)['member']);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_a_list_of_todays_live_atc_bookings()
     {
-        factory(Booking::class)->create(['date' => $this->today, 'position' => 'EGKK_APP']); // Live ATC booking today
-        factory(Booking::class)->create(['date' => $this->today, 'position' => 'EGKK_SBAT']); // Sweatbox ATC booking today
-        factory(Booking::class)->create(['date' => $this->today, 'position' => 'P1_VATSIM']); // Pilot booking today
-        factory(Booking::class)->create(['date' => $this->tomorrow, 'position' => 'EGKK_APP']); // ATC booking tomorrow
-        factory(Booking::class)->create(['date' => $this->tomorrow, 'position' => 'P1_VATSIM']); // Pilot booking tomorrw
+        Booking::Factory()->create(['date' => $this->today, 'position' => 'EGKK_APP']); // Live ATC booking today
+        Booking::Factory()->create(['date' => $this->today, 'position' => 'EGKK_SBAT']); // Sweatbox ATC booking today
+        Booking::Factory()->create(['date' => $this->today, 'position' => 'P1_VATSIM']); // Pilot booking today
+        Booking::Factory()->create(['date' => $this->tomorrow, 'position' => 'EGKK_APP']); // ATC booking tomorrow
+        Booking::Factory()->create(['date' => $this->tomorrow, 'position' => 'P1_VATSIM']); // Pilot booking tomorrw
 
         $atcBookings = $this->subjectUnderTest->getTodaysLiveAtcBookings();
 
@@ -118,22 +131,22 @@ class BookingsRepositoryTest extends TestCase
         $this->assertCount(1, $atcBookings);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_a_booking_without_a_known_member()
     {
-        factory(Booking::class)->create(['date' => $this->today, 'member_id' => 0, 'type' => 'BK']);
+        Booking::Factory()->create(['date' => $this->today, 'member_id' => 0, 'type' => 'BK']);
 
         $this->subjectUnderTest->getTodaysLiveAtcBookings();
 
         $this->expectNotToPerformAssertions();
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_bookings_in_start_time_order()
     {
-        $afternoon = factory(Booking::class)->create(['date' => $this->today, 'from' => '16:00', 'to' => '17:00', 'type' => 'BK']);
-        $morning = factory(Booking::class)->create(['date' => $this->today, 'from' => '09:00', 'to' => '11:00', 'type' => 'BK']);
-        $night = factory(Booking::class)->create(['date' => $this->today, 'from' => '22:00', 'to' => '23:00', 'type' => 'BK']);
+        $afternoon = Booking::Factory()->create(['date' => $this->today, 'from' => '16:00', 'to' => '17:00', 'type' => 'BK']);
+        $morning = Booking::Factory()->create(['date' => $this->today, 'from' => '09:00', 'to' => '11:00', 'type' => 'BK']);
+        $night = Booking::Factory()->create(['date' => $this->today, 'from' => '22:00', 'to' => '23:00', 'type' => 'BK']);
 
         $todaysBookings = $this->subjectUnderTest->getTodaysBookings();
         $todaysAtcBookings = $this->subjectUnderTest->getTodaysLiveAtcBookings();

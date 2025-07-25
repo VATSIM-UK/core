@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ApplicationCleanUpTest extends TestCase
@@ -53,7 +54,7 @@ class ApplicationCleanUpTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_it_will_set50_hour_check_as_passed()
     {
         $this->assertNull($this->application->check_outcome_50_hours);
@@ -61,7 +62,7 @@ class ApplicationCleanUpTest extends TestCase
         $this->assertTrue($this->application->fresh()->check_outcome_50_hours);
     }
 
-    /** @test */
+    #[Test]
     public function test_it_will_set90_day_check_as_passed()
     {
         $this->assertNull($this->application->check_outcome_90_day);

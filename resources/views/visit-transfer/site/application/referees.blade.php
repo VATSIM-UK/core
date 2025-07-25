@@ -3,7 +3,10 @@
 @section('vt-content')
     <div class="row">
         <div class="col-md-12">
-            {!! HTML::panelOpen("References &amp; Referees", ["type" => "fa", "key" => "comment-o"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'References & Referees',
+                'icon' => ['type' => 'fa', 'key' => 'comment-o']
+            ])
             <div class="row">
 
                 <div class="col-md-6 col-md-offset-3">
@@ -31,37 +34,37 @@
                 <div class="col-md-6">
                     <div class="row">
                         @if($application->number_references_required_relative > 0)
-                            {!! Form::open(["route" => ["visiting.application.referees.post", $application->public_id], "method" => "POST"]) !!}
+                            <form action="{{ route('visiting.application.referees.post', $application->public_id) }}"
+                                  method="POST">
+                                @csrf
 
                             <div class="col-md-6">
                                 <div id="refereeCidHelp">
-                                    {!! Form::label("referee_cid","Referee CID"),
-                                    Form::text("referee_cid", '', ['class' => 'form-control']) !!}
+                                    <label for="referee_cid">Referee CID</label>
+                                    <input type="text" name="referee_cid" class="form-control">
                                     <small class="form-text text-muted">Please ensure this is correct.</small>
                                 </div>
 
                                 <div id="refereePositionHelp">
-                                    {!! Form::label("referee_relationship","Staff Position"),
-                                        Form::select("referee_relationship", [
-                                            "Region Director"               => "Region Director",
-                                            "Region Staff"                  => "Region Staff",
-
-                                            "Division Director"             => "Division Director",
-                                            "Division Training Director"    => "Division Training Director",
-                                            "Division Staff"                => "Division Staff",
-
-                                            "VACC/ARTCC Director"           => "VACC/ARTCC Director",
-                                            "VACC/ARTCC Training Director"  => "VACC/ARTCC Training Director",
-                                            "VACC/ARTCC Staff"              => "VACC/ARTCC Staff",
-                                        ], '', ['class' => 'form-control']) !!}
+                                    <label for="referee_relationship">Staff Position</label>
+                                    <select name="referee_relationship" class="form-control">
+                                        <option value="Region Director">Region Director</option>
+                                        <option value="Region Staff">Region Staff</option>
+                                        <option value="Division Director">Division Director</option>
+                                        <option value="Division Training Director">Division Training Director</option>
+                                        <option value="Division Staff">Division Staff</option>
+                                        <option value="VACC/ARTCC Director">VACC/ARTCC Director</option>
+                                        <option value="VACC/ARTCC Training Director">VACC/ARTCC Training Director</option>
+                                        <option value="VACC/ARTCC Staff">VACC/ARTCC Staff</option>
+                                    </select>
                                 </div>
 
                             </div>
 
                             <div class="col-md-6">
                                 <div id="refereeEmail">
-                                    {!! Form::label("referee_email", "Email Address"),
-                                    Form::text("referee_email", '', ['class' => 'form-control']) !!}
+                                    <label for="referee_email">Email Address</label>
+                                    <input type="text" name="referee_email" class="form-control">
                                     <small class="form-text text-muted">This should be the member's staff email address.</small>
                                 </div>
 
@@ -70,7 +73,7 @@
                                 </div>
                             </div>
 
-                            {!! Form::close() !!}
+                            </form>
                         @else
                             <div class="col-md-12 text-center">
                                 <p>You cannot add any additional referees at this time.</p>
@@ -98,9 +101,12 @@
                                 <td>{{ $referee->email }}</td>
                                 <td>{{ $referee->relationship }}</td>
                                 <td>
-                                    {!! Form::open(["route" => ["visiting.application.referees.delete.post", $application->public_id, $referee->id], "method" => "POST"]) !!}
+                                    <form
+                                        action="{{ route('visiting.application.referees.delete.post', [$application->public_id, $referee->id]) }}"
+                                        method="POST">
+                                        @csrf
                                     <button type="submit" class="btn btn-danger btn-xs">DELETE</button>
-                                    {!! Form::close() !!}
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
@@ -109,7 +115,7 @@
                 </div>
 
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
     </div>
 @stop

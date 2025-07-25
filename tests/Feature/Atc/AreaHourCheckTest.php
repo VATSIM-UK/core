@@ -6,6 +6,7 @@ use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AreaHourCheckTest extends TestCase
@@ -14,7 +15,7 @@ class AreaHourCheckTest extends TestCase
 
     protected $hourCheckRoute = 'controllers.hour_check.area';
 
-    /** @test */
+    #[Test]
     public function test_redirects_away_if_user_not_s3()
     {
         $account = Account::factory()->create();
@@ -28,7 +29,7 @@ class AreaHourCheckTest extends TestCase
             ->assertRedirect(route('mship.manage.dashboard'));
     }
 
-    /** @test */
+    #[Test]
     public function test_successful_navigation_if_user_is_s3()
     {
         $this->markTestSkipped('Page disabled.');
@@ -45,7 +46,7 @@ class AreaHourCheckTest extends TestCase
             ->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_redirects_away_if_no_relevant_endorsements_created()
     {
         $account = Account::factory()->create();

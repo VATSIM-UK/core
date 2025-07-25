@@ -46,14 +46,14 @@
                 </div>
                 <div class="panel-body">
                     @if(Auth::user() && $_account->primary_state->code == 'DIVISION')
-                        <strong>{{ $_account->name_first }}</strong>, <strong>you are</strong> a Division member, so you can get started straight away!<br />
+                        <strong>{{ $_account->name_first }}</strong>, <strong>you are</strong> a Division member, so that you can get started straight away!<br />
                         You can find details on how to sign up for training in the UK below.
                     @elseif(Auth::user())
                         <strong>{{ $_account->name_first }}</strong>, <strong>you're not</strong> currently a Division member!<br />
                         You can find details on how to sign up for training in the UK below.
                     @else
-                        You will need to be a member of VATSIM to sign up to our training courses.<br />
-                        Already a member? {!! HTML::link(route('login'), "Click here to login") !!} and find out which route is the most applicable to you.
+                        You will need to be a VATSIM member to sign up for our training courses.<br />
+                        Already a member? <a href="{{ route('login') }}">Click here to login</a> and find out which route is the most applicable to you.
                     @endif
                 </div>
             </div>
@@ -71,7 +71,7 @@
                 <div class="panel-body">
                     <ol>
                         <li>
-                            Express your interest <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noopener noreferrer">here</a> - you will then be added to the waiting list.
+                            Join the waiting list <a href="{{ route('mship.waiting-lists.index') }}" target="_blank" rel="noopener noreferrer">here</a>
                         </li>
                         <li>
                             Sign up to the P1 PPL(A) moodle course <a href="https://moodle.vatsim.uk/course/view.php?id=51" target="_blank" rel="noopener noreferrer">here</a>.
@@ -80,7 +80,7 @@
                             Complete Theory Modules one, two and three.
                         </li>
                         <li>
-                            Notify us <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noopener noreferrer">here</a> that you have completed the Theory Phase of the P1 PPL(A) moodle course.
+                            Notify us <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noopener noreferrer">here</a> that you have completed the Theory Phase of the P1 PPL(A) Moodle course.
                         </li>
                         <li>
                             Sit tight! We will be in touch when a training place becomes available.
@@ -93,15 +93,15 @@
         <div class="col-md-4" @if(Auth::user() && $_account->primary_state->code == 'DIVISION')style="opacity: 0.3"@endif>
             <div class="panel panel-uk-danger">
                 <div class="panel-heading"><i class="glyphicon glyphicon-remove-circle"></i> &thinsp; I am not a member
-                    of the UK divison
+                    of the UK division
                 </div>
                 <div class="panel-body">
                     <ol>
                         <li>
-                            <a href="{{ route('visiting.landing') }}" rel="noreferrer noopener">Apply to visit as a Pilot</a>
+                            <a href="{{ route('visiting.landing') }}" rel="noreferrer noopener">Apply to visit as a Pilot</a>, not seeing the option you want? Submit a ticket <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noreferrer noopener">here</a>
                         </li>
                         <li>
-                            When your V/T application has been accepted you will be added to the waiting list.
+                            When your V/T application has been accepted, you will be added to the waiting list.
                         </li>
                         <li>
                             Sign up to the P1 PPL(A) moodle course <a href="https://moodle.vatsim.uk/course/view.php?id=51" target="_blank" rel="noopener noreferrer">here</a>.
@@ -110,7 +110,7 @@
                             Complete Theory Modules one, two and three.
                         </li>
                         <li>
-                            Notify us <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noreferrer noopener">here</a> that you have completed the Theory Phase of the P1 PPL(A) moodle course.
+                            Notify us <a href="https://helpdesk.vatsim.uk/open.php" target="_blank" rel="noreferrer noopener">here</a> that you have completed the Theory Phase of the P1 PPL(A) Moodle course.
                         </li>
                         <li>
                             Sit tight! We will be in touch when a training place becomes available.

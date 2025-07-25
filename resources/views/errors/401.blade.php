@@ -4,5 +4,5 @@
     <h1>401 - Unauthorized</h1>
     <h4>Error Detail</h4>
     <pre>{{ $exception->getMessage() }}</pre>
-    <p>If you require support with this issue, please contact {!! HTML::mailto('web-support@vatsim.uk') !!}.</p>
+    <p>If you require support with this issue, please contact <a href="mailto:technology-support@vatsim.uk">technology-support@vatsim.uk</a>.</p>
 @stop

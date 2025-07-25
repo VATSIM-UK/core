@@ -15,15 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.4
 
       - name: Install PHP dependencies
-        uses: ramsey/composer-install@v2
+        uses: ramsey/composer-install@v3
 
       - name: 'Lint PHP'
         run: composer lint -- --test
@@ -39,16 +39,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.2']
+        php: ['8.4']
         composer: ['v2']
         experimental: [false]
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      #
-      # ENVIRONMENT DEPENDENCIES SETUP
-      #
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -58,9 +55,31 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
-      # Start MySQL and Create Databases
+      - name: Composer Cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ hashFiles('**/composer.lock') }}
+            composer-
+
+      - name: Node Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            public/build
+            public/css
+            public/js
+            public/mix-manifest.json
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ hashFiles('**/package-lock.json') }}
+            npm-
+
       - name: Create Databases
         run: |
           sudo systemctl start mysql.service
@@ -68,101 +87,36 @@ jobs:
           mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
           mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
 
-      #
-      # COMPOSER DEPENDENICES
-      #
-
-      # Add GitHub Auth to Composer
-      - name: Add Composer GitHub Token
+      - name: Composer Authentication
         run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
 
-      # Restore Caches
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Restore Composer Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-
-      - name: Restore Vendor From Cache
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
-
-      # Install
       - name: Install Composer Dependencies
-        run: |
-           composer install --no-interaction
-           php artisan package:discover
+        run: composer install --no-interaction
 
-      #
-      # NODE BUILD
-      #
-
-      # Restore Caches
-      - name: Get Node Cache Directory
-        id: node-cache-dir-path
-        run: echo "::set-output name=dir::$(node cache dir)"
-
-      - name: Restore Node Cache
-        uses: actions/cache@v3
-        id: node-cache
-        with:
-          path: ${{ steps.node-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      # Install node_modules
-      - name: Install Core assets
+      - name: Install assets
         run: npm ci
 
-      # Run Webpack
-      - name: Compile Core assets
+      - name: Compile assets
         run: npm run build
 
-      #
-      # APPLICATION SETUP
-      #
-
-      # Environment Configuration
       - name: Create Environment File
         run: mv .env.ci .env
-
-      # Publish Packages
-      - name: Publish Horizon
-        run: php artisan horizon:publish
 
       - name: Publish Telescope
         run: php artisan telescope:publish
 
-      # Run Database Migration
       - name: Migrate & Seed Database
         run: php artisan migrate && php artisan cts:migrate:fresh
 
-      # Cache Setup
       - name: Cache Routes
         run: php artisan route:cache
 
       - name: Cache Config
         run: php artisan config:cache
 
-      # Start Application
       - name: Serve Application
         run: php artisan serve -q &
 
-      #
-      # RUN TESTING SUITE
-      #
-
-      # Run Tests
       - name: Execute PHPUnit Tests
         run: vendor/bin/phpunit
 
@@ -172,11 +126,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      #
-      # RELEASE (main only)
-      #
       - name: Trigger deploy workflow
-        uses: peter-evans/repository-dispatch@v2
+        uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
           event-type: deploy-trigger

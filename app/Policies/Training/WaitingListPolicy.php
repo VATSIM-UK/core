@@ -4,6 +4,7 @@ namespace App\Policies\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
+use App\Services\Training\WaitingListSelfEnrolment;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Arr;
 
@@ -23,7 +24,8 @@ class WaitingListPolicy
 
     public function addAccounts(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-accounts.%s']);
+        return ! $waitingList->isAtCapacity() &&
+            $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-accounts.%s']);
     }
 
     public function addAccountsAdmin(Account $account, WaitingList $waitingList)
@@ -48,7 +50,7 @@ class WaitingListPolicy
 
     public function update(Account $account, WaitingList $waitingList)
     {
-        return false;
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.admin.%s']);
     }
 
     public function delete(Account $account, WaitingList $waitingList)
@@ -59,6 +61,11 @@ class WaitingListPolicy
     public function create(Account $account)
     {
         return $account->hasAnyPermission(['waiting-lists.create']);
+    }
+
+    public function selfEnrol(Account $account, WaitingList $waitingList)
+    {
+        return WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList);
     }
 
     /**

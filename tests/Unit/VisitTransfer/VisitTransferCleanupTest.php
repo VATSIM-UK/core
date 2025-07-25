@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class VisitTransferCleanupTest extends TestCase
@@ -44,7 +45,7 @@ class VisitTransferCleanupTest extends TestCase
         $this->oldApplication = $application->fresh();
     }
 
-    /** @test */
+    #[Test]
     public function it_only_cancels_old_applications()
     {
         Artisan::call('visit-transfer:cleanup');
@@ -53,7 +54,7 @@ class VisitTransferCleanupTest extends TestCase
         $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_IN_PROGRESS, $this->newApplication->fresh()->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_lapses_applications_for_old_contacted_referees()
     {
         Mail::fake();
@@ -78,7 +79,7 @@ class VisitTransferCleanupTest extends TestCase
         $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_LAPSED, $application->fresh()->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_wont_incorrectly_lapse_applications()
     {
         // A submitted application with a requested (contacted & pending) reference that is not old

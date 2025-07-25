@@ -7,6 +7,7 @@ use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Repositories\Cts\StudentRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class StudentRepositoryTest extends TestCase
@@ -23,12 +24,12 @@ class StudentRepositoryTest extends TestCase
         $this->subjectUnderTest = resolve(StudentRepository::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_a_list_of_students_of_an_rts()
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        $positionValidation = factory(PositionValidation::class)->create([
+        $positionValidation = PositionValidation::Factory()->create([
             'status' => 1,
             'position_id' => $position->id,
         ]);
@@ -38,12 +39,12 @@ class StudentRepositoryTest extends TestCase
         $this->assertEquals($students->first(), $positionValidation->member->cid);
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_return_students_of_another_rts()
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'status' => 1,
             'position_id' => $position->id,
         ]);
@@ -53,21 +54,21 @@ class StudentRepositoryTest extends TestCase
         $this->assertNull($students->first());
     }
 
-    /** @test */
+    #[Test]
     public function it_only_returns_a_students_once_within_an_rts()
     {
-        $member = factory(Member::class)->create();
+        $member = Member::Factory()->create();
 
         $positionOne = Position::factory()->create(['rts_id' => 15]);
         $positionTwo = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 1,
             'position_id' => $positionOne->id,
         ]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 1,
             'position_id' => $positionTwo->id,
@@ -78,13 +79,13 @@ class StudentRepositoryTest extends TestCase
         $this->assertCount(1, $rts);
     }
 
-    /** @test */
+    #[Test]
     public function it_formats_the_return_data_for_an_rts_correctly()
     {
-        $member = factory(Member::class)->create();
+        $member = Member::Factory()->create();
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'member_id' => $member->id,
             'status' => 1,
             'position_id' => $position->id,
@@ -95,12 +96,12 @@ class StudentRepositoryTest extends TestCase
         $this->assertEquals($return, collect($member->cid));
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_return_mentors_as_students()
     {
         $position = Position::factory()->create(['rts_id' => 15]);
 
-        factory(PositionValidation::class)->create([
+        PositionValidation::Factory()->create([
             'status' => 5,
             'position_id' => $position->id,
         ]);
