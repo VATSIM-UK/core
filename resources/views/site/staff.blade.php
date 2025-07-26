@@ -64,7 +64,7 @@
                     <table class="table">
                         <tr>
                             <td>Deputy Operations Director</td>
-                            <td>Peter Mooney</td>
+                            <td><em>Vacant</em></td>
                         </tr>
                         <tr>
                             <td>Enroute Operations Coordinator</td>
