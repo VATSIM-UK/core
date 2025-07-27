@@ -24,4 +24,14 @@ class PracticalExaminers extends Model
     {
         return $this->belongsTo(Member::class, 'senior', 'id');
     }
+
+    public function secondaryExaminer(): BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'other', 'id');
+    }
+
+    public function traineeExaminer(): BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'trainee', 'id');
+    }
 }

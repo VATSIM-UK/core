@@ -243,14 +243,14 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             ->assertHasNoFormErrors(formName: 'form')
             ->assertHasNoFormErrors(formName: 'examResultForm');
 
-        $this->assertDatabaseHas('practical_results', connection: 'cts', data: [
+        $this->assertDatabaseHas('practical_results', data: [
             'examid' => $exam->id,
             'student_id' => $student->id,
             'result' => 'P',
             'notes' => 'Test notes for test result',
             'date' => now(),
             'exam' => 'TWR',
-        ]);
+        ], connection: 'cts');
 
         Event::assertDispatched(PracticalExamCompleted::class, function ($event) use ($exam) {
             return $event->examBooking->id === $exam->id && $event->practicalResult->examid === $exam->id;
