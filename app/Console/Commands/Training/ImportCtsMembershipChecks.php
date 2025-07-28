@@ -19,7 +19,7 @@ class ImportCtsMembershipChecks extends Command
      *
      * @var string
      */
-    protected $description = 'Import membership_checks from CTS db to training_waiting_list_retention_checks';
+    protected $description = 'Import memberships_check from CTS db to training_waiting_list_retention_checks';
 
     /**
      * Execute the console command.
@@ -40,7 +40,7 @@ class ImportCtsMembershipChecks extends Command
         });
         */
 
-        /* OLD TABLE (cts.membership_checks):
+        /* OLD TABLE (cts.memberships_check):
 
         Field 	Type 	Null 	Key 	Default 	Extra
         id 	int 	NO 	PRI 	NULL 	auto_increment
@@ -57,17 +57,17 @@ class ImportCtsMembershipChecks extends Command
         */
 
         $records = DB::connection('cts')
-            ->table('membership_checks')
-            ->join('members', 'membership_checks.member_id', '=', 'members.id')
+            ->table('memberships_check')
+            ->join('members', 'memberships_check.member_id', '=', 'members.id')
             ->select([
-                'membership_checks.code',
-                'membership_checks.date_expires',
-                'membership_checks.date_clicked',
-                'membership_checks.status',
-                'membership_checks.date_requested',
+                'memberships_check.code',
+                'memberships_check.date_expires',
+                'memberships_check.date_clicked',
+                'memberships_check.status',
+                'memberships_check.date_requested',
                 'members.cid as cid',
             ])
-            ->where('membership_checks.status', '!=', 'E')
+            ->where('memberships_check.status', '!=', 'E')
             ->whereIn('members.cid', function ($query) {
                 $query->select('account_id')
                     ->from('training_waiting_list_accounts')
