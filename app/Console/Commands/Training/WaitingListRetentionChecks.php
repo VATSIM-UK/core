@@ -30,6 +30,7 @@ class WaitingListRetentionChecks extends Command
     {
         $recordsToRemove = WaitingListWaitingListRetentionChecks::query()
             ->where('expires_at', '<', now())
+            ->where('email_sent_at', '>=', now()->subMonths(6)->subDay())
             ->where('status', WaitingListWaitingListRetentionChecks::STATUS_PENDING)
             ->get();
 
@@ -39,6 +40,7 @@ class WaitingListRetentionChecks extends Command
 
         $recodsToSend = WaitingListWaitingListRetentionChecks::query()
             ->where('email_sent_at', '<', now()->subMonths(3))
+            ->where('email_sent_at', '>=', now()->subMonths(6)->subDay())
             ->get();
 
         foreach ($recodsToSend as $record) {

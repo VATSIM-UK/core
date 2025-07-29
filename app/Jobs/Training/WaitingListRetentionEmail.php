@@ -38,6 +38,12 @@ class WaitingListRetentionEmail implements ShouldQueue
     public function handle()
     {
         $oldRecord = $this->retentionCheck;
+
+        if (! $oldRecord->waitingListAccount) {
+            \Log::warning("WaitingListAccount not found for retention check {$this->retentionCheck->id}. Cannot send retention email.");
+
+            return;
+        }
         $verifyToken = $this->generateToken();
 
         $record = WaitingListRetentionChecks::create([
