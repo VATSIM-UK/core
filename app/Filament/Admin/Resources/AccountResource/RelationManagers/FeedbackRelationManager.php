@@ -23,6 +23,7 @@ class FeedbackRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()->resource(FeedbackResource::class),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 }

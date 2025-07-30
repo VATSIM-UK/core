@@ -1,6 +1,7 @@
 <?php
 
 // Dashboard
+
 Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('landing');
 
 // Authentication
@@ -82,6 +83,7 @@ Route::group([
     ], function () {
         Route::get('')->uses('WaitingLists@index')->name('index');
         Route::post('self-enrol/{waitingList}')->uses('WaitingLists@selfEnrol')->name('self-enrol');
+        Route::get('retention')->uses('WaitingLists@getRetentionWithToken')->name('retention.token');
     });
 
     // Other
