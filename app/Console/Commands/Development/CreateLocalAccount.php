@@ -164,14 +164,6 @@ class CreateLocalAccount extends Command
     }
 
     /**
-     * Get CID from option or generate a new one
-     */
-    private function getOrGenerateCid(): int
-    {
-        return $this->option('cid') ?: $this->generateValidCid();
-    }
-
-    /**
      * Validate that CID doesn't already exist
      */
     private function validateCidDoesNotExist(int $cid): void
@@ -222,24 +214,32 @@ class CreateLocalAccount extends Command
     }
 
     /**
-     * Create the base account using factory with validation
+     * Create the base account using factory
      */
     private function createAccount(): Account
     {
-        $cid = $this->getOrGenerateCid();
-        $this->validateCidDoesNotExist($cid);
+        $attributes = $this->getAccountAttributes();
+        
+        // If user provided a specific CID, validate it doesn't exist
+        if (isset($attributes['id'])) {
+            $this->validateCidDoesNotExist($attributes['id']);
+        }
 
-        return Account::factory()->create($this->getAccountAttributes($cid));
+        return Account::factory()->create($attributes);
     }
 
     /**
      * Get account attributes for factory, using provided options or factory defaults
      */
-    private function getAccountAttributes(int $cid): array
+    private function getAccountAttributes(): array
     {
-        $attributes = ['id' => $cid, 'joined_at' => now()];
+        $attributes = ['joined_at' => now()];
 
         // Only override factory defaults if user provided explicit values
+        if ($cid = $this->option('cid')) {
+            $attributes['id'] = (int) $cid;
+        }
+
         if ($firstName = $this->option('first-name')) {
             $attributes['name_first'] = $firstName;
         }
@@ -253,27 +253,6 @@ class CreateLocalAccount extends Command
         }
 
         return $attributes;
-    }
-
-    /**
-     * Generate a valid VATSIM CID (7-digit number that doesn't exist)
-     */
-    private function generateValidCid(): int
-    {
-        // Use a more efficient approach with factory-style generation
-        $attempts = 0;
-        $maxAttempts = 100;
-
-        do {
-            $cid = fake()->numberBetween(1_000_000, 9_999_999);
-            $attempts++;
-
-            if ($attempts >= $maxAttempts) {
-                throw new \Exception('Unable to generate unique CID after multiple attempts');
-            }
-        } while (Account::find($cid));
-
-        return $cid;
     }
 
     /**
