@@ -87,11 +87,13 @@ class CreateLocalAccount extends Command
 
         if ($this->shouldListQualifications()) {
             $this->listQualifications();
+
             return 0;
         }
 
         if ($this->shouldListStates()) {
             $this->listStates();
+
             return 0;
         }
 
@@ -128,6 +130,7 @@ class CreateLocalAccount extends Command
     private function exitWithError(string $message): int
     {
         $this->error($message);
+
         return 1;
     }
 
@@ -150,10 +153,12 @@ class CreateLocalAccount extends Command
             DB::commit();
 
             $this->outputSuccessAndSummary($account);
+
             return 0;
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return $this->exitWithError("Failed to create account: {$e->getMessage()}");
         }
     }
@@ -190,7 +195,7 @@ class CreateLocalAccount extends Command
     private function processQualifications(Account $account): void
     {
         $qualifications = $this->option('qualification');
-        if (!empty($qualifications)) {
+        if (! empty($qualifications)) {
             $this->addQualifications($account, $qualifications);
         }
     }
@@ -277,8 +282,8 @@ class CreateLocalAccount extends Command
     private function addQualifications(Account $account, array $qualifications): void
     {
         collect($qualifications)
-            ->map(fn($code) => strtolower(trim($code)))
-            ->each(fn($qualCode) => $this->addSingleQualification($account, $qualCode));
+            ->map(fn ($code) => strtolower(trim($code)))
+            ->each(fn ($qualCode) => $this->addSingleQualification($account, $qualCode));
     }
 
     /**
@@ -309,6 +314,7 @@ class CreateLocalAccount extends Command
         // Try pilot qualifications
         if (isset(self::PILOT_QUALIFICATIONS[$qualCode])) {
             $vatsimValue = self::PILOT_QUALIFICATIONS[$qualCode];
+
             return Qualification::ofType('pilot')->networkValue($vatsimValue)->first();
         }
 
@@ -340,14 +346,16 @@ class CreateLocalAccount extends Command
     {
         $stateCode = strtolower(trim($stateCode));
 
-        if (!isset(self::MEMBERSHIP_STATES[$stateCode])) {
+        if (! isset(self::MEMBERSHIP_STATES[$stateCode])) {
             $this->outputStateNotFound($stateCode);
+
             return;
         }
 
         $state = State::findByCode(self::MEMBERSHIP_STATES[$stateCode]);
-        if (!$state) {
+        if (! $state) {
             $this->warn("⚠️  State '{$stateCode}' not found in database");
+
             return;
         }
 
@@ -394,12 +402,12 @@ class CreateLocalAccount extends Command
     {
         $this->info('Available ATC Qualifications:');
         collect(self::ATC_QUALIFICATIONS)
-            ->map(fn($code, $short) => [
+            ->map(fn ($code, $short) => [
                 'short' => $short,
                 'code' => $code,
-                'name' => Qualification::code($code)->first()?->name_long ?? 'Not found'
+                'name' => Qualification::code($code)->first()?->name_long ?? 'Not found',
             ])
-            ->each(fn($qual) => $this->line("  {$qual['short']} -> {$qual['code']} ({$qual['name']})"));
+            ->each(fn ($qual) => $this->line("  {$qual['short']} -> {$qual['code']} ({$qual['name']})"));
     }
 
     /**
@@ -409,11 +417,11 @@ class CreateLocalAccount extends Command
     {
         $this->info('Available Pilot Qualifications:');
         collect(self::PILOT_QUALIFICATIONS)
-            ->map(fn($vatsimValue, $short) => [
+            ->map(fn ($vatsimValue, $short) => [
                 'short' => $short,
-                'name' => Qualification::ofType('pilot')->networkValue($vatsimValue)->first()?->name_long ?? 'Not found'
+                'name' => Qualification::ofType('pilot')->networkValue($vatsimValue)->first()?->name_long ?? 'Not found',
             ])
-            ->each(fn($qual) => $this->line("  {$qual['short']} -> {$qual['name']}"));
+            ->each(fn ($qual) => $this->line("  {$qual['short']} -> {$qual['name']}"));
     }
 
     /**
@@ -423,10 +431,10 @@ class CreateLocalAccount extends Command
     {
         $this->info('Available Membership States:');
         collect(self::MEMBERSHIP_STATES)
-            ->map(fn($code, $short) => [
+            ->map(fn ($code, $short) => [
                 'short' => $short,
                 'code' => $code,
-                'state' => State::findByCode($code)
+                'state' => State::findByCode($code),
             ])
             ->each(function ($item) {
                 $state = $item['state'];
