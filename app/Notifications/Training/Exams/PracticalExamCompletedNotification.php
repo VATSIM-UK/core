@@ -35,7 +35,7 @@ class PracticalExamCompletedNotification extends Notification
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject("Practical Exam Completed - {$this->practicalResult->student->account->name} - {$this->practicalResult->exam}")
             ->view('emails.training.exams.practical_exam_completed_staff', [
-                'recipientName' => $notifiable->routes["mail"],
+                'recipientName' => $notifiable->routes['mail'],
                 'practicalResult' => $this->practicalResult,
             ]);
 
