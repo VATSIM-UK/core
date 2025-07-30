@@ -25,8 +25,8 @@ class PracticalExamResultNotificationTest extends TestCase
         $studentAccount = Account::factory()->create(['email' => 'student@example.com']);
         $examinerAccount = Account::factory()->create(['email' => 'examiner@example.com']);
 
-        $student = factory(Member::class)->create(['cid' => $studentAccount->id]);
-        $examiner = factory(Member::class)->create(['cid' => $examinerAccount->id]);
+        $student = Member::factory()->create(['cid' => $studentAccount->id]);
+        $examiner = Member::factory()->create(['cid' => $examinerAccount->id]);
 
         $examBooking = ExamBooking::factory()->create([
             'student_id' => $student->id,
@@ -73,8 +73,8 @@ class PracticalExamResultNotificationTest extends TestCase
         $studentAccount = Account::factory()->create(['email' => 'student@example.com']);
         $examinerAccount = Account::factory()->create(['email' => 'examiner@example.com']);
 
-        $student = factory(Member::class)->create(['cid' => $studentAccount->id]);
-        $examiner = factory(Member::class)->create(['cid' => $examinerAccount->id]);
+        $student = Member::factory()->create(['cid' => $studentAccount->id]);
+        $examiner = Member::factory()->create(['cid' => $examinerAccount->id]);
 
         $examBooking = ExamBooking::factory()->create([
             'student_id' => $student->id,

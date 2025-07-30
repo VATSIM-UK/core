@@ -23,7 +23,7 @@ class ExamBookingFactory extends Factory
     public function definition(): array
     {
         $account = Account::factory()->create();
-        $studentMember = factory(Member::class)->create(
+        $studentMember = Member::factory()->create(
             ['id' => $account->id, 'cid' => $account->id]
         );
 

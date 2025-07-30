@@ -40,7 +40,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.access');
 
         $student = Account::factory()->create();
-        factory(Member::class)->create(['id' => $student->id, 'cid' => $student->id]);
+        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
 
         $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $student->id]);
         $exam->examiners()->create([
@@ -62,7 +62,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.access');
 
         $student = Account::factory()->create();
-        factory(Member::class)->create(['id' => $student->id, 'cid' => $student->id]);
+        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
 
         $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $student->id]);
         $exam->examiners()->create([
@@ -84,7 +84,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.access');
 
         $student = Account::factory()->create();
-        factory(Member::class)->create(['id' => $student->id, 'cid' => $student->id]);
+        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
 
         $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $student->id]);
         $exam->examiners()->create([
@@ -106,7 +106,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.access');
 
         $student = Account::factory()->create();
-        factory(Member::class)->create(['id' => $student->id, 'cid' => $student->id]);
+        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
 
         $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $student->id]);
         $exam->examiners()->create([

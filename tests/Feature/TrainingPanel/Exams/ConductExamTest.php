@@ -28,7 +28,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     public function it_loads_if_authorised()
     {
         $account = Account::factory()->create();
-        $student = factory(Member::class)->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
@@ -125,7 +125,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     public function test_can_fill_out_comments_one_of_criteria()
     {
         $account = Account::factory()->create();
-        $student = factory(Member::class)->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
@@ -165,7 +165,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     public function test_can_change_grade_on_one_of_criteria()
     {
         $account = Account::factory()->create();
-        $student = factory(Member::class)->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
@@ -205,7 +205,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     public function test_full_end_to_end_completion_of_form_pass()
     {
         $account = Account::factory()->create();
-        $student = factory(Member::class)->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,

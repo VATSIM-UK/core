@@ -14,14 +14,14 @@ class CtsExamSeeder extends Seeder
     public function run(): void
     {
         // create 3 students
-        $students = factory(Member::class, 3)->create();
+        $students = Member::factory()->count(3)->create();
 
         $webOneCid = 1_000_000_1;
         $webOneId = $webOneCid + 2_000_000;
 
         if (! Member::find($webOneId)) {
             // add web one as a cts examiner
-            factory(Member::class)->create([
+            Member::factory()->create([
                 'id' => $webOneId,
                 'cid' => $webOneCid,
             ]);
