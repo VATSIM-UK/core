@@ -92,7 +92,21 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $commandsPath = __DIR__.'/Commands';
+
+        // Auto-detect all command directories except Development
+        if (is_dir($commandsPath)) {
+            collect(scandir($commandsPath))
+                // Reject special entries: "." (current dir), ".." (parent dir), and "Development"
+                ->reject(fn ($item) => in_array($item, ['.', '..', 'Development']))
+                ->filter(fn ($item) => is_dir($commandsPath.'/'.$item))
+                ->each(fn ($directory) => $this->load($commandsPath.'/'.$directory));
+        }
+
+        // Load development commands only in local environment
+        if (app()->environment('local')) {
+            $this->load($commandsPath.'/Development');
+        }
     }
 
     protected function bootstrappers()
