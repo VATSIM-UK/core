@@ -35,6 +35,12 @@ class WaitingListRetentionRemoval implements ShouldQueue
         $this->retentionCheck->removal_actioned_at = now();
         $this->retentionCheck->save();
 
+        if (! $this->retentionCheck->waitingListAccount) {
+            \Log::warning("WaitingListAccount not found for retention check {$this->retentionCheck->id}. Cannot remove from waiting list.");
+
+            return;
+        }
+
         $this->retentionCheck->waitingListAccount->account->notify(new RemovedFromWaitingListFailedRetention($this->retentionCheck));
 
         $account = $this->retentionCheck->waitingListAccount->account;
