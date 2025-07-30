@@ -219,7 +219,7 @@ class CreateLocalAccount extends Command
     private function createAccount(): Account
     {
         $attributes = $this->getAccountAttributes();
-        
+
         // If user provided a specific CID, validate it doesn't exist
         if (isset($attributes['id'])) {
             $this->validateCidDoesNotExist($attributes['id']);
