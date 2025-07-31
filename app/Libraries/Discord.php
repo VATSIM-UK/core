@@ -10,6 +10,8 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Event;
 
 class Discord
 {
@@ -33,106 +35,140 @@ class Discord
         $this->headers = ['Authorization' => "Bot {$this->token}"];
     }
 
+    // --- Public API ---
+
     public function grantRole(Account $account, string $role): bool
     {
         $role_id = $this->findRole($role);
-
         return $this->grantRoleById($account, $role_id);
     }
 
     public function grantRoleById(Account $account, int $role): bool
     {
-        $response = Http::withHeaders($this->headers)
-            ->put("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
+        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}";
+        $context = [
+            'action' => 'grantRoleById',
+            'account_id' => $account->id,
+            'discord_id' => $account->discord_id,
+            'role_id' => $role,
+        ];
 
-        $retry_after = $response->json()['retry_after'] ?? null;
+        $response = $this->rateLimitedRequest(
+            fn() => Http::withHeaders($this->headers)->put($endpoint),
+            $context
+        );
 
-        // discord API will return a retry field if being rate limited non-globally
-        // wait until this has passed before proceeding.
-        if ($retry_after) {
-            sleep($retry_after);
-            $this->grantRoleById($account, $role);
-        }
-
-        return $this->result($response);
+        return $this->result($response, $context);
     }
 
     public function removeRole(Account $account, string $role): bool
     {
         $role_id = $this->findRole($role);
-
-        return $this->removeRoleById($role_id);
+        return $this->removeRoleById($account, $role_id);
     }
 
     public function removeRoleById(Account $account, int $role): bool
     {
-        $response = Http::withHeaders($this->headers)
-            ->delete("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}");
+        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}/roles/{$role}";
+        $context = [
+            'action' => 'removeRoleById',
+            'account_id' => $account->id,
+            'discord_id' => $account->discord_id,
+            'role_id' => $role,
+        ];
 
-        return $this->result($response);
+        $response = $this->rateLimitedRequest(
+            fn() => Http::withHeaders($this->headers)->delete($endpoint),
+            $context
+        );
+
+        return $this->result($response, $context);
     }
 
     public function setNickname(Account $account, string $nickname): bool
     {
-        $response = Http::withHeaders($this->headers)
-            ->patch("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}",
-                [
-                    'nick' => $nickname,
-                ]
-            );
+        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}";
+        $context = [
+            'action' => 'setNickname',
+            'account_id' => $account->id,
+            'discord_id' => $account->discord_id,
+            'nickname' => $nickname,
+        ];
 
-        return $this->result($response);
+        $response = $this->rateLimitedRequest(
+            fn() => Http::withHeaders($this->headers)->patch($endpoint, ['nick' => $nickname]),
+            $context
+        );
+
+        return $this->result($response, $context);
     }
 
     public function kick(Account $account): bool
     {
-        $response = Http::withHeaders($this->headers)
-            ->delete("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}");
+        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}";
+        $context = [
+            'action' => 'kick',
+            'account_id' => $account->id,
+            'discord_id' => $account->discord_id,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn() => Http::withHeaders($this->headers)->delete($endpoint),
+            $context
+        );
 
         if ($response->status() == 404) {
+            Log::info('Discord kick: user not found, treating as success', $context);
             return true;
         }
 
-        return $this->result($response);
+        return $this->result($response, $context);
     }
 
     public function invite(Account $account): bool
     {
-        $response = Http::withHeaders($this->headers)
-            ->put("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}", [
+        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}";
+        $context = [
+            'action' => 'invite',
+            'account_id' => $account->id,
+            'discord_id' => $account->discord_id,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn() => Http::withHeaders($this->headers)->put($endpoint, [
                 'access_token' => $account->discord_access_token,
-            ]);
+            ]),
+            $context
+        );
 
         if ($response->status() > 300 && $response->json()['code'] == 30001) {
+            Log::warning('Discord invite: server limit reached', $context);
             throw new DiscordUserInviteException($response, 'You have reached your Discord server limit! You must leave a server before you can join another one');
         }
 
-        return $this->result($response);
+        return $this->result($response, $context);
     }
 
     public function getUserRoles(Account $account): Collection
     {
-        $response = Http::withHeaders($this->headers)
-            ->get("{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}");
+        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}";
+        $context = [
+            'action' => 'getUserRoles',
+            'account_id' => $account->id,
+            'discord_id' => $account->discord_id,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn() => Http::withHeaders($this->headers)->get($endpoint),
+            $context
+        );
 
         if (! $response->successful()) {
+            Log::warning('Discord getUserRoles: failed', $context + ['status' => $response->status()]);
             return collect([]);
         }
 
         return collect($response->json()['roles']);
-    }
-
-    private function findRole(string $roleName): int
-    {
-        $response = Http::withHeaders($this->headers)
-            ->get("{$this->base_url}/guilds/{$this->guild_id}/roles")->json();
-
-        $role_id = collect($response)
-            ->where('name', $roleName)
-            ->pluck('id')
-            ->first();
-
-        return (int) $role_id;
     }
 
     public function getUserInformation(Account $account)
@@ -142,26 +178,108 @@ class Discord
         }
 
         return Cache::remember($account->id.'.discord.userdata', now()->addHours(12), function () use ($account) {
-            return Http::withHeaders($this->headers)
-                ->get("{$this->base_url}/users/{$account->discord_id}")->json();
+            $endpoint = "{$this->base_url}/users/{$account->discord_id}";
+            $context = [
+                'action' => 'getUserInformation',
+                'account_id' => $account->id,
+                'discord_id' => $account->discord_id,
+            ];
+            $response = $this->rateLimitedRequest(
+                fn() => Http::withHeaders($this->headers)->get($endpoint),
+                $context
+            );
+            return $response->json();
         });
     }
 
     public function sendMessageToChannel(string $channelId, array $messageContents)
     {
-        $response = Http::withHeaders($this->headers)
-            ->post("{$this->base_url}/channels/{$channelId}/messages", $messageContents);
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages";
+        $context = [
+            'action' => 'sendMessageToChannel',
+            'channel_id' => $channelId,
+        ];
 
-        return $this->result($response);
+        $response = $this->rateLimitedRequest(
+            fn() => Http::withHeaders($this->headers)->post($endpoint, $messageContents),
+            $context
+        );
+
+        return $this->result($response, $context);
     }
 
-    protected function result(Response $response)
+    // --- Internal helpers ---
+
+    /**
+     * Handles Discord rate limits, logs, and fires events for observability.
+     */
+    protected function rateLimitedRequest(callable $requestCallback, array $context = [], int $maxAttempts = 5): Response
     {
-        if ($response->status() == 404 && $response->json()['message'] == 'Unknown Member') {
+        $attempt = 0;
+        do {
+            $response = $requestCallback();
+            $retry_after = $response->json()['retry_after'] ?? null;
+
+            if ($retry_after) {
+                $context['retry_after'] = $retry_after;
+                $context['attempt'] = $attempt + 1;
+                Log::warning('Discord rate limit hit', $context);
+                Event::dispatch('discord.rate_limited', [$context, $response]);
+                sleep((int) ceil($retry_after));
+            }
+
+            $attempt++;
+        } while ($retry_after && $attempt < $maxAttempts);
+
+        $context['attempts'] = $attempt;
+        $context['status'] = $response->status();
+
+        if ($response->failed()) {
+            Log::error('Discord API call failed', $context + ['body' => $response->json()]);
+            Event::dispatch('discord.api_failed', [$context, $response]);
+        } else {
+            Log::info('Discord API call succeeded', $context);
+            Event::dispatch('discord.api_succeeded', [$context, $response]);
+        }
+
+        return $response;
+    }
+
+    private function findRole(string $roleName): int
+    {
+        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/roles";
+        $context = [
+            'action' => 'findRole',
+            'role_name' => $roleName,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn() => Http::withHeaders($this->headers)->get($endpoint),
+            $context
+        )->json();
+
+        $role_id = collect($response)
+            ->where('name', $roleName)
+            ->pluck('id')
+            ->first();
+
+        return (int) $role_id;
+    }
+
+    /**
+     * Handles Discord API response, throws exceptions, and logs as needed.
+     */
+    protected function result(Response $response, array $context = [])
+    {
+        if ($response->status() == 404 && ($response->json()['message'] ?? '') == 'Unknown Member') {
+            Log::notice('Discord user not found', $context);
+            Event::dispatch('discord.user_not_found', [$context, $response]);
             throw new DiscordUserNotFoundException($response);
         }
 
         if ($response->status() > 300) {
+            Log::error('Discord API error', $context + ['body' => $response->json()]);
+            Event::dispatch('discord.api_error', [$context, $response]);
             throw new GenericDiscordException($response);
         }
 
