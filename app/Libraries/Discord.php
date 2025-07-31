@@ -9,9 +9,9 @@ use App\Models\Mship\Account;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Event;
 
 class Discord
 {
@@ -40,6 +40,7 @@ class Discord
     public function grantRole(Account $account, string $role): bool
     {
         $role_id = $this->findRole($role);
+
         return $this->grantRoleById($account, $role_id);
     }
 
@@ -54,7 +55,7 @@ class Discord
         ];
 
         $response = $this->rateLimitedRequest(
-            fn() => Http::withHeaders($this->headers)->put($endpoint),
+            fn () => Http::withHeaders($this->headers)->put($endpoint),
             $context
         );
 
@@ -64,6 +65,7 @@ class Discord
     public function removeRole(Account $account, string $role): bool
     {
         $role_id = $this->findRole($role);
+
         return $this->removeRoleById($account, $role_id);
     }
 
@@ -78,7 +80,7 @@ class Discord
         ];
 
         $response = $this->rateLimitedRequest(
-            fn() => Http::withHeaders($this->headers)->delete($endpoint),
+            fn () => Http::withHeaders($this->headers)->delete($endpoint),
             $context
         );
 
@@ -96,7 +98,7 @@ class Discord
         ];
 
         $response = $this->rateLimitedRequest(
-            fn() => Http::withHeaders($this->headers)->patch($endpoint, ['nick' => $nickname]),
+            fn () => Http::withHeaders($this->headers)->patch($endpoint, ['nick' => $nickname]),
             $context
         );
 
@@ -113,12 +115,13 @@ class Discord
         ];
 
         $response = $this->rateLimitedRequest(
-            fn() => Http::withHeaders($this->headers)->delete($endpoint),
+            fn () => Http::withHeaders($this->headers)->delete($endpoint),
             $context
         );
 
         if ($response->status() == 404) {
             Log::info('Discord kick: user not found, treating as success', $context);
+
             return true;
         }
 
@@ -135,7 +138,7 @@ class Discord
         ];
 
         $response = $this->rateLimitedRequest(
-            fn() => Http::withHeaders($this->headers)->put($endpoint, [
+            fn () => Http::withHeaders($this->headers)->put($endpoint, [
                 'access_token' => $account->discord_access_token,
             ]),
             $context
@@ -159,12 +162,13 @@ class Discord
         ];
 
         $response = $this->rateLimitedRequest(
-            fn() => Http::withHeaders($this->headers)->get($endpoint),
+            fn () => Http::withHeaders($this->headers)->get($endpoint),
             $context
         );
 
         if (! $response->successful()) {
             Log::warning('Discord getUserRoles: failed', $context + ['status' => $response->status()]);
+
             return collect([]);
         }
 
@@ -185,9 +189,10 @@ class Discord
                 'discord_id' => $account->discord_id,
             ];
             $response = $this->rateLimitedRequest(
-                fn() => Http::withHeaders($this->headers)->get($endpoint),
+                fn () => Http::withHeaders($this->headers)->get($endpoint),
                 $context
             );
+
             return $response->json();
         });
     }
@@ -201,7 +206,7 @@ class Discord
         ];
 
         $response = $this->rateLimitedRequest(
-            fn() => Http::withHeaders($this->headers)->post($endpoint, $messageContents),
+            fn () => Http::withHeaders($this->headers)->post($endpoint, $messageContents),
             $context
         );
 
@@ -254,7 +259,7 @@ class Discord
         ];
 
         $response = $this->rateLimitedRequest(
-            fn() => Http::withHeaders($this->headers)->get($endpoint),
+            fn () => Http::withHeaders($this->headers)->get($endpoint),
             $context
         )->json();
 
