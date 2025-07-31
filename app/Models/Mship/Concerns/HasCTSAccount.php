@@ -2,6 +2,8 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Models\Cts\Member;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -16,6 +18,7 @@ trait HasCTSAccount
      */
     public function generateCTSInternalID(int $cid): int // NOSONAR
     {
+
         if ($cid < 800000) {
             return $cid + 2000000;
         } elseif ($cid < 1323000) {
@@ -25,6 +28,17 @@ trait HasCTSAccount
         } else {
             return $cid + 2000000;
         }
+    }
+
+    /**
+     * Return the member model relating to the account.
+     * We cannot use a relationship here as the CTS member model is not in the same database connection.
+     */
+    public function member(): Attribute
+    {
+        return Attribute::make(
+            fn () => Member::where('cid', $this->id)->first(),
+        );
     }
 
     /**

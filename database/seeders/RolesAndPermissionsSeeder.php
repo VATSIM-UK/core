@@ -34,6 +34,12 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Training Panel Permissions
             'training.access',
+            'training.exams.access',
+            'training.exams.conduct.*',
+            'training.exams.conduct.obs',
+            'training.exams.conduct.twr',
+            'training.exams.conduct.app',
+            'training.exams.conduct.ctr',
 
             // Account Permissions
             'account.self',
