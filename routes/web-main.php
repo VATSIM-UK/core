@@ -149,7 +149,7 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('endorsements/gatwick')->uses('EndorsementController@getGatwickGroundIndex')->name('endorsements.gatwick_ground');
-    Route::get('endorsements/heathrow-s1')->uses('EndorsementEndorsementController@getAreaIndexController@getHeathrowGroundS1Index')->name('endorsements.heathrow_ground_s1');
+    Route::get('endorsements/heathrow-s1')->uses('EndorsementController@getHeathrowGroundS1Index')->name('endorsements.heathrow_ground_s1');
 });
 
 // Network data
