@@ -16,8 +16,8 @@ class TeamspeakManagementTest extends TestCase
     #[Test]
     public function test_user_can_delete_own_registration()
     {
-        $this->followingRedirects()->actingAs($this->registration->account)
-            ->get(route('teamspeak.delete', $this->registration))
+        $this->from(route('mship.manage.dashboard'))->followingRedirects()->actingAs($this->registration->account)
+            ->get(route('teamspeak.delete', ['mshipRegistration' => $this->registration->id]))
             ->assertSuccessful();
     }
 

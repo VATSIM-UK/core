@@ -18,6 +18,7 @@ The following is an abbreviated guide to get started quickly.
 Install the Composer dependencies and create an environment file by copying the example (`.env.example`).
 ```shell
 composer install
+composer install-hooks
 cp .env.example .env
 ```
 
