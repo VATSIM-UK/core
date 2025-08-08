@@ -8,6 +8,7 @@ enum RemovalReason: string
     case Request = 'requested_removal';
     case Inactivity = 'member_inactive';
     case NonHome = 'member_non_home';
+    case FailedRetention = 'failed_retention_check';
     case Other = 'other';
 
     public function label(): string
@@ -17,6 +18,7 @@ enum RemovalReason: string
             self::Request => 'Member requested removal',
             self::Inactivity => 'Member inactive',
             self::NonHome => 'Member is not a home member',
+            self::FailedRetention => 'Member failed retention check',
             self::Other => 'Other (please specify)',
         };
     }

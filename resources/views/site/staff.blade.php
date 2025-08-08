@@ -64,7 +64,7 @@
                     <table class="table">
                         <tr>
                             <td>Deputy Operations Director</td>
-                            <td>Peter Mooney</td>
+                            <td><em>Vacant</em></td>
                         </tr>
                         <tr>
                             <td>Enroute Operations Coordinator</td>
@@ -84,7 +84,7 @@
                         </tr>
                         <tr>
                             <td>Events Manager</td>
-                            <td>Luke Thompson</td>
+                            <td>James Bayliss-de-Gruchy</td>
                         </tr>
                         <tr>
                             <td>Events Assistant</td>
@@ -92,7 +92,7 @@
                         </tr>
                         <tr>
                             <td>Events Assistant</td>
-                            <td>James Bayliss-de-Gruchy</td>
+                            <td><em>Vacant</em></td>
                         </tr>
                         <tr>
                             <td>Operations Assistant</td>
@@ -169,11 +169,15 @@
                         </tr>
                         <tr>
                             <td>Outreach Assistant</td>
-                            <td>Thomas Hallam</td>
+                            <td>Callum Hicks</td>
                         </tr>
                         <tr>
                             <td>Outreach Assistant</td>
-                            <td><em>Vacant</em></td>
+                            <td>Charles Newman</td>
+                        </tr>
+                        <tr>
+                            <td>Outreach Assistant</td>
+                            <td>1670702</td>
                         </tr>
                         <tr>
                             <td>Community Assistant</td>
@@ -253,7 +257,7 @@
                                 <td>James Taylor</td>
                             </tr>
                             <tr>
-                                <td>Lead Mentor (New Controller)</td>
+                                <td>TG Instructor (New Controller)</td>
                                 <td>Stephen Lee</td>
                             </tr>
                             <tr>
@@ -262,7 +266,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
-                                <td>Samuel Lefevre</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (ENR) & <br />
@@ -278,16 +282,16 @@
 
                     <div class="col-md-6">
                         <h4 class="text-center">Pilot Training Director (VATUK6)</h4><br />
-                        <p class="text-center">Darren Hill</p>
+                        <p class="text-center"><em>Vacant</em></p>
                         <h4 class="text-center">Pilot Training Team</h4>
                         <table class="table">
                             <tr>
                                 <td>Pilot Training Manager</td>
-                                <td><em>Vacant</em></td>
+                                <td>Lewis Hammett</td>
                             </tr>
                             <tr>
                                 <td>Initial Flight Instructor</td>
-                                <td>Cole Edwards</td>
+                                <td>Riley Casement</td>
                             </tr>
                             <tr>
                                 <td>VFR Flight Instructor</td>
