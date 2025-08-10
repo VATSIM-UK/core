@@ -118,7 +118,7 @@ jobs:
         run: php artisan serve -q &
 
       - name: Execute PHPUnit Tests
-        run: vendor/bin/phpunit
+        run: php artisan test
 
   trigger-deploy:
     name: Trigger Deploy
