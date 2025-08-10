@@ -3,7 +3,7 @@
 namespace App\Jobs\Training;
 
 use App\Models\Training\WaitingList\WaitingListAccount;
-use App\Notifications\Training\WaitingListRetentionCheckNotification;
+use App\Notifications\Training\WaitingListRetentionCheckAccountNotification;
 use App\Services\Training\WaitingListRetentionChecks as WaitingListRetentionChecksService;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -37,7 +37,7 @@ class SendWaitingListRetentionCheck implements ShouldQueue
         $retentionCheck = WaitingListRetentionChecksService::createRetentionCheckRecord($this->waitingListAccount);
 
         try {
-            $this->waitingListAccount->account->notify(new WaitingListRetentionCheckNotification($retentionCheck));
+            $this->waitingListAccount->account->notify(new WaitingListRetentionCheckAccountNotification($retentionCheck));
         } catch (Exception $e) {
             Log::error("Failed to notify account {$this->waitingListAccount->account->id} of retention check {$retentionCheck->id}: {$e->getMessage()}");
             DB::rollBack();

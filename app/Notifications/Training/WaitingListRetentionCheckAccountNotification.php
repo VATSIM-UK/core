@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notification;
  * This is deliberately not queued, as the processes dispatching this notification
  * are already a queueable job.
  */
-class WaitingListRetentionCheckNotification extends Notification
+class WaitingListRetentionCheckAccountNotification extends Notification
 {
     public function __construct(public WaitingListRetentionCheck $retentionCheck)
     {

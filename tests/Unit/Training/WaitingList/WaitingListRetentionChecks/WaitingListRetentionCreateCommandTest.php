@@ -5,7 +5,7 @@ namespace Tests\Unit\Training\WaitingList\WaitingListRetentionChecks;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
-use App\Notifications\Training\WaitingListRetentionCheckNotification;
+use App\Notifications\Training\WaitingListRetentionCheckAccountNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
@@ -59,6 +59,6 @@ class WaitingListRetentionCreateCommandTest extends TestCase
             'waiting_list_account_id' => $waitingListAccount->id,
             'status' => WaitingListRetentionCheck::STATUS_PENDING,
         ]);
-        Notification::assertSentTo($account, WaitingListRetentionCheckNotification::class);
+        Notification::assertSentTo($account, WaitingListRetentionCheckAccountNotification::class);
     }
 }
