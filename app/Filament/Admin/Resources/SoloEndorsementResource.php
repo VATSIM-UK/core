@@ -42,7 +42,7 @@ class SoloEndorsementResource extends Resource
                 Tables\Columns\TextColumn::make('account.id')->label('CID'),
                 Tables\Columns\TextColumn::make('account.name')->label('Account'),
                 Tables\Columns\TextColumn::make('endorsable.description')->label('Position'),
-                Tables\Columns\TextColumn::make('duration')->getStateUsing(fn ($record) => $record->expires_at->diffInDays($record->created_at).' days')->label('Duration'),
+                Tables\Columns\TextColumn::make('duration')->getStateUsing(fn ($record) => $record->created_at->diffInDays($record->expires_at).' days')->label('Duration'),
                 Tables\Columns\TextColumn::make('created_at')->label('Started At')->isoDateTimeFormat('lll'),
                 Tables\Columns\TextColumn::make('expires_at')->label('Expires At')->isoDateTimeFormat('lll')->sortable(),
                 Tables\Columns\TextColumn::make('status')->label('Status')->badge()
