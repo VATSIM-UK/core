@@ -76,13 +76,6 @@
                                 <li><a href="{{ route('site.atc.heathrow') }}">Heathrow</a></li>
                             </ul>
                         </li>
-                        <li class="col-sm-12">
-                            <ul>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Hour Checker</li>
-                                <li><a href="{{ route('controllers.hour_check.area') }}">C1 Training Place</a></li>
-                            </ul>
-                        </li>
                     </ul>
                 </li>
 
@@ -126,8 +119,6 @@
                                 <li><a href="{{ route('site.policy.division') }}">Division Policy</a></li>
                                 <li><a href="{{ route('site.policy.atc-training') }}">ATC Training Policy</a></li>
                                 <li><a href="{{ route('site.policy.visiting-and-transferring') }}">Visiting & Transferring Policy</a></li>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Web Policy</li>
                                 <li><a href="{{ route('site.policy.terms') }}">Terms & Conditions</a></li>
                                 <li><a href="{{ route('site.policy.privacy') }}">Privacy Policy</a></li>
                                 <li><a href="{{ route('site.policy.data-protection') }}">Data Protection Policy</a></li>
