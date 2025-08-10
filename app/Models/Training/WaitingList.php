@@ -89,7 +89,7 @@ class WaitingList extends Model
 
     public $table = 'training_waiting_list';
 
-    protected $fillable = ['name', 'slug', 'department', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours', 'max_capacity'];
+    protected $fillable = ['name', 'slug', 'department', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours', 'max_capacity', 'retention_checks_enabled', 'retention_checks_months'];
 
     const ATC_DEPARTMENT = 'atc';
 
@@ -110,6 +110,8 @@ class WaitingList extends Model
         'self_enrolment_hours_at_qualification_id' => 'integer',
         'self_enrolment_hours_at_qualification_minimum_hours' => 'integer',
         'max_capacity' => 'integer',
+        'retention_checks_enabled' => 'boolean',
+        'retention_checks_months' => 'integer',
     ];
 
     /**
@@ -343,6 +345,14 @@ class WaitingList extends Model
         }
 
         return max(0, $this->max_capacity - $this->getCurrentCapacity());
+    }
+
+    /**
+     * Scope a query to only include waiting lists with retention checks enabled.
+     */
+    public function scopeWithRetentionChecksEnabled($query)
+    {
+        return $query->where('retention_checks_enabled', true);
     }
 
     public function __toString()
