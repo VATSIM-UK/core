@@ -50,4 +50,30 @@ class WaitingListRetentionChecksServiceTest extends TestCase
             'email_sent_at' => null,
         ]);
     }
+
+    #[Test]
+    public function it_marks_a_retention_check_as_expired()
+    {
+        $retentionCheck = WaitingListRetentionCheck::factory()->create([
+            'status' => WaitingListRetentionCheck::STATUS_PENDING,
+        ]);
+
+        $retentionCheck = WaitingListRetentionChecksService::markRetentionCheckAsExpired($retentionCheck);
+
+        $this->assertEquals(WaitingListRetentionCheck::STATUS_EXPIRED, $retentionCheck->status);
+        $this->assertNotNull($retentionCheck->removal_actioned_at);
+    }
+
+    #[Test]
+    public function it_marks_a_retention_check_as_used()
+    {
+        $retentionCheck = WaitingListRetentionCheck::factory()->create([
+            'status' => WaitingListRetentionCheck::STATUS_PENDING,
+        ]);
+
+        $retentionCheck = WaitingListRetentionChecksService::markRetentionCheckAsUsed($retentionCheck);
+
+        $this->assertEquals(WaitingListRetentionCheck::STATUS_USED, $retentionCheck->status);
+        $this->assertNotNull($retentionCheck->response_at);
+    }
 }

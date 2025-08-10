@@ -35,7 +35,17 @@ class WaitingListRetentionChecks
             'removal_actioned_at' => now(),
         ]);
 
-        return $retentionCheck;
+        return $retentionCheck->fresh();
+    }
+
+    public static function markRetentionCheckAsUsed(WaitingListRetentionCheckModel $retentionCheck): WaitingListRetentionCheckModel
+    {
+        $retentionCheck->update([
+            'status' => WaitingListRetentionCheckModel::STATUS_USED,
+            'response_at' => now(),
+        ]);
+
+        return $retentionCheck->fresh();
     }
 
     /**
