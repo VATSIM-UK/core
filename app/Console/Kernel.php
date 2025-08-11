@@ -73,9 +73,13 @@ class Kernel extends ConsoleKernel
             ->twiceDaily(2, 14)
             ->graceTimeInMinutes(15);
 
-        // $schedule->command('waiting-lists:send-retention-checks')
-        //     ->cron('0 */72 * * *') // Every 72 hours
-        //     ->graceTimeInMinutes(15);
+        $schedule->command('waiting-lists:create-retention-checks')
+            ->dailyAt('07:00')
+            ->graceTimeInMinutes(15);
+
+        $schedule->command('waiting-lists:check-for-expired-retention-checks')
+            ->dailyAt('07:30')
+            ->graceTimeInMinutes(15);
 
         // === By Quarter === //
         $schedule->command('roster:update', [
