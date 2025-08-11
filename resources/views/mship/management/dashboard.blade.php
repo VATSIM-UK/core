@@ -423,7 +423,7 @@
                         <div class="col-xs-12">
                             @if($_account->discord_id)
                                 Currently registered with Discord
-                                ID {{ $_account->discord_user ? $_account->discord_user['username'].'#'.$_account->discord_user['discriminator'] : $_account->discord_id }}
+                                ID {{ $_account->discord_user ? $_account->discord_user['username'] : $_account->discord_id }}
                                 . <br/>
                                 <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
                             @else
