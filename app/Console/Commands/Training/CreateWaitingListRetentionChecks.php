@@ -48,6 +48,12 @@ class CreateWaitingListRetentionChecks extends Command
 
                 $mostRecentRetentionCheck = $retentionChecks->sortByDesc('created_at')->first();
 
+                if (! $mostRecentRetentionCheck) {
+                    // If there are no retention checks, and it hasn't been 3 months since the account was added to the waiting list,
+                    // we don't need to create a new retention check.
+                    continue;
+                }
+
                 /**
                  * If the most recent retention check is older than the retention checks in months,
                  * determined by when the account was added to the waiting list,
