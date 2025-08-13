@@ -165,6 +165,13 @@
                         @endif
                     </a>
                 </li>
+                @if(Auth::user()->can('training.access'))
+                <li class="dropdown dropdown-large">
+                    <a href="{{ route('filament.training.pages.dashboard') }}" title="Training Dashboard">
+                        <i class="fa fa-graduation-cap"></i>
+                    </a>
+                </li>
+                @endif
                 @if(Auth::user()->can('admin.access'))
                 <li class="dropdown dropdown-large">
                     <a href="{{ route('filament.app.pages.dashboard') }}" title="Admin Dashboard">
