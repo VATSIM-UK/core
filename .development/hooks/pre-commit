@@ -1,8 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Pre-commit hook to run composer lint
 # This will run Laravel Pint to check code style before committing
 #
+
+source ~/.bashrc
 
 echo "Running composer lint..."
 
