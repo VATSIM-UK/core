@@ -9,9 +9,16 @@ for arg in "$@"; do
     [[ $arg == "--force" ]] && force=true
 done
 
-if ! ln -s test.txt test.txt 2>/dev/null || ! ls -l test.txt | grep -q '^l'; then
+# Test if symlinks are supported (clean up after test)
+tmp_src="$(mktemp -t symlink_test_src.XXXXXX 2>/dev/null || echo ".symlink_test_src_$$")"
+echo "" > "$tmp_src"
+tmp_link="${tmp_src}_link"
+
+if ! ln -s "$tmp_src" "$tmp_link" 2>/dev/null || [ ! -L "$tmp_link" ]; then
     echo "⚠️ Symlinks are not supported in this environment. File contents will be copied instead of symlinks."
 fi
+
+rm -f "$tmp_src" "$tmp_link"
 
 
 echo "⚙️ Installing git hooks..."
