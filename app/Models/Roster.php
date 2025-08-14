@@ -94,12 +94,6 @@ class Roster extends Model
             ->whereDoesntHave('membershipEndorsement', fn ($query) => $query->where('account_id', $this->account->id))
             ->get();
 
-        \Log::debug('Assigned position groups with position', [
-            'account_id' => $this->account->id,
-            'position_id' => $position->id,
-            'assigned_position_groups' => $assignedPositionGroupsWithPosition->pluck('id'),
-            'unassigned_position_groups' => $unassignedPositionGroupsWithPosition->pluck('id'),
-        ]);
         $checkPositionForPositionGroup = function (PositionGroupPosition $positionGroupPosition) {
             // If the position is part of a group,
             // a) are they a home member with a rating above the position's maximum?
