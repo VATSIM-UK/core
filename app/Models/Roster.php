@@ -94,6 +94,13 @@ class Roster extends Model
             ->whereDoesntHave('membershipEndorsement', fn ($query) => $query->where('account_id', $this->account->id))
             ->get();
 
+        \Log::debug('Assigned position groups with position', [
+            'account_id' => $this->account->id,
+            'position_id' => $position->id,
+            'assigned_position_groups' => $assignedPositionGroupsWithPosition->pluck('id'),
+            'unassigned_position_groups' => $unassignedPositionGroupsWithPosition->pluck('id'),
+        ]);
+
         $checkPositionForPositionGroup = function (PositionGroupPosition $positionGroupPosition) {
             // If the position is part of a group,
             // a) are they a home member with a rating above the position's maximum?
@@ -137,11 +144,16 @@ class Roster extends Model
         /** Check any unassigned position groups have a maximum atc qualification
          * if so, check if the account has a rating above the maximum specified
          * qualification and if so, they are entitled to control even if the
-         * position group hasn't been endorsed to that member. */
+         * position group hasn't been endorsed to that member. This does not
+         * apply to visiting and transfering controllers */
         $unassignedPositionGroupsWithPositionWithMaxRating = $unassignedPositionGroupsWithPosition->filter(fn ($positionGroup) => isset($positionGroup->maximumAtcQualification));
         if ($unassignedPositionGroupsWithPositionWithMaxRating->count() > 0) {
             return $unassignedPositionGroupsWithPosition->some(
                 function (PositionGroup $positionGroup) use ($position) {
+                    if ($this->account->hasState('VISITING') || $this->account->hasState('TRANSFERRING')) {
+                        return false;
+                    }
+
                     $positionGroupPosition = $positionGroup->positions->where('id', $position->id)->first()->pivot;
 
                     return $this->account->qualification_atc->vatsim > $positionGroupPosition->positionGroup->maximumAtcQualification->vatsim;
