@@ -157,8 +157,7 @@
             "./vendor/bin/pint"
         ],
         "install-hooks": [
-            "chmod +x .development/hooks/install.sh",
-            "bash .development/hooks/install.sh"
+            "chmod +x .development/hooks/install.sh && bash .development/hooks/install.sh \"$@\""
         ]
     },
     "config": {
