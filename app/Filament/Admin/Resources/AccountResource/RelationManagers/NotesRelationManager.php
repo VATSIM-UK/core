@@ -43,7 +43,7 @@ class NotesRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        $usableTypes = Type::usable()->pluck('name', 'id');
+        $usableTypes = Type::usable()->orderBy('name')->pluck('name', 'id');
 
         return $form
             ->schema([

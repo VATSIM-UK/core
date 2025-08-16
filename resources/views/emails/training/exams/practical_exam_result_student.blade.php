@@ -5,7 +5,7 @@
 Your {{ $examType }} practical exam has been completed and the result is now available.
 </p>
 
-<div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+<div>
     <h3 style="margin-top: 0; color: #333;">Exam Result: <strong>{{ $result }}</strong></h3>
 </div>
 
@@ -20,7 +20,7 @@ Your {{ $examType }} practical exam has been completed and the result is now ava
 @if($practicalResult->notes)
 <h4>Examiner Comments:</h4>
 <div style="background-color: #f8f9fa; padding: 10px; border-radius: 3px; margin: 10px 0;">
-    {{ $practicalResult->notes }}
+    {!! $practicalResult->notes !!}
 </div>
 @endif
 

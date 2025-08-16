@@ -5,7 +5,7 @@ namespace App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WaitingListRetentionChecks extends Model
+class WaitingListRetentionCheck extends Model
 {
     use HasFactory;
 
@@ -24,6 +24,7 @@ class WaitingListRetentionChecks extends Model
         'response_at',
         'status',
         'email_sent_at',
+        'removal_actioned_at',
     ];
 
     protected function casts(): array
