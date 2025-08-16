@@ -18,7 +18,7 @@ class AccountFactory extends Factory
     public function definition()
     {
         return [
-            'id' => rand(10000000, 99999999),
+            'id' => rand(100_000, 9999999),
             'name_first' => fake()->firstName,
             'name_last' => fake()->lastName,
             'email' => fake()->email,
