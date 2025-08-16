@@ -1,6 +1,7 @@
 <?php
 
 // Dashboard
+
 Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('landing');
 
 // Authentication
@@ -94,6 +95,9 @@ Route::group([
     });
 });
 
+// Waiting Lists - Retention (No authentication required)
+Route::get('mship/waiting-lists/retention')->uses('Mship\WaitingLists@getRetentionWithToken')->name('mship.waiting-lists.retention.token');
+
 Route::get('atcfb', function () {
     return redirect()
         ->route('mship.feedback.new.form', [
@@ -148,7 +152,6 @@ Route::group([
 ], function () {
     Route::get('endorsements/gatwick')->uses('EndorsementController@getGatwickGroundIndex')->name('endorsements.gatwick_ground');
     Route::get('endorsements/heathrow-s1')->uses('EndorsementController@getHeathrowGroundS1Index')->name('endorsements.heathrow_ground_s1');
-    Route::get('hour-check/area')->uses('EndorsementController@getAreaIndex')->name('hour_check.area');
 });
 
 // Network data

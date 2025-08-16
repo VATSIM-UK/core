@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Pre-commit hook to run composer lint
+# This will run Laravel Pint to check code style before committing
+#
+
+echo "Running composer lint..."
+
+# Run composer lint
+if ! composer lint; then
+    echo ""
+    echo "❌ Code style check failed!"
+    echo "Please fix the style issues above before committing."
+    echo "You can run 'composer lint' to see the issues."
+    echo ""
+    exit 1
+fi
+
+echo "✅ Code style check passed!"
+exit 0
