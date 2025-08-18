@@ -20,5 +20,5 @@ class Exams extends Model
     public function examiner()
     {
         return $this->belongsTo(Member::class, 'exmr_id', 'id');
-    }  
+    }
 }
