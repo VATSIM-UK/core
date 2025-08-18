@@ -2,14 +2,14 @@
 
 namespace Database\Factories\Training\WaitingList;
 
-use App\Models\Training\WaitingList\WaitingListRetentionChecks;
+use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
-class WaitingListRetentionChecksFactory extends Factory
+class WaitingListRetentionCheckFactory extends Factory
 {
-    protected $model = WaitingListRetentionChecks::class;
+    protected $model = WaitingListRetentionCheck::class;
 
     public function definition(): array
     {

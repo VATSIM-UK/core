@@ -83,7 +83,6 @@ Route::group([
     ], function () {
         Route::get('')->uses('WaitingLists@index')->name('index');
         Route::post('self-enrol/{waitingList}')->uses('WaitingLists@selfEnrol')->name('self-enrol');
-        Route::get('retention')->uses('WaitingLists@getRetentionWithToken')->name('retention.token');
     });
 
     // Other
@@ -95,6 +94,9 @@ Route::group([
         Route::post('notification/acknowledge/{sysNotification}')->uses('Notification@postAcknowledge')->name('notification.acknowledge');
     });
 });
+
+// Waiting Lists - Retention (No authentication required)
+Route::get('mship/waiting-lists/retention')->uses('Mship\WaitingLists@getRetentionWithToken')->name('mship.waiting-lists.retention.token');
 
 Route::get('atcfb', function () {
     return redirect()

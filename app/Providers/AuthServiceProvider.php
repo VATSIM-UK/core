@@ -8,7 +8,7 @@ use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingList\WaitingListRetentionChecks;
+use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use App\Models\VisitTransfer;
 use App\Policies\FeedbackPolicy;
 use App\Policies\Mship\Account\BanPolicy;
@@ -52,7 +52,7 @@ class AuthServiceProvider extends ServiceProvider
         Ban::class => BanPolicy::class,
         Role::class => RolePolicy::class,
         Note::class => NotePolicy::class,
-        WaitingListRetentionChecks::class => WaitingListRetentionChecksPolicy::class,
+        WaitingListRetentionCheck::class => WaitingListRetentionChecksPolicy::class,
     ];
 
     /**

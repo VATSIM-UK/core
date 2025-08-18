@@ -9,6 +9,7 @@ use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -100,6 +101,11 @@ class WaitingListAccount extends Model
     public function addFlag(WaitingListFlag $listFlag, $value = null)
     {
         return $this->flags()->attach($listFlag, ['marked_at' => $value]);
+    }
+
+    public function retentionChecks(): HasMany
+    {
+        return $this->hasMany(WaitingListRetentionCheck::class, 'waiting_list_account_id');
     }
 
     /**
