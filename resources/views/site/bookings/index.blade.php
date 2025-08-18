@@ -17,66 +17,6 @@
     ];
 @endphp
 
-<style>
-    .calendar {
-        width: 100%;
-        max-width: 850px;
-        margin: 0 auto;
-        border-collapse: collapse;
-        table-layout: fixed;
-    }
-    .calendar th, .calendar td {
-        width: 14.28%;
-        height: 100px;
-        text-align: center;
-        font-weight: bold;
-        vertical-align: top;
-        padding: 5px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-    }
-    .bg-gray-100 { background-color: #f0f0f0; }
-    .booking-entry {
-        cursor: pointer;
-        text-decoration: none;
-        font-size: 15px;
-        margin-top: 5px;
-    }
-    .booking-entry:hover {
-        text-decoration: underline;
-    }
-    .today-cell {
-        background-color: #FFFFCC !important;
-        border: 2px solid #FFCC00 !important;
-    }
-    .booking { padding: 4px; border: 2px solid transparent; border-radius: 4px; }
-    .booking-mentoring { color: #7429C7; border-color: #7429C7; }
-    .booking-event { color: #FF0000; border-color: #FF0000; }
-    .booking-exam { color: #993300; border-color: #993300; }
-    .tooltip-container { position: relative; display: inline-block; }
-    .tooltip-content {
-        display: none;
-        position: absolute;
-        z-index: 10;
-        left: 100%;
-        top: 0;
-        min-width: 250px;
-        background: #fff;
-        color: #222;
-        border: 1px solid #888;
-        border-radius: 6px;
-        padding: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        white-space: normal;
-        font-size: 13px;
-    }
-    .tooltip-container:hover .tooltip-content,
-    .tooltip-container:focus-within .tooltip-content {
-        display: block;
-    }
-    .no-x-overflow { overflow-x: visible !important; }
-</style>
-
 <div class="col-md-8 col-md-offset-2">
     <div class="panel panel-ukblue">
         <div class="panel-heading">
@@ -132,12 +72,29 @@
                                                         $bookingTypeClass = 'booking-event';
                                                     } elseif ($booking->isExam()) {
                                                         $bookingTypeClass = 'booking-exam';
+                                                    } else {
+                                                        $bookingTypeClass = 'booking';
                                                     }
                                                     $fromTime = Carbon::parse($booking->from)->format('H:i');
                                                     $toTime = Carbon::parse($booking->to)->format('H:i');
                                                     $tooltipHtml = !$booking->isEvent() ? view('site.bookings.partials.tooltip', compact('booking', 'dayDate', 'fromTime', 'toTime'))->render() : null;
+                                                    // Decide a normalized kind for filtering
+                                                    $kind = 'normal';
+                                                    if ($booking->isEvent()) {
+                                                        $kind = 'event';
+                                                    } elseif ($booking->isExam()) {
+                                                        $kind = 'exam';
+                                                    } elseif ($booking->isMentoring()) {
+                                                        $kind = 'mentoring';
+                                                    } elseif (strtolower($booking->type ?? '') === 'seminar') {
+                                                        $kind = 'seminar';
+                                                    }
                                                 @endphp
-                                                <div class="tooltip-container booking-entry booking-{{ strtolower($booking->type) }} {{ $rowClass }} {{ $bookingTypeClass }}" tabindex="0">
+                                                <div class="tooltip-container booking-entry booking-{{ strtolower($booking->type) }} {{ $rowClass }} {{ $bookingTypeClass }}
+                                                    "@if(Auth::check() && $booking->user_id === Auth::id())
+                                                        border-4
+                                                    @endif"
+                                                    tabindex="0" data-kind="{{ $kind }}">
                                                     📌 {{ strtoupper($booking->position) ?? 'Booking' }}<br>
                                                     🕒 {{ $fromTime }} - {{ $toTime }}
                                                     @if(!$booking->isEvent())
@@ -158,40 +115,109 @@
         </div>
     </div>
 </div>
+
 <div class="col-md-8 col-md-offset-2 mt-4">
     <div class="panel panel-ukblue">
         <div class="panel-heading">
-            <i class="fa fa-list"></i> &thinsp; Legend
+            <i class="fa fa-list"></i> &thinsp; Calendar Legend / Filter
         </div>
         <div class="panel-body">
-            <div class="d-flex flex-wrap gap-3">
-                <span class="booking booking-mentoring bg-blue-100 border-blue-400 px-3 py-1 rounded-pill">
-                    Mentoring
-                </span>
-                <span class="booking booking-event bg-red-100 border-red-400 px-3 py-1 rounded-pill">
-                    Event
-                </span>
-                <span class="booking booking-exam bg-yellow-100 border-yellow-400 px-3 py-1 rounded-pill">
-                    Exam
-                </span>
-                <span class="booking bg-gray-100 border-gray-300 px-3 py-1 rounded-pill">
-                    Normal Booking
-                </span>
-            </div>
-        </div>
-    </div>
-</div>
+            <table class="table table-bordered table-sm legend-table" style="font-size: 14px;">
+                <tbody>
+                    <tr>
+                        <td style="width: 40px; background-color: #336633;"></td>
+                        <td><strong>Booking</strong></td>
+                        <td>
+                            <label>
+                                <input type="checkbox" data-filter="normal" checked>
+                                Position booking
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #7429C7;"></td>
+                        <td><strong>Mentoring</strong></td>
+                        <td>
+                            <label>
+                                <input type="checkbox" data-filter="mentoring" checked>
+                                Confirmed session
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #FFA500;"></td>
+                        <td><strong>Seminar</strong></td>
+                        <td>
+                            <label>
+                                <input type="checkbox" data-filter="seminar" checked>
+                                Confirmed seminar
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #993300;"></td>
+                        <td><strong>Exam</strong></td>
+                        <td>
+                            <label>
+                                <input type="checkbox" data-filter="exam" checked>
+                                Confirmed exam
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #FF0000;"></td>
+                        <td><strong>Event</strong></td>
+                        <td>
+                            <label>
+                                <input type="checkbox" data-filter="event" checked>
+                                Event position
+                            </label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-<div class="col-md-8 col-md-offset-2">
-    <div class="panel panel-ukblue">
-        <div class="panel-heading">
-            <i class="fa fa-cog"></i> &thinsp; Bookings Calendar
-        </div>
-        <div class="panel-body">
-            <p>
-                The bookings calendar shows the availability of our controllers for bookings. You can navigate through the months using the links below.
-            </p>
+{{--             <div class="mt-3">
+                <label><input type="checkbox" id="filter-old"> Display old bookings</label>
+                &nbsp;&nbsp;
+                <label><input type="checkbox" id="filter-home"> Display only home TG positions</label>
+                <br>
+                <label><input type="checkbox" id="filter-today-old"> Hide today's old bookings</label>
+            </div>
+
+            <div class="mt-3">
+                <label for="order">Search Order:</label>
+                <select id="order" name="order" class="form-control form-control-sm d-inline-block" style="width: auto;">
+                    <option value="time">Time booked</option>
+                    <option value="type">Type</option>
+                    <option value="position">Position</option>
+                </select>
+            </div> --}}
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"][data-filter]'));
+    const bookings = () => Array.from(document.querySelectorAll('.booking-entry'));
+
+    function applyTypeFilters() {
+        const allowed = new Set(
+            checkboxes.filter(cb => cb.checked).map(cb => cb.getAttribute('data-filter'))
+        );
+
+        bookings().forEach(el => {
+            const kind = el.getAttribute('data-kind') || 'normal';
+            el.style.display = allowed.has(kind) ? '' : 'none';
+        });
+    }
+
+    // Watch for changes
+    checkboxes.forEach(cb => cb.addEventListener('change', applyTypeFilters));
+
+    // Run once on load
+    applyTypeFilters();
+});
+</script>
+
 @stop

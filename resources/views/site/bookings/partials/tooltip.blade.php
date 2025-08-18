@@ -63,7 +63,6 @@ $timeBooked = formatDate($booking->time_booked);
         <p>Requested on: <strong>{{ $requestTime }}</strong></p>
         <br>
         <p>Examiner: <strong>{{ $examiner }}</strong></p>
-        <p>Accepted on: <strong>{{ $takenTime }}</strong></p>
     @elseif($showMentor)
         <p>Requested on: <strong>{{ $requestTime }}</strong></p>
         <br>
