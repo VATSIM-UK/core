@@ -158,15 +158,26 @@
         </div>
     </div>
 </div>
-<div class="col-md-8 col-md-offset-2">
+<div class="col-md-8 col-md-offset-2 mt-4">
     <div class="panel panel-ukblue">
         <div class="panel-heading">
-            <i class="fa fa-cog"></i> &thinsp; Bookings Calendar
+            <i class="fa fa-list"></i> &thinsp; Legend
         </div>
         <div class="panel-body">
-            <p>
-                The bookings calendar shows the availability of our controllers for bookings. You can navigate through the months using the links below.
-            </p>
+            <div class="d-flex flex-wrap gap-3">
+                <span class="booking booking-mentoring bg-blue-100 border-blue-400 px-3 py-1 rounded-pill">
+                    Mentoring
+                </span>
+                <span class="booking booking-event bg-red-100 border-red-400 px-3 py-1 rounded-pill">
+                    Event
+                </span>
+                <span class="booking booking-exam bg-yellow-100 border-yellow-400 px-3 py-1 rounded-pill">
+                    Exam
+                </span>
+                <span class="booking bg-gray-100 border-gray-300 px-3 py-1 rounded-pill">
+                    Normal Booking
+                </span>
+            </div>
         </div>
     </div>
 </div>

@@ -18,5 +18,5 @@ class Session extends Model
     public function mentor()
     {
         return $this->belongsTo(Member::class, 'mentor_id', 'id');
-    }  
+    }
 }
