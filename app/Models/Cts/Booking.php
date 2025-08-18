@@ -72,6 +72,6 @@ class Booking extends Model
 
     public function exams()
     {
-        return $this->belongsTo(\App\Models\Cts\ExamBooking::class, 'type_id', 'id');
+        return $this->belongsTo(\App\Models\Cts\Exams::class, 'type_id', 'id');
     }      
 }

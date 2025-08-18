@@ -91,6 +91,28 @@ class BookingRepository
                 ];
             }
 
+            if ($booking->type === 'EX' && $booking->exams) {
+                $examinerName = 'Unknown';
+
+                // Safely get mentor name and ID
+                if ($booking->exams->mentor) {
+                    $examinerName = $booking->exams->examiner->name.' ('.$booking->exams->examiner->cid.')';
+                }
+
+                $booking->exams_details = [
+                    'id' => $booking->exams->id,
+                    'position' => $booking->exams->position,
+                    'student_id' => $booking->exams->student_id,
+                    'exmr_id' => $booking->exams->exmr_id,
+                    'examiner' => $examinerName,
+                    'date' => $booking->exams->date_1,
+                    'from' => $booking->exams->from_1,
+                    'to' => $booking->exams->to_1,
+                    'time_book' => $booking->exams->time_book,
+                    'taken_time' => $booking->exams->time_taken,
+                ];
+            }
+
             return $booking;
         });
 

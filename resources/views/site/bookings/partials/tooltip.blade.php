@@ -11,35 +11,41 @@ if (!function_exists('formatDate')) {
 $displayType = 'Position Booking';
 $displayName = $booking->member ? $booking->member->name : 'Unknown';
 $bookedLabel = 'Booked on';
-$sessionRoles = []; // Will hold dynamic roles (mentor, examiner, etc.)
+$showMentor = false;
+$showExaminer = false;
+$mentor = 'N/A';
+$examiner = 'N/A';
 $requestTime = 'N/A';
 $takenTime = 'N/A';
 
-// Handle session types dynamically
-if ($booking->session) {
-    switch ($booking->type) {
-        case 'EX':
-            $displayType = 'Confirmed Practical Exam';
-            $displayName = 'HIDDEN';
-            $bookedLabel = 'Requested on';
-            //if ($booking->session->examiner) {
-            //    $sessionRoles['Examiner'] = $booking->session->examiner->name . ' (' . $booking->session->examiner->cid . ')';
-            //}
-            break;
+// EX (Practical Exam)
+if ($booking->type === 'EX') {
+    $displayType = 'Confirmed Practical Exam';
+    $displayName = 'HIDDEN';
+    $bookedLabel = 'Requested on';
+    $showExaminer = true;
 
-        case 'ME':
-            $displayType = 'Confirmed Mentoring Session';
-            $displayName = 'HIDDEN';
-            $bookedLabel = 'Requested on';
-            if ($booking->session->mentor) {
-                $sessionRoles['Mentor'] = $booking->session->mentor->name . ' (' . $booking->session->mentor->cid . ')';
-            }
-            break;
+    if ($booking->exams && $booking->exams->examiner) {
+        $examiner = $booking->exams->examiner->name . ' (' . $booking->exams->examiner->cid . ')';
     }
 
-    // Common times for all session types
-    $requestTime = formatDate($booking->session->request_time);
-    $takenTime = formatDate($booking->session->taken_time);
+    $requestTime = $booking->exams ? formatDate($booking->exams->time_book) : 'N/A';
+    $takenTime = $booking->exams ? formatDate($booking->exams->time_taken) : 'N/A';
+}
+
+// ME (Mentoring Session)
+if ($booking->type === 'ME') {
+    $displayType = 'Confirmed Mentoring Session';
+    $displayName = 'HIDDEN';
+    $bookedLabel = 'Requested on';
+    $showMentor = true;
+
+    if ($booking->session && $booking->session->mentor) {
+        $mentor = $booking->session->mentor->name . ' (' . $booking->session->mentor->cid . ')';
+    }
+
+    $requestTime = $booking->session ? formatDate($booking->session->request_time) : 'N/A';
+    $takenTime = $booking->session ? formatDate($booking->session->taken_time) : 'N/A';
 }
 
 $timeBooked = formatDate($booking->time_booked);
@@ -53,14 +59,16 @@ $timeBooked = formatDate($booking->time_booked);
     <p>Book Time: <strong>{{ $fromTime }} - {{ $toTime }}</strong></p>
     <br>
     <p>Booked By: <strong>{{ $displayName }}</strong></p>
-
-    @if(!empty($sessionRoles))
+    @if($showExaminer)
         <p>Requested on: <strong>{{ $requestTime }}</strong></p>
         <br>
-        @foreach($sessionRoles as $role => $name)
-            <p>{{ $role }}: <strong>{{ $name }}</strong></p>
-            <p>Accepted on: <strong>{{ $takenTime }}</strong></p>
-        @endforeach
+        <p>Examiner: <strong>{{ $examiner }}</strong></p>
+        <p>Accepted on: <strong>{{ $takenTime }}</strong></p>
+    @elseif($showMentor)
+        <p>Requested on: <strong>{{ $requestTime }}</strong></p>
+        <br>
+        <p>Mentor: <strong>{{ $mentor }}</strong></p>
+        <p>Accepted on: <strong>{{ $takenTime }}</strong></p>
     @else
         <p>{{ $bookedLabel }}: <strong>{{ $timeBooked }}</strong></p>
     @endif
