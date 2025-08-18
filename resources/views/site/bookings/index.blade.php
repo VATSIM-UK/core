@@ -158,4 +158,29 @@
         </div>
     </div>
 </div>
+<div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-ukblue">
+        <div class="panel-heading">
+            <i class="fa fa-cog"></i> &thinsp; Bookings Calendar
+        </div>
+        <div class="panel-body">
+            <p>
+                The bookings calendar shows the availability of our controllers for bookings. You can navigate through the months using the links below.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-ukblue">
+        <div class="panel-heading">
+            <i class="fa fa-cog"></i> &thinsp; Bookings Calendar
+        </div>
+        <div class="panel-body">
+            <p>
+                The bookings calendar shows the availability of our controllers for bookings. You can navigate through the months using the links below.
+            </p>
+        </div>
+    </div>
+</div>
 @stop

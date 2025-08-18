@@ -10,7 +10,7 @@ class BookingRepository
 {
     public function getBookingsBetween($startDate, $endDate)
     {
-        return Booking::with('member')
+        return Booking::with(['member', 'session.mentor'])
             ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
             ->get()->each(function ($booking) {
                 $booking->date = Carbon::parse($booking->date);
@@ -20,7 +20,7 @@ class BookingRepository
     public function getBookings(Carbon $date)
     {
         $bookings = Booking::where('date', '=', $date->toDateString())
-            ->with('member')
+            ->with(['member', 'session.mentor'])
             ->orderBy('from')
             ->get();
 
@@ -30,7 +30,7 @@ class BookingRepository
     public function getTodaysBookings()
     {
         $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
-            ->with('member')
+            ->with(['member', 'session.mentor'])
             ->orderBy('from')
             ->get();
 
@@ -41,7 +41,7 @@ class BookingRepository
     {
         $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
             ->networkAtc()
-            ->with('member')
+            ->with(['member', 'session.mentor'])
             ->orderBy('from')
             ->get();
 
@@ -53,7 +53,7 @@ class BookingRepository
         $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
             ->notEvent()
             ->networkAtc()
-            ->with('member')
+            ->with(['member', 'session.mentor'])
             ->orderBy('from')
             ->get();
 
@@ -68,6 +68,28 @@ class BookingRepository
 
             $booking->member = $this->formatMember($booking);
             $booking->unsetRelation('member');
+
+            if ($booking->type === 'ME' && $booking->session) {
+                $mentorName = 'Unknown';
+
+                // Safely get mentor name and ID
+                if ($booking->session->mentor) {
+                    $mentorName = $booking->session->mentor->name.' ('.$booking->session->mentor->cid.')';
+                }
+
+                $booking->session_details = [
+                    'id' => $booking->session->id,
+                    'position' => $booking->session->position,
+                    'student_id' => $booking->session->student_id,
+                    'mentor_id' => $booking->session->mentor_id,
+                    'mentor' => $mentorName,
+                    'date' => $booking->session->date_1,
+                    'from' => $booking->session->from_1,
+                    'to' => $booking->session->to_1,
+                    'request_time' => $booking->session->request_time,
+                    'taken_time' => $booking->session->taken_time,
+                ];
+            }
 
             return $booking;
         });
