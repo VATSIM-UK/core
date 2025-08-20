@@ -12,7 +12,6 @@ class ExaminerRepository
      * Core reusable fetcher.
      */
     private function _getExaminersByScope(string $scope): Collection
-
     {
         // We capitalize here so that the scope methods are readable.
         $scopeMethod = 'scope'.ucfirst($scope);
