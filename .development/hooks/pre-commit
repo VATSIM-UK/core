@@ -17,7 +17,10 @@ echo "Running Pint..."
 composer lint -- --quiet $staged_files || true
 
 # Check if Pint changed any of the staged files
-fixed_files=$(git diff --name-only -- $staged_files)
+composer lint -- --quiet "$staged_files" || true
+
+# Check if Pint changed any of the staged files
+fixed_files=$(git diff --name-only -- "$staged_files")
 
 if [ -n "$fixed_files" ]; then
     echo
