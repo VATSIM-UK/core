@@ -27,7 +27,7 @@ class ExaminerSettings extends Model
 
     public function scopeTwr($query)
     {
-    return $query->where('S1', '=', 1);
+        return $query->where('S1', '=', 1);
     }
 
     public function scopeApp($query)
