@@ -45,7 +45,6 @@
                                 <li><a href="{{ route('site.pilots.mentor') }}">Become a Mentor</a></li>
                                 <li><a href="{{ route('site.pilots.oceanic') }}">Oceanic Procedures</a></li>
                                 <li><a href="{{ route('site.pilots.tfp') }}">Flying Programme</a></li>
-                                <li class="divider"></li>
                             </ul>
                         </li>
                     </ul>
