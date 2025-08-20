@@ -1,22 +1,30 @@
-#!/bin/bash
-#
-# Pre-commit hook to run composer lint
-# This will run Laravel Pint to check code style before committing
-#
+#!/usr/bin/env bash
 
-source ~/.bashrc
+# pre-commit hook for Laravel Pint
+# Auto-fix staged files, but fail commit if anything was fixed.
 
-echo "Running composer lint..."
+if [ -f "$HOME/.bashrc" ]; then
+    . "$HOME/.bashrc"
+fi
 
-# Run composer lint
-if ! composer lint; then
-    echo ""
-    echo "❌ Code style check failed!"
-    echo "Please fix the style issues above before committing."
-    echo "You can run 'composer lint' to see the issues."
-    echo ""
+set -euo pipefail
+
+# Get staged PHP files
+staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep '\.php$' || true)
+[ -z "$staged_files" ] && exit 0
+
+echo "Running Pint..."
+composer lint -- --quiet "$staged_files" || true
+
+# Check if Pint changed any of the staged files
+fixed_files=$(git diff --name-only -- "$staged_files")
+
+if [ -n "$fixed_files" ]; then
+    echo
+    echo "⚠️  Pint fixed some files. Please re-add them and commit again:"
+    echo "$fixed_files"
     exit 1
 fi
 
-echo "✅ Code style check passed!"
+echo "✅ Pint made no changes."
 exit 0
