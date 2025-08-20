@@ -11,8 +11,10 @@ class ExaminerRepository
     /**
      * Core reusable fetcher.
      */
-    private function getExaminersByScope(string $scope): Collection
+    private function _getExaminersByScope(string $scope): Collection
+
     {
+        // We capitalize here so that the scope methods are readable.
         $scopeMethod = 'scope'.ucfirst($scope);
         if (! method_exists(ExaminerSettings::class, $scopeMethod)) {
             throw new InvalidArgumentException("Unknown scope '{$scope}'.");
@@ -29,31 +31,31 @@ class ExaminerRepository
 
     public function getObsExaminers(): Collection
     {
-        return $this->getExaminersByScope('obs');
+        return $this->_getExaminersByScope('obs');
     }
 
     public function getTwrExaminers(): Collection
     {
-        return $this->getExaminersByScope('twr');
+        return $this->_getExaminersByScope('twr');
     }
 
     public function getAppExaminers(): Collection
     {
-        return $this->getExaminersByScope('app');
+        return $this->_getExaminersByScope('app');
     }
 
     public function getCtrExaminers(): Collection
     {
-        return $this->getExaminersByScope('ctr');
+        return $this->_getExaminersByScope('ctr');
     }
 
     public function getAtcExaminers(): Collection
     {
-        return $this->getExaminersByScope('atc');
+        return $this->_getExaminersByScope('atc');
     }
 
     public function getPilotExaminers(): Collection
     {
-        return $this->getExaminersByScope('pilot');
+        return $this->_getExaminersByScope('pilot');
     }
 }
