@@ -14,7 +14,7 @@ staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep '\.php$' |
 [ -z "$staged_files" ] && exit 0
 
 echo "Running Pint..."
-composer lint -- --quiet $staged_files || true
+composer lint -- --quiet "$staged_files" || true
 
 # Check if Pint changed any of the staged files
 fixed_files=$(git diff --name-only -- "$staged_files")
