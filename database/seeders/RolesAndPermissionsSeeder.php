@@ -23,6 +23,12 @@ class RolesAndPermissionsSeeder extends Seeder
         $privacc = Role::firstOrCreate(['name' => 'privacc', 'guard_name' => 'web', 'default' => false]);
         $member = Role::firstOrCreate(['name' => 'member', 'guard_name' => 'web', 'default' => true]);
 
+        // Create ATC Examiner Roles
+        $obsExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (OBS)', 'guard_name' => 'web', 'default' => false]);
+        $twrExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (TWR)', 'guard_name' => 'web', 'default' => false]);
+        $appExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (APP)', 'guard_name' => 'web', 'default' => false]);
+        $ctrExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (CTR)', 'guard_name' => 'web', 'default' => false]);
+
         // Add All Permissions
         $permissions = [
             app()->isProduction() ? null : '*',
@@ -198,6 +204,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'roster.manage',
             'roster.restriction.create',
             'roster.restriction.remove',
+
         ];
 
         foreach ($permissions as $permission) {

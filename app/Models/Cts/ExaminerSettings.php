@@ -20,6 +20,26 @@ class ExaminerSettings extends Model
         return $this->belongsTo(Member::class, 'memberID', 'id');
     }
 
+    public function scopeObs($query)
+    {
+        return $query->where('OBS', '=', 1);
+    }
+
+    public function scopeTwr($query)
+    {
+        return $query->where('S1', '=', 1);
+    }
+
+    public function scopeApp($query)
+    {
+        return $query->where('S2', '=', 1);
+    }
+
+    public function scopeCtr($query)
+    {
+        return $query->where('S3', '=', 1);
+    }
+
     public function scopeAtc($query)
     {
         return $query->where('OBS', '=', 1) // OBS to S1 examiner

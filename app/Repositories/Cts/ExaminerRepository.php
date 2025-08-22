@@ -3,32 +3,58 @@
 namespace App\Repositories\Cts;
 
 use App\Models\Cts\ExaminerSettings;
+use Illuminate\Support\Collection;
+use InvalidArgumentException;
 
 class ExaminerRepository
 {
-    public function getAtcExaminers()
+    /**
+     * Core reusable fetcher.
+     */
+    private function _getExaminersByScope(string $scope): Collection
     {
-        $examiners = ExaminerSettings::with(['member'])
-            ->atc()
-            ->get();
+        // We capitalize here so that the scope methods are readable.
+        $scopeMethod = 'scope'.ucfirst($scope);
+        if (! method_exists(ExaminerSettings::class, $scopeMethod)) {
+            throw new InvalidArgumentException("Unknown scope '{$scope}'.");
+        }
 
-        return $examiners->reject(function ($examiner) {
-            return ! (bool) $examiner->member->examiner;
-        })->map(function ($examiner) {
-            return $examiner->member->cid;
-        })->sort()->values();
+        return ExaminerSettings::with('member')
+            ->{$scope}()
+            ->whereHas('member', fn ($q) => $q->where('examiner', true))
+            ->get()
+            ->pluck('member.cid')
+            ->sort()
+            ->values();
     }
 
-    public function getPilotExaminers()
+    public function getObsExaminers(): Collection
     {
-        $examiners = ExaminerSettings::with(['member'])
-            ->pilot()
-            ->get();
+        return $this->_getExaminersByScope('obs');
+    }
 
-        return $examiners->reject(function ($examiner) {
-            return ! (bool) $examiner->member->examiner;
-        })->map(function ($examiner) {
-            return $examiner->member->cid;
-        })->sort()->values();
+    public function getTwrExaminers(): Collection
+    {
+        return $this->_getExaminersByScope('twr');
+    }
+
+    public function getAppExaminers(): Collection
+    {
+        return $this->_getExaminersByScope('app');
+    }
+
+    public function getCtrExaminers(): Collection
+    {
+        return $this->_getExaminersByScope('ctr');
+    }
+
+    public function getAtcExaminers(): Collection
+    {
+        return $this->_getExaminersByScope('atc');
+    }
+
+    public function getPilotExaminers(): Collection
+    {
+        return $this->_getExaminersByScope('pilot');
     }
 }
