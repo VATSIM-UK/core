@@ -10,7 +10,8 @@ $screen-sm: 802px;
 @import "_padding-utils";
 @import "_top-notification";
 
-body, html {
+body,
+html {
   margin: 0 auto;
   font-size: 14px;
   font-family: Calibri, Tahoma, Geneva, sans-serif;
@@ -33,15 +34,16 @@ body, html {
   height: 70%;
   float: left;
   margin: 10px 15px 0 5.0%;
+
   img {
     height: 100%;
   }
 }
 
 .dev_environment_notification {
-    height: 20px;
-    background-color: red;
-    text-align: center;
+  height: 20px;
+  background-color: red;
+  text-align: center;
 }
 
 .sys_notification {
@@ -50,13 +52,13 @@ body, html {
   position: relative;
 
   .text {
-      margin: 0;
-      position: absolute;
-      top: 50%;
-      -ms-transform: translateY(-50%);
-      transform: translateY(-50%);
-      text-align: center;
-      width: 100%;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    text-align: center;
+    width: 100%;
   }
 }
 
@@ -68,6 +70,7 @@ body, html {
   transform-style: preserve-3d;
   transform: perspective(auto) translateZ(-30vw) scale(1.4);
   perspective: 1000;
+
   img {
     margin-top: 90px;
     height: 260px;
@@ -77,8 +80,9 @@ body, html {
 .fuzzy_date {
   color: #337ab7;
   text-decoration: none;
-  &:hover{
-    cursor:pointer;
+
+  &:hover {
+    cursor: pointer;
   }
 }
 
@@ -86,11 +90,11 @@ body, html {
   color: white !important;
 }
 
-.vertical-center{
+.vertical-center {
   vertical-align: middle !important;
 }
 
-.table.table-borders >tbody > tr > td {
+.table.table-borders>tbody>tr>td {
   border: 1px solid grey;
 }
 
@@ -109,7 +113,8 @@ body, html {
   width: 90%;
 }
 
-.breadcrumb_content_left, .breadcrumb_content_right {
+.breadcrumb_content_left,
+.breadcrumb_content_right {
   margin: 0 auto;
   padding-top: 8px;
   height: 100%;
@@ -205,7 +210,9 @@ body, html {
   border: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  > .panel-heading, > .panel-heading-link > .panel-heading {
+
+  >.panel-heading,
+  >.panel-heading-link>.panel-heading {
     background-color: #17375e;
     border-color: #17375E;
     color: white;
@@ -226,36 +233,42 @@ body, html {
       padding: 5px;
     }
 
-    > .panel-title a {
+    >.panel-title a {
       color: white;
     }
   }
+
   .panel-body .row-text-contain {
     word-break: break-word;
   }
-    .panel-footer.panel-footer-primary {
-        color: white;
-        background-color: $brand-primary;
-        a {
-            color: white;
-        }
-        a:hover {
-            color: $gray-lighter;
-        }
+
+  .panel-footer.panel-footer-primary {
+    color: white;
+    background-color: $brand-primary;
+
+    a {
+      color: white;
     }
+
+    a:hover {
+      color: $gray-lighter;
+    }
+  }
 }
 
 .panel-uk-danger {
   border: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  > .panel-heading {
+
+  >.panel-heading {
     background-color: #c30c1d;
     border-color: #840712;
     color: white;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
   }
+
   .panel-body .row-text-contain {
     word-break: break-word;
   }
@@ -265,20 +278,24 @@ body, html {
   border: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  > .panel-heading {
+
+  >.panel-heading {
     background-color: #009700;
     border-color: #006900;
     color: white;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
   }
+
   .panel-body .row-text-contain {
     word-break: break-word;
   }
 }
 
-.panel-group#unreadNotifications, .panel-group#readNotifications {
+.panel-group#unreadNotifications,
+.panel-group#readNotifications {
   padding: 10px;
+
   .panel {
     margin-bottom: 15px;
   }
@@ -309,18 +326,117 @@ body, html {
 .profile-picture {
   object-fit: cover;
   border-radius: 50px;
-  height:50px;
+  height: 50px;
   width: 50px;
 }
 
 .equal {
-    display: flex;
-    display: -webkit-flex;
-    flex-wrap: wrap;
+  display: flex;
+  display: -webkit-flex;
+  flex-wrap: wrap;
 }
 
 .flex-centered {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calendar {
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.calendar th,
+.calendar td {
+  width: 14.28%;
+  height: 100px;
+  text-align: center;
+  font-weight: bold;
+  vertical-align: top;
+  padding: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.bg-gray-100 {
+  background-color: #f0f0f0;
+}
+
+.booking-entry {
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 15px;
+  margin-top: 5px;
+}
+
+.booking-entry:hover {
+  text-decoration: underline;
+}
+
+.today-cell {
+  background-color: #FFFFCC !important;
+  border: 2px solid #FFCC00 !important;
+}
+
+.booking {
+  color: #336633;
+  border-color: #336633;
+  padding: 4px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+}
+
+.booking-mentoring {
+  color: #7429C7;
+  border-color: #7429C7;
+}
+
+.booking-event {
+  color: #FF0000;
+  border-color: #FF0000;
+}
+
+.booking-exam {
+  color: #993300;
+  border-color: #993300;
+}
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-content {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  left: 100%;
+  top: 0;
+  min-width: 250px;
+  background: #fff;
+  color: #222;
+  border: 1px solid #888;
+  border-radius: 6px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  white-space: normal;
+  font-size: 13px;
+}
+
+.tooltip-container:hover .tooltip-content,
+.tooltip-container:focus-within .tooltip-content {
+  display: block;
+}
+
+.no-x-overflow {
+  overflow-x: visible !important;
+}
+
+.legend-table td {
+  vertical-align: middle !important;
+  padding: 6px 10px !important;
 }
