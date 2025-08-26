@@ -33,7 +33,6 @@ class WaitingListsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('waitingList.formatted_department')->label('Department')->sortable(),
                 Tables\Columns\TextColumn::make('position')->label('Position')->getStateUsing(fn ($record) => $record->position ?? '-'),
                 Tables\Columns\TextColumn::make('created_at')->label('Added On')->date()->sortable(),
-                Tables\Columns\TextColumn::make('deleted_at')->label('Removed On')->date()->sortable()->default(''),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
