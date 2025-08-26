@@ -13,6 +13,8 @@ class WaitingListsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'id';
 
+    protected static ?string $title = 'Waiting Lists';
+
     protected function getLogActionName(): string
     {
         return 'ViewWaitingLists';
