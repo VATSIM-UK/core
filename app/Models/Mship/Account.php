@@ -27,6 +27,8 @@ use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Concerns\HasWaitingLists;
 use App\Models\Mship\Note\Type;
 use App\Models\Roster;
+use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -34,6 +36,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -622,5 +625,20 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         }
 
         return [$this->id];
+    }
+
+    /**
+     * All retention checks for this account across all waiting lists.
+     */
+    public function retentionChecks(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            WaitingListRetentionCheck::class,
+            WaitingListAccount::class,
+            'account_id',
+            'waiting_list_account_id',
+            'id',
+            'id'
+        );
     }
 }
