@@ -26,8 +26,15 @@ This repository uses [NodeJS](https://github.com/VATSIM-UK/core/blob/main/packag
 
 If you've never worked with Git, you will need to configure your [SSH keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key)
 
+### Clone the repository
 
-### Install the Composer dependencies and create an environment file by copying the example (`.env.example`).
+Create a fork of the repository, then clone your fork to your local machine using SSH
+
+```shell
+git clone git@github.com:<YOUR_USERNAME>/core.git
+```
+
+### Install the Composer dependencies and create an environment file by copying the example (`.env.example`)
 
 ```shell
 composer install
