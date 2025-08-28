@@ -111,6 +111,10 @@ npm install # Install dependencies
 npm run build # Build the assets
 ```
 
+### Install Git hooks
+
+Follow [this guide](https://github.com/VATSIM-UK/core/tree/main/.development/hooks) to install git hooks (optinal but recommended)
+
 ### Start the webserver
 
 Since `core.test` is not a standard local domain, you may need to modify your host file.
