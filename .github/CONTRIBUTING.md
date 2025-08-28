@@ -8,7 +8,7 @@ Some issues simply can't be delegated to outside contributors as they may requir
 
 ## Contributor license agreement
 
-By submitting code as an individual you agree that VATSIM UK can use your amendments, fixes, patches, changes, modifications, submissions and creations in the production of the UK Core and that the ownership of your submissions transfers to VATSIM UK in their entirety.
+By submitting code as an individual you agree that VATSIM UK can use your amendments, fixes, patches, changes, modifications, submissions and creations in the production of the UK Core and that the ownership of your submissions transfers to VATSIM UK in their entirety. More info on the licensing can be found in [LINCENSE](https://github.com/VATSIM-UK/core/blob/consolidate-dev-docs/LICENSE.md)
 
 ## Contributing to the codebase
 
