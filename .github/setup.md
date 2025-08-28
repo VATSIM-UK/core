@@ -2,6 +2,12 @@
 
 This repository uses [NodeJS](https://github.com/VATSIM-UK/core/blob/main/package.json) and [PHP](https://github.com/VATSIM-UK/core/blob/main/composer.json)
 
+## Video guide
+
+For Windows users, there's a video guide available here - https://www.youtube.com/watch?v=rAQn_PcjCqU
+
+*This guide sets up databases manually and does not use docker which may be more complex for begginers.*
+
 ## Prerequisites
 
 ### Windows
