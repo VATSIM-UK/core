@@ -1,21 +1,21 @@
 # Configuring a Development Environment
 
-This repository uses [NodeJS](https://github.com/VATSIM-UK/core/blob/main/package.json) and [PHP](https://github.com/VATSIM-UK/core/blob/main/composer.json)
+This repository uses [Node.js](https://github.com/VATSIM-UK/core/blob/main/package.json) and [PHP](https://github.com/VATSIM-UK/core/blob/main/composer.json)
 
 ## Video guide
 
-For Windows users, there's a video guide available here - https://www.youtube.com/watch?v=rAQn_PcjCqU
+For Windows users, there's a video guide available here: [YouTube video](https://www.youtube.com/watch?v=rAQn_PcjCqU)
 
-*This guide sets up databases manually and does not use docker which may be more complex for begginers.*
+*This guide sets up databases manually and does not use Docker which may be more complex for beginners.*
 
 ## Prerequisites
 
 ### Windows
 
-- **Git CLI + Git bash** -  Git is used for versioning and Git bash is required to run any git hooks in this repo + it will make following the rest of the guide easier - https://git-scm.com/downloads/win
+- **Git CLI + Git Bash** -  Git is used for versioning and Git Bash is required to run any git hooks in this repo + it will make following the rest of the guide easier - https://git-scm.com/downloads/win
 - **Docker Desktop** - If you don't want to go through running a database manually, Docker is recommended - https://docs.docker.com/desktop/setup/install/windows-install/
-- **Node JS** - https://nodejs.org/en/download (see the prebuilt section)
-- **Laravel Herd** - Herd is used to easily get PHP and composer installed - https://herd.laravel.com/download/latest/windows
+- **Node.js** - https://nodejs.org/en/download (see the prebuilt section)
+- **Laravel Herd** - Herd is used to easily get PHP and Composer installed - https://herd.laravel.com/download/latest/windows
 
 ### Linux / Mac
 
@@ -23,7 +23,7 @@ For Windows users, there's a video guide available here - https://www.youtube.co
 
 - **Git CLI**
 - **Docker Engine** - https://docs.docker.com/engine/install/
-- **Node JS**
+- **Node.js**
 - **PHP**
 
 ## Setup
@@ -59,7 +59,7 @@ php artisan key:generate
 ```
 APP_URL=core.test # Do not include any trailing slashes
 
-# Eliminate the need for redis:
+# Eliminate the need for Redis:
 CACHE_DRIVER=array
 QUEUE_DRIVER=sync
 SESSION_DRIVER=file
@@ -75,7 +75,7 @@ VATSIM_OAUTH_SCOPES=full_name,email,vatsim_details,country
 
 ### Start the database
 
-In Git bash / bash run this command to start the databases
+In Git Bash / Bash run this command to start the databases
 
 ```shell
 .devcontainer/load-dotenv.sh docker-compose -f .devcontainer/docker-compose.dev.yml up
@@ -87,7 +87,7 @@ In Git bash / bash run this command to start the databases
 
 ```shell
 php artisan migrate
-php artisan cts:migrate:fresh # Optional if you require a CTS db for tests
+php artisan cts:migrate:fresh # Optional if you require a CTS database for tests
 ```
 
 ### Seed the database
@@ -98,7 +98,7 @@ php artisan db:seed # sets up the roles and permissions
 
 ### Create a superuser
 
-*List of accounts availible in the OAuth sandbox is availiable here - https://vatsim.dev/services/connect/sandbox*
+*List of accounts available in the OAuth sandbox is available here: [https://vatsim.dev/services/connect/sandbox](https://vatsim.dev/services/connect/sandbox)*
 
 ```shell
 php artisan grant:superman <CID> # makes a test account an admin
@@ -113,11 +113,11 @@ npm run build # Build the assets
 
 ### Install Git hooks
 
-Follow [this guide](https://github.com/VATSIM-UK/core/tree/main/.development/hooks) to install git hooks (optinal but recommended)
+Follow [this guide](https://github.com/VATSIM-UK/core/tree/main/.development/hooks) to install git hooks (optional but recommended)
 
-### Start the webserver
+### Start the web server
 
-Since `core.test` is not a standard local domain, you may need to modify your host file.
+Since `core.test` is not a standard local domain, you may need to modify your hosts file.
 
 - On Windows, this will be `c:\Windows\System32\Drivers\etc\hosts` (requires Admin privileges to modify)
 - On Mac/Linux, this will be `/etc/hosts`
@@ -128,7 +128,7 @@ and append the following line:
 127.0.0.1 core.test
 ```
 
-To start the webserver, run
+To start the web server, run
 
 ```shell
 php artisan serve --host core.test --port 80
