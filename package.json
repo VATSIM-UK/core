@@ -16,7 +16,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "admin-lte": "2.4.18",
     "autoprefixer": "^10.4.21",
-    "bootstrap": "^5.3.7",
+    "bootstrap": "^5.3.8",
     "bootstrap-sass": "^3.4.3",
     "bootstrap-tour": "^0.12.0",
     "jquery-datetimepicker": "^2.5.20",
