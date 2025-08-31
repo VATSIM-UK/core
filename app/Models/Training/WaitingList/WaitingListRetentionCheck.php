@@ -2,6 +2,7 @@
 
 namespace App\Models\Training\WaitingList;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,6 +36,20 @@ class WaitingListRetentionCheck extends Model
             'email_sent_at' => 'datetime',
             'removal_actioned_at' => 'datetime',
         ];
+    }
+
+    protected function statusHuman(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, array $attributes) {
+                $status = $attributes['status'] ?? null;
+
+                return match ($status) {
+                    self::STATUS_USED => 'responded',
+                    default => $status,
+                };
+            }
+        );
     }
 
     public function waitingListAccount()
