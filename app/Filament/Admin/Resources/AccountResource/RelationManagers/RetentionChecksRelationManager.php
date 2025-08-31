@@ -27,20 +27,20 @@ class RetentionChecksRelationManager extends RelationManager
             ->modifyQueryUsing(function ($query) {
                 return $query->with(['waitingListAccount.waitingList']);
             })
-            ->defaultSort('email_sent_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('waitingListAccount.waitingList.name')
                     ->label('Waiting List')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('status_human')
+                    ->label('Status')
                     ->badge()
-                    ->color(fn ($state) => match ($state) {
+                    ->color(fn ($state, WaitingListRetentionCheck $record) => match ($record->status) {
                         WaitingListRetentionCheck::STATUS_PENDING => 'warning',
                         WaitingListRetentionCheck::STATUS_USED => 'success',
                         WaitingListRetentionCheck::STATUS_EXPIRED => 'danger',
                         default => 'gray',
                     })
-                    ->sortable(),
+                    ->sortable('status'),
                 Tables\Columns\TextColumn::make('email_sent_at')->dateTime()->label('Email Sent')->sortable(),
                 Tables\Columns\TextColumn::make('expires_at')->dateTime()->label('Expires')->sortable(),
                 Tables\Columns\TextColumn::make('response_at')->dateTime()->label('Responded')->sortable(),
