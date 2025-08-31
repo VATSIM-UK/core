@@ -20,18 +20,23 @@ composer install-hooks
 ```
 
 This will:
-1. Copy the hooks from `.development/hooks/` to `.git/hooks/`
+
+1. Symlink the hooks from `.development/hooks/` to `.git/hooks/`
 2. Make them executable
 3. Confirm successful installation
 
-## Manual Installation
-
-If you prefer to install manually:
+If you wish to force reinstall the hooks, you can use:
 
 ```bash
-cp .development/hooks/pre-commit .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
+composer install-hooks -- --force
 ```
+
+This will remove existing hooks and create new symlinks.
+
+## Manual Installation
+
+If you prefer to install manually, symlink the wanted hooks from `.development/hooks/` to `.git/hooks/`:
+
 
 ## For New Team Members
 
