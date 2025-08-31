@@ -27,6 +27,7 @@ class RetentionChecksRelationManager extends RelationManager
             ->modifyQueryUsing(function ($query) {
                 return $query->with(['waitingListAccount.waitingList']);
             })
+            ->defaultSort('email_sent_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('waitingListAccount.waitingList.name')
                     ->label('Waiting List')
