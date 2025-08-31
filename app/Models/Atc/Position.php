@@ -117,6 +117,13 @@ class Position extends Model implements Endorseable
         ];
 
         $callsignParts = explode('_', $this->callsign);
+
+        if (! in_array($callsignParts[count($callsignParts) - 1], array_keys($mapping))) {
+            return Attribute::make(
+                get: fn () => null,
+            );
+        }
+
         $rts = $mapping[$callsignParts[count($callsignParts) - 1]];
 
         return Attribute::make(
