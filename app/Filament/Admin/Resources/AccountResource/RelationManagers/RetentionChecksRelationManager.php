@@ -44,10 +44,6 @@ class RetentionChecksRelationManager extends RelationManager
                         default => 'gray',
                     })
                     ->sortable(),
-                Tables\Columns\TextColumn::make('token')
-                    ->label('Token')
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->copyable(),
                 Tables\Columns\TextColumn::make('email_sent_at')->dateTime()->label('Email Sent')->sortable(),
                 Tables\Columns\TextColumn::make('expires_at')->dateTime()->label('Expires')->sortable(),
                 Tables\Columns\TextColumn::make('response_at')->dateTime()->label('Responded')->sortable(),
