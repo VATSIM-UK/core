@@ -65,6 +65,7 @@ class RetentionCheckTokenTest extends TestCase
         WaitingListRetentionCheck::factory()->create([
             'token' => 'valid-token',
             'expires_at' => now()->addDays(7),
+            'response_at' => null,
             'status' => WaitingListRetentionCheck::STATUS_PENDING,
         ]);
 
