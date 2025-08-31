@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 
 class RetentionChecksRelationManager extends RelationManager
@@ -45,6 +46,13 @@ class RetentionChecksRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('removal_actioned_at')->dateTime()->label('Removal Actioned')->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created')->toggleable(isToggledHiddenByDefault: true)->sortable(),
             ])
+            ->groups([
+                Group::make('waitingListAccount.waitingList.name')
+                    ->label('Waiting List')
+                    ->collapsible(),
+            ])
+            ->groupingSettingsHidden()
+            ->defaultGroup('waitingListAccount.waitingList.name')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
@@ -54,7 +62,6 @@ class RetentionChecksRelationManager extends RelationManager
                     ])
                     ->label('Status'),
             ])
-            ->defaultSort('created_at', 'desc')
             ->bulkActions([])
             ->headerActions([]);
     }
