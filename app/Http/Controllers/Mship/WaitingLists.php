@@ -70,6 +70,13 @@ class WaitingLists extends BaseController
         }
 
         // Only the scheduled command will change the status so we need to check the expires_at timestamp as well
+        if ($retentionCheck->status === WaitingListRetentionCheck::STATUS_USED ||
+            $retentionCheck->response_at !== null) {
+            return redirect()
+                ->route('mship.waiting-lists.retention.fail')
+                ->with('failReason', 'This retention check token has already been used, waiting list place has already been confirmed');
+        }
+
         if ($retentionCheck->status !== WaitingListRetentionCheck::STATUS_PENDING || $retentionCheck->expires_at < now()) {
             return redirect()
                 ->route('mship.waiting-lists.retention.fail')
