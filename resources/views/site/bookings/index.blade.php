@@ -90,6 +90,7 @@
                                         {{ $dayDate->month !== $date->month ? 'bg-gray-100' : '' }}
                                         {{ $dayDate->isToday() ? 'today-cell' : '' }}">
                                         <strong>{{ $dayDate->day }}</strong>
+                                        <br>
                                         @if(!$dayDate->isBefore(Carbon::today()))
                                             @foreach($day['bookings'] as $booking)
                                                 @php
@@ -127,11 +128,11 @@
                                                         border-4
                                                     @endif"
                                                     tabindex="0" data-kind="{{ $kind }}">
-                                                    📌 {{ strtoupper($booking->position) ?? 'Booking' }}<br>
-                                                    🕒 <span class="booking-time"
+                                                    {{ strtoupper($booking->position) ?? 'Booking' }}<br>
+                                                    <span class="booking-time"
                                                         data-start="{{ \Carbon\Carbon::parse($booking->from)->toIso8601String() }}"
                                                         data-end="{{ \Carbon\Carbon::parse($booking->to)->toIso8601String() }}">
-                                                        {{ $fromTime }}z - {{ $toTime }}z
+                                                        {{ $fromTime }} z - {{ $toTime }}z
                                                     </span>
                                                     @if(!$booking->isEvent())
                                                     <div class="tooltip-content">
