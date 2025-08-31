@@ -15,11 +15,6 @@ class RetentionChecksRelationManager extends RelationManager
 
     protected static ?string $title = 'Retention Checks';
 
-    protected function getLogActionName(): string
-    {
-        return 'ViewRetentionChecks';
-    }
-
     public function isReadOnly(): bool
     {
         return true;
