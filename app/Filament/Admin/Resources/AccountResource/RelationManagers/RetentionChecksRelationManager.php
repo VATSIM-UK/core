@@ -46,6 +46,7 @@ class RetentionChecksRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('response_at')->dateTime()->label('Responded')->sortable(),
                 Tables\Columns\TextColumn::make('removal_actioned_at')->dateTime()->label('Removal Actioned')->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created')->toggleable(isToggledHiddenByDefault: true)->sortable(),
+                Tables\Columns\TextColumn::make('token')->label('Token')->toggleable(isToggledHiddenByDefault: true)->copyable(),
             ])
             ->groups([
                 Group::make('waitingListAccount.waitingList.name')
