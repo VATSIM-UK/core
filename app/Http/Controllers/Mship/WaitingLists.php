@@ -73,8 +73,8 @@ class WaitingLists extends BaseController
         if ($retentionCheck->status === WaitingListRetentionCheck::STATUS_USED ||
             $retentionCheck->response_at !== null) {
             return redirect()
-                ->route('mship.waiting-lists.retention.fail')
-                ->with('failReason', 'This retention check token has already been used, waiting list place has already been confirmed');
+                ->route('mship.waiting-lists.retention.success')
+                ->with('extraMessage', 'This retention check token has already been used, waiting list place has already been confirmed');
         }
 
         if ($retentionCheck->status !== WaitingListRetentionCheck::STATUS_PENDING || $retentionCheck->expires_at < now()) {

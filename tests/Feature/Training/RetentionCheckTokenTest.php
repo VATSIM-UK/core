@@ -35,6 +35,7 @@ class RetentionCheckTokenTest extends TestCase
         WaitingListRetentionCheck::factory()->create([
             'token' => 'expired-token',
             'expires_at' => now()->subDays(1),
+            'response_at' => null,
             'status' => WaitingListRetentionCheck::STATUS_EXPIRED,
         ]);
 
@@ -50,6 +51,7 @@ class RetentionCheckTokenTest extends TestCase
         WaitingListRetentionCheck::factory()->create([
             'token' => 'expired-token',
             'expires_at' => now()->subDays(1),
+            'response_at' => null,
             'status' => WaitingListRetentionCheck::STATUS_PENDING,
         ]);
 
