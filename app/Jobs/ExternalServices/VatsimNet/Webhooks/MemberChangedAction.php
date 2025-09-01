@@ -8,25 +8,21 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Collection;
 
 class MemberChangedAction implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected Account $account;
+    private Account $account;
 
-    protected Collection $data;
-
-    public function __construct(int $memberId, array $data)
-    {
-        $this->account = Account::with('states', 'qualifications')->findOrFail($memberId);
-        $this->data = collect($data);
-    }
+    public function __construct(private readonly int $memberId, private readonly array $data) {}
 
     public function handle()
     {
-        foreach ($this->data->get('deltas') as $delta) {
+        $this->account = Account::findOrFail($this->memberId);
+        $data = collect($this->data);
+
+        foreach ($data->get('deltas', []) as $delta) {
             match ($delta['field']) {
                 'id', 'name_first', 'name_last', 'email', 'reg_date' => $this->processAccountChange($delta['field'], $delta['after']),
                 'rating' => $this->processAtcRatingChange($delta['after']),

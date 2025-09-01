@@ -5,36 +5,55 @@ namespace App\Http\Controllers\External\VatsimNet;
 use App\Http\Controllers\BaseController;
 use App\Jobs\ExternalServices\VatsimNet\Webhooks\MemberChangedAction;
 use App\Jobs\ExternalServices\VatsimNet\Webhooks\MemberCreatedAction;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class ProcessVatsimNetWebhook extends BaseController
 {
-    public function __invoke()
+    public function __invoke(Request $request)
     {
-        if (request()->header('Authorization') !== config('services.vatsim-net.webhook.key')) {
-            return response()->json([
-                'status' => 'forbidden',
-            ], 403);
-        }
+        $this->validateAuth($request);
+        $webhook = $request->all();
 
-        foreach (request()->json('actions') as $action) {
-            $class = match ($action['action']) {
-                'member_created_action' => MemberCreatedAction::class,
-                'member_changed_action' => MemberChangedAction::class,
-                default => null,
-            };
+        \Log::debug('VATSIM.net webhook received', [
+            'resource' => $webhook['resource'],
+            'actions.length' => count($webhook['actions']),
+        ]);
 
-            if (! $class) {
-                Log::error("Unhandled webhook from VATSIM.net: {$action['action']}");
+        // Sort the actions by timestamp to make sure that we process them in the correct order
+        $actions = $webhook['actions'];
+        usort($actions, function ($a, $b) {
+            return $a['timestamp'] <=> $b['timestamp'];
+        });
 
-                continue;
+        $jobs = [];
+
+        foreach ($actions as $action) {
+            switch ($action['action']) {
+                case 'member_created_action':
+                    $jobs[] = new MemberCreatedAction($webhook['resource'], $action);
+                    break;
+                case 'member_changed_action':
+                    $jobs[] = new MemberChangedAction($webhook['resource'], $action);
+                    break;
+                default:
+                    Log::error("Unknown action from VATSIM.net webook: {$action['action']}");
+                    abort(400);
             }
-
-            dispatch(new $class(request()->json('resource'), $action));
         }
+
+        // Dispatch the jobs in a chain to ensure that we don't get any race conditions
+        \Bus::chain($jobs)->dispatch();
 
         return response()->json([
             'status' => 'ok',
         ]);
+    }
+
+    private function validateAuth(Request $request)
+    {
+        if ($request->header('Authorization') !== config('services.vatsim-net.webhook.key')) {
+            abort(403);
+        }
     }
 }
