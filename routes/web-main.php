@@ -1,6 +1,7 @@
 <?php
 
 // Dashboard
+
 Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('landing');
 
 // Authentication
@@ -72,7 +73,6 @@ Route::group([
         Route::post('new')->uses('Feedback@postFeedbackFormSelect')->name('new.post');
         Route::get('new/{form}')->uses('Feedback@getFeedback')->name('new.form');
         Route::post('new/{form}')->uses('Feedback@postFeedback')->name('new.form.post');
-        Route::get('users/search/{name}')->uses('Feedback@getUserSearch')->name('usersearch');
         Route::get('view')->uses('Feedback\ViewFeedbackController@show')->name('view');
     });
 
@@ -82,6 +82,7 @@ Route::group([
         'prefix' => 'waiting-lists',
     ], function () {
         Route::get('')->uses('WaitingLists@index')->name('index');
+        Route::post('self-enrol/{waitingList}')->uses('WaitingLists@selfEnrol')->name('self-enrol');
     });
 
     // Other
@@ -93,6 +94,9 @@ Route::group([
         Route::post('notification/acknowledge/{sysNotification}')->uses('Notification@postAcknowledge')->name('notification.acknowledge');
     });
 });
+
+// Waiting Lists - Retention (No authentication required)
+Route::get('mship/waiting-lists/retention')->uses('Mship\WaitingLists@getRetentionWithToken')->name('mship.waiting-lists.retention.token');
 
 Route::get('atcfb', function () {
     return redirect()
@@ -148,7 +152,6 @@ Route::group([
 ], function () {
     Route::get('endorsements/gatwick')->uses('EndorsementController@getGatwickGroundIndex')->name('endorsements.gatwick_ground');
     Route::get('endorsements/heathrow-s1')->uses('EndorsementController@getHeathrowGroundS1Index')->name('endorsements.heathrow_ground_s1');
-    Route::get('hour-check/area')->uses('EndorsementController@getAreaIndex')->name('hour_check.area');
 });
 
 // Network data
@@ -159,7 +162,6 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('dashboard')->uses('MainController@getDashboard')->name('dashboard');
-    Route::get('online')->uses('Online@getOnline')->name('online');
 });
 
 Route::group([
@@ -209,22 +211,4 @@ Route::group([
         Route::post('complete/{token}')->uses('Reference@postComplete')->name('complete.post');
         Route::post('complete/{token}/cancel')->uses('Reference@postCancel')->name('complete.cancel');
     });
-});
-
-// SmartCARS
-Route::any('frame.php', 'Smartcars\Api\Router@routeRequest');
-
-Route::group([
-    'as' => 'fte.',
-    'prefix' => 'fte',
-    'namespace' => 'Smartcars',
-    'middleware' => 'auth_full_group',
-], function () {
-    Route::get('dashboard')->uses('SmartcarsController@getDashboard')->name('dashboard');
-    Route::get('map')->uses('SmartcarsController@getMap')->name('map');
-    Route::get('exercises/{exercise?}')->uses('SmartcarsController@getExercise')->name('exercises');
-    Route::post('exercises/{exercise}/book')->uses('SmartcarsController@bookExercise')->name('exercise.book');
-    Route::post('exercises/{exercise}/cancel')->uses('SmartcarsController@cancelExercise')->name('exercise.cancel');
-    Route::get('history/{pirep?}')->uses('SmartcarsController@getHistory')->name('history');
-    Route::get('guide')->uses('SmartcarsController@getGuide')->name('guide');
 });

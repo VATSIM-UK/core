@@ -41,7 +41,6 @@ return [
     */
 
     'debug' => env('APP_DEBUG', false),
-    'debug_smartcars' => env('APP_DEBUG_SMARTCARS', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -156,7 +155,6 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
-        Collective\Html\HtmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Alawrence\Ipboard\ServiceProvider::class,
@@ -170,7 +168,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\HorizonServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
-        App\Providers\Filament\AppPanelProvider::class,
+        App\Providers\Filament\AdminPanelProvider::class,
+        App\Providers\Filament\TrainingPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TrainingEventServiceProvider::class,
         App\Providers\FilamentServiceProvider::class,
@@ -234,9 +233,6 @@ return [
         /*
          * Third Party Aliases
          */
-        'HTML' => Collective\Html\HtmlFacade::class,
-        'Form' => Collective\Html\FormFacade::class,
-        'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'IPBoard' => Alawrence\Ipboard\Facades\Ipboard::class,
     ],

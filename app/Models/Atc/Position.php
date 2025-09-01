@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Arr;
 
 class Position extends Model implements Endorseable
 {
@@ -103,6 +104,32 @@ class Position extends Model implements Endorseable
     {
         return Attribute::make(
             get: fn () => $this->callsign
+        );
+    }
+
+    protected function rts(): Attribute
+    {
+        // use the position callsign to determine the rts for the position.
+        // the callsign is in the format of EGXX_TWR, EGXX_APP, EGXX_CTR
+        $mapping = [
+            'TWR' => 18,
+            'APP' => 19,
+            'CTR' => 17,
+        ];
+
+        $callsignParts = explode('_', $this->callsign);
+        $last = Arr::last($callsignParts);
+        $rts = $mapping[$last] ?? null;
+
+        return Attribute::make(
+            get: fn () => $rts,
+        );
+    }
+
+    protected function examLevel(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => Arr::last(explode('_', $this->callsign)),
         );
     }
 }

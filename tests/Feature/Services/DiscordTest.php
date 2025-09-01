@@ -2,17 +2,20 @@
 
 namespace Tests\Feature\Services;
 
+use App\Models\Mship\Account;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use League\OAuth2\Client\Token\AccessToken;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
 
 class DiscordTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function test_it_shows_registration_page()
     {
         $this->actingAs($this->user)
@@ -21,7 +24,7 @@ class DiscordTest extends TestCase
             ->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_to_o_auth()
     {
         $response = $this->actingAs($this->user)
@@ -34,7 +37,7 @@ class DiscordTest extends TestCase
         $this->assertEquals($expectedUrl, $redirectUrl);
     }
 
-    /** @test */
+    #[Test]
     public function test_it_passes_paramaters_to_o_auth()
     {
         Config::set('services.discord.redirect_uri', 'https://example.com/store');
@@ -68,36 +71,27 @@ class DiscordTest extends TestCase
         $this->assertEquals($parameters->except('state')->toArray(), $expected);
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_when_code_missing()
     {
         $emptyString = $this->actingAs($this->user)
             ->from(route('discord.show'))
-            ->get(route('discord.store', [
-                'code' => '',
-            ]));
+            ->get(route('discord.store', ['code' => '']));
 
         $missingCode = $this->actingAs($this->user)
             ->from(route('discord.show'))
-            ->get(route('discord.store', [
-                //
-            ]));
+            ->get(route('discord.store'));
 
         $nullCode = $this->actingAs($this->user)
             ->from(route('discord.show'))
-            ->get(route('discord.store', [
-                'code' => null,
-            ]));
+            ->get(route('discord.store', ['code' => null]));
 
-        $emptyString->assertRedirect(route('discord.show'))
-            ->assertSessionHasErrors('code');
-        $missingCode->assertRedirect(route('discord.show'))
-            ->assertSessionHasErrors('code');
-        $nullCode->assertRedirect(route('discord.show'))
-            ->assertSessionHasErrors('code');
+        $emptyString->assertRedirect(route('discord.show'))->assertSessionHasErrors('code');
+        $missingCode->assertRedirect(route('discord.show'))->assertSessionHasErrors('code');
+        $nullCode->assertRedirect(route('discord.show'))->assertSessionHasErrors('code');
     }
 
-    /** @test */
+    #[Test]
     public function test_it_reports_when_user_in_too_many_servers()
     {
         $this->instance(\Wohali\OAuth2\Client\Provider\Discord::class, Mockery::mock(\Wohali\OAuth2\Client\Provider\Discord::class, function (MockInterface $mock) {
@@ -117,5 +111,30 @@ class DiscordTest extends TestCase
             ]))
             ->assertRedirect(route('discord.show'))
             ->assertSessionHas('error', 'You have reached your Discord server limit! You must leave a server before you can join another one');
+    }
+
+    #[Test]
+    public function test_rate_limit_event_is_dispatched_and_retry_succeeds()
+    {
+        /** @var Account $account */
+        $account = Account::factory()->create([
+            'discord_id' => 9876543,
+            'discord_access_token' => 'xyz',
+        ]);
+
+        Event::fake();
+
+        // 1st call returns retry_after -> rate limit
+        // 2nd call succeeds
+        Http::fakeSequence()
+            ->push(['retry_after' => 1], 429)
+            ->push([], 200);
+
+        $discord = new \App\Libraries\Discord;
+        $result = $discord->grantRoleById($account, 99);
+
+        $this->assertTrue($result);
+        Event::assertDispatched('discord.rate_limited');
+        Event::assertDispatched('discord.api_succeeded');
     }
 }

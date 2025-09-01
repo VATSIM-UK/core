@@ -8,6 +8,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WaitingListAccountCtsTheoryTest extends TestCase
@@ -24,7 +25,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
         // create the member first as for some reason the CID is not overwritten
         // when using a factory
-        $this->member = factory(Member::class)->create();
+        $this->member = Member::Factory()->create();
         $this->account = Account::factory()->create(['id' => $this->member->cid]);
         $this->account->addState(State::findByCode('DIVISION'));
 
@@ -33,7 +34,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 
     private function setupWaitingList(?string $ctsLevel, ?string $department = WaitingList::ATC_DEPARTMENT): WaitingList\WaitingListAccount
     {
-        $waitingList = factory(WaitingList::class)->create(['cts_theory_exam_level' => $ctsLevel, 'department' => $department]);
+        $waitingList = WaitingList::factory()->create(['cts_theory_exam_level' => $ctsLevel, 'department' => $department]);
 
         return $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
     }
@@ -47,7 +48,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_detect_when_theory_exam_passed()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
@@ -56,7 +57,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         $this->assertTrue($waitingListAccount->theoryExamPassed);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_detect_when_theory_exam_failed()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
@@ -65,7 +66,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_return_false_when_pilot_waiting_list()
     {
         $waitingListAccount = $this->setupWaitingList(null, WaitingList::PILOT_DEPARTMENT);
@@ -73,7 +74,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_return_null_when_no_exam_configured()
     {
         $waitingListAccount = $this->setupWaitingList(null);
@@ -82,7 +83,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_return_null_when_no_theory_result_found()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
@@ -91,7 +92,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_only_detect_passes_at_the_configured_exam_level()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
@@ -100,7 +101,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_disregard_multiple_failures_at_configured_level()
     {
         $waitingListAccount = $this->setupWaitingList('S3');
@@ -110,7 +111,7 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         $this->assertFalse($waitingListAccount->theoryExamPassed);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_display_passed_with_previous_failures_and_then_pass()
     {
         $waitingListAccount = $this->setupWaitingList('S3');

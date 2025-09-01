@@ -9,6 +9,7 @@ use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -47,6 +48,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount withoutTrashed()
  *
+ * @property int|null $removed_by
+ * @property \App\Models\Training\WaitingList\RemovalReason|null $removal_type
+ * @property string|null $removal_comment
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Data\Change> $dataChanges
+ * @property-read int|null $data_changes_count
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereRemovalComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereRemovalType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount whereRemovedBy($value)
+ *
  * @mixin \Eloquent
  */
 class WaitingListAccount extends Model
@@ -55,12 +66,13 @@ class WaitingListAccount extends Model
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['added_by', 'deleted_at', 'notes', 'flags_status_summary'];
+    public $fillable = ['added_by', 'deleted_at', 'notes', 'flags_status_summary', 'removed_by', 'removal_type'];
 
     protected $appends = ['theory_exam_passed'];
 
     protected $casts = [
         'flags_status_summary' => 'array',
+        'removal_type' => RemovalReason::class,
     ];
 
     // 24 hours
@@ -89,6 +101,11 @@ class WaitingListAccount extends Model
     public function addFlag(WaitingListFlag $listFlag, $value = null)
     {
         return $this->flags()->attach($listFlag, ['marked_at' => $value]);
+    }
+
+    public function retentionChecks(): HasMany
+    {
+        return $this->hasMany(WaitingListRetentionCheck::class, 'waiting_list_account_id');
     }
 
     /**

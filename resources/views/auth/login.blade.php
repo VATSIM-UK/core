@@ -3,7 +3,10 @@
 @section('content')
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            {!! HTML::panelOpen("Secondary Authentication", ["type" => "fa", "key" => "fa-key"]) !!}
+            @include('components.html.panel_open', [
+                'title' => 'Secondary Authentication',
+                'icon' => ['type' => 'fa', 'key' => 'fa-key'],
+            ])
             <div class="row">
                 <div class="col-md-12">
                     <p>
@@ -16,12 +19,13 @@
                     </ol>
                     </p>
                     <p>
-                        If you believe you are seeing this page too often, or erroneously, please contact the Web Services Team.
+                        If you believe you are seeing this page too often, or erroneously, please contact the Technology Team.
                     </p>
                 </div>
 
                 <div class="col-md-8 col-md-offset-2">
-                    {!! Form::open(["route" => 'auth-secondary.post', "method" => "POST", 'class' => 'form-horizontal']) !!}
+                    <form action="{{ route('auth-secondary.post') }}" method="POST" class="form-horizontal">
+                        @csrf
                     <input name="remember" type="hidden" value="true">
 
                     <div class='form-group'>
@@ -49,17 +53,17 @@
                             <input class="btn btn-default" type="submit" value="Login">
                         </div>
                     </div>
-                    {!! Form::close() !!}
+                    </form>
                 </div>
             </div>
-            {!! HTML::panelClose() !!}
+            @include('components.html.panel_close')
         </div>
         <div class="col-md-2">
             <div class="panel panel-uk-danger">
               <div class="panel-heading"><i class="fa fa-exclamation-circle"></i> Having issues?</div>
               <div class="panel-body">
                 Use your primary email address (*****<b>{{"@" . explode("@", Auth::user()->email)[1]}}</b>) to send an email to
-                <p>{{ HTML::mailto("web-support@vatsim.uk")}}</p>
+                <p><a href="mailto:technology-support@vatsim.uk">technology-support@vatsim.uk</a></p>
               </div>
             </div>
         </div>
@@ -79,7 +83,7 @@
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('password.email') }}">
                         {{ csrf_field() }}
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger" id="confirm">Confirm</button>
+                        <button type="submit" class="btn btn-danger" id="confirmPasswordReset">Confirm</button>
                     </form>
                 </div>
             </div><!-- /.modal-content -->
@@ -99,7 +103,7 @@
                 <div class="modal-footer">
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('logout') }}">
                         {{ csrf_field() }}
-                        <button type="submit" class="btn btn-danger" id="confirm">Logout</button>
+                        <button type="submit" class="btn btn-danger" id="confirmLogout">Logout</button>
                     </form>
                 </div>
             </div><!-- /.modal-content -->

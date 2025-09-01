@@ -298,6 +298,94 @@ class MockCtsDatabase
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `exam_book` (
+          `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+          `rts_id` smallint unsigned NOT NULL DEFAULT '0',
+          `student_id` int unsigned NOT NULL DEFAULT '0',
+          `student_rating` tinyint unsigned NOT NULL DEFAULT '0',
+          `exam` enum('P1','P2','P3','P4','P5','P6','P7','P8','P9','OBS','TWR','APP','CTR','S3','C1','C3') NOT NULL DEFAULT 'TWR',
+          `position_1` varchar(10) NOT NULL DEFAULT '',
+          `position_2` varchar(10) DEFAULT NULL,
+          `date_1` date DEFAULT NULL,
+          `from_1` time DEFAULT NULL,
+          `to_1` time DEFAULT NULL,
+          `date_2` date DEFAULT NULL,
+          `from_2` time DEFAULT NULL,
+          `to_2` time DEFAULT NULL,
+          `date_3` date DEFAULT NULL,
+          `from_3` time DEFAULT NULL,
+          `to_3` time DEFAULT NULL,
+          `taken` tinyint unsigned DEFAULT '0',
+          `taken_date` date DEFAULT NULL,
+          `taken_from` time DEFAULT NULL,
+          `taken_to` time DEFAULT NULL,
+          `exmr_id` int unsigned DEFAULT NULL,
+          `exmr_rating` tinyint unsigned DEFAULT NULL,
+          `time_book` datetime DEFAULT NULL,
+          `time_taken` datetime DEFAULT NULL,
+          `book_done` tinyint unsigned DEFAULT '0',
+          `second_examiner_req` tinyint unsigned DEFAULT '0',
+          `pass` tinyint unsigned DEFAULT '0',
+          `finished` tinyint unsigned DEFAULT '0',
+          PRIMARY KEY (`id`),
+          KEY `student_id` (`student_id`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=2739 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;");
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `practical_examiners` (
+              `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+              `examid` smallint unsigned NOT NULL DEFAULT '0',
+              `senior` int unsigned NOT NULL DEFAULT '0',
+              `other` int unsigned DEFAULT '0',
+              `trainee` int unsigned DEFAULT '0',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=3010 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `exam_criteria` (
+            `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+            `exam` enum('OBS','TWR','APP','CTR','P1','P2','P3','P4','P5','P6','P7','P8','P9') NOT NULL DEFAULT 'TWR',
+            `criteria` longtext NOT NULL,
+            `deleted` tinyint unsigned DEFAULT '0',
+            PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=247 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `practical_criteria_assess` (
+              `id` mediumint unsigned NOT NULL AUTO_INCREMENT,
+              `examid` smallint unsigned NOT NULL DEFAULT '0',
+              `criteria_id` smallint unsigned NOT NULL DEFAULT '0',
+              `result` char(1) NOT NULL DEFAULT '',
+              `addnotes` tinyint unsigned DEFAULT '0',
+              `notes` longtext NOT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=38933 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `exam_setup` (
+                `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+                `rts_id` smallint unsigned NOT NULL DEFAULT '0',
+                `student_id` int unsigned NOT NULL DEFAULT '0',
+                `position_1` varchar(10) DEFAULT NULL,
+                `position_2` varchar(10) DEFAULT NULL,
+                `exam` char(3) NOT NULL DEFAULT '',
+                `setup_by` int unsigned NOT NULL DEFAULT '0',
+                `setup_date` datetime DEFAULT NULL,
+                `response` tinyint unsigned DEFAULT '0',
+                `deny_reason` longtext,
+                `dealt_by` int unsigned DEFAULT '0',
+                `dealt_date` datetime DEFAULT NULL,
+                `bookid` mediumint NOT NULL DEFAULT '0',
+                `booked` smallint unsigned DEFAULT '0',
+                PRIMARY KEY (`id`),
+                KEY `student_id` (`student_id`)
+              ) ENGINE=InnoDB AUTO_INCREMENT=2344 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
     }
 
     public static function destroy()
@@ -352,6 +440,22 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `rts`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `exam_book`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `practical_examiners`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `exam_criteria`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `practical_criteria_assess`;'
         );
     }
 }

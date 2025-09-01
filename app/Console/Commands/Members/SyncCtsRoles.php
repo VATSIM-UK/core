@@ -50,6 +50,13 @@ class SyncCtsRoles extends Command
         $this->syncPilotStudents(55); // Pilot Students
         $this->syncStudentsByPosition('TFP_FLIGHT', Role::findByName('TFP Student')->id); // TFP Students
         $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
+
+        /**
+         * If you wish to do multiple positions for the same rule, don't do what I did and separate them into different
+         * calls. If you duplicate the role ID it will succeed on the first, but the next one will remove it.
+         */
+        // Heathrow students
+        $this->syncStudentsByPositions(['EGLL_2_GND', 'EGLL_S_TWR', 'EGLL_N_APP'], Role::findByName('ATC Students (Heathrow)')->id);
         // OBS Student
         $this->syncStudentsByPositions(['OBS_CC_PT2', 'OBS_NX_PT2', 'OBS_PH_PT2', 'OBS_SS_PT2'], Role::findByName('OBS Students')->id);
 
@@ -58,7 +65,12 @@ class SyncCtsRoles extends Command
         $this->syncStudentsByRts(17, Role::findByName('ATC Students (ENR)')->id); // Enroute Students
 
         // Sync Examiners
-        $this->syncAtcExaminers(31); // ATC
+        // Split ATC Examiner roles per level
+        $this->syncObsExaminers(Role::findByName('ATC Examiner (OBS)')->id);
+        $this->syncTwrExaminers(Role::findByName('ATC Examiner (TWR)')->id);
+        $this->syncAppExaminers(Role::findByName('ATC Examiner (APP)')->id);
+        $this->syncCtrExaminers(Role::findByName('ATC Examiner (CTR)')->id);
+
         $this->syncPilotExaminers(40); // Pilot
     }
 
@@ -76,10 +88,31 @@ class SyncCtsRoles extends Command
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 
-    private function syncAtcExaminers(int $roleId): void
+    private function syncObsExaminers(int $roleId): void
     {
         $hasRole = $this->getAccountsWithRoleId($roleId);
-        $shouldHaveRole = (new ExaminerRepository)->getAtcExaminers();
+        $shouldHaveRole = (new ExaminerRepository)->getObsExaminers();
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncTwrExaminers(int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new ExaminerRepository)->getTwrExaminers();
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncAppExaminers(int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new ExaminerRepository)->getAppExaminers();
+        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
+    }
+
+    private function syncCtrExaminers(int $roleId): void
+    {
+        $hasRole = $this->getAccountsWithRoleId($roleId);
+        $shouldHaveRole = (new ExaminerRepository)->getCtrExaminers();
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 

@@ -7,6 +7,7 @@ use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WaitingListTest extends TestCase
@@ -26,38 +27,38 @@ class WaitingListTest extends TestCase
         $this->actingAs($this->privacc);
     }
 
-    /** @test * */
+    #[Test]
     public function it_displays_name_on_to_string()
     {
         $this->assertEquals($this->waitingList->name, $this->waitingList);
     }
 
-    /** @test * */
+    #[Test]
     public function it_has_a_name()
     {
         $this->assertNotNull($this->waitingList->name);
         $this->assertNotNull($this->waitingList->slug);
     }
 
-    /** @test * */
+    #[Test]
     public function it_detects_if_atc_list()
     {
-        $atcList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $atcList = WaitingList::factory()->create(['department' => 'atc']);
 
         $this->assertTrue($atcList->isAtcList());
         $this->assertFalse($atcList->isPilotList());
     }
 
-    /** @test * */
+    #[Test]
     public function it_detects_if_pilot_list()
     {
-        $atcList = factory(WaitingList::class)->create(['department' => 'pilot']);
+        $atcList = WaitingList::factory()->create(['department' => 'pilot']);
 
         $this->assertTrue($atcList->isPilotList());
         $this->assertFalse($atcList->isAtcList());
     }
 
-    /** @test * */
+    #[Test]
     public function it_can_have_students()
     {
         $account = Account::factory()->make();
@@ -70,7 +71,7 @@ class WaitingListTest extends TestCase
             ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_find_position_of_account()
     {
         $accounts_added_at = [Carbon::now()->subDays(10), Carbon::now()->subDays(1), Carbon::now()->subDays(4)];
@@ -81,7 +82,7 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->department = WaitingList::PILOT_DEPARTMENT;
         $this->waitingList->save();
-        $flag = $this->waitingList->addFlag(factory(WaitingListFlag::class)->create(['default_value' => false]));
+        $flag = $this->waitingList->addFlag(WaitingListFlag::factory()->create(['default_value' => false]));
 
         // Add to list
         foreach ($accounts as $i => $account) {
@@ -112,7 +113,7 @@ class WaitingListTest extends TestCase
         $this->assertDatabaseHas('training_waiting_list_account',
             ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
 
-        $this->waitingList->removeFromWaitingList($account);
+        $this->waitingList->removeFromWaitingList($account, new WaitingList\Removal(WaitingList\RemovalReason::Other, null));
 
         $this->assertDatabaseHas('training_waiting_list_account',
             [
@@ -127,7 +128,7 @@ class WaitingListTest extends TestCase
             $this->waitingList->addToWaitingList($account, $this->privacc);
         });
 
-        $this->waitingList->removeFromWaitingList($accounts[1]);
+        $this->waitingList->removeFromWaitingList($accounts[1], new WaitingList\Removal(WaitingList\RemovalReason::Other, null));
 
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $this->waitingList->id,
@@ -135,19 +136,19 @@ class WaitingListTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_have_a_boolean_flag()
     {
-        $flag = factory(WaitingListFlag::class)->create();
+        $flag = WaitingListFlag::factory()->create();
         $this->waitingList->addFlag($flag);
 
         $this->assertTrue($this->waitingList->flags->contains($flag));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_have_flags_removed()
     {
-        $flag = factory(WaitingListFlag::class)->create();
+        $flag = WaitingListFlag::factory()->create();
         $this->waitingList->addFlag($flag);
 
         $this->waitingList->removeFlag($flag);
@@ -155,7 +156,7 @@ class WaitingListTest extends TestCase
         $this->assertFalse($this->waitingList->flags->contains($flag));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_detect_whether_to_show_atc_hour_check()
     {
         $this->waitingList->department = WaitingList::ATC_DEPARTMENT;
@@ -176,7 +177,7 @@ class WaitingListTest extends TestCase
         $this->assertFalse($this->waitingList->should_check_atc_hours);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_detect_whether_to_check_for_cts_theory_exam()
     {
         $this->waitingList->feature_toggles = null;
@@ -196,7 +197,7 @@ class WaitingListTest extends TestCase
         $this->assertFalse($this->waitingList->should_check_cts_theory_exam);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_feature_toggles_formatted_in_array()
     {
         $this->waitingList->feature_toggles = null;

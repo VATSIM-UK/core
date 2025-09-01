@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Role;
 
-use App\Filament\Resources\RoleResource;
+use App\Filament\Admin\Resources\RoleResource;
 use App\Policies\RolePolicy;
 use Tests\Feature\Admin\BaseAdminResourceTestCase;
 

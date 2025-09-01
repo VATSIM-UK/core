@@ -23,6 +23,12 @@ class RolesAndPermissionsSeeder extends Seeder
         $privacc = Role::firstOrCreate(['name' => 'privacc', 'guard_name' => 'web', 'default' => false]);
         $member = Role::firstOrCreate(['name' => 'member', 'guard_name' => 'web', 'default' => true]);
 
+        // Create ATC Examiner Roles
+        $obsExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (OBS)', 'guard_name' => 'web', 'default' => false]);
+        $twrExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (TWR)', 'guard_name' => 'web', 'default' => false]);
+        $appExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (APP)', 'guard_name' => 'web', 'default' => false]);
+        $ctrExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (CTR)', 'guard_name' => 'web', 'default' => false]);
+
         // Add All Permissions
         $permissions = [
             app()->isProduction() ? null : '*',
@@ -31,6 +37,16 @@ class RolesAndPermissionsSeeder extends Seeder
             'admin.access',
             'horizon.access',
             'telescope.access',
+
+            // Training Panel Permissions
+            'training.access',
+            'training.exams.access',
+            'training.exams.setup',
+            'training.exams.conduct.*',
+            'training.exams.conduct.obs',
+            'training.exams.conduct.twr',
+            'training.exams.conduct.app',
+            'training.exams.conduct.ctr',
 
             // Account Permissions
             'account.self',
@@ -88,6 +104,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'waiting-lists.add-flags.*',
             'waiting-lists.delete.*',
             'waiting-lists.create',
+            'waiting-lists.admin.*',
+            'waiting-lists.admin.atc',
+            'waiting-lists.admin.pilot',
 
             // // Feedback System Permissions
             'feedback.access',
@@ -102,23 +121,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'feedback.action',
             // 'feedback.form.create',
             // 'feedback.form.configure.*',
-
-            // // SmartCars System Permissions
-            // 'smartcars.access',
-            // 'smartcars.aircraft.view.*',
-            // 'smartcars.aircraft.create',
-            // 'smartcars.aircraft.update.*',
-            // 'smartcars.aircraft.delete.*',
-            // 'smartcars.airport.view.*',
-            // 'smartcars.airport.create',
-            // 'smartcars.airport.update.*',
-            // 'smartcars.airport.delete.*',
-            // 'smartcars.exercie.view.*',
-            // 'smartcars.exercie.create',
-            // 'smartcars.exercie.update.*',
-            // 'smartcars.exercie.delete.*',
-            // 'smartcars.flight.view.*',
-            // 'smartcars.flight.edit.*',
 
             // // Endorsement System Permissions
             // 'atc.endorsement.access',
@@ -180,11 +182,14 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'discord.rostering',
             // 'discord.livestreaming',
             'discord.atc.student.obs',
+            'discord.atc.student.heathrow',
 
             'position-group.view.*',
 
             'endorsement.temporary.create.*',
             'endorsement.temporary.edit.*',
+            'endorsement.bypass.minimumdays',
+            'endorsement.bypass.maximumdays',
 
             'endorsement.create.*',
             'endorsement.create.permanent',
@@ -198,6 +203,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'endorsement-request.approve.*',
             'endorsement-request.reject.*',
             'roster.manage',
+            'roster.restriction.create',
+            'roster.restriction.remove',
+
         ];
 
         foreach ($permissions as $permission) {

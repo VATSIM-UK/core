@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Account;
 
-use App\Filament\Resources\BanResource;
+use App\Filament\Admin\Resources\BanResource;
 use App\Policies\Mship\Account\BanPolicy;
 use Tests\Feature\Admin\BaseAdminResourceTestCase;
 

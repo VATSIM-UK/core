@@ -2,10 +2,13 @@
 
 namespace App\Models\Cts;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ExaminerSettings extends Model
 {
+    use HasFactory;
+
     protected $connection = 'cts';
 
     protected $table = 'examinerSettings';
@@ -15,6 +18,26 @@ class ExaminerSettings extends Model
     public function member()
     {
         return $this->belongsTo(Member::class, 'memberID', 'id');
+    }
+
+    public function scopeObs($query)
+    {
+        return $query->where('OBS', '=', 1);
+    }
+
+    public function scopeTwr($query)
+    {
+        return $query->where('S1', '=', 1);
+    }
+
+    public function scopeApp($query)
+    {
+        return $query->where('S2', '=', 1);
+    }
+
+    public function scopeCtr($query)
+    {
+        return $query->where('S3', '=', 1);
     }
 
     public function scopeAtc($query)

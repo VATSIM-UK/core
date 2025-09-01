@@ -3,16 +3,21 @@
 namespace App\Models\Training\WaitingList;
 
 use App\Models\Atc\PositionGroup;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingListFlag extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 
     protected $table = 'training_waiting_list_flags';
+
+    protected $casts = [
+        'display_in_table' => 'boolean',
+    ];
 
     protected static function boot()
     {

@@ -11,6 +11,7 @@ use Faker\Provider\Lorem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AccountSyncTest extends TestCase
@@ -27,7 +28,7 @@ class AccountSyncTest extends TestCase
         Model::setEventDispatcher($initialDispatcher);
     }
 
-    /** @test */
+    #[Test]
     public function it_triggers_when_email_changed()
     {
         $this->user->email = 'joe@example.org';
@@ -35,7 +36,7 @@ class AccountSyncTest extends TestCase
         Event::assertDispatched(AccountAltered::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_triggers_when_banned()
     {
         $reason = Reason::factory()->create();
@@ -46,7 +47,7 @@ class AccountSyncTest extends TestCase
         Event::assertDispatched(AccountAltered::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_triggers_when_un_banned()
     {
         $ban = Ban::factory()->create();
@@ -55,7 +56,7 @@ class AccountSyncTest extends TestCase
         Event::assertDispatched(AccountAltered::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_doesnt_trigger_when_untracked_values_changed()
     {
         $this->user->last_login = Carbon::now();

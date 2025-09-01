@@ -4,6 +4,7 @@ namespace Tests\Unit\Mship;
 
 use App\Models\Mship\Qualification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Metadata\DataProvider;
 use Tests\TestCase;
 
@@ -11,7 +12,7 @@ class QualificationDetectionTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function it_handles_minus1_by_not_assigning_pilot_ratings()
     {
         $qualifications = Qualification::parseVatsimPilotQualifications(-1);
@@ -19,7 +20,7 @@ class QualificationDetectionTest extends TestCase
         $this->assertEmpty($qualifications);
     }
 
-    /** @test */
+    #[Test]
     public function it_handles_flight_instructor_rating()
     {
         $flightInstructorQualification = Qualification::where('code', 'FI')->first();
@@ -29,7 +30,7 @@ class QualificationDetectionTest extends TestCase
         $this->assertTrue(collect($qualifications)->pluck('code')->contains($flightInstructorQualification->code));
     }
 
-    /** @test */
+    #[Test]
     public function it_handles_flight_examiner_rating()
     {
         $flightExaminerQualification = Qualification::where('code', 'FE')->first();

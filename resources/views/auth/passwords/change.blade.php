@@ -10,11 +10,12 @@
 
             <div class="row">
                 <div class="col-md-7 col-md-offset-2">
-                    {!! Form::open(["route" => "password.change", "class" => "form-horizontal"]) !!}
+                    <form action="{{ route('password.change') }}" method="POST" class="form-horizontal">
+                    @csrf
                     @include('auth.passwords.partials._old')
                     @include('auth.passwords.partials._new')
                     @include('auth.passwords.partials._submit')
-                    {{ Form::close() }}
+                    </form>
                 </div>
             </div>
         </div>

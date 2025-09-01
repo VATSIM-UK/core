@@ -25,19 +25,10 @@ class AirportController extends BaseController
 
     public function show(Airport $airport)
     {
-        $airport->load(['navaids', 'runways', 'procedures', 'procedures.runway']);
-
-        $positions = $airport->positions()->orderByDesc('type')->get()->groupBy('type')->transform(function ($group) {
-            return $group->sortBy(function ($station) {
-                return strlen($station->callsign) * ($station->sub_station ? 2 : 1);
-            });
-        })->collapse();
-
         return $this->viewMake('site.airport.view')
             ->with(
                 [
                     'airport' => $airport,
-                    'positions' => $positions,
                     'stands' => $this->ukcp->getStandStatus(Str::upper($airport->icao)),
                 ]
             );

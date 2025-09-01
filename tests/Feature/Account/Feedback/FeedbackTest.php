@@ -4,6 +4,7 @@ namespace Tests\Feature\Account\Feedback;
 
 use App\Models\Mship\Feedback\Form;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class FeedbackTest extends TestCase
@@ -19,14 +20,14 @@ class FeedbackTest extends TestCase
         $this->form = Form::find(1);
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_from_feedback_form_selector_as_guest()
     {
         $this->get(route('mship.feedback.new'))
             ->assertRedirect(route('landing'));
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_feedback_form_selector()
     {
         $this->actingAs($this->user, 'web')
@@ -34,14 +35,14 @@ class FeedbackTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_redirects_from_feedback_form_as_guest()
     {
         $this->get(route('mship.feedback.new.form', $this->form->slug))
             ->assertRedirect(route('landing'));
     }
 
-    /** @test */
+    #[Test]
     public function test_it_loads_the_feedback_form()
     {
         $this->actingAs($this->user, 'web')
@@ -49,7 +50,7 @@ class FeedbackTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function test_it_fills_user_cid_in_atc_form()
     {
         $form = Form::whereSlug('atc')->first();
@@ -77,25 +78,25 @@ class FeedbackTest extends TestCase
         $request->assertRedirect(route('mship.feedback.new.form', [$form->slug, 'cid' => 'mycidishere']));
     }
 
-    //    /** @test */
+    //    #[Test]
     //    public function testItAllowsSubmission()
     //    {
     //        //
     //    }
     //
-    //    /** @test */
+    //    #[Test]
     //    public function testItAllowsCreationOfFormWithPermission()
     //    {
     //        //
     //    }
     //
-    //    /** @test */
+    //    #[Test]
     //    public function testItAllowsViewingOfSubmissionWithPermission()
     //    {
     //        //
     //    }
     //
-    //    /** @test */
+    //    #[Test]
     //    public function testItDoesNotAllowViewingOfSubmissionWithoutPermission()
     //    {
     //        //

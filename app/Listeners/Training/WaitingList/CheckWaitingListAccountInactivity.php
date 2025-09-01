@@ -3,6 +3,8 @@
 namespace App\Listeners\Training\WaitingList;
 
 use App\Events\Mship\AccountAltered;
+use App\Models\Training\WaitingList\Removal;
+use App\Models\Training\WaitingList\RemovalReason;
 use App\Notifications\Training\RemovedFromWaitingListInactiveAccount;
 use Illuminate\Support\Facades\Log;
 
@@ -33,7 +35,7 @@ class CheckWaitingListAccountInactivity
         foreach ($account->currentWaitingLists() as $waitingList) {
             Log::info("Inactive account {$account->id} is in waiting list {$waitingList->id} - removing from waiting list");
 
-            $waitingList->removeFromWaitingList($account);
+            $waitingList->removeFromWaitingList($account, new Removal(RemovalReason::Inactivity, null));
         }
 
         Log::info("Account {$account->id} is in waiting lists {$account->currentWaitingLists()->pluck('id')->join(', ')}, with inactive account state - (fake) notifying account");

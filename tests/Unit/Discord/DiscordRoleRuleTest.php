@@ -39,7 +39,7 @@ class DiscordRoleRuleTest extends TestCase
         }
 
         // Setup CTS may control
-        $member = factory(Member::class)->create([
+        $member = Member::Factory()->create([
             'visit_may_control' => $ctsControlSetup[0] ? 'Some Group / CTS_SEARCH_QUERY / Another Group' : 'Some Group / Another Group',
         ]);
         $account = Account::factory()->create(['id' => $member->cid]);

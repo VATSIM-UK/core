@@ -27,6 +27,8 @@ use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Concerns\HasWaitingLists;
 use App\Models\Mship\Note\Type;
 use App\Models\Roster;
+use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -34,6 +36,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -148,8 +151,6 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $o_auth_tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Smartcars\Pirep> $pireps
- * @property-read int|null $pireps_count
  * @property-read \App\Models\Training\WaitingList\WaitingListAccount $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Qualification> $qualifications
  * @property-read int|null $qualifications_count
@@ -382,11 +383,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function activityRecent()
     {
         return $this->hasMany(\App\Models\Sys\Activity::class, 'actor_id');
-    }
-
-    public function pireps()
-    {
-        return $this->hasManyThrough(\App\Models\Smartcars\Pirep::class, \App\Models\Smartcars\Bid::class, 'account_id', 'bid_id', 'id');
     }
 
     public function feedback()
@@ -629,5 +625,20 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         }
 
         return [$this->id];
+    }
+
+    /**
+     * All retention checks for this account across all waiting lists.
+     */
+    public function retentionChecks(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            WaitingListRetentionCheck::class,
+            WaitingListAccount::class,
+            'account_id',
+            'waiting_list_account_id',
+            'id',
+            'id'
+        );
     }
 }

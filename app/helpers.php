@@ -114,9 +114,11 @@ function human_diff_string(Carbon\Carbon $ts1, Carbon\Carbon $ts2, $absolute = f
         return 'unknown length';
     }
 
-    if ($ts2 < \Carbon\Carbon::minValue() || $ts2 > \Carbon\Carbon::maxValue()) {
+    $min = \Carbon\Carbon::parse('0001-01-01 00:00:00');
+    $max = \Carbon\Carbon::parse('9999-12-31 23:59:59');
+    if ($ts2 < $min || $ts2 > $max) {
         throw new \Carbon\Exceptions\InvalidDateException('Date outside range', $ts2);
-    } elseif ($ts1 < \Carbon\Carbon::minValue() || $ts1 > \Carbon\Carbon::maxValue()) {
+    } elseif ($ts1 < $min || $ts1 > $max) {
         throw new \Carbon\Exceptions\InvalidDateException('Date outside range', $ts1);
     }
 

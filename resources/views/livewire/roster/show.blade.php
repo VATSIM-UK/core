@@ -41,28 +41,28 @@
                 </div>
             </div>
             <div class="flex flex-col space-y-4">
-                    @if($roster)
-            <hr>
-            <form wire:submit="search" class="flex flex-col mb-4 space-y-4">
-                <div>
-                    <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Check
-                        Position</label>
-                    <div class="mt-2">
-                        <input wire:model="searchTerm" id="search" name="search" type="text" autocomplete="off"
-                            required
-                            placeholder="e.g. EGKK or EGKK_APP"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    </div>
-                </div>
+                @if($roster && $roster->restrictionNote == null)
+                    <hr>
+                    <form wire:submit="search" class="flex flex-col mb-4 space-y-4">
+                        <div>
+                            <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Check
+                                Position</label>
+                            <div class="mt-2">
+                                <input wire:model="searchTerm" id="search" name="search" type="text" autocomplete="off"
+                                    required
+                                    placeholder="e.g. EGKK or EGKK_APP"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            </div>
+                        </div>
 
-                <div>
-                    <button
-                        type="submit"
-                        class="flex w-full justify-center rounded-md bg-brand px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Search
-                    </button>
-                </div>
-            </form>
+                        <div>
+                            <button
+                                type="submit"
+                                class="flex w-full justify-center rounded-md bg-brand px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Search
+                            </button>
+                        </div>
+                    </form>
                 @endif
                 @if($positions)
                     @if(count($positions) == 1)
@@ -90,9 +90,11 @@
                 @if(!$roster)
                     <span>❌ {{ $account->id }} cannot control any UK positions.</span>
                 @endif
-                
+                @if($roster && $roster->restrictionNote)
+                    <span class="text-red-500">❗ {{ $roster->restrictionNote->content }}</span>
+                @endif
             </div>
-            
+
             <div>
                 <a class="text-bold text-blue-500 hover:cursor-pointer" wire:navigate
                 href="{{ route('site.roster.search') }}">Go back</a>
