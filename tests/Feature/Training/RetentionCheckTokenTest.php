@@ -81,4 +81,21 @@ class RetentionCheckTokenTest extends TestCase
             'status' => WaitingListRetentionCheck::STATUS_USED,
         ]);
     }
+
+    #[Test]
+    public function it_redirects_to_success_with_already_used_token()
+    {
+        WaitingListRetentionCheck::factory()->create([
+            'token' => 'used-token',
+            'expires_at' => now()->addDays(7),
+            'response_at' => now(),
+            'status' => WaitingListRetentionCheck::STATUS_USED,
+        ]);
+
+        $this->actingAs($this->user)
+            ->get(route('mship.waiting-lists.retention.token', ['token' => 'used-token']))
+            ->assertStatus(302)
+            ->assertRedirect(route('mship.waiting-lists.retention.success'))
+            ->assertSessionHas('extraMessage');
+    }
 }
