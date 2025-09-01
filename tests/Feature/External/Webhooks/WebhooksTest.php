@@ -86,7 +86,7 @@ class WebhooksTest extends TestCase
 
     public function test_update_handler()
     {
-        $this->testCreationHandler();
+        $this->test_creation_handler();
 
         $webhook = $this->buildChangedSample();
         $accountId = $webhook['resource'];
@@ -100,7 +100,7 @@ class WebhooksTest extends TestCase
     {
         // Make sure that account is booted from waiting list when leaving division
 
-        $this->testCreationHandler();
+        $this->test_creation_handler();
 
         $webhook = $this->buildLeavingSample();
         $accountId = $webhook['resource'];
