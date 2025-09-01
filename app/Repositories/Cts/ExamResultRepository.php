@@ -17,6 +17,14 @@ class ExamResultRepository
             ->get();
     }
 
+    public function getPendingExamsOfType(string $type, int $daysConsideredRecent = 180): Collection
+    {
+        return ExamBooking::where('exam', $type)
+            ->where('taken', 1)
+            ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->get();
+    }
+
     public function createPracticalResult(ExamBooking $examBooking, string $result, ?string $additionalComments)
     {
         $practicalResult = PracticalResult::create([
