@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Arr;
 
 class Position extends Model implements Endorseable
 {
@@ -117,14 +118,8 @@ class Position extends Model implements Endorseable
         ];
 
         $callsignParts = explode('_', $this->callsign);
-
-        if (! in_array($callsignParts[count($callsignParts) - 1], array_keys($mapping))) {
-            return Attribute::make(
-                get: fn () => null,
-            );
-        }
-
-        $rts = $mapping[$callsignParts[count($callsignParts) - 1]];
+        $last = Arr::last($callsignParts);
+        $rts = $mapping[$last] ?? null;
 
         return Attribute::make(
             get: fn () => $rts,
@@ -134,7 +129,7 @@ class Position extends Model implements Endorseable
     protected function examLevel(): Attribute
     {
         return Attribute::make(
-            get: fn () => explode('_', $this->callsign)[1],
+            get: fn () => Arr::last(explode('_', $this->callsign)),
         );
     }
 }
