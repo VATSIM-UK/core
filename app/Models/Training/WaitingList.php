@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Number;
 
 /**
  * @property int $id
@@ -252,10 +253,12 @@ class WaitingList extends Model
         $waitingListAccount->removal_comment = $removal->otherReason;
         $waitingListAccount->removed_by = $removal->removedBy;
 
+        $position = Number::ordinal($this->positionOf($waitingListAccount));
+
         $noteType = Type::isShortCode('training')->firstOrFail();
         $account->addNote(
             $noteType,
-            "Removed from {$this->name} Waiting List: {$removal->comment()}",
+            "Removed from list '{$this->name}' ({$removal->comment()}), original join date {$waitingListAccount->created_at->format('Y-m-d')}, was {$position}.",
             $removal->removedBy);
 
         $waitingListAccount->save();
