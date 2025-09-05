@@ -365,6 +365,27 @@ class MockCtsDatabase
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB AUTO_INCREMENT=38933 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `exam_setup` (
+                `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+                `rts_id` smallint unsigned NOT NULL DEFAULT '0',
+                `student_id` int unsigned NOT NULL DEFAULT '0',
+                `position_1` varchar(10) DEFAULT NULL,
+                `position_2` varchar(10) DEFAULT NULL,
+                `exam` char(3) NOT NULL DEFAULT '',
+                `setup_by` int unsigned NOT NULL DEFAULT '0',
+                `setup_date` datetime DEFAULT NULL,
+                `response` tinyint unsigned DEFAULT '0',
+                `deny_reason` longtext,
+                `dealt_by` int unsigned DEFAULT '0',
+                `dealt_date` datetime DEFAULT NULL,
+                `bookid` mediumint NOT NULL DEFAULT '0',
+                `booked` smallint unsigned DEFAULT '0',
+                PRIMARY KEY (`id`),
+                KEY `student_id` (`student_id`)
+              ) ENGINE=InnoDB AUTO_INCREMENT=2344 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
     }
 
     public static function destroy()

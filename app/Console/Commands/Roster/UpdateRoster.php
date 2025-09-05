@@ -79,7 +79,7 @@ class UpdateRoster extends Command
                 $query
                     ->join('roster', 'mship_account_state.account_id', '=', 'roster.account_id')
                     ->whereIn('mship_state.code', ['DIVISION'])
-                    ->orWhereColumn('roster.updated_at', '>', 'mship_account_state.start_at');
+                    ->orWhereColumn('roster.updated_at', '>=', 'mship_account_state.start_at');
             });
         });
 
@@ -88,7 +88,7 @@ class UpdateRoster extends Command
                 $query
                     ->join('roster', 'mship_account_state.account_id', '=', 'roster.account_id')
                     ->whereIn('mship_state.code', ['TRANSFERRING', 'VISITING'])
-                    ->orWhereColumn('roster.updated_at', '>', 'mship_account_state.start_at');
+                    ->orWhereColumn('roster.updated_at', '>=', 'mship_account_state.start_at');
             });
         });
 
@@ -97,13 +97,18 @@ class UpdateRoster extends Command
             ->remove($rosterUpdate);
 
         // On an ATC waiting list, not on the roster, need to be removed...
-        $removeFromWaitingList = WaitingListAccount::with('waitingList')
+        $removeFromWaitingList = WaitingListAccount::with('waitingList', 'account')
             ->whereIn('list_id', WaitingList::where('department', WaitingList::ATC_DEPARTMENT)->where('requires_roster_membership', true)->get('id'))
             ->whereNotIn('account_id', $eligible)
             ->get();
+
+        $removal = new WaitingList\Removal(WaitingList\RemovalReason::Inactivity, null, 'Triggered by roster removal');
+
         $removeFromWaitingList
-            ->each
-            ->delete();
+            ->each(function (WaitingListAccount $waitingListAccount) use ($removal) {
+                $waitingListAccount->waitingList->removeFromWaitingList($waitingListAccount->account, $removal);
+                \Log::debug("Removed {$waitingListAccount->account->id} from {$waitingListAccount->waitingList->id} due to roster removal");
+            });
 
         // Not on the roster, need to be on...
         Roster::upsert(
