@@ -92,7 +92,7 @@
         "sentry/sentry-laravel": "^4.0",
         "spatie/laravel-markdown": "^2.7",
         "spatie/laravel-permission": "^6.9",
-        "spatie/laravel-schedule-monitor": "^3.0",
+        "spatie/laravel-schedule-monitor": "^4.0",
         "symfony/http-client": "^7.0",
         "symfony/mailgun-mailer": "^7.0",
         "symfony/translation": "^7.2",
