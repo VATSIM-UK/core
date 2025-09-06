@@ -3398,16 +3398,16 @@
         },
         {
             "name": "laravel/helpers",
-            "version": "v1.7.2",
+            "version": "v1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/helpers.git",
-                "reference": "672d79d5b5f65dc821e57783fa11f22c4d762d70"
+                "reference": "d0094b4bc4364560c8ee3a9e956596d760d4afab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/helpers/zipball/672d79d5b5f65dc821e57783fa11f22c4d762d70",
-                "reference": "672d79d5b5f65dc821e57783fa11f22c4d762d70",
+                "url": "https://api.github.com/repos/laravel/helpers/zipball/d0094b4bc4364560c8ee3a9e956596d760d4afab",
+                "reference": "d0094b4bc4364560c8ee3a9e956596d760d4afab",
                 "shasum": ""
             },
             "require": {
@@ -3449,9 +3449,9 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/helpers/tree/v1.7.2"
+                "source": "https://github.com/laravel/helpers/tree/v1.8.1"
             },
-            "time": "2025-01-24T15:41:25+00:00"
+            "time": "2025-09-02T15:31:25+00:00"
         },
         {
             "name": "laravel/horizon",
