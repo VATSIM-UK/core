@@ -77,7 +77,7 @@ return [
 
     'vatsim-net' => [
         'webhook' => [
-            'key' => env('VATSIM_NET_WEBHOOK_KEY'),
+            'key' => env('VATSIM_NET_WEBHOOK_KEY', ''),
         ],
         'api' => [
             'base' => env('VATSIM_API_BASE', 'https://api.vatsim.net/api/'),
