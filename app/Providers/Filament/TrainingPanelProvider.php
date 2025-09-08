@@ -46,6 +46,7 @@ class TrainingPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 TrainingPanelAccessMiddleware::class,
-            ]);
+            ])
+            ->viteTheme('resources/assets/css/tailwind.css');
     }
 }
