@@ -3,8 +3,12 @@
 namespace App\Filament\Admin\Resources\RoleResource\RelationManagers;
 
 use App\Filament\Admin\Resources\AccountResource;
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
+use Filament\Actions\DetachBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class UsersRelationManager extends RelationManager
@@ -17,22 +21,22 @@ class UsersRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->searchable(),
+                TextColumn::make('name')->searchable(),
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()
+                AttachAction::make()
                     ->recordSelectSearchColumns(AccountResource::getGloballySearchableAttributes())
                     ->recordTitle(fn ($record) => "$record->name ($record->id)"),
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make()->resource(AccountResource::class),
-                Tables\Actions\DetachAction::make()
+            ->recordActions([
+                ViewAction::make()->resource(AccountResource::class),
+                DetachAction::make()
                     ->using(function ($record, $livewire) {
                         $record->removeRole($livewire->ownerRecord);
                     }),
             ])
-            ->bulkActions([
-                Tables\Actions\DetachBulkAction::make()
+            ->toolbarActions([
+                DetachBulkAction::make()
                     ->using(function ($records, $livewire) {
                         $records->forEach(fn ($record) => $record->removeRole($livewire->ownerRecord));
                     }),

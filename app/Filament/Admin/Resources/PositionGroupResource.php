@@ -2,30 +2,33 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\PositionGroupResource\Pages\ListPositionGroups;
+use App\Filament\Admin\Resources\PositionGroupResource\Pages\ViewPositionGroup;
 use App\Filament\Admin\Resources\PositionGroupResource\RelationManagers\MembershipEndorsementRelationManager;
 use App\Models\Atc\PositionGroup;
-use Filament\Infolists;
-use Filament\Infolists\Infolist;
+use Filament\Actions\ViewAction;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class PositionGroupResource extends Resource
 {
     protected static ?string $model = PositionGroup::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $modelLabel = 'Tier Endorsements';
 
-    protected static ?string $navigationGroup = 'Mentoring';
+    protected static string|\UnitEnum|null $navigationGroup = 'Mentoring';
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
-                Infolists\Components\TextEntry::make('name'),
-                Infolists\Components\TextEntry::make('positions.callsign'),
+        return $schema
+            ->components([
+                TextEntry::make('name'),
+                TextEntry::make('positions.callsign'),
             ]);
     }
 
@@ -33,15 +36,15 @@ class PositionGroupResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Name')
+                TextColumn::make('name')->label('Name')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('membership_endorsement_count')
+                TextColumn::make('membership_endorsement_count')
                     ->label('Endorsed')
                     ->counts('membershipEndorsement'),
             ])
             ->defaultSort('name')
-            ->actions([
-                Tables\Actions\ViewAction::make(),
+            ->recordActions([
+                ViewAction::make(),
             ])
             ->defaultSort('name', 'desc');
     }
@@ -56,8 +59,8 @@ class PositionGroupResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\PositionGroupResource\Pages\ListPositionGroups::route('/'),
-            'view' => \App\Filament\Admin\Resources\PositionGroupResource\Pages\ViewPositionGroup::route('/{record}'),
+            'index' => ListPositionGroups::route('/'),
+            'view' => ViewPositionGroup::route('/{record}'),
         ];
     }
 }

@@ -2,11 +2,16 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\SoloEndorsementResource\Pages\ListSoloEndorsements;
 use App\Models\Atc\Position;
 use App\Models\Mship\Account\Endorsement;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\QueryBuilder;
+use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint\Operators\EqualsOperator;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -14,11 +19,11 @@ class SoloEndorsementResource extends Resource
 {
     protected static ?string $model = Endorsement::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $modelLabel = 'Solo Endorsements';
 
-    protected static ?string $navigationGroup = 'Mentoring';
+    protected static string|\UnitEnum|null $navigationGroup = 'Mentoring';
 
     public static function getEloquentQuery(): Builder
     {
@@ -39,13 +44,13 @@ class SoloEndorsementResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('account.id')->label('CID'),
-                Tables\Columns\TextColumn::make('account.name')->label('Account'),
-                Tables\Columns\TextColumn::make('endorsable.description')->label('Position'),
-                Tables\Columns\TextColumn::make('duration')->getStateUsing(fn ($record) => floor($record->created_at->diffInDays($record->expires_at)).' days')->label('Duration'),
-                Tables\Columns\TextColumn::make('created_at')->label('Started At')->isoDateTimeFormat('lll'),
-                Tables\Columns\TextColumn::make('expires_at')->label('Expires At')->isoDateTimeFormat('lll')->sortable(),
-                Tables\Columns\TextColumn::make('status')->label('Status')->badge()
+                TextColumn::make('account.id')->label('CID'),
+                TextColumn::make('account.name')->label('Account'),
+                TextColumn::make('endorsable.description')->label('Position'),
+                TextColumn::make('duration')->getStateUsing(fn ($record) => floor($record->created_at->diffInDays($record->expires_at)).' days')->label('Duration'),
+                TextColumn::make('created_at')->label('Started At')->isoDateTimeFormat('lll'),
+                TextColumn::make('expires_at')->label('Expires At')->isoDateTimeFormat('lll')->sortable(),
+                TextColumn::make('status')->label('Status')->badge()
                     ->getStateUsing(fn ($record) => $record->expires_at->isPast() ? 'Expired' : 'Active')
                     ->color(
                         fn (string $state): string => match ($state) {
@@ -57,7 +62,7 @@ class SoloEndorsementResource extends Resource
             ])
             ->defaultSort('expires_at', 'desc')
             ->filters([
-                Tables\Filters\TernaryFilter::make('expires_at')
+                TernaryFilter::make('expires_at')
                     ->label('Endorsement Expiry Status')
                     ->trueLabel('Active')
                     ->default(true)
@@ -70,11 +75,11 @@ class SoloEndorsementResource extends Resource
                         blank: fn (Builder $query) => $query
                     ),
 
-                Tables\Filters\QueryBuilder::make()
+                QueryBuilder::make()
                     ->constraints([
-                        Tables\Filters\QueryBuilder\Constraints\TextConstraint::make('account.id')->operators(
+                        TextConstraint::make('account.id')->operators(
                             [
-                                Tables\Filters\QueryBuilder\Constraints\TextConstraint\Operators\EqualsOperator::class,
+                                EqualsOperator::class,
                             ]
                         ),
                     ]),
@@ -84,7 +89,7 @@ class SoloEndorsementResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\SoloEndorsementResource\Pages\ListSoloEndorsements::route('/'),
+            'index' => ListSoloEndorsements::route('/'),
         ];
     }
 }

@@ -11,8 +11,9 @@ use App\Models\Contact;
 use App\Models\Mship\Note\Type;
 use App\Models\Roster;
 use App\Notifications\Mship\UserImpersonated;
-use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -38,7 +39,7 @@ class ViewAccount extends BaseViewRecordPage
         $hasRosterRestriction = (bool) $roster?->restrictionNote;
 
         return [
-            Actions\Action::make('request_central_update')
+            Action::make('request_central_update')
                 ->color('gray')
                 ->icon('heroicon-o-cloud-arrow-down')
                 ->action(function ($action) {
@@ -49,7 +50,7 @@ class ViewAccount extends BaseViewRecordPage
 
             ActionGroup::make([
                 $this->getImpersonateAction(),
-                Actions\Action::make('toggle_roster_status')
+                Action::make('toggle_roster_status')
                     ->visible(fn () => auth()->user()->can('roster.manage'))
                     ->color($onRoster ? 'danger' : 'success')
                     ->icon('heroicon-o-list-bullet')
@@ -67,7 +68,7 @@ class ViewAccount extends BaseViewRecordPage
                     ->requiresConfirmation()
                     ->successNotificationTitle('Roster status updated!'),
                 ...$this->getRosterRestrictionActions($roster, $onRoster, $hasRosterRestriction),
-                Actions\Action::make('remove_password')
+                Action::make('remove_password')
                     ->visible(fn () => $this->record->hasPassword() && auth()->user()->can('removeSecondaryPassword', $this->record))
                     ->color('warning')
                     ->icon('heroicon-o-key')
@@ -78,7 +79,7 @@ class ViewAccount extends BaseViewRecordPage
                     })
                     ->requiresConfirmation()
                     ->successNotificationTitle('Password removed'),
-                Actions\Action::make('unlink_discord')
+                Action::make('unlink_discord')
                     ->label('Unlink Discord')
                     ->visible(fn () => $this->record->discord_id && auth()->user()->can('unlinkDiscordAccount', $this->record))
                     ->color('warning')
@@ -89,14 +90,14 @@ class ViewAccount extends BaseViewRecordPage
                     })
                     ->requiresConfirmation()
                     ->successNotificationTitle('Discord account unlinked'),
-                Actions\EditAction::make()->visible(auth()->user()->can('update', $this->record)),
+                EditAction::make()->visible(auth()->user()->can('update', $this->record)),
             ]),
         ];
     }
 
-    protected function getImpersonateAction(): Actions\Action
+    protected function getImpersonateAction(): Action
     {
-        return Actions\Action::make('impersonate')
+        return Action::make('impersonate')
             ->visible(fn () => auth()->user()->can('impersonate', $this->record))
             ->icon('heroicon-o-finger-print')
             ->color('danger')
@@ -106,7 +107,7 @@ class ViewAccount extends BaseViewRecordPage
 <p>This feature should only be used in rare and extreme circumstances. All impersonations are monitored, and may be followed up. Use of this feature must be authorized by the Web Services Director every time it is used.</p>
 
 <p><strong>You MUST include the Helpdesk ticket reference in your reason.<strong></p>'))
-            ->form([
+            ->schema([
                 Textarea::make('reason')->required()->minLength(10),
             ])
             ->modalSubmitActionLabel('Impersonate')
@@ -126,13 +127,13 @@ class ViewAccount extends BaseViewRecordPage
     protected function getRosterRestrictionActions(?Roster $roster, bool $onRoster, bool $hasRosterRestriction): array
     {
         return [
-            Actions\Action::make('roster_restriction')
+            Action::make('roster_restriction')
                 ->visible(fn () => auth()->user()->can('roster.restriction.create') && $onRoster)
                 ->color('warning')
                 ->icon('heroicon-o-exclamation-triangle')
                 ->name($hasRosterRestriction ? 'Edit roster restriction' : 'Add roster restriction')
                 ->modalHeading($hasRosterRestriction ? 'Edit Roster Restriction' : 'Add Roster Restriction')
-                ->form([
+                ->schema([
                     Textarea::make('restriction_note')
                         ->label('Restriction Note')
                         ->required()
@@ -148,12 +149,12 @@ class ViewAccount extends BaseViewRecordPage
                 })
                 ->requiresConfirmation(),
 
-            Actions\Action::make('roster_restriction_remove')
+            Action::make('roster_restriction_remove')
                 ->visible(fn () => $hasRosterRestriction && auth()->user()->can('roster.restriction.remove'))
                 ->color('danger')
                 ->icon('heroicon-o-trash')
                 ->modalHeading('Remove Roster Restriction')
-                ->form([
+                ->schema([
                     Textarea::make('restriction_removal_note')
                         ->label('Removal Note')
                         ->required()

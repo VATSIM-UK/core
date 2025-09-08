@@ -6,11 +6,16 @@ use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Qualification;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
@@ -24,11 +29,11 @@ class EndorsementsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'endorsable.name';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('position_group_id')
+        return $schema
+            ->components([
+                Select::make('position_group_id')
                     ->label('Endorsement')
                     ->required()
                     ->options(PositionGroup::unassignedFor($this->ownerRecord)->mapWithKeys(function (PositionGroup $model) {
@@ -36,12 +41,12 @@ class EndorsementsRelationManager extends RelationManager
                     }))
                     ->hiddenOn('edit'),
 
-                Forms\Components\DatePicker::make('expires_at')
+                DatePicker::make('expires_at')
                     ->native(false)
                     ->label('Expiration')
                     ->minDate(now()),
 
-                Forms\Components\Hidden::make('created_by')
+                Hidden::make('created_by')
                     ->afterStateHydrated(fn ($component, $state) => $component->state(auth()->user()->getKey())),
             ]);
     }
@@ -56,9 +61,9 @@ class EndorsementsRelationManager extends RelationManager
         return $table
             ->recordTitle(fn ($record) => "{$record->endorsable->name} endorsement")
             ->columns([
-                Tables\Columns\TextColumn::make('created_at')->label('Granted')->date(),
-                Tables\Columns\TextColumn::make('expires_at')->label('Expires')->date()->default(''),
-                Tables\Columns\TextColumn::make('duration')->label('Duration (Days)')
+                TextColumn::make('created_at')->label('Granted')->date(),
+                TextColumn::make('expires_at')->label('Expires')->date()->default(''),
+                TextColumn::make('duration')->label('Duration (Days)')
                     ->summarize(Sum::make()->hidden(fn (Builder $query): bool => ! $query->exists())
                         ->label('Total Duration')),
             ])
@@ -75,10 +80,10 @@ class EndorsementsRelationManager extends RelationManager
             ])
             ->defaultGroup('endorsable_id')
             ->groupingSettingsHidden()
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->visible(fn ($record) => $record->expires_at),
-                Tables\Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])
             ->filters([
                 SelectFilter::make('endorsable_type')

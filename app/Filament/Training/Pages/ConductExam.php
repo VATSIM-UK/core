@@ -9,21 +9,20 @@ use App\Models\Cts\PracticalResult;
 use App\Repositories\Cts\ExamAssessmentRepository;
 use App\Repositories\Cts\ExamResultRepository;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
@@ -33,11 +32,11 @@ class ConductExam extends Page implements HasForms, HasInfolists
 {
     use InteractsWithForms, InteractsWithInfolists;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static string $view = 'filament.training.pages.conduct-exam';
+    protected string $view = 'filament.training.pages.conduct-exam';
 
     protected static ?string $slug = 'exams/conduct/{examId}';
 
@@ -121,15 +120,15 @@ class ConductExam extends Page implements HasForms, HasInfolists
         ];
     }
 
-    public function examDetailsInfoList(Infolist $infolist)
+    public function examDetailsInfoList(Schema $schema)
     {
         $examinerFormat = function ($examiner) {
             return $examiner ? "{$examiner->account->name} ({$examiner->account->id})" : 'N/A';
         };
 
-        return $infolist
+        return $schema
             ->record($this->examBooking)
-            ->schema([
+            ->components([
                 Section::make('Exam Details')->schema([
                     TextEntry::make('Student')->getStateUsing(fn () => "{$this->examBooking->studentAccount()->name} ({$this->examBooking->studentAccount()->id})"),
                     TextEntry::make('Student Rating')->getStateUsing(fn () => $this->examBooking->studentQualification->name),
@@ -151,7 +150,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $criteria = ExamCriteria::byType($this->examBooking->exam)->get();
 
@@ -179,14 +178,14 @@ class ConductExam extends Page implements HasForms, HasInfolists
             }
         );
 
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 ...$criteriaComponents,
             ])
             ->statePath('data');
     }
 
-    public function examResultForm(Form $form): Form
+    public function examResultForm(Schema $schema): Schema
     {
         $completionComponents = Fieldset::make('completion')
             ->label('Exam Result')
@@ -212,7 +211,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->required(),
 
                 Actions::make([
-                    Actions\Action::make('submit_report')->action(fn () => $this->completeExam())
+                    Action::make('submit_report')->action(fn () => $this->completeExam())
                         ->extraAttributes(['class' => 'w-full'])
                         ->label('Submit Report')
                         ->icon('heroicon-o-check')
@@ -222,8 +221,8 @@ class ConductExam extends Page implements HasForms, HasInfolists
                 ])->id('submit_report_action')->alignment(Alignment::End)->columnSpan(12),
             ])->columns(12);
 
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 $completionComponents,
             ])->statePath('examResultData');
     }
