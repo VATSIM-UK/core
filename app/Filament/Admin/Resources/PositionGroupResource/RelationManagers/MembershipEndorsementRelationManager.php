@@ -2,11 +2,13 @@
 
 namespace App\Filament\Admin\Resources\PositionGroupResource\RelationManagers;
 
+use App\Models\Mship\Account;
 use App\Services\Training\EndorsementCreationService;
-use Filament\Forms;
+use Filament\Actions\CreateAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -26,16 +28,16 @@ class MembershipEndorsementRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('account.id')->label('CID')->searchable(),
-                Tables\Columns\TextColumn::make('account.name')->label('Name')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->label('Endorsed')->isoDateTimeFormat('lll'),
+                TextColumn::make('account.id')->label('CID')->searchable(),
+                TextColumn::make('account.name')->label('Name')->searchable()->sortable(),
+                TextColumn::make('created_at')->label('Endorsed')->isoDateTimeFormat('lll'),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->form([
-                    Forms\Components\TextInput::make('account_id')->label('CID')->required(),
+                CreateAction::make()->schema([
+                    TextInput::make('account_id')->label('CID')->required(),
                 ])->action(function (array $data) {
                     try {
-                        $account = \App\Models\Mship\Account::findOrFail($data['account_id']);
+                        $account = Account::findOrFail($data['account_id']);
                     } catch (ModelNotFoundException) {
                         Notification::make()->title('Account not found')->danger()->send();
 

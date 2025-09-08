@@ -5,22 +5,22 @@ namespace App\Filament\Training\Pages;
 use App\Infolists\Components\PracticalExamCriteriaResult;
 use App\Models\Cts\PracticalResult;
 use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ViewExamReport extends Page implements HasInfolists
 {
     use InteractsWithInfolists;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static string $view = 'filament.training.pages.view-exam-report';
+    protected string $view = 'filament.training.pages.view-exam-report';
 
     protected static ?string $slug = 'exams/report/{examId}';
 
@@ -48,9 +48,9 @@ class ViewExamReport extends Page implements HasInfolists
         }
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist->record($this->practicalResult)->schema([
+        return $schema->record($this->practicalResult)->components([
             Section::make('')->schema([
                 Section::make('Student')->schema([
                     TextEntry::make('student.account.name')->label('Name'),
@@ -81,9 +81,9 @@ class ViewExamReport extends Page implements HasInfolists
         ]);
     }
 
-    public function criteriaInfoList(Infolist $infolist): Infolist
+    public function criteriaInfoList(Schema $schema): Schema
     {
-        return $infolist->record($this->practicalResult)->schema([
+        return $schema->record($this->practicalResult)->components([
             RepeatableEntry::make('criteria')->label('')->schema([
                 TextEntry::make('examCriteria.criteria')->label(null)->columnSpan(10),
                 PracticalExamCriteriaResult::make('result')->label('Result')->columnSpan(2),

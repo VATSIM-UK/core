@@ -156,7 +156,7 @@
     <div class="container">
         <div class="row align-items-center h-100">
 
-            <div class="col-md-8 mx-auto text-center py-8 flex-grow">
+            <div class="col-md-8 mx-auto text-center py-8 grow">
                 @if(currentUserHasAuth() && $_account->hasState('DIVISION'))
                     <h1>Welcome back, {{ $_account->name_first }}!</h1>
                     <p class="lead mt-5 my-0">Did you know you're one of {{ $stats['members_division'] }} members of

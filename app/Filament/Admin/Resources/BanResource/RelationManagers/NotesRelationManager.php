@@ -5,19 +5,19 @@ namespace App\Filament\Admin\Resources\BanResource\RelationManagers;
 use App\Filament\Admin\Resources\AccountResource\RelationManagers\NotesRelationManager as AccountNotesRelationManager;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Tables\Actions\CreateAction;
+use Filament\Actions\CreateAction;
+use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
 class NotesRelationManager extends AccountNotesRelationManager
 {
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Textarea::make('content')
+        return $schema
+            ->components([
+                Textarea::make('content')
                     ->required()
                     ->minLength(5),
             ]);

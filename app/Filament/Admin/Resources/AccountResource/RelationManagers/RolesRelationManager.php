@@ -3,8 +3,11 @@
 namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
 use App\Filament\Admin\Resources\RoleResource;
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class RolesRelationManager extends RelationManager
@@ -24,14 +27,14 @@ class RolesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                TextColumn::make('name'),
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()->preloadRecordSelect()->label('Add / Attach')->color('primary'),
+                AttachAction::make()->preloadRecordSelect()->label('Add / Attach')->color('primary'),
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make()->resource(RoleResource::class),
-                Tables\Actions\DetachAction::make()->label('Remove'),
+            ->recordActions([
+                ViewAction::make()->resource(RoleResource::class),
+                DetachAction::make()->label('Remove'),
             ]);
     }
 }

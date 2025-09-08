@@ -3,9 +3,13 @@
 namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
 use App\Filament\Admin\Resources\WaitingListResource;
+use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class WaitingListsRelationManager extends RelationManager
 {
@@ -28,30 +32,30 @@ class WaitingListsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->with('waitingList'))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with('waitingList'))
             ->recordTitle(fn ($record) => $record->waitingList?->name ? ('Waiting List: '.$record->waitingList->name) : "Waiting List #{$record->id}")
             ->columns([
-                Tables\Columns\TextColumn::make('waitingList.name')->label('Waiting List')->sortable(),
-                Tables\Columns\TextColumn::make('waitingList.formatted_department')->label('Department')->sortable(),
-                Tables\Columns\TextColumn::make('position')->label('Position')->getStateUsing(fn ($record) => $record->position ?? '-'),
-                Tables\Columns\TextColumn::make('created_at')->label('Added On')->date()->sortable(),
+                TextColumn::make('waitingList.name')->label('Waiting List')->sortable(),
+                TextColumn::make('waitingList.formatted_department')->label('Department')->sortable(),
+                TextColumn::make('position')->label('Position')->getStateUsing(fn ($record) => $record->position ?? '-'),
+                TextColumn::make('created_at')->label('Added On')->date()->sortable(),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
-                Tables\Filters\SelectFilter::make('waiting_list_id')
+                TrashedFilter::make(),
+                SelectFilter::make('waiting_list_id')
                     ->label('Waiting List')
                     ->relationship('waitingList', 'name')
                     ->multiple()
                     ->placeholder('Any'),
             ])
             ->defaultSort('created_at', 'desc')
-            ->actions([
-                Tables\Actions\ViewAction::make()
+            ->recordActions([
+                ViewAction::make()
                     ->url(fn ($record) => WaitingListResource::getUrl('view', [
                         'record' => $record->waitingList,
                     ])),
             ])
-            ->bulkActions([])
+            ->toolbarActions([])
             ->headerActions([]);
     }
 }

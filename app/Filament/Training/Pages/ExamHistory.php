@@ -3,8 +3,8 @@
 namespace App\Filament\Training\Pages;
 
 use App\Repositories\Cts\ExamResultRepository;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -14,11 +14,11 @@ class ExamHistory extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.training.pages.exam-history';
+    protected string $view = 'filament.training.pages.exam-history';
 
-    protected static ?string $navigationGroup = 'Exams';
+    protected static string|\UnitEnum|null $navigationGroup = 'Exams';
 
     public static function canAccess(): bool
     {
@@ -53,7 +53,7 @@ class ExamHistory extends Page implements HasTable
             TextColumn::make('examBooking.start_date')->label('Exam date'),
             TextColumn::make('date')->label('Report filed'),
         ])->defaultSort('date', 'desc')
-            ->actions([
+            ->recordActions([
                 Action::make('view')->label('View')->url(fn ($record) => ViewExamReport::getUrl(['examId' => $record->examid])),
             ]);
     }

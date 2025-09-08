@@ -4,7 +4,8 @@ namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
 use App\Enums\QualificationTypeEnum;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class QualificationsRelationManager extends RelationManager
@@ -17,12 +18,12 @@ class QualificationsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('code'),
-                Tables\Columns\TextColumn::make('name_long')->label('Name'),
-                Tables\Columns\TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at)->label('Awarded')->sortable(),
+                TextColumn::make('code'),
+                TextColumn::make('name_long')->label('Name'),
+                TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at)->label('Awarded')->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('type')->options(collect(QualificationTypeEnum::cases())->mapWithKeys(fn ($enum) => [$enum->value => $enum->name]))->multiple(),
+                SelectFilter::make('type')->options(collect(QualificationTypeEnum::cases())->mapWithKeys(fn ($enum) => [$enum->value => $enum->name]))->multiple(),
             ])->defaultSort('created_at');
     }
 }

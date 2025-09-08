@@ -3,8 +3,8 @@
 namespace App\Filament\Training\Pages;
 
 use App\Models\Cts\ExamBooking;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -14,11 +14,11 @@ class Exams extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.training.pages.exams';
+    protected string $view = 'filament.training.pages.exams';
 
-    protected static ?string $navigationGroup = 'Exams';
+    protected static string|\UnitEnum|null $navigationGroup = 'Exams';
 
     public static function canAccess(): bool
     {
@@ -50,7 +50,7 @@ class Exams extends Page implements HasTable
             TextColumn::make('start_date')->label('Date'),
         ]);
 
-        $table->actions([
+        $table->recordActions([
             Action::make('Conduct')
                 ->url(fn (ExamBooking $exam): string => ConductExam::getUrl(['examId' => $exam->id]))
                 ->visible(fn (ExamBooking $examBooking) => $examBooking->finished != ExamBooking::FINISHED_FLAG),

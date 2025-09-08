@@ -6,17 +6,17 @@ use App\Filament\Admin\Helpers\Pages\BasePage;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
 use Carbon\Carbon;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Grid;
 use Illuminate\Support\Facades\DB;
 
 class GenerateQuarterlyStats extends BasePage
 {
-    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static ?string $navigationGroup = 'Operations';
+    protected static string|\UnitEnum|null $navigationGroup = 'Operations';
 
-    protected static string $view = 'filament.pages.operations.generate-quarterly-stats';
+    protected string $view = 'filament.pages.operations.generate-quarterly-stats';
 
     protected static ?string $navigationLabel = 'Quarterly Stats';
 

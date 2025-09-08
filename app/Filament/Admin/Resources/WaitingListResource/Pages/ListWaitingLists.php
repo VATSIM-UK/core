@@ -4,7 +4,7 @@ namespace App\Filament\Admin\Resources\WaitingListResource\Pages;
 
 use App\Filament\Admin\Helpers\Pages\BaseListRecordsPage;
 use App\Filament\Admin\Resources\WaitingListResource;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 
 class ListWaitingLists extends BaseListRecordsPage
 {
@@ -13,7 +13,7 @@ class ListWaitingLists extends BaseListRecordsPage
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 }

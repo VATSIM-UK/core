@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\RosterRestrictionResource\Pages\ListRosterRestrictions;
 use App\Models\Roster;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
@@ -12,11 +13,11 @@ class RosterRestrictionResource extends Resource
 {
     protected static ?string $model = Roster::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $modelLabel = 'Roster Restrictions';
 
-    protected static ?string $navigationGroup = 'User Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'User Management';
 
     public static function canAccess(): bool
     {
@@ -48,7 +49,7 @@ class RosterRestrictionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\RosterRestrictionResource\Pages\ListRosterRestrictions::route('/'),
+            'index' => ListRosterRestrictions::route('/'),
         ];
     }
 }

@@ -10,8 +10,9 @@ use App\Notifications\Mship\BanRepealed;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
-use Filament\Forms;
-use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Grid;
 
 class ViewBan extends BaseViewRecordPage
 {
@@ -24,15 +25,15 @@ class ViewBan extends BaseViewRecordPage
                 ->label('Modify')
                 ->color('warning')
                 ->visible(auth()->user()->can('update', $this->record))
-                ->form([
-                    Forms\Components\DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->required()->notIn($this->record->period_finish ?? ''),
+                ->schema([
+                    DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->required()->notIn($this->record->period_finish ?? ''),
                     Grid::make(2)->schema([
-                        Forms\Components\Textarea::make('extra_info')
+                        Textarea::make('extra_info')
                             ->required()
                             ->label('Reason')
                             ->helperText('This is sent to the member')
                             ->minLength(5),
-                        Forms\Components\Textarea::make('note')
+                        Textarea::make('note')
                             ->helperText('This is **not** sent to the member')
                             ->required()
                             ->minLength(5),
@@ -67,8 +68,8 @@ class ViewBan extends BaseViewRecordPage
                 ->color('danger')
                 ->visible(auth()->user()->can('repeal', $this->record))
                 ->requiresConfirmation()
-                ->form([
-                    Forms\Components\Textarea::make('reason')->required()->minLength(5),
+                ->schema([
+                    Textarea::make('reason')->required()->minLength(5),
                 ])
                 ->action(function (array $data, Action $action) {
                     $this->record->account->addNote(Type::isShortCode('discipline')->first(), 'Ban Repealed: '.$data['reason'], auth()->user(), $this->record);

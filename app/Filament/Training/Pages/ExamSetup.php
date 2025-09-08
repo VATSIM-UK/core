@@ -10,14 +10,14 @@ use App\Models\Cts\Position as CtsPosition;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Repositories\Cts\SessionRepository;
 use Carbon\Carbon;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -26,11 +26,11 @@ class ExamSetup extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.training.pages.exam-setup';
+    protected string $view = 'filament.training.pages.exam-setup';
 
-    protected static ?string $navigationGroup = 'Exams';
+    protected static string|\UnitEnum|null $navigationGroup = 'Exams';
 
     public static function canAccess(): bool
     {
@@ -144,10 +144,10 @@ class ExamSetup extends Page implements HasForms
         return redirect()->route('filament.training.pages.exam-setup');
     }
 
-    public function formOBS(Form $form): Form
+    public function formOBS(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('Exam Setup - OBS PT3')
                     ->schema([
                         Select::make('position_obs')
@@ -203,10 +203,10 @@ class ExamSetup extends Page implements HasForms
             ->statePath('dataOBS');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('Exam Setup - TWR to CTR')
                     ->schema([
                         Select::make('position')

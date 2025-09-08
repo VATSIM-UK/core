@@ -3,7 +3,7 @@
 namespace App\Filament\Admin\Resources\EndorsementRequestResource\Pages;
 
 use App\Filament\Admin\Resources\EndorsementRequestResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditEndorsementRequest extends EditRecord
@@ -13,7 +13,7 @@ class EditEndorsementRequest extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

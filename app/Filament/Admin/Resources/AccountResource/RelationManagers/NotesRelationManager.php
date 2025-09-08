@@ -6,10 +6,11 @@ use App\Filament\Admin\Helpers\Pages\LogRelationAccess;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Note\Type;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\CreateAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Actions\CreateAction;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -41,16 +42,16 @@ class NotesRelationManager extends RelationManager
         return false;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $usableTypes = Type::usable()->orderBy('name')->pluck('name', 'id');
 
-        return $form
-            ->schema([
-                Forms\Components\Textarea::make('content')
+        return $schema
+            ->components([
+                Textarea::make('content')
                     ->required()
                     ->minLength(5),
-                Forms\Components\Select::make('type')
+                Select::make('type')
                     ->required()
                     ->options($usableTypes)
                     ->default($usableTypes->keys()->first()),
