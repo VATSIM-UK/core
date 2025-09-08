@@ -5,6 +5,7 @@ namespace App\Models\Cts;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PracticalResult extends Model
 {
@@ -44,5 +45,10 @@ class PracticalResult extends Model
             self::INCOMPLETE => 'Incomplete',
             default => 'Unknown',
         };
+    }
+
+    public function criteria(): HasMany
+    {
+        return $this->hasMany(ExamCriteriaAssessment::class, 'examid', 'examid')->with('examCriteria');
     }
 }
