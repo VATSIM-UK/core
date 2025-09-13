@@ -66,10 +66,10 @@ class ExamHistory extends Page implements HasTable
                 ])->query(function ($query, array $data) {
                     return $query
                         ->when($data['exam_date_from'], fn ($query, $date) => $query->whereHas('examBooking', function ($q) use ($date) {
-                            $q->whereDate('start_date', '>=', $date);
+                            $q->whereDate('taken_date', '>=', $date);
                         }))
                         ->when($data['exam_date_to'], fn ($query, $date) => $query->whereHas('examBooking', function ($q) use ($date) {
-                            $q->whereDate('start_date', '<=', $date);
+                            $q->whereDate('taken_date', '<=', $date);
                         }));
                 })->label('Exam date'),
                 Filter::make('position')->form([
@@ -85,7 +85,11 @@ class ExamHistory extends Page implements HasTable
                 ])->query(function ($query, array $data) {
                     return $query
                         ->when($data['position'], fn ($query, $positions) => $query->whereHas('examBooking', function ($q) use ($positions) {
-                            $q->whereIn('position_1', $positions);
+                            $q->where(function ($subQuery) use ($positions) {
+                                foreach ($positions as $position) {
+                                    $subQuery->orWhere('position_1', 'LIKE', "%{$position}%");
+                                }
+                            });
                         }));
                 })->label('Position'),
             ]);
