@@ -78,7 +78,7 @@ class ExamHistory extends Page implements HasTable
                             'OBS' => 'Observer',
                             'TWR' => 'Tower',
                             'APP' => 'Approach',
-                            'CTR' => 'Center',
+                            'CTR' => 'Enroute',
                         ])
                         ->multiple()
                         ->label('Position'),
