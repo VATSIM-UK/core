@@ -15,6 +15,10 @@ class ProcessVatsimNetWebhook extends BaseController
         $this->validateAuth($request);
         $webhook = $request->all();
 
+        \Log::info('Raw webhook data', [
+            'webhook' => $webhook,
+        ]);
+
         \Log::debug('VATSIM.net webhook received', [
             'resource' => $webhook['resource'],
             'actions.length' => count($webhook['actions']),
