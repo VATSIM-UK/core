@@ -61,4 +61,40 @@ class WaitingListRetentionCreateCommandTest extends TestCase
         ]);
         Notification::assertSentTo($account, WaitingListRetentionCheckAccountNotification::class);
     }
+
+    #[Test]
+    public function test_creates_new_retention_check_when_previous_check_email_date_is_old()
+    {
+        Notification::fake();
+
+        $waitingList = WaitingList::factory()->create([
+            'retention_checks_enabled' => true,
+            'retention_checks_months' => 3,
+        ]);
+
+        $account = Account::factory()->create();
+        $waitingListAccount = $waitingList->addToWaitingList($account, $this->privacc, now()->subMonths(7));
+
+        // Create an existing retention check that's 4 months old
+        $existingCheck = WaitingListRetentionCheck::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'status' => WaitingListRetentionCheck::STATUS_PENDING,
+            'created_at' => now()->subMonths(4)->subDays(2),
+            'email_sent_at' => now()->subMonths(4),
+            'token' => 'existing-token',
+        ]);
+        $existingCheck->save();
+
+        Artisan::call('waiting-lists:create-retention-checks');
+
+        // Should have 2 retention checks: the original one we created and a new one
+        $this->assertEquals(2, $waitingListAccount->retentionChecks()->count());
+
+        // Check that the newest one was created just now
+        $latestCheck = $waitingListAccount->retentionChecks()->latest('created_at')->first();
+        $this->assertNotEquals($existingCheck->id, $latestCheck->id);
+        $this->assertEquals(WaitingListRetentionCheck::STATUS_PENDING, $latestCheck->status);
+
+        Notification::assertSentTo($account, WaitingListRetentionCheckAccountNotification::class);
+    }
 }
