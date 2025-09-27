@@ -41,7 +41,7 @@
                                         href="https://vatsim.net/docs/policy/transfer-and-visiting-controller-policy/"
                                         rel="external nofollow" target="_blank">VATSIM&nbsp;Transfer &amp; Visiting
                                     Controller Policy</a>&nbsp;and <a
-                                        href="https://community.vatsim.uk/files/downloads/file/25-division-policy"
+                                        href="https://www.vatsim.uk/policy/division-policy"
                                         rel="">VATSIM
                                     UK Division
                                     Policy</a>;
