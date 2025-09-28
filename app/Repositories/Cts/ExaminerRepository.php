@@ -28,6 +28,22 @@ class ExaminerRepository
             ->values();
     }
 
+    public function getExaminerDetailsByScope(string $scope): Collection
+    {
+        return ExaminerSettings::with('member')
+            ->{$scope}()
+            ->whereHas('member', fn ($q) => $q->where('examiner', true))
+            ->get()
+            ->sortBy('member.cid')
+            ->map(function ($examiner) {
+                return [
+                    'cid' => $examiner->member->cid,
+                    'name' => $examiner->member->name,
+                    'id' => $examiner->member->id,
+                ];
+            });
+    }
+
     public function getObsExaminers(): Collection
     {
         return $this->_getExaminersByScope('obs');
