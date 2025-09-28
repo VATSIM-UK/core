@@ -386,6 +386,19 @@ class MockCtsDatabase
                 KEY `student_id` (`student_id`)
               ) ENGINE=InnoDB AUTO_INCREMENT=2344 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `availability` (
+            `id` bigint NOT NULL AUTO_INCREMENT,
+            `student_id` int NOT NULL DEFAULT '0',
+            `type` enum('S','M') NOT NULL DEFAULT 'S',
+            `date` date NOT NULL DEFAULT '0000-00-00',
+            `from` time NOT NULL DEFAULT '00:00:00',
+            `to` time NOT NULL DEFAULT '00:00:00',
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `student_id` (`student_id`,`date`,`from`,`to`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=644790 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
     }
 
     public static function destroy()
@@ -456,6 +469,10 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `practical_criteria_assess`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `availability`;'
         );
     }
 }
