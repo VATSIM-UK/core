@@ -196,9 +196,9 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                             })
                             ->options(
                                 (new ExaminerRepository)
-                                    ->getAtcExaminers()
+                                    ->getExaminerDetailsByScope('atc')
                                     ->mapWithKeys(function ($examiner) {
-                                        return [$examiner->id => $examiner->name];
+                                        return [$examiner['id'] => "{$examiner['name']} ({$examiner['cid']})"];
                                     })
                             ),
                     ])
