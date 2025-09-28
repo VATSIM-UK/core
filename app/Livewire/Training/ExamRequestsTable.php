@@ -194,13 +194,14 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                             ->required(function (ExamBooking $record) {
                                 return $this->isSecondaryExaminerRequired($record->exam);
                             })
-                            ->options(
-                                (new ExaminerRepository)
-                                    ->getExaminerDetailsByScope('atc')
+                            ->options(function (ExamBooking $record) {
+                                return (new ExaminerRepository)
+                                    ->getExaminerDetailsByScope(Str::lower($record->exam))
+                                    ->sortBy('name')
                                     ->mapWithKeys(function ($examiner) {
                                         return [$examiner['id'] => "{$examiner['name']} ({$examiner['cid']})"];
-                                    })
-                            ),
+                                    });
+                            }),
                     ])
                     ->action(function (array $data, ExamBooking $record) {
                         // Get the selected availability slot
