@@ -30,6 +30,11 @@ class TrainingEventServiceProvider extends ServiceProvider
             \App\Listeners\Training\Exams\NotifyStaffPracticalExamCompleted::class,
             \App\Listeners\Training\Exams\NotifyStudentPracticalExamCompleted::class,
         ],
+        \App\Events\Training\Exams\ExamAccepted::class => [
+            \App\Listeners\Training\Exams\NotifyStudentExamAccepted::class,
+            \App\Listeners\Training\Exams\NotifyExaminersExamAccepted::class,
+            \App\Listeners\Training\Exams\CreateCtsBookingEntry::class,
+        ],
     ];
 
     /**

@@ -65,7 +65,7 @@ class ExamSetup extends Page implements HasForms
         $positionId = $validated['data']['position'];
         $position = Position::find($positionId);
 
-        $ctsMember = Member::where('cid', $validated['data']['student'])->first();
+        $ctsMember = Member::where('id', $validated['data']['student'])->first();
 
         $setup = ExamSetupModel::create([
             'rts_id' => $position->rts,
