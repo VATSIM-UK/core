@@ -15,6 +15,21 @@ class ExaminerSettings extends Model
 
     public $timestamps = false;
 
+    protected $fillable = [
+        'memberID',
+        'OBS',
+        'S1',
+        'S2',
+        'S3',
+        'P1',
+        'P2',
+        'P3',
+        'P4',
+        'P5',
+        'lastUpdated',
+        'updatedBy',
+    ];
+
     public function member()
     {
         return $this->belongsTo(Member::class, 'memberID', 'id');
