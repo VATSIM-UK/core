@@ -351,6 +351,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
         $query = ExamBooking::query()
             ->with(['student', 'examiners'])
             ->where('taken', 0) // Not yet taken/accepted
+            ->where('finished', 0) // Not finished
             ->whereDoesntHave('examiners');
 
         // Filter by exam levels the user has permission to conduct
