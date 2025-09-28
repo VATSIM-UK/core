@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Training;
 
+use App\Events\Training\Exams\ExamAccepted;
 use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\PracticalExaminers;
@@ -248,6 +249,11 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                             'senior' => auth()->user()->member->id,
                             'other' => $data['secondary_examiner'],
                         ]);
+
+                        // Fire event to send email notifications
+                        // Load relationships before firing the event
+                        $examBooking->load(['student', 'examiners.primaryExaminer', 'examiners.secondaryExaminer']);
+                        event(new ExamAccepted($examBooking));
 
                         $studentName = $examBooking->student->name;
                         $examDateTime = $examStartDateTime->format('Y-m-d H:i');
