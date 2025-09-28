@@ -20,4 +20,20 @@ You have been assigned as an examiner for a {{ $examType }} practical exam that 
 </p>
 @endif
 
+<p>A secondary examiner may be allocated either in support of complex exams or for training.
+Please ensure that the secondary examiner is briefed before the conduct of the exam.
+You should consider whether or not to ping for adjacent ATC or pilots to support the exam in the relevant Discord channel.
+It is the responsibility of you as the primary examiner to arrange for these pings if required.
+</p>
+
+<p>You should brief the candidate at the beginning of the exam in accordance with the <a href="https://community.vatsim.uk/files/downloads/file/230-atc-training-handbook/">ATC Training Handbook</a>.</p>
+
+<p>Should the candidate fail to attend, please notify the relevant TGI.
+In the event of either failure or success, feedback on the exam should be summarised to the training group in question.
+</p>
+
+@stop
+
+@section('signature')
+VATSIM UK Training Department
 @stop
