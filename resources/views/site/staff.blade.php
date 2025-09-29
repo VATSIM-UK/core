@@ -287,7 +287,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
-                                <td>Fraser Cooper</td>
+                                <td>John Batten</td>
                             </tr>
                         </table>
                     </div>
