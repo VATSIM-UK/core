@@ -287,7 +287,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
-                                <td>John Batten</td>
+                                <td>John B (1256537)</td>
                             </tr>
                         </table>
                     </div>
