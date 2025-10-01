@@ -17,7 +17,7 @@ class AddNewS1ToRosterCommandTest extends TestCase
         $account = Account::factory()->create(['id' => 1111111]);
         $account->addState(State::findByCode('DIVISION'));
 
-        $ctsMember = factory(Member::class)->create(['cid' => $account->id]);
+        $ctsMember = Member::Factory()->create(['cid' => $account->id]);
         PracticalResult::factory()->create(['student_id' => $ctsMember->id, 'result' => PracticalResult::PASSED, 'exam' => 'OBS', 'date' => now()->subDays(1)]);
 
         Artisan::call('roster:check-new-s1-exams');
@@ -32,7 +32,7 @@ class AddNewS1ToRosterCommandTest extends TestCase
         $account = Account::factory()->create(['id' => 1111111]);
         $account->addState(State::findByCode('DIVISION'));
 
-        $ctsMember = factory(Member::class)->create(['cid' => $account->id]);
+        $ctsMember = Member::Factory()->create(['cid' => $account->id]);
         PracticalResult::factory()->create(['student_id' => $ctsMember->id, 'result' => PracticalResult::PASSED, 'exam' => 'OBS', 'date' => now()->subDays(1)]);
 
         Roster::create(['account_id' => $account->id]);
@@ -49,7 +49,7 @@ class AddNewS1ToRosterCommandTest extends TestCase
         $account = Account::factory()->create(['id' => 1111111]);
         $account->addState(State::findByCode('VISITING'));
 
-        $ctsMember = factory(Member::class)->create(['cid' => $account->id]);
+        $ctsMember = Member::Factory()->create(['cid' => $account->id]);
         PracticalResult::factory()->create(['student_id' => $ctsMember->id, 'result' => PracticalResult::PASSED, 'exam' => 'OBS', 'date' => now()->subDays(1)]);
 
         Artisan::call('roster:check-new-s1-exams');

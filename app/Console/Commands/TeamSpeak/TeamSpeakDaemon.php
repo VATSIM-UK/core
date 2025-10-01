@@ -108,9 +108,8 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     protected function establishConnection($attempt = 1)
     {
         try {
-            $id = uniqid();
             // establish connection
-            $connection = TeamSpeak::run("teaman $id", true);
+            $connection = TeamSpeak::run('vUK Management Bot', true);
 
             // register for events
             $connection->notifyRegister('server');

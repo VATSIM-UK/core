@@ -2,7 +2,10 @@
 
 namespace App\Repositories\Cts;
 
+use App\Events\Training\Exams\PracticalExamCompleted;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\PracticalResult;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class ExamResultRepository
@@ -13,5 +16,41 @@ class ExamResultRepository
             ->where('exam', $type)
             ->where('date', '>=', now()->subDays($daysConsideredRecent))
             ->get();
+    }
+
+    public function getPendingExamsOfType(string $type, int $daysConsideredRecent = 180): Collection
+    {
+        return ExamBooking::where('exam', $type)
+            ->where('taken', 1)
+            ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->get();
+    }
+
+    public function createPracticalResult(ExamBooking $examBooking, string $result, ?string $additionalComments)
+    {
+        $practicalResult = PracticalResult::create([
+            'examid' => $examBooking->id,
+            'student_id' => $examBooking->student->id,
+            'result' => $result,
+            'notes' => $additionalComments ?? '',
+            'date' => now(),
+            'exam' => $examBooking->exam,
+        ]);
+
+        $examBooking->update(['finished' => ExamBooking::FINISHED_FLAG]);
+
+        event(new PracticalExamCompleted($examBooking, $practicalResult));
+    }
+
+    /**
+     * Get a query for practical results filtered by exam levels
+     *
+     * @param  Collection  $examLevels  Collection of exam levels to include
+     */
+    public function getExamHistoryQueryForLevels(Collection $examLevels): Builder
+    {
+        return PracticalResult::query()
+            ->with('student', 'examBooking')
+            ->whereIn('exam', $examLevels);
     }
 }

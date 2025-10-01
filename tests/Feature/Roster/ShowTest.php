@@ -146,4 +146,26 @@ class ShowTest extends TestCase
             ->call('search')
             ->assertSeeTextInOrder(['EGKK_TWR', '\u2705', 'EGKK_APP', '\u274c']);
     }
+
+    public function test_shows_roster_restriction_only_when_exists()
+    {
+        $account = Account::factory()->create();
+        $qualification = Qualification::code('S2')->first();
+        $account->addState(State::findByCode('DIVISION'));
+        $account->addQualification($qualification);
+        $restrictionNote = $account->addNote(
+            \App\Models\Mship\Note\Type::isShortCode('roster')->first(),
+            'Test restriction',
+            auth()->user()
+        );
+
+        Roster::create([
+            'account_id' => $account->id,
+            'restriction_note_id' => $restrictionNote->id,
+        ]);
+
+        Livewire::test(Show::class, ['account' => $account])
+            ->assertDontSee('Search')
+            ->assertSee('Test restriction');
+    }
 }

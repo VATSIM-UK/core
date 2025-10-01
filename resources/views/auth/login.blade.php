@@ -19,7 +19,7 @@
                     </ol>
                     </p>
                     <p>
-                        If you believe you are seeing this page too often, or erroneously, please contact the Web Services Team.
+                        If you believe you are seeing this page too often, or erroneously, please contact the Technology Team.
                     </p>
                 </div>
 
@@ -63,7 +63,7 @@
               <div class="panel-heading"><i class="fa fa-exclamation-circle"></i> Having issues?</div>
               <div class="panel-body">
                 Use your primary email address (*****<b>{{"@" . explode("@", Auth::user()->email)[1]}}</b>) to send an email to
-                <p><a href="mailto:web-support@vatsim.uk">web-support@vatsim.uk</a></p>
+                <p><a href="mailto:technology-support@vatsim.uk">technology-support@vatsim.uk</a></p>
               </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('password.email') }}">
                         {{ csrf_field() }}
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger" id="confirm">Confirm</button>
+                        <button type="submit" class="btn btn-danger" id="confirmPasswordReset">Confirm</button>
                     </form>
                 </div>
             </div><!-- /.modal-content -->
@@ -103,7 +103,7 @@
                 <div class="modal-footer">
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('logout') }}">
                         {{ csrf_field() }}
-                        <button type="submit" class="btn btn-danger" id="confirm">Logout</button>
+                        <button type="submit" class="btn btn-danger" id="confirmLogout">Logout</button>
                     </form>
                 </div>
             </div><!-- /.modal-content -->

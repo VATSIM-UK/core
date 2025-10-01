@@ -27,11 +27,11 @@ class WaitingListFlagTest extends TestCase
     {
         parent::setUp();
 
-        $this->flag = factory(WaitingListFlag::class)->create();
+        $this->flag = WaitingListFlag::factory()->create();
 
         $this->actingAs($this->privacc);
 
-        $this->waitingList = factory(WaitingList::class)->create();
+        $this->waitingList = WaitingList::factory()->create();
         $this->waitingList->addFlag($this->flag);
         $this->waitingListAccount = $this->waitingList->addToWaitingList($this->privacc, $this->privacc);
 
@@ -104,7 +104,7 @@ class WaitingListFlagTest extends TestCase
         $account = Account::factory()->create();
         // null list represents a flag which hasn't yet been assigned to list.
         // Normal flow wouldn't have this, but needs to emulate the action
-        $flag = factory(WaitingListFlag::class)->create(['list_id' => null]);
+        $flag = WaitingListFlag::factory()->create(['list_id' => null]);
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
         $this->waitingList->addFlag($flag);

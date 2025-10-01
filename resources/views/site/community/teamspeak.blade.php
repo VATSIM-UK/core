@@ -56,7 +56,7 @@
                                     Agreement</a>;
                             </li>
                             <li>
-                                <a href="{{ route('site.community.terms') }}" rel="">VATSIM UK Terms
+                                <a href="{{ route('site.policy.terms') }}" rel="">VATSIM UK Terms
                                     and Conditions</a>.
                             </li>
                         </ul>
@@ -249,8 +249,8 @@
 
                 <ol>
                     <li>
-                        Go to the&nbsp;<a href="http://www.teamspeak.com/" rel="external nofollow" target="_blank">TeamSpeak
-                            website</a>&nbsp;and download the latest client appropriate for your operating system.
+                        Go to the&nbsp;<a href="https://teamspeak.com/en/downloads/#ts3client" rel="external nofollow" target="_blank">TeamSpeak
+                            website</a>&nbsp;and download the latest TeamSpeak 3 client appropriate for your operating system.
                     </li>
                 </ol>
 
