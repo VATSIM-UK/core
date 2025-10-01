@@ -13,7 +13,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout Codes
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           ref: ${{ github.event.client_payload.ref }}
@@ -42,7 +42,7 @@ jobs:
           DISCORD_TRAINING_ALERTS_CHANNEL_ID: ${{ secrets.DISCORD_TRAINING_ALERTS_CHANNEL_ID }}
 
       - name: Discord Notification (Start)
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v2
         with:
             severity: warn
             description: ${{ format('Starting Deployment of **{0}**', github.repository) }}
@@ -67,7 +67,7 @@ jobs:
           tools: composer:${{ matrix.composer }}
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
 
@@ -209,7 +209,7 @@ jobs:
 
       - name: Discord Notification (Failed)
         if: failure()
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v2
         with:
             severity: error
             description: ${{ format('Deployment **FAILED** of **{0}**', github.repository) }}
@@ -220,7 +220,7 @@ jobs:
 
       - name: Discord Notification (Success)
         if: success()
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v2
         with:
             severity: info
             description: ${{ format('Deployment **SUCCEEDED** of **{0}**', github.repository) }}

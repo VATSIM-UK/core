@@ -23,6 +23,12 @@ class RolesAndPermissionsSeeder extends Seeder
         $privacc = Role::firstOrCreate(['name' => 'privacc', 'guard_name' => 'web', 'default' => false]);
         $member = Role::firstOrCreate(['name' => 'member', 'guard_name' => 'web', 'default' => true]);
 
+        // Create ATC Examiner Roles
+        $obsExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (OBS)', 'guard_name' => 'web', 'default' => false]);
+        $twrExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (TWR)', 'guard_name' => 'web', 'default' => false]);
+        $appExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (APP)', 'guard_name' => 'web', 'default' => false]);
+        $ctrExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (CTR)', 'guard_name' => 'web', 'default' => false]);
+
         // Add All Permissions
         $permissions = [
             app()->isProduction() ? null : '*',
@@ -31,6 +37,16 @@ class RolesAndPermissionsSeeder extends Seeder
             'admin.access',
             'horizon.access',
             'telescope.access',
+
+            // Training Panel Permissions
+            'training.access',
+            'training.exams.access',
+            'training.exams.setup',
+            'training.exams.conduct.*',
+            'training.exams.conduct.obs',
+            'training.exams.conduct.twr',
+            'training.exams.conduct.app',
+            'training.exams.conduct.ctr',
 
             // Account Permissions
             'account.self',
@@ -187,6 +203,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'endorsement-request.approve.*',
             'endorsement-request.reject.*',
             'roster.manage',
+            'roster.restriction.create',
+            'roster.restriction.remove',
+
         ];
 
         foreach ($permissions as $permission) {

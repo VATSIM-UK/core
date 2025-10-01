@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Admin\WaitingLists;
 
-use App\Filament\Resources\WaitingListResource\Pages\ViewWaitingList;
-use App\Filament\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
+use App\Filament\Admin\Resources\WaitingListResource\Pages\ViewWaitingList;
+use App\Filament\Admin\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
@@ -27,7 +27,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_one_relation_manager_tables_are_present()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $this->adminUser->givePermissionTo('waiting-lists.view.atc');
         $this->adminUser->givePermissionTo('waiting-lists.access');
 
@@ -37,7 +37,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_admin_user_cant_add_student_without_permission()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
         $this->adminUser->givePermissionTo('waiting-lists.view.atc');
         $this->adminUser->givePermissionTo('waiting-lists.access');
@@ -49,7 +49,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_home_student_can_be_added()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
@@ -73,7 +73,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     {
         Livewire::actingAs($this->adminUser);
 
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
@@ -92,7 +92,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_non_home_student_cant_be_added()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('INTERNATIONAL'));
 
@@ -117,7 +117,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_cannot_see_join_date_field_without_permission()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
@@ -134,7 +134,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     public function test_admin_can_add_student_with_join_date_if_specified()
     {
         /** @var WaitingList $waitingList */
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
@@ -161,7 +161,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_admin_can_add_manual_flag_to_waiting_list()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
         $this->adminUser->givePermissionTo('waiting-lists.view.atc');
         $this->adminUser->givePermissionTo('waiting-lists.access');
@@ -182,13 +182,13 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_admin_cant_add_duplicate_named_flag_in_list()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
         $this->adminUser->givePermissionTo('waiting-lists.view.atc');
         $this->adminUser->givePermissionTo('waiting-lists.access');
         $this->adminUser->givePermissionTo('waiting-lists.add-flags.*');
 
-        $flag = factory(WaitingListFlag::class)->create([
+        $flag = WaitingListFlag::factory()->create([
             'list_id' => $waitingList->id,
             'name' => 'test',
         ]);
@@ -204,7 +204,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_admin_can_create_flag_with_linked_endorsement()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $positionGroup = factory(PositionGroup::class)->create();
 
         $this->adminUser->givePermissionTo('waiting-lists.view.atc');
@@ -228,7 +228,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_flag_cannot_be_added_without_permission()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
         $this->adminUser->givePermissionTo('waiting-lists.view.atc');
         $this->adminUser->givePermissionTo('waiting-lists.access');
@@ -243,7 +243,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
 
         /** @var WaitingList $waitingList */
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->adminUser);
@@ -261,7 +261,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
 
         /** @var WaitingList $waitingList */
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->adminUser);
@@ -279,7 +279,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
 
         /** @var WaitingList $waitingList */
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->adminUser);
@@ -295,7 +295,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_notes_can_be_added_to_waiting_list_account()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->adminUser);
@@ -321,10 +321,10 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_can_modify_manual_flag_to_true()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
-        $manualFlag = factory(WaitingListFlag::class)->create([
+        $manualFlag = WaitingListFlag::factory()->create([
             'list_id' => $waitingList->id,
             'name' => 'Test Manual Flag',
         ]);
@@ -354,10 +354,10 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     public function test_can_modify_manual_flag_to_false()
     {
         /** @var WaitingList $waitingList */
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
-        $manualFlag = factory(WaitingListFlag::class)->create([
+        $manualFlag = WaitingListFlag::factory()->create([
             'list_id' => $waitingList->id,
             'name' => 'Test Manual Flag',
         ]);
@@ -394,7 +394,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_account_can_be_removed()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->adminUser);
@@ -424,7 +424,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_account_can_be_removed_with_other_reason()
     {
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->adminUser);
@@ -458,7 +458,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     {
         $userWithoutPermission = Account::factory()->create();
 
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
         $userWithoutPermission->givePermissionTo('waiting-lists.view.atc');
         $userWithoutPermission->givePermissionTo('waiting-lists.access');
@@ -470,7 +470,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     public function test_can_see_edit_button_when_admin()
     {
         $userWithPermission = Account::factory()->create();
-        $waitingList = factory(WaitingList::class)->create(['department' => 'atc']);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
         $userWithPermission->givePermissionTo('waiting-lists.view.atc');
         $userWithPermission->givePermissionTo('waiting-lists.access');

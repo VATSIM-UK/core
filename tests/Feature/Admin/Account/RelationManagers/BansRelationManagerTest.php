@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Account\RelationManagers;
 
-use App\Filament\Resources\AccountResource\RelationManagers\BansRelationManager;
+use App\Filament\Admin\Resources\AccountResource\RelationManagers\BansRelationManager;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;

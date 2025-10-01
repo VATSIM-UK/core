@@ -19,4 +19,9 @@ class Session extends Model
     {
         return $this->belongsTo(Member::class, 'mentor_id', 'id');
     }
+
+    public function student()
+    {
+        return $this->belongsTo(Member::class, 'student_id', 'id');
+    }
 }

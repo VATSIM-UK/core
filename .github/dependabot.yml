@@ -6,6 +6,7 @@ updates:
     interval: weekly
     day: friday
     time: "18:00"
+
 - package-ecosystem: npm
   directory: "/"
   schedule:
@@ -27,6 +28,13 @@ updates:
   - dependency-name: admin-lte
     versions:
     - 3.1.0
+
+  groups:
+    vite-stack:
+      patterns:
+        - "vite"
+        - "laravel-vite-plugin"
+
 - package-ecosystem: composer
   directory: "/"
   schedule:

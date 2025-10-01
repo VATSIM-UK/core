@@ -42,8 +42,7 @@
                             <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link"
-                               href="https://community.vatsim.uk/files/downloads/category/4-policy-documents/">Policies</a>
+                            <a class="nav-link" href="{{ route('site.policy.division') }}">Policies</a>
                         </li>
                     </ul>
                 </li>

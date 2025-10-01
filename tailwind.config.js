@@ -47,15 +47,17 @@ module.exports = {
             pink: colors.pink,
             rose: colors.rose,
         }
-    }, content: {
-        files: [
-            './app/**/*.php',
-            './resources/*.php',
-            './resources/**/*.php',
-            "./resources/**/*.blade.php",
-            './vendor/filament/**/*.blade.php',
-            './storage/framework/views/*.php'
-        ]
     },
+    content: [
+        './app/**/*.php',
+        './resources/**/*.php',
+        './resources/**/*.blade.php',
+        './resources/**/*.js',
+        './app/Filament/**/*.php',
+        './app/Livewire/**/*.php',
+        './vendor/filament/**/*.blade.php',
+        './vendor/wire-elements/modal/resources/views/*.blade.php',
+        './storage/framework/views/*.php'
+    ],
     plugins: [require("@tailwindcss/forms")],
 };

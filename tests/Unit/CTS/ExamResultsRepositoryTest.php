@@ -13,7 +13,7 @@ class ExamResultsRepositoryTest extends TestCase
     public function test_retrieves_passed_exam_results_of_type()
     {
         $account = Account::factory()->create(['id' => 1111111]);
-        $member = factory(Member::class)->create([
+        $member = Member::Factory()->create([
             'cid' => $account->id,
         ]);
 
@@ -41,7 +41,7 @@ class ExamResultsRepositoryTest extends TestCase
     public function test_doesnt_return_non_recent_exam_passes()
     {
         $account = Account::factory()->create(['id' => 1111111]);
-        $member = factory(Member::class)->create([
+        $member = Member::Factory()->create([
             'cid' => $account->id,
         ]);
 
@@ -61,7 +61,7 @@ class ExamResultsRepositoryTest extends TestCase
     public function test_only_returns_recent_successful_exams_of_specified_type()
     {
         $account = Account::factory()->create(['id' => 1111111]);
-        $member = factory(Member::class)->create([
+        $member = Member::Factory()->create([
             'cid' => $account->id,
         ]);
 
