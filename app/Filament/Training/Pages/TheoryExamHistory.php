@@ -39,7 +39,7 @@ class TheoryExamHistory extends Page implements HasTable
                     ->schema([
                         Placeholder::make('cid')->label('CID')->content(fn ($record) => $record->student_id),
 
-                        Placeholder::make('Name')->label('Name')->content(fn ($record) => $record->student?->account?->name),
+                        Placeholder::make('Name')->label('Name')->content(fn ($record) => $record->student?->account?->name ?? 'Unknown'),
 
                         Placeholder::make('Exam')->label('Exam')->content(fn ($record) => $record->exam),
 
@@ -73,7 +73,7 @@ class TheoryExamHistory extends Page implements HasTable
 
         return $table->query($query)->columns([
             TextColumn::make('student_id')->label('CID')->searchable(),
-            TextColumn::make('student.account.name')->label('Name'),
+            TextColumn::make('student.account.name')->label('Name')->getStateUsing(fn ($record) => $record->student?->account?->name ?? 'Unknown'),
             TextColumn::make('exam')->label('Exam'),
             TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => match ($state) {
                 'Passed' => 'success',
@@ -85,7 +85,7 @@ class TheoryExamHistory extends Page implements HasTable
             ->actions([
                 ViewAction::make()
                     ->label('View')
-                    ->modalHeading(fn ($record) => "{$record->student?->account?->name}'s {$record->exam} Theory Exam")
+                    ->modalHeading(fn ($record) => (($record->student?->account?->name) ?? 'Unknown')."'s {$record->exam} Theory Exam")
                     ->form(fn (Form $form) => $this->form($form)),
             ])
             ->filters([
