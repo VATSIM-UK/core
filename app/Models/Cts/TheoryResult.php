@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
 
 class TheoryResult extends Model
@@ -15,6 +16,28 @@ class TheoryResult extends Model
     protected $connection = 'cts';
 
     public $timestamps = false;
+
+    protected $casts = [
+        'started' => 'datetime',
+        'expires' => 'datetime',
+        'submitted_time' => 'datetime',
+    ];
+
+    public $guarded = [];
+
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'student_id', 'id');
+    }
+
+    public function resultHuman(): string
+    {
+        if ($this->pass === 1) {
+            return 'Passed';
+        }
+
+        return 'Failed';
+    }
 
     /**
      * Get result for the internal Core account_id, also their CId
