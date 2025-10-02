@@ -16,7 +16,6 @@ abstract class BaseTrainingPanelResourceTestCase extends BaseAdminTestCase
 
     protected ?string $policy = null;
 
-
     public static function providerPageRenderData()
     {
         if (! static::$resourceClass) {
@@ -40,7 +39,7 @@ abstract class BaseTrainingPanelResourceTestCase extends BaseAdminTestCase
         return factory($model);
     }
 
-        #[DataProvider('providerPageRenderData')]
+    #[DataProvider('providerPageRenderData')]
     public function test_page_renders(string $name, $dataGenerator)
     {
         $this->actingAsSuperUser();
