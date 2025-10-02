@@ -28,7 +28,7 @@ class TheoryExamHistory extends Page implements HasTable
     public static function canAccess(): bool
     {
 
-        return auth()->user()->can('training.exams.access');
+        return auth()->user()->can('training.theory.access');
     }
 
     public function form(Form $form): Form
@@ -60,10 +60,10 @@ class TheoryExamHistory extends Page implements HasTable
     public function table(Table $table): Table
     {
         $userPermissionsTruthTable = [
-            's1' => auth()->user()->can('training.exams.conduct.obs'),
-            's2' => auth()->user()->can('training.exams.conduct.twr'),
-            's3' => auth()->user()->can('training.exams.conduct.app'),
-            'c1' => auth()->user()->can('training.exams.conduct.ctr'),
+            's1' => auth()->user()->can('training.theory.view.obs'),
+            's2' => auth()->user()->can('training.theory.view.twr'),
+            's3' => auth()->user()->can('training.theory.view.app'),
+            'c1' => auth()->user()->can('training.theory.view.ctr'),
         ];
 
         $typesToShow = collect($userPermissionsTruthTable)->filter(fn ($value) => $value)->keys();
@@ -85,6 +85,8 @@ class TheoryExamHistory extends Page implements HasTable
             ->actions([
                 ViewAction::make()
                     ->label('View')
+                    ->icon(null)
+                    ->color('primary')
                     ->modalHeading(fn ($record) => (($record->student?->account?->name) ?? 'Unknown')."'s {$record->exam} Theory Exam")
                     ->form(fn (Form $form) => $this->form($form)),
             ])
@@ -97,25 +99,25 @@ class TheoryExamHistory extends Page implements HasTable
                         ->when($data['exam_date_from'], fn ($query, $date) => $query->whereDate('submitted_time', '>=', $date))
                         ->when($data['exam_date_to'], fn ($query, $date) => $query->whereDate('submitted_time', '<=', $date));
                 })->label('Exam date'),
-                Filter::make('position')->form([
-                    Forms\Components\Select::make('position')
+                Filter::make('exam_rating')->form([
+                    Forms\Components\Select::make('exam_rating')
                         ->options([
-                            'S1' => 'Observer',
+                            'S1' => 'Student 1',
                             'S2' => 'Tower',
                             'S3' => 'Approach',
                             'C1' => 'Enroute',
                         ])
                         ->multiple()
-                        ->label('Position'),
+                        ->label('Exam'),
                 ])->query(function ($query, array $data) {
                     return $query
-                        ->when($data['position'], fn ($query, $positions) => $query->where(function ($subQuery) use ($positions) {
-                            foreach ($positions as $position) {
-                                $subQuery->orWhere('exam', 'LIKE', "%{$position}%");
+                        ->when($data['exam_rating'], fn ($query, $exam_ratings) => $query->where(function ($subQuery) use ($exam_ratings) {
+                            foreach ($exam_ratings as $exam_rating) {
+                                $subQuery->orWhere('exam', 'LIKE', "%{$exam_rating}%");
                             }
                         })
                         );
-                })->label('Position'),
+                })->label('Exam'),
             ])
             ->paginated(['25', '50', '100'])
             ->defaultPaginationPageOption(25);
