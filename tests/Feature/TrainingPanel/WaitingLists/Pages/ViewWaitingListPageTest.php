@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Admin\WaitingLists;
+namespace Tests\Feature\TrainingPanel\WaitingLists;
 
-use App\Filament\Admin\Resources\WaitingListResource\Pages\ViewWaitingList;
-use App\Filament\Admin\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
+use App\Filament\Training\Resources\WaitingListResource\Pages\ViewWaitingList;
+use App\Filament\Training\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
@@ -12,9 +12,9 @@ use App\Models\Training\WaitingList\WaitingListFlag;
 use Filament\Tables\Actions\EditAction;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
-use Tests\Feature\Admin\BaseAdminTestCase;
+use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
-class ViewWaitingListPageTest extends BaseAdminTestCase
+class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
 {
     use DatabaseTransactions;
 
@@ -22,14 +22,14 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     {
         parent::setUp();
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
     }
 
     public function test_one_relation_manager_tables_are_present()
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
 
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertStatus(200);
@@ -39,10 +39,10 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertDontSee('Add student');
     }
@@ -53,11 +53,11 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->callAction('add_student', data: [
                 'account_id' => $accountToAdd->id,
@@ -71,17 +71,17 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_student_cant_be_added_twice()
     {
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
 
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
-        $waitingList->addToWaitingList($accountToAdd, $this->adminUser);
+        $waitingList->addToWaitingList($accountToAdd, $this->panelUser);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
 
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->callAction('add_student', data: [
@@ -96,11 +96,11 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('INTERNATIONAL'));
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->callAction('add_student', data: [
                 'account_id' => $accountToAdd->id,
@@ -121,11 +121,11 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->mountAction('add_student')
             ->assertDontSee('Join date');
@@ -138,12 +138,12 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.add-accounts.*');
-        $this->adminUser->givePermissionTo('waiting-lists.add-accounts-admin.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.add-accounts-admin.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->callAction('add_student', data: [
                 'account_id' => $accountToAdd->id,
@@ -163,11 +163,11 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.add-flags.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.add-flags.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->callAction('add_flag', data: [
                 'name' => 'My Test Flag',
@@ -184,9 +184,9 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.add-flags.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.add-flags.*');
 
         $flag = WaitingListFlag::factory()->create([
             'list_id' => $waitingList->id,
@@ -194,7 +194,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         ]);
         $waitingList->addFlag($flag);
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->fresh()->id])
             ->callAction('add_flag', data: [
                 'name' => 'test',
@@ -207,11 +207,11 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $positionGroup = factory(PositionGroup::class)->create();
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.add-flags.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.add-flags.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->callAction('add_flag', data: [
                 'name' => 'My Test Flag',
@@ -230,26 +230,26 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertActionHidden('add_flag');
     }
 
     public function test_can_view_account_in_waiting_list()
     {
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
 
         /** @var WaitingList $waitingList */
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
-        $waitingList->addToWaitingList($account, $this->adminUser);
+        $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList, 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts()->first()])
@@ -258,16 +258,16 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_cannot_edit_account_in_waiting_list_without_permission()
     {
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
 
         /** @var WaitingList $waitingList */
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
-        $waitingList->addToWaitingList($account, $this->adminUser);
+        $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList, 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
@@ -276,17 +276,17 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
 
     public function test_can_open_edit_action_with_permission()
     {
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
 
         /** @var WaitingList $waitingList */
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
-        $waitingList->addToWaitingList($account, $this->adminUser);
+        $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.update-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.update-accounts.*');
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList, 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
@@ -298,11 +298,11 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
-        $waitingList->addToWaitingList($account, $this->adminUser);
+        $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.update-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.update-accounts.*');
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
@@ -328,11 +328,11 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
             'list_id' => $waitingList->id,
             'name' => 'Test Manual Flag',
         ]);
-        $waitingList->addToWaitingList($account, $this->adminUser);
+        $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.update-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.update-accounts.*');
 
         $waitingListAccount = $waitingList->waitingListAccounts->first();
 
@@ -361,11 +361,11 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
             'list_id' => $waitingList->id,
             'name' => 'Test Manual Flag',
         ]);
-        $waitingListAccount = $waitingList->addToWaitingList($account, $this->adminUser);
+        $waitingListAccount = $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
-        $this->adminUser->givePermissionTo('waiting-lists.update-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.update-accounts.*');
 
         // set flag to true
         $waitingListAccount->flags()->sync($manualFlag->id, [
@@ -397,11 +397,11 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
-        $waitingList->addToWaitingList($account, $this->adminUser);
+        $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.remove-accounts.*');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.remove-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
 
         $removal_type = WaitingList\RemovalReason::Request->value;
 
@@ -417,7 +417,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
             'list_id' => $waitingList->id,
             'account_id' => $account->id,
             'deleted_at' => now(),
-            'removed_by' => $this->adminUser->id,
+            'removed_by' => $this->panelUser->id,
             'removal_type' => $removal_type,
         ]);
     }
@@ -427,11 +427,11 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
-        $waitingList->addToWaitingList($account, $this->adminUser);
+        $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->adminUser->givePermissionTo('waiting-lists.view.atc');
-        $this->adminUser->givePermissionTo('waiting-lists.remove-accounts.*');
-        $this->adminUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.remove-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
 
         $removal_type = WaitingList\RemovalReason::Other->value;
         $other_reason = 'for testing';
@@ -448,7 +448,7 @@ class ViewWaitingListPageTest extends BaseAdminTestCase
             'list_id' => $waitingList->id,
             'account_id' => $account->id,
             'deleted_at' => now(),
-            'removed_by' => $this->adminUser->id,
+            'removed_by' => $this->panelUser->id,
             'removal_type' => $removal_type,
             'removal_comment' => $other_reason,
         ]);
