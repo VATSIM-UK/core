@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\WaitingListResource\Pages;
+namespace App\Filament\Training\Resources\WaitingListResource\Pages;
 
-use App\Filament\Admin\Resources\WaitingListResource;
+use App\Filament\Training\Resources\WaitingListResource;
 use Filament\Resources\Pages\EditRecord;
 
 class EditWaitingList extends EditRecord

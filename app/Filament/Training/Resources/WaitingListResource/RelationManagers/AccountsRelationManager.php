@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Resources\WaitingListResource\RelationManagers;
+namespace App\Filament\Training\Resources\WaitingListResource\RelationManagers;
 
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;

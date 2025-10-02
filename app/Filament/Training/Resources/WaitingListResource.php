@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources;
+namespace App\Filament\Training\Resources;
 
-use App\Filament\Admin\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
+use App\Filament\Training\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
 use App\Models\Training\WaitingList;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -123,10 +123,10 @@ class WaitingListResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\WaitingListResource\Pages\ListWaitingLists::route('/'),
-            'create' => \App\Filament\Admin\Resources\WaitingListResource\Pages\CreateWaitingList::route('/create'),
-            'edit' => \App\Filament\Admin\Resources\WaitingListResource\Pages\EditWaitingList::route('/{record}/edit'),
-            'view' => \App\Filament\Admin\Resources\WaitingListResource\Pages\ViewWaitingList::route('/{record}'),
+            'index' => \App\Filament\Training\Resources\WaitingListResource\Pages\ListWaitingLists::route('/'),
+            'create' => \App\Filament\Training\Resources\WaitingListResource\Pages\CreateWaitingList::route('/create'),
+            'edit' => \App\Filament\Training\Resources\WaitingListResource\Pages\EditWaitingList::route('/{record}/edit'),
+            'view' => \App\Filament\Training\Resources\WaitingListResource\Pages\ViewWaitingList::route('/{record}'),
         ];
     }
 }

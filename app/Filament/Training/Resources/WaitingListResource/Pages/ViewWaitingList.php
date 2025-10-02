@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Admin\Resources\WaitingListResource\Pages;
+namespace App\Filament\Training\Resources\WaitingListResource\Pages;
 
-use App\Filament\Admin\Resources\WaitingListResource;
-use App\Filament\Admin\Resources\WaitingListResource\Widgets\IndividualWaitingListOverview;
+use App\Filament\Training\Resources\WaitingListResource;
+use App\Filament\Training\Resources\WaitingListResource\Widgets\IndividualWaitingListOverview;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;

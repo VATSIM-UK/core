@@ -3,7 +3,7 @@
 namespace Tests\Feature\Admin\PositionGroup;
 
 use App\Filament\Admin\Resources\PositionGroupResource\RelationManagers\MembershipEndorsementRelationManager;
-use App\Filament\Admin\Resources\WaitingListResource\Pages\ViewWaitingList;
+use App\Filament\Training\Resources\WaitingListResource\Pages\ViewWaitingList;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

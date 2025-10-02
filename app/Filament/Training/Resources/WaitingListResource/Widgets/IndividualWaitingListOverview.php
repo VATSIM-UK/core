@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Resources\WaitingListResource\Widgets;
+namespace App\Filament\Training\Resources\WaitingListResource\Widgets;
 
 use App\Models\Training\WaitingList;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
