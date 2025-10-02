@@ -49,7 +49,7 @@ class WaitingListsRelationManager extends RelationManager
                 Tables\Actions\ViewAction::make()
                     ->url(fn ($record) => WaitingListResource::getUrl('view', [
                         'record' => $record->waitingList,
-                    ])),
+                    ], panel: 'training')),
             ])
             ->bulkActions([])
             ->headerActions([]);
