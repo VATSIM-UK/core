@@ -4,7 +4,7 @@
 
 @php
     use Carbon\Carbon;
-    use App\Libraries\Bookings;  // ← add this import
+    use App\Libraries\Bookings; 
 
     if (is_string($date)) {
         $date = Carbon::parse($date);

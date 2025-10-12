@@ -61,6 +61,7 @@
                                 <li><a href="{{ route('site.atc.endorsements') }}">Endorsements</a></li>
                                 <li><a href="{{ route('site.atc.mentor') }}">Become a Mentor</a></li>
                                 <li><a href="{{ route('site.atc.bookings') }}">Bookings</a></li>
+                                <li><a href="{{ route('site.bookings.index') }}">Bookings Calendar</a></li>
                                 @if(currentUserHasAuth())
                                 <li><a href="{{ route('ukcp.guide') }}">UK Controller Plugin</a></li>
                                 @endif
