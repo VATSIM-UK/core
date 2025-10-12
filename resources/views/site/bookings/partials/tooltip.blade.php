@@ -48,6 +48,19 @@ if ($booking->type === 'ME') {
     $takenTime = $booking->session ? formatDate($booking->session->taken_time) : 'N/A';
 }
 
+if ($booking->type === 'GS') {
+    $displayType = 'Seminar Booking';
+    $bookedLabel = 'Booked on';
+    $showMentor = false;
+
+    if ($booking->session && $booking->session->mentor) {
+        $mentor = $booking->session->mentor->name . ' (' . $booking->session->mentor->cid . ')';
+    }
+
+    $requestTime = $booking->session ? formatDate($booking->session->request_time) : 'N/A';
+    $takenTime = $booking->session ? formatDate($booking->session->taken_time) : 'N/A';
+}
+
 $timeBooked = formatDate($booking->time_booked);
 @endphp
 

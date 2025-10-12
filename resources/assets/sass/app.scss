@@ -415,6 +415,15 @@ html {
   display: inline-block;
 }
 
+.booking-entry.is-past {
+  display: none !important;
+}
+
+.show-old .booking-entry.is-past {
+  display: block !important;
+}
+
+
 .tooltip-content {
   display: none;
   position: absolute;
