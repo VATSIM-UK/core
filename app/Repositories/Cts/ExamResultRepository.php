@@ -5,6 +5,7 @@ namespace App\Repositories\Cts;
 use App\Events\Training\Exams\PracticalExamCompleted;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\PracticalResult;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class ExamResultRepository
@@ -39,5 +40,17 @@ class ExamResultRepository
         $examBooking->update(['finished' => ExamBooking::FINISHED_FLAG]);
 
         event(new PracticalExamCompleted($examBooking, $practicalResult));
+    }
+
+    /**
+     * Get a query for practical results filtered by exam levels
+     *
+     * @param  Collection  $examLevels  Collection of exam levels to include
+     */
+    public function getExamHistoryQueryForLevels(Collection $examLevels): Builder
+    {
+        return PracticalResult::query()
+            ->with('student', 'examBooking')
+            ->whereIn('exam', $examLevels);
     }
 }

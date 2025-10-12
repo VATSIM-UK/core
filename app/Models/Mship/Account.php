@@ -639,6 +639,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             'waiting_list_account_id',
             'id',
             'id'
-        );
+        )->withoutGlobalScopes(); // Include waiting list accounts that have been soft deleted
     }
 }

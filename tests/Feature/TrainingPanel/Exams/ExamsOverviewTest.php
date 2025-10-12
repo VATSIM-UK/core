@@ -4,6 +4,7 @@ namespace Tests\Feature\TrainingPanel\Exams;
 
 use App\Filament\Training\Pages\ConductExam;
 use App\Filament\Training\Pages\Exams;
+use App\Livewire\Training\AcceptedExamsTable;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
@@ -49,7 +50,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         ]);
 
         Livewire::actingAs($this->panelUser)
-            ->test(Exams::class)
+            ->test(AcceptedExamsTable::class)
             ->assertSuccessful()
             ->assertSee($exam->student->cid)
             ->assertSee($exam->position_1)
@@ -71,7 +72,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         ]);
 
         Livewire::actingAs($this->panelUser)
-            ->test(Exams::class)
+            ->test(AcceptedExamsTable::class)
             ->assertSuccessful()
             ->assertSee($exam->student->cid)
             ->assertSee($exam->position_1)
@@ -93,7 +94,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         ]);
 
         Livewire::actingAs($this->panelUser)
-            ->test(Exams::class)
+            ->test(AcceptedExamsTable::class)
             ->assertSuccessful()
             ->assertSee($exam->student->cid)
             ->assertSee($exam->position_1)
@@ -115,7 +116,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         ]);
 
         Livewire::actingAs($this->panelUser)
-            ->test(Exams::class)
+            ->test(AcceptedExamsTable::class)
             ->assertTableActionHasUrl(name: 'Conduct', record: $exam, url: ConductExam::getUrl(['examId' => $exam->id]))
             ->callTableAction('Conduct', record: $exam);
     }

@@ -202,7 +202,7 @@
                                                 @yield('content', "No content to display")
                                                 <p>
                                                     Kind regards,<br>
-                                                    <strong>VATSIM UK</strong>
+                                                    <strong>@yield('signature', 'VATSIM UK')</strong>
                                                 </p>
                                             </td>
                                         </tr>

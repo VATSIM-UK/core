@@ -85,7 +85,7 @@ trait HasQualifications
      * @param  int|null  $atcRating  The VATSIM ATC rating
      * @param  int|null  $pilotRating  The VATSIM pilot rating
      */
-    public function updateVatsimRatings(?int $atcRating, ?int $pilotRating)
+    public function updateVatsimRatings(?int $atcRating = null, ?int $pilotRating = null)
     {
         if ($atcRating === 0) {
             $this->addNetworkBan('Network ban discovered via Cert login.');
