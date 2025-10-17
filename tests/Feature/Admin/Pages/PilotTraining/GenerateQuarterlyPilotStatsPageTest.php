@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Pages\PilotTraining;
 
-use App\Filament\Pages\PilotTraining\GeneratePilotQuarterlyStats;
+use App\Filament\Admin\Pages\PilotTraining\GeneratePilotQuarterlyStats;
 use App\Models\Cts\PracticalResult;
 use App\Models\Cts\Session;
 use Livewire\Livewire;

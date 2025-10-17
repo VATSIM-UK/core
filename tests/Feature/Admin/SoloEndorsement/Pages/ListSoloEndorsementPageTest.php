@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\SoloEndorsement\Pages;
 
-use App\Filament\Resources\SoloEndorsementResource\Pages\ListSoloEndorsements;
+use App\Filament\Admin\Resources\SoloEndorsementResource\Pages\ListSoloEndorsements;
 use App\Models\Atc\Position;
 use App\Models\Mship\Account\Endorsement;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

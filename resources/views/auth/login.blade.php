@@ -19,7 +19,7 @@
                     </ol>
                     </p>
                     <p>
-                        If you believe you are seeing this page too often, or erroneously, please contact the Web Services Team.
+                        If you believe you are seeing this page too often, or erroneously, please contact the Technology Team.
                     </p>
                 </div>
 

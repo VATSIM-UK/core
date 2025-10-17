@@ -30,7 +30,7 @@ class WaitingListStressSeeder extends Seeder
         $admin = $this->seedS1();
 
         /** @var WaitingList $waitingList */
-        $waitingList = WaitingList::create(['name' => 'Fake TWR List', 'slug' => 'fk-twr', 'department' => 'ATC Training']);
+        $waitingList = WaitingList::create(['name' => 'Fake TWR List', 'slug' => 'fk-twr', 'department' => 'atc', 'requires_roster_membership' => true]);
         $waitingList->save();
 
         foreach (range(0, self::SIZE) as $index) {
