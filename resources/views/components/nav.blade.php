@@ -86,7 +86,7 @@
                                 <li class="dropdown-header">ATC Training</li>
                                 <li><a href="{{ route('site.atc.landing') }}">Welcome</a></li>
                                 <li><a href="{{ route('site.atc.newController') }}">New Controller</a></li>
-                                <li><a href="{{ route('site.atc.endorsements') }}">Raiting Endorsements</a></li>
+                                <li><a href="{{ route('site.atc.endorsements') }}">Rating Endorsements</a></li>
                                 <li><a href="https://moodle.vatsim.uk/course/index.php?categoryid=3">eLearning</a></li>
                                 <li><a href="{{ route('site.atc.mentor') }}">Become a Mentor</a></li>
                             </ul>
