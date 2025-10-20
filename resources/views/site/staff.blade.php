@@ -92,7 +92,7 @@
                         </tr>
                         <tr>
                             <td>Events Assistant</td>
-                            <td><em>Vacant</em></td>
+                            <td>Alex Heirbaut Kitteridge</td>
                         </tr>
                         <tr>
                             <td>Operations Assistant</td>
@@ -113,6 +113,18 @@
                         <tr>
                             <td>Operations Assistant</td>
                             <td>Jack Edwards</td>
+                        </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>Sonny Nixon</td>
+                        </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>Lily Unitt</td>
+                        </tr>
+                        <tr>
+                            <td>Operations Assistant</td>
+                            <td>Oliver Cesarczyk</td>
                         </tr>
                     </table>
                 </div>
@@ -282,7 +294,7 @@
 
                     <div class="col-md-6">
                         <h4 class="text-center">Pilot Training Director (VATUK6)</h4><br />
-                        <p class="text-center"><em>Vacant</em></p>
+                        <p class="text-center">Ben Carpenter</p>
                         <h4 class="text-center">Pilot Training Team</h4>
                         <table class="table">
                             <tr>
@@ -296,10 +308,6 @@
                             <tr>
                                 <td>VFR Flight Instructor</td>
                                 <td>Benjamin Arrowsmith</td>
-                            </tr>
-                            <tr>
-                                <td>VFR Flight Instructor</td>
-                                <td>Ben Carpenter</td>
                             </tr>
                             <tr>
                                 <td>IFR Flight Instructor</td>
