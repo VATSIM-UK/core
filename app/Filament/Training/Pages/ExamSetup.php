@@ -112,7 +112,7 @@ class ExamSetup extends Page implements HasForms
         $positionId = $validated['dataOBS']['position_obs'];
         $position = CtsPosition::find($positionId);
 
-        $ctsMember = Member::where('cid', $this->dataOBS['student_obs'])->first();
+        $ctsMember = Member::where('id', $this->dataOBS['student_obs'])->first();
 
         $setup = ExamSetupModel::create([
             'rts_id' => 14, // hard coded for OBS
