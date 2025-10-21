@@ -68,7 +68,7 @@ class AdminPanelProvider extends PanelProvider
                 NavigationItem::make('Training Panel')
                     ->url(fn () => route('filament.training.pages.dashboard'))
                     ->icon('heroicon-o-academic-cap')
-                    ->visible(fn () => request()->user()->hasPermissionTo('training.access')),         
+                    ->visible(fn () => request()->user()->hasPermissionTo('training.access')),
                 NavigationItem::make('Horizon')
                     ->group('Technology')
                     ->icon('heroicon-o-bars-arrow-down')
