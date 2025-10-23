@@ -11,7 +11,7 @@ class TrainingPagesController extends \App\Http\Controllers\BaseController
         $this->addBreadcrumb('ATC Training Process', '#');
     }
 
-    public finction viewS1Syllabus()
+    public function viewS1Syllabus()
     {
         $this->setTitle('ATC Training Process');
         $this->addBreadcrumb('ATC Training Process', route('site.training.s1-syllabus'));
