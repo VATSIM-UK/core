@@ -10,6 +10,6 @@ class TrainingPagesTest extends TestCase
     #[Test]
     public function test_it_loads_the_s1_syllabus()
     {
-        $this->get(route('sire.training.s1-syllabus'))->assertOk();
+        $this->get(route('site.training.s1-syllabus'))->assertOk();
     }
 }
