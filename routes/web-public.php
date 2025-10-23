@@ -68,7 +68,7 @@ Route::group([
     Route::group([
         'as' => 'training.',
         'prefix' => 'training',
-    ], function(){
+    ], function () {
         Route::get('/s1-syllabus')->uses('TrainingPagesController@viewS1Syllabus')->name('s1-syllabus');
     });
 });
