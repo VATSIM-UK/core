@@ -131,7 +131,7 @@
                 </li>
 
                 <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">ATC Training Policy <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">ATC Training Process <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
