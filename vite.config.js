@@ -1,5 +1,5 @@
-import {defineConfig} from 'vite';
-import laravel, {refreshPaths} from 'laravel-vite-plugin'
+import { defineConfig } from 'vite';
+import laravel, { refreshPaths } from 'laravel-vite-plugin'
 
 export default defineConfig({
     plugins: [
@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/assets/sass/home.scss',
                 'resources/assets/js/home.js',
                 'resources/assets/js/snow.js',
+                'resources/assets/js/bookings.js',
                 'resources/assets/js/top-notification.js'
             ],
             refresh: [
@@ -20,7 +21,7 @@ export default defineConfig({
         }),
         {
             name: 'blade',
-            handleHotUpdate({file, server}) {
+            handleHotUpdate({ file, server }) {
                 if (file.endsWith('.blade.php')) {
                     server.ws.send({
                         type: 'full-reload',
