@@ -8,7 +8,7 @@ class TrainingPagesController extends \App\Http\Controllers\BaseController
     {
         parent::__construct();
 
-        $this->addBreadcrumb('ATC Training Process')
+        $this->addBreadcrumb('ATC Training Process', '#');
     }
 
     publci finction viewS1Syllabus()
