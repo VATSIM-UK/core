@@ -13,8 +13,8 @@ class TrainingPagesController extends \App\Http\Controllers\BaseController
 
     public function viewS1Syllabus()
     {
-        $this->setTitle('ATC Training Process');
-        $this->addBreadcrumb('ATC Training Process', route('site.training.s1-syllabus'));
+        $this->setTitle('S1 Syllabus and Lesson Plans');
+        $this->addBreadcrumb('S1 Syllabus and Lesson Plans', route('site.training.s1-syllabus'));
 
         return $this->viewMake('site.training.s1-syllabus');
     }
