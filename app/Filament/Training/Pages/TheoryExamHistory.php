@@ -6,6 +6,7 @@ use App\Repositories\Cts\TheoryExamResultRepository;
 use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\ViewAction;
@@ -52,9 +53,51 @@ class TheoryExamHistory extends Page implements HasTable
                         Placeholder::make('submitted_time')->label('Submitted Time')->content(fn ($record) => $record->submitted_time),
                         Placeholder::make('score')->label('Score')->content(fn ($record) => "{$record->correct} / {$record->questions} (Passmark: {$record->passmark})"),
                         Placeholder::make('time_mins')->label('Time Limit')->content(fn ($record) => "{$record->time_mins} Mins"),
-                        Placeholder::make('expires')->label('Expires')->content(fn ($record) => $record->expires),
                     ]),
+
+                Section::make('Questions')->collapsible()->collapsed()->schema(fn ($record) => $this->buildQuestionPlaceholders($record)),
             ]);
+    }
+
+    protected function buildQuestionPlaceholders($record): array
+    {
+
+        if (! $record) {
+            return [];
+        }
+
+        $answers = $record->answers()->with('question')->get();
+
+        return $answers->map(function ($answer, $index) use ($record) {
+            $number = $index + 1;
+            $question = $answer->question;
+            $questionText = $question->question ?? 'Unknown question';
+
+            $givenAnswer = $record->getOptionText($question, $answer->answer_given);
+            $correctAnswer = $record->getOptionText($question, $question->answer ?? null);
+
+            $isCorrect = $answer->answer_given == ($question->answer ?? null);
+
+            return Fieldset::make("Question {$number}")
+                ->schema([
+                    Placeholder::make("question_{$number}_text")
+                        ->label('Question')
+                        ->content($questionText),
+                    Placeholder::make("question_{$number}_answer")
+                        ->label('Member Answer')
+                        ->content($givenAnswer),
+                    Placeholder::make("question_{$number}_correct")
+                        ->label('Correct Answer')
+                        ->content($correctAnswer),
+                    Placeholder::make("question_{$number}_status")
+                        ->label('Status')
+                        ->content($isCorrect ? 'CORRECT' : 'INCORRECT')
+                        ->extraAttributes([
+                            'class' => $isCorrect ? 'text-success-600 font-semibold' : 'text-danger-600 font-semibold',
+                        ]),
+                ])
+                ->columns(4);
+        })->all();
     }
 
     public function table(Table $table): Table
@@ -102,10 +145,10 @@ class TheoryExamHistory extends Page implements HasTable
                 Filter::make('exam_rating')->form([
                     Forms\Components\Select::make('exam_rating')
                         ->options([
-                            'S1' => 'Student 1',
-                            'S2' => 'Tower',
-                            'S3' => 'Approach',
-                            'C1' => 'Enroute',
+                            'S1' => 'OBS/Student (S1)',
+                            'S2' => 'Tower (S2)',
+                            'S3' => 'Approach (S3)',
+                            'C1' => 'Enroute (C1)',
                         ])
                         ->multiple()
                         ->label('Exam'),
