@@ -6,6 +6,8 @@ use App\Filament\Training\Pages\TheoryExamHistory;
 use App\Models\Cts\Member;
 use App\Models\Cts\TheoryResult;
 use App\Models\Mship\Account;
+use App\Models\Cts\TheoryQuestion;
+use App\Models\Cts\TheoryAnswer;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
@@ -405,5 +407,33 @@ class TheoryExamHistoryTest extends BaseTrainingPanelTestCase
 
         // Should not find APP exam (older than 14 days)
         $component->assertDontSee($this->theoryResults['S3']->student->account->name);
+    }
+
+    #[Test]
+    public function it_shows_questions_and_answers_for_a_theory_result()
+    {
+        $this->panelUser->givePermissionTo(['training.theory.access', 'training.theory.view.app']);
+
+        $result = $this->theoryResults['S3'];
+
+        $question = TheoryQuestion::factory()->create([
+            'question' => 'What is the correct ATC phrase for climb?',
+            'option_1' => 'Climb flight level 130',
+            'option_2' => 'Go up',
+            'option_3' => 'Increase altitude',
+            'option_4' => 'Ascend please',
+        ]);
+
+        TheoryAnswer::factory()->create([
+            'theory_id' => $result->id,
+            'question_id' => $question->id,
+            'answer_given' => 1,
+        ]);
+
+        $component = Livewire::actingAs($this->panelUser)
+            ->test(TheoryExamHistory::class)
+            ->mountTableAction('view', $result)
+            ->assertSee('What is the correct ATC phrase for climb?')
+            ->assertSee('Climb flight level 130');
     }
 }
