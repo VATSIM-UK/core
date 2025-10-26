@@ -1,4 +1,4 @@
-﻿<x-markdown>
+<x-markdown>
 # Syllabus and Lesson Plans
 
 **Version 1.0**  

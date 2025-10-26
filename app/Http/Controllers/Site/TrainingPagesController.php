@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\BaseController;
 
-Class TrainingPagesController extends BaseController
+class TrainingPagesController extends BaseController
 {
     public function construct()
     {
@@ -20,5 +20,4 @@ Class TrainingPagesController extends BaseController
 
         return $this->viewMake('site.training.s2-syllabus');
     }
-
 }
