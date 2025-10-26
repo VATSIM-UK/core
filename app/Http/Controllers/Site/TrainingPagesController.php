@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Site;
 
-Class TrainingPagesController extends BaseTrainingPagesController
+use App\Http\Controllers\BaseController;
+
+Class TrainingPagesController extends BaseController
 {
     public function construct()
     {
