@@ -9,6 +9,7 @@ use App\Models\Cts\PracticalExaminers;
 use App\Repositories\Cts\ExaminerRepository;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -49,6 +50,21 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                         $this->canConductExam($examBooking->exam)
                     )
                     ->form([
+                        Grid::make(3)
+                            ->schema([
+                                Placeholder::make('student_name')
+                                    ->label('Student Name')
+                                    ->content(fn (ExamBooking $record) => $record->student->name),
+
+                                Placeholder::make('student_cid')
+                                    ->label('CID')
+                                    ->content(fn (ExamBooking $record) => $record->student->cid),
+
+                                Placeholder::make('exam_position')
+                                    ->label('Position')
+                                    ->content(fn (ExamBooking $record) => $record->position_1),
+                            ]),
+
                         Select::make('availability_slot')
                             ->label('Select Availability Slot')
                             ->required()
