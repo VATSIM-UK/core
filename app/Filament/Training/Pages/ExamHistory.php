@@ -41,6 +41,9 @@ class ExamHistory extends Page implements HasTable
 
         $examResultRepository = app(ExamResultRepository::class);
         $query = $examResultRepository->getExamHistoryQueryForLevels($typesToShow);
+        $query->orWhereHas('examBooking', function ($q) {
+            $q->where('exmr_id', auth()->user()->id);
+        });
 
         return $table->query($query)->columns([
             TextColumn::make('student.account.id')->label('CID')->searchable(),
