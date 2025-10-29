@@ -391,12 +391,32 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 
 ### 5.3 Lesson 2
 
-| | Basic Aerodrome Control 2 |
-| --- | --- |
-| Environment | SweatBox |
-| Duration | 1 - 1.5 hours |
-| Objectives | Navigate to the eAIP and discuss the different chart types and their features.</br>2. Introduce basic altimetry - definitions of QNH and QFE and where they are used</br>3. Discuss the basic area of responsibilities of adjacent control positions (AIR, APC, FIN, INT, TC, and AC), and what they do, how they appear in EuroScope, and examples of when you might co-ordinate with them</br>4. Highlight any lateral and vertical flight plan restrictions specific to the student's training aerodrome</br>5. Recognise errors in flight plans such as initial routings for a SID, RFL for direction of flight, RFL for standing agreements</br>6. Explain and practise using conditional clearances</br>7. Introduce VFR clearances for the circuit and CTR entry/exit</br>8. Consolidate objectives from previous lessons |
-| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=15)</br>[Standard Route Document (SRD)](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/)</br>[UKCP SRD search](https://ukcp.vatsim.uk/srd-routes)</br>[eAIP](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/) |
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Basic Aerodrome Control 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Environment</td>
+<td>SweatBox</td>
+</tr>
+<tr>
+<td>Duration</td>
+<td>1 - 1.5 hours</td>
+</tr>
+<tr>
+<td>Objectives</td>
+<td>Navigate to the eAIP and discuss the different chart types and their features.</br>2. Introduce basic altimetry - definitions of QNH and QFE and where they are used</br>3. Discuss the basic area of responsibilities of adjacent control positions (AIR, APC, FIN, INT, TC, and AC), and what they do, how they appear in EuroScope, and examples of when you might co-ordinate with them</br>4. Highlight any lateral and vertical flight plan restrictions specific to the student&#39;s training aerodrome</br>5. Recognise errors in flight plans such as initial routings for a SID, RFL for direction of flight, RFL for standing agreements</br>6. Explain and practise using conditional clearances</br>7. Introduce VFR clearances for the circuit and CTR entry/exit</br>8. Consolidate objectives from previous lessons</td>
+</tr>
+<tr>
+<td>Student notes and resources</td>
+<td><a href="https://moodle.vatsim.uk/course/view.php?id=15">S1 - Aerodrome Control e-learning course</a></br><a href="https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/">Standard Route Document (SRD)</a></br><a href="https://ukcp.vatsim.uk/srd-routes">UKCP SRD search</a></br><a href="https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/">eAIP</a></td>
+</tr>
+</tbody>
+</table>
 
 ### 5.4 Lesson 3
 
