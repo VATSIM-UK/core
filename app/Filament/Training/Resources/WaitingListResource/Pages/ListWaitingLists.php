@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Admin\Resources\WaitingListResource\Pages;
+namespace App\Filament\Training\Resources\WaitingListResource\Pages;
 
 use App\Filament\Admin\Helpers\Pages\BaseListRecordsPage;
-use App\Filament\Admin\Resources\WaitingListResource;
+use App\Filament\Training\Resources\WaitingListResource;
 use Filament\Actions;
 
 class ListWaitingLists extends BaseListRecordsPage
