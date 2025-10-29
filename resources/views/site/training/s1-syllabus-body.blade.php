@@ -323,12 +323,42 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 
 ### 5.1 Runway Configurations
 
-| Lesson Number | Manchester (EGCC) | London Stansted (EGSS) | Edinburgh (EGPH) |
-| --- | --- | --- | --- |
-| 1 | 23 singles | 22 | 24 |
-| 2 | 23 duals   | 22 | 24 |
-| 3 | 05 singles | 04 | 06 |
-| 4 | 23 singles | 22 | 24 |
+<table>
+<thead>
+<tr>
+<th>Lesson Number</th>
+<th>Manchester (EGCC)</th>
+<th>London Stansted (EGSS)</th>
+<th>Edinburgh (EGPH)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>23 singles</td>
+<td>22</td>
+<td>24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>23 duals</td>
+<td>22</td>
+<td>24</td>
+</tr>
+<tr>
+<td>3</td>
+<td>05 singles</td>
+<td>04</td>
+<td>06</td>
+</tr>
+<tr>
+<td>4</td>
+<td>23 singles</td>
+<td>22</td>
+<td>24</td>
+</tr>
+</tbody>
+</table>
 
 ### 5.2 Lesson 1
 
