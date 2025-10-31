@@ -64,4 +64,12 @@ Route::group([
         Route::get('/branding-guidelines')->uses('PolicyPagesController@viewBranding')->name('branding');
         Route::get('/streaming-guidelines')->uses('PolicyPagesController@viewStreaming')->name('streaming');
     });
+
+    Route::group([
+        'as' => 'bookings.',
+        'prefix' => 'bookings',
+    ], function () {
+        Route::get('calendar/{year?}/{month?}')->uses('BookingsPagesController@index')->name('index');
+        Route::get('/{id}')->uses('BookingsPagesController@show')->name('bookings.show');
+    });
 });
