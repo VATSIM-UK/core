@@ -420,32 +420,12 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 
 ### 5.4 Lesson 3
 
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Advanced Aerodrome Control</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Environment</td>
-<td>SweatBox</td>
-</tr>
-<tr>
-<td>Duration</td>
-<td>1 - 1.5 hours</td>
-</tr>
-<tr>
-<td>Objectives</td>
-<td>1. Introduce low visibility procedures and talk though the local procedures associated with them</br>2. Introduce METARs and TAFs, and practise decoding simple examples</br>3. Introduce non-standard IFR clearances (airway departures, vectored departure) and practise issuing them.</br>4. Introduce the use of the command line - aliases, private messaging, function keys</br>5. Consolidate objectives from previous lessons</td>
-</tr>
-<tr>
-<td>Student notes and resources</td>
-<td><a href="https://moodle.vatsim.uk/course/view.php?id=15">S1 - Aerodrome Control e-learning course</a></br><a href="https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/">Standard Route Document (SRD)</a></br><a href="https://ukcp.vatsim.uk/srd-routes">UKCP SRD search</a></br><a href="https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/">eAIP</a></br><a href="https://docs.google.com/spreadsheets/d/1WfveAfGmAg_qFpZjx5k55XKTnVqtxlJTN_Vf9XwPtNM/edit?usp=sharing">METAR bank</a></td>
-</tr>
-</tbody>
-</table>
+| | Advanced Aerodrome Control |
+| --- | --- |
+| Environment | SweatBox |
+| Duration | 1 - 1.5 hours |
+| Objectives | 1. Introduce low visibility procedures and talk though the local procedures associated with them</br>2. Introduce METARs and TAFs, and practise decoding simple examples</br>3. Introduce non-standard IFR clearances (airway departures, vectored departure) and practise issuing them.</br>4. Introduce the use of the command line - aliases, private messaging, function keys</br>5. Consolidate objectives from previous lessons |
+| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=15)</br>[Standard Route Document (SRD)](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/)</br>[UKCP SRD search](https://ukcp.vatsim.uk/srd-routes)</br>[eAIP](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/)</br>[METAR bank](https://docs.google.com/spreadsheets/d/1WfveAfGmAg_qFpZjx5k55XKTnVqtxlJTN_Vf9XwPtNM/edit?usp=sharing) |
 
 ### 5.5 Lesson 4
 
