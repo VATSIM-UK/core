@@ -28,7 +28,7 @@ Before submission for practical examination, a student must have passed the S1 t
 Alongside the guidance in other sections of this syllabus, mentors and instructors will need to use their judgement and experience to decide when it is appropriate to submit a student for practical examination.
 
 | Grade | Description |
-| :---: | :--- |
+| :--- | :--- |
 | Not covered | The student has not covered this competency. |
 | Covered | Key facts and concepts can be recalled, with some understanding shown. If the student has demonstrated pracical application, it will be with significant mentor input. |
 | Developing | Knowledge is satisfactorily applied to practical situations with some mentor input. A strong understanding is shown, either explicity, or implicitly. |
