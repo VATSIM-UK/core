@@ -449,31 +449,11 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 
 ### 5.5 Lesson 4
 
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Aerodrome Control Consolidation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Environment</td>
-<td>SweatBox</td>
-</tr>
-<tr>
-<td>Duration</td>
-<td>1 - 1.5 hours</td>
-</tr>
-<tr>
-<td>Objectives</td>
-<td>1. Discuss the purpose of flow management techniques including the use of CTOTs and MDIs</br>2. Discuss the benefits of introducing flow control</br>3. Introduce the use of flow management techniques during high traffic scenarios</br>4. Review the course aims and consolidate knowledge in preparation for the exam</br>5. In most situations forward to exam, even if you are unsure as to whether they will pass (if you think they will more likely fail then do one further consolidation session)</td>
-</tr>
-<tr>
-<td>Student notes and resources</td>
-<td><a href="https://moodle.vatsim.uk/course/view.php?id=15">S1 - Aerodrome Control e-learning course</a></br><a href="https://www.aurora.nats.co.uk/htmlAIP/Publications/2021-01-28-AIRAC/html/eAIP/EG-GEN-2.3-en-GB.html#GEN-2.3">Aeronautical Chart Symbols</a></br><a href="https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/">Standard Route Document (SRD)</a></br><a href="https://ukcp.vatsim.uk/srd-routes">UKCP SRD search</a></br><a href="https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/">eAIP</a></td>
-</tr>
-</tbody>
-</table>
+| | Aerodrome Control Consolidation |
+| --- | --- |
+| Environment | SweatBox |
+| Duration | 1 - 1.5 hours |
+| Objectives | 1. Discuss the purpose of flow management techniques including the use of CTOTs and MDIs</br>2. Discuss the benefits of introducing flow control</br>3. Introduce the use of flow management techniques during high traffic scenarios</br>4. Review the course aims and consolidate knowledge in preparation for the exam</br>5. In most situations forward to exam, even if you are unsure as to whether they will pass (if you think they will more likely fail then do one further consolidation session) |
+| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=15)</br>[Aeronautical Chart Symbols](https://www.aurora.nats.co.uk/htmlAIP/Publications/2021-01-28-AIRAC/html/eAIP/EG-GEN-2.3-en-GB.html#GEN-2.3)</br>[Standard Route Document (SRD)](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/)</br>[UKCP SRD search](https://ukcp.vatsim.uk/srd-routes)</br>[eAIP](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/) |
 
 </x-markdown>
