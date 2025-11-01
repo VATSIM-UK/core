@@ -309,7 +309,7 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 
 ### 5.2 Lesson 1
 
-| | Basic Aerodrome Control 1 |
+| Title | Basic Aerodrome Control 1 |
 | :--- | :--- |
 | Environment | SweatBox |
 | Duration | 1 - 1.5 hours |
@@ -318,7 +318,7 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 
 ### 5.3 Lesson 2
 
-| | Basic Aerodrome Control 2 |
+| Title | Basic Aerodrome Control 2 |
 | :--- | :--- |
 | Environment | SweatBox |
 | Duration | 1 - 1.5 hours |
@@ -327,7 +327,7 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 
 ### 5.4 Lesson 3
 
-| | Advanced Aerodrome Control |
+| Title | Advanced Aerodrome Control |
 | :--- | :--- |
 | Environment | SweatBox |
 | Duration | 1 - 1.5 hours |
@@ -336,7 +336,7 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 
 ### 5.5 Lesson 4
 
-| | Aerodrome Control Consolidation |
+| Title | Aerodrome Control Consolidation |
 | :--- | :--- |
 | Environment | SweatBox |
 | Duration | 1 - 1.5 hours |
