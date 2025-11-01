@@ -362,32 +362,12 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 
 ### 5.2 Lesson 1
 
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Basic Aerodrome Control 1</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Environment</td>
-<td>SweatBox</td>
-</tr>
-<tr>
-<td>Duration</td>
-<td>1 - 1.5 hours</td>
-</tr>
-<tr>
-<td>Objectives</td>
-<td>1. Connect to SweatBox</br>2. Discuss the roles and aeras of responsibilities of the GMP, GMC, and AIR controllers</br>3. Select a runway for use</br>4. Talk though the aerodrome layout and &#39;standard&#39; taxi routings</br>5. Practise coordinating an initial logon to the network</br>6. Generate an ATIS</br>7. Explain the use of status blocks and scratch pads. Give a brief introduction to how scratchpads can be used, but emphasiese that the student can use them however they want</br>8. Explain and practise issing IFR clearances and mandatory readback items</br>9. Explain and practise using push-back and start-up instructions</br>10. Explain and practise issuing taxi instructions</br>11. Define and practise using the correct handoff procedure</td>
-</tr>
-<tr>
-<td>Student notes and resources</td>
-<td><a href="https://moodle.vatsim.uk/course/view.php?id=15">S1 - Aerodrome Control e-learning course</a></br><a href="https://www.aurora.nats.co.uk/htmlAIP/Publications/2021-01-28-AIRAC/html/eAIP/EG-GEN-2.3-en-GB.html#GEN-2.3">Aeronautical Chart Symbols</a></td>
-</tr>
-</tbody>
-</table>
+| | Basic Aerodrome Control 1 |
+| --- | --- |
+| Environment | SweatBox |
+| Duration | 1 - 1.5 hours |
+| Objectives | 1. Connect to SweatBox</br>2. Discuss the roles and aeras of responsibilities of the GMP, GMC, and AIR controllers</br>3. Select a runway for use</br>4. Talk though the aerodrome layout and 'standard' taxi routings</br>5. Practise coordinating an initial logon to the network</br>6. Generate an ATIS</br>7. Explain the use of status blocks and scratch pads. Give a brief introduction to how scratchpads can be used, but emphasiese that the student can use them however they want</br>8. Explain and practise issing IFR clearances and mandatory readback items</br>9. Explain and practise using push-back and start-up instructions</br>10. Explain and practise issuing taxi instructions</br>11. Define and practise using the correct handoff procedure |
+| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=15)</br>[Aeronautical Chart Symbols](https://www.aurora.nats.co.uk/htmlAIP/Publications/2021-01-28-AIRAC/html/eAIP/EG-GEN-2.3-en-GB.html#GEN-2.3) |
 
 ### 5.3 Lesson 2
 
