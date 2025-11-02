@@ -125,10 +125,13 @@
                                 <li class="dropdown-header">Guidelines</li>
                                 <li><a href="{{ route('site.policy.branding') }}">Branding Guidelines</a></li>
                                 <li><a href="{{ route('site.policy.streaming') }}">Streaming Guidelines</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ route('site.policy.training.s1-syllabus') }}">S1 Syllabus</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
+
                 <li class="nav-item"><a href="https://community.vatsim.uk/downloads">Downloads</a></li>
 
                 <li class="dropdown dropdown-large">
