@@ -63,6 +63,11 @@ Route::group([
         Route::get('/data-protection-policy')->uses('PolicyPagesController@viewDPP')->name('data-protection');
         Route::get('/branding-guidelines')->uses('PolicyPagesController@viewBranding')->name('branding');
         Route::get('/streaming-guidelines')->uses('PolicyPagesController@viewStreaming')->name('streaming');
-        Route::get('/training-process/s1-syllabus')->uses('PolicyPagesController@viewS1Syllabus')->name('s1-syllabus');
+        Route::group([
+            'as' => 'training.',
+            'prefix' => 'training',
+        ], function () {
+            Route::get('/s1-syllabus')->uses('PolicyPagesController@viewS1Syllabus')->name('s1-syllabus');
+        });
     });
 });
