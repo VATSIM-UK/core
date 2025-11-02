@@ -12,19 +12,6 @@ updates:
 
   open-pull-requests-limit: 99
   labels: []
-  ignore:
-  - dependency-name: postcss
-    versions:
-    - 8.2.12
-    - 8.2.6
-    - 8.2.9
-  - dependency-name: laravel-mix
-    versions:
-    - 6.0.13
-    - 6.0.16
-  - dependency-name: admin-lte
-    versions:
-    - 3.1.0
 
   groups:
     vite-stack:
@@ -35,37 +22,7 @@ updates:
 - package-ecosystem: composer
   directory: "/"
   schedule:
-    interval: weekly
-    day: friday
-    time: "18:00"
+    interval: monthly
+
   open-pull-requests-limit: 99
   labels: []
-  ignore:
-  - dependency-name: league/csv
-    versions:
-    - ">= 9.3.a, < 9.4"
-  - dependency-name: symfony/translation
-    versions:
-    - 5.2.4
-  - dependency-name: laravel/framework
-    versions:
-    - 8.29.0
-    - 8.31.0
-  - dependency-name: doctrine/dbal
-    versions:
-    - 3.0.0
-  - dependency-name: league/csv
-    versions:
-    - 9.6.2
-  - dependency-name: spatie/laravel-cookie-consent
-    versions:
-    - 2.12.13
-  - dependency-name: laravel/passport
-    versions:
-    - 10.1.1
-  - dependency-name: maatwebsite/excel
-    versions:
-    - 3.1.27
-  - dependency-name: laravel/telescope
-    versions:
-    - 4.4.4
