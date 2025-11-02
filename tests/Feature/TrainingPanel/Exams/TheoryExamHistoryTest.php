@@ -249,7 +249,7 @@ class TheoryExamHistoryTest extends BaseTrainingPanelTestCase
         $component->assertSee($twr->student->account->id); // CID
         $component->assertSee($twr->student->account->name); // Name
         $component->assertSee('S2'); // Exam type
-        $component->assertSee($twr->submitted_time); // Submitted Time
+        $component->assertSee($twr->submitted_time->isoFormat('lll')); // Submitted Time
     }
 
     #[Test]
