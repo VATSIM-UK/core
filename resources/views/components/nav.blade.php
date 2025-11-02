@@ -126,7 +126,7 @@
                                 <li><a href="{{ route('site.policy.branding') }}">Branding Guidelines</a></li>
                                 <li><a href="{{ route('site.policy.streaming') }}">Streaming Guidelines</a></li>
                                 <li class="divider"></li>
-                                <li><a href="{{ route('site.policy.training-process.s1-syllabus') }}">S1 Syllabus and Lesson Plans</a></li>
+                                <li><a href="{{ route('site.policy.s1-syllabus') }}">S1 Syllabus and Lesson Plans</a></li>
                             </ul>
                         </li>
                     </ul>
