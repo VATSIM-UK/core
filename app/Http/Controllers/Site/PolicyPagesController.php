@@ -74,4 +74,12 @@ class PolicyPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.policy.streaming');
     }
+
+    public function viewS1Syllabus()
+    {
+        $this->setTitle('S1 Syllabus and Lesson Plans');
+        $this->addBreadcrumb('S1 Syllabus and Lesson Plans', route('site.policy.training-process.s1-syllabus'));
+
+        return $this->viewMake('site.policy.training-process.s1-syllabus');
+    }
 }

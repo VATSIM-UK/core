@@ -125,17 +125,8 @@
                                 <li class="dropdown-header">Guidelines</li>
                                 <li><a href="{{ route('site.policy.branding') }}">Branding Guidelines</a></li>
                                 <li><a href="{{ route('site.policy.streaming') }}">Streaming Guidelines</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">ATC Training Process <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li><a href="{{ route('site.training.s1-syllabus') }}">S1 Syllabus and Lesson Plans</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ route('site.policy.training-process.s1-syllabus') }}">S1 Syllabus and Lesson Plans</a></li>
                             </ul>
                         </li>
                     </ul>
