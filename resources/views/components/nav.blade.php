@@ -119,7 +119,7 @@
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
-                                
+                                <li><a href="{{ route('site.policy.training.s1-syllabus') }}">S1 Syllabus</a></li>
                             </ul>
                         </li>
                     </ul>
