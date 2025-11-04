@@ -68,6 +68,7 @@ Route::group([
             'prefix' => 'training',
         ], function () {
             Route::get('/s1-syllabus')->uses('PolicyPagesController@viewS1Syllabus')->name('s1-syllabus');
+            Route::get('/s3-syllabus')->uses('PolicyPagesController@viewS3Syllabus')->name('s3-syllabus');
         });
     });
 });
