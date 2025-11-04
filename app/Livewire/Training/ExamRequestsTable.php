@@ -76,9 +76,14 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                                     ->orderBy('from')
                                     ->get()
                                     ->mapWithKeys(function ($availability) {
+                                        [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
+                                            Carbon::parse($availability->from),
+                                            Carbon::parse($availability->to),
+                                        );
+
                                         $date = $availability->date->format('Y-m-d');
-                                        $fromTime = Carbon::parse($availability->from)->format('H:i');
-                                        $toTime = Carbon::parse($availability->to)->format('H:i');
+                                        $fromTime = $availStart->format('H:i');
+                                        $toTime = $availEnd->format('H:i');
 
                                         return [
                                             $availability->id => "{$date} from {$fromTime} to {$toTime}",
@@ -109,10 +114,19 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                                             return [];
                                         }
 
-                                        $startHour = Carbon::parse($availability->from)->hour;
-                                        $endHour = Carbon::parse($availability->to)->hour;
+                                        [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
+                                            Carbon::parse($availability->from),
+                                            Carbon::parse($availability->to),
+                                        );
 
-                                        return $this->generateHourOptions($startHour, $endHour);
+                                        $latestStartHour = min($availEnd->copy()->subHour()->hour, 22); // Don't allow a start hour to be 2300+ as they won't have the minimum of 60 minutes for the exam.
+                                        $hours = [];
+
+                                        for ($hour = $availStart->hour; $hour <= $latestStartHour; $hour++) {
+                                            $hours[$hour] = sprintf('%02d', $hour);
+                                        }
+
+                                        return $hours;
                                     })
                                     ->placeholder('Hour')
                                     ->live()
@@ -131,8 +145,10 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                                             return [];
                                         }
 
-                                        $availStart = Carbon::parse($availability->from);
-                                        $availEnd = Carbon::parse($availability->to);
+                                        [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
+                                            Carbon::parse($availability->from),
+                                            Carbon::parse($availability->to),
+                                        );
 
                                         return $this->generateStartMinuteOptions($selectedHour, $availStart, $availEnd);
                                     })
@@ -158,10 +174,14 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                                             return [];
                                         }
 
+                                        [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
+                                            Carbon::parse($availability->from),
+                                            Carbon::parse($availability->to),
+                                        );
+
                                         $startTime = Carbon::create(null, null, null, $startHour, $startMinute);
                                         $minEndTime = $startTime->copy()->addMinutes(60); // Minimum 60 minutes
                                         $maxEndTime = $startTime->copy()->addMinutes(120); // Maximum 120 minutes (2 hours)
-                                        $availEnd = Carbon::parse($availability->to);
 
                                         // Use the earliest of max exam duration or availability end
                                         $effectiveEndTime = $maxEndTime->lessThan($availEnd) ? $maxEndTime : $availEnd;
@@ -187,10 +207,14 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                                             return [];
                                         }
 
+                                        [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
+                                            Carbon::parse($availability->from),
+                                            Carbon::parse($availability->to),
+                                        );
+
                                         $startTime = Carbon::create(null, null, null, $startHour, $startMinute);
                                         $minEndTime = $startTime->copy()->addMinutes(60);
                                         $maxEndTime = $startTime->copy()->addMinutes(120); // Maximum 120 minutes (2 hours)
-                                        $availEnd = Carbon::parse($availability->to);
 
                                         // Use the earliest of max exam duration or availability end
                                         $effectiveEndTime = $maxEndTime->lessThan($availEnd) ? $maxEndTime : $availEnd;
@@ -358,6 +382,15 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
         foreach ($fields as $field) {
             $set($field, null);
         }
+    }
+
+    protected function normalizeAvailabilityTimes(Carbon $from, Carbon $to): array
+    {
+        if ($to->lessThanOrEqualTo($from) || $to->hour > 23 || ($to->hour === 23 && $to->minute > 45)) {
+            $to->setHour(23)->setMinute(45)->setSecond(0);
+        }
+
+        return [$from, $to];
     }
 
     /**
