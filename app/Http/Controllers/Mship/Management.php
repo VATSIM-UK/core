@@ -54,18 +54,7 @@ class Management extends \App\Http\Controllers\BaseController
             ->with('roster', $roster);
     }
 
-//     public function postInvisibility()
-//     {
-//         // Toggle
-//         if (Auth::user()->is_invisible) {
-//             Auth::user()->is_invisible = 0;
-//         } else {
-//             Auth::user()->is_invisible = 1;
-//         }
-//         Auth::user()->save();
-//
-//         return redirect($this->redirectPath());
-//     }
+
 
     public function getEmailAdd()
     {

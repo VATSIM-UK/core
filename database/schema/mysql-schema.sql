@@ -333,7 +333,7 @@ CREATE TABLE `mship_account` (
   `experience` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `age` smallint unsigned NOT NULL DEFAULT '0',
   `inactive` tinyint(1) NOT NULL DEFAULT '0',
---   `is_invisible` tinyint(1) NOT NULL DEFAULT '0',
+  `is_invisible` tinyint(1) NOT NULL DEFAULT '0',
   `debug` tinyint(1) NOT NULL DEFAULT '0',
   `joined_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
