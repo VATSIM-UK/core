@@ -70,4 +70,11 @@ Route::group([
             Route::get('/s1-syllabus')->uses('PolicyPagesController@viewS1Syllabus')->name('s1-syllabus');
         });
     });
+
+    Route::group([
+        'as' => 'training.',
+        'prefix' => 'training',
+    ], function () {
+        Route::get('/s2-syllabus')->uses('TrainingPagesController@viewS2Syllabus')->name('s2-syllabus');
+    });
 });
