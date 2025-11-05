@@ -89,7 +89,6 @@ Route::group([
     Route::group([
     ], function () {
 
-
         Route::get('notification/list')->uses('Notification@getList')->name('notification.list');
         Route::post('notification/acknowledge/{sysNotification}')->uses('Notification@postAcknowledge')->name('notification.acknowledge');
     });

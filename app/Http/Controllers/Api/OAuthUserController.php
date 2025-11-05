@@ -94,7 +94,6 @@ class OAuthUserController
         $return['account_state_current'] = $account->primary_state->name;
         $return['account_status'] = $account->status;
 
-
         $return['is_banned'] = (bool) $account->is_banned;
         $return['ban_info'] = ($account->is_banned ? $account->bans->first() : null);
 

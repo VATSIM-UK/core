@@ -54,8 +54,6 @@ class Management extends \App\Http\Controllers\BaseController
             ->with('roster', $roster);
     }
 
-
-
     public function getEmailAdd()
     {
         return $this->viewMake('mship.management.email.add');
