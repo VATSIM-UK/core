@@ -64,7 +64,7 @@
                     <table class="table">
                         <tr>
                             <td>Deputy Operations Director</td>
-                            <td><em>Vacant</em></td>
+                            <td>1604708</td>
                         </tr>
                         <tr>
                             <td>Enroute Operations Coordinator</td>
@@ -80,7 +80,7 @@
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
-                            <td>Ben Walker</td>
+                            <td>1604708</td>
                         </tr>
                         <tr>
                             <td>Events Manager</td>
@@ -303,11 +303,15 @@
                             </tr>
                             <tr>
                                 <td>Initial Flight Instructor</td>
-                                <td>Riley Casement</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>VFR Flight Instructor</td>
                                 <td>Benjamin Arrowsmith</td>
+                            </tr>
+                            <tr>
+                                <td>VFR Flight Instructor</td>
+                                <td>Riley Casement</td>
                             </tr>
                             <tr>
                                 <td>IFR Flight Instructor</td>
@@ -316,6 +320,10 @@
                             <tr>
                                 <td>Advanced Flight Instructor</td>
                                 <td>Tarik Merrylees</td>
+                            </tr>
+                            <tr>
+                                <td>Advanced Flight Instructor</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                         </table>
                     </div>
