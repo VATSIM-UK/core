@@ -191,7 +191,6 @@
                                     <li class="divider"></li>
                                     <li class="dropdown-header">Guidelines</li>
                                     <li><a href="{{ route('site.policy.branding') }}">Branding Guidelines</a></li>
-                                    <li><a href="{{ route('site.policy.streaming') }}">Streaming Guidelines</a></li>
                                     <li class="divider"></li>
                                     <li><a href="{{ route('site.policy.training.s1-syllabus') }}">S1 Syllabus</a></li>
                                 </ul>

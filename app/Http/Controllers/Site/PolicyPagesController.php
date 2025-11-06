@@ -67,14 +67,6 @@ class PolicyPagesController extends \App\Http\Controllers\BaseController
         return $this->viewMake('site.policy.branding');
     }
 
-    public function viewStreaming()
-    {
-        $this->setTitle('Streaming Guidelines');
-        $this->addBreadcrumb('Streaming Guidelines', route('site.policy.streaming'));
-
-        return $this->viewMake('site.policy.streaming');
-    }
-
     public function viewS1Syllabus()
     {
         $this->setTitle('S1 Syllabus and Lesson Plans');

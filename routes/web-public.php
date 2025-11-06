@@ -62,7 +62,6 @@ Route::group([
         Route::get('/privacy-policy')->uses('PolicyPagesController@viewPrivacy')->name('privacy');
         Route::get('/data-protection-policy')->uses('PolicyPagesController@viewDPP')->name('data-protection');
         Route::get('/branding-guidelines')->uses('PolicyPagesController@viewBranding')->name('branding');
-        Route::get('/streaming-guidelines')->uses('PolicyPagesController@viewStreaming')->name('streaming');
         Route::group([
             'as' => 'training.',
             'prefix' => 'training',
