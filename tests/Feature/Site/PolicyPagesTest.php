@@ -50,12 +50,6 @@ class PolicyPagesTest extends TestCase
     }
 
     #[Test]
-    public function test_it_loads_the_streaming_page()
-    {
-        $this->get(route('site.policy.streaming'))->assertOk();
-    }
-
-    #[Test]
     public function test_it_loads_the_s1_syllabus()
     {
         $this->get(route('site.policy.training.s1-syllabus'))->assertOk();
