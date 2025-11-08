@@ -47,6 +47,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.exams.conduct.twr',
             'training.exams.conduct.app',
             'training.exams.conduct.ctr',
+            'training.theory.access',
+            'training.theory.view.*',
+            'training.theory.view.obs',
+            'training.theory.view.twr',
+            'training.theory.view.app',
+            'training.theory.view.ctr',
 
             // Account Permissions
             'account.self',
