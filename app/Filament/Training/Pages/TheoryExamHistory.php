@@ -87,8 +87,8 @@ class TheoryExamHistory extends Page implements HasTable
         $query = $theoryExamResultRepository->getTheoryExamHistoryQueryForLevels($typesToShow);
 
         return $table->query($query)->columns([
-            TextColumn::make('student_id')->label('CID')->searchable(),
-            TextColumn::make('student.account.name')->label('Name')->getStateUsing(fn ($record) => $record->student?->account?->name ?? 'Unknown'),
+            TextColumn::make('student.cid')->label('CID')->searchable(),
+            TextColumn::make('student.account.name')->label('Name'),
             TextColumn::make('exam')->label('Exam'),
             TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => match ($state) {
                 'Passed' => 'success',

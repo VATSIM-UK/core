@@ -35,7 +35,8 @@ class TheoryExamHistoryTest extends BaseTrainingPanelTestCase
             // Create a student account and member
             $student = Account::factory()->create();
             $studentMember = Member::factory()->create([
-                'id' => $student->id,
+                // emulate different internal CID ID to check relationship mapping
+                'id' => $student->generateCTSInternalID($student->id),
                 'cid' => $student->id,
             ]);
 
