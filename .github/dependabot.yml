@@ -1,29 +1,27 @@
 version: 2
+
 updates:
-- package-ecosystem: github-actions
-  directory: "/"
-  schedule:
-    interval: cron
-    cronjob: "0 14 * * mon#1"
-
-- package-ecosystem: npm
-  directory: "/"
-    interval: cron
-    cronjob: "0 14 * * mon#1"
-
-  open-pull-requests-limit: 99
-  labels: []
-
-  groups:
-    vite-stack:
-      patterns:
-        - "vite"
-        - "laravel-vite-plugin"
-
-- package-ecosystem: composer
-  directory: "/"
-  schedule:
-    interval: monthly
-
-  open-pull-requests-limit: 99
-  labels: []
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: cron
+      cronjob: 0 14 * * mon#1
+      
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: cron
+      cronjob: 0 14 * * mon#1
+    labels: []
+    
+    groups:
+      vite-stack:
+        patterns:
+          - vite
+          - laravel-vite-plugin
+          
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: monthly
+    labels: []
