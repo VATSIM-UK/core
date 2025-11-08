@@ -25,7 +25,7 @@ class TheoryResult extends Model
 
     public function student(): BelongsTo
     {
-        return $this->belongsTo(Member::class, 'student_id', 'cid');
+        return $this->belongsTo(Member::class, 'student_id', 'id');
     }
 
     public function resultHuman(): string
