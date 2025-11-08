@@ -3,12 +3,13 @@ updates:
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
-    interval: monthly
+    interval: cron
+    cronjob: "0 14 * * mon#1"
 
 - package-ecosystem: npm
   directory: "/"
-  schedule:
-    interval: monthly
+    interval: cron
+    cronjob: "0 14 * * mon#1"
 
   open-pull-requests-limit: 99
   labels: []
