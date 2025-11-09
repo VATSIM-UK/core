@@ -69,7 +69,6 @@ use Watson\Rememberable\Rememberable;
  * @property string|null $experience
  * @property int $age
  * @property bool $inactive
- * @property int $is_invisible
  * @property int $debug
  * @property \Illuminate\Support\Carbon|null $joined_at
  * @property \Illuminate\Support\Carbon|null $created_at
