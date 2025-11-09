@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\Exams;
 
-use App\Filament\Training\Pages\ViewExamReport;
+use App\Filament\Training\Pages\Exam\ViewExamReport;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;

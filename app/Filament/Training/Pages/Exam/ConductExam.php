@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Training\Pages;
+namespace App\Filament\Training\Pages\Exam;
 
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
