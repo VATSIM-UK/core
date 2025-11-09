@@ -138,7 +138,7 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Technology Director (VATUK8)</h4><br />
-                    <p class="text-center">1169992</p>
+                    <p class="text-center">Callum Axon</p>
 
                     <h4 class="text-center">Technology Team</h4>
                     <table class="table">
@@ -151,10 +151,6 @@
                         <tr>
                             <td>Developer</td>
                             <td>Kristián Kunc</td>
-                        </tr>
-                        <tr>
-                            <td>Developer</td>
-                            <td>Dave Etheridge</td>
                         </tr>
                         <tr>
                             <td>Developer</td>
