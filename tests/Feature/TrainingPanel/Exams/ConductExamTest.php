@@ -3,7 +3,7 @@
 namespace Tests\Feature\TrainingPanel\Exams;
 
 use App\Events\Training\Exams\PracticalExamCompleted;
-use App\Filament\Training\Pages\ConductExam;
+use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\Member;
