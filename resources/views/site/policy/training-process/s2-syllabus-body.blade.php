@@ -158,65 +158,28 @@ in a group session rather than individual 1-1 sessions. The session will endeavo
 the expectations of students during training - namely students’ engagement, self-study and
 progression.
 
-**Title:** Introduction to ADC / S2_SEMINAR
-
-**Duration:** 1.5 hours
-
-**Environment:** Seminar
-
-**Resources:**
-- [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37)
-
-**Covered topics:**
-1. Euroscope Setup
-2. Area of Responsibility
-3. Takeoff and Landing Clearances
-4. Conditional Clearances
-5. Use of Datablocks and Scratchpads
-6. Handover Coordination (RAWNS, CRAFT)
-7. Flight Rules and Airspace Classification
-8. Radiotelephony
-9. Releases and Checks
+| Title       | Introduction to ADC / S2_SEMINAR                                   |
+| ----------- | ------------------------------------------------------------------ |
+| Duration    | 1.5 hours                                                          |
+| Environment | Seminar                                                            |
+| Resources   | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
+| Covered Topics | 1. Euroscope Setup<br>2. Area of Responsibility<br>3. Takeoff and Landing Clearances<br>4. Conditional Clearances<br>5. Use of Datablocks and Scratchpads<br>6. Handover Coordination (RAWNS, CRAFT)<br>7. Flight Rules and Airspace Classification<br>8. Radiotelephony<br>9. Releases and Checks|
 
 ### 4.2 Lesson Two
-**Title:** VFR Departures, Arrivals and Transits
-
-**Duration:** 2 hours
-
-**Environment:** Sweatbox
-
-**Resources:**
-- [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37)
-
-**Covered topics:**
-1. Training Aerodrome Overview
-2. Sequencing
-3. Transfer of Traffic / Handoffs and Sector Ownership
-4. Traffic Information
-5. Altimetry and Meteorology
-6. VFR Departures
-7. VFR Arrivals
-8. VFR Transits
-9. Non-Standard IFR Departures
+| Title          | VFR Departures, Arrivals and Transits                              |
+| -------------- | ------------------------------------------------------------------ |
+| Duration       | 2 hours                                                            |
+| Environment    | Sweatbox                                                           |
+| Resources      | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
+| Covered Topics | 1.Transfer of Traffic / Handoffs and Sector Ownership<br>2.Traffic Information<br>3.Altimetry and Meteorology<br>4.VFR Departures<br>5.VFR Arrivals<br>6.VFR Transits<br>7.Non-Standard IFR Departures |
 
 ### 4.1 Lesson Three
-**Title:** VFR Circuits and Integration With IFR
-
-**Duration:** 2 hours
-
-**Environment:** Sweatbox
-
-**Resources:**
-- [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37)
-
-**Covered topics:**
-1. Missed Approaches
-2. Land After
-3. IFR/VFR Integration
-4. Gap Strategies and Coordination with APC
-5. VFR Circuits
-6. Situational Awareness and Communication Priority
-7. (Extra time to cover competencies at student request / mentor recommendation)
+| Title       | VFR Circuits and Integration With IFR                              |
+| ----------- | ------------------------------------------------------------------ |
+| Duration    | 2 hours                                                            |
+| Environment | Sweatbox                                                           |
+| Resources   | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
+| Covered topics | 1. Training Aerodrome Overview<br>2. Sequencing<br>3. Transfer of Traffic / Handoffs and Sector Ownership<br>4. Traffic Information<br>5. Altimetry and Meteorology<br>6. VFR Departures<br>7. VFR Arrivals<br>8. VFR Transits<br>9. Non-Standard IFR Departures|
 
 ---
 
