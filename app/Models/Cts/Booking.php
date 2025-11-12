@@ -64,4 +64,19 @@ class Booking extends Model
     {
         return $this->type == 'ME';
     }
+
+    public function isSeminar()
+    {
+        return $this->type == 'GS';
+    }
+
+    public function session()
+    {
+        return $this->belongsTo(\App\Models\Cts\Session::class, 'type_id', 'id');
+    }
+
+    public function exams()
+    {
+        return $this->belongsTo(\App\Models\Cts\Exams::class, 'type_id', 'id');
+    }
 }
