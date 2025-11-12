@@ -64,7 +64,7 @@
                     <table class="table">
                         <tr>
                             <td>Deputy Operations Director</td>
-                            <td><em>Vacant</em></td>
+                            <td>1604708</td>
                         </tr>
                         <tr>
                             <td>Enroute Operations Coordinator</td>
@@ -80,7 +80,7 @@
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
-                            <td>Ben Walker</td>
+                            <td>1604708</td>
                         </tr>
                         <tr>
                             <td>Events Manager</td>
@@ -124,7 +124,7 @@
                         </tr>
                         <tr>
                             <td>Operations Assistant</td>
-                            <td>Oliver Cesarczyk</td>
+                            <td>1433686</td>
                         </tr>
                     </table>
                 </div>
@@ -138,7 +138,7 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Technology Director (VATUK8)</h4><br />
-                    <p class="text-center">1169992</p>
+                    <p class="text-center">Callum Axon</p>
 
                     <h4 class="text-center">Technology Team</h4>
                     <table class="table">
@@ -151,10 +151,6 @@
                         <tr>
                             <td>Developer</td>
                             <td>Kristián Kunc</td>
-                        </tr>
-                        <tr>
-                            <td>Developer</td>
-                            <td>Dave Etheridge</td>
                         </tr>
                         <tr>
                             <td>Developer</td>
@@ -287,7 +283,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
-                                <td>Fraser Cooper</td>
+                                <td>John B (1256537)</td>
                             </tr>
                         </table>
                     </div>
@@ -303,11 +299,15 @@
                             </tr>
                             <tr>
                                 <td>Initial Flight Instructor</td>
-                                <td>Riley Casement</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>VFR Flight Instructor</td>
                                 <td>Benjamin Arrowsmith</td>
+                            </tr>
+                            <tr>
+                                <td>VFR Flight Instructor</td>
+                                <td>Riley Casement</td>
                             </tr>
                             <tr>
                                 <td>IFR Flight Instructor</td>
@@ -316,6 +316,10 @@
                             <tr>
                                 <td>Advanced Flight Instructor</td>
                                 <td>Tarik Merrylees</td>
+                            </tr>
+                            <tr>
+                                <td>Advanced Flight Instructor</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                         </table>
                     </div>

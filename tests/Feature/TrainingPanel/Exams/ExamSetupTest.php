@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\Exams;
 
-use App\Filament\Training\Pages\ExamSetup;
+use App\Filament\Training\Pages\Exam\ExamSetup;
 use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
