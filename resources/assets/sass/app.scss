@@ -172,6 +172,7 @@ html {
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
   }
 
@@ -428,7 +429,7 @@ html {
 .tooltip-content {
   display: none;
   position: absolute;
-  z-index: 10;
+  z-index: 1000;
   left: 100%;
   top: 0;
   min-width: 250px;
@@ -444,6 +445,56 @@ html {
 
 .tooltip-container:hover .tooltip-content,
 .tooltip-container:focus-within .tooltip-content {
+  display: block;
+}
+
+.tooltip-container.is-open .tooltip-content {
+  display: block;
+}
+
+/* keep your existing tooltip styles; add these utility positions */
+.tooltip-container {
+  position: relative;
+}
+
+.tooltip-content {
+  will-change: transform;
+}
+
+.tooltip-content.pos-right {
+  left: 100%;
+  top: 0;
+  right: auto;
+  bottom: auto;
+  margin-left: 8px;
+}
+
+.tooltip-content.pos-left {
+  right: 100%;
+  left: auto;
+  top: 0;
+  bottom: auto;
+  margin-right: 8px;
+}
+
+.tooltip-content.pos-below {
+  top: 100%;
+  bottom: auto;
+  left: 0;
+  right: auto;
+  margin-top: 8px;
+}
+
+.tooltip-content.pos-above {
+  bottom: 100%;
+  top: auto;
+  left: 0;
+  right: auto;
+  margin-bottom: 8px;
+}
+
+/* ensure pinned tips (from your click-to-pin code) also show */
+.tooltip-container.is-open .tooltip-content {
   display: block;
 }
 

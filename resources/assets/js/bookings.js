@@ -97,4 +97,117 @@ document.addEventListener('DOMContentLoaded', function () {
         updateBookingTimes();
         toggleLocalTime.addEventListener('change', updateBookingTimes);
     }
+
+    // ---- Tooltip containers ----
+    const items = Array.from(document.querySelectorAll('.tooltip-container'));
+
+    // Hide all except optional "keep" element
+    function hideAll(keep = null) {
+        items.forEach(el => {
+            if (el !== keep) {
+                el.classList.remove('is-open');
+                if (el === document.activeElement) el.blur();
+            }
+        });
+    }
+
+    items.forEach(el => {
+        // Open on hover, but ensure only one is active
+        el.addEventListener('mouseenter', () => {
+            hideAll(el);
+            // purely hover should still show via your CSS .tooltip-container:hover .tooltip-content
+            // we don't set is-open here to keep hover behavior unchanged
+        });
+
+        // Keyboard focus: keep only one open
+        el.addEventListener('focus', () => hideAll(el));
+
+        // Click to "pin" (toggle). Only one pinned at a time.
+        el.addEventListener('click', (e) => {
+            const willOpen = !el.classList.contains('is-open');
+            hideAll(willOpen ? el : null);
+            el.classList.toggle('is-open', willOpen);
+            // Prevent the click from bubbling to the document "outside click" handler
+            e.stopPropagation();
+        });
+
+        // If you leave with the mouse and it's not pinned (no .is-open), let it close
+        el.addEventListener('mouseleave', () => {
+            if (!el.classList.contains('is-open') && !el.matches(':focus')) {
+                // hover-out: your CSS already hides, nothing needed
+            }
+        });
+
+        // When focus is lost, unpin
+        el.addEventListener('blur', () => el.classList.remove('is-open'));
+    });
+
+    // Click outside → close any pinned tooltip
+    document.addEventListener('click', () => hideAll());
+
+    // ESC to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') hideAll();
+    });
+
+    const containers = Array.from(document.querySelectorAll('.tooltip-container'));
+
+    function positionTip(container) {
+        const tip = container.querySelector('.tooltip-content');
+        if (!tip) return;
+
+        // Reset any previous inline transforms/positions
+        tip.style.transform = '';
+        tip.classList.remove('pos-above', 'pos-below', 'pos-left', 'pos-right');
+
+        // Start with a sensible default (to the right, below)
+        tip.classList.add('pos-right', 'pos-below');
+
+        // Wait a frame so the browser can measure with classes applied
+        requestAnimationFrame(() => {
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const tipRect = tip.getBoundingClientRect();
+            const contRect = container.getBoundingClientRect();
+
+            // Decide vertical placement
+            let vertical = 'below';
+            if (tipRect.bottom > vh && contRect.top > tipRect.height) vertical = 'above';
+            tip.classList.toggle('pos-below', vertical === 'below');
+            tip.classList.toggle('pos-above', vertical === 'above');
+
+            // Re-measure if we changed vertical
+            let r = tip.getBoundingClientRect();
+
+            // Decide horizontal placement
+            let horizontal = 'right';
+            if (r.right > vw && contRect.left > r.width) horizontal = 'left';
+            tip.classList.toggle('pos-right', horizontal === 'right');
+            tip.classList.toggle('pos-left', horizontal === 'left');
+
+            // Final nudge to keep fully on-screen
+            r = tip.getBoundingClientRect();
+            let dx = 0, dy = 0;
+            if (r.left < 0) dx += -r.left + 8;
+            if (r.right > vw) dx += vw - r.right - 8;
+            if (r.top < 0) dy += -r.top + 8;
+            if (r.bottom > vh) dy += vh - r.bottom - 8;
+            if (dx || dy) tip.style.transform = `translate(${dx}px, ${dy}px)`;
+        });
+    }
+
+    // Position when tip becomes visible (hover/focus/pin)
+    containers.forEach(c => {
+        c.addEventListener('mouseenter', () => positionTip(c));
+        c.addEventListener('focus', () => positionTip(c), true);
+        c.addEventListener('click', () => positionTip(c)); // if you support click-to-pin
+    });
+
+    // Reposition any open ones on resize/scroll
+    const repack = () => {
+        document.querySelectorAll('.tooltip-container.is-open, .tooltip-container:hover, .tooltip-container:focus-within')
+            .forEach(c => positionTip(c));
+    };
+    window.addEventListener('resize', repack, { passive: true });
+    window.addEventListener('scroll', repack, { passive: true });
 });
