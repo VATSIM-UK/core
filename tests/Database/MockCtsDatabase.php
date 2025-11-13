@@ -399,6 +399,41 @@ class MockCtsDatabase
             UNIQUE KEY `student_id` (`student_id`,`date`,`from`,`to`)
             ) ENGINE=InnoDB AUTO_INCREMENT=644790 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `theory_questions` (
+            `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+            `level` char(2) NOT NULL DEFAULT '',
+            `question` longtext NOT NULL,
+            `option_1` longtext NOT NULL,
+            `option_2` longtext NOT NULL,
+            `option_3` longtext NOT NULL,
+            `option_4` longtext NOT NULL,
+            `answer` tinyint unsigned NOT NULL DEFAULT '0',
+            `add_by` int unsigned NOT NULL DEFAULT '0',
+            `add_date` date NOT NULL DEFAULT '0000-00-00',
+            `edit_by` int unsigned DEFAULT '0',
+            `edit_date` datetime NOT NULL,
+            `deleted` tinyint unsigned DEFAULT '0',
+            `status` int NOT NULL DEFAULT '0',
+            PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1476 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `theory_answers` (
+            `answer_id` bigint NOT NULL AUTO_INCREMENT,
+            `theory_id` mediumint NOT NULL,
+            `question_id` mediumint NOT NULL,
+            `question_no` tinyint NOT NULL DEFAULT '0',
+            `answer_given` tinyint(1) NOT NULL DEFAULT '0',
+            `answer_correct` tinyint(1) NOT NULL DEFAULT '0',
+            `correct` tinyint(1) NOT NULL DEFAULT '0',
+            `submitted` tinyint(1) NOT NULL DEFAULT '0',
+            `submitted_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+            PRIMARY KEY (`answer_id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=479361 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        );
     }
 
     public static function destroy()
@@ -456,6 +491,10 @@ class MockCtsDatabase
         );
 
         DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `exam_setup`;'
+        );
+
+        DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `exam_book`;'
         );
 
@@ -473,6 +512,14 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `availability`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `theory_questions`;'
+        );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `theory_answers`;'
         );
     }
 }

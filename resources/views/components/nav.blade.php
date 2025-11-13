@@ -1,203 +1,22 @@
-<nav id="nav" class="navbar navbar-uk navbar-fixed-top">
+<nav id="nav" class="navbar navbar-uk navbar-fixed-top no-border-bottom">
     @if (is_local_environment())
     <div class="dev_environment_notification">
         You are in a <b>NON-PRODUCTION</b> environment
     </div>
     @endif
     @include('components.top-notification')
-    <div class="nav_upper_container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse" data-target="#nav-inner">
-                <span class="nav-collapsed-icon"></span>
-                <span class="nav-collapsed-icon"></span>
-                <span class="nav-collapsed-icon"></span>
-            </button>
-            <a class="navbar-brand" href="{{ route('site.home') }}">
-                <img src="{{ asset('images/vatsim_uk_logo.png') }}" alt="VATSIM UK Logo" />
-            </a>
-        </div>
 
-        <div id="nav-inner" class="collapse navbar-collapse" style="height:100%">
-            <ul class="nav navbar-nav navcustom" style="height:100%">
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Home <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li><a href="{{ route('site.staff') }}">Staff</a></li>
-                                <li><a href="https://community.vatsim.uk/files/downloads/category/9-minutes-reports/">Meeting Minutes</a></li>
-                                <li><a href="">Policies</a></li> {{-- Link to Policy tab landing page, to be created --}}
-                                <li><a href="https://helpdesk.vatsim.uk/">Contact Us</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li><a href="{{ route('mship.feedback.new') }}">Submit Feedback</a></li>
-                                <li><a href="{{ route('mship.feedback.view') }}">View My Feedback</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li class="dropdown-header">Resources</li>
-                                <li><a href="https://ukcp.vatsim.uk/request-a-stand">Request a stand</a></li>
-                                <li><a href="https://chartfox.org/">Chartfox</a></li>
-                                <li><a href="{{ route('site.airports') }}">Airfield Information</a></li>
-                                <li><a href="{{ route('site.operations.sectors') }}">UK Area Sectors</a></li>
-                                <li class="divider"></li>
-
-                                <li class="dropdown-header">Pilot Training</li>
-                                <li><a href="{{ route('site.pilots.landing') }}">Welcome</a></li>
-                                <li><a href="{{ route('site.pilots.ratings') }}">Rating Training</a></li>
-                                <li><a href="{{ route('site.pilots.tfp') }}">The Flying Programme</a></li>
-                                <li><a href="https://moodle.vatsim.uk/course/index.php?categoryid=29">eLearning</a></li>
-                                <li><a href="{{ route('site.pilots.mentor') }}">Become a Mentor</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li><a href="{{ route('site.atc.newController') }}">Become a controller</a></li>
-                                <li><a href="{{ route('site.roster.index') }}">Controller Roster</a></li>
-                                <li class="divider"></li>
-
-                                <li class="dropdown-header">Operations</li>
-                                <li><a href="https://docs.vatsim.uk/">ATC Documentation</a></li>
-                                <li><a href="https://community.vatsim.uk/forum/166-atc-procedure-changes/">ATC Procedure Changes</a></li>
-                                <li><a href="https://docs.vatsim.uk/">ATC Software</a></li>
-                                <li class="divider"></li>
-
-                                <li class="dropdown-header">ATC Training</li>
-                                <li><a href="{{ route('site.atc.landing') }}">Welcome</a></li>
-                                <li><a href="{{ route('site.atc.newController') }}">New Controller</a></li>
-                                <li><a href="{{ route('site.atc.endorsements') }}">Rating Endorsements</a></li>
-                                <li><a href="https://moodle.vatsim.uk/course/index.php?categoryid=3">eLearning</a></li>
-                                <li><a href="{{ route('site.atc.mentor') }}">Become a Mentor</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Membership <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li><a href="https://helpdesk.vatsim.uk/">Contact Us</a></li>
-                                <li class="divider"></li>
-
-                                <li class="dropdown-header">Waiting Lists</li>
-                                <li><a href="{{ route('mship.waiting-lists.index') }}">My Waiting Lists</a></li>
-                                <li class="divider"></li>
-
-                                <li class="dropdown-header">Vist / Transfer</li>
-                                <li><a href="{{ route('site.community.vt-guide') }}">Guide</a></li>
-                                <li><a href="{{ route('visiting.landing') }}">Dashboard</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">ATC Training Process<b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li><a href="{{ route('site.policy.training.s1-syllabus') }}">S1 Syllabus</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Policy <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li class="dropdown-header">Policies</li>
-                                <li><a href="{{ route('site.policy.division') }}">Division Policy</a></li>
-                                <li><a href="{{ route('site.policy.atc-training') }}">ATC Training Policy</a></li>
-                                <li><a href="{{ route('site.policy.visiting-and-transferring') }}">Visiting & Transferring Policy</a></li>
-                                <li class="divider"></li>
-
-                                <li class="dropdown-header">Protecting You</li>
-                                <li><a href="{{ route('site.policy.terms') }}">Terms & Conditions</a></li>
-                                <li><a href="{{ route('site.policy.privacy') }}">Privacy Policy</a></li>
-                                <li><a href="{{ route('site.policy.data-protection') }}">Data Protection Policy</a></li>
-                                <li class="divider"></li>
-
-                                <li class="dropdown-header">Guidelines</li>
-                                <li><a href="{{ route('site.policy.branding') }}">Branding</a></li>
-                                <li><a href="{{ route('site.policy.streaming') }}">Streaming</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Our Services <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li class="dropdown-header">Communications</li>
-                                <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
-                                <li><a href="{{ route('discord.show') }}">Discord</a></li>
-                                <li class="divider"></li>
-                                <li><a href="https://cts.vatsim.uk/">Training System</a></li>
-                                <li><a href="https://docs.vatsim.uk/">Docs Site</a></li>
-                                <li><a href="https://moodle.vatsim.uk/">eLearning</a></li>
-                                <li><a href="https://helpdesk.vatsim.uk/">Helpdesk</a></li>
-                                <li><a href="https://events.vatsim.uk/">Event Bookings</a></li>
-                                <li><a href="https://github.com/VATSIM-UK">Github</a></li>
-                                <li><a href="https://community.vatsim.uk/">Forum</a></li>
-                                <li><a href="https://moodle.vatsim.uk/">Moodle</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+    {{-- Top section: Logo and Account Dropdown --}}
+    <div class="nav_top_section">
+        <div class="nav_upper_container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ route('site.home') }}">
+                    <img src="{{ asset('images/vatsim_uk_logo.png') }}" alt="VATSIM UK Logo" />
+                </a>
+            </div>
 
             @if(currentUserHasAuth())
             <ul class="nav navbar-nav navbar-right navcustom">
-                <li class="dropdown dropdown-large navbar-notification hidden-xs">
-                    <a href="{{ route('mship.notification.list') }}" title="Notifications">
-                        @if(Auth::user()->has_unread_notifications)
-                        <i class="fa fa-bell unread-notifications"></i>
-                        @else
-                        <i class="fa fa-bell"></i>
-                        @endif
-                    </a>
-                </li>
-                @if(Auth::user()->can('training.access'))
-                <li class="dropdown dropdown-large">
-                    <a href="{{ route('filament.training.pages.dashboard') }}" title="Training Dashboard">
-                        <i class="fa fa-graduation-cap"></i>
-                    </a>
-                </li>
-                @endif
-                @if(Auth::user()->can('admin.access'))
-                <li class="dropdown dropdown-large">
-                    <a href="{{ route('filament.app.pages.dashboard') }}" title="Admin Dashboard">
-                        <i class="fa fa-briefcase"></i>
-                    </a>
-                </li>
-                @endif
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="hidden-md">{{Auth::user()->name.' (' .Auth::user()->id.')'}} <b class="caret"></b></span>
@@ -235,8 +54,7 @@
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST">
                                         @csrf
                                     </form>
-                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log
-                                        Out</a>
+                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log Out</a>
                                 </li>
                             </ul>
                         </li>
@@ -252,6 +70,200 @@
                 </li>
             </ul>
             @endif
+        </div>
+    </div>
+
+    {{-- Bottom section: All navigation menu items --}}
+    <div class="nav_secondary_container">
+        <div class="nav_upper_container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse" data-target="#nav-inner">
+                    <span class="nav-collapsed-icon"></span>
+                    <span class="nav-collapsed-icon"></span>
+                    <span class="nav-collapsed-icon"></span>
+                </button>
+            </div>
+
+            <div id="nav-inner" class="collapse navbar-collapse" style="height:100%">
+                <ul class="nav navbar-nav navcustom" style="height:100%">
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Home <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li><a href="{{ route('site.staff') }}">Staff</a></li>
+                                    <li><a href="https://community.vatsim.uk/files/downloads/category/9-minutes-reports/">Meeting Minutes</a></li>
+                                    <li><a href="">Policies</a></li>
+                                    <li><a href="https://helpdesk.vatsim.uk/">Contact Us</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li><a href="{{ route('mship.feedback.new') }}">Submit Feedback</a></li>
+                                    <li><a href="{{ route('mship.feedback.view') }}">View My Feedback</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li class="dropdown-header">Resources</li>
+                                    <li><a href="https://ukcp.vatsim.uk/request-a-stand">Request a stand</a></li>
+                                    <li><a href="https://chartfox.org/">Chartfox</a></li>
+                                    <li><a href="{{ route('site.airports') }}">Airfield Information</a></li>
+                                    <li><a href="{{ route('site.operations.sectors') }}">UK Area Sectors</a></li>
+                                    <li class="divider"></li>
+
+                                    <li class="dropdown-header">Pilot Training</li>
+                                    <li><a href="{{ route('site.pilots.landing') }}">Welcome</a></li>
+                                    <li><a href="{{ route('site.pilots.ratings') }}">Rating Training</a></li>
+                                    <li><a href="{{ route('site.pilots.tfp') }}">The Flying Programme</a></li>
+                                    <li><a href="https://moodle.vatsim.uk/course/index.php?categoryid=29">eLearning</a></li>
+                                    <li><a href="{{ route('site.pilots.mentor') }}">Become a Mentor</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li><a href="{{ route('site.atc.newController') }}">Become a controller</a></li>
+                                    <li><a href="{{ route('site.roster.index') }}">Controller Roster</a></li>
+                                    <li class="divider"></li>
+
+                                    <li class="dropdown-header">Operations</li>
+                                    <li><a href="https://docs.vatsim.uk/">ATC Documentation</a></li>
+                                    <li><a href="https://community.vatsim.uk/forum/166-atc-procedure-changes/">ATC Procedure Changes</a></li>
+                                    <li><a href="https://docs.vatsim.uk/">ATC Software</a></li>
+                                    <li class="divider"></li>
+
+                                    <li class="dropdown-header">ATC Training</li>
+                                    <li><a href="{{ route('site.atc.landing') }}">Welcome</a></li>
+                                    <li><a href="{{ route('site.atc.newController') }}">New Controller</a></li>
+                                    <li><a href="{{ route('site.atc.endorsements') }}">Rating Endorsements</a></li>
+                                    <li><a href="https://moodle.vatsim.uk/course/index.php?categoryid=3">eLearning</a></li>
+                                    <li><a href="{{ route('site.atc.mentor') }}">Become a Mentor</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Membership <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li><a href="https://helpdesk.vatsim.uk/">Contact Us</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Waiting Lists</li>
+                                    <li><a href="{{ route('mship.waiting-lists.index') }}">My Waiting Lists</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Visit / Transfer</li>
+                                    <li><a href="{{ route('site.community.vt-guide') }}">Guide</a></li>
+                                    <li><a href="{{ route('visiting.landing') }}">Dashboard</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">ATC Training Process<b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li><a href="{{ route('site.policy.training.s1-syllabus') }}">S1 Syllabus</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Policy <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li class="dropdown-header">Policies</li>
+                                    <li><a href="{{ route('site.policy.division') }}">Division Policy</a></li>
+                                    <li><a href="{{ route('site.policy.atc-training') }}">ATC Training Policy</a></li>
+                                    <li><a href="{{ route('site.policy.visiting-and-transferring') }}">Visiting & Transferring Policy</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Protecting You</li>
+                                    <li><a href="{{ route('site.policy.terms') }}">Terms & Conditions</a></li>
+                                    <li><a href="{{ route('site.policy.privacy') }}">Privacy Policy</a></li>
+                                    <li><a href="{{ route('site.policy.data-protection') }}">Data Protection Policy</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Guidelines</li>
+                                    <li><a href="{{ route('site.policy.branding') }}">Branding</a></li>
+                                    <li><a href="{{ route('site.policy.streaming') }}">Streaming</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Our Services <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li class="dropdown-header">Communications</li>
+                                    <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
+                                    <li><a href="{{ route('discord.show') }}">Discord</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="https://cts.vatsim.uk/">Training System</a></li>
+                                    <li><a href="https://docs.vatsim.uk/">Docs Site</a></li>
+                                    <li><a href="https://moodle.vatsim.uk/">eLearning</a></li>
+                                    <li><a href="https://helpdesk.vatsim.uk/">Helpdesk</a></li>
+                                    <li><a href="https://events.vatsim.uk/">Event Bookings</a></li>
+                                    <li><a href="https://github.com/VATSIM-UK">Github</a></li>
+                                    <li><a href="https://community.vatsim.uk/">Forum</a></li>
+                                    <li><a href="https://moodle.vatsim.uk/">Moodle</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+                @if(currentUserHasAuth())
+                <ul class="nav navbar-nav navbar-right navcustom">
+                    <li class="dropdown dropdown-large navbar-notification hidden-xs">
+                        <a href="{{ route('mship.notification.list') }}" title="Notifications">
+                            @if(Auth::user()->has_unread_notifications)
+                            <i class="fa fa-bell unread-notifications"></i>
+                            @else
+                            <i class="fa fa-bell"></i>
+                            @endif
+                        </a>
+                    </li>
+                    @if(Auth::user()->can('training.access'))
+                    <li class="dropdown dropdown-large">
+                        <a href="{{ route('filament.training.pages.dashboard') }}" title="Training Dashboard">
+                            <i class="fa fa-graduation-cap"></i>
+                        </a>
+                    </li>
+                    @endif
+                    @if(Auth::user()->can('admin.access'))
+                    <li class="dropdown dropdown-large">
+                        <a href="{{ route('filament.app.pages.dashboard') }}" title="Admin Dashboard">
+                            <i class="fa fa-briefcase"></i>
+                        </a>
+                    </li>
+                    @endif
+                </ul>
+                @endif
+            </div>
         </div>
     </div>
 </nav>

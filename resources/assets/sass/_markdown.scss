@@ -1,0 +1,24 @@
+.markdown-table {
+  border-collapse: collapse;
+  margin: 1rem 0;
+
+  thead {
+    tr {
+      th {
+        padding: 0.5rem 1rem;
+        text-align: left;
+        font-weight: 600;
+        border: 1px solid rgb(208 215 222);
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        padding: 0.5rem 1rem;
+        border: 1px solid rgb(208 215 222);
+      }
+    }
+  }
+}

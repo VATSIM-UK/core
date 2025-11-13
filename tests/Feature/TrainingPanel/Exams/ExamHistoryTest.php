@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\Exams;
 
-use App\Filament\Training\Pages\ExamHistory;
+use App\Filament\Training\Pages\Exam\ExamHistory;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalResult;

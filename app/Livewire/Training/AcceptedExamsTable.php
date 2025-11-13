@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Training;
 
-use App\Filament\Training\Pages\ConductExam;
+use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;

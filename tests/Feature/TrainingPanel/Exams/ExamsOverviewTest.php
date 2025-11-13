@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\TrainingPanel\Exams;
 
-use App\Filament\Training\Pages\ConductExam;
-use App\Filament\Training\Pages\Exams;
+use App\Filament\Training\Pages\Exam\ConductExam;
+use App\Filament\Training\Pages\Exam\Exams;
 use App\Livewire\Training\AcceptedExamsTable;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
