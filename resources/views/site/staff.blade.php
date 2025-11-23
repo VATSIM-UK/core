@@ -51,8 +51,9 @@
 
 <div class="container">
     <!-- Row One -->
-    <div class="row row-eq-height">
-        <!-- Operations -->
+        <!-- Row Two -->
+    <div class="row">
+                <!-- Operations -->
         <div class="col-md-4">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Operations
@@ -131,99 +132,6 @@
             </div>
         </div>
         <!-- End Operations -->
-        <!-- Web Services -->
-        <div class="col-md-4">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Technology
-                </div>
-                <div class="panel-body">
-                    <h4 class="text-center">Technology Director (VATUK8)</h4><br />
-                    <p class="text-center">Callum Axon</p>
-
-                    <h4 class="text-center">Technology Team</h4>
-                    <table class="table">
-                        <tr>
-                            <td>Technology Manager<br />
-                                Developer
-                            </td>
-                            <td>Calum Tοwers</td>
-                        </tr>
-                        <tr>
-                            <td>Developer</td>
-                            <td>Kristián Kunc</td>
-                        </tr>
-                        <tr>
-                            <td>Developer</td>
-                            <td>Max Brokman</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- End Web Services -->
-        <!-- Community -->
-        <div class="col-md-4">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Community
-                </div>
-                <div class="panel-body">
-                    <h4 class="text-center">Community Director (VATUK3)</h4><br />
-                    <p class="text-center">William Shaw</p>
-                    <h4 class="text-center">Community Team</h4>
-                    <table class="table">
-                        <tr>
-                            <td>Outreach Manager</td>
-                            <td>Kye Taylor</td>
-                        </tr>
-                        <tr>
-                            <td>Outreach Assistant</td>
-                            <td>Callum Hicks</td>
-                        </tr>
-                        <tr>
-                            <td>Outreach Assistant</td>
-                            <td>Charles Newman</td>
-                        </tr>
-                        <tr>
-                            <td>Outreach Assistant</td>
-                            <td>1670702</td>
-                        </tr>
-                        <tr>
-                            <td>Community Assistant</td>
-                            <td>William Brushfield</td>
-                        </tr>
-                        <tr>
-                            <td>VT Assistant</td>
-                            <td>Dylan Parkes</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- End Community -->
-    </div>
-    <!-- End Row One -->
-</div>
-<div class="container">
-    <!-- Row Two -->
-    <div class="row">
-        <div class="col-md-4">
-            <!-- Other Roles -->
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Other Roles
-                </div>
-                <div class="panel-body">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>Data Protection Officer</td>
-                                <td>Chris Pawley</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- End Other Roles -->
-        </div>
         <!-- Training -->
         <div class="col-md-8">
             <div class="panel panel-ukblue">
@@ -328,6 +236,81 @@
         </div>
         <!-- End Training -->
     </div>
+</div>
+<div class="container">
+    <div class="row row-eq-height">
+        <!-- Web Services -->
+        <div class="col-md-4">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Technology
+                </div>
+                <div class="panel-body">
+                    <h4 class="text-center">Technology Director (VATUK8)</h4><br />
+                    <p class="text-center">Callum Axon</p>
+
+                    <h4 class="text-center">Technology Team</h4>
+                    <table class="table">
+                        <tr>
+                            <td>Technology Manager<br />
+                                Developer
+                            </td>
+                            <td>Calum Tοwers</td>
+                        </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Kristián Kunc</td>
+                        </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Max Brokman</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- End Web Services -->
+        <!-- Community -->
+        <div class="col-md-4">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Community
+                </div>
+                <div class="panel-body">
+                    <h4 class="text-center">Community Director (VATUK3)</h4><br />
+                    <p class="text-center">William Shaw</p>
+                    <h4 class="text-center">Community Team</h4>
+                    <table class="table">
+                        <tr>
+                            <td>Outreach Manager</td>
+                            <td>Kye Taylor</td>
+                        </tr>
+                        <tr>
+                            <td>Outreach Assistant</td>
+                            <td>Callum Hicks</td>
+                        </tr>
+                        <tr>
+                            <td>Outreach Assistant</td>
+                            <td>Charles Newman</td>
+                        </tr>
+                        <tr>
+                            <td>Outreach Assistant</td>
+                            <td>1670702</td>
+                        </tr>
+                        <tr>
+                            <td>Community Assistant</td>
+                            <td>William Brushfield</td>
+                        </tr>
+                        <tr>
+                            <td>VT Assistant</td>
+                            <td>Dylan Parkes</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- End Community -->
+    </div>
+    <!-- End Row One -->
+
 </div>
 <!-- End Row Two -->
 </div>
