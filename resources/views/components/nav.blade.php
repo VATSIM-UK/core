@@ -159,7 +159,24 @@
                             </li>
                         </ul>
                     </li>
-                
+
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Community <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li class="dropdown-header">Visit / Transfer</li>
+                                    <li><a href="{{ route('site.community.vt-guide') }}">Guide</a></li>
+                                    <li><a href="{{ route('visiting.landing') }}">Dashboard</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Third-Party Services</li>
+                                    <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
+                                    <li><a href="{{ route('discord.show') }}">Discord</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li class="dropdown dropdown-large">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Policy <b class="caret"></b></a>
                         <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
