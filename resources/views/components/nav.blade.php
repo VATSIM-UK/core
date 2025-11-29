@@ -117,11 +117,19 @@
                         <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                             <li class="col-sm-12">
                                 <ul>
+                                    <li class="dropdown-header">Resources</li>
+                                    <li><a href="https://ukcp.vatsim.uk/request-a-stand">Request a stand</a></li>
+                                    <li><a href="https://chartfox.org/">Chartfox</a></li>
+                                    <li><a href="{{ route('site.airports') }}">Airfield Information</a></li>
+                                    <li><a href="{{ route('site.operations.sectors') }}">UK Area Sectors</a></li>
+                                    <li class="divider"></li>
+
+                                    <li class="dropdown-header">Pilot Training</li>
                                     <li><a href="{{ route('site.pilots.landing') }}">Welcome</a></li>
-                                    <li><a href="{{ route('site.pilots.ratings') }}">Ratings</a></li>
+                                    <li><a href="{{ route('site.pilots.ratings') }}">Rating Training</a></li>
+                                    <li><a href="{{ route('site.pilots.tfp') }}">The Flying Programme</a></li>
+                                    <li><a href="https://moodle.vatsim.uk/course/index.php?categoryid=29">eLearning</a></li>
                                     <li><a href="{{ route('site.pilots.mentor') }}">Become a Mentor</a></li>
-                                    <li><a href="{{ route('site.pilots.oceanic') }}">Oceanic Procedures</a></li>
-                                    <li><a href="{{ route('site.pilots.tfp') }}">Flying Programme</a></li>
                                 </ul>
                             </li>
                         </ul>
