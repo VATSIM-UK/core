@@ -42,7 +42,13 @@
                             <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.policy.division') }}">Policies</a>
+                            <a class="nav-link" href="https://community.vatsim.uk/files/downloads/category/9-minutes-reports/">Meeting Minutes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Policies</a> {{-- Link to Policy tab landing page, to be created --}}
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://helpdesk.vatsim.uk/">Contact Us</a>
                         </li>
                     </ul>
                 </li>
