@@ -203,17 +203,24 @@
                     </li>
 
                     <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Community <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Policy <b class="caret"></b></a>
                         <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                             <li class="col-sm-12">
                                 <ul>
-                                    <li class="dropdown-header">Visit / Transfer</li>
-                                    <li><a href="{{ route('site.community.vt-guide') }}">Guide</a></li>
-                                    <li><a href="{{ route('visiting.landing') }}">Dashboard</a></li>
+                                    <li class="dropdown-header">Policies</li>
+                                    <li><a href="{{ route('site.policy.division') }}">Division Policy</a></li>
+                                    <li><a href="{{ route('site.policy.atc-training') }}">ATC Training Policy</a></li>
+                                    <li><a href="{{ route('site.policy.visiting-and-transferring') }}">Visiting & Transferring Policy</a></li>
                                     <li class="divider"></li>
-                                    <li class="dropdown-header">Third-Party Services</li>
-                                    <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
-                                    <li><a href="{{ route('discord.show') }}">Discord</a></li>
+
+                                    <li class="dropdown-header">Protecting You</li>
+                                    <li><a href="{{ route('site.policy.terms') }}">Terms & Conditions</a></li>
+                                    <li><a href="{{ route('site.policy.privacy') }}">Privacy Policy</a></li>
+                                    <li><a href="{{ route('site.policy.data-protection') }}">Data Protection Policy</a></li>
+                                    <li class="divider"></li>
+
+                                    <li class="dropdown-header">Guidelines</li>
+                                    <li><a href="{{ route('site.policy.branding') }}">Branding</a></li>
                                 </ul>
                             </li>
                         </ul>
