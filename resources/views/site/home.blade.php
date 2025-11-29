@@ -83,6 +83,7 @@
                             </li>
                         </ul>
                     </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="#">Controllers <span class="arrow"></span></a>
                     <ul class="nav">
@@ -90,24 +91,20 @@
                             <a class="nav-link" href="{{ route('site.atc.newController') }}">Become a Controller</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ config('services.docs.url') }}">Documentation</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('site.roster.index') }}">Controller Roster</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.atc.heathrow') }}">Heathrow Endorsements</a>
+                            <a class="nav-link" href="https://docs.vatsim.uk/">Documentation</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link"
-                               href="https://community.vatsim.uk/files/downloads/category/4-policy-documents/">Regulations
-                                and Policies</a>
+                            <a class="nav-link" href="{{ route('site.atc.endorsements') }}">Raiting Endorsements</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('visiting.landing') }}">Visit / Transfer</a>
                         </li>
                     </ul>
                 </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="#">Community <span class="arrow"></span></a>
                     <ul class="nav">
