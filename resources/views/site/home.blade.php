@@ -52,37 +52,37 @@
                         </li>
                     </ul>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="#">Pilots <span class="arrow"></span></a>
-                    <ul class="nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">ATC Bookings</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               href="{{ route('site.airports') }}"
-                               target="_blank">Charts</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.airports') }}">Airports</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.pilots.stands') }}">Stand Guide</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.operations.sectors') }}">Area Sectors</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.pilots.landing') }}">Pilot Training</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.pilots.tfp') }}">Flying Programme</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
-                        </li>
-                    </ul>
-                </li>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://ukcp.vatsim.uk/request-a-stand">Request a Stand</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://chartfox.org/">Chartfox</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">ATC Bookings</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('site.operations.sectors') }}">UK Area Sectors</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('site.pilots.landing') }}">Pilot Training</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('site.pilots.tfp') }}">The Flying Programme</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('mship.feedback.new') }}">Submit Feedback</a>
+                            </li>
+                        </ul>
+                    </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Controllers <span class="arrow"></span></a>
                     <ul class="nav">
@@ -135,9 +135,6 @@
                             <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
                         </li>
                     </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="https://helpdesk.vatsim.uk">Contact Us</a>
