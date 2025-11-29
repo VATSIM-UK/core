@@ -135,8 +135,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Booking System</a>
+                        </li>
                     </ul>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="https://helpdesk.vatsim.uk">Contact Us</a>
                 </li>
