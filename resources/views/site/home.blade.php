@@ -104,27 +104,31 @@
                         </li>
                     </ul>
                 </li>
-                
+
                 <li class="nav-item">
                     <a class="nav-link" href="#">Community <span class="arrow"></span></a>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
+                            <a class="nav-link" href="{{ route('discord.show') }}">Discord</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('site.community.teamspeak') }}">TeamSpeak</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('discord.show') }}">Discord</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="https://www.facebook.com/vatsimuk">Facebook</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="https://www.twitter.com/vatsimuk">Twitter</a>
+                            <a class="nav-link" href="https://www.twitter.com/vatsimuk">X</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://www.instagram.com/vatsimuk/">Instagram</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
                         </li>
                     </ul>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="#">Events <span class="arrow"></span></a>
                     <ul class="nav">
