@@ -162,10 +162,6 @@
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
-                                <td>Henry Cleaver</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
                                 <td>Fergus Walsh</td>
                             </tr>
                             <tr>
