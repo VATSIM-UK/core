@@ -133,7 +133,7 @@
                     <a class="nav-link" href="#">Events <span class="arrow"></span></a>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
+                            <a class="nav-link" href="{{ route('site.bookings.index') }}">Calendar</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Booking System</a>
