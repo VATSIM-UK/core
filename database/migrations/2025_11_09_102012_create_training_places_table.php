@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('training_positions', function (Blueprint $table) {
-            $table->ulid('id')->primary();
-            $table->unsignedInteger('position_id')->nullable()->after('id');
+            $table->id();
+            $table->unsignedInteger('position_id')->nullable();
             $table->json('cts_positions')->nullable();
             $table->timestamps();
 
@@ -25,8 +25,8 @@ return new class extends Migration
 
         Schema::create('training_places', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->unsignedInteger('waiting_list_account_id')->nullable()->after('id');
-            $table->ulid('training_position_id')->nullable()->after('waiting_list_account_id');
+            $table->unsignedInteger('waiting_list_account_id')->nullable();
+            $table->unsignedBigInteger('training_position_id')->nullable();
             $table->timestamps();
 
             $table->foreign('waiting_list_account_id')

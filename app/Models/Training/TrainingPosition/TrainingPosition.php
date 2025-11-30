@@ -14,13 +14,11 @@ class TrainingPosition extends Model
     /** @use HasFactory<\Database\Factories\Training\TrainingPosition\TrainingPositionFactory> */
     use HasFactory;
 
-    public $incrementing = false;
-
-    protected $keyType = 'string';
-
     protected $casts = [
         'cts_positions' => 'array',
     ];
+
+    protected $guarded = [];
 
     public function position(): BelongsTo
     {
