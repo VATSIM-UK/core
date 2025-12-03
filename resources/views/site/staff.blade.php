@@ -65,7 +65,7 @@
                     <table class="table">
                         <tr>
                             <td>Deputy Operations Director</td>
-                            <td>1604708</td>
+                            <td>Ben Walker</td>
                         </tr>
                         <tr>
                             <td>Enroute Operations Coordinator</td>
@@ -77,11 +77,11 @@
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
-                            <td>1116943</td>
+                            <td>Luke Brown</td>
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
-                            <td>1604708</td>
+                            <td>Ben Walker</td>
                         </tr>
                         <tr>
                             <td>Events Manager</td>
@@ -125,7 +125,7 @@
                         </tr>
                         <tr>
                             <td>Operations Assistant</td>
-                            <td>1433686</td>
+                            <td>Oliver Cesarczyk</td>
                         </tr>
                     </table>
                 </div>
@@ -165,6 +165,10 @@
                                 <td>Fergus Walsh</td>
                             </tr>
                             <tr>
+                                <td>Division Instructor</td>
+                                <td>Charlie Watson</td>
+                            </tr>
+                            <tr>
                                 <td>TG Instructor (New Controller)</td>
                                 <td>James Taylor</td>
                             </tr>
@@ -187,7 +191,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
-                                <td>John B (1256537)</td>
+                                <td>John Batten</td>
                             </tr>
                         </table>
                     </div>
@@ -203,11 +207,11 @@
                             </tr>
                             <tr>
                                 <td>Initial Flight Instructor</td>
-                                <td><em>Vacant</em></td>
+                                <td>Aiden Bok</td>
                             </tr>
                             <tr>
                                 <td>VFR Flight Instructor</td>
-                                <td>Benjamin Arrowsmith</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>VFR Flight Instructor</td>
@@ -219,7 +223,7 @@
                             </tr>
                             <tr>
                                 <td>Advanced Flight Instructor</td>
-                                <td>Tarik Merrylees</td>
+                                <td>Charlie Innam</td>
                             </tr>
                             <tr>
                                 <td>Advanced Flight Instructor</td>
@@ -289,7 +293,7 @@
                         </tr>
                         <tr>
                             <td>Outreach Assistant</td>
-                            <td>1670702</td>
+                            <td>Noah Murdoch</td>
                         </tr>
                         <tr>
                             <td>Community Assistant</td>
