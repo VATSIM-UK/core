@@ -9,21 +9,32 @@ use Illuminate\Support\Facades\DB;
 
 class ExamOverview extends BaseWidget
 {
+    protected ?string $heading = 'Exam Overview for Current Year';
+
     protected function getCards(): array
     {
-        $total = PracticalResult::count();
-        $passed = PracticalResult::where('result', PracticalResult::PASSED)->count();
-        $failed = PracticalResult::where('result', PracticalResult::FAILED)->count();
-        $incomplete = PracticalResult::where('result', PracticalResult::INCOMPLETE)->count();
+        $startofYear = now()->startOfYear();
+        $endofYear = now()->endOfYear();
 
-        $examStats = PracticalResult::select('exam', 'result', DB::raw('count(*) as total'))
+        $overall = PracticalResult::select(
+            DB::raw('count(*) as total'),
+            DB::raw("SUM(CASE WHEN result = '".PracticalResult::PASSED."' THEN 1 ELSE 0 END) as passed"),
+            DB::raw("SUM(CASE WHEN result = '".PracticalResult::FAILED."' THEN 1 ELSE 0 END) as failed"),
+            DB::raw("SUM(CASE WHEN result = '".PracticalResult::INCOMPLETE."' THEN 1 ELSE 0 END) as incomplete"),
+        )
+            ->WhereBetween('date', [$startofYear, $endofYear])
+            ->first();
+
+        $examStats = PracticalResult::whereBetween('date', [$startofYear, $endofYear])
+            ->select('exam', 'result', DB::raw('count(*) as total'))
             ->groupBy('exam', 'result')
             ->get()
             ->groupBy('exam');
 
         $cards = [
-            Stat::make('Total Taken', $total),
-            Stat::make('Pass Rate', ($total ? round($passed / $total * 100) : 100).'%')->description("$passed Passed, $failed Failed, $incomplete Incomplete"),
+            Stat::make('Total Taken', $overall->total),
+            Stat::make('Pass Rate', ($overall->total ? round($overall->passed / $overall->total * 100) : 100).'%')
+                ->description("$overall->passed Passed, $overall->failed Failed, $overall->incomplete Incomplete"),
         ];
 
         $examOrder = ['OBS', 'TWR', 'APP', 'CTR'];
