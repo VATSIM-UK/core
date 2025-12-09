@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
-use App\Models\VisitTransfer\Application;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,13 +20,10 @@ class VisitTransferRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
-                Tables\Columns\TextColumn::make('type')->label('Type')->formatStateUsing(fn ($state) => $state === Application::TYPE_VISIT ? 'Visit' : 'Transfer'),
+                Tables\Columns\TextColumn::make('type_string')->label('Type'),
                 Tables\Columns\TextColumn::make('facility.name')->label('Facility'),
-                Tables\Columns\BadgeColumn::make('status')->label('Status')->formatStateUsing(fn ($state, $record) => $record->status_string)->colors([
-                    'success' => fn ($state) => in_array($state, [Application::STATUS_ACCEPTED, Application::STATUS_COMPLETED]),
-                    'warning' => fn ($state) => in_array($state, [Application::STATUS_UNDER_REVIEW, Application::STATUS_IN_PROGRESS, Application::STATUS_SUBMITTED]),
-                    'danger' => fn ($state) => in_array($state, [Application::STATUS_REJECTED, Application::STATUS_CANCELLED, Application::STATUS_WITHDRAWN, Application::STATUS_EXPIRED, Application::STATUS_LAPSED]),
-                ]),
+                Tables\Columns\BadgeColumn::make('status')->label('Status')->formatStateUsing(fn ($state, $record) => $record->status_string)
+                    ->color(fn ($record) => $record->status_color),
                 Tables\Columns\TextColumn::make('created_at')->label('Submitted At')->dateTime()->isoDateTimeFormat('lll'),
                 Tables\Columns\TextColumn::make('updated_at')->label('Last Updated')->dateTime()->isoDateTimeFormat('lll'),
             ])
