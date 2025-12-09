@@ -149,7 +149,7 @@ class Facility extends Model
             $attributes['training_spaces'] = null;
         }
 
-        $input_emails = array_filter($attributes['acceptance_emails']);
+        /*$input_emails = array_filter($attributes['acceptance_emails']);
         shuffle($input_emails);
         $current_emails = $this->emails()->get();
 
@@ -175,7 +175,7 @@ class Facility extends Model
             if (array_search($email->email, $input_emails) === false) {
                 $email->delete();
             }
-        }
+        }*/
 
         return parent::update($attributes, $options);
     }
