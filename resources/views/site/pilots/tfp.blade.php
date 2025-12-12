@@ -220,7 +220,7 @@
                                 </p>
 
                                 <p>
-                                    The mandatory Moodle course is available for <i>any home member of VATSIM UK</i> to
+                                    The mandatory Moodle course is available for <i>any member of VATSIM</i> to
                                     join: <a href="https://moodle.vatsim.uk/course/view.php?id=63"
                                         rel="external nofollow noopener"
                                         target="_blank">https://moodle.vatsim.uk/course/view.php?id=63</a>
@@ -229,6 +229,12 @@
                                 <p>
                                     Upon completion of the moodle exam, please submit a ticket to Pilot Training department
                                     on the helpdesk stating your completion of the moodle to move onto the next step.
+                                </p>
+
+                                <p>
+                                    Non UK home members must submit a visitor application via the <a href="https://helpdesk.vatsim.uk/"
+                                        rel="external nofollow noopener" target="_blank">Helpdesk</a> (Help Topic: Community) 
+                                    before commencing training.
                                 </p>
 
                                 <p>
