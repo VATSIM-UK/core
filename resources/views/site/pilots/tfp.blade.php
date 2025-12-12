@@ -232,9 +232,8 @@
                                 </p>
 
                                 <p>
-                                    Non UK home members must submit a visitor application via the <a href="https://helpdesk.vatsim.uk/"
-                                        rel="external nofollow noopener" target="_blank">Helpdesk</a> (Help Topic: Community) 
-                                    before commencing training.
+                                    Non UK home members must submit a visitor application via the <a href="https://www.vatsim.uk/visit-transfer/"
+                                        rel="external nofollow noopener" target="_blank">Visiting Dashboard</a> before commencing training.
                                 </p>
 
                                 <p>
