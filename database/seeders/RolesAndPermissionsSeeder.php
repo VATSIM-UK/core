@@ -30,8 +30,6 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Add All Permissions
         $permissions = [
-            app()->isProduction() ? null : '*',
-
             // Admin Access Permissions
             'admin.access',
             'horizon.access',
@@ -218,6 +216,10 @@ class RolesAndPermissionsSeeder extends Seeder
                 continue;
             }
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+        }
+
+        if (!app()->isProduction()) {
+            Permission::firstOrCreate(['name' => '*', 'guard_name' => 'web']);
         }
 
         $privacc->givePermissionTo('*');
