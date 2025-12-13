@@ -23,9 +23,35 @@ abstract class TestCase extends BaseTestCase
 
     protected $connectionsToTransact = [null, 'cts']; // Default and CTS database connections
 
+    /**
+     * Track if the database has been seeded for this test run
+     * This allows us to seed once and reuse the data across all tests
+     */
+    protected static $seeded = false;
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Seed once per test run (not per test)
+        // We commit the seed data so it persists, then start a new transaction for test data
+        if (! self::$seeded) {
+            $this->seed();
+
+            // Commit the seed data (roles, permissions) so it persists across tests
+            foreach ($this->connectionsToTransact as $connection) {
+                $database = $this->app->make('db');
+                $dbConnection = $database->connection($connection);
+
+                // Commit the seed transaction
+                $dbConnection->commit();
+
+                // Start a new transaction for this test's data
+                $dbConnection->beginTransaction();
+            }
+
+            self::$seeded = true;
+        }
 
         // Exclude Middleware Across All Tests
         $this->withoutMiddleware(VerifyCsrfToken::class);
@@ -39,8 +65,6 @@ abstract class TestCase extends BaseTestCase
         $now = now()->setMicro(0);
         Carbon::setTestNow($now);
         $this->knownDate = $now;
-
-        $this->seed();
 
         // Force regeneration of permissions cache
         $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
