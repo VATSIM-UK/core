@@ -218,7 +218,7 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        if (!app()->isProduction()) {
+        if (! app()->isProduction()) {
             Permission::firstOrCreate(['name' => '*', 'guard_name' => 'web']);
         }
 
