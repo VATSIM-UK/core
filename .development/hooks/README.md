@@ -7,9 +7,9 @@ These hooks are stored in `.development/hooks/` to keep development-related file
 ## Available Hooks
 
 ### pre-commit
-- **Purpose**: Runs code style checks before each commit
+- **Purpose**: Runs code style checks and auto-fixes before each commit
 - **Command**: `composer lint` (Laravel Pint)
-- **Behavior**: Prevents commits if code style issues are found
+- **Behavior**: Automatically fixes code style issues and adds modified files to the commit
 
 ## Installation
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # pre-commit hook for Laravel Pint
-# Auto-fix staged files, but fail commit if anything was fixed.
+# Auto-fix staged files and automatically add them to the commit.
 
 if [ -f "$HOME/.bashrc" ]; then
     . "$HOME/.bashrc"
@@ -21,10 +21,15 @@ fixed_files=$(git diff --name-only -- "$staged_files")
 
 if [ -n "$fixed_files" ]; then
     echo
-    echo "⚠️  Pint fixed some files. Please re-add them and commit again:"
+    echo "✨ Pint fixed some files. Adding them to the commit:"
     echo "$fixed_files"
-    exit 1
+
+    # Add the fixed files back to staging
+    echo "$fixed_files" | xargs git add
+
+    echo "✅ Fixed files have been added to the commit."
+else
+    echo "✅ Pint made no changes."
 fi
 
-echo "✅ Pint made no changes."
 exit 0
