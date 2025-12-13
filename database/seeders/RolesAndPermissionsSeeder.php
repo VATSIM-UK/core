@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
@@ -31,8 +30,6 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Add All Permissions
         $permissions = [
-            app()->isProduction() ? null : '*',
-
             // Admin Access Permissions
             'admin.access',
             'horizon.access',
@@ -221,11 +218,11 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        try {
-            $privacc->givePermissionTo('*');
-        } catch (PermissionDoesNotExist $exception) {
-            // It doesn't exist...
+        if (! app()->isProduction()) {
+            Permission::firstOrCreate(['name' => '*', 'guard_name' => 'web']);
         }
+
+        $privacc->givePermissionTo('*');
 
         // $member->givePermissionTo('discord.member');
     }
