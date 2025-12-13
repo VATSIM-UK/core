@@ -176,6 +176,7 @@
                             <li class="col-sm-12">
                                 <ul>
                                     <li><a href="https://helpdesk.vatsim.uk/">Contact Us</a></li>
+                                    <li><a href="{{ route('networkdata.dashboard') }}">My Statistics</a></li>
                                     <li class="divider"></li>
 
                                     <li class="dropdown-header">Waiting Lists</li>
