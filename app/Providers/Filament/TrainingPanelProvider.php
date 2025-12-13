@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\TrackInactivity;
 use App\Http\Middleware\TrainingPanelAccessMiddleware;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -41,6 +42,7 @@ class TrainingPanelProvider extends PanelProvider
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
+                TrackInactivity::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
