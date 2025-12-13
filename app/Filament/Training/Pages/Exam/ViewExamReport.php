@@ -4,12 +4,16 @@ namespace App\Filament\Training\Pages\Exam;
 
 use App\Infolists\Components\PracticalExamCriteriaResult;
 use App\Models\Cts\PracticalResult;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
+use Filament\Pages\Actions\Action as PageAction;
 use Filament\Pages\Page;
 
 class ViewExamReport extends Page implements HasInfolists
@@ -46,6 +50,43 @@ class ViewExamReport extends Page implements HasInfolists
         } else {
             abort(403, 'Invalid exam booking.');
         }
+    }
+
+    public function getActions(): array
+    {
+        return [
+            PageAction::make('changeResult')
+                ->label('Change Result')
+                ->icon('heroicon-o-pencil')
+                ->visible(fn () => auth()->user()->can('training.exams.override'))
+                ->form([
+                    Select::make('result')
+                        ->label('Result')
+                        ->options([
+                            PracticalResult::PASSED => 'Passed',
+                            PracticalResult::FAILED => 'Failed',
+                            PracticalResult::INCOMPLETE => 'Incomplete',
+                        ])
+                        ->required(),
+                    Textarea::make('notes')
+                        ->label('Additional Comments')
+                        ->rows(4)
+                        ->default(fn () => $this->practicalResult->notes),
+                ])
+                ->modalHeading('Change Exam Result')
+                ->modalSubHeading('Update the result and comments for this exam report.')
+                ->action(function (array $data) {
+                    $this->practicalResult->result = $data['result'];
+                    $this->practicalResult->notes = $data['notes'];
+                    $this->practicalResult->save();
+
+                    $this->practicalResult->refresh();
+                    Notification::make()
+                        ->title('Exam result updated successfully.')
+                        ->success()
+                        ->send();
+                }),
+        ];
     }
 
     public function infolist(Infolist $infolist): Infolist
