@@ -462,6 +462,26 @@ class Application extends Model
         }
     }
 
+    public function getStatusColorAttribute()
+    {
+        return match ($this->status) {
+            self::STATUS_ACCEPTED,
+            self::STATUS_COMPLETED => 'success',
+
+            self::STATUS_IN_PROGRESS,
+            self::STATUS_SUBMITTED,
+            self::STATUS_UNDER_REVIEW => 'warning',
+
+            self::STATUS_WITHDRAWN,
+            self::STATUS_EXPIRED,
+            self::STATUS_LAPSED,
+            self::STATUS_CANCELLED,
+            self::STATUS_REJECTED => 'danger',
+
+            default => 'gray',
+        };
+    }
+
     public function getIsVisitAttribute()
     {
         return $this->type == self::TYPE_VISIT;
