@@ -70,4 +70,12 @@ Route::group([
             Route::get('/c1-syllabus')->uses('PolicyPagesController@viewC1Syllabus')->name('c1-syllabus');
         });
     });
+
+    Route::group([
+        'as' => 'bookings.',
+        'prefix' => 'bookings',
+    ], function () {
+        Route::get('calendar/{year?}/{month?}')->uses('BookingsPagesController@index')->name('index');
+        Route::get('/{id}')->uses('BookingsPagesController@show')->name('bookings.show');
+    });
 });
