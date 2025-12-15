@@ -147,10 +147,55 @@ jobs:
             ln -sfn $RELEASE_DIRECTORY $APPLICATION_ROOT/current
           envs: RELEASE_DIRECTORY,SHARED_DIRECTORY,APPLICATION_ROOT
 
-      - name: Trigger Forge Deployment
-        uses: jbrooksuk/laravel-forge-action@v1.0.4
+      - name: (Remote) Run deployment commands
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
         with:
-          trigger_url: ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER}}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # Ensure we're working from the new release
+            cd /home/core/www.vatsim.uk/current
+
+            # Stop Application / Services
+            $PHP_PATH artisan down
+            $PHP_PATH artisan horizon:terminate
+
+            # Cache & Config
+            $PHP_PATH artisan migrate --step --force -n
+            $PHP_PATH artisan db:seed --class=RolesAndPermissionsSeeder --force
+            $PHP_PATH artisan route:cache
+            $PHP_PATH artisan config:cache
+            $PHP_PATH artisan view:clear
+            $PHP_PATH artisan storage:link
+
+            # Publish
+            $PHP_PATH artisan telescope:publish
+            $PHP_PATH artisan horizon:publish
+            $PHP_PATH artisan filament:assets
+
+            # Run migrations
+            $PHP_PATH artisan migrate --force
+
+            # Move log files
+            if [ -e "storage/logs/laravel.log" ]; then
+              mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true
+            fi
+
+            # Restart PHP-FPM
+
+            ( flock -w 10 9 || exit 1
+                echo 'Restarting FPM...'; sudo -S service $PHP_FPM reload ) 9>/tmp/fpmlock
+
+            # Bugsnag
+            $PHP_PATH artisan bugsnag:deploy --repository "https://github.com/VATSIM-UK/core" --revision "$COMMIT" --builder "$GITHUB_ACTOR"
+
+            # Start Applications / Services
+            $PHP_PATH artisan up
+          envs: APPLICATION_ROOT,PHP_PATH,TAG,COMMIT,GITHUB_ACTOR
 
       - name: Create Sentry release
         uses: getsentry/action-release@v3

@@ -90,7 +90,6 @@ Route::group([
     // Other
     Route::group([
     ], function () {
-        Route::post('auth/invisibility')->uses('Management@postInvisibility')->name('auth.invisibility');
 
         Route::get('notification/list')->uses('Notification@getList')->name('notification.list');
         Route::post('notification/acknowledge/{sysNotification}')->uses('Notification@postAcknowledge')->name('notification.acknowledge');
