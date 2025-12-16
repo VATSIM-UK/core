@@ -53,7 +53,7 @@
 							<a href="https://vatsim.uk/ukcp" rel="external nofollow">UK Controller Plugin</a>
 						</li>
 						<li>
-							<a href="https://github.com/pierr3/TrackAudio/releases" rel="external nofollow">Track Audio</a>
+							<a href="https://audio.vatsim.net/docs/2.0/atc/euroscope" rel="external nofollow">Audio for VATSIM</a>
 						</li>
                         <li>
                             <a href="{{ route('site.community.teamspeak') }}" rel="">Teamspeak</a>&nbsp;Installed
