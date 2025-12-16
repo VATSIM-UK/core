@@ -85,14 +85,7 @@
 
                         </div>
 
-                        <div class="col-xs-4">
-                            <form action="{{ route('mship.auth.invisibility') }}" id="invisibility-form" method="POST">
-                                @csrf
-                            <strong>FORUM INVISIBILITY:</strong>
-                            <a href="{{ route('mship.auth.invisibility') }}"
-                               onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Disable' : 'Enable' }}</a>
-                            </form>
-                        </div>
+
 
                         <div class="col-xs-4">
                             <strong>CONTROLLER ROSTER:</strong>

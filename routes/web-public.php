@@ -6,7 +6,6 @@ Route::group([
 ], function () {
     Route::get('/')->uses('HomePageController')->name('home');
     Route::get('/join')->uses('JoinPageController')->name('join');
-    Route::get('/staff')->uses('StaffPageController@staff')->name('staff');
     Route::get('/airports')->uses('AirportController@index')->name('airports');
     Route::get('/airports/{ukAirportByICAO}')->uses('AirportController@show')->name('airport.view');
     Route::get('/VATSIM_UK_Sector_Provider.txt')->uses('EuroScopeSectorProvider');
@@ -67,6 +66,8 @@ Route::group([
             'prefix' => 'training',
         ], function () {
             Route::get('/s1-syllabus')->uses('PolicyPagesController@viewS1Syllabus')->name('s1-syllabus');
+            Route::get('/s2-syllabus')->uses('PolicyPagesController@viewS2Syllabus')->name('s2-syllabus');
+            Route::get('/c1-syllabus')->uses('PolicyPagesController@viewC1Syllabus')->name('c1-syllabus');
         });
     });
 });

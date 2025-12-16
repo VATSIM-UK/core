@@ -154,7 +154,7 @@
             "php artisan ide-helper:meta"
         ],
         "lint": [
-            "./vendor/bin/pint"
+            "./vendor/bin/pint --parallel"
         ],
         "install-hooks": [
             "chmod +x .development/hooks/install.sh && bash .development/hooks/install.sh \"$@\""

@@ -51,8 +51,9 @@
 
 <div class="container">
     <!-- Row One -->
-    <div class="row row-eq-height">
-        <!-- Operations -->
+        <!-- Row Two -->
+    <div class="row">
+                <!-- Operations -->
         <div class="col-md-4">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Operations
@@ -64,7 +65,7 @@
                     <table class="table">
                         <tr>
                             <td>Deputy Operations Director</td>
-                            <td>1604708</td>
+                            <td>Ben Walker</td>
                         </tr>
                         <tr>
                             <td>Enroute Operations Coordinator</td>
@@ -76,11 +77,11 @@
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
-                            <td>1116943</td>
+                            <td>Luke Brown</td>
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
-                            <td>1604708</td>
+                            <td>Ben Walker</td>
                         </tr>
                         <tr>
                             <td>Events Manager</td>
@@ -124,13 +125,120 @@
                         </tr>
                         <tr>
                             <td>Operations Assistant</td>
-                            <td>1433686</td>
+                            <td>Oliver Cesarczyk</td>
                         </tr>
                     </table>
                 </div>
             </div>
         </div>
         <!-- End Operations -->
+        <!-- Training -->
+        <div class="col-md-8">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Training
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-6">
+                        <h4 class="text-center">ATC Training Director (VATUK5)</h4><br />
+                        <p class="text-center">Adam Arkley</p>
+                        <h4 class="text-center">ATC Training Team</h4>
+                        <table class="table">
+                            <tr>
+                                <td>ATC Training Manager & <br />
+                                Division Instructor</td>
+                                <td>Will Jennings</td>
+                            </tr>
+                            <tr>
+                                <td>Training Department Assistant</td>
+                                <td>Craig Stewart</td>
+                            </tr>
+                            <tr>
+                                <td>Division Instructor</td>
+                                <td>Adam Arkley</td>
+                            </tr>
+                            <tr>
+                                <td>Division Instructor</td>
+                                <td>Fraser Cooper</td>
+                            </tr>
+                            <tr>
+                                <td>Division Instructor</td>
+                                <td>Fergus Walsh</td>
+                            </tr>
+                            <tr>
+                                <td>Division Instructor</td>
+                                <td>Charlie Watson</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (New Controller)</td>
+                                <td>James Taylor</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (New Controller)</td>
+                                <td>Stephen Lee</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (TWR)</td>
+                                <td>Reece Buckley</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (APP)</td>
+                                <td><em>Vacant</em></td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (ENR) & <br />
+                                Division Instructor</td>
+                                <td>Kye Taylor</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (Heathrow)</td>
+                                <td>John Batten</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h4 class="text-center">Pilot Training Director (VATUK6)</h4><br />
+                        <p class="text-center">Ben Carpenter</p>
+                        <h4 class="text-center">Pilot Training Team</h4>
+                        <table class="table">
+                            <tr>
+                                <td>Pilot Training Manager</td>
+                                <td>Lewis Hammett</td>
+                            </tr>
+                            <tr>
+                                <td>Initial Flight Instructor</td>
+                                <td>Aiden Bok</td>
+                            </tr>
+                            <tr>
+                                <td>VFR Flight Instructor</td>
+                                <td><em>Vacant</em></td>
+                            </tr>
+                            <tr>
+                                <td>VFR Flight Instructor</td>
+                                <td>Riley Casement</td>
+                            </tr>
+                            <tr>
+                                <td>IFR Flight Instructor</td>
+                                <td>Firas Bashee</td>
+                            </tr>
+                            <tr>
+                                <td>Advanced Flight Instructor</td>
+                                <td>Charlie Innam</td>
+                            </tr>
+                            <tr>
+                                <td>Advanced Flight Instructor</td>
+                                <td><em>Vacant</em></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Training -->
+    </div>
+</div>
+<div class="container">
+    <div class="row row-eq-height">
         <!-- Web Services -->
         <div class="col-md-4">
             <div class="panel panel-ukblue">
@@ -138,7 +246,7 @@
                 </div>
                 <div class="panel-body">
                     <h4 class="text-center">Technology Director (VATUK8)</h4><br />
-                    <p class="text-center">1169992</p>
+                    <p class="text-center">Callum Axon</p>
 
                     <h4 class="text-center">Technology Team</h4>
                     <table class="table">
@@ -151,10 +259,6 @@
                         <tr>
                             <td>Developer</td>
                             <td>Kristián Kunc</td>
-                        </tr>
-                        <tr>
-                            <td>Developer</td>
-                            <td>Dave Etheridge</td>
                         </tr>
                         <tr>
                             <td>Developer</td>
@@ -189,7 +293,7 @@
                         </tr>
                         <tr>
                             <td>Outreach Assistant</td>
-                            <td>1670702</td>
+                            <td>Noah Murdoch</td>
                         </tr>
                         <tr>
                             <td>Community Assistant</td>
@@ -206,132 +310,7 @@
         <!-- End Community -->
     </div>
     <!-- End Row One -->
-</div>
-<div class="container">
-    <!-- Row Two -->
-    <div class="row">
-        <div class="col-md-4">
-            <!-- Other Roles -->
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Other Roles
-                </div>
-                <div class="panel-body">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>Data Protection Officer</td>
-                                <td>Chris Pawley</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- End Other Roles -->
-        </div>
-        <!-- Training -->
-        <div class="col-md-8">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Training
-                </div>
-                <div class="panel-body">
-                    <div class="col-md-6">
-                        <h4 class="text-center">ATC Training Director (VATUK5)</h4><br />
-                        <p class="text-center">Adam Arkley</p>
-                        <h4 class="text-center">ATC Training Team</h4>
-                        <table class="table">
-                            <tr>
-                                <td>ATC Training Manager & <br />
-                                Division Instructor</td>
-                                <td>Will Jennings</td>
-                            </tr>
-                            <tr>
-                                <td>Training Department Assistant</td>
-                                <td>Craig Stewart</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
-                                <td>Adam Arkley</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
-                                <td>Fraser Cooper</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
-                                <td>Henry Cleaver</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
-                                <td>Fergus Walsh</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (New Controller)</td>
-                                <td>James Taylor</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (New Controller)</td>
-                                <td>Stephen Lee</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (TWR)</td>
-                                <td>Reece Buckley</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (APP)</td>
-                                <td><em>Vacant</em></td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (ENR) & <br />
-                                Division Instructor</td>
-                                <td>Kye Taylor</td>
-                            </tr>
-                            <tr>
-                                <td>TG Instructor (Heathrow)</td>
-                                <td>John B (1256537)</td>
-                            </tr>
-                        </table>
-                    </div>
 
-                    <div class="col-md-6">
-                        <h4 class="text-center">Pilot Training Director (VATUK6)</h4><br />
-                        <p class="text-center">Ben Carpenter</p>
-                        <h4 class="text-center">Pilot Training Team</h4>
-                        <table class="table">
-                            <tr>
-                                <td>Pilot Training Manager</td>
-                                <td>Lewis Hammett</td>
-                            </tr>
-                            <tr>
-                                <td>Initial Flight Instructor</td>
-                                <td><em>Vacant</em></td>
-                            </tr>
-                            <tr>
-                                <td>VFR Flight Instructor</td>
-                                <td>Benjamin Arrowsmith</td>
-                            </tr>
-                            <tr>
-                                <td>VFR Flight Instructor</td>
-                                <td>Riley Casement</td>
-                            </tr>
-                            <tr>
-                                <td>IFR Flight Instructor</td>
-                                <td>Firas Bashee</td>
-                            </tr>
-                            <tr>
-                                <td>Advanced Flight Instructor</td>
-                                <td>Tarik Merrylees</td>
-                            </tr>
-                            <tr>
-                                <td>Advanced Flight Instructor</td>
-                                <td><em>Vacant</em></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Training -->
-    </div>
 </div>
 <!-- End Row Two -->
 </div>
