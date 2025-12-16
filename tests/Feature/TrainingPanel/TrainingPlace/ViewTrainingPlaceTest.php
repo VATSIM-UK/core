@@ -23,6 +23,8 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     {
         parent::setUp();
 
+        $this->panelUser->givePermissionTo('training-places.view.*');
+
         Livewire::actingAs($this->panelUser);
     }
 
@@ -39,6 +41,35 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => 'non-existent-id']);
+    }
+
+    public function test_page_cannot_be_accessed_without_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+
+        // Create a user without the training-places.view.* permission
+        $userWithoutPermission = Account::factory()->create();
+        Member::factory()->create(['id' => $userWithoutPermission->id, 'cid' => $userWithoutPermission->id]);
+        $userWithoutPermission->givePermissionTo('training.access'); // Has training panel access but not training places
+
+        Livewire::actingAs($userWithoutPermission)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertForbidden();
+    }
+
+    public function test_page_can_be_accessed_with_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+
+        // Create a user with the training-places.view.* permission
+        $userWithPermission = Account::factory()->create();
+        Member::factory()->create(['id' => $userWithPermission->id, 'cid' => $userWithPermission->id]);
+        $userWithPermission->givePermissionTo('training.access');
+        $userWithPermission->givePermissionTo('training-places.view.*');
+
+        Livewire::actingAs($userWithPermission)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200);
     }
 
     public function test_infolist_displays_training_place_details()

@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class ViewTrainingPlace extends Page implements HasInfolists, HasTable
 {
@@ -36,6 +37,13 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
 
     public function mount(): void
     {
+        // Check training places view permission
+        /** @var \App\Models\Mship\Account|null $user */
+        $user = Auth::user();
+        if (! $user || ! $user->can('training-places.view.*')) {
+            abort(403, 'You do not have permission to view training places.');
+        }
+
         $this->trainingPlace = TrainingPlace::where('id', $this->trainingPlaceId)->with('waitingListAccount', 'trainingPosition')->firstOrFail();
     }
 
