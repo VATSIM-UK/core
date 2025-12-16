@@ -66,7 +66,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         return $table
             ->heading('Mentoring session history')
             ->queryStringIdentifier('mentoring')
-            ->query(Session::query()->where('position', $this->trainingPlace->trainingPosition->position->callsign)->where('taken_date', '>=', now()->subDays(180)))
+            ->query(Session::query()->whereIn('position', $this->trainingPlace->trainingPosition->cts_positions))
             ->defaultSort('date_1', 'desc')
             ->paginated([10])
             ->defaultPaginationPageOption(10)
@@ -76,18 +76,11 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 TextColumn::make('mentor.cid')->label('Mentor CID'),
                 TextColumn::make('mentor.name')->label('Mentor'),
                 TextColumn::make('status')->label('Status')->badge()->getStateUsing(
-                    function ($record) {
-                        if ($record->noShow) {
-                            return 'No Show';
-                        }
-                        if ($record->cancelled_datetime) {
-                            return 'Cancelled';
-                        }
-                        if ($record->session_done) {
-                            return 'Completed';
-                        }
-
-                        return 'Pending';
+                    fn ($record) => match (true) {
+                        $record->noShow => 'No Show',
+                        $record->cancelled_datetime => 'Cancelled',
+                        $record->session_done => 'Completed',
+                        default => 'Pending',
                     })
                     ->color(fn ($state) => match ($state) {
                         'Pending' => 'primary',
