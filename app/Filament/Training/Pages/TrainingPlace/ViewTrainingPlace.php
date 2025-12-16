@@ -77,9 +77,9 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 TextColumn::make('mentor.name')->label('Mentor'),
                 TextColumn::make('status')->label('Status')->badge()->getStateUsing(
                     fn ($record) => match (true) {
-                        $record->noShow => 'No Show',
-                        $record->cancelled_datetime => 'Cancelled',
-                        $record->session_done => 'Completed',
+                        $record->noShow == 1 => 'No Show',
+                        $record->cancelled_datetime != null => 'Cancelled',
+                        $record->session_done == 1 => 'Completed',
                         default => 'Pending',
                     })
                     ->color(fn ($state) => match ($state) {
