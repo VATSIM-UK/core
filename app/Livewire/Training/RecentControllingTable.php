@@ -23,12 +23,14 @@ class RecentControllingTable extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->heading('Recent controlling')
+            ->heading('Controlling during training')
             ->queryStringIdentifier('recent-controlling')
             ->query(
                 Atc::query()->where('account_id', $this->trainingPlace->waitingListAccount->account_id)
+                    ->where('created_at', '>=', $this->trainingPlace->created_at)
                     ->isUk()
             )
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('created_at')->label('Date')->date('d/m/Y H:i:s'),
                 TextColumn::make('callsign')->label('Callsign'),
