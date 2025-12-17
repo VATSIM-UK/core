@@ -63,8 +63,8 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 TextEntry::make('waitingListAccount.account.name')->label('Name'),
                 TextEntry::make('waitingListAccount.account.id')->label('CID'),
                 TextEntry::make('trainingPosition.position.name')->label('Position'),
-                TextEntry::make('created_at')->label('Training Start')->dateTime('d/m/Y H:i:s'),
-                TextEntry::make('waitingListAccount.created_at')->label('Waiting List Join Date')->dateTime('d/m/Y H:i:s'),
+                TextEntry::make('created_at')->label('Training Start')->date('d/m/Y'),
+                TextEntry::make('waitingListAccount.created_at')->label('Waiting List Join Date')->date('d/m/Y'),
             ])->columns(2),
         ]);
     }
