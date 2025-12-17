@@ -80,7 +80,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             ->defaultPaginationPageOption(10)
             ->columns([
                 TextColumn::make('position')->label('Position'),
-                TextColumn::make('date_1')->label('Date')->date('d/m/Y'),
+                TextColumn::make('taken_date')->label('Date')->date('d/m/Y'),
                 TextColumn::make('mentor.cid')->label('Mentor CID'),
                 TextColumn::make('mentor.name')->label('Mentor'),
                 TextColumn::make('status')->label('Status')->badge()->getStateUsing(
