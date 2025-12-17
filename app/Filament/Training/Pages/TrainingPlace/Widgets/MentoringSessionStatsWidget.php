@@ -18,7 +18,7 @@ class MentoringSessionStatsWidget extends BaseWidget
         $sessionRepository = app(SessionRepository::class);
 
         return [
-            Stat::make('Total Sessions', $sessionRepository->getTotalSessionsForPositions($this->trainingPlace->trainingPosition->cts_positions, $this->trainingPlace->waitingListAccount->member->id))
+            Stat::make('Total Sessions', $sessionRepository->getTotalSessionsForPositions($this->trainingPlace->trainingPosition->cts_positions, $this->trainingPlace->waitingListAccount->account->member->id))
                 ->icon('heroicon-o-document-text')
                 ->description('Includes Sweatbox sessions')
                 ->color('primary'),

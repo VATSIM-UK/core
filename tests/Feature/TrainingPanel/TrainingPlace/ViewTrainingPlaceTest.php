@@ -87,8 +87,8 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     {
         $trainingPlace = $this->createTrainingPlace();
 
-        $formattedTrainingStart = $trainingPlace->created_at->format('d/m/Y H:i:s');
-        $formattedWaitingListJoin = $trainingPlace->waitingListAccount->created_at->format('d/m/Y H:i:s');
+        $formattedTrainingStart = $trainingPlace->created_at->format('d/m/Y');
+        $formattedWaitingListJoin = $trainingPlace->waitingListAccount->created_at->format('d/m/Y');
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
@@ -104,13 +104,14 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         // Create a session that matches the training position
         $session = Session::factory()->create([
             'position' => $cts_positions[0],
-            'date_1' => now()->subDays(5),
+            'taken_date' => now()->subDays(5),
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
         ]);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
             ->assertSee($session->position)
-            ->assertSee($session->date_1->format('d/m/Y'));
+            ->assertSee($session->taken_date->format('d/m/Y'));
     }
 
     public function test_table_does_not_display_sessions_for_other_positions()
@@ -119,8 +120,9 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         // Create a session for a different position
         $otherSession = Session::factory()->create([
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => 'EGKK_TWR', // Different position
-            'date_1' => now()->subDays(5),
+            'taken_date' => now()->subDays(5),
         ]);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
@@ -135,8 +137,9 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         $mentor = Member::factory()->create();
         $session = Session::factory()->create([
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => $cts_positions[0],
-            'date_1' => now()->subDays(5),
+            'taken_date' => now()->subDays(5),
             'mentor_id' => $mentor->id,
         ]);
 
@@ -153,7 +156,8 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         $session = Session::factory()->create([
             'position' => $cts_positions[0],
-            'date_1' => now()->subDays(5),
+            'taken_date' => now()->subDays(5),
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'noShow' => 0, // Explicitly set to 0 to ensure it's false
             'cancelled_datetime' => null, // Explicitly set to null
             'session_done' => 0, // Explicitly set to 0 to ensure it's false
@@ -170,8 +174,9 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $cts_positions = $trainingPlace->trainingPosition->cts_positions;
 
         $session = Session::factory()->create([
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => $cts_positions[0],
-            'date_1' => now()->subDays(5),
+            'taken_date' => now()->subDays(5),
             'noShow' => 0,
             'cancelled_datetime' => null,
             'session_done' => 1,
@@ -189,8 +194,9 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $cts_positions = $trainingPlace->trainingPosition->cts_positions;
 
         $session = Session::factory()->create([
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => $cts_positions[0],
-            'date_1' => now()->subDays(5),
+            'taken_date' => now()->subDays(5),
             'noShow' => 1, // Explicitly set to 1 to ensure it's true
             'cancelled_datetime' => null, // Explicitly set to null
             'session_done' => 0, // Explicitly set to 0
@@ -207,8 +213,9 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $cts_positions = $trainingPlace->trainingPosition->cts_positions;
 
         $session = Session::factory()->create([
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => $cts_positions[0],
-            'date_1' => now()->subDays(5),
+            'taken_date' => now()->subDays(5),
             'cancelled_datetime' => now()->subDays(6)->toDateTimeString(),
             'noShow' => 0,
             'session_done' => 0,
@@ -227,7 +234,8 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         $session = Session::factory()->create([
             'position' => $cts_positions[0],
-            'date_1' => now()->subDays(5),
+            'taken_date' => now()->subDays(5),
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
         ]);
 
         $expectedUrl = "https://cts.vatsim.uk/mentors/report.php?id={$session->id}&view=report";
@@ -252,13 +260,15 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         // Create sessions for both positions
         $session1 = Session::factory()->create([
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => 'EGLL_APP',
-            'date_1' => now()->subDays(5),
+            'taken_date' => now()->subDays(5),
         ]);
 
         $session2 = Session::factory()->create([
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => 'EGLL_TWR',
-            'date_1' => now()->subDays(3),
+            'taken_date' => now()->subDays(3),
         ]);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
@@ -285,6 +295,8 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $student = Account::factory()->create();
         $student->addState(State::findByCode('DIVISION'));
 
+        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+
         // Create a waiting list
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
@@ -299,6 +311,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             ->withCtsPositions($cts_positions)
             ->create([
                 'position_id' => $position->id,
+                'created_at' => now()->subDays(14),
             ]);
 
         // Create and return training place
