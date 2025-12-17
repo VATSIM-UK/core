@@ -74,7 +74,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         return $table
             ->heading('Mentoring session history')
             ->queryStringIdentifier('mentoring')
-            ->query(Session::query()->whereIn('position', $this->trainingPlace->trainingPosition->cts_positions))
+            ->query(Session::query()->whereIn('position', $this->trainingPlace->trainingPosition->cts_positions)->where('student_id', $this->trainingPlace->waitingListAccount->member->id))
             ->defaultSort('taken_date', 'desc')
             ->paginated([10])
             ->defaultPaginationPageOption(10)
