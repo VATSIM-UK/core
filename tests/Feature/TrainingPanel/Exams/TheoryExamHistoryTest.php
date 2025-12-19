@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\Exams;
 
-use App\Filament\Training\Pages\TheoryExamHistory;
+use App\Filament\Training\Pages\TheoryExam\TheoryExamHistory;
 use App\Models\Cts\Member;
 use App\Models\Cts\TheoryAnswer;
 use App\Models\Cts\TheoryQuestion;

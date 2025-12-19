@@ -2,6 +2,7 @@
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Filament\Training\Pages\Exam\Widgets\ExamOverview;
 use App\Repositories\Cts\ExamResultRepository;
 use Filament\Forms;
 use Filament\Pages\Page;
@@ -26,6 +27,13 @@ class ExamHistory extends Page implements HasTable
     {
 
         return auth()->user()->can('training.exams.access');
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ExamOverview::class,
+        ];
     }
 
     public function table(Table $table): Table

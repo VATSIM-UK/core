@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Filament\Training\Pages;
+namespace App\Filament\Training\Pages\TheoryExam;
 
+use App\Filament\Training\Pages\TheoryExam\Widgets\TheoryExamOverview;
 use App\Repositories\Cts\TheoryExamResultRepository;
 use Carbon\Carbon;
 use Filament\Forms;
@@ -30,6 +31,13 @@ class TheoryExamHistory extends Page implements HasTable
     {
 
         return auth()->user()->can('training.theory.access');
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            TheoryExamOverview::class,
+        ];
     }
 
     protected function buildQuestionPlaceholders($record): array
