@@ -228,7 +228,7 @@
 
                                 <ul>
                                     <li style="margin-left:18pt;">
-                                        At least 200 hours of flying on the VATSIM network;
+                                        At least 200 hours of flying on the VATSIM network, with the exception of real life pilots (considered on a per-case basis);
                                     </li>
                                     <li style="margin-left:18pt;">
                                         Be a member in good standing in the division;
