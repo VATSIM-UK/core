@@ -10,6 +10,7 @@ use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Livewire\Component;
 
@@ -26,8 +27,15 @@ class TrainingPlaceSoloEndorsement extends Component implements HasForms, HasTab
             ->heading('Solo endorsements')
             ->description('Solo endorsements displayed are scoped only to the positions relevant to this training place and filtered by the commencement of the training place.')
             ->queryStringIdentifier('solo-endorsements')
-            ->query(EndorsementService::getSoloEndorsementsForTrainingPlace($this->trainingPlace))
+            ->query(EndorsementService::getAllSoloEndorsementsIncludingRelatedPositionsForTrainingPlace($this->trainingPlace))
             ->defaultSort('created_at', 'desc')
+            ->groups([
+                Group::make('endorsement_category')
+                    ->label('Category')
+                    ->collapsible(),
+            ])
+            ->defaultGroup('endorsement_category')
+            ->groupingSettingsHidden()
             ->columns([
                 TextColumn::make('endorsable.description')->label('Position'),
                 TextColumn::make('created_at')->label('Granted')->date('d/m/Y H:i'),
