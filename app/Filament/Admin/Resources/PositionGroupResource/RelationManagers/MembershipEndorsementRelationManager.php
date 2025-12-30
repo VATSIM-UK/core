@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\PositionGroupResource\RelationManagers;
 
-use App\Services\Training\EndorsementCreationService;
+use App\Services\Training\EndorsementService;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -42,7 +42,7 @@ class MembershipEndorsementRelationManager extends RelationManager
                         return;
                     }
 
-                    EndorsementCreationService::createPermanent($this->getOwnerRecord(), $account, auth()->user());
+                    EndorsementService::createPermanent($this->getOwnerRecord(), $account, auth()->user());
                 })->visible(fn () => auth()->user()->can('endorse', $this->getOwnerRecord())),
             ]);
     }

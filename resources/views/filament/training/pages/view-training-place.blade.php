@@ -7,5 +7,7 @@
 
     {{ $this->table }}
 
+    @livewire(\App\Livewire\Training\TrainingPlaceSoloEndorsement::class, ['trainingPlace' => $this->trainingPlace], key('training-place-solo-endorsement'))
+
     @livewire(\App\Livewire\Training\RecentControllingTable::class, ['trainingPlace' => $this->trainingPlace], key('recent-controlling-table'))
 </x-filament-panels::page>
