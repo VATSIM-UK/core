@@ -301,4 +301,47 @@ class EndorsementServiceTest extends TestCase
 
         $this->assertCount(0, $result);
     }
+
+    public function test_get_all_solo_endorsements_includes_endorsements_before_training_place_start_date()
+    {
+        // Create endorsement BEFORE training place started (should be included)
+        $oldEndorsement = Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $this->position->id,
+            'expires_at' => now()->addDays(30),
+            'created_at' => now()->subDays(60), // Before training place created (created at -30 days)
+        ]);
+
+        // Create endorsement AFTER training place started (should also be included)
+        $newEndorsement = Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $this->position->id,
+            'expires_at' => now()->addDays(30),
+            'created_at' => now()->subDays(10), // After training place created
+        ]);
+
+        // Create related position endorsement before training place
+        $relatedPosition = Position::factory()->create([
+            'callsign' => 'EGLL_TWR',
+        ]);
+
+        $oldRelatedEndorsement = Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $relatedPosition->id,
+            'expires_at' => now()->addDays(30),
+            'created_at' => now()->subDays(90), // Long before training place created
+        ]);
+
+        $result = EndorsementService::getAllSoloEndorsementsIncludingRelatedPositionsForTrainingPlace($this->trainingPlace)->get();
+
+        // All three endorsements should be included regardless of creation date
+        $this->assertCount(3, $result);
+        $endorsementIds = $result->pluck('id')->toArray();
+        $this->assertContains($oldEndorsement->id, $endorsementIds);
+        $this->assertContains($newEndorsement->id, $endorsementIds);
+        $this->assertContains($oldRelatedEndorsement->id, $endorsementIds);
+    }
 }

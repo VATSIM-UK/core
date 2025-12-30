@@ -44,7 +44,7 @@ class EndorsementService
             ->pluck('id');
 
         return Endorsement::query()
-        	// use a computed column to group the endorsements by the position they are related to
+            // use a computed column to group the endorsements by the position they are related to
             // so we can use these in a grouping within the table
             ->selectRaw(
                 'mship_account_endorsement.*,
@@ -58,7 +58,6 @@ class EndorsementService
             ->whereIn('endorsable_id', $positionIds)
             ->where('endorsable_type', Position::class)
             ->whereNotNull('expires_at')
-            ->where('created_at', '>=', $trainingPlace->created_at)
             // ensure the training place position is always first in the query.
             ->orderByRaw('CASE WHEN endorsable_id = ? THEN 0 ELSE 1 END', [$position->id]);
     }
