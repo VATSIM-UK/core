@@ -8,9 +8,9 @@
                 </div>
                 <div class="panel-body">
                     <h2>Introduction</h2>
-                    <p>The Flying Programme is an expansion of the P0 Initial Pilot rating aimed at assisting pilots
+                    <p>The Flying Programme is an extension of the P0 Initial Pilot rating aimed at assisting pilots
                         starting on the network, pilots who are not confident on the network, or any pilots who feel they
-                        may benefit from 1-on-1 sessions to improve their VATSIM and flying skills. The programme now offers
+                        may benefit from 1-on-1 sessions to improve their VATSIM and flying skills. The programme offers
                         support for both VFR and IFR pilots, helping those flying visually in aircraft such as the C152,
                         C172, and PA28, or operating IFR aircraft like the Boeing 737NG series or Airbus A320 family, get
                         started on the network. It aims to develop fully competent VATSIM pilots, whether flying local
@@ -36,6 +36,9 @@
                     </p>
 
                     <ul>
+                        <li style="margin-left:18pt;">
+                            VATSIM Mandatory Knowledge (Creating flightplans & connecting)
+                        </li>
                         <li style="margin-left:18pt;">
                             IFR Pre-flight Planning
                         </li>
@@ -93,7 +96,7 @@
                     </ul>
 
                     <p>
-                        The final assessment is open book, with a time limit of 1 hour and a pass grade of 75%. The exam may
+                        The Moodle assessment is open book, with a time limit of 1 hour and a pass grade of 75%. The exam may
                         be retaken after a cooldown period, allowing you to revise the necessary areas.
                     </p>
 
@@ -106,17 +109,8 @@
                     </p>
 
                     <p>
-                        A student can request an <b>IFR route</b> from our list of beginner friendly flights, available as a
-                        pinned comment in the students’ channel. These routes have been planned and verified by the Pilot
-                        Training team for their short duration (under 1 hour flight time) and simple procedures (eg SIDs,
-                        STARs).
-                    </p>
-
-                    <p>
-                        <b>A member can request a maximum of <i>FIVE</i> one-on-one sessions per 12 months, with the 12
-                            months starting from the date of the second session.</b> This allows a member to return after
-                        absence from the network and get assistance in starting to fly again. The Initial Flight Instructor
-                        may allow exceptions to this rule in very specific circumstances.
+                        A student can request an <b>IFR route</b> of their choice, or recommended by the mentor.
+                        These routes should have a short duration (around 1 hour) and relatively simple procedures.
                     </p>
 
                     <h3>Group Sessions</h3>
@@ -124,32 +118,16 @@
                     <h4>Group Flights</h4>
 
                     <p>
-                        Group flights will be flown once every two weeks (depending on the demand) along one of the routes
-                        as listed in the student’s channel.
+                        Group flights will be held periodically subject to demand and announced in the VATSIM UK Discord.
+                        Members wishing to attend the group flight must enrol via CTS to be allocated a slot.
+                        Members who have not enrolled via CTS are still welcome to attend the group flight
+                        and be in the Discord channel.
                     </p>
 
                     <p>
-                        Members with the relevant Flying Programme permissions to book a slot in CTS and will be allocated a
-                        specific flight number for the flight, with the ficticious callsign ‘<b>TANGENT</b>’. Members who
-                        have not enrolled via CTS are still welcome to attend the group flight and be in the Discord
-                        channel.
-                    </p>
-
-                    <p>
-                        Group flights will take place in one of the public group_flight_1/2/3 Discord channels with at least
+                        Group flights will take place in the "tfp-group-flight" Discord channel with at least
                         one mentor present. The mentor is there to help everyone attending but will give priority to helping
                         members who booked via CTS.
-                    </p>
-
-                    <p>
-                        Members taking part in The Flying Programme can attend an unlimited amount of group flights.
-                    </p>
-
-                    <h4>Seminars</h4>
-
-                    <p>
-                        Group seminars will be hosted regularly on a rotating series of topics. Additionally, event-specific
-                        briefings for events in the UK such a <i>Cross the Pond</i> will be held.
                     </p>
 
                     <h3>Sign-Off</h3>
@@ -199,9 +177,6 @@
                         </li>
                     </ul>
 
-                    <p>
-                        <em>* The 2 sessions in 12 months rule in enforced using the removal of CTS permissions.</em>
-                    </p>
                 </div>
             </div>
         </div>
@@ -227,8 +202,8 @@
                                 </p>
 
                                 <p>
-                                    Upon completion of the moodle exam, please submit a ticket to Pilot Training department
-                                    on the helpdesk stating your completion of the moodle to move onto the next step.
+                                    Upon completion of the Moodle exam, please submit a ticket to Pilot Training department
+                                    on the helpdesk stating your completion of the Moodle to move onto the next step.
                                 </p>
 
                                 <p>
@@ -253,7 +228,7 @@
 
                                 <ul>
                                     <li style="margin-left:18pt;">
-                                        At least 150 hours of flying on the VATSIM network;
+                                        At least 200 hours of flying on the VATSIM network, with the exception of pilots holding a real life licence (considered on a per-case basis);
                                     </li>
                                     <li style="margin-left:18pt;">
                                         Be a member in good standing in the division;
