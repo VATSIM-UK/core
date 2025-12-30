@@ -25,7 +25,7 @@ class TrainingPlaceSoloEndorsement extends Component implements HasForms, HasTab
     {
         return $table
             ->heading('Solo endorsements')
-            ->description('Solo endorsements displayed are scoped only to the positions relevant to this training place and filtered by the commencement of the training place.')
+            ->description('Both solo endorsements related to the training place and other solo endorsements related to the same rating are displayed.')
             ->queryStringIdentifier('solo-endorsements')
             ->query(EndorsementService::getAllSoloEndorsementsIncludingRelatedPositionsForTrainingPlace($this->trainingPlace))
             ->defaultSort('created_at', 'desc')
