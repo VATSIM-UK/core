@@ -344,4 +344,132 @@ class EndorsementServiceTest extends TestCase
         $this->assertContains($newEndorsement->id, $endorsementIds);
         $this->assertContains($oldRelatedEndorsement->id, $endorsementIds);
     }
+
+    public function test_has_active_solo_endorsement_returns_true_when_active_endorsement_exists()
+    {
+        // Create an active endorsement
+        Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $this->position->id,
+            'expires_at' => now()->addDays(30),
+        ]);
+
+        $result = EndorsementService::hasActiveSoloEndorsement($this->position, $this->student);
+
+        $this->assertTrue($result);
+    }
+
+    public function test_has_active_solo_endorsement_returns_false_when_no_endorsement_exists()
+    {
+        // Don't create any endorsements
+
+        $result = EndorsementService::hasActiveSoloEndorsement($this->position, $this->student);
+
+        $this->assertFalse($result);
+    }
+
+    public function test_has_active_solo_endorsement_returns_false_when_endorsement_has_expired()
+    {
+        // Create an expired endorsement
+        Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $this->position->id,
+            'expires_at' => now()->subDays(1), // Expired yesterday
+        ]);
+
+        $result = EndorsementService::hasActiveSoloEndorsement($this->position, $this->student);
+
+        $this->assertFalse($result);
+    }
+
+    public function test_has_active_solo_endorsement_returns_false_for_different_position()
+    {
+        // Create endorsement for a different position
+        $differentPosition = Position::factory()->create([
+            'callsign' => 'EGLL_APP',
+        ]);
+
+        Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $differentPosition->id,
+            'expires_at' => now()->addDays(30),
+        ]);
+
+        $result = EndorsementService::hasActiveSoloEndorsement($this->position, $this->student);
+
+        $this->assertFalse($result);
+    }
+
+    public function test_has_active_solo_endorsement_returns_false_for_different_account()
+    {
+        // Create endorsement for a different account
+        $differentAccount = Account::factory()->create();
+
+        Endorsement::factory()->create([
+            'account_id' => $differentAccount->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $this->position->id,
+            'expires_at' => now()->addDays(30),
+        ]);
+
+        $result = EndorsementService::hasActiveSoloEndorsement($this->position, $this->student);
+
+        $this->assertFalse($result);
+    }
+
+    public function test_has_active_solo_endorsement_returns_false_for_permanent_endorsement()
+    {
+        // Create a permanent endorsement (no expiry date)
+        Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $this->position->id,
+            'expires_at' => null, // Permanent endorsement
+        ]);
+
+        $result = EndorsementService::hasActiveSoloEndorsement($this->position, $this->student);
+
+        $this->assertFalse($result);
+    }
+
+    public function test_has_active_solo_endorsement_returns_true_when_endorsement_expires_today()
+    {
+        // Create an endorsement that expires at the end of today
+        Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $this->position->id,
+            'expires_at' => now()->endOfDay(),
+        ]);
+
+        $result = EndorsementService::hasActiveSoloEndorsement($this->position, $this->student);
+
+        $this->assertTrue($result);
+    }
+
+    public function test_has_active_solo_endorsement_returns_true_when_multiple_endorsements_and_one_is_active()
+    {
+        // Create an expired endorsement
+        Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $this->position->id,
+            'expires_at' => now()->subDays(10),
+        ]);
+
+        // Create an active endorsement
+        Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $this->position->id,
+            'expires_at' => now()->addDays(30),
+        ]);
+
+        $result = EndorsementService::hasActiveSoloEndorsement($this->position, $this->student);
+
+        $this->assertTrue($result);
+    }
 }
