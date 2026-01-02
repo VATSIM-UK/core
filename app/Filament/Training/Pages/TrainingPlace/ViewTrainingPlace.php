@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -205,6 +206,10 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 TextEntry::make('trainingPosition.position.name')->label('Position'),
                 TextEntry::make('created_at')->label('Training Start')->date('d/m/Y'),
                 TextEntry::make('waitingListAccount.created_at')->label('Waiting List Join Date')->date('d/m/Y'),
+                IconEntry::make('has_pending_exam')
+                    ->label('Has Pending Exam Booking')
+                    ->getStateUsing(fn () => $this->hasPendingExam())
+                    ->boolean(),
             ])->columns(2),
         ]);
     }
