@@ -41,8 +41,12 @@ class SuperSeeder extends Command
         parent::__construct();
     }
 
-    public function handle(): void
+    public function handle(): int
     {
+        if (! $this->isLocalEnvironment()) {
+            return $this->exitWithError('This command can only be executed in the local environment for security reasons.');
+        }
+
         $this->info('Starting super seeder...');
         $tables = $this->option('tables');
 
@@ -62,8 +66,31 @@ class SuperSeeder extends Command
         }
 
         $this->info('Super seeder completed!');
+
+        return 0;
     }
 
+    /**
+     * Check if running in local environment
+     */
+    private function isLocalEnvironment(): bool
+    {
+        return app()->environment('local');
+    }
+
+    /**
+     * Exit command with error message
+     */
+    private function exitWithError(string $message): int
+    {
+        $this->error($message);
+
+        return 1;
+    }
+
+    /**
+     * Seed all tables
+     */
     private function seedAll(): void
     {
         // Seed core dependencies first
