@@ -75,6 +75,8 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             $actions[] = Action::make('forwardForExam')
                 ->label('Forward for Practical Exam')
                 ->icon('heroicon-o-arrow-right')
+                ->disabled(fn () => $this->hasPendingExam())
+                ->tooltip(fn () => $this->hasPendingExam() ? 'This member already has a pending exam booking.' : 'Forward the member for a practical exam on their primary training position')
                 ->form([
                     Select::make('position_id')
                         ->label('Position')
@@ -97,11 +99,17 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 ->action(fn (array $data) => $this->forwardForExam($data['position_id']))
                 ->modalHeading('Forward for Practical Exam')
                 ->modalDescription('Confirm the details below to forward this member for a practical exam.')
-                ->modalSubmitActionLabel('Forward for Exam')
-                ->tooltip('Forward the member for a practical exam on their primary training position');
+                ->modalSubmitActionLabel('Forward for Exam');
         }
 
         return $actions;
+    }
+
+    private function hasPendingExam(): bool
+    {
+        return ExamBooking::where('student_id', $this->trainingPlace->waitingListAccount->account->member->id)
+            ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->exists();
     }
 
     public function forwardForExam(int $positionId): void
