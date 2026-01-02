@@ -3,13 +3,22 @@
 namespace App\Filament\Training\Pages\TrainingPlace;
 
 use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
+use App\Models\Atc\Position;
+use App\Models\Cts\ExamBooking;
+use App\Models\Cts\ExamSetup;
+use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -56,8 +65,131 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         ];
     }
 
+    protected function getHeaderActions(): array
+    {
+        $actions = [];
+
+        /** @var \App\Models\Mship\Account|null $user */
+        $user = Auth::user();
+        if ($user && $user->can('training.exams.setup')) {
+            $actions[] = Action::make('forwardForExam')
+                ->label('Forward for Practical Exam')
+                ->icon('heroicon-o-arrow-right')
+                ->form([
+                    Select::make('position_id')
+                        ->label('Position')
+                        ->options(fn () => Position::where('callsign', 'NOT LIKE', '%ATIS%')->orderBy('callsign')->pluck('callsign', 'id'))
+                        ->default(fn () => $this->trainingPlace->trainingPosition->position->id)
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+                    TextInput::make('student_name')
+                        ->label('Student Name')
+                        ->default(fn () => $this->trainingPlace->waitingListAccount->account->name)
+                        ->disabled()
+                        ->dehydrated(false),
+                    TextInput::make('student_cid')
+                        ->label('Student CID')
+                        ->default(fn () => $this->trainingPlace->waitingListAccount->account->id)
+                        ->disabled()
+                        ->dehydrated(false),
+                ])
+                ->action(fn (array $data) => $this->forwardForExam($data['position_id']))
+                ->modalHeading('Forward for Practical Exam')
+                ->modalDescription('Confirm the details below to forward this member for a practical exam.')
+                ->modalSubmitActionLabel('Forward for Exam')
+                ->tooltip('Forward the member for a practical exam on their primary training position');
+        }
+
+        return $actions;
+    }
+
+    public function forwardForExam(int $positionId): void
+    {
+        try {
+            // Get the position from the provided ID
+            $position = Position::findOrFail($positionId);
+            $ctsMember = $this->trainingPlace->waitingListAccount->account->member;
+
+            if (! $position || ! $ctsMember) {
+                Notification::make()
+                    ->title('Error')
+                    ->danger()
+                    ->body('Unable to forward for exam - missing position or member information.')
+                    ->send();
+
+                return;
+            }
+
+            // Check if the member has an ATC qualification
+            if (! $ctsMember->account->qualification_atc) {
+                Notification::make()
+                    ->title('Error')
+                    ->danger()
+                    ->body('Unable to forward for exam - member does not have a valid ATC qualification.')
+                    ->send();
+
+                return;
+            }
+
+            /** @var \App\Models\Mship\Account|null $user */
+            $user = Auth::user();
+            if (! $user) {
+                Notification::make()
+                    ->title('Error')
+                    ->danger()
+                    ->body('Unable to determine current user.')
+                    ->send();
+
+                return;
+            }
+
+            // Create the exam setup record
+            $setup = ExamSetup::create([
+                'rts_id' => $position->rts,
+                'student_id' => $ctsMember->id,
+                'position_1' => $position->callsign,
+                'position_2' => null,
+                'exam' => $position->examLevel,
+                'setup_by' => $user->id,
+                'setup_date' => Carbon::now()->format('Y-m-d H:i:s'),
+                'response' => 1,
+                'dealt_by' => $user->id,
+                'dealt_date' => Carbon::now()->format('Y-m-d H:i:s'),
+            ]);
+
+            // Create the exam booking record
+            $examBooking = ExamBooking::create([
+                'rts_id' => $position->rts,
+                'student_id' => $ctsMember->id,
+                'student_rating' => $ctsMember->account->qualification_atc->vatsim,
+                'position_1' => $position->callsign,
+                'position_2' => null,
+                'exam' => $position->examLevel,
+            ]);
+
+            // Link the exam setup to the booking
+            $setup->update([
+                'bookid' => $examBooking->id,
+            ]);
+
+            Notification::make()
+                ->title('Success')
+                ->success()
+                ->body('Exam setup for '.$position->callsign.' has been created.')
+                ->send();
+        } catch (\Exception $e) {
+            Notification::make()
+                ->title('Error')
+                ->danger()
+                ->body('An error occurred while forwarding for exam: '.$e->getMessage())
+                ->send();
+        }
+    }
+
     public function infolist(Infolist $infolist): Infolist
     {
+
         return $infolist->record($this->trainingPlace)->schema([
             Section::make('Training Place Details')->schema([
                 TextEntry::make('waitingListAccount.account.name')->label('Name'),
