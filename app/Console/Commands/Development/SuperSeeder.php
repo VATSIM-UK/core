@@ -184,8 +184,8 @@ class SuperSeeder extends Command
     private function seedAccountEmails(): void
     {
         foreach ($this->accounts as $account) {
-            if ($account->emails()->count() === 0) {
-                $account->emails()->save(\App\Models\Mship\Account\Email::factory()->make());
+            if ($account->secondaryEmails()->count() === 0) {
+                $account->secondaryEmails()->save(\App\Models\Mship\Account\Email::factory()->make());
             }
         }
         $this->line('Account emails seeded.');
