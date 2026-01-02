@@ -23,6 +23,7 @@ use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
 use Database\Seeders\WaitingListStressSeeder;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class SuperSeeder extends Command
 {
@@ -46,6 +47,9 @@ class SuperSeeder extends Command
         if (! $this->isLocalEnvironment()) {
             return $this->exitWithError('This command can only be executed in the local environment for security reasons.');
         }
+
+        // Fake notifications to prevent email/Discord errors during seeding
+        Notification::fake();
 
         $this->info('Starting super seeder...');
         $tables = $this->option('tables');
