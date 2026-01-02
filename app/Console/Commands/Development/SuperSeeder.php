@@ -185,7 +185,7 @@ class SuperSeeder extends Command
     {
         foreach ($this->accounts as $account) {
             if ($account->secondaryEmails()->count() === 0) {
-                $account->secondaryEmails()->save(\App\Models\Mship\Account\Email::factory()->make());
+                $account->addSecondaryEmail(fake()->unique()->safeEmail(), true);
             }
         }
         $this->line('Account emails seeded.');
@@ -646,8 +646,10 @@ class SuperSeeder extends Command
         $ctsPositions = \App\Models\Cts\Position::factory()->count(10)->create()->all();
 
         // Seed CTS sessions linked to members
-        foreach (array_slice($ctsMembers, 0, 10) as $student) {
-            $mentor = $ctsMembers[array_rand($ctsMembers)];
+        foreach (array_slice($ctsMembers, 0, 10) as $index => $student) {
+            // Ensure mentor is different from student
+            $mentorIndex = ($index + 1) % count($ctsMembers);
+            $mentor = $ctsMembers[$mentorIndex];
             \App\Models\Cts\Session::factory()->create([
                 'student_id' => $student->id,
                 'mentor_id' => $mentor->id,
@@ -670,8 +672,8 @@ class SuperSeeder extends Command
             ]);
         }
 
-        // Seed exam setups
-        $examSetups = \App\Models\Cts\ExamSetup::factory()->count(5)->create()->all();
+        // Seed exam setups (shared resources for exams)
+        \App\Models\Cts\ExamSetup::factory()->count(5)->create();
 
         // Seed theory questions
         \App\Models\Cts\TheoryQuestion::factory()->count(20)->create();
