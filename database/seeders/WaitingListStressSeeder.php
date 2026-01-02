@@ -27,6 +27,15 @@ class WaitingListStressSeeder extends Seeder
 
     private function seed(): void
     {
+        // Skip if waiting lists already exist (prevents duplicate account creation on re-runs)
+        if (WaitingList::count() > 0) {
+            echo "Waiting lists already exist, skipping seeding...\n";
+
+            return;
+        }
+
+        // Only reach here if no waiting lists exist, so we need to create them
+        // First, ensure admin account exists (only created if waiting lists don't exist)
         $admin = $this->seedS1();
 
         /** @var WaitingList $waitingList */
