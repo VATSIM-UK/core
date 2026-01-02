@@ -238,11 +238,12 @@ class SuperSeeder extends Command
 
         foreach (array_slice($this->accounts, 0, 5) as $account) {
             if ($account->bans()->count() === 0) {
-                \App\Models\Mship\Account\Ban::factory()->create([
-                    'account_id' => $account->id,
-                    'ban_reason_id' => $reasons->random()->id,
-                    'banned_by' => $this->accounts[0]->id ?? 1,
-                ]);
+                $account->addBan(
+                    $reasons->random(),
+                    'Sample ban for testing purposes',
+                    'Banned during seeding',
+                    $this->accounts[0] ?? null
+                );
             }
         }
         $this->line('Account bans seeded.');
@@ -321,12 +322,10 @@ class SuperSeeder extends Command
             return;
         }
 
-        $qualifications = Qualification::where('type', 'atc')->get();
         foreach ($this->positionGroups as $group) {
-            if ($qualifications->count() > 0 && rand(0, 1) && $group->conditions()->count() === 0) {
+            if (rand(0, 1) && $group->conditions()->count() === 0) {
                 $group->conditions()->create([
                     'type' => PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD,
-                    'qualification_id' => $qualifications->random()->id,
                     'required_hours' => rand(10, 50),
                     'positions' => ['EGLL_%', 'EGKK_%'],
                 ]);
