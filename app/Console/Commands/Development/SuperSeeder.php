@@ -23,6 +23,7 @@ use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
 use Database\Seeders\WaitingListStressSeeder;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class SuperSeeder extends Command
 {
@@ -43,6 +44,9 @@ class SuperSeeder extends Command
 
     public function handle(): void
     {
+        // Fake notifications to prevent email/Discord errors during seeding
+        Notification::fake();
+
         $this->info('Starting super seeder...');
         $tables = $this->option('tables');
 
