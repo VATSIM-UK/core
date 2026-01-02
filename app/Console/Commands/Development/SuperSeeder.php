@@ -562,18 +562,18 @@ class SuperSeeder extends Command
 
     private function seedWaitingListRetentionChecks(): void
     {
-        $waitingLists = WaitingList::all();
-        if ($waitingLists->count() === 0 || empty($this->accounts)) {
-            $this->line('No waiting lists or accounts, skipping retention checks...');
+        $waitingListAccounts = \App\Models\Training\WaitingList\WaitingListAccount::limit(10)->get();
+        
+        if ($waitingListAccounts->count() === 0) {
+            $this->line('No waiting list accounts available, skipping retention checks...');
 
             return;
         }
 
-        foreach ($waitingLists as $list) {
-            foreach (array_slice($this->accounts, 0, 5) as $account) {
+        foreach ($waitingListAccounts as $waitingListAccount) {
+            if ($waitingListAccount->retentionChecks()->count() === 0) {
                 \App\Models\Training\WaitingList\WaitingListRetentionCheck::factory()->create([
-                    'waiting_list_id' => $list->id,
-                    'account_id' => $account->id,
+                    'waiting_list_account_id' => $waitingListAccount->id,
                 ]);
             }
         }
