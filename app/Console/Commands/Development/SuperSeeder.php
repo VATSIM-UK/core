@@ -626,18 +626,85 @@ class SuperSeeder extends Command
             return;
         }
 
-        // Seed CTS members
+        // Seed CTS members linked to accounts
+        $ctsMembers = [];
         foreach (array_slice($this->accounts, 0, 20) as $account) {
-            \App\Models\Cts\Member::factory()->create(['account_id' => $account->id]);
+            $member = \App\Models\Cts\Member::factory()->create([
+                'id' => $account->id,
+                'cid' => $account->id,
+            ]);
+            $ctsMembers[] = $member;
         }
 
-        // Seed other CTS data
-        \App\Models\Cts\Position::factory()->count(10)->create();
-        \App\Models\Cts\Session::factory()->count(15)->create();
-        \App\Models\Cts\ExamSetup::factory()->count(5)->create();
+        if (empty($ctsMembers)) {
+            $this->line('No CTS members created, skipping CTS data...');
+
+            return;
+        }
+
+        // Seed CTS positions
+        $ctsPositions = \App\Models\Cts\Position::factory()->count(10)->create()->all();
+
+        // Seed CTS sessions linked to members
+        foreach (array_slice($ctsMembers, 0, 10) as $student) {
+            $mentor = $ctsMembers[array_rand($ctsMembers)];
+            \App\Models\Cts\Session::factory()->create([
+                'student_id' => $student->id,
+                'mentor_id' => $mentor->id,
+                'position' => $ctsPositions[array_rand($ctsPositions)]->name ?? 'EGLL_APP',
+            ]);
+        }
+
+        // Seed CTS bookings linked to members
+        foreach (array_slice($ctsMembers, 0, 15) as $member) {
+            \App\Models\Cts\Booking::factory()->create([
+                'member_id' => $member->id,
+                'position' => $ctsPositions[array_rand($ctsPositions)]->name ?? 'EGKK_APP',
+            ]);
+        }
+
+        // Seed CTS memberships linked to members
+        foreach (array_slice($ctsMembers, 0, 15) as $member) {
+            \App\Models\Cts\Membership::factory()->create([
+                'member_id' => $member->id,
+            ]);
+        }
+
+        // Seed exam setups
+        $examSetups = \App\Models\Cts\ExamSetup::factory()->count(5)->create()->all();
+
+        // Seed theory questions
         \App\Models\Cts\TheoryQuestion::factory()->count(20)->create();
 
-        $this->line('CTS data seeded.');
+        // Seed theory results linked to members
+        foreach (array_slice($ctsMembers, 0, 8) as $member) {
+            \App\Models\Cts\TheoryResult::factory()->create([
+                'student_id' => $member->id,
+            ]);
+        }
+
+        // Seed practical results linked to members
+        foreach (array_slice($ctsMembers, 0, 8) as $member) {
+            \App\Models\Cts\PracticalResult::factory()->create([
+                'student_id' => $member->id,
+            ]);
+        }
+
+        // Seed exam bookings linked to members
+        foreach (array_slice($ctsMembers, 0, 5) as $member) {
+            \App\Models\Cts\ExamBooking::factory()->create([
+                'student_id' => $member->id,
+            ]);
+        }
+
+        // Seed availabilities linked to members
+        foreach (array_slice($ctsMembers, 0, 10) as $member) {
+            \App\Models\Cts\Availability::factory()->create([
+                'student_id' => $member->id,
+            ]);
+        }
+
+        $this->line('CTS data seeded with proper connections to members.');
     }
 
     private function seedDiscordRoleRules(): void
