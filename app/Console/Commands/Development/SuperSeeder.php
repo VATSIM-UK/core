@@ -5,6 +5,7 @@ namespace App\Console\Commands\Development;
 use App\Models\Airport;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
+use App\Models\Atc\PositionGroupCondition;
 use App\Models\Mship\Account;
 use App\Models\Mship\Ban\Reason as BanReason;
 use App\Models\Mship\Feedback\Answer;
@@ -22,7 +23,6 @@ use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
 use Database\Seeders\WaitingListStressSeeder;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class SuperSeeder extends Command
 {
@@ -198,13 +198,7 @@ class SuperSeeder extends Command
                 $stateCodes = ['DIVISION', 'VISITING', 'REGION', 'INTERNATIONAL'];
                 $state = \App\Models\Mship\State::where('code', $stateCodes[array_rand($stateCodes)])->first();
                 if ($state) {
-                    DB::table('mship_account_state')->insert([
-                        'account_id' => $account->id,
-                        'state_id' => $state->id,
-                        'start_at' => now()->subMonths(rand(1, 12)),
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
+                    $account->addState($state, 'EUR', 'GBR');
                 }
             }
         }
@@ -265,14 +259,11 @@ class SuperSeeder extends Command
 
         foreach (array_slice($this->accounts, 0, 20) as $account) {
             if ($account->notes()->count() === 0) {
-                DB::table('mship_account_note')->insert([
-                    'account_id' => $account->id,
-                    'writer_id' => $this->accounts[0]->id ?? 1,
-                    'type_id' => $noteTypes->random()->id,
-                    'content' => 'Sample note for testing purposes.',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+                $account->addNote(
+                    $noteTypes->random(),
+                    'Sample note for testing purposes.',
+                    $this->accounts[0] ?? null
+                );
             }
         }
         $this->line('Account notes seeded.');
@@ -315,15 +306,9 @@ class SuperSeeder extends Command
         }
 
         foreach ($this->positionGroups as $group) {
-            $positions = array_slice($this->positions, 0, rand(2, 5));
-            foreach ($positions as $position) {
-                DB::table('position_group_positions')->insertOrIgnore([
-                    'position_group_id' => $group->id,
-                    'position_id' => $position->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
+            $positionsToAttach = array_slice($this->positions, 0, rand(2, 5));
+            $positionIds = array_map(fn ($pos) => $pos->id, $positionsToAttach);
+            $group->positions()->syncWithoutDetaching($positionIds);
         }
         $this->line('Position group positions seeded.');
     }
@@ -338,13 +323,12 @@ class SuperSeeder extends Command
 
         $qualifications = Qualification::where('type', 'atc')->get();
         foreach ($this->positionGroups as $group) {
-            if ($qualifications->count() > 0 && rand(0, 1)) {
-                DB::table('position_group_conditions')->insertOrIgnore([
-                    'position_group_id' => $group->id,
-                    'type' => 'qualification',
+            if ($qualifications->count() > 0 && rand(0, 1) && $group->conditions()->count() === 0) {
+                $group->conditions()->create([
+                    'type' => PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD,
                     'qualification_id' => $qualifications->random()->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'required_hours' => rand(10, 50),
+                    'positions' => ['EGLL_%', 'EGKK_%'],
                 ]);
             }
         }
@@ -361,13 +345,9 @@ class SuperSeeder extends Command
         }
 
         foreach ($airports as $airport) {
-            $positions = array_slice($this->positions, 0, rand(1, 3));
-            foreach ($positions as $position) {
-                DB::table('airport_positions')->insertOrIgnore([
-                    'airport_id' => $airport->id,
-                    'position_id' => $position->id,
-                ]);
-            }
+            $positionsToAttach = array_slice($this->positions, 0, rand(1, 3));
+            $positionIds = array_map(fn ($pos) => $pos->id, $positionsToAttach);
+            $airport->positions()->syncWithoutDetaching($positionIds);
         }
         $this->line('Airport positions seeded.');
     }
