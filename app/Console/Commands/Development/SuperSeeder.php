@@ -23,10 +23,14 @@ use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
 use Database\Seeders\WaitingListStressSeeder;
 use Illuminate\Console\Command;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Schema;
 
 class SuperSeeder extends Command
 {
+    use WithoutModelEvents;
+
     protected $signature = 'db:super-seed {--tables=* : Specific tables to seed}';
 
     protected $description = 'Seeds all tables with realistic-looking data for development purposes.';
@@ -42,6 +46,19 @@ class SuperSeeder extends Command
         parent::__construct();
     }
 
+    /**
+     * Check if a table exists on the CTS connection
+     */
+    private function ctsTableExists(string $table): bool
+    {
+        try {
+            return Schema::connection('cts')->hasTable($table);
+        } catch (\Exception $e) {
+            // If checking fails (no connection or misconfigured), treat as missing
+            return false;
+        }
+    }
+
     public function handle(): int
     {
         if (! $this->isLocalEnvironment()) {
@@ -54,19 +71,27 @@ class SuperSeeder extends Command
         $this->info('Starting super seeder...');
         $tables = $this->option('tables');
 
-        if (empty($tables)) {
-            // Seed everything
-            $this->seedAll();
-        } else {
-            // Seed specific tables
-            foreach ($tables as $table) {
-                $method = 'seed'.str_replace('_', '', ucwords($table, '_'));
-                if (method_exists($this, $method)) {
-                    $this->$method();
-                } else {
-                    $this->warn("Seeder method {$method} does not exist for table {$table}");
+        // Disable all model events to prevent listeners from creating accounts
+        \Illuminate\Database\Eloquent\Model::unsetEventDispatcher();
+
+        try {
+            if (empty($tables)) {
+                // Seed everything
+                $this->seedAll();
+            } else {
+                // Seed specific tables
+                foreach ($tables as $table) {
+                    $method = 'seed'.str_replace('_', '', ucwords($table, '_'));
+                    if (method_exists($this, $method)) {
+                        $this->$method();
+                    } else {
+                        $this->warn("Seeder method {$method} does not exist for table {$table}");
+                    }
                 }
             }
+        } finally {
+            // Re-enable the dispatcher
+            \Illuminate\Database\Eloquent\Model::setEventDispatcher(app('events'));
         }
 
         $this->info('Super seeder completed!');
@@ -113,6 +138,10 @@ class SuperSeeder extends Command
         $this->seedAccountBans();
         $this->seedAccountNotes();
 
+        // Seed airports
+        $this->info('Seeding airports...');
+        $this->seedAirports();
+
         // Seed positions and groups
         $this->info('Seeding positions...');
         $this->seedPositions();
@@ -141,7 +170,11 @@ class SuperSeeder extends Command
 
         // Seed waiting lists (using existing seeder)
         $this->info('Seeding waiting lists...');
-        $this->call(WaitingListStressSeeder::class);
+        if (WaitingList::count() === 0) {
+            $this->call(WaitingListStressSeeder::class);
+        } else {
+            $this->line('Waiting lists already exist, skipping seeding...');
+        }
         $this->seedWaitingListRetentionChecks();
 
         // Seed visit/transfer
@@ -198,16 +231,56 @@ class SuperSeeder extends Command
         $this->line('Note types seeded.');
     }
 
+    private function seedAirports(): void
+    {
+        $count = Airport::count();
+        if ($count >= 10) {
+            $this->line("Airports already exist ({$count} exist), skipping...");
+
+            return;
+        }
+
+        // Create some common UK airports for testing
+        $airports = [
+            ['icao' => 'EGLL', 'iata' => 'LHR', 'name' => 'London Heathrow'],
+            ['icao' => 'EGKK', 'iata' => 'LGW', 'name' => 'London Gatwick'],
+            ['icao' => 'EGSS', 'iata' => 'STN', 'name' => 'London Stansted'],
+            ['icao' => 'EGLC', 'iata' => 'LCY', 'name' => 'London City'],
+            ['icao' => 'EGMD', 'iata' => 'MSE', 'name' => 'Manston'],
+            ['icao' => 'EGBB', 'iata' => 'BHX', 'name' => 'Birmingham'],
+            ['icao' => 'EGNX', 'iata' => 'EMA', 'name' => 'East Midlands'],
+            ['icao' => 'EGNT', 'iata' => 'NCL', 'name' => 'Newcastle'],
+            ['icao' => 'EGFF', 'iata' => 'CWL', 'name' => 'Cardiff'],
+            ['icao' => 'EGPF', 'iata' => 'GLA', 'name' => 'Glasgow'],
+        ];
+
+        foreach ($airports as $airport) {
+            Airport::firstOrCreate(
+                ['icao' => $airport['icao']],
+                [
+                    'iata' => $airport['iata'],
+                    'name' => $airport['name'],
+                ]
+            );
+        }
+
+        $this->line('10 airports seeded.');
+    }
+
     private function seedAccounts(): void
     {
         $count = Account::count();
-        if ($count >= 50) {
-            $this->line("Accounts already seeded ({$count} exist), skipping...");
+
+        // Skip account creation entirely if any accounts exist
+        // This prevents creating more accounts on subsequent runs
+        if ($count > 0) {
+            $this->line("Accounts already exist ({$count} total), skipping creation...");
             $this->accounts = Account::limit(50)->get()->all();
 
             return;
         }
 
+        // Only create accounts if the table is completely empty
         $this->accounts = Account::factory()->count(50)->create()->all();
         $this->line('50 accounts created.');
     }
@@ -563,7 +636,7 @@ class SuperSeeder extends Command
     private function seedWaitingListRetentionChecks(): void
     {
         $waitingListAccounts = \App\Models\Training\WaitingList\WaitingListAccount::limit(10)->get();
-        
+
         if ($waitingListAccounts->count() === 0) {
             $this->line('No waiting list accounts available, skipping retention checks...');
 
@@ -588,7 +661,25 @@ class SuperSeeder extends Command
             return;
         }
 
-        Facility::factory()->count(3)->create();
+        // Create VT facilities manually since factory is not available
+        for ($i = 0; $i < 3; $i++) {
+            Facility::create([
+                'name' => fake()->company(),
+                'description' => fake()->paragraph(),
+                'can_transfer' => rand(0, 1),
+                'can_visit' => rand(0, 1),
+                'training_required' => rand(0, 1),
+                'training_team' => fake()->randomElement(['atc', 'pilot']),
+                'training_spaces' => rand(5, 20),
+                'stage_statement_enabled' => 1,
+                'stage_reference_enabled' => 1,
+                'stage_reference_quantity' => 2,
+                'stage_checks' => 0,
+                'auto_acceptance' => 0,
+                'open' => 1,
+                'public' => 1,
+            ]);
+        }
         $this->line('VT facilities seeded.');
     }
 
@@ -602,9 +693,11 @@ class SuperSeeder extends Command
         }
 
         foreach (array_slice($this->accounts, 0, 10) as $account) {
-            Application::factory()->create([
+            Application::create([
                 'account_id' => $account->id,
                 'facility_id' => $facilities->random()->id,
+                'type' => fake()->randomElement([Application::TYPE_VISIT, Application::TYPE_TRANSFER]),
+                'training_team' => fake()->randomElement(['atc', 'pilot']),
             ]);
         }
         $this->line('VT applications seeded.');
@@ -620,9 +713,11 @@ class SuperSeeder extends Command
         }
 
         foreach ($applications as $application) {
-            Reference::factory()->create([
+            Reference::create([
                 'application_id' => $application->id,
                 'account_id' => $this->accounts[array_rand($this->accounts)]->id,
+                'email' => fake()->email(),
+                'relationship' => fake()->word(),
             ]);
         }
         $this->line('VT references seeded.');
@@ -636,86 +731,175 @@ class SuperSeeder extends Command
             return;
         }
 
-        // Seed CTS members linked to accounts
-        $ctsMembers = [];
-        foreach (array_slice($this->accounts, 0, 20) as $account) {
-            $member = \App\Models\Cts\Member::factory()->create([
-                'id' => $account->id,
-                'cid' => $account->id,
-            ]);
-            $ctsMembers[] = $member;
-        }
-
-        if (empty($ctsMembers)) {
-            $this->line('No CTS members created, skipping CTS data...');
+        // Ensure CTS connection has necessary tables before attempting any operations
+        if (! $this->ctsTableExists('members') || ! $this->ctsTableExists('positions')) {
+            $this->line('CTS schema not available or missing essential tables, skipping CTS seeding...');
 
             return;
         }
 
-        // Seed CTS positions
-        $ctsPositions = \App\Models\Cts\Position::factory()->count(10)->create()->all();
-
-        // Seed CTS sessions linked to members (only if we have at least 2 members)
-        if (count($ctsMembers) >= 2) {
-            foreach (array_slice($ctsMembers, 0, min(10, count($ctsMembers))) as $index => $student) {
-                // Ensure mentor is different from student
-                $mentorIndex = ($index + 1) % count($ctsMembers);
-                $mentor = $ctsMembers[$mentorIndex];
-                \App\Models\Cts\Session::factory()->create([
-                    'student_id' => $student->id,
-                    'mentor_id' => $mentor->id,
-                    'position' => ! empty($ctsPositions) ? $ctsPositions[array_rand($ctsPositions)]->name : 'EGLL_APP',
+        // Seed CTS members linked to accounts (only if they don't already exist)
+        // Only use the first 20 accounts to avoid member proliferation
+        $ctsMembers = [];
+        foreach (array_slice($this->accounts, 0, 20) as $account) {
+            // Check if member already exists before creating
+            $member = \App\Models\Cts\Member::find($account->id);
+            if (! $member) {
+                $member = \App\Models\Cts\Member::factory()->create([
+                    'id' => $account->id,
+                    'cid' => $account->id,
                 ]);
+            }
+            $ctsMembers[] = $member;
+        }
+
+        if (empty($ctsMembers)) {
+            $this->line('No CTS members available, skipping CTS data...');
+
+            return;
+        }
+
+        // Seed CTS positions (only if they don't already exist)
+        $positionCount = \App\Models\Cts\Position::count();
+        if ($positionCount === 0) {
+            $ctsPositions = \App\Models\Cts\Position::factory()->count(10)->create()->all();
+        } else {
+            $ctsPositions = \App\Models\Cts\Position::limit(10)->get()->all();
+            $this->line("CTS positions already exist ({$positionCount} total), using existing...");
+        }
+
+        // Seed CTS sessions linked to members (only if we have at least 2 members and positions)
+        if (count($ctsMembers) >= 2 && ! empty($ctsPositions)) {
+            foreach (array_slice($ctsMembers, 0, min(10, count($ctsMembers))) as $index => $student) {
+                // Check if session already exists for this student
+                if (\App\Models\Cts\Session::where('student_id', $student->id)->doesntExist()) {
+                    try {
+                        // Ensure mentor is different from student
+                        $mentorIndex = ($index + 1) % count($ctsMembers);
+                        $mentor = $ctsMembers[$mentorIndex];
+                        $position = $ctsPositions[array_rand($ctsPositions)];
+                        \App\Models\Cts\Session::factory()->create([
+                            'student_id' => $student->id,
+                            'mentor_id' => $mentor->id,
+                            'position' => $position->name ?? $position,
+                        ]);
+                    } catch (\Exception $e) {
+                        $this->line("Warning: Could not create CTS session for member {$student->id}: {$e->getMessage()}");
+                    }
+                }
+            }
+        } elseif (count($ctsMembers) >= 2) {
+            $this->line('No CTS positions available, skipping sessions...');
+        }
+
+        // Seed CTS bookings linked to members (only if they don't already exist)
+        if (! empty($ctsPositions)) {
+            foreach (array_slice($ctsMembers, 0, 15) as $member) {
+                if (\App\Models\Cts\Booking::where('member_id', $member->id)->doesntExist()) {
+                    try {
+                        $position = $ctsPositions[array_rand($ctsPositions)];
+                        \App\Models\Cts\Booking::factory()->create([
+                            'member_id' => $member->id,
+                            'position' => $position->name ?? $position,
+                        ]);
+                    } catch (\Exception $e) {
+                        // Skip on error
+                    }
+                }
+            }
+        } else {
+            $this->line('No CTS positions available, skipping bookings...');
+        }
+
+        // Seed CTS memberships linked to members (only if they don't already exist)
+        foreach (array_slice($ctsMembers, 0, 15) as $member) {
+            if (\App\Models\Cts\Membership::where('member_id', $member->id)->doesntExist()) {
+                try {
+                    \App\Models\Cts\Membership::factory()->create([
+                        'member_id' => $member->id,
+                    ]);
+                } catch (\Exception $e) {
+                    // Skip on error
+                }
             }
         }
 
-        // Seed CTS bookings linked to members
-        foreach (array_slice($ctsMembers, 0, 15) as $member) {
-            \App\Models\Cts\Booking::factory()->create([
-                'member_id' => $member->id,
-                'position' => ! empty($ctsPositions) ? $ctsPositions[array_rand($ctsPositions)]->name : 'EGKK_APP',
-            ]);
+        // Seed exam setups (shared resources for exams, only if empty)
+        if (Schema::connection('cts')->hasTable('exam_setup') && \App\Models\Cts\ExamSetup::count() === 0) {
+            try {
+                \App\Models\Cts\ExamSetup::factory()->count(5)->create();
+            } catch (\Exception $e) {
+                $this->line("Warning: Could not create exam setups: {$e->getMessage()}");
+            }
         }
 
-        // Seed CTS memberships linked to members
-        foreach (array_slice($ctsMembers, 0, 15) as $member) {
-            \App\Models\Cts\Membership::factory()->create([
-                'member_id' => $member->id,
-            ]);
+        // Seed theory questions (shared resources, only if empty)
+        if (Schema::connection('cts')->hasTable('theory_questions') && \App\Models\Cts\TheoryQuestion::count() === 0) {
+            try {
+                \App\Models\Cts\TheoryQuestion::factory()->count(20)->create();
+            } catch (\Exception $e) {
+                $this->line("Warning: Could not create theory questions: {$e->getMessage()}");
+            }
         }
 
-        // Seed exam setups (shared resources for exams)
-        \App\Models\Cts\ExamSetup::factory()->count(5)->create();
-
-        // Seed theory questions
-        \App\Models\Cts\TheoryQuestion::factory()->count(20)->create();
-
-        // Seed theory results linked to members
-        foreach (array_slice($ctsMembers, 0, 8) as $member) {
-            \App\Models\Cts\TheoryResult::factory()->create([
-                'student_id' => $member->id,
-            ]);
+        // Seed theory results linked to members (only if they don't already exist)
+        if (Schema::connection('cts')->hasTable('theory_results')) {
+            foreach (array_slice($ctsMembers, 0, 8) as $member) {
+                if (\App\Models\Cts\TheoryResult::where('student_id', $member->id)->doesntExist()) {
+                    try {
+                        \App\Models\Cts\TheoryResult::factory()->create([
+                            'student_id' => $member->id,
+                        ]);
+                    } catch (\Exception $e) {
+                        // Skip on error
+                    }
+                }
+            }
         }
 
-        // Seed practical results linked to members
-        foreach (array_slice($ctsMembers, 0, 8) as $member) {
-            \App\Models\Cts\PracticalResult::factory()->create([
-                'student_id' => $member->id,
-            ]);
+        // Seed practical results linked to members (only if they don't already exist)
+        if (Schema::connection('cts')->hasTable('practical_results')) {
+            foreach (array_slice($ctsMembers, 0, 8) as $member) {
+                if (\App\Models\Cts\PracticalResult::where('student_id', $member->id)->doesntExist()) {
+                    try {
+                        \App\Models\Cts\PracticalResult::factory()->create([
+                            'student_id' => $member->id,
+                        ]);
+                    } catch (\Exception $e) {
+                        // Skip on error
+                    }
+                }
+            }
         }
 
-        // Seed exam bookings linked to members
-        foreach (array_slice($ctsMembers, 0, 5) as $member) {
-            \App\Models\Cts\ExamBooking::factory()->create([
-                'student_id' => $member->id,
-            ]);
+        // Seed exam bookings linked to members (only if they don't already exist)
+        if (Schema::connection('cts')->hasTable('exam_bookings')) {
+            foreach (array_slice($ctsMembers, 0, 5) as $member) {
+                if (\App\Models\Cts\ExamBooking::where('student_id', $member->id)->doesntExist()) {
+                    try {
+                        \App\Models\Cts\ExamBooking::factory()->create([
+                            'student_id' => $member->id,
+                        ]);
+                    } catch (\Exception $e) {
+                        // Skip on error
+                    }
+                }
+            }
         }
 
-        // Seed availabilities linked to members
-        foreach (array_slice($ctsMembers, 0, 10) as $member) {
-            \App\Models\Cts\Availability::factory()->create([
-                'student_id' => $member->id,
-            ]);
+        // Seed availabilities linked to members (only if they don't already exist)
+        if (Schema::connection('cts')->hasTable('availability')) {
+            foreach (array_slice($ctsMembers, 0, 10) as $member) {
+                if (\App\Models\Cts\Availability::where('student_id', $member->id)->doesntExist()) {
+                    try {
+                        \App\Models\Cts\Availability::factory()->create([
+                            'student_id' => $member->id,
+                        ]);
+                    } catch (\Exception $e) {
+                        // Skip on error
+                    }
+                }
+            }
         }
 
         $this->line('CTS data seeded with proper connections to members.');
