@@ -2,7 +2,7 @@
 
 namespace App\Filament\Training\Pages;
 
-use App\Repositories\Cts\TheoryExamResultRepository as CtsTheoryExamResultRepository;
+use App\Repositories\Cts\TheoryExamResultRepository;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Infolists\Components\Fieldset;
@@ -28,11 +28,13 @@ class TheoryExamHistory extends Page implements HasTable
 
     public static function canAccess(): bool
     {
+
         return auth()->user()->can('training.theory.access');
     }
 
     protected function buildQuestionPlaceholders($record): array
     {
+
         if (! $record) {
             return [];
         }
@@ -81,7 +83,7 @@ class TheoryExamHistory extends Page implements HasTable
 
         $typesToShow = collect($userPermissionsTruthTable)->filter(fn ($value) => $value)->keys();
 
-        $theoryExamResultRepository = app(CtsTheoryExamResultRepository::class);
+        $theoryExamResultRepository = app(TheoryExamResultRepository::class);
         $query = $theoryExamResultRepository->getTheoryExamHistoryQueryForLevels($typesToShow);
 
         return $table->query($query)->columns([
