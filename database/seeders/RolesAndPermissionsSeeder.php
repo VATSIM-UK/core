@@ -114,6 +114,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'waiting-lists.admin.atc',
             'waiting-lists.admin.pilot',
 
+            // Training Places Permissions
+            'training-places.view.*',
+
             // // Feedback System Permissions
             'feedback.access',
             'feedback.view-submitter',
