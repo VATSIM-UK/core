@@ -645,23 +645,25 @@ class SuperSeeder extends Command
         // Seed CTS positions
         $ctsPositions = \App\Models\Cts\Position::factory()->count(10)->create()->all();
 
-        // Seed CTS sessions linked to members
-        foreach (array_slice($ctsMembers, 0, 10) as $index => $student) {
-            // Ensure mentor is different from student
-            $mentorIndex = ($index + 1) % count($ctsMembers);
-            $mentor = $ctsMembers[$mentorIndex];
-            \App\Models\Cts\Session::factory()->create([
-                'student_id' => $student->id,
-                'mentor_id' => $mentor->id,
-                'position' => $ctsPositions[array_rand($ctsPositions)]->name ?? 'EGLL_APP',
-            ]);
+        // Seed CTS sessions linked to members (only if we have at least 2 members)
+        if (count($ctsMembers) >= 2) {
+            foreach (array_slice($ctsMembers, 0, min(10, count($ctsMembers))) as $index => $student) {
+                // Ensure mentor is different from student
+                $mentorIndex = ($index + 1) % count($ctsMembers);
+                $mentor = $ctsMembers[$mentorIndex];
+                \App\Models\Cts\Session::factory()->create([
+                    'student_id' => $student->id,
+                    'mentor_id' => $mentor->id,
+                    'position' => ! empty($ctsPositions) ? $ctsPositions[array_rand($ctsPositions)]->name : 'EGLL_APP',
+                ]);
+            }
         }
 
         // Seed CTS bookings linked to members
         foreach (array_slice($ctsMembers, 0, 15) as $member) {
             \App\Models\Cts\Booking::factory()->create([
                 'member_id' => $member->id,
-                'position' => $ctsPositions[array_rand($ctsPositions)]->name ?? 'EGKK_APP',
+                'position' => ! empty($ctsPositions) ? $ctsPositions[array_rand($ctsPositions)]->name : 'EGKK_APP',
             ]);
         }
 
