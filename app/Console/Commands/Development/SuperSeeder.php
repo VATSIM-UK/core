@@ -5,7 +5,6 @@ namespace App\Console\Commands\Development;
 use App\Models\Airport;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
-use App\Models\Cts;
 use App\Models\Mship\Account;
 use App\Models\Mship\Ban\Reason as BanReason;
 use App\Models\Mship\Feedback\Answer;
@@ -29,7 +28,7 @@ class SuperSeeder extends Command
 {
     protected $signature = 'db:super-seed {--tables=* : Specific tables to seed}';
 
-    protected $description = 'Seeds all the table with realistic-looking data for development purposes.';
+    protected $description = 'Seeds all tables with realistic-looking data for development purposes.';
 
     private array $accounts = [];
 
