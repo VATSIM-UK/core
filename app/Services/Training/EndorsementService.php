@@ -23,6 +23,30 @@ class EndorsementService
         ]);
     }
 
+    public static function createTemporary(Endorseable $endorsable, Account $account, Account $creator, int $days)
+    {
+        return Endorsement::create([
+            'account_id' => $account->id,
+            'created_by' => $creator->id,
+            'endorsable_type' => $endorsable::class,
+            'endorsable_id' => $endorsable->id,
+            'expires_at' => now()->addDays($days),
+            'endorsement_request_id' => null,
+        ]);
+    }
+
+    public static function hasActiveSoloEndorsement(Position $position, Account $account): bool
+    {
+        return $account
+            ->endorsements()
+            ->where('expires_at', '>=', now())
+            ->whereHasMorph('endorsable',
+                Position::class,
+                fn ($query) => $query->where('id', $position->id)
+            )
+            ->exists();
+    }
+
     public static function getSoloEndorsementsForTrainingPlace(TrainingPlace $trainingPlace): Builder
     {
         return Endorsement::query()
