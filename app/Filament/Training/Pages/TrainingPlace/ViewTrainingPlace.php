@@ -89,12 +89,12 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                     TextInput::make('student_name')
                         ->label('Student Name')
                         ->default(fn () => $this->trainingPlace->waitingListAccount->account->name)
-                        ->disabled()
+                        ->readOnly()
                         ->dehydrated(false),
                     TextInput::make('student_cid')
                         ->label('Student CID')
                         ->default(fn () => $this->trainingPlace->waitingListAccount->account->id)
-                        ->disabled()
+                        ->readOnly()
                         ->dehydrated(false),
                 ])
                 ->action(fn (array $data) => $this->forwardForExam($data['position_id']))
