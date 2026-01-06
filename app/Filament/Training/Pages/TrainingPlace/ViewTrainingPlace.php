@@ -143,15 +143,6 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
 
             /** @var \App\Models\Mship\Account|null $user */
             $user = Auth::user();
-            if (! $user) {
-                Notification::make()
-                    ->title('Error')
-                    ->danger()
-                    ->body('Unable to determine current user.')
-                    ->send();
-
-                return;
-            }
 
             // Create the exam setup record
             $setup = ExamSetup::create([
