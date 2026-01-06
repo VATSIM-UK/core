@@ -4,6 +4,7 @@ namespace Tests\Feature\TrainingPanel\TrainingPlace;
 
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Models\Atc\Position;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
@@ -13,6 +14,7 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
@@ -284,6 +286,125 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
             ->assertSee('Mentoring session history');
+    }
+
+    #[Test]
+    public function it_shows_forward_for_exam_action_when_user_has_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSeeHtml('Forward for Practical Exam');
+    }
+
+    #[Test]
+    public function it_does_not_show_forward_for_exam_action_without_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->revokePermissionTo('training.exams.setup');
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertDontSeeHtml('Forward for Practical Exam');
+    }
+
+    #[Test]
+    public function it_disables_forward_for_exam_action_when_member_has_pending_exam()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        // Create a pending exam booking for the student
+        ExamBooking::factory()->create([
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+        ]);
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertActionDisabled('forwardForExam');
+    }
+
+    #[Test]
+    public function it_enables_forward_for_exam_action_when_member_has_no_pending_exam()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertActionEnabled('forwardForExam');
+    }
+
+    #[Test]
+    public function it_can_forward_member_for_exam()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        $position = Position::factory()->create([
+            'callsign' => 'EGKK_TWR',
+            'type' => Position::TYPE_TOWER,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->callAction('forwardForExam', data: ['position_id' => $position->id])
+            ->assertNotified();
+    }
+
+    #[Test]
+    public function it_shows_error_when_member_lacks_atc_qualification()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        // Remove ATC qualification from the member's account
+        $trainingPlace->waitingListAccount->account->update(['qualification_atc' => 0]);
+
+        $position = Position::factory()->create([
+            'callsign' => 'EGKK_TWR',
+            'type' => Position::TYPE_TOWER,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->callAction('forwardForExam', data: ['position_id' => $position->id])
+            ->assertNotified();
+    }
+
+    #[Test]
+    public function it_shows_tooltip_with_pending_exam_message()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        // Create a pending exam booking
+        ExamBooking::factory()->create([
+            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+        ]);
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertActionHasIcon('forwardForExam', 'heroicon-o-arrow-right');
+    }
+
+    #[Test]
+    public function it_displays_student_details_in_forward_form()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSee($trainingPlace->waitingListAccount->account->name)
+            ->assertSee((string) $trainingPlace->waitingListAccount->account->id);
     }
 
     /**
