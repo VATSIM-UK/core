@@ -21,12 +21,13 @@ class ExamForwardingServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new ExamForwardingService();
+        $this->service = new ExamForwardingService;
     }
 
     private function createTestMember(): Member
     {
         $account = Account::factory()->withQualification()->create();
+
         return Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
     }
 
