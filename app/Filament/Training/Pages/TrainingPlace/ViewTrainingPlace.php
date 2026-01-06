@@ -5,11 +5,10 @@ namespace App\Filament\Training\Pages\TrainingPlace;
 use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
 use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
-use App\Models\Cts\ExamSetup;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
-use Carbon\Carbon;
+use App\Services\Training\ExamForwardingService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -144,34 +143,9 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             /** @var \App\Models\Mship\Account|null $user */
             $user = Auth::user();
 
-            // Create the exam setup record
-            $setup = ExamSetup::create([
-                'rts_id' => $position->rts,
-                'student_id' => $ctsMember->id,
-                'position_1' => $position->callsign,
-                'position_2' => null,
-                'exam' => $position->examLevel,
-                'setup_by' => $user->id,
-                'setup_date' => Carbon::now()->format('Y-m-d H:i:s'),
-                'response' => 1,
-                'dealt_by' => $user->id,
-                'dealt_date' => Carbon::now()->format('Y-m-d H:i:s'),
-            ]);
-
-            // Create the exam booking record
-            $examBooking = ExamBooking::create([
-                'rts_id' => $position->rts,
-                'student_id' => $ctsMember->id,
-                'student_rating' => $ctsMember->account->qualification_atc->vatsim,
-                'position_1' => $position->callsign,
-                'position_2' => null,
-                'exam' => $position->examLevel,
-            ]);
-
-            // Link the exam setup to the booking
-            $setup->update([
-                'bookid' => $examBooking->id,
-            ]);
+            // Use the service to forward for exam
+            $service = new ExamForwardingService;
+            $service->forwardForExam($ctsMember, $position, $user->id);
 
             Notification::make()
                 ->title('Success')

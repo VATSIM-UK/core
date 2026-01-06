@@ -3,20 +3,17 @@
 namespace App\Filament\Training\Pages\Exam;
 
 use App\Models\Atc\Position;
-use App\Models\Cts\ExamBooking;
-use App\Models\Cts\ExamSetup as ExamSetupModel;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Repositories\Cts\SessionRepository;
-use Carbon\Carbon;
+use App\Services\Training\ExamForwardingService;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -67,37 +64,9 @@ class ExamSetup extends Page implements HasForms
 
         $ctsMember = Member::where('id', $validated['data']['student'])->first();
 
-        $setup = ExamSetupModel::create([
-            'rts_id' => $position->rts,
-            'student_id' => $ctsMember->id,
-            'position_1' => $position->callsign,
-            'position_2' => null,
-            'exam' => $position->examLevel,
-            'setup_by' => Auth::user()->id,
-            'setup_date' => Carbon::now()->format('Y-m-d H:i:s'),
-            'response' => 1,
-            'dealt_by' => Auth::user()->id,
-            'dealt_date' => Carbon::now()->format('Y-m-d H:i:s'),
-        ]);
-
-        $examBooking = ExamBooking::create([
-            'rts_id' => $position->rts,
-            'student_id' => $ctsMember->id,
-            'student_rating' => $ctsMember->account->qualification_atc->vatsim,
-            'position_1' => $position->callsign,
-            'position_2' => null,
-            'exam' => $position->examLevel,
-        ]);
-
-        $setup->update([
-            'bookid' => $examBooking->id,
-        ]);
-
-        Notification::make()
-            ->title('Exam Setup')
-            ->success()
-            ->body('Exam setup for '.$position->callsign.' has been created.')
-            ->send();
+        $service = new ExamForwardingService;
+        $service->forwardForExam($ctsMember, $position, Auth::user()->id);
+        $service->notifySuccess($position->callsign);
 
         return redirect()->route('filament.training.pages.exam-setup');
     }
@@ -114,32 +83,9 @@ class ExamSetup extends Page implements HasForms
 
         $ctsMember = Member::where('id', $this->dataOBS['student_obs'])->first();
 
-        $setup = ExamSetupModel::create([
-            'rts_id' => 14, // hard coded for OBS
-            'student_id' => $ctsMember->id,
-            'position_1' => $position->callsign,
-            'position_2' => null,
-            'exam' => 'OBS',
-        ]);
-
-        $examBooking = ExamBooking::create([
-            'rts_id' => 14, // hard coded for OBS
-            'student_id' => $ctsMember->id,
-            'student_rating' => $ctsMember->account->qualification_atc->vatsim,
-            'position_1' => $position->callsign,
-            'position_2' => null,
-            'exam' => 'OBS',
-        ]);
-
-        $setup->update([
-            'bookid' => $examBooking->id,
-        ]);
-
-        Notification::make()
-            ->title('Exam Setup')
-            ->success()
-            ->body('Exam setup for '.$position->callsign.' has been created.')
-            ->send();
+        $service = new ExamForwardingService;
+        $service->forwardForObsExam($ctsMember, $position);
+        $service->notifySuccess($position->callsign);
 
         return redirect()->route('filament.training.pages.exam-setup');
     }
