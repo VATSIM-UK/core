@@ -9,6 +9,8 @@ use Filament\Tables\Table;
 use Filament\Forms;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Mship\Qualification;
+use Carbon\CarbonImmutable;
+use Filament\Notifications\Notification;
 
 class QualificationsRelationManager extends RelationManager
 {
@@ -21,7 +23,7 @@ class QualificationsRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code'),
-                Tables\Columns\TextColumn::make('name_long')->label('Name'),
+                Tables\Columns\TextColumn::make('name_long')->label( 'Name'),
                 Tables\Columns\TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at)->label('Awarded')->sortable(),
             ])
             ->filters([
@@ -42,7 +44,51 @@ class QualificationsRelationManager extends RelationManager
                             Forms\Components\Placeholder::make('warning_admin_rating')
                                 ->label('')
                                 ->content('Warning: This member does not currently have an administrative rating.')
-                                ->visible(fn () => ! $hasAdminRating),];
+                                ->visible(fn () => ! $hasAdminRating),
+
+                            Forms\Components\TextInput::make('next_qualification')
+                                ->label('Next rating')
+                                ->disabled()
+                                ->dehydrated(false)
+                                ->default(fn () => $nextRating->name_long),
+
+                            Forms\Components\DatePicker::make('awarded_on')
+                                ->label('Awarded date')
+                                ->default(now()->toDateString())
+                                ->maxDate(now())
+                                ->required(),
+                            ];
+                    })
+                    ->action(function (array $data): void {
+                        $account = $this->getOwnerRecord();
+
+                        $qualificationId = $this->getNextAtcQualification($account)->id;
+                        // error handling for no id goes here
+
+                        $qualification = Qualification::query()->findOrFail($qualificationId);
+
+                        $awardedOn = CarbonImmutable::parse($data['awarded_on'])->startOfDay();
+                        $account->addQualification($qualification);
+                        $account->qualifications()->updateExistingPivot($qualification->getKey(), [
+                            'created_at' => $awardedOn,
+                            'updated_at' => $awardedOn,
+                        ]);
+
+                        $account->addNote(
+                            'training',
+                            sprintf(
+                                'Manual ATC rating upgrade processed in VATSIM UK systems: assigned %s with awarded date %s.',
+                                $qualification->name_long,
+                                $awardedOn->toDateString(),
+                            ),
+                            Auth::id(),
+                        );
+
+                        Notification::make()
+                            ->title('ATC rating upgrade processed')
+                            ->body("Assigned {$qualification->name_long}")
+                            ->success()
+                            ->send();
                     })
             ]);
     }
