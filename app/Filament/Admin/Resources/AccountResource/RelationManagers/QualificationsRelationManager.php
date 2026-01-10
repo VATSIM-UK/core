@@ -37,6 +37,7 @@ class QualificationsRelationManager extends RelationManager
                     ->modalDescription('This only updates the member’s rating within VATSIM UK systems and does not sync to VATSIM.net.')
                     ->form(function (): array {
                         $account = $this->getOwnerRecord();
+
                         $nextRating = $this->getNextAtcQualification($account);
                         $hasAdminRating = $this->accountHasAdministrativeRating($account);
 
@@ -50,7 +51,7 @@ class QualificationsRelationManager extends RelationManager
                                 ->label('Next rating')
                                 ->disabled()
                                 ->dehydrated(false)
-                                ->default(fn () => $nextRating->name_long),
+                                ->default(fn () => $nextRating->name_long ?? "No ATC rating upgrade is available. This account already holds the highest ATC rating."),
 
                             Forms\Components\DatePicker::make('awarded_on')
                                 ->label('Awarded date')
@@ -62,8 +63,16 @@ class QualificationsRelationManager extends RelationManager
                     ->action(function (array $data): void {
                         $account = $this->getOwnerRecord();
 
-                        $qualificationId = $this->getNextAtcQualification($account)->id;
-                        // error handling for no id goes here
+                        $qualificationId = $this->getNextAtcQualification($account)->id ?? null;
+
+                        if (! $qualificationId) {
+                            Notification::make()
+                                ->title('No rating to assign')
+                                ->body('This account already holds the highest ATC rating available.')
+                                ->warning()
+                                ->send();
+                            return;
+                        }
 
                         $qualification = Qualification::query()->findOrFail($qualificationId);
 
