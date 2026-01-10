@@ -3,10 +3,7 @@ name: Tests
 on:
   push:
     branches:
-      - '*'
-      - '**'
-    tags-ignore:
-      - v*
+      - main
   pull_request:
 
 jobs:
