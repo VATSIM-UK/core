@@ -17,6 +17,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
+use App\Services\Training\ExamAnnouncementService;
 
 class AcceptedExamsTable extends Component implements HasForms, HasTable
 {
@@ -57,16 +58,10 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                     ->icon('heroicon-o-megaphone')
                     ->color('info')
                     ->visible(function (ExamBooking $examBooking): bool {
-                        if ($examBooking->finished == ExamBooking::FINISHED_FLAG) {
-                            return false;
-                        }
-
-                       // use CTS member ID rather than Core acocunt ID.
+                        // use CTS member ID rather than Core acocunt ID.
                         $memberId = auth()->user()->member->id;
 
-                        $examiners = $examBooking->examiners;
-
-                        return $examiners->senior === $memberId || $examiners->other === $memberId || $examiners->trainee === $memberId;
+                        return app(ExamAnnouncementService::class)->canPostAnnouncement($examBooking, $memberId);
                     })
                     ->form([
                         Checkbox::make('ping_exam_pilot')
@@ -86,36 +81,8 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                     ])
                     ->requiresConfirmation()
                     ->action(function (ExamBooking $examBooking, array $data): void {
-                        $channelId = config('training.discord.exam_announce_channel_id');
-
-                        $startUtc = CarbonImmutable::parse($examBooking->start_date)->utc();
-                        $unix = $startUtc->getTimestamp();
-
-                        $position = $examBooking->position_1;
-                        $level = $examBooking->exam;
-
-                        $pilotRoleId = config('training.discord.exam_pilot_role_id');
-                        $controllerRoleId = config('training.discord.exam_controller_role_id');
-
-                        $mentions = collect([
-                            ! empty($data['ping_exam_pilot']) && filled($pilotRoleId) ? "<@&{$pilotRoleId}>" : null,
-                            ! empty($data['ping_exam_controller']) && filled($controllerRoleId) ? "<@&{$controllerRoleId}>" : null,
-                        ])->filter()->implode(' ');
-
-                        $notes = trim($data['notes'] ?? '');
-                        $notesBlock = $notes !== '' ? "\n\n**Notes:**\n{$notes}" : '';
-
-                        $message = ($mentions ? $mentions."\n" : '').
-                            "**Upcoming {$level} Exam**\n".
-                            "There will be an exam on **{$position}** on **<t:{$unix}:F>** (<t:{$unix}:R>)".
-                            $notesBlock;
-
                         try {
-                            $discord = new Discord;
-
-                            $discord->sendMessageToChannel($channelId, [
-                                'content' => $message,
-                            ]);
+                            app(ExamAnnouncementService::class)->postAnnouncement($examBooking, $data);
 
                             Notification::make()
                                 ->title('Discord notification sent')
