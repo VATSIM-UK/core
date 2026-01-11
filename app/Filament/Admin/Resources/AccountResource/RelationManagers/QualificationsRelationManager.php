@@ -24,7 +24,7 @@ class QualificationsRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code'),
-                Tables\Columns\TextColumn::make('name_long')->label( 'Name'),
+                Tables\Columns\TextColumn::make('name_long')->label('Name'),
                 Tables\Columns\TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at)->label('Awarded')->sortable(),
             ])
             ->filters([

@@ -38,7 +38,7 @@ class ManualAtcUpgradeServiceTest extends TestCase
         $account = Account::factory()->create();
 
         $obs = $this->qualByCode('OBS');
-        $s1  = $this->qualByCode('S1');
+        $s1 = $this->qualByCode('S1');
 
         // Give the account OBS, so next should be S1
         $account->addQualification($obs);
@@ -53,7 +53,7 @@ class ManualAtcUpgradeServiceTest extends TestCase
     public function it_awards_next_atc_rating_and_sets_awarded_date_on_mship_account_qualification_pivot()
     {
         $account = Account::factory()->create();
-        $writer  = Account::factory()->create();
+        $writer = Account::factory()->create();
 
         $obs = $this->qualByCode('OBS');
         $awardedOn = CarbonImmutable::parse('2026-01-01')->startOfDay();
@@ -75,7 +75,7 @@ class ManualAtcUpgradeServiceTest extends TestCase
     public function it_returns_null_when_no_next_atc_rating_exists()
     {
         $account = Account::factory()->create();
-        $writer  = Account::factory()->create();
+        $writer = Account::factory()->create();
 
         $obs = $this->qualByCode('C3');
 
