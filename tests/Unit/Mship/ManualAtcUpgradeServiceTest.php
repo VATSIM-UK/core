@@ -64,6 +64,8 @@ class ManualAtcUpgradeServiceTest extends TestCase
             'created_at' => $awardedOn->toDateTimeString(),
             'updated_at' => $awardedOn->toDateTimeString(),
         ]);
+
+        $this->assertTrue($account->qualifications_atc->contains('id', $obs->id));
     }
 
     #[Test]
