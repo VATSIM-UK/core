@@ -3,14 +3,14 @@
 namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
 use App\Enums\QualificationTypeEnum;
+use App\Models\Mship\Qualification;
+use Carbon\CarbonImmutable;
+use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Mship\Qualification;
-use Carbon\CarbonImmutable;
-use Filament\Notifications\Notification;
 
 class QualificationsRelationManager extends RelationManager
 {
@@ -51,14 +51,14 @@ class QualificationsRelationManager extends RelationManager
                                 ->label('Next rating')
                                 ->disabled()
                                 ->dehydrated(false)
-                                ->default(fn () => $nextRating->name_long ?? "No ATC rating upgrade is available. This account already holds the highest ATC rating."),
+                                ->default(fn () => $nextRating->name_long ?? 'No ATC rating upgrade is available. This account already holds the highest ATC rating.'),
 
                             Forms\Components\DatePicker::make('awarded_on')
                                 ->label('Awarded date')
                                 ->default(now()->toDateString())
                                 ->maxDate(now())
                                 ->required(),
-                            ];
+                        ];
                     })
                     ->action(function (array $data): void {
                         $account = $this->getOwnerRecord();
@@ -71,6 +71,7 @@ class QualificationsRelationManager extends RelationManager
                                 ->body('This account already holds the highest ATC rating available.')
                                 ->warning()
                                 ->send();
+
                             return;
                         }
 
@@ -98,7 +99,7 @@ class QualificationsRelationManager extends RelationManager
                             ->body("Assigned {$qualification->name_long}")
                             ->success()
                             ->send();
-                    })
+                    }),
             ]);
     }
 
