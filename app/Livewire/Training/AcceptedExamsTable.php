@@ -61,6 +61,7 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                             return false;
                         }
 
+                       // use CTS member ID rather than Core acocunt ID.
                         $memberId = auth()->user()->member->id;
 
                         $examiners = $examBooking->examiners;
