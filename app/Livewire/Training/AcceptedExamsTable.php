@@ -4,6 +4,7 @@ namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\Action;
@@ -12,6 +13,10 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
+use Carbon\CarbonImmutable;
+use Filament\Notifications\Notification;
+
+use App\Libraries\Discord;
 
 class AcceptedExamsTable extends Component implements HasForms, HasTable
 {
@@ -47,6 +52,72 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                 Action::make('Conduct')
                     ->url(fn (ExamBooking $exam): string => ConductExam::getUrl(['examId' => $exam->id]))
                     ->visible(fn (ExamBooking $examBooking) => $examBooking->finished != ExamBooking::FINISHED_FLAG),
+                Action::make('postExamAnnouncement')
+                    ->label("Post Exam Announcement")
+                    ->icon('heroicon-o-megaphone')
+                    ->color('info')
+                    ->visible(function (ExamBooking $examBooking): bool {
+                        if ($examBooking->finished == ExamBooking::FINISHED_FLAG) {
+                            return false;
+                        }
+
+                        $memberId = auth()->user()->member->id;
+
+                        $examiners = $examBooking->examiners;
+
+                        return $examiners->senior === $memberId || $examiners->other === $memberId || $examiners->trainee ?? 0 === $memberId;
+                    })
+                    ->form([
+                        Textarea::make('notes')
+                            ->label('Additional notes')
+                            ->placeholder('Optional: additional notes')
+                            ->rows(4)
+                            ->maxLength(1000),
+                            
+                    ])
+                    ->requiresConfirmation()
+                    ->action(function (ExamBooking $examBooking, array $data): void {
+                        $channelId = config('training.discord.exam_announce_channel_id');
+                        $roleId    = config('training.discord.exam_announce_role_id');
+                        $mention   = config('training.discord.exam_announce_mention_role');
+
+                        $startUtc = CarbonImmutable::parse($examBooking->start_date)->utc();
+                        $unix = $startUtc->getTimestamp();
+
+                        $position = $examBooking->position_1;
+                        $level = $examBooking->exam;
+                        $roleMention = ($mention && filled($roleId)) ? "<@&{$roleId}> " : '';
+
+                        $notes = trim((string)($data['notes'] ?? ''));
+                        $notesBlock = $notes !== '' ? "\n\n**Notes:**\n{$notes}" : '';
+                        
+                        $message =
+                            $roleMention .
+                            "**Upcoming {$level} Exam**\n" .
+                            "**Position:** {$position}\n" .
+                            "**Time:** <t:{$unix}:F> (<t:{$unix}:R>)\n" .
+                            $notesBlock;
+
+                        try {
+                            $discord = new Discord();
+
+                            $discord->sendMessageToChannel($channelId, [
+                                'content' => $message,
+                            ]);
+
+                            Notification::make()
+                                ->title('Discord notification sent')
+                                ->success()
+                                ->send();
+
+                            } catch (\Throwable $e) {
+                            Notification::make()
+                                ->title('Failed to post to Discord')
+                                ->danger()
+                                ->send();
+                        }
+
+                        }),
             ]);
     }
 

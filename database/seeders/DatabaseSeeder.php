@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Testing\CtsExamSeeder;
+use Database\Seeders\Testing\PositionsAndEndorsementsSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,6 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(RolesAndPermissionsSeeder::class);
+        // $this->call(RolesAndPermissionsSeeder::class);
+        $this->call(CtsExamSeeder::class);
+        $this->call(PositionsAndEndorsementsSeeder::class);
     }
 }
