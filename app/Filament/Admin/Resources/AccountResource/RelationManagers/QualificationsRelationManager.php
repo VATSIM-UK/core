@@ -11,6 +11,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Training\ManualAtcUpgradeService;
 
 class QualificationsRelationManager extends RelationManager
 {
@@ -62,29 +63,18 @@ class QualificationsRelationManager extends RelationManager
                     })
                     ->action(function (array $data): void {
                         $account = $this->getOwnerRecord();
+                        $awardedOn = CarbonImmutable::parse($data['awarded_on'])->startOfDay();
 
-                        $qualificationId = $this->getNextAtcQualification($account)->id ?? null;
+                        $qualification = ManualAtcUpgradeService::awardNextAtcQualification($account, $awardedOn, Auth::id());
 
-                        if (! $qualificationId) {
+                        if (! $qualification) {
                             Notification::make()
                                 ->title('No rating to assign')
                                 ->body('This account already holds the highest ATC rating available.')
                                 ->warning()
                                 ->send();
-
                             return;
                         }
-
-                        $qualification = Qualification::query()->findOrFail($qualificationId);
-
-                        $awardedOn = CarbonImmutable::parse($data['awarded_on'])->startOfDay();
-                        $account->addQualification($qualification);
-                        $account->qualifications()->updateExistingPivot($qualification->getKey(), [
-                            'created_at' => $awardedOn,
-                            'updated_at' => $awardedOn,
-                        ]);
-
-                        $account->addNote('training', sprintf( 'Manual ATC rating upgrade processed in VATSIM UK systems: assigned %s with awarded date %s.', $qualification->name_long, $awardedOn->toDateString(),),Auth::id(),);
 
                         Notification::make()
                             ->title('ATC rating upgrade processed')
