@@ -3,21 +3,20 @@
 namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Exam\ConductExam;
+use App\Libraries\Discord;
 use App\Models\Cts\ExamBooking;
+use Carbon\CarbonImmutable;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
-use Carbon\CarbonImmutable;
-use Filament\Notifications\Notification;
-
-use App\Libraries\Discord;
 
 class AcceptedExamsTable extends Component implements HasForms, HasTable
 {
@@ -54,7 +53,7 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                     ->url(fn (ExamBooking $exam): string => ConductExam::getUrl(['examId' => $exam->id]))
                     ->visible(fn (ExamBooking $examBooking) => $examBooking->finished != ExamBooking::FINISHED_FLAG),
                 Action::make('postExamAnnouncement')
-                    ->label("Post Exam Announcement")
+                    ->label('Post Exam Announcement')
                     ->icon('heroicon-o-megaphone')
                     ->color('info')
                     ->visible(function (ExamBooking $examBooking): bool {
@@ -82,7 +81,7 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                             ->placeholder('Optional: additional notes')
                             ->rows(4)
                             ->maxLength(1000),
-                            
+
                     ])
                     ->requiresConfirmation()
                     ->action(function (ExamBooking $examBooking, array $data): void {
@@ -98,23 +97,20 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                         $controllerRoleId = config('training.discord.exam_controller_role_id');
 
                         $mentions = collect([
-                            !empty($data['ping_exam_pilot']) && filled($pilotRoleId) ? "<@&{$pilotRoleId}>" : null,
-                            !empty($data['ping_exam_controller']) && filled($controllerRoleId) ? "<@&{$controllerRoleId}>" : null,
+                            ! empty($data['ping_exam_pilot']) && filled($pilotRoleId) ? "<@&{$pilotRoleId}>" : null,
+                            ! empty($data['ping_exam_controller']) && filled($controllerRoleId) ? "<@&{$controllerRoleId}>" : null,
                         ])->filter()->implode(' ');
 
-
-                        $notes = trim((string)($data['notes'] ?? ''));
+                        $notes = trim($data['notes'] ?? '');
                         $notesBlock = $notes !== '' ? "\n\n**Notes:**\n{$notes}" : '';
-                        
-                        $message =
-                            ($mentions ? $mentions . "\n" : '') .
-                            "**Upcoming {$level} Exam**\n" .
-                            "There will be an exam on **{$position}** on **<t:{$unix}:F>** (<t:{$unix}:R>)" .
+
+                        $message = ($mentions ? $mentions."\n" : '').
+                            "**Upcoming {$level} Exam**\n".
+                            "There will be an exam on **{$position}** on **<t:{$unix}:F>** (<t:{$unix}:R>)".
                             $notesBlock;
 
-                        dd($message);
                         try {
-                            $discord = new Discord();
+                            $discord = new Discord;
 
                             $discord->sendMessageToChannel($channelId, [
                                 'content' => $message,
@@ -125,14 +121,14 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                                 ->success()
                                 ->send();
 
-                            } catch (\Throwable $e) {
+                        } catch (\Throwable $e) {
                             Notification::make()
                                 ->title('Failed to post to Discord')
                                 ->danger()
                                 ->send();
                         }
 
-                        }),
+                    }),
             ]);
     }
 
