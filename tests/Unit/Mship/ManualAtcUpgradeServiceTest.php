@@ -14,17 +14,12 @@ class ManualAtcUpgradeServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private function qualByCode(string $code): Qualification
-    {
-        return Qualification::query()->where('code', $code)->firstOrFail();
-    }
-
     #[Test]
     public function it_returns_obs_as_next_atc_rating_when_user_has_no_atc_quals()
     {
         $account = Account::factory()->create();
 
-        $obs = $this->qualByCode('OBS');
+        $obs = Qualification::code('OBS')->first();
 
         $next = ManualAtcUpgradeService::getNextAtcQualification($account);
 
@@ -37,8 +32,8 @@ class ManualAtcUpgradeServiceTest extends TestCase
     {
         $account = Account::factory()->create();
 
-        $obs = $this->qualByCode('OBS');
-        $s1 = $this->qualByCode('S1');
+        $obs = Qualification::code('OBS')->first();
+        $s1 = Qualification::code('S1')->first();
 
         // Give the account OBS, so next should be S1
         $account->addQualification($obs);
@@ -55,7 +50,7 @@ class ManualAtcUpgradeServiceTest extends TestCase
         $account = Account::factory()->create();
         $writer = Account::factory()->create();
 
-        $obs = $this->qualByCode('OBS');
+        $obs = Qualification::code('OBS')->first();
         $awardedOn = CarbonImmutable::parse('2026-01-01')->startOfDay();
 
         $awarded = ManualAtcUpgradeService::awardNextAtcQualification($account, $awardedOn, $writer->id);
@@ -77,7 +72,7 @@ class ManualAtcUpgradeServiceTest extends TestCase
         $account = Account::factory()->create();
         $writer = Account::factory()->create();
 
-        $obs = $this->qualByCode('C3');
+        $obs = Qualification::code('C3')->first();
 
         // Give account C3 so there is no higher controller rating
         $account->addQualification($obs);
@@ -96,7 +91,7 @@ class ManualAtcUpgradeServiceTest extends TestCase
         $this->assertFalse(ManualAtcUpgradeService::hasAdministrativeRating($account));
 
         // Give account I1 so we can test if it detects an admininstative rating
-        $I1 = $this->qualByCode('I1');
+        $I1 = Qualification::code('I1')->first();
         $account->addQualification($I1);
 
         $this->assertTrue(ManualAtcUpgradeService::hasAdministrativeRating($account));
