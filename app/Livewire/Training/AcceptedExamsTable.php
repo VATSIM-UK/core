@@ -4,6 +4,7 @@ namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -65,9 +66,17 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
 
                         $examiners = $examBooking->examiners;
 
-                        return $examiners->senior === $memberId || $examiners->other === $memberId || $examiners->trainee ?? 0 === $memberId;
+                        return $examiners->senior === $memberId || $examiners->other === $memberId || $examiners->trainee === $memberId;
                     })
                     ->form([
+                        Checkbox::make('ping_exam_pilot')
+                            ->label('Ping: Exam Pilot')
+                            ->default(true),
+
+                        Checkbox::make('ping_exam_controller')
+                            ->label('Ping: Exam Controller')
+                            ->default(false),
+
                         Textarea::make('notes')
                             ->label('Additional notes')
                             ->placeholder('Optional: additional notes')
@@ -86,13 +95,21 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
 
                         $position = $examBooking->position_1;
                         $level = $examBooking->exam;
-                        $roleMention = ($mention && filled($roleId)) ? "<@&{$roleId}> " : '';
+
+                        $pilotRoleId = config('training.discord.exam_pilot_role_id');
+                        $controllerRoleId = config('training.discord.exam_controller_role_id');
+
+                        $mentions = collect([
+                            !empty($data['ping_exam_pilot']) && filled($pilotRoleId) ? "<@&{$pilotRoleId}>" : null,
+                            !empty($data['ping_exam_controller']) && filled($controllerRoleId) ? "<@&{$controllerRoleId}>" : null,
+                        ])->filter()->implode(' ');
+
 
                         $notes = trim((string)($data['notes'] ?? ''));
                         $notesBlock = $notes !== '' ? "\n\n**Notes:**\n{$notes}" : '';
                         
                         $message =
-                            $roleMention .
+                            ($mentions ? $mentions . "\n" : '') .
                             "**Upcoming {$level} Exam**\n" .
                             "**Position:** {$position}\n" .
                             "**Time:** <t:{$unix}:F> (<t:{$unix}:R>)\n" .
