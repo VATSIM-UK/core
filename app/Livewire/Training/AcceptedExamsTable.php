@@ -109,10 +109,10 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                         $message =
                             ($mentions ? $mentions . "\n" : '') .
                             "**Upcoming {$level} Exam**\n" .
-                            "**Position:** {$position}\n" .
-                            "**Time:** <t:{$unix}:F> (<t:{$unix}:R>)" .
+                            "There will be an exam on **{$position}** on **<t:{$unix}:F>** (<t:{$unix}:R>)" .
                             $notesBlock;
 
+                        dd($message);
                         try {
                             $discord = new Discord();
 
