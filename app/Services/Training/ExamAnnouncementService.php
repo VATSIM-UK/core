@@ -27,8 +27,6 @@ class ExamAnnouncementService
 
         $message = $this->buildMessage($examBooking, $data);
 
-        dd($message);
-
         $this->discord->sendMessageToChannel($channelId, [
             'content' => $message,
         ]);
