@@ -42,10 +42,10 @@ class ExamAnnouncementService
         $notes = trim($data['notes'] ?? '');
         $notesBlock = $notes !== '' ? "\n\n**Notes:**\n{$notes}" : '';
 
-        return ($mentions !== '' ? $mentions . "\n" : '')
-            . "**Upcoming {$examBooking->exam} Exam**\n"
-            . "There will be an exam on **{$examBooking->position_1}** on **<t:{$unix}:F>** (<t:{$unix}:R>)"
-            . $notesBlock;
+        return ($mentions !== '' ? $mentions."\n" : '')
+            ."**Upcoming {$examBooking->exam} Exam**\n"
+            ."There will be an exam on **{$examBooking->position_1}** on **<t:{$unix}:F>** (<t:{$unix}:R>)"
+            .$notesBlock;
     }
 
     private function buildMentions(array $data): string
@@ -53,8 +53,8 @@ class ExamAnnouncementService
         $pilotRoleId = config('training.discord.exam_pilot_role_id');
         $controllerRoleId = config('training.discord.exam_controller_role_id');
 
-        $pingPilot = !empty($data['ping_exam_pilot']);
-        $pingController = !empty($data['ping_exam_controller']);
+        $pingPilot = ! empty($data['ping_exam_pilot']);
+        $pingController = ! empty($data['ping_exam_controller']);
 
         return collect([
             $pingPilot && filled($pilotRoleId) ? "<@&{$pilotRoleId}>" : null,
