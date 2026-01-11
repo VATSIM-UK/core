@@ -87,8 +87,6 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                     ->requiresConfirmation()
                     ->action(function (ExamBooking $examBooking, array $data): void {
                         $channelId = config('training.discord.exam_announce_channel_id');
-                        $roleId    = config('training.discord.exam_announce_role_id');
-                        $mention   = config('training.discord.exam_announce_mention_role');
 
                         $startUtc = CarbonImmutable::parse($examBooking->start_date)->utc();
                         $unix = $startUtc->getTimestamp();
@@ -112,7 +110,7 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                             ($mentions ? $mentions . "\n" : '') .
                             "**Upcoming {$level} Exam**\n" .
                             "**Position:** {$position}\n" .
-                            "**Time:** <t:{$unix}:F> (<t:{$unix}:R>)\n" .
+                            "**Time:** <t:{$unix}:F> (<t:{$unix}:R>)" .
                             $notesBlock;
 
                         try {
