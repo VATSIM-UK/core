@@ -109,7 +109,6 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                             "**Upcoming {$level} Exam**\n".
                             "There will be an exam on **{$position}** on **<t:{$unix}:F>** (<t:{$unix}:R>)".
                             $notesBlock;
-                        dd($message);
 
                         try {
                             $discord = new Discord;
