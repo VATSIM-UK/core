@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Testing\CtsExamSeeder;
-use Database\Seeders\Testing\PositionsAndEndorsementsSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
