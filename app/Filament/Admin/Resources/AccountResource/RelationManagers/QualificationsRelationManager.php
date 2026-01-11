@@ -84,15 +84,7 @@ class QualificationsRelationManager extends RelationManager
                             'updated_at' => $awardedOn,
                         ]);
 
-                        $account->addNote(
-                            'training',
-                            sprintf(
-                                'Manual ATC rating upgrade processed in VATSIM UK systems: assigned %s with awarded date %s.',
-                                $qualification->name_long,
-                                $awardedOn->toDateString(),
-                            ),
-                            Auth::id(),
-                        );
+                        $account->addNote('training', sprintf( 'Manual ATC rating upgrade processed in VATSIM UK systems: assigned %s with awarded date %s.', $qualification->name_long, $awardedOn->toDateString(),),Auth::id(),);
 
                         Notification::make()
                             ->title('ATC rating upgrade processed')
