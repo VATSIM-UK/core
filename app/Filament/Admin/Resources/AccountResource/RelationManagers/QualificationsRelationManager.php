@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
 use App\Enums\QualificationTypeEnum;
 use App\Models\Mship\Qualification;
+use App\Services\Training\ManualAtcUpgradeService;
 use Carbon\CarbonImmutable;
 use Filament\Forms;
 use Filament\Notifications\Notification;
@@ -11,7 +12,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
-use App\Services\Training\ManualAtcUpgradeService;
 
 class QualificationsRelationManager extends RelationManager
 {
@@ -73,6 +73,7 @@ class QualificationsRelationManager extends RelationManager
                                 ->body('This account already holds the highest ATC rating available.')
                                 ->warning()
                                 ->send();
+
                             return;
                         }
 

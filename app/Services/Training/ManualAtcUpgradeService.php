@@ -5,8 +5,6 @@ namespace App\Services\Training;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\DB;
-use Filament\Notifications\Notification;
 
 class ManualAtcUpgradeService
 {
@@ -30,7 +28,8 @@ class ManualAtcUpgradeService
             ->exists();
     }
 
-    public static function awardNextAtcQualification(Account $account, CarbonImmutable $awardedOn, int $writerId): ?Qualification {
+    public static function awardNextAtcQualification(Account $account, CarbonImmutable $awardedOn, int $writerId): ?Qualification
+    {
         $qualification = self::getNextAtcQualification($account);
 
         if (! $qualification) {
@@ -44,10 +43,10 @@ class ManualAtcUpgradeService
         ]);
 
         $account->addNote('training', sprintf(
-                'Manual ATC rating upgrade processed in VATSIM UK systems: assigned %s with awarded date %s.',
-                $qualification->name_long,
-                $awardedOn->toDateString(),
-            ),
+            'Manual ATC rating upgrade processed in VATSIM UK systems: assigned %s with awarded date %s.',
+            $qualification->name_long,
+            $awardedOn->toDateString(),
+        ),
             $writerId,
         );
 
