@@ -61,6 +61,7 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                             return false;
                         }
 
+                       // use CTS member ID rather than Core acocunt ID.
                         $memberId = auth()->user()->member->id;
 
                         $examiners = $examBooking->examiners;
@@ -108,7 +109,6 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                             "**Upcoming {$level} Exam**\n".
                             "There will be an exam on **{$position}** on **<t:{$unix}:F>** (<t:{$unix}:R>)".
                             $notesBlock;
-                        dd($message);
 
                         try {
                             $discord = new Discord;
