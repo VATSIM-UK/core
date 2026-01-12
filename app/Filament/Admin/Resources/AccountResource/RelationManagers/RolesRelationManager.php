@@ -39,6 +39,7 @@ class RolesRelationManager extends RelationManager
             ])->bulkActions([
                 BulkAction::make('detach')
                     ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion()
                     ->label("Detach Selected")
                     ->authorize(fn () => auth()->user()->can('adm/mship/account/*/roles/*/detach'))
                     ->action(function (Collection $records) {
