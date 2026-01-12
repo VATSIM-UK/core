@@ -3,13 +3,12 @@
 namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
 use App\Filament\Admin\Resources\RoleResource;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Table;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
-use Filament\Notifications\Notification;
-
 
 class RolesRelationManager extends RelationManager
 {
@@ -40,7 +39,7 @@ class RolesRelationManager extends RelationManager
                 BulkAction::make('detach')
                     ->requiresConfirmation()
                     ->deselectRecordsAfterCompletion()
-                    ->label("Detach Selected")
+                    ->label('Detach Selected')
                     ->authorize(fn () => auth()->user()->can('adm/mship/account/*/roles/*/detach'))
                     ->action(function (Collection $records) {
                         $this->getRelationship()->detach($records->pluck('id'));
@@ -49,7 +48,7 @@ class RolesRelationManager extends RelationManager
                             ->title('Roles detached')
                             ->success()
                             ->send();
-                    })
+                    }),
             ]);
     }
 }
