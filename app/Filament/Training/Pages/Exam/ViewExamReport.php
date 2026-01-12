@@ -76,7 +76,7 @@ class ViewExamReport extends Page implements HasInfolists
                     default => 'gray',
                 })->getStateUsing(fn ($record) => $record->resultHuman()),
 
-                TextEntry::make('notes')->html()->extraAttributes(['style' => 'word-break:break-word',])->label('Additional Comments'),
+                TextEntry::make('notes')->html()->extraAttributes(['style' => 'word-break:break-word'])->label('Additional Comments'),
 
             ])->columns(2)->extraAttributes(['class' => 'items-stretch']),
         ]);
