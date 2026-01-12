@@ -57,7 +57,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public int $autosaveIdleSeconds = 1;
 
-    public int $autosaveMinInterval = 5; 
+    public int $autosaveMinInterval = 5;
 
     public ?int $lastAutosaveAt = null;
 
