@@ -61,6 +61,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public ?int $lastAutosaveAt = null;
 
+    // save additional comments in session to persist across form submissions
+    // this is because we don't save additional comments in the CTS database until the exam is completed
+
     #[Session('additionalComments.{examId}')]
     public ?string $additionalComments = '';
 
