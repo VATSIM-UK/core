@@ -179,7 +179,6 @@ class ViewExamReport extends Page implements HasInfolists
                     default => 'gray',
                 })->getStateUsing(fn () => PracticalResult::resultHuman($this->practicalResult->result)),
 
-
                 TextEntry::make('notes')->html()->extraAttributes(['style' => 'word-break:break-word'])->label('Additional Comments'),
 
                 TextEntry::make('previous_result')->label('Previous Result')->badge()->color(fn ($state) => match ($state) {
@@ -200,7 +199,7 @@ class ViewExamReport extends Page implements HasInfolists
                     return 'N/A';
                 })->visible(fn () => ! empty($this->practicalResult->previous_result)),
 
-                TextEntry::make('result_update_reason')->label('Result Update Reason')
+                TextEntry::make('result_update_reason')->label('Internal Note')
                     ->helperText('This note is only visible to users who can edit exam results.')
                     ->visible(fn () => ! empty($this->practicalResult->previous_result) && auth()->user()->can('training.exams.override')),
 
