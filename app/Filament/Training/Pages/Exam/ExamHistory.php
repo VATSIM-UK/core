@@ -46,7 +46,7 @@ class ExamHistory extends Page implements HasTable
             TextColumn::make('student.account.id')->label('CID')->searchable(),
             TextColumn::make('student.account.name')->label('Name'),
             TextColumn::make('examBooking.exam')->label('Exam'),
-            TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => match ($state) {
+            TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman($record->result))->badge()->color(fn ($state) => match ($state) {
                 'Passed' => 'success',
                 'Failed' => 'danger',
                 'Incomplete' => 'warning',

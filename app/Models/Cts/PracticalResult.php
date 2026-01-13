@@ -37,12 +37,13 @@ class PracticalResult extends Model
         return $this->belongsTo(ExamBooking::class, 'examid', 'id');
     }
 
-    public function resultHuman(): string
+    public static function resultHuman(?string $result): string
     {
-        return match ($this->result) {
+        return match ($result) {
             self::PASSED => 'Passed',
             self::FAILED => 'Failed',
             self::INCOMPLETE => 'Incomplete',
+            null => 'N/A',
             default => 'Unknown',
         };
     }

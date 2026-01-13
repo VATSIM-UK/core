@@ -3,7 +3,13 @@
 namespace App\Filament\Training\Pages\Exam;
 
 use App\Infolists\Components\PracticalExamCriteriaResult;
+use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\PracticalResult;
+use App\Models\Mship\Account;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section as FormSection;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\RepeatableEntry;
@@ -55,34 +61,90 @@ class ViewExamReport extends Page implements HasInfolists
     public function getActions(): array
     {
         return [
-            PageAction::make('changeResult')
-                ->label('Change Result')
+            PageAction::make('updateExam')
+                ->label('Update Exam')
                 ->icon('heroicon-o-pencil')
                 ->visible(fn () => auth()->user()->can('training.exams.override'))
                 ->form([
-                    Select::make('result')
-                        ->label('Result')
-                        ->options([
-                            PracticalResult::PASSED => 'Passed',
-                            PracticalResult::FAILED => 'Failed',
-                            PracticalResult::INCOMPLETE => 'Incomplete',
-                        ])
-                        ->required(),
-                    Textarea::make('notes')
-                        ->label('Additional Comments')
-                        ->rows(4)
-                        ->default(fn () => $this->practicalResult->notes),
+                    FormSection::make('Overall Result')->schema([
+                        Select::make('result')
+                            ->label('Result')
+                            ->options([
+                                PracticalResult::PASSED => 'Passed',
+                                PracticalResult::FAILED => 'Failed',
+                                PracticalResult::INCOMPLETE => 'Incomplete',
+                            ])
+                            ->default(fn () => $this->practicalResult->result)
+                            ->required(),
+                        RichEditor::make('notes')
+                            ->label('Additional Comments')
+                            ->disableToolbarButtons(['attachFiles', 'blockquote'])
+                            ->columnSpan(9)
+                            ->required()
+                            ->default(fn () => $this->practicalResult->notes),
+                        TextArea::make('result_update_reason')
+                            ->label('Internal Note')
+                            ->helperText('Adds an internal note only visible to users who can edit exam results explaining why the result was changed.')
+                            ->rows(3)
+                            ->required(),
+                    ]),
+
+                    FormSection::make('Criteria')->schema([
+                        Repeater::make('criteria')->label('')->schema([
+                            Placeholder::make('criteria_text')->label('Criteria')->content(fn ($get) => $get('criteria_text')),
+
+                            Select::make('result')->label('Result')->options(ExamCriteriaAssessment::gradeDropdownOptions())->required(),
+
+                            RichEditor::make('notes')->label('Notes')
+                                ->disableToolbarButtons(['attachFiles', 'blockquote'])
+                                ->required(),
+
+                        ])->addable(false)->deletable(false)->reorderable(false)
+                            ->default(fn () => $this->practicalResult->criteria->map(function ($assessment) {
+                                return [
+                                    'id' => $assessment->id,
+                                    'criteria_text' => $assessment->examCriteria->criteria,
+                                    'result' => $assessment->result,
+                                    'notes' => $assessment->notes,
+                                ];
+                            })->toArray()),
+                    ]),
                 ])
-                ->modalHeading('Change Exam Result')
+                ->modalHeading('Update Exam')
                 ->modalSubHeading('Update the result and comments for this exam report.')
                 ->action(function (array $data) {
-                    $this->practicalResult->result = $data['result'];
-                    $this->practicalResult->notes = $data['notes'];
-                    $this->practicalResult->save();
+                    $resultData = [
+                        'result_update_reason' => $data['result_update_reason'],
+                        'result' => $data['result'],
+                        'notes' => $data['notes'],
+                    ];
+
+                    // Only record previous result if it has changed. Always require and record an exam updated reason.
+                    if ($this->practicalResult->result !== $data['result']) {
+                        $resultData['previous_result'] = $this->practicalResult->result;
+                        $resultData['result_updated_by'] = auth()->id();
+                    }
+                    $this->practicalResult->update($resultData);
+
+                    foreach ($data['criteria'] as $row) {
+                        $assessment = ExamCriteriaAssessment::find($row['id']);
+                        if (! $assessment) {
+                            continue;
+                        }
+
+                        if ($assessment->result !== $row['result'] || $assessment->notes !== $row['notes']) {
+                            $assessment->previous_result = $assessment->result;
+                            $assessment->result_updated_by = auth()->id();
+                        }
+                        $assessment->update([
+                            'result' => $row['result'],
+                            'notes' => $row['notes'],
+                        ]);
+                    }
 
                     $this->practicalResult->refresh();
                     Notification::make()
-                        ->title('Exam result updated successfully.')
+                        ->title('Exam updated successfully.')
                         ->success()
                         ->send();
                 }),
@@ -115,9 +177,32 @@ class ViewExamReport extends Page implements HasInfolists
                     'Failed' => 'danger',
                     'Incomplete' => 'warning',
                     default => 'gray',
-                })->getStateUsing(fn ($record) => $record->resultHuman()),
+                })->getStateUsing(fn () => PracticalResult::resultHuman($this->practicalResult->result)),
 
                 TextEntry::make('notes')->html()->label('Additional Comments'),
+
+                TextEntry::make('previous_result')->label('Previous Result')->badge()->color(fn ($state) => match ($state) {
+                    'Passed' => 'success',
+                    'Failed' => 'danger',
+                    'Incomplete' => 'warning',
+                    default => 'gray',
+                })->getStateUsing(fn () => PracticalResult::resultHuman($this->practicalResult->previous_result))
+                    ->visible(fn () => ! empty($this->practicalResult->previous_result)),
+
+                TextEntry::make('result_updated_by')->label('Result Updated By')->getStateUsing(function () {
+                    if ($this->practicalResult->result_updated_by) {
+                        $user = Account::find($this->practicalResult->result_updated_by);
+
+                        return $user ? $user->name : 'Unknown User';
+                    }
+
+                    return 'N/A';
+                })->visible(fn () => ! empty($this->practicalResult->previous_result)),
+
+                TextEntry::make('result_update_reason')->label('Result Update Reason')
+                    ->helperText('This note is only visible to users who can edit exam results.')
+                    ->visible(fn () => ! empty($this->practicalResult->previous_result) && auth()->user()->can('training.exams.override')),
+
             ])->columns(2)->extraAttributes(['class' => 'items-stretch']),
         ]);
     }
@@ -126,8 +211,9 @@ class ViewExamReport extends Page implements HasInfolists
     {
         return $infolist->record($this->practicalResult)->schema([
             RepeatableEntry::make('criteria')->label('')->schema([
-                TextEntry::make('examCriteria.criteria')->label(null)->columnSpan(10),
+                TextEntry::make('examCriteria.criteria')->label(null)->columnSpan(fn ($record) => ! empty($record->previous_result) ? 8 : 10),
                 PracticalExamCriteriaResult::make('result')->label('Result')->columnSpan(2),
+                PracticalExamCriteriaResult::make('previous_result')->getStateUsing(fn ($record) => $record->previous_result)->label('Previous Result')->visible(fn ($record) => ! empty($record->previous_result))->columnSpan(2),
                 TextEntry::make('notes')->html()->label('Notes')->columnSpan(12),
             ])->columns(12),
         ]);

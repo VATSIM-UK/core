@@ -2,7 +2,6 @@
 
 namespace App\Models\Cts;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -42,16 +41,14 @@ class ExamCriteriaAssessment extends Model
         return $this->belongsTo(ExamCriteria::class, 'criteria_id', 'id');
     }
 
-    protected function resultHuman(): Attribute
+    public static function resultHuman(?string $result): string
     {
-        return Attribute::make(
-            get: fn ($value) => [
-                self::FULLY_COMPETENT => 'Fully Competent',
-                self::MOSTLY_COMPETENT => 'Mostly Competent',
-                self::PARTLY_COMPETENT => 'Partly Competent',
-                self::NOT_ASSESSED => 'Not Assessed',
-                self::FAIL => 'Fail',
-            ][$this->result],
-        );
+        return match ($result) {
+            self::FULLY_COMPETENT => 'Fully Competent',
+            self::MOSTLY_COMPETENT => 'Mostly Competent',
+            self::PARTLY_COMPETENT => 'Partly Competent',
+            self::NOT_ASSESSED => 'Not Assessed',
+            self::FAIL => 'Fail',
+        };
     }
 }
