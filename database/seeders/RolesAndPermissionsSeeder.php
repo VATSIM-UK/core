@@ -69,6 +69,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'account.ban.edit.*',
             'account.ban.repeal.*',
             'account.note.create',
+            'account.qualification.manual-upgrade.atc',
 
             // Permissions & Access Permissions
             'permission.view.*',
@@ -114,6 +115,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'waiting-lists.admin.*',
             'waiting-lists.admin.atc',
             'waiting-lists.admin.pilot',
+
+            // Training Places Permissions
+            'training-places.view.*',
 
             // // Feedback System Permissions
             'feedback.access',

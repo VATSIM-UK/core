@@ -179,7 +179,8 @@ class ViewExamReport extends Page implements HasInfolists
                     default => 'gray',
                 })->getStateUsing(fn () => PracticalResult::resultHuman($this->practicalResult->result)),
 
-                TextEntry::make('notes')->html()->label('Additional Comments'),
+
+                TextEntry::make('notes')->html()->extraAttributes(['style' => 'word-break:break-word'])->label('Additional Comments'),
 
                 TextEntry::make('previous_result')->label('Previous Result')->badge()->color(fn ($state) => match ($state) {
                     'Passed' => 'success',

@@ -176,6 +176,7 @@
                             <li class="col-sm-12">
                                 <ul>
                                     <li><a href="https://helpdesk.vatsim.uk/">Contact Us</a></li>
+                                    <li><a href="{{ route('networkdata.dashboard') }}">My Statistics</a></li>
                                     <li class="divider"></li>
 
                                     <li class="dropdown-header">Waiting Lists</li>
@@ -197,6 +198,7 @@
                                 <ul>
                                     <li><a href="{{ route('site.policy.training.s1-syllabus') }}">S1 Syllabus</a></li>
                                     <li><a href="{{ route('site.policy.training.s2-syllabus') }}">S2 Syllabus</a></li>
+                                    <li><a href="{{ route('site.policy.training.c1-syllabus') }}">C1 Syllabus</a></li>
                                 </ul>
                             </li>
                         </ul>
