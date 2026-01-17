@@ -12,7 +12,7 @@
                     Please <a class="text-blue-500 hover:cursor-pointer" href="mailto:atc-training@vatsim.uk">contact ATC Training</a>.
                 </span>
             @else
-                <p>It has been a while! Our records show it has {{ $lastLogon }} since your last controlling session.</p>
+                <p>It has been a while! Our records show that your last controlling session was {{ $lastLogon }}.</p>
                 <p>Because of this, you are required to reactivate onto the VATSIM UK controlling roster.</p>
                 <p>Before you do this, please take a read through what has changed in the Division and Procedurally whilst you've been gone!</p>
             @endif

@@ -83,7 +83,7 @@ We aim to keep this wait under one month by only running seminars when this ‘b
 
 ### Step 5 - Practical training
 
-Where applicable, eligibility criteria are defined in the relevant sections of the [ATC Training Handbook](https://community.vatsim.uk/files/downloads/file/230-atc-training-handbook/).
+Where applicable, eligibility criteria are defined in the relevant sections of the [ATC Training Handbook]({{ __('atc.handbook.url') }}).
 Once a training place is available, training staff will offer it to you by email/ticket.
 You will have 84 hours (3.5 days) to respond before the place is offered to the next eligible student on the waiting list.
 Places may be offered on any of the UK’s training aerodromes.
@@ -121,7 +121,7 @@ To progress to your S2 rating, you will need to have controlled as an S1 for 50 
 
 To do this, submit a ticket to ATC Training via the [helpdesk](https://helpdesk.vatsim.uk/). You may be offered a training place at any UK aerodrome.
 
-Further information on our training programmes is available in the [ATC Training Handbook](https://community.vatsim.uk/files/downloads/file/230-atc-training-handbook/).
+Further information on our training programmes is available in the [ATC Training Handbook]({{ __('atc.handbook.url') }}).
 
 Your S2 training will review and solidify what you’ve learnt during your S1 training, so you should use the waiting time to practice your skills.
 
