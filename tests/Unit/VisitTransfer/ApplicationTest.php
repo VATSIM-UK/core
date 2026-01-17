@@ -23,6 +23,15 @@ class ApplicationTest extends TestCase
 {
     use DatabaseTransactions;
 
+    protected Account $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = Account::factory()->create();
+    }
+
     #[Test]
     public function it_can_create_a_new_application_for_a_user()
     {
@@ -75,11 +84,10 @@ class ApplicationTest extends TestCase
     {
         Mail::fake();
 
-        $this->user = Account::factory()->create();
         $qual = Qualification::code('S2')->first();
         $this->user->addQualification($qual)->save();
 
-        $application = factory(Application::class, 'atc_transfer')->create([
+        $application = Application::factory()->transfer('atc')->create([
             'account_id' => $this->user->id,
             'status' => Application::STATUS_SUBMITTED,
             'should_perform_checks' => 1,
@@ -116,7 +124,7 @@ class ApplicationTest extends TestCase
         $this->user->addQualification($qual);
         $this->user->save();
 
-        $application = factory(Application::class, 'atc_transfer')->create([
+        $application = Application::factory()->transfer('atc')->create([
             'account_id' => $this->user->id,
             'status' => Application::STATUS_SUBMITTED,
             'should_perform_checks' => 1,
@@ -144,7 +152,7 @@ class ApplicationTest extends TestCase
         $this->user->addQualification($qual);
         $this->user->save();
 
-        $application = factory(Application::class, 'atc_transfer')->create([
+        $application = Application::factory()->transfer('atc')->create([
             'account_id' => $this->user->id,
             'status' => Application::STATUS_SUBMITTED,
             'should_perform_checks' => 1,
@@ -163,7 +171,7 @@ class ApplicationTest extends TestCase
 
         $this->user->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
 
-        $facility = factory(\App\Models\VisitTransfer\Facility::class, 'atc_visit')->create();
+        $facility = \App\Models\VisitTransfer\Facility::factory()->visit('atc')->create();
 
         $application = $this->user->fresh()->createVisitingTransferApplication([
             'type' => Application::TYPE_VISIT,
@@ -236,7 +244,7 @@ class ApplicationTest extends TestCase
 
         // Create some applications
 
-        factory(Application::class, 20)->create([
+        Application::factory()->count(20)->create([
             'status' => function () use ($applicationTypes) {
                 return Base::randomElement(Base::randomElement($applicationTypes));
             },
