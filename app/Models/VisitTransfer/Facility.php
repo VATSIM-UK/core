@@ -5,6 +5,7 @@ namespace App\Models\VisitTransfer;
 use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
 use App\Models\Contact;
 use App\Models\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Malahierba\PublicId\PublicId;
 
@@ -65,7 +66,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Facility extends Model
 {
-    use Notifiable, PublicId;
+    use HasFactory, Notifiable, PublicId;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-facility';
 

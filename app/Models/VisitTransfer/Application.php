@@ -26,6 +26,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Traits\HasStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Malahierba\PublicId\PublicId;
@@ -128,7 +129,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Application extends Model
 {
-    use HasStatus, PublicId, SoftDeletes;
+    use HasFactory, HasStatus, PublicId, SoftDeletes;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
 
@@ -460,6 +461,26 @@ class Application extends Model
             case self::STATUS_REJECTED:
                 return 'Rejected';
         }
+    }
+
+    public function getStatusColorAttribute()
+    {
+        return match ($this->status) {
+            self::STATUS_ACCEPTED,
+            self::STATUS_COMPLETED => 'success',
+
+            self::STATUS_IN_PROGRESS,
+            self::STATUS_SUBMITTED,
+            self::STATUS_UNDER_REVIEW => 'warning',
+
+            self::STATUS_WITHDRAWN,
+            self::STATUS_EXPIRED,
+            self::STATUS_LAPSED,
+            self::STATUS_CANCELLED,
+            self::STATUS_REJECTED => 'danger',
+
+            default => 'gray',
+        };
     }
 
     public function getIsVisitAttribute()
