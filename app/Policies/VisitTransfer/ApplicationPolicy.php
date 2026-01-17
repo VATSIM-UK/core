@@ -19,6 +19,46 @@ class ApplicationPolicy
         }
     }
 
+    public function viewAny(Account $user)
+    {
+        return $user->can('vt.application.view.*');
+    }
+
+    public function view(Account $user, Application $application)
+    {
+        return $user->can("vt.application.view.{$application->id}") || $user->id === $application->account_id;
+    }
+
+    public function accept(Account $user, Application $application)
+    {
+        return $user->can('vt.application.accept.*')
+        && $application->check_outcome_90_day
+        && $application->check_outcome_50_hours
+        && $application->can_accept;
+    }
+
+    public function reject(Account $user, Application $application)
+    {
+        return $user->can('vt.application.reject.*') && $application->can_reject;
+    }
+
+    public function complete(Account $user, Application $application)
+    {
+        return $user->can('vt.application.complete.*') && $application->is_accepted;
+    }
+
+    public function cancel(Account $user, Application $application)
+    {
+        return $user->can('vt.application.cancel.*') && $application->is_accepted;
+    }
+
+    public function overrideChecks(Account $user, Application $application)
+    {
+        return $user->can('vt.application.accept.*')
+        && $application->can_accept
+        && (! $application->check_outcome_90_day || ! $application->check_outcome_50_hours);
+    }
+
     public function create(Account $user, Application $application)
     {
         // If they are currently a division member, they are not authorised.
@@ -129,43 +169,6 @@ class ApplicationPolicy
         }
 
         return true;
-    }
-
-    public function viewApplication(Account $user, Application $application)
-    {
-        return $application->exists && $user->id == $application->account_id;
-    }
-
-    public function accept(Account $user, Application $application)
-    {
-        if ($application->check_outcome_90_day === 0 || $application->check_outcome_90_day === null) {
-            return false;
-        }
-
-        if ($application->check_outcome_50_hours === 0 || $application->check_outcome_50_hours === null) {
-            return false;
-        }
-
-        if (! $application->can_accept) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function reject(Account $user, Application $application)
-    {
-        return $application->can_reject;
-    }
-
-    public function complete(Account $user, Application $application)
-    {
-        return $application->is_accepted;
-    }
-
-    public function cancel(Account $user, Application $application)
-    {
-        return $application->is_accepted;
     }
 
     public function checkOutcome(Account $user, Application $application)
