@@ -23,9 +23,25 @@ class FacilityResource extends Resource
 {
     protected static ?string $model = Facility::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
 
-    protected static ?string $navigationGroup = 'Visiting/Transferring';
+    protected static ?string $navigationGroup = 'Visiting / Transferring';
+
+    public static function canAccess(): bool
+    {
+
+        return auth()->user()->can('vt.facility.view.*');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('vt.facility.create');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->can('vt.facility.update.*');
+    }
 
     public static function form(Form $form): Form
     {
@@ -109,21 +125,6 @@ class FacilityResource extends Resource
                             ->label('Automated Checks')
                             ->helperText('Checks against the 50 hours and 90 days rules.')
                             ->required(),
-                        Toggle::make('stage_reference_enabled')
-                            ->label('References Required')
-                            ->required()
-                            ->reactive(),
-                        Select::make('stage_reference_quantity')
-                            ->label('Number of References')
-                            ->options([
-                                1 => '1 Reference',
-                                2 => '2 References',
-                                3 => '3 References',
-                            ])
-                            ->selectablePlaceholder(false)
-                            ->default(1)
-                            ->required()
-                            ->visible(fn (callable $get) => $get('stage_reference_enabled')),
                         Toggle::make('auto_acceptance')
                             ->label('Auto Acceptance')
                             ->helperText('Automatically accept all applicants.')
@@ -166,26 +167,23 @@ class FacilityResource extends Resource
                         return 'N/A';
                     }
                 })->colors([
-                    'success' => 'Visit & Transfer',
-                    'warning' => ['Visit Only', 'Transfer Only'],
+                    'warning' => 'Visit & Transfer',
+                    'success' => 'Transfer Only',
+                    'primary' => 'Visit Only',
                     'danger' => 'N/A',
                 ])->alignCenter(),
-                TextColumn::make('training_team')->label('Training Team')->formatStateUsing(fn ($state) => strtoupper($state))->alignCenter(),
-                BadgeColumn::make('stage_statement_enabled')->label('Statement')->getStateUsing(fn ($record) => $record->stage_statement_enabled ? 'Enabled' : 'Disabled')->colors([
-                    'success' => 'Enabled',
+                TextColumn::make('training_team')->label('Team')->formatStateUsing(fn ($state) => strtoupper($state))->alignCenter(),
+                BadgeColumn::make('stage_statement_enabled')->label('Statement')->getStateUsing(fn ($record) => $record->stage_statement_enabled ? 'Required' : 'Disabled')->colors([
+                    'success' => 'Required',
                     'danger' => 'Disabled',
                 ]),
-                BadgeColumn::make('stage_reference_enabled')->label('Reference')->getStateUsing(fn ($record) => $record->stage_reference_enabled ? 'Enabled' : 'Disabled')->colors([
+                BadgeColumn::make('stage_checks')->label('Checks')->getStateUsing(fn ($record) => $record->stage_checks ? 'Auto' : 'Manual')->colors([
+                    'success' => 'Auto',
+                    'danger' => 'Manual',
+                ]),
+                BadgeColumn::make('auto_acceptance')->label('Auto Accept')->getStateUsing(fn ($record) => $record->auto_acceptance ? 'Enabled' : 'Disabled')->colors([
                     'success' => 'Enabled',
                     'danger' => 'Disabled',
-                ]),
-                BadgeColumn::make('stage_checks')->label('Checks')->getStateUsing(fn ($record) => $record->stage_checks ? 'Enabled' : 'Disabled')->colors([
-                    'success' => 'Enabled',
-                    'danger' => 'Disabled',
-                ]),
-                BadgeColumn::make('auto_acceptance')->label('Auto')->getStateUsing(fn ($record) => $record->auto_acceptance ? 'Yes' : 'No')->colors([
-                    'success' => 'Yes',
-                    'danger' => 'No',
                 ]),
                 BadgeColumn::make('open')->label('Open')->getStateUsing(fn ($record) => $record->open ? 'Yes' : 'No')->colors([
                     'success' => 'Yes',
