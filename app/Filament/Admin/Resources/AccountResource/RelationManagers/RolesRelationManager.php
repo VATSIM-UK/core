@@ -42,7 +42,11 @@ class RolesRelationManager extends RelationManager
                     ->label('Detach Selected')
                     ->authorize(fn () => auth()->user()->can('adm/mship/account/*/roles/*/detach'))
                     ->action(function (Collection $records) {
-                        $this->getRelationship()->detach($records->pluck('id'));
+                        $account = $this->getOwnerRecord();
+
+                        foreach ($records as $role) {
+                            $account->removeRole($role);
+                        }
 
                         Notification::make()
                             ->title('Roles detached')
