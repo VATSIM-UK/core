@@ -148,4 +148,55 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
             ->assertForbidden();
     }
+
+    public function test_can_reject_feedback_with_permission()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
+        $this->adminUser->givePermissionTo('feedback.action');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
+            ->assertActionVisible('reject_feedback')
+            ->callAction('reject_feedback');
+
+        $this->assertNotNull($feedback->fresh()->deleted_at);
+    }
+
+    public function test_reject_feedback_tracks_deleted_by_user()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
+        $this->adminUser->givePermissionTo('feedback.action');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
+            ->callAction('reject_feedback');
+
+        $feedback = $feedback->fresh();
+        $this->assertNotNull($feedback->deleted_at);
+        $this->assertEquals($feedback->deleted_by, $this->adminUser->id);
+    }
+
+    public function test_soft_deleted_feedback_excluded_from_queries()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+        $feedbackId = $feedback->id;
+
+        // Soft delete the feedback
+        $feedback->delete();
+
+        // normal queries
+        $this->assertNull(Feedback::find($feedbackId));
+
+        // trashed included queries
+        $this->assertNotNull(Feedback::withTrashed()->find($feedbackId));
+    }
 }
