@@ -47,8 +47,8 @@ class ViewFeedback extends BaseViewRecordPage
                 ->requiresConfirmation()
                 ->visible(fn () => auth()->user()->can('actionFeedback', $this->record)),
             
-            Actions\Action::make('re_allocate_feedback')
-                ->label('Re-allocate Feedback')
+            Actions\Action::make('reallocate_feedback')
+                ->label('Reallocate Feedback')
                 ->color('gray')
                 ->icon('heroicon-o-arrow-right')
                 ->action(fn ($data) => $this->record->reallocate($data['account_id']))
