@@ -46,7 +46,7 @@ class ViewFeedback extends BaseViewRecordPage
                 ->action(fn () => $this->record->markRejected(auth()->user()))
                 ->requiresConfirmation()
                 ->visible(fn () => auth()->user()->can('actionFeedback', $this->record)),
-            
+
             Actions\Action::make('reallocate_feedback')
                 ->label('Reallocate feedback')
                 ->color('gray')
@@ -56,7 +56,7 @@ class ViewFeedback extends BaseViewRecordPage
                 ->form([
                     AccountSelect::make('account')
                         ->label('Account')
-                        ->helperText("Select the account you want to reallocate the feedback to.")
+                        ->helperText('Select the account you want to reallocate the feedback to.')
                         ->required(),
                 ])
                 ->visible(fn () => $this->record->actioned_at === null && $this->record->sent_at === null && auth()->user()->can('actionFeedback', $this->record)),
