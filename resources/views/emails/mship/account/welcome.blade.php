@@ -18,7 +18,7 @@
 <p>We have a thriving community, why not come and join us?</p>
 
 <p><strong>Discord</strong> - Our Discord server provides an opportunity for instant communication with members through chat. Why not come and introduce yourself?</p>
-<div style="margin-bottom: 2em;"><a href="{{route('discord.show')}}" class="btn btn-primary">Register for Discord</a></div>
+<div style="margin-bottom: 2em;"><a href="{{route('mship.manage.dashboard')}}" class="btn btn-primary">Register for Discord</a></div>
 
 <p><strong>TeamSpeak</strong> - We use TeamSpeak for voice communication. This includes coordination whilst controlling, one-to-one mentoring sessions, group seminars and general chat.</p>
 <div style="margin-bottom: 2em;"><a href="{{route('site.community.teamspeak')}}" class="btn btn-primary">Join us on TeamSpeak</a></div>
@@ -44,7 +44,7 @@
 
 <h2>❓ Getting help</h2>
 <p>
-    We recommend making use of our <a href="{{route('discord.show')}}">Discord</a>, <a href="https://community.vatsim.uk">community forum</a>, or <a href="{{route('site.community.teamspeak')}}">TeamSpeak</a> to get help from members and division staff.
+    We recommend making use of our <a href="{{route('mship.manage.dashboard')}}">Discord</a>, <a href="https://community.vatsim.uk">community forum</a>, or <a href="{{route('site.community.teamspeak')}}">TeamSpeak</a> to get help from members and division staff.
 </p>
 <p>
     Although there is a lot to learn, you will be in good company, surrounded by like-minded simming enthusiasts ready to help you get started.
