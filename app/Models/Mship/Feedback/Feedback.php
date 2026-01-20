@@ -4,6 +4,7 @@ namespace App\Models\Mship\Feedback;
 
 use App\Models\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
 /**
@@ -21,8 +22,11 @@ use Illuminate\Notifications\Notifiable;
  * @property int|null $sent_by_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property \Carbon\Carbon|null $deleted_at
+ * @property int|null $deleted_by
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Mship\Account $actioner
+ * @property-read \App\Models\Mship\Account|null $deleter
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Answer[] $answers
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Feedback\Form $form
@@ -48,6 +52,7 @@ use Illuminate\Notifications\Notifiable;
 class Feedback extends Model
 {
     use Notifiable;
+    use SoftDeletes;
 
     protected $table = 'mship_feedback';
 
@@ -137,6 +142,11 @@ class Feedback extends Model
         return $this->hasOne(\App\Models\Mship\Account::class, 'id', 'sent_by_id');
     }
 
+    public function deleter()
+    {
+        return $this->hasOne(\App\Models\Mship\Account::class, 'id', 'deleted_by');
+    }
+
     public function isATC()
     {
         if ($this->formSlug() == 'atc') {
@@ -185,6 +195,15 @@ class Feedback extends Model
         $this->actioned_comment = 'Feedback automatically marked as actioned by sending feedback to member.';
         $this->actioned_by_id = $sender->id;
         $this->save();
+    }
+
+    public function markRejected($user = null)
+    {
+        if ($user) {
+            $this->deleted_by = $user->id;
+            $this->save();
+        }
+        $this->delete();
     }
 
     public function getOptions($options)

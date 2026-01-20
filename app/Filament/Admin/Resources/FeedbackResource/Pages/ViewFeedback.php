@@ -16,6 +16,8 @@ class ViewFeedback extends BaseViewRecordPage
         return [
             Actions\Action::make('send_feedback')
                 ->label('Send Feedback')
+                ->color('success')
+                ->icon('heroicon-o-paper-airplane')
                 ->action(fn ($data) => $this->record->markSent(auth()->user(), $data['comment']))
                 ->form([
                     Forms\Components\Textarea::make('comment')
@@ -25,6 +27,8 @@ class ViewFeedback extends BaseViewRecordPage
                 ->visible(fn () => $this->record->sent_at === null && auth()->user()->can('actionFeedback', $this->record)),
             Actions\Action::make('action_feedback')
                 ->label('Action Feedback')
+                ->color('info')
+                ->icon('heroicon-o-check-circle')
                 ->action(fn ($data) => $this->record->markActioned(auth()->user(), $data['comment']))
                 ->form([
                     Forms\Components\Textarea::make('comment')
@@ -32,6 +36,14 @@ class ViewFeedback extends BaseViewRecordPage
                         ->rules('required', 'min:10'),
                 ])
                 ->visible(fn () => $this->record->actioned_at === null && auth()->user()->can('actionFeedback', $this->record)),
+
+            Actions\Action::make('reject_feedback')
+                ->label('Reject Feedback')
+                ->color('danger')
+                ->icon('heroicon-o-x-mark')
+                ->action(fn () => $this->record->markRejected(auth()->user()))
+                ->requiresConfirmation()
+                ->visible(fn () => auth()->user()->can('actionFeedback', $this->record)),
         ];
     }
 }
