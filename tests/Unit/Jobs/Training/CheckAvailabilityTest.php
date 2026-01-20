@@ -10,7 +10,9 @@ use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\WaitingList;
+use App\Notifications\Training\AvailabilityWarningCreated;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -329,5 +331,74 @@ class CheckAvailabilityTest extends TestCase
             'training_place_id' => $this->trainingPlace->id,
             'status' => 'pending',
         ]);
+    }
+
+    #[Test]
+    public function it_sends_notification_when_availability_warning_is_created(): void
+    {
+        // Arrange: Fake the notification system
+        Notification::fake();
+
+        // Act: Run the job without availability (which creates a warning)
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: The account should receive the notification
+        Notification::assertSentTo(
+            $this->account,
+            AvailabilityWarningCreated::class,
+            function ($notification, $channels) {
+                // Verify the notification is sent via email
+                $this->assertContains('mail', $channels);
+
+                // Verify the notification has the correct warning attached
+                $this->assertInstanceOf(AvailabilityWarning::class, $notification->availabilityWarning);
+                $this->assertEquals($this->trainingPlace->id, $notification->availabilityWarning->training_place_id);
+
+                return true;
+            }
+        );
+    }
+
+    #[Test]
+    public function it_does_not_send_notification_when_check_passes(): void
+    {
+        // Arrange: Fake the notification system and create availability
+        Notification::fake();
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+
+        // Act: Run the job with availability (which passes)
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: No notification should be sent
+        Notification::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_sends_notification_atomically_with_database_creation(): void
+    {
+        // Arrange: Fake the notification system
+        Notification::fake();
+
+        // Act: Run the job without availability
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: Both the warning and notification should exist
+        $warning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
+            ->where('status', 'pending')
+            ->first();
+
+        $this->assertNotNull($warning, 'Warning should be created in database');
+
+        Notification::assertSentTo(
+            $this->account,
+            AvailabilityWarningCreated::class,
+            function ($notification) use ($warning) {
+                // The notification should reference the same warning that was created
+                return $notification->availabilityWarning->id === $warning->id;
+            }
+        );
     }
 }
