@@ -48,10 +48,11 @@ class ViewFeedback extends BaseViewRecordPage
                 ->visible(fn () => auth()->user()->can('actionFeedback', $this->record)),
             
             Actions\Action::make('reallocate_feedback')
-                ->label('Reallocate Feedback')
+                ->label('Reallocate feedback')
                 ->color('gray')
                 ->icon('heroicon-o-arrow-right')
                 ->action(fn ($data) => $this->record->reallocate($data['account_id']))
+                ->modalSubmitActionLabel('Reallocate')
                 ->form([
                     AccountSelect::make('account')
                         ->label('Account')
