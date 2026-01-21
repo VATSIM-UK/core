@@ -13,16 +13,21 @@
                     <div class="panel-body">
 
                         <p>
-                            The building blocks for our brand are contained on this page. While the guidelines are
-                            here to get you started, all uses of our brand must be approved by VATSIM UK.
+                            Our brand reflects who we are: professional, welcoming, and united.
+                            These guidelines ensure consistency while allowing creative flexibility to suit different media,
+                            audiences, and contexts.
+                        </p>
+                        <p>
+                            The building blocks for our brand are contained on this page. While the guidelines are here to
+                            get you started, all uses of our brand must be approved by VATSIMUK.
                         </p>
 
-                        <hr/>
+                        <hr />
 
                         <h3>Using Our Logo</h3>
 
                         <p>
-                            If you leave the previous logos intact, you should be fine, but we've included a few
+                            Always use the official VATSIM UK logos provided as your starting point. We've included a few
                             examples anyway of what you shouldn't do.
                         </p>
 
@@ -51,17 +56,19 @@
                                 </div>
                                 <div class="col-md-4">
                                     <img class="img-responsive center-block" src="/images/branding/background.png">
-                                    <p class="text-center">Do not use our logo on a background which can make any element hard to see</p>
+                                    <p class="text-center">Do not use our logo on a background which can make any element
+                                        hard to see</p>
                                 </div>
                                 <div class="col-md-4">
                                     <img class="img-responsive center-block" src="/images/branding/cropped.png">
-                                    <p class="text-center">Do not crop any part of our logo, apart from using the radar blips in conjunction
+                                    <p class="text-center">Do not crop any part of our logo, apart from using the radar
+                                        blips in conjunction
                                         with an uncropped logo</p>
                                 </div>
                             </div>
                         </div>
 
-                        <hr/>
+                        <hr />
 
                         <h3>Event Banners</h3>
 
@@ -71,7 +78,7 @@
                             <div class="col-md-4">
                                 <p class="text-center"><strong>Event title/logo</strong></p>
                                 <ul>
-                                    <li>Event titles must at least be 25px in size and in a colour which makes the text clear to read.</li>
+                                    <li>The title should be prominent, clear and readable at a glance.</li>
                                     <li>The VATSIM UK logo must be clearly displayed, with a minimum width of 90px.</li>
                                 </ul>
                             </div>
@@ -79,17 +86,19 @@
                             <div class="col-md-4">
                                 <p class="text-center"><strong>Event information</strong></p>
                                 <ul>
-                                    <li>Event dates must be in the day, month format. If the space permits, the name of the day the event falls on may also be included.</li>
+                                    <li>Event dates must be in the day, month format. If the space permits, the name of the
+                                        day the event falls on may also be included.</li>
                                     <li>Event airport must include the ICAO code.</li>
                                     <li>Times must be in a 24 hour, Zulu format.</li>
                                 </ul>
                             </div>
 
                             <div class="col-md-4">
-                                <p class="text-center"><strong>Event branding</strong></p>
+                                <p class="text-center"><strong>Layout guidance</strong></p>
                                 <ul>
-                                    <li>Use our branding where possible (light/dark blue).</li>
-                                    <li>Use a font which is clear to read, ideally our documentation font <a href="http://www.dafont.com/alegre-sans-nc.font">same font</a>. Event titles: 25px+ / Subtitle: 14px.</li>
+                                    <li>Use a modular approach, title, imagery, and details can be arranged to suit the
+                                        medium.</li>
+                                    <li>Maintain balance between imagery and text; avoid overcrowding.</li>
                                 </ul>
                             </div>
                         </div>
@@ -102,8 +111,10 @@
                                 <p class="text-center">Example of a good banner</p>
                                 <ul>
                                     <li>Uses the VATSIM UK branding colours throughout.</li>
-                                    <li>VATSIM UK logo has been used correctly (clear, correct colours, dimensions haven't been changed...).</li>
-                                    <li>Event text is clear and unambigious, event times are in 24hr format and in zulu.</li>
+                                    <li>VATSIM UK logo has been used correctly (clear, correct colours, dimensions haven't
+                                        been changed...).</li>
+                                    <li>Event text is clear and unambigious, event times are in 24hr format and in zulu.
+                                    </li>
                                     <li>The airport's ICAO has been used.</li>
                                 </ul>
                             </div>
@@ -113,28 +124,93 @@
                                 <ul>
                                     <li>Background image is poor and does not compliment text.</li>
                                     <li>Several fonts and sizes have been used.</li>
-                                    <li>VATSIM UK logo is not in an acceptable form, there is hardly any margin spacing.</li>
-                                    <li>Times are ambiguous, is this event running in the morning or afternoon and is it in Zulu time?</li>
+                                    <li>VATSIM UK logo is not in an acceptable form, there is hardly any margin spacing.
+                                    </li>
+                                    <li>Times are ambiguous, is this event running in the morning or afternoon and is it in
+                                        Zulu time?</li>
                                 </ul>
                             </div>
                         </div>
-
+                        <p>&nbsp;</p>
+                        <h3>Digital Approach</h3>
                         <p>
-                            Posting an event on our forum? <a
-                                    href="https://community.vatsim.uk/topic/34833-looking-to-post-an-event-please-read-first/"
-                                    rel="external nofollow">https://community.vatsim.uk/topic/34833-looking-to-post-an-event-please-read-first/</a>
+                            Social Media: Bold, eye-catching designs are encouraged, but always maintain brand colours and
+                            legibility.
                         </p>
 
-                        <ul>
-                        </ul>
+                        <h3>Accessibility</h3>
+                        <p>
+                            Avoid text over busy imagery unless a high-opacity overlay is used.
+                            Use alt text for digital images where possible.
+                        </p>
 
+                        <h3>Submissions</h3>
+                        <p>Event banners should always be provided in both PNG and PSD format.</p>
+
+                        <h3>The use of AI</h3>
+                        <p>
+                            Whilst AI can be a powerful tool in digital content creation, we encourage members creating
+                            banners and content for VATSIMUK to take a measured approach.
+                            We strongly discourage entirely creating banners with AI, as it can lead to inconsistencies with
+                            design, style and quality.
+                            AI elements should only be used to support human work, or enhance it, not replace it.
+                            Should you have any questions about the use of AI, or if you’re unsure of whether something
+                            matches the standard expected of VATSIMUK content, please contact a member of the community
+                            team.
+                        </p>
+
+                        <h3>Approval Process</h3>
+                        <p>
+                            If you’d like to use a variant of the VATSIMUK logo or banner which has been altered beyond the
+                            permitted adaptations, please submit the modified logo or banner to <a
+                                href="mailto:community@vatsim.uk">community@vatsim.uk</a> for approval.
+                            You may also submit logos for a new recurring format (e.g, series banners)
+
+                        </p>
                     </div>
                 </div>
             </div>
 
-        </div>
 
+
+            <div class="col-md-12">
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="fa fa-palette"></i> &thinsp; Join the Media Team
+                    </div>
+                    <div class="panel-body">
+                        <h3 class="text-center">🖌️ Want to join the VATSIM UK Media Team? 🖌️</h3>
+                        <img class="img-responsive center-block" src="/images/branding/media_team.png">
+                        <p>&nbsp;</p>
+                        <p>
+                            We are looking to expand the VATSIM UK Media Team! This is a voluntary group of people who
+                            assist the community department with the creation of event banners and various graphics for our
+                            social media and other digital forums.
+                        </p>
+
+                        <p>
+                            If you are interested in joining, please create a fictional banner for the following event:
+
+                            "Newcastle Overload - 21/01/26 - 1200z - 1500z - Full staffup of Newcastle"
+
+                            Please note, this is a fictional event and the media team role is not a staff role.
+                        </p>
+
+                        <p>
+
+                            Looking to contribute in a different way? You may be interested in helping produce some of our
+                            video and/or animated content, to express interest, please provide us with a few examples of
+                            your work.
+                        </p>
+                        <p>
+                            Submit to <a href="mailto:community@vatsim.uk">community@vatsim.uk</a> with your name and CID.
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
 
 
     <div class="col-md-3">
@@ -166,11 +242,12 @@
                 <ul>
                     <li>
                         Headers use Alegre Sans - <a href="http://www.dafont.com/alegre-sans-nc.font"
-                                                     rel="external nofollow" target="_blank">Download</a>
+                            rel="external nofollow" target="_blank">Download</a>
                     </li>
                     <li>
-                        All other content should use DIN 1451 Mittelschrift - <a href="https://www.1001fonts.com/alte-din-1451-mittelschrift-font.html"
-                                                                                rel="external nofollow" target="_blank">Download</a>
+                        All other content should use DIN 1451 Mittelschrift - <a
+                            href="https://www.1001fonts.com/alte-din-1451-mittelschrift-font.html" rel="external nofollow"
+                            target="_blank">Download</a>
                     </li>
                 </ul>
 
@@ -207,6 +284,7 @@
                         <strong>HSV</strong> 212 / 75 / 36
                     </li>
                 </ul>
+                Our blues remain the anchor, but accents that do not overpower the primary colours are welcome.
 
             </div>
         </div>
