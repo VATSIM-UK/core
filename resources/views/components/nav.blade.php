@@ -235,7 +235,7 @@
                                 <ul>
                                     <li class="dropdown-header">Communications</li>
                                     <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
-                                    <li><a href="{{ route('discord.show') }}">Discord</a></li>
+                                    <li><a href="{{ route('mship.manage.dashboard') }}">Discord</a></li>
                                     <li class="divider"></li>
                                     <li><a href="https://cts.vatsim.uk/">Training System</a></li>
                                     <li><a href="https://docs.vatsim.uk/">Docs Site</a></li>
