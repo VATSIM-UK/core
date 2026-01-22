@@ -259,7 +259,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_recreates_exam_booking_when_exam_report_is_incomplete()
+    public function it_resubmits_student_for_exam_when_exam_report_is_incomplete()
     {
         // Create user and login
         $account = Account::factory()->withQualification()->create();
