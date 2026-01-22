@@ -150,18 +150,18 @@
                         <h3>The use of AI</h3>
                         <p>
                             Whilst AI can be a powerful tool in digital content creation, we encourage members creating
-                            banners and content for VATSIMUK to take a measured approach.
+                            banners and content for VATSIM UK to take a measured approach.
                             We strongly discourage entirely creating banners with AI, as it can lead to inconsistencies with
                             design, style and quality.
                             AI elements should only be used to support human work, or enhance it, not replace it.
                             Should you have any questions about the use of AI, or if you’re unsure of whether something
-                            matches the standard expected of VATSIMUK content, please contact a member of the community
+                            matches the standard expected of VATSIM UK content, please contact a member of the community
                             team.
                         </p>
 
                         <h3>Approval Process</h3>
                         <p>
-                            If you’d like to use a variant of the VATSIMUK logo or banner which has been altered beyond the
+                            If you’d like to use a variant of the VATSIM UK logo or banner which has been altered beyond the
                             permitted adaptations, please submit the modified logo or banner to <a
                                 href="mailto:community@vatsim.uk">community@vatsim.uk</a> for approval.
                             You may also submit logos for a new recurring format (e.g, series banners)
