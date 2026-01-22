@@ -111,6 +111,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'waiting-lists.remove-accounts.pilot',
             'waiting-lists.add-flags.*',
             'waiting-lists.delete.*',
+            'waiting-lists.delete.atc',
+            'waiting-lists.delete.pilot',
             'waiting-lists.create',
             'waiting-lists.admin.*',
             'waiting-lists.admin.atc',
