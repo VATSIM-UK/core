@@ -26,6 +26,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Traits\HasStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Malahierba\PublicId\PublicId;
@@ -128,7 +129,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Application extends Model
 {
-    use HasStatus, PublicId, SoftDeletes;
+    use HasFactory, HasStatus, PublicId, SoftDeletes;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
 

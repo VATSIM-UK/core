@@ -28,7 +28,7 @@ class DivisionMemberTest extends TestCase
 
     public function test_it_doesnt_allow_member_to_start_visiting_atc_application()
     {
-        factory(Facility::class)->states('atc_visit')->create();
+        Facility::factory()->visit('atc')->create();
 
         $this->get(route('visiting.landing'))
             ->assertSeeText(trans('application.dashboard.apply.atc.visit.unable'));
@@ -36,7 +36,7 @@ class DivisionMemberTest extends TestCase
 
     public function test_it_doesnt_allow_member_to_start_transferring_atc_application()
     {
-        factory(Facility::class)->states('atc_transfer')->create();
+        Facility::factory()->transfer('atc')->create();
 
         $this->get(route('visiting.landing'))
             ->assertSeeText(trans('application.dashboard.apply.atc.transfer.unable'));

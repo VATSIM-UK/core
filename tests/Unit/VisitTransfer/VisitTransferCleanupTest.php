@@ -2,6 +2,10 @@
 
 namespace Tests\Unit\VisitTransfer;
 
+use App\Models\Mship\Account;
+use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransfer\Facility;
+use App\Models\VisitTransfer\Reference;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
@@ -24,21 +28,21 @@ class VisitTransferCleanupTest extends TestCase
         parent::setUp();
 
         // A draft application that has just been started
-        $this->facility = factory(\App\Models\VisitTransfer\Facility::class, 'atc_visit')->create([
+        $this->facility = Facility::factory()->visit('atc')->create([
             'stage_reference_enabled' => 1,
             'stage_reference_quantity' => 1,
         ]);
         $application = $this->user->createVisitingTransferApplication([
-            'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
+            'type' => Application::TYPE_VISIT,
             'facility_id' => $this->facility->id,
         ]);
         $this->newApplication = $application->fresh();
 
         // A draft application that was started 3 hours ago
         Carbon::setTestNow(Carbon::now()->subHours(3));
-        $user = \App\Models\Mship\Account::factory()->create();
+        $user = Account::factory()->create();
         $application = $user->createVisitingTransferApplication([
-            'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
+            'type' => Application::TYPE_VISIT,
             'facility_id' => $this->facility->id,
         ]);
         Carbon::setTestNow();
@@ -50,8 +54,8 @@ class VisitTransferCleanupTest extends TestCase
     {
         Artisan::call('visit-transfer:cleanup');
 
-        $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_EXPIRED, $this->oldApplication->fresh()->status);
-        $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_IN_PROGRESS, $this->newApplication->fresh()->status);
+        $this->assertEquals(Application::STATUS_EXPIRED, $this->oldApplication->fresh()->status);
+        $this->assertEquals(Application::STATUS_IN_PROGRESS, $this->newApplication->fresh()->status);
     }
 
     #[Test]
@@ -60,59 +64,59 @@ class VisitTransferCleanupTest extends TestCase
         Mail::fake();
 
         // A submitted application with a pending reference that has expired
-        $application = factory(\App\Models\VisitTransfer\Application::class)->create([
-            'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
+        $application = Application::factory()->create([
+            'type' => Application::TYPE_VISIT,
             'facility_id' => $this->facility->id,
-            'status' => \App\Models\VisitTransfer\Application::STATUS_SUBMITTED,
+            'status' => Application::STATUS_SUBMITTED,
             'references_required' => 1,
             'submitted_at' => Carbon::now(),
         ]);
         Carbon::setTestNow(Carbon::now()->subDays(15));
-        factory(\App\Models\VisitTransfer\Reference::class)->create([
-            'status' => \App\Models\VisitTransfer\Reference::STATUS_REQUESTED,
+        Reference::factory()->create([
+            'status' => Reference::STATUS_REQUESTED,
             'contacted_at' => Carbon::now(),
             'application_id' => $application->id,
         ]);
         Carbon::setTestNow();
 
         Artisan::call('visit-transfer:cleanup');
-        $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_LAPSED, $application->fresh()->status);
+        $this->assertEquals(Application::STATUS_LAPSED, $application->fresh()->status);
     }
 
     #[Test]
     public function it_wont_incorrectly_lapse_applications()
     {
         // A submitted application with a requested (contacted & pending) reference that is not old
-        $application1 = factory(\App\Models\VisitTransfer\Application::class)->create([
-            'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
+        $application1 = Application::factory()->create([
+            'type' => Application::TYPE_VISIT,
             'facility_id' => $this->facility->id,
-            'status' => \App\Models\VisitTransfer\Application::STATUS_SUBMITTED,
+            'status' => Application::STATUS_SUBMITTED,
             'references_required' => 1,
             'submitted_at' => Carbon::now(),
         ]);
         Carbon::setTestNow(Carbon::now()->subDays(12));
-        factory(\App\Models\VisitTransfer\Reference::class)->create([
-            'status' => \App\Models\VisitTransfer\Reference::STATUS_REQUESTED,
+        Reference::factory()->create([
+            'status' => Reference::STATUS_REQUESTED,
             'contacted_at' => Carbon::now(),
             'application_id' => $application1->id,
         ]);
         Carbon::setTestNow();
 
         // A submitted application with a requested (pending - not contacted) reference that is not old
-        $application2 = factory(\App\Models\VisitTransfer\Application::class)->create([
-            'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
+        $application2 = Application::factory()->create([
+            'type' => Application::TYPE_VISIT,
             'facility_id' => $this->facility->id,
-            'status' => \App\Models\VisitTransfer\Application::STATUS_SUBMITTED,
+            'status' => Application::STATUS_SUBMITTED,
             'references_required' => 1,
             'submitted_at' => Carbon::now(),
         ]);
-        factory(\App\Models\VisitTransfer\Reference::class)->create([
-            'status' => \App\Models\VisitTransfer\Reference::STATUS_REQUESTED,
+        Reference::factory()->create([
+            'status' => Reference::STATUS_REQUESTED,
             'application_id' => $application2->id,
         ]);
 
         Artisan::call('visit-transfer:cleanup');
-        $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_SUBMITTED, $application1->fresh()->status);
-        $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_SUBMITTED, $application2->fresh()->status);
+        $this->assertEquals(Application::STATUS_SUBMITTED, $application1->fresh()->status);
+        $this->assertEquals(Application::STATUS_SUBMITTED, $application2->fresh()->status);
     }
 }

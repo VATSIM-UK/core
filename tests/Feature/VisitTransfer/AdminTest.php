@@ -28,9 +28,9 @@ class AdminTest extends TestCase
         parent::setUp();
         Mail::fake();
 
-        $this->application = factory(Application::class)->create();
-        $this->ref1 = factory(Reference::class)->create(['application_id' => $this->application->id]);
-        $this->ref2 = factory(Reference::class)->create(['application_id' => $this->application->id]);
+        $this->application = Application::factory()->create();
+        $this->ref1 = Reference::factory()->create(['application_id' => $this->application->id]);
+        $this->ref2 = Reference::factory()->create(['application_id' => $this->application->id]);
         $this->application = $this->application->fresh();
     }
 
@@ -109,7 +109,7 @@ class AdminTest extends TestCase
 
     private function createTestPostData()
     {
-        $basicData = factory(Facility::class)->make()->toArray();
+        $basicData = Facility::factory()->make()->toArray();
 
         $data = [
             'can_visit' => true,
