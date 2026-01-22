@@ -23,7 +23,7 @@ class FeedbackResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
+        $query = parent::getEloquentQuery()->withTrashed();
 
         return $query->with(['account', 'submitter', 'form']);
     }
@@ -81,6 +81,17 @@ class FeedbackResource extends Resource
                             ->label('Actioned Comment')
                             ->content(fn ($record) => $record->actioned_comment),
                     ])->hidden(fn ($record) => $record->actioned_at === null),
+
+                Forms\Components\Fieldset::make('Rejection Information')
+                    ->schema([
+                        Forms\Components\Placeholder::make('rejected_by')
+                            ->label('Rejected By')
+                            ->content(fn ($record) => $record->deleted_by ? $record->deleter->name : null),
+
+                        Forms\Components\Placeholder::make('reject_reason')
+                            ->label('Rejection Reason')
+                            ->content(fn ($record) => $record->reject_reason),
+                    ])->hidden(fn ($record) => ! $record->trashed()),
 
                 Forms\Components\Section::make('Answers')
                     ->schema([

@@ -60,6 +60,7 @@ class Feedback extends Model
         'account_id',
         'submitter_account_id',
         'form_id',
+        'reject_reason',
     ];
 
     protected $casts = [
@@ -197,12 +198,15 @@ class Feedback extends Model
         $this->save();
     }
 
-    public function markRejected($user = null)
+    public function markRejected($user = null, $reason = null)
     {
         if ($user) {
             $this->deleted_by = $user->id;
-            $this->save();
         }
+        if ($reason) {
+            $this->reject_reason = $reason;
+        }
+        $this->save();
         $this->delete();
     }
 
