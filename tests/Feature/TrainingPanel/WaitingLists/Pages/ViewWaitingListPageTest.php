@@ -483,7 +483,7 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
     public function test_atc_admin_can_delete_atc_waiting_list()
     {
         $userWithPermission = Account::factory()->create();
-        $waitingList = WaitingList::factory()->create(['department' => 'atc',]);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
         $userWithPermission->givePermissionTo('waiting-lists.view.atc');
         $userWithPermission->givePermissionTo('waiting-lists.access');
@@ -496,7 +496,7 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
     public function test_atc_delete_permission_cannot_delete_pilot_waiting_list()
     {
         $userWithPermission = Account::factory()->create();
-        $waitingList = WaitingList::factory()->create(['department' => 'pilot',]);
+        $waitingList = WaitingList::factory()->create(['department' => 'pilot']);
 
         $userWithPermission->givePermissionTo('waiting-lists.view.atc');
         $userWithPermission->givePermissionTo('waiting-lists.access');
@@ -505,5 +505,4 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)->test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertDontSee('Delete Waiting List');
     }
-
 }
