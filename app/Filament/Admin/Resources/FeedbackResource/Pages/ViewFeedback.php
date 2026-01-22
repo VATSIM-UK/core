@@ -42,8 +42,12 @@ class ViewFeedback extends BaseViewRecordPage
                 ->label('Reject Feedback')
                 ->color('danger')
                 ->icon('heroicon-o-x-mark')
-                ->action(fn () => $this->record->markRejected(auth()->user()))
-                ->requiresConfirmation()
+                ->action(fn ($data) => $this->record->markRejected(auth()->user(), $data['reason']))
+                ->form([
+                    Forms\Components\Textarea::make('reason')
+                        ->label('Rejection Reason')
+                        ->rules('required', 'min:10'),
+                ])
                 ->visible(fn () => ! $this->record->trashed() && auth()->user()->can('actionFeedback', $this->record)),
 
             Actions\Action::make('reallocate_feedback')
