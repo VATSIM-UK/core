@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin\Feedback;
 
 use App\Filament\Admin\Resources\FeedbackResource\Pages\ViewFeedback;
+use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -198,5 +199,27 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
 
         // trashed included queries
         $this->assertNotNull(Feedback::withTrashed()->find($feedbackId));
+    }
+
+    public function test_reallocates_feedback_to_another_account()
+    {
+        $originalAccount = Account::factory()->create();
+        $newAccount = Account::factory()->create();
+
+        $form = Form::first();
+
+        $feedback = new Feedback([
+            'form_id' => $form->id,
+            'account_id' => $originalAccount->id,
+            'submitter_account_id' => $originalAccount->id,
+        ]);
+        $feedback->save();
+
+        $this->assertEquals($originalAccount->id, $feedback->account_id);
+
+        $feedback->reallocate($newAccount->id);
+        $feedback->refresh();
+
+        $this->assertEquals($newAccount->id, $feedback->account_id);
     }
 }
