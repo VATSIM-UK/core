@@ -109,7 +109,7 @@
                     <a class="nav-link" href="#">Community <span class="arrow"></span></a>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('discord.show') }}">Discord</a>
+                            <a class="nav-link" href="{{ route('mship.manage.dashboard') }}">Discord</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('site.community.teamspeak') }}">TeamSpeak</a>

@@ -33,8 +33,8 @@ class ApplicationCleanUpTest extends TestCase
         $this->user->save();
 
         // Create facility & application
-        $facility = factory(Facility::class)->states('atc_transfer')->create();
-        $this->application = factory(Application::class)->states('atc_transfer')->create([
+        $facility = Facility::factory()->transfer('atc')->create();
+        $this->application = Application::factory()->transfer('atc')->create([
             'account_id' => $this->user->id,
             'status' => Application::STATUS_SUBMITTED,
             'should_perform_checks' => 1,

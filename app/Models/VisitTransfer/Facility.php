@@ -5,6 +5,7 @@ namespace App\Models\VisitTransfer;
 use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
 use App\Models\Contact;
 use App\Models\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Malahierba\PublicId\PublicId;
 
@@ -65,7 +66,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Facility extends Model
 {
-    use Notifiable, PublicId;
+    use HasFactory, Notifiable, PublicId;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-facility';
 
@@ -149,7 +150,7 @@ class Facility extends Model
             $attributes['training_spaces'] = null;
         }
 
-        $input_emails = array_filter($attributes['acceptance_emails']);
+        /*$input_emails = array_filter($attributes['acceptance_emails']);
         shuffle($input_emails);
         $current_emails = $this->emails()->get();
 
@@ -175,7 +176,7 @@ class Facility extends Model
             if (array_search($email->email, $input_emails) === false) {
                 $email->delete();
             }
-        }
+        }*/
 
         return parent::update($attributes, $options);
     }

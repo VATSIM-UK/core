@@ -4,8 +4,12 @@ namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
+use App\Services\Training\ExamAnnouncementService;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -47,6 +51,50 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                 Action::make('Conduct')
                     ->url(fn (ExamBooking $exam): string => ConductExam::getUrl(['examId' => $exam->id]))
                     ->visible(fn (ExamBooking $examBooking) => $examBooking->finished != ExamBooking::FINISHED_FLAG),
+                Action::make('postExamAnnouncement')
+                    ->label('Post Exam Announcement')
+                    ->icon('heroicon-o-megaphone')
+                    ->color('info')
+                    ->visible(function (ExamBooking $examBooking): bool {
+                        // use CTS member ID rather than Core acocunt ID.
+                        $memberId = auth()->user()->member->id;
+
+                        return app(ExamAnnouncementService::class)->canPostAnnouncement($examBooking, $memberId);
+                    })
+                    ->form([
+                        Checkbox::make('ping_exam_pilot')
+                            ->label('Ping: Exam Pilot')
+                            ->default(true),
+
+                        Checkbox::make('ping_exam_controller')
+                            ->label('Ping: Exam Controller')
+                            ->default(false),
+
+                        Textarea::make('notes')
+                            ->label('Additional notes')
+                            ->placeholder('Optional: additional notes')
+                            ->rows(4)
+                            ->maxLength(1000),
+
+                    ])
+                    ->requiresConfirmation()
+                    ->action(function (ExamBooking $examBooking, array $data): void {
+                        try {
+                            app(ExamAnnouncementService::class)->postAnnouncement($examBooking, $data);
+
+                            Notification::make()
+                                ->title('Discord notification sent')
+                                ->success()
+                                ->send();
+
+                        } catch (\Throwable $e) {
+                            Notification::make()
+                                ->title('Failed to post to Discord')
+                                ->danger()
+                                ->send();
+                        }
+
+                    }),
             ]);
     }
 
