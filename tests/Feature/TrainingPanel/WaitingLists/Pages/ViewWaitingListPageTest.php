@@ -480,7 +480,7 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
             ->assertSee('Edit settings');
     }
 
-    public function test_atc_admin_can_delete_atc_waiting_list()
+    public function test_user_with_delete_atc_permission_can_delete_atc_waiting_list()
     {
         $userWithPermission = Account::factory()->create();
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
@@ -493,7 +493,7 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
             ->assertSee('Delete Waiting List');
     }
 
-    public function test_atc_delete_permission_cannot_delete_pilot_waiting_list()
+    public function test_user_with_delete_atc_permission_cannot_delete_pilot_waiting_list()
     {
         $userWithPermission = Account::factory()->create();
         $waitingList = WaitingList::factory()->create(['department' => 'pilot']);
