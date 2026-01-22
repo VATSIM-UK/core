@@ -82,6 +82,17 @@ class FeedbackResource extends Resource
                             ->content(fn ($record) => $record->actioned_comment),
                     ])->hidden(fn ($record) => $record->actioned_at === null),
 
+                Forms\Components\Fieldset::make('Rejection Information')
+                    ->schema([
+                        Forms\Components\Placeholder::make('rejected_by')
+                            ->label('Rejected By')
+                            ->content(fn ($record) => $record->deleted_by ? $record->deleter->name : null),
+
+                        Forms\Components\Placeholder::make('reject_reason')
+                            ->label('Rejection Reason')
+                            ->content(fn ($record) => $record->reject_reason),
+                    ])->hidden(fn ($record) => !$record->trashed()),
+
                 Forms\Components\Section::make('Answers')
                     ->schema([
                         Forms\Components\Repeater::make('Answers')
