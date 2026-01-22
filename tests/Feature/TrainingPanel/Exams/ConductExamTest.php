@@ -321,4 +321,71 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             ->where('exam', 'TWR')
             ->count());
     }
+
+    #[Test]
+    public function it_resubmits_student_for_obs_exam_when_exam_report_is_incomplete()
+    {
+        // Create user with ATC qualification and login
+        $account = Account::factory()->withQualification()->create();
+        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+
+        // Create OBS position
+        $position = Position::factory()->create(['callsign' => 'OBS_PH_PT3']);
+
+        // Create exam booking
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'exam' => 'OBS',
+            'student_id' => $student->id,
+            'position_1' => $position->callsign,
+            'student_rating' => Qualification::code('OBS')->first()->vatsim,
+            'rts_id' => 14,
+        ]);
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => $this->panelUser->id,
+        ]);
+
+        $this->panelUser->givePermissionTo('training.exams.conduct.obs');
+
+        // Create exam criteria for OBS
+        $criteria = ExamCriteria::create([
+            'exam' => 'OBS',
+            'criteria' => 'Test Criteria',
+            'deleted' => 0,
+        ]);
+
+        // Submit exam report as incomplete
+        Livewire::actingAs($this->panelUser)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->fillForm(function () use ($criteria) {
+                return ['form' => [$criteria->id => ['grade' => 'N']]];
+            })
+            ->set('examResultData.exam_result', 'N')
+            ->call('completeExam')
+            ->assertHasNoFormErrors();
+
+        // Check the practical_results table
+        $this->assertDatabaseHas('practical_results', connection: 'cts', data: [
+            'examid' => $exam->id,
+            'student_id' => $student->id,
+            'result' => 'N',
+            'exam' => 'OBS',
+        ]);
+
+        // Check a new exam booking exists for the student & OBS position
+        $this->assertDatabaseHas('exam_book', connection: 'cts', data: [
+            'student_id' => $student->id,
+            'position_1' => $position->callsign,
+            'exam' => 'OBS',
+        ]);
+
+        // There should now be at least 2 bookings for this student
+        $this->assertEquals(2, ExamBooking::where('student_id', $student->id)
+            ->where('position_1', $position->callsign)
+            ->where('exam', 'OBS')
+            ->count());
+    }
+
 }

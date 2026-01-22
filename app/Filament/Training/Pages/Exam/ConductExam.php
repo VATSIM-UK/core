@@ -275,7 +275,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
     public function resubmitForExam()
     {
         $service = new ExamForwardingService;
-        
+
         $student = $this->examBooking->student;
         $position = Position::query()
             ->where('callsign', $this->examBooking->position_1)
