@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-9">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-pencil"></i> &thinsp; New Controller
+                <div class="panel-heading"><i class="fa fa-pencil"></i> &thinsp; New Controller
                 </div>
                 <div class="panel-body">
                     @include("site.atc.newcontroller-panel")
@@ -19,7 +19,7 @@
 
         <div class="col-md-3">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-question-sign"></i> &thinsp; FAQs
+                <div class="panel-heading"><i class="fa fa-question"></i> &thinsp; FAQs
                 </div>
                 <div class="panel-body">
                     <p>
@@ -39,27 +39,28 @@
                     </p>
 
                     <p>
-                        <strong>What do I need before attending a group session?</strong>
+                        <strong>What software will I need before attending a group session?</strong>
                     </p>
 
                     <ul>
                         <li>
-                            An installed version of <a href="http://www.euroscope.hu/" rel="external nofollow">Euroscope</a>
+                            Version 3.2.3.2 of <a href="https://euroscope.hu/install/EuroScopeSetup.3.2.3.2.msi" rel="external nofollow">EuroScope</a>
                         </li>
                         <li>
                             <a href="https://docs.vatsim.uk/General/Software%20Downloads/Controller%20Pack%20%26%20Sector%20File/" rel="">UK Controller Pack</a>
                         </li>
 						<li>
-							<a href="https://vatsim.uk/ukcp" rel="external nofollow">UK Controller Plugin</a>
-						</li>
-						<li>
-							<a href="https://audio.vatsim.net/docs/2.0/atc/euroscope" rel="external nofollow">Audio for VATSIM</a>
+							<a href="https://github.com/pierr3/TrackAudio/releases/latest" rel="external nofollow">TrackAudio</a>
 						</li>
                         <li>
-                            <a href="{{ route('site.community.teamspeak') }}" rel="">Teamspeak</a>&nbsp;Installed
+                            <a href="{{ route('site.community.teamspeak') }}" rel="">Teamspeak</a>
                         </li>
 
                     </ul>
+
+                    <p>
+                        We strongly recommend following the <a href="https://docs.vatsim.uk/General/Use%20of%20Software/EuroScope%20Setup%20Guide/" rel="">EuroScope Setup Guide</a> on our Docs website as it will contain up-to-date links and tutorials on how to setup EuroScope.
+                    </p>
 
                     <p>
                         <strong>Where do I sign up for a group session?</strong>
