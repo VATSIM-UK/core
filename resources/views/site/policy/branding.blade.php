@@ -19,7 +19,7 @@
                         </p>
                         <p>
                             The building blocks for our brand are contained on this page. While the guidelines are here to
-                            get you started, all uses of our brand must be approved by VATSIMUK.
+                            get you started, all uses of our brand must be approved by VATSIM UK.
                         </p>
 
                         <hr />
