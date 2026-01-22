@@ -2,12 +2,14 @@
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\PracticalResult;
 use App\Repositories\Cts\ExamAssessmentRepository;
 use App\Repositories\Cts\ExamResultRepository;
+use App\Services\Training\ExamForwardingService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Fieldset;
@@ -263,7 +265,28 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ->success()
             ->send();
 
+        if ($examResultFormData['exam_result'] == 'N') {
+            $this->resubmitForExam();
+        }
+
         $this->redirect(Exams::getUrl());
+    }
+
+    public function resubmitForExam()
+    {
+        $service = new ExamForwardingService;
+        
+        $student = $this->examBooking->student;
+        $position = Position::query()
+            ->where('callsign', $this->examBooking->position_1)
+            ->first();
+        $exam_level = $this->examBooking->exam;
+
+        if ($exam_level == 'OBS') {
+            $service->forwardForObsExam($student, $position);
+        } else {
+            $service->forwardForExam($student, $position, Auth()->user()->id);
+        }
     }
 
     public function validateGradesBeforeSubmission(string $result): bool

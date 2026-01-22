@@ -4,6 +4,7 @@ namespace Tests\Feature\TrainingPanel\Exams;
 
 use App\Events\Training\Exams\PracticalExamCompleted;
 use App\Filament\Training\Pages\Exam\ConductExam;
+use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\Member;
@@ -255,5 +256,69 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         Event::assertDispatched(PracticalExamCompleted::class, function ($event) use ($exam) {
             return $event->examBooking->id === $exam->id && $event->practicalResult->examid === $exam->id;
         });
+    }
+
+    #[Test]
+    public function it_recreates_exam_booking_when_exam_report_is_incomplete()
+    {
+        // Create user and login
+        $account = Account::factory()->withQualification()->create();
+        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+
+        // Create exam booking
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'exam' => 'TWR',
+            'student_id' => $student->id,
+            'position_1' => $position->callsign,
+            'student_rating' => Qualification::code('S1')->first()->vatsim,
+        ]);
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => $this->panelUser->id,
+        ]);
+
+        $this->panelUser->givePermissionTo('training.exams.conduct.twr');
+
+        // Create exam criteria
+        $criteria = ExamCriteria::create([
+            'exam' => 'TWR',
+            'criteria' => 'Test Criteria',
+            'deleted' => 0,
+        ]);
+
+        // Submit exam report as incomplete
+        Livewire::actingAs($this->panelUser)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->fillForm(function () use ($criteria) {
+                return ['form' => [$criteria->id => ['grade' => 'N']]];
+            })
+            ->set('examResultData.exam_result', 'N')
+            ->call('completeExam')
+            ->assertHasNoFormErrors();
+
+        // Check the practical_results table
+        $this->assertDatabaseHas('practical_results', connection: 'cts', data: [
+            'examid' => $exam->id,
+            'student_id' => $student->id,
+            'result' => 'N',
+            'exam' => 'TWR',
+        ]);
+
+        // Check a new exam booking exists for the student & same position
+        $this->assertDatabaseHas('exam_book', connection: 'cts', data: [
+            'student_id' => $student->id,
+            'position_1' => $position->callsign,
+            'exam' => 'TWR',
+        ]);
+
+        // There should now be at least 2 bookings for this student
+        $this->assertEquals(2, ExamBooking::where('student_id', $student->id)
+            ->where('position_1', $position->callsign)
+            ->where('exam', 'TWR')
+            ->count());
     }
 }
