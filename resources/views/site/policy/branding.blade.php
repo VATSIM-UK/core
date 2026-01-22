@@ -113,7 +113,7 @@
                                     <li>Uses the VATSIM UK branding colours throughout.</li>
                                     <li>VATSIM UK logo has been used correctly (clear, correct colours, dimensions haven't
                                         been changed...).</li>
-                                    <li>Event text is clear and unambigious, event times are in 24hr format and in zulu.
+                                    <li>Event text is clear and unambiguous, event times are in 24hr format and in zulu.
                                     </li>
                                     <li>The airport's ICAO has been used.</li>
                                 </ul>
