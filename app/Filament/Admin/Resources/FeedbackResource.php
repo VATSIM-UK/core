@@ -23,7 +23,7 @@ class FeedbackResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
+        $query = parent::getEloquentQuery()->withTrashed();
 
         return $query->with(['account', 'submitter', 'form']);
     }
