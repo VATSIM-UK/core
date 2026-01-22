@@ -85,7 +85,7 @@
         "logtail/monolog-logtail": "^3.2",
         "maatwebsite/excel": "~3.1.17",
         "malahierba-lab/public-id": "dev-main",
-        "ohdearapp/ohdear-php-sdk": "^3.0",
+        "ohdearapp/ohdear-php-sdk": "^4.4",
         "planetteamspeak/ts3-php-framework": "~1.3.0",
         "predis/predis": "^2.0",
         "pusher/pusher-php-server": "~7.2",
