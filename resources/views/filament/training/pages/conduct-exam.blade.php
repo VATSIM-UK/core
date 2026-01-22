@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-    <div wire:poll.1s="autosave"></div>
+    <div wire:poll.5s="autosave"></div>
     {{ $this->examDetailsInfoList }}
 
     {{ $this->form }}
