@@ -29,9 +29,9 @@ class WaitingListResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->autofocus()->required()->live(onBlur: true)->disabledOn('edit')
+                TextInput::make('name')->autofocus()->required()->live(onBlur: true)
                     ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
-                TextInput::make('slug')->disabledOn('edit')->required(),
+                TextInput::make('slug')->required(),
 
                 Select::make('department')->options([
                     'atc' => 'ATC Training',
