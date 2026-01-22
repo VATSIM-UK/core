@@ -161,7 +161,9 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
             ->assertActionVisible('reject_feedback')
-            ->callAction('reject_feedback');
+            ->callAction('reject_feedback', data: [
+                'reason' => 'Testing rejection of feedback.',
+            ]);
 
         $this->assertNotNull($feedback->fresh()->deleted_at);
     }
@@ -177,7 +179,9 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
-            ->callAction('reject_feedback');
+            ->callAction('reject_feedback', data: [
+                'reason' => 'Testing rejection of feedback.',
+            ]);
 
         $feedback = $feedback->fresh();
         $this->assertNotNull($feedback->deleted_at);
