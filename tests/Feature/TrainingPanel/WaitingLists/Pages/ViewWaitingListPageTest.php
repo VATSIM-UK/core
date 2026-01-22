@@ -485,11 +485,12 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $userWithPermission = Account::factory()->create();
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $userWithPermission->givePermissionTo('waiting-lists.view.atc');
         $userWithPermission->givePermissionTo('waiting-lists.access');
+        $userWithPermission->givePermissionTo('waiting-lists.view.atc');
+        $userWithPermission->givePermissionTo('waiting-lists.admin.atc');
         $userWithPermission->givePermissionTo('waiting-lists.delete.atc');
 
-        Livewire::actingAs($this->panelUser)->test(ViewWaitingList::class, ['record' => $waitingList->id])
+        Livewire::actingAs($userWithPermission)->test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertSee('Delete Waiting List');
     }
 
@@ -498,8 +499,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $userWithPermission = Account::factory()->create();
         $waitingList = WaitingList::factory()->create(['department' => 'pilot']);
 
-        $userWithPermission->givePermissionTo('waiting-lists.view.atc');
         $userWithPermission->givePermissionTo('waiting-lists.access');
+        $userWithPermission->givePermissionTo('waiting-lists.view.atc');
+        $userWithPermission->givePermissionTo('waiting-lists.admin.atc');
         $userWithPermission->givePermissionTo('waiting-lists.delete.atc');
 
         Livewire::actingAs($this->panelUser)->test(ViewWaitingList::class, ['record' => $waitingList->id])
