@@ -24,7 +24,7 @@ class ViewFeedback extends BaseViewRecordPage
                         ->label('Comment')
                         ->rules('required', 'min:10'),
                 ])
-                ->visible(fn () => $this->record->sent_at === null && !$this->record->trashed() && auth()->user()->can('actionFeedback', $this->record)),
+                ->visible(fn () => $this->record->sent_at === null && ! $this->record->trashed() && auth()->user()->can('actionFeedback', $this->record)),
             Actions\Action::make('action_feedback')
                 ->label('Action Feedback')
                 ->color('info')
@@ -35,7 +35,7 @@ class ViewFeedback extends BaseViewRecordPage
                         ->label('Comment')
                         ->rules('required', 'min:10'),
                 ])
-                ->visible(fn () => $this->record->actioned_at === null && !$this->record->trashed() && auth()->user()->can('actionFeedback', $this->record)),
+                ->visible(fn () => $this->record->actioned_at === null && ! $this->record->trashed() && auth()->user()->can('actionFeedback', $this->record)),
 
             Actions\Action::make('reject_feedback')
                 ->label('Reject Feedback')
@@ -43,7 +43,7 @@ class ViewFeedback extends BaseViewRecordPage
                 ->icon('heroicon-o-x-mark')
                 ->action(fn () => $this->record->markRejected(auth()->user()))
                 ->requiresConfirmation()
-                ->visible(fn () => !$this->record->trashed() && auth()->user()->can('actionFeedback', $this->record)),
+                ->visible(fn () => ! $this->record->trashed() && auth()->user()->can('actionFeedback', $this->record)),
         ];
     }
 }
