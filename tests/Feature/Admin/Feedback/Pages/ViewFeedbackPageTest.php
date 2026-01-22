@@ -161,7 +161,9 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
             ->assertActionVisible('reject_feedback')
-            ->callAction('reject_feedback');
+            ->callAction('reject_feedback', data: [
+                'reason' => 'Testing rejection of feedback.',
+            ]);
 
         $this->assertNotNull($feedback->fresh()->deleted_at);
     }
@@ -177,26 +179,74 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
-            ->callAction('reject_feedback');
+            ->callAction('reject_feedback', data: [
+                'reason' => 'Testing rejection of feedback.',
+            ]);
 
         $feedback = $feedback->fresh();
         $this->assertNotNull($feedback->deleted_at);
         $this->assertEquals($feedback->deleted_by, $this->adminUser->id);
     }
 
-    public function test_soft_deleted_feedback_excluded_from_queries()
+    public function test_can_reject_feedback_with_reason()
     {
         $form = factory(Form::class)->create(['slug' => 'atc']);
         $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
-        $feedbackId = $feedback->id;
 
-        // Soft delete the feedback
-        $feedback->delete();
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
+        $this->adminUser->givePermissionTo('feedback.action');
 
-        // normal queries
-        $this->assertNull(Feedback::find($feedbackId));
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
+            ->assertActionVisible('reject_feedback')
+            ->callAction('reject_feedback', data: [
+                'reason' => 'This feedback does not meet our standards.',
+            ]);
 
-        // trashed included queries
-        $this->assertNotNull(Feedback::withTrashed()->find($feedbackId));
+        $feedback = $feedback->fresh();
+        $this->assertNotNull($feedback->deleted_at);
+        $this->assertEquals($feedback->reject_reason, 'This feedback does not meet our standards.');
+    }
+
+    public function test_rejected_feedback_shows_in_details_page()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
+        $this->adminUser->givePermissionTo('feedback.action');
+
+        // Reject the feedback
+        $feedback->markRejected($this->adminUser, 'Invalid feedback');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
+            ->assertSuccessful()
+            ->assertSee('Rejected By')
+            ->assertSee($this->adminUser->name)
+            ->assertSee('Rejection Reason')
+            ->assertSee('Invalid feedback');
+    }
+
+    public function test_rejected_feedback_hides_action_buttons()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
+        $this->adminUser->givePermissionTo('feedback.action');
+
+        // Reject the feedback
+        $feedback->markRejected($this->adminUser, 'Invalid feedback');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
+            ->assertSuccessful()
+            ->assertActionHidden('reject_feedback')
+            ->assertActionHidden('send_feedback')
+            ->assertActionHidden('action_feedback');
     }
 }
