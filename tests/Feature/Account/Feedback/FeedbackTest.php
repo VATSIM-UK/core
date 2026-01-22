@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Account\Feedback;
 
+use App\Models\Mship\Account;
+use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
@@ -76,6 +78,29 @@ class FeedbackTest extends TestCase
             ->call('GET', route('mship.feedback.redirect.atc'), ['cid' => 'mycidishere']);
 
         $request->assertRedirect(route('mship.feedback.new.form', [$form->slug, 'cid' => 'mycidishere']));
+    }
+
+    #[Test]
+    public function it_reallocates_feedback_to_another_account()
+    {
+        $originalAccount = Account::factory()->create();
+        $newAccount = Account::factory()->create();
+
+        $form = Form::first();
+
+        $feedback = new Feedback([
+            'form_id' => $form->id,
+            'account_id' => $originalAccount->id,
+            'submitter_account_id' => $originalAccount->id,
+        ]);
+        $feedback->save();
+
+        $this->assertEquals($originalAccount->id, $feedback->account_id);
+
+        $feedback->reallocate($newAccount->id);
+        $feedback->refresh();
+
+        $this->assertEquals($newAccount->id, $feedback->account_id);
     }
 
     //    #[Test]
