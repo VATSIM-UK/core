@@ -210,6 +210,12 @@ class Feedback extends Model
         $this->delete();
     }
 
+    public function reallocate($account_id)
+    {
+        $this->account_id = $account_id;
+        $this->save();
+    }
+
     public function getOptions($options)
     {
         return json_decode($options);
