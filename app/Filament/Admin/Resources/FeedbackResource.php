@@ -91,7 +91,7 @@ class FeedbackResource extends Resource
                         Forms\Components\Placeholder::make('reject_reason')
                             ->label('Rejection Reason')
                             ->content(fn ($record) => $record->reject_reason),
-                    ])->hidden(fn ($record) => !$record->trashed()),
+                    ])->hidden(fn ($record) => ! $record->trashed()),
 
                 Forms\Components\Section::make('Answers')
                     ->schema([
