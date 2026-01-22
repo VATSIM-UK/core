@@ -387,5 +387,4 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             ->where('exam', 'OBS')
             ->count());
     }
-
 }
