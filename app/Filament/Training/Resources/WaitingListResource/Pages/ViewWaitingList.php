@@ -98,6 +98,7 @@ class ViewWaitingList extends ViewRecord
                 ])
                 ->visible(fn () => auth()->user()->can('addFlags', $this->record)),
             Actions\EditAction::make()->label('Edit settings')->visible(fn () => auth()->user()->can('update', $this->record)),
+            Actions\DeleteAction::make()->label('Delete Waiting List')->requiresConfirmation()->visible(fn () => auth()->user()->can('delete', $this->record)),
         ];
     }
 }
