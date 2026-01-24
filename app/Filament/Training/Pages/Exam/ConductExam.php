@@ -2,6 +2,7 @@
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Enums\ExamResultEnum;
 use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
@@ -219,9 +220,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
                 Select::make('exam_result')
                     ->label('Result')
                     ->options([
-                        'P' => 'Pass',
-                        'F' => 'Fail',
-                        'N' => 'Incomplete',
+                        ExamResultEnum::Pass->value => ExamResultEnum::Pass->human(),
+                        ExamResultEnum::Fail->value => ExamResultEnum::Fail->human(),
+                        ExamResultEnum::Incomplete->value => ExamResultEnum::Incomplete->human(),
                     ])
                     ->live()
                     ->columnSpan(3)
@@ -265,7 +266,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ->success()
             ->send();
 
-        if ($examResultFormData['exam_result'] == 'N') {
+        if ($examResultFormData['exam_result'] == ExamResultEnum::Incomplete->value) {
             $this->resubmitForExam();
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Cts;
 
+use App\Enums\ExamResultEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,14 +16,9 @@ class PracticalResult extends Model
 
     public $timestamps = false;
 
-    public const PASSED = 'P';
-
-    public const FAILED = 'F';
-
-    public const INCOMPLETE = 'N';
-
     protected $casts = [
         'date' => 'datetime',
+        'result' => ExamResultEnum::class,
     ];
 
     public $guarded = [];
@@ -39,12 +35,7 @@ class PracticalResult extends Model
 
     public function resultHuman(): string
     {
-        return match ($this->result) {
-            self::PASSED => 'Passed',
-            self::FAILED => 'Failed',
-            self::INCOMPLETE => 'Incomplete',
-            default => 'Unknown',
-        };
+        return $this->result->human();
     }
 
     public function criteria(): HasMany
