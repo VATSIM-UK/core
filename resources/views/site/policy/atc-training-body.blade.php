@@ -67,7 +67,7 @@ To be eligible for Heathrow Training, S1 members must:
 
 - Be on the active controlling roster;
 - Not have significant negative feedback;
-- Have completed 50hrs on any UK Ground or Delivery positions;
+- Have completed 50hrs on any UK Ground or Delivery positions.
 
 ### 1.5 Heathrow DEL/GND (S2+)
 
