@@ -21,7 +21,7 @@ class ViewVisitTransferApplication extends ViewRecord
 
     public function getTitle(): string
     {
-        return 'View '.$this->record->account->full_name.'\'s '.$this->record->type_string.' Application #'.$this->record->public_id;
+        return 'View '.$this->record->account?->full_name.'\'s '.$this->record->type_string.' Application #'.$this->record->public_id;
     }
 
     protected function getHeaderActions(): array
@@ -125,8 +125,8 @@ class ViewVisitTransferApplication extends ViewRecord
                                 Grid::make(2)->schema([
                                     TextEntry::make('account.full_name')->label('Applicant Name'),
                                     TextEntry::make('account.id')->label('Applicant ID'),
-                                    TextEntry::make('atc_rating')->label('ATC Rating')->getStateUsing(fn ($record) => ($record->account->qualification_atc->name_long ?? 'Unknown ATC')),
-                                    TextEntry::make('pilot_rating')->label('Pilot Rating')->getStateUsing(fn ($record) => ($record->account->qualification_pilot->name_long ?? 'Unknown Pilot')),
+                                    TextEntry::make('atc_rating')->label('ATC Rating')->getStateUsing(fn ($record) => ($record->account?->qualification_atc?->name_long ?? 'Unknown ATC')),
+                                    TextEntry::make('pilot_rating')->label('Pilot Rating')->getStateUsing(fn ($record) => ($record->account?->qualification_pilot?->name_long ?? 'Unknown Pilot')),
                                     TextEntry::make('type_string')->label('Facility Type'),
                                     TextEntry::make('facility.name')->label('Facility Name'),
                                     TextEntry::make('created_at')->label('Created At')->dateTime(),
@@ -164,7 +164,7 @@ class ViewVisitTransferApplication extends ViewRecord
                             ->description('Current and Past Memberships of the Applicant')
                             ->schema([
                                 Grid::make(1)->schema(
-                                    $application->account->statesHistory
+                                    ($application->account?->statesHistory ?? collect())
                                         ->sortByDesc('pivot.start_at')
                                         ->map(function ($state) {
                                             $status = ($state->pivot->end_at) ? 'Expired' : 'Active - '.($state->is_permanent ? 'Permanent' : 'Temporary');
@@ -179,11 +179,12 @@ class ViewVisitTransferApplication extends ViewRecord
                             ->description('Check for any recent notes that may be relevant to this application')
                             ->schema([
                                 Grid::make(1)->schema(
-                                    $application->account->notes->map(function ($note) {
-                                        return TextEntry::make("note_{$note->id}")
-                                            ->label("Note by {$note->account->full_name} on {$note->created_at->toFormattedDateString()}")
-                                            ->getStateUsing(fn () => $note->content);
-                                    })->toArray()
+                                    ($application->account?->notes ?? collect())
+                                        ->map(function ($note) {
+                                            return TextEntry::make("note_{$note->id}")
+                                                ->label("Note by {$note->account?->full_name} on {$note->created_at->toFormattedDateString()}")
+                                                ->getStateUsing(fn () => $note->content);
+                                        })->toArray()
                                 ),
                             ]),
                     ])->from('md'), // stacks on smaller screens
@@ -192,30 +193,30 @@ class ViewVisitTransferApplication extends ViewRecord
                         ->description('Previous Visiting & Transferring Applications by this Member')
                         ->schema([
                             Grid::make(1)->schema(
-                                $application->account->visitTransferApplications
+                                ($application->account?->visitTransferApplications ?? collect())
                                     ->where('id', '!=', $application->id)
                                     ->sortByDesc('created_at')
                                     ->map(function ($oldapp) {
                                         return Grid::make(5)->schema([
                                             TextEntry::make("app_{$oldapp->id}_id")
                                                 ->label('Application ID')
-                                                ->getStateUsing(fn () => $oldapp->public_id)
-                                                ->url(route('filament.app.resources.visit-transfer.visit-transfer-applications.view', ['record' => $oldapp->id]))
+                                                ->getStateUsing(fn () => $oldapp->public_id ?? 'Unknown')
+                                                ->url($oldapp->id ? route('filament.app.resources.visit-transfer.visit-transfer-applications.view', ['record' => $oldapp->id]) : null)
                                                 ->color('primary'),
                                             TextEntry::make("app_{$oldapp->id}_type")
                                                 ->label('Type')
-                                                ->getStateUsing(fn () => $oldapp->type_string),
+                                                ->getStateUsing(fn () => $oldapp->type_string ?? 'Unknown'),
                                             TextEntry::make("app_{$oldapp->id}_facility")
                                                 ->label('Facility')
-                                                ->getStateUsing(fn () => $oldapp->facility->name),
+                                                ->getStateUsing(fn () => $oldapp->facility?->name ?? 'Deleted Facility'),
                                             TextEntry::make("app_{$oldapp->id}_status")
                                                 ->label('Status')
-                                                ->getStateUsing(fn () => $oldapp->status_string)
+                                                ->getStateUsing(fn () => $oldapp->status_string ?? 'Unknown')
                                                 ->badge()
-                                                ->color(fn () => $oldapp->status_color),
+                                                ->color(fn () => $oldapp->status_color ?? 'gray'),
                                             TextEntry::make("app_{$oldapp->id}_created")
                                                 ->label('Created')
-                                                ->getStateUsing(fn () => $oldapp->created_at->toDayDateTimeString()),
+                                                ->getStateUsing(fn () => optional($oldapp->created_at)->toDayDateTimeString() ?? 'Unknown'),
                                         ]);
                                     })->toArray()
                             ),
