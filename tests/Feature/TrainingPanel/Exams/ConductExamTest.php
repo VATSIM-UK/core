@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\Exams;
 
+use App\Enums\ExamResultEnum;
 use App\Events\Training\Exams\PracticalExamCompleted;
 use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Atc\Position;
@@ -158,7 +159,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             'examid' => $exam->id,
             'criteria_id' => $examCriteria->id,
             'notes' => 'Test comment for test criteria',
-            'result' => 'N',
+            'result' => ExamResultEnum::Incomplete->value,
         ]);
     }
 
@@ -296,7 +297,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             ->fillForm(function () use ($criteria) {
                 return ['form' => [$criteria->id => ['grade' => 'N']]];
             })
-            ->set('examResultData.exam_result', 'N')
+            ->set('examResultData.exam_result', ExamResultEnum::Incomplete->value)
             ->call('completeExam')
             ->assertHasNoFormErrors();
 
@@ -304,7 +305,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         $this->assertDatabaseHas('practical_results', connection: 'cts', data: [
             'examid' => $exam->id,
             'student_id' => $student->id,
-            'result' => 'N',
+            'result' => ExamResultEnum::Incomplete->value,
             'exam' => 'TWR',
         ]);
 
@@ -362,7 +363,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             ->fillForm(function () use ($criteria) {
                 return ['form' => [$criteria->id => ['grade' => 'N']]];
             })
-            ->set('examResultData.exam_result', 'N')
+            ->set('examResultData.exam_result', ExamResultEnum::Incomplete->value)
             ->call('completeExam')
             ->assertHasNoFormErrors();
 
@@ -370,7 +371,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         $this->assertDatabaseHas('practical_results', connection: 'cts', data: [
             'examid' => $exam->id,
             'student_id' => $student->id,
-            'result' => 'N',
+            'result' => ExamResultEnum::Incomplete->value,
             'exam' => 'OBS',
         ]);
 
