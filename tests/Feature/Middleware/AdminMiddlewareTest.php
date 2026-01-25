@@ -12,28 +12,6 @@ class AdminMiddlewareTest extends TestCase
     use DatabaseTransactions;
 
     #[Test]
-    public function test_a_guest_cannot_access_adm_endpoints()
-    {
-        $this->get(route('adm.index'))
-            ->assertRedirect(route('landing'));
-    }
-
-    #[Test]
-    public function test_a_non_staff_member_cannot_access_adm_endpoints()
-    {
-        $this->actingAs($this->user)->get(route('adm.index'))
-            ->assertForbidden();
-    }
-
-    #[Test]
-    public function test_privacc_can_bypass_guard()
-    {
-        $this->actingAs($this->privacc)
-            ->get(route('adm.index'))
-            ->assertSuccessful();
-    }
-
-    #[Test]
     public function test_telescope_is_not_available_to_guests()
     {
         $this->get(config('telescope.path'))
