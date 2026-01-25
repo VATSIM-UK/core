@@ -112,7 +112,7 @@ If you meet the standard to be awarded a rating, they will request your rating t
 This is manually processed, so may take up to around 72 hours from the point at which your exam report is filed.
 You will receive an email when the rating upgrade has taken place, and will then be able to login as a controller. You will be removed from the New Controller TG.
 
-As a new S1, you are permitted to control any DEL or GND position in VATSIM UK, with the exceptions of London/Heathrow, London/Gatwick, and Military aerodromes.
+As a new S1, you are permitted to control any DEL or GND position in VATSIM UK, with the exceptions of London/Heathrow and Military aerodromes.
 When moving onto a new position, you should be sure to read the local documentation available on our [downloads](https://community.vatsim.uk/downloads) page to ensure that you are aware with the local procedures.
 
 ## Further Training
@@ -124,11 +124,6 @@ To do this, submit a ticket to ATC Training via the [helpdesk](https://helpdesk.
 Further information on our training programmes is available in the [ATC Training Handbook]({{ __('atc.handbook.url') }}).
 
 Your S2 training will review and solidify what you’ve learnt during your S1 training, so you should use the waiting time to practice your skills.
-
-### Gatwick Endorsement
-
-In light of the high traffic levels that Gatwick regularly sees, S1-rated members wishing to control there must complete an additional endorsement [here](https://www.vatsim.uk/controllers/endorsements/gatwick).
-To access the moodle exam you must have achieved 50 hours controlling post rating upgrade.
 
 ### A/G Fiso Endorsement
 
