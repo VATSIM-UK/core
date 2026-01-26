@@ -53,22 +53,13 @@ positions post-C1 [*];
 mean ‘after being validated to C1’ in the UK.
 ```
 
-### 1.2 Gatwick Endorsement (S1)
-
-Before starting training, S1 members must:
-
-- Be active on the controller roster;
-- Have completed 50hrs on UK GND/DEL positions;
-- Have completed the Gatwick ADC Moodle;
-- Not have significant negative feedback.
-
 ### 1.3 AFIS & A/G (S1)
 
 Before being able to complete the endorsement, S1 members must:
 
 - Be active on the controller roster;
-- Have completed 50hrs on UK GND/DEL positions;
-- Not have significant negative feedback.
+- Not have significant negative feedback;
+- Have controlled for at least 50 hours on any UK Ground or Delivery position.
 
 ### 1.4 Heathrow DEL/GND (S1)
 
@@ -76,8 +67,7 @@ To be eligible for Heathrow Training, S1 members must:
 
 - Be on the active controlling roster;
 - Not have significant negative feedback;
-- Hold a Gatwick ground endorsement with 50 hours on EGKK positions, post-endorsement award.
-
+- Have controlled for at least 50 hours on any UK Ground or Delivery position
 
 ### 1.5 Heathrow DEL/GND (S2+)
 
