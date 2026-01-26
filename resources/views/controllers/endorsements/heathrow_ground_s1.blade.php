@@ -33,10 +33,7 @@
                             You must be active on the controller roster
                         </li>
                         <li>
-                            You must hold a Gatwick Endorsement
-                        </li>
-                        <li>
-                            You must have controlled for 50 hours at Gatwick after acquiring your endorsement
+                            You must have controlled for at least 50 hours on any UK ground or delivery position
                         </li>
                     </ul>
                     <h4>Step Two</h4>
