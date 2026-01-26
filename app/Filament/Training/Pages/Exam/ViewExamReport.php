@@ -2,14 +2,20 @@
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Enums\ExamResultEnum;
 use App\Infolists\Components\PracticalExamCriteriaResult;
 use App\Models\Cts\PracticalResult;
+use App\Services\Training\ExamResubmissionService;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 
 class ViewExamReport extends Page implements HasInfolists
@@ -68,15 +74,37 @@ class ViewExamReport extends Page implements HasInfolists
                 ])->columns(2)->columnSpan(1)->extraAttributes(['class' => 'h-full']),
             ])->columns(2)->extraAttributes(['class' => 'items-stretch']),
 
-            Section::make('Exam Result')->schema([
-                TextEntry::make('result')->label('Result')->badge()->color(fn ($state) => match ($state) {
-                    'Passed' => 'success',
-                    'Failed' => 'danger',
-                    'Incomplete' => 'warning',
-                    default => 'gray',
-                })->getStateUsing(fn ($record) => $record->resultHuman()),
+            Section::make('Exam Result')
+                ->headerActions([
+                    Action::make('override_result')
+                        ->icon('heroicon-m-pencil-square')
+                        ->color('warning')
+                        ->visible(fn () => auth()->user()->can('training.exams.override-result'))
+                        ->form([
+                            Select::make('exam_result')
+                                ->label('Result')
+                                ->options([
+                                    ExamResultEnum::Pass->value => ExamResultEnum::Pass->human(),
+                                    ExamResultEnum::Fail->value => ExamResultEnum::Fail->human(),
+                                    ExamResultEnum::Incomplete->value => ExamResultEnum::Incomplete->human(),
+                                ])
+                                ->required(),
+                            Textarea::make('reason')
+                                ->label('Reason')
+                                ->required(),
+                        ])
+                        ->action(fn (array $data) => $this->overrideResult($data))
+                        ->requiresConfirmation(),
+                ])
+                ->schema([
+                    TextEntry::make('result')->label('Result')->badge()->color(fn ($state) => match ($state) {
+                        'Passed' => 'success',
+                        'Failed' => 'danger',
+                        'Incomplete' => 'warning',
+                        default => 'gray',
+                    })->getStateUsing(fn ($record) => $record->resultHuman()),
 
-                TextEntry::make('notes')->html()->extraAttributes(['style' => 'word-break:break-word'])->label('Additional Comments'),
+                    TextEntry::make('notes')->html()->extraAttributes(['style' => 'word-break:break-word'])->label('Additional Comments'),
 
             ])->columns(2)->extraAttributes(['class' => 'items-stretch']),
         ]);
@@ -91,5 +119,24 @@ class ViewExamReport extends Page implements HasInfolists
                 TextEntry::make('notes')->extraAttributes(['style' => 'word-break:break-word'])->html()->label('Notes')->columnSpan(12),
             ])->columns(12),
         ]);
+    }
+
+    public function overrideResult($data)
+    {
+        $newResult = ExamResultEnum::from($data['exam_result']);
+
+        $this->practicalResult->update(['result' => $newResult->value]);
+
+        app(ExamResubmissionService::class)->handle(
+            examBooking: $this->examBooking,
+            result: $newResult->value,
+            userId: auth()->id(),
+        );
+
+        Notification::make()
+            ->title('Exam result amended')
+            ->body("Exam result updated to {$newResult->human()}")
+            ->success()
+            ->send();
     }
 }
