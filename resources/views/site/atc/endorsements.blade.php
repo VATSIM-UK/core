@@ -85,7 +85,7 @@
                         This restriction is in place to allow members to gain experience in quieter environments
                         and practice their skills before tackling the workload at Heathrow.
 
-                        S1 rated members that hold a Gatwick Endorsement may train for a Heathrow Ground (S1) Endorsement.
+                        S1 rated members that have 50 hours on any UK ground or delivery positions may train for a Heathrow Ground (S1) Endorsement.
                     </p>
 
                     <h3>Endorsement Process</h3>

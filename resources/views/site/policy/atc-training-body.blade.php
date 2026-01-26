@@ -67,8 +67,8 @@ Before starting training, S1 members must:
 Before being able to complete the endorsement, S1 members must:
 
 - Be active on the controller roster;
-- Have completed 50hrs on UK GND/DEL positions;
 - Not have significant negative feedback.
+- Have controller for 50 hours on any UK ground or delivery positions.
 
 ### 1.4 Heathrow DEL/GND (S1)
 
@@ -76,8 +76,7 @@ To be eligible for Heathrow Training, S1 members must:
 
 - Be on the active controlling roster;
 - Not have significant negative feedback;
-- Hold a Gatwick ground endorsement with 50 hours on EGKK positions, post-endorsement award.
-
+- Have controller for 50 hours on any UK ground or delivery positions.
 
 ### 1.5 Heathrow DEL/GND (S2+)
 
