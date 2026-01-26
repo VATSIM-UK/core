@@ -136,7 +136,7 @@ class ViewExamReport extends Page implements HasInfolists
         $account = $this->practicalResult->examBooking->student->account;
 
         $account->addNote(noteType: 'training',
-            noteContent: "Exam result overridden to {$newResult->human()}. Reason: {$data['reason']}",
+            noteContent: "Exam result for {$this->practicalResult->examBooking->exam} overridden to {$newResult->human()}. Reason: {$data['reason']}",
             writer: auth()->user(),
         );
 
