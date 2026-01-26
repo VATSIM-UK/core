@@ -3,8 +3,8 @@
 namespace App\Services\Training;
 
 use App\Enums\ExamResultEnum;
-use App\Models\Cts\ExamBooking;
 use App\Models\Atc\Position;
+use App\Models\Cts\ExamBooking;
 
 class ExamResubmissionService
 {

@@ -106,7 +106,7 @@ class ViewExamReport extends Page implements HasInfolists
 
                     TextEntry::make('notes')->html()->extraAttributes(['style' => 'word-break:break-word'])->label('Additional Comments'),
 
-            ])->columns(2)->extraAttributes(['class' => 'items-stretch']),
+                ])->columns(2)->extraAttributes(['class' => 'items-stretch']),
         ]);
     }
 

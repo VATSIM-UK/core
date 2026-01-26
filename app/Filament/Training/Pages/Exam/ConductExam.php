@@ -3,7 +3,6 @@
 namespace App\Filament\Training\Pages\Exam;
 
 use App\Enums\ExamResultEnum;
-use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
