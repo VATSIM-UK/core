@@ -128,7 +128,7 @@ class ViewExamReport extends Page implements HasInfolists
         $this->practicalResult->update(['result' => $newResult->value]);
 
         app(ExamResubmissionService::class)->handle(
-            examBooking: $this->examBooking,
+            examBooking: $this->practicalResult->examBooking,
             result: $newResult->value,
             userId: auth()->id(),
         );
