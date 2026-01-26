@@ -42,6 +42,6 @@ class Email extends Model
 
     public function facility()
     {
-        $this->belongsTo(\App\Models\VisitTransfer\Facility::class);
+        return $this->belongsTo(\App\Models\VisitTransfer\Facility::class);
     }
 }

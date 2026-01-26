@@ -182,7 +182,7 @@ class ViewVisitTransferApplication extends ViewRecord
                                     ($application->account?->notes ?? collect())
                                         ->map(function ($note) {
                                             return TextEntry::make("note_{$note->id}")
-                                                ->label("Note by {$note->account?->full_name} on {$note->created_at->toFormattedDateString()}")
+                                                ->label("Note by {$note->writer?->full_name} on {$note->created_at->toFormattedDateString()}")
                                                 ->getStateUsing(fn () => $note->content);
                                         })->toArray()
                                 ),
