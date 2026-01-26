@@ -27,7 +27,7 @@ return new class extends Migration
                 ->where('position_group_id', $gatwickPositionGroupId)
                 ->delete();
 
-            DB::table('position_group')
+            DB::table('position_groups')
                 ->where('id', $gatwickPositionGroupId)
                 ->delete();
         });
