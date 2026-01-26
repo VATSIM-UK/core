@@ -72,7 +72,7 @@
                         <p>You are a home member of the UK.</p>
                     @else
                         <p class="text-danger"><strong>You are not a home member of the UK Division. If you wish to hold
-                                a Gatwick endorsement, apply to transfer to the UK
+                                a Heathrow endorsement, apply to transfer to the UK
                                 by <a href="{{ route('visiting.landing') }}">clicking here</a>.</strong></p>
                     @endif
 
@@ -80,15 +80,7 @@
                         <p>You are active on the controller roster.</p>
                     @else
                         <p class="text-danger">You are not active on the controller roster. If you wish to hold a
-                            Gatwick endorsement you must be active on the roster.</p>
-                    @endif
-
-                    @if($hasEgkkEndorsement)
-                        <p>You are endorsed to control Gatwick.</p>
-                    @else
-                        <p class="text-danger">You do not hold a Gatwick endorsement,
-                            you must <a href="{{ route('controllers.endorsements.heathrow_ground_s1') }}">complete this before</a>
-                            starting your Heathrow training.</p>
+                            Heathrow endorsement you must be active on the roster.</p>
                     @endif
                 </div>
             </div>
@@ -96,7 +88,7 @@
 
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-info"></i> 50 Hours Controlling at Gatwick</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> 50 Hours Controlling delivery or ground positions</div>
                 <div class="panel-body">
                     <div class="progress" data-toggle="tooltip" title="Hours Controlling DEL and GND">
                         @if($hoursMet)

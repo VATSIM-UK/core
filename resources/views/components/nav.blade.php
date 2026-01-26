@@ -162,7 +162,6 @@
                                 <ul>
                                     <li class="divider"></li>
                                     <li class="dropdown-header">Endorsements</li>
-                                    <li><a href="{{ route('controllers.endorsements.gatwick_ground') }}">Gatwick Ground</a></li>
                                     <li><a href="{{ route('controllers.endorsements.heathrow_ground_s1') }}">Heathrow Ground (S1)</a></li>
                                     <li><a href="{{ route('site.atc.heathrow') }}">Heathrow</a></li>
                                 </ul>
