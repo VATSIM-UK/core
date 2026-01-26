@@ -133,6 +133,13 @@ class ViewExamReport extends Page implements HasInfolists
             userId: auth()->id(),
         );
 
+        $account = $this->practicalResult->examBooking->student->account;
+
+        $account->addNote(noteType: 'training',
+            noteContent: "Exam result overridden to {$newResult->human()}. Reason: {$data['reason']}",
+            writer: auth()->user(),
+        );
+
         Notification::make()
             ->title('Exam result amended')
             ->body("Exam result updated to {$newResult->human()}")
