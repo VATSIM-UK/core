@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Atc;
 
 use App\Http\Controllers\BaseController;
-use App\Models\Atc\PositionGroup;
 use App\Models\NetworkData\Atc;
 use App\Models\Roster;
 use Illuminate\Database\Eloquent\Builder;
