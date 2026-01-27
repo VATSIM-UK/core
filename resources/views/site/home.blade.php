@@ -42,7 +42,7 @@
                             <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="https://community.vatsim.uk/files/downloads/category/9-minutes-reports/">Meeting Minutes</a>
+                            <a class="nav-link" href="">Meeting Minutes</a> {{-- Link to Meeting Minutes to be created --}}
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="">Policies</a> {{-- Link to Policy tab landing page, to be created --}}
@@ -97,7 +97,7 @@
                             <a class="nav-link" href="https://docs.vatsim.uk/">Documentation</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.atc.endorsements') }}">Raiting Endorsements</a>
+                            <a class="nav-link" href="{{ route('site.atc.endorsements') }}">Rating Endorsements</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('visiting.landing') }}">Visit / Transfer</a>
@@ -122,9 +122,6 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="https://www.instagram.com/vatsimuk/">Instagram</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
                         </li>
                     </ul>
                 </li>
