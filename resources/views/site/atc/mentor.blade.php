@@ -161,7 +161,7 @@
                     </h3>
                     
                     <p>
-                        Advertisements for mentoring sessions and specific requests may be made in this <a href="https://community.vatsim.uk/topic/22218-traffic-requests-here/">forum thread</a>.
+                        Advertisements for mentoring sessions and specific requests may be made in the relevent channels in our discords</a>.
                     </p>
 
                     <h3>
