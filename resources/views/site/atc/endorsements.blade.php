@@ -171,7 +171,7 @@
                         <li>Wickenby (EGNW)</li>
                         <li>Wolverhampton / Halfpenny Green (EGBO)</li>
                         <li>Wycombe Air Park/Booker (EGTB)</li>
-                        <li>Stanley (SFAL) - see <a href="https://docs.vatsim.uk/General/Letters%20of%20Agreement/VATSIM%20Argentina-VATSIM%20UK%20%28Falklands%29%20LoA%20-%202021%2008.pdf">Argentina LoA</a></li>
+                        <li>Stanley (SFAL) - see <a href="https://docs.vatsim.uk/General/Letters%20of%20Agreement/">Argentina LoA</a></li>
                     </ul>
 
                     <h3>Get Started</h3>
