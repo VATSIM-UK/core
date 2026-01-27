@@ -161,7 +161,7 @@
                     </h3>
                     
                     <p>
-                        Advertisements for mentoring sessions and specific requests may be made in the relevent channels in our discords</a>.
+                        Advertisements for mentoring sessions and specific requests may be made in the relevant channels in our Discord.
                     </p>
 
                     <h3>
