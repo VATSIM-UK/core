@@ -4,11 +4,11 @@ namespace Tests\Feature\TrainingPanel\Exams;
 
 use App\Enums\ExamResultEnum;
 use App\Filament\Training\Pages\Exam\ViewExamReport;
+use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\Member;
-use App\Models\Cts\Position;
 use App\Models\Cts\PracticalResult;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
@@ -483,10 +483,7 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
             ->assertHasNoErrors();
 
         $this->practicalResult->refresh();
-        $this->assertSame(
-            ExamResultEnum::Incomplete->value,
-            $this->practicalResult->result
-        );
+        $this->assertSame(ExamResultEnum::Incomplete->value, $this->practicalResult->result);
 
         $this->assertDatabaseHas('exam_book', connection: 'cts', data: [
             'student_id' => $this->studentMember->id,
