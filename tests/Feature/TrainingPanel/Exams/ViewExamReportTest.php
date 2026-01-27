@@ -8,6 +8,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\Member;
+use App\Models\Cts\Position;
 use App\Models\Cts\PracticalResult;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
@@ -436,6 +437,36 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_resubmits_student_for_exam_when_result_is_overridden_to_incomplete()
     {
+        $account = Account::factory()->withQualification()->create();
+        $student = Member::factory()->create([
+            'id' => $account->id,
+            'cid' => $account->id,
+        ]);
+
+        $position = Position::factory()->create([
+            'callsign' => 'EGKK_TWR',
+        ]);
+
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::FINISHED_FLAG,
+            'exam' => 'TWR',
+            'student_id' => $student->id,
+            'position_1' => $position->callsign,
+            'student_rating' => Qualification::code('S1')->first()->vatsim,
+        ]);
+
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => $this->panelUser->id,
+        ]);
+
+        $practicalResult = PracticalResult::factory()->create([
+            'examid' => $exam->id,
+            'exam' => 'TWR',
+            'result' => ExamResultEnum::Pass->value,
+        ]);
+
         $this->panelUser->givePermissionTo([
             'training.exams.access',
             'training.exams.conduct.twr',
@@ -447,7 +478,7 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
             ->assertSeeHtml('override_result')
             ->call('overrideResult', [
                 'exam_result' => ExamResultEnum::Incomplete->value,
-                'reason' => 'Test Reason',
+                'reason' => 'Test reason',
             ])
             ->assertHasNoErrors();
 
