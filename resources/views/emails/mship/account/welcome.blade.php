@@ -41,7 +41,7 @@
 
 <h2>❓ Getting help</h2>
 <p>
-    We recommend making use of our <a href="{{route('mship.manage.dashboard')}}">Discord</a>, or <a href="{{route('site.community.teamspeak')}}">TeamSpeak</a> to get help from members and division staff.
+    We recommend making use of our #community-help channel on our <a href="{{route('mship.manage.dashboard')}}">Discord</a>, or join our <a href="{{route('site.community.teamspeak')}}">TeamSpeak</a> to get help from members and division staff.
 </p>
 <p>
     Although there is a lot to learn, you will be in good company, surrounded by like-minded simming enthusiasts ready to help you get started.
