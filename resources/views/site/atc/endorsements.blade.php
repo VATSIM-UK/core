@@ -247,7 +247,7 @@
                         <li>RAF Mount Pleasant (EGYP)</li>
                         <li>RAF Ascension Island (FHAW)</li>
                         <li>EGVV_CTR - 133.900 - Swanwick Military - Covers military activity in both EGTT and EGPX, as well as top-down control for Military airfields</li>
-                        <li>EGVV_x_CTR - Swanwick Military - Various other splits, as outlined in <a href="https://docs.vatsim.uk/Enroute/Shanwick%20FIR%20%28EGGX%29/0-OCP/?h=shanwick">this procedure change post</a>.</li>
+                        <li>EGVV_x_CTR - Swanwick Military - Various other splits.</li>
                         <li>ISLAND_CTR - Island Radar - Provides radar services to aircraft within the Falklands Control Zone, and top-down control for EGYP.</li>
                     </ul>
 
