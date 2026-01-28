@@ -8,10 +8,10 @@ use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\PracticalResult;
 use App\Services\Training\ExamResubmissionService;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Get;
 use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
@@ -22,7 +22,6 @@ use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
-use Filament\Forms\Get;
 
 class ViewExamReport extends Page implements HasInfolists
 {
@@ -86,6 +85,7 @@ class ViewExamReport extends Page implements HasInfolists
                         ->icon('heroicon-m-pencil-square')
                         ->color('warning')
                         ->modalWidth(MaxWidth::SevenExtraLarge)
+                        ->modalSubmitActionLabel('Override')
                         ->visible(fn () => auth()->user()->can('training.exams.override-result'))
                         ->form([
                             \Filament\Forms\Components\Section::make('Exam Result')->columns(2)->schema([
@@ -117,11 +117,10 @@ class ViewExamReport extends Page implements HasInfolists
                                     ->placeholder('Explain why this exam result was adjusted')
                                     ->required()
                                     ->columnSpanFull(),
-                                    ]),
+                            ]),
 
                             \Filament\Forms\Components\Section::make('Exam Criteria')
-                                ->visible(fn ($get) =>
-                                    $get('exam_result') !== $this->practicalResult->result
+                                ->visible(fn ($get) => $get('exam_result') !== $this->practicalResult->result
                                 )
                                 ->schema(function () {
                                     $criteria = ExamCriteria::byType($this->practicalResult->examBooking->exam)->get();
@@ -144,21 +143,20 @@ class ViewExamReport extends Page implements HasInfolists
                                                     ->default($existingAssessments->get($criteria->id))
                                                     ->live()
                                                     ->required(),
-                                                    
+
                                                 Textarea::make("criteria_updates.{$criteria->id}.change_comments")
                                                     ->label('Reason for criteria change')
                                                     ->placeholder('Explain why this specific criteria grade was adjusted')
-                                                    ->required(fn (Get $get) => 
-                                                        $get("criteria_updates.{$criteria->id}.grade") !== ($existingAssessments->get($criteria->id))
+                                                    ->required(fn (Get $get) => $get("criteria_updates.{$criteria->id}.grade") !== ($existingAssessments->get($criteria->id))
                                                     )
-                                                    ->visible(fn (Get $get) => 
-                                                        $get("criteria_updates.{$criteria->id}.grade") !== ($existingAssessments->get($criteria->id))
+                                                    ->visible(fn (Get $get) => $get("criteria_updates.{$criteria->id}.grade") !== ($existingAssessments->get($criteria->id))
                                                     )
                                                     ->columnSpanFull(),
                                             ]);
-                                    })->toArray();}
+                                    })->toArray();
+                                }
                                 ),
-                            ])
+                        ])
                         ->action(fn (array $data) => $this->overrideResult($data)),
                 ])
                 ->schema([
@@ -213,10 +211,10 @@ class ViewExamReport extends Page implements HasInfolists
                 $assessment->save();
 
                 $criteriaName = ExamCriteria::find($criteriaId)?->criteria ?? "Criteria #{$criteriaId}";
-                
+
                 $account->addNote(
                     noteType: 'training',
-                    noteContent: "'{$criteriaName}' updated from {$oldGrade} to {$newGrade}. Reason: " . ($update['change_comments'] ?? 'No comment.'),
+                    noteContent: "'{$criteriaName}' updated from {$oldGrade} to {$newGrade}. Reason: ".($update['change_comments'] ?? 'No comment.'),
                     writer: auth()->user(),
                 );
             }
