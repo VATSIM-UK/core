@@ -435,6 +435,74 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function test_override_result_updates_practical_result()
+    {
+        $this->panelUser->givePermissionTo([
+            'training.exams.access',
+            'training.exams.conduct.twr',
+            'training.exams.override-result',
+        ]);
+
+        $newResult = ExamResultEnum::Fail->value;
+        $reason = 'Test reason';
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
+            ->call('overrideResult', [
+                'exam_result' => $newResult,
+                'reason' => $reason,
+                'criteria_updates' => [],
+            ])
+            ->assertHasNoErrors();
+
+        $this->practicalResult->refresh();
+        $this->assertSame($newResult, $this->practicalResult->result);
+    }
+
+    #[Test]
+    public function test_override_result_updates_criteria()
+    {
+        $this->panelUser->givePermissionTo([
+            'training.exams.access',
+            'training.exams.conduct.twr',
+            'training.exams.override-result',
+        ]);
+
+        $criteria = ExamCriteria::create([
+            'exam' => 'TWR',
+            'criteria' => 'Test Criteria',
+            'deleted' => 0,
+        ]);
+
+        $assessment = ExamCriteriaAssessment::create([
+            'examid' => $this->examBooking->id,
+            'criteria_id' => $criteria->id,
+            'result' => ExamCriteriaAssessment::MOSTLY_COMPETENT,
+            'notes' => 'Some notes',
+        ]);
+
+        $newGrade = ExamCriteriaAssessment::FULLY_COMPETENT;
+        $reason = 'Test reason';
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
+            ->call('overrideResult', [
+                'exam_result' => $this->practicalResult->result,
+                'reason' => 'Overall performance checked',
+                'criteria_updates' => [
+                    $criteria->id => [
+                        'grade' => $newGrade,
+                        'change_comments' => $reason,
+                    ],
+                ],
+            ])
+            ->assertHasNoErrors();
+
+        $assessment->refresh();
+        $this->assertSame($newGrade, $assessment->result);
+    }
+
+    #[Test]
     public function it_resubmits_student_for_exam_when_result_is_overridden_to_incomplete()
     {
         $account = Account::factory()->withQualification()->create();

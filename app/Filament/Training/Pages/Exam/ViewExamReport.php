@@ -4,8 +4,12 @@ namespace App\Filament\Training\Pages\Exam;
 
 use App\Enums\ExamResultEnum;
 use App\Infolists\Components\PracticalExamCriteriaResult;
+use App\Models\Cts\ExamCriteria;
+use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\PracticalResult;
 use App\Services\Training\ExamResubmissionService;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\Actions\Action;
@@ -17,6 +21,8 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Support\Enums\MaxWidth;
+use Filament\Forms\Get;
 
 class ViewExamReport extends Page implements HasInfolists
 {
@@ -79,22 +85,81 @@ class ViewExamReport extends Page implements HasInfolists
                     Action::make('override_result')
                         ->icon('heroicon-m-pencil-square')
                         ->color('warning')
+                        ->modalWidth(MaxWidth::SevenExtraLarge)
                         ->visible(fn () => auth()->user()->can('training.exams.override-result'))
                         ->form([
-                            Select::make('exam_result')
-                                ->label('Result')
-                                ->options([
-                                    ExamResultEnum::Pass->value => ExamResultEnum::Pass->human(),
-                                    ExamResultEnum::Fail->value => ExamResultEnum::Fail->human(),
-                                    ExamResultEnum::Incomplete->value => ExamResultEnum::Incomplete->human(),
-                                ])
-                                ->required(),
-                            Textarea::make('reason')
-                                ->label('Reason')
-                                ->required(),
-                        ])
-                        ->action(fn (array $data) => $this->overrideResult($data))
-                        ->requiresConfirmation(),
+                            \Filament\Forms\Components\Section::make('Exam Result')->columns(2)->schema([
+                                Select::make('previous_exam_result')
+                                    ->label('Previous Result')
+                                    ->default($this->practicalResult->result)
+                                    ->options([
+                                        ExamResultEnum::Pass->value => ExamResultEnum::Pass->human(),
+                                        ExamResultEnum::Fail->value => ExamResultEnum::Fail->human(),
+                                        ExamResultEnum::Incomplete->value => ExamResultEnum::Incomplete->human(),
+                                    ])
+                                    ->required()
+                                    ->disabled()
+                                    ->columns(1)
+                                    ->dehydrated(true),
+                                Select::make('exam_result')
+                                    ->label('New Result')
+                                    ->default($this->practicalResult->result)
+                                    ->live()
+                                    ->columns(1)
+                                    ->options([
+                                        ExamResultEnum::Pass->value => ExamResultEnum::Pass->human(),
+                                        ExamResultEnum::Fail->value => ExamResultEnum::Fail->human(),
+                                        ExamResultEnum::Incomplete->value => ExamResultEnum::Incomplete->human(),
+                                    ])
+                                    ->required(),
+                                Textarea::make('reason')
+                                    ->label('Reason for exam result change')
+                                    ->placeholder('Explain why this exam result was adjusted')
+                                    ->required()
+                                    ->columnSpanFull(),
+                                    ]),
+
+                            \Filament\Forms\Components\Section::make('Exam Criteria')
+                                ->visible(fn ($get) =>
+                                    $get('exam_result') !== $this->practicalResult->result
+                                )
+                                ->schema(function () {
+                                    $criteria = ExamCriteria::byType($this->practicalResult->examBooking->exam)->get();
+                                    $existingAssessments = $this->practicalResult->criteria->pluck('result', 'criteria_id');
+
+                                    return $criteria->map(function (ExamCriteria $criteria) use ($existingAssessments) {
+                                        return Fieldset::make("criteria_updates.{$criteria->id}")
+                                            ->label($criteria->criteria)
+                                            ->schema([
+                                                Select::make("criteria_updates.previous_{$criteria->id}.grade")
+                                                    ->label('Previous Grade')
+                                                    ->options(ExamCriteriaAssessment::gradeDropdownOptions())
+                                                    ->default($existingAssessments->get($criteria->id))
+                                                    ->disabled()
+                                                    ->dehydrated(false),
+
+                                                Select::make("criteria_updates.{$criteria->id}.grade")
+                                                    ->label('New Grade')
+                                                    ->options(ExamCriteriaAssessment::gradeDropdownOptions())
+                                                    ->default($existingAssessments->get($criteria->id))
+                                                    ->live()
+                                                    ->required(),
+                                                    
+                                                Textarea::make("criteria_updates.{$criteria->id}.change_comments")
+                                                    ->label('Reason for criteria change')
+                                                    ->placeholder('Explain why this specific criteria grade was adjusted')
+                                                    ->required(fn (Get $get) => 
+                                                        $get("criteria_updates.{$criteria->id}.grade") !== ($existingAssessments->get($criteria->id))
+                                                    )
+                                                    ->visible(fn (Get $get) => 
+                                                        $get("criteria_updates.{$criteria->id}.grade") !== ($existingAssessments->get($criteria->id))
+                                                    )
+                                                    ->columnSpanFull(),
+                                            ]);
+                                    })->toArray();}
+                                ),
+                            ])
+                        ->action(fn (array $data) => $this->overrideResult($data)),
                 ])
                 ->schema([
                     TextEntry::make('result')->label('Result')->badge()->color(fn ($state) => match ($state) {
@@ -124,20 +189,43 @@ class ViewExamReport extends Page implements HasInfolists
     public function overrideResult($data)
     {
         $newResult = ExamResultEnum::from($data['exam_result']);
+        $criteriaUpdates = $data['criteria_updates'] ?? [];
 
         $this->practicalResult->update(['result' => $newResult->value]);
-
-        app(ExamResubmissionService::class)->handle(
-            examBooking: $this->practicalResult->examBooking,
-            result: $newResult->value,
-            userId: auth()->id(),
-        );
 
         $account = $this->practicalResult->examBooking->student->account;
 
         $account->addNote(noteType: 'training',
             noteContent: "Exam result for {$this->practicalResult->examBooking->exam} overridden to {$newResult->human()}. Reason: {$data['reason']}",
             writer: auth()->user(),
+        );
+
+        foreach ($criteriaUpdates as $criteriaId => $update) {
+            $assessment = ExamCriteriaAssessment::where('examid', $this->practicalResult->examid)
+                ->where('criteria_id', $criteriaId)
+                ->first();
+
+            $oldGrade = $assessment->result;
+            $newGrade = $update['grade'] ?? $oldGrade;
+
+            if ($oldGrade !== $newGrade) {
+                $assessment->result = $newGrade;
+                $assessment->save();
+
+                $criteriaName = ExamCriteria::find($criteriaId)?->criteria ?? "Criteria #{$criteriaId}";
+                
+                $account->addNote(
+                    noteType: 'training',
+                    noteContent: "'{$criteriaName}' updated from {$oldGrade} to {$newGrade}. Reason: " . ($update['change_comments'] ?? 'No comment.'),
+                    writer: auth()->user(),
+                );
+            }
+        }
+
+        app(ExamResubmissionService::class)->handle(
+            examBooking: $this->practicalResult->examBooking,
+            result: $newResult->value,
+            userId: auth()->id(),
         );
 
         Notification::make()
