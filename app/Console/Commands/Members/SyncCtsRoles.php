@@ -41,7 +41,6 @@ class SyncCtsRoles extends Command
         $this->syncMentorsByRts(18, 33); // Tower
         $this->syncMentorsByRts(19, 47); // Approach
         $this->syncMentorsByCallsign('OBS', 32); // OBS Mentors
-        $this->syncMentorsByCallsign('EGKK_GND', 53); // Gatwick Mentors
         $this->syncMentorsByCallsign('TFP', 65); // PTD Flying Programme Mentors
         $this->syncMentorsByCallsign('P1_PPL(A)', Role::findByName('P1 Mentor')->id); // P1 Mentors
         $this->syncMentorsByCallsign('P2_SEIR(A)', Role::findByName('P2 Mentor')->id); // P2 Mentors
@@ -49,7 +48,6 @@ class SyncCtsRoles extends Command
         // Sync Students
         $this->syncPilotStudents(55); // Pilot Students
         $this->syncStudentsByPosition('TFP_FLIGHT', Role::findByName('TFP Student')->id); // TFP Students
-        $this->syncStudentsByPosition('EGKK_GND', Role::findByName('Gatwick GND Students')->id); // Gatwick Ground Students
 
         /**
          * If you wish to do multiple positions for the same rule, don't do what I did and separate them into different

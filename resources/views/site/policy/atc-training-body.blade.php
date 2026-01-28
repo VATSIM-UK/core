@@ -58,8 +58,8 @@ mean ‘after being validated to C1’ in the UK.
 Before being able to complete the endorsement, S1 members must:
 
 - Be active on the controller roster;
-- Not have significant negative feedback;
-- Have controlled for at least 50 hours on any UK Ground or Delivery position.
+- Not have significant negative feedback.
+- Have controlled for 50 hours on any UK ground or delivery positions.
 
 ### 1.4 Heathrow DEL/GND (S1)
 
@@ -67,7 +67,7 @@ To be eligible for Heathrow Training, S1 members must:
 
 - Be on the active controlling roster;
 - Not have significant negative feedback;
-- Have controlled for at least 50 hours on any UK Ground or Delivery position
+- Have controlled for 50 hours on any UK ground or delivery positions.
 
 ### 1.5 Heathrow DEL/GND (S2+)
 
