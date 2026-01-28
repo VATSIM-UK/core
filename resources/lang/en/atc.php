@@ -9,5 +9,5 @@ return [
     'type.ctr' => 'En-Route',
     'type.fss' => 'Flight Service Station',
 
-    'handbook.url' => 'https://community.vatsim.uk/files/downloads/file/230-atc-training-handbook/',
+    'handbook.url' => '',
 ];

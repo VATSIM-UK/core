@@ -114,7 +114,7 @@
                                 href="https://github.com/VATSIM-UK/uk-controller-plugin/blob/develop/docs/README.md">full
                             feature list</a>.</p>
 
-                    <p>Having trouble or got questions? Ask on <a href="https://community.vatsim.uk">our Forum</a>!</p>
+                    <p>Having trouble or got questions? Ask on <a href="{{ route('mship.manage.dashboard') }}">our Discord</a>!</p>
                 </div>
             </div>
         </div>

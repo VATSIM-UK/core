@@ -23,9 +23,6 @@
 <p><strong>TeamSpeak</strong> - We use TeamSpeak for voice communication. This includes coordination whilst controlling, one-to-one mentoring sessions, group seminars and general chat.</p>
 <div style="margin-bottom: 2em;"><a href="{{route('site.community.teamspeak')}}" class="btn btn-primary">Join us on TeamSpeak</a></div>
 
-<p><strong>Community Forum</strong> - Our community forum is a place for text discussion; express your interest in events, share screenshots of your latest flight and keep up to date on the latest news.</p>
-<div style="margin-bottom: 2em;"><a href="https://community.vatsim.uk" class="btn btn-primary">Take a look around our Forum</a></div>
-
 <p><strong>Division Website</strong> - Our website hosts all the information you might need whilst a member of the network. There's lot to digest, and we'll help you find what you need!</p>
 <div style="margin-bottom: 0.5em;"><a href="{{route('site.home')}}" class="btn btn-primary">Visit our website</a></div>
 <div style="margin-bottom: 2em;"><a href="{{route('mship.manage.dashboard')}}" class="btn btn-primary">Check your personal details</a></div>
@@ -44,7 +41,7 @@
 
 <h2>❓ Getting help</h2>
 <p>
-    We recommend making use of our <a href="{{route('mship.manage.dashboard')}}">Discord</a>, <a href="https://community.vatsim.uk">community forum</a>, or <a href="{{route('site.community.teamspeak')}}">TeamSpeak</a> to get help from members and division staff.
+    We recommend making use of our #community-help channel on our <a href="{{route('mship.manage.dashboard')}}">Discord</a>, or join our <a href="{{route('site.community.teamspeak')}}">TeamSpeak</a> to get help from members and division staff.
 </p>
 <p>
     Although there is a lot to learn, you will be in good company, surrounded by like-minded simming enthusiasts ready to help you get started.
