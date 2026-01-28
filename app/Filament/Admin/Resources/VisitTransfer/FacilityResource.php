@@ -64,9 +64,9 @@ class FacilityResource extends Resource
                                 Action::make('copy')
                                     ->icon('heroicon-m-clipboard')
                                     ->tooltip('Copy')
-                                    ->action(fn ($record, $livewire) => $livewire->js('navigator.clipboard.writeText("'.$record->public_id.'")')
-                                    )
-                            ),
+                                    ->visible(fn ($record) => filled($record?->public_id))
+                                    ->action(fn ($record, $livewire) => $livewire->js('navigator.clipboard.writeText("'.$record?->public_id.'")'))
+                            )->visibleOn('edit'),
                     ]),
                     Select::make('training_team')
                         ->label('Training Team')
