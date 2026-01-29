@@ -39,6 +39,8 @@ class EndorsementController extends BaseController
         $totalHours = $minutesOnline / 60;
         $hoursMet = $totalHours >= self::GATWICK_HOURS_REQUIREMENT;
 
+        $this->setTitle('Gatwick Ground Endorsement');
+
         return $this->viewMake('controllers.endorsements.gatwick_ground')
             ->with('totalHours', $totalHours)
             ->with('progress', ($totalHours / self::GATWICK_HOURS_REQUIREMENT) * 100)
@@ -77,12 +79,14 @@ class EndorsementController extends BaseController
                     $builder->where('facility_type', Atc::TYPE_GND)
                         ->orWhere('facility_type', Atc::TYPE_DEL);
                 })
-                ->where('connected_at', '>=', $egkkEndorsement->created_at)
-                ->sum('minutes_online');
+            ->where('connected_at', '>=', $egkkEndorsement->created_at)
+            ->sum('minutes_online');
         }
 
         $totalHours = $minutesOnline / 60;
         $hoursMet = $totalHours >= self::HEATHROW_S1_HOURS_REQUIREMENT;
+
+        $this->setTitle('Heathrow Ground (S1) Endorsement');
 
         return $this->viewMake('controllers.endorsements.heathrow_ground_s1')
             ->with('totalHours', $totalHours)

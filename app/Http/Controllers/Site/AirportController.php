@@ -20,11 +20,15 @@ class AirportController extends BaseController
     {
         $airports = Airport::uk()->orderBy('name')->get()->split(2);
 
+        $this->setTitle('Airports');
+
         return $this->viewMake('site.airport.index')->with('airports', $airports);
     }
 
     public function show(Airport $airport)
     {
+        $this->setTitle("{$airport->icao} | {$airport->name}");
+
         return $this->viewMake('site.airport.view')
             ->with(
                 [
