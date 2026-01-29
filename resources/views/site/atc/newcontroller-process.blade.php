@@ -113,7 +113,7 @@ This is manually processed, so may take up to around 72 hours from the point at 
 You will receive an email when the rating upgrade has taken place, and will then be able to login as a controller. You will be removed from the New Controller TG.
 
 As a new S1, you are permitted to control any DEL or GND position in VATSIM UK, with the exceptions of London/Heathrow and Military aerodromes.
-When moving onto a new position, you should be sure to read the local documentation available on our [downloads](https://community.vatsim.uk/downloads) page to ensure that you are aware with the local procedures.
+When moving onto a new position, you should be sure to read the local documentation available on our [documentation site](https://docs.vatsim.uk/) to ensure that you are aware of local procedures.
 
 ## Further Training
 
