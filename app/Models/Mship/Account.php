@@ -647,6 +647,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             ->orderByDesc('disconnected_at')
             ->first();
         
-        return $lastSession?->disconnected_at ?? "Never Controlled";
+        return $lastSession?->disconnected_at->format('d M Y, H:i') ?? "Never Controlled";
     }
 }
