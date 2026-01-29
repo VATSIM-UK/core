@@ -115,12 +115,6 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                                 ->visibleOn('view'),
                         ];
                     })->visibleOn('view'),
-
-                    Forms\Components\Fieldset::make('Last Seen')->schema([
-                        Forms\Components\Grid::make(3)->schema([
-                            
-                        ]),
-                    ])->visibleOn('view'),
                 ]),
             ]);
     }
