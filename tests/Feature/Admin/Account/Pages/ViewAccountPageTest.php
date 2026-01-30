@@ -204,11 +204,11 @@ class ViewAccountPageTest extends BaseAdminTestCase
     {
         $olderSession = factory(\App\Models\NetworkData\Atc::class)
             ->states('offline')
-            ->create(['account_id' => $this->privacc->id, 'disconnected_at' => now()->subDays(2),]);
+            ->create(['account_id' => $this->privacc->id, 'disconnected_at' => now()->subDays(2)]);
 
         $newerSession = factory(\App\Models\NetworkData\Atc::class)
             ->states('offline')
-            ->create(['account_id' => $this->privacc->id,'disconnected_at' => now()->subHour(),]);
+            ->create(['account_id' => $this->privacc->id, 'disconnected_at' => now()->subHour()]);
 
         $lastSeen = $this->privacc->lastSeenControllingUK();
 
@@ -220,5 +220,4 @@ class ViewAccountPageTest extends BaseAdminTestCase
     {
         $this->assertNull($this->privacc->lastSeenControllingUK());
     }
-
 }
