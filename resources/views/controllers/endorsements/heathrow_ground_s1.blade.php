@@ -33,7 +33,7 @@
                             You must be active on the controller roster
                         </li>
                         <li>
-                            You must have controlled for at least 50 hours on any UK Ground or Delivery position
+                            You must have controlled for at least 50 hours on any UK ground or delivery position
                         </li>
                     </ul>
                     <h4>Step Two</h4>

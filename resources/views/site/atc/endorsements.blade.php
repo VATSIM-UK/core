@@ -44,7 +44,7 @@
                         This restriction is in place to allow members to gain experience in quieter environments
                         and practice their skills before tackling the workload at Heathrow.
 
-                        S1 rated members that have 50 hours on any UK Ground or Delivery positions may train for a Heathrow Ground (S1) Endorsement.
+                        S1 rated members that have 50 hours on any UK ground or delivery positions may train for a Heathrow Ground (S1) Endorsement.
                     </p>
 
                     <h3>Endorsement Process</h3>
@@ -171,7 +171,7 @@
                         <li>Wickenby (EGNW)</li>
                         <li>Wolverhampton / Halfpenny Green (EGBO)</li>
                         <li>Wycombe Air Park/Booker (EGTB)</li>
-                        <li>Stanley (SFAL) - see <a href="https://community.vatsim.uk/files/downloads/file/36-vatsim-argentina-comodoro-rivadavia-acc-vatsim-uk-mount-pleasant-ats-unit-loa/">Argentina LoA</a></li>
+                        <li>Stanley (SFAL) - see <a href="https://docs.vatsim.uk/General/Letters%20of%20Agreement/">Argentina LoA</a></li>
                     </ul>
 
                     <h3>Get Started</h3>
@@ -247,7 +247,7 @@
                         <li>RAF Mount Pleasant (EGYP)</li>
                         <li>RAF Ascension Island (FHAW)</li>
                         <li>EGVV_CTR - 133.900 - Swanwick Military - Covers military activity in both EGTT and EGPX, as well as top-down control for Military airfields</li>
-                        <li>EGVV_x_CTR - Swanwick Military - Various other splits, as outlined in <a href="https://community.vatsim.uk/topic/37499-2020-12-03-swanwick-mil-sectorisation-and-frequency-change/">this procedure change post</a>.</li>
+                        <li>EGVV_x_CTR - Swanwick Military - Various other splits.</li>
                         <li>ISLAND_CTR - Island Radar - Provides radar services to aircraft within the Falklands Control Zone, and top-down control for EGYP.</li>
                     </ul>
 

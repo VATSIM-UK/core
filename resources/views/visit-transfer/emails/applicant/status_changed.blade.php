@@ -29,7 +29,7 @@
 </p>
 @if($application->training_required)
 <p>
-   In order for your application to be deemed completed, you will be required to undergo training. The training will be as per the VATUK <a href="https://community.vatsim.uk/files/downloads/file/291-visiting-and-transferring-controller-policy/">VATUK Visiting and Transferring Control Policy </a>. We will be in touch when we can offer you a training place. You will be able to see your place on the waiting list <a href="https://www.vatsim.uk/mship/waiting-lists">My Waiting List </a>. Please allow a few days for this to show your place.
+   In order for your application to be deemed completed, you will be required to undergo training. The training will be provided in accordance with the <a href="https://www.vatsim.uk/policy/visiting-and-transferring-policy">VATSIM UK Visiting and Transferring Control Policy </a>. We will be in touch when we can offer you a training place. You will be able to see your place on the waiting list <a href="https://www.vatsim.uk/mship/waiting-lists">My Waiting List </a>. Please allow a few days for this to show your place.
 </p>
 <p>
    To remain compliant with the Visiting Transfer and Controller Policy, you must complete your training <strong>within</strong> 90 days of the date of accepting your Training Place.
