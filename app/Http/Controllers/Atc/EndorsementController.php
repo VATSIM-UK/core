@@ -79,8 +79,8 @@ class EndorsementController extends BaseController
                     $builder->where('facility_type', Atc::TYPE_GND)
                         ->orWhere('facility_type', Atc::TYPE_DEL);
                 })
-            ->where('connected_at', '>=', $egkkEndorsement->created_at)
-            ->sum('minutes_online');
+                ->where('connected_at', '>=', $egkkEndorsement->created_at)
+                ->sum('minutes_online');
         }
 
         $totalHours = $minutesOnline / 60;
