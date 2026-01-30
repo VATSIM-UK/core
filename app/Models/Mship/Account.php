@@ -640,13 +640,4 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             'id'
         )->withoutGlobalScopes(); // Include waiting list accounts that have been soft deleted
     }
-
-    public function lastSeenControllingUK()
-    {
-        $lastSession = $this->networkDataAtcUk()
-            ->orderByDesc('disconnected_at')
-            ->first();
-
-        return $lastSession?->disconnected_at->format('d M Y, H:i') ?? 'Never Controlled';
-    }
 }
