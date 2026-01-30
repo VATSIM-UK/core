@@ -145,6 +145,7 @@ class Discord
         );
 
         if ($response->status() > 300 && $response->json()['code'] == 30001) {
+            Log::warning('Discord invite: server limit reached', $context);
             throw new DiscordUserInviteException($response, 'You have reached your Discord server limit! You must leave a server before you can join another one');
         }
 
