@@ -199,4 +199,25 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->test(ViewAccount::class, ['record' => $this->privacc->refresh()->getKey()])
             ->assertActionHidden('roster_restriction_remove');
     }
+
+    public function test_it_returns_the_most_recent_uk_atc_session_disconnect_time()
+    {
+        $olderSession = factory(\App\Models\NetworkData\Atc::class)
+            ->states('offline')
+            ->create(['account_id' => $this->privacc->id, 'disconnected_at' => now()->subDays(2)]);
+
+        $newerSession = factory(\App\Models\NetworkData\Atc::class)
+            ->states('offline')
+            ->create(['account_id' => $this->privacc->id, 'disconnected_at' => now()->subHour()]);
+
+        $lastSeen = $this->privacc->lastSeenControllingUK();
+
+        $this->assertNotNull($lastSeen);
+        $this->assertTrue($lastSeen->equalTo($newerSession->disconnected_at));
+    }
+
+    public function test_it_returns_null_when_no_uk_atc_sessions_exist()
+    {
+        $this->assertNull($this->privacc->lastSeenControllingUK());
+    }
 }

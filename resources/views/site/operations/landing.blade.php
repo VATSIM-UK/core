@@ -39,8 +39,7 @@
                     </p>
 
                     <p>
-                        Most updates are posted via our <a href="https://community.vatsim.uk/">Forum</a> and notified in
-                        Discord. We encourage you to subscribe to our forum channels to receive emails when procedures change.
+                        Most updates are posted on our <a href="https://docs.vatsim.uk/">documentation site</a> and notified in the Discord #operations-updates channel.
                     </p>
                 </div>
             </div>
