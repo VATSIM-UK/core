@@ -30,9 +30,9 @@ class VisitTransferRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\ViewAction::make('View')
                     ->label('View Application')
-                    ->url(fn ($record) => route('adm.visiting.application.view', ['application' => $record->id]))
+                    ->url(fn ($record) => route('filament.app.resources.visit-transfer.visit-transfer-applications.view', ['record' => $record->id]))
                     ->color('primary')
-                    ->visible(fn () => auth()->user()->can('adm/visit-transfer')),
+                    ->visible(fn () => auth()->user()->can('vt.application.view.*')),
             ])
             ->defaultSort('created_at', 'desc');
     }
