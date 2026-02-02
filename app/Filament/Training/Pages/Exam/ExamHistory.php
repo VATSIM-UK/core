@@ -100,6 +100,22 @@ class ExamHistory extends Page implements HasTable
                             });
                         }));
                 })->label('Position'),
+                Filter::make('conducted_by_me')->form([
+                    Forms\Components\Checkbox::make('conducted_by_me')
+                        ->label('Only show exams I conducted'),
+                ])->query(function ($query, array $data) {
+                    if ($data['conducted_by_me']) {
+                        $userCid = auth()->user()->id;
+                        return $query->whereHas('examBooking.examiners', function ($q) use ($userCid) {
+                            $q->where(function ($subQuery) use ($userCid) {
+                                $subQuery->whereHas('primaryExaminer', fn ($sq) => $sq->where('cid', $userCid))
+                                    ->orWhereHas('secondaryExaminer', fn ($sq) => $sq->where('cid', $userCid))
+                                    ->orWhereHas('traineeExaminer', fn ($sq) => $sq->where('cid', $userCid));
+                            });
+                        });
+                    }
+                    return $query;
+                })->label('Conducted by me'),
             ]);
     }
 }
