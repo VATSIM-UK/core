@@ -106,6 +106,7 @@ class ExamHistory extends Page implements HasTable
                 ])->query(function ($query, array $data) {
                     if ($data['conducted_by_me']) {
                         $userCid = auth()->user()->id;
+
                         return $query->whereHas('examBooking.examiners', function ($q) use ($userCid) {
                             $q->where(function ($subQuery) use ($userCid) {
                                 $subQuery->whereHas('primaryExaminer', fn ($sq) => $sq->where('cid', $userCid))
@@ -114,6 +115,7 @@ class ExamHistory extends Page implements HasTable
                             });
                         });
                     }
+
                     return $query;
                 })->label('Conducted by me'),
             ]);
