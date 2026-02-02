@@ -2,17 +2,17 @@
 # Syllabus and Lesson Plans
 
 **Version 1.0**  
-**Effective Date:** 12th December 2025
+**Effective Date:** 2nd February 2026
 
 ---
 
-## Scope
+## 1. Scope
 
 This document outlines the Senior Student (S3) training syllabus for students training in VATSIM UK.
 
 ---
 
-## Scope
+## Exclusion of Liability
 
 This document is only to be used in conjunction with the S3 training scheme of the VATSIM UK Training Department and should never be adopted for real world use.
 
@@ -25,6 +25,8 @@ as to the currency, accuracy or quality of the information, nor for any conseque
 
 The syllabus details the competencies and content covered by the S3 training course in VATSIM UK. Students will meet the learning objectives through independent study of material provided in eLearning courses and traditional documentation, supported by mentors and instructors in one-to-one and group teaching sessions. Students are encouraged to ask questions in the #app_students channel on Discord.
 
+---
+    
 ## Pre-Course Learning
 
 In advance of students beginning a course of practical training, they are expected to have completed the relevant theory examination and attended a pre-course seminar, which will serve to provide the basis for theoretical knowledge to be developed upon during a course of practical training. VATSIM UK’s S3 Moodle course should form the basis for much of the theoretical knowledge required for the rating.
@@ -55,6 +57,8 @@ The pre-course seminar will cover the following content:
     - Introduction to Standing Agreements
     - Inbound Releases
 
+---
+    
 ## Syllabus
 This section serves to outline the competencies required of an S3 controller within VATSIM UK and aims to explain the requirements of each competency. Insofar as is possible, this section should be considered exhaustive; it should not be required that a student receiving training towards an S3 rating in VATSIM UK demonstrate any skills beyond those which are listed in this section of this document.     
 
@@ -64,7 +68,7 @@ S3 Training now incorporates block training as a way to standardise the Approach
 
 Students should complete all blocks before being forwarded for a practical exam unless otherwise agreed with the training administrators (TGI, ATC TM, ATC TD). The block training system comprises of two blocks; students are only taught competencies in their block until completing the content of each and then they complete the end of block exam.
 
-#### Block One
+### Block One
 
 Block one aims to introduce student controllers to the basic concept of approach radar control. A student controller should, at the end of this block, be expected to demonstrate:
 - An understanding of the role of an approach radar controller.
@@ -105,7 +109,7 @@ Block one aims to introduce student controllers to the basic concept of approach
     - Understanding the ‘PRAWNS’ pneumonic to facilitate controller handovers.
     - Working split positions (INT/FIN splits).
 
-#### Block Two
+### Block Two
 
 Block two aims to develop on the knowledge obtained at Block One, whilst introducing more advanced concepts for streaming arriving aircraft, managing continuous descent approaches, managing holds and providing UK Flight Information Services. A student controller should, at the end of this block, be expected to demonstrate:
 
@@ -217,12 +221,16 @@ This lesson is intended to take approximately 60-90 minutes.
 ### Required Future Learning
 At the end of the session, the student should be directed to ensure that they revise the local airspace of the position that they are controlling, with the intention of beginning live controlling. They should focus on the lateral and vertical constraints of their airspace and, if capacity allows, basic information regarding release points. 
 
+---
+    
 ## End Of Block Assessments
 
 The S3 syllabus does not require an assessment at the end of block one. The natural progression of students is expected to slowly incorporate block two elements, although the mentor may be expected to either take control of the frequency, reject certain traffic scenarios or heavily coach the student through block two scenarios early in the live training.
 
 At the end of block two, before a student is considered for a practical exam, an end of block two assessment should be conducted by a suitably experienced member of the training group, authorised by the Training Group Instructor, ATC Training Manager or ATC Training Director. The assessment should be conducted in exam conditions: an open book assessment whereby the student is expected to independently control appropriate volumes of traffic and demonstrate an acceptable level of competence of all competencies required within the syllabus. In normal circumstances, an examination should not be concluded until a block two assessment has been conducted and the prospective candidate demonstrated the required standard of control to pass an exam.
 
+---
+    
 ## Guidance to Mentors
 
 It is widely regarded that the learning curve from S2 to S3 is the steepest that students will undergo throughout their ATC Training in VATSIM UK. Thus, mentors must ensure that students are theoretically prepared for their training and set realistic practical expectations for the first few mentoring sessions. Below is a list of do’s and don’ts through the S3 training programme
