@@ -161,4 +161,84 @@ In order to ensure that students beginning their S3 training are brokered to the
 
 ### Lesson One
 
+**Purpose:**
+- To introduce the student to the Radar Display, demonstrating the capabilities of Euroscope and TopSky.
+- To introduce the student to the concept of tracking and various Euroscope shortcuts to assist with this.
+- To introduce the student to basic Radiotelephony concepts.
+- To introduce the student to the effects of speed and altitude on aircraft performance.
+- To demonstrate to the student basic vectoring and descent techniques.
+
+This lesson is intended to take approximately 45-60 minutes.
+
+| Objective | Training Notes | Success Criteria |
+|-----------|----------------|------------------|
+| 1 | The mentor should assist the student via means of a Discord screenshare. The mentor should identify or demonstrate:<br><br>- The four common radar profiles and how to promptly access them – and close them if required.<br>- How to access the SMR when covering a position on a top-down basis.<br>- The contents of the three tag types (untracked, tracked, detailed).<br>- The click-actions of each tag item.<br>- The use of leader lines and the separation tool.<br>- The use of the Display Menu to control airspace depiction.<br>- The use of TopSky shortcuts to toggle the display of VRPs and airspace bases. | The student can configure their radar display and demonstrates familiarity with the tag family and lists. The student can easily access elements of the radar display, either by selecting a new ASR or by using the display menu or TopSky shortcuts. |
+| 2 | The mentor should describe the concept of *tracking* aircraft in Euroscope and how students should track, drop, transfer or force transfer aircraft. The mentor should have the student demonstrate:<br><br>- How to track an aircraft using the list, tag, or **F3** shortcut.<br>- How to drop the track using the list, tag, or **Shift + F4**.<br>- How to identify the controller that Euroscope recommends transferring to.<br>- How to transfer an aircraft to the recommended controller using **F4**, then clicking a tag, list item or using ASEL.<br>- How to forcibly transfer an aircraft using **F4**, typing a controller identifier, then clicking a tag, list item or using ASEL. | The student demonstrates the ability to track an aircraft, drop the track, transfer to the recommended controller, and transfer to a specified controller using a simulated aircraft. |
+| 3 | The mentor should ensure that the student understands basic radiotelephony for:<br><br>- Turning an aircraft left or right.<br>- Turning onto a specified heading (“fly radar heading”).<br>- Descending an aircraft to a flight level.<br>- Descending an aircraft to an altitude.<br>- Clearing an aircraft for an ILS approach. | During the lesson, the student should be offered the opportunity to provide basic vectors and descents to a simulated aircraft. The student should issue CAP413-compliant instructions, with mentor support if required. The focus is on correct phraseology rather than proficiency.<br><br>There is no requirement to simulate initial check-ins, expected approach instructions, or delay information. |
+| 4 | The mentor should explain basic aircraft performance principles. Using two simulated aircraft, one significantly higher than the other, the mentor should discuss performance implications during climb. A demonstration should then be made showing the effect of aircraft speed on turn radius. | The student should demonstrate:<br><br>- That higher aircraft typically have a higher groundspeed.<br>- That aircraft flying into wind will have a lower groundspeed.<br>- That faster aircraft have a larger turning radius than slower aircraft. |
+| 5 | The student should be given time to practice vectoring aircraft freely, eventually resulting in at least one aircraft being vectored onto the ILS. | The student is given discretion to vector aircraft to understand timing and effect of actions. At least one aircraft should be vectored onto the ILS.<br><br>There is no requirement to ensure aircraft remain within controlled airspace, comply with restrictions, or establish on the ILS within normal tolerances. |
+
+#### Required Future Learning
+At the end of the session, the student should be directed to ensure that they revise the requirements for information to be verified with aircraft on first contact, alongside consolidating their knowledge of the required radiotelephony for block one items.
+
+### Lesson Two
+
+**Purpose:**
+- To ensure the student is familiar with the required information to be exchanged on initial check-in.
+- To ensure that the student is familiar with the IVV process.
+- To ensure that the student is aware of their separation minima and how to apply them.
+- To ensure that the student can perform basic streaming.
+
+This lesson is intended to take approximately 60-90 minutes.
+
+| Objective | Training Notes | Success Criteria |
+|-----------|----------------|------------------|
+| 1 | The mentor should discuss the requirements of the IVV process, ensuring theoretical understanding. The mentor should identify or demonstrate:<br><br>- The difference between identified and unidentified aircraft via correlated and uncorrelated tags.<br>- The process to manually correlate aircraft.<br>- The phraseology required to issue a new squawk.<br>- The phraseology to direct an aircraft to set a new squawk, having previously had one. | The student can:<br><br>- Explain the importance of identification.<br>- Explain the steps in the IVV process.<br>- Identify the correct Mode C validation tolerance.<br>- Spot an unidentified aircraft on the radar display.<br>- Issue an appropriate squawk.<br>- Correctly identify the aircraft.<br>- Explain how to manage departures that do not automatically complete code–callsign correlation. |
+| 2 | The mentor should ensure the student understands separation minima and their origin. The student should also demonstrate understanding of how separation can be achieved and maintained. The student should be invited to:<br><br>- Vector two aircraft one behind the other and attempt to reduce spacing using speed.<br>- Observe that even moderate speed differences (e.g. 180 kt vs 250 kt) require significant time to create spacing.<br>- Create a situation with two aircraft nearly overhead and apply a 30° diverging heading, timing how long it takes to achieve 3 NM separation.<br><br>The purpose is to illustrate that:<br>- Speed can maintain separation but not build it.<br>- Headings are highly effective at building separation. | The student demonstrates an understanding of separation mechanics and the relative effectiveness of speed and heading changes in maintaining and creating separation. |
+| 3 | Using these techniques, the student should stream three aircraft for an arrival. No focus is required on controlled airspace, RMAs or release points; the exercise is designed to introduce basic vectoring. <br><br>The student should also demonstrate *paralleling* — recognising that two aircraft at similar altitudes on the same heading will remain separated, allowing level swaps whilst maintaining separation. | The student can:<br><br>- Vector aircraft to achieve required separation and/or spacing.<br>- Stream aircraft by achieving similar ground tracks rather than paralleling.<br>- Apply suitable speed restrictions to maintain separation.<br>- Vector aircraft on parallel tracks to maintain separation.<br>- Correctly recall standard and reduced separation minima for known traffic and separation requirements for unknown traffic within controlled airspace. |
+
+#### Required Future Learning
+At the end of the session, the student should be directed to ensure that they revise the requirements for information to be verified with aircraft on first contact, alongside consolidating their knowledge of the required radiotelephony for block one items.
+
+### Lesson Three
+
+**Purpose:**
+- To ensure the student is capable of reading ILS and RNP approach charts.
+- To vector aircraft to establish on an ILS approach within the required profile.
+- To recognise and understand the phraseology difference between “cleared ILS approach” and “once established on the localiser, descend on the glidepath”.
+
+This lesson is intended to take approximately 60-90 minutes.
+
+| Objective | Training Notes | Success Criteria |
+|-----------|----------------|------------------|
+| **1** | The mentor should begin with theoretical instruction on ILS and RNP approaches, using charts from an airfield other than the student’s training aerodrome. <br><br>The mentor should ensure understanding of the ILS components:<br>- Localiser<br>- Glidepath<br>- DME<br><br>The mentor should lead a discussion covering key chart elements:<br>- Approach type and runway<br>- Airfield and threshold elevations<br>- MSA<br>- ILS frequency<br>- Inbound course<br>- Platform altitude<br>- Descent point and DME<br>- Missed approach details<br>- IAF(s) and FAF<br><br>The student should then review a chart for their training aerodrome and identify the same elements. | The student can:<br><br>- Demonstrate understanding of the constituent parts of an approach chart.<br>- Interrogate an approach chart to identify critical information. |
+| **2** | The mentor should discuss principles of establishing aircraft for ILS approaches, including:<br><br>- Aircraft must be below the glidepath to intercept.<br>- High-speed aircraft may overshoot the localiser.<br>- Aircraft must not establish on a heading more than 40° from the localiser.<br>- Aircraft should, where possible, experience straight and level flight before intercepting.<br><br>The mentor should explain phraseology differences for aircraft establishing above versus at/below platform altitude. <br><br>The student should then vector aircraft to establish on an instrument approach, respecting airspace confines, platform altitude and descent profile. | The student can:<br><br>- Vector aircraft appropriately in low-workload situations to establish on an approach.<br>- Consistently establish aircraft at the same intercept point.<br>- Manage aircraft speed appropriately throughout the arrival phase. |
+
+### Required Future Learning
+At the end of the session, the student should be directed to ensure that they revise the local airspace of the position that they are controlling, with the intention of beginning live controlling. They should focus on the lateral and vertical constraints of their airspace and, if capacity allows, basic information regarding release points. 
+
+## End Of Block Assessments
+
+The S3 syllabus does not require an assessment at the end of block one. The natural progression of students is expected to slowly incorporate block two elements, although the mentor may be expected to either take control of the frequency, reject certain traffic scenarios or heavily coach the student through block two scenarios early in the live training.
+
+At the end of block two, before a student is considered for a practical exam, an end of block two assessment should be conducted by a suitably experienced member of the training group, authorised by the Training Group Instructor, ATC Training Manager or ATC Training Director. The assessment should be conducted in exam conditions: an open book assessment whereby the student is expected to independently control appropriate volumes of traffic and demonstrate an acceptable level of competence of all competencies required within the syllabus. In normal circumstances, an examination should not be concluded until a block two assessment has been conducted and the prospective candidate demonstrated the required standard of control to pass an exam.
+
+## Guidance to Mentors
+
+It is widely regarded that the learning curve from S2 to S3 is the steepest that students will undergo throughout their ATC Training in VATSIM UK. Thus, mentors must ensure that students are theoretically prepared for their training and set realistic practical expectations for the first few mentoring sessions. Below is a list of do’s and don’ts through the S3 training programme
+
+DO: 
+- Remind students that controlling with Mode C correlation is mandatory. The use of Easy VATSIM mode is not permitted.
+- Discuss and check baseline theoretical knowledge between lessons – a solid theoretical foundation is critical to good practical development. 
+- Set realistic goals for students. Approach radar training is difficult; there are many concepts to adopt and students are truly in control in three dimensions for the first time.
+- Be open and honest; challenge students, remind them that they are responsible for their own development and stop sessions if the student has demonstrably not put the effort in. Inform students if they are not meeting the expected standard and inform the Training Group staff.
+- Ask the student why they’re doing something – demonstrating and understanding of the tools, techniques, rules and restrictions is more critical at this level than for Aerodrome ratings.
+- Use plenty of images in mentoring reports to supplement your description of learning points. Be thorough!
+
+DON’T: 
+- Simply put the student straight into a live network session without having prepared them for it. Their confidence will be damaged when mistakes are made; this precious time to repair. 
+- Bring in more advanced competencies from other blocks. Stick to teaching Block 1 competencies until the student demonstrates suitable proficiency. 
+- Expect the student to know everything. The theoretical training resources are a great tool for preparation, but they cannot prepare students for handling the real thing. Guide students on where to find information and discuss why mistakes are made.
+- Take control of the frequency unnecessarily – students have to make mistakes to learn and they cannot make mistakes if you take the frequency!
+
 </x-markdown>
