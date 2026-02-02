@@ -75,6 +75,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                     Forms\Components\Placeholder::make('has_secondary_password')->content(fn ($record) => $record->hasPassword() ? 'Yes' : 'No'),
                     Forms\Components\Placeholder::make('discord_id')->label('Discord ID')->content(fn ($record) => $record->discord_id ?? new HtmlString('<i>Not Linked</i>')),
                     Forms\Components\Placeholder::make('roster_status')->label('Roster Status')->content(fn ($record) => Roster::where('account_id', $record->id)->exists() ? 'Active' : 'Inactive'),
+                    Forms\Components\Placeholder::make('last_seen_controlling_uk')->label('Last UK Controlling Session')->content(fn ($record) => $record->lastSeenControllingUK()?->format('d M Y, H:i') ?? 'Never Controlled'),
 
                     Forms\Components\Fieldset::make('Emails')->schema([
                         Forms\Components\TextInput::make('email')
