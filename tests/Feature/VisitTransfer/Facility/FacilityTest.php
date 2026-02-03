@@ -2,17 +2,17 @@
 
 namespace Tests\Feature\VisitTransfer\Facility;
 
+use App\Enums\QualificationTypeEnum;
 use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\CreateFacility;
 use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\EditFacility;
 use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\ListFacilities;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\Admin\BaseAdminTestCase;
-use App\Enums\QualificationTypeEnum;
-use App\Models\Mship\Qualification;
 
 class FacilityTest extends BaseAdminTestCase
 {
@@ -253,7 +253,7 @@ class FacilityTest extends BaseAdminTestCase
     {
         $minQual = Qualification::ofType(QualificationTypeEnum::ATC->value)->where('vatsim', 3)->first();
         $maxQual = Qualification::ofType(QualificationTypeEnum::ATC->value)->where('vatsim', 4)->first();
-        
+
         $facility = Facility::factory()->create([
             'training_team' => 'atc',
             'minimum_atc_qualification_id' => $minQual->id,
@@ -280,7 +280,7 @@ class FacilityTest extends BaseAdminTestCase
     public function it_correctly_identifies_if_a_user_is_qualified_for_pilot_facility()
     {
         $p2 = Qualification::ofType(QualificationTypeEnum::Pilot->value)->where('vatsim', 2)->first();
-        
+
         $facility = Facility::factory()->create([
             'training_team' => 'pilot',
             'minimum_pilot_qualification_id' => $p2->id,
