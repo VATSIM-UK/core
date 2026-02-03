@@ -5,10 +5,10 @@ namespace App\Models\VisitTransfer;
 use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
 use App\Models\Contact;
 use App\Models\Model;
+use App\Models\Mship\Qualification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Malahierba\PublicId\PublicId;
-use App\Models\Mship\Qualification;
 
 /**
  * App\Models\VisitTransfer\Facility.

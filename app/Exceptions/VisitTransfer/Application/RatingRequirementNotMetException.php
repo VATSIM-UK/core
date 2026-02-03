@@ -12,7 +12,7 @@ class RatingRequirementNotMetException extends \Exception
     {
         $this->facility = $facility;
 
-        $this->message = "Your current rating is outside the requirements for " . $this->facility->name . ".";
+        $this->message = 'Your current rating is outside the requirements for '.$this->facility->name.'.';
     }
 
     public function __toString()

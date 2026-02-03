@@ -2,7 +2,9 @@
 
 namespace App\Filament\Admin\Resources\VisitTransfer;
 
+use App\Enums\QualificationTypeEnum;
 use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages;
+use App\Models\Mship\Qualification;
 use App\Models\VisitTransfer\Facility;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Grid;
@@ -18,8 +20,6 @@ use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use App\Enums\QualificationTypeEnum;
-use App\Models\Mship\Qualification;
 
 class FacilityResource extends Resource
 {
@@ -132,7 +132,7 @@ class FacilityResource extends Resource
                             ->label('Auto Acceptance')
                             ->helperText('Automatically accept all applicants.')
                             ->required(),
-                        
+
                         Grid::make(2)->reactive()->visible(fn ($get) => $get('training_team') === 'atc')->schema([
                             Select::make('minimum_atc_qualification_id')
                                 ->label('Minimum ATC Qualification')
@@ -163,8 +163,8 @@ class FacilityResource extends Resource
                                 ->rules([
                                     fn (callable $get) => function (string $attribute, $value, $fail) use ($get) {
                                         $minId = $get('minimum_atc_qualification_id');
-                                        
-                                        if (!$minId || !$value) {
+
+                                        if (! $minId || ! $value) {
                                             return;
                                         }
 
@@ -172,54 +172,54 @@ class FacilityResource extends Resource
                                         $maxQual = Qualification::find($value);
 
                                         if ($maxQual && $minQual && $maxQual->vatsim < $minQual->vatsim) {
-                                            $fail("The Maximum qualification cannot be lower than the Minimum.");
+                                            $fail('The Maximum qualification cannot be lower than the Minimum.');
                                         }
                                     },
                                 ]),
-                          ]),
-                            
-                            Grid::make(2)->reactive()->visible(fn ($get) => $get('training_team') === 'pilot')->schema([
-                                Select::make('minimum_pilot_qualification_id')
-                                    ->label('Minimum Pilot Qualification')
-                                    ->options(
-                                        Qualification::ofType(QualificationTypeEnum::Pilot->value)
-                                            ->orderBy('vatsim')
-                                            ->get()
-                                            ->pluck('name', 'id')
-                                            ->toArray()
-                                    )
-                                    ->placeholder('No Minimum')
-                                    ->nullable()
-                                    ->default(null)
-                                    ->reactive(),
+                        ]),
 
-                                Select::make('maximum_pilot_qualification_id')
-                                    ->label('Maximum Pilot Qualification')
-                                    ->options(
-                                        Qualification::ofType(QualificationTypeEnum::Pilot->value)
-                                            ->orderBy('vatsim')
-                                            ->get()
-                                            ->pluck('name', 'id')
-                                            ->toArray()
-                                    )
-                                    ->placeholder('No Maximum')
-                                    ->nullable()
-                                    ->default(null)
-                                    ->rules([
-                                        fn (callable $get) => function (string $attribute, $value, $fail) use ($get) {
-                                            $minId = $get('minimum_pilot_qualification_id');
-                                            
-                                            if (!$minId || !$value) {
-                                                return;
-                                            }
+                        Grid::make(2)->reactive()->visible(fn ($get) => $get('training_team') === 'pilot')->schema([
+                            Select::make('minimum_pilot_qualification_id')
+                                ->label('Minimum Pilot Qualification')
+                                ->options(
+                                    Qualification::ofType(QualificationTypeEnum::Pilot->value)
+                                        ->orderBy('vatsim')
+                                        ->get()
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                )
+                                ->placeholder('No Minimum')
+                                ->nullable()
+                                ->default(null)
+                                ->reactive(),
 
-                                            $minQual = Qualification::find($minId);
-                                            $maxQual = Qualification::find($value);
+                            Select::make('maximum_pilot_qualification_id')
+                                ->label('Maximum Pilot Qualification')
+                                ->options(
+                                    Qualification::ofType(QualificationTypeEnum::Pilot->value)
+                                        ->orderBy('vatsim')
+                                        ->get()
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                )
+                                ->placeholder('No Maximum')
+                                ->nullable()
+                                ->default(null)
+                                ->rules([
+                                    fn (callable $get) => function (string $attribute, $value, $fail) use ($get) {
+                                        $minId = $get('minimum_pilot_qualification_id');
 
-                                            if ($maxQual && $minQual && $maxQual->vatsim < $minQual->vatsim) {
-                                                $fail("The Maximum qualification cannot be lower than the Minimum.");
-                                            }
-                                        },
+                                        if (! $minId || ! $value) {
+                                            return;
+                                        }
+
+                                        $minQual = Qualification::find($minId);
+                                        $maxQual = Qualification::find($value);
+
+                                        if ($maxQual && $minQual && $maxQual->vatsim < $minQual->vatsim) {
+                                            $fail('The Maximum qualification cannot be lower than the Minimum.');
+                                        }
+                                    },
                                 ]),
                         ]),
                     ]),

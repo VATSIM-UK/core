@@ -20,8 +20,8 @@ use App\Exceptions\VisitTransfer\Application\AttemptingToTransferToNonTrainingFa
 use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
 use App\Exceptions\VisitTransfer\Application\DuplicateRefereeException;
 use App\Exceptions\VisitTransfer\Application\FacilityHasNoCapacityException;
-use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Exceptions\VisitTransfer\Application\RatingRequirementNotMetException;
+use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
@@ -926,7 +926,7 @@ class Application extends Model
 
     private function guardAgainstApplyingToAFacilityWhileQualificationOutOfBounds(Facility $requestedFacility)
     {
-        if (!$this->isQualifiedFor($requestedFacility)) {
+        if (! $this->isQualifiedFor($requestedFacility)) {
             throw new RatingRequirementNotMetException($requestedFacility);
         }
     }
