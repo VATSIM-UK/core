@@ -86,6 +86,21 @@
                         <p class="text-center" style="text-align: justify; text-justify: inter-word;">
                             {{ $facility->description }}
                         </p>
+
+                        <p class="text-center">
+                            @if($facility->minimum_atc_qualification_id)
+                                Minimum ATC Rating: {{ \App\Models\Mship\Qualification::find($facility->minimum_atc_qualification_id)->name }}
+                            @else
+                                Minimum ATC Rating: None
+                            @endif
+                            <br>
+                            @if($facility->maximum_atc_qualification_id)
+                                Maximum ATC Rating: {{ \App\Models\Mship\Qualification::find($facility->maximum_atc_qualification_id)->name }}
+                            @else
+                                Maximum ATC Rating: None
+                            @endif
+                        </p>
+
                         <p class="text-center">
                             @if($facility->training_required)
                                 <span class="label label-warning">TRAINING IS REQUIRED</span>
