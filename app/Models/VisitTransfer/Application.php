@@ -21,6 +21,7 @@ use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
 use App\Exceptions\VisitTransfer\Application\DuplicateRefereeException;
 use App\Exceptions\VisitTransfer\Application\FacilityHasNoCapacityException;
 use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
+use App\Exceptions\VisitTransfer\Application\RatingRequirementNotMetException;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
@@ -571,6 +572,8 @@ class Application extends Model
 
         $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
 
+        $this->guardAgainstApplyingToAFacilityWhileQualificationOutOfBounds($facility);
+
         $this->training_required = $facility->training_required;
         $this->statement_required = $facility->stage_statement_enabled;
         $this->references_required = $facility->stage_reference_enabled ? $facility->stage_reference_quantity : 0;
@@ -910,6 +913,13 @@ class Application extends Model
     {
         if ($requestedFacility->training_required == 1 && $requestedFacility->training_spaces === 0) {
             throw new FacilityHasNoCapacityException($requestedFacility);
+        }
+    }
+
+    private function guardAgainstApplyingToAFacilityWhileQualificationOutOfBounds(Facility $requestedFacility)
+    {
+        if (!$this->isQualifiedFor($requestedFacility)) {
+            throw new RatingRequirementNotMetException($requestedFacility);
         }
     }
 
