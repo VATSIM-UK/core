@@ -580,7 +580,7 @@ class Application extends Model
 
         $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
 
-        $this->guardAgainstApplyingToAFacilityWhileQualificationOutOfBounds($facility);
+        $this->guardAgainstApplyingToAFacilityWhileNotMeetingRatingRequirements($facility);
 
         $this->training_required = $facility->training_required;
         $this->statement_required = $facility->stage_statement_enabled;
@@ -924,7 +924,7 @@ class Application extends Model
         }
     }
 
-    private function guardAgainstApplyingToAFacilityWhileQualificationOutOfBounds(Facility $requestedFacility)
+    private function guardAgainstApplyingToAFacilityWhileNotMeetingRatingRequirements(Facility $requestedFacility)
     {
         if (! $this->meetsRatingRequirements($requestedFacility)) {
             throw new RatingRequirementNotMetException($requestedFacility);
