@@ -21,7 +21,7 @@ class Registration extends BaseController
 
     public function show()
     {
-        return $this->viewMake('discord.new');
+        return redirect()->route('mship.manage.dashboard');
     }
 
     public function create(Request $request)
