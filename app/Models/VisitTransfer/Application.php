@@ -548,17 +548,25 @@ class Application extends Model
 
     public function isQualifiedFor(Facility $facility)
     {
-        if (!$facility->minimumATCQualification && !$facility->maximumATCQualification) {
-            return true;
+        if ($facility->training_team === 'atc') {
+            $userRating = $this->account->qualification_atc?->vatsim;
+            $minQual    = $facility->minimumATCQualification;
+            $maxQual    = $facility->maximumATCQualification;
+        } else {
+            $userRating = $this->account->qualification_pilot?->vatsim;
+            $minQual    = $facility->minimumPilotQualification;
+            $maxQual    = $facility->maximumPilotQualification;
         }
 
-        $userRating = $this->account->qualification_atc->vatsim;
-
-        if ($facility->minimumATCQualification && $userRating < $facility->minimumATCQualification->vatsim) {
+        if ($userRating === null) {
             return false;
         }
 
-        if ($facility->maximumATCQualification && $userRating > $facility->maximumATCQualification->vatsim) {
+        if ($minQual && $userRating < $minQual->vatsim) {
+            return false;
+        }
+
+        if ($maxQual && $userRating > $maxQual->vatsim) {
             return false;
         }
 

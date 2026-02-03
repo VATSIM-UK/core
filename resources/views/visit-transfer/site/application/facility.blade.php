@@ -88,16 +88,12 @@
                         </p>
 
                         <p class="text-center">
-                            @if($facility->minimumATCQualification)
-                                Minimum ATC Rating: {{ $facility->minimumATCQualification->name }}
+                            @if($facility->training_team === 'atc')
+                                <strong>Minimum ATC Rating:</strong> {{ $facility->minimumATCQualification->name ?? 'None' }}<br>
+                                <strong>Maximum ATC Rating:</strong> {{ $facility->maximumATCQualification->name ?? 'None' }}
                             @else
-                                Minimum ATC Rating: None
-                            @endif
-                            <br>
-                            @if($facility->maximumATCQualification)
-                                Maximum ATC Rating: {{ $facility->maximumATCQualification->name }}
-                            @else
-                                Maximum ATC Rating: None
+                                <strong>Minimum Pilot Rating:</strong> {{ $facility->minimumPilotQualification->name ?? 'None' }}<br>
+                                <strong>Maximum Pilot Rating:</strong> {{ $facility->maximumPilotQualification->name ?? 'None' }}
                             @endif
                         </p>
 
@@ -124,7 +120,7 @@
                             @else
                                 <button class="btn btn-default" disabled="disabled">INELIGIBLE</button>
                                 <br>
-                                <small class="text-danger">Your current ATC rating does not meet this facility's requirements.</small>
+                                <small class="text-danger">Your current rating does not meet this facility's requirements.</small>
                             @endif
                         </p>
 

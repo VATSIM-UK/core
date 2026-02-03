@@ -109,6 +109,8 @@ class Facility extends Model
         'auto_acceptance',
         'minimum_atc_qualification_id',
         'maximum_atc_qualification_id',
+        'minimum_pilot_qualification_id',
+        'maximum_pilot_qualification_id',
         'public',
     ];
 
@@ -274,6 +276,16 @@ class Facility extends Model
     public function maximumATCQualification()
     {
         return $this->belongsTo(Qualification::class, 'maximum_atc_qualification_id');
+    }
+
+    public function minimumPilotQualification()
+    {
+        return $this->belongsTo(Qualification::class, 'minimum_pilot_qualification_id');
+    }
+
+    public function maximumPilotQualification()
+    {
+        return $this->belongsTo(Qualification::class, 'maximum_pilot_qualification_id');
     }
 
     private function guardAgainstDuplicateFacilityName($proposedName, $excludeCurrent = false)
