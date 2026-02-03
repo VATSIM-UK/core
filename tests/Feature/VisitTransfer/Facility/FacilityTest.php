@@ -11,6 +11,8 @@ use App\Models\VisitTransfer\Facility;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\Admin\BaseAdminTestCase;
+use App\Enums\QualificationTypeEnum;
+use App\Models\Mship\Qualification;
 
 class FacilityTest extends BaseAdminTestCase
 {
@@ -244,5 +246,57 @@ class FacilityTest extends BaseAdminTestCase
             ->assertSee(trans('application.dashboard.apply.atc.visit.unable'))
             ->assertSee(trans('application.continue'))
             ->assertSee(trans('application.dashboard.apply.visit_open'));
+    }
+
+    #[Test]
+    public function it_correctly_identifies_if_a_user_is_qualified_for_atc_facility()
+    {
+        $minQual = Qualification::ofType(QualificationTypeEnum::ATC->value)->where('vatsim', 3)->first();
+        $maxQual = Qualification::ofType(QualificationTypeEnum::ATC->value)->where('vatsim', 4)->first();
+        
+        $facility = Facility::factory()->create([
+            'training_team' => 'atc',
+            'minimum_atc_qualification_id' => $minQual->id,
+            'maximum_atc_qualification_id' => $maxQual->id,
+        ]);
+
+        $application = new Application(['account_id' => $this->internationalUser->id]);
+
+        // 1. User is S1, Should fail (Too low)
+        $s1 = Qualification::ofType(QualificationTypeEnum::ATC->value)->where('vatsim', 2)->first();
+        $this->internationalUser->addQualification($s1);
+        $this->assertFalse($application->isQualifiedFor($facility));
+
+        // 2. User is S2, Should pass
+        $this->internationalUser->addQualification($minQual);
+        $this->internationalUser->refresh();
+        $this->assertTrue($application->isQualifiedFor($facility->fresh()));
+
+        // 3. User is C1, Should fail (Too high)
+        $c1 = Qualification::ofType(QualificationTypeEnum::ATC->value)->where('vatsim', 5)->first();
+        $this->internationalUser->addQualification($c1);
+        $this->internationalUser->refresh();
+        $this->assertFalse($application->isQualifiedFor($facility->fresh()));
+    }
+
+    #[Test]
+    public function it_correctly_identifies_if_a_user_is_qualified_for_pilot_facility()
+    {
+        $p2 = Qualification::ofType(QualificationTypeEnum::Pilot->value)->where('vatsim', 2)->first();
+        
+        $facility = Facility::factory()->create([
+            'training_team' => 'pilot',
+            'minimum_pilot_qualification_id' => $p2->id,
+        ]);
+
+        $application = new Application(['account_id' => $this->internationalUser->id]);
+
+        // User has no pilot qualifications - Should fail
+        $this->assertFalse($application->isQualifiedFor($facility));
+
+        // User gains P2 - Should pass
+        $this->internationalUser->addQualification($p2);
+        $this->internationalUser->refresh();
+        $this->assertTrue($application->isQualifiedFor($facility->fresh()));
     }
 }
