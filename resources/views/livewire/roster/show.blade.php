@@ -34,7 +34,7 @@
                                     @endif
                                             </span>
                                 <span
-                                    class="text-xs text-left opacity-50">Covers: {{ $endorsement->endorsable->description }}</span>
+                                    class="text-xs text-left opacity-50">Covers: {{ $endorsement->endorsable?->description ?? 'No description available' }}</span>
                             @endforeach
                         @endforeach
                     </div>
