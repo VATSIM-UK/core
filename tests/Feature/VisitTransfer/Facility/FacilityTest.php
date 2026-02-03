@@ -291,10 +291,10 @@ class FacilityTest extends BaseAdminTestCase
 
         $application = new Application(['account_id' => $this->internationalUser->id]);
 
-        // User has no pilot qualifications - Should fail
+        // User has no pilot qualifications, Should fail
         $this->assertFalse($application->isQualifiedFor($facility));
 
-        // User gains P2 - Should pass
+        // User gains P2, Should pass
         $this->internationalUser->addQualification($p2);
         $this->internationalUser->refresh();
         $this->assertTrue($application->isQualifiedFor($facility->fresh()));
