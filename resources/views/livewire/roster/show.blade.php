@@ -27,7 +27,7 @@
                         @foreach($account->endorsements()->active()->get()->groupBy('type') as $type => $endorsements)
                             <span class="text-sm font-semibold">{{ $type }}</span>
                             @foreach($endorsements as $endorsement)
-                                <span>{{ $endorsement->endorsable->name }}
+                                <span>{{ $endorsement->endorsable?->name ?? 'Unknown Endorsement' }}
                                     @if($endorsement->expires())
                                         <span
                                             class="text-xs opacity-75">Expires {{ $endorsement->expires_at->toFormattedDateString() }}</span>
