@@ -88,14 +88,14 @@
                         </p>
 
                         <p class="text-center">
-                            @if($facility->minimum_atc_qualification_id)
-                                Minimum ATC Rating: {{ \App\Models\Mship\Qualification::find($facility->minimum_atc_qualification_id)->name }}
+                            @if($facility->minimumATCQualification)
+                                Minimum ATC Rating: {{ $facility->minimumATCQualification->name }}
                             @else
                                 Minimum ATC Rating: None
                             @endif
                             <br>
-                            @if($facility->maximum_atc_qualification_id)
-                                Maximum ATC Rating: {{ \App\Models\Mship\Qualification::find($facility->maximum_atc_qualification_id)->name }}
+                            @if($facility->minimumATCQualification)
+                                Maximum ATC Rating: {{ $facility->maximumATCQualification->name }}
                             @else
                                 Maximum ATC Rating: None
                             @endif

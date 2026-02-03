@@ -8,6 +8,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Malahierba\PublicId\PublicId;
+use App\Models\Mship\Qualification;
 
 /**
  * App\Models\VisitTransfer\Facility.
@@ -263,6 +264,16 @@ class Facility extends Model
         if ($this->training_required == 1 && $this->training_spaces !== null) {
             $this->decrement('training_spaces');
         }
+    }
+
+    public function minimumATCQualification()
+    {
+        return $this->belongsTo(Qualification::class, 'minimum_atc_qualification_id');
+    }
+
+    public function maximumATCQualification()
+    {
+        return $this->belongsTo(Qualification::class, 'maximum_atc_qualification_id');
     }
 
     private function guardAgainstDuplicateFacilityName($proposedName, $excludeCurrent = false)
