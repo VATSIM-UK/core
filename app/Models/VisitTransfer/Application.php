@@ -550,12 +550,12 @@ class Application extends Model
     {
         if ($facility->training_team === 'atc') {
             $userRating = $this->account->qualification_atc?->vatsim;
-            $minQual    = $facility->minimumATCQualification;
-            $maxQual    = $facility->maximumATCQualification;
+            $minQual = $facility->minimumATCQualification;
+            $maxQual = $facility->maximumATCQualification;
         } else {
             $userRating = $this->account->qualification_pilot?->vatsim;
-            $minQual    = $facility->minimumPilotQualification;
-            $maxQual    = $facility->maximumPilotQualification;
+            $minQual = $facility->minimumPilotQualification;
+            $maxQual = $facility->maximumPilotQualification;
         }
 
         if ($userRating === null) {
