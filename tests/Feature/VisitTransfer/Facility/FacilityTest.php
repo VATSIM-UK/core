@@ -265,7 +265,7 @@ class FacilityTest extends BaseAdminTestCase
             'maximum_atc_qualification_id' => $maxQual->id,
         ]);
 
-        $application = new Application(['account_id' => $this->internationalUser->id,]);
+        $application = new Application(['account_id' => $this->internationalUser->id]);
 
         $s1 = Qualification::ofType(QualificationTypeEnum::ATC->value)
             ->where('vatsim', 2)
@@ -293,7 +293,7 @@ class FacilityTest extends BaseAdminTestCase
             'maximum_atc_qualification_id' => $maxQual->id,
         ]);
 
-        $application = new Application(['account_id' => $this->internationalUser->id,]);
+        $application = new Application(['account_id' => $this->internationalUser->id]);
 
         $this->internationalUser->addQualification($minQual);
 
@@ -317,7 +317,7 @@ class FacilityTest extends BaseAdminTestCase
             'maximum_atc_qualification_id' => $maxQual->id,
         ]);
 
-        $application = new Application(['account_id' => $this->internationalUser->id,]);
+        $application = new Application(['account_id' => $this->internationalUser->id]);
 
         $c1 = Qualification::ofType(QualificationTypeEnum::ATC->value)
             ->where('vatsim', 5)
