@@ -111,7 +111,7 @@
                             @csrf
 
                         <p class="text-center">
-                            @if($application->isQualifiedFor($facility))
+                            @if($application->meetsRatingRequirements($facility))
                                 @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
                                     <button type="submit" class="btn btn-primary">APPLY TO THIS FACILITY</button>
                                 @else

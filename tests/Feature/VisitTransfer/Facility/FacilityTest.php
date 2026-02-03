@@ -264,16 +264,16 @@ class FacilityTest extends BaseAdminTestCase
 
         $s1 = Qualification::ofType(QualificationTypeEnum::ATC->value)->where('vatsim', 2)->first();
         $this->internationalUser->addQualification($s1);
-        $this->assertFalse($application->isQualifiedFor($facility));
+        $this->assertFalse($application->meetsRatingRequirements($facility));
 
         $this->internationalUser->addQualification($minQual);
         $this->internationalUser->refresh();
-        $this->assertTrue($application->isQualifiedFor($facility->fresh()));
+        $this->assertTrue($application->meetsRatingRequirements($facility->fresh()));
 
         $c1 = Qualification::ofType(QualificationTypeEnum::ATC->value)->where('vatsim', 5)->first();
         $this->internationalUser->addQualification($c1);
         $this->internationalUser->refresh();
-        $this->assertFalse($application->isQualifiedFor($facility->fresh()));
+        $this->assertFalse($application->meetsRatingRequirements($facility->fresh()));
     }
 
     #[Test]
@@ -288,10 +288,10 @@ class FacilityTest extends BaseAdminTestCase
 
         $application = new Application(['account_id' => $this->internationalUser->id]);
 
-        $this->assertFalse($application->isQualifiedFor($facility));
+        $this->assertFalse($application->meetsRatingRequirements($facility));
 
         $this->internationalUser->addQualification($p2);
         $this->internationalUser->refresh();
-        $this->assertTrue($application->isQualifiedFor($facility->fresh()));
+        $this->assertTrue($application->meetsRatingRequirements($facility->fresh()));
     }
 }

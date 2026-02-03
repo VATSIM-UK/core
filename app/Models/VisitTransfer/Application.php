@@ -546,7 +546,7 @@ class Application extends Model
         return $this->facility ? $this->facility->name : 'Not selected';
     }
 
-    public function isQualifiedFor(Facility $facility)
+    public function meetsRatingRequirements(Facility $facility)
     {
         if ($facility->training_team === 'atc') {
             $userRating = $this->account->qualification_atc?->vatsim;
@@ -926,7 +926,7 @@ class Application extends Model
 
     private function guardAgainstApplyingToAFacilityWhileQualificationOutOfBounds(Facility $requestedFacility)
     {
-        if (! $this->isQualifiedFor($requestedFacility)) {
+        if (! $this->meetsRatingRequirements($requestedFacility)) {
             throw new RatingRequirementNotMetException($requestedFacility);
         }
     }
