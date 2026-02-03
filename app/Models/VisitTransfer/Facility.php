@@ -106,6 +106,8 @@ class Facility extends Model
         'stage_reference_quantity',
         'stage_checks',
         'auto_acceptance',
+        'minimum_atc_qualification_id',
+        'maximum_atc_qualification_id',
         'public',
     ];
 

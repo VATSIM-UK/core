@@ -18,6 +18,8 @@ use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use App\Enums\QualificationTypeEnum;
+use App\Models\Mship\Qualification;
 
 class FacilityResource extends Resource
 {
@@ -129,6 +131,50 @@ class FacilityResource extends Resource
                             ->label('Auto Acceptance')
                             ->helperText('Automatically accept all applicants.')
                             ->required(),
+                        Grid::make(2)->schema([
+                            Select::make('minimum_atc_qualification_id')
+                                ->label('Minimum ATC Qualification')
+                                ->options(
+                                    Qualification::ofType(QualificationTypeEnum::ATC->value)
+                                        ->orderBy('vatsim')
+                                        ->get()
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                )
+                                ->placeholder('No Minimum')
+                                ->nullable()
+                                ->default(null)
+                                ->reactive(),
+
+                            Select::make('maximum_atc_qualification_id')
+                                ->label('Maximum ATC Qualification')
+                                ->options(
+                                    Qualification::ofType(QualificationTypeEnum::ATC->value)
+                                        ->orderBy('vatsim')
+                                        ->get()
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                )
+                                ->placeholder('No Maximum')
+                                ->nullable()
+                                ->default(null)
+                                ->rules([
+                                    fn (callable $get) => function (string $attribute, $value, $fail) use ($get) {
+                                        $minId = $get('minimum_atc_qualification_id');
+                                        
+                                        if (!$minId || !$value) {
+                                            return;
+                                        }
+
+                                        $minQual = Qualification::find($minId);
+                                        $maxQual = Qualification::find($value);
+
+                                        if ($maxQual && $minQual && $maxQual->vatsim < $minQual->vatsim) {
+                                            $fail("The Maximum qualification cannot be lower than the Minimum.");
+                                        }
+                                    },
+                                ]),
+                        ]),
                     ]),
                 ]),
                 Section::make('Notification Emails')
