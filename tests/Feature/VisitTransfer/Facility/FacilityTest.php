@@ -262,17 +262,14 @@ class FacilityTest extends BaseAdminTestCase
 
         $application = new Application(['account_id' => $this->internationalUser->id]);
 
-        // 1. User is S1, Should fail (Too low)
         $s1 = Qualification::ofType(QualificationTypeEnum::ATC->value)->where('vatsim', 2)->first();
         $this->internationalUser->addQualification($s1);
         $this->assertFalse($application->isQualifiedFor($facility));
 
-        // 2. User is S2, Should pass
         $this->internationalUser->addQualification($minQual);
         $this->internationalUser->refresh();
         $this->assertTrue($application->isQualifiedFor($facility->fresh()));
 
-        // 3. User is C1, Should fail (Too high)
         $c1 = Qualification::ofType(QualificationTypeEnum::ATC->value)->where('vatsim', 5)->first();
         $this->internationalUser->addQualification($c1);
         $this->internationalUser->refresh();
@@ -291,10 +288,8 @@ class FacilityTest extends BaseAdminTestCase
 
         $application = new Application(['account_id' => $this->internationalUser->id]);
 
-        // User has no pilot qualifications, Should fail
         $this->assertFalse($application->isQualifiedFor($facility));
 
-        // User gains P2, Should pass
         $this->internationalUser->addQualification($p2);
         $this->internationalUser->refresh();
         $this->assertTrue($application->isQualifiedFor($facility->fresh()));
