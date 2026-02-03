@@ -279,18 +279,18 @@ class FacilityTest extends BaseAdminTestCase
     #[Test]
     public function it_correctly_identifies_if_a_user_is_qualified_for_pilot_facility()
     {
-        $p2 = Qualification::ofType(QualificationTypeEnum::Pilot->value)->where('vatsim', 2)->first();
+        $pilotRating = Qualification::ofType(QualificationTypeEnum::Pilot->value)->where('vatsim', 1)->first();
 
         $facility = Facility::factory()->create([
             'training_team' => 'pilot',
-            'minimum_pilot_qualification_id' => $p2->id,
+            'minimum_pilot_qualification_id' => $pilotRating->id,
         ]);
 
         $application = new Application(['account_id' => $this->internationalUser->id]);
 
         $this->assertFalse($application->meetsRatingRequirements($facility));
 
-        $this->internationalUser->addQualification($p2);
+        $this->internationalUser->addQualification($pilotRating);
         $this->internationalUser->refresh();
         $this->assertTrue($application->meetsRatingRequirements($facility->fresh()));
     }
