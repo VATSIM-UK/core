@@ -545,6 +545,25 @@ class Application extends Model
         return $this->facility ? $this->facility->name : 'Not selected';
     }
 
+    public function isQualifiedFor(Facility $facility)
+    {
+        if (!$facility->minimumATCQualification && !$facility->maximumATCQualification) {
+            return true;
+        }
+
+        $userRating = $this->account->qualification_atc->vatsim;
+
+        if ($facility->minimumATCQualification && $userRating < $facility->minimumATCQualification->vatsim) {
+            return false;
+        }
+
+        if ($facility->maximumATCQualification && $userRating > $facility->maximumATCQualification->vatsim) {
+            return false;
+        }
+
+        return true;
+    }
+
     /** Business logic. */
     public function setFacility(Facility $facility)
     {

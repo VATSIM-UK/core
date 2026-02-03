@@ -94,7 +94,7 @@
                                 Minimum ATC Rating: None
                             @endif
                             <br>
-                            @if($facility->minimumATCQualification)
+                            @if($facility->maximumATCQualification)
                                 Maximum ATC Rating: {{ $facility->maximumATCQualification->name }}
                             @else
                                 Maximum ATC Rating: None
@@ -115,10 +115,16 @@
                             @csrf
 
                         <p class="text-center">
-                            @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
-                                <button type="submit" class="btn btn-primary">APPLY TO THIS FACILITY</button>
+                            @if($application->isQualifiedFor($facility))
+                                @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
+                                    <button type="submit" class="btn btn-primary">APPLY TO THIS FACILITY</button>
+                                @else
+                                    <button class="btn btn-danger" disabled="disabled">NO PLACES AVAILABLE</button>
+                                @endif
                             @else
-                                <button class="btn btn-danger" disabled="disabled">NO PLACES AVAILABLE</button>
+                                <button class="btn btn-default" disabled="disabled">INELIGIBLE</button>
+                                <br>
+                                <small class="text-danger">Your current ATC rating does not meet this facility's requirements.</small>
                             @endif
                         </p>
 
