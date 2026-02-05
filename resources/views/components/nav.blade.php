@@ -147,7 +147,7 @@
                                     <li class="dropdown-header">Operations</li>
                                     <li><a href="https://docs.vatsim.uk/">ATC Documentation</a></li>
                                     <li><a href="https://docs.vatsim.uk/Briefing/">ATC Procedure Changes</a></li>
-                                    <li><a href="https://docs.vatsim.uk/">ATC Software</a></li>
+                                    <li><a href="https://docs.vatsim.uk/General/">ATC Software</a></li>
                                     <li class="divider"></li>
 
                                     <li class="dropdown-header">ATC Training</li>
