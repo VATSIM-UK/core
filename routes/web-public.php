@@ -67,6 +67,7 @@ Route::group([
         ], function () {
             Route::get('/s1-syllabus')->uses('PolicyPagesController@viewS1Syllabus')->name('s1-syllabus');
             Route::get('/s2-syllabus')->uses('PolicyPagesController@viewS2Syllabus')->name('s2-syllabus');
+            Route::get('/s3-syllabus')->uses('PolicyPagesController@viewS3Syllabus')->name('s3-syllabus');
             Route::get('/c1-syllabus')->uses('PolicyPagesController@viewC1Syllabus')->name('c1-syllabus');
         });
     });

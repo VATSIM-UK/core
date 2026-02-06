@@ -62,6 +62,12 @@ class PolicyPagesTest extends TestCase
     }
 
     #[Test]
+    public function test_it_loads_the_s3_syllabus()
+    {
+        $this->get(route('site.policy.training.s3-syllabus'))->assertOk();
+    }
+
+    #[Test]
     public function test_it_loads_the_c1_syllabus()
     {
         $this->get(route('site.policy.training.c1-syllabus'))->assertOk();
