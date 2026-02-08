@@ -4,6 +4,7 @@ namespace App\Models\Mship\Concerns;
 
 use App\Events\Mship\Roles\RoleAssigned;
 use App\Events\Mship\Roles\RoleRemoved;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles as OriginalHasRoles;
 
 /**
@@ -68,5 +69,10 @@ trait HasRoles
         event(new RoleRemoved($this, $this->getStoredRole($role)));
 
         return true;
+    }
+
+    public function delegatedRoles()
+    {
+        return $this->belongsToMany(Role::class, 'mship_role_delegations', 'admin_id', 'role_id');
     }
 }

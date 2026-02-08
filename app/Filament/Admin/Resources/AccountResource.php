@@ -161,6 +161,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
             \App\Filament\Admin\Resources\AccountResource\RelationManagers\QualificationsRelationManager::class,
             \App\Filament\Admin\Resources\AccountResource\RelationManagers\FeedbackRelationManager::class,
             \App\Filament\Admin\Resources\AccountResource\RelationManagers\RolesRelationManager::class,
+            \App\Filament\Admin\Resources\AccountResource\RelationManagers\DelegatedRolesRelationManager::class,
             \App\Filament\Admin\Resources\AccountResource\RelationManagers\BansRelationManager::class,
             \App\Filament\Admin\Resources\AccountResource\RelationManagers\NotesRelationManager::class,
             \App\Filament\Admin\Resources\AccountResource\RelationManagers\EndorsementsRelationManager::class,
