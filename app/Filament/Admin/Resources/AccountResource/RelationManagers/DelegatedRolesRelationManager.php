@@ -29,7 +29,8 @@ class DelegatedRolesRelationManager extends RelationManager
                     ->modalHeading('Delegate administration of role')
                     ->modalSubheading('Delagating a role will allow this user to assign and remove that role from all members')
                     ->preloadRecordSelect()
-                    
+                    ->modalSubmitActionLabel('Delegate')
+                    ->attachAnother(false)  
             ])
             ->actions([
                 Tables\Actions\DetachAction::make()->label('Undelegate'),
