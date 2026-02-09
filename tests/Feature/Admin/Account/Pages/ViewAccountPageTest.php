@@ -268,7 +268,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_revoke_visiting_status_not_visible_without_visiting_state()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('vt.status.revoke.*');
+        $this->user->givePermissionTo('vt.status.revoke');
 
         Livewire::actingAs($this->user);
 
