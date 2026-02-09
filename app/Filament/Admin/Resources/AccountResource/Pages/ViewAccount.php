@@ -49,6 +49,21 @@ class ViewAccount extends BaseViewRecordPage
 
             ActionGroup::make([
                 $this->getImpersonateAction(),
+                Actions\Action::make('revoke_visiting_status')
+                    ->label('Revoke Visiting Status')
+                    ->visible(fn () => $this->record->hasState("VISITING") && auth()->user()->can('vt.status.revoke'))
+                    ->color('danger')
+                    ->icon('heroicon-o-no-symbol')
+                    ->modalHeading('Revoke Visiting Status')
+                    ->action(function () {
+                        $visitingState = $this->record->states
+                           ->first(fn ($s) => $s->code === 'VISITING');
+                        $this->record->removeState($visitingState);
+
+                        $this->record->addNote('visittransfer', 'Visiting status revoked by ' . auth()->user()->name, auth()->user()->id);
+                    })
+                    ->requiresConfirmation()
+                    ->successNotificationTitle('Visiting Status Revoked'),
                 Actions\Action::make('toggle_roster_status')
                     ->visible(fn () => auth()->user()->can('roster.manage'))
                     ->color($onRoster ? 'danger' : 'success')
@@ -92,6 +107,7 @@ class ViewAccount extends BaseViewRecordPage
                 Actions\EditAction::make()->visible(auth()->user()->can('update', $this->record)),
             ]),
         ];
+
     }
 
     protected function getImpersonateAction(): Actions\Action
