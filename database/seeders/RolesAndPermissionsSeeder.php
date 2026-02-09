@@ -91,7 +91,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'vt.application.reject.*',
             'vt.application.complete.*',
             'vt.application.cancel.*',
-            'vt.status.revoke.*',
+            'vt.status.revoke',
             // 'vt.application.reference.accept.*',
             // 'vt.application.reference.reject.*',
             // 'vt.application.check.modify.*',
