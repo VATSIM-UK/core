@@ -51,16 +51,16 @@ class ViewAccount extends BaseViewRecordPage
                 $this->getImpersonateAction(),
                 Actions\Action::make('revoke_visiting_status')
                     ->label('Revoke Visiting Status')
-                    ->visible(fn () => $this->record->hasState("VISITING") && auth()->user()->can('vt.status.revoke'))
+                    ->visible(fn () => $this->record->hasState('VISITING') && auth()->user()->can('vt.status.revoke'))
                     ->color('danger')
                     ->icon('heroicon-o-no-symbol')
                     ->modalHeading('Revoke Visiting Status')
                     ->action(function () {
                         $visitingState = $this->record->states
-                           ->first(fn ($s) => $s->code === 'VISITING');
+                            ->first(fn ($s) => $s->code === 'VISITING');
                         $this->record->removeState($visitingState);
 
-                        $this->record->addNote('visittransfer', 'Visiting status revoked by ' . auth()->user()->name, auth()->user()->id);
+                        $this->record->addNote('visittransfer', 'Visiting status revoked by '.auth()->user()->name, auth()->user()->id);
                     })
                     ->requiresConfirmation()
                     ->successNotificationTitle('Visiting Status Revoked'),

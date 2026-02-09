@@ -261,7 +261,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
         $this->assertDatabaseHas('mship_account_note', [
             'account_id' => $this->privacc->id,
             'writer_id' => $this->user->id,
-            'content' => 'Visiting status revoked by ' . $this->user->name,
+            'content' => 'Visiting status revoked by '.$this->user->name,
         ]);
     }
 
