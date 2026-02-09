@@ -197,6 +197,7 @@
                                 <ul>
                                     <li><a href="{{ route('site.policy.training.s1-syllabus') }}">S1 Syllabus</a></li>
                                     <li><a href="{{ route('site.policy.training.s2-syllabus') }}">S2 Syllabus</a></li>
+                                    <li><a href="{{ route('site.policy.training.s3-syllabus') }}">S3 Syllabus</a></li>
                                     <li><a href="{{ route('site.policy.training.c1-syllabus') }}">C1 Syllabus</a></li>
                                 </ul>
                             </li>
