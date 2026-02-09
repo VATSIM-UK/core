@@ -76,7 +76,7 @@
 
                         @can("view", $application)
                             <li role="presentation" {!! (Route::is('visiting.application.view') ? "class='active'" : '') !!}>
-                                {{-- <a href="{{ route('visiting.application.view', [$application->public_id]) }}" class="{{ Route::is('visiting.application.referees') ? 'active' : '' }}">View Full Application</a> --}}
+                                <a href="{{ route('visiting.application.view', [$application->public_id]) }}" class="{{ Route::is('visiting.application.referees') ? 'active' : '' }}">View Full Application</a>
                             </li>
                         @else
                             <li role="presentation" class="disabled">
