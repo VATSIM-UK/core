@@ -220,4 +220,59 @@ class ViewAccountPageTest extends BaseAdminTestCase
     {
         $this->assertNull($this->privacc->lastSeenControllingUK());
     }
+
+    public function test_cant_revoke_visiting_status_without_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->privacc->addState(State::findByCode('VISITING'));
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertActionHidden('revoke_visiting_status');
+    }
+
+    public function test_can_revoke_visiting_status_when_permitted()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('vt.status.revoke');
+
+        $this->privacc->addState(State::findByCode('VISITING'));
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
+            ->assertActionVisible('revoke_visiting_status')
+            ->callAction('revoke_visiting_status');
+
+        $this->assertFalse($this->privacc->fresh()->hasState('VISITING'));
+    }
+
+    public function test_revoke_visiting_status_creates_a_note()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('vt.status.revoke');
+
+        $this->privacc->addState(State::findByCode('VISITING'));
+
+        Livewire::actingAs($this->user);
+
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
+            ->callAction('revoke_visiting_status');
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'account_id' => $this->privacc->id,
+            'writer_id' => $this->user->id,
+            'content' => 'Visiting status revoked by '.$this->user->name,
+        ]);
+    }
+
+    public function test_revoke_visiting_status_not_visible_without_visiting_state()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('vt.status.revoke');
+
+        Livewire::actingAs($this->user);
+
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertActionHidden('revoke_visiting_status');
+    }
 }
