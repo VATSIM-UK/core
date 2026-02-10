@@ -3,8 +3,9 @@
 namespace App\Exceptions\VisitTransfer\Application;
 
 use App\Models\VisitTransfer\Facility;
+use Exception;
 
-class RatingRequirementNotMetException extends \Exception
+class RatingRequirementNotMetException extends Exception
 {
     private $facility;
 
