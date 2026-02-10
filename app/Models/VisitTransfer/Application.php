@@ -580,7 +580,9 @@ class Application extends Model
 
         $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
 
-        $this->guardAgainstApplyingToAFacilityWhileNotMeetingRatingRequirements($facility);
+        if (!$this->meetsRatingRequirements($requestedFacility)) {
+            throw new RatingRequirementNotMetException($requestedFacility);
+        }
 
         $this->training_required = $facility->training_required;
         $this->statement_required = $facility->stage_statement_enabled;
@@ -921,13 +923,6 @@ class Application extends Model
     {
         if ($requestedFacility->training_required == 1 && $requestedFacility->training_spaces === 0) {
             throw new FacilityHasNoCapacityException($requestedFacility);
-        }
-    }
-
-    private function guardAgainstApplyingToAFacilityWhileNotMeetingRatingRequirements(Facility $requestedFacility)
-    {
-        if (! $this->meetsRatingRequirements($requestedFacility)) {
-            throw new RatingRequirementNotMetException($requestedFacility);
         }
     }
 
