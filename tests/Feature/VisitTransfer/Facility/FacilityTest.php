@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\VisitTransfer\Facility;
 
+use App\Enums\QualificationTypeEnum;
 use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\CreateFacility;
 use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\EditFacility;
 use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\ListFacilities;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use Livewire\Livewire;
@@ -244,5 +246,121 @@ class FacilityTest extends BaseAdminTestCase
             ->assertSee(trans('application.dashboard.apply.atc.visit.unable'))
             ->assertSee(trans('application.continue'))
             ->assertSee(trans('application.dashboard.apply.visit_open'));
+    }
+
+    #[Test]
+    public function atc_facility_rejects_user_below_minimum_qualification()
+    {
+        $minQual = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 3)
+            ->first();
+
+        $maxQual = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 4)
+            ->first();
+
+        $facility = Facility::factory()->create([
+            'training_team' => 'atc',
+            'minimum_atc_qualification_id' => $minQual->id,
+            'maximum_atc_qualification_id' => $maxQual->id,
+        ]);
+
+        $application = new Application(['account_id' => $this->internationalUser->id]);
+
+        $s1 = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 2)
+            ->first();
+
+        $this->internationalUser->addQualification($s1);
+
+        $this->assertFalse($application->meetsRatingRequirements($facility->fresh()));
+    }
+
+    #[Test]
+    public function atc_facility_accepts_user_at_minimum_qualification()
+    {
+        $minQual = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 3)
+            ->first();
+
+        $maxQual = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 4)
+            ->first();
+
+        $facility = Facility::factory()->create([
+            'training_team' => 'atc',
+            'minimum_atc_qualification_id' => $minQual->id,
+            'maximum_atc_qualification_id' => $maxQual->id,
+        ]);
+
+        $application = new Application(['account_id' => $this->internationalUser->id]);
+
+        $this->internationalUser->addQualification($minQual);
+
+        $this->assertTrue($application->meetsRatingRequirements($facility->fresh()));
+    }
+
+    #[Test]
+    public function atc_facility_rejects_user_above_maximum_qualification()
+    {
+        $minQual = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 3)
+            ->first();
+
+        $maxQual = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 4)
+            ->first();
+
+        $facility = Facility::factory()->create([
+            'training_team' => 'atc',
+            'minimum_atc_qualification_id' => $minQual->id,
+            'maximum_atc_qualification_id' => $maxQual->id,
+        ]);
+
+        $application = new Application(['account_id' => $this->internationalUser->id]);
+
+        $c1 = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 5)
+            ->first();
+
+        $this->internationalUser->addQualification($c1);
+
+        $this->assertFalse($application->meetsRatingRequirements($facility->fresh()));
+    }
+
+    #[Test]
+    public function pilot_facility_rejects_unqualified_user()
+    {
+        $pilotRating = Qualification::ofType(QualificationTypeEnum::Pilot->value)
+            ->where('vatsim', 1)
+            ->first();
+
+        $facility = Facility::factory()->create([
+            'training_team' => 'pilot',
+            'minimum_pilot_qualification_id' => $pilotRating->id,
+        ]);
+
+        $application = new Application(['account_id' => $this->internationalUser->id]);
+
+        $this->assertFalse($application->meetsRatingRequirements($facility));
+    }
+
+    #[Test]
+    public function pilot_facility_accepts_qualified_user()
+    {
+        $pilotRating = Qualification::ofType(QualificationTypeEnum::Pilot->value)
+            ->where('vatsim', 1)
+            ->first();
+
+        $facility = Facility::factory()->create([
+            'training_team' => 'pilot',
+            'minimum_pilot_qualification_id' => $pilotRating->id,
+        ]);
+
+        $application = new Application(['account_id' => $this->internationalUser->id]);
+
+        $this->internationalUser->addQualification($pilotRating);
+
+        $this->assertTrue($application->meetsRatingRequirements($facility->fresh()));
     }
 }

@@ -20,6 +20,7 @@ use App\Exceptions\VisitTransfer\Application\AttemptingToTransferToNonTrainingFa
 use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
 use App\Exceptions\VisitTransfer\Application\DuplicateRefereeException;
 use App\Exceptions\VisitTransfer\Application\FacilityHasNoCapacityException;
+use App\Exceptions\VisitTransfer\Application\RatingRequirementNotMetException;
 use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
@@ -545,12 +546,43 @@ class Application extends Model
         return $this->facility ? $this->facility->name : 'Not selected';
     }
 
+    public function meetsRatingRequirements(Facility $facility)
+    {
+        if ($facility->training_team === 'atc') {
+            $userRating = $this->account->qualification_atc?->vatsim;
+            $minQual = $facility->minimumATCQualification?->vatsim;
+            $maxQual = $facility->maximumATCQualification?->vatsim;
+        } else {
+            $userRating = $this->account->qualification_pilot?->vatsim;
+            $minQual = $facility->minimumPilotQualification?->vatsim;
+            $maxQual = $facility->maximumPilotQualification?->vatsim;
+        }
+
+        if ($userRating === null) {
+            return false;
+        }
+
+        if ($minQual && $userRating < $minQual) {
+            return false;
+        }
+
+        if ($maxQual && $userRating > $maxQual) {
+            return false;
+        }
+
+        return true;
+    }
+
     /** Business logic. */
     public function setFacility(Facility $facility)
     {
         $this->guardAgainstTransferringToANonTrainingFacility($facility);
 
         $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
+
+        if (! $this->meetsRatingRequirements($requestedFacility)) {
+            throw new RatingRequirementNotMetException($requestedFacility);
+        }
 
         $this->training_required = $facility->training_required;
         $this->statement_required = $facility->stage_statement_enabled;
