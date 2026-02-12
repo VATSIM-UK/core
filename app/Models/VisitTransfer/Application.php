@@ -580,8 +580,8 @@ class Application extends Model
 
         $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
 
-        if (! $this->meetsRatingRequirements($requestedFacility)) {
-            throw new RatingRequirementNotMetException($requestedFacility);
+        if (! $this->meetsRatingRequirements($facility)) {
+            throw new RatingRequirementNotMetException($facility);
         }
 
         $this->training_required = $facility->training_required;
