@@ -9,9 +9,9 @@ use Filament\Actions;
 use Filament\Actions\ActionGroup;
 use App\Models\Permission;
 use Filament\Notifications\Notification;
-use App\Filament\Admin\Forms\Components\AccountSelect;
 use App\Models\Mship\Account;
 use Filament\Forms\Components\Select;
+use App\Services\Roles\DelegateRoleManagementService;
 
 class EditRole extends BaseEditRecordPage
 {
@@ -31,7 +31,8 @@ class EditRole extends BaseEditRecordPage
                     ->modalDescription('Creates a role-specific permission allowing delegation.')
                     ->modalSubmitActionLabel('Create Permission')
                     ->action(function (Role $record) {
-                        $this->createDelegatePermission($record);
+                        $service = new DelegateRoleManagementService();
+                        $service->createDelegatePermission($record);
 
                         Notification::make()
                             ->title('Permission created')
@@ -58,8 +59,8 @@ class EditRole extends BaseEditRecordPage
                                     ->limit(50)
                                     ->get();
 
-                                    return $accounts->mapWithKeys(fn ($account) => [
-                                        $account->id => $account->name_first . ' ' . $account->name_last . ' - ' . $account->id
+                                return $accounts->mapWithKeys(fn ($account) => [
+                                    $account->id => $account->name_first . ' ' . $account->name_last . ' - ' . $account->id
                                 ])->toArray();
                             })
                             ->getOptionLabelFromRecordUsing(fn($record) => $record),
@@ -69,8 +70,9 @@ class EditRole extends BaseEditRecordPage
                     ->modalSubmitActionLabel('Delegate')
                     ->action(function (Role $record, array $data) {
                         $account = Account::where('id', $data['account_id'])->firstOrFail();
+                        $service = new DelegateRoleManagementService();
 
-                        if ($account->can($this->delegatePermissionName($record)))
+                        if ($account->can($service->delegatePermissionName($record)))
                         {
                             Notification::make()
                                 ->title('Delegation unsuccessful')
@@ -78,9 +80,9 @@ class EditRole extends BaseEditRecordPage
                                 ->warning()
                                 ->send();
 
-                                return;
+                            return;
                         }
-                        $account->givePermissionTo($this->delegatePermissionName($record));
+                        $account->givePermissionTo($service->delegatePermissionName($record));
 
                         Notification::make()
                             ->title('Delegation successful')
@@ -89,6 +91,48 @@ class EditRole extends BaseEditRecordPage
                             ->send();
                     })
                     ->visible(fn (Role $record) => $this->delegatePermissionExists($record)),
+
+                Actions\Action::make('remove_delegation_from_user')
+                    ->label('Remove Delegate')
+                    ->icon('heroicon-o-user-minus')
+                    ->color('warning')
+                    ->form(function (Role $record) {
+                        $service = new DelegateRoleManagementService();
+                        $delegates = $service->getDelegates($record)->get();
+
+                        return [
+                            Select::make('account_id')
+                                ->label('Select Delegate to Remove')
+                                ->required()
+                                ->options($delegates->mapWithKeys(fn ($account) => [
+                                    $account->id => $account->name_first . ' ' . $account->name_last . ' - ' . $account->id
+                                ])->toArray())
+                                ->searchable()
+                                ->native(false),
+                        ];
+                    })
+                    ->modalHeading(fn (Role $record) => "Remove Delegate from '{$record->name}'")
+                    ->modalDescription('Select a delegate to revoke their role management permission.')
+                    ->modalSubmitActionLabel('Remove Delegate')
+                    ->action(function (Role $record, array $data) {
+                        $account = Account::findOrFail($data['account_id']);
+                        $service = new DelegateRoleManagementService();
+                        
+                        $service->revokeDelegate($account, $record);
+
+                        Notification::make()
+                            ->title('Delegate Removed')
+                            ->body("{$account->name} no longer has permissions to manage {$record->name}.")
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(function (Role $record) {
+                        if (!$this->delegatePermissionExists($record)) {
+                            return false;
+                        }
+                        $service = new DelegateRoleManagementService();
+                        return $service->getDelegates($record)->exists();
+                    }),
 
                 Actions\Action::make('remove_delegate_permission')
                     ->label('Remove Delegate Permission')
@@ -99,7 +143,8 @@ class EditRole extends BaseEditRecordPage
                     ->modalDescription('Deletes the delegation permission for this role.')
                     ->modalSubmitActionLabel('Delete Permission')
                     ->action(function (Role $record) {
-                        $this->deleteDelegatePermission($record);
+                        $service = new DelegateRoleManagementService();
+                        $service->deleteDelegatePermission($record);
 
                         Notification::make()
                             ->title('Permission deleted')
@@ -112,23 +157,9 @@ class EditRole extends BaseEditRecordPage
         ];
     }
 
-    protected function delegatePermissionName(Role $role): string
-    {
-        return "account.edit-roles.{$role->id}";
-    }
-
     protected function delegatePermissionExists(Role $role): bool
     {
-        return Permission::where('name', $this->delegatePermissionName($role))->exists();
-    }
-
-    protected function createDelegatePermission(Role $role): void
-    {
-        Permission::create(['name' => $this->delegatePermissionName($role), 'guard_name' => 'web']);
-    }
-
-    protected function deleteDelegatePermission(Role $role): void
-    {
-        Permission::where('name', $this->delegatePermissionName($role))->first()->delete();
+        $service = new DelegateRoleManagementService();
+        return $service->delegatePermissionExists($role);
     }
 }
