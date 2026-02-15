@@ -45,4 +45,12 @@ class SessionRepository
             ->where('noShow', '=', 1)
             ->count();
     }
+
+    public function getTotalCancelledSessionsForPositions(array $positionCallsigns, int $studentId)
+    {
+        return Session::where('student_id', $studentId)
+            ->whereIn('position', $positionCallsigns)
+            ->whereNotNull('cancelled_datetime')
+            ->count();
+    }
 }
