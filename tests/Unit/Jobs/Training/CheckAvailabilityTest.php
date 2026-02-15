@@ -5,10 +5,12 @@ namespace Tests\Unit\Jobs\Training;
 use App\Jobs\Training\CheckAvailability;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
+use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\AvailabilityWarningCreated;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -26,6 +28,8 @@ class CheckAvailabilityTest extends TestCase
 
     private TrainingPlace $trainingPlace;
 
+    private TrainingPosition $trainingPosition;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,52 +42,58 @@ class CheckAvailabilityTest extends TestCase
         $waitingList = WaitingList::factory()->create();
         $waitingListAccount = $waitingList->addToWaitingList($this->account, Account::factory()->create());
 
+        // Create a training position with CTS positions
+        $this->trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => ['EGLL_APP', 'EGLL_TWR'],
+        ]);
+
         // Create a training place for this waiting list account
         $this->trainingPlace = TrainingPlace::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $this->trainingPosition->id,
         ]);
     }
 
     #[Test]
-    public function it_creates_passed_availability_check_when_availability_exists(): void
+    public function it_creates_failed_availability_check_when_only_availability_exists(): void
     {
-        // Arrange: Create availability for the student
+        // Arrange: Create availability for the student but no session request
         Availability::factory()->forStudent($this->ctsMember->id)->create();
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
         $job->handle();
 
-        // Assert: A passed availability check should be created
+        // Assert: A failed availability check should be created (because no session exists)
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'passed',
+            'status' => 'failed',
         ]);
 
-        // Assert: No availability warning should be created
-        $this->assertDatabaseMissing('availability_warnings', [
+        // Assert: An availability warning should be created
+        $this->assertDatabaseHas('availability_warnings', [
             'training_place_id' => $this->trainingPlace->id,
         ]);
     }
 
     #[Test]
-    public function it_creates_passed_availability_check_when_multiple_availabilities_exist(): void
+    public function it_creates_failed_availability_check_when_multiple_availabilities_exist_but_no_session(): void
     {
-        // Arrange: Create multiple availabilities for the student
+        // Arrange: Create multiple availabilities for the student but no session request
         Availability::factory()->forStudent($this->ctsMember->id)->count(3)->create();
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
         $job->handle();
 
-        // Assert: A passed availability check should be created
+        // Assert: A failed availability check should be created (because no session exists)
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'passed',
+            'status' => 'failed',
         ]);
 
-        // Assert: No availability warning should be created
-        $this->assertDatabaseMissing('availability_warnings', [
+        // Assert: An availability warning should be created
+        $this->assertDatabaseHas('availability_warnings', [
             'training_place_id' => $this->trainingPlace->id,
         ]);
     }
@@ -119,11 +129,11 @@ class CheckAvailabilityTest extends TestCase
             'status' => 'pending',
         ]);
 
-        // Assert: The warning should expire in 5 days
+        // Assert: The warning should expire at the end of day 5 days from now
         $warning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->first();
         $this->assertNotNull($warning);
         $this->assertEqualsWithDelta(
-            now()->addDays(5)->timestamp,
+            now()->addDays(5)->endOfDay()->timestamp,
             $warning->expires_at->timestamp,
             60 // Allow 60 seconds delta for test execution time
         );
@@ -298,7 +308,7 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_can_transition_from_failed_to_passed_checks(): void
     {
-        // Arrange & Act: First run without availability
+        // Arrange & Act: First run without availability or session
         $job1 = new CheckAvailability($this->trainingPlace);
         $job1->handle();
 
@@ -313,8 +323,12 @@ class CheckAvailabilityTest extends TestCase
             'status' => 'pending',
         ]);
 
-        // Arrange: Now create availability
+        // Arrange: Now create both availability and session
         Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+        ]);
 
         // Act: Run the job again
         $job2 = new CheckAvailability($this->trainingPlace);
@@ -363,11 +377,15 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_does_not_send_notification_when_check_passes(): void
     {
-        // Arrange: Fake the notification system and create availability
+        // Arrange: Fake the notification system and create availability and session
         Notification::fake();
         Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+        ]);
 
-        // Act: Run the job with availability (which passes)
+        // Act: Run the job with availability and session (which passes)
         $job = new CheckAvailability($this->trainingPlace);
         $job->handle();
 
@@ -400,5 +418,181 @@ class CheckAvailabilityTest extends TestCase
                 return $notification->availabilityWarning->id === $warning->id;
             }
         );
+    }
+
+    #[Test]
+    public function it_creates_passed_check_when_both_availability_and_session_exist(): void
+    {
+        // Arrange: Create availability and session for the student
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP', // Matches one of the cts_positions
+        ]);
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A passed availability check should be created
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => 'passed',
+        ]);
+
+        // Assert: No availability warning should be created
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_passed_check_when_session_matches_any_cts_position(): void
+    {
+        // Arrange: Create availability and session with second callsign
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_TWR', // Matches the second cts_position
+        ]);
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A passed availability check should be created
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => 'passed',
+        ]);
+
+        // Assert: No availability warning should be created
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_failed_check_when_session_exists_but_no_availability(): void
+    {
+        // Arrange: Create session but no availability
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+        ]);
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A failed availability check should be created
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => 'failed',
+        ]);
+
+        // Assert: An availability warning should be created
+        $this->assertDatabaseHas('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_failed_check_when_session_position_does_not_match_cts_positions(): void
+    {
+        // Arrange: Create availability and session with non-matching position
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGKK_APP', // Does not match any cts_position
+        ]);
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A failed availability check should be created
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => 'failed',
+        ]);
+
+        // Assert: An availability warning should be created
+        $this->assertDatabaseHas('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_failed_check_when_session_exists_for_different_student(): void
+    {
+        // Arrange: Create availability for the student and session for a different student
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        $otherMember = Member::factory()->create();
+        Session::factory()->create([
+            'student_id' => $otherMember->id,
+            'position' => 'EGLL_APP',
+        ]);
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A failed availability check should be created
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => 'failed',
+        ]);
+
+        // Assert: An availability warning should be created
+        $this->assertDatabaseHas('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_failed_check_when_training_position_has_no_cts_positions(): void
+    {
+        // Arrange: Update training position to have no cts_positions
+        $this->trainingPosition->update(['cts_positions' => null]);
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A failed availability check should be created
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => 'failed',
+        ]);
+
+        // Assert: An availability warning should be created
+        $this->assertDatabaseHas('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_failed_check_when_training_place_has_no_training_position(): void
+    {
+        // Arrange: Update training place to have no training position
+        $this->trainingPlace->update(['training_position_id' => null]);
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A failed availability check should be created
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => 'failed',
+        ]);
+
+        // Assert: An availability warning should be created
+        $this->assertDatabaseHas('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
     }
 }
