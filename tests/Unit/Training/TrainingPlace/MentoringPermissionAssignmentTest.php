@@ -10,11 +10,23 @@ use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Services\Training\TrainingPlaceService;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MentoringPermissionAssignmentTest extends TestCase
 {
+    use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // disable training place observer
+        Event::fake();
+    }
+
     #[Test]
     public function it_can_assign_mentoring_permissions_to_a_training_place()
     {
