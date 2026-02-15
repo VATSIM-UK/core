@@ -13,6 +13,7 @@ use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
@@ -28,6 +29,9 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training-places.view.*');
 
         Livewire::actingAs($this->panelUser);
+
+        // disable training place observer
+        Event::fake();
     }
 
     public function test_page_can_be_accessed_with_valid_training_place()

@@ -32,7 +32,7 @@ class MentoringPermissionAssignmentTest extends TestCase
     {
         $ctsPosition = CtsPosition::factory()->create();
         $trainingPosition = TrainingPosition::factory()->create([
-            'cts_positions' => [$ctsPosition->id],
+            'cts_positions' => [$ctsPosition->callsign],
         ]);
 
         $waitingList = WaitingList::factory()->create();
@@ -61,7 +61,7 @@ class MentoringPermissionAssignmentTest extends TestCase
     {
         $ctsPosition = CtsPosition::factory()->create();
         $trainingPosition = TrainingPosition::factory()->create([
-            'cts_positions' => [$ctsPosition->id],
+            'cts_positions' => [$ctsPosition->callsign],
         ]);
 
         $waitingList = WaitingList::factory()->create();

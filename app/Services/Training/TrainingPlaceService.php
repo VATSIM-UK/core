@@ -3,6 +3,7 @@
 namespace App\Services\Training;
 
 use App\Enums\PositionValidationStatusEnum;
+use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use Illuminate\Support\Facades\Log;
@@ -22,10 +23,12 @@ class TrainingPlaceService
         $ctsPositions = $trainingPlace->trainingPosition->cts_positions;
 
         foreach ($ctsPositions as $ctsPosition) {
+            $ctsPositionModel = Position::where('callsign', $ctsPosition)->first();
+
             PositionValidation::create([
                 // use CTS member id
                 'member_id' => $student->member->id,
-                'position_id' => $ctsPosition,
+                'position_id' => $ctsPositionModel->id,
                 'status' => PositionValidationStatusEnum::Student->value,
                 'changed_by' => $student->id,
                 'date_changed' => now(),
