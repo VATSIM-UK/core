@@ -52,9 +52,9 @@ class TrainingPlaceObserverTest extends TestCase
     #[Test]
     public function it_assigns_mentoring_permissions_for_multiple_cts_positions(): void
     {
-        // Arrange: Create multiple CTS positions
-        $ctsPosition1 = CtsPosition::factory()->create();
-        $ctsPosition2 = CtsPosition::factory()->create();
+        // Arrange: Create multiple CTS positions with unique callsigns
+        $ctsPosition1 = CtsPosition::factory()->create(['callsign' => 'EGLL_TWR']);
+        $ctsPosition2 = CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
 
         $trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => [$ctsPosition1->callsign, $ctsPosition2->callsign],
@@ -167,7 +167,7 @@ class TrainingPlaceObserverTest extends TestCase
         // Arrange: Create a training place with permissions
         $ctsPosition = CtsPosition::factory()->create();
         $trainingPosition = TrainingPosition::factory()->create([
-            'cts_positions' => [$ctsPosition->id],
+            'cts_positions' => [$ctsPosition->callsign],
         ]);
 
         $waitingList = WaitingList::factory()->create();
@@ -201,12 +201,12 @@ class TrainingPlaceObserverTest extends TestCase
     #[Test]
     public function it_revokes_mentoring_permissions_for_multiple_cts_positions_on_deletion(): void
     {
-        // Arrange: Create multiple CTS positions
-        $ctsPosition1 = CtsPosition::factory()->create();
-        $ctsPosition2 = CtsPosition::factory()->create();
+        // Arrange: Create multiple CTS positions with unique callsigns
+        $ctsPosition1 = CtsPosition::factory()->create(['callsign' => 'EGKK_TWR']);
+        $ctsPosition2 = CtsPosition::factory()->create(['callsign' => 'EGKK_APP']);
 
         $trainingPosition = TrainingPosition::factory()->create([
-            'cts_positions' => [$ctsPosition1->id, $ctsPosition2->id],
+            'cts_positions' => [$ctsPosition1->callsign, $ctsPosition2->callsign],
         ]);
 
         $waitingList = WaitingList::factory()->create();
@@ -252,7 +252,7 @@ class TrainingPlaceObserverTest extends TestCase
         // Arrange: Create data without a CTS member
         $ctsPosition = CtsPosition::factory()->create();
         $trainingPosition = TrainingPosition::factory()->create([
-            'cts_positions' => [$ctsPosition->id],
+            'cts_positions' => [$ctsPosition->callsign],
         ]);
 
         $waitingList = WaitingList::factory()->create();
@@ -284,11 +284,11 @@ class TrainingPlaceObserverTest extends TestCase
         $ctsPosition2 = CtsPosition::factory()->create();
 
         $trainingPosition1 = TrainingPosition::factory()->create([
-            'cts_positions' => [$ctsPosition1->id],
+            'cts_positions' => [$ctsPosition1->callsign],
         ]);
 
         $trainingPosition2 = TrainingPosition::factory()->create([
-            'cts_positions' => [$ctsPosition2->id],
+            'cts_positions' => [$ctsPosition2->callsign],
         ]);
 
         $waitingList = WaitingList::factory()->create();
