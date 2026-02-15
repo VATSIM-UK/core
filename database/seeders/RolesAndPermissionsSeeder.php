@@ -122,6 +122,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Training Places Permissions
             'training-places.view.*',
+            'training-places.manual-setup',
 
             // // Feedback System Permissions
             'feedback.access',
