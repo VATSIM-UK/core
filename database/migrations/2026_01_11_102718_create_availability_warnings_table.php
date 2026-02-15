@@ -18,14 +18,14 @@ return new class extends Migration
                 ->references('id')
                 ->on('training_places')
                 ->onDelete('cascade');
-            $table->unsignedBigInteger('availability_check_id');
+            $table->ulid('availability_check_id');
             $table->foreign('availability_check_id')
                 ->references('id')
                 ->on('availability_checks')
                 ->onDelete('cascade');
             $table->enum('status', ['pending', 'resolved', 'expired']);
             $table->timestamp('resolved_at')->nullable();
-            $table->unsignedBigInteger('resolved_availability_check_id')->nullable();
+            $table->ulid('resolved_availability_check_id')->nullable();
             $table->foreign('resolved_availability_check_id')
                 ->references('id')
                 ->on('availability_checks')
