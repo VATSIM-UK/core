@@ -280,8 +280,8 @@ class TrainingPlaceObserverTest extends TestCase
     public function it_only_revokes_permissions_for_the_specific_student_and_positions(): void
     {
         // Arrange: Create two students with different training places
-        $ctsPosition1 = CtsPosition::factory()->create();
-        $ctsPosition2 = CtsPosition::factory()->create();
+        $ctsPosition1 = CtsPosition::factory()->create(['callsign' => 'EGKK_TWR']);
+        $ctsPosition2 = CtsPosition::factory()->create(['callsign' => 'EGKK_APP']);
 
         $trainingPosition1 = TrainingPosition::factory()->create([
             'cts_positions' => [$ctsPosition1->callsign],
