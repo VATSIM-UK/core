@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands\Training;
 
+use App\Jobs\Training\CheckAvailability;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use Illuminate\Console\Command;
 
 class CheckAvailabilityForActiveTrainingPlaces extends Command
@@ -25,6 +27,11 @@ class CheckAvailabilityForActiveTrainingPlaces extends Command
      */
     public function handle()
     {
-        //
+        // training places have soft deletes, so we need to get all active training places
+        $trainingPlaces = TrainingPlace::whereNull('deleted_at')->get();
+
+        foreach ($trainingPlaces as $trainingPlace) {
+            CheckAvailability::dispatch($trainingPlace);
+        }
     }
 }
