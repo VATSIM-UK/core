@@ -17,6 +17,8 @@ class ViewFeedbackController extends \App\Http\Controllers\BaseController
             return Redirect::route('mship.manage.dashboard')->withError('You have no feedback available to view at this time.');
         }
 
+        $this->setTitle('Your Feedback');
+
         return $this->viewMake('mship.feedback.view')
             ->with('feedback', $feedback);
     }

@@ -32,7 +32,7 @@ class TrainingPlaceObserver
      */
     public function deleted(TrainingPlace $trainingPlace): void
     {
-        //
+        $this->trainingPlaceService->revokeMentoringPermissions($trainingPlace);
     }
 
     /**
