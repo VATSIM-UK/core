@@ -80,6 +80,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'role.create',
             'role.edit.*',
             'role.delete.*',
+            'role.manage-delegates.*',
 
             // Visit Transfer System Permissions
             'vt.access',
