@@ -160,4 +160,181 @@ class TrainingPlaceObserverTest extends TestCase
             'date_changed should be set to the current timestamp'
         );
     }
+
+    #[Test]
+    public function it_automatically_revokes_mentoring_permissions_when_training_place_is_deleted(): void
+    {
+        // Arrange: Create a training place with permissions
+        $ctsPosition = CtsPosition::factory()->create();
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => [$ctsPosition->id],
+        ]);
+
+        $waitingList = WaitingList::factory()->create();
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
+
+        $trainingPlace = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]);
+
+        // Verify permissions were created
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $student->member->id,
+            'position_id' => $ctsPosition->id,
+            'status' => PositionValidationStatusEnum::Student->value,
+        ], 'cts');
+
+        // Act: Delete the training place (soft delete)
+        $trainingPlace->delete();
+
+        // Assert: The mentoring permissions should have been automatically revoked
+        $this->assertDatabaseMissing('position_validations', [
+            'member_id' => $student->member->id,
+            'position_id' => $ctsPosition->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_revokes_mentoring_permissions_for_multiple_cts_positions_on_deletion(): void
+    {
+        // Arrange: Create multiple CTS positions
+        $ctsPosition1 = CtsPosition::factory()->create();
+        $ctsPosition2 = CtsPosition::factory()->create();
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => [$ctsPosition1->id, $ctsPosition2->id],
+        ]);
+
+        $waitingList = WaitingList::factory()->create();
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
+
+        $trainingPlace = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]);
+
+        // Verify permissions were created for both positions
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $student->member->id,
+            'position_id' => $ctsPosition1->id,
+        ], 'cts');
+
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $student->member->id,
+            'position_id' => $ctsPosition2->id,
+        ], 'cts');
+
+        // Act: Delete the training place
+        $trainingPlace->delete();
+
+        // Assert: Mentoring permissions should be revoked for both positions
+        $this->assertDatabaseMissing('position_validations', [
+            'member_id' => $student->member->id,
+            'position_id' => $ctsPosition1->id,
+        ], 'cts');
+
+        $this->assertDatabaseMissing('position_validations', [
+            'member_id' => $student->member->id,
+            'position_id' => $ctsPosition2->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_handles_deletion_when_student_has_no_cts_member(): void
+    {
+        // Arrange: Create data without a CTS member
+        $ctsPosition = CtsPosition::factory()->create();
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => [$ctsPosition->id],
+        ]);
+
+        $waitingList = WaitingList::factory()->create();
+        $student = Account::factory()->create();
+
+        // Do NOT create a CTS member for the student
+
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
+
+        $trainingPlace = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]);
+
+        // Act: Delete the training place (should not throw an exception)
+        $trainingPlace->delete();
+
+        // Assert: No position validations exist (there were none to begin with)
+        $this->assertDatabaseMissing('position_validations', [
+            'position_id' => $ctsPosition->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_only_revokes_permissions_for_the_specific_student_and_positions(): void
+    {
+        // Arrange: Create two students with different training places
+        $ctsPosition1 = CtsPosition::factory()->create();
+        $ctsPosition2 = CtsPosition::factory()->create();
+
+        $trainingPosition1 = TrainingPosition::factory()->create([
+            'cts_positions' => [$ctsPosition1->id],
+        ]);
+
+        $trainingPosition2 = TrainingPosition::factory()->create([
+            'cts_positions' => [$ctsPosition2->id],
+        ]);
+
+        $waitingList = WaitingList::factory()->create();
+
+        // Student 1
+        $student1 = Account::factory()->create();
+        Member::factory()->create(['cid' => $student1->id]);
+        $waitingListAccount1 = $waitingList->addToWaitingList($student1, $this->privacc);
+        $trainingPlace1 = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount1->id,
+            'training_position_id' => $trainingPosition1->id,
+        ]);
+
+        // Student 2
+        $student2 = Account::factory()->create();
+        Member::factory()->create(['cid' => $student2->id]);
+        $waitingListAccount2 = $waitingList->addToWaitingList($student2, $this->privacc);
+        $trainingPlace2 = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount2->id,
+            'training_position_id' => $trainingPosition2->id,
+        ]);
+
+        // Verify both students have permissions
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $student1->member->id,
+            'position_id' => $ctsPosition1->id,
+        ], 'cts');
+
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $student2->member->id,
+            'position_id' => $ctsPosition2->id,
+        ], 'cts');
+
+        // Act: Delete only student1's training place
+        $trainingPlace1->delete();
+
+        // Assert: Only student1's permissions should be revoked
+        $this->assertDatabaseMissing('position_validations', [
+            'member_id' => $student1->member->id,
+            'position_id' => $ctsPosition1->id,
+        ], 'cts');
+
+        // Student2's permissions should still exist
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $student2->member->id,
+            'position_id' => $ctsPosition2->id,
+        ], 'cts');
+    }
 }

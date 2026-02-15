@@ -32,4 +32,23 @@ class TrainingPlaceService
             ]);
         }
     }
+
+    public function revokeMentoringPermissions(TrainingPlace $trainingPlace): void
+    {
+        $student = $trainingPlace->waitingListAccount->account;
+
+        if (! $student->member) {
+            Log::error('Student does not have a CTS member model attached');
+
+            return;
+        }
+
+        $ctsPositions = $trainingPlace->trainingPosition->cts_positions;
+
+        foreach ($ctsPositions as $ctsPosition) {
+            PositionValidation::where('member_id', $student->member->id)
+                ->where('position_id', $ctsPosition)
+                ->delete();
+        }
+    }
 }

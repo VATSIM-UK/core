@@ -5,6 +5,7 @@ namespace Tests\Unit\Training\TrainingPlace;
 use App\Enums\PositionValidationStatusEnum;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
+use App\Models\Cts\PositionValidation;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
@@ -78,6 +79,42 @@ class MentoringPermissionAssignmentTest extends TestCase
 
         $this->assertDatabaseMissing('position_validations', [
             'position_id' => $ctsPosition->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_will_remove_mentoring_permissions()
+    {
+        $ctsPosition = CtsPosition::factory()->create();
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => [$ctsPosition->id],
+        ]);
+
+        $waitingList = WaitingList::factory()->create();
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
+
+        $trainingPlace = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]);
+
+        PositionValidation::create([
+            'member_id' => $student->member->id,
+            'position_id' => $ctsPosition->id,
+            'status' => PositionValidationStatusEnum::Student->value,
+            'changed_by' => $student->id,
+            'date_changed' => now(),
+        ]);
+
+        $service = new TrainingPlaceService;
+        $service->revokeMentoringPermissions($trainingPlace);
+
+        $this->assertDatabaseMissing('position_validations', [
+            'member_id' => $student->member->id,
+            'position_id' => $ctsPosition->id,
+            'status' => PositionValidationStatusEnum::Student->value,
         ], 'cts');
     }
 }
