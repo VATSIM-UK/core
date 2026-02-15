@@ -2,9 +2,9 @@
 
 namespace App\Services\Roles;
 
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use App\Models\Mship\Account;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class DelegateRoleManagementService
 {
@@ -40,6 +40,9 @@ class DelegateRoleManagementService
     public function getDelegates(Role $role)
     {
         $permissionName = $this->delegatePermissionName($role);
-        return Account::query()->whereHas('permissions', function ($q) use ($permissionName) {$q->where('name', $permissionName);});
+
+        return Account::query()->whereHas('permissions', function ($q) use ($permissionName) {
+            $q->where('name', $permissionName);
+        });
     }
 }

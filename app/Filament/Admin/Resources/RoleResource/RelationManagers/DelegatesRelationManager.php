@@ -10,28 +10,27 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Auth;
+
 class DelegatesRelationManager extends RelationManager
 {
     protected static string $relationship = 'users';
-    
+
     protected static ?string $title = 'Delegates';
-    
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public function table(Table $table): Table
     {
-        $service = new DelegateRoleManagementService();
-        
+        $service = new DelegateRoleManagementService;
+
         return $table
             ->modifyQueryUsing(function (Builder $query) use ($service) {
                 $role = $this->getOwnerRecord();
-                
-                if (!$service->delegatePermissionExists($role)) {
+
+                if (! $service->delegatePermissionExists($role)) {
                     return $query->whereRaw('1 = 0');
                 }
-                
+
                 return $service->getDelegates($role);
             })
             ->columns([
@@ -42,7 +41,7 @@ class DelegatesRelationManager extends RelationManager
                     ->label('Name')
                     ->searchable(),
             ])
-            ->headerActions([                    
+            ->headerActions([
                 Tables\Actions\Action::make('add_delegate')
                     ->label('Add Delegate')
                     ->icon('heroicon-o-user-plus')
@@ -61,10 +60,10 @@ class DelegatesRelationManager extends RelationManager
                                     ->get();
 
                                 return $accounts->mapWithKeys(fn ($account) => [
-                                    $account->id => $account->name_first . ' ' . $account->name_last . ' - ' . $account->id
+                                    $account->id => $account->name_first.' '.$account->name_last.' - '.$account->id,
                                 ])->toArray();
                             })
-                            ->getOptionLabelFromRecordUsing(fn($record) => $record),
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record),
                     ])
                     ->modalHeading(fn () => "Delegate '{$this->getOwnerRecord()->name}'")
                     ->modalDescription('Select a member to grant permission to manage this role.')
@@ -82,7 +81,7 @@ class DelegatesRelationManager extends RelationManager
                             ->send();
                     })
                     ->visible(fn () => $service->delegatePermissionExists($this->getOwnerRecord()) && Auth()->user()->can('role.manage-delegates.*')),
-                
+
                 Tables\Actions\Action::make('remove_delegate_permission')
                     ->label('Remove Delegate Permission')
                     ->icon('heroicon-o-trash')
@@ -127,9 +126,10 @@ class DelegatesRelationManager extends RelationManager
             ->emptyStateHeading('No Delegates')
             ->emptyStateDescription(function () use ($service) {
                 $role = $this->getOwnerRecord();
-                if (!$service->delegatePermissionExists($role)) {
+                if (! $service->delegatePermissionExists($role)) {
                     return 'Create a delegate permission first to enable delegation.';
                 }
+
                 return 'No users have been delegated permission to manage this role.';
             })
             ->emptyStateIcon('heroicon-o-user-group')
@@ -148,7 +148,7 @@ class DelegatesRelationManager extends RelationManager
                             ->success()
                             ->send();
                     })
-                    ->visible(fn () => !$service->delegatePermissionExists($this->getOwnerRecord()) && Auth()->user()->can('role.manage-delegates.*')),
+                    ->visible(fn () => ! $service->delegatePermissionExists($this->getOwnerRecord()) && Auth()->user()->can('role.manage-delegates.*')),
             ]);
     }
 }
