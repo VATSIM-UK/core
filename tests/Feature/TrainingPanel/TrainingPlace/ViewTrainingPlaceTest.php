@@ -110,6 +110,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         // Create a session that matches the training position
         $session = Session::factory()->create([
             'position' => $cts_positions[0],
+            'taken' => 1,
             'taken_date' => now()->subDays(5),
             'student_id' => $trainingPlace->waitingListAccount->account->member->id,
         ]);
@@ -128,6 +129,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $otherSession = Session::factory()->create([
             'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => 'EGKK_TWR', // Different position
+            'taken' => 1,
             'taken_date' => now()->subDays(5),
         ]);
 
@@ -146,6 +148,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => $cts_positions[0],
             'taken_date' => now()->subDays(5),
+            'taken' => 1,
             'mentor_id' => $mentor->id,
         ]);
 
@@ -167,6 +170,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'noShow' => 0, // Explicitly set to 0 to ensure it's false
             'cancelled_datetime' => null, // Explicitly set to null
             'session_done' => 0, // Explicitly set to 0 to ensure it's false
+            'taken' => 1,
         ]);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
@@ -186,6 +190,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'noShow' => 0,
             'cancelled_datetime' => null,
             'session_done' => 1,
+            'taken' => 1,
         ]);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
@@ -206,6 +211,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'noShow' => 1, // Explicitly set to 1 to ensure it's true
             'cancelled_datetime' => null, // Explicitly set to null
             'session_done' => 0, // Explicitly set to 0
+            'taken' => 1,
         ]);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
@@ -225,6 +231,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'cancelled_datetime' => now()->subDays(6)->toDateTimeString(),
             'noShow' => 0,
             'session_done' => 0,
+            'taken' => 1,
         ]);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
@@ -269,12 +276,14 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => 'EGLL_APP',
             'taken_date' => now()->subDays(5),
+            'taken' => 1,
         ]);
 
         $session2 = Session::factory()->create([
             'student_id' => $trainingPlace->waitingListAccount->account->member->id,
             'position' => 'EGLL_TWR',
             'taken_date' => now()->subDays(3),
+            'taken' => 1,
         ]);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
