@@ -6,8 +6,8 @@ use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
 use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
-use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -190,7 +190,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         return $table
             ->heading('Mentoring session history')
             ->queryStringIdentifier('mentoring')
-            ->query(Session::query()->whereIn('position', $this->trainingPlace->trainingPosition->cts_positions)->where('student_id', $this->trainingPlace->waitingListAccount->account->member->id))
+            ->query((new SessionRepository)->getAllAcceptedSessionsForPositionsQuery($this->trainingPlace->trainingPosition->cts_positions, $this->trainingPlace->waitingListAccount->account->member->id))
             ->defaultSort('taken_date', 'desc')
             ->paginated([10])
             ->defaultPaginationPageOption(10)

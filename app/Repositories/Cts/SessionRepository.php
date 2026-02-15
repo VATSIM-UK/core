@@ -17,6 +17,15 @@ class SessionRepository
 
     }
 
+    public function getAllAcceptedSessionsForPositionsQuery(array $positionCallsigns, int $studentId)
+    {
+        return Session::query()
+            ->with(['student', 'mentor'])
+            ->where('student_id', $studentId)
+            ->whereIn('position', $positionCallsigns)
+            ->where('taken', 1);
+    }
+
     public function getTotalSessionsForPosition(string $positionCallsign)
     {
         return Session::where('position', $positionCallsign)
