@@ -3,12 +3,15 @@
 namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
 use App\Filament\Admin\Resources\RoleResource;
+use App\Services\Roles\DelegateRoleManagementService;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
+use Spatie\Permission\Models\Role;
 
 class RolesRelationManager extends RelationManager
 {
@@ -26,6 +29,21 @@ class RolesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $service = new DelegateRoleManagementService();
+                $user = auth()->user();
+
+                if ($user->can('account.edit-roles.*')) {
+                    return $query;
+                }
+
+                $manageableRoleIds = Role::all()->filter(function ($role) use ($service, $user) {
+                    return $service->delegatePermissionExists($role) 
+                        && $user->hasPermissionTo($service->delegatePermissionName($role));
+                })->pluck('id');
+
+                return $query->whereIn('id', $manageableRoleIds);
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
             ])

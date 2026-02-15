@@ -103,6 +103,27 @@ class DelegatesRelationManager extends RelationManager
                     })
                     ->visible(fn () => $service->delegatePermissionExists($this->getOwnerRecord()) && Auth()->user()->can('role.manage-delegates.*')),
             ])
+            ->actions([
+                Tables\Actions\Action::make('remove_delegate')
+                    ->label('Remove')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (Account $record) => "Remove {$record->name}?")
+                    ->modalDescription(fn () => "This will revoke their permission to manage {$this->getOwnerRecord()->name}.")
+                    ->action(function (Account $record) use ($service) {
+                        $role = $this->getOwnerRecord();
+                        $service->revokeDelegate($record, $role);
+
+                        Notification::make()
+                            ->title('Delegate Removed')
+                            ->body("{$record->name} no longer has permissions to manage {$role->name}.")
+                            ->success()
+                            ->send();
+                    })
+                    ->after(fn () => $this->dispatch('$refresh'))
+                    ->visible(fn () => Auth()->user()->can('role.manage-delegates.*')),
+            ])
             ->emptyStateHeading('No Delegates')
             ->emptyStateDescription(function () use ($service) {
                 $role = $this->getOwnerRecord();
