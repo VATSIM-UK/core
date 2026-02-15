@@ -9,8 +9,8 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\Role;
 
 class RolesRelationManager extends RelationManager
@@ -30,7 +30,7 @@ class RolesRelationManager extends RelationManager
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
-                $service = new DelegateRoleManagementService();
+                $service = new DelegateRoleManagementService;
                 $user = auth()->user();
 
                 if ($user->can('account.edit-roles.*')) {
@@ -38,7 +38,7 @@ class RolesRelationManager extends RelationManager
                 }
 
                 $manageableRoleIds = Role::all()->filter(function ($role) use ($service, $user) {
-                    return $service->delegatePermissionExists($role) 
+                    return $service->delegatePermissionExists($role)
                         && $user->hasPermissionTo($service->delegatePermissionName($role));
                 })->pluck('id');
 
