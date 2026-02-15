@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('availability_checks', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->ulid('training_place_id');
             $table->foreign('training_place_id')
                 ->references('id')
