@@ -26,7 +26,7 @@ class TrainingPlaceService
                 // use CTS member id
                 'member_id' => $student->member->id,
                 'position_id' => $ctsPosition,
-                'status' => PositionValidationStatusEnum::Mentor->value,
+                'status' => PositionValidationStatusEnum::Student->value,
                 'changed_by' => $student->id,
                 'date_changed' => now(),
             ]);

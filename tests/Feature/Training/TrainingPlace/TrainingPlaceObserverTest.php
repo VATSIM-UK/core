@@ -44,7 +44,7 @@ class TrainingPlaceObserverTest extends TestCase
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $student->member->id,
             'position_id' => $ctsPosition->id,
-            'status' => PositionValidationStatusEnum::Mentor->value,
+            'status' => PositionValidationStatusEnum::Student->value,
             'changed_by' => $student->id,
         ], 'cts');
     }
@@ -78,13 +78,13 @@ class TrainingPlaceObserverTest extends TestCase
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $student->member->id,
             'position_id' => $ctsPosition1->id,
-            'status' => PositionValidationStatusEnum::Mentor->value,
+            'status' => PositionValidationStatusEnum::Student->value,
         ], 'cts');
 
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $student->member->id,
             'position_id' => $ctsPosition2->id,
-            'status' => PositionValidationStatusEnum::Mentor->value,
+            'status' => PositionValidationStatusEnum::Student->value,
         ], 'cts');
     }
 

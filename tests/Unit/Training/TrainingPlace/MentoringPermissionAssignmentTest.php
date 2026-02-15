@@ -52,7 +52,7 @@ class MentoringPermissionAssignmentTest extends TestCase
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $student->member->id,
             'position_id' => $ctsPosition->id,
-            'status' => PositionValidationStatusEnum::Mentor->value,
+            'status' => PositionValidationStatusEnum::Student->value,
         ], 'cts');
     }
 
