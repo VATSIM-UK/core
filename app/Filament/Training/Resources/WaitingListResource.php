@@ -44,7 +44,7 @@ class WaitingListResource extends Resource
                         Select::make('trainingPositions')
                             ->label('Training Positions')
                             ->helperText('Link this waiting list to one or more training positions.')
-                            ->relationship('trainingPositions', 'id')
+                            ->relationship('trainingPositions')
                             ->multiple()
                             ->preload()
                             ->getOptionLabelFromRecordUsing(fn (TrainingPosition $record) => $record->position?->callsign ?? "Position #{$record->id}"),
