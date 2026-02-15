@@ -414,22 +414,27 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-12">
-                            @if($_account->discord_id)
-                                Currently registered with Discord account {{ $_account->discord_user ? '@' . $_account->discord_user['username'] : $_account->discord_id }}.<br/>
-                                <a href="{{ route('discord.destroy') }}">Unlink Discord account</a>
+                            <p>Our community Discord server is the place to go to chat to other members of the UK Division and the wider network.</p>
+                            @if(!$_account->discord_id)
+                                <p>
+                                    Clicking the button below will take you to Discord.<br>
+                                    There, you will need to create an account or login to an existing one.
+                                </p>
+                                <p>
+                                    Once logged in, you will be asked to click "Authorize" and give VATSIM UK permission to add you to our Discord server and assign you the relevant permissions.
+                                </p>
+                                <a href="{{ route('discord.create') }}" style="text-decoration: none;">
+                                    <button class="btn btn-primary center-block"><em class="fab fa-discord"></em> &thinsp; Link Discord Account</button>
+                                </a>
                             @else
-                                You are not yet
-                                registered.  <a href="{{ route('discord.create') }}">Click here to register.</a>
+                                
+                                <a href="#" style="text-decoration: none;">
+                                <button class="btn btn-primary center-block" disabled><em class="fab fa-discord"></em>
+                                        Currently registered with Discord account {{ $_account->discord_user ? '@' . $_account->discord_user['username'] : $_account->discord_id }}.
+                                    </button>
+                                </a>
+                                <p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
                             @endif
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-footer panel-footer-primary">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <a href="{{ route('discord.show') }}">
-                                <span class='fa fa-info'></span> Discord Guide
-                            </a>
                         </div>
                     </div>
                 </div>

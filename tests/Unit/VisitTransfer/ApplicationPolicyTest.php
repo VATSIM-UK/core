@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\VisitTransfer;
 
+use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Reference;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -11,6 +12,17 @@ use Tests\TestCase;
 class ApplicationPolicyTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected Account $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = Account::factory()->create();
+
+        $this->user->givePermissionTo(['vt.application.view.*', 'vt.application.accept.*', 'vt.application.reject.*', 'vt.application.complete.*']);
+    }
 
     public static function providerApplicationState(): array
     {
@@ -29,17 +41,19 @@ class ApplicationPolicyTest extends TestCase
     #[DataProvider('providerApplicationState')]
     public function test_actions_policy($status, $num_accepted_references, $num_pending_references, $checks_met, $can_accept, $can_reject, $can_complete)
     {
-        $application = factory(Application::class)->create([
+        $application = Application::factory()->create([
             'status' => $status,
             'check_outcome_90_day' => $checks_met,
             'check_outcome_50_hours' => $checks_met,
         ]);
 
-        factory(Reference::class, $num_accepted_references)->create(['application_id' => $application, 'status' => Reference::STATUS_ACCEPTED]);
-        factory(Reference::class, $num_pending_references)->create(['application_id' => $application, 'status' => Reference::STATUS_REQUESTED]);
+        Reference::factory()->count($num_accepted_references)->create(['application_id' => $application, 'status' => Reference::STATUS_ACCEPTED]);
+        Reference::factory()->count($num_pending_references)->create(['application_id' => $application, 'status' => Reference::STATUS_REQUESTED]);
 
-        $this->assertEquals($can_accept, $this->user->can('accept', $application));
-        $this->assertEquals($can_reject, $this->user->can('reject', $application));
-        $this->assertEquals($can_complete, $this->user->can('complete', $application));
+        $policy = app(\App\Policies\VisitTransfer\ApplicationPolicy::class);
+
+        $this->assertEquals($can_accept, $policy->accept($this->user, $application));
+        $this->assertEquals($can_reject, $policy->reject($this->user, $application));
+        $this->assertEquals($can_complete, $policy->complete($this->user, $application));
     }
 }

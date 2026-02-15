@@ -27,7 +27,7 @@ class ReferenceTest extends TestCase
     public function it_cant_submit_itself_when_not_requested()
     {
         $this->expectException(ReferenceNotRequestedException::class);
-        $reference = factory(Reference::class)->create();
+        $reference = Reference::factory()->create();
         $text = $this->faker->realText;
         $reference->submit($text);
     }
@@ -35,7 +35,7 @@ class ReferenceTest extends TestCase
     #[Test]
     public function it_can_submit_itself()
     {
-        $reference = factory(Reference::class)->create(['status' => Reference::STATUS_REQUESTED]);
+        $reference = Reference::factory()->create(['status' => Reference::STATUS_REQUESTED]);
         $text = $this->faker->realText;
         $reference->submit($text);
         $this->assertEquals($text, $reference->fresh()->reference);
@@ -46,7 +46,7 @@ class ReferenceTest extends TestCase
     #[Test]
     public function it_can_delete_itself()
     {
-        $reference = factory(Reference::class)->create();
+        $reference = Reference::factory()->create();
         $reference->delete();
         $this->assertEquals(Reference::STATUS_DELETED, $reference->fresh()->status);
         $this->assertNotNull($reference->fresh()->deleted_at);
@@ -56,14 +56,14 @@ class ReferenceTest extends TestCase
     public function it_cant_reject_itself_when_not_under_review()
     {
         $this->expectException(ReferenceNotUnderReviewException::class);
-        $reference = factory(Reference::class)->create();
+        $reference = Reference::factory()->create();
         $reference->reject();
     }
 
     #[Test]
     public function it_can_reject_itself()
     {
-        $reference = factory(Reference::class)->create(['status' => Reference::STATUS_UNDER_REVIEW]);
+        $reference = Reference::factory()->create(['status' => Reference::STATUS_UNDER_REVIEW]);
         $reference->reject();
         $this->assertEquals(Reference::STATUS_REJECTED, $reference->fresh()->status);
     }
@@ -88,7 +88,7 @@ class ReferenceTest extends TestCase
 
         // Create some references
 
-        factory(Reference::class, 20)->create([
+        Reference::factory()->count(20)->create([
             'status' => function () use ($referenceTypes) {
                 return Base::randomElement(Base::randomElement($referenceTypes));
             },

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin\Feedback;
 
 use App\Filament\Admin\Resources\FeedbackResource\Pages\ViewFeedback;
+use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -147,5 +148,128 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
         Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
             ->assertForbidden();
+    }
+
+    public function test_can_reject_feedback_with_permission()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
+        $this->adminUser->givePermissionTo('feedback.action');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
+            ->assertActionVisible('reject_feedback')
+            ->callAction('reject_feedback', data: [
+                'reason' => 'Testing rejection of feedback.',
+            ]);
+
+        $this->assertNotNull($feedback->fresh()->deleted_at);
+    }
+
+    public function test_reject_feedback_tracks_deleted_by_user()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
+        $this->adminUser->givePermissionTo('feedback.action');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
+            ->callAction('reject_feedback', data: [
+                'reason' => 'Testing rejection of feedback.',
+            ]);
+
+        $feedback = $feedback->fresh();
+        $this->assertNotNull($feedback->deleted_at);
+        $this->assertEquals($feedback->deleted_by, $this->adminUser->id);
+    }
+
+    public function test_can_reject_feedback_with_reason()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
+        $this->adminUser->givePermissionTo('feedback.action');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
+            ->assertActionVisible('reject_feedback')
+            ->callAction('reject_feedback', data: [
+                'reason' => 'This feedback does not meet our standards.',
+            ]);
+
+        $feedback = $feedback->fresh();
+        $this->assertNotNull($feedback->deleted_at);
+        $this->assertEquals($feedback->reject_reason, 'This feedback does not meet our standards.');
+    }
+
+    public function test_rejected_feedback_shows_in_details_page()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
+        $this->adminUser->givePermissionTo('feedback.action');
+
+        // Reject the feedback
+        $feedback->markRejected($this->adminUser, 'Invalid feedback');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
+            ->assertSuccessful()
+            ->assertSee('Rejected By')
+            ->assertSee($this->adminUser->name)
+            ->assertSee('Rejection Reason')
+            ->assertSee('Invalid feedback');
+    }
+
+    public function test_rejected_feedback_hides_action_buttons()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$feedback->form->slug}");
+        $this->adminUser->givePermissionTo('feedback.action');
+
+        // Reject the feedback
+        $feedback->markRejected($this->adminUser, 'Invalid feedback');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ViewFeedback::class, ['record' => $feedback->id])
+            ->assertSuccessful()
+            ->assertActionHidden('reject_feedback')
+            ->assertActionHidden('send_feedback')
+            ->assertActionHidden('action_feedback');
+    }
+
+    public function test_reallocates_feedback_to_another_account()
+    {
+        $originalAccount = Account::factory()->create();
+        $newAccount = Account::factory()->create();
+
+        $form = Form::first();
+
+        $feedback = new Feedback([
+            'form_id' => $form->id,
+            'account_id' => $originalAccount->id,
+            'submitter_account_id' => $originalAccount->id,
+        ]);
+        $feedback->save();
+
+        $this->assertEquals($originalAccount->id, $feedback->account_id);
+
+        $feedback->reallocate($newAccount->id);
+        $feedback->refresh();
+
+        $this->assertEquals($newAccount->id, $feedback->account_id);
     }
 }

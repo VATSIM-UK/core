@@ -2,6 +2,7 @@
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Filament\Training\Pages\Exam\Widgets\ExamOverview;
 use App\Repositories\Cts\ExamResultRepository;
 use Filament\Forms;
 use Filament\Pages\Page;
@@ -28,6 +29,13 @@ class ExamHistory extends Page implements HasTable
         return auth()->user()->can('training.exams.access');
     }
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ExamOverview::class,
+        ];
+    }
+
     public function table(Table $table): Table
     {
         $userPermissionsTruthTable = [
@@ -43,7 +51,10 @@ class ExamHistory extends Page implements HasTable
         $query = $examResultRepository->getExamHistoryQueryForLevels($typesToShow);
 
         return $table->query($query)->columns([
-            TextColumn::make('student.account.id')->label('CID')->searchable(),
+            TextColumn::make('student.account.id')->label('CID')
+                ->searchable(query: function ($query, string $search): void {
+                    $query->where('student_id', 'like', "%{$search}%");
+                }),
             TextColumn::make('student.account.name')->label('Name'),
             TextColumn::make('examBooking.exam')->label('Exam'),
             TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => match ($state) {

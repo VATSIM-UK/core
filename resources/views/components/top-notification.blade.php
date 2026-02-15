@@ -11,7 +11,7 @@
                     <p>Discord is available to all VATSIM UK members. Registration takes less than 60 seconds. Simply hit the button to get started.</p>
                 </div>
                 <div class="col-md-3 cta text-center">
-                    <a href="{{ route('discord.show') }}" class="button secondary">
+                    <a href="{{ route('mship.manage.dashboard') }}" class="button secondary">
                         Register for Discord
                     </a>
                     <a href="#" data-top-notification-id="vuk-notification-discord0820" class="button top_notification_dismiss tertiary">

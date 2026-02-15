@@ -479,4 +479,32 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($userWithPermission)->test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertSee('Edit settings');
     }
+
+    public function test_user_with_delete_atc_permission_can_delete_atc_waiting_list()
+    {
+        $userWithPermission = Account::factory()->create();
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
+
+        $userWithPermission->givePermissionTo('waiting-lists.access');
+        $userWithPermission->givePermissionTo('waiting-lists.view.atc');
+        $userWithPermission->givePermissionTo('waiting-lists.admin.atc');
+        $userWithPermission->givePermissionTo('waiting-lists.delete.atc');
+
+        Livewire::actingAs($userWithPermission)->test(ViewWaitingList::class, ['record' => $waitingList->id])
+            ->assertSee('Delete Waiting List');
+    }
+
+    public function test_user_with_delete_atc_permission_cannot_delete_pilot_waiting_list()
+    {
+        $userWithPermission = Account::factory()->create();
+        $waitingList = WaitingList::factory()->create(['department' => 'pilot']);
+
+        $userWithPermission->givePermissionTo('waiting-lists.access');
+        $userWithPermission->givePermissionTo('waiting-lists.view.atc');
+        $userWithPermission->givePermissionTo('waiting-lists.admin.atc');
+        $userWithPermission->givePermissionTo('waiting-lists.delete.atc');
+
+        Livewire::actingAs($this->panelUser)->test(ViewWaitingList::class, ['record' => $waitingList->id])
+            ->assertDontSee('Delete Waiting List');
+    }
 }

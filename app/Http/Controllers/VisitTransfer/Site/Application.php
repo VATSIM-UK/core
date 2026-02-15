@@ -83,7 +83,7 @@ class Application extends BaseController
             return Redirect::route('visiting.application.submit', [$application->public_id]);
         }
 
-        if (Gate::allows('view-application', $application)) {
+        if (Gate::allows('view', $application)) {
             return Redirect::route('visiting.application.view', [$application->public_id]);
         }
 
@@ -265,7 +265,7 @@ class Application extends BaseController
 
     public function getView(\App\Models\VisitTransfer\Application $application)
     {
-        $this->authorize('view-application', $application);
+        $this->authorize('view', $application);
 
         $application->load('facility')->load('referees.account');
 

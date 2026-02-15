@@ -25,47 +25,6 @@
     </div>
 
     <div class="row equal">
-
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-ukblue">
-                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#endorsement-gatwickgnd">
-                    <div class="panel-heading">
-                        <i class="fa fa-plane-departure" aria-hidden="true"></i> &thinsp; London Gatwick - GND (S1)
-                        <i class="pull-right fa fa-arrow-down" aria-hidden="true"></i>
-                    </div>
-                </a>
-                <div id="endorsement-gatwickgnd" class="panel-collapse collapse panel-body">
-                    <h3>Background</h3>
-
-                    <p>
-                        Controlling at London Gatwick is restricted to S2 rated members, or S1s that hold a special endorsement.
-                        This restriction for S1s is in place to allow members to gain experience in quieter environments
-                        and practice their skills before tackling the workload at Gatwick.
-                    </p>
-
-                    <p>
-                        The Gatwick (S1) Endorsement enables controllers to open Ground (EGKK_GND) or Delivery (EGKK_DEL).
-                    </p>
-
-                    <h3>Endorsement Process</h3>
-
-                    <p>
-                        View the requirements for the Gatwick Ground endorsement by <a
-                            href="{{ route('controllers.endorsements.gatwick_ground') }}">clicking here</a>.
-                    <p>
-
-                    <h3>Get Started</h3>
-
-                    <p>
-                        The process for getting started with the Gatwick Ground endorsement can be found by <a
-                            href="{{ route('controllers.endorsements.gatwick_ground') }}">clicking here</a>.
-                    </p>
-
-                </div>
-            </div>
-        </div>
-
-
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-ukblue">
                 <a class="panel-heading-link" role="button" data-toggle="collapse" href="#endorsement-heathrow-s1">
@@ -85,7 +44,7 @@
                         This restriction is in place to allow members to gain experience in quieter environments
                         and practice their skills before tackling the workload at Heathrow.
 
-                        S1 rated members that hold a Gatwick Endorsement may train for a Heathrow Ground (S1) Endorsement.
+                        S1 rated members that have 50 hours on any UK ground or delivery positions may train for a Heathrow Ground (S1) Endorsement.
                     </p>
 
                     <h3>Endorsement Process</h3>
@@ -212,7 +171,7 @@
                         <li>Wickenby (EGNW)</li>
                         <li>Wolverhampton / Halfpenny Green (EGBO)</li>
                         <li>Wycombe Air Park/Booker (EGTB)</li>
-                        <li>Stanley (SFAL) - see <a href="https://community.vatsim.uk/files/downloads/file/36-vatsim-argentina-comodoro-rivadavia-acc-vatsim-uk-mount-pleasant-ats-unit-loa/">Argentina LoA</a></li>
+                        <li>Stanley (SFAL) - see <a href="https://docs.vatsim.uk/General/Letters%20of%20Agreement/">Argentina LoA</a></li>
                     </ul>
 
                     <h3>Get Started</h3>
@@ -288,7 +247,7 @@
                         <li>RAF Mount Pleasant (EGYP)</li>
                         <li>RAF Ascension Island (FHAW)</li>
                         <li>EGVV_CTR - 133.900 - Swanwick Military - Covers military activity in both EGTT and EGPX, as well as top-down control for Military airfields</li>
-                        <li>EGVV_x_CTR - Swanwick Military - Various other splits, as outlined in <a href="https://community.vatsim.uk/topic/37499-2020-12-03-swanwick-mil-sectorisation-and-frequency-change/">this procedure change post</a>.</li>
+                        <li>EGVV_x_CTR - Swanwick Military - Various other splits.</li>
                         <li>ISLAND_CTR - Island Radar - Provides radar services to aircraft within the Falklands Control Zone, and top-down control for EGYP.</li>
                     </ul>
 

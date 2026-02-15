@@ -19,7 +19,7 @@ class DiscordTest extends TestCase
     public function test_it_shows_registration_page()
     {
         $this->actingAs($this->user)
-            ->get(route('discord.show'))
+            ->get(route('mship.manage.dashboard'))
             ->assertSee('Discord Registration')
             ->assertOk();
     }
@@ -75,20 +75,20 @@ class DiscordTest extends TestCase
     public function test_it_redirects_when_code_missing()
     {
         $emptyString = $this->actingAs($this->user)
-            ->from(route('discord.show'))
+            ->from(route('mship.manage.dashboard'))
             ->get(route('discord.store', ['code' => '']));
 
         $missingCode = $this->actingAs($this->user)
-            ->from(route('discord.show'))
+            ->from(route('mship.manage.dashboard'))
             ->get(route('discord.store'));
 
         $nullCode = $this->actingAs($this->user)
-            ->from(route('discord.show'))
+            ->from(route('mship.manage.dashboard'))
             ->get(route('discord.store', ['code' => null]));
 
-        $emptyString->assertRedirect(route('discord.show'))->assertSessionHasErrors('code');
-        $missingCode->assertRedirect(route('discord.show'))->assertSessionHasErrors('code');
-        $nullCode->assertRedirect(route('discord.show'))->assertSessionHasErrors('code');
+        $emptyString->assertRedirect(route('mship.manage.dashboard'))->assertSessionHasErrors('code');
+        $missingCode->assertRedirect(route('mship.manage.dashboard'))->assertSessionHasErrors('code');
+        $nullCode->assertRedirect(route('mship.manage.dashboard'))->assertSessionHasErrors('code');
     }
 
     #[Test]
@@ -109,7 +109,7 @@ class DiscordTest extends TestCase
             ->get(route('discord.store', [
                 'code' => '123456789',
             ]))
-            ->assertRedirect(route('discord.show'))
+            ->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('error', 'You have reached your Discord server limit! You must leave a server before you can join another one');
     }
 

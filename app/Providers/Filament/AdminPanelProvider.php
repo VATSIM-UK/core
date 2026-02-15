@@ -61,10 +61,6 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make('Technology'),
             ])
             ->navigationItems([
-                NavigationItem::make('Legacy Admin Panel')
-                    ->url(fn () => route('adm.index')) // This is a closure as routes may not have been registered yet
-                    ->icon('heroicon-o-clock')
-                    ->visible(fn () => request()->user()->hasPermissionTo('adm')),
                 NavigationItem::make('Training Panel')
                     ->url(fn () => route('filament.training.pages.dashboard'))
                     ->icon('heroicon-o-academic-cap')

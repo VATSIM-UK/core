@@ -21,7 +21,7 @@ class Registration extends BaseController
 
     public function show()
     {
-        return $this->viewMake('discord.new');
+        return redirect()->route('mship.manage.dashboard');
     }
 
     public function create(Request $request)
@@ -70,6 +70,6 @@ class Registration extends BaseController
 
     protected function error(string $message)
     {
-        return redirect()->route('discord.show')->withError($message);
+        return redirect()->route('mship.manage.dashboard')->withError($message);
     }
 }

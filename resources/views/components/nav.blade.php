@@ -146,8 +146,8 @@
 
                                     <li class="dropdown-header">Operations</li>
                                     <li><a href="https://docs.vatsim.uk/">ATC Documentation</a></li>
-                                    <li><a href="https://community.vatsim.uk/forum/166-atc-procedure-changes/">ATC Procedure Changes</a></li>
-                                    <li><a href="https://docs.vatsim.uk/">ATC Software</a></li>
+                                    <li><a href="https://docs.vatsim.uk/Briefing/">ATC Permanent Instructions</a></li>
+                                    <li><a href="https://docs.vatsim.uk/General/">ATC Software</a></li>
                                     <li class="divider"></li>
 
                                     <li class="dropdown-header">ATC Training</li>
@@ -162,7 +162,6 @@
                                 <ul>
                                     <li class="divider"></li>
                                     <li class="dropdown-header">Endorsements</li>
-                                    <li><a href="{{ route('controllers.endorsements.gatwick_ground') }}">Gatwick Ground</a></li>
                                     <li><a href="{{ route('controllers.endorsements.heathrow_ground_s1') }}">Heathrow Ground (S1)</a></li>
                                     <li><a href="{{ route('site.atc.heathrow') }}">Heathrow</a></li>
                                 </ul>
@@ -198,6 +197,7 @@
                                 <ul>
                                     <li><a href="{{ route('site.policy.training.s1-syllabus') }}">S1 Syllabus</a></li>
                                     <li><a href="{{ route('site.policy.training.s2-syllabus') }}">S2 Syllabus</a></li>
+                                    <li><a href="{{ route('site.policy.training.s3-syllabus') }}">S3 Syllabus</a></li>
                                     <li><a href="{{ route('site.policy.training.c1-syllabus') }}">C1 Syllabus</a></li>
                                 </ul>
                             </li>
@@ -235,7 +235,7 @@
                                 <ul>
                                     <li class="dropdown-header">Communications</li>
                                     <li><a href="{{ route('site.community.teamspeak') }}">TeamSpeak</a></li>
-                                    <li><a href="{{ route('discord.show') }}">Discord</a></li>
+                                    <li><a href="{{ route('mship.manage.dashboard') }}">Discord</a></li>
                                     <li class="divider"></li>
                                     <li><a href="https://cts.vatsim.uk/">Training System</a></li>
                                     <li><a href="https://docs.vatsim.uk/">Docs Site</a></li>

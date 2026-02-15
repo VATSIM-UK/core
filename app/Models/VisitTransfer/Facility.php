@@ -5,6 +5,8 @@ namespace App\Models\VisitTransfer;
 use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
 use App\Models\Contact;
 use App\Models\Model;
+use App\Models\Mship\Qualification;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Malahierba\PublicId\PublicId;
 
@@ -65,7 +67,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Facility extends Model
 {
-    use Notifiable, PublicId;
+    use HasFactory, Notifiable, PublicId;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-facility';
 
@@ -105,6 +107,10 @@ class Facility extends Model
         'stage_reference_quantity',
         'stage_checks',
         'auto_acceptance',
+        'minimum_atc_qualification_id',
+        'maximum_atc_qualification_id',
+        'minimum_pilot_qualification_id',
+        'maximum_pilot_qualification_id',
         'public',
     ];
 
@@ -149,7 +155,7 @@ class Facility extends Model
             $attributes['training_spaces'] = null;
         }
 
-        $input_emails = array_filter($attributes['acceptance_emails']);
+        /*$input_emails = array_filter($attributes['acceptance_emails']);
         shuffle($input_emails);
         $current_emails = $this->emails()->get();
 
@@ -175,7 +181,7 @@ class Facility extends Model
             if (array_search($email->email, $input_emails) === false) {
                 $email->delete();
             }
-        }
+        }*/
 
         return parent::update($attributes, $options);
     }
@@ -260,6 +266,26 @@ class Facility extends Model
         if ($this->training_required == 1 && $this->training_spaces !== null) {
             $this->decrement('training_spaces');
         }
+    }
+
+    public function minimumATCQualification()
+    {
+        return $this->belongsTo(Qualification::class, 'minimum_atc_qualification_id');
+    }
+
+    public function maximumATCQualification()
+    {
+        return $this->belongsTo(Qualification::class, 'maximum_atc_qualification_id');
+    }
+
+    public function minimumPilotQualification()
+    {
+        return $this->belongsTo(Qualification::class, 'minimum_pilot_qualification_id');
+    }
+
+    public function maximumPilotQualification()
+    {
+        return $this->belongsTo(Qualification::class, 'maximum_pilot_qualification_id');
     }
 
     private function guardAgainstDuplicateFacilityName($proposedName, $excludeCurrent = false)

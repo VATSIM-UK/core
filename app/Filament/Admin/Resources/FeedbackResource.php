@@ -23,7 +23,7 @@ class FeedbackResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
+        $query = parent::getEloquentQuery()->withTrashed();
 
         return $query->with(['account', 'submitter', 'form']);
     }
@@ -37,16 +37,16 @@ class FeedbackResource extends Resource
                     ->content(fn ($record) => $record->id),
 
                 Forms\Components\Placeholder::make('Form Name')
-                    ->content(fn ($record) => $record->form->name),
+                    ->content(fn ($record) => $record->form?->name),
 
                 Forms\Components\Placeholder::make('account.name')
                     ->label('Subject')
-                    ->content(fn ($record) => $record->account->name),
+                    ->content(fn ($record) => $record->account?->name),
 
                 Forms\Components\Placeholder::make('submitter.name')
                     ->label('Submitted by')
                     ->visible(self::canSeeSubmitter())
-                    ->content(fn ($record) => $record->submitter->name),
+                    ->content(fn ($record) => $record->submitter?->name),
 
                 Forms\Components\Placeholder::make('created_at')
                     ->label('Submitted at')
@@ -60,7 +60,7 @@ class FeedbackResource extends Resource
 
                         Forms\Components\Placeholder::make('sent_by')
                             ->label('Sent By')
-                            ->content(fn ($record) => $record->sent_by_id ? $record->sender->name : null),
+                            ->content(fn ($record) => $record->sent_by_id ? $record->sender?->name : null),
 
                         Forms\Components\Placeholder::make('sent_comment')
                             ->label('Sent Notes')
@@ -75,12 +75,23 @@ class FeedbackResource extends Resource
 
                         Forms\Components\Placeholder::make('actioned_by')
                             ->label('Actioned By')
-                            ->content(fn ($record) => $record->actioned_by_id ? $record->actioner->name : null),
+                            ->content(fn ($record) => $record->actioned_by_id ? $record->actioner?->name : null),
 
                         Forms\Components\Placeholder::make('actioned_comment')
                             ->label('Actioned Comment')
                             ->content(fn ($record) => $record->actioned_comment),
                     ])->hidden(fn ($record) => $record->actioned_at === null),
+
+                Forms\Components\Fieldset::make('Rejection Information')
+                    ->schema([
+                        Forms\Components\Placeholder::make('rejected_by')
+                            ->label('Rejected By')
+                            ->content(fn ($record) => $record->deleted_by ? $record->deleter?->name : null),
+
+                        Forms\Components\Placeholder::make('reject_reason')
+                            ->label('Rejection Reason')
+                            ->content(fn ($record) => $record->reject_reason),
+                    ])->hidden(fn ($record) => ! $record->trashed()),
 
                 Forms\Components\Section::make('Answers')
                     ->schema([
@@ -90,7 +101,7 @@ class FeedbackResource extends Resource
                             ->schema([
                                 Forms\Components\Placeholder::make('question')
                                     ->label('Question')
-                                    ->content(fn ($record) => $record->question->question),
+                                    ->content(fn ($record) => $record->question?->question),
 
                                 CopyablePlaceholder::make('response')
                                     ->label('Answer')

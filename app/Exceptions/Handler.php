@@ -24,6 +24,7 @@ class Handler extends ExceptionHandler
         \Illuminate\Validation\ValidationException::class,
         \Illuminate\Queue\MaxAttemptsExceededException::class,
         \League\OAuth2\Server\Exception\OAuthServerException::class,
+        \App\Exceptions\Discord\DiscordUserInviteException::class,
     ];
 
     /**

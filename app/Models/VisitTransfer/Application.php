@@ -20,12 +20,14 @@ use App\Exceptions\VisitTransfer\Application\AttemptingToTransferToNonTrainingFa
 use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
 use App\Exceptions\VisitTransfer\Application\DuplicateRefereeException;
 use App\Exceptions\VisitTransfer\Application\FacilityHasNoCapacityException;
+use App\Exceptions\VisitTransfer\Application\RatingRequirementNotMetException;
 use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Traits\HasStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Malahierba\PublicId\PublicId;
@@ -128,7 +130,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Application extends Model
 {
-    use HasStatus, PublicId, SoftDeletes;
+    use HasFactory, HasStatus, PublicId, SoftDeletes;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
 
@@ -544,12 +546,43 @@ class Application extends Model
         return $this->facility ? $this->facility->name : 'Not selected';
     }
 
+    public function meetsRatingRequirements(Facility $facility)
+    {
+        if ($facility->training_team === 'atc') {
+            $userRating = $this->account->qualification_atc?->vatsim;
+            $minQual = $facility->minimumATCQualification?->vatsim;
+            $maxQual = $facility->maximumATCQualification?->vatsim;
+        } else {
+            $userRating = $this->account->qualification_pilot?->vatsim;
+            $minQual = $facility->minimumPilotQualification?->vatsim;
+            $maxQual = $facility->maximumPilotQualification?->vatsim;
+        }
+
+        if ($userRating === null) {
+            return false;
+        }
+
+        if ($minQual && $userRating < $minQual) {
+            return false;
+        }
+
+        if ($maxQual && $userRating > $maxQual) {
+            return false;
+        }
+
+        return true;
+    }
+
     /** Business logic. */
     public function setFacility(Facility $facility)
     {
         $this->guardAgainstTransferringToANonTrainingFacility($facility);
 
         $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
+
+        if (! $this->meetsRatingRequirements($facility)) {
+            throw new RatingRequirementNotMetException($facility);
+        }
 
         $this->training_required = $facility->training_required;
         $this->statement_required = $facility->stage_statement_enabled;
