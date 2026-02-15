@@ -7,12 +7,14 @@ use App\Events\Training\FlagAddedToWaitingList;
 use App\Events\Training\WaitingListCreated;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Number;
@@ -151,6 +153,19 @@ class WaitingList extends Model
     public function flags()
     {
         return $this->hasMany(WaitingListFlag::class, 'list_id');
+    }
+
+    /**
+     * A WaitingList can be related to many TrainingPositions.
+     */
+    public function trainingPositions(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            TrainingPosition::class,
+            'training_position_waiting_list',
+            'waiting_list_id',
+            'training_position_id'
+        )->withTimestamps();
     }
 
     /**
