@@ -3,7 +3,7 @@
 namespace App\Filament\Training\Pages\Exam;
 
 use App\Filament\Training\Pages\Exam\Widgets\ExamOverview;
-use App\Repositories\Cts\ExamResultRepository;
+use App\Services\Training\ExamHistoryService;
 use Filament\Forms;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\Action;
@@ -38,28 +38,14 @@ class ExamHistory extends Page implements HasTable
 
     public function table(Table $table): Table
     {
-        $userPermissionsTruthTable = [
-            'obs' => auth()->user()->can('training.exams.conduct.obs'),
-            'twr' => auth()->user()->can('training.exams.conduct.twr'),
-            'app' => auth()->user()->can('training.exams.conduct.app'),
-            'ctr' => auth()->user()->can('training.exams.conduct.ctr'),
-        ];
+        $examHistoryService = app(ExamHistoryService::class);
+        $user = auth()->user();
 
-        $typesToShow = collect($userPermissionsTruthTable)->filter(fn ($value) => $value)->keys();
-
-        $examResultRepository = app(ExamResultRepository::class);
-        $query = $examResultRepository->getExamHistoryQueryForLevels($typesToShow);
-
-        return $table->query($query)->columns([
+        return $table->query($examHistoryService->getExamHistoryQuery($user))->columns([
             TextColumn::make('student.account.id')->label('CID')->searchable(),
             TextColumn::make('student.account.name')->label('Name'),
             TextColumn::make('examBooking.exam')->label('Exam'),
-            TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => match ($state) {
-                'Passed' => 'success',
-                'Failed' => 'danger',
-                'Incomplete' => 'warning',
-                default => 'gray',
-            })->label('Result'),
+            TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => $examHistoryService->getResultBadgeColor($state))->label('Result'),
             TextColumn::make('examBooking.position_1')->label('Position'),
             TextColumn::make('examBooking.start_date')->label('Exam date'),
             TextColumn::make('date')->label('Report filed'),
@@ -71,15 +57,7 @@ class ExamHistory extends Page implements HasTable
                 Filter::make('exam_date')->form([
                     Forms\Components\DatePicker::make('exam_date_from')->label('From'),
                     Forms\Components\DatePicker::make('exam_date_to')->label('To'),
-                ])->query(function ($query, array $data) {
-                    return $query
-                        ->when($data['exam_date_from'], fn ($query, $date) => $query->whereHas('examBooking', function ($q) use ($date) {
-                            $q->whereDate('taken_date', '>=', $date);
-                        }))
-                        ->when($data['exam_date_to'], fn ($query, $date) => $query->whereHas('examBooking', function ($q) use ($date) {
-                            $q->whereDate('taken_date', '<=', $date);
-                        }));
-                })->label('Exam date'),
+                ])->query(fn ($query, array $data) => $examHistoryService->applyExamDateFilter($query, $data))->label('Exam date'),
                 Filter::make('position')->form([
                     Forms\Components\Select::make('position')
                         ->options([
@@ -90,34 +68,11 @@ class ExamHistory extends Page implements HasTable
                         ])
                         ->multiple()
                         ->label('Position'),
-                ])->query(function ($query, array $data) {
-                    return $query
-                        ->when($data['position'], fn ($query, $positions) => $query->whereHas('examBooking', function ($q) use ($positions) {
-                            $q->where(function ($subQuery) use ($positions) {
-                                foreach ($positions as $position) {
-                                    $subQuery->orWhere('position_1', 'LIKE', "%{$position}%");
-                                }
-                            });
-                        }));
-                })->label('Position'),
+                ])->query(fn ($query, array $data) => $examHistoryService->applyPositionFilter($query, $data))->label('Position'),
                 Filter::make('conducted_by_me')->form([
                     Forms\Components\Checkbox::make('conducted_by_me')
                         ->label('Show exams I conducted'),
-                ])->query(function ($query, array $data) {
-                    if ($data['conducted_by_me']) {
-                        $userCid = auth()->user()->id;
-
-                        return $query->whereHas('examBooking.examiners', function ($q) use ($userCid) {
-                            $q->where(function ($subQuery) use ($userCid) {
-                                $subQuery->whereHas('primaryExaminer', fn ($sq) => $sq->where('cid', $userCid))
-                                    ->orWhereHas('secondaryExaminer', fn ($sq) => $sq->where('cid', $userCid))
-                                    ->orWhereHas('traineeExaminer', fn ($sq) => $sq->where('cid', $userCid));
-                            });
-                        });
-                    }
-
-                    return $query;
-                })->label('Conducted by me'),
+                ])->query(fn ($query, array $data) => $examHistoryService->applyConductedByMeFilter($query, $data, $user->id))->label('Conducted by me'),
             ]);
     }
 }
