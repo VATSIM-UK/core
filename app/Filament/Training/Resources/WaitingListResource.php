@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Resources;
 
 use App\Filament\Training\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -40,6 +41,14 @@ class WaitingListResource extends Resource
 
                 Section::make('Additional Settings')
                     ->schema([
+                        Select::make('trainingPositions')
+                            ->label('Training Positions')
+                            ->helperText('Link this waiting list to one or more training positions.')
+                            ->relationship('trainingPositions', 'id')
+                            ->multiple()
+                            ->preload()
+                            ->getOptionLabelFromRecordUsing(fn (TrainingPosition $record) => $record->position?->callsign ?? "Position #{$record->id}"),
+
                         Toggle::make('feature_toggles.check_atc_hours')
                             ->label('Check ATC Hours')
                             ->default(true),
