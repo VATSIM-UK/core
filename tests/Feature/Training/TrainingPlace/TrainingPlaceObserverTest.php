@@ -52,9 +52,9 @@ class TrainingPlaceObserverTest extends TestCase
     #[Test]
     public function it_assigns_mentoring_permissions_for_multiple_cts_positions(): void
     {
-        // Arrange: Create multiple CTS positions with unique callsigns
-        $ctsPosition1 = CtsPosition::factory()->create(['callsign' => 'EGLL_TWR']);
-        $ctsPosition2 = CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
+        // Arrange: Create multiple CTS positions
+        $ctsPosition1 = CtsPosition::factory()->create(['callsign' => 'EGKK_TWR']);
+        $ctsPosition2 = CtsPosition::factory()->create(['callsign' => 'EGLL_TWR']);
 
         $trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => [$ctsPosition1->callsign, $ctsPosition2->callsign],
@@ -92,7 +92,7 @@ class TrainingPlaceObserverTest extends TestCase
     public function it_handles_training_place_creation_when_student_has_no_cts_member(): void
     {
         // Arrange: Create data without a CTS member
-        $ctsPosition = CtsPosition::factory()->create();
+        $ctsPosition = CtsPosition::factory()->create(['callsign' => 'EGKK_TWR']);
         $trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => [$ctsPosition->callsign],
         ]);
