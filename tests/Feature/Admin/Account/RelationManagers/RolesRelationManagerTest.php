@@ -16,18 +16,22 @@ class RolesRelationManagerTest extends BaseAdminTestCase
     use RefreshDatabase;
 
     private DelegateRoleManagementService $service;
+
     private Account $targetAccount;
+
     private Role $role1;
+
     private Role $role2;
+
     private Role $role3;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->service = new DelegateRoleManagementService();
+        $this->service = new DelegateRoleManagementService;
         $this->targetAccount = Account::factory()->create();
-        
+
         $this->role1 = Role::create(['name' => 'Role 1', 'guard_name' => 'web']);
         $this->role2 = Role::create(['name' => 'Role 2', 'guard_name' => 'web']);
         $this->role3 = Role::create(['name' => 'Role 3', 'guard_name' => 'web']);

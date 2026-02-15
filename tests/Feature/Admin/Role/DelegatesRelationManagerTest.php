@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\Admin\Role\RelationManagers;
 
-use App\Filament\Admin\Resources\RoleResource;
 use App\Filament\Admin\Resources\RoleResource\Pages\EditRole;
 use App\Filament\Admin\Resources\RoleResource\RelationManagers\DelegatesRelationManager;
 use App\Models\Mship\Account;
 use App\Services\Roles\DelegateRoleManagementService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
@@ -18,14 +16,16 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
     use RefreshDatabase;
 
     private Role $role;
+
     private DelegateRoleManagementService $service;
+
     private Account $delegateAccount;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->service = new DelegateRoleManagementService();
+        $this->service = new DelegateRoleManagementService;
         $this->role = Role::create(['name' => 'Test Role', 'guard_name' => 'web']);
         $this->delegateAccount = Account::factory()->create();
     }
@@ -151,7 +151,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
 
         $this->service->createDelegatePermission($this->role);
         $permissionName = $this->service->delegatePermissionName($this->role);
-        
+
         $delegate1 = Account::factory()->create();
         $delegate2 = Account::factory()->create();
 
