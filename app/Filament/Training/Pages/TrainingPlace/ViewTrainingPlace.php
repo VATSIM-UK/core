@@ -25,6 +25,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Auth;
 
 class ViewTrainingPlace extends Page implements HasInfolists, HasTable
@@ -54,6 +55,11 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         }
 
         $this->trainingPlace = TrainingPlace::where('id', $this->trainingPlaceId)->with('waitingListAccount', 'trainingPosition')->firstOrFail();
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return "View Training Place - {$this->trainingPlace->waitingListAccount->account->name}";
     }
 
     protected function getHeaderWidgets(): array
