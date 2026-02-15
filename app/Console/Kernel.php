@@ -81,6 +81,11 @@ class Kernel extends ConsoleKernel
             ->dailyAt('07:30')
             ->graceTimeInMinutes(15);
 
+        // INTENTIONALLY DISABLED FOR NOW WHILST UNDER DEVELOPMENT
+        // $schedule->command('training-places:check-availability')
+        //     ->dailyAt('10:00')
+        //     ->graceTimeInMinutes(15);
+
         // === By Quarter === //
         $schedule->command('roster:update', [
             Carbon::now()->subMonths(3),
