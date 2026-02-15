@@ -43,7 +43,7 @@ class EditRole extends BaseEditRecordPage
                     ->visible(fn (Role $record) => ! $this->delegatePermissionExists($record)),
 
                 Actions\Action::make('assign_delegation_to_user')
-                    ->label('Delegate Role')
+                    ->label('Add Delegate')
                     ->icon('heroicon-o-user-plus')
                     ->color('success')
                     ->form([
