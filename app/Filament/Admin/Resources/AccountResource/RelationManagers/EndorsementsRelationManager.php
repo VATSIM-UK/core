@@ -54,7 +54,7 @@ class EndorsementsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitle(fn ($record) => "{$record->endorsable?->name} endorsement")
+            ->recordTitle(fn ($record) => "{$record->endorsable->name} endorsement")
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')->label('Granted')->date(),
                 Tables\Columns\TextColumn::make('expires_at')->label('Expires')->date()->default(''),
@@ -68,7 +68,7 @@ class EndorsementsRelationManager extends RelationManager
             ->groups([
                 Group::make('endorsable_id')
                     ->label('Name')
-                    ->getTitleFromRecordUsing(fn ($record): string => "$record->type - {$record->endorsable?->name}")
+                    ->getTitleFromRecordUsing(fn ($record): string => "$record->type - {$record->endorsable->name}")
                     ->groupQueryUsing(fn (\Illuminate\Database\Query\Builder $query) => $query->groupByRaw("CONCAT(endorsable_type,'::',endorsable_id)"))
                     ->getKeyFromRecordUsing(fn (Endorsement $record): string => "$record->endorsable_type::$record->endorsable_id")
                     ->titlePrefixedWithLabel(false),
