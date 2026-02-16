@@ -68,6 +68,11 @@ class WaitingListPolicy
         return WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList);
     }
 
+    public function trainingPlacesManualSetup(Account $account, WaitingList $waitingList)
+    {
+        return $account->hasAnyPermission('training-places.manual-setup');
+    }
+
     /**
      * Returns if the account has permission for either the ID or department type for the given permission
      *
