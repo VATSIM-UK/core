@@ -72,7 +72,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
             ->call('mountAction', 'create_permission')
             ->call('callMountedAction');
 
-        $this->assertDatabaseHas('mship_permission', ['name' => $expectedPermissionName, 'guard_name' => 'web'], connection: 'cts');
+        $this->assertDatabaseHas('mship_permission', ['name' => $expectedPermissionName, 'guard_name' => 'web']);
     }
 
     public function test_create_permission_action_hidden_when_permission_already_exists()
