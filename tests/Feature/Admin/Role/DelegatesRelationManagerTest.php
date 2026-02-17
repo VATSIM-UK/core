@@ -53,7 +53,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
                 'ownerRecord' => $this->role,
                 'pageClass' => EditRole::class,
             ])
-            ->assertActionHidden('create_permission');
+            ->assertDontSee('Create Delegate Permission');
     }
 
     public function test_can_create_delegate_permission_with_permission()
@@ -68,8 +68,9 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
                 'ownerRecord' => $this->role,
                 'pageClass' => EditRole::class,
             ])
-            ->assertActionVisible('create_permission')
-            ->callAction('create_permission');
+            ->assertSee('Create Delegate Permission')
+            ->call('mountAction', 'create_permission')
+            ->call('callMountedAction');
 
         $this->assertDatabaseHas('permissions', ['name' => $expectedPermissionName, 'guard_name' => 'web']);
     }
@@ -86,7 +87,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
                 'ownerRecord' => $this->role,
                 'pageClass' => EditRole::class,
             ])
-            ->assertActionHidden('create_permission');
+            ->assertDontSee('Create Delegate Permission');
     }
 
     public function test_cant_add_delegate_without_permission()
@@ -99,7 +100,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
                 'ownerRecord' => $this->role,
                 'pageClass' => EditRole::class,
             ])
-            ->assertActionHidden('add_delegate');
+            ->assertTableActionHidden('add_delegate');
     }
 
     public function test_can_add_delegate_with_permission()
@@ -115,8 +116,8 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
                 'ownerRecord' => $this->role,
                 'pageClass' => EditRole::class,
             ])
-            ->assertActionVisible('add_delegate')
-            ->callAction('add_delegate', data: [
+            ->assertTableActionVisible('add_delegate')
+            ->callTableAction('add_delegate', data: [
                 'account_id' => $this->delegateAccount->id,
             ]);
 
@@ -166,7 +167,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
                 'ownerRecord' => $this->role,
                 'pageClass' => EditRole::class,
             ])
-            ->callAction('remove_delegate_permission');
+            ->callTableAction('remove_delegate_permission');
 
         $this->assertFalse($delegate1->fresh()->hasPermissionTo($permissionName));
         $this->assertFalse($delegate2->fresh()->hasPermissionTo($permissionName));
