@@ -39,6 +39,8 @@ class RolesRelationManagerTest extends BaseAdminTestCase
 
     public function test_wildcard_user_can_see_all_roles()
     {
+        $this->targetAccount->syncRoles([]);
+        
         $this->user->givePermissionTo('account.view-insensitive.*');
         $this->user->givePermissionTo('account.edit-roles.*');
 

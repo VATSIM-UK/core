@@ -72,7 +72,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
             ->call('mountAction', 'create_permission')
             ->call('callMountedAction');
 
-        $this->assertDatabaseHas('permissions', ['name' => $expectedPermissionName, 'guard_name' => 'web']);
+        $this->assertDatabaseHas('mship_permission', ['name' => $expectedPermissionName, 'guard_name' => 'web'], connection: 'cts');
     }
 
     public function test_create_permission_action_hidden_when_permission_already_exists()
@@ -167,7 +167,8 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
                 'ownerRecord' => $this->role,
                 'pageClass' => EditRole::class,
             ])
-            ->callTableAction('remove_delegate_permission');
+            ->call('mountAction', 'remove_delegate_permission')
+            ->call('callMountedAction');
 
         $this->assertFalse($delegate1->fresh()->hasPermissionTo($permissionName));
         $this->assertFalse($delegate2->fresh()->hasPermissionTo($permissionName));
