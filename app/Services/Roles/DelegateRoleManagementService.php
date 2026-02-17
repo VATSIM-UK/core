@@ -46,6 +46,7 @@ class DelegateRoleManagementService
 
         $permission->delete();
     }
+
     public function revokeDelegate(Account $account, Role $role): void
     {
         $permissionName = $this->delegatePermissionName($role);
