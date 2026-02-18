@@ -28,23 +28,7 @@ class DelegateRoleManagementService
 
     public function deleteDelegatePermission(Role $role): void
     {
-        $permission = Permission::where('name', $this->delegatePermissionName($role))->first();
-
-        if (! $permission) {
-            return;
-        }
-
-        $accounts = Account::whereHas('permissions', function ($q) use ($permission) {
-            $q->where('name', $permission->name);
-        })->get();
-
-        foreach ($accounts as $account) {
-            $account->revokePermissionTo($permission);
-        }
-
-        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
-
-        $permission->delete();
+        Permission::where('name', $this->delegatePermissionName($role))->delete();
     }
 
     public function revokeDelegate(Account $account, Role $role): void
