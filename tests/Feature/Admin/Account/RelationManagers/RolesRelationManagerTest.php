@@ -77,4 +77,53 @@ class RolesRelationManagerTest extends BaseAdminTestCase
             ->assertCanNotSeeTableRecords([$this->role2])
             ->assertCountTableRecords(1);
     }
+
+    public function test_wildcard_user_can_attach_any_role()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.edit-roles.*');
+
+        $this->service->createDelegatePermission($this->role1);
+        $this->service->createDelegatePermission($this->role2);
+
+        Livewire::actingAs($this->user)
+            ->test(RolesRelationManager::class, [
+                'ownerRecord' => $this->targetAccount,
+                'pageClass' => ViewAccount::class,
+            ])
+            ->callTableAction('attach', data: ['recordId' => $this->role1->id])
+            ->assertHasNoTableActionErrors();
+
+        $this->assertTrue($this->user->can($this->service->delegatePermissionName($this->role1)));
+    }
+
+    public function test_delegate_user_can_only_attach_permitted_roles()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+
+        $this->service->createDelegatePermission($this->role1);
+        $this->service->createDelegatePermission($this->role2);
+
+        $this->user->givePermissionTo($this->service->delegatePermissionName($this->role1));
+
+        Livewire::actingAs($this->user)
+            ->test(RolesRelationManager::class, [
+                'ownerRecord' => $this->targetAccount,
+                'pageClass' => ViewAccount::class,
+            ])
+            ->callTableAction('attach', data: ['recordId' => $this->role1->id])
+            ->assertHasNoTableActionErrors();
+
+        $this->assertTrue($this->user->can($this->service->delegatePermissionName($this->role1)));
+
+        Livewire::actingAs($this->user)
+            ->test(RolesRelationManager::class, [
+                'ownerRecord' => $this->targetAccount,
+                'pageClass' => ViewAccount::class,
+            ])
+            ->callTableAction('attach', data: ['recordId' => $this->role2->id])
+            ->assertHasTableActionErrors(['recordId']);
+
+        $this->assertTrue($this->user->can($this->service->delegatePermissionName($this->role2)));
+    }
 }

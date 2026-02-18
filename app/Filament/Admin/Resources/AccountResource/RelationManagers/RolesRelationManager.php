@@ -31,24 +31,19 @@ class RolesRelationManager extends RelationManager
         return $table
             ->modifyQueryUsing(function (Builder $query) {
                 $service = new DelegateRoleManagementService;
-                $user = auth()->user();
 
-                if ($user->can('account.edit-roles.*')) {
-                    return $query;
-                }
-
-                $manageableRoleIds = Role::all()->filter(function ($role) use ($service, $user) {
-                    return $service->delegatePermissionExists($role)
-                        && $user->hasPermissionTo($service->delegatePermissionName($role));
-                })->pluck('id');
-
-                return $query->whereIn('id', $manageableRoleIds);
+                return $service->getManageableRolesQuery($query, auth()->user());
             })
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()->preloadRecordSelect()->label('Add / Attach')->color('primary'),
+                Tables\Actions\AttachAction::make()->preloadRecordSelect()->label('Add / Attach')->color('primary')
+                    ->recordSelectOptionsQuery(function (Builder $query) {
+                        $service = new DelegateRoleManagementService;
+
+                        return $service->getManageableRolesQuery($query, auth()->user());
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()->resource(RoleResource::class),
