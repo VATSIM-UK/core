@@ -37,7 +37,7 @@ Alongside the guidance in other sections of this syllabus, mentors and instructo
 
 ## Section 3 | Theoretical Knowledge Syllabus
 
-The following list contains the theoretical content covered in the [S1 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=15) e-learning course.
+The following list contains the theoretical content covered in the [S1 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=67) e-learning course.
 
 - Introduction to VATSIM
     - VATSIM organisational structure, rules, and regulations
@@ -175,7 +175,7 @@ The student should be able to:
 
 - Use the phonetic alphabet where appropriate
 - Correctly use the readability scale (1-5)
-- Issue instructions with phraseology detailed in the [S1 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=15) e-learning course and [CAP413](https://www.caa.co.uk/our-work/publications/documents/content/cap-413), including:
+- Issue instructions with phraseology detailed in the [S1 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=67) e-learning course and [CAP413](https://www.caa.co.uk/our-work/publications/documents/content/cap-413), including:
     - Taxi instructions
     - Level instructions
     - Heading instructions
@@ -217,11 +217,11 @@ The student should be able to:
 
 The student should be able to:
 
-- Describe in detail the areas of responsibilities (as per the [S1 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=15) e-learning course and [CAP413](https://www.caa.co.uk/our-work/publications/documents/content/cap-413)) of:
+- Describe in detail the areas of responsibilities (as per the [S1 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=67) e-learning course and [CAP413](https://www.caa.co.uk/our-work/publications/documents/content/cap-413)) of:
     - Ground Movement Planner (GMP)
     - Ground Movement Control (GMC)
     - Air Control (AIR)
-- Describe in basic terms the areas of responsibilities (as per the [S1 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=15) e-learning course and [CAP413](https://www.caa.co.uk/our-work/publications/documents/content/cap-413)) of:
+- Describe in basic terms the areas of responsibilities (as per the [S1 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=67) e-learning course and [CAP413](https://www.caa.co.uk/our-work/publications/documents/content/cap-413)) of:
     - Approach and Intermediate/Final Director Controller (APC and INT/FIN)
     - Terminal Control (TC)
     - Area Control (AC)
@@ -314,7 +314,7 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 | Environment | SweatBox |
 | Duration | 1 - 1.5 hours |
 | Objectives | 1. Connect to SweatBox</br>2. Discuss the roles and aeras of responsibilities of the GMP, GMC, and AIR controllers</br>3. Select a runway for use</br>4. Talk though the aerodrome layout and 'standard' taxi routings</br>5. Practise coordinating an initial logon to the network</br>6. Generate an ATIS</br>7. Explain the use of status blocks and scratch pads. Give a brief introduction to how scratchpads can be used, but emphasiese that the student can use them however they want</br>8. Explain and practise issing IFR clearances and mandatory readback items</br>9. Explain and practise using push-back and start-up instructions</br>10. Explain and practise issuing taxi instructions</br>11. Define and practise using the correct handoff procedure |
-| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=15)</br>[Aeronautical Chart Symbols](https://www.aurora.nats.co.uk/htmlAIP/Publications/2021-01-28-AIRAC/html/eAIP/EG-GEN-2.3-en-GB.html#GEN-2.3) |
+| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=67)</br>[Aeronautical Chart Symbols](https://www.aurora.nats.co.uk/htmlAIP/Publications/2021-01-28-AIRAC/html/eAIP/EG-GEN-2.3-en-GB.html#GEN-2.3) |
 
 ### 5.3 Lesson 2
 
@@ -323,7 +323,7 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 | Environment | SweatBox |
 | Duration | 1 - 1.5 hours |
 | Objectives | Navigate to the eAIP and discuss the different chart types and their features.</br>2. Introduce basic altimetry - definitions of QNH and QFE and where they are used</br>3. Discuss the basic area of responsibilities of adjacent control positions (AIR, APC, FIN, INT, TC, and AC), and what they do, how they appear in EuroScope, and examples of when you might co-ordinate with them</br>4. Highlight any lateral and vertical flight plan restrictions specific to the student's training aerodrome</br>5. Recognise errors in flight plans such as initial routings for a SID, RFL for direction of flight, RFL for standing agreements</br>6. Explain and practise using conditional clearances</br>7. Introduce VFR clearances for the circuit and CTR entry/exit</br>8. Consolidate objectives from previous lessons |
-| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=15)</br>[Standard Route Document (SRD)](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/)</br>[UKCP SRD search](https://ukcp.vatsim.uk/srd-routes)</br>[eAIP](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/) |
+| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=67)</br>[Standard Route Document (SRD)](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/)</br>[UKCP SRD search](https://ukcp.vatsim.uk/srd-routes)</br>[eAIP](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/) |
 
 ### 5.4 Lesson 3
 
@@ -332,7 +332,7 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 | Environment | SweatBox |
 | Duration | 1 - 1.5 hours |
 | Objectives | 1. Introduce low visibility procedures and talk though the local procedures associated with them</br>2. Introduce METARs and TAFs, and practise decoding simple examples</br>3. Introduce non-standard IFR clearances (airway departures, vectored departure) and practise issuing them.</br>4. Introduce the use of the command line - aliases, private messaging, function keys</br>5. Consolidate objectives from previous lessons |
-| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=15)</br>[Standard Route Document (SRD)](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/)</br>[UKCP SRD search](https://ukcp.vatsim.uk/srd-routes)</br>[eAIP](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/)</br>[METAR bank](https://docs.google.com/spreadsheets/d/1WfveAfGmAg_qFpZjx5k55XKTnVqtxlJTN_Vf9XwPtNM/edit?usp=sharing) |
+| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=67)</br>[Standard Route Document (SRD)](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/)</br>[UKCP SRD search](https://ukcp.vatsim.uk/srd-routes)</br>[eAIP](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/)</br>[METAR bank](https://docs.google.com/spreadsheets/d/1WfveAfGmAg_qFpZjx5k55XKTnVqtxlJTN_Vf9XwPtNM/edit?usp=sharing) |
 
 ### 5.5 Lesson 4
 
@@ -341,6 +341,6 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 | Environment | SweatBox |
 | Duration | 1 - 1.5 hours |
 | Objectives | 1. Discuss the purpose of flow management techniques including the use of CTOTs and MDIs</br>2. Discuss the benefits of introducing flow control</br>3. Introduce the use of flow management techniques during high traffic scenarios</br>4. Review the course aims and consolidate knowledge in preparation for the exam</br>5. In most situations forward to exam, even if you are unsure as to whether they will pass (if you think they will more likely fail then do one further consolidation session) |
-| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=15)</br>[Aeronautical Chart Symbols](https://www.aurora.nats.co.uk/htmlAIP/Publications/2021-01-28-AIRAC/html/eAIP/EG-GEN-2.3-en-GB.html#GEN-2.3)</br>[Standard Route Document (SRD)](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/)</br>[UKCP SRD search](https://ukcp.vatsim.uk/srd-routes)</br>[eAIP](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/) |
+| Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=67)</br>[Aeronautical Chart Symbols](https://www.aurora.nats.co.uk/htmlAIP/Publications/2021-01-28-AIRAC/html/eAIP/EG-GEN-2.3-en-GB.html#GEN-2.3)</br>[Standard Route Document (SRD)](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/digital-datasets/)</br>[UKCP SRD search](https://ukcp.vatsim.uk/srd-routes)</br>[eAIP](https://nats-uk.ead-it.com/cms-nats/opencms/en/Publications/AIP/) |
 
 </x-markdown>

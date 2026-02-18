@@ -17,7 +17,7 @@ This may be once per month however we may delay this subject to the availability
 To be eligible for an invite for the seminar, you MUST complete the [OBS > S1 CTS Theory Exam](https://cts.vatsim.uk/theory/setup.php).
 <img class="img-responsive center-block" src="/images/tgnc_theory.png" alt="TGNC ScreenShot 3">
 
-The content to assist with this exam can be found on our Moodle Platform and the [S1 Aerodrome Control Moodle Course](https://moodle.vatsim.uk/course/view.php?id=15).
+The content to assist with this exam can be found on our Moodle Platform and the [S1 Aerodrome Control Moodle Course](https://moodle.vatsim.uk/course/view.php?id=67).
 
 ### Step 2 - Being invited to a group session.
 In order to be invited to an OBS_PT1 Group Session you must have completed the CTS Observer to Student 1 Theory Exam.
