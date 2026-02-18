@@ -11,6 +11,14 @@ class PolicyPagesController extends \App\Http\Controllers\BaseController
         $this->addBreadcrumb('Policy', '#');
     }
 
+    public function viewLanding()
+    {
+        $this->setTitle('Policy');
+        $this->addBreadcrumb('Policy', route('site.policy.landing'));
+
+        return $this->viewMake('site.policy.landing');
+    }
+
     public function viewDivision()
     {
         $this->setTitle('Division Policy');

@@ -54,6 +54,7 @@ Route::group([
         'as' => 'policy.',
         'prefix' => 'policy',
     ], function () {
+        Route::get('/')->uses('PolicyPagesController@viewLanding')->name('landing');
         Route::get('/division-policy')->uses('PolicyPagesController@viewDivision')->name('division');
         Route::get('/atc-training-policy')->uses('PolicyPagesController@viewATCTraining')->name('atc-training');
         Route::get('/visiting-and-transferring-policy')->uses('PolicyPagesController@viewVisitTransfer')->name('visiting-and-transferring');
