@@ -7,6 +7,7 @@ use App\Filament\Training\Resources\TrainingPlaceResource\Pages;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -24,6 +25,28 @@ class TrainingPlaceResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $categoryGroup = Group::make('trainingPosition.category')
+            ->label('Category')
+            ->titlePrefixedWithLabel(false)
+            ->collapsible()
+            ->getTitleFromRecordUsing(
+                fn (TrainingPlace $record): string => filled($record->trainingPosition?->category)
+                    ? $record->trainingPosition->category
+                    : 'Uncategorised'
+            )
+            ->getKeyFromRecordUsing(
+                fn (TrainingPlace $record): string => filled($record->trainingPosition?->category)
+                    ? $record->trainingPosition->category
+                    : '__uncategorised__'
+            )
+            ->scopeQueryByKeyUsing(function (Builder $query, string $key): Builder {
+                if ($key === '__uncategorised__') {
+                    return $query->whereHas('trainingPosition', fn (Builder $query) => $query->whereNull('category')->orWhere('category', ''));
+                }
+
+                return $query->whereHas('trainingPosition', fn (Builder $query) => $query->where('category', $key));
+            });
+
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query
                 ->with([
@@ -32,6 +55,8 @@ class TrainingPlaceResource extends Resource
                     'trainingPosition.position',
                 ])
             )
+            ->groups([$categoryGroup])
+            ->defaultGroup($categoryGroup)
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
