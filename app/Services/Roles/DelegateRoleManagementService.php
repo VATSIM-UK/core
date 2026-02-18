@@ -3,9 +3,9 @@
 namespace App\Services\Roles;
 
 use App\Models\Mship\Account;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Illuminate\Database\Eloquent\Builder;
 
 class DelegateRoleManagementService
 {
@@ -54,8 +54,8 @@ class DelegateRoleManagementService
         }
 
         $manageableRoleIds = Role::all()->filter(function ($role) use ($user) {
-        return $this->delegatePermissionExists($role)
-            && $user->hasPermissionTo($this->delegatePermissionName($role));
+            return $this->delegatePermissionExists($role)
+                && $user->hasPermissionTo($this->delegatePermissionName($role));
         })->pluck('id');
 
         return $query->whereIn('id', $manageableRoleIds);
