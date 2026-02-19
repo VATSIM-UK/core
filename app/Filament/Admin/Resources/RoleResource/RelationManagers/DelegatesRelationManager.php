@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\RoleResource\RelationManagers;
 
 use App\Models\Mship\Account;
+use App\Filament\Admin\Forms\Components\AccountSelect;
 use App\Services\Roles\DelegateRoleManagementService;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
@@ -47,23 +48,7 @@ class DelegatesRelationManager extends RelationManager
                     ->icon('heroicon-o-user-plus')
                     ->color('success')
                     ->form([
-                        Select::make('account_id')
-                            ->label('Account')
-                            ->required()
-                            ->searchable()
-                            ->getSearchResultsUsing(function (string $search) {
-                                $accounts = Account::query()
-                                    ->where('id', 'like', "%{$search}%")
-                                    ->orWhere('name_first', 'like', "%{$search}%")
-                                    ->orWhere('name_last', 'like', "%{$search}%")
-                                    ->limit(50)
-                                    ->get();
-
-                                return $accounts->mapWithKeys(fn ($account) => [
-                                    $account->id => $account->name_first.' '.$account->name_last.' - '.$account->id,
-                                ])->toArray();
-                            })
-                            ->getOptionLabelFromRecordUsing(fn ($record) => $record),
+                        AccountSelect::make('users')->model($this->getOwnerRecord()),
                     ])
                     ->modalHeading(fn () => "Delegate '{$this->getOwnerRecord()->name}'")
                     ->modalDescription('Select a member to grant permission to manage this role.')
@@ -71,7 +56,7 @@ class DelegatesRelationManager extends RelationManager
                     ->action(function (array $data) use ($service) {
                         $role = $this->getOwnerRecord();
 
-                        $account = Account::where('id', $data['account_id'])->first();
+                        $account = Account::where('id', $data['users_id'])->first();
                         $account->givePermissionTo($service->delegatePermissionName($role));
 
                         Notification::make()

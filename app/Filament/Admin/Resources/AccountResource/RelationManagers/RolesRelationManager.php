@@ -11,6 +11,7 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Spatie\Permission\Models\Role;
 
 class RolesRelationManager extends RelationManager
 {
@@ -28,11 +29,6 @@ class RolesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query) {
-                $service = new DelegateRoleManagementService;
-
-                return $service->getManageableRolesQuery($query, auth()->user());
-            })
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
             ])
@@ -42,6 +38,20 @@ class RolesRelationManager extends RelationManager
                         $service = new DelegateRoleManagementService;
 
                         return $service->getManageableRolesQuery($query, auth()->user());
+                    })
+                    ->before(function (Tables\Actions\AttachAction $action, array $data) {
+                        $service = new DelegateRoleManagementService;
+                        $role = Role::find($data['recordId']);
+
+                        if (! auth()->user()->can($service->delegatePermissionName($role))) {
+                            Notification::make()
+                                ->danger()
+                                ->title('Permission denied')
+                                ->body('You do not have permission to assign this role.')
+                                ->send();
+
+                            $action->cancel();
+                        }
                     }),
             ])
             ->actions([
@@ -65,6 +75,12 @@ class RolesRelationManager extends RelationManager
                             ->success()
                             ->send();
                     }),
-            ]);
+            ])
+            ->description('Only roles you have been delegated permission to manage are shown. There may be additional roles assigned to this account that are not visible to you.')
+            ->modifyQueryUsing(function (Builder $query) {
+                $service = new DelegateRoleManagementService;
+
+                return $service->getManageableRolesQuery($query, auth()->user());
+            });
     }
 }

@@ -69,8 +69,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
                 'pageClass' => EditRole::class,
             ])
             ->assertSee('Create Delegate Permission')
-            ->call('mountAction', 'create_permission')
-            ->call('callMountedAction');
+            ->callTableAction('create_permission');
 
         $this->assertDatabaseHas('mship_permission', ['name' => $expectedPermissionName, 'guard_name' => 'web']);
     }
