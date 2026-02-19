@@ -47,7 +47,15 @@ class DelegatesRelationManager extends RelationManager
                     ->icon('heroicon-o-user-plus')
                     ->color('success')
                     ->form([
-                        AccountSelect::make('users')->model($this->getOwnerRecord()),
+                        AccountSelect::make('users')
+                            ->label('Member')
+                            ->model($this->getOwnerRecord())
+                            ->options(options: function () {
+                                return Account::all()
+                                    ->filter(fn ($account) => $account->can('admin.access'))
+                                    ->mapWithKeys(fn ($account) => [$account->id => "{$account->name} ({$account->id})"]);
+                                 })
+                            ->required()
                     ])
                     ->modalHeading(fn () => "Delegate '{$this->getOwnerRecord()->name}'")
                     ->modalDescription('Select a member to grant permission to manage this role.')
