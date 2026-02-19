@@ -54,8 +54,8 @@ class DelegatesRelationManager extends RelationManager
                                 return Account::all()
                                     ->filter(fn ($account) => $account->can('admin.access'))
                                     ->mapWithKeys(fn ($account) => [$account->id => "{$account->name} ({$account->id})"]);
-                                 })
-                            ->required()
+                            })
+                            ->required(),
                     ])
                     ->modalHeading(fn () => "Delegate '{$this->getOwnerRecord()->name}'")
                     ->modalDescription('Select a member to grant permission to manage this role.')

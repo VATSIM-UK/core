@@ -117,7 +117,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
             ])
             ->assertTableActionVisible('add_delegate')
             ->callTableAction('add_delegate', data: [
-                'account_id' => $this->delegateAccount->id,
+                'users_id' => $this->delegateAccount->id,
             ]);
 
         $this->assertTrue($this->delegateAccount->fresh()->hasPermissionTo($expectedPermissionName));

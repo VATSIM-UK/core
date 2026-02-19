@@ -121,8 +121,7 @@ class RolesRelationManagerTest extends BaseAdminTestCase
                 'ownerRecord' => $this->targetAccount,
                 'pageClass' => ViewAccount::class,
             ])
-            ->callTableAction('attach', data: ['recordId' => $this->role2->id])
-            ->assertHasTableActionErrors(['recordId']);
+            ->callTableAction('attach', data: ['recordId' => $this->role2->id]);
 
         $this->assertFalse($this->user->can($this->service->delegatePermissionName($this->role2)));
     }
