@@ -26,6 +26,6 @@ class AccountSelect extends Select
 
     private function setRelationship(): static
     {
-        return $this->resourceRelationship(AccountResource::class, $this->relationshipName, 'first_name');
+        return $this->resourceRelationship(AccountResource::class, $this->relationshipName, 'first_name', $this->queryModifier);
     }
 }
