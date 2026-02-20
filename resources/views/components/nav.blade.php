@@ -93,7 +93,6 @@
                                     <ul>
                                         <li><a href="{{ route('site.staff') }}">Staff</a></li>
                                         <li><a href="https://community.vatsim.uk/files/downloads/category/9-minutes-reports/">Meeting Minutes</a></li>
-                                        <li><a href="">Policies</a></li> {{-- Link to Policy tab landing page, to be created --}}
                                         <li><a href="https://helpdesk.vatsim.uk/">Contact Us</a></li>
                                     </ul>
                                 </li>
