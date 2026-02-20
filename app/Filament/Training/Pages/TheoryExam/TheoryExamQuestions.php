@@ -64,11 +64,11 @@ class TheoryExamQuestions extends Page implements HasTable
                     ->color($this->level === $level ? 'primary' : 'gray');
             })->toArray();
 
-        $createButton = \Filament\Actions\Action::make('create')
+        $createButton = \Filament\Actions\CreateAction::make('create')
             ->label('Create Question')
             ->form($this->getQuestionFormSchema())
             ->color('success')
-            ->action(function (array $data, $action) {
+            ->using(function (array $data, $action) {
                 TheoryQuestion::create([
                     ...$data,
                     'add_by' => auth()->id(),
@@ -77,7 +77,6 @@ class TheoryExamQuestions extends Page implements HasTable
                     'edit_date' => now(),
                 ]);
 
-                $action->success();
             })
             ->successNotificationTitle('Question created');
 
@@ -149,7 +148,7 @@ class TheoryExamQuestions extends Page implements HasTable
     {
         return [
             Select::make('level')
-                ->options(fn () => collect($this->allowedLevels)->mapWithKeys(fn ($level) => [$level => $level])->toArray())
+                ->options(fn () => collect($this->allowedLevels)->mapWithKeys(fn ($level) => [$level => $level])->toArray())->default($this->level)
                 ->required(),
             TextInput::make('question')->required(),
             TextInput::make('option_1')->required(),
