@@ -264,6 +264,10 @@
                             <td>Developer</td>
                             <td>Max Brokman</td>
                         </tr>
+                        <tr>
+                            <td>Developer</td>
+                            <td>Coby Chapman</td>
+                        </tr>
                     </table>
                 </div>
             </div>
