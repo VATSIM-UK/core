@@ -182,7 +182,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
-                                <td><em>Vacant</em></td>
+                                <td>James Bradford</td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (ENR) & <br />
