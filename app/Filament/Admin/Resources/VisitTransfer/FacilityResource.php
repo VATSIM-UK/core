@@ -2,14 +2,16 @@
 
 namespace App\Filament\Admin\Resources\VisitTransfer;
 
+use App\Enums\QualificationTypeEnum;
 use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages;
+use App\Models\Mship\Qualification;
 use App\Models\VisitTransfer\Facility;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextArea;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -64,9 +66,9 @@ class FacilityResource extends Resource
                                 Action::make('copy')
                                     ->icon('heroicon-m-clipboard')
                                     ->tooltip('Copy')
-                                    ->action(fn ($record, $livewire) => $livewire->js('navigator.clipboard.writeText("'.$record->public_id.'")')
-                                    )
-                            ),
+                                    ->visible(fn ($record) => filled($record?->public_id))
+                                    ->action(fn ($record, $livewire) => $livewire->js('navigator.clipboard.writeText("'.$record?->public_id.'")'))
+                            )->visibleOn('edit'),
                     ]),
                     Select::make('training_team')
                         ->label('Training Team')
@@ -76,8 +78,9 @@ class FacilityResource extends Resource
                             'pilot' => 'Pilot',
                         ])
                         ->default('atc')
-                        ->selectablePlaceholder(false),
-                    TextArea::make('description')
+                        ->selectablePlaceholder(false)
+                        ->live(),
+                    Textarea::make('description')
                         ->label('Description')
                         ->rows(3)
                         ->maxLength(1000)
@@ -129,6 +132,96 @@ class FacilityResource extends Resource
                             ->label('Auto Acceptance')
                             ->helperText('Automatically accept all applicants.')
                             ->required(),
+
+                        Grid::make(2)->reactive()->visible(fn ($get) => $get('training_team') === 'atc')->schema([
+                            Select::make('minimum_atc_qualification_id')
+                                ->label('Minimum ATC Qualification')
+                                ->options(
+                                    Qualification::ofType(QualificationTypeEnum::ATC->value)
+                                        ->orderBy('vatsim')
+                                        ->get()
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                )
+                                ->placeholder('No Minimum')
+                                ->nullable()
+                                ->default(null)
+                                ->reactive(),
+
+                            Select::make('maximum_atc_qualification_id')
+                                ->label('Maximum ATC Qualification')
+                                ->options(
+                                    Qualification::ofType(QualificationTypeEnum::ATC->value)
+                                        ->orderBy('vatsim')
+                                        ->get()
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                )
+                                ->placeholder('No Maximum')
+                                ->nullable()
+                                ->default(null)
+                                ->rules([
+                                    fn (callable $get) => function (string $attribute, $value, $fail) use ($get) {
+                                        $minId = $get('minimum_atc_qualification_id');
+
+                                        if (! $minId || ! $value) {
+                                            return;
+                                        }
+
+                                        $minQual = Qualification::find($minId);
+                                        $maxQual = Qualification::find($value);
+
+                                        if ($maxQual && $minQual && $maxQual->vatsim < $minQual->vatsim) {
+                                            $fail('The Maximum qualification cannot be lower than the Minimum.');
+                                        }
+                                    },
+                                ]),
+                        ]),
+
+                        Grid::make(2)->reactive()->visible(fn ($get) => $get('training_team') === 'pilot')->schema([
+                            Select::make('minimum_pilot_qualification_id')
+                                ->label('Minimum Pilot Qualification')
+                                ->options(
+                                    Qualification::ofType(QualificationTypeEnum::Pilot->value)
+                                        ->orderBy('vatsim')
+                                        ->get()
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                )
+                                ->placeholder('No Minimum')
+                                ->nullable()
+                                ->default(null)
+                                ->reactive(),
+
+                            Select::make('maximum_pilot_qualification_id')
+                                ->label('Maximum Pilot Qualification')
+                                ->options(
+                                    Qualification::ofType(QualificationTypeEnum::Pilot->value)
+                                        ->orderBy('vatsim')
+                                        ->get()
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                )
+                                ->placeholder('No Maximum')
+                                ->nullable()
+                                ->default(null)
+                                ->rules([
+                                    fn (callable $get) => function (string $attribute, $value, $fail) use ($get) {
+                                        $minId = $get('minimum_pilot_qualification_id');
+
+                                        if (! $minId || ! $value) {
+                                            return;
+                                        }
+
+                                        $minQual = Qualification::find($minId);
+                                        $maxQual = Qualification::find($value);
+
+                                        if ($maxQual && $minQual && $maxQual->vatsim < $minQual->vatsim) {
+                                            $fail('The Maximum qualification cannot be lower than the Minimum.');
+                                        }
+                                    },
+                                ]),
+                        ]),
                     ]),
                 ]),
                 Section::make('Notification Emails')

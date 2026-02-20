@@ -12,7 +12,7 @@
                         The UK Controller Plugin (UKCP) is a EuroScope 3.2 plugin that is designed to assist controllers
                         in the UK.<br/>
                         A full feature list can be found by <a
-                                href="https://github.com/VATSIM-UK/uk-controller-plugin/blob/develop/docs/README.md"
+                                href="https://github.com/VATSIM-UK/uk-controller-plugin/blob/main/docs/UserGuide/UserGuide.md"
                                 target="_blank">clicking
                             here</a>.<br/>
                         <br/>
@@ -114,7 +114,7 @@
                                 href="https://github.com/VATSIM-UK/uk-controller-plugin/blob/develop/docs/README.md">full
                             feature list</a>.</p>
 
-                    <p>Having trouble or got questions? Ask on <a href="https://community.vatsim.uk">our Forum</a>!</p>
+                    <p>Having trouble or got questions? Ask on <a href="{{ route('mship.manage.dashboard') }}">our Discord</a>!</p>
                 </div>
             </div>
         </div>

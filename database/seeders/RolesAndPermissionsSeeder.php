@@ -47,6 +47,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.exams.conduct.twr',
             'training.exams.conduct.app',
             'training.exams.conduct.ctr',
+            'training.exams.override-result',
             'training.theory.access',
             'training.theory.view.*',
             'training.theory.view.obs',
@@ -90,6 +91,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'vt.application.reject.*',
             'vt.application.complete.*',
             'vt.application.cancel.*',
+            'vt.status.revoke',
             // 'vt.application.reference.accept.*',
             // 'vt.application.reference.reject.*',
             // 'vt.application.check.modify.*',
@@ -120,6 +122,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Training Places Permissions
             'training-places.view.*',
+            'training-places.manual-setup',
 
             // // Feedback System Permissions
             'feedback.access',

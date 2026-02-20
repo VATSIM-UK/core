@@ -86,6 +86,17 @@
                         <p class="text-center" style="text-align: justify; text-justify: inter-word;">
                             {{ $facility->description }}
                         </p>
+
+                        <p class="text-center">
+                            @if($facility->training_team === 'atc')
+                                <strong>Minimum ATC Rating:</strong> {{ $facility->minimumATCQualification->name ?? 'None' }}<br>
+                                <strong>Maximum ATC Rating:</strong> {{ $facility->maximumATCQualification->name ?? 'None' }}
+                            @else
+                                <strong>Minimum Pilot Rating:</strong> {{ $facility->minimumPilotQualification->name ?? 'None' }}<br>
+                                <strong>Maximum Pilot Rating:</strong> {{ $facility->maximumPilotQualification->name ?? 'None' }}
+                            @endif
+                        </p>
+
                         <p class="text-center">
                             @if($facility->training_required)
                                 <span class="label label-warning">TRAINING IS REQUIRED</span>
@@ -100,10 +111,16 @@
                             @csrf
 
                         <p class="text-center">
-                            @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
-                                <button type="submit" class="btn btn-primary">APPLY TO THIS FACILITY</button>
+                            @if($application->meetsRatingRequirements($facility))
+                                @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
+                                    <button type="submit" class="btn btn-primary">APPLY TO THIS FACILITY</button>
+                                @else
+                                    <button class="btn btn-danger" disabled="disabled">NO PLACES AVAILABLE</button>
+                                @endif
                             @else
-                                <button class="btn btn-danger" disabled="disabled">NO PLACES AVAILABLE</button>
+                                <button class="btn btn-default" disabled="disabled">INELIGIBLE</button>
+                                <br>
+                                <small class="text-danger">Your current rating does not meet this facility's requirements.</small>
                             @endif
                         </p>
 

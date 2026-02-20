@@ -45,9 +45,6 @@
                             <a class="nav-link" href="">Meeting Minutes</a> {{-- Link to Meeting Minutes to be created --}}
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Policies</a> {{-- Link to Policy tab landing page, to be created --}}
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="https://helpdesk.vatsim.uk/">Contact Us</a>
                         </li>
                     </ul>

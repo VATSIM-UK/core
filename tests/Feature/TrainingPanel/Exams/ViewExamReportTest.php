@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\TrainingPanel\Exams;
 
+use App\Enums\ExamResultEnum;
 use App\Filament\Training\Pages\Exam\ViewExamReport;
+use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
@@ -32,7 +34,7 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
         parent::setUp();
 
         // Create a student account and member
-        $this->student = Account::factory()->create();
+        $this->student = Account::factory()->withQualification()->create();
         $this->studentMember = Member::factory()->create([
             'id' => $this->student->id,
             'cid' => $this->student->id,
@@ -392,5 +394,175 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
             ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
             ->assertSuccessful()
             ->assertSee('APP');
+    }
+
+    #[Test]
+    public function test_user_with_correct_permissions_can_override_exam_result()
+    {
+        $this->panelUser->givePermissionTo([
+            'training.exams.access',
+            'training.exams.conduct.twr',
+            'training.exams.override-result',
+        ]);
+
+        $newResult = PracticalResult::FAILED;
+        $reason = 'Test reason';
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
+            ->assertSeeHtml('override_result')
+            ->call('overrideResult', [
+                'exam_result' => $newResult,
+                'reason' => $reason,
+            ])
+            ->assertHasNoErrors();
+
+        $this->practicalResult->refresh();
+        $this->assertSame($newResult, $this->practicalResult->result);
+    }
+
+    #[Test]
+    public function test_user_without_correct_permissions_cannot_override_exam_result()
+    {
+        $this->panelUser->givePermissionTo([
+            'training.exams.access',
+            'training.exams.conduct.twr',
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
+            ->assertDontSeeHtml('override_result');
+    }
+
+    #[Test]
+    public function test_override_result_updates_practical_result()
+    {
+        $this->panelUser->givePermissionTo([
+            'training.exams.access',
+            'training.exams.conduct.twr',
+            'training.exams.override-result',
+        ]);
+
+        $newResult = ExamResultEnum::Fail->value;
+        $reason = 'Test reason';
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
+            ->call('overrideResult', [
+                'exam_result' => $newResult,
+                'reason' => $reason,
+                'criteria_updates' => [],
+            ])
+            ->assertHasNoErrors();
+
+        $this->practicalResult->refresh();
+        $this->assertSame($newResult, $this->practicalResult->result);
+    }
+
+    #[Test]
+    public function test_override_result_updates_criteria()
+    {
+        $this->panelUser->givePermissionTo([
+            'training.exams.access',
+            'training.exams.conduct.twr',
+            'training.exams.override-result',
+        ]);
+
+        $criteria = ExamCriteria::create([
+            'exam' => 'TWR',
+            'criteria' => 'Test Criteria',
+            'deleted' => 0,
+        ]);
+
+        $assessment = ExamCriteriaAssessment::create([
+            'examid' => $this->examBooking->id,
+            'criteria_id' => $criteria->id,
+            'result' => ExamCriteriaAssessment::MOSTLY_COMPETENT,
+            'notes' => 'Some notes',
+        ]);
+
+        $newGrade = ExamCriteriaAssessment::FULLY_COMPETENT;
+        $reason = 'Test reason';
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
+            ->call('overrideResult', [
+                'exam_result' => $this->practicalResult->result,
+                'reason' => 'Overall performance checked',
+                'criteria_updates' => [
+                    $criteria->id => [
+                        'grade' => $newGrade,
+                        'change_comments' => $reason,
+                    ],
+                ],
+            ])
+            ->assertHasNoErrors();
+
+        $assessment->refresh();
+        $this->assertSame($newGrade, $assessment->result);
+    }
+
+    #[Test]
+    public function it_resubmits_student_for_exam_when_result_is_overridden_to_incomplete()
+    {
+        $account = Account::factory()->withQualification()->create();
+        $student = Member::factory()->create([
+            'id' => $account->id,
+            'cid' => $account->id,
+        ]);
+
+        $position = Position::factory()->create([
+            'callsign' => 'EGKK_TWR',
+        ]);
+
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::FINISHED_FLAG,
+            'exam' => 'TWR',
+            'student_id' => $student->id,
+            'position_1' => $position->callsign,
+            'student_rating' => Qualification::code('S1')->first()->vatsim,
+        ]);
+
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => $this->panelUser->id,
+        ]);
+
+        $practicalResult = PracticalResult::factory()->create([
+            'examid' => $exam->id,
+            'exam' => 'TWR',
+            'result' => ExamResultEnum::Pass->value,
+        ]);
+
+        $this->panelUser->givePermissionTo([
+            'training.exams.access',
+            'training.exams.conduct.twr',
+            'training.exams.override-result',
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
+            ->assertSeeHtml('override_result')
+            ->call('overrideResult', [
+                'exam_result' => ExamResultEnum::Incomplete->value,
+                'reason' => 'Test reason',
+            ])
+            ->assertHasNoErrors();
+
+        $this->practicalResult->refresh();
+        $this->assertSame(ExamResultEnum::Incomplete->value, $this->practicalResult->result);
+
+        $this->assertDatabaseHas('exam_book', connection: 'cts', data: [
+            'student_id' => $this->studentMember->id,
+            'position_1' => $this->examBooking->position_1,
+            'exam' => $this->examBooking->exam,
+        ]);
+
+        $this->assertEquals(2, ExamBooking::where('student_id', $this->studentMember->id)
+            ->where('position_1', $this->examBooking->position_1)
+            ->where('exam', $this->examBooking->exam)
+            ->count()
+        );
     }
 }

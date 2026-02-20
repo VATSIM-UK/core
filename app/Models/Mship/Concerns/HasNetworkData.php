@@ -55,4 +55,18 @@ trait HasNetworkData
     {
         return $this->hasMany(\App\Models\NetworkData\Pilot::class, 'account_id', 'id');
     }
+
+    /**
+     * Fetch date of last ATC Session within the UK.
+     *
+     * @return \Carbon\Carbon
+     */
+    public function lastSeenControllingUK()
+    {
+        $lastSession = $this->networkDataAtcUk()
+            ->orderByDesc('disconnected_at')
+            ->first();
+
+        return $lastSession?->disconnected_at;
+    }
 }

@@ -6,8 +6,8 @@ use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
 use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
-use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -25,6 +25,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Auth;
 
 class ViewTrainingPlace extends Page implements HasInfolists, HasTable
@@ -54,6 +55,11 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         }
 
         $this->trainingPlace = TrainingPlace::where('id', $this->trainingPlaceId)->with('waitingListAccount', 'trainingPosition')->firstOrFail();
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return "View Training Place - {$this->trainingPlace->waitingListAccount->account->name}";
     }
 
     protected function getHeaderWidgets(): array
@@ -184,7 +190,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         return $table
             ->heading('Mentoring session history')
             ->queryStringIdentifier('mentoring')
-            ->query(Session::query()->whereIn('position', $this->trainingPlace->trainingPosition->cts_positions)->where('student_id', $this->trainingPlace->waitingListAccount->account->member->id))
+            ->query((new SessionRepository)->getAllAcceptedSessionsForPositionsQuery($this->trainingPlace->trainingPosition->cts_positions, $this->trainingPlace->waitingListAccount->account->member->id))
             ->defaultSort('taken_date', 'desc')
             ->paginated([10])
             ->defaultPaginationPageOption(10)
