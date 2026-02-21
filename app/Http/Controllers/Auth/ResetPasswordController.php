@@ -33,7 +33,7 @@ class ResetPasswordController extends BaseController
     {
         return [
             'token' => 'required',
-            'password' => 'required|confirmed|min:6',
+            'password' => 'required|string|confirmed|min:8|upperchars:1|lowerchars:1|numbers:1',
         ];
     }
 
