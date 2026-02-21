@@ -98,4 +98,46 @@ class WaitingListsTest extends TestCase
             ->post(route('mship.waiting-lists.self-enrol', $list->id))
             ->assertForbidden();
     }
+
+    #[Test]
+    public function test_cannot_self_enrol_when_list_is_at_capacity()
+    {
+        $account = Account::factory()->create();
+        $list = WaitingList::factory()->create([
+            'name' => 'My List',
+            'self_enrolment_enabled' => true,
+            'max_capacity' => 1,
+        ]);
+
+        $existingAccount = Account::factory()->create();
+        $list->addToWaitingList($existingAccount, $this->privacc);
+
+        $this->actingAs($account)
+            ->post(route('mship.waiting-lists.self-enrol', $list->id));
+
+        $this->assertFalse($list->includesAccount($account));
+    }
+
+    #[Test]
+    public function test_at_capacity_list_shows_no_places_available_button()
+    {
+        $account = Account::factory()->create();
+        $account->addState(State::findByCode('DIVISION'));
+        $account->refresh();
+
+        $list = WaitingList::factory()->create([
+            'name' => 'My List',
+            'self_enrolment_enabled' => true,
+            'max_capacity' => 1,
+        ]);
+
+        // Fill the list to capacity
+        $existingAccount = Account::factory()->create();
+        $list->addToWaitingList($existingAccount, $this->privacc);
+
+        $this->actingAs($account)
+            ->get(route('mship.waiting-lists.index'))
+            ->assertSee('Waiting List Full')
+            ->assertDontSee('Self Enrol');
+    }
 }
