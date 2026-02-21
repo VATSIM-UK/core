@@ -11,6 +11,7 @@ use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\Section;
@@ -107,6 +108,27 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 ->modalDescription('Confirm the details below to forward this member for a practical exam.')
                 ->modalSubmitActionLabel('Forward for Exam');
         }
+
+        $actions[] = Action::make('revokeTrainingPlace')
+            ->label('Revoke Training Place')
+            ->icon('heroicon-o-x-circle')
+            ->color('danger')
+            ->authorize(Auth()->user()->can('training-places.revoke.*'))
+            ->modalIcon('heroicon-o-exclamation-triangle')
+            ->modalIconColor('danger')
+            ->modalHeading('Revoke Training Place')
+            ->modalDescription('Are you sure you want to revoke this member\'s training place?')
+            ->modalSubmitActionLabel('Revoke Training Place')
+            ->form([
+                Textarea::make('reason')
+                    ->label('Reason ')
+                    ->placeholder('Please provide a reason for revoking this training place')
+                    ->rows(3)
+                    ->required(),
+            ])
+            ->action(function (array $data) {
+                $this->trainingPlace->revokeTrainingPlace($data['reason'], Auth()->user());
+            });
 
         return $actions;
     }

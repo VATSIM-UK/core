@@ -2,6 +2,7 @@
 
 namespace App\Models\Training\TrainingPlace;
 
+use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Observers\Training\TrainingPlaceObserver;
@@ -30,5 +31,11 @@ class TrainingPlace extends Model
     public function trainingPosition(): BelongsTo
     {
         return $this->belongsTo(TrainingPosition::class, 'training_position_id');
+    }
+
+    public function revokeTrainingPlace(string $reason, Account $admin): void
+    {
+        $this->waitingListAccount->account->addNote('training', "Training place revoked on {$this->trainingPosition->position->callsign}. Reason: {$reason}", $admin->id);
+        $this->delete();
     }
 }
