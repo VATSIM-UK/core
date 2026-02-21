@@ -22,28 +22,43 @@ class ProcessVatsimNetWebhook extends BaseController
      */
     public function __invoke(Request $request)
     {
+        $startedAt = microtime(true);
         $this->validateAuth($request);
 
         $webhook = $request->all();
+        $memberId = (int) ($webhook['resource'] ?? 0);
 
         // Sort the actions by timestamp to make sure we process them in order.
-        $actions = collect($webhook['actions'] ?? [])->sortBy('timestamp');
+        $actions = collect($webhook['actions'] ?? [])->sortBy('timestamp')->values();
 
-        Log::info('Raw webhook data', [
-            'webhook' => $webhook,
-        ]);
-
-        Log::debug('VATSIM.net webhook received', [
-            'resource' => $webhook['resource'] ?? null,
+        Log::info('VATSIM.net webhook received', [
+            'resource' => $memberId,
             'actions.length' => $actions->count(),
+            'actions.types' => $actions->pluck('action')->values(),
         ]);
+
+        if ($actions->isEmpty()) {
+            Log::warning('VATSIM.net webhook received with no actions', [
+                'resource' => $memberId,
+            ]);
+
+            return response()->json([
+                'status' => 'ok',
+            ]);
+        }
 
         $jobs = $actions
-            ->map(fn (array $action): ShouldQueue => $this->createActionJob((int) $webhook['resource'], $action))
+            ->map(fn (array $action): ShouldQueue => $this->createActionJob($memberId, $action))
             ->all();
 
         // Dispatch the jobs in a chain to avoid race conditions between actions.
         Bus::chain($jobs)->dispatch();
+
+        Log::debug('VATSIM.net webhook jobs chained', [
+            'resource' => $memberId,
+            'jobs.length' => count($jobs),
+            'preparation_ms' => (int) round((microtime(true) - $startedAt) * 1000),
+        ]);
 
         return response()->json([
             'status' => 'ok',
@@ -55,10 +70,14 @@ class ProcessVatsimNetWebhook extends BaseController
      */
     private function createActionJob(int $memberId, array $action): ShouldQueue
     {
-        $jobClass = self::ACTION_JOB_MAP[$action['action'] ?? ''] ?? null;
+        $actionName = $action['action'] ?? 'missing';
+        $jobClass = self::ACTION_JOB_MAP[$actionName] ?? null;
 
         if (! $jobClass) {
-            Log::error("Unknown action from VATSIM.net webook: {$action['action']}");
+            Log::error('Unknown action from VATSIM.net webhook', [
+                'resource' => $memberId,
+                'action' => $actionName,
+            ]);
             abort(400);
         }
 

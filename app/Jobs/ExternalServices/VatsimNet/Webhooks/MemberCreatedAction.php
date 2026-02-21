@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class MemberCreatedAction implements ShouldQueue
 {
@@ -35,5 +36,10 @@ class MemberCreatedAction implements ShouldQueue
         $account->updateVatsimRatings($this->getDeltaAfter('rating'), $this->getDeltaAfter('pilotrating'));
         $account->updateDivision($this->getDeltaAfter('division_id'), $this->getDeltaAfter('region_id'));
         $account->save();
+
+        Log::debug('Processed VATSIM.net member_created_action', [
+            'resource' => $this->memberId,
+            'account_id' => $account->id,
+        ]);
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class MemberChangedAction implements ShouldQueue
 {
@@ -39,6 +40,11 @@ class MemberChangedAction implements ShouldQueue
         if ($changes->has('division_id') || $changes->has('region_id')) {
             $this->processStateChange();
         }
+
+        Log::debug('Processed VATSIM.net member_changed_action', [
+            'resource' => $this->memberId,
+            'changed_fields' => $changes->keys()->values(),
+        ]);
     }
 
     /**

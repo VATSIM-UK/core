@@ -7,12 +7,22 @@ use Illuminate\Support\Collection;
 
 trait InteractsWithMemberDeltas
 {
+    private ?Collection $deltaCollection = null;
+
+    private ?Collection $changedFieldMap = null;
+
     /**
      * Return deltas from the webhook payload as a collection.
      */
     private function deltas(): Collection
     {
-        return collect($this->data['deltas'] ?? []);
+        if ($this->deltaCollection instanceof Collection) {
+            return $this->deltaCollection;
+        }
+
+        $this->deltaCollection = collect($this->data['deltas'] ?? []);
+
+        return $this->deltaCollection;
     }
 
     /**
@@ -20,9 +30,7 @@ trait InteractsWithMemberDeltas
      */
     private function getDeltaAfter(string $field): mixed
     {
-        $delta = $this->deltas()->firstWhere('field', $field);
-
-        return Arr::get($delta, 'after');
+        return $this->changedFields()->get($field);
     }
 
     /**
@@ -30,8 +38,14 @@ trait InteractsWithMemberDeltas
      */
     private function changedFields(): Collection
     {
-        return $this->deltas()
+        if ($this->changedFieldMap instanceof Collection) {
+            return $this->changedFieldMap;
+        }
+
+        $this->changedFieldMap = $this->deltas()
             ->mapWithKeys(fn (array $delta) => [Arr::get($delta, 'field') => Arr::get($delta, 'after')])
             ->filter(fn (mixed $value, mixed $key) => ! is_null($key));
+
+        return $this->changedFieldMap;
     }
 }
