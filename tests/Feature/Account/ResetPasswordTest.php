@@ -5,7 +5,6 @@ namespace Tests\Feature\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Password;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -29,8 +28,6 @@ class ResetPasswordTest extends TestCase
     #[Test]
     public function test_password_reset_updates_correctly()
     {
-        Http::fake();
-
         $this->user->password = 'Testing123';
 
         $now = Carbon::today();
