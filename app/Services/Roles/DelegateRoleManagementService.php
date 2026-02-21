@@ -43,8 +43,8 @@ class DelegateRoleManagementService
         return Account::query()
             ->where(function ($q) use ($search) {
                 $q->where('id', 'like', "%{$search}%")
-                ->orWhere('name_first', 'like', "%{$search}%")
-                ->orWhere('name_last', 'like', "%{$search}%");
+                    ->orWhere('name_first', 'like', "%{$search}%")
+                    ->orWhere('name_last', 'like', "%{$search}%");
             })
             ->limit(50)
             ->get()
