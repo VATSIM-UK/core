@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Jobs\Training;
 
+use App\Jobs\Training\ActionExpiredAvailabilityWarningRemoval;
+use App\Jobs\Training\ActionFourthAvailabilityFailureRemoval;
 use App\Jobs\Training\CheckAvailability;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
@@ -14,6 +16,7 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\AvailabilityWarningCreated;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -254,6 +257,83 @@ class CheckAvailabilityTest extends TestCase
             ->get();
 
         $this->assertCount(1, $expiredWarnings);
+    }
+
+    #[Test]
+    public function it_removes_training_place_immediately_on_fourth_availability_failure_after_three_resolved_warnings(): void
+    {
+        Bus::fake();
+        Notification::fake();
+
+        // Arrange: Create 3 resolved warnings (member failed then passed within window on 3 previous occasions)
+        for ($i = 0; $i < 3; $i++) {
+            $failedCheck = AvailabilityCheck::factory()->failed()->create([
+                'training_place_id' => $this->trainingPlace->id,
+            ]);
+            AvailabilityWarning::factory()->resolved()->create([
+                'training_place_id' => $this->trainingPlace->id,
+                'availability_check_id' => $failedCheck->id,
+            ]);
+        }
+
+        // Act: Run the job with failure conditions (no availability) - 4th failure
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A failed check was recorded
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => 'failed',
+        ]);
+
+        // Assert: A 4th warning was created with expires_at = now() (immediate removal)
+        $fourthWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
+            ->where('status', 'pending')
+            ->latest()
+            ->first();
+        $this->assertNotNull($fourthWarning);
+        $this->assertFalse($fourthWarning->expires_at->isFuture(), 'Fourth failure warning should have expires_at in the past for immediate removal');
+
+        // Assert: Fourth-failure removal job was dispatched for the 4th warning
+        Bus::assertDispatched(ActionFourthAvailabilityFailureRemoval::class, function ($dispatchedJob) use ($fourthWarning) {
+            return $dispatchedJob->availabilityWarning->id === $fourthWarning->id;
+        });
+        Bus::assertNotDispatched(ActionExpiredAvailabilityWarningRemoval::class);
+
+        // Assert: No "warning created" notification (job only sends it for normal 5-day warnings, not 4th failure)
+        Notification::assertNotSentTo($this->account, AvailabilityWarningCreated::class);
+    }
+
+    #[Test]
+    public function it_creates_normal_warning_when_only_two_previous_warnings_were_resolved(): void
+    {
+        Bus::fake();
+
+        // Arrange: Create 2 resolved warnings (not yet at the 3-strike threshold)
+        for ($i = 0; $i < 2; $i++) {
+            $failedCheck = AvailabilityCheck::factory()->failed()->create([
+                'training_place_id' => $this->trainingPlace->id,
+            ]);
+            AvailabilityWarning::factory()->resolved()->create([
+                'training_place_id' => $this->trainingPlace->id,
+                'availability_check_id' => $failedCheck->id,
+            ]);
+        }
+
+        // Act: Run the job with failure conditions
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A normal 5-day warning was created (not immediate removal)
+        $thirdWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
+            ->where('status', 'pending')
+            ->latest()
+            ->first();
+        $this->assertNotNull($thirdWarning);
+        $this->assertTrue($thirdWarning->expires_at->isFuture(), 'Third failure should still get the normal 5-day window');
+
+        Bus::assertNotDispatched(ActionExpiredAvailabilityWarningRemoval::class);
+        Bus::assertNotDispatched(ActionFourthAvailabilityFailureRemoval::class);
     }
 
     #[Test]

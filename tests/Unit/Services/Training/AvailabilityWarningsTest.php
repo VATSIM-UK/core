@@ -10,21 +10,12 @@ use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\AvailabilityWarnings;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AvailabilityWarningsTest extends TestCase
 {
     use DatabaseTransactions;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // fake events to stop TrainingPlaceObserver from sending notifications
-        Event::fake();
-    }
 
     #[Test]
     public function it_returns_only_pending_warnings_that_have_expired(): void

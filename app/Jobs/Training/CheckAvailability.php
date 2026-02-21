@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs\Training;
 
 use App\Models\Cts\Availability;
@@ -7,8 +9,10 @@ use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Notifications\Training\AvailabilityWarningCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\DB;
 
 class CheckAvailability implements ShouldQueue
 {
@@ -58,12 +62,32 @@ class CheckAvailability implements ShouldQueue
             return;
         }
 
-        AvailabilityWarning::create([
-            'training_place_id' => $this->trainingPlace->id,
-            'availability_check_id' => $availabilityCheck->id,
-            'status' => 'pending',
-            'expires_at' => now()->addDays(5)->endOfDay(),
-        ]);
+        // Fourth failure: they have already had 3 instances where they failed then resolved within the window
+        $resolvedWarningCount = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
+            ->where('status', 'resolved')
+            ->count();
+
+        if ($resolvedWarningCount >= 3) {
+            $warning = AvailabilityWarning::create([
+                'training_place_id' => $this->trainingPlace->id,
+                'availability_check_id' => $availabilityCheck->id,
+                'status' => 'pending',
+                'expires_at' => now(),
+            ]);
+            ActionFourthAvailabilityFailureRemoval::dispatch($warning);
+
+            return;
+        }
+
+        DB::transaction(function () use ($account, $availabilityCheck): void {
+            $warning = AvailabilityWarning::create([
+                'training_place_id' => $this->trainingPlace->id,
+                'availability_check_id' => $availabilityCheck->id,
+                'status' => 'pending',
+                'expires_at' => now()->addDays(5)->endOfDay(),
+            ]);
+            $account->notify(new AvailabilityWarningCreated($warning));
+        });
     }
 
     /**
