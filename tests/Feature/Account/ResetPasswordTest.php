@@ -42,10 +42,14 @@ class ResetPasswordTest extends TestCase
         // Hold time to allow for comparision
 
         // Reset the password
-        $this->followingRedirects()->actingAs($this->user, 'vatsim-sso')
+        $this->actingAs($this->user, 'vatsim-sso')
             ->from(route('password.reset', $token))
-            ->post(route('password.request'), ['token' => $token, 'password' => 'Testing234', 'password_confirmation' => 'Testing234'])
-            ->assertSuccessful();
+            ->post(route('password.request'), [
+                'token' => $token,
+                'new_password' => 'Testing234',
+                'new_password_confirmation' => 'Testing234',
+            ])
+            ->assertRedirect();
 
         $this->assertTrue(Hash::check('Testing234', $this->user->fresh()->password));
         $this->assertEquals($now, $this->user->fresh()->password_set_at);
