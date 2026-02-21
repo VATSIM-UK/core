@@ -45,6 +45,12 @@ class WaitingLists extends BaseController
     {
         $this->authorize('selfEnrol', $waitingList);
 
+        if ($waitingList->isAtCapacity()) {
+            return redirect()
+                ->route('mship.waiting-lists.index')
+                ->with('error', 'This waiting list is currently at capacity and is not accepting new enrolments.');
+        }
+
         $waitingList->addToWaitingList($request->user(), $request->user());
 
         return redirect()

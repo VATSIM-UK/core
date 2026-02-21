@@ -82,11 +82,18 @@
                         <tr>
                             <td>{{$waitingList->name}}</td>
                             <td>
-                                <form action="{{route('mship.waiting-lists.self-enrol', ['waitingList' => $waitingList])}}" method="POST">
-                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                    <button class="btn btn-primary" type="submit">Self Enrol</button>
-                                </form>
+                                @if(!$waitingList->isAtCapacity())
+                                    <form action="{{route('mship.waiting-lists.self-enrol', ['waitingList' => $waitingList])}}" method="POST">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <button class="btn btn-primary" type="submit">Self Enrol</button>
+                                    </form>
+                                @else
+                                    <form>
+                                        <button class="btn btn-danger" disabled type="submit">Waiting List Full</button>
+                                    </form>
+                                @endif
                             </td>
+                            <span class="text-muted">Waiting list at capacity</span>
                         </tr>
                         @endforeach
                         @empty($waitingList)
