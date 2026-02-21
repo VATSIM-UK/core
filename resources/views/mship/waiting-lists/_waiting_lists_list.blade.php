@@ -93,7 +93,6 @@
                                     </form>
                                 @endif
                             </td>
-                            <span class="text-muted">Waiting list at capacity</span>
                         </tr>
                         @endforeach
                         @empty($waitingList)
