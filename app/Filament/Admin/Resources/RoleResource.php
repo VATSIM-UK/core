@@ -67,6 +67,7 @@ class RoleResource extends Resource
     {
         return [
             \App\Filament\Admin\Resources\RoleResource\RelationManagers\UsersRelationManager::class,
+            \App\Filament\Admin\Resources\RoleResource\RelationManagers\DelegatesRelationManager::class,
         ];
     }
 
