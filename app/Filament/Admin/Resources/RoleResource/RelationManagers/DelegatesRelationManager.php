@@ -49,12 +49,8 @@ class DelegatesRelationManager extends RelationManager
                     ->form([
                         AccountSelect::make('users')
                             ->label('Member')
-                            ->model($this->getOwnerRecord())
-                            ->options(options: function () {
-                                return Account::all()
-                                    ->filter(fn ($account) => $account->can('admin.access'))
-                                    ->mapWithKeys(fn ($account) => [$account->id => "{$account->name} ({$account->id})"]);
-                            })
+                            ->searchable()
+                            ->getSearchResultsUsing(fn (string $search) => $service->getPotentialDelegates($search))
                             ->required(),
                     ])
                     ->modalHeading(fn () => "Delegate '{$this->getOwnerRecord()->name}'")

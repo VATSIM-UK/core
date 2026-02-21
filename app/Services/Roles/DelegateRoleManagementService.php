@@ -38,6 +38,21 @@ class DelegateRoleManagementService
         $account->revokePermissionTo($permissionName);
     }
 
+    public function getPotentialDelegates(string $search): array
+    {
+        return Account::query()
+            ->where(function ($q) use ($search) {
+                $q->where('id', 'like', "%{$search}%")
+                    ->orWhere('name_first', 'like', "%{$search}%")
+                    ->orWhere('name_last', 'like', "%{$search}%");
+            })
+            ->limit(50)
+            ->get()
+            ->filter(fn ($account) => $account->can('admin.access'))
+            ->mapWithKeys(fn ($account) => [$account->id => "{$account->name} ({$account->id})"])
+            ->toArray();
+    }
+
     public function getDelegates(Role $role)
     {
         $permissionName = $this->delegatePermissionName($role);
