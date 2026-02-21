@@ -454,4 +454,55 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'training_position_id' => $trainingPosition->id,
         ]);
     }
+
+    #[Test]
+    public function it_does_not_show_revoke_training_place_action_without_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertActionHidden('revokeTrainingPlace');
+    }
+
+    #[Test]
+    public function it_shows_revoke_training_place_action_when_user_has_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training-places.revoke.*');
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertActionVisible('revokeTrainingPlace');
+    }
+
+    #[Test]
+    public function it_can_revoke_training_place_with_reason()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training-places.revoke.*');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->callAction('revokeTrainingPlace', data: ['reason' => 'test reason.'])
+            ->assertNotified();
+
+        $this->assertDatabaseMissing('training_places', ['id' => $trainingPlace->id]);
+    }
+
+    #[Test]
+    public function it_adds_a_note_to_account_when_revoking_training_place()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training-places.revoke.*');
+        $reason = 'test reason.';
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->callAction('revokeTrainingPlace', data: ['reason' => $reason]);
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'account_id' => $trainingPlace->waitingListAccount->account->id,
+            'content' => "Training place revoked on {$trainingPlace->trainingPosition->position->callsign}. Reason: {$reason}",
+        ]);
+    }
 }
