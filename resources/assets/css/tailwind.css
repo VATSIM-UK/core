@@ -1,3 +1,65 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  /* Main nav dropdown trigger (Home, Feedback, Pilots, etc.) */
+  .nav-trigger {
+    @apply flex w-full items-center gap-1 px-4 py-4 text-base font-semibold text-white transition-colors hover:bg-nav-accent lg:w-auto;
+  }
+
+  /* Top section: account dropdown button, login link */
+  .nav-trigger-top {
+    @apply flex items-center gap-1 px-4 py-4 font-semibold text-white transition-colors hover:underline;
+  }
+
+  /* Mobile hamburger button */
+  .nav-mobile-toggle {
+    @apply inline-flex h-full flex-col items-center justify-center border-0 bg-transparent px-2.5 py-3 transition-colors hover:bg-nav-accent lg:hidden;
+  }
+
+  /* Dropdown panel (main nav, left-aligned) */
+  .nav-dropdown {
+    @apply min-w-[230px] border-0 bg-nav-accent py-5 lg:absolute lg:left-0 lg:top-full lg:z-50 lg:shadow-lg;
+  }
+
+  /* Dropdown panel (account menu, right-aligned) */
+  .nav-dropdown-right {
+    @apply absolute right-[5%] top-full z-50 min-w-[230px] border-0 bg-nav-accent py-5 shadow-lg;
+  }
+
+  /* Sub-nav link with hover (overrides Bootstrap) */
+  .nav-dropdown-link {
+    @apply block px-5 py-1.5 text-white hover:!bg-white hover:!text-black;
+  }
+
+  /* Sub-nav static text (e.g. ATC Rating, Pilot Rating) */
+  .nav-dropdown-link-static {
+    @apply block px-5 py-1.5 text-white;
+  }
+
+  /* Section header inside dropdown */
+  .nav-dropdown-header {
+    @apply px-5 py-1.5 text-lg font-bold text-white;
+  }
+
+  /* Divider between dropdown sections */
+  .nav-dropdown-divider {
+    @apply my-1 border-t border-white/20;
+  }
+
+  /* List reset for dropdown content */
+  .nav-dropdown-list {
+    @apply list-none px-0 py-0;
+  }
+
+  /* Right-side icon links (notifications, training, admin) */
+  .nav-icon-link {
+    @apply px-4 py-4 text-white transition-colors hover:bg-nav-accent;
+  }
+
+  /* Chevron icon (shared size) */
+  .nav-chevron {
+    @apply ml-1 h-4 w-4 shrink-0;
+  }
+}
