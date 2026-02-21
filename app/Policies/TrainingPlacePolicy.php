@@ -12,7 +12,7 @@ class TrainingPlacePolicy
      */
     public function viewAny(Account $account): bool
     {
-        return false;
+        return $account->hasPermissionTo('training-places.view.*');
     }
 
     /**
@@ -20,7 +20,7 @@ class TrainingPlacePolicy
      */
     public function view(Account $account, TrainingPlace $trainingPlace): bool
     {
-        return false;
+        return $account->hasPermissionTo('training-places.view.*');
     }
 
     /**

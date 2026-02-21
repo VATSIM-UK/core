@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Cts;
 
+use App\Enums\PositionValidationStatusEnum;
 use App\Models\Cts\PositionValidation;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -13,7 +14,7 @@ class StudentRepository
         $positionValidations = PositionValidation::with(['member', 'position'])
             ->whereHas('position', function (Builder $query) use ($rtsId) {
                 $query->where('rts_id', '=', $rtsId);
-            })->where('status', '=', 1)->get();
+            })->where('status', PositionValidationStatusEnum::Student->value)->get();
 
         $students = collect();
 

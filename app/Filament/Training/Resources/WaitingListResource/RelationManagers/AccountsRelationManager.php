@@ -2,11 +2,15 @@
 
 namespace App\Filament\Training\Resources\WaitingListResource\RelationManagers;
 
+use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Services\Training\TrainingPlaceService;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Actions\Action as NotificationAction;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -147,6 +151,47 @@ class AccountsRelationManager extends RelationManager
                     ->modalSubmitActionLabel('Remove')
                     ->modalCancelActionLabel('Cancel')
                     ->visible(fn ($record) => $this->can('removeAccounts', $record->waitingList)),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('manualSetupTrainingPlace')
+                        ->label('Manual Setup Training Place')
+                        ->icon('heroicon-o-academic-cap')
+                        ->visible(fn ($record) => $this->can('trainingPlacesManualSetup', $record->waitingList))
+                        ->form([
+                            Forms\Components\Select::make('training_position_id')
+                                ->label('Training Position')
+                                ->options(function ($livewire) {
+                                    return $livewire->ownerRecord->trainingPositions
+                                        ->mapWithKeys(fn ($tp) => [$tp->id => $tp->position?->callsign ?? "Position #{$tp->id}"])
+                                        ->toArray();
+                                })
+                                ->required()
+                                ->helperText('Select the training position to offer to this user.'),
+                        ])
+                        ->action(function (WaitingListAccount $record, array $data, $livewire) {
+                            $trainingPosition = $livewire->ownerRecord->trainingPositions()->findOrFail($data['training_position_id']);
+
+                            $service = app(TrainingPlaceService::class);
+                            $trainingPlace = $service->createManualTrainingPlace($record, $trainingPosition);
+
+                            Notification::make()
+                                ->title('Training place offered successfully')
+                                ->success()
+                                ->actions([
+                                    NotificationAction::make('view')
+                                        ->label('View Training Place')
+                                        ->url(ViewTrainingPlace::getUrl(['trainingPlaceId' => $trainingPlace->id]))
+                                        ->markAsRead(),
+                                ])
+                                ->send();
+
+                            $livewire->dispatch('refreshWaitingList');
+                        })
+                        ->successNotificationTitle('Training place offered successfully')
+                        ->modalHeading('Manual Setup Training Place')
+                        ->modalDescription('Select a training position to manually setup a training place for this user.')
+                        ->modalSubmitActionLabel('Setup Training Place')
+                        ->modalCancelActionLabel('Cancel'),
+                ]),
             ])
             ->defaultSort('created_at', 'asc')
             ->persistSearchInSession()

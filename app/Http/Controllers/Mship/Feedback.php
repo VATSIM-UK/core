@@ -23,6 +23,8 @@ class Feedback extends \App\Http\Controllers\BaseController
             $feedbackForms[$f->slug] = $f->name;
         }
 
+        $this->setTitle('Submit Feedback');
+
         return $this->viewMake('mship.feedback.form')
             ->with('feedbackForms', $feedbackForms);
     }
@@ -77,6 +79,8 @@ class Feedback extends \App\Http\Controllers\BaseController
                 old($question->slug, array_get($defaultValues, $question->slug))
             );
         }
+
+        $this->setTitle($form->name ?? 'Submit Feedback');
 
         return $this->viewMake('mship.feedback.form')->with(['form' => $form, 'questions' => $questions]);
     }

@@ -34,6 +34,8 @@ class EndorsementController extends BaseController
         $totalHours = $minutesOnline / 60;
         $hoursMet = $totalHours >= self::HEATHROW_S1_HOURS_REQUIREMENT;
 
+        $this->setTitle('Heathrow Ground (S1) Endorsement');
+
         return $this->viewMake('controllers.endorsements.heathrow_ground_s1')
             ->with('totalHours', $totalHours)
             ->with('progress', ($totalHours / self::HEATHROW_S1_HOURS_REQUIREMENT) * 100)

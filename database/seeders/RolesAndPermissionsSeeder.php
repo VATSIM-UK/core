@@ -80,6 +80,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'role.create',
             'role.edit.*',
             'role.delete.*',
+            'role.manage-delegates.*',
 
             // Visit Transfer System Permissions
             'vt.access',
@@ -122,6 +123,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Training Places Permissions
             'training-places.view.*',
+            'training-places.manual-setup',
 
             // // Feedback System Permissions
             'feedback.access',

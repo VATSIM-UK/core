@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Filament\Admin\Resources\RoleResource\RelationManagers;
+
+use App\Filament\Admin\Forms\Components\AccountSelect;
+use App\Models\Mship\Account;
+use App\Services\Roles\DelegateRoleManagementService;
+use Filament\Notifications\Notification;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+
+class DelegatesRelationManager extends RelationManager
+{
+    protected static string $relationship = 'users';
+
+    protected static ?string $title = 'Delegates';
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public function table(Table $table): Table
+    {
+        $service = new DelegateRoleManagementService;
+
+        return $table
+            ->modifyQueryUsing(function (Builder $query) use ($service) {
+                $role = $this->getOwnerRecord();
+
+                if (! $service->delegatePermissionExists($role)) {
+                    return $query->whereRaw('1 = 0');
+                }
+
+                return $service->getDelegates($role);
+            })
+            ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('CID')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Name')
+                    ->searchable(),
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('add_delegate')
+                    ->label('Add Delegate')
+                    ->icon('heroicon-o-user-plus')
+                    ->color('success')
+                    ->form([
+                        AccountSelect::make('users')
+                            ->label('Member')
+                            ->searchable()
+                            ->getSearchResultsUsing(fn (string $search) => $service->getPotentialDelegates($search))
+                            ->required(),
+                    ])
+                    ->modalHeading(fn () => "Delegate '{$this->getOwnerRecord()->name}'")
+                    ->modalDescription('Select a member to grant permission to manage this role.')
+                    ->modalSubmitActionLabel('Delegate')
+                    ->action(function (array $data) use ($service) {
+                        $role = $this->getOwnerRecord();
+
+                        $account = Account::where('id', $data['users_id'])->first();
+                        $account->givePermissionTo($service->delegatePermissionName($role));
+
+                        Notification::make()
+                            ->title('Delegation successful')
+                            ->body("{$account->name} can now manage {$role->name}.")
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(fn () => $service->delegatePermissionExists($this->getOwnerRecord()) && Auth()->user()->can('role.manage-delegates.*')),
+
+                Tables\Actions\Action::make('remove_delegate_permission')
+                    ->label('Remove Delegate Permission')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Remove Delegate Permission')
+                    ->modalDescription('Deletes the role-specific permission allowing management of this role.')
+                    ->modalSubmitActionLabel('Delete Permission')
+                    ->action(function () use ($service) {
+                        $role = $this->getOwnerRecord();
+                        $service->deleteDelegatePermission($role);
+
+                        Notification::make()
+                            ->title('Permission deleted')
+                            ->body("Delegate permission for {$role->name} removed.")
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(fn () => $service->delegatePermissionExists($this->getOwnerRecord()) && Auth()->user()->can('role.manage-delegates.*')),
+            ])
+            ->actions([
+                Tables\Actions\Action::make('remove_delegate')
+                    ->label('Remove')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (Account $record) => "Remove {$record->name}?")
+                    ->modalDescription(fn () => "This will revoke their permission to manage {$this->getOwnerRecord()->name}.")
+                    ->action(function (Account $record) use ($service) {
+                        $role = $this->getOwnerRecord();
+                        $service->revokeDelegate($record, $role);
+
+                        Notification::make()
+                            ->title('Delegate Removed')
+                            ->body("{$record->name} no longer has permissions to manage {$role->name}.")
+                            ->success()
+                            ->send();
+                    })
+                    ->after(fn () => $this->dispatch('$refresh'))
+                    ->visible(fn () => Auth()->user()->can('role.manage-delegates.*')),
+            ])
+            ->emptyStateHeading('No Delegates')
+            ->emptyStateDescription(function () use ($service) {
+                $role = $this->getOwnerRecord();
+                if (! $service->delegatePermissionExists($role)) {
+                    return 'Create a delegate permission first to enable delegation.';
+                }
+
+                return 'No users have been delegated permission to manage this role.';
+            })
+            ->emptyStateIcon('heroicon-o-user-group')
+            ->emptyStateActions([
+                Tables\Actions\Action::make('create_permission')
+                    ->label('Create Delegate Permission')
+                    ->icon('heroicon-o-key')
+                    ->color('info')
+                    ->action(function () use ($service) {
+                        $role = $this->getOwnerRecord();
+                        $service->createDelegatePermission($role);
+
+                        Notification::make()
+                            ->title('Permission created')
+                            ->body("Delegate permission for {$role->name} created.")
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(fn () => ! $service->delegatePermissionExists($this->getOwnerRecord()) && Auth()->user()->can('role.manage-delegates.*')),
+            ]);
+    }
+}
