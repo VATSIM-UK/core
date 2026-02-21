@@ -47,7 +47,7 @@ class ResetPasswordController extends BaseController
     {
         $credentials = $request->only('new_password', 'new_password_confirmation', 'token');
 
-        return array_merge(['id' => Auth::guard('vatsim-sso')->user()->id], $credentials, ['password' => $credentials['new_password'], 'password_confirmation' => $credentials['new_password_confirmation'],]);
+        return array_merge(['id' => Auth::guard('vatsim-sso')->user()->id], $credentials, ['password' => $credentials['new_password'], 'password_confirmation' => $credentials['new_password_confirmation']]);
     }
 
     /**
