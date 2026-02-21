@@ -82,6 +82,11 @@ class Kernel extends ConsoleKernel
             ->graceTimeInMinutes(15);
 
         // INTENTIONALLY DISABLED FOR NOW WHILST UNDER DEVELOPMENT
+        // $schedule->command('training-places:check-for-expired-availability-warnings')
+        //     ->dailyAt('10:15')
+        //     ->graceTimeInMinutes(15);
+
+        // INTENTIONALLY DISABLED FOR NOW WHILST UNDER DEVELOPMENT
         // $schedule->command('training-places:check-availability')
         //     ->dailyAt('10:00')
         //     ->graceTimeInMinutes(15);
