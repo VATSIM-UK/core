@@ -46,7 +46,7 @@ class DelegateRoleManagementService
                 ->orWhere('name_first', 'like', "%{$search}%")
                 ->orWhere('name_last', 'like', "%{$search}%");
             })
-            ->limit(100)
+            ->limit(50)
             ->get()
             ->filter(fn ($account) => $account->can('admin.access'))
             ->mapWithKeys(fn ($account) => [$account->id => "{$account->name} ({$account->id})"])
