@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\AvailabilityWarningCreated;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -33,9 +34,12 @@ class AvailabilityWarningCreatedNotificationTest extends TestCase
         $waitingList = WaitingList::factory()->create(['name' => 'Test Waiting List']);
         $waitingListAccount = $waitingList->addToWaitingList($this->account, Account::factory()->create());
 
-        // Create a training place
+        $trainingPosition = TrainingPosition::factory()->create(['cts_positions' => []]);
+
+        // Create a training place (with full relations so observer does not crash)
         $trainingPlace = TrainingPlace::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
         ]);
 
         // Create an availability check and warning

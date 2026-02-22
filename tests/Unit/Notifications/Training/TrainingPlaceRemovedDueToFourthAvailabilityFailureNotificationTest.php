@@ -36,7 +36,10 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailureNotificationTest extends
         $waitingListAccount = $waitingList->addToWaitingList($this->account, Account::factory()->create());
 
         $position = Position::factory()->create(['name' => 'EGLL Tower']);
-        $trainingPosition = TrainingPosition::factory()->create(['position_id' => $position->id]);
+        $trainingPosition = TrainingPosition::factory()->create([
+            'position_id' => $position->id,
+            'cts_positions' => [],
+        ]);
 
         $trainingPlace = TrainingPlace::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,

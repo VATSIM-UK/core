@@ -35,7 +35,7 @@ class ActionExpiredAvailabilityWarningRemovalTest extends TestCase
         $account = Account::factory()->create(['id' => $ctsMember->cid]);
         $waitingList = WaitingList::factory()->create();
         $waitingListAccount = $waitingList->addToWaitingList($account, Account::factory()->create());
-        $trainingPosition = TrainingPosition::factory()->create();
+        $trainingPosition = TrainingPosition::factory()->create(['cts_positions' => []]);
         $trainingPlace = TrainingPlace::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $trainingPosition->id,

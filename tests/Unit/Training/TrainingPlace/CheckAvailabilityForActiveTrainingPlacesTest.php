@@ -31,7 +31,8 @@ class CheckAvailabilityForActiveTrainingPlacesTest extends TestCase
     #[Test]
     public function it_does_not_check_availability_for_inactive_training_places()
     {
-        $trainingPlace = TrainingPlace::factory()->create(['deleted_at' => now()]);
+        $trainingPlace = $this->createActiveTrainingPlace();
+        $trainingPlace->delete();
 
         $this->artisan('training-places:check-availability');
 
@@ -48,7 +49,7 @@ class CheckAvailabilityForActiveTrainingPlacesTest extends TestCase
 
         $waitingList = WaitingList::factory()->create();
         $waitingListAccount = $waitingList->addToWaitingList($account, $account);
-        $trainingPosition = TrainingPosition::factory()->create();
+        $trainingPosition = TrainingPosition::factory()->create(['cts_positions' => []]);
 
         return TrainingPlace::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,

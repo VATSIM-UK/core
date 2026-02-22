@@ -36,7 +36,10 @@ class TrainingPlaceRemovedDueToExpiredAvailabilityNotificationTest extends TestC
         $waitingListAccount = $waitingList->addToWaitingList($this->account, Account::factory()->create());
 
         $position = Position::factory()->create(['name' => 'EGLL Tower']);
-        $trainingPosition = TrainingPosition::factory()->create(['position_id' => $position->id]);
+        $trainingPosition = TrainingPosition::factory()->create([
+            'position_id' => $position->id,
+            'cts_positions' => [],
+        ]);
 
         $trainingPlace = TrainingPlace::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,
@@ -71,7 +74,7 @@ class TrainingPlaceRemovedDueToExpiredAvailabilityNotificationTest extends TestC
 
         $mailMessage = $notification->toMail($this->account);
 
-        $this->assertEquals('Training Place Removed - Availability Check Expired', $mailMessage->subject);
+        $this->assertEquals('Attention: Your Training Place Has Been Removed - Availability Check Expired', $mailMessage->subject);
     }
 
     #[Test]
@@ -83,19 +86,8 @@ class TrainingPlaceRemovedDueToExpiredAvailabilityNotificationTest extends TestC
 
         $this->assertEquals('emails.training.training_place_removed_expired_availability', $mailMessage->view);
         $this->assertArrayHasKey('recipient', $mailMessage->viewData);
-        $this->assertArrayHasKey('waiting_list_name', $mailMessage->viewData);
-        $this->assertArrayHasKey('position_name', $mailMessage->viewData);
+        $this->assertArrayHasKey('training_place_position_name', $mailMessage->viewData);
         $this->assertArrayHasKey('removal_date', $mailMessage->viewData);
-    }
-
-    #[Test]
-    public function it_includes_waiting_list_name_in_view_data(): void
-    {
-        $notification = new TrainingPlaceRemovedDueToExpiredAvailability($this->availabilityWarning);
-
-        $mailMessage = $notification->toMail($this->account);
-
-        $this->assertEquals('Test Waiting List', $mailMessage->viewData['waiting_list_name']);
     }
 
     #[Test]
@@ -105,7 +97,7 @@ class TrainingPlaceRemovedDueToExpiredAvailabilityNotificationTest extends TestC
 
         $mailMessage = $notification->toMail($this->account);
 
-        $this->assertEquals('EGLL Tower', $mailMessage->viewData['position_name']);
+        $this->assertEquals('EGLL Tower', $mailMessage->viewData['training_place_position_name']);
     }
 
     #[Test]

@@ -13,6 +13,7 @@ use App\Models\Training\WaitingList;
 use App\Services\Training\TrainingPlaceService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -202,10 +203,12 @@ class MentoringPermissionAssignmentTest extends TestCase
     #[Test]
     public function it_revokes_mentoring_permissions_for_multiple_cts_positions()
     {
-        $ctsPosition1 = CtsPosition::factory()->create(['callsign' => 'EGGD_TWR']);
-        $ctsPosition2 = CtsPosition::factory()->create(['callsign' => 'EGGD_APP']);
+        $callsign1 = 'EGGD_TWR_'.Str::random(8);
+        $callsign2 = 'EGGD_APP_'.Str::random(8);
+        $ctsPosition1 = CtsPosition::factory()->create(['callsign' => $callsign1]);
+        $ctsPosition2 = CtsPosition::factory()->create(['callsign' => $callsign2]);
         $trainingPosition = TrainingPosition::factory()->create([
-            'cts_positions' => [$ctsPosition1->callsign, $ctsPosition2->callsign],
+            'cts_positions' => [$callsign1, $callsign2],
         ]);
 
         $waitingList = WaitingList::factory()->create();
