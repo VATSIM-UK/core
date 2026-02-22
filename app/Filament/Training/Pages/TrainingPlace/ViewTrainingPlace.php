@@ -2,8 +2,8 @@
 
 namespace App\Filament\Training\Pages\TrainingPlace;
 
-use App\Filament\Training\Resources\TrainingPlaceResource\Pages\ListTrainingPlaces;
 use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
+use App\Filament\Training\Resources\TrainingPlaceResource\Pages\ListTrainingPlaces;
 use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;

@@ -472,7 +472,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     public function it_shows_revoke_training_place_action_when_user_has_permission()
     {
         $trainingPlace = $this->createTrainingPlace();
-        $this->panelUser->givePermissionTo("training-places.revoke.*");
+        $this->panelUser->givePermissionTo('training-places.revoke.*');
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertActionVisible('revokeTrainingPlace');
