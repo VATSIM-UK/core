@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[ObservedBy([TrainingPlaceObserver::class])]
 class TrainingPlace extends Model
@@ -31,4 +32,20 @@ class TrainingPlace extends Model
     {
         return $this->belongsTo(TrainingPosition::class, 'training_position_id');
     }
+
+    public function leaveOfAbsences(): HasMany
+    {
+        return $this->hasMany(TrainingPlaceLeaveOfAbsence::class);
+    }
+
+    public function isOnLeaveOfAbsence()
+    {
+        return $this->leaveOfAbsences()->current()->exists();
+    }
+
+    public function currentLeaveOfAbsence()
+    {
+        return $this->leaveOfAbsences()->current()->first();
+    }
+
 }
