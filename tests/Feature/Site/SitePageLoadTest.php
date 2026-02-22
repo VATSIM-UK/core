@@ -3,7 +3,6 @@
 namespace Tests\Feature\Site;
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -25,10 +24,6 @@ class SitePageLoadTest extends TestCase
     #[Test]
     public function test_it_loads_the_staff_page_for_authenticated_users()
     {
-        Config::set([
-            'ipboard.api_key' => 'Invalid_API_Key',
-        ]);
-
         $this->actingAs($this->user)
             ->get(route('site.staff'))
             ->assertOk();
