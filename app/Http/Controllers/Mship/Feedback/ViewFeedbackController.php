@@ -14,15 +14,15 @@ class ViewFeedbackController extends \App\Http\Controllers\BaseController
 
     public function show()
     {
-        $feedback = $this->feedbackViewService->getSentFeedback($this->account);
+        $displayData = $this->feedbackViewService->getDisplayData($this->account);
 
-        if ($feedback->isEmpty()) {
-            return Redirect::route('mship.manage.dashboard')->withError('You have no feedback available to view at this time.');
+        if (! $displayData->canDisplay) {
+            return Redirect::route('mship.manage.dashboard')->withError((string) $displayData->errorMessage);
         }
 
         $this->setTitle('Your Feedback');
 
         return $this->viewMake('mship.feedback.view')
-            ->with('feedback', $feedback);
+            ->with('feedback', $displayData->feedback);
     }
 }

@@ -26,19 +26,10 @@ class Registration extends BaseController
 
     public function store(DiscordRegistration $request)
     {
-        $exchangeResult = $this->registrationFlowService->exchangeCode((string) $request->validated('code'));
-        if (! $exchangeResult['ok']) {
-            return $this->error($exchangeResult['message']);
-        }
+        $result = $this->registrationFlowService->registerByCode($request->user(), (string) $request->validated('code'));
 
-        $linkResult = $this->registrationFlowService->linkAccount(
-            $request->user(),
-            $exchangeResult['discordUser'],
-            $exchangeResult['token']
-        );
-
-        if (! $linkResult['ok']) {
-            return $this->error($linkResult['message']);
+        if (! $result->ok) {
+            return $this->error((string) $result->message);
         }
 
         return redirect()->route('mship.manage.dashboard')->withSuccess('Your Discord account has been linked and you will be able to access our Discord server shortly, go to Discord to see!');

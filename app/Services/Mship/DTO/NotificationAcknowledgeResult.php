@@ -23,4 +23,9 @@ class NotificationAcknowledgeResult
     {
         return new self('continue', $redirectUrl);
     }
+
+    public function isAlreadyRead(): bool
+    {
+        return $this->status === 'already_read';
+    }
 }

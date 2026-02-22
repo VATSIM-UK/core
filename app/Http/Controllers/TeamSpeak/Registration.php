@@ -17,7 +17,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
     public function getNew()
     {
-        if (count($this->account->teamspeakRegistrations) > 25) {
+        if (! $this->registrationFlowService->canStartRegistration($this->account)) {
             return Redirect::route('mship.manage.dashboard');
         }
 
@@ -47,12 +47,6 @@ class Registration extends \App\Http\Controllers\BaseController
 
     public function postStatus(RegistrationModel $mshipRegistration)
     {
-        $status = $this->registrationFlowService->getRegistrationStatus($this->account, $mshipRegistration);
-
-        if ($status === null) {
-            return Response::make('Cannot retrieve registration status.');
-        }
-
-        return Response::make($status);
+        return Response::make($this->registrationFlowService->getRegistrationStatusResponseBody($this->account, $mshipRegistration));
     }
 }

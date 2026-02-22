@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\BaseController;
 use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
 use App\Libraries\UKCP;
@@ -49,7 +48,7 @@ class AppServiceProvider extends ServiceProvider
         $this->registerValidatorExtensions();
 
         View::composer('layout*', function ($view) {
-            $view->with('_bannerUrl', BaseController::generateBannerUrl());
+            $view->with('_bannerUrl', app(\App\Services\Site\BannerService::class)->generateBannerUrl());
         });
 
         RateLimiter::for('discord-sync', function (object $job) {

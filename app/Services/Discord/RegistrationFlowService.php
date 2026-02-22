@@ -4,8 +4,11 @@ namespace App\Services\Discord;
 
 use App\Events\Discord\DiscordLinked;
 use App\Events\Discord\DiscordUnlinked;
+use App\Services\Discord\DTO\DiscordCodeExchangeResult;
+use App\Services\Discord\DTO\DiscordLinkResult;
 use App\Exceptions\Discord\DiscordUserInviteException;
 use App\Models\Mship\Account;
+use App\Services\Discord\DTO\DiscordRegistrationResult;
 use Exception;
 use Wohali\OAuth2\Client\Provider\Discord;
 
@@ -20,38 +23,77 @@ class RegistrationFlowService
         ]);
     }
 
-    /**
-     * @return array{ok: bool, message?: string, token?: mixed, discordUser?: mixed}
-     */
-    public function exchangeCode(string $code): array
+    public function exchangeCode(string $code): DiscordCodeExchangeResult
     {
         try {
             $token = $this->provider->getAccessToken('authorization_code', ['code' => $code]);
             $discordUser = $this->provider->getResourceOwner($token);
         } catch (Exception) {
-            return ['ok' => false, 'message' => 'Something went wrong. Please try again.'];
+            return DiscordCodeExchangeResult::failure('Something went wrong. Please try again.');
         }
 
         if (! strstr($token->getValues()['scope'], 'identify') || ! strstr($token->getValues()['scope'], 'guilds.join')) {
-            return ['ok' => false, 'message' => "We didn't get all of the permissions required, please try again."];
+            return DiscordCodeExchangeResult::failure("We didn't get all of the permissions required, please try again.");
         }
 
         if (Account::where('discord_id', $discordUser->getId())->get()->isNotEmpty()) {
-            return ['ok' => false, 'message' => 'This Discord account is already linked to a VATSIM UK account. Please contact Web Services.'];
+            return DiscordCodeExchangeResult::failure('This Discord account is already linked to a VATSIM UK account. Please contact Web Services.');
         }
 
-        return ['ok' => true, 'token' => $token, 'discordUser' => $discordUser];
+        return DiscordCodeExchangeResult::success($token, $discordUser);
     }
 
-    /**
-     * @return array{ok: bool, message?: string}
-     */
-    public function linkAccount(Account $account, mixed $discordUser, mixed $token): array
+    public function linkAccount(Account $account, mixed $discordUser, mixed $token): DiscordLinkResult
     {
         try {
             event(new DiscordLinked($account, $discordUser, $token));
         } catch (DiscordUserInviteException $e) {
-            return ['ok' => false, 'message' => $e->getMessage()];
+            return DiscordLinkResult::failure($e->getMessage());
+        }
+
+        return DiscordLinkResult::success();
+    }
+
+
+    public function registerByCode(Account $account, string $code): DiscordRegistrationResult
+    {
+        $exchangeResult = $this->exchangeCode($code);
+        if (! $exchangeResult->ok) {
+            return DiscordRegistrationResult::failure((string) ($exchangeResult->message ?? 'Something went wrong. Please try again.'));
+        }
+
+        $linkResult = $this->linkAccount(
+            $account,
+            $exchangeResult->discordUser,
+            $exchangeResult->token
+        );
+
+        if (! $linkResult->ok) {
+            return DiscordRegistrationResult::failure((string) ($linkResult->message ?? 'Something went wrong. Please try again.'));
+        }
+
+        return DiscordRegistrationResult::success();
+    }
+
+
+    /**
+     * @return array{ok: bool, message?: string}
+     */
+    public function registerByCode(Account $account, string $code): array
+    {
+        $exchangeResult = $this->exchangeCode($code);
+        if (! $exchangeResult['ok']) {
+            return ['ok' => false, 'message' => (string) ($exchangeResult['message'] ?? 'Something went wrong. Please try again.')];
+        }
+
+        $linkResult = $this->linkAccount(
+            $account,
+            $exchangeResult['discordUser'],
+            $exchangeResult['token']
+        );
+
+        if (! $linkResult['ok']) {
+            return ['ok' => false, 'message' => (string) ($linkResult['message'] ?? 'Something went wrong. Please try again.')];
         }
 
         return ['ok' => true];

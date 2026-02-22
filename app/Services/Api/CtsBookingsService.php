@@ -12,6 +12,25 @@ class CtsBookingsService
 {
     public function __construct(private BookingRepository $bookingRepository) {}
 
+
+    public function getBookingsForApi(string $requestIp, ?string $requestedDate, string $bookingsRoute): ApiServiceResult
+    {
+        $result = $this->getBookings($requestIp, $requestedDate);
+
+        if ($result->statusCode !== 200) {
+            return $result;
+        }
+
+        $payload = $result->payload;
+        $payload['next_page_url'] = $bookingsRoute.'?date='.$payload['next_date'];
+        $payload['previous_page_url'] = $payload['previous_date']
+            ? $bookingsRoute.'?date='.$payload['previous_date']
+            : null;
+        unset($payload['next_date'], $payload['previous_date']);
+
+        return new ApiServiceResult($result->statusCode, $payload, $result->headers);
+    }
+
     public function getBookings(string $requestIp, ?string $requestedDate): ApiServiceResult
     {
         if (app()->environment() !== 'development' && RateLimiter::tooManyAttempts('get-bookings:'.$requestIp, 1)) {

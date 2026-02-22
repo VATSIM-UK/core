@@ -36,7 +36,7 @@ class Feedback extends \App\Http\Controllers\BaseController
             new QuestionRenderContext((array) $request->session()->getOldInput(), $request->get('cid'))
         );
 
-        if (count($questions) === 0 || ! $form->enabled) {
+        if (! $this->feedbackFlowService->canRenderForm($form, $questions)) {
             return Redirect::route('mship.manage.dashboard')
                 ->withError('There was an issue loading the requested form');
         }
@@ -49,22 +49,36 @@ class Feedback extends \App\Http\Controllers\BaseController
     public function postFeedback(Form $form, Request $request)
     {
         $result = $this->feedbackFlowService->submitFeedback($form, $request->all(), (int) auth()->id());
+        $redirectData = $this->feedbackFlowService->buildSubmitRedirectData($result);
 
-        if (! $result->isSuccess()) {
-            if ($result->status === 'validation_failed') {
-                return Redirect::back()->withErrors($result->errors)->withInput();
+        if ($redirectData->useBackRedirect) {
+            $redirect = Redirect::back();
+
+            if ($redirectData->errors !== []) {
+                $redirect = $redirect->withErrors($redirectData->errors);
             }
 
-            if ($result->status === 'self_feedback_error') {
-                return Redirect::back()->withError((string) $result->message)->withInput();
+            if ($redirectData->message !== null) {
+                $redirect = $redirect->withError($redirectData->message);
             }
 
-            if ($result->status === 'target_resolution_failed') {
-                return Redirect::route('mship.manage.dashboard')->withError((string) $result->message);
+            if ($redirectData->withInput) {
+                $redirect = $redirect->withInput();
             }
+
+            return $redirect;
         }
 
-        return Redirect::route('mship.manage.dashboard')
-            ->withSuccess('Your feedback has been recorded. Thank you!');
+        $redirect = Redirect::route($redirectData->route);
+
+        if ($redirectData->message !== null) {
+            if ($result->isSuccess()) {
+                return $redirect->withSuccess($redirectData->message);
+            }
+
+            return $redirect->withError($redirectData->message);
+        }
+
+        return $redirect;
     }
 }

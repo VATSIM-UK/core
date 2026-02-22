@@ -21,18 +21,21 @@ class Notification extends \App\Http\Controllers\BaseController
             : null;
 
         $result = $this->notificationFlowService->acknowledge($this->account, $notification, $this->redirectPath(), $forcedReturnUrl);
+        $redirectData = $this->notificationFlowService->buildAcknowledgeRedirect($result);
 
-        if ($result->status === 'already_read') {
-            return redirect()->route('mship.manage.dashboard');
+        if ($redirectData->usesRouteRedirect()) {
+            return redirect()->route($redirectData->route);
         }
 
-        return redirect((string) $result->redirectUrl);
+        return redirect((string) $redirectData->redirectUrl);
     }
 
     public function getList()
     {
-        $allowedToLeave = ! Session::has('force_notification_read_return_url')
-            || $this->notificationFlowService->canLeaveNotificationFlow($this->account);
+        $allowedToLeave = $this->notificationFlowService->allowedToLeaveNotificationList(
+            $this->account,
+            Session::has('force_notification_read_return_url')
+        );
 
         return $this->viewMake('mship.notification.list')
             ->with('unreadNotifications', $this->account->unreadNotifications)

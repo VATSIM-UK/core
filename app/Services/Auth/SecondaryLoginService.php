@@ -2,27 +2,26 @@
 
 namespace App\Services\Auth;
 
-use Illuminate\Support\Facades\Auth;
+use App\Services\Auth\DTO\SecondaryLoginGuardResult;
 
 class SecondaryLoginService
 {
-    public function hasPrimarySsoSession(): bool
+    public function validateSecondaryGuard(bool $hasVatsimSso): SecondaryLoginGuardResult
     {
-        return Auth::guard('vatsim-sso')->check();
-    }
+        if (! $hasVatsimSso) {
+            return SecondaryLoginGuardResult::deny('Could not authenticate: VATSIM.net authentication is not present.');
+        }
 
-    public function useWebGuard(): void
-    {
-        Auth::shouldUse('web');
+        return SecondaryLoginGuardResult::allow();
     }
 
     /**
      * @return array{id: int, password: mixed}
      */
-    public function credentialsFromPassword(mixed $password): array
+    public function credentialsFromPassword(int $vatsimId, mixed $password): array
     {
         return [
-            'id' => Auth::guard('vatsim-sso')->user()->id,
+            'id' => $vatsimId,
             'password' => $password,
         ];
     }

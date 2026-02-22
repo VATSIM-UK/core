@@ -17,6 +17,12 @@ class ManagementFlowService
 {
     public function __construct(private UKCPLibrary $ukcp) {}
 
+
+    public function shouldRedirectLanding(bool $isAuthenticated): bool
+    {
+        return $isAuthenticated;
+    }
+
     /**
      * @return array{pluginKeys: mixed, roster: bool}
      */
@@ -31,6 +37,17 @@ class ManagementFlowService
     /**
      * @return array{ok: bool, message?: string, level?: string, route?: string}
      */
+    public function addSecondaryEmailResponse(Account $account, string $email, string $emailConfirmation): array
+    {
+        $result = $this->addSecondaryEmail($account, $email, $emailConfirmation);
+
+        return [
+            'route' => (string) ($result['route'] ?? 'mship.manage.dashboard'),
+            'level' => ($result['ok'] ?? false) ? 'success' : 'error',
+            'message' => (string) $result['message'],
+        ];
+    }
+
     public function addSecondaryEmail(Account $account, string $email, string $emailConfirmation): array
     {
         $normalisedEmail = strtolower($email);
@@ -76,6 +93,41 @@ class ManagementFlowService
         ];
     }
 
+
+    /**
+     * @return array{email: AccountEmail, assignments: mixed}|null
+     */
+    public function getEmailDeleteViewData(Account $account, AccountEmail $email): ?array
+    {
+        if (! $this->canViewEmail($account, $email)) {
+            return null;
+        }
+
+        return [
+            'email' => $email,
+            'assignments' => $email->ssoEmails,
+        ];
+    }
+
+    /**
+     * @return array{route: string, level: string, message?: string}
+     */
+    public function deleteSecondaryEmailResponse(Account $account, AccountEmail $email): array
+    {
+        if (! $this->deleteSecondaryEmail($account, $email)) {
+            return [
+                'route' => 'mship.manage.dashboard',
+                'level' => 'error',
+            ];
+        }
+
+        return [
+            'route' => 'mship.manage.dashboard',
+            'level' => 'success',
+            'message' => 'Your secondary email ('.$email->email.') has been removed!',
+        ];
+    }
+
     public function deleteSecondaryEmail(Account $account, AccountEmail $email): bool
     {
         if ($email->account->id !== $account->id) {
@@ -85,6 +137,42 @@ class ManagementFlowService
         $email->delete();
 
         return true;
+    }
+
+
+    public function canViewEmail(Account $account, AccountEmail $email): bool
+    {
+        return $email->account->id === $account->id;
+    }
+
+    /**
+     * @return array{redirect: bool, message: string, level: string}
+     */
+    public function getVerifyEmailViewResult(string $code, bool $isAuthenticated): array
+    {
+        $result = $this->verifyEmailToken($code);
+
+        if (! $result['ok']) {
+            return [
+                'redirect' => false,
+                'level' => 'error',
+                'message' => $result['message'],
+            ];
+        }
+
+        if ($isAuthenticated) {
+            return [
+                'redirect' => true,
+                'level' => 'success',
+                'message' => $result['message'],
+            ];
+        }
+
+        return [
+            'redirect' => false,
+            'level' => 'success',
+            'message' => $result['message'],
+        ];
     }
 
     /**
@@ -173,6 +261,26 @@ class ManagementFlowService
         $token->related->verify();
 
         return ['ok' => true, 'message' => 'Your new email address ('.$token->related->email.') has been verified!', 'email' => $token->related->email];
+    }
+
+    /**
+     * @return array{route: string, level: string, message: string}
+     */
+    public function requestCertCheckResponse(int $accountId): array
+    {
+        if (! $this->requestCertCheck($accountId)) {
+            return [
+                'route' => 'mship.manage.dashboard',
+                'level' => 'error',
+                'message' => 'You requested an update with the central VATSIM database recently. Try again later.',
+            ];
+        }
+
+        return [
+            'route' => 'mship.manage.dashboard',
+            'level' => 'success',
+            'message' => 'Account update requested. This may take up to 5 minutes to complete.',
+        ];
     }
 
     public function requestCertCheck(int $accountId): bool

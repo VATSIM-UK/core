@@ -6,7 +6,9 @@ use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use App\Services\Mship\DTO\RetentionTokenResult;
+use App\Services\Mship\DTO\WaitingListSelfEnrolResult;
 use App\Services\Training\WaitingListRetentionChecks;
+use App\Services\Training\WaitingListSelfEnrolment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 
@@ -30,6 +32,29 @@ class WaitingListFlowService
             'atcWaitingListAccounts' => $atcWaitingListAccounts,
             'pilotWaitingListAccounts' => $pilotWaitingListAccounts,
         ];
+    }
+
+    /**
+     * @return array{atcSelfEnrolmentLists: Collection, pilotSelfEnrolmentLists: Collection}
+     */
+    public function splitSelfEnrolmentListsByDepartment(Account $account): array
+    {
+        $selfEnrolmentLists = WaitingListSelfEnrolment::getListsAccountCanSelfEnrol($account);
+
+        return [
+            'atcSelfEnrolmentLists' => $selfEnrolmentLists->where('department', WaitingList::ATC_DEPARTMENT),
+            'pilotSelfEnrolmentLists' => $selfEnrolmentLists->where('department', WaitingList::PILOT_DEPARTMENT),
+        ];
+    }
+
+
+    public function getSelfEnrolResult(WaitingList $waitingList): WaitingListSelfEnrolResult
+    {
+        if ($waitingList->isAtCapacity()) {
+            return WaitingListSelfEnrolResult::denied('This waiting list is currently at capacity and is not accepting new enrolments.');
+        }
+
+        return WaitingListSelfEnrolResult::allowed();
     }
 
     public function selfEnrol(WaitingList $waitingList, Account $actor): void

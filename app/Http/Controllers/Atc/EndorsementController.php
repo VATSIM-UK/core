@@ -15,12 +15,12 @@ class EndorsementController extends BaseController
 
     public function getHeathrowGroundS1Index()
     {
-        if (! $this->account->fully_defined || ! $this->account->qualification_atc->isS1) {
+        $eligibility = $this->heathrowGroundS1EligibilityService->getEligibilityForDisplay($this->account);
+
+        if ($eligibility === null) {
             return Redirect::route('mship.manage.dashboard')
                 ->withError('Only S1 rated controllers are eligible for a Heathrow Ground (S1) endorsement.');
         }
-
-        $eligibility = $this->heathrowGroundS1EligibilityService->getEligibility($this->account);
 
         $this->setTitle('Heathrow Ground (S1) Endorsement');
 

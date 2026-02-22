@@ -24,15 +24,17 @@ class LoginController extends BaseController
 
     public function login(Request $request)
     {
-        if (! $request->has('code') || ! $request->has('state')) {
+        if ($this->loginFlowService->shouldStartAuthorizationFlow($request->has('code'), $request->has('state'))) {
             $authorizationData = $this->loginFlowService->getAuthorizationData();
             $request->session()->put('vatsimauthstate', $authorizationData->state);
 
             return redirect()->away($authorizationData->authorizationUrl);
         }
 
-        if (! $this->loginFlowService->isValidState((string) $request->input('state'), $request->session()->pull('vatsimauthstate'))) {
-            return redirect()->route('landing')->withError('Something went wrong, please try again.');
+        $stateValidation = $this->loginFlowService->validateState((string) $request->input('state'), $request->session()->pull('vatsimauthstate'));
+
+        if (! $stateValidation->valid) {
+            return redirect()->route('landing')->withError((string) $stateValidation->errorMessage);
         }
 
         return $this->verifyLogin($request);
@@ -46,22 +48,18 @@ class LoginController extends BaseController
         );
 
         if (! $result->ok) {
-            if ($result->reason === 'missing_permissions') {
-                return redirect()->route('landing')->withError('You cannot use our services unless you provide the relevant permissions upon login. Please try again.');
-            }
-
-            return redirect()->route('landing')->withError('Something went wrong, please try again.');
+            return redirect()->route('landing')->withError($this->loginFlowService->loginFailureMessage((string) $result->reason));
         }
 
         $account = $result->account;
 
         Auth::guard('vatsim-sso')->loginUsingId($account->id);
 
-        if ($account->hasPassword()) {
+        if ($this->loginFlowService->requiresSecondaryLogin($account)) {
             return redirect()->route('auth-secondary');
         }
 
-        $intended = $this->loginFlowService->pullIntendedUrl(route('site.home'));
+        $intended = (string) $request->session()->pull('url.intended', route('site.home'));
 
         Auth::login(Auth::guard('vatsim-sso')->user(), true);
 

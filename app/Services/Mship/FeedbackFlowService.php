@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Answer;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
+use App\Services\Mship\DTO\FeedbackSubmitRedirectData;
 use App\Services\Mship\DTO\FeedbackSubmitResult;
 use App\Services\Mship\DTO\QuestionRenderContext;
 use Illuminate\Support\Facades\Validator;
@@ -57,6 +58,33 @@ class FeedbackFlowService
         }
 
         return $questions->all();
+    }
+
+
+    /**
+     * @param  Question[]  $questions
+     */
+    public function canRenderForm(Form $form, array $questions): bool
+    {
+        return $form->enabled && count($questions) > 0;
+    }
+
+
+    public function buildSubmitRedirectData(FeedbackSubmitResult $result): FeedbackSubmitRedirectData
+    {
+        if ($result->isValidationFailed()) {
+            return new FeedbackSubmitRedirectData(true, 'mship.feedback.new.form', errors: $result->errors, withInput: true);
+        }
+
+        if ($result->isSelfFeedbackError()) {
+            return new FeedbackSubmitRedirectData(true, 'mship.feedback.new.form', message: (string) $result->message, withInput: true);
+        }
+
+        if ($result->isTargetResolutionFailed()) {
+            return new FeedbackSubmitRedirectData(false, 'mship.manage.dashboard', message: (string) $result->message);
+        }
+
+        return new FeedbackSubmitRedirectData(false, 'mship.manage.dashboard', message: 'Your feedback has been recorded. Thank you!');
     }
 
     /**

@@ -5,9 +5,17 @@ namespace App\Services\TeamSpeak;
 use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
 use App\Models\TeamSpeak\Registration as RegistrationModel;
+use App\Services\TeamSpeak\DTO\RegistrationStatusResult;
 
 class RegistrationFlowService
 {
+    private const MAX_REGISTRATIONS_PER_ACCOUNT = 25;
+
+    public function canStartRegistration(Account $account): bool
+    {
+        return $account->teamspeakRegistrations()->count() <= self::MAX_REGISTRATIONS_PER_ACCOUNT;
+    }
+
     public function getOrCreateRegistration(Account $account, string $registrationIp): RegistrationModel
     {
         if (! $account->new_ts_registration) {
@@ -37,13 +45,24 @@ class RegistrationFlowService
         return true;
     }
 
-    public function getRegistrationStatus(Account $account, RegistrationModel $registration): ?string
+    public function getRegistrationStatus(Account $account, RegistrationModel $registration): RegistrationStatusResult
     {
         if ($account->id !== $registration->account_id) {
-            return null;
+            return RegistrationStatusResult::forbidden();
         }
 
-        return $registration->dbid === null ? 'new' : 'active';
+        return RegistrationStatusResult::success($registration->dbid === null ? 'new' : 'active');
+    }
+
+    public function getRegistrationStatusResponseBody(Account $account, RegistrationModel $registration): string
+    {
+        $result = $this->getRegistrationStatus($account, $registration);
+
+        if (! $result->ok) {
+            return 'Cannot retrieve registration status.';
+        }
+
+        return (string) $result->status;
     }
 
     public function generateAutoUrl(Account $account, ConfirmationModel $confirmation): string

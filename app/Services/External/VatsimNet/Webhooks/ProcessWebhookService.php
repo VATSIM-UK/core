@@ -4,12 +4,41 @@ namespace App\Services\External\VatsimNet\Webhooks;
 
 use App\Jobs\ExternalServices\VatsimNet\Webhooks\MemberChangedAction;
 use App\Jobs\ExternalServices\VatsimNet\Webhooks\MemberCreatedAction;
+use App\Services\External\VatsimNet\Webhooks\DTO\ProcessWebhookHttpResult;
 use App\Services\External\VatsimNet\Webhooks\DTO\ProcessWebhookResult;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 
 class ProcessWebhookService
 {
+
+    /**
+     * @param  array<string, mixed>  $webhook
+     */
+    public function handleWebhook(?string $authorizationHeader, array $webhook): ProcessWebhookHttpResult
+    {
+        if (! $this->isAuthorized($authorizationHeader)) {
+            return new ProcessWebhookHttpResult(403, [
+                'status' => 'error',
+                'message' => 'Forbidden',
+            ]);
+        }
+
+        $result = $this->process($webhook);
+
+        if (! $result->isOk()) {
+            return new ProcessWebhookHttpResult(400, [
+                'status' => 'error',
+                'message' => 'Unknown action in webhook payload.',
+                'action' => $result->message,
+            ]);
+        }
+
+        return new ProcessWebhookHttpResult(200, [
+            'status' => 'ok',
+        ]);
+    }
+
     /**
      * @param  array<string, mixed>  $webhook
      */

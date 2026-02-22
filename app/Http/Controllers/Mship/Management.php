@@ -17,7 +17,7 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function getLanding()
     {
-        if (Auth::check()) {
+        if ($this->managementFlowService->shouldRedirectLanding(Auth::check())) {
             return redirect()->intended(route('mship.manage.dashboard'));
         }
 
@@ -47,40 +47,35 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function postEmailAdd()
     {
-        $result = $this->managementFlowService->addSecondaryEmail(
+        $result = $this->managementFlowService->addSecondaryEmailResponse(
             $this->account,
             (string) Request::input('new_email'),
             (string) Request::input('new_email2')
         );
 
-        if (! $result['ok']) {
-            return Redirect::route((string) $result['route'])
-                ->withError((string) $result['message']);
-        }
-
-        return Redirect::route('mship.manage.dashboard')
-            ->withSuccess((string) $result['message']);
+        return Redirect::route((string) $result['route'])->with($result['level'], (string) $result['message']);
     }
 
     public function getEmailDelete(AccountEmail $email)
     {
-        if ($email->account->id !== $this->account->id) {
+        $data = $this->managementFlowService->getEmailDeleteViewData($this->account, $email);
+
+        if ($data === null) {
             return Redirect::route('mship.manage.dashboard');
         }
 
-        return $this->viewMake('mship.management.email.delete')
-            ->with('email', $email)
-            ->with('assignments', $email->ssoEmails);
+        return $this->viewMake('mship.management.email.delete')->with($data);
     }
 
     public function postEmailDelete(AccountEmail $email)
     {
-        if (! $this->managementFlowService->deleteSecondaryEmail($this->account, $email)) {
-            return Redirect::route('mship.manage.dashboard');
+        $result = $this->managementFlowService->deleteSecondaryEmailResponse($this->account, $email);
+
+        if (! isset($result['message'])) {
+            return Redirect::route((string) $result['route']);
         }
 
-        return Redirect::route('mship.manage.dashboard')
-            ->withSuccess('Your secondary email ('.$email->email.') has been removed!');
+        return Redirect::route((string) $result['route'])->with($result['level'], (string) $result['message']);
     }
 
     public function getEmailAssignments()
@@ -102,25 +97,19 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function getVerifyEmail($code)
     {
-        $result = $this->managementFlowService->verifyEmailToken($code);
+        $result = $this->managementFlowService->getVerifyEmailViewResult($code, (bool) $this->account);
 
-        if (! $result['ok']) {
-            return $this->viewMake('mship.management.email.verify')->with('error', $result['message']);
+        if (! $result['redirect']) {
+            return $this->viewMake('mship.management.email.verify')->with($result['level'], $result['message']);
         }
 
-        if ($this->account) {
-            return Redirect::route('mship.manage.dashboard')->withSuccess($result['message']);
-        }
-
-        return $this->viewMake('mship.management.email.verify')->with('success', $result['message']);
+        return Redirect::route('mship.manage.dashboard')->withSuccess($result['message']);
     }
 
     public function requestCertCheck()
     {
-        if (! $this->managementFlowService->requestCertCheck((int) Auth::user()->id)) {
-            return redirect()->route('mship.manage.dashboard')->withError('You requested an update with the central VATSIM database recently. Try again later.');
-        }
+        $result = $this->managementFlowService->requestCertCheckResponse((int) $this->account->id);
 
-        return redirect()->route('mship.manage.dashboard')->withSuccess('Account update requested. This may take up to 5 minutes to complete.');
+        return redirect()->route((string) $result['route'])->with($result['level'], $result['message']);
     }
 }

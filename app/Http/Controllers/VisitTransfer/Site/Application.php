@@ -30,7 +30,7 @@ class Application extends BaseController
     {
         $this->authorize('create', new \App\Models\VisitTransfer\Application);
 
-        if ($trainingTeam == 'pilot') {
+        if ($this->applicationFlowService->shouldAutoStartApplication((string) $trainingTeam)) {
             try {
                 $application = $this->applicationFlowService->startApplication(Auth::user(), $applicationType, $trainingTeam);
             } catch (Exception $e) {
@@ -61,13 +61,9 @@ class Application extends BaseController
 
     public function getContinue(\App\Models\VisitTransfer\Application $application)
     {
-        $route = $this->applicationFlowService->getContinueRoute($application);
+        $redirectData = $this->applicationFlowService->getContinueRedirectData($application);
 
-        if ($route === 'visiting.landing') {
-            return Redirect::route($route);
-        }
-
-        return Redirect::route($route, [$application->public_id]);
+        return Redirect::route($redirectData->route, $redirectData->routeParameters);
     }
 
     public function getFacility()
@@ -153,13 +149,15 @@ class Application extends BaseController
                 ->withError("There doesn't seem to be a VATSIM user with that ID.")
                 ->withInput();
         } catch (Exception $e) {
-            if ($e->getMessage() === 'Your referee must be in your home region.') {
+            $error = $this->applicationFlowService->mapRefereeAddException($e);
+
+            if ($error->useBackRedirect) {
                 return Redirect::back()
-                    ->withError('Your referee must be in your home region.')
+                    ->withError($error->message)
                     ->withInput();
             }
 
-            return Redirect::route('visiting.application.referees', [$application->public_id])->withError($e->getMessage());
+            return Redirect::route('visiting.application.referees', [$application->public_id])->withError($error->message);
         }
 
         return Redirect::route($flowResult['redirectRoute'], [$application->public_id])->withSuccess('Referee '.Request::input('referee_cid').' added successfully! They will not be contacted until you submit your application.');
@@ -228,6 +226,6 @@ class Application extends BaseController
 
     private function getCurrentOpenApplicationForUser()
     {
-        return Auth::check() ? Auth::user()->visit_transfer_current : new \App\Models\VisitTransfer\Application;
+        return $this->applicationFlowService->getCurrentOpenApplicationForUser(Auth::user());
     }
 }

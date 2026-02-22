@@ -6,12 +6,45 @@ use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
+use App\Services\VisitTransfer\DTO\ApplicationContinueRedirectData;
+use App\Services\VisitTransfer\DTO\RefereeAddExceptionData;
+use Illuminate\Contracts\Auth\Authenticatable;
 use ErrorException;
 use Exception;
 use Illuminate\Support\Facades\Gate;
 
 class ApplicationFlowService
 {
+
+    public function shouldAutoStartApplication(string $trainingTeam): bool
+    {
+        return $trainingTeam === 'pilot';
+    }
+
+    public function shouldRedirectToLanding(string $route): bool
+    {
+        return $route === 'visiting.landing';
+    }
+
+    public function mapRefereeAddException(Exception $exception): RefereeAddExceptionData
+    {
+        if ($exception->getMessage() === 'Your referee must be in your home region.') {
+            return new RefereeAddExceptionData('Your referee must be in your home region.', true);
+        }
+
+        return new RefereeAddExceptionData($exception->getMessage(), false);
+    }
+
+
+    public function getCurrentOpenApplicationForUser(?Authenticatable $account): Application
+    {
+        if (! $account instanceof Account) {
+            return new Application;
+        }
+
+        return $account->visit_transfer_current ?? new Application;
+    }
+
     public function startApplication(Account $account, string $type, string $team): Application
     {
         return $account->createVisitingTransferApplication([
@@ -43,6 +76,17 @@ class ApplicationFlowService
         }
 
         return 'visiting.landing';
+    }
+
+    public function getContinueRedirectData(Application $application): ApplicationContinueRedirectData
+    {
+        $route = $this->getContinueRoute($application);
+
+        if ($this->shouldRedirectToLanding($route)) {
+            return new ApplicationContinueRedirectData($route);
+        }
+
+        return new ApplicationContinueRedirectData($route, [$application->public_id]);
     }
 
     public function setManualFacility(Application $application, string $facilityCode): void

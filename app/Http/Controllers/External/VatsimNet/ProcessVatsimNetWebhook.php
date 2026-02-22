@@ -15,22 +15,11 @@ class ProcessVatsimNetWebhook extends BaseController
 
     public function __invoke(Request $request)
     {
-        if (! $this->processWebhookService->isAuthorized($request->header('Authorization'))) {
-            abort(403);
-        }
+        $result = $this->processWebhookService->handleWebhook(
+            $request->header('Authorization'),
+            $request->all()
+        );
 
-        $result = $this->processWebhookService->process($request->all());
-
-        if (! $result->isOk()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unknown action in webhook payload.',
-                'action' => $result->message,
-            ], 400);
-        }
-
-        return response()->json([
-            'status' => 'ok',
-        ]);
+        return response()->json($result->payload, $result->statusCode);
     }
 }

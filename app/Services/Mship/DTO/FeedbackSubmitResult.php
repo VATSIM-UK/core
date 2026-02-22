@@ -40,4 +40,19 @@ class FeedbackSubmitResult
     {
         return $this->status === 'success';
     }
+
+    public function isValidationFailed(): bool
+    {
+        return $this->status === 'validation_failed';
+    }
+
+    public function isSelfFeedbackError(): bool
+    {
+        return $this->status === 'self_feedback_error';
+    }
+
+    public function isTargetResolutionFailed(): bool
+    {
+        return $this->status === 'target_resolution_failed';
+    }
 }

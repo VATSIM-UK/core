@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Mship;
 use App\Http\Controllers\BaseController;
 use App\Models\Training\WaitingList;
 use App\Services\Mship\WaitingListFlowService;
-use App\Services\Training\WaitingListSelfEnrolment;
 use Illuminate\Http\Request;
 
 class WaitingLists extends BaseController
@@ -19,12 +18,14 @@ class WaitingLists extends BaseController
     {
         $groupedWaitingListAccounts = $this->waitingListFlowService->splitWaitingListAccountsByDepartment($request->user()->waitingListAccounts);
 
+        $selfEnrolmentLists = $this->waitingListFlowService->splitSelfEnrolmentListsByDepartment($request->user());
+
         $this->setTitle('Waiting Lists');
 
         return $this->viewMake('mship.waiting-lists.index')
             ->with('atcWaitingListAccounts', $groupedWaitingListAccounts['atcWaitingListAccounts'])
-            ->with('atcSelfEnrolmentLists', WaitingListSelfEnrolment::getListsAccountCanSelfEnrol($request->user())->where('department', WaitingList::ATC_DEPARTMENT))
-            ->with('pilotSelfEnrolmentLists', WaitingListSelfEnrolment::getListsAccountCanSelfEnrol($request->user())->where('department', WaitingList::PILOT_DEPARTMENT))
+            ->with('atcSelfEnrolmentLists', $selfEnrolmentLists['atcSelfEnrolmentLists'])
+            ->with('pilotSelfEnrolmentLists', $selfEnrolmentLists['pilotSelfEnrolmentLists'])
             ->with('pilotWaitingListAccounts', $groupedWaitingListAccounts['pilotWaitingListAccounts']);
     }
 
@@ -32,8 +33,10 @@ class WaitingLists extends BaseController
     {
         $this->authorize('selfEnrol', $waitingList);
 
-        if ($waitingList->isAtCapacity()) {
-            abort(403, 'This waiting list is currently at capacity and is not accepting new enrolments.');
+        $selfEnrolResult = $this->waitingListFlowService->getSelfEnrolResult($waitingList);
+
+        if (! $selfEnrolResult->allowed) {
+            abort(403, (string) $selfEnrolResult->message);
         }
 
         $this->waitingListFlowService->selfEnrol($waitingList, $request->user());

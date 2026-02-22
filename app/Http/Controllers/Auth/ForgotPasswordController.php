@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Services\Auth\ForgotPasswordFlowService;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 
 /**
@@ -29,7 +30,7 @@ class ForgotPasswordController extends BaseController
      */
     public function sendResetLinkEmail(Request $request)
     {
-        $response = $this->forgotPasswordFlowService->sendResetLink($this->broker());
+        $response = $this->forgotPasswordFlowService->sendResetLink($this->broker(), (int) Auth::guard('vatsim-sso')->id());
 
         return $response == Password::RESET_LINK_SENT
             ? $this->sendResetLinkResponse($request, $response)
