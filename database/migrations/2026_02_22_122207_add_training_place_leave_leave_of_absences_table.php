@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('training_place_leave_of_absences', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('training_place_id');
+            $table->string('training_place_id');
             $table->dateTime('begins_at');
             $table->dateTime('ends_at');
             $table->text('reason');
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('training_place_loas');
+        Schema::dropIfExists('training_place_leave_of_absences');
     }
 };
