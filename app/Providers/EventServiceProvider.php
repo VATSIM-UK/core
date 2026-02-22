@@ -4,10 +4,8 @@ namespace App\Providers;
 
 use App\Events\Discord\DiscordLinked;
 use App\Events\Discord\DiscordUnlinked;
-use App\Events\NetworkData\AtcSessionEnded;
 use App\Listeners\Discord\RemoveDiscordUser;
 use App\Listeners\Discord\SetupDiscordUser;
-use App\Listeners\NetworkData\FlushEndorsementCache;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -26,17 +24,8 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Mship\SendS1Email::class,
         ],
 
-        \App\Events\Mship\Bans\BanUpdated::class => [
-            \App\Listeners\Sync\Bans\SyncBanToForum::class,
-        ],
-
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
             // \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
-        ],
-
-        AtcSessionEnded::class => [
-            // AtcSessionRecordedSuccessNotification::class,
-            FlushEndorsementCache::class,
         ],
 
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [
