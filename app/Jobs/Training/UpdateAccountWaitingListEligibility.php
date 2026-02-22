@@ -23,9 +23,10 @@ class UpdateAccountWaitingListEligibility implements ShouldQueue
 
     public $backoff = 15;
 
-    public $queue = 'training-eligibility';
-
-    public function __construct(public Account $account) {}
+    public function __construct(public Account $account)
+    {
+        $this->onQueue('training-eligibility');
+    }
 
     public function handle(): void
     {
