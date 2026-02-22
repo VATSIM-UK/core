@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Pages\TrainingPlace;
 
 use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
+use App\Filament\Training\Resources\TrainingPlaceResource\Pages\ListTrainingPlaces;
 use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
@@ -11,6 +12,7 @@ use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\Section;
@@ -73,14 +75,13 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
 
     protected function getHeaderActions(): array
     {
-        $actions = [];
-
-        /** @var \App\Models\Mship\Account|null $user */
         $user = Auth::user();
-        if ($user && $user->can('training.exams.setup')) {
-            $actions[] = Action::make('forwardForExam')
+
+        return [
+            Action::make('forwardForExam')
                 ->label('Forward for Practical Exam')
                 ->icon('heroicon-o-arrow-right')
+                ->visible(fn () => $user->can('training.exams.setup'))
                 ->disabled(fn () => $this->hasPendingExam())
                 ->tooltip(fn () => $this->hasPendingExam() ? 'This member already has a pending exam booking.' : 'Forward the member for a practical exam on their primary training position')
                 ->form([
@@ -105,10 +106,34 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 ->action(fn (array $data) => $this->forwardForExam($data['position_id']))
                 ->modalHeading('Forward for Practical Exam')
                 ->modalDescription('Confirm the details below to forward this member for a practical exam.')
-                ->modalSubmitActionLabel('Forward for Exam');
-        }
+                ->modalSubmitActionLabel('Forward for Exam'),
 
-        return $actions;
+            Action::make('revokeTrainingPlace')
+                ->label('Revoke Training Place')
+                ->icon('heroicon-o-x-circle')
+                ->color('danger')
+                ->visible(fn () => $user->can('training-places.revoke.*'))
+                ->modalHeading('Revoke Training Place')
+                ->modalDescription('Are you sure you want to revoke this members training place?')
+                ->modalSubmitActionLabel('Revoke Training Place')
+                ->form([
+                    Textarea::make('reason')
+                        ->label('Reason')
+                        ->placeholder('Please provide a reason for revoking this training place')
+                        ->rows(3)
+                        ->required(),
+                ])
+                ->action(function (array $data) {
+                    $this->trainingPlace->revokeTrainingPlace($data['reason'], Auth()->user());
+
+                    Notification::make()
+                        ->title('Training place revoked successfully')
+                        ->success()
+                        ->send();
+
+                    $this->redirect(ListTrainingPlaces::getUrl());
+                }),
+        ];
     }
 
     private function hasPendingExam(): bool
