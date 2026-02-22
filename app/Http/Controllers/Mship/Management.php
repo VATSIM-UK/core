@@ -56,8 +56,15 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function postCommunityDisplaySettings()
     {
+        $hideRealNameInCommunity = Request::boolean('hide_real_name_in_community');
+        $hasChanged = $this->account->hide_real_name_in_community !== $hideRealNameInCommunity;
+
         $this->account->hide_real_name_in_community = Request::boolean('hide_real_name_in_community');
         $this->account->save();
+
+        if ($hasChanged) {
+            $this->account->syncToDiscord();
+        }
 
         return Redirect::route('mship.manage.dashboard')->withSuccess('Community display settings updated.');
     }
