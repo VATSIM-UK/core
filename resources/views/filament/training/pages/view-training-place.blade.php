@@ -10,4 +10,6 @@
     @livewire(\App\Livewire\Training\TrainingPlaceSoloEndorsement::class, ['trainingPlace' => $this->trainingPlace], key('training-place-solo-endorsement'))
 
     @livewire(\App\Livewire\Training\RecentControllingTable::class, ['trainingPlace' => $this->trainingPlace], key('recent-controlling-table'))
+
+    @livewire(\App\Livewire\Training\LeaveOfAbsencesTable::class, ['trainingPlace' => $this->trainingPlace], key('leave-of-absences-table'))
 </x-filament-panels::page>
