@@ -20,7 +20,7 @@ class TrainingPlaceLeaveOfAbsence extends Model
 
     protected $casts = [
         'begins_at' => 'datetime',
-        'ends_at'   => 'datetime',
+        'ends_at' => 'datetime',
     ];
 
     public function trainingPlace(): BelongsTo
@@ -30,12 +30,12 @@ class TrainingPlaceLeaveOfAbsence extends Model
 
     public function scopeCurrent(Builder $query)
     {
-        return $query->where('begins_at', '<=', now())->where('ends_at',   '>=', now());
+        return $query->where('begins_at', '<=', now())->where('ends_at', '>=', now());
     }
 
     public function scopeOverlapping(Builder $query, \DateTimeInterface $start, \DateTimeInterface $end)
     {
-        return $query->where('begins_at', '<', $end) ->where('ends_at',   '>', $start);
+        return $query->where('begins_at', '<', $end)->where('ends_at', '>', $start);
     }
 
     public function isActive()

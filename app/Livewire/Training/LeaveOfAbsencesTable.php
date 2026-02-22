@@ -13,17 +13,14 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
-use Filament\Tables\Actions\Action;
-
 
 class LeaveOfAbsencesTable extends Component implements HasForms, HasTable
 {
@@ -50,7 +47,7 @@ class LeaveOfAbsencesTable extends Component implements HasForms, HasTable
 
                 TextColumn::make('duration')
                     ->label('Duration')
-                    ->getStateUsing(fn (TrainingPlaceLeaveOfAbsence $record) => ceil($record->begins_at->diffInDays($record->ends_at)) . ' days'),
+                    ->getStateUsing(fn (TrainingPlaceLeaveOfAbsence $record) => ceil($record->begins_at->diffInDays($record->ends_at)).' days'),
 
                 IconColumn::make('is_active')
                     ->label('Active')
@@ -68,7 +65,7 @@ class LeaveOfAbsencesTable extends Component implements HasForms, HasTable
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->label("Create LOA")
+                    ->label('Create LOA')
                     ->icon('heroicon-o-plus')
                     ->model(TrainingPlaceLeaveOfAbsence::class)
                     ->modalHeading('Create a Leave of Absence')
@@ -101,11 +98,11 @@ class LeaveOfAbsencesTable extends Component implements HasForms, HasTable
                         ]),
                         Textarea::make('reason')
                             ->label('Reason')
-                            ->placeholder("Please provide a reason for the leave of absence.")
+                            ->placeholder('Please provide a reason for the leave of absence.')
                             ->required()
                             ->rows(3)
                             ->columnSpanFull(),
-                        ])
+                    ])
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['training_place_id'] = $this->trainingPlace->id;
                         $data['ends_at'] = Carbon::parse($data['ends_at'])->endOfDay();
@@ -128,7 +125,7 @@ class LeaveOfAbsencesTable extends Component implements HasForms, HasTable
                     ->form([
                         Textarea::make('reason')
                             ->label('Reason')
-                            ->placeholder("Please provide a reason for ending the leave of absence early.")
+                            ->placeholder('Please provide a reason for ending the leave of absence early.')
                             ->required()
                             ->rows(3)
                             ->columnSpanFull(),
@@ -144,7 +141,7 @@ class LeaveOfAbsencesTable extends Component implements HasForms, HasTable
                             ->success()
                             ->send();
                     }),
-                ])
+            ])
             ->emptyStateHeading('No leaves of absences');
     }
 
