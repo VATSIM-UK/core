@@ -6,10 +6,8 @@ use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
@@ -42,9 +40,7 @@ abstract class TestCase extends BaseTestCase
         Carbon::setTestNow($now);
         $this->knownDate = $now;
 
-        if ($this->shouldSeedDatabase()) {
-            $this->seed();
-        }
+        $this->seed();
 
         // Force regeneration of permissions cache
         $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
@@ -65,29 +61,6 @@ abstract class TestCase extends BaseTestCase
     public function __set($name, $value)
     {
         $this->$name = $value;
-    }
-
-    private function shouldSeedDatabase(): bool
-    {
-        if (! $this->isRunningInParallelWorker() || $this->usesRefreshDatabase()) {
-            return true;
-        }
-
-        if (! Schema::hasTable('mship_permission')) {
-            return true;
-        }
-
-        return ! DB::table('mship_permission')->exists();
-    }
-
-    private function isRunningInParallelWorker(): bool
-    {
-        return (bool) (env('TEST_TOKEN') ?? $_SERVER['TEST_TOKEN'] ?? null);
-    }
-
-    private function usesRefreshDatabase(): bool
-    {
-        return in_array(RefreshDatabase::class, class_uses_recursive(static::class), true);
     }
 
     protected function getOrMakeUser(): Account
