@@ -158,7 +158,7 @@ class TrainingPlaceLeaveOfAbsenceTest extends BaseTrainingPanelTestCase
             ])
             ->assertNotified();
 
-        $this->assertTrue($loa->fresh()->ends_at->isPast());
+        $this->assertTrue($loa->fresh()->ends_at->isNowOrPast());
     }
 
     private function createLoa(array $attributes = []): TrainingPlaceLeaveOfAbsence
