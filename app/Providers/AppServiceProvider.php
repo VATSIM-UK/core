@@ -93,10 +93,15 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        ParallelTesting::setUpTestDatabase(function () {
-            Artisan::call('db:seed', ['--force' => true]);
-            $this->app->make(PermissionRegistrar::class)->forgetCachedPermissions();
-        });
+        if (! class_exists(\Illuminate\Testing\ParallelTesting::class)) {
+            return;
+        }
+
+        $this->app->make(\Illuminate\Testing\ParallelTesting::class)
+            ->setUpTestDatabase(function () {
+                Artisan::call('db:seed', ['--force' => true]);
+                $this->app->make(PermissionRegistrar::class)->forgetCachedPermissions();
+            });
     }
 
     public function registerValidatorExtensions()
