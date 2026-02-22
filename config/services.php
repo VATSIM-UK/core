@@ -69,12 +69,6 @@ return [
         'public_token' => env('CHARTFOX_PUBLIC_TOKEN'),
     ],
 
-    'autotools' => [
-        'division' => env('VATSIM_AT_DIV'),
-        'username' => env('VATSIM_CERT_AT_USER'),
-        'password' => env('VATSIM_CERT_AT_PASS'),
-    ],
-
     'vatsim-net' => [
         'webhook' => [
             'key' => env('VATSIM_NET_WEBHOOK_KEY', ''),
