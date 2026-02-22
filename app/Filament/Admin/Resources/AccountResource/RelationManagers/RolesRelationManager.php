@@ -62,7 +62,7 @@ class RolesRelationManager extends RelationManager
                     ->requiresConfirmation()
                     ->deselectRecordsAfterCompletion()
                     ->label('Detach Selected')
-                    ->authorize(fn () => auth()->user()->can('adm/mship/account/*/roles/*/detach'))
+                    ->authorize(fn () => auth()->user()->can('account.edit-roles.*'))
                     ->action(function (Collection $records) {
                         $account = $this->getOwnerRecord();
 
