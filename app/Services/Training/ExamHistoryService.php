@@ -52,17 +52,34 @@ class ExamHistoryService
         return $query->when($data['position'] ?? null, function (Builder $query, array $positions) {
             $query->whereHas('examBooking', function (Builder $q) use ($positions) {
                 $q->where(function (Builder $subQuery) use ($positions) {
-                    foreach ($positions as $position) {
-                        $subQuery->orWhere('position_1', 'LIKE', "%{$position}%");
-                    }
+                    $this->applyPositionLikeClauses($subQuery, $positions);
                 });
             });
         });
     }
 
+
+    /**
+     * @param  array<int, string>  $positions
+     */
+    private function applyPositionLikeClauses(Builder $query, array $positions): void
+    {
+        foreach ($positions as $position) {
+            $query->orWhere('position_1', 'LIKE', "%{$position}%");
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    private function shouldApplyConductedByMeFilter(array $data): bool
+    {
+        return (bool) ($data['conducted_by_me'] ?? false);
+    }
+
     public function applyConductedByMeFilter(Builder $query, array $data, int $userCid): Builder
     {
-        if (! ($data['conducted_by_me'] ?? false)) {
+        if (! $this->shouldApplyConductedByMeFilter($data)) {
             return $query;
         }
 

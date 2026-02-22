@@ -27,21 +27,13 @@ class TrainingPlaceService
         $ctsPositions = $trainingPlace->trainingPosition->cts_positions;
 
         foreach ($ctsPositions as $ctsPosition) {
-            $ctsPositionModel = Position::where('callsign', $ctsPosition)->first();
+            $ctsPositionModel = $this->findCtsPosition($ctsPosition);
 
             if (! $ctsPositionModel) {
-                Log::error("CTS position with callsign {$ctsPosition} not found");
-
                 continue;
             }
 
-            // Check if the validation already exists to prevent duplicates
-            $existingValidation = PositionValidation::where('member_id', $student->member->id)
-                ->where('position_id', $ctsPositionModel->id)
-                ->where('status', PositionValidationStatusEnum::Student->value)
-                ->first();
-
-            if ($existingValidation) {
+            if ($this->studentValidationExists((int) $student->member->id, (int) $ctsPositionModel->id)) {
                 continue;
             }
 
@@ -69,11 +61,9 @@ class TrainingPlaceService
         $ctsPositions = $trainingPlace->trainingPosition->cts_positions;
 
         foreach ($ctsPositions as $ctsPosition) {
-            $ctsPositionModel = Position::where('callsign', $ctsPosition)->first();
+            $ctsPositionModel = $this->findCtsPosition($ctsPosition);
 
             if (! $ctsPositionModel) {
-                Log::error("CTS position with callsign {$ctsPosition} not found");
-
                 continue;
             }
 
@@ -82,6 +72,27 @@ class TrainingPlaceService
                 ->where('status', PositionValidationStatusEnum::Student->value)
                 ->delete();
         }
+    }
+
+    private function findCtsPosition(string $callsign): ?Position
+    {
+        $position = Position::where('callsign', $callsign)->first();
+
+        if (! $position) {
+            Log::error("CTS position with callsign {$callsign} not found");
+
+            return null;
+        }
+
+        return $position;
+    }
+
+    private function studentValidationExists(int $memberId, int $positionId): bool
+    {
+        return PositionValidation::where('member_id', $memberId)
+            ->where('position_id', $positionId)
+            ->where('status', PositionValidationStatusEnum::Student->value)
+            ->exists();
     }
 
     public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition, ?int $actorId = null): TrainingPlace

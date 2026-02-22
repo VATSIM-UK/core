@@ -18,38 +18,16 @@ class OAuthUserProfileService
         $data['name_full'] = $account->name;
         $data['email'] = $this->getEmailForClient($account, $clientId);
 
-        if ($account->qualifications_atc->isEmpty()) {
-            $data['atc_rating'][] = 0;
-            $data['atc_rating_human_short'][] = 'NA';
-            $data['atc_rating_human_long'][] = 'None Awarded';
-        } else {
-            $data['atc_rating'] = $account->qualification_atc->vatsim;
-            $data['atc_rating_human_short'] = $account->qualification_atc->name_small;
-            $data['atc_rating_human_long'] = $account->qualification_atc->name_long;
-            $data['atc_rating_date'] = $account->qualification_atc->pivot->created_at->toDateTimeString();
-        }
+        $data = array_merge($data, $this->getAtcRatingData($account));
 
-        $pilotRatingsBin = 0;
-        $pilotRatings = [];
-        if ($account->qualifications_pilot->isEmpty()) {
-            $pilotRatings[] = 0;
-            $data['pilot_ratings_human_short'][] = 'NA';
-            $data['pilot_ratings_human_long'][] = 'None Awarded';
-        } else {
-            foreach ($account->qualifications_pilot as $qual) {
-                $entry = [
-                    'rating' => $qual->vatsim,
-                    'human_short' => $qual->name_small,
-                    'human_long' => $qual->name_long,
-                    'date' => $qual->pivot->created_at->toDateTimeString(),
-                ];
-                $pilotRatings[] = $entry;
-                $pilotRatingsBin += $qual->vatsim;
-            }
-        }
+        $pilotRatingsData = $this->getPilotRatingsData($account);
+        $data['pilot_ratings'] = $pilotRatingsData['pilot_ratings'];
+        $data['pilot_ratings_bin'] = $pilotRatingsData['pilot_ratings_bin'];
 
-        $data['pilot_ratings'] = $pilotRatings;
-        $data['pilot_ratings_bin'] = decbin($pilotRatingsBin);
+        if (isset($pilotRatingsData['pilot_ratings_human_short'])) {
+            $data['pilot_ratings_human_short'] = $pilotRatingsData['pilot_ratings_human_short'];
+            $data['pilot_ratings_human_long'] = $pilotRatingsData['pilot_ratings_human_long'];
+        }
         $data['admin_ratings'] = $this->mapRatings($account->qualifications_admin);
         $data['training_pilot_ratings'] = $this->mapRatings($account->qualifications_pilot_training);
         $data['training_atc_ratings'] = $this->mapRatings($account->qualifications_atc_training);
@@ -65,6 +43,61 @@ class OAuthUserProfileService
         $data['impersonation'] = $isImpersonating;
 
         return $data;
+    }
+
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getAtcRatingData(Account $account): array
+    {
+        if ($account->qualifications_atc->isEmpty()) {
+            return [
+                'atc_rating' => [0],
+                'atc_rating_human_short' => ['NA'],
+                'atc_rating_human_long' => ['None Awarded'],
+            ];
+        }
+
+        return [
+            'atc_rating' => $account->qualification_atc->vatsim,
+            'atc_rating_human_short' => $account->qualification_atc->name_small,
+            'atc_rating_human_long' => $account->qualification_atc->name_long,
+            'atc_rating_date' => $account->qualification_atc->pivot->created_at->toDateTimeString(),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getPilotRatingsData(Account $account): array
+    {
+        if ($account->qualifications_pilot->isEmpty()) {
+            return [
+                'pilot_ratings' => [0],
+                'pilot_ratings_human_short' => ['NA'],
+                'pilot_ratings_human_long' => ['None Awarded'],
+                'pilot_ratings_bin' => decbin(0),
+            ];
+        }
+
+        $pilotRatingsBin = 0;
+        $pilotRatings = [];
+
+        foreach ($account->qualifications_pilot as $qual) {
+            $pilotRatings[] = [
+                'rating' => $qual->vatsim,
+                'human_short' => $qual->name_small,
+                'human_long' => $qual->name_long,
+                'date' => $qual->pivot->created_at->toDateTimeString(),
+            ];
+            $pilotRatingsBin += $qual->vatsim;
+        }
+
+        return [
+            'pilot_ratings' => $pilotRatings,
+            'pilot_ratings_bin' => decbin($pilotRatingsBin),
+        ];
     }
 
     private function getEmailForClient(Account $account, int $clientId): string

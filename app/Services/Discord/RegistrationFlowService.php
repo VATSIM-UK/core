@@ -75,30 +75,6 @@ class RegistrationFlowService
         return DiscordRegistrationResult::success();
     }
 
-
-    /**
-     * @return array{ok: bool, message?: string}
-     */
-    public function registerByCode(Account $account, string $code): array
-    {
-        $exchangeResult = $this->exchangeCode($code);
-        if (! $exchangeResult['ok']) {
-            return ['ok' => false, 'message' => (string) ($exchangeResult['message'] ?? 'Something went wrong. Please try again.')];
-        }
-
-        $linkResult = $this->linkAccount(
-            $account,
-            $exchangeResult['discordUser'],
-            $exchangeResult['token']
-        );
-
-        if (! $linkResult['ok']) {
-            return ['ok' => false, 'message' => (string) ($linkResult['message'] ?? 'Something went wrong. Please try again.')];
-        }
-
-        return ['ok' => true];
-    }
-
     public function unlinkAccount(Account $account): void
     {
         event(new DiscordUnlinked($account));

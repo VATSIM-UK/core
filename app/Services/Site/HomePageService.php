@@ -16,7 +16,11 @@ class HomePageService
         return Cache::remember('home.nextEvent', now()->addDay(), function () {
             $response = Http::get('https://cts.vatsim.uk/extras/next_event.php');
 
-            return $response->failed() ? '' : $this->getHTMLByID('next', $response);
+            if ($response->failed()) {
+                return '';
+            }
+
+            return $this->getHTMLByID('next', $response);
         });
     }
 

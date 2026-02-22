@@ -13,10 +13,15 @@ class MetarService
             $response = Http::get("http://metar.vatsim.net/metar.php?id=$airportIcao");
 
             if ($response->failed()) {
-                return 'METAR UNAVAILABLE';
+                return $this->unavailableResponse();
             }
 
             return $response->body();
         });
+    }
+
+    private function unavailableResponse(): string
+    {
+        return 'METAR UNAVAILABLE';
     }
 }

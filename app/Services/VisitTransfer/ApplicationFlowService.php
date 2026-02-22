@@ -2,10 +2,12 @@
 
 namespace App\Services\VisitTransfer;
 
+use App\Exceptions\Mship\InvalidCIDException;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
+use App\Services\VisitTransfer\DTO\ApplicationActionResult;
 use App\Services\VisitTransfer\DTO\ApplicationContinueRedirectData;
 use App\Services\VisitTransfer\DTO\RefereeAddExceptionData;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -51,6 +53,23 @@ class ApplicationFlowService
             'type' => $type,
             'training_team' => $team,
         ]);
+    }
+
+    public function startApplicationAction(Account $account, string $type, string $team, string $errorRoute, array $errorRouteParameters = []): ApplicationActionResult
+    {
+        try {
+            $application = $this->startApplication($account, $type, $team);
+        } catch (Exception $exception) {
+            return new ApplicationActionResult(false, $errorRoute, $errorRouteParameters, 'error', $exception->getMessage());
+        }
+
+        return new ApplicationActionResult(
+            false,
+            'visiting.application.facility',
+            [$application->public_id],
+            'success',
+            'Application started! Please complete all sections to submit your application.'
+        );
     }
 
     public function getContinueRoute(Application $application): string
@@ -109,6 +128,39 @@ class ApplicationFlowService
         $application->setStatement($statement);
     }
 
+    public function setManualFacilityAction(Application $application, string $facilityCode): ApplicationActionResult
+    {
+        try {
+            $this->setManualFacility($application, $facilityCode);
+        } catch (Exception $exception) {
+            return new ApplicationActionResult(false, 'visiting.application.facility', [$application->public_id], 'error', $exception->getMessage());
+        }
+
+        return new ApplicationActionResult(false, 'visiting.application.continue', [$application->public_id], 'success', 'Facility selection saved!');
+    }
+
+    public function setFacilityAction(Application $application, int $facilityId): ApplicationActionResult
+    {
+        try {
+            $this->setFacilityById($application, $facilityId);
+        } catch (Exception $exception) {
+            return new ApplicationActionResult(false, 'visiting.application.facility', [$application->public_id], 'error', $exception->getMessage());
+        }
+
+        return new ApplicationActionResult(false, 'visiting.application.continue', [$application->public_id], 'success', 'Facility selection saved!');
+    }
+
+    public function setStatementAction(Application $application, string $statement): ApplicationActionResult
+    {
+        try {
+            $this->setStatement($application, $statement);
+        } catch (Exception $exception) {
+            return new ApplicationActionResult(false, 'visiting.application.statement', [$application->public_id], 'error', $exception->getMessage());
+        }
+
+        return new ApplicationActionResult(false, 'visiting.application.continue', [$application->public_id], 'success', 'Statement completed');
+    }
+
     /**
      * @return array{redirectRoute: string}
      */
@@ -133,9 +185,61 @@ class ApplicationFlowService
         ];
     }
 
+    public function addRefereeAction(
+        Application $application,
+        Account $actor,
+        string $refereeCid,
+        ?string $refereeEmail,
+        ?string $refereeRelationship
+    ): ApplicationActionResult {
+        try {
+            $flowResult = $this->addReferee($application, $actor, $refereeCid, $refereeEmail, $refereeRelationship);
+        } catch (InvalidCIDException) {
+            return new ApplicationActionResult(true, '', [], 'error', "There doesn't seem to be a VATSIM user with that ID.", true);
+        } catch (Exception $exception) {
+            $error = $this->mapRefereeAddException($exception);
+
+            if ($error->useBackRedirect) {
+                return new ApplicationActionResult(true, '', [], 'error', $error->message, true);
+            }
+
+            return new ApplicationActionResult(false, 'visiting.application.referees', [$application->public_id], 'error', $error->message);
+        }
+
+        return new ApplicationActionResult(
+            false,
+            (string) $flowResult['redirectRoute'],
+            [$application->public_id],
+            'success',
+            sprintf('Referee %s added successfully! They will not be contacted until you submit your application.', $refereeCid)
+        );
+    }
+
     public function deleteReferee(Reference $reference): void
     {
         $reference->delete();
+    }
+
+    public function submitAction(Application $application): ApplicationActionResult
+    {
+        try {
+            $this->submit($application);
+        } catch (Exception $exception) {
+            return new ApplicationActionResult(false, 'visiting.application.submit', [$application->public_id], 'error', $exception->getMessage());
+        }
+
+        return new ApplicationActionResult(false, 'visiting.application.view', [$application->public_id], 'success', 'Your application has been submitted! You will be notified when staff have reviewed the details.');
+    }
+
+    public function withdrawAction(Application $application): ApplicationActionResult
+    {
+        try {
+            $this->withdraw($application);
+        } catch (Exception $exception) {
+            return new ApplicationActionResult(false, 'visiting.application.withdraw', [$application->public_id], 'error', $exception->getMessage());
+        }
+
+        return new ApplicationActionResult(false, 'visiting.landing', [], 'success', 'Your application has been withdrawn! You can submit a new application as required.');
     }
 
     public function submit(Application $application): void

@@ -18,15 +18,29 @@ class BannerService
         $timeSegment = $this->resolveTimeSegment(Carbon::now());
 
         $dir = public_path('images/banner/'.$timeSegment);
-        $images = array_diff(scandir($dir), ['.', '..']);
-        if (count($images) == 0) {
-            return asset('images/banner/fallback.jpg');
+        $images = $this->loadImages($dir);
+        if ($images === []) {
+            return $this->fallbackBannerUrl();
         }
 
         $url = asset("images/banner/$timeSegment/".$images[array_rand($images)]);
         Cache::put($key, $url, 60 * 60);
 
         return $url;
+    }
+
+
+    /**
+     * @return array<int, string>
+     */
+    private function loadImages(string $directory): array
+    {
+        return array_values(array_diff(scandir($directory), ['.', '..']));
+    }
+
+    private function fallbackBannerUrl(): string
+    {
+        return asset('images/banner/fallback.jpg');
     }
 
     private function resolveTimeSegment(Carbon $time): string

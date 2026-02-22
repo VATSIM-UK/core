@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mship\Account;
-use Auth;
+use App\Services\Http\BaseControllerContextService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Session;
 use View;
 
 class BaseController extends \Illuminate\Routing\Controller
@@ -32,13 +31,10 @@ class BaseController extends \Illuminate\Routing\Controller
 
     public function __construct()
     {
-        $this->middleware(function ($request, $next) {
-            if (Auth::check() || Auth::guard('web')->check()) {
-                $this->account = Auth::user();
-                $this->account->load('roles', 'roles.permissions');
-            } else {
-                $this->account = new Account;
-            }
+        $contextService = app(BaseControllerContextService::class);
+
+        $this->middleware(function ($request, $next) use ($contextService) {
+            $this->account = $contextService->resolveAuthenticatedAccount();
 
             return $next($request);
         });
@@ -46,11 +42,7 @@ class BaseController extends \Illuminate\Routing\Controller
 
     public function redirectTo()
     {
-        if (Session::has('url.intended')) {
-            return Session::pull('url.intended');
-        }
-
-        return $this->redirectTo;
+        return app(BaseControllerContextService::class)->resolveRedirectTo($this->redirectTo);
     }
 
     /**
@@ -67,14 +59,16 @@ class BaseController extends \Illuminate\Routing\Controller
         try {
             return $this->doAuthorize($ability, $arguments);
         } catch (AuthorizationException $e) {
-            if (Session::has('authorization.error')) {
+            $contextService = app(BaseControllerContextService::class);
+
+            if ($contextService->hasAuthorizationErrorMessage()) {
                 $class = get_class($e);
 
                 // throw the same exception with the reason for authorization failure
-                throw new $class(Session::get('authorization.error'), $e->getCode(), $e->getPrevious());
-            } else {
-                throw $e;
+                throw new $class($contextService->getAuthorizationErrorMessage(), $e->getCode(), $e->getPrevious());
             }
+
+            throw $e;
         }
     }
 

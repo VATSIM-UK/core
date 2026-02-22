@@ -12,19 +12,13 @@ class PositionValidationService
     public function validatePosition(?string $positionCallsign): ApiServiceResult
     {
         if (! $positionCallsign) {
-            return new ApiServiceResult(400, [
-                'status' => '400',
-                'message' => 'No position was supplied.',
-            ]);
+            return $this->noPositionSupplied();
         }
 
         try {
             $position = Position::where('callsign', $positionCallsign)->firstOrFail();
         } catch (ModelNotFoundException) {
-            return new ApiServiceResult(404, [
-                'status' => '404',
-                'message' => 'Position not found.',
-            ]);
+            return $this->positionNotFound();
         }
 
         $validatedMembers = cache()->remember("validation_members_{$position->id}", now()->addDay(), function () use ($position) {
@@ -40,4 +34,21 @@ class PositionValidationService
             'validated_members' => $validatedMembers,
         ]);
     }
+
+    private function noPositionSupplied(): ApiServiceResult
+    {
+        return new ApiServiceResult(400, [
+            'status' => '400',
+            'message' => 'No position was supplied.',
+        ]);
+    }
+
+    private function positionNotFound(): ApiServiceResult
+    {
+        return new ApiServiceResult(404, [
+            'status' => '404',
+            'message' => 'Position not found.',
+        ]);
+    }
+
 }

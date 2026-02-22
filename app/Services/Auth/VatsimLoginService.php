@@ -9,14 +9,9 @@ class VatsimLoginService
 {
     public function hasRequiredResourceOwnerFields(object $resourceOwner): bool
     {
-        return $resourceOwner->data &&
-            $resourceOwner->data->cid &&
-            $resourceOwner->data->personal &&
-            optional($resourceOwner->data->personal)->name_first &&
-            optional($resourceOwner->data->personal)->name_last &&
-            optional($resourceOwner->data->personal)->email &&
-            $resourceOwner->data->vatsim &&
-            $resourceOwner->data->oauth->token_valid === 'true';
+        return $this->hasAccountIdentityData($resourceOwner)
+            && $this->hasPersonalData($resourceOwner)
+            && $this->hasVatsimAndValidOauthToken($resourceOwner);
     }
 
     public function completeLogin(object $resourceOwner, object $token, string $ipAddress): Account
@@ -31,14 +26,42 @@ class VatsimLoginService
         $account->updateVatsimRatings($resourceOwner->data->vatsim->rating->id, $resourceOwner->data->vatsim->pilotrating->id);
         $account->updateDivision($resourceOwner->data->vatsim->division->id, $resourceOwner->data->vatsim->region->id);
 
-        if ($resourceOwner->data->oauth->token_valid) {
-            $account->vatsim_access_token = $token->getToken();
-            $account->vatsim_refresh_token = $token->getRefreshToken();
-            $account->vatsim_token_expires = $token->getExpires();
+        if ($this->isOauthTokenValid($resourceOwner)) {
+            $this->setAccountTokens($account, $token);
         }
 
         $account->save();
 
         return $account;
+    }
+
+    private function hasAccountIdentityData(object $resourceOwner): bool
+    {
+        return isset($resourceOwner->data) && isset($resourceOwner->data->cid);
+    }
+
+    private function hasPersonalData(object $resourceOwner): bool
+    {
+        return isset($resourceOwner->data->personal)
+            && filled(optional($resourceOwner->data->personal)->name_first)
+            && filled(optional($resourceOwner->data->personal)->name_last)
+            && filled(optional($resourceOwner->data->personal)->email);
+    }
+
+    private function hasVatsimAndValidOauthToken(object $resourceOwner): bool
+    {
+        return isset($resourceOwner->data->vatsim) && $resourceOwner->data->oauth->token_valid === 'true';
+    }
+
+    private function isOauthTokenValid(object $resourceOwner): bool
+    {
+        return (bool) $resourceOwner->data->oauth->token_valid;
+    }
+
+    private function setAccountTokens(Account $account, object $token): void
+    {
+        $account->vatsim_access_token = $token->getToken();
+        $account->vatsim_refresh_token = $token->getRefreshToken();
+        $account->vatsim_token_expires = $token->getExpires();
     }
 }

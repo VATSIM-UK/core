@@ -47,35 +47,35 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function postEmailAdd()
     {
-        $result = $this->managementFlowService->addSecondaryEmailResponse(
+        $result = $this->managementFlowService->getAddSecondaryEmailRedirectResult(
             $this->account,
             (string) Request::input('new_email'),
             (string) Request::input('new_email2')
         );
 
-        return Redirect::route((string) $result['route'])->with($result['level'], (string) $result['message']);
+        return Redirect::route($result->route)->with((string) $result->level, (string) $result->message);
     }
 
     public function getEmailDelete(AccountEmail $email)
     {
-        $data = $this->managementFlowService->getEmailDeleteViewData($this->account, $email);
+        $result = $this->managementFlowService->getEmailDeleteViewResult($this->account, $email);
 
-        if ($data === null) {
-            return Redirect::route('mship.manage.dashboard');
+        if ($result->redirect) {
+            return Redirect::route($result->route);
         }
 
-        return $this->viewMake('mship.management.email.delete')->with($data);
+        return $this->viewMake('mship.management.email.delete')->with($result->data);
     }
 
     public function postEmailDelete(AccountEmail $email)
     {
-        $result = $this->managementFlowService->deleteSecondaryEmailResponse($this->account, $email);
+        $result = $this->managementFlowService->getDeleteSecondaryEmailRedirectResult($this->account, $email);
 
-        if (! isset($result['message'])) {
-            return Redirect::route((string) $result['route']);
+        if (! $result->hasFlashMessage()) {
+            return Redirect::route($result->route);
         }
 
-        return Redirect::route((string) $result['route'])->with($result['level'], (string) $result['message']);
+        return Redirect::route($result->route)->with((string) $result->level, (string) $result->message);
     }
 
     public function getEmailAssignments()
@@ -97,19 +97,19 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function getVerifyEmail($code)
     {
-        $result = $this->managementFlowService->getVerifyEmailViewResult($code, (bool) $this->account);
+        $result = $this->managementFlowService->getVerifyEmailPageResult($code, (bool) $this->account);
 
-        if (! $result['redirect']) {
-            return $this->viewMake('mship.management.email.verify')->with($result['level'], $result['message']);
+        if (! $result->redirect) {
+            return $this->viewMake('mship.management.email.verify')->with((string) $result->level, (string) $result->message);
         }
 
-        return Redirect::route('mship.manage.dashboard')->withSuccess($result['message']);
+        return Redirect::route($result->route)->withSuccess((string) $result->message);
     }
 
     public function requestCertCheck()
     {
-        $result = $this->managementFlowService->requestCertCheckResponse((int) $this->account->id);
+        $result = $this->managementFlowService->getRequestCertCheckRedirectResult((int) $this->account->id);
 
-        return redirect()->route((string) $result['route'])->with($result['level'], $result['message']);
+        return redirect()->route($result->route)->with((string) $result->level, (string) $result->message);
     }
 }

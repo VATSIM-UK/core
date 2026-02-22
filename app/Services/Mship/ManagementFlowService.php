@@ -8,6 +8,8 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Roster;
 use App\Models\Sys\Token as SystemToken;
+use App\Services\Mship\DTO\ManagementRedirectResult;
+use App\Services\Mship\DTO\ManagementViewResult;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
@@ -46,6 +48,13 @@ class ManagementFlowService
             'level' => ($result['ok'] ?? false) ? 'success' : 'error',
             'message' => (string) $result['message'],
         ];
+    }
+
+    public function getAddSecondaryEmailRedirectResult(Account $account, string $email, string $emailConfirmation): ManagementRedirectResult
+    {
+        $result = $this->addSecondaryEmailResponse($account, $email, $emailConfirmation);
+
+        return new ManagementRedirectResult((string) $result['route'], (string) $result['level'], (string) $result['message']);
     }
 
     public function addSecondaryEmail(Account $account, string $email, string $emailConfirmation): array
@@ -109,6 +118,17 @@ class ManagementFlowService
         ];
     }
 
+    public function getEmailDeleteViewResult(Account $account, AccountEmail $email): ManagementViewResult
+    {
+        $data = $this->getEmailDeleteViewData($account, $email);
+
+        if ($data === null) {
+            return new ManagementViewResult(true, 'mship.manage.dashboard');
+        }
+
+        return new ManagementViewResult(false, '', $data);
+    }
+
     /**
      * @return array{route: string, level: string, message?: string}
      */
@@ -126,6 +146,17 @@ class ManagementFlowService
             'level' => 'success',
             'message' => 'Your secondary email ('.$email->email.') has been removed!',
         ];
+    }
+
+    public function getDeleteSecondaryEmailRedirectResult(Account $account, AccountEmail $email): ManagementRedirectResult
+    {
+        $result = $this->deleteSecondaryEmailResponse($account, $email);
+
+        return new ManagementRedirectResult(
+            (string) $result['route'],
+            isset($result['message']) ? (string) $result['level'] : null,
+            isset($result['message']) ? (string) $result['message'] : null,
+        );
     }
 
     public function deleteSecondaryEmail(Account $account, AccountEmail $email): bool
@@ -173,6 +204,17 @@ class ManagementFlowService
             'level' => 'success',
             'message' => $result['message'],
         ];
+    }
+
+    public function getVerifyEmailPageResult(string $code, bool $isAuthenticated): ManagementViewResult
+    {
+        $result = $this->getVerifyEmailViewResult($code, $isAuthenticated);
+
+        if ((bool) $result['redirect']) {
+            return new ManagementViewResult(true, 'mship.manage.dashboard', level: 'success', message: (string) $result['message']);
+        }
+
+        return new ManagementViewResult(false, '', level: (string) $result['level'], message: (string) $result['message']);
     }
 
     /**
@@ -281,6 +323,13 @@ class ManagementFlowService
             'level' => 'success',
             'message' => 'Account update requested. This may take up to 5 minutes to complete.',
         ];
+    }
+
+    public function getRequestCertCheckRedirectResult(int $accountId): ManagementRedirectResult
+    {
+        $result = $this->requestCertCheckResponse($accountId);
+
+        return new ManagementRedirectResult((string) $result['route'], (string) $result['level'], (string) $result['message']);
     }
 
     public function requestCertCheck(int $accountId): bool

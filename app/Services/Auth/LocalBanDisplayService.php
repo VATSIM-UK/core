@@ -9,7 +9,7 @@ class LocalBanDisplayService
 {
     public function canViewBanPage(Account $account): bool
     {
-        return $account->is_system_banned;
+        return $this->isSystemBanned($account);
     }
 
     public function getBanForDisplay(Account $account): ?Ban
@@ -18,6 +18,16 @@ class LocalBanDisplayService
             return null;
         }
 
+        return $this->loadBanWithReason($account);
+    }
+
+    private function isSystemBanned(Account $account): bool
+    {
+        return $account->is_system_banned;
+    }
+
+    private function loadBanWithReason(Account $account): Ban
+    {
         return $account->system_ban->load('reason');
     }
 }
