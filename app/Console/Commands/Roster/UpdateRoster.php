@@ -92,6 +92,10 @@ class UpdateRoster extends Command
             });
         });
 
+        $removeFromRosterCount = $removeFromRoster->count();
+        $homeRemovalsCount = $homeRemovals->count();
+        $visitingAndTransferringRemovalsCount = $visitingAndTransferringRemovals->count();
+
         $removeFromRoster->get()
             ->each
             ->remove($rosterUpdate);
@@ -122,9 +126,9 @@ class UpdateRoster extends Command
                 'newS1Members' => $newS1Members->count(),
                 'ganderControllers' => $ganderControllers->count(),
                 'eligible' => $eligible->count(),
-                'removeFromRoster' => $removeFromRoster->count(),
-                'homeRemovals' => $homeRemovals->count(),
-                'visitingAndTransferringRemovals' => $visitingAndTransferringRemovals->count(),
+                'removeFromRoster' => $removeFromRosterCount,
+                'homeRemovals' => $homeRemovalsCount,
+                'visitingAndTransferringRemovals' => $visitingAndTransferringRemovalsCount,
                 'removeFromWaitingList' => $removeFromWaitingList->countBy('list_id'),
             ],
         ]);
