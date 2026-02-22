@@ -24,10 +24,6 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Mship\SendS1Email::class,
         ],
 
-        \App\Events\Mship\Bans\BanUpdated::class => [
-            \App\Listeners\Sync\Bans\SyncBanToForum::class,
-        ],
-
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
             // \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],

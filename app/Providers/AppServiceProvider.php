@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Http\Controllers\BaseController;
 use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
-use App\Libraries\Forum;
 use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
@@ -75,7 +74,6 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(UKCP::class);
         $this->app->singleton(Discord::class);
-        $this->app->singleton(Forum::class);
         $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
         $this->app->singleton(\Wohali\OAuth2\Client\Provider\Discord::class, function () {
             return new \Wohali\OAuth2\Client\Provider\Discord([

@@ -157,8 +157,6 @@ return [
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Alawrence\Ipboard\ServiceProvider::class,
-
         /*
          * Application Service Providers...
          */
@@ -234,7 +232,6 @@ return [
          * Third Party Aliases
          */
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        'IPBoard' => Alawrence\Ipboard\Facades\Ipboard::class,
     ],
 
 ];
