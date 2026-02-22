@@ -3,27 +3,18 @@
 namespace App\Http\Controllers\UKCP;
 
 use App\Http\Controllers\BaseController;
-use App\Libraries\UKCP as UKCPLibrary;
+use App\Services\UKCP\TokenService;
 
 class Token extends BaseController
 {
-    /** @var Token */
-    private $ukcp;
-
-    public function __construct(UKCPLibrary $ukcp)
+    public function __construct(private TokenService $tokenService)
     {
-        $this->ukcp = $ukcp;
-
         parent::__construct();
     }
 
     public function invalidate()
     {
-        $currentTokens = $this->ukcp->getValidTokensFor(auth()->user());
-
-        foreach ($currentTokens as $token) {
-            $this->ukcp->deleteToken($token->id, auth()->user());
-        }
+        $this->tokenService->invalidateAll(auth()->user());
 
         return redirect()->route('ukcp.guide')->withSuccess('Tokens Invalidated!');
     }

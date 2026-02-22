@@ -3,28 +3,25 @@
 namespace App\Http\Controllers\VisitTransfer\Site;
 
 use App\Http\Controllers\BaseController;
-use Auth;
+use App\Services\VisitTransfer\DashboardService;
 
 class Dashboard extends BaseController
 {
+    public function __construct(private DashboardService $dashboardService)
+    {
+        parent::__construct();
+    }
+
     public function getDashboard()
     {
-        $allApplications = Auth::user()->visitTransferApplications;
-
-        $currentVisitApplication = Auth::user()->visitTransferApplications()->visit()->open()->latest()->first();
-
-        $currentTransferApplication = Auth::user()->visitTransferApplications()->transfer()->open()->latest()->first();
-
-        $pendingReferences = $this->account->visitTransferReferee->filter(function ($ref) {
-            return $ref->is_requested;
-        });
+        $dashboardData = $this->dashboardService->getDashboardData($this->account);
 
         $this->setTitle('Visiting and Transfer Dashboard');
 
         return $this->viewMake('visit-transfer.site.dashboard')
-            ->with('allApplications', $allApplications)
-            ->with('currentVisitApplication', $currentVisitApplication)
-            ->with('currentTransferApplication', $currentTransferApplication)
-            ->with('pendingReferences', $pendingReferences);
+            ->with('allApplications', $dashboardData['allApplications'])
+            ->with('currentVisitApplication', $dashboardData['currentVisitApplication'])
+            ->with('currentTransferApplication', $dashboardData['currentTransferApplication'])
+            ->with('pendingReferences', $dashboardData['pendingReferences']);
     }
 }

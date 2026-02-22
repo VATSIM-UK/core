@@ -4,41 +4,28 @@ namespace App\Http\Controllers\Mship;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingList\WaitingListAccount;
-use App\Models\Training\WaitingList\WaitingListRetentionCheck;
-use App\Services\Training\WaitingListRetentionChecks;
+use App\Services\Mship\WaitingListFlowService;
 use App\Services\Training\WaitingListSelfEnrolment;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 
 class WaitingLists extends BaseController
 {
+    public function __construct(private WaitingListFlowService $waitingListFlowService)
+    {
+        parent::__construct();
+    }
+
     public function index(Request $request)
     {
-        /** @var Collection<WaitingListAccount> $waitingListAccounts */
-        $waitingListAccounts = $request->user()->waitingListAccounts;
-
-        $atcWaitingListAccounts = collect();
-        $pilotWaitingListAccounts = collect();
-
-        foreach ($waitingListAccounts as $waitingListAccount) {
-            if ($waitingListAccount->waitingList->department == WaitingList::ATC_DEPARTMENT) {
-                $atcWaitingListAccounts->push($waitingListAccount);
-            }
-
-            if ($waitingListAccount->waitingList->department == WaitingList::PILOT_DEPARTMENT) {
-                $pilotWaitingListAccounts->push($waitingListAccount);
-            }
-        }
+        $groupedWaitingListAccounts = $this->waitingListFlowService->splitWaitingListAccountsByDepartment($request->user()->waitingListAccounts);
 
         $this->setTitle('Waiting Lists');
 
         return $this->viewMake('mship.waiting-lists.index')
-            ->with('atcWaitingListAccounts', $atcWaitingListAccounts)
+            ->with('atcWaitingListAccounts', $groupedWaitingListAccounts['atcWaitingListAccounts'])
             ->with('atcSelfEnrolmentLists', WaitingListSelfEnrolment::getListsAccountCanSelfEnrol($request->user())->where('department', WaitingList::ATC_DEPARTMENT))
             ->with('pilotSelfEnrolmentLists', WaitingListSelfEnrolment::getListsAccountCanSelfEnrol($request->user())->where('department', WaitingList::PILOT_DEPARTMENT))
-            ->with('pilotWaitingListAccounts', $pilotWaitingListAccounts);
+            ->with('pilotWaitingListAccounts', $groupedWaitingListAccounts['pilotWaitingListAccounts']);
     }
 
     public function selfEnrol(WaitingList $waitingList, Request $request)
@@ -49,7 +36,7 @@ class WaitingLists extends BaseController
             abort(403, 'This waiting list is currently at capacity and is not accepting new enrolments.');
         }
 
-        $waitingList->addToWaitingList($request->user(), $request->user());
+        $this->waitingListFlowService->selfEnrol($waitingList, $request->user());
 
         return redirect()
             ->route('mship.waiting-lists.index')
@@ -58,39 +45,8 @@ class WaitingLists extends BaseController
 
     public function getRetentionWithToken()
     {
-        $token = request()->query('token');
+        $result = $this->waitingListFlowService->processRetentionToken(request()->query('token'));
 
-        if (! $token || empty($token)) {
-            return redirect()
-                ->route('mship.waiting-lists.retention.fail')
-                ->with('failReason', 'No token provided');
-        }
-
-        try {
-            $retentionCheck = WaitingListRetentionCheck::where('token', $token)->firstOrFail();
-        } catch (ModelNotFoundException) {
-            return redirect()
-                ->route('mship.waiting-lists.retention.fail')
-                ->with('failReason', 'Invalid or expired token');
-        }
-
-        // Only the scheduled command will change the status so we need to check the expires_at timestamp as well
-        if ($retentionCheck->status === WaitingListRetentionCheck::STATUS_USED ||
-            $retentionCheck->response_at !== null) {
-            return redirect()
-                ->route('mship.waiting-lists.retention.success')
-                ->with('extraMessage', 'This retention check token has already been used, waiting list place has already been confirmed');
-        }
-
-        if ($retentionCheck->status !== WaitingListRetentionCheck::STATUS_PENDING || $retentionCheck->expires_at < now()) {
-            return redirect()
-                ->route('mship.waiting-lists.retention.fail')
-                ->with('failReason', 'Invalid or expired token');
-        }
-
-        WaitingListRetentionChecks::markRetentionCheckAsUsed($retentionCheck);
-
-        return redirect()
-            ->route('mship.waiting-lists.retention.success');
+        return redirect()->route($result->route)->with($result->flash);
     }
 }

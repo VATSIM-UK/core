@@ -5,32 +5,34 @@ namespace App\Http\Controllers\VisitTransfer\Site;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\VisitTransfer\ApplicationFacilitySelectedRequested;
+use App\Http\Requests\VisitTransfer\ApplicationManualFacilityRequest;
 use App\Http\Requests\VisitTransfer\ApplicationRefereeAddRequest;
 use App\Http\Requests\VisitTransfer\ApplicationRefereeDeleteRequest;
 use App\Http\Requests\VisitTransfer\ApplicationStartRequest;
 use App\Http\Requests\VisitTransfer\ApplicationStatementSubmitRequest;
 use App\Http\Requests\VisitTransfer\ApplicationSubmitRequest;
 use App\Http\Requests\VisitTransfer\ApplicationWithdrawRequest;
-use App\Models\Mship\Account;
-use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
+use App\Services\VisitTransfer\ApplicationFlowService;
 use Auth;
-use ErrorException;
 use Exception;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Request;
 use Redirect;
-use Validator;
 
 class Application extends BaseController
 {
+    public function __construct(private ApplicationFlowService $applicationFlowService)
+    {
+        parent::__construct();
+    }
+
     public function getStart($applicationType, $trainingTeam = 'atc')
     {
         $this->authorize('create', new \App\Models\VisitTransfer\Application);
 
         if ($trainingTeam == 'pilot') {
             try {
-                $application = $this->startApplication($applicationType, $trainingTeam);
+                $application = $this->applicationFlowService->startApplication(Auth::user(), $applicationType, $trainingTeam);
             } catch (Exception $e) {
                 return Redirect::route('visiting.landing')->withError($e->getMessage());
             }
@@ -49,7 +51,7 @@ class Application extends BaseController
     public function postStart(ApplicationStartRequest $request)
     {
         try {
-            $application = $this->startApplication(Request::input('application_type'), Request::input('training_team'));
+            $application = $this->applicationFlowService->startApplication(Auth::user(), (string) Request::input('application_type'), (string) Request::input('training_team'));
         } catch (Exception $e) {
             return Redirect::route('visiting.application.start', [Request::input('application_type')])->withError($e->getMessage());
         }
@@ -57,37 +59,15 @@ class Application extends BaseController
         return Redirect::route('visiting.application.facility', [$application->public_id])->withSuccess('Application started! Please complete all sections to submit your application.');
     }
 
-    private function startApplication($type, $team)
-    {
-        return Auth::user()->createVisitingTransferApplication([
-            'type' => $type,
-            'training_team' => $team,
-        ]);
-    }
-
     public function getContinue(\App\Models\VisitTransfer\Application $application)
     {
-        if (Gate::allows('select-facility', $application)) {
-            return Redirect::route('visiting.application.facility', [$application->public_id]);
+        $route = $this->applicationFlowService->getContinueRoute($application);
+
+        if ($route === 'visiting.landing') {
+            return Redirect::route($route);
         }
 
-        if (Gate::allows('add-statement', $application) && $application->statement == null) {
-            return Redirect::route('visiting.application.statement', [$application->public_id]);
-        }
-
-        if (Gate::allows('add-referee', $application) && $application->number_references_required_relative > 0) {
-            return Redirect::route('visiting.application.referees', [$application->public_id]);
-        }
-
-        if (Gate::allows('submit-application', $application)) {
-            return Redirect::route('visiting.application.submit', [$application->public_id]);
-        }
-
-        if (Gate::allows('view', $application)) {
-            return Redirect::route('visiting.application.view', [$application->public_id]);
-        }
-
-        return Redirect::route('visiting.landing');
+        return Redirect::route($route, [$application->public_id]);
     }
 
     public function getFacility()
@@ -101,26 +81,10 @@ class Application extends BaseController
             ->with('facilities', $this->getCurrentOpenApplicationForUser()->potential_facilities);
     }
 
-    public function postManualFacility(Request $request, \App\Models\VisitTransfer\Application $application)
+    public function postManualFacility(ApplicationManualFacilityRequest $request, \App\Models\VisitTransfer\Application $application)
     {
-        $validator = Validator::make(Request::all(), [
-            'facility-code' => 'required|alpha_num',
-        ]);
-
-        if ($validator->fails()) {
-            return Redirect::back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $facility = Facility::findByPublicID(Request::input('facility-code'));
-        if (! $facility) {
-            return Redirect::back()
-                ->withError('That facility code is invalid.')
-                ->withInput();
-        }
-
         try {
-            $application->setFacility($facility);
+            $this->applicationFlowService->setManualFacility($application, (string) Request::input('facility-code'));
         } catch (Exception $e) {
             return Redirect::route('visiting.application.facility', [$application->public_id])->withError($e->getMessage());
         }
@@ -131,7 +95,7 @@ class Application extends BaseController
     public function postFacility(ApplicationFacilitySelectedRequested $request, \App\Models\VisitTransfer\Application $application)
     {
         try {
-            $application->setFacility(Facility::find(Request::input('facility_id')));
+            $this->applicationFlowService->setFacilityById($application, (int) Request::input('facility_id'));
         } catch (Exception $e) {
             return Redirect::route('visiting.application.facility', [$application->public_id])->withError($e->getMessage());
         }
@@ -154,7 +118,7 @@ class Application extends BaseController
     public function postStatement(ApplicationStatementSubmitRequest $request, \App\Models\VisitTransfer\Application $application)
     {
         try {
-            $application->setStatement(Request::input('statement'));
+            $this->applicationFlowService->setStatement($application, (string) Request::input('statement'));
         } catch (Exception $e) {
             return Redirect::route('visiting.application.statement', [$application->public_id])->withError($e->getMessage());
         }
@@ -176,47 +140,34 @@ class Application extends BaseController
 
     public function postReferees(ApplicationRefereeAddRequest $request, \App\Models\VisitTransfer\Application $application)
     {
-        // Check if the CID is in the home region
         try {
-            $referee = Account::findOrRetrieve(Request::input('referee_cid'));
+            $flowResult = $this->applicationFlowService->addReferee(
+                $application,
+                Auth::user(),
+                (string) Request::input('referee_cid'),
+                Request::input('referee_email'),
+                Request::input('referee_relationship')
+            );
         } catch (InvalidCIDException $e) {
             return Redirect::back()
                 ->withError("There doesn't seem to be a VATSIM user with that ID.")
                 ->withInput();
-        }
-
-        try {
-            if ($referee->primary_permanent_state->pivot->region != Auth::user()->primary_permanent_state->pivot->region) {
+        } catch (Exception $e) {
+            if ($e->getMessage() === 'Your referee must be in your home region.') {
                 return Redirect::back()
                     ->withError('Your referee must be in your home region.')
                     ->withInput();
             }
-        } catch (ErrorException $e) {
-            // If we don't have this data, we shouldn't penalise the applicant at this point.
-        }
 
-        try {
-            $application->addReferee(
-                $referee,
-                Request::input('referee_email'),
-                Request::input('referee_relationship')
-            );
-        } catch (Exception $e) {
             return Redirect::route('visiting.application.referees', [$application->public_id])->withError($e->getMessage());
         }
 
-        $redirectRoute = 'visiting.application.referees';
-
-        if ($application->fresh()->number_references_required_relative == 0) {
-            $redirectRoute = 'visiting.application.submit';
-        }
-
-        return Redirect::route($redirectRoute, [$application->public_id])->withSuccess('Referee '.Request::input('referee_cid').' added successfully! They will not be contacted until you submit your application.');
+        return Redirect::route($flowResult['redirectRoute'], [$application->public_id])->withSuccess('Referee '.Request::input('referee_cid').' added successfully! They will not be contacted until you submit your application.');
     }
 
     public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, \App\Models\VisitTransfer\Application $application, Reference $reference)
     {
-        $reference->delete();
+        $this->applicationFlowService->deleteReferee($reference);
 
         return Redirect::route('visiting.application.referees', [$application->public_id])->withSuccess('Referee '.$reference->account->name.' deleted.');
     }
@@ -234,7 +185,7 @@ class Application extends BaseController
     public function postSubmit(ApplicationSubmitRequest $request, \App\Models\VisitTransfer\Application $application)
     {
         try {
-            $application->submit();
+            $this->applicationFlowService->submit($application);
         } catch (Exception $e) {
             return Redirect::route('visiting.application.submit', [$application->public_id])->withError($e->getMessage());
         }
@@ -255,7 +206,7 @@ class Application extends BaseController
     public function postWithdraw(ApplicationWithdrawRequest $request, \App\Models\VisitTransfer\Application $application)
     {
         try {
-            $application->withdraw();
+            $this->applicationFlowService->withdraw($application);
         } catch (Exception $e) {
             return Redirect::route('visiting.application.withdraw', [$application->public_id])->withError($e->getMessage());
         }

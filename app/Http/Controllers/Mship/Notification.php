@@ -2,41 +2,41 @@
 
 namespace App\Http\Controllers\Mship;
 
-use Auth;
-use Redirect;
-use Session;
+use App\Services\Mship\NotificationFlowService;
+use Illuminate\Support\Facades\Session;
 
 class Notification extends \App\Http\Controllers\BaseController
 {
     protected $redirectTo = 'mship/notification/list';
 
+    public function __construct(private NotificationFlowService $notificationFlowService)
+    {
+        parent::__construct();
+    }
+
     public function postAcknowledge($notification)
     {
-        if ($this->account->hasReadNotification($notification)) {
+        $forcedReturnUrl = Session::has('force_notification_read_return_url')
+            ? (string) Session::pull('force_notification_read_return_url')
+            : null;
+
+        $result = $this->notificationFlowService->acknowledge($this->account, $notification, $this->redirectPath(), $forcedReturnUrl);
+
+        if ($result->status === 'already_read') {
             return redirect()->route('mship.manage.dashboard');
         }
-        $this->account->readSystemNotifications()
-            ->attach($notification->id);
 
-        // If this is an interrupt AND we're got no more important notifications, then let's go back!
-        if (Session::has('force_notification_read_return_url')) {
-            if (! Auth::user()->has_unread_important_notifications and ! Auth::user()->get_unread_must_read_notifications) {
-                return Redirect::to(Session::pull('force_notification_read_return_url'));
-            }
-        }
-
-        return redirect($this->redirectPath());
+        return redirect((string) $result->redirectUrl);
     }
 
     public function getList()
     {
-        // Get all unread notifications.
-        $unreadNotifications = $this->account->unreadNotifications;
-        $readNotifications = $this->account->readSystemNotifications;
+        $allowedToLeave = ! Session::has('force_notification_read_return_url')
+            || $this->notificationFlowService->canLeaveNotificationFlow($this->account);
 
         return $this->viewMake('mship.notification.list')
-            ->with('unreadNotifications', $unreadNotifications)
-            ->with('readNotifications', $readNotifications)
-            ->with('allowedToLeave', ! Session::has('force_notification_read_return_url') or (! Auth::user()->has_unread_important_notifications and ! Auth::user()->get_unread_must_read_notifications));
+            ->with('unreadNotifications', $this->account->unreadNotifications)
+            ->with('readNotifications', $this->account->readSystemNotifications)
+            ->with('allowedToLeave', $allowedToLeave);
     }
 }
