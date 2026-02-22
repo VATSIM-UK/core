@@ -28,7 +28,7 @@ class ActionWaitingListRetentionCheckRemoval implements ShouldQueue
 
     public function __construct(public WaitingListRetentionCheck $retentionCheck)
     {
-        this->onQueue('training-retention');
+        $this->onQueue('training-retention');
     }
 
     public function handle(): void
