@@ -3,6 +3,7 @@
 namespace App\Models\Cts;
 
 use App\Models\Mship\Account;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,13 +40,17 @@ class TheoryQuestion extends Model
 
     // The below matches the 'add_by' and 'edit_by' fields to the 'id' in the cts.members table. if no match is found for the id then it will match those fields with the cid.
     // The aim is to account for some cts accounts having mismatched IDs but core utilising the CID regardless on CRUD actions.
-    public function addedBy()
+    protected function addedByMember(): Attribute
     {
-        return Member::where('id', $this->add_by)->orWhere('cid', $this->add_by)->first();
+        return Attribute::make(
+            get: fn () => Member::where('id', $this->add_by)->orWhere('cid', $this->add_by)->first(),
+        );
     }
 
-    public function editedBy()
+    protected function editedByMember(): Attribute
     {
-        return Member::where('id', $this->edit_by)->orWhere('cid', $this->edit_by)->first();
+        return Attribute::make(
+            get: fn () => Member::where('id', $this->edit_by)->orWhere('cid', $this->edit_by)->first(),
+        );
     }
 }

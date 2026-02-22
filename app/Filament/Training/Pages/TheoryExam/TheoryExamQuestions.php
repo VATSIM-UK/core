@@ -112,9 +112,9 @@ class TheoryExamQuestions extends Page implements HasTable
                     ->icon('heroicon-o-pencil')
                     ->fillForm(fn ($record) => [
                         ...$record->toArray(),
-                        'added_by' => $record->addedBy()?->account?->name ?? $record->add_by,
+                        'added_by' => $record->added_by_member?->account?->name ?? $record->add_by,
                         'added_date' => $record->add_date ? Carbon::parse($record->add_date)->isoFormat('LL') : null, // Date only (stored in db like this, not sure why)
-                        'edited_by' => $record->editedBy()?->account?->name ?? $record->edit_by,
+                        'edited_by' => $record->edited_by_member?->account?->name ?? $record->edit_by,
                         'edited_date' => $record->edit_date ? Carbon::parse($record->edit_date)->isoFormat('lll') : null,
                     ])
                     ->action(function (array $data, $record, $action) {
