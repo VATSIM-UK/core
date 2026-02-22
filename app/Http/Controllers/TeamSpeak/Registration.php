@@ -36,7 +36,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
         $base = sprintf('%s%s%s', 'ts3server://', config('services.teamspeak.host'), '?');
         $query = http_build_query([
-            'nickname' => sprintf('%s %s', $this->account->name, $this->account->id),
+            'nickname' => $this->account->hide_real_name_in_community ? $this->account->id : sprintf('%s %s', $this->account->name, $this->account->id),
             'token' => $confirmation->privilege_key,
         ], encoding_type: PHP_QUERY_RFC3986);
 

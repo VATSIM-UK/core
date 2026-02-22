@@ -39,6 +39,16 @@ class HasDiscordAccountTest extends TestCase
         $this->user->syncToDiscord();
     }
 
+    public function test_discord_name_can_be_cid_only()
+    {
+        $user = Account::factory()->create([
+            'id' => 123456789,
+            'hide_real_name_in_community' => true,
+        ]);
+
+        $this->assertEquals('123456789', $user->discordName);
+    }
+
     public function test_includes_cid_in_name()
     {
         $user = Account::factory()->create([

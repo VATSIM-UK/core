@@ -16,6 +16,9 @@ trait HasDiscordAccount
 {
     public function getDiscordNameAttribute()
     {
+        if ($this->hide_real_name_in_community) {
+            return (string) $this->id;
+        }
         // discord only permits a nickname of 32 characters.
         // in the event that the name + CID exceeds, truncate accordin
         $nameWithCid = "{$this->name} - {$this->id}";

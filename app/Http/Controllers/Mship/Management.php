@@ -54,6 +54,14 @@ class Management extends \App\Http\Controllers\BaseController
             ->with('roster', $roster);
     }
 
+    public function postCommunityDisplaySettings()
+    {
+        $this->account->hide_real_name_in_community = Request::boolean('hide_real_name_in_community');
+        $this->account->save();
+
+        return Redirect::route('mship.manage.dashboard')->withSuccess('Community display settings updated.');
+    }
+
     public function getEmailAdd()
     {
         return $this->viewMake('mship.management.email.add');
