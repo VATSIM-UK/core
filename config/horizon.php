@@ -171,7 +171,8 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['high', 'default', 'discord'],
+                // Include dedicated service queues so tuned job routing is actually consumed by workers.
+                'queue' => ['high', 'default', 'discord', 'helpdesk', 'moodle', 'forums', 'cts', 'training-retention', 'training-eligibility'],
                 'balance' => 'auto',
                 'min-processes' => 2,
                 'max-processes' => 14,
@@ -184,7 +185,8 @@ return [
         'local' => [
             '1' => [
                 'connection' => 'redis',
-                'queue' => ['high', 'default', 'discord'],
+                // Include dedicated service queues so tuned job routing is actually consumed by workers.
+                'queue' => ['high', 'default', 'discord', 'helpdesk', 'moodle', 'forums', 'cts', 'training-retention', 'training-eligibility'],
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 10,
