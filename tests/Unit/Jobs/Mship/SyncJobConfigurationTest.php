@@ -4,7 +4,6 @@ namespace Tests\Unit\Jobs\Mship;
 
 use App\Jobs\Mship\SyncToCTS;
 use App\Jobs\Mship\SyncToDiscord;
-use App\Jobs\Mship\SyncToForums;
 use App\Jobs\Mship\SyncToHelpdesk;
 use App\Jobs\Mship\SyncToMoodle;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -47,7 +46,6 @@ class SyncJobConfigurationTest extends TestCase
             [SyncToDiscord::class, 'discord'],
             [SyncToHelpdesk::class, 'helpdesk'],
             [SyncToMoodle::class, 'moodle'],
-            [SyncToForums::class, 'forums'],
             [SyncToCTS::class, 'cts'],
         ];
     }
