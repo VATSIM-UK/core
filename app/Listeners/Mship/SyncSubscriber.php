@@ -7,7 +7,6 @@ use App\Events\Mship\Roles\RoleAssigned;
 use App\Events\Mship\Roles\RoleRemoved;
 use App\Jobs\Mship\SyncToCTS;
 use App\Jobs\Mship\SyncToDiscord;
-use App\Jobs\Mship\SyncToForums;
 use App\Jobs\Mship\SyncToHelpdesk;
 use App\Jobs\Mship\SyncToMoodle;
 use Illuminate\Support\Facades\Cache;
@@ -30,7 +29,6 @@ class SyncSubscriber
             SyncToCTS::dispatch($event->account);
             SyncToHelpdesk::dispatch($event->account);
             SyncToMoodle::dispatch($event->account);
-            SyncToForums::dispatch($event->account);
         }
 
         if ($event->account->discord_id) {

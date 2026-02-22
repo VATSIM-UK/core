@@ -4,59 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "137ccd08e6af3b0f16f6cd94965fc06d",
+    "content-hash": "7938bb2e9d3f48b9708f78c2d5152bb0",
     "packages": [
-        {
-            "name": "alawrence/laravel-ipboard",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/VATSIM-UK/laravel-ipboard.git",
-                "reference": "ba71ea2b122afd8dca9facb71ab37a377854a52f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/VATSIM-UK/laravel-ipboard/zipball/ba71ea2b122afd8dca9facb71ab37a377854a52f",
-                "reference": "ba71ea2b122afd8dca9facb71ab37a377854a52f",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "~6.0|^7.0",
-                "php": ">=5.4.0"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Alawrence\\Ipboard\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anthony Lawrence",
-                    "email": "artisan@anthonylawrence.me.uk"
-                }
-            ],
-            "description": "IPBoard API integration with Laravel",
-            "keywords": [
-                "api",
-                "board",
-                "forum",
-                "invision",
-                "invision power",
-                "ipboard",
-                "laravel",
-                "rest",
-                "restful"
-            ],
-            "support": {
-                "source": "https://github.com/VATSIM-UK/laravel-ipboard/tree/main"
-            },
-            "time": "2020-11-14T16:48:03+00:00"
-        },
         {
             "name": "anourvalar/eloquent-serialize",
             "version": "1.3.4",
@@ -15657,7 +15606,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "alawrence/laravel-ipboard": 20,
         "malahierba-lab/public-id": 20
     },
     "prefer-stable": false,
