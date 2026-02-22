@@ -31,7 +31,7 @@ class SyncJobConfigurationTest extends TestCase
 
     #[Test]
     #[DataProvider('jobConfigurationProvider')]
-    public function it_applies_rate_limiting_and_overlap_protection(string $jobClass): void
+    public function it_applies_rate_limiting_and_overlap_protection(string $jobClass, string $_expectedQueue): void
     {
         $job = new $jobClass($this->user);
         $middleware = $job->middleware();
