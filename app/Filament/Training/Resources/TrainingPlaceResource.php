@@ -75,6 +75,11 @@ class TrainingPlaceResource extends Resource
                     ->searchable()
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Training Start')
+                    ->date('d/m/Y')
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('trainingPosition.position.callsign')
                     ->label('Position')
                     ->searchable()
