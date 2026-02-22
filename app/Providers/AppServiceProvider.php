@@ -100,7 +100,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->make(\Illuminate\Testing\ParallelTesting::class)
             ->setUpTestDatabase(function () {
                 Artisan::call('db:seed', ['--force' => true]);
-                $this->app->make(PermissionRegistrar::class)->forgetCachedPermissions();
+                $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
             });
     }
 
