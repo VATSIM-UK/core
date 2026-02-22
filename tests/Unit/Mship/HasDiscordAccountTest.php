@@ -26,15 +26,18 @@ class HasDiscordAccountTest extends TestCase
             $mock->shouldReceive('removeRoleById')->with($this->user, '2')->once();
         });
 
-        $permissionHas = factory(Permission::class)->create();
-        DiscordRoleRule::factory()->create(['discord_id' => '3', 'cts_may_control_contains' => 'UNMATCHABLE_CTS_TOKEN']); // Role rule means user shouldn't have role
+        $permissionHas = factory(Permission::class)->create(['name' => 'discord.test.role-1']);
+        $permissionDoesNotHaveA = factory(Permission::class)->create(['name' => 'discord.test.role-2']);
+        $permissionDoesNotHaveB = factory(Permission::class)->create(['name' => 'discord.test.role-3']);
 
+        DiscordRoleRule::factory()->create(['discord_id' => '3', 'permission_id' => $PermissionDoesNotHaveA]); // Role rule means user shouldn't have role
+        
         DiscordRoleRule::factory()->create(['discord_id' => '1', 'permission_id' => $permissionHas]); // Role rule means user should have
-        DiscordRoleRule::factory()->create(['discord_id' => '1', 'permission_id' => factory(Permission::class)->create()]); // Role rule means user shouldn't have (but granted by one above)
+        DiscordRoleRule::factory()->create(['discord_id' => '1', 'permission_id' => $permissionDoesNotHaveB); // Role rule means user shouldn't have (but granted by one above)
 
-        DiscordRoleRule::factory()->create(['discord_id' => '2', 'cts_may_control_contains' => 'UNMATCHABLE_CTS_TOKEN']); // Role rule means user shouldn't have role. Should be removed
+        DiscordRoleRule::factory()->create(['discord_id' => '2', 'permission_id' => $PermissionDoesNotHaveA]); // Role rule means user shouldn't have role. Should be removed
 
-        $this->user->givePermissionTo($permissionHas);
+        $this->user->syncPermissions($permissionHas);
 
         $this->user->syncToDiscord();
     }
