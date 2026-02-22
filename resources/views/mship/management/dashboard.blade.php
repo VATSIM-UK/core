@@ -415,6 +415,17 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <p>Our community Discord server is the place to go to chat to other members of the UK Division and the wider network.</p>
+                            <form action="{{ route('mship.manage.community-display-settings.post') }}" method="POST" class="mb-2">
+                                @csrf
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="hide_real_name_in_community" value="1" {{ $_account->hide_real_name_in_community ? 'checked' : '' }}>
+                                        Hide my real name in Discord and TeamSpeak (CID only)
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-default btn-sm">Save Preference</button>
+                            </form>
+
                             @if(!$_account->discord_id)
                                 <p>
                                     Clicking the button below will take you to Discord.<br>

@@ -283,6 +283,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     protected $casts = [
         'inactive' => 'boolean',
+        'hide_real_name_in_community' => 'boolean',
         'discord_id' => 'int',
         'last_login' => 'datetime',
         'joined_at' => 'datetime',
@@ -521,7 +522,8 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     {
         $allowedNames = collect();
 
-        return $allowedNames->push($this->name)
+        return $allowedNames->push((string) $this->id)
+            ->push($this->name)
             ->push($this->real_name)
             ->each(function ($item) use (&$allowedNames) {
                 $allowedNames->push("{$item} {$this->id}");

@@ -64,6 +64,7 @@ Route::group([
         Route::post('email/delete/{email}')->uses('Management@postEmailDelete')->name('email.delete.post');
         Route::get('email/assignments')->uses('Management@getEmailAssignments')->name('email.assignments');
         Route::post('email/assignments')->uses('Management@postEmailAssignments')->name('email.assignments.post');
+        Route::post('community-display-settings')->uses('Management@postCommunityDisplaySettings')->name('community-display-settings.post');
     });
 
     // Feedback
