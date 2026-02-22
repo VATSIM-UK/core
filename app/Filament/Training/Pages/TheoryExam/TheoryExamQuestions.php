@@ -6,6 +6,7 @@ use App\Models\Cts\TheoryQuestion;
 use Carbon\Carbon;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Pages\Page;
@@ -100,7 +101,7 @@ class TheoryExamQuestions extends Page implements HasTable
             ->query($query)
             ->columns([
                 TextColumn::make('id')->toggleable(isToggledHiddenByDefault: true)->searchable(),
-                TextColumn::make('question')->searchable(),
+                TextColumn::make('question')->wrap()->searchable(),
                 IconColumn::make('status')
                     ->boolean()
                     ->label('Active')->sortable(),
@@ -108,7 +109,6 @@ class TheoryExamQuestions extends Page implements HasTable
             ->actions([
                 Action::make('edit')
                     ->form($this->getQuestionFormSchema())
-                    ->hiddenLabel()
                     ->icon('heroicon-o-pencil')
                     ->fillForm(fn ($record) => [
                         ...$record->toArray(),
@@ -126,7 +126,6 @@ class TheoryExamQuestions extends Page implements HasTable
                         $action->success();
                     })->successNotificationTitle('Question updated'),
                 Action::make('delete')
-                    ->hiddenLabel()
                     ->color('danger')
                     ->requiresConfirmation()
                     ->icon('heroicon-o-trash')
@@ -139,7 +138,6 @@ class TheoryExamQuestions extends Page implements HasTable
                         $action->success();
                     })->successNotificationTitle('Question deleted'),
             ])
-            ->actionsPosition(\Filament\Tables\Enums\ActionsPosition::BeforeColumns)
             ->paginated(['10', '25', '50'])
             ->defaultPaginationPageOption(25);
     }
@@ -150,7 +148,7 @@ class TheoryExamQuestions extends Page implements HasTable
             Select::make('level')
                 ->options(fn () => collect($this->allowedLevels)->mapWithKeys(fn ($level) => [$level => $level])->toArray())->default($this->level)
                 ->required(),
-            TextInput::make('question')->required(),
+            Textarea::make('question')->rows(2)->autosize()->required(),
             TextInput::make('option_1')->required(),
             TextInput::make('option_2')->required(),
             TextInput::make('option_3')->required(),
