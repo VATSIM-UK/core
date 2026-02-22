@@ -70,7 +70,7 @@ abstract class TestCase extends BaseTestCase
     private function usesRefreshDatabase(): bool
     {
         return in_array(RefreshDatabase::class, class_uses_recursive(static::class), true);
-    }    
+    }
 
     protected function getOrMakeUser(): Account
     {

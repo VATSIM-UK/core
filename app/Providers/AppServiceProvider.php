@@ -9,17 +9,15 @@ use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\PrallelTesting;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Spatie\Permission\PermissionsRegistrar;
 use Whitecube\LaravelCookieConsent\Facades\Cookies;
 
 class AppServiceProvider extends ServiceProvider
@@ -99,7 +97,7 @@ class AppServiceProvider extends ServiceProvider
             Artisan::call('db:seed', ['--force' => true]);
             $this->app->make(PermissionRegistrar::class)->forgetCachedPermissions();
         });
-    }    
+    }
 
     public function registerValidatorExtensions()
     {
