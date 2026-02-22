@@ -35,7 +35,6 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         AtcSessionEnded::class => [
-            // AtcSessionRecordedSuccessNotification::class,
             FlushEndorsementCache::class,
         ],
 
