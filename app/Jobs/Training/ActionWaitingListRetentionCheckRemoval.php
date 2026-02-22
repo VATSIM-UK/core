@@ -26,9 +26,10 @@ class ActionWaitingListRetentionCheckRemoval implements ShouldQueue
 
     public $backoff = 30;
 
-    public $queue = 'training-retention';
-
-    public function __construct(public WaitingListRetentionCheck $retentionCheck) {}
+    public function __construct(public WaitingListRetentionCheck $retentionCheck)
+    {
+        this->onQueue('training-retention');
+    }
 
     public function handle(): void
     {
