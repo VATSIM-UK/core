@@ -25,8 +25,6 @@ class SendWaitingListRetentionCheck implements ShouldQueue
 
     public $backoff = 30;
 
-    public $queue = 'training-retention';
-
     public function __construct(public WaitingListAccount $waitingListAccount)
     {
         $this->onQueue('training-retention');
