@@ -172,7 +172,7 @@ return [
             'supervisor-1' => [
                 'connection' => 'redis',
                 // Include dedicated service queues so tuned job routing is actually consumed by workers.
-                'queue' => ['high', 'default', 'discord', 'helpdesk', 'moodle', 'forums', 'cts', 'training-retention', 'training-eligibility'],
+                'queue' => ['high', 'default', 'discord', 'helpdesk', 'moodle', 'cts', 'training-retention', 'training-eligibility'],
                 'balance' => 'auto',
                 'min-processes' => 2,
                 'max-processes' => 14,
