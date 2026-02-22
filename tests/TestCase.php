@@ -6,8 +6,10 @@ use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\ParallelTesting;
 use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
@@ -40,7 +42,9 @@ abstract class TestCase extends BaseTestCase
         Carbon::setTestNow($now);
         $this->knownDate = $now;
 
-        $this->seed();
+        if (! ParallelTesting::token() || $this->usesRefreshDatabase()) {
+            $this->seed();
+        }
 
         // Force regeneration of permissions cache
         $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
@@ -62,6 +66,11 @@ abstract class TestCase extends BaseTestCase
     {
         $this->$name = $value;
     }
+
+    private function usesRefreshDatabase(): bool
+    {
+        return in_array(RefreshDatabase::class, class_uses_recursive(static::class), true);
+    }    
 
     protected function getOrMakeUser(): Account
     {
