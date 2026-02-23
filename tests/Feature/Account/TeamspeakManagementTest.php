@@ -58,7 +58,7 @@ class TeamspeakManagementTest extends TestCase
     #[Test]
     public function test_user_with_25_registrations_can_open_new_registration_page()
     {
-        factory(Registration::class, 25)->create(['account_id' => $this->registration->account->id]);
+        factory(Registration::class, 24)->create(['account_id' => $this->registration->account->id]);
 
         $this->actingAs($this->registration->account)
             ->get(route('teamspeak.new'))
