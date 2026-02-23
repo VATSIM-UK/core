@@ -6,6 +6,7 @@ use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
 use App\Models\TeamSpeak\Registration as RegistrationModel;
 use App\Services\TeamSpeak\DTO\RegistrationStatusResult;
+use Illuminate\Support\Str;
 
 class RegistrationFlowService
 {
@@ -93,9 +94,11 @@ class RegistrationFlowService
 
         $confirmation = new ConfirmationModel;
         $confirmation->registration_id = $registrationId;
-        $confirmation->privilege_key = \App\Libraries\TeamSpeak::run()
-            ->serverGroupGetByName('New')
-            ->privilegeKeyCreate($keyDescription, $keyCustomInfo);
+        $confirmation->privilege_key = \App\Libraries\TeamSpeak::enabled()
+            ? \App\Libraries\TeamSpeak::run()
+                ->serverGroupGetByName('New')
+                ->privilegeKeyCreate($keyDescription, $keyCustomInfo)
+            : Str::upper(Str::random(32));
         $confirmation->save();
 
         return $confirmation;
