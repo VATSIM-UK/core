@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Account;
 
+use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Registration;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
@@ -48,9 +49,10 @@ class TeamspeakManagementTest extends TestCase
     #[Test]
     public function test_user_with_more_than_25_registrations_is_redirected_from_new_registration()
     {
-        factory(Registration::class, 26)->create(['account_id' => $this->registration->account->id]);
+        $account = factory(Account::class)->create();
+        factory(Registration::class, 26)->create(['account_id' => $account->id]);
 
-        $this->actingAs($this->registration->account)
+        $this->actingAs($account)
             ->get(route('teamspeak.new'))
             ->assertRedirect(route('mship.manage.dashboard'));
     }
@@ -58,9 +60,10 @@ class TeamspeakManagementTest extends TestCase
     #[Test]
     public function test_user_with_25_registrations_can_open_new_registration_page()
     {
-        factory(Registration::class, 24)->create(['account_id' => $this->registration->account->id]);
+        $account = factory(Account::class)->create();
+        factory(Registration::class, 25)->create(['account_id' => $account->id]);
 
-        $this->actingAs($this->registration->account)
+        $this->actingAs($account)
             ->get(route('teamspeak.new'))
             ->assertSuccessful();
     }
