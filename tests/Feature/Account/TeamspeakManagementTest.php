@@ -45,7 +45,6 @@ class TeamspeakManagementTest extends TestCase
             ->assertNotFound();
     }
 
-
     #[Test]
     public function test_user_with_more_than_25_registrations_is_redirected_from_new_registration()
     {

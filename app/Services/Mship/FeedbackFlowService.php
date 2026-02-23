@@ -60,7 +60,6 @@ class FeedbackFlowService
         return $questions->all();
     }
 
-
     /**
      * @param  Question[]  $questions
      */
@@ -68,7 +67,6 @@ class FeedbackFlowService
     {
         return $form->enabled && count($questions) > 0;
     }
-
 
     public function buildSubmitRedirectData(FeedbackSubmitResult $result): FeedbackSubmitRedirectData
     {

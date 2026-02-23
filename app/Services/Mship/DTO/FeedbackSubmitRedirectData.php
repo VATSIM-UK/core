@@ -15,4 +15,3 @@ class FeedbackSubmitRedirectData
         public bool $withInput = false
     ) {}
 }
-

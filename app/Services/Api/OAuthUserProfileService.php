@@ -45,7 +45,6 @@ class OAuthUserProfileService
         return $data;
     }
 
-
     /**
      * @return array<string, mixed>
      */

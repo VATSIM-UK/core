@@ -19,4 +19,3 @@ class DiscordRegistrationResult
         return new self(false, $message);
     }
 }
-

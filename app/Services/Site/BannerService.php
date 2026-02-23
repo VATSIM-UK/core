@@ -29,7 +29,6 @@ class BannerService
         return $url;
     }
 
-
     /**
      * @return array<int, string>
      */

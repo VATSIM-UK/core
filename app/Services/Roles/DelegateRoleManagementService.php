@@ -62,7 +62,6 @@ class DelegateRoleManagementService
         });
     }
 
-
     /**
      * @return array<int, int>
      */

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Auth\PasswordManagementService;
-use Auth;
 use Illuminate\Http\Request;
 
 /**

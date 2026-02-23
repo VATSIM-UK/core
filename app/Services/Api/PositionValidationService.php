@@ -50,5 +50,4 @@ class PositionValidationService
             'message' => 'Position not found.',
         ]);
     }
-
 }

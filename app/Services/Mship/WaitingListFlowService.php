@@ -47,7 +47,6 @@ class WaitingListFlowService
         ];
     }
 
-
     public function getSelfEnrolResult(WaitingList $waitingList): WaitingListSelfEnrolResult
     {
         if ($waitingList->isAtCapacity()) {

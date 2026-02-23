@@ -4,10 +4,10 @@ namespace App\Services\Discord;
 
 use App\Events\Discord\DiscordLinked;
 use App\Events\Discord\DiscordUnlinked;
-use App\Services\Discord\DTO\DiscordCodeExchangeResult;
-use App\Services\Discord\DTO\DiscordLinkResult;
 use App\Exceptions\Discord\DiscordUserInviteException;
 use App\Models\Mship\Account;
+use App\Services\Discord\DTO\DiscordCodeExchangeResult;
+use App\Services\Discord\DTO\DiscordLinkResult;
 use App\Services\Discord\DTO\DiscordRegistrationResult;
 use Exception;
 use Wohali\OAuth2\Client\Provider\Discord;
@@ -53,7 +53,6 @@ class RegistrationFlowService
 
         return DiscordLinkResult::success();
     }
-
 
     public function registerByCode(Account $account, string $code): DiscordRegistrationResult
     {

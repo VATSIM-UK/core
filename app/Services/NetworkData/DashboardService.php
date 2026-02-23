@@ -2,7 +2,7 @@
 
 namespace App\Services\NetworkData;
 
-use App\Models\Account;
+use App\Models\Mship\Account;
 
 class DashboardService
 {

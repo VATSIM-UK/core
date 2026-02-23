@@ -15,7 +15,6 @@ class LoginFlowService
         private VatsimLoginService $vatsimLoginService
     ) {}
 
-
     public function shouldStartAuthorizationFlow(bool $hasCode, bool $hasState): bool
     {
         return ! $hasCode || ! $hasState;
@@ -73,5 +72,4 @@ class LoginFlowService
             $this->vatsimLoginService->completeLogin($resourceOwner, $accessToken, $ipAddress)
         );
     }
-
 }

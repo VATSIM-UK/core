@@ -58,7 +58,6 @@ class ExamHistoryService
         });
     }
 
-
     /**
      * @param  array<int, string>  $positions
      */

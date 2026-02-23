@@ -19,7 +19,6 @@ class ManagementFlowService
 {
     public function __construct(private UKCPLibrary $ukcp) {}
 
-
     public function shouldRedirectLanding(bool $isAuthenticated): bool
     {
         return $isAuthenticated;
@@ -102,7 +101,6 @@ class ManagementFlowService
         ];
     }
 
-
     /**
      * @return array{email: AccountEmail, assignments: mixed}|null
      */
@@ -169,7 +167,6 @@ class ManagementFlowService
 
         return true;
     }
-
 
     public function canViewEmail(Account $account, AccountEmail $email): bool
     {

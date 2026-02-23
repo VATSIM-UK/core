@@ -10,14 +10,13 @@ use App\Models\VisitTransfer\Reference;
 use App\Services\VisitTransfer\DTO\ApplicationActionResult;
 use App\Services\VisitTransfer\DTO\ApplicationContinueRedirectData;
 use App\Services\VisitTransfer\DTO\RefereeAddExceptionData;
-use Illuminate\Contracts\Auth\Authenticatable;
 use ErrorException;
 use Exception;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Gate;
 
 class ApplicationFlowService
 {
-
     public function shouldAutoStartApplication(string $trainingTeam): bool
     {
         return $trainingTeam === 'pilot';
@@ -36,7 +35,6 @@ class ApplicationFlowService
 
         return new RefereeAddExceptionData($exception->getMessage(), false);
     }
-
 
     public function getCurrentOpenApplicationForUser(?Authenticatable $account): Application
     {

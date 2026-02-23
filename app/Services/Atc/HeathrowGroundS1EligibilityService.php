@@ -11,7 +11,6 @@ class HeathrowGroundS1EligibilityService
 {
     private const HOURS_REQUIREMENT = 50;
 
-
     public function canViewEligibility(Account $account): bool
     {
         return $account->fully_defined && $account->qualification_atc->isS1;

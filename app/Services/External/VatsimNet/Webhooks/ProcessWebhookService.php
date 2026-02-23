@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Log;
 
 class ProcessWebhookService
 {
-
     /**
      * @param  array<string, mixed>  $webhook
      */

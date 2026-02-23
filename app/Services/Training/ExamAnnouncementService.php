@@ -21,7 +21,6 @@ class ExamAnnouncementService
         return $this->isExaminerAssigned($examiners->senior, $examiners->other, $examiners->trainee, $memberId);
     }
 
-
     private function isBookingFinished(ExamBooking $examBooking): bool
     {
         return $examBooking->finished == ExamBooking::FINISHED_FLAG;

@@ -12,7 +12,6 @@ class CtsBookingsService
 {
     public function __construct(private BookingRepository $bookingRepository) {}
 
-
     public function getBookingsForApi(string $requestIp, ?string $requestedDate, string $bookingsRoute): ApiServiceResult
     {
         $result = $this->getBookings($requestIp, $requestedDate);
