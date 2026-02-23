@@ -49,7 +49,7 @@ class TeamspeakManagementTest extends TestCase
     #[Test]
     public function test_user_with_more_than_25_registrations_is_redirected_from_new_registration()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         factory(Registration::class, 26)->create(['account_id' => $account->id]);
 
         $this->actingAs($account)
@@ -60,7 +60,7 @@ class TeamspeakManagementTest extends TestCase
     #[Test]
     public function test_user_with_25_registrations_can_open_new_registration_page()
     {
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
         factory(Registration::class, 25)->create(['account_id' => $account->id]);
 
         $this->actingAs($account)
