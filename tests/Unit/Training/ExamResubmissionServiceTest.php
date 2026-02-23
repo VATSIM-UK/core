@@ -16,7 +16,7 @@ class ExamResubmissionServiceTest extends TestCase
         $booking = new ExamBooking;
         $booking->exam = 'OBS';
 
-        $decision = $service->getResubmissionDecision($booking, ExamResultEnum::Passed->value);
+        $decision = $service->getResubmissionDecision($booking, ExamResultEnum::Pass->value);
 
         $this->assertFalse($decision->shouldResubmit);
         $this->assertFalse($decision->isObservationExam);

@@ -61,12 +61,12 @@ class ApplicationFlowServiceTest extends TestCase
         };
 
         $application = new Application;
-        $application->public_id = 'abc123';
+        $application->id = 12345;
 
         $result = $service->getContinueRedirectData($application);
 
         $this->assertSame('visiting.application.submit', $result->route);
-        $this->assertSame(['abc123'], $result->routeParameters);
+        $this->assertSame([$application->public_id], $result->routeParameters);
     }
 
     public function test_add_referee_action_handles_invalid_cid_and_back_redirect_error_paths(): void
