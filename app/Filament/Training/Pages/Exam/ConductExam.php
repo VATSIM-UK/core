@@ -246,6 +246,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function completeExam()
     {
+        
         $examResultFormData = $this->examResultForm->getState();
 
         $this->save(withNotification: false);
@@ -265,11 +266,18 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ->success()
             ->send();
 
+        // This handles a INCOMPLETE exam result
         app(ExamResubmissionService::class)->handle(
             examBooking: $this->examBooking,
             result: $examResultFormData['exam_result'],
             userId: auth()->id(),
         );
+
+        // This handles a PASS exam result
+        if ($examResultFormData['exam_result'] == ExamResultEnum::Pass->value) 
+        { 
+            $this->removeTrainingPlace(); 
+        }
 
         $this->redirect(Exams::getUrl());
     }
@@ -370,5 +378,10 @@ class ConductExam extends Page implements HasForms, HasInfolists
     {
         $this->hasUnsavedChanges = true;
         $this->lastChangedAt = now()->timestamp;
+    }
+
+    public function removeTrainingPlace()
+    {
+        $this->examBooking->studentAccount()->waitingListAccount->trainingPlace->delete();
     }
 }
