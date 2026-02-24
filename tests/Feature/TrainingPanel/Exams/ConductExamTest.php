@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\TrainingPanel\Exams;
 
+use App\Models\Training\WaitingList;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Enums\ExamResultEnum;
 use App\Events\Training\Exams\PracticalExamCompleted;
 use App\Filament\Training\Pages\Exam\ConductExam;
@@ -387,5 +389,57 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             ->where('position_1', $position->callsign)
             ->where('exam', 'OBS')
             ->count());
+    }
+
+    #[Test]
+    public function it_removes_training_place_when_exam_is_passed()
+    {
+        $account = Account::factory()->create();
+        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'exam' => 'TWR',
+            'student_id' => $student->id,
+            'position_1' => $position->callsign,
+            'student_rating' => Qualification::code('S1')->first()->vatsim,
+        ]);
+
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => $this->panelUser->id,
+        ]);
+
+        $this->panelUser->givePermissionTo('training.exams.conduct.twr');
+
+        $criteria = ExamCriteria::create([
+            'exam' => 'TWR',
+            'criteria' => 'Test Criteria',
+            'deleted' => 0,
+        ]);
+
+        $waitingList = WaitingList::factory()->create();
+        $waitingListAccount = $waitingList->addToWaitingList($account, $this->privacc);
+
+        $trainingPlace = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->fillForm(function () use ($criteria) {
+                return ['form' => [$criteria->id => ['comments' => '', 'grade' => 'P']]];
+            })
+            ->set('examResultData.exam_result', PracticalResult::PASSED)
+            ->set('examResultData.additional_comments', '')
+            ->call('completeExam')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseMissing('training_places', [
+            'id' => $trainingPlace->id,
+            'waiting_list_account_id' => $waitingListAccount->id,]);
     }
 }
