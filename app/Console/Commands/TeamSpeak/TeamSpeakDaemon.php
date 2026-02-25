@@ -68,6 +68,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             // log the client's clid and dbid in a data structure
             self::$connectedClients[$event->clid] = $client['client_database_id'];
 
+            // add small delay after connection to see if it helps with permissions issues
+            sleep(1);
+
             // perform the necessary checks on the client
             $member = TeamSpeak::checkClientRegistration($client);
             $client = TeamSpeak::checkClientDescription($client, $member);
