@@ -60,6 +60,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 NavigationGroup::make('Technology'),
             ])
+            ->viteTheme('resources/assets/css/tailwind.css')
             ->navigationItems([
                 NavigationItem::make('Training Panel')
                     ->url(fn () => route('filament.training.pages.dashboard'))
