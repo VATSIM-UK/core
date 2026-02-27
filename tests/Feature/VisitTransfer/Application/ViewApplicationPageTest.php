@@ -279,4 +279,70 @@ class ViewApplicationPageTest extends BaseAdminTestCase
             ->assertSuccessful()
             ->assertActionHidden('override_checks');
     }
+
+    #[Test]
+    public function it_can_add_applicant_to_waiting_list_on_accept()
+    {
+        $this->adminUser->givePermissionTo('vt.application.accept.*');
+
+        $waitingList = \App\Models\Training\WaitingList::factory()->create(['name' => 'Test Waiting List', 'department' => 'atc']);
+        $facility = Facility::factory()->transfer('atc')->create(['waiting_list_id' => $waitingList->id]);
+
+        $application = Application::factory()->create([
+            'check_outcome_90_day' => true,
+            'check_outcome_50_hours' => true,
+            'status' => Application::STATUS_SUBMITTED,
+            'facility_id' => $facility->id,
+        ]);
+
+        Livewire::actingAs($this->adminUser)
+            ->test(ViewVisitTransferApplication::class, ['record' => $application->id])
+            ->assertActionVisible('accept');
+
+        $application = $application->fresh()->load('facility.waitingList');
+
+        $application->accept(
+            staffComment: 'Test note',
+            actor: $this->adminUser,
+            addToWaitingList: true,
+        );
+
+        $waitingList = $waitingList->fresh();
+        $this->assertTrue($waitingList->includesAccount($application->account));
+
+        $this->assertTrue($application->fresh()->is_accepted);
+    }
+
+    #[Test]
+    public function it_removes_applicant_from_waiting_list_on_cancel()
+    {
+        $this->adminUser->givePermissionTo('vt.application.cancel.*');
+
+        $waitingList = \App\Models\Training\WaitingList::factory()->create(['name' => 'Test Waiting List', 'department' => 'atc']);
+        $facility = Facility::factory()->transfer('atc')->create(['waiting_list_id' => $waitingList->id]);
+
+        $application = Application::factory()->create([
+            'check_outcome_90_day' => true,
+            'check_outcome_50_hours' => true,
+            'status' => Application::STATUS_ACCEPTED,
+            'facility_id' => $facility->id,
+        ]);
+
+        $application = $application->fresh()->load('facility.waitingList');
+
+        // Manually add to waiting list
+        $waitingList->addToWaitingList($application->account, $this->adminUser);
+        $this->assertTrue($waitingList->includesAccount($application->account));
+
+        Livewire::actingAs($this->adminUser)
+            ->test(ViewVisitTransferApplication::class, ['record' => $application->id])
+            ->assertActionVisible('cancel');
+
+        $application->cancel('Test cancel note', $this->adminUser);
+
+        $waitingList = $waitingList->fresh();
+        $this->assertFalse($waitingList->includesAccount($application->account));
+
+        $this->assertTrue($application->fresh()->is_cancelled);
+    }
 }
