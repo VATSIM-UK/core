@@ -112,6 +112,7 @@ class Facility extends Model
         'minimum_pilot_qualification_id',
         'maximum_pilot_qualification_id',
         'public',
+        'waiting_list_id',
     ];
 
     public function routeNotificationForMail()
@@ -300,5 +301,10 @@ class Facility extends Model
         if (! $excludeCurrent && self::where('name', 'LIKE', $proposedName)->count() > 0) {
             throw new DuplicateFacilityNameException($proposedName);
         }
+    }
+
+    public function waitingList()
+    {
+        return $this->belongsTo(\App\Models\Training\WaitingList::class, 'waiting_list_id');
     }
 }
