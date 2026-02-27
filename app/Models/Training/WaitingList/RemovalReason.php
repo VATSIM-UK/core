@@ -9,6 +9,7 @@ enum RemovalReason: string
     case Inactivity = 'member_inactive';
     case NonHome = 'member_non_home';
     case FailedRetention = 'failed_retention_check';
+    case CancelledVTApplication = 'cancelled_vt_application';
     case Other = 'other';
 
     public function label(): string
@@ -19,6 +20,7 @@ enum RemovalReason: string
             self::Inactivity => 'Member inactive',
             self::NonHome => 'Member is not a home member',
             self::FailedRetention => 'Member failed retention check',
+            self::CancelledVTApplication => 'VT application cancelled',
             self::Other => 'Other (please specify)',
         };
     }

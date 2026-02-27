@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplicationRes
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplicationResource;
 use Carbon\Carbon;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\Grid;
@@ -35,11 +36,16 @@ class ViewVisitTransferApplication extends ViewRecord
                 ->modalHeading(fn ($record) => "Accept Application #{$record->public_id}")
                 ->modalDescription('If you accept this application the applicant will be notified.')
                 ->action(function ($record, array $data) {
-                    $record->accept($data['staff_note']);
+                    $record->accept($data['staff_note'], auth()->user(), $data['add_to_waiting_list'] ?? false);
                 })
                 ->form([
                     Textarea::make('staff_note')
                         ->label('Staff Note (optional)'),
+                    Checkbox::make('add_to_waiting_list')
+                        ->label('Add to Waiting List')
+                        ->visible(fn ($record) => $record->facility?->waitingList !== null)
+                        ->default(true)
+                        ->helperText('If checked, the applicant will be added to the waiting list associated with this facility.'),
                 ])->authorize(fn ($record) => auth()->user()->can('accept', $record)),
 
             Action::make('override_checks')
