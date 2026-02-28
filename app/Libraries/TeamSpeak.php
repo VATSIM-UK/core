@@ -12,6 +12,8 @@ use App\Models\TeamSpeak\ServerGroup;
 use Cache;
 use Carbon\Carbon;
 use DB;
+use Exception;
+use Illuminate\Support\Facades\Log;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\TeamSpeak3Exception;
 use PlanetTeamSpeak\TeamSpeak3Framework\Node\Client;
@@ -301,18 +303,39 @@ class TeamSpeak
         $memberQualifications = $member->active_qualifications;
 
         foreach ($serverGroups as $group) {
-            $memberHasRequiredQualification = $group->qualification ? $memberQualifications->contains('id', $group->qualification->id) : false;
-            $memberHasGroupPermission = $group->permission ? $member->hasPermissionTo($group->permission) : false;
+            try {
+                $memberHasRequiredQualification = $group->qualification ? $memberQualifications->contains('id', $group->qualification->id) : false;
+                $memberHasGroupPermission = $group->permission ? $member->hasPermissionTo($group->permission) : false;
 
-            $qualifiesForGroup = $memberHasRequiredQualification || $memberHasGroupPermission;
-            $alreadyInGroup = in_array($group->dbid, $currentGroups);
+                $qualifiesForGroup = $memberHasRequiredQualification || $memberHasGroupPermission;
+                $alreadyInGroup = in_array($group->dbid, $currentGroups);
 
-            if ($qualifiesForGroup && ! $alreadyInGroup) {
-                \Log::info("servergroupaddclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
-                $client->request("servergroupaddclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
-            } elseif (! $group->default && $alreadyInGroup && ! $qualifiesForGroup) {
-                \Log::info("servergroupdelclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
-                $client->request("servergroupdelclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
+                Log::info("Account {$member->id} qualifies for group {$group->name}: {$qualifiesForGroup}, alreadyInGroup: {$alreadyInGroup}");
+
+                if ($qualifiesForGroup && ! $alreadyInGroup) {
+                    Log::info("servergroupaddclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
+                    $client->request("servergroupaddclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
+                } elseif (! $group->default && $alreadyInGroup && ! $qualifiesForGroup) {
+                    Log::info("servergroupdelclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
+                    $client->request("servergroupdelclient sgid={$group->dbid} cldbid={$client['client_database_id']}");
+                }
+            } catch (ServerQueryException $e) {
+                Log::warning('TeamSpeak server group update failed for client', [
+                    'sgid' => $group->dbid,
+                    'group_name' => $group->name ?? null,
+                    'cldbid' => $client['client_database_id'],
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage(),
+                ]);
+            } catch (Exception $e) {
+                Log::warning('TeamSpeak server group evaluation or update failed for client', [
+                    'sgid' => $group->dbid,
+                    'group_name' => $group->name ?? null,
+                    'cldbid' => $client['client_database_id'],
+                    'exception' => get_class($e),
+                    'message' => $e->getMessage(),
+                ]);
+                report($e);
             }
         }
     }
