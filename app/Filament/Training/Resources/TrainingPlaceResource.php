@@ -8,10 +8,12 @@ use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Str;
 
 class TrainingPlaceResource extends Resource
@@ -81,7 +83,25 @@ class TrainingPlaceResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Training Start')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->summarize(
+                        Summarizer::make('average_training_time')
+                            ->label('Average training time')
+                            ->using(function (QueryBuilder $query): float {
+                                $alias = (new TrainingPlace)->getTable();
+                                $clone = clone $query;
+                                $clone->columns = [new \Illuminate\Database\Query\Expression("AVG(DATEDIFF(NOW(), `{$alias}`.`created_at`)) as avg_days")];
+
+                                return (float) ($clone->value('avg_days') ?? 0.0);
+                            })
+                            ->formatStateUsing(function (mixed $state): string {
+                                $value = $state !== null && $state !== '' ? (float) $state : null;
+
+                                return $value !== null
+                                    ? number_format((int) round($value)).' '.Str::plural('day', (int) round($value))
+                                    : '—';
+                            })
+                    ),
 
                 Tables\Columns\TextColumn::make('trainingPosition.position.callsign')
                     ->label('Position')
