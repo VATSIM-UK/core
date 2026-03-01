@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Jobs\Training;
 
+use App\Enums\AvailabilityCheckStatus;
 use App\Jobs\Training\ActionExpiredAvailabilityWarningRemoval;
 use App\Jobs\Training\ActionFourthAvailabilityFailureRemoval;
 use App\Jobs\Training\CheckAvailability;
@@ -12,6 +13,7 @@ use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPlace\TrainingPlaceLeaveOfAbsence;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\AvailabilityWarningCreated;
@@ -58,6 +60,38 @@ class CheckAvailabilityTest extends TestCase
     }
 
     #[Test]
+    public function it_creates_on_leave_availability_check_and_sends_no_warning_when_on_leave_of_absence(): void
+    {
+        // Arrange: Training place has a current leave of absence
+        TrainingPlaceLeaveOfAbsence::create([
+            'training_place_id' => $this->trainingPlace->id,
+            'begins_at' => now()->subDay(),
+            'ends_at' => now()->addDays(7),
+            'reason' => 'Annual leave',
+        ]);
+
+        Notification::fake();
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: An availability check with status on leave is created
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::OnLeave->value,
+        ]);
+
+        // Assert: No availability warning is created
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+
+        // Assert: No availability warning notification is sent
+        Notification::assertNothingSent();
+    }
+
+    #[Test]
     public function it_creates_failed_availability_check_when_only_availability_exists(): void
     {
         // Arrange: Create availability for the student but no session request
@@ -70,7 +104,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A failed availability check should be created (because no session exists)
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         // Assert: An availability warning should be created
@@ -92,7 +126,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A failed availability check should be created (because no session exists)
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         // Assert: An availability warning should be created
@@ -113,7 +147,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A failed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
     }
 
@@ -153,7 +187,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Assert: The warning should be linked to the failed check
         $failedCheck = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)
-            ->where('status', 'failed')
+            ->where('status', AvailabilityCheckStatus::Failed)
             ->first();
 
         $warning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->first();
@@ -189,7 +223,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Assert: A new failed check should still be created
         $failedChecks = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)
-            ->where('status', 'failed')
+            ->where('status', AvailabilityCheckStatus::Failed)
             ->get();
 
         $this->assertCount(2, $failedChecks); // The existing one + the new one
@@ -283,7 +317,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A failed check was recorded
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         // Assert: A 4th warning was created with expires_at = now() (immediate removal)
@@ -350,7 +384,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: Should create a failed check because the availability is for a different student
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         // Assert: An availability warning should be created
@@ -372,7 +406,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Assert: Two failed checks should be created
         $failedChecks = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)
-            ->where('status', 'failed')
+            ->where('status', AvailabilityCheckStatus::Failed)
             ->get();
 
         $this->assertCount(2, $failedChecks);
@@ -395,7 +429,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: Failed check and pending warning should exist
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         $this->assertDatabaseHas('availability_warnings', [
@@ -417,12 +451,12 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A passed check should now exist
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'passed',
+            'status' => AvailabilityCheckStatus::Passed->value,
         ]);
 
         // Assert: The existing pending warning should be marked resolved and linked to the passed check
         $passedCheck = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)
-            ->where('status', 'passed')
+            ->where('status', AvailabilityCheckStatus::Passed)
             ->first();
         $this->assertNotNull($passedCheck);
 
@@ -523,7 +557,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A passed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'passed',
+            'status' => AvailabilityCheckStatus::Passed->value,
         ]);
 
         // Assert: No availability warning should be created
@@ -549,7 +583,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A passed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'passed',
+            'status' => AvailabilityCheckStatus::Passed->value,
         ]);
 
         // Assert: No availability warning should be created
@@ -574,7 +608,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A failed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         // Assert: An availability warning should be created
@@ -600,7 +634,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A failed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         // Assert: An availability warning should be created
@@ -627,7 +661,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A failed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         // Assert: An availability warning should be created
@@ -650,7 +684,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A failed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         // Assert: An availability warning should be created
@@ -673,7 +707,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A failed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         // Assert: An availability warning should be created
