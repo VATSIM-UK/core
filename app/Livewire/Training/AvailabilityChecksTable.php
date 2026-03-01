@@ -7,18 +7,18 @@ namespace App\Livewire\Training;
 use App\Enums\AvailabilityCheckStatus;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\TrainingPlace;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class AvailabilityChecksTable extends Component implements HasTable, HasForms
+class AvailabilityChecksTable extends Component implements HasForms, HasTable
 {
-    use InteractsWithTable;
     use InteractsWithForms;
+    use InteractsWithTable;
 
     public TrainingPlace $trainingPlace;
 

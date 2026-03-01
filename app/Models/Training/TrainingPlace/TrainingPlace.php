@@ -5,7 +5,6 @@ namespace App\Models\Training\TrainingPlace;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\WaitingListAccount;
-use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Observers\Training\TrainingPlaceObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
