@@ -246,7 +246,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function completeExam()
     {
-        
+
         $examResultFormData = $this->examResultForm->getState();
 
         $this->save(withNotification: false);
@@ -274,9 +274,8 @@ class ConductExam extends Page implements HasForms, HasInfolists
         );
 
         // This handles a PASS exam result
-        if ($examResultFormData['exam_result'] == ExamResultEnum::Pass->value) 
-        { 
-            $this->removeTrainingPlace(); 
+        if ($examResultFormData['exam_result'] == ExamResultEnum::Pass->value) {
+            $this->removeTrainingPlace();
         }
 
         $this->redirect(Exams::getUrl());
