@@ -19,7 +19,7 @@ abstract class BaseTrainingPanelTestCase extends TestCase
             Filament::getPanel('training')
         );
 
-        $this->panelUser = Account::factory()->create(['id' => 9000000]);
+        $this->panelUser = Account::factory()->create();
 
         Member::factory()->create(['id' => $this->panelUser->id, 'cid' => $this->panelUser->id]);
 

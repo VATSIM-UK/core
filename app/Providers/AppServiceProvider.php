@@ -8,6 +8,7 @@ use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\RateLimiter;
@@ -60,6 +61,8 @@ class AppServiceProvider extends ServiceProvider
         Cookies::essentials()
             ->session()
             ->csrf();
+
+        $this->configureParallelTesting();
     }
 
     /**
@@ -81,6 +84,23 @@ class AppServiceProvider extends ServiceProvider
                 'redirectUri' => Config::get('services.discord.redirect_uri'),
             ]);
         });
+    }
+
+    private function configureParallelTesting(): void
+    {
+        if (! $this->app->runningUnitTests()) {
+            return;
+        }
+
+        if (! class_exists(\Illuminate\Testing\ParallelTesting::class)) {
+            return;
+        }
+
+        $this->app->make(\Illuminate\Testing\ParallelTesting::class)
+            ->setUpTestDatabase(function () {
+                Artisan::call('db:seed', ['--force' => true]);
+                $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+            });
     }
 
     public function registerValidatorExtensions()
