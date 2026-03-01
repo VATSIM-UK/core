@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\TrainingPanel\Exams;
 
-use App\Models\Training\WaitingList;
-use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Enums\ExamResultEnum;
 use App\Events\Training\Exams\PracticalExamCompleted;
 use App\Filament\Training\Pages\Exam\ConductExam;
@@ -14,6 +12,8 @@ use App\Models\Cts\Member;
 use App\Models\Cts\PracticalResult;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\WaitingList;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
@@ -440,6 +440,6 @@ class ConductExamTest extends BaseTrainingPanelTestCase
 
         $this->assertDatabaseMissing('training_places', [
             'id' => $trainingPlace->id,
-            'waiting_list_account_id' => $waitingListAccount->id,]);
+            'waiting_list_account_id' => $waitingListAccount->id, ]);
     }
 }
