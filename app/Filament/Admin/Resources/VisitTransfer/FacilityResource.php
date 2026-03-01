@@ -222,6 +222,14 @@ class FacilityResource extends Resource
                                     },
                                 ]),
                         ]),
+
+                        Select::make('waiting_list_id')
+                            ->label('Linked Waiting List')
+                            ->relationship('waitingList', 'name')
+                            ->nullable()
+                            ->searchable()
+                            ->preload()
+                            ->helperText('If selected, applicants to this facility will be added to the selected waiting list upon application.'),
                     ]),
                 ]),
                 Section::make('Notification Emails')
