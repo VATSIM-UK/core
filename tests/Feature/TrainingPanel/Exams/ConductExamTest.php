@@ -12,6 +12,8 @@ use App\Models\Cts\Member;
 use App\Models\Cts\PracticalResult;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\WaitingList;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
@@ -387,5 +389,61 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             ->where('position_1', $position->callsign)
             ->where('exam', 'OBS')
             ->count());
+    }
+
+    #[Test]
+    public function it_removes_training_place_when_exam_is_passed()
+    {
+        $account = Account::factory()->create();
+        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'exam' => 'TWR',
+            'student_id' => $student->id,
+            'position_1' => $position->callsign,
+            'student_rating' => Qualification::code('S1')->first()->vatsim,
+        ]);
+
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => $this->panelUser->id,
+        ]);
+
+        $this->panelUser->givePermissionTo('training.exams.conduct.twr');
+
+        $criteria = ExamCriteria::create([
+            'exam' => 'TWR',
+            'criteria' => 'Test Criteria',
+            'deleted' => 0,
+        ]);
+
+        $waitingList = WaitingList::factory()->create();
+        $waitingListAccount = $waitingList->addToWaitingList($account, $this->privacc);
+
+        $trainingPlace = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->tap(function ($component) use ($exam) {
+                $allCriteria = ExamCriteria::byType($exam->exam)->get();
+                foreach ($allCriteria as $criterion) {
+                    $component->set("data.form.{$criterion->id}.grade", 'P');
+                    $component->set("data.form.{$criterion->id}.comments", '');
+                }
+            })
+            ->set('examResultData.exam_result', PracticalResult::PASSED)
+            ->set('examResultData.additional_comments', '')
+            ->call('completeExam')
+            ->assertHasNoFormErrors();
+
+        $this->assertSoftDeleted('training_places', [
+            'id' => $trainingPlace->id,
+            'waiting_list_account_id' => $waitingListAccount->id, ]);
     }
 }

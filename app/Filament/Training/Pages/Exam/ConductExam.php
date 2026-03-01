@@ -7,6 +7,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\PracticalResult;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Repositories\Cts\ExamAssessmentRepository;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Services\Training\ExamResubmissionService;
@@ -246,6 +247,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function completeExam()
     {
+
         $examResultFormData = $this->examResultForm->getState();
 
         $this->save(withNotification: false);
@@ -265,11 +267,17 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ->success()
             ->send();
 
+        // This handles a INCOMPLETE exam result
         app(ExamResubmissionService::class)->handle(
             examBooking: $this->examBooking,
             result: $examResultFormData['exam_result'],
             userId: auth()->id(),
         );
+
+        // This handles a PASS exam result
+        if ($examResultFormData['exam_result'] == ExamResultEnum::Pass->value) {
+            $this->removeTrainingPlace();
+        }
 
         $this->redirect(Exams::getUrl());
     }
@@ -370,5 +378,13 @@ class ConductExam extends Page implements HasForms, HasInfolists
     {
         $this->hasUnsavedChanges = true;
         $this->lastChangedAt = now()->timestamp;
+    }
+
+    public function removeTrainingPlace()
+    {
+        $studentAccount = $this->examBooking->studentAccount();
+        $waitingListAccountIds = $studentAccount->waitingListAccounts()->pluck('id');
+
+        TrainingPlace::whereIn('waiting_list_account_id', $waitingListAccountIds)->first()?->delete();
     }
 }
