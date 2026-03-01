@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Training\TrainingPlace;
 
+use App\Enums\AvailabilityCheckStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +18,18 @@ class AvailabilityCheck extends Model
     use HasUlids;
 
     protected $guarded = [];
+
+    /**
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'status' => AvailabilityCheckStatus::class,
+    ];
+
+    public function getStatusLabelAttribute(): string
+    {
+        return $this->status->label();
+    }
 
     public function trainingPlace(): BelongsTo
     {

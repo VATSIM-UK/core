@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\Training;
 
+use App\Enums\AvailabilityCheckStatus;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
@@ -29,6 +30,16 @@ class CheckAvailability implements ShouldQueue
      */
     public function handle(): void
     {
+        // During leave of absence, record the check as on leave but do not send any warnings
+        if ($this->trainingPlace->isOnLeaveOfAbsence()) {
+            AvailabilityCheck::create([
+                'training_place_id' => $this->trainingPlace->id,
+                'status' => AvailabilityCheckStatus::OnLeave,
+            ]);
+
+            return;
+        }
+
         $account = $this->trainingPlace->waitingListAccount->account;
         $memberId = $account->member->id;
 
@@ -45,7 +56,7 @@ class CheckAvailability implements ShouldQueue
         if ($hasAvailability && $hasSessionRequest) {
             $availabilityCheck = AvailabilityCheck::create([
                 'training_place_id' => $this->trainingPlace->id,
-                'status' => 'passed',
+                'status' => AvailabilityCheckStatus::Passed,
             ]);
 
             if ($existingAvailabilityWarning) {
@@ -58,7 +69,7 @@ class CheckAvailability implements ShouldQueue
         // Check failed - create failed check and warning
         $availabilityCheck = AvailabilityCheck::create([
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed,
         ]);
 
         if ($existingAvailabilityWarning) {

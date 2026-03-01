@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Training;
 
+use App\Enums\AvailabilityCheckStatus;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
@@ -11,6 +12,7 @@ use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPlace\TrainingPlaceLeaveOfAbsence;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\TrainingPlaceRemovedDueToExpiredAvailability;
@@ -72,7 +74,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
         $warning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
             ->where('status', 'pending')
@@ -138,7 +140,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         Carbon::setTestNow($this->dayZero->copy()->addDay());
         $this->addAvailabilityAndSession();
         Artisan::call('training-places:check-availability');
-        $passedCheck1 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', 'passed')->latest()->first();
+        $passedCheck1 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', AvailabilityCheckStatus::Passed)->latest()->first();
         $this->assertNotNull($passedCheck1);
         $warning1->refresh();
         $this->assertSame('resolved', $warning1->status, 'Job should resolve pending warning when check passes');
@@ -154,7 +156,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         Carbon::setTestNow($this->dayZero->copy()->addDays(3));
         $this->addAvailabilityAndSession();
         Artisan::call('training-places:check-availability');
-        $passedCheck2 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', 'passed')->latest()->first();
+        $passedCheck2 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', AvailabilityCheckStatus::Passed)->latest()->first();
         $this->assertNotNull($passedCheck2);
         $warning2->refresh();
         $this->assertSame('resolved', $warning2->status);
@@ -170,7 +172,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         Carbon::setTestNow($this->dayZero->copy()->addDays(5));
         $this->addAvailabilityAndSession();
         Artisan::call('training-places:check-availability');
-        $passedCheck3 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', 'passed')->latest()->first();
+        $passedCheck3 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', AvailabilityCheckStatus::Passed)->latest()->first();
         $this->assertNotNull($passedCheck3);
         $warning3->refresh();
         $this->assertSame('resolved', $warning3->status);
@@ -191,6 +193,76 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         $this->assertSame('expired', $fourthWarning->status, 'Removal job should mark the fourth warning as expired');
 
         Notification::assertSentTo($this->account, TrainingPlaceRemovedDueToFourthAvailabilityFailure::class);
+    }
+
+    #[Test]
+    public function it_records_on_leave_checks_and_creates_no_warnings_during_leave_of_absence(): void
+    {
+        // Create a leave of absence covering day 0 to end of day 7
+        TrainingPlaceLeaveOfAbsence::create([
+            'training_place_id' => $this->trainingPlace->id,
+            'begins_at' => $this->dayZero->copy(),
+            'ends_at' => $this->dayZero->copy()->addDays(7)->endOfDay(),
+            'reason' => 'Annual leave',
+        ]);
+
+        // Day 0: Run availability check while on leave
+        Artisan::call('training-places:check-availability');
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::OnLeave->value,
+        ]);
+        $this->assertSame(0, AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->count(), 'No warnings should be created during leave');
+        $this->trainingPlace->refresh();
+        $this->assertNull($this->trainingPlace->deleted_at, 'Training place must not be removed during leave');
+
+        // Day 1 & 2: Daily checks still run and record on_leave; still no warnings
+        Carbon::setTestNow($this->dayZero->copy()->addDay());
+        Artisan::call('training-places:check-availability');
+        Carbon::setTestNow($this->dayZero->copy()->addDays(2));
+        Artisan::call('training-places:check-availability');
+
+        $onLeaveCount = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)
+            ->where('status', AvailabilityCheckStatus::OnLeave)
+            ->count();
+        $this->assertSame(3, $onLeaveCount, 'Three on-leave checks should be recorded (day 0, 1, 2)');
+        $this->assertSame(0, AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->count());
+        $this->trainingPlace->refresh();
+        $this->assertNull($this->trainingPlace->deleted_at);
+    }
+
+    #[Test]
+    public function it_resumes_normal_availability_checks_and_warnings_after_leave_of_absence_ends(): void
+    {
+        // Leave of absence: day 0 to end of day 5
+        TrainingPlaceLeaveOfAbsence::create([
+            'training_place_id' => $this->trainingPlace->id,
+            'begins_at' => $this->dayZero->copy(),
+            'ends_at' => $this->dayZero->copy()->addDays(5)->endOfDay(),
+            'reason' => 'Annual leave',
+        ]);
+
+        // During leave (day 0): on_leave checks only, no warnings
+        Artisan::call('training-places:check-availability');
+        $this->assertSame(1, AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', AvailabilityCheckStatus::OnLeave)->count());
+        $this->assertSame(0, AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->count());
+
+        // First day after leave ends (day 6): normal flow resumes – no availability/session → failed check and new warning
+        Carbon::setTestNow($this->dayZero->copy()->addDays(6));
+        Artisan::call('training-places:check-availability');
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
+        $warning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'pending')->first();
+        $this->assertNotNull($warning, 'A pending availability warning should be created when member returns and has no availability');
+        $this->trainingPlace->refresh();
+        $this->assertNull($this->trainingPlace->deleted_at, 'Training place must not be removed on first failure after return');
+
+        // Total: 1 on_leave check + 1 failed check
+        $this->assertSame(2, $this->availabilityCheckCount());
     }
 
     /**
@@ -216,7 +288,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'failed',
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
         $warning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
             ->where('status', 'pending')
@@ -243,11 +315,11 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         $this->assertSame($expectedCheckCount, $this->availabilityCheckCount());
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => 'passed',
+            'status' => AvailabilityCheckStatus::Passed->value,
         ]);
         $warning->refresh();
         $this->assertSame('resolved', $warning->status, 'Job should resolve pending warning when check passes on recovery');
-        $passedCheck = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', 'passed')->first();
+        $passedCheck = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', AvailabilityCheckStatus::Passed)->first();
         $this->assertSame($passedCheck->id, $warning->resolved_availability_check_id);
         $this->trainingPlace->refresh();
         $this->assertNull($this->trainingPlace->deleted_at, "Training place should be maintained when availability and session are added on day {$recoveryDay}");
