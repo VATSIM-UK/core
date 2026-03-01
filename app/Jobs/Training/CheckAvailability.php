@@ -10,6 +10,7 @@ use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Notifications\Training\AvailabilityWarningCreated;
+use App\Services\Training\AvailabilityWarnings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
@@ -38,12 +39,18 @@ class CheckAvailability implements ShouldQueue
         // Check if a session request exists for the training position
         $hasSessionRequest = $this->checkSessionRequest($memberId);
 
+        $existingAvailabilityWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'pending')->first();
+
         // Check passes only if BOTH availability and session request exist
         if ($hasAvailability && $hasSessionRequest) {
-            AvailabilityCheck::create([
+            $availabilityCheck = AvailabilityCheck::create([
                 'training_place_id' => $this->trainingPlace->id,
                 'status' => 'passed',
             ]);
+
+            if ($existingAvailabilityWarning) {
+                AvailabilityWarnings::markWarningAsResolved($existingAvailabilityWarning, $availabilityCheck->id);
+            }
 
             return;
         }
@@ -53,8 +60,6 @@ class CheckAvailability implements ShouldQueue
             'training_place_id' => $this->trainingPlace->id,
             'status' => 'failed',
         ]);
-
-        $existingAvailabilityWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'pending')->first();
 
         if ($existingAvailabilityWarning) {
             // There is already a pending availability warning for this training place

@@ -15,7 +15,6 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\TrainingPlaceRemovedDueToExpiredAvailability;
 use App\Notifications\Training\TrainingPlaceRemovedDueToFourthAvailabilityFailure;
-use App\Services\Training\AvailabilityWarnings;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
@@ -141,10 +140,12 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         Artisan::call('training-places:check-availability');
         $passedCheck1 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', 'passed')->latest()->first();
         $this->assertNotNull($passedCheck1);
-        AvailabilityWarnings::markWarningAsResolved($warning1, $passedCheck1->id);
+        $warning1->refresh();
+        $this->assertSame('resolved', $warning1->status, 'Job should resolve pending warning when check passes');
+        $this->assertSame($passedCheck1->id, $warning1->resolved_availability_check_id);
         $this->removeAvailabilityAndSession();
 
-        // Episode 2: Fail → warning, then resolve within window
+        // Episode 2: Fail → warning, then resolve within window (job auto-resolves on pass)
         Carbon::setTestNow($this->dayZero->copy()->addDays(2));
         Artisan::call('training-places:check-availability');
         $warning2 = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'pending')->first();
@@ -155,10 +156,12 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         Artisan::call('training-places:check-availability');
         $passedCheck2 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', 'passed')->latest()->first();
         $this->assertNotNull($passedCheck2);
-        AvailabilityWarnings::markWarningAsResolved($warning2, $passedCheck2->id);
+        $warning2->refresh();
+        $this->assertSame('resolved', $warning2->status);
+        $this->assertSame($passedCheck2->id, $warning2->resolved_availability_check_id);
         $this->removeAvailabilityAndSession();
 
-        // Episode 3: Fail → warning, then resolve within window
+        // Episode 3: Fail → warning, then resolve within window (job auto-resolves on pass)
         Carbon::setTestNow($this->dayZero->copy()->addDays(4));
         Artisan::call('training-places:check-availability');
         $warning3 = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'pending')->first();
@@ -169,7 +172,9 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         Artisan::call('training-places:check-availability');
         $passedCheck3 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', 'passed')->latest()->first();
         $this->assertNotNull($passedCheck3);
-        AvailabilityWarnings::markWarningAsResolved($warning3, $passedCheck3->id);
+        $warning3->refresh();
+        $this->assertSame('resolved', $warning3->status);
+        $this->assertSame($passedCheck3->id, $warning3->resolved_availability_check_id);
         $this->removeAvailabilityAndSession();
 
         $this->assertSame(3, AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'resolved')->count());
@@ -225,7 +230,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
             $this->assertSame($day + 1, $this->availabilityCheckCount(), "After day {$day} should have ".($day + 1).' failed checks');
         }
 
-        // Recovery day: Member adds session request and availability → check passes, training place maintained
+        // Recovery day: Member adds session request and availability → check passes, job resolves warning, training place maintained
         Carbon::setTestNow($this->dayZero->copy()->addDays($recoveryDay));
         Availability::factory()->forStudent($this->ctsMember->id)->create();
         Session::factory()->create([
@@ -240,6 +245,10 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
             'training_place_id' => $this->trainingPlace->id,
             'status' => 'passed',
         ]);
+        $warning->refresh();
+        $this->assertSame('resolved', $warning->status, 'Job should resolve pending warning when check passes on recovery');
+        $passedCheck = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', 'passed')->first();
+        $this->assertSame($passedCheck->id, $warning->resolved_availability_check_id);
         $this->trainingPlace->refresh();
         $this->assertNull($this->trainingPlace->deleted_at, "Training place should be maintained when availability and session are added on day {$recoveryDay}");
     }

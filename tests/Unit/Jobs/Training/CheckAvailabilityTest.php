@@ -392,7 +392,7 @@ class CheckAvailabilityTest extends TestCase
         $job1 = new CheckAvailability($this->trainingPlace);
         $job1->handle();
 
-        // Assert: Failed check and warning should exist
+        // Assert: Failed check and pending warning should exist
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
             'status' => 'failed',
@@ -420,11 +420,17 @@ class CheckAvailabilityTest extends TestCase
             'status' => 'passed',
         ]);
 
-        // Assert: The warning should still be pending (job doesn't resolve it)
-        $this->assertDatabaseHas('availability_warnings', [
-            'training_place_id' => $this->trainingPlace->id,
-            'status' => 'pending',
-        ]);
+        // Assert: The existing pending warning should be marked resolved and linked to the passed check
+        $passedCheck = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)
+            ->where('status', 'passed')
+            ->first();
+        $this->assertNotNull($passedCheck);
+
+        $resolvedWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
+            ->where('status', 'resolved')
+            ->first();
+        $this->assertNotNull($resolvedWarning, 'Job should resolve the pending warning when check passes');
+        $this->assertEquals($passedCheck->id, $resolvedWarning->resolved_availability_check_id);
     }
 
     #[Test]
