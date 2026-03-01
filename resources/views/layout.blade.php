@@ -14,6 +14,7 @@
     <link media="all" type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Yellowtail">
     <link media="all" type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Josefin+Slab:600">
     @vite('resources/assets/sass/app.scss')
+    @vite('resources/assets/css/tailwind.css')
     {{-- Dynamic Style --}}
     <style type="text/css">
         .banner{
@@ -27,7 +28,7 @@
 </head>
 <body>
 @include('components.nav')
-<div class="container-fluid">
+<div class="container-fluid pt-[7.5rem]">
     <div class="header_container">
         <div id="banner" class="banner hidden-xs hidden-sm"></div>
 
