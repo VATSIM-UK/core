@@ -4,6 +4,7 @@ namespace App\Console\Commands\TeamSpeak;
 
 use App\Libraries\TeamSpeak;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use PlanetTeamSpeak\TeamSpeak3Framework\Adapter\ServerQuery;
 use PlanetTeamSpeak\TeamSpeak3Framework\Adapter\ServerQuery\Event;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
@@ -53,20 +54,23 @@ class TeamSpeakDaemon extends TeamSpeakCommand
 
     public static function clientJoinedEvent(Event $event, Host $host)
     {
-        \Log::info('TeamSpeak: clientJoinedEvent');
+        Log::info('TeamSpeak: clientJoinedEvent');
 
         if ($event['client_type'] != 0) {
             return;
         }
 
         try {
-            \Log::info('TeamSpeak: clientJoinedEvent', ['clid' => $event->clid]);
+            Log::info('TeamSpeak: clientJoinedEvent', ['clid' => $event->clid]);
 
             $client = $host->serverGetSelected()->clientGetById($event->clid);
             self::$command->currentMember = $client['client_database_id'];
 
             // log the client's clid and dbid in a data structure
             self::$connectedClients[$event->clid] = $client['client_database_id'];
+
+            // add small delay after connection to see if it helps with permissions issues
+            sleep(1);
 
             // perform the necessary checks on the client
             $member = TeamSpeak::checkClientRegistration($client);
@@ -81,9 +85,11 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             }
         } catch (ServerQueryException $e) {
             report($e);
+            Log::error('TeamSpeak: clientJoinedEvent server query exception', ['error' => $e->getMessage()]);
             self::handleServerQueryException($e);
         } catch (Exception $e) {
             report($e);
+            Log::error('TeamSpeak: clientJoinedEvent error', ['error' => $e->getMessage()]);
             self::handleException($e);
         }
     }
@@ -98,7 +104,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     public static function serverQueryWaitTimeout(int $time, ServerQuery $adapter): void
     {
         if ($adapter->getQueryLastTimestamp() < time() - self::KEEP_ALIVE_SECONDS) {
-            \Log::info('TeamSpeak: serverQueryWaitTimeout/keepAlive');
+            Log::info('TeamSpeak: serverQueryWaitTimeout/keepAlive');
 
             // Connection keep alive
             $adapter->request('clientupdate');

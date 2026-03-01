@@ -33,7 +33,8 @@ class ResetPasswordController extends BaseController
     {
         return [
             'token' => 'required',
-            'password' => 'required|confirmed|min:6',
+            'new_password' => 'required|string|confirmed|min:8|upperchars:1|lowerchars:1|numbers:1',
+            'new_password_confirmation' => 'required|same:new_password',
         ];
     }
 
@@ -44,9 +45,9 @@ class ResetPasswordController extends BaseController
      */
     protected function credentials(Request $request)
     {
-        return array_merge(['id' => Auth::guard('vatsim-sso')->user()->id], $request->only(
-            'password', 'password_confirmation', 'token'
-        ));
+        $credentials = $request->only('new_password', 'new_password_confirmation', 'token');
+
+        return array_merge(['id' => Auth::guard('vatsim-sso')->user()->id], $credentials, ['password' => $credentials['new_password'], 'password_confirmation' => $credentials['new_password_confirmation']]);
     }
 
     /**

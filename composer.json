@@ -51,10 +51,6 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/VATSIM-UK/laravel-ipboard"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/VATSIM-UK/public-id"
         },
         {
@@ -64,7 +60,6 @@
     ],
     "require": {
         "php": "^8.3.0",
-        "alawrence/laravel-ipboard": "dev-main",
         "axonc/filament-copyable-placeholder": "^0.3.0",
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^3.0",
@@ -102,6 +97,7 @@
     },
     "require-dev": {
         "ext-json": "*",
+        "brianium/paratest": "^7.17.0",
         "fakerphp/faker": "^1.9.1",
         "laravel/homestead": "^15.0.1",
         "laravel/legacy-factories": "^1.1",

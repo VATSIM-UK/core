@@ -54,6 +54,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.theory.view.twr',
             'training.theory.view.app',
             'training.theory.view.ctr',
+            'training.theory.manage.*',
+            'training.theory.manage.obs',
+            'training.theory.manage.twr',
+            'training.theory.manage.app',
+            'training.theory.manage.ctr',
 
             // Account Permissions
             'account.self',
@@ -124,6 +129,9 @@ class RolesAndPermissionsSeeder extends Seeder
             // Training Places Permissions
             'training-places.view.*',
             'training-places.manual-setup',
+            'training-places.revoke.*',
+            'training-places.loas.create.*',
+            'training-places.loas.end-early.*',
 
             // // Feedback System Permissions
             'feedback.access',
