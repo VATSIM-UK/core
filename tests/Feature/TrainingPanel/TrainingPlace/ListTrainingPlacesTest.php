@@ -72,39 +72,43 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_can_filter_by_waiting_list()
+    public function it_can_filter_by_category()
     {
-        // Arrange
-        $ctsPosition = CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
-        $trainingPosition = TrainingPosition::factory()->withCtsPositions([$ctsPosition->callsign])->create();
+        // Arrange - two training positions with different categories
+        $ctsPosition1 = CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
+        $ctsPosition2 = CtsPosition::factory()->create(['callsign' => 'EGLL_TWR']);
+        $trainingPositionApproach = TrainingPosition::factory()
+            ->withCtsPositions([$ctsPosition1->callsign])
+            ->create(['category' => 'approach']);
+        $trainingPositionTower = TrainingPosition::factory()
+            ->withCtsPositions([$ctsPosition2->callsign])
+            ->create(['category' => 'tower']);
 
-        $waitingList1 = WaitingList::factory()->create(['name' => 'List One']);
-        $waitingList2 = WaitingList::factory()->create(['name' => 'List Two']);
-
+        $waitingList = WaitingList::factory()->create();
         $student1 = Account::factory()->create();
         $student2 = Account::factory()->create();
         Member::factory()->create(['cid' => $student1->id]);
         Member::factory()->create(['cid' => $student2->id]);
 
-        $waitingListAccount1 = $waitingList1->addToWaitingList($student1, $this->privacc);
-        $waitingListAccount2 = $waitingList2->addToWaitingList($student2, $this->privacc);
+        $waitingListAccount1 = $waitingList->addToWaitingList($student1, $this->privacc);
+        $waitingListAccount2 = $waitingList->addToWaitingList($student2, $this->privacc);
 
-        $trainingPlace1 = TrainingPlace::create([
+        $trainingPlaceApproach = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount1->id,
-            'training_position_id' => $trainingPosition->id,
+            'training_position_id' => $trainingPositionApproach->id,
         ]);
 
-        $trainingPlace2 = TrainingPlace::create([
+        $trainingPlaceTower = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount2->id,
-            'training_position_id' => $trainingPosition->id,
+            'training_position_id' => $trainingPositionTower->id,
         ]);
 
-        // Act & Assert - Filter by first waiting list
+        // Act & Assert - Filter by approach category
         Livewire::actingAs($this->privacc)
             ->test(ListTrainingPlaces::class)
-            ->filterTable('waiting_list', $waitingList1->id)
-            ->assertCanSeeTableRecords([$trainingPlace1])
-            ->assertCanNotSeeTableRecords([$trainingPlace2]);
+            ->filterTable('trainingPosition.category', 'approach')
+            ->assertCanSeeTableRecords([$trainingPlaceApproach])
+            ->assertCanNotSeeTableRecords([$trainingPlaceTower]);
     }
 
     #[Test]

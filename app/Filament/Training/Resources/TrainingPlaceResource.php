@@ -5,11 +5,14 @@ namespace App\Filament\Training\Resources;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Filament\Training\Resources\TrainingPlaceResource\Pages;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class TrainingPlaceResource extends Resource
 {
@@ -86,12 +89,15 @@ class TrainingPlaceResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('waiting_list')
-                    ->relationship('waitingListAccount.waitingList', 'name')
-                    ->label('Waiting List')
+                Tables\Filters\SelectFilter::make('trainingPosition.category')
+                    ->label('Category')
+                    ->options(TrainingPosition::all()->pluck('category', 'category')->map(fn ($category) => Str::title($category ?? 'Uncategorised')))
                     ->preload()
-                    ->searchable(),
-            ])
+                    ->searchable()
+                    ->query(fn (Builder $query, array $data): Builder => filled($data['value'] ?? null)
+                        ? $query->whereHas('trainingPosition', fn (Builder $q): Builder => $q->where('category', $data['value']))
+                        : $query),
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->url(fn (TrainingPlace $record) => url("/training/training-places/{$record->id}")),
