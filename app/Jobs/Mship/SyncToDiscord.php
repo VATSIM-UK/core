@@ -10,6 +10,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimitedWithRedis;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class SyncToDiscord extends Job implements ShouldQueue
 {
@@ -19,7 +21,7 @@ class SyncToDiscord extends Job implements ShouldQueue
 
     public $tries = 3;
 
-    public $backoff = 60;
+    public $backoff = 30;
 
     public $queue = 'discord';
 
@@ -28,9 +30,13 @@ class SyncToDiscord extends Job implements ShouldQueue
         $this->account = $account;
     }
 
-    public function handle()
+    public function handle(): void
     {
+        Log::info('Starting MSHIP sync job.', $this->logContext());
+
         $this->account->syncToDiscord();
+
+        Log::info('Completed MSHIP sync job.', $this->logContext());
     }
 
     public function getAccountId(): int
@@ -40,6 +46,25 @@ class SyncToDiscord extends Job implements ShouldQueue
 
     public function middleware(): array
     {
-        return [new RateLimitedWithRedis('discord-sync'), new WithoutOverlapping($this->getAccountId())];
+        // Keep external API calls fast across accounts while serialising sync work per account.
+        return [
+            new RateLimitedWithRedis('discord-sync'),
+            (new WithoutOverlapping($this->getAccountId()))->releaseAfter(5)->expireAfter(120),
+        ];
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        Log::error('MSHIP sync job failed.', array_merge($this->logContext(), [
+            'error' => $exception->getMessage(),
+        ]));
+    }
+
+    private function logContext(): array
+    {
+        return [
+            'job' => static::class,
+            'account_id' => $this->account->id,
+        ];
     }
 }
