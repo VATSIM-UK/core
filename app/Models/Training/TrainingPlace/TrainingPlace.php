@@ -5,6 +5,7 @@ namespace App\Models\Training\TrainingPlace;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Observers\Training\TrainingPlaceObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -34,6 +35,11 @@ class TrainingPlace extends Model
     public function trainingPosition(): BelongsTo
     {
         return $this->belongsTo(TrainingPosition::class, 'training_position_id');
+    }
+
+    public function availabilityChecks(): HasMany
+    {
+        return $this->hasMany(AvailabilityCheck::class);
     }
 
     public function leaveOfAbsences(): HasMany
