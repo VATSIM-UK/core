@@ -430,15 +430,19 @@ class ConductExamTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->panelUser)
             ->test(ConductExam::class, ['examId' => $exam->id])
-            ->fillForm(function () use ($criteria) {
-                return ['form' => [$criteria->id => ['comments' => '', 'grade' => 'P']]];
+            ->tap(function ($component) use ($exam) {
+                $allCriteria = ExamCriteria::byType($exam->exam)->get();
+                foreach ($allCriteria as $criterion) {
+                    $component->set("data.form.{$criterion->id}.grade", 'P');
+                    $component->set("data.form.{$criterion->id}.comments", '');
+                }
             })
             ->set('examResultData.exam_result', PracticalResult::PASSED)
             ->set('examResultData.additional_comments', '')
             ->call('completeExam')
             ->assertHasNoFormErrors();
 
-        $this->assertDatabaseMissing('training_places', [
+        $this->assertSoftDeleted('training_places', [
             'id' => $trainingPlace->id,
             'waiting_list_account_id' => $waitingListAccount->id, ]);
     }

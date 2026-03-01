@@ -30,6 +30,7 @@ use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Session;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 
 class ConductExam extends Page implements HasForms, HasInfolists
 {
@@ -381,6 +382,10 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function removeTrainingPlace()
     {
-        $this->examBooking->studentAccount()->waitingListAccounts()->whereHas('trainingPlace')->first()?->trainingPlace?->delete();
+        $studentAccount = $this->examBooking->studentAccount();
+    
+        $waitingListAccountIds = $studentAccount->waitingListAccounts()->pluck('id');
+        
+        TrainingPlace::whereIn('waiting_list_account_id', $waitingListAccountIds)->first()?->delete();
     }
 }
