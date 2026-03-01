@@ -3,26 +3,21 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\BaseController;
-use App\Libraries\UKCP;
 use App\Models\Airport;
-use Illuminate\Support\Str;
+use App\Services\Site\AirportService;
 
 class AirportController extends BaseController
 {
-    private readonly UKCP $ukcp;
-
-    public function __construct(UKCP $ukcp)
+    public function __construct(private AirportService $airportService)
     {
-        $this->ukcp = $ukcp;
+        parent::__construct();
     }
 
     public function index()
     {
-        $airports = Airport::uk()->orderBy('name')->get()->split(2);
-
         $this->setTitle('Airports');
 
-        return $this->viewMake('site.airport.index')->with('airports', $airports);
+        return $this->viewMake('site.airport.index')->with('airports', $this->airportService->getAirportIndex());
     }
 
     public function show(Airport $airport)
@@ -33,7 +28,7 @@ class AirportController extends BaseController
             ->with(
                 [
                     'airport' => $airport,
-                    'stands' => $this->ukcp->getStandStatus(Str::upper($airport->icao)),
+                    'stands' => $this->airportService->getStandStatus($airport),
                 ]
             );
     }

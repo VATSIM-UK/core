@@ -62,17 +62,23 @@ class DelegateRoleManagementService
         });
     }
 
+    /**
+     * @return array<int, int>
+     */
+    private function manageableRoleIdsForUser(Account $user): array
+    {
+        return Role::all()->filter(function ($role) use ($user) {
+            return $this->delegatePermissionExists($role)
+                && $user->hasPermissionTo($this->delegatePermissionName($role));
+        })->pluck('id')->all();
+    }
+
     public function getManageableRolesQuery(Builder $query, Account $user)
     {
         if ($user->can('account.edit-roles.*')) {
             return $query;
         }
 
-        $manageableRoleIds = Role::all()->filter(function ($role) use ($user) {
-            return $this->delegatePermissionExists($role)
-                && $user->hasPermissionTo($this->delegatePermissionName($role));
-        })->pluck('id');
-
-        return $query->whereIn('id', $manageableRoleIds);
+        return $query->whereIn('id', $this->manageableRoleIdsForUser($user));
     }
 }

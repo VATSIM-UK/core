@@ -5,6 +5,7 @@ namespace App\Services\Training;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Services\Training\DTO\WaitingListFlagSummaryResult;
 
 class CheckWaitingListFlags
 {
@@ -20,17 +21,20 @@ class CheckWaitingListFlags
      */
     public function checkWaitingListFlags(WaitingList $waitingList): array
     {
-        $waitingListAccount = $this->getWaitingListAccount($waitingList);
+        return $this->getFlagSummaryResult($waitingList)->toArray();
+    }
 
+    public function getFlagSummaryResult(WaitingList $waitingList): WaitingListFlagSummaryResult
+    {
         if ($waitingList->flags()->doesntExist()) {
-            return ['summary' => null];
+            return new WaitingListFlagSummaryResult(null);
         }
 
-        $summaryByFlag = $waitingListAccount->flags()->get()->mapWithKeys(function ($flag) {
+        $summaryByFlag = $this->getWaitingListAccount($waitingList)->flags()->get()->mapWithKeys(function ($flag) {
             return [$flag->name => $flag->pivot->value];
         });
 
-        return ['summary' => $summaryByFlag->toArray()];
+        return new WaitingListFlagSummaryResult($summaryByFlag->toArray());
     }
 
     public function getWaitingListAccount(WaitingList $waitingList): WaitingListAccount

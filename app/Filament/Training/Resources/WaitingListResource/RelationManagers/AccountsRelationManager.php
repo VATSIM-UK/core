@@ -171,7 +171,7 @@ class AccountsRelationManager extends RelationManager
                             $trainingPosition = $livewire->ownerRecord->trainingPositions()->findOrFail($data['training_position_id']);
 
                             $service = app(TrainingPlaceService::class);
-                            $trainingPlace = $service->createManualTrainingPlace($record, $trainingPosition);
+                            $trainingPlace = $service->createManualTrainingPlace($record, $trainingPosition, auth()->id());
 
                             Notification::make()
                                 ->title('Training place offered successfully')

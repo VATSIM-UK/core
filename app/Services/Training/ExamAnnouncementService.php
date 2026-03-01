@@ -12,13 +12,23 @@ class ExamAnnouncementService
 
     public function canPostAnnouncement(ExamBooking $examBooking, int $memberId): bool
     {
-        if ($examBooking->finished == ExamBooking::FINISHED_FLAG) {
+        if ($this->isBookingFinished($examBooking)) {
             return false;
         }
 
         $examiners = $examBooking->examiners;
 
-        return $examiners->senior === $memberId || $examiners->other === $memberId || $examiners->trainee === $memberId;
+        return $this->isExaminerAssigned($examiners->senior, $examiners->other, $examiners->trainee, $memberId);
+    }
+
+    private function isBookingFinished(ExamBooking $examBooking): bool
+    {
+        return $examBooking->finished == ExamBooking::FINISHED_FLAG;
+    }
+
+    private function isExaminerAssigned(?int $senior, ?int $other, ?int $trainee, int $memberId): bool
+    {
+        return $senior === $memberId || $other === $memberId || $trainee === $memberId;
     }
 
     public function postAnnouncement(ExamBooking $examBooking, array $data): void
