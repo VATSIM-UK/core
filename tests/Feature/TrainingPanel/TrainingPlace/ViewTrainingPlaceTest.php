@@ -495,7 +495,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             ->callAction('revokeTrainingPlace', data: ['reason' => 'test reason.'])
             ->assertNotified();
 
-        $this->assertDatabaseMissing('training_places', ['id' => $trainingPlace->id]);
+        $this->assertSoftDeleted('training_places', ['id' => $trainingPlace->id]);
     }
 
     #[Test]
