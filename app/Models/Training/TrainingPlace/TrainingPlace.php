@@ -41,6 +41,11 @@ class TrainingPlace extends Model
         return $this->hasMany(AvailabilityCheck::class);
     }
 
+    public function availabilityWarnings(): HasMany
+    {
+        return $this->hasMany(AvailabilityWarning::class);
+    }
+
     public function leaveOfAbsences(): HasMany
     {
         return $this->hasMany(TrainingPlaceLeaveOfAbsence::class);
