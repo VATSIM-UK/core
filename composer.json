@@ -97,6 +97,7 @@
     },
     "require-dev": {
         "ext-json": "*",
+        "brianium/paratest": "^7.17.0",
         "fakerphp/faker": "^1.9.1",
         "laravel/homestead": "^15.0.1",
         "laravel/legacy-factories": "^1.1",

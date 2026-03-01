@@ -17,7 +17,8 @@ class TrainingPlaceFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'waiting_list_account_id' => null,
+            'training_position_id' => null,
         ];
     }
 }

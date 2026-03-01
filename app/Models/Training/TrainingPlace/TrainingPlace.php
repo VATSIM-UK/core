@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[ObservedBy([TrainingPlaceObserver::class])]
 class TrainingPlace extends Model
@@ -20,6 +21,7 @@ class TrainingPlace extends Model
     use HasFactory;
 
     use HasUlids;
+    use SoftDeletes;
 
     protected $guarded = [];
 
@@ -32,6 +34,16 @@ class TrainingPlace extends Model
     public function trainingPosition(): BelongsTo
     {
         return $this->belongsTo(TrainingPosition::class, 'training_position_id');
+    }
+
+    public function availabilityChecks(): HasMany
+    {
+        return $this->hasMany(AvailabilityCheck::class);
+    }
+
+    public function availabilityWarnings(): HasMany
+    {
+        return $this->hasMany(AvailabilityWarning::class);
     }
 
     public function leaveOfAbsences(): HasMany

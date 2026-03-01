@@ -50,6 +50,7 @@ class TrainingPanelProvider extends PanelProvider
             ->authMiddleware([
                 TrainingPanelAccessMiddleware::class,
             ])
+            ->brandLogo(asset('images/branding/vatsimuk_whiteblue.png'))
             ->navigationItems([
                 NavigationItem::make('Admin Panel')
                     ->url(fn () => route('filament.app.pages.dashboard'))

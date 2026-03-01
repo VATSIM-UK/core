@@ -18,6 +18,11 @@ use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
+/**
+ * When asserting that a training place has been revoked/deleted, use
+ * assertSoftDeleted('training_places', ['id' => $id]) — not assertDatabaseMissing.
+ * TrainingPlace uses SoftDeletes, so the row remains with deleted_at set.
+ */
 class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 {
     use DatabaseTransactions;
@@ -490,7 +495,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             ->callAction('revokeTrainingPlace', data: ['reason' => 'test reason.'])
             ->assertNotified();
 
-        $this->assertDatabaseMissing('training_places', ['id' => $trainingPlace->id]);
+        $this->assertSoftDeleted('training_places', ['id' => $trainingPlace->id]);
     }
 
     #[Test]
