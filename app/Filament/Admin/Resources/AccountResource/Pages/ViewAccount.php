@@ -9,6 +9,7 @@ use App\Filament\Admin\Resources\AccountResource;
 use App\Jobs\UpdateMember;
 use App\Models\Contact;
 use App\Models\Mship\Note\Type;
+use App\Models\Mship\State;
 use App\Models\Roster;
 use App\Notifications\Mship\UserImpersonated;
 use Filament\Actions;
@@ -55,15 +56,44 @@ class ViewAccount extends BaseViewRecordPage
                     ->color('danger')
                     ->icon('heroicon-o-no-symbol')
                     ->modalHeading('Revoke Visiting Status')
-                    ->action(function () {
+                    ->action(function (Actions\Action $action) {
                         $visitingState = $this->record->states
                             ->first(fn ($s) => $s->code === 'VISITING');
                         $this->record->removeState($visitingState);
 
                         $this->record->addNote('visittransfer', 'Visiting status revoked by '.auth()->user()->name, auth()->user()->id);
+
+                        $action->success();
                     })
                     ->requiresConfirmation()
                     ->successNotificationTitle('Visiting Status Revoked'),
+
+                Actions\Action::make('grant_visiting_status')
+                    ->label('Grant Visiting Status')
+                    ->visible(fn () => ! $this->record->hasState('VISITING')
+                    && ! $this->record->hasState('TRANSFERRING')
+                    && ! $this->record->hasState('DIVISION')
+                    && auth()->user()->can('vt.status.grant.manual'))
+                    ->color('success')
+                    ->icon('heroicon-o-check-circle')
+                    ->modalHeading('Grant Visiting Status Manually')
+                    ->form([
+                        Textarea::make('reason')
+                            ->label('Reason')
+                            ->helperText('This action should only be used in certain specific circumstances and you MUST include a reason for granting visiting status, please include any relevant ticket references.')
+                            ->minLength(10)
+                            ->required(),
+                    ])
+                    ->action(function (array $data, Actions\Action $action) {
+                        $this->record->addState(State::findByCode('VISITING'));
+
+                        $this->record->addNote('visittransfer', 'Visiting status granted manually: '.$data['reason'], auth()->user()->id);
+
+                        $action->success();
+                    })
+                    ->requiresConfirmation()
+                    ->successNotificationTitle('Visiting Status Granted'),
+
                 Actions\Action::make('toggle_roster_status')
                     ->visible(fn () => auth()->user()->can('roster.manage'))
                     ->color($onRoster ? 'danger' : 'success')
