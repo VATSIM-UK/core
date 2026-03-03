@@ -36,6 +36,7 @@ class ExamHistoryService
             'Passed' => 'success',
             'Failed' => 'danger',
             'Incomplete' => 'warning',
+            'Failed - Resubmit' => 'danger',
             default => 'gray',
         };
     }

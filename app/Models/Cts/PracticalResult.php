@@ -21,6 +21,8 @@ class PracticalResult extends Model
 
     public const INCOMPLETE = 'N';
 
+    public const FAILRESUBMIT = 'R'; // Legacy value, not used for new records
+
     protected $casts = [
         'date' => 'datetime',
     ];
@@ -43,6 +45,7 @@ class PracticalResult extends Model
             self::PASSED => 'Passed',
             self::FAILED => 'Failed',
             self::INCOMPLETE => 'Incomplete',
+            self::FAILRESUBMIT => 'Failed - Resubmit',
             default => 'Unknown',
         };
     }
