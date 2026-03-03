@@ -363,4 +363,27 @@ class FacilityTest extends BaseAdminTestCase
 
         $this->assertTrue($application->meetsRatingRequirements($facility->fresh()));
     }
+
+    #[Test]
+    public function it_can_search_and_link_a_waiting_list()
+    {
+        $waitingList = \App\Models\Training\WaitingList::factory()->create(['name' => 'Test Waiting List']);
+        $facility = Facility::factory()->create();
+
+        $this->adminUser->givePermissionTo(['vt.facility.view.*', 'vt.facility.update.*']);
+
+        Livewire::actingAs($this->adminUser)
+            ->test(EditFacility::class, ['record' => $facility->id])
+            ->assertSuccessful()
+            ->fillForm([
+                'waiting_list_id' => $waitingList->id,
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('vt_facility', [
+            'id' => $facility->id,
+            'waiting_list_id' => $waitingList->id,
+        ]);
+    }
 }
