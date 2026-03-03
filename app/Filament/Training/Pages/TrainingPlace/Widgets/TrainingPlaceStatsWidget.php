@@ -25,6 +25,8 @@ class TrainingPlaceStatsWidget extends BaseWidget
         $waitingTime = (int) ceil($this->trainingPlace->waitingListAccount?->created_at->diffInDays($this->trainingPlace->waitingListAccount->deleted_at));
         $waitingTime = "{$waitingTime} ".Str::plural('day', $waitingTime);
 
+        $warningsCount = $this->trainingPlace->availabilityWarnings()->count();
+
         return [
             Stat::make('Training Time', $activeTime)
                 ->icon('heroicon-o-clock')
@@ -33,6 +35,10 @@ class TrainingPlaceStatsWidget extends BaseWidget
             Stat::make('Waiting Time in Queue', $waitingTime)
                 ->icon('heroicon-o-clock')
                 ->color('primary'),
+
+            Stat::make('Availability Warnings', $warningsCount)
+                ->icon('heroicon-o-exclamation-triangle')
+                ->color($warningsCount > 0 ? 'warning' : 'success'),
         ];
     }
 }

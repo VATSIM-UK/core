@@ -11,6 +11,7 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role;
 
 class RolesRelationManager extends RelationManager
@@ -82,5 +83,12 @@ class RolesRelationManager extends RelationManager
 
                 return $service->getManageableRolesQuery($query, auth()->user());
             });
+    }
+
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        $user = auth()->user();
+
+        return $user->can('account.edit-roles.*') || $user->permissions()->where('name', 'like', 'account.edit-roles.%')->exists();
     }
 }

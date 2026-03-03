@@ -22,6 +22,11 @@ if (env('CTS_DATABASE_URL', null) !== null) {
     $ctsDb['pass'] = $split['pass'];
 }
 
+$ctsDatabaseName = env('CTS_DATABASE', Arr::get($ctsDb, 'name'));
+if (env('APP_ENV') === 'testing' && env('TEST_TOKEN')) {
+    $ctsDatabaseName = sprintf('%s_test_%s', $ctsDatabaseName, env('TEST_TOKEN'));
+}
+
 return [
 
     /*
@@ -83,7 +88,7 @@ return [
             'driver' => 'mysql',
             'host' => env('DB_MYSQL_HOST', Arr::get($ctsDb, 'host')),
             'port' => env('DB_MYSQL_PORT', Arr::get($ctsDb, 'port')),
-            'database' => env('CTS_DATABASE', Arr::get($ctsDb, 'name')),
+            'database' => $ctsDatabaseName,
             'username' => env('DB_MYSQL_USER', Arr::get($ctsDb, 'user')),
             'password' => env('DB_MYSQL_PASS', Arr::get($ctsDb, 'pass')),
             'unix_socket' => env('DB_SOCKET', ''),

@@ -28,7 +28,6 @@ class CtsMock extends Command
      */
     public function handle()
     {
-        MockCtsDatabase::destroy();
-        MockCtsDatabase::create();
+        MockCtsDatabase::recreate();
     }
 }

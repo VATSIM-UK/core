@@ -2,12 +2,40 @@
 
 namespace Tests\Database;
 
+use Illuminate\Database\Query\Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class MockCtsDatabase
 {
+    public static function ensureCreated(): void
+    {
+        self::ensureDatabaseExists();
+
+        if (! Schema::connection('cts')->hasTable('members')) {
+            self::create();
+        }
+    }
+
+    public static function recreate(): void
+    {
+        self::ensureDatabaseExists();
+        self::destroy();
+        self::create();
+    }
+
+    public static function ensureDatabaseExists(): void
+    {
+        $databaseName = config('database.connections.cts.database');
+
+        DB::connection('mysql')->statement(sprintf('CREATE DATABASE IF NOT EXISTS `%s`', $databaseName));
+        DB::purge('cts');
+    }
+
     public static function create()
     {
+        self::ensureDatabaseExists();
+
         DB::connection('cts')->statement("SET SESSION sql_mode='NO_ZERO_IN_DATE';");
 
         DB::connection('cts')->statement(
@@ -438,9 +466,13 @@ class MockCtsDatabase
 
     public static function destroy()
     {
-        DB::connection('cts')->statement(
-            'DROP TABLE IF EXISTS `members`;'
-        );
+        try {
+            DB::connection('cts')->statement(
+                'DROP TABLE IF EXISTS `members`;'
+            );
+        } catch (Exception) {
+            return;
+        }
 
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `bookings`;'
