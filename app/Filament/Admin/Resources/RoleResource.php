@@ -63,10 +63,11 @@ class RoleResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()->visible(fn () => auth()->user()?->can('role.delete.*')),
                 Tables\Actions\BulkAction::make('assignPermissions')
                     ->icon('heroicon-o-shield-check')
                     ->label('Assign Permissions')
+                    ->visible(fn () => auth()->user()?->can('role.edit.*'))
                     ->form([
                         CheckboxList::make('permissions')
                             ->options(\Spatie\Permission\Models\Permission::orderBy('name')->pluck('name', 'name'))
