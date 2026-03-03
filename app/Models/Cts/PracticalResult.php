@@ -21,7 +21,7 @@ class PracticalResult extends Model
 
     public const INCOMPLETE = 'N';
 
-    public const FAILRESUBMIT = 'R'; // Lagacy value, not used for new records
+    public const FAILRESUBMIT = 'R'; // Legacy value, not used for new records
 
     protected $casts = [
         'date' => 'datetime',
