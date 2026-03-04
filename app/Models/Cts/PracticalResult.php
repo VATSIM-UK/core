@@ -54,4 +54,9 @@ class PracticalResult extends Model
     {
         return $this->hasMany(ExamCriteriaAssessment::class, 'examid', 'examid')->with('examCriteria');
     }
+
+    public function isPassed(): bool
+    {
+        return $this->result === self::PASSED;
+    }
 }
