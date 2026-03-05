@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use App\Models\Mship\Feedback\Feedback;
 
 /**
  * @property WaitingList $ownerRecord
@@ -100,6 +101,57 @@ class AccountsRelationManager extends RelationManager
                 ...$this->getFlagColumns(),
             ])
             ->actions([
+                Tables\Actions\Action::make('offerTrainingPlace')
+                    ->label("Offer Training Place")
+                    ->icon('heroicon-o-academic-cap')
+                    ->visible(fn ($record) => $this->can('offerTrainingPlace', $record->waitingList))
+                    ->form(function (WaitingListAccount $record) {
+                        $recentFeedback = Feedback::where('account_id', $record->account_id)
+                            ->with(['answers.question'])
+                            ->latest()
+                            ->get();
+
+                        $feedbackEntries = $recentFeedback->map(fn (Feedback $feedback) => 
+                            Forms\Components\Section::make("Feedback - {$feedback->created_at->format('d/m/Y H:i')}")
+                                ->schema([
+                                    ...$feedback->answers->map(fn ($answer) =>
+                                        Forms\Components\Placeholder::make("answer_{$answer->id}")
+                                            ->label($answer->question?->question ?? 'Unknown Question')
+                                            ->content($answer->response ?? '—')
+                                    )->all(),
+                                ])
+                                ->columns(3)
+                                ->collapsible()
+                        )->all();
+
+                        return [
+                            Forms\Components\Section::make('Member Feedback')
+                                ->schema($feedbackEntries ?: [
+                                    Forms\Components\Placeholder::make('no_feedback')
+                                        ->label('')
+                                        ->content('No feedback on record for this member.'),
+                                    ]
+                                )
+                                ->collapsible()
+                                ->columns(3),
+
+                            Forms\Components\Select::make('training_position_id')
+                                ->label('Training Position')
+                                ->options(function ($livewire) {
+                                    return $livewire->ownerRecord->trainingPositions
+                                        ->mapWithKeys(fn ($tp) => [$tp->id => $tp->position?->callsign ?? "Position #{$tp->id}"])
+                                        ->toArray();
+                                })
+                                ->required()
+                                ->helperText('Select the training position to offer to this member.'),
+                        ];
+                    })
+                    ->successNotificationTitle('Training place offered successfully')
+                    ->modalHeading('Offer Training Place')
+                    ->modalDescription('Select a training position to offer this member.')
+                    ->modalSubmitActionLabel('Offer Training Place')
+                    ->modalCancelActionLabel('Cancel')
+                    ->color('success'),
                 Tables\Actions\EditAction::make()
                     ->using(function (WaitingListAccount $record, $data, $livewire) {
                         $record->update([
