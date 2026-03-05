@@ -17,17 +17,17 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
             abort(404, 'This offer does not exist.');
         }
 
+        if ($offer->waitingListAccount->account->id !== auth()->id()) {
+            abort(403);
+        }
+
         if ($offer->expires_at->isPast()) {
             return view('training.training-place-offer.expired', compact('offer'));
         }
 
         if ($offer->status !== TrainingPlaceOfferStatus::Pending) {
             return view('training.training-place-offer.already-responded', compact('offer'));
-        }
-
-        if ($offer->waitingListAccount->account->id !== auth()->id()) {
-            abort(403);
-        }
+        }  
 
         return view('training.training-place-offer.show', compact('offer'));
     }
@@ -35,6 +35,10 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
     public function respond(string $token, Request $request, TrainingPlaceService $service)
     {
         $offer = TrainingPlaceOffer::where('token', $token)->firstOrFail();
+
+        if ($offer->waitingListAccount->account->id !== auth()->id()) {
+            abort(403);
+        }
 
         if ($offer->expires_at->isPast()) {
             return redirect()->route('mship.manage.dashboard')
@@ -44,10 +48,6 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
         if ($offer->status !== TrainingPlaceOfferStatus::Pending) {
             return redirect()->route('mship.manage.dashboard')
                 ->with('error', 'This offer has already been responded to.');
-        }
-
-        if ($offer->waitingListAccount->account->id !== auth()->id()) {
-            abort(403);
         }
 
         $request->validate([
