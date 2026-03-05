@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\TrainingPlaceOfferStatus;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class TrainingPlaceOffer extends Model
 {
@@ -42,5 +44,12 @@ class TrainingPlaceOffer extends Model
     public function getStatusLabelAttribute(): string
     {
         return $this->status->label();
+    }
+
+    public static function getExpiredOffers(Carbon $date): Collection
+    {
+        return TrainingPlaceOffer::where('status', TrainingPlaceOfferStatus::Pending)
+            ->where('expires_at', '<', now())
+            ->get();
     }
 }

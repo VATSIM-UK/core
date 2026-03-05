@@ -98,7 +98,7 @@ class TrainingPlaceService
                 'training_position_id' => $trainingPosition->id,
                 'status' => TrainingPlaceOfferStatus::Pending->value,
                 'token' => self::generateToken(),
-                'expires_at' => now()->addDays(3)->endOfHour(),
+                'expires_at' => now()->addHours(84)->endOfHour(), // 3.5 days
             ]);
             $waitingListAccount->account->notify(new TrainingPlaceOffered($trainingPlaceOffer));
         });
@@ -119,24 +119,42 @@ class TrainingPlaceService
     public function declineOffer(TrainingPlaceOffer $offer, string $reason): void
     {
         $offer->update([
-            'status' => TrainingPlaceOfferStatus::Declined,
+            'status' => TrainingPlaceOfferStatus::UnderReview,
             'decline_reason' => $reason,
             'response_at' => now(),
         ]);
+
+        // Notify staff
+    }
+
+    public function rescindOffer(TrainingPlaceOffer $offer): void
+    {
+        $offer->update([
+            'status' => TrainingPlaceOfferStatus::Rescinded,
+        ]);
+
+        // Need notification here
+    }
+
+    public function expireOffer(TrainingPlaceOffer $offer): void
+    {
+        $offer->update([
+            'status' => TrainingPlaceOfferStatus::Expired,
+        ]);
+
+        // need notification here
     }
 
     public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition): TrainingPlace
     {
-        // $trainingPlace = TrainingPlace::create([
-        //     'waiting_list_account_id' => $waitingListAccount->id,
-        //     'training_position_id' => $trainingPosition->id,
-        // ]);
+        $trainingPlace = TrainingPlace::create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]);
 
-        // $this->removeFromWaitingList($trainingPlace);
+        $this->removeFromWaitingList($trainingPlace);
 
-        // return $trainingPlace;#
-
-        return null;
+        return $trainingPlace;
     }
 
     public function removeFromWaitingList(TrainingPlace $trainingPlace): void

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('training_position_id');
             $table->string('token');
             $table->timestamp('expires_at');
-            $table->enum('status', ['pending', 'accepted', 'declined']);
+            $table->enum('status', ['pending', 'accepted', 'declined', 'under_review', 'rescinded', 'expired']);
             $table->dateTime('response_at')->nullable();
             $table->text('decline_reason')->nullable();
             $table->timestamps();
