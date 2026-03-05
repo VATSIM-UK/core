@@ -36,18 +36,15 @@ class TrainingPlaceOffered extends Notification
      */
     public function toMail($notifiable)
     {
-        $waitingListAccount = $this->trainingPlaceOffer->waitingListAccount;
         $trainingPosition = $this->trainingPlaceOffer->trainingPosition();
-
-        // $trainingPlaceUrl = route('mship.waiting-lists.retention.token', [
-        //     'token' => $this->retentionCheck->token,
-        // ]);
+        $offerUrl = route('training.place-offer.show', ['token' => $this->trainingPlaceOffer->token]);
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject('UK Training Place Offer')
             ->view('emails.training.training_place_offer', [
                 'position' => $trainingPosition,
+                'offer_url' => $offerUrl,
             ]);
     }
 }

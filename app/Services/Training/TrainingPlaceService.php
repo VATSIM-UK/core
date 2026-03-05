@@ -104,16 +104,39 @@ class TrainingPlaceService
         });
     }
 
+    public function acceptOffer(TrainingPlaceOffer $offer): void
+    {
+        DB::transaction(function () use ($offer): void {
+            $offer->update([
+                'status' => TrainingPlaceOfferStatus::Accepted,
+                'response_at' => now(),
+            ]);
+
+            $this->createManualTrainingPlace($offer->waitingListAccount, $offer->trainingPosition);
+        });
+    }
+
+    public function declineOffer(TrainingPlaceOffer $offer, string $reason): void
+    {
+        $offer->update([
+            'status' => TrainingPlaceOfferStatus::Declined,
+            'decline_reason' => $reason,
+            'response_at' => now(),
+        ]);
+    }
+
     public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition): TrainingPlace
     {
-        $trainingPlace = TrainingPlace::create([
-            'waiting_list_account_id' => $waitingListAccount->id,
-            'training_position_id' => $trainingPosition->id,
-        ]);
+        // $trainingPlace = TrainingPlace::create([
+        //     'waiting_list_account_id' => $waitingListAccount->id,
+        //     'training_position_id' => $trainingPosition->id,
+        // ]);
 
-        $this->removeFromWaitingList($trainingPlace);
+        // $this->removeFromWaitingList($trainingPlace);
 
-        return $trainingPlace;
+        // return $trainingPlace;#
+
+        return null;
     }
 
     public function removeFromWaitingList(TrainingPlace $trainingPlace): void

@@ -12,7 +12,7 @@
 
 <p>If we’ve not heard from you within the next 84 hours (3.5 days), unfortunately, we will have to offer the place to another student.</p>
 
-<!-- <p><a href="{{ $training_place_url }}" class="btn btn-primary">Manage Training Place</a></p> -->
+<p><a href="{{ $offer_url }}" class="btn btn-primary">Manage Training Place</a></p>
 
 <p>Kind Regards,
 The ATC Training Team</p>

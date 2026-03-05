@@ -85,6 +85,10 @@ Route::group([
     ], function () {
         Route::get('')->uses('WaitingLists@index')->name('index');
         Route::post('self-enrol/{waitingList}')->uses('WaitingLists@selfEnrol')->name('self-enrol');
+
+        // Training place offers
+        Route::get('training-place-offer/{token}')->uses('\App\Http\Controllers\Training\TrainingPlaceOfferController@show')->name('place-offer.show');
+        Route::post('training-place-offer/{token}/respond')->uses('\App\Http\Controllers\Training\TrainingPlaceOfferController@respond')->name('place-offer.respond');
     });
 
     // Other
