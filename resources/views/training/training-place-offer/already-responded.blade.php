@@ -23,8 +23,9 @@
                 <div class="alert alert-warning">
                     <strong>Already declined.</strong> You have already declined this training place offer.
                 </div>
+            @endif
 
-            <a href="{{ route('mship.manage.dashboard') }}" class="btn btn-default">Return to Dashboard</a>
+            <a href="{{ route('mship.manage.dashboard') }}" class="btn btn-link">Return to Dashboard</a>
         </div>
     </div>
 @endsection

@@ -16,8 +16,8 @@
                 </div>
             @else
 
-                <p>You have been offered a training place for <strong>{{ $offer->trainingPosition->position?->callsign }}</strong>.</p>
-                <p>Please respond before <strong>{{ $offer->expires_at->format('d/m/Y H:i') }}</strong>.</p>
+                <p>You have been offered a training place for <strong>{{ $offer->trainingPosition->position?->name }} ({{ $offer->trainingPosition->position?->callsign }})</strong>.</p>
+                <p>Your training place offer expires on <strong>{{ $offer->expires_at->format('d/m/Y H:i') }}</strong>.</p>
 
                 <form role="form" method="POST" action="{{ route('mship.waiting-lists.place-offer.respond', $offer->token) }}" id="offer-form">
                     {{ csrf_field() }}
@@ -36,19 +36,19 @@
                             id="decline_reason"
                             rows="4"
                             class="form-control"
-                            placeholder="Please provide a reason for declining..."
+                            placeholder="Please provide a reason for declining your training place offer..."
                         ></textarea>
                         @error('decline_reason')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="main-buttons">
                         <button type="button" class="btn btn-success" onclick="submitResponse('accepted')">
                             Accept Training Place
                         </button>
                         <button type="button" class="btn btn-danger" onclick="toggleDecline()">
-                            Decline
+                            Decline Training Place
                         </button>
                     </div>
 
@@ -72,9 +72,12 @@
     function toggleDecline() {
         const section = document.getElementById('decline-reason-section');
         const confirm = document.getElementById('confirm-decline');
+        const mainButtons = document.getElementById('main-buttons');
+
         const visible = section.style.display !== 'none';
         section.style.display = visible ? 'none' : 'block';
         confirm.style.display = visible ? 'none' : 'block';
+        mainButtons.style.display = visible ? 'block' : 'none';
     }
 
     function submitResponse(response) {
