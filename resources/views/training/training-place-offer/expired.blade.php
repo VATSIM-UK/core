@@ -1,4 +1,3 @@
-{{-- expired.blade.php --}}
 @extends('layout')
 
 @section('content')

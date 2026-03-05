@@ -17,16 +17,16 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
             abort(404, 'This offer does not exist.');
         }
 
-        if ($offer->status !== TrainingPlaceOfferStatus::Pending) {
-            return view('training.training-place-offer.already-responded', compact('offer'));
-        }
-
         if ($offer->expires_at->isPast()) {
             return view('training.training-place-offer.expired', compact('offer'));
         }
 
+        if ($offer->status !== TrainingPlaceOfferStatus::Pending) {
+            return view('training.training-place-offer.already-responded', compact('offer'));
+        }
+
         if ($offer->waitingListAccount->account->id !== auth()->id()) {
-            abort(403, 'This offer does not belong to you.');
+            abort(403);
         }
 
         return view('training.training-place-offer.show', compact('offer'));
@@ -36,14 +36,14 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
     {
         $offer = TrainingPlaceOffer::where('token', $token)->firstOrFail();
 
-        if ($offer->status !== TrainingPlaceOfferStatus::Pending) {
-            return redirect()->route('mship.manage.dashboard')
-                ->with('error', 'This offer has already been responded to.');
-        }
-
         if ($offer->expires_at->isPast()) {
             return redirect()->route('mship.manage.dashboard')
                 ->with('error', 'This offer has expired.');
+        }
+
+        if ($offer->status !== TrainingPlaceOfferStatus::Pending) {
+            return redirect()->route('mship.manage.dashboard')
+                ->with('error', 'This offer has already been responded to.');
         }
 
         if ($offer->waitingListAccount->account->id !== auth()->id()) {
@@ -58,7 +58,7 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
         if ($request->response === 'accepted') {
             $service->acceptOffer($offer);
             return redirect()->route('mship.manage.dashboard')
-                ->with('success', 'You have accepted your training place.');
+                ->with('success', 'You have accepted your training place offer.');
         }
 
         $service->declineOffer($offer, $request->decline_reason);
