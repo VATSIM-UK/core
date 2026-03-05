@@ -85,6 +85,11 @@ class TrainingPlaceService
         }
     }
 
+    public function offerTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition): TrainingPlace
+    {
+        
+    }
+
     public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition): TrainingPlace
     {
         $trainingPlace = TrainingPlace::create([

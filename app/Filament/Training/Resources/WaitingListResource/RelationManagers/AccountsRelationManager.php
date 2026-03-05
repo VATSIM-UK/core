@@ -109,6 +109,7 @@ class AccountsRelationManager extends RelationManager
                         $recentFeedback = Feedback::where('account_id', $record->account_id)
                             ->with(['answers.question'])
                             ->latest()
+                            ->limit(10)
                             ->get();
 
                         $feedbackEntries = $recentFeedback->map(fn (Feedback $feedback) => 
@@ -117,7 +118,7 @@ class AccountsRelationManager extends RelationManager
                                     ...$feedback->answers->map(fn ($answer) =>
                                         Forms\Components\Placeholder::make("answer_{$answer->id}")
                                             ->label($answer->question?->question ?? 'Unknown Question')
-                                            ->content($answer->response ?? '—')
+                                            ->content($answer->response ?? 'Question not answered')
                                     )->all(),
                                 ])
                                 ->columns(3)
@@ -145,6 +146,12 @@ class AccountsRelationManager extends RelationManager
                                 ->required()
                                 ->helperText('Select the training position to offer to this member.'),
                         ];
+                    })
+                    ->action(function (WaitingListAccount $record, array $data, $livewire) {
+                        $trainingPosition = $livewire->ownerRecord->trainingPositions()->findOrFail($data['training_position_id']);
+
+                        $service = app(TrainingPlaceService::class);
+                        $service->offerTrainingPlace($record, $trainingPosition);
                     })
                     ->successNotificationTitle('Training place offered successfully')
                     ->modalHeading('Offer Training Place')
