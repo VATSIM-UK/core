@@ -3,15 +3,20 @@
 namespace App\Services\Training;
 
 use App\Enums\PositionValidationStatusEnum;
+use App\Enums\TrainingPlaceOfferStatus;
 use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use App\Notifications\Training\TrainingPlaceOffered;
+use Illuminate\Support\Str;
 
 class TrainingPlaceService
 {
@@ -85,9 +90,18 @@ class TrainingPlaceService
         }
     }
 
-    public function offerTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition): TrainingPlace
+    public function offerTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition)
     {
-        
+        DB::transaction(function () use ($waitingListAccount, $trainingPosition): void {
+            $trainingPlaceOffer = TrainingPlaceOffer::create([
+                'waiting_list_account_id' => $waitingListAccount->id,
+                'training_position_id' => $trainingPosition->id,
+                'status' => TrainingPlaceOfferStatus::Pending->value,
+                'token' => self::generateToken(),
+                'expires_at' => now()->addDays(3)->endOfHour(),
+            ]);
+            $waitingListAccount->account->notify(new TrainingPlaceOffered($trainingPlaceOffer));
+        });
     }
 
     public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition): TrainingPlace
@@ -111,5 +125,18 @@ class TrainingPlaceService
         $removal = new Removal(RemovalReason::TrainingPlace, Auth::user()->id);
 
         $trainingPlace->waitingListAccount->waitingList->removeFromWaitingList($trainingPlace->waitingListAccount->account, $removal);
+    }
+
+    /**
+     * Generate a unique token for the training place offer.
+     * Robust against any collisions on existing
+     */
+    private static function generateToken(): string
+    {
+        do {
+            $token = Str::random(32);
+        } while (TrainingPlaceOffer::where('token', $token)->exists());
+
+        return $token;
     }
 }

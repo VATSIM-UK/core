@@ -7,15 +7,25 @@ use App\Models\Training\WaitingList\WaitingListAccount;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\TrainingPlaceOfferStatus;
 
 class TrainingPlaceOffer extends Model
 {
-    use HasUlids;
-
     protected $guarded = [];
+
+    protected $fillable = [
+        'waiting_list_account_id',
+        'training_position_id',
+        'token',
+        'expires_at',
+        'response_at',
+        'status',
+        'decline_reason',
+    ];
 
     protected $casts = [
         'expires_at' => 'datetime',
+        'response_at' => 'datetime',
         'status' => TrainingPlaceOfferStatus::class,
     ];
 

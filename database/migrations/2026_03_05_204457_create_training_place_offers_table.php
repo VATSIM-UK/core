@@ -14,18 +14,12 @@ return new class extends Migration
         Schema::create('training_place_offers', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('waiting_list_account_id');
-            $table->foreign('waiting_list_account_id')
-                ->references('id')
-                ->on('training_waiting_list_account')
-                ->onDelete('cascade');
             $table->unsignedBigInteger('training_position_id');
-            $table->foreign('training_position_id')
-                ->references('id')
-                ->on('training_positions')
-                ->onDelete('cascade');
-            $table->enum('status', ['pending', 'accepted', 'declined']);
-            $table->text('decline_reason')->nullable();
+            $table->string('token');
             $table->timestamp('expires_at');
+            $table->enum('status', ['pending', 'accepted', 'declined']);
+            $table->dateTime('response_at')->nullable();
+            $table->text('decline_reason')->nullable();
             $table->timestamps();
         });
     }
