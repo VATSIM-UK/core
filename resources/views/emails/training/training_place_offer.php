@@ -2,7 +2,7 @@
 
 @section('body')
 
-<p>Dear <Firstname>,</p>
+<p>Dear {{$account->name_first}},</p>
 
 <p>A training place is now available for you on {{$position->name}} ({{$position->callsign}}). 
     Training times vary from student to student, but you should expect to be training for a number of months. 

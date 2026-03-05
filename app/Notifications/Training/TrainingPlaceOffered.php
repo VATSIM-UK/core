@@ -36,6 +36,7 @@ class TrainingPlaceOffered extends Notification
      */
     public function toMail($notifiable)
     {
+        $studentAccount = $this->trainingPlaceOffer->trainingPlace->studentAccount();
         $trainingPosition = $this->trainingPlaceOffer->trainingPosition();
         $offerUrl = route('mship.waiting-lists.place-offer.show', ['token' => $this->trainingPlaceOffer->token]);
 
@@ -43,6 +44,7 @@ class TrainingPlaceOffered extends Notification
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject('UK Training Place Offer')
             ->view('emails.training.training_place_offer', [
+                'account' => $studentAccount,
                 'position' => $trainingPosition,
                 'offer_url' => $offerUrl,
             ]);
