@@ -108,7 +108,7 @@ class TrainingPlaceService
     {
         DB::transaction(function () use ($offer): void {
             $offer->update([
-                'status' => TrainingPlaceOfferStatus::Accepted,
+                'status' => TrainingPlaceOfferStatus::Accepted->value,
                 'response_at' => now(),
             ]);
 
@@ -119,7 +119,7 @@ class TrainingPlaceService
     public function declineOffer(TrainingPlaceOffer $offer, string $reason): void
     {
         $offer->update([
-            'status' => TrainingPlaceOfferStatus::UnderReview,
+            'status' => TrainingPlaceOfferStatus::UnderReview->value,
             'decline_reason' => $reason,
             'response_at' => now(),
         ]);
@@ -130,7 +130,7 @@ class TrainingPlaceService
     public function rescindOffer(TrainingPlaceOffer $offer): void
     {
         $offer->update([
-            'status' => TrainingPlaceOfferStatus::Rescinded,
+            'status' => TrainingPlaceOfferStatus::Rescinded->value,
         ]);
 
         // Need notification here
@@ -139,7 +139,7 @@ class TrainingPlaceService
     public function expireOffer(TrainingPlaceOffer $offer): void
     {
         $offer->update([
-            'status' => TrainingPlaceOfferStatus::Expired,
+            'status' => TrainingPlaceOfferStatus::Expired->value,
         ]);
 
         // need notification here

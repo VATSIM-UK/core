@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 
 /**
  * @property int $id
@@ -106,6 +107,11 @@ class WaitingListAccount extends Model
     public function retentionChecks(): HasMany
     {
         return $this->hasMany(WaitingListRetentionCheck::class, 'waiting_list_account_id');
+    }
+
+    public function trainingPlaceOffers(): HasMany
+    {
+        return $this->hasMany(TrainingPlaceOffer::class);
     }
 
     /**

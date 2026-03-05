@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use App\Models\Mship\Feedback\Feedback;
+use App\Enums\TrainingPlaceOfferStatus;
 
 /**
  * @property WaitingList $ownerRecord
@@ -104,7 +105,15 @@ class AccountsRelationManager extends RelationManager
                 Tables\Actions\Action::make('offerTrainingPlace')
                     ->label("Offer Training Place")
                     ->icon('heroicon-o-academic-cap')
-                    ->visible(fn ($record) => $this->can('offerTrainingPlace', $record->waitingList))
+                    ->visible(function (WaitingListAccount $record) {
+                        return $this->can('offerTrainingPlace', $record->waitingList)
+                            && !$record->trainingPlaceOffers()
+                                ->whereIn('status', [
+                                    TrainingPlaceOfferStatus::Pending->value,
+                                    TrainingPlaceOfferStatus::UnderReview->value,
+                                ])
+                                ->exists();
+                    })
                     ->form(function (WaitingListAccount $record) {
                         $recentFeedback = Feedback::where('account_id', $record->account_id)
                             ->with(['answers.question'])
@@ -159,6 +168,109 @@ class AccountsRelationManager extends RelationManager
                     ->modalSubmitActionLabel('Offer Training Place')
                     ->modalCancelActionLabel('Cancel')
                     ->color('success'),
+                Tables\Actions\Action::make('viewTrainingPlaceOffer')
+                    ->label('View Training Place Offer')
+                    ->icon('heroicon-o-academic-cap')
+                    ->visible(function (WaitingListAccount $record) {
+                        return $this->can('offerTrainingPlace', $record->waitingList)
+                            && $record->trainingPlaceOffers()
+                                ->whereIn('status', [
+                                    TrainingPlaceOfferStatus::Pending->value,
+                                    TrainingPlaceOfferStatus::UnderReview->value,
+                                ])
+                                ->exists();
+                    })
+                    ->modalHeading('Training Place Offer')
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Close')
+                    ->fillForm(function (WaitingListAccount $record) {
+                        $offer = $record->trainingPlaceOffers()
+                            ->whereIn('status', [
+                                TrainingPlaceOfferStatus::Pending->value,
+                                TrainingPlaceOfferStatus::UnderReview->value,
+                            ])
+                            ->latest()
+                            ->first();
+
+                        return [
+                            'offer_id' => $offer->id,
+                            'status' => $offer->status->label(),
+                            'position' => $offer->trainingPosition->position->name,
+                            'expires_at' => $offer->expires_at->format('d/m/Y H:i'),
+                            'response_at' => $offer->response_at?->format('d/m/Y H:i') ?? '—',
+                            'decline_reason' => $offer->decline_reason,
+                        ];
+                    })
+                    ->form([
+                    Forms\Components\Grid::make(2)
+                        ->schema([
+                            Forms\Components\Placeholder::make('status')
+                                ->label('Status')
+                                ->content(fn ($state) => $state),
+
+                            Forms\Components\Placeholder::make('position')
+                                ->label('Position')
+                                ->content(fn ($state) => $state),
+
+                            Forms\Components\Placeholder::make('expires_at')
+                                ->label('Offer Expires')
+                                ->content(fn ($state) => $state),
+
+                            Forms\Components\Placeholder::make('response_at')
+                                ->label('Member Responded At')
+                                ->content(fn ($state) => $state),
+                        ]),
+
+                    Forms\Components\Placeholder::make('decline_reason')
+                        ->label('Decline Reason')
+                        ->content(fn ($state) => $state ?? '—')
+                        ->visible(fn ($state) => filled($state))
+                        ->columnSpanFull(),
+
+                    Forms\Components\Hidden::make('offer_id'),
+                ])
+                    ->extraModalFooterActions(function (WaitingListAccount $record) {
+                        $offer = $record->trainingPlaceOffers()
+                            ->whereIn('status', [
+                                TrainingPlaceOfferStatus::Pending->value,
+                                TrainingPlaceOfferStatus::UnderReview->value,
+                            ])
+                            ->latest()
+                            ->first();
+
+                        if (! $offer || $offer->status !== TrainingPlaceOfferStatus::UnderReview) {
+                            return [];
+                        }
+
+                        return [
+                            Tables\Actions\Action::make('rescind')
+                                ->label('Rescind Offer')
+                                ->color('danger')
+                                ->icon('heroicon-o-x-circle')
+                                ->requiresConfirmation()
+                                ->modalHeading('Rescind Training Place Offer')
+                                ->modalDescription('This will rescind the offer and notify the member. Are you sure?')
+                                ->action(function () use ($offer) {
+                                    app(TrainingPlaceService::class)->rescindOffer($offer);
+                                })
+                                ->successNotificationTitle('Offer rescinded'),
+
+                            Tables\Actions\Action::make('removeFromWaitingList')
+                                ->label('Remove from Waiting List')
+                                ->color('danger')
+                                ->icon('heroicon-o-trash')
+                                ->requiresConfirmation()
+                                ->modalHeading('Remove from Waiting List')
+                                ->modalDescription('This will rescind the offer and remove the member from the waiting list entirely. This cannot be undone.')
+                                ->action(function () use ($offer) {
+                                    $service = app(TrainingPlaceService::class);
+                                    $service->rescindOffer($offer);
+                                    $service->removeFromWaitingList($offer->waitingListAccount->trainingPlace);
+                                })
+                                ->successNotificationTitle('Member removed from waiting list'),
+                        ];
+                    })
+                    ->color('info'),
                 Tables\Actions\EditAction::make()
                     ->using(function (WaitingListAccount $record, $data, $livewire) {
                         $record->update([
