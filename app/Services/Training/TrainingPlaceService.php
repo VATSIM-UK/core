@@ -10,7 +10,6 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListAccount;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class TrainingPlaceService
@@ -28,21 +27,13 @@ class TrainingPlaceService
         $ctsPositions = $trainingPlace->trainingPosition->cts_positions;
 
         foreach ($ctsPositions as $ctsPosition) {
-            $ctsPositionModel = Position::where('callsign', $ctsPosition)->first();
+            $ctsPositionModel = $this->findCtsPosition($ctsPosition);
 
             if (! $ctsPositionModel) {
-                Log::error("CTS position with callsign {$ctsPosition} not found");
-
                 continue;
             }
 
-            // Check if the validation already exists to prevent duplicates
-            $existingValidation = PositionValidation::where('member_id', $student->member->id)
-                ->where('position_id', $ctsPositionModel->id)
-                ->where('status', PositionValidationStatusEnum::Student->value)
-                ->first();
-
-            if ($existingValidation) {
+            if ($this->studentValidationExists((int) $student->member->id, (int) $ctsPositionModel->id)) {
                 continue;
             }
 
@@ -70,11 +61,9 @@ class TrainingPlaceService
         $ctsPositions = $trainingPlace->trainingPosition->cts_positions;
 
         foreach ($ctsPositions as $ctsPosition) {
-            $ctsPositionModel = Position::where('callsign', $ctsPosition)->first();
+            $ctsPositionModel = $this->findCtsPosition($ctsPosition);
 
             if (! $ctsPositionModel) {
-                Log::error("CTS position with callsign {$ctsPosition} not found");
-
                 continue;
             }
 
@@ -85,25 +74,46 @@ class TrainingPlaceService
         }
     }
 
-    public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition): TrainingPlace
+    private function findCtsPosition(string $callsign): ?Position
+    {
+        $position = Position::where('callsign', $callsign)->first();
+
+        if (! $position) {
+            Log::error("CTS position with callsign {$callsign} not found");
+
+            return null;
+        }
+
+        return $position;
+    }
+
+    private function studentValidationExists(int $memberId, int $positionId): bool
+    {
+        return PositionValidation::where('member_id', $memberId)
+            ->where('position_id', $positionId)
+            ->where('status', PositionValidationStatusEnum::Student->value)
+            ->exists();
+    }
+
+    public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition, ?int $actorId = null): TrainingPlace
     {
         $trainingPlace = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $trainingPosition->id,
         ]);
 
-        $this->removeFromWaitingList($trainingPlace);
+        $this->removeFromWaitingList($trainingPlace, $actorId);
 
         return $trainingPlace;
     }
 
-    public function removeFromWaitingList(TrainingPlace $trainingPlace): void
+    public function removeFromWaitingList(TrainingPlace $trainingPlace, ?int $actorId = null): void
     {
         if (! $trainingPlace->waitingListAccount) {
             return;
         }
 
-        $removal = new Removal(RemovalReason::TrainingPlace, Auth::user()->id);
+        $removal = new Removal(RemovalReason::TrainingPlace, $actorId);
 
         $trainingPlace->waitingListAccount->waitingList->removeFromWaitingList($trainingPlace->waitingListAccount->account, $removal);
     }

@@ -5,13 +5,18 @@ namespace App\Http\Controllers\VisitTransfer\Site;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\VisitTransfer\ReferenceSubmitRequest;
 use App\Models\Sys\Token;
-use App\Notifications\ApplicationReferenceCancelledByReferee;
+use App\Services\VisitTransfer\ReferenceFlowService;
 use Exception;
 use Illuminate\Support\Facades\Request;
 use Redirect;
 
 class Reference extends BaseController
 {
+    public function __construct(private ReferenceFlowService $referenceFlowService)
+    {
+        parent::__construct();
+    }
+
     public function getComplete(Token $token)
     {
         $reference = $token->related;
@@ -31,11 +36,8 @@ class Reference extends BaseController
         $reference = $token->related;
 
         try {
-            $reference->submit(Request::input('reference'));
-            $token->consume();
+            $this->referenceFlowService->completeReference($token, (string) Request::input('reference'));
         } catch (Exception $e) {
-            dd($e);
-
             return Redirect::route('visiting.reference.complete', [$token->code])->withError($e->getMessage());
         }
 
@@ -45,11 +47,8 @@ class Reference extends BaseController
     public function postCancel(Token $token)
     {
         $reference = $token->related;
-        $reference->status_note = 'Referee reported that applicant is not known to them';
-        $reference->cancel();
 
-        $reference->application->account->notify(new ApplicationReferenceCancelledByReferee($reference));
-        $reference->application->markAsUnderReview();
+        $this->referenceFlowService->cancelReference($token);
 
         return Redirect::route('visiting.landing')->withSuccess('You have canceled your reference for '.$reference->application->account->name.'.  Thank you.');
     }

@@ -3,10 +3,16 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
+use App\Services\Auth\LocalBanDisplayService;
 use Illuminate\Support\Facades\Auth;
 
 class LocalBanDisplayController extends BaseController
 {
+    public function __construct(private LocalBanDisplayService $localBanDisplayService)
+    {
+        parent::__construct();
+    }
+
     /**
      * Handle the incoming request.
      *
@@ -15,12 +21,14 @@ class LocalBanDisplayController extends BaseController
      */
     public function __invoke()
     {
-        if (! Auth::user()->is_system_banned) {
+        $account = Auth::user();
+
+        $localBan = $this->localBanDisplayService->getBanForDisplay($account);
+
+        if ($localBan === null) {
             // don't allow non-banned users to see the contents of the view.
             return redirect()->route('mship.manage.dashboard');
         }
-
-        $localBan = Auth::user()->system_ban->load('reason');
 
         return $this->viewMake('errors.banned-local')->with(['ban' => $localBan]);
     }

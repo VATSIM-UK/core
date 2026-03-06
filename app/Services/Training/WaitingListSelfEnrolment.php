@@ -7,6 +7,7 @@ use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
+use App\Services\Training\DTO\WaitingListSelfEnrolmentEligibility;
 use Illuminate\Database\Eloquent\Collection;
 
 class WaitingListSelfEnrolment
@@ -21,21 +22,26 @@ class WaitingListSelfEnrolment
         Account $account,
         WaitingList $waitingList
     ): bool {
+        return self::evaluateEligibility($account, $waitingList)->allowed;
+    }
+
+    public static function evaluateEligibility(Account $account, WaitingList $waitingList): WaitingListSelfEnrolmentEligibility
+    {
         if (! $waitingList->self_enrolment_enabled) {
-            return false;
+            return WaitingListSelfEnrolmentEligibility::deny('self_enrolment_disabled');
         }
 
         if ($waitingList->includesAccount($account)) {
-            return false;
+            return WaitingListSelfEnrolmentEligibility::deny('already_enrolled');
         }
 
         if ($waitingList->requires_roster_membership && ! $account->onRoster()) {
-            return false;
+            return WaitingListSelfEnrolmentEligibility::deny('roster_membership_required');
         }
 
         $accountIsNotHomeMember = ! $account->hasState(State::findByCode('DIVISION'));
         if ($waitingList->home_members_only && $accountIsNotHomeMember) {
-            return false;
+            return WaitingListSelfEnrolmentEligibility::deny('home_members_only');
         }
 
         if ($waitingList->self_enrolment_minimum_qualification_id) {
@@ -49,7 +55,7 @@ class WaitingListSelfEnrolment
             );
 
             if ($minimumQualification && $activeQualification?->vatsim < $minimumQualification->vatsim) {
-                return false;
+                return WaitingListSelfEnrolmentEligibility::deny('minimum_qualification_not_met');
             }
         }
 
@@ -64,7 +70,7 @@ class WaitingListSelfEnrolment
             );
 
             if ($maximumQualification && $activeQualification?->vatsim > $maximumQualification->vatsim) {
-                return false;
+                return WaitingListSelfEnrolmentEligibility::deny('maximum_qualification_exceeded');
             }
         }
 
@@ -78,11 +84,11 @@ class WaitingListSelfEnrolment
                 ->sum('minutes_online') / 60;
 
             if ($atcSessionsAtQualificationsHours < $waitingList->self_enrolment_hours_at_qualification_minimum_hours) {
-                return false;
+                return WaitingListSelfEnrolmentEligibility::deny('minimum_hours_not_met');
             }
         }
 
-        return true;
+        return WaitingListSelfEnrolmentEligibility::allow();
     }
 
     public static function getListsAccountCanSelfEnrol(Account $account): Collection

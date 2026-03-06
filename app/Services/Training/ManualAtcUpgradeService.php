@@ -4,6 +4,7 @@ namespace App\Services\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Services\Training\DTO\ManualAtcUpgradeResult;
 use Carbon\CarbonImmutable;
 
 class ManualAtcUpgradeService
@@ -30,12 +31,24 @@ class ManualAtcUpgradeService
 
     public static function awardNextAtcQualification(Account $account, CarbonImmutable $awardedOn, int $writerId): ?Qualification
     {
+        return self::awardNextAtcQualificationResult($account, $awardedOn, $writerId)->qualification;
+    }
+
+    public static function awardNextAtcQualificationResult(Account $account, CarbonImmutable $awardedOn, int $writerId): ManualAtcUpgradeResult
+    {
         $qualification = self::getNextAtcQualification($account);
 
         if (! $qualification) {
-            return null;
+            return ManualAtcUpgradeResult::noUpgradeAvailable();
         }
 
+        self::persistQualificationAward($account, $qualification, $awardedOn, $writerId);
+
+        return ManualAtcUpgradeResult::upgraded($qualification);
+    }
+
+    private static function persistQualificationAward(Account $account, Qualification $qualification, CarbonImmutable $awardedOn, int $writerId): void
+    {
         $account->addQualification($qualification);
         $account->qualifications()->updateExistingPivot($qualification->getKey(), [
             'created_at' => $awardedOn,
@@ -49,7 +62,5 @@ class ManualAtcUpgradeService
         ),
             $writerId,
         );
-
-        return $qualification;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
+use App\Services\Auth\SecondaryLoginService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,11 +12,18 @@ class SecondaryLoginController extends BaseController
 {
     use AuthenticatesUsers;
 
+    public function __construct(private SecondaryLoginService $secondaryLoginService)
+    {
+        parent::__construct();
+    }
+
     public function loginSecondary(Request $request)
     {
-        if (! Auth::guard('vatsim-sso')->check()) {
+        $guardResult = $this->secondaryLoginService->validateSecondaryGuard(Auth::guard('vatsim-sso')->check());
+
+        if (! $guardResult->canContinue) {
             return redirect()->route('landing')
-                ->withError('Could not authenticate: VATSIM.net authentication is not present.');
+                ->withError((string) $guardResult->errorMessage);
         }
 
         Auth::shouldUse('web');
@@ -42,6 +50,6 @@ class SecondaryLoginController extends BaseController
      */
     protected function credentials(Request $request)
     {
-        return ['id' => Auth::guard('vatsim-sso')->user()->id, 'password' => $request->input('password')];
+        return $this->secondaryLoginService->credentialsFromPassword((int) Auth::guard('vatsim-sso')->id(), $request->input('password'));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
+use App\Services\Auth\PasswordManagementService;
 use Auth;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -16,6 +17,11 @@ use Illuminate\Http\Request;
 class ResetPasswordController extends BaseController
 {
     use ResetsPasswords;
+
+    public function __construct(private PasswordManagementService $passwordManagementService)
+    {
+        parent::__construct();
+    }
 
     /**
      * Where to redirect users after resetting their password.
@@ -59,7 +65,7 @@ class ResetPasswordController extends BaseController
      */
     protected function resetPassword($user, $password)
     {
-        $user->setPassword($password);
+        $this->passwordManagementService->setPassword($user, $password);
 
         event(new PasswordReset($user));
 
