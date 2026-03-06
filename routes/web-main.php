@@ -87,8 +87,13 @@ Route::group([
         Route::post('self-enrol/{waitingList}')->uses('WaitingLists@selfEnrol')->name('self-enrol');
 
         // Training place offers
-        Route::get('training-place-offer/{token}')->uses('\App\Http\Controllers\Training\TrainingPlaceOfferController@show')->name('training-place-offer.show');
-        Route::post('training-place-offer/{token}/respond')->uses('\App\Http\Controllers\Training\TrainingPlaceOfferController@respond')->name('training-place-offer.respond');
+        Route::get('training-place-offer/{token}/accept')
+            ->uses('\App\Http\Controllers\Mship\Training\TrainingPlaceOfferController@accept')
+            ->name('training-place-offer.accept');
+
+        Route::get('training-place-offer/{token}/decline')
+            ->uses('\App\Http\Controllers\Mship\Training\TrainingPlaceOfferController@decline')
+            ->name('training-place-offer.decline');
     });
 
     // Other

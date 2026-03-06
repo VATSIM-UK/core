@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\Training\TrainingPlaceOffered;
 use Illuminate\Support\Str;
+use App\Notifications\Training\TrainingPlaceOfferRescinded;
 
 class TrainingPlaceService
 {
@@ -116,33 +117,33 @@ class TrainingPlaceService
         });
     }
 
-    public function declineOffer(TrainingPlaceOffer $offer, string $reason): void
+    public function declineOffer(TrainingPlaceOffer $trainingPlaceOffer): void
     {
-        $offer->update([
-            'status' => TrainingPlaceOfferStatus::UnderReview->value,
-            'decline_reason' => $reason,
-            'response_at' => now(),
-        ]);
+        DB::transaction(function () use ($trainingPlaceOffer): void {
+            $trainingPlaceOffer->update([
+                'status' => TrainingPlaceOfferStatus::Declined->value,
+                'response_at' => now(),
+            ]);
 
-        // Notify staff
+            $removal = new Removal(RemovalReason::DeclinedTrainingPlaceOffer, Auth::user()->id);
+            $trainingPlaceOffer->waitingListAccount->waitingList->removeFromWaitingList($trainingPlaceOffer->waitingListAccount->account, $removal);
+        });
     }
 
-    public function rescindOffer(TrainingPlaceOffer $offer): void
+    public function rescindOffer(TrainingPlaceOffer $trainingPlaceOffer, string $reason): void
     {
-        $offer->update([
+        $trainingPlaceOffer->update([
             'status' => TrainingPlaceOfferStatus::Rescinded->value,
         ]);
 
-        // Need notification here
+        $trainingPlaceOffer->waitingListAccount->account->notify(new TrainingPlaceOfferRescinded($trainingPlaceOffer, $reason));
     }
 
-    public function expireOffer(TrainingPlaceOffer $offer): void
+    public function expireOffer(TrainingPlaceOffer $trainingPlaceOffer): void
     {
-        $offer->update([
+        $trainingPlaceOffer->update([
             'status' => TrainingPlaceOfferStatus::Expired->value,
         ]);
-
-        // need notification here
     }
 
     public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition): TrainingPlace

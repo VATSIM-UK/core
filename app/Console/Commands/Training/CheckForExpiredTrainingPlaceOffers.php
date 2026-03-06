@@ -7,7 +7,7 @@ use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Services\Training\TrainingPlaceService;
 use Illuminate\Console\Command;
 
-class CheckForExpiredTrainingPlace extends Command
+class CheckForExpiredTrainingPlaceOffers extends Command
 {
     protected $signature = 'training:check-for-expired-training-place-offers';
     protected $description = 'Expire pending training place offers that have passed their expiry time';

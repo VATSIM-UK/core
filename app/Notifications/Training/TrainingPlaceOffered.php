@@ -34,19 +34,22 @@ class TrainingPlaceOffered extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
-        $studentAccount = $this->trainingPlaceOffer->trainingPlace->studentAccount();
-        $trainingPosition = $this->trainingPlaceOffer->trainingPosition();
-        $offerUrl = route('mship.waiting-lists.place-offer.show', ['token' => $this->trainingPlaceOffer->token]);
+        $account = $this->trainingPlaceOffer->waitingListAccount->account;
+        $position = $this->trainingPlaceOffer->trainingPosition->position;
+        $offer = $this->trainingPlaceOffer;
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject('UK Training Place Offer')
             ->view('emails.training.training_place_offer', [
-                'account' => $studentAccount,
-                'position' => $trainingPosition,
-                'offer_url' => $offerUrl,
+                'recipient' => $notifiable,
+                'account' => $account,
+                'position' => $position,
+                'offer' => $offer,
+                'accept_url' => route('mship.waiting-lists.training-place-offer.accept', ['token' => $offer->token]),
+                'decline_url' => route('mship.waiting-lists.training-place-offer.decline', ['token' => $offer->token]),
             ]);
     }
 }
