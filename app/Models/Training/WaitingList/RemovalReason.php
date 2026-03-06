@@ -11,7 +11,6 @@ enum RemovalReason: string
     case FailedRetention = 'failed_retention_check';
     case CancelledVTApplication = 'cancelled_vt_application';
     case DeclinedTrainingPlaceOffer = 'declined_training_place_offer';
-    case TrainingPlaceOfferExpired = 'training_place_offer_expired';
     case Other = 'other';
 
     public function label(): string

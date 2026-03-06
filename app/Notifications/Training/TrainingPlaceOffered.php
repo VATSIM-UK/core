@@ -36,9 +36,9 @@ class TrainingPlaceOffered extends Notification
      */
     public function toMail($notifiable): MailMessage
     {
-        $account = $this->trainingPlaceOffer->waitingListAccount->account;
-        $position = $this->trainingPlaceOffer->trainingPosition->position;
         $offer = $this->trainingPlaceOffer;
+        $account = $offer->waitingListAccount->account;
+        $position = $offer->trainingPosition->position;
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
