@@ -25,6 +25,8 @@ use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
+use App\Models\Training\WaitingList\Removal;
+use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -731,7 +733,7 @@ class Application extends Model
         }
     }
 
-    public function accept($staffComment = null, ?Account $actor = null)
+    public function accept($staffComment = null, ?Account $actor = null, bool $addToWaitingList = false)
     {
         $this->guardAgainstUnAcceptableApplication();
 
@@ -753,6 +755,13 @@ class Application extends Model
 
         if ($this->is_transfer) {
             $this->account->addState(State::findByCode('TRANSFERRING'));
+        }
+        if ($addToWaitingList && $this->facility?->waitingList) {
+
+            $waitingList = $this->facility->waitingList;
+            if (! $waitingList->includesAccount($this->account)) {
+                $waitingList->addToWaitingList($this->account, $actor);
+            }
         }
 
         event(new ApplicationAccepted($this));
@@ -776,6 +785,18 @@ class Application extends Model
 
         if ($this->is_transfer) {
             $this->account->removeState(State::findByCode('TRANSFERRING'));
+        }
+
+        if ($this->facility?->waitingList) {
+            $waitingList = $this->facility->waitingList;
+            if ($waitingList->includesAccount($this->account)) {
+                $removal = new Removal(
+                    reason: RemovalReason::CancelledVTApplication,
+                    removedBy: $actor?->id,
+                );
+
+                $waitingList->removeFromWaitingList($this->account, $removal);
+            }
         }
 
         event(new ApplicationCancelled($this));
