@@ -24,14 +24,6 @@
                     If you have any questions, please contact the ATC Training team via the helpdesk.
                 </div>
 
-            @elseif($offer->status === \App\Enums\TrainingPlaceOfferStatus::Expired)
-                <div class="alert alert-danger">
-                    <strong>Offer expired.</strong> This training place offer expired on
-                    <strong>{{ $offer->expires_at->format('d/m/Y H:i') }} UTC</strong> and is no longer available.
-                    If you believe this was a mistake, please contact the ATC Training team via the helpdesk.
-                </div>
-            @endif
-
             <a href="{{ route('mship.manage.dashboard') }}" class="btn btn-link">Return to Dashboard</a>
         </div>
     </div>
