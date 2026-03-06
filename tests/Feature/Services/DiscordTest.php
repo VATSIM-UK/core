@@ -137,4 +137,46 @@ class DiscordTest extends TestCase
         Event::assertDispatched('discord.rate_limited');
         Event::assertDispatched('discord.api_succeeded');
     }
+
+    #[Test]
+    public function test_it_creates_a_thread_from_message_successfully()
+    {
+        $discord = new \App\Libraries\Discord;
+        $channelId = 12345;
+        $messageId = 67890;
+        $data = [
+            'name' => 'Test Thread',
+            'auto_archive_duration' => 60,
+        ];
+
+        Http::fake([
+            "discord.com/api/v6/channels/{$channelId}/messages/{$messageId}/threads" => Http::response(['id' => 'thread123', 'name' => 'Test Thread'], 200),
+        ]);
+
+        $result = $discord->createThreadFromMessage($channelId, $messageId, $data);
+
+        $this->assertEquals('thread123', $result['id']);
+        $this->assertEquals('Test Thread', $result['name']);
+    }
+
+    #[Test]
+    public function test_it_throws_exception_on_thread_creation_failure()
+    {
+        $discord = new \App\Libraries\Discord;
+        $channelId = 12345;
+        $messageId = 67890;
+        $data = [
+            'name' => 'Test Thread',
+            'auto_archive_duration' => 60,
+        ];
+
+        Http::fake([
+            "discord.com/api/v6/channels/{$channelId}/messages/{$messageId}/threads" => Http::response(['message' => 'Bad Request'], 400),
+        ]);
+
+        $this->expectException(\App\Exceptions\Discord\GenericDiscordException::class);
+        $this->expectExceptionMessage('{"message":"Bad Request"}');
+
+        $discord->createThreadFromMessage($channelId, $messageId, $data);
+    }
 }

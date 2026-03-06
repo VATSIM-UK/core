@@ -42,7 +42,7 @@ class ExamHistory extends Page implements HasTable
         $user = auth()->user();
 
         return $table->query($examHistoryService->getExamHistoryQuery($user))->columns([
-            TextColumn::make('student.account.id')->label('CID')->searchable(),
+            TextColumn::make('student.cid')->label('CID')->searchable(),
             TextColumn::make('student.account.name')->label('Name'),
             TextColumn::make('examBooking.exam')->label('Exam'),
             TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => $examHistoryService->getResultBadgeColor($state))->label('Result'),

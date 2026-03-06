@@ -92,7 +92,6 @@
                                 <li class="col-sm-12">
                                     <ul>
                                         <li><a href="{{ route('site.staff') }}">Staff</a></li>
-                                        <li><a href="https://community.vatsim.uk/files/downloads/category/9-minutes-reports/">Meeting Minutes</a></li>
                                         <li><a href="https://helpdesk.vatsim.uk/">Contact Us</a></li>
                                     </ul>
                                 </li>
@@ -145,8 +144,8 @@
 
                                     <li class="dropdown-header">Operations</li>
                                     <li><a href="https://docs.vatsim.uk/">ATC Documentation</a></li>
-                                    <li><a href="https://docs.vatsim.uk/Briefing/">ATC Permanent Instructions</a></li>
-                                    <li><a href="https://docs.vatsim.uk/General/">ATC Software</a></li>
+                                    <li><a href="https://docs.vatsim.uk/Briefing/">ATC Briefing Area</a></li>
+                                    <li><a href="https://docs.vatsim.uk/General/Software%20Downloads/Controller%20Pack%20%26%20Sector%20File/">ATC Software</a></li>
                                     <li class="divider"></li>
 
                                     <li class="dropdown-header">ATC Training</li>
@@ -242,7 +241,6 @@
                                     <li><a href="https://helpdesk.vatsim.uk/">Helpdesk</a></li>
                                     <li><a href="https://events.vatsim.uk/">Event Bookings</a></li>
                                     <li><a href="https://github.com/VATSIM-UK">Github</a></li>
-                                    <li><a href="https://community.vatsim.uk/">Forum</a></li>
                                     <li><a href="https://moodle.vatsim.uk/">Moodle</a></li>
                                 </ul>
                             </li>

@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -52,14 +53,39 @@ class RoleResource extends Resource
                         foreach ($userIds as $userId) {
                             \App\Jobs\UpdateMember::dispatch($userId);
                         }
-                        filament()->notify('success', 'Central details refresh & service sync queued for all users with this role.');
+                        Notification::make()
+                            ->title('Central details refresh & service sync queued for all users with this role.')
+                            ->success()
+                            ->send();
                     })
                     ->icon('heroicon-o-arrow-path')
                     ->requiresConfirmation(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()->visible(fn () => auth()->user()?->can('role.delete.*')),
+                Tables\Actions\BulkAction::make('assignPermissions')
+                    ->icon('heroicon-o-shield-check')
+                    ->label('Assign Permissions')
+                    ->visible(fn () => auth()->user()?->can('role.edit.*'))
+                    ->form([
+                        CheckboxList::make('permissions')
+                            ->options(\Spatie\Permission\Models\Permission::orderBy('name')->pluck('name', 'name'))
+                            ->columns(3)
+                            ->searchable()
+                            ->bulkToggleable()
+                            ->required(),
+                    ])
+                    ->action(function ($records, array $data) {
+                        foreach ($records as $role) {
+                            $role->givePermissionTo($data['permissions']);
+                        }
+                        Notification::make()
+                            ->title('Permissions updated for selected roles.')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
             ]);
     }
 
