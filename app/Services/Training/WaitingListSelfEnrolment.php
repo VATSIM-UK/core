@@ -82,6 +82,10 @@ class WaitingListSelfEnrolment
             }
         }
 
+        if (! $waitingList->accountHasRequiredEndorsement($account)) {
+            return false;
+        }
+
         return true;
     }
 
