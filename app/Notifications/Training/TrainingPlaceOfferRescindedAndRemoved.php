@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notification;
  * Sent to a member when their training place offer is rescinded by staff.
  * The member retains their waiting list position.
  */
-class TrainingPlaceOfferRescinded extends Notification
+class TrainingPlaceOfferRescindedAndRemoved extends Notification
 {
     public function __construct(
         public TrainingPlaceOffer $trainingPlaceOffer,

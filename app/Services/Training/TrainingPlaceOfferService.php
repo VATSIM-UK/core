@@ -14,6 +14,7 @@ use App\Notifications\Training\TrainingPlaceOffered;
 use App\Notifications\Training\TrainingPlaceOfferRescinded;
 use Illuminate\Support\Str;
 use App\Services\Training\TrainingPlaceService;
+use App\Notifications\Training\TrainingPlaceOfferRescindedAndRemoved;
 
 class TrainingPlaceOfferService
 {
@@ -71,7 +72,7 @@ class TrainingPlaceOfferService
             'status' => TrainingPlaceOfferStatus::Rescinded->value,
         ]);
 
-        // $trainingPlaceOffer->waitingListAccount->account->notify(new TrainingPlaceOfferRescinded($trainingPlaceOffer, $reason));
+        $trainingPlaceOffer->waitingListAccount->account->notify(new TrainingPlaceOfferRescindedAndRemoved($trainingPlaceOffer, $reason));
 
         $removal = new Removal(RemovalReason::TrainingPlaceOfferRescinded, Auth::user()->id);
         $this->removeFromWaitingList($trainingPlaceOffer, $removal);
@@ -83,7 +84,7 @@ class TrainingPlaceOfferService
             'status' => TrainingPlaceOfferStatus::Expired->value,
         ]);
 
-        $removal = new Removal(RemovalReason::TrainingPlaceOfferRescinded, Auth::user()->id);
+        $removal = new Removal(RemovalReason::TrainingPlaceOfferExpired, Auth::user()->id);
         $this->removeFromWaitingList($trainingPlaceOffer, $removal);
     }
 
