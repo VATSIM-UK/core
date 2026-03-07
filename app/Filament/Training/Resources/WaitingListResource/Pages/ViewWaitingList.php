@@ -65,6 +65,17 @@ class ViewWaitingList extends ViewRecord
                                 }
                             }
                         })
+                        ->rule(fn () => function ($attribute, $value, $fail) {
+                            try {
+                                $account = Account::findOrFail($value);
+
+                                if (! $this->record->accountHasRequiredEndorsement($account)) {
+                                    $fail('The specified member does not have the required endorsement to join this waiting list.');
+                                }
+                            } catch (ModelNotFoundException $e) {
+                                $fail('The specified member was not found.');
+                            }
+                        })
                         ->required(),
                     DatePicker::make('join_date')
                         ->visible(fn () => auth()->user()->can('addAccountsAdmin', $this->record))
