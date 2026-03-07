@@ -17,7 +17,7 @@ class TeamspeakManagementTest extends TestCase
     public function test_user_can_delete_own_registration()
     {
         $this->from(route('mship.manage.dashboard'))->followingRedirects()->actingAs($this->registration->account)
-            ->get(route('teamspeak.delete', ['mshipRegistration' => $this->registration->id]))
+            ->post(route('teamspeak.delete', ['mshipRegistration' => $this->registration->id]))
             ->assertSuccessful();
     }
 
@@ -25,7 +25,7 @@ class TeamspeakManagementTest extends TestCase
     public function test_user_cant_delete_others_registration()
     {
         $this->followingRedirects()->actingAs($this->user)
-            ->get(route('teamspeak.delete', $this->registration))
+            ->post(route('teamspeak.delete', $this->registration))
             ->assertNotFound();
     }
 
@@ -48,6 +48,14 @@ class TeamspeakManagementTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        config([
+            'services.teamspeak.host' => null,
+            'services.teamspeak.username' => null,
+            'services.teamspeak.password' => null,
+            'services.teamspeak.port' => null,
+            'services.teamspeak.query_port' => null,
+        ]);
 
         $this->registration = factory(Registration::class)->create();
     }

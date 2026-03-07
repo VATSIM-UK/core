@@ -123,7 +123,7 @@ class Token extends Model
         $token = new self;
         $token->type = $type;
         $token->expires_at = \Carbon\Carbon::now()->addMinutes($expireMinutes)->toDateTimeString();
-        $token->code = uniqid(uniqid());
+        $token->code = self::generateSecureCode();
 
         if ($relation != null) {
             $relation->tokens()->save($token);
@@ -132,6 +132,16 @@ class Token extends Model
         }
 
         return $token;
+    }
+
+    private static function generateSecureCode(): string
+    {
+        do {
+            // `sys_token.code` is VARCHAR(31), so keep this at 30 chars.
+            $code = bin2hex(random_bytes(15));
+        } while (self::where('code', '=', $code)->exists());
+
+        return $code;
     }
 
     public function consume()
@@ -146,7 +156,7 @@ class Token extends Model
 
     public function getIsUsedAttribute()
     {
-        return $this->used_at != null && $this->used_at->isPast();
+        return $this->used_at != null;
     }
 
     public function getIsExpiredAttribute()

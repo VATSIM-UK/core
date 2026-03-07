@@ -25,6 +25,7 @@ class DiscordRegistration extends FormRequest
     {
         return [
             'code' => 'required|string',
+            'state' => 'required|string',
         ];
     }
 }

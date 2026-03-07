@@ -55,4 +55,23 @@ class ResetPasswordTest extends TestCase
         $this->assertEquals($now, $this->user->fresh()->password_set_at);
         $this->assertEquals($now->addDays($this->user->roles()->first()->password_lifetime), $this->user->fresh()->password_expires_at);
     }
+
+    #[Test]
+    public function test_password_reset_rejects_password_without_numeric_character()
+    {
+        $this->user->setPassword('Testing123');
+        $token = Password::broker()->createToken($this->user);
+
+        $this->actingAs($this->user, 'vatsim-sso')
+            ->from(route('password.reset', $token))
+            ->post(route('password.request'), [
+                'token' => $token,
+                'new_password' => 'PasswordNoDigits',
+                'new_password_confirmation' => 'PasswordNoDigits',
+            ])
+            ->assertRedirect(route('password.reset', $token))
+            ->assertSessionHasErrors('new_password');
+
+        $this->assertTrue(Hash::check('Testing123', $this->user->fresh()->password));
+    }
 }

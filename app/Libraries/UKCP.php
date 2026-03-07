@@ -151,10 +151,9 @@ class UKCP
 
             return true;
         } catch (ClientException $e) {
-            dd($e);
             Log::info("UKCP Client Exception {$e->getMessage()} when marking notification read");
 
-            return [];
+            return false;
         }
     }
 
