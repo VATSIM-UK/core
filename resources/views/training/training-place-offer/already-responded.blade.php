@@ -23,6 +23,7 @@
                     <strong>Offer rescinded.</strong> This training place offer has been rescinded by the training team.
                     If you have any questions, please contact the ATC Training team via the helpdesk.
                 </div>
+            @endif
 
             <a href="{{ route('mship.manage.dashboard') }}" class="btn btn-link">Return to Dashboard</a>
         </div>

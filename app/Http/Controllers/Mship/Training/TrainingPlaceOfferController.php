@@ -26,7 +26,7 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
 
         $service->acceptOffer($offer);
 
-        return view('training.training-place-offer.result', ['result' => 'accepted']);
+        return view('training.training-place-offer.result', ['result' => 'accepted', 'offer' => $offer]);
     }
 
     public function decline(string $token, TrainingPlaceOfferService $service)
@@ -47,7 +47,7 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
 
         $service->declineOffer($offer);
 
-        return view('training.training-place-offer.result', ['result' => 'declined']);
+        return view('training.training-place-offer.result', ['result' => 'declined', 'offer' => $offer]);
     }
 
     private function findOffer(string $token): TrainingPlaceOffer
@@ -55,6 +55,7 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
         return TrainingPlaceOffer::with([
             'waitingListAccount' => fn ($q) => $q->withTrashed(),
             'waitingListAccount.account',
+            'trainingPosition.position',
         ])->where('token', $token)->firstOrFail();
     }
 

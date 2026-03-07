@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\Training\TrainingPlaceOffered;
 use App\Notifications\Training\TrainingPlaceOfferRescinded;
+use Illuminate\Support\Str;
+use App\Services\Training\TrainingPlaceService;
 
 class TrainingPlaceOfferService
 {
@@ -37,7 +39,7 @@ class TrainingPlaceOfferService
                 'response_at' => now(),
             ]);
 
-            $this->createManualTrainingPlace($offer->waitingListAccount, $offer->trainingPosition);
+            $this->createTrainingPlace($offer->waitingListAccount, $offer->trainingPosition);
         });
     }
 
@@ -50,7 +52,7 @@ class TrainingPlaceOfferService
             ]);
 
             $removal = new Removal(RemovalReason::DeclinedTrainingPlaceOffer, Auth::user()->id);
-            $this->removeFromWaitingList($trainingPlaceOffer->waitingListAccount->account, $removal);
+            $this->removeFromWaitingList($trainingPlaceOffer, $removal);
         });
     }
 
@@ -69,10 +71,10 @@ class TrainingPlaceOfferService
             'status' => TrainingPlaceOfferStatus::Rescinded->value,
         ]);
 
-        $trainingPlaceOffer->waitingListAccount->account->notify(new TrainingPlaceOfferRescinded($trainingPlaceOffer, $reason));
+        // $trainingPlaceOffer->waitingListAccount->account->notify(new TrainingPlaceOfferRescinded($trainingPlaceOffer, $reason));
 
         $removal = new Removal(RemovalReason::TrainingPlaceOfferRescinded, Auth::user()->id);
-        $this->removeFromWaitingList($trainingPlaceOffer->waitingListAccount->account, $removal);
+        $this->removeFromWaitingList($trainingPlaceOffer, $removal);
     }
 
     public function expireOffer(TrainingPlaceOffer $trainingPlaceOffer): void
@@ -82,12 +84,17 @@ class TrainingPlaceOfferService
         ]);
 
         $removal = new Removal(RemovalReason::TrainingPlaceOfferRescinded, Auth::user()->id);
-        $this->removeFromWaitingList($trainingPlaceOffer->waitingListAccount->account, $removal);
+        $this->removeFromWaitingList($trainingPlaceOffer, $removal);
     }
 
     public function removeFromWaitingList(TrainingPlaceOffer $trainingPlaceOffer, Removal $removal)
     {
         $trainingPlaceOffer->waitingListAccount->waitingList->removeFromWaitingList($trainingPlaceOffer->waitingListAccount->account, $removal);
+    }
+
+    public function createTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition)
+    {
+        app(TrainingPlaceService::class)->createManualTrainingPlace($waitingListAccount, $trainingPosition);
     }
 
     private static function generateToken(): string

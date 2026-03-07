@@ -7,13 +7,12 @@
 
             @if($result === 'accepted')
                 <div class="alert alert-success">
-                    <strong>Training place accepted!</strong>
+                    <strong>Training place accepted!</strong> You have accepted your training place on {{ $offer->trainingPosition->position->name }} ({{ $offer->trainingPosition->position->callsign }}).
                 </div>
 
             @elseif($result === 'declined')
                 <div class="alert alert-danger">
-                    <strong>Offer declined.</strong> You have been removed from the waiting list.
-                    If you have any questions, please contact the ATC Training Team via the helpdesk.
+                    <strong>Training place declined.</strong> You have declined your training place offer for {{ $offer->trainingPosition->position->name }} ({{ $offer->trainingPosition->position->callsign }}) and therefore have been removed from the waiting list.
                 </div>
             @endif
 
