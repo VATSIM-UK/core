@@ -5,7 +5,7 @@ namespace App\Filament\Training\Resources\WaitingListResource\RelationManagers;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
-use App\Services\Training\TrainingPlaceService;
+use App\Services\Training\TrainingPlaceOfferService;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -153,7 +153,7 @@ class AccountsRelationManager extends RelationManager
                     ->action(function (WaitingListAccount $record, array $data, $livewire) {
                         $trainingPosition = $livewire->ownerRecord->trainingPositions()->findOrFail($data['training_position_id']);
 
-                        $service = app(TrainingPlaceService::class);
+                        $service = app(TrainingPlaceOfferService::class);
                         $service->offerTrainingPlace($record, $trainingPosition);
                     })
                     ->successNotificationTitle('Training place offered successfully')
@@ -192,7 +192,7 @@ class AccountsRelationManager extends RelationManager
                                         ->rows(4),
                                 ])
                                 ->action(function (array $data) use ($offer) {
-                                    app(TrainingPlaceService::class)->rescindOffer($offer, $data['reason']);
+                                    app(TrainingPlaceOfferService::class)->rescindOffer($offer, $data['reason']);
                                 })
                                 ->successNotificationTitle('Offer rescinded'),
 
@@ -212,7 +212,7 @@ class AccountsRelationManager extends RelationManager
                                         ->rows(4),
                                 ])
                                 ->action(function (array $data) use ($offer) {
-                                    $service = app(TrainingPlaceService::class);
+                                    $service = app(TrainingOfferPlaceService::class);
                                     $service->rescindOffer($offer, $data['reason']);
                                     $service->removeFromWaitingList($offer->waitingListAccount->trainingPlace);
                                 })
@@ -346,7 +346,7 @@ class AccountsRelationManager extends RelationManager
                         ->action(function (WaitingListAccount $record, array $data, $livewire) {
                             $trainingPosition = $livewire->ownerRecord->trainingPositions()->findOrFail($data['training_position_id']);
 
-                            $service = app(TrainingPlaceService::class);
+                            $service = app(TrainingOfferPlaceService::class);
                             $trainingPlace = $service->createManualTrainingPlace($record, $trainingPosition);
 
                             Notification::make()

@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Mship\Training;
 
 use App\Enums\TrainingPlaceOfferStatus;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
-use App\Services\Training\TrainingPlaceService;
+use App\Services\Training\TrainingPlaceOfferService;
 
 class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
 {
-    public function accept(string $token, TrainingPlaceService $service)
+    public function accept(string $token, TrainingPlaceOfferService $service)
     {
         $offer = $this->findOffer($token);
 
@@ -29,7 +29,7 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
         return view('training.training-place-offer.result', ['result' => 'accepted']);
     }
 
-    public function decline(string $token, TrainingPlaceService $service)
+    public function decline(string $token, TrainingPlaceOfferService $service)
     {
         $offer = $this->findOffer($token);
 

@@ -11,6 +11,8 @@ enum RemovalReason: string
     case FailedRetention = 'failed_retention_check';
     case CancelledVTApplication = 'cancelled_vt_application';
     case DeclinedTrainingPlaceOffer = 'declined_training_place_offer';
+    case TrainingPlaceOfferRescinded = 'training_place_offer_rescinded';
+    case TrainingPlaceOfferExpired = 'training_place_offer_expired';
     case Other = 'other';
 
     public function label(): string
@@ -23,6 +25,8 @@ enum RemovalReason: string
             self::FailedRetention => 'Member failed retention check',
             self::CancelledVTApplication => 'VT application cancelled',
             self::DeclinedTrainingPlaceOffer => 'Declined training place offer',
+            self::TrainingPlaceOfferRescinded => 'Training place offer rescinded',
+            self::TrainingPlaceOfferExpired => 'Training place offer expired',
             self::Other => 'Other (please specify)',
         };
     }
