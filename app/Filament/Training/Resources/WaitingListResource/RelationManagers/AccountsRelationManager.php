@@ -162,8 +162,13 @@ class AccountsRelationManager extends RelationManager
                     ->color('success'),
 
                 Tables\Actions\ViewAction::make()
-                    ->modalHeading(fn (WaitingListAccount $record) => "Waiting List Account — {$record->account->name}")
-                    ->extraModalFooterActions(function (WaitingListAccount $record) {
+                    ->modalHeading(fn (?WaitingListAccount $record) => "Waiting List Account — {$record?->account->name}")
+                    ->extraModalFooterActions(function (?WaitingListAccount $record) {
+                        if (!$record)
+                        {
+                            return [];
+                        }
+
                         $offer = $record->trainingPlaceOffers()
                             ->where('status', TrainingPlaceOfferStatus::Pending->value)
                             ->latest()
@@ -210,14 +215,22 @@ class AccountsRelationManager extends RelationManager
                                         ->minLength(10)
                                         ->rows(4),
                                 ])
-                                ->action(function (array $data) use ($offer) {
+                                ->action(function (array $data, $livewire) use ($offer) {
                                     $service = app(TrainingPlaceOfferService::class);
                                     $service->rescindOfferAndRemove($offer, $data['reason']);
+
+                                    $livewire->dispatch('close-modal');
+                                    $livewire->dispatch('refreshWaitingList');
                                 })
                                 ->successNotificationTitle('Offer rescinded and member removed from waiting list'),
                         ];
                     })
-                    ->form(function (WaitingListAccount $record) {
+                    ->form(function (?WaitingListAccount $record) {
+                        if (!$record)
+                        {
+                            return [];
+                        }
+
                         $offer = $record->trainingPlaceOffers()
                             ->where('status', TrainingPlaceOfferStatus::Pending->value)
                             ->latest()

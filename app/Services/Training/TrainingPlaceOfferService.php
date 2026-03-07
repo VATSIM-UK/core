@@ -8,13 +8,11 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListAccount;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use App\Notifications\Training\TrainingPlaceOffered;
 use App\Notifications\Training\TrainingPlaceOfferRescinded;
-use Illuminate\Support\Str;
-use App\Services\Training\TrainingPlaceService;
 use App\Notifications\Training\TrainingPlaceOfferRescindedAndRemoved;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class TrainingPlaceOfferService
 {
@@ -42,7 +40,7 @@ class TrainingPlaceOfferService
 
             $this->createTrainingPlace($offer->waitingListAccount, $offer->trainingPosition);
         });
-        
+
     }
 
     public function declineOffer(TrainingPlaceOffer $trainingPlaceOffer): void

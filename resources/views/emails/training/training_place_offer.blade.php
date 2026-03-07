@@ -2,8 +2,6 @@
 
 @section('body')
 
-<p>Hi {{ $account->name_first }},</p>
-
 <p>A training place is now available for you on <strong>{{ $position->name }} ({{ $position->callsign }})</strong>.
     Training times vary from student to student, but you should expect to be training for the next six to nine months.
     Please inform us before accepting this place if you will not be available to complete your training during this period.</p>
@@ -26,14 +24,11 @@
 <p>If we've not heard from you within the next 84 hours (3.5 days), unfortunately, we will have to offer the place
     to another student and your place on the waiting list will be forfeit.</p>
 
-<p>This offer expires at {{ $offer->expires_at->format('H:i') }} UTC on {{ $offer->expires_at->format('d/m/Y') }}.</p>
+<p>This offer expires at <strong>{{ $offer->expires_at->format('H:i') }} UTC on {{ $offer->expires_at->format('d/m/Y') }}</strong>.</p>
 
 <p style="margin-top: 24px;">
     <a href="{{ $accept_url }}" class="btn btn-primary" style="margin-right: 12px;">Accept Training Place</a>
-    <a href="{{ $decline_url }}" style="btn btn-danger" style="margin-right: 12px;">Decline Training Place</a>
+    <a href="{{ $decline_url }}" style="btn btn-link" style="margin-right: 12px;">Decline Training Place</a>
 </p>
-
-<p>Kind Regards,<br>
-The ATC Training Team</p>
 
 @stop
