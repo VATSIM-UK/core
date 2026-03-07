@@ -42,6 +42,7 @@ class TrainingPlaceOfferService
 
             $this->createTrainingPlace($offer->waitingListAccount, $offer->trainingPosition);
         });
+        
     }
 
     public function declineOffer(TrainingPlaceOffer $trainingPlaceOffer): void
@@ -52,7 +53,7 @@ class TrainingPlaceOfferService
                 'response_at' => now(),
             ]);
 
-            $removal = new Removal(RemovalReason::DeclinedTrainingPlaceOffer, Auth::user()->id);
+            $removal = new Removal(RemovalReason::DeclinedTrainingPlaceOffer, auth()->id());
             $this->removeFromWaitingList($trainingPlaceOffer, $removal);
         });
     }
@@ -74,7 +75,7 @@ class TrainingPlaceOfferService
 
         $trainingPlaceOffer->waitingListAccount->account->notify(new TrainingPlaceOfferRescindedAndRemoved($trainingPlaceOffer, $reason));
 
-        $removal = new Removal(RemovalReason::TrainingPlaceOfferRescinded, Auth::user()->id);
+        $removal = new Removal(RemovalReason::TrainingPlaceOfferRescinded, auth()->id());
         $this->removeFromWaitingList($trainingPlaceOffer, $removal);
     }
 
@@ -84,7 +85,7 @@ class TrainingPlaceOfferService
             'status' => TrainingPlaceOfferStatus::Expired->value,
         ]);
 
-        $removal = new Removal(RemovalReason::TrainingPlaceOfferExpired, Auth::user()->id);
+        $removal = new Removal(RemovalReason::TrainingPlaceOfferExpired, auth()->id());
         $this->removeFromWaitingList($trainingPlaceOffer, $removal);
     }
 

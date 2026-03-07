@@ -7,7 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 /**
- * Sent to a member when their training place offer is rescinded by staff.
+ * Sent to a member when their training place offer is rescinded by staff and they are removed from the waiting list.
  * The member retains their waiting list position.
  */
 class TrainingPlaceOfferRescindedAndRemoved extends Notification

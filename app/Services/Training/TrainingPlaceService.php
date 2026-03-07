@@ -93,7 +93,7 @@ class TrainingPlaceService
         ]);
 
         $this->removeFromWaitingList($trainingPlace);
-
+ 
         return $trainingPlace;
     }
 

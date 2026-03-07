@@ -4,15 +4,18 @@ namespace App\Models\Training\TrainingPlace;
 
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\WaitingListAccount;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\TrainingPlaceOfferStatus;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TrainingPlaceOffer extends Model
 {
+    /** @use HasFactory<\Database\Factories\Training\TrainingPlace\TrainingPlaceOfferFactory> */
+    use HasFactory;
+
     protected $guarded = [];
 
     protected $fillable = [
