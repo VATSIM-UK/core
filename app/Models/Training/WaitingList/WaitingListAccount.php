@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
+use App\Enums\TrainingPlaceOfferStatus;
 
 /**
  * @property int $id
@@ -181,5 +182,12 @@ class WaitingListAccount extends Model
     private function cacheKey()
     {
         return "waiting-list-account:{$this->id}";
+    }
+
+    public function hasPendingTrainingPlaceOffer(): bool
+    {
+        return $this->trainingPlaceOffers()
+            ->where('status', TrainingPlaceOfferStatus::Pending->value)
+            ->exists();
     }
 }
