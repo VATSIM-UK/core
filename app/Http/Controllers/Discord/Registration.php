@@ -29,6 +29,7 @@ class Registration extends BaseController
         $authUrl = $this->provider->getAuthorizationUrl([
             'scope' => ['identify', 'guilds.join'],
         ]);
+        $request->session()->put('discordauthstate', $this->provider->getState());
 
         return redirect()->away($authUrl);
     }
@@ -36,6 +37,11 @@ class Registration extends BaseController
     public function store(DiscordRegistration $request)
     {
         $inputs = $request->validated();
+        $storedState = session()->pull('discordauthstate', '');
+
+        if (! is_string($storedState) || $storedState === '' || ! hash_equals($storedState, $inputs['state'])) {
+            return $this->error('Something went wrong. Please try again.');
+        }
 
         try {
             $token = $this->provider->getAccessToken('authorization_code', ['code' => $inputs['code']]);

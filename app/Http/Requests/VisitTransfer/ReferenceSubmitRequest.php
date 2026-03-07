@@ -3,6 +3,7 @@
 namespace App\Http\Requests\VisitTransfer;
 
 use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransfer\Reference;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -52,6 +53,17 @@ class ReferenceSubmitRequest extends FormRequest
     public function authorize()
     {
         $token = $this->route('token');
+
+        if (
+            ! $token
+            || ! $token->related instanceof Reference
+            || $token->type !== 'visittransfer_reference_request'
+            || $token->used_at !== null
+            || $token->is_expired
+        ) {
+            return false;
+        }
+
         $reference = $token->related;
 
         return Gate::allows('complete', $reference);
