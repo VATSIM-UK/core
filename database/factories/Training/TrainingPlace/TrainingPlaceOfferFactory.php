@@ -4,8 +4,6 @@ namespace Database\Factories\Training\TrainingPlace;
 
 use App\Enums\TrainingPlaceOfferStatus;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
-use App\Models\Training\TrainingPosition\TrainingPosition;
-use App\Models\Training\WaitingList\WaitingListAccount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

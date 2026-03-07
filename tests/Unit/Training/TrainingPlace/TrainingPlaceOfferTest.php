@@ -3,11 +3,11 @@
 namespace Tests\Unit\Training\TrainingPlace;
 
 use App\Enums\TrainingPlaceOfferStatus;
+use App\Models\Cts\Member;
+use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
-use App\Models\Mship\Account;
-use App\Models\Cts\Member;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;

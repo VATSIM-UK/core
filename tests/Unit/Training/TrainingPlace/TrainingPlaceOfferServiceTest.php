@@ -5,7 +5,6 @@ namespace Tests\Unit\Training\TrainingPlace;
 use App\Enums\TrainingPlaceOfferStatus;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
-use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
@@ -13,10 +12,10 @@ use App\Notifications\Training\TrainingPlaceOffered;
 use App\Notifications\Training\TrainingPlaceOfferRescinded;
 use App\Services\Training\TrainingPlaceOfferService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Event;
 
 class TrainingPlaceOfferServiceTest extends TestCase
 {

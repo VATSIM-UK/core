@@ -2,7 +2,9 @@
 
 namespace App\Filament\Training\Resources\WaitingListResource\RelationManagers;
 
+use App\Enums\TrainingPlaceOfferStatus;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
+use App\Models\Mship\Feedback\Feedback;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Services\Training\TrainingPlaceOfferService;
@@ -17,8 +19,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use App\Models\Mship\Feedback\Feedback;
-use App\Enums\TrainingPlaceOfferStatus;
 
 /**
  * @property WaitingList $ownerRecord
@@ -103,10 +103,10 @@ class AccountsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\Action::make('offerTrainingPlace')
-                    ->label("Offer Training Place")
+                    ->label('Offer Training Place')
                     ->icon('heroicon-o-academic-cap')
                     ->visible(function (WaitingListAccount $record) {
-                        return $this->can('offerTrainingPlace', $record->waitingList) && !$record->hasPendingTrainingPlaceOffer();
+                        return $this->can('offerTrainingPlace', $record->waitingList) && ! $record->hasPendingTrainingPlaceOffer();
                     })
                     ->form(function (WaitingListAccount $record) {
                         $recentFeedback = Feedback::where('account_id', $record->account_id)
@@ -115,17 +115,15 @@ class AccountsRelationManager extends RelationManager
                             ->limit(10)
                             ->get();
 
-                        $feedbackEntries = $recentFeedback->map(fn (Feedback $feedback) =>
-                            Forms\Components\Section::make("Feedback - {$feedback->created_at->format('d/m/Y H:i')}")
-                                ->schema([
-                                    ...$feedback->answers->map(fn ($answer) =>
-                                        Forms\Components\Placeholder::make("answer_{$answer->id}")
-                                            ->label($answer->question?->question ?? 'Unknown Question')
-                                            ->content($answer->response ?? 'Question not answered')
-                                    )->all(),
-                                ])
-                                ->columns(3)
-                                ->collapsible()
+                        $feedbackEntries = $recentFeedback->map(fn (Feedback $feedback) => Forms\Components\Section::make("Feedback - {$feedback->created_at->format('d/m/Y H:i')}")
+                            ->schema([
+                                ...$feedback->answers->map(fn ($answer) => Forms\Components\Placeholder::make("answer_{$answer->id}")
+                                    ->label($answer->question?->question ?? 'Unknown Question')
+                                    ->content($answer->response ?? 'Question not answered')
+                                )->all(),
+                            ])
+                            ->columns(3)
+                            ->collapsible()
                         )->all();
 
                         return [
@@ -134,7 +132,7 @@ class AccountsRelationManager extends RelationManager
                                     Forms\Components\Placeholder::make('no_feedback')
                                         ->label('')
                                         ->content('No feedback on record for this member.'),
-                                    ]
+                                ]
                                 )
                                 ->collapsible()
                                 ->columns(3),
@@ -192,7 +190,8 @@ class AccountsRelationManager extends RelationManager
                                         ->rows(4),
                                 ])
                                 ->action(function (array $data) use ($offer) {
-                                    app(TrainingPlaceOfferService::class)->rescindOffer($offer, $data['reason']);
+                                    $service = app(TrainingPlaceOfferService::class);
+                                    $service->rescindOffer($offer, $data['reason']);
                                 })
                                 ->successNotificationTitle('Offer rescinded'),
 
@@ -212,9 +211,8 @@ class AccountsRelationManager extends RelationManager
                                         ->rows(4),
                                 ])
                                 ->action(function (array $data) use ($offer) {
-                                    $service = app(TrainingOfferPlaceService::class);
-                                    $service->rescindOffer($offer, $data['reason']);
-                                    $service->removeFromWaitingList($offer->waitingListAccount->trainingPlace);
+                                    $service = app(TrainingPlaceOfferService::class);
+                                    $service->rescindOfferAndRemove($offer, $data['reason']);
                                 })
                                 ->successNotificationTitle('Offer rescinded and member removed from waiting list'),
                         ];
@@ -239,7 +237,7 @@ class AccountsRelationManager extends RelationManager
 
                                     Forms\Components\Placeholder::make('offer_expires_at')
                                         ->label('Expires At')
-                                        ->content($offer->expires_at->format('d/m/Y H:i') . ' UTC'),
+                                        ->content($offer->expires_at->format('d/m/Y H:i').' UTC'),
 
                                     Forms\Components\Placeholder::make('offer_responded_at')
                                         ->label('Member Responded At')

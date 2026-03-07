@@ -27,7 +27,7 @@ class TrainingPlaceOfferRescindedAndRemoved extends Notification
     public function toMail($notifiable): MailMessage
     {
         $account = $this->trainingPlaceOffer->waitingListAccount->account;
-        $position = $this->trainingPlaceOffer->trainingPosition->position;
+        $waitingList = $this->trainingPlaceOffer->waitingListAccount->waitingList;
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
@@ -35,8 +35,7 @@ class TrainingPlaceOfferRescindedAndRemoved extends Notification
             ->view('emails.training.training_place_offer_rescinded_and_removed', [
                 'recipient' => $notifiable,
                 'account' => $account,
-                'position' => $position,
-                'reasons' => $this->reason,
+                'waiting_list' => $waitingList,
             ]);
     }
 }

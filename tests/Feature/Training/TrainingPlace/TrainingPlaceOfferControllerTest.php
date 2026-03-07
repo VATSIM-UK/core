@@ -3,24 +3,24 @@
 namespace Tests\Feature\Training\TrainingPlace;
 
 use App\Enums\TrainingPlaceOfferStatus;
+use App\Models\Atc\Position;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
-use App\Services\Training\TrainingPlaceService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Event;
-use App\Models\Atc\Position;
 
 class TrainingPlaceOfferControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
     private Account $student;
+
     private TrainingPlaceOffer $offer;
 
     protected function setUp(): void
@@ -34,7 +34,7 @@ class TrainingPlaceOfferControllerTest extends TestCase
 
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $waitingListAccount = $waitingList->addToWaitingList($this->student, $this->privacc);
-        
+
         $position = Position::factory()->create();
         $trainingPosition = TrainingPosition::factory()
             ->withCtsPositions(['EGLL_APP'])
@@ -110,7 +110,6 @@ class TrainingPlaceOfferControllerTest extends TestCase
             ->get(route('mship.waiting-lists.training-place-offer.decline', $this->offer->token))
             ->assertForbidden();
     }
-
 
     #[Test]
     public function declining_removes_member_from_waiting_list()
