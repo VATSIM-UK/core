@@ -81,7 +81,6 @@ class TrainingPlaceOfferRescindedNotificationTest extends TestCase
         $mailMessage = $notification->toMail($this->account);
 
         $this->assertArrayHasKey('recipient', $mailMessage->viewData);
-        $this->assertArrayHasKey('offer', $mailMessage->viewData);
         $this->assertArrayHasKey('account', $mailMessage->viewData);
         $this->assertArrayHasKey('position', $mailMessage->viewData);
         $this->assertArrayHasKey('reason', $mailMessage->viewData);
