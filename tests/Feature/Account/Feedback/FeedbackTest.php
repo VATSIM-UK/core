@@ -177,7 +177,6 @@ class FeedbackTest extends TestCase
         $targetAccount = Account::factory()->create();
         $eventTime = now();
 
-        // Do NOT create any ATC session - this should still succeed for non-ATC forms
         $formData = $this->buildFormData($this->form, $targetAccount, $eventTime);
 
         $this->actingAs($this->user, 'web')
