@@ -165,7 +165,6 @@ class Feedback extends \App\Http\Controllers\BaseController
         // Get the event datetime from the form submission
         $eventDatetime = $datetimefield ? \Carbon\Carbon::parse($request->input($datetimefield)) : now();
 
-        // check if feedback type is ATC
         if ($form->slug == 'atc') {
             // check if the controller has controlled +- 30 minutes around the event time
             $hasFeedbackSession = Atc::query()->where('account_id', $account->id)
