@@ -264,4 +264,51 @@ class ApplicationTest extends TestCase
             Application::$function();
         }
     }
+
+    #[Test]
+    public function completing_a_pilot_application_removes_visiting_state_if_no_atc_applications_exist()
+    {
+        $visiting = \App\Models\Mship\State::findByCode('VISITING');
+        $pilotFacility = \App\Models\VisitTransfer\Facility::factory()->visit('pilot')->create();
+
+        $application = Application::factory()->visit('pilot')->create([
+            'account_id' => $this->user->id,
+            'facility_id' => $pilotFacility->id,
+            'status' => Application::STATUS_UNDER_REVIEW,
+        ]);
+        $application->accept();
+
+        $this->assertTrue($this->user->fresh()->hasState($visiting));
+        $application->complete();
+        $this->assertFalse($this->user->fresh()->hasState($visiting));
+    }
+
+    public function completing_a_pilot_application_does_not_remove_visiting_state_if_an_atc_application_exists()
+    {
+        $visiting = \App\Models\Mship\State::findByCode('VISITING');
+        $pilotFacility = \App\Models\VisitTransfer\Facility::factory()->visit('pilot')->create();
+        $atcFacility = \App\Models\VisitTransfer\Facility::factory()->visit('atc')->create();
+
+        $atcApplication = Application::factory()->visit('atc')->create([
+            'account_id' => $this->user->id,
+            'facility_id' => $atcFacility->id,
+            'status' => Application::STATUS_UNDER_REVIEW,
+        ]);
+
+        $pilotApplication = Application::factory()->visit('pilot')->create([
+            'account_id' => $this->user->id,
+            'facility_id' => $pilotFacility->id,
+            'status' => Application::STATUS_UNDER_REVIEW,
+        ]);
+
+        $atcApplication->accept();
+        $this->assertTrue($this->user->fresh()->hasState($visiting));
+        $atcApplication->complete();
+        $this->assertTrue($this->user->fresh()->hasState($visiting));
+
+        $pilotApplication->accept();
+        $pilotApplication->complete();
+        $this->assertTrue($this->user->fresh()->hasState($visiting));
+
+    }
 }
