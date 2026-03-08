@@ -110,7 +110,7 @@ class FeedbackTest extends TestCase
         $targetAccount = Account::factory()->create();
         $eventTime = now()->subMinutes(10);
 
-        // Create an ATC session within the ±30 minute window (around event time)
+        // Create an ATC session within the +-30 minute window (around event time)
         $session = new Atc([
             'account_id' => $targetAccount->id,
             'qualification_id' => 1,
@@ -164,6 +164,26 @@ class FeedbackTest extends TestCase
             ->post(route('mship.feedback.new.form.post', $form->slug), $formData)
             ->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('error');
+    }
+
+    #[Test]
+    public function test_it_accepts_non_atc_feedback_without_active_session()
+    {
+        // Get a non-ATC form (form ID 1 from setUp)
+        if ($this->form->slug == 'atc') {
+            $this->markTestSkipped('form is ATC form, need non-ATC form for this test');
+        }
+
+        $targetAccount = Account::factory()->create();
+        $eventTime = now();
+
+        // Do NOT create any ATC session - this should still succeed for non-ATC forms
+        $formData = $this->buildFormData($this->form, $targetAccount, $eventTime);
+
+        $this->actingAs($this->user, 'web')
+            ->post(route('mship.feedback.new.form.post', $this->form->slug), $formData)
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('success');
     }
 
     /**
