@@ -169,18 +169,18 @@ class FeedbackTest extends TestCase
     #[Test]
     public function test_it_accepts_non_atc_feedback_without_active_session()
     {
-        // Get a non-ATC form (form ID 1 from setUp)
-        if ($this->form->slug == 'atc') {
-            $this->markTestSkipped('form is ATC form, need non-ATC form for this test');
+        $form = Form::where('slug', '!=', 'atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find non-ATC form');
         }
 
         $targetAccount = Account::factory()->create();
         $eventTime = now();
 
-        $formData = $this->buildFormData($this->form, $targetAccount, $eventTime);
+        $formData = $this->buildFormData($form, $targetAccount, $eventTime);
 
         $this->actingAs($this->user, 'web')
-            ->post(route('mship.feedback.new.form.post', $this->form->slug), $formData)
+            ->post(route('mship.feedback.new.form.post', $form->slug), $formData)
             ->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('success');
     }
