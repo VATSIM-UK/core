@@ -23,8 +23,11 @@ class TrainingPlaceOfferRescindedAndRemovedNotificationTest extends TestCase
     use DatabaseTransactions;
 
     private Account $account;
+
     private TrainingPlaceOffer $offer;
+
     private WaitingList $waitingList;
+
     private string $reason = 'No longer able to accommodate a new student at this time.';
 
     protected function setUp(): void

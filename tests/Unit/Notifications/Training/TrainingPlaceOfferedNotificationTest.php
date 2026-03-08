@@ -23,6 +23,7 @@ class TrainingPlaceOfferedNotificationTest extends TestCase
     use DatabaseTransactions;
 
     private Account $account;
+
     private TrainingPlaceOffer $offer;
 
     protected function setUp(): void
