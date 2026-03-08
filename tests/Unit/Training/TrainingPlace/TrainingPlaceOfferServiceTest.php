@@ -3,6 +3,7 @@
 namespace Tests\Unit\Training\TrainingPlace;
 
 use App\Enums\TrainingPlaceOfferStatus;
+use App\Models\Atc\Position;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
@@ -10,6 +11,7 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\TrainingPlaceOffered;
 use App\Notifications\Training\TrainingPlaceOfferRescinded;
+use App\Notifications\Training\TrainingPlaceOfferRescindedAndRemoved;
 use App\Services\Training\TrainingPlaceOfferService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
@@ -45,7 +47,10 @@ class TrainingPlaceOfferServiceTest extends TestCase
     private function createOffer(array $attributes = []): TrainingPlaceOffer
     {
         $waitingListAccount = $this->createWaitingListAccount();
-        $trainingPosition = TrainingPosition::factory()->withCtsPositions()->create();
+        $position = Position::factory()->create();
+        $trainingPosition = TrainingPosition::factory()
+            ->withCtsPositions(['EGLL_APP'])
+            ->create(['position_id' => $position->id]);
 
         return TrainingPlaceOffer::factory()->create(array_merge([
             'waiting_list_account_id' => $waitingListAccount->id,
@@ -62,7 +67,7 @@ class TrainingPlaceOfferServiceTest extends TestCase
         Notification::fake();
 
         $waitingListAccount = $this->createWaitingListAccount();
-        $trainingPosition = TrainingPosition::factory()->create();
+        $trainingPosition = TrainingPosition::factory()->withCtsPositions()->create();
 
         $this->service->offerTrainingPlace($waitingListAccount, $trainingPosition);
 
@@ -73,12 +78,27 @@ class TrainingPlaceOfferServiceTest extends TestCase
         ]);
     }
 
+    #[Test]
+    public function it_generates_a_token_when_offering_a_training_place()
+    {
+        Notification::fake();
+
+        $waitingListAccount = $this->createWaitingListAccount();
+        $trainingPosition = TrainingPosition::factory()->withCtsPositions()->create();
+
+        $this->service->offerTrainingPlace($waitingListAccount, $trainingPosition);
+
+        $offer = TrainingPlaceOffer::where('waiting_list_account_id', $waitingListAccount->id)->first();
+        $this->assertNotNull($offer->token);
+    }
+
+    #[Test]
     public function it_sends_a_notification_to_the_member_when_offering()
     {
         Notification::fake();
 
         $waitingListAccount = $this->createWaitingListAccount();
-        $trainingPosition = TrainingPosition::factory()->create();
+        $trainingPosition = TrainingPosition::factory()->withCtsPositions()->create();
 
         $this->service->offerTrainingPlace($waitingListAccount, $trainingPosition);
 
@@ -127,6 +147,17 @@ class TrainingPlaceOfferServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_adds_a_note_to_the_account_when_accepting()
+    {
+        $offer = $this->createOffer();
+        $this->service->acceptOffer($offer);
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'account_id' => $offer->waitingListAccount->account_id,
+        ]);
+    }
+
+    #[Test]
     public function it_marks_offer_as_declined()
     {
         $offer = $this->createOffer();
@@ -167,8 +198,21 @@ class TrainingPlaceOfferServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_adds_a_note_to_the_account_when_declining()
+    {
+        $offer = $this->createOffer();
+        $this->service->declineOffer($offer);
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'account_id' => $offer->waitingListAccount->account_id,
+        ]);
+    }
+
+    #[Test]
     public function it_marks_offer_as_rescinded()
     {
+        Notification::fake();
+
         $offer = $this->createOffer();
         $this->service->rescindOffer($offer, 'Test reason for rescinding.');
 
@@ -187,6 +231,17 @@ class TrainingPlaceOfferServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_does_not_send_rescinded_and_removed_notification_when_only_rescinding()
+    {
+        Notification::fake();
+
+        $offer = $this->createOffer();
+        $this->service->rescindOffer($offer, 'Test reason.');
+
+        Notification::assertNotSentTo($offer->waitingListAccount->account, TrainingPlaceOfferRescindedAndRemoved::class);
+    }
+
+    #[Test]
     public function it_does_not_remove_member_from_waiting_list_when_rescinding()
     {
         Notification::fake();
@@ -200,11 +255,105 @@ class TrainingPlaceOfferServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_adds_a_note_to_the_account_when_rescinding()
+    {
+        Notification::fake();
+
+        $offer = $this->createOffer();
+        $this->service->rescindOffer($offer, 'Test reason for rescinding.');
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'account_id' => $offer->waitingListAccount->account_id,
+        ]);
+    }
+
+    #[Test]
+    public function it_marks_offer_as_rescinded_when_rescinding_and_removing()
+    {
+        Notification::fake();
+
+        $offer = $this->createOffer();
+        $this->service->rescindOfferAndRemove($offer, 'Test reason.');
+
+        $this->assertEquals(TrainingPlaceOfferStatus::Rescinded, $offer->fresh()->status);
+    }
+
+    #[Test]
+    public function it_removes_member_from_waiting_list_when_rescinding_and_removing()
+    {
+        Notification::fake();
+
+        $offer = $this->createOffer();
+        $waitingListAccount = $offer->waitingListAccount;
+
+        $this->service->rescindOfferAndRemove($offer, 'Test reason.');
+
+        $this->assertNotNull($waitingListAccount->fresh()->deleted_at);
+    }
+
+    #[Test]
+    public function it_sends_rescinded_and_removed_notification_when_rescinding_and_removing()
+    {
+        Notification::fake();
+
+        $offer = $this->createOffer();
+        $this->service->rescindOfferAndRemove($offer, 'Test reason.');
+
+        Notification::assertSentTo($offer->waitingListAccount->account, TrainingPlaceOfferRescindedAndRemoved::class);
+    }
+
+    #[Test]
+    public function it_does_not_send_plain_rescinded_notification_when_rescinding_and_removing()
+    {
+        Notification::fake();
+
+        $offer = $this->createOffer();
+        $this->service->rescindOfferAndRemove($offer, 'Test reason.');
+
+        Notification::assertNotSentTo($offer->waitingListAccount->account, TrainingPlaceOfferRescinded::class);
+    }
+
+    #[Test]
+    public function it_adds_a_note_to_the_account_when_rescinding_and_removing()
+    {
+        Notification::fake();
+
+        $offer = $this->createOffer();
+        $this->service->rescindOfferAndRemove($offer, 'Test reason.');
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'account_id' => $offer->waitingListAccount->account_id,
+        ]);
+    }
+
+    #[Test]
     public function it_marks_offer_as_expired()
     {
         $offer = $this->createOffer(['expires_at' => now()->subHour()]);
         $this->service->expireOffer($offer);
 
         $this->assertEquals(TrainingPlaceOfferStatus::Expired, $offer->fresh()->status);
+    }
+
+    #[Test]
+    public function it_removes_member_from_waiting_list_when_offer_expires()
+    {
+        $offer = $this->createOffer(['expires_at' => now()->subHour()]);
+        $waitingListAccount = $offer->waitingListAccount;
+
+        $this->service->expireOffer($offer);
+
+        $this->assertNotNull($waitingListAccount->fresh()->deleted_at);
+    }
+
+    #[Test]
+    public function it_adds_a_note_to_the_account_when_expiring()
+    {
+        $offer = $this->createOffer(['expires_at' => now()->subHour()]);
+        $this->service->expireOffer($offer);
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'account_id' => $offer->waitingListAccount->account_id,
+        ]);
     }
 }
