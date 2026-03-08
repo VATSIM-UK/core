@@ -210,7 +210,30 @@ class Discord
             $context
         );
 
-        return $this->result($response, $context);
+        return $response->json();
+    }
+
+    public function createThreadFromMessage(string $channelId, string $messageId, array $data)
+    {
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages/{$messageId}/threads";
+        $context = [
+            'action' => 'createThreadFromMessage',
+            'channel_id' => $channelId,
+            'message_id' => $messageId,
+            'data' => $data,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->post($endpoint, $data),
+            $context
+        );
+
+        if ($response->failed()) {
+            Log::error('Failed to create Discord thread', $context + ['status' => $response->status(), 'body' => $response->json()]);
+            throw new GenericDiscordException($response);
+        }
+
+        return $response->json();
     }
 
     // --- Internal helpers ---
