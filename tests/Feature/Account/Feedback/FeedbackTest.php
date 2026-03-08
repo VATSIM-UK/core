@@ -67,6 +67,7 @@ class FeedbackTest extends TestCase
         $request->assertSee('mycidishere');
     }
 
+    #[Test]
     public function test_it_redirects_to_atc_feedback()
     {
         $form = Form::whereSlug('atc')->first();
@@ -81,7 +82,6 @@ class FeedbackTest extends TestCase
     }
 
     #[Test]
-#[Test]
     public function test_it_stores_the_atc_qualification_id_on_submission()
     {
         $form = Form::whereSlug('atc')->first();
@@ -91,10 +91,26 @@ class FeedbackTest extends TestCase
 
         $qualification = \App\Models\Mship\Qualification::factory()->create(['type' => 'atc']);
 
-        $account = \App\Models\Mship\Account::factory()->create();
+        $account = Account::factory()->create();
         $account->qualifications()->attach($qualification->id);
 
-        $formData = $this->buildFormData($form, $account);
+        $eventTime = now()->subMinutes(10);
+
+        // Create an ATC session within the +-30 minute window (around event time)
+        $session = new Atc([
+            'account_id' => $account->id,
+            'qualification_id' => 1,
+            'callsign' => 'EGLL_TWR',
+            'frequency' => 118.500,
+            'facility_type' => Atc::TYPE_TWR,
+            'connected_at' => $eventTime,
+        ]);
+        $session->timestamps = false;
+        $session->created_at = $eventTime;
+        $session->updated_at = $eventTime;
+        $session->save();
+
+        $formData = $this->buildFormData($form, $account, $eventTime);
 
         $this->actingAs($this->user, 'web')
             ->post(route('mship.feedback.new.form.post', $form->slug), $formData)
@@ -107,6 +123,7 @@ class FeedbackTest extends TestCase
         ]);
     }
 
+    #[Test]
     public function test_it_rejects_feedback_submission_without_active_session()
     {
         $form = Form::whereSlug('atc')->first();
