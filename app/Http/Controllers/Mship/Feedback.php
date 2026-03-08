@@ -90,6 +90,7 @@ class Feedback extends \App\Http\Controllers\BaseController
     {
         $questions = $form->questions;
         $cidfield = null;
+        $datetimefield = null;
         // Make the validation rules
         $ruleset = [];
         $errormessages = [];
@@ -106,6 +107,10 @@ class Feedback extends \App\Http\Controllers\BaseController
                         ->withError('You cannot leave feedback about yourself')
                         ->withInput();
                 }
+            }
+
+            if ($question->type->name == 'datetime') {
+                $datetimefield = $question->slug;
             }
 
             // Proccess rules
@@ -157,10 +162,13 @@ class Feedback extends \App\Http\Controllers\BaseController
                 ->withError("Sorry, we can't process your feedback at the moment. Please check back later.");
         }
 
-        // check if the controller has controlled +- 30 minutes
+        // Get the event datetime from the form submission
+        $eventDatetime = $datetimefield ? \Carbon\Carbon::parse($request->input($datetimefield)) : now();
+
+        // check if the controller has controlled +- 30 minutes around the event time
         $hasFeedbackSession = Atc::query()->where('account_id', $account->id)
-            ->where('created_at', '>=', $form->created_at->subMinutes(30))
-            ->where('created_at', '<=', $form->created_at->addMinutes(30))
+            ->where('created_at', '>=', $eventDatetime->copy()->subMinutes(30))
+            ->where('created_at', '<=', $eventDatetime->copy()->addMinutes(30))
             ->isUk()
             ->exists();
 

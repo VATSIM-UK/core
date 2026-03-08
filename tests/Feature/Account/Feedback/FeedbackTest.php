@@ -89,14 +89,14 @@ class FeedbackTest extends TestCase
         }
 
         $targetAccount = Account::factory()->create();
+        $eventTime = now()->subMinutes(10);
+
+        $formData = $this->buildFormData($form, $targetAccount, $eventTime);
 
         $this->actingAs($this->user, 'web')
-            ->post(route('mship.feedback.new.form.post', $form->slug), [
-                'account_id' => $targetAccount->id,
-                // Assuming there's an account lookup question field
-            ])
+            ->post(route('mship.feedback.new.form.post', $form->slug), $formData)
             ->assertRedirect(route('mship.manage.dashboard'))
-            ->assertSessionHas('errors');
+            ->assertSessionHas('error');
     }
 
     #[Test]
@@ -108,18 +108,26 @@ class FeedbackTest extends TestCase
         }
 
         $targetAccount = Account::factory()->create();
+        $eventTime = now()->subMinutes(10);
 
-        // Create an ATC session within the ±30 minute window
-        Atc::factory()->create([
+        // Create an ATC session within the ±30 minute window (around event time)
+        $session = new Atc([
             'account_id' => $targetAccount->id,
-            'created_at' => $form->created_at,
-            'callsign' => $form->callsign,
+            'qualification_id' => 1,
+            'callsign' => 'EGLL_TWR',
+            'frequency' => 118.500,
+            'facility_type' => Atc::TYPE_TWR,
+            'connected_at' => $eventTime,
         ]);
+        $session->timestamps = false;
+        $session->created_at = $eventTime;
+        $session->updated_at = $eventTime;
+        $session->save();
+
+        $formData = $this->buildFormData($form, $targetAccount, $eventTime);
 
         $this->actingAs($this->user, 'web')
-            ->post(route('mship.feedback.new.form.post', $form->slug), [
-                'account_id' => $targetAccount->id,
-            ])
+            ->post(route('mship.feedback.new.form.post', $form->slug), $formData)
             ->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('success');
     }
@@ -133,19 +141,53 @@ class FeedbackTest extends TestCase
         }
 
         $targetAccount = Account::factory()->create();
+        $eventTime = now();
 
-        // Create an ATC session 35 minutes before the form creation time (outside window)
-        Atc::factory()->create([
+        // Create an ATC session 35 minutes before event time (outside window)
+        $sessionTime = $eventTime->copy()->subMinutes(35);
+        $session = new Atc([
             'account_id' => $targetAccount->id,
-            'created_at' => $form->created_at->subMinutes(35),
-            'callsign' => $form->callsign,
+            'qualification_id' => 1,
+            'callsign' => 'EGLL_TWR',
+            'frequency' => 118.500,
+            'facility_type' => Atc::TYPE_TWR,
+            'connected_at' => $sessionTime,
         ]);
+        $session->timestamps = false;
+        $session->created_at = $sessionTime;
+        $session->updated_at = $sessionTime;
+        $session->save();
+
+        $formData = $this->buildFormData($form, $targetAccount, $eventTime);
 
         $this->actingAs($this->user, 'web')
-            ->post(route('mship.feedback.new.form.post', $form->slug), [
-                'account_id' => $targetAccount->id,
-            ])
+            ->post(route('mship.feedback.new.form.post', $form->slug), $formData)
             ->assertRedirect(route('mship.manage.dashboard'))
-            ->assertSessionHas('errors');
+            ->assertSessionHas('error');
+    }
+
+    /**
+     * Build form data with answers to all questions.
+     */
+    private function buildFormData(Form $form, Account $targetAccount, $eventTime = null): array
+    {
+        $formData = [];
+        $eventTime = $eventTime ?? now();
+
+        foreach ($form->questions as $question) {
+            if ($question->type->name == 'userlookup') {
+                $formData[$question->slug] = $targetAccount->id;
+            } elseif ($question->type->name == 'datetime') {
+                $formData[$question->slug] = $eventTime->format('Y-m-d H:i');
+            } elseif ($question->type->requires_value) {
+                if (isset($question->options['values']) && ! empty($question->options['values'])) {
+                    $formData[$question->slug] = $question->options['values'][0];
+                }
+            } else {
+                $formData[$question->slug] = 'Test answer for '.$question->slug;
+            }
+        }
+
+        return $formData;
     }
 }
