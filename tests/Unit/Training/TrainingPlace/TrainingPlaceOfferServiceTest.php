@@ -345,15 +345,4 @@ class TrainingPlaceOfferServiceTest extends TestCase
 
         $this->assertNotNull($waitingListAccount->fresh()->deleted_at);
     }
-
-    #[Test]
-    public function it_adds_a_note_to_the_account_when_expiring()
-    {
-        $offer = $this->createOffer(['expires_at' => now()->subHour()]);
-        $this->service->expireOffer($offer);
-
-        $this->assertDatabaseHas('mship_account_note', [
-            'account_id' => $offer->waitingListAccount->account_id,
-        ]);
-    }
 }

@@ -107,11 +107,6 @@ class TrainingPlaceOfferService
 
         $removal = new Removal(RemovalReason::TrainingPlaceOfferExpired, auth()->id());
         $this->removeFromWaitingList($trainingPlaceOffer, $removal);
-
-        $trainingPlaceOffer->waitingListAccount->account->addNote(
-            'training',
-            "Training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign} expired at {$trainingPlaceOffer->expires_at->format('d/m/Y H:i')}Z. Member removed from waiting list."
-        );
     }
 
     public function removeFromWaitingList(TrainingPlaceOffer $trainingPlaceOffer, Removal $removal)
