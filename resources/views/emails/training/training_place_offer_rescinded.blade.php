@@ -3,7 +3,7 @@
 @section('body')
 
 <p>We write to inform you that the previous offer for a training place on {{ $position->name }} ({{ $position->callsign }}) has been rescinded.
-    <br>The reasons for this is: {{ $reasons }}.</p>
+    <br>The reasons for this is: {{ $reason }}.</p>
 
 <p>Owing to the fact that the offer has been rescinded rather than you being removed from the waiting list, your position
     on the waiting list will remain and you will be offered another training place at an appropriate time.

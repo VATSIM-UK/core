@@ -36,7 +36,7 @@ class TrainingPlaceOfferRescinded extends Notification
                 'recipient' => $notifiable,
                 'account' => $account,
                 'position' => $position,
-                'reasons' => $this->reason,
+                'reason' => $this->reason,
             ]);
     }
 }
