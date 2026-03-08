@@ -94,7 +94,7 @@ class TrainingPlaceOfferService
 
     public function createTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition)
     {
-        app(TrainingPlaceService::class)->createManualTrainingPlace($waitingListAccount, $trainingPosition);
+        return app(TrainingPlaceService::class)->createManualTrainingPlace($waitingListAccount, $trainingPosition);
     }
 
     private static function generateToken(): string

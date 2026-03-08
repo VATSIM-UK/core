@@ -355,8 +355,8 @@ class AccountsRelationManager extends RelationManager
                         ->action(function (WaitingListAccount $record, array $data, $livewire) {
                             $trainingPosition = $livewire->ownerRecord->trainingPositions()->findOrFail($data['training_position_id']);
 
-                            $service = app(TrainingOfferPlaceService::class);
-                            $trainingPlace = $service->createManualTrainingPlace($record, $trainingPosition);
+                            $service = app(TrainingPlaceOfferService::class);
+                            $trainingPlace = $service->createTrainingPlace($record, $trainingPosition);
 
                             Notification::make()
                                 ->title('Training place offered successfully')
