@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Answer;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
+use App\Models\NetworkData\Atc;
 use Illuminate\Http\Request;
 use Redirect;
 use Validator;
@@ -154,6 +155,18 @@ class Feedback extends \App\Http\Controllers\BaseController
             // No one specified a user lookup field!
             return Redirect::route('mship.manage.dashboard')
                 ->withError("Sorry, we can't process your feedback at the moment. Please check back later.");
+        }
+
+        // check if the controller has controlled +- 30 minutes
+        $hasFeedbackSession = Atc::query()->where('account_id', $account->id)
+            ->where('created_at', '>=', $form->created_at->subMinutes(30))
+            ->where('created_at', '<=', $form->created_at->addMinutes(30))
+            ->isUk()
+            ->exists();
+
+        if (! $hasFeedbackSession) {
+            return Redirect::route('mship.manage.dashboard')
+                ->withError('We could not find a controlling session for the specified user around the time you submitted the feedback. Please ensure you have entered the correct CID, and that the controller was online around the time you submitted the feedback (within 30 minutes either side).');
         }
 
         // Make new feedback

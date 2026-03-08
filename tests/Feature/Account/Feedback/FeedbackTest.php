@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Account\Feedback;
 
+use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Form;
+use App\Models\NetworkData\Atc;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -78,27 +80,72 @@ class FeedbackTest extends TestCase
         $request->assertRedirect(route('mship.feedback.new.form', [$form->slug, 'cid' => 'mycidishere']));
     }
 
-    //    #[Test]
-    //    public function testItAllowsSubmission()
-    //    {
-    //        //
-    //    }
-    //
-    //    #[Test]
-    //    public function testItAllowsCreationOfFormWithPermission()
-    //    {
-    //        //
-    //    }
-    //
-    //    #[Test]
-    //    public function testItAllowsViewingOfSubmissionWithPermission()
-    //    {
-    //        //
-    //    }
-    //
-    //    #[Test]
-    //    public function testItDoesNotAllowViewingOfSubmissionWithoutPermission()
-    //    {
-    //        //
-    //    }
+    #[Test]
+    public function test_it_rejects_feedback_submission_without_active_session()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $targetAccount = Account::factory()->create();
+
+        $this->actingAs($this->user, 'web')
+            ->post(route('mship.feedback.new.form.post', $form->slug), [
+                'account_id' => $targetAccount->id,
+                // Assuming there's an account lookup question field
+            ])
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('errors');
+    }
+
+    #[Test]
+    public function test_it_accepts_feedback_submission_with_active_session()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $targetAccount = Account::factory()->create();
+
+        // Create an ATC session within the ±30 minute window
+        Atc::factory()->create([
+            'account_id' => $targetAccount->id,
+            'created_at' => $form->created_at,
+            'callsign' => $form->callsign,
+        ]);
+
+        $this->actingAs($this->user, 'web')
+            ->post(route('mship.feedback.new.form.post', $form->slug), [
+                'account_id' => $targetAccount->id,
+            ])
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('success');
+    }
+
+    #[Test]
+    public function test_it_rejects_feedback_when_session_is_outside_30_minute_window()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $targetAccount = Account::factory()->create();
+
+        // Create an ATC session 35 minutes before the form creation time (outside window)
+        Atc::factory()->create([
+            'account_id' => $targetAccount->id,
+            'created_at' => $form->created_at->subMinutes(35),
+            'callsign' => $form->callsign,
+        ]);
+
+        $this->actingAs($this->user, 'web')
+            ->post(route('mship.feedback.new.form.post', $form->slug), [
+                'account_id' => $targetAccount->id,
+            ])
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('errors');
+    }
 }
