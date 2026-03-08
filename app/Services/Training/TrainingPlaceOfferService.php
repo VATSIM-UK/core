@@ -13,7 +13,6 @@ use App\Notifications\Training\TrainingPlaceOfferRescinded;
 use App\Notifications\Training\TrainingPlaceOfferRescindedAndRemoved;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Throwable;
 
 class TrainingPlaceOfferService
 {
