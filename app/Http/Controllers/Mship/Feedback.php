@@ -160,6 +160,7 @@ class Feedback extends \App\Http\Controllers\BaseController
         $feedback = $account->feedback()->create([
             'submitter_account_id' => \Auth::user()->id,
             'form_id' => $form->id,
+            'account_atc_qualification_id' => $account->qualification_atc?->id,
         ]);
 
         // Add in the answers

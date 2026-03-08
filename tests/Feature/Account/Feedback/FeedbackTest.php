@@ -78,6 +78,32 @@ class FeedbackTest extends TestCase
         $request->assertRedirect(route('mship.feedback.new.form', [$form->slug, 'cid' => 'mycidishere']));
     }
 
+    #[Test]
+    public function test_it_stores_the_atc_qualification_id_on_submission()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $qualification = \App\Models\Mship\Qualification::factory()->create(['type' => 'atc']);
+
+        $account = \App\Models\Mship\Account::factory()->create();
+        $account->qualifications()->attach($qualification->id);
+
+        $formData = $this->buildFormData($form, $account);
+
+        $this->actingAs($this->user, 'web')
+            ->post(route('mship.feedback.new.form.post', $form->slug), $formData)
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('mship_feedback', [
+            'account_id' => $account->id,
+            'account_atc_qualification_id' => $qualification?->id,
+        ]);
+    }
+
     //    #[Test]
     //    public function testItAllowsSubmission()
     //    {
