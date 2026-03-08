@@ -2,3 +2,5 @@ User-agent: *
 Disallow: /admin/
 Disallow: /training/
 Disallow: /mship/
+Disallow: /api/
+Disallow: /external/
