@@ -13,6 +13,7 @@ use App\Notifications\Training\TrainingPlaceOfferRescinded;
 use App\Notifications\Training\TrainingPlaceOfferRescindedAndRemoved;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 class TrainingPlaceOfferService
 {
@@ -41,8 +42,8 @@ class TrainingPlaceOfferService
             $this->createTrainingPlace($trainingPlaceOffer->waitingListAccount, $trainingPlaceOffer->trainingPosition);
 
             $trainingPlaceOffer->waitingListAccount->account->addNote(
-                noteType: 'training',
-                content: "The member accepted a training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign}."
+                'training',
+                "The member accepted a training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign}."
             );
         });
 
@@ -60,8 +61,8 @@ class TrainingPlaceOfferService
             $this->removeFromWaitingList($trainingPlaceOffer, $removal);
 
             $trainingPlaceOffer->waitingListAccount->account->addNote(
-                noteType: 'training',
-                content: "The member declined a training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign}. Member removed from waiting list."
+                'training',
+                "The member declined a training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign}. Member removed from waiting list."
             );
         });
     }
