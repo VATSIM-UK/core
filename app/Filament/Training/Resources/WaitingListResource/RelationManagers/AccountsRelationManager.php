@@ -7,6 +7,7 @@ use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Services\Training\TrainingPlaceService;
 use App\Services\Training\TrainingPlaceOfferService;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Forms;
@@ -357,8 +358,8 @@ class AccountsRelationManager extends RelationManager
                         ->action(function (WaitingListAccount $record, array $data, $livewire) {
                             $trainingPosition = $livewire->ownerRecord->trainingPositions()->findOrFail($data['training_position_id']);
 
-                            $service = app(TrainingPlaceOfferService::class);
-                            $trainingPlace = $service->createTrainingPlace($record, $trainingPosition);
+                            $service = app(TrainingPlaceService::class);
+                            $trainingPlace = $service->createManualTrainingPlace($record, $trainingPosition);
 
                             Notification::make()
                                 ->title('Training place offered successfully')

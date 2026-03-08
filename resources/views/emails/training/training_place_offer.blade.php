@@ -24,11 +24,12 @@
 <p>If we've not heard from you within the next 84 hours (3.5 days), unfortunately, we will have to offer the place
     to another student and your place on the waiting list will be forfeit.</p>
 
-<p>This offer expires at <strong>{{ $offer->expires_at->format('H:i') }} UTC on {{ $offer->expires_at->format('d/m/Y') }}</strong>.</p>
+<p>This offer expires at <strong>{{ $offer->expires_at->format('H:i') }}Z on {{ $offer->expires_at->format('d/m/Y') }}</strong>.</p>
 
 <p style="margin-top: 24px;">
+    <p style="margin-top: 24px;">
     <a href="{{ $accept_url }}" class="btn btn-primary" style="margin-right: 12px;">Accept Training Place</a>
-    <a href="{{ $decline_url }}" style="btn btn-link" style="margin-right: 12px;">Decline Training Place</a>
+    <a href="{{ $decline_url }}" class="btn btn-danger" style="color: #fff; background-color: #d9534f; border-color: #d43f3a;">Decline Training Place</a>
 </p>
 
 @stop

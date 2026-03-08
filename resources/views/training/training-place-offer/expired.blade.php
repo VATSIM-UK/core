@@ -6,7 +6,7 @@
         <div class="panel-body">
             <div class="alert alert-danger">
                 <strong>Offer expired.</strong> This training place offer expired at
-                <strong>{{ $offer->expires_at->format('H:i') }} UTC on {{ $offer->expires_at->format('d/m/Y') }}</strong>
+                <strong>{{ $offer->expires_at->format('H:i') }}Z on {{ $offer->expires_at->format('d/m/Y') }}</strong>
                 and is no longer available.
 
                 <p>If you believe this is a mistake or have any questions, please contact the ATC Training team via the helpdesk.</p>

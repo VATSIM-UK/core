@@ -30,15 +30,20 @@ class TrainingPlaceOfferService
         });
     }
 
-    public function acceptOffer(TrainingPlaceOffer $offer): void
+    public function acceptOffer(TrainingPlaceOffer $trainingPlaceOffer): void
     {
-        DB::transaction(function () use ($offer): void {
-            $offer->update([
+        DB::transaction(function () use ($trainingPlaceOffer): void {
+            $trainingPlaceOffer->update([
                 'status' => TrainingPlaceOfferStatus::Accepted->value,
                 'response_at' => now(),
             ]);
 
-            $this->createTrainingPlace($offer->waitingListAccount, $offer->trainingPosition);
+            $this->createTrainingPlace($trainingPlaceOffer->waitingListAccount, $trainingPlaceOffer->trainingPosition);
+
+            $trainingPlaceOffer->waitingListAccount->account->addNote(
+                noteType: 'training',
+                content: "The member accepted a training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign}."
+            );
         });
 
     }
@@ -53,6 +58,11 @@ class TrainingPlaceOfferService
 
             $removal = new Removal(RemovalReason::DeclinedTrainingPlaceOffer, auth()->id());
             $this->removeFromWaitingList($trainingPlaceOffer, $removal);
+
+            $trainingPlaceOffer->waitingListAccount->account->addNote(
+                noteType: 'training',
+                content: "The member declined a training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign}. Member removed from waiting list."
+            );
         });
     }
 
@@ -63,6 +73,12 @@ class TrainingPlaceOfferService
         ]);
 
         $trainingPlaceOffer->waitingListAccount->account->notify(new TrainingPlaceOfferRescinded($trainingPlaceOffer, $reason));
+
+        $trainingPlaceOffer->waitingListAccount->account->addNote(
+            'training',
+            "Training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign} was rescinded by staff. Reason: {$reason}",
+            auth()->id()
+        );
     }
 
     public function rescindOfferAndRemove(TrainingPlaceOffer $trainingPlaceOffer, string $reason): void
@@ -75,6 +91,12 @@ class TrainingPlaceOfferService
 
         $removal = new Removal(RemovalReason::TrainingPlaceOfferRescinded, auth()->id());
         $this->removeFromWaitingList($trainingPlaceOffer, $removal);
+
+        $trainingPlaceOffer->waitingListAccount->account->addNote(
+            'training',
+            "Training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign} was rescinded by staff and member removed from waiting list. Reason: {$reason}",
+            auth()->id()
+        );
     }
 
     public function expireOffer(TrainingPlaceOffer $trainingPlaceOffer): void
@@ -85,6 +107,11 @@ class TrainingPlaceOfferService
 
         $removal = new Removal(RemovalReason::TrainingPlaceOfferExpired, auth()->id());
         $this->removeFromWaitingList($trainingPlaceOffer, $removal);
+
+        $trainingPlaceOffer->waitingListAccount->account->addNote(
+            'training',
+            "Training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign} expired at {$trainingPlaceOffer->expires_at->format('d/m/Y H:i')}Z. Member removed from waiting list."
+        );
     }
 
     public function removeFromWaitingList(TrainingPlaceOffer $trainingPlaceOffer, Removal $removal)
