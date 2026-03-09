@@ -13,11 +13,14 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.4
+          coverage: none
 
       - name: Install PHP dependencies
         uses: ramsey/composer-install@v3
@@ -42,12 +45,15 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
 
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           tools: composer:${{ matrix.composer }}
+          coverage: none
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -57,13 +63,16 @@ jobs:
       - name: Composer Cache
         uses: actions/cache@v5
         with:
-          path: vendor
-          key: composer-${{ hashFiles('**/composer.lock') }}
+          path: |
+            vendor
+            ~/.composer/cache
+          key: composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            composer-${{ hashFiles('**/composer.lock') }}
+            composer-${{ matrix.php }}-
             composer-
 
       - name: Node Cache
+        id: node-cache
         uses: actions/cache@v5
         with:
           path: |
@@ -74,7 +83,6 @@ jobs:
             public/mix-manifest.json
           key: npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            npm-${{ hashFiles('**/package-lock.json') }}
             npm-
 
       - name: Create Databases
@@ -90,9 +98,11 @@ jobs:
         run: composer install --no-interaction
 
       - name: Install assets
+        if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Compile assets
+        if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm run build
 
       - name: Create Environment File
@@ -101,21 +111,20 @@ jobs:
       - name: Publish Telescope
         run: php artisan telescope:publish
 
-      - name: Cache Routes
-        run: php artisan route:cache
-
-      - name: Cache Config
-        run: php artisan config:cache
+      - name: Cache Application
+        run: |
+          php artisan route:cache
+          php artisan config:cache
 
       - name: Serve Application
         run: php artisan serve -q &
 
-      - name: Execute Parallel Tests
+      - name: Execute Tests
         run: php artisan test --parallel --processes=4 --recreate-databases
 
   trigger-deploy:
     name: Trigger Deploy
-    needs: test
+    needs: [lint, test]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
