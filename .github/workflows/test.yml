@@ -29,7 +29,8 @@ jobs:
         run: composer lint -- --test
 
   test:
-    name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }}
+    name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }} 
+    needs: lint
     runs-on: ubuntu-latest
     concurrency:
       group: core-test-${{ github.ref }}
