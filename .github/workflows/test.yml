@@ -25,11 +25,11 @@ jobs:
       - name: Install PHP dependencies
         uses: ramsey/composer-install@v3
 
-      - name: Lint PHP
+      - name: "Lint PHP"
         run: composer lint -- --test
 
   test:
-    name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }} 
+    name: PHP ${{ matrix.php }} / Composer ${{ matrix.composer }}
     needs: lint
     runs-on: ubuntu-latest
     concurrency:
@@ -119,7 +119,7 @@ jobs:
       - name: Serve Application
         run: php artisan serve -q &
 
-      - name: Execute Parallel Tests
+      - name: Execute Tests
         run: php artisan test --parallel --processes=4 --recreate-databases
 
   trigger-deploy:
