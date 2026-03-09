@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Answer;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
+use App\Models\NetworkData\Atc;
 use Illuminate\Http\Request;
 use Redirect;
 use Validator;
@@ -89,6 +90,7 @@ class Feedback extends \App\Http\Controllers\BaseController
     {
         $questions = $form->questions;
         $cidfield = null;
+        $datetimefield = null;
         // Make the validation rules
         $ruleset = [];
         $errormessages = [];
@@ -105,6 +107,10 @@ class Feedback extends \App\Http\Controllers\BaseController
                         ->withError('You cannot leave feedback about yourself')
                         ->withInput();
                 }
+            }
+
+            if ($question->type->name == 'datetime') {
+                $datetimefield = $question->slug;
             }
 
             // Proccess rules
@@ -156,10 +162,28 @@ class Feedback extends \App\Http\Controllers\BaseController
                 ->withError("Sorry, we can't process your feedback at the moment. Please check back later.");
         }
 
+        // Get the event datetime from the form submission
+        $eventDatetime = $datetimefield ? \Carbon\Carbon::parse($request->input($datetimefield)) : now();
+
+        if ($form->slug == 'atc') {
+            // check if the controller has controlled +- 30 minutes around the event time
+            $hasFeedbackSession = Atc::query()->where('account_id', $account->id)
+                ->where('created_at', '>=', $eventDatetime->copy()->subMinutes(30))
+                ->where('created_at', '<=', $eventDatetime->copy()->addMinutes(30))
+                ->isUk()
+                ->exists();
+
+            if (! $hasFeedbackSession) {
+                return Redirect::route('mship.manage.dashboard')
+                    ->withError('We could not find a controlling session for the specified user around the time you submitted the feedback. Please ensure you have entered the correct CID, and that the controller was online around the time you submitted the feedback (within 30 minutes either side).');
+            }
+        }
+
         // Make new feedback
         $feedback = $account->feedback()->create([
             'submitter_account_id' => \Auth::user()->id,
             'form_id' => $form->id,
+            'account_atc_qualification_id' => $account->qualification_atc?->id,
         ]);
 
         // Add in the answers

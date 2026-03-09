@@ -58,6 +58,7 @@ class Feedback extends Model
 
     protected $fillable = [
         'account_id',
+        'account_atc_qualification_id',
         'submitter_account_id',
         'form_id',
         'reject_reason',
@@ -224,5 +225,10 @@ class Feedback extends Model
     public function getActionedAttribute()
     {
         return ! is_null($this->actioned_at);
+    }
+
+    public function accountAtcQualification()
+    {
+        return $this->belongsTo(\App\Models\Mship\Qualification::class, 'account_atc_qualification_id');
     }
 }
