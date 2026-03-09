@@ -64,7 +64,7 @@ jobs:
         with:
           path: |
             vendor
-            ~/.composer/cache  # Cache the Composer package cache too
+            ~/.composer/cache
           key: composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             composer-${{ matrix.php }}-
@@ -110,11 +110,10 @@ jobs:
       - name: Publish Telescope
         run: php artisan telescope:publish
 
-      - name: Cache Routes
-        run: php artisan route:cache
-
-      - name: Cache Config
-        run: php artisan config:cache
+      - name: Cache Application
+        run: |
+          php artisan route:cache
+          php artisan config:cache
 
       - name: Serve Application
         run: php artisan serve -q &
