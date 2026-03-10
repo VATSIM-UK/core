@@ -166,10 +166,15 @@ class Feedback extends \App\Http\Controllers\BaseController
         $eventDatetime = $datetimefield ? \Carbon\Carbon::parse($request->input($datetimefield)) : now();
 
         if ($form->slug == 'atc') {
-            // check if the controller has controlled +- 30 minutes around the event time
+            // check if the controller has controlled within a session that overlaps the +-30 minute window around the event time
+            $windowStart = $eventDatetime->copy()->subMinutes(30);
+            $windowEnd = $eventDatetime->copy()->addMinutes(30);
             $hasFeedbackSession = Atc::query()->where('account_id', $account->id)
-                ->where('created_at', '>=', $eventDatetime->copy()->subMinutes(30))
-                ->where('created_at', '<=', $eventDatetime->copy()->addMinutes(30))
+                ->where('connected_at', '<=', $windowEnd)
+                ->where(function ($query) use ($windowStart) {
+                    $query->whereNull('disconnected_at')
+                        ->orWhere('disconnected_at', '>=', $windowStart);
+                })
                 ->isUk()
                 ->exists();
 
