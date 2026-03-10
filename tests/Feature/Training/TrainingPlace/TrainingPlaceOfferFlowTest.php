@@ -29,9 +29,13 @@ class TrainingPlaceOfferFlowTest extends TestCase
     use DatabaseTransactions;
 
     private Account $student;
+
     private WaitingListAccount $waitingListAccount;
+
     private TrainingPosition $trainingPosition;
+
     private TrainingPlaceOfferService $service;
+
     private Carbon $offerTime;
 
     protected function setUp(): void
