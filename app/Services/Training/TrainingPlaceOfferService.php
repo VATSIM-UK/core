@@ -105,7 +105,7 @@ class TrainingPlaceOfferService
             'status' => TrainingPlaceOfferStatus::Expired->value,
         ]);
 
-        $removal = new Removal(RemovalReason::TrainingPlaceOfferExpired);
+        $removal = new Removal(RemovalReason::TrainingPlaceOfferExpired, null);
         $this->removeFromWaitingList($trainingPlaceOffer, $removal);
     }
 
