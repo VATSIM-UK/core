@@ -16,7 +16,7 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
             abort(403);
         }
 
-        if ($this->isExpired($offer)) {
+        if ($offer->isExpired($offer)) {
             return $this->expired($offer);
         }
 
@@ -37,7 +37,7 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
             abort(403);
         }
 
-        if ($this->isExpired($offer)) {
+        if ($offer->isExpired($offer)) {
             return $this->expired($offer);
         }
 
@@ -57,11 +57,6 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
             'waitingListAccount.account',
             'trainingPosition.position',
         ])->where('token', $token)->firstOrFail();
-    }
-
-    private function isExpired(TrainingPlaceOffer $offer): bool
-    {
-        return $offer->status === TrainingPlaceOfferStatus::Expired || $offer->expires_at->isPast();
     }
 
     private function alreadyResponded(TrainingPlaceOffer $offer)

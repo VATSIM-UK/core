@@ -50,6 +50,11 @@ class TrainingPlaceOffer extends Model
         return Attribute::make(get: fn () => $this->status->label());
     }
 
+    protected function isExpired(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->status === TrainingPlaceOfferStatus::Expired || $this->expires_at->isPast());
+    }
+
     public static function getExpiredOffers(Carbon $date): Collection
     {
         return TrainingPlaceOffer::where('status', TrainingPlaceOfferStatus::Pending)
