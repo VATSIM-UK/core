@@ -110,10 +110,11 @@ class AccountsRelationManager extends RelationManager
                         return $this->can('offerTrainingPlace', $record->waitingList) && ! $record->hasPendingTrainingPlaceOffer();
                     })
                     ->form(function (WaitingListAccount $record) {
-                        $recentFeedback = Feedback::where('account_id', $record->account_id)
+                        $recentFeedback = Feedback::ATC()
+                            ->where('account_id', $record->account_id)
                             ->with(['answers.question'])
+                            ->where('created_at', '>=', now()->subMonths(3))
                             ->latest()
-                            ->limit(10)
                             ->get();
 
                         $feedbackEntries = $recentFeedback->map(fn (Feedback $feedback) => Forms\Components\Section::make("Feedback - {$feedback->created_at->format('d/m/Y H:i')}")
