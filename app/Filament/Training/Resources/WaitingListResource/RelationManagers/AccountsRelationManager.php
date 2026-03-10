@@ -133,8 +133,7 @@ class AccountsRelationManager extends RelationManager
                                     Forms\Components\Placeholder::make('no_feedback')
                                         ->label('')
                                         ->content('No feedback on record for this member.'),
-                                ]
-                                )
+                                ])
                                 ->collapsible()
                                 ->columns(3),
 
