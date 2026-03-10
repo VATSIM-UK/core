@@ -16,7 +16,7 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
             abort(403);
         }
 
-        if ($offer->isExpired($offer)) {
+        if ($offer->isExpired) {
             return $this->expired($offer);
         }
 
@@ -37,7 +37,7 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
             abort(403);
         }
 
-        if ($offer->isExpired($offer)) {
+        if ($offer->isExpired) {
             return $this->expired($offer);
         }
 
