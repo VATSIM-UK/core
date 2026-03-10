@@ -29,7 +29,7 @@
 <p style="margin-top: 24px;">
     <p style="margin-top: 24px;">
     <a href="{{ $accept_url }}" class="btn btn-primary" style="margin-right: 12px;">Accept Training Place</a>
-    <a href="{{ $decline_url }}" class="btn btn-danger" style="color: #fff; background-color: #d9534f; border-color: #d43f3a;">Decline Training Place</a>
+    <a href="{{ $decline_url }}" class="btn" style="color: #fff; background-color: #d9534f; border-color: #d43f3a; text-decoration: none; display: inline-block; padding: 6px 12px; font-size: 14px; border-radius: 4px; border: 1px solid #d43f3a;">Decline Training Place</a>
 </p>
 
 @stop

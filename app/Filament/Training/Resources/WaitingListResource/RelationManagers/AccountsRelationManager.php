@@ -130,6 +130,7 @@ class AccountsRelationManager extends RelationManager
 
                         return [
                             Forms\Components\Section::make('Member Feedback')
+                                ->description('Displaying ATC feedback entries from the last 3 months only.')
                                 ->schema($feedbackEntries ?: [
                                     Forms\Components\Placeholder::make('no_feedback')
                                         ->label('')
