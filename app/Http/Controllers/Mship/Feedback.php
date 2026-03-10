@@ -168,8 +168,8 @@ class Feedback extends \App\Http\Controllers\BaseController
         if ($form->slug == 'atc') {
             // check if the controller has controlled +- 30 minutes around the event time
             $hasFeedbackSession = Atc::query()->where('account_id', $account->id)
-                ->where('created_at', '>=', $eventDatetime->copy()->subMinutes(30))
-                ->where('created_at', '<=', $eventDatetime->copy()->addMinutes(30))
+                ->where('connected_at', '>=', $eventDatetime->copy()->subMinutes(30))
+                ->where('disconnected_at', '<=', $eventDatetime->copy()->addMinutes(30))
                 ->isUk()
                 ->exists();
 

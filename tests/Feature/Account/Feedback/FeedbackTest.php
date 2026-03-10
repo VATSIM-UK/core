@@ -104,10 +104,9 @@ class FeedbackTest extends TestCase
             'frequency' => 118.500,
             'facility_type' => Atc::TYPE_TWR,
             'connected_at' => $eventTime,
+            'disconnected_at' => $eventTime->copy()->addMinutes(10),
         ]);
         $session->timestamps = false;
-        $session->created_at = $eventTime;
-        $session->updated_at = $eventTime;
         $session->save();
 
         $formData = $this->buildFormData($form, $account, $eventTime);
@@ -161,10 +160,9 @@ class FeedbackTest extends TestCase
             'frequency' => 118.500,
             'facility_type' => Atc::TYPE_TWR,
             'connected_at' => $eventTime,
+            'disconnected_at' => $eventTime->copy()->addMinutes(10),
         ]);
         $session->timestamps = false;
-        $session->created_at = $eventTime;
-        $session->updated_at = $eventTime;
         $session->save();
 
         $formData = $this->buildFormData($form, $targetAccount, $eventTime);
@@ -195,10 +193,9 @@ class FeedbackTest extends TestCase
             'frequency' => 118.500,
             'facility_type' => Atc::TYPE_TWR,
             'connected_at' => $sessionTime,
+            'disconnected_at' => $sessionTime->copy()->addMinutes(5),
         ]);
         $session->timestamps = false;
-        $session->created_at = $sessionTime;
-        $session->updated_at = $sessionTime;
         $session->save();
 
         $formData = $this->buildFormData($form, $targetAccount, $eventTime);
