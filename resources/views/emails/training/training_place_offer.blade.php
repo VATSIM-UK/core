@@ -10,16 +10,16 @@
     independent theoretical study and remain engaged with VATSIM UK wherever possible. For rated controllers, this
     includes continuing to control on relevant positions throughout your training.</p>
 
-<p>You can either accept this offer by clicking 'Accept' below, or reject it by clicking the 'Decline' link below.
+<p>You can either accept this offer by clicking 'Accept Training Place' below, or reject it by clicking the 'Decline Training Place' link below.
     Please note that you may not reject an offer in the hope of receiving an offer on another position, nor does the
     department routinely permit the deferral of training places. Should you decline this offer, you will be
     removed from the waiting list.</p>
 
-<p>If you are ready and able to begin your training, please let us know as soon as possible. By clicking 'Accept',
+<p>If you are ready and able to begin your training, please let us know as soon as possible. By clicking 'Accept Training Place',
     you indicate that you agree with the requirements set out in section 5 of the
-    <!-- NEED TO FIND LINKS FOR THESE -->
+    <!-- Still don't know where the ATC Training Handbook Exists' -->
     <a href="unknown">ATC Training Handbook</a> as well as Section 2 of the 
-    <a href="unknown">ATC Training Policy</a>.</p>
+    <a href="https://www.vatsim.uk/policy/atc-training-policy">ATC Training Policy</a>.</p>
 
 <p>If we've not heard from you within the next 84 hours (3.5 days), unfortunately, we will have to offer the place
     to another student and your place on the waiting list will be forfeit.</p>
