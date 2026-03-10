@@ -6,6 +6,7 @@ use App\Enums\TrainingPlaceOfferStatus;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,9 +45,9 @@ class TrainingPlaceOffer extends Model
         return $this->belongsTo(TrainingPosition::class);
     }
 
-    public function getStatusLabelAttribute(): string
+    protected function statusLabel(): Attribute
     {
-        return $this->status->label();
+        return Attribute::make(get: fn () => $this->status->label());
     }
 
     public static function getExpiredOffers(Carbon $date): Collection
