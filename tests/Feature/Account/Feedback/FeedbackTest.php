@@ -184,8 +184,8 @@ class FeedbackTest extends TestCase
         $targetAccount = Account::factory()->create();
         $eventTime = now();
 
-        // Create an ATC session 35 minutes before event time (outside window)
-        $sessionTime = $eventTime->copy()->subMinutes(35);
+        // Create an ATC session entirely before the 30-minute window (connected at -65min, disconnected at -35min)
+        $sessionTime = $eventTime->copy()->subMinutes(65);
         $session = new Atc([
             'account_id' => $targetAccount->id,
             'qualification_id' => 1,
@@ -193,7 +193,7 @@ class FeedbackTest extends TestCase
             'frequency' => 118.500,
             'facility_type' => Atc::TYPE_TWR,
             'connected_at' => $sessionTime,
-            'disconnected_at' => $sessionTime->copy()->addMinutes(5),
+            'disconnected_at' => $sessionTime->copy()->addMinutes(30),
         ]);
         $session->timestamps = false;
         $session->save();
