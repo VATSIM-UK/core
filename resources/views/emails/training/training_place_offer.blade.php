@@ -17,8 +17,7 @@
 
 <p>If you are ready and able to begin your training, please let us know as soon as possible. By clicking 'Accept Training Place',
     you indicate that you agree with the requirements set out in section 5 of the
-    <!-- Still don't know where the ATC Training Handbook Exists' -->
-    <a href="unknown">ATC Training Handbook</a> as well as Section 2 of the 
+    <a href="https://drive.google.com/file/d/1SKsHPvtfKxxvYchm1y37sw1Zq-8GsxMl/view?usp=drive_link">ATC Training Handbook</a> as well as Section 2 of the 
     <a href="https://www.vatsim.uk/policy/atc-training-policy">ATC Training Policy</a>.</p>
 
 <p>If we've not heard from you within the next 84 hours (3.5 days), unfortunately, we will have to offer the place
