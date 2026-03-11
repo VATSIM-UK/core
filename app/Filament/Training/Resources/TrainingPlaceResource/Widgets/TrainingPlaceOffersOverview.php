@@ -64,8 +64,8 @@ class TrainingPlaceOffersOverview extends BaseWidget
                         TrainingPlaceOfferStatus::Pending   => 'warning',
                         TrainingPlaceOfferStatus::Accepted  => 'success',
                         TrainingPlaceOfferStatus::Declined  => 'danger',
-                        TrainingPlaceOfferStatus::Rescinded => 'gray',
-                        TrainingPlaceOfferStatus::Expired   => 'gray',
+                        TrainingPlaceOfferStatus::Rescinded => 'danger',
+                        TrainingPlaceOfferStatus::Expired   => 'danger',
                     })
                     ->formatStateUsing(fn (TrainingPlaceOfferStatus $state): string => $state->label())
                     ->sortable(),
