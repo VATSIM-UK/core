@@ -43,6 +43,16 @@ class WaitingListPolicy
         return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.remove-accounts.%s']);
     }
 
+    public function offerTrainingPlace(Account $account, WaitingList $waitingList)
+    {
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.training-place.offer.%s']);
+    }
+
+    public function rescindTrainingPlaceOffer(Account $account, WaitingList $waitingList)
+    {
+        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.training-place.rescind-offer.%s']);
+    }
+
     public function addFlags(Account $account, WaitingList $waitingList)
     {
         return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-flags.%s']);
