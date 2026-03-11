@@ -18,7 +18,7 @@ class TrainingPlaceOffersOverview extends BaseWidget
 {
     protected static ?string $heading = 'Training Place Offers';
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
@@ -61,11 +61,11 @@ class TrainingPlaceOffersOverview extends BaseWidget
                     ->label('Status')
                     ->badge()
                     ->color(fn (TrainingPlaceOfferStatus $state): string => match ($state) {
-                        TrainingPlaceOfferStatus::Pending   => 'warning',
-                        TrainingPlaceOfferStatus::Accepted  => 'success',
-                        TrainingPlaceOfferStatus::Declined  => 'danger',
+                        TrainingPlaceOfferStatus::Pending => 'warning',
+                        TrainingPlaceOfferStatus::Accepted => 'success',
+                        TrainingPlaceOfferStatus::Declined => 'danger',
                         TrainingPlaceOfferStatus::Rescinded => 'danger',
-                        TrainingPlaceOfferStatus::Expired   => 'danger',
+                        TrainingPlaceOfferStatus::Expired => 'danger',
                     })
                     ->formatStateUsing(fn (TrainingPlaceOfferStatus $state): string => $state->label())
                     ->sortable(),
