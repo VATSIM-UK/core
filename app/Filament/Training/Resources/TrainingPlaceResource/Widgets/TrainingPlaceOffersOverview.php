@@ -43,17 +43,14 @@ class TrainingPlaceOffersOverview extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('waitingListAccount.account.name')
                     ->label('Student')
-                    ->searchable(['name_first', 'name_last'])
-                    ->sortable(),
+                    ->searchable(['name_first', 'name_last']),
 
                 Tables\Columns\TextColumn::make('waitingListAccount.account_id')
                     ->label('CID')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('trainingPosition.position.callsign')
-                    ->label('Position')
-                    ->sortable(),
+                    ->label('Position'),
 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
@@ -82,7 +79,7 @@ class TrainingPlaceOffersOverview extends BaseWidget
                     ->label('Responded At')
                     ->dateTime('d/m/Y H:i')
                     ->sortable()
-                    ->placeholder('—'),
+                    ->placeholder('-'),
             ])
             ->actions([
                 Tables\Actions\Action::make('rescind')
