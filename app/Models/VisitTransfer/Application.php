@@ -24,8 +24,8 @@ use App\Exceptions\VisitTransfer\Application\RatingRequirementNotMetException;
 use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
-use App\Models\Mship\State;
 use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Traits\HasStatus;
@@ -560,7 +560,7 @@ class Application extends Model
                 $s3 = Qualification::where('code', 'S3')->first()?->vatsim;
                 $c1 = Qualification::where('code', 'C1')->first()?->vatsim;
 
-                return ($this->ratingFallsInRange($s3, $minQual, $maxQual))
+                return $this->ratingFallsInRange($s3, $minQual, $maxQual)
                     || ($this->ratingFallsInRange($c1, $minQual, $maxQual));
             }
 
