@@ -262,7 +262,7 @@ class AccountsRelationManager extends RelationManager
                                 ->columns(2),
                         ] : [];
 
-                         return [
+                        return [
                             Forms\Components\Fieldset::make('base_information')
                                 ->label('Base Information')
                                 ->schema([
