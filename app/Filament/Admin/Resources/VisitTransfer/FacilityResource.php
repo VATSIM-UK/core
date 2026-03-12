@@ -233,17 +233,16 @@ class FacilityResource extends Resource
                     ]),
                 ]),
 
-                Section::make('Check Overrides')
-                    ->description('Disable specific checks for all applications to this facility.')
-                    ->visible(fn (callable $get) => ! $get('stage_checks'))
+                Section::make('Manage Specific Checks')
+                    ->description('Control which checks run for future applications to this facility.')
                     ->schema([
                         Grid::make(2)->schema([
-                            Toggle::make('skip_90_day_check')
-                                ->label('Disable 90-Day Check')
-                                ->default(false),
-                            Toggle::make('skip_50_hours_check')
-                                ->label('Disable 50-Hours Check')
-                                ->default(false),
+                            Toggle::make('enable_90_day_check')
+                                ->label('Enable 90-Day Check')
+                                ->default(true),
+                            Toggle::make('enable_50_hours_check')
+                                ->label('Enable 50-Hours Check')
+                                ->default(true),
                         ]),
                     ]),
 

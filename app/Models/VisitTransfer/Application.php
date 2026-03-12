@@ -593,13 +593,11 @@ class Application extends Model
         $this->should_perform_checks = $facility->stage_checks;
         $this->will_auto_accept = $facility->auto_acceptance;
 
-        if (! $facility->stage_checks) {
-            if ($facility->skip_90_day_check) {
-                $this->check_outcome_90_day = VTCheckStatus::NotRequired;
+        if (! $facility->enable_90_day_check) {
+            $this->check_outcome_90_day = VTCheckStatus::NotRequired;
             }
-            if ($facility->skip_50_hours_check) {
-                $this->check_outcome_50_hours = VTCheckStatus::NotRequired;
-            }
+        if (! $facility->enable_50_hours_check) {
+            $this->check_outcome_50_hours = VTCheckStatus::NotRequired;
         }
 
         $facility->applications()->save($this);
@@ -908,7 +906,7 @@ class Application extends Model
         }
 
         if (! $this->submitted_at) {
-            return false;
+            return VTCheckStatus::Pending;
         }
 
         $currentATCQualification = $this->account->qualification_atc;
