@@ -82,6 +82,7 @@ class FacilityResource extends Resource
                         ->live(),
                     Textarea::make('description')
                         ->label('Description')
+                        ->required()
                         ->rows(3)
                         ->maxLength(1000)
                         ->minLength(25),
