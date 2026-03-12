@@ -232,6 +232,21 @@ class FacilityResource extends Resource
                             ->helperText('If selected, applicants to this facility will be added to the selected waiting list upon application.'),
                     ]),
                 ]),
+
+                Section::make('Check Overrides')
+                    ->description('Disable specific checks for all applications to this facility.')
+                    ->visible(fn (callable $get) => ! $get('stage_checks'))
+                    ->schema([
+                        Grid::make(2)->schema([
+                            Toggle::make('skip_90_day_check')
+                                ->label('Disable 90-Day Check')
+                                ->default(false),
+                            Toggle::make('skip_50_hours_check')
+                                ->label('Disable 50-Hours Check')
+                                ->default(false),
+                        ]),
+                    ]),
+
                 Section::make('Notification Emails')
                     ->description(fn ($record) => "These email addresses will be sent an email once an application to this facility is succesful. If no email addresses are entered, this will default to {$record?->training_team}-team@vatsim.uk")
                     ->schema([

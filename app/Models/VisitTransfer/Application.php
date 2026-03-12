@@ -2,6 +2,7 @@
 
 namespace App\Models\VisitTransfer;
 
+use App\Enums\VTCheckStatus;
 use App\Events\VisitTransfer\ApplicationAccepted;
 use App\Events\VisitTransfer\ApplicationCancelled;
 use App\Events\VisitTransfer\ApplicationCompleted;
@@ -157,8 +158,8 @@ class Application extends Model
     public $timestamps = true;
 
     protected $casts = [
-        'check_outcome_90_day' => 'boolean',
-        'check_outcome_50_hours' => 'boolean',
+        'check_outcome_90_day' => VTCheckStatus::class,
+        'check_outcome_50_hours' => VTCheckStatus::class,
         'expires_at' => 'datetime',
         'submitted_at' => 'datetime',
         'created_at' => 'datetime',
@@ -592,6 +593,15 @@ class Application extends Model
         $this->should_perform_checks = $facility->stage_checks;
         $this->will_auto_accept = $facility->auto_acceptance;
 
+        if (! $facility->stage_checks) {
+            if ($facility->skip_90_day_check) {
+                $this->check_outcome_90_day = VTCheckStatus::NotRequired;
+            }
+            if ($facility->skip_50_hours_check) {
+                $this->check_outcome_50_hours = VTCheckStatus::NotRequired;
+            }
+        }
+
         $facility->applications()->save($this);
     }
 
@@ -829,13 +839,18 @@ class Application extends Model
         $this->notes()->save($note);
     }
 
-    public function setCheckOutcome($check, $outcome)
+    public function setCheckOutcome($check, VTCheckStatus $outcome)
     {
         // $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
 
         $columnName = 'check_outcome_'.$check;
-        $this->{$columnName} = (int) $outcome;
+        $this->{$columnName} = $outcome;
         $this->save();
+    }
+
+    public function disableCheck(string $check): void
+    {
+        $this->setCheckOutcome($check, VTCheckStatus::NotRequired);
     }
 
     public function settingToggle($setting)
@@ -888,6 +903,10 @@ class Application extends Model
 
     public function check90DayQualification()
     {
+        if ($this->check_outcome_90_day === VTCheckStatus::NotRequired) {
+            return VTCheckStatus::NotRequired;
+        }
+
         if (! $this->submitted_at) {
             return false;
         }
@@ -895,15 +914,19 @@ class Application extends Model
         $currentATCQualification = $this->account->qualification_atc;
         $application90DayCutOff = $this->submitted_at->subDays(90);
 
-        return $currentATCQualification->pivot->created_at->lt($application90DayCutOff);
+        return $currentATCQualification->pivot->created_at->lt($application90DayCutOff) ? VTCheckStatus::Passed : VTCheckStatus::Failed;
     }
 
     public function check50Hours()
     {
+        if ($this->check_outcome_50_hours === VTCheckStatus::NotRequired) {
+            return VTCheckStatus::NotRequired;
+        }
+
         $qualificationId = $this->account->qualification_atc->id;
         $timeOnline = $this->account->networkDataAtc()->forQualificationId($qualificationId)->offline()->sum('minutes_online');
 
-        return $timeOnline >= (50 * 60);
+        return $timeOnline >= (50 * 60) ? VTCheckStatus::Passed : VTCheckStatus::Failed;
     }
 
     /** Statistics */

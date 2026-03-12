@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplicationResource\Pages;
 
+use App\Enums\VTCheckStatus;
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplicationResource;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -51,11 +52,15 @@ class ViewVisitTransferApplication extends ViewRecord
             Action::make('override_checks')
                 ->label('Override Checks')
                 ->color('warning')
-                ->modalHeading(fn ($record) => 'Override Checks')
+                ->modalHeading('Override Checks')
+                ->modalDescription('This will mark any outstanding checks as passed. Checks already set to Not Required will not be changed.')
                 ->action(function () use ($application) {
-                    $application->check_outcome_90_day = true;
-                    $application->check_outcome_50_hours = true;
-                    $application->save();
+                    if ($application->check_outcome_90_day !== VTCheckStatus::NotRequired) {
+                        $application->setCheckOutcome('90_day', VTCheckStatus::Passed);
+                    }
+                    if ($application->check_outcome_50_hours !== VTCheckStatus::NotRequired) {
+                        $application->setCheckOutcome('50_hours', VTCheckStatus::Passed);
+                    }
                 })
                 ->requiresConfirmation()
                 ->authorize(fn () => auth()->user()->can('overrideChecks', $application))
@@ -147,20 +152,17 @@ class ViewVisitTransferApplication extends ViewRecord
                                     IconEntry::make('should_perform_checks')->label('Auto Check')->getStateUsing(fn ($record) => $record->should_perform_checks)->boolean(),
                                     IconEntry::make('will_auto_accept')->label('Auto Accept')->getStateUsing(fn ($record) => $record->will_auto_accept)->boolean(),
 
-                                    IconEntry::make('check_outcome_90_day')->label('90 Days Check')->getStateUsing(function ($record) {
-                                        return match ($record->check_outcome_90_day) {
-                                            true => true,
-                                            false => false,
-                                            null => false,
-                                        };
-                                    })->boolean(),
-                                    IconEntry::make('check_outcome_50_hours')->label('50 Hours Check')->getStateUsing(function ($record) {
-                                        return match ($record->check_outcome_50_hours) {
-                                            true => true,
-                                            false => false,
-                                            null => false,
-                                        };
-                                    })->boolean(),
+                                    TextEntry::make('check_outcome_90_day')
+                                        ->label('90-Day Check')
+                                        ->getStateUsing(fn ($record) => $record->check_outcome_90_day?->label())
+                                        ->badge()
+                                        ->color(fn ($record) => ($record->check_outcome_90_day)->color()),
+ 
+                                    TextEntry::make('check_outcome_50_hours')
+                                        ->label('50-Hours Check')
+                                        ->getStateUsing(fn ($record) => $record->check_outcome_50_hours?->label())
+                                        ->badge()
+                                        ->color(fn ($record) => ($record->check_outcome_50_hours)->color()),
                                 ]),
                             ]),
                     ])->from('md'), // stacks on smaller screens
