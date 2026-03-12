@@ -165,7 +165,6 @@ class AccountsRelationManager extends RelationManager
 
                 Tables\Actions\ViewAction::make()
                     ->modalHeading(fn (?WaitingListAccount $record) => "{$record?->account->name} - Waiting List Account")
-                    ->visible(fn (WaitingListAccount $record) => $this->can('viewTrainingPlaceOffer', $record->waitingList))
                     ->extraModalFooterActions(function (?WaitingListAccount $record) {
                         if (! $record) {
                             return [];
