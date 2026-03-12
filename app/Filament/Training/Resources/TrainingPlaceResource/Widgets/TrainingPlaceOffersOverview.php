@@ -44,14 +44,12 @@ class TrainingPlaceOffersOverview extends BaseWidget
                 Tables\Columns\TextColumn::make('waitingListAccount.account.name')
                     ->label('Student')
                     ->searchable(['name_first', 'name_last'])
-                    ->sortable()
-                    ->placeholder('—'),
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('waitingListAccount.account_id')
                     ->label('CID')
                     ->searchable()
-                    ->sortable()
-                    ->placeholder('—'),
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('trainingPosition.position.callsign')
                     ->label('Position')
@@ -78,8 +76,7 @@ class TrainingPlaceOffersOverview extends BaseWidget
                 Tables\Columns\TextColumn::make('expires_at')
                     ->label('Expires At')
                     ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->placeholder('—'),
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('response_at')
                     ->label('Responded At')
@@ -150,6 +147,7 @@ class TrainingPlaceOffersOverview extends BaseWidget
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
+                    ->default(TrainingPlaceOfferStatus::Pending->value)
                     ->options(TrainingPlaceOfferStatus::class),
 
                 Filter::make('offered_at')
