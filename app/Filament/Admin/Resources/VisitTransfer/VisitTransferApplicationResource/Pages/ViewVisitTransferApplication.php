@@ -157,7 +157,7 @@ class ViewVisitTransferApplication extends ViewRecord
                                         ->getStateUsing(fn ($record) => $record->check_outcome_90_day?->label())
                                         ->badge()
                                         ->color(fn ($record) => ($record->check_outcome_90_day)->color()),
- 
+
                                     TextEntry::make('check_outcome_50_hours')
                                         ->label('50-Hours Check')
                                         ->getStateUsing(fn ($record) => $record->check_outcome_50_hours?->label())

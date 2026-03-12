@@ -24,10 +24,10 @@ enum VTCheckStatus: string
     public function color(): string
     {
         return match ($this) {
-            self::Passed      => 'success',
-            self::Failed      => 'danger',
+            self::Passed => 'success',
+            self::Failed => 'danger',
             self::NotRequired => 'gray',
-            self::Pending     => 'warning',
+            self::Pending => 'warning',
         };
     }
 }

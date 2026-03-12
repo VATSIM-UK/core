@@ -595,7 +595,7 @@ class Application extends Model
 
         if (! $facility->enable_90_day_check) {
             $this->check_outcome_90_day = VTCheckStatus::NotRequired;
-            }
+        }
         if (! $facility->enable_50_hours_check) {
             $this->check_outcome_50_hours = VTCheckStatus::NotRequired;
         }

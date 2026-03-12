@@ -59,13 +59,13 @@ return new class extends Migration
                     ELSE NULL
                 END
         ");
- 
-        DB::statement("
+
+        DB::statement('
             ALTER TABLE vt_application
             MODIFY COLUMN check_outcome_90_day VARCHAR(12) NULL DEFAULT NULL,
             MODIFY COLUMN check_outcome_50_hours VARCHAR(12) NULL DEFAULT NULL
-        ");
- 
+        ');
+
         DB::statement("
             UPDATE vt_application
             SET check_outcome_90_day = CASE check_outcome_90_day
@@ -80,10 +80,10 @@ return new class extends Migration
                 END
         ");
 
-        DB::statement("
+        DB::statement('
             ALTER TABLE vt_application
             MODIFY COLUMN check_outcome_90_day TINYINT(1) NULL DEFAULT NULL,
             MODIFY COLUMN check_outcome_50_hours TINYINT(1) NULL DEFAULT NULL
-        ");
+        ');
     }
 };
