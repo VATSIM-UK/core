@@ -164,7 +164,7 @@ class AccountsRelationManager extends RelationManager
                     ->color('success'),
 
                 Tables\Actions\ViewAction::make()
-                    ->modalHeading(fn (?WaitingListAccount $record) => "{$record?->account->name} - Training Place Offer")
+                    ->modalHeading(fn (?WaitingListAccount $record) => "{$record?->account->name} - Waiting List Account")
                     ->visible(fn (WaitingListAccount $record) => $this->can('viewTrainingPlaceOffer', $record->waitingList))
                     ->extraModalFooterActions(function (?WaitingListAccount $record) {
                         if (! $record) {
@@ -262,7 +262,33 @@ class AccountsRelationManager extends RelationManager
                                 ->columns(2),
                         ] : [];
 
-                        return $offerFields;
+                         return [
+                            Forms\Components\Fieldset::make('base_information')
+                                ->label('Base Information')
+                                ->schema([
+                                    CopyablePlaceholder::make('id')
+                                        ->label('CID')
+                                        ->content(fn (WaitingListAccount $record) => $record->account_id)
+                                        ->iconOnly(),
+
+                                    CopyablePlaceholder::make('name')
+                                        ->label('Name')
+                                        ->content(fn (WaitingListAccount $record) => $record->account->name)
+                                        ->iconOnly(),
+
+                                    Forms\Components\Placeholder::make('position')
+                                        ->label('Position')
+                                        ->content(function (WaitingListAccount $record) {
+                                            return sprintf(
+                                                '%s of %d',
+                                                $this->ownerRecord->positionOf($record) ?? '-',
+                                                $this->ownerRecord->waitingListAccounts->count()
+                                            );
+                                        }),
+                                ]),
+
+                            ...$offerFields,
+                        ];
                     }),
 
                 Tables\Actions\EditAction::make()
