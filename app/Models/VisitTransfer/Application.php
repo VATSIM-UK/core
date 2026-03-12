@@ -787,6 +787,16 @@ class Application extends Model
     {
         $this->guardAgainstNonAcceptedApplication();
         $this->changeStatus(self::STATUS_COMPLETED, null, $staffComment, $actor);
+
+        if ($this->facility?->training_team == 'pilot') {
+            $hasCompletedAtc = $this->account->visitApplications()->whereHas('facility', function ($query) {
+                $query->where('training_team', 'atc');
+            })->statusIn([self::STATUS_COMPLETED, self::STATUS_ACCEPTED])->exists();
+
+            if (! $hasCompletedAtc) {
+                $this->account->removeState(State::findByCode('VISITING'));
+            }
+        }  
         event(new ApplicationCompleted($this));
     }
 
