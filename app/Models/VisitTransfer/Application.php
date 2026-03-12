@@ -796,7 +796,7 @@ class Application extends Model
             if (! $hasCompletedAtc) {
                 $this->account->removeState(State::findByCode('VISITING'));
             }
-        }  
+        }
         event(new ApplicationCompleted($this));
     }
 
