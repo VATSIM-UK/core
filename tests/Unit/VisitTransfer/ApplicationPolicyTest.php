@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\VisitTransfer;
 
+use App\Enums\VTCheckStatus;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Reference;
@@ -28,13 +29,13 @@ class ApplicationPolicyTest extends TestCase
     {
         // Application Status, Number of Accepted References, Number of Pending References, Checks Met, Can Accept, Can Reject, Can Complete, Can Cancel
         return [
-            [Application::STATUS_CANCELLED, 0, 2, false, false, false, false],
-            [Application::STATUS_IN_PROGRESS, 0, 2, false, false, true, false],
-            [Application::STATUS_SUBMITTED, 0, 2, true, true, true, false],
-            [Application::STATUS_SUBMITTED, 2, 0, true, true, true, false],
-            [Application::STATUS_SUBMITTED, 2, 2, true, true, true, false],
-            [Application::STATUS_UNDER_REVIEW, 2, 0, true, true, true, false],
-            [Application::STATUS_ACCEPTED, 2, 0, true, false, false, true],
+            [Application::STATUS_CANCELLED, 0, 2, VTCheckStatus::Failed, false, false, false],
+            [Application::STATUS_IN_PROGRESS, 0, 2, VTCheckStatus::Failed, false, true, false],
+            [Application::STATUS_SUBMITTED, 0, 2, VTCheckStatus::Passed, true, true, false],
+            [Application::STATUS_SUBMITTED, 2, 0, VTCheckStatus::Passed, true, true, false],
+            [Application::STATUS_SUBMITTED, 2, 2, VTCheckStatus::Passed, true, true, false],
+            [Application::STATUS_UNDER_REVIEW, 2, 0, VTCheckStatus::Passed, true, true, false],
+            [Application::STATUS_ACCEPTED, 2, 0, VTCheckStatus::Passed, false, false, true],
         ];
     }
 
