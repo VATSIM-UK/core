@@ -14,7 +14,7 @@ class Dashboard extends BaseController
         $currentVisitApplication = Auth::user()->visitTransferApplications()->visit()->open()->latest()->first();
 
         $currentTransferApplication = Auth::user()->visitTransferApplications()->transfer()->open()->latest()->first();
-        
+
         $this->setTitle('Visiting and Transfer Dashboard');
 
         return $this->viewMake('visit-transfer.site.dashboard')

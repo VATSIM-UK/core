@@ -7,9 +7,6 @@ use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Mail;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class VisitTransferCleanupTest extends TestCase

@@ -5,7 +5,6 @@ namespace App\Console\Commands\VisitTransfer;
 use App\Console\Commands\Command;
 use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
 use App\Models\VisitTransfer\Application;
-use Carbon\Carbon;
 
 class ApplicationsCleanup extends Command
 {
