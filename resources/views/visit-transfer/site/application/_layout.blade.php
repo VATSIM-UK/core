@@ -56,7 +56,7 @@
 
                         @can("submit-application", $application)
                             <li role="presentation" {!! (Route::is('visiting.application.submit') ? "class='active'" : '') !!}>
-                                <a href="{{ route('visiting.application.submit', [$application->public_id]) }}">Stage 5 - Submission</a>
+                                <a href="{{ route('visiting.application.submit', [$application->public_id]) }}">Stage 4 - Submission</a>
                             </li>
                         @else
                             <li role="presentation" class="disabled">
