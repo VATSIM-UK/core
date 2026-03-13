@@ -5,15 +5,12 @@ namespace App\Http\Controllers\VisitTransfer\Site;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\VisitTransfer\ApplicationFacilitySelectedRequested;
-use App\Http\Requests\VisitTransfer\ApplicationRefereeAddRequest;
-use App\Http\Requests\VisitTransfer\ApplicationRefereeDeleteRequest;
 use App\Http\Requests\VisitTransfer\ApplicationStartRequest;
 use App\Http\Requests\VisitTransfer\ApplicationStatementSubmitRequest;
 use App\Http\Requests\VisitTransfer\ApplicationSubmitRequest;
 use App\Http\Requests\VisitTransfer\ApplicationWithdrawRequest;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Facility;
-use App\Models\VisitTransfer\Reference;
 use Auth;
 use ErrorException;
 use Exception;
@@ -73,10 +70,6 @@ class Application extends BaseController
 
         if (Gate::allows('add-statement', $application) && $application->statement == null) {
             return Redirect::route('visiting.application.statement', [$application->public_id]);
-        }
-
-        if (Gate::allows('add-referee', $application) && $application->number_references_required_relative > 0) {
-            return Redirect::route('visiting.application.referees', [$application->public_id]);
         }
 
         if (Gate::allows('submit-application', $application)) {
@@ -162,65 +155,6 @@ class Application extends BaseController
         return Redirect::route('visiting.application.continue', [$application->public_id])->withSuccess('Statement completed');
     }
 
-    public function getReferees(\App\Models\VisitTransfer\Application $application)
-    {
-        $this->authorize('add-referee', $application);
-
-        $application->load('referees.account');
-
-        $this->setTitle('Referees - Visit/Transfer Application');
-
-        return $this->viewMake('visit-transfer.site.application.referees')
-            ->with('application', $application);
-    }
-
-    public function postReferees(ApplicationRefereeAddRequest $request, \App\Models\VisitTransfer\Application $application)
-    {
-        // Check if the CID is in the home region
-        try {
-            $referee = Account::findOrRetrieve(Request::input('referee_cid'));
-        } catch (InvalidCIDException $e) {
-            return Redirect::back()
-                ->withError("There doesn't seem to be a VATSIM user with that ID.")
-                ->withInput();
-        }
-
-        try {
-            if ($referee->primary_permanent_state->pivot->region != Auth::user()->primary_permanent_state->pivot->region) {
-                return Redirect::back()
-                    ->withError('Your referee must be in your home region.')
-                    ->withInput();
-            }
-        } catch (ErrorException $e) {
-            // If we don't have this data, we shouldn't penalise the applicant at this point.
-        }
-
-        try {
-            $application->addReferee(
-                $referee,
-                Request::input('referee_email'),
-                Request::input('referee_relationship')
-            );
-        } catch (Exception $e) {
-            return Redirect::route('visiting.application.referees', [$application->public_id])->withError($e->getMessage());
-        }
-
-        $redirectRoute = 'visiting.application.referees';
-
-        if ($application->fresh()->number_references_required_relative == 0) {
-            $redirectRoute = 'visiting.application.submit';
-        }
-
-        return Redirect::route($redirectRoute, [$application->public_id])->withSuccess('Referee '.Request::input('referee_cid').' added successfully! They will not be contacted until you submit your application.');
-    }
-
-    public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, \App\Models\VisitTransfer\Application $application, Reference $reference)
-    {
-        $reference->delete();
-
-        return Redirect::route('visiting.application.referees', [$application->public_id])->withSuccess('Referee '.$reference->account->name.' deleted.');
-    }
-
     public function getSubmit(\App\Models\VisitTransfer\Application $application)
     {
         $this->authorize('submit-application', $application);
@@ -267,7 +201,7 @@ class Application extends BaseController
     {
         $this->authorize('view', $application);
 
-        $application->load('facility')->load('referees.account');
+        $application->load('facility');
 
         $this->setTitle('View Visit/Transfer Application');
 

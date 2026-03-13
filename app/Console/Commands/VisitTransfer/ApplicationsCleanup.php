@@ -52,21 +52,6 @@ class ApplicationsCleanup extends Command
                 }
             }
         }
-
-        /* @var Application[] $applications */
-        $applications = Application::status(Application::STATUS_SUBMITTED)
-            ->where('references_required', '!=', 0)
-            ->with('referees')
-            ->get();
-        foreach ($applications as $application) {
-            foreach ($application->referees as $referee) {
-                if (! $referee->is_submitted && $referee->contacted_at && $referee->contacted_at->addDays(14)->lt(new Carbon)) {
-                    $application->lapse();
-
-                    continue;
-                }
-            }
-        }
     }
 
     /**
@@ -74,9 +59,7 @@ class ApplicationsCleanup extends Command
      */
     private function runAutomatedChecks()
     {
-        $submittedApplications = Application::submitted()->get()->filter(function ($application) {
-            return ! $application->is_pending_references;
-        });
+        $submittedApplications = Application::submitted()->get();
 
         foreach ($submittedApplications as $application) {
             if ($application->should_perform_checks) {

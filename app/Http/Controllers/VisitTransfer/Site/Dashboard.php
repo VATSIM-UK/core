@@ -14,17 +14,12 @@ class Dashboard extends BaseController
         $currentVisitApplication = Auth::user()->visitTransferApplications()->visit()->open()->latest()->first();
 
         $currentTransferApplication = Auth::user()->visitTransferApplications()->transfer()->open()->latest()->first();
-
-        $pendingReferences = $this->account->visitTransferReferee->filter(function ($ref) {
-            return $ref->is_requested;
-        });
-
+        
         $this->setTitle('Visiting and Transfer Dashboard');
 
         return $this->viewMake('visit-transfer.site.dashboard')
             ->with('allApplications', $allApplications)
             ->with('currentVisitApplication', $currentVisitApplication)
-            ->with('currentTransferApplication', $currentTransferApplication)
-            ->with('pendingReferences', $pendingReferences);
+            ->with('currentTransferApplication', $currentTransferApplication);
     }
 }
