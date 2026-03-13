@@ -7,6 +7,8 @@ use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Artisan;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class VisitTransferCleanupTest extends TestCase
@@ -40,5 +42,14 @@ class VisitTransferCleanupTest extends TestCase
         ]);
         Carbon::setTestNow();
         $this->oldApplication = $application->fresh();
+    }
+
+    #[Test]
+    public function it_only_cancels_old_applications()
+    {
+        Artisan::call('visit-transfer:cleanup');
+
+        $this->assertEquals(Application::STATUS_EXPIRED, $this->oldApplication->fresh()->status);
+        $this->assertEquals(Application::STATUS_IN_PROGRESS, $this->newApplication->fresh()->status);
     }
 }

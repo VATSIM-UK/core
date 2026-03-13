@@ -81,6 +81,7 @@ class Facility extends Model
         'can_visit' => 'boolean',
         'can_transfer' => 'boolean',
         'training_required' => 'boolean',
+        'stage_statement_enabled' => 'boolean',
         'stage_checks' => 'boolean',
         'auto_acceptance' => 'boolean',
         'open' => 'boolean',
