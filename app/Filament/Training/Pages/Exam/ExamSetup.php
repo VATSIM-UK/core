@@ -80,7 +80,7 @@ class ExamSetup extends Page implements HasForms
         $positionId = $validated['dataOBS']['position_obs'];
         $position = CtsPosition::find($positionId);
 
-        $trainingPosition = TrainingPosition::whereJsonContains('cts_positions', $positionId)->firstOrFail();
+        $trainingPosition = TrainingPosition::whereJsonContains('cts_positions', $position->callsign)->firstOrFail();
         $ctsMember = Member::where('id', $this->dataOBS['student_obs'])->first();
 
         $service = new ExamForwardingService;
