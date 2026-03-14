@@ -66,18 +66,20 @@ class ExamForwardingService
      * Forward a member for an OBS exam by creating exam setup and booking records.
      *
      * @param  Member  $ctsMember  The CTS member to forward for exam
-     * @param  Model  $position  The OBS position (CtsPosition model)
+     * @param  TrainingPosition  $position  The OBS position (CtsPosition model)
      * @return array<string, ExamSetup|ExamBooking> Array containing 'setup' and 'examBooking' keys
      *
      * @throws \Exception
      */
-    public function forwardForObsExam(Member $ctsMember, Model $position): array
+    public function forwardForObsExam(Member $ctsMember, TrainingPosition $trainingPosition): array
     {
+        $callsign = $trainingPosition->exam_callsign ?? $trainingPosition->position->callsign;
+
         // Create the exam setup record (rts_id 14 is hard coded for OBS)
         $setup = ExamSetup::create([
             'rts_id' => 14,
             'student_id' => $ctsMember->id,
-            'position_1' => $position->callsign,
+            'position_1' => $callsign,
             'position_2' => null,
             'exam' => 'OBS',
         ]);
@@ -87,7 +89,7 @@ class ExamForwardingService
             'rts_id' => 14,
             'student_id' => $ctsMember->id,
             'student_rating' => $ctsMember->account->qualification_atc->vatsim,
-            'position_1' => $position->callsign,
+            'position_1' => $callsign,
             'position_2' => null,
             'exam' => 'OBS',
         ]);

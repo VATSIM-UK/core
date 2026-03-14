@@ -80,11 +80,12 @@ class ExamSetup extends Page implements HasForms
         $positionId = $validated['dataOBS']['position_obs'];
         $position = CtsPosition::find($positionId);
 
+        $trainingPosition = TrainingPosition::whereJsonContains('cts_positions', $positionId)->firstOrFail();
         $ctsMember = Member::where('id', $this->dataOBS['student_obs'])->first();
 
         $service = new ExamForwardingService;
-        $service->forwardForObsExam($ctsMember, $position);
-        $service->notifySuccess($position->callsign);
+        $service->forwardForObsExam($ctsMember, $trainingPosition);
+        $service->notifySuccess($trainingPosition->exam_callsign ?? $trainingPosition->position->callsign);
 
         return redirect()->route('filament.training.pages.exam-setup');
     }
