@@ -715,4 +715,30 @@ class CheckAvailabilityTest extends TestCase
             'training_place_id' => $this->trainingPlace->id,
         ]);
     }
+
+    #[Test]
+    public function it_creates_failed_check_when_session_exists_but_has_been_taken(): void
+    {
+        // Arrange: Create availability and a session that has already been taken (taken_time set)
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Session::factory()->accepted()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+        ]);
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A failed availability check should be created (untaken session request required)
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
+
+        // Assert: An availability warning should be created
+        $this->assertDatabaseHas('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
 }
