@@ -18,6 +18,7 @@ use Filament\Pages\Page;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 
 class ExamSetup extends Page implements HasForms
 {
@@ -59,14 +60,12 @@ class ExamSetup extends Page implements HasForms
             'data.student' => 'required',
         ]);
 
-        $positionId = $validated['data']['position'];
-        $position = Position::find($positionId);
-
+        $trainingPosition = TrainingPosition::where('position_id', $validated['data']['position'])->firstOrFail();
         $ctsMember = Member::where('id', $validated['data']['student'])->first();
 
         $service = new ExamForwardingService;
-        $service->forwardForExam($ctsMember, $position, Auth::user()->id);
-        $service->notifySuccess($position->callsign);
+        $service->forwardForExam($ctsMember, $trainingPosition, Auth::user()->id);
+        $service->notifySuccess($trainingPosition->exam_callsign ?? $trainingPosition->position->callsign);
 
         return redirect()->route('filament.training.pages.exam-setup');
     }

@@ -2,10 +2,10 @@
 
 namespace App\Services\Training;
 
-use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Models\Cts\Member;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
@@ -16,19 +16,22 @@ class ExamForwardingService
      * Forward a member for a practical exam by creating exam setup and booking records.
      *
      * @param  Member  $ctsMember  The CTS member to forward for exam
-     * @param  Position  $position  The position/exam to forward the member for
+     * @param  TrainingPosition  $position  The training position/exam to forward the member for
      * @param  int  $setupByUserId  The ID of the user setting up the exam
      * @return array<string, ExamSetup|ExamBooking> Array containing 'setup' and 'examBooking' keys
      *
      * @throws \Exception
      */
-    public function forwardForExam(Member $ctsMember, Position $position, int $setupByUserId): array
+    public function forwardForExam(Member $ctsMember, TrainingPosition $trainingPosition, int $setupByUserId): array
     {
+        $position = $trainingPosition->position;
+        $callsign = $trainingPosition->exam_callsign ?? $position->callsign;
+        
         // Create the exam setup record
         $setup = ExamSetup::create([
             'rts_id' => $position->rts,
             'student_id' => $ctsMember->id,
-            'position_1' => $position->callsign,
+            'position_1' => $callsign,
             'position_2' => null,
             'exam' => $position->examLevel,
             'setup_by' => $setupByUserId,
@@ -43,7 +46,7 @@ class ExamForwardingService
             'rts_id' => $position->rts,
             'student_id' => $ctsMember->id,
             'student_rating' => $ctsMember->account->qualification_atc->vatsim,
-            'position_1' => $position->callsign,
+            'position_1' => $callsign,
             'position_2' => null,
             'exam' => $position->examLevel,
         ]);
