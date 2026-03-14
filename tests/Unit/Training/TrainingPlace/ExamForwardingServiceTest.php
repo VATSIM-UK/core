@@ -134,4 +134,72 @@ class ExamForwardingServiceTest extends TestCase
         $this->service->notifyError('Test error');
         $this->assertTrue(true);
     }
+
+    #[Test]
+    public function it_uses_exam_callsign_override_when_set()
+    {
+        $member = $this->createTestMember();
+        $position = Position::factory()->create(['callsign' => 'EGCC_S_APP']);
+        $trainingPosition = TrainingPosition::factory()->create([
+            'position_id' => $position->id,
+            'exam_callsign' => 'EGCC_APP',
+        ]);
+        $userId = Account::factory()->create()->id;
+
+        $result = $this->service->forwardForExam($member, $trainingPosition, $userId);
+
+        $this->assertEquals('EGCC_APP', $result['setup']->position_1);
+        $this->assertEquals('EGCC_APP', $result['examBooking']->position_1);
+    }
+
+    #[Test]
+    public function it_falls_back_to_position_callsign_when_exam_callsign_is_null()
+    {
+        $member = $this->createTestMember();
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+        $trainingPosition = TrainingPosition::factory()->create([
+            'position_id' => $position->id,
+            'exam_callsign' => null,
+        ]);
+        $userId = Account::factory()->create()->id;
+
+        $result = $this->service->forwardForExam($member, $trainingPosition, $userId);
+
+        $this->assertEquals('EGKK_TWR', $result['setup']->position_1);
+        $this->assertEquals('EGKK_TWR', $result['examBooking']->position_1);
+    }
+
+    #[Test]
+    public function it_uses_exam_callsign_override_for_obs_exam()
+    {
+        $member = $this->createTestMember();
+        $position = Position::factory()->create(['callsign' => 'SC_GND']);
+        $trainingPosition = TrainingPosition::factory()->create([
+            'position_id' => $position->id,
+            'exam_callsign' => 'OBS_SC_PT3',
+        ]);
+
+        $result = $this->service->forwardForObsExam($member, $trainingPosition);
+
+        $this->assertEquals('OBS_SC_PT3', $result['setup']->position_1);
+        $this->assertEquals('OBS_SC_PT3', $result['examBooking']->position_1);
+        $this->assertEquals('OBS', $result['setup']->exam);
+        $this->assertEquals(14, $result['setup']->rts_id);
+    }
+
+    #[Test]
+    public function it_falls_back_to_position_callsign_for_obs_when_exam_callsign_is_null()
+    {
+        $member = $this->createTestMember();
+        $position = Position::factory()->create(['callsign' => 'SC_GND']);
+        $trainingPosition = TrainingPosition::factory()->create([
+            'position_id' => $position->id,
+            'exam_callsign' => null,
+        ]);
+
+        $result = $this->service->forwardForObsExam($member, $trainingPosition);
+
+        $this->assertEquals('SC_GND', $result['setup']->position_1);
+        $this->assertEquals('SC_GND', $result['examBooking']->position_1);
+    }
 }
