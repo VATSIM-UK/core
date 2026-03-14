@@ -24,6 +24,7 @@ use App\Exceptions\VisitTransfer\Application\RatingRequirementNotMetException;
 use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\RemovalReason;
@@ -551,9 +552,19 @@ class Application extends Model
     public function meetsRatingRequirements(Facility $facility)
     {
         if ($facility->training_team === 'atc') {
-            $userRating = $this->account->qualification_atc?->vatsim;
             $minQual = $facility->minimumATCQualification?->vatsim;
             $maxQual = $facility->maximumATCQualification?->vatsim;
+
+            // Members with an I1 or I3 rating should be treated as both a S3 and C1 when doing an ATC application
+            if ($this->account->qualifications_atc_training->isNotEmpty()) {
+                $s3 = Qualification::where('code', 'S3')->first()?->vatsim;
+                $c1 = Qualification::where('code', 'C1')->first()?->vatsim;
+
+                return $this->ratingFallsInRange($s3, $minQual, $maxQual)
+                    || ($this->ratingFallsInRange($c1, $minQual, $maxQual));
+            }
+
+            $userRating = $this->account->qualification_atc?->vatsim;
         } else {
             $userRating = $this->account->qualification_pilot?->vatsim;
             $minQual = $facility->minimumPilotQualification?->vatsim;
@@ -564,11 +575,16 @@ class Application extends Model
             return false;
         }
 
-        if ($minQual && $userRating < $minQual) {
+        return $this->ratingFallsInRange($userRating, $minQual, $maxQual);
+    }
+
+    private function ratingFallsInRange(int $rating, ?int $minQual, ?int $maxQual): bool
+    {
+        if ($minQual && $rating < $minQual) {
             return false;
         }
 
-        if ($maxQual && $userRating > $maxQual) {
+        if ($maxQual && $rating > $maxQual) {
             return false;
         }
 
