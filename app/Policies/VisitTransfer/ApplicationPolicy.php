@@ -109,38 +109,6 @@ class ApplicationPolicy
         return true;
     }
 
-    public function addReferee(Account $user, Application $application)
-    {
-        if (! $application->facility || ! $application->is_editable) {
-            return false;
-        }
-
-        if ($application->references_required === 0) {
-            return false;
-        }
-
-        if ($application->statement == null && $application->statement_required) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function deleteReferee(Account $user, Application $application)
-    {
-        $reference = \Request::route('reference');
-
-        if (! $application->facility || ! $application->is_editable) {
-            return false;
-        }
-
-        if ($reference->application->account->id != $user->id) {
-            return false;
-        }
-
-        return true;
-    }
-
     public function submitApplication(Account $user, Application $application)
     {
         if (! $application->facility || ! $application->is_editable) {
@@ -148,10 +116,6 @@ class ApplicationPolicy
         }
 
         if ($application->statement == null && $application->statement_required) {
-            return false;
-        }
-
-        if ($application->number_references_required_relative > 0) {
             return false;
         }
 

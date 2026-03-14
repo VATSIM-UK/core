@@ -54,29 +54,19 @@
                             </li>
                         @endif
 
-                        @can("add-referee", $application)
-                            <li role="presentation" {!! (Route::is('visiting.application.referees') ? "class='active'" : '') !!}>
-                                <a href="{{ route('visiting.application.referees', [$application->public_id]) }}">Stage 4 - Referees{{ $application->references_required > 0 ? '' : ' (Not Required)' }}</a>
-                            </li>
-                        @else
-                            <li role="presentation" class="disabled">
-                                <a href="#">Stage 4 - Referees{{ $application->references_required > 0 ? '' : ' (Not Required)' }}</a>
-                            </li>
-                        @endcan
-
                         @can("submit-application", $application)
                             <li role="presentation" {!! (Route::is('visiting.application.submit') ? "class='active'" : '') !!}>
-                                <a href="{{ route('visiting.application.submit', [$application->public_id]) }}">Stage 5 - Submission</a>
+                                <a href="{{ route('visiting.application.submit', [$application->public_id]) }}">Stage 4 - Submission</a>
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                <a href="#">Stage 5 - Submission</a>
+                                <a href="#">Stage 4 - Submission</a>
                             </li>
                         @endif
 
                         @can("view", $application)
                             <li role="presentation" {!! (Route::is('visiting.application.view') ? "class='active'" : '') !!}>
-                                <a href="{{ route('visiting.application.view', [$application->public_id]) }}" class="{{ Route::is('visiting.application.referees') ? 'active' : '' }}">View Full Application</a>
+                                {{-- <a href="{{ route('visiting.application.view', [$application->public_id]) }}" class="{{ Route::is('visiting.application.referees') ? 'active' : '' }}">View Full Application</a> --}}
                             </li>
                         @else
                             <li role="presentation" class="disabled">
@@ -201,58 +191,6 @@
             element: "#labelNoTrainingHelp",
             title: "Facilities Not Requiring Training",
             content: "Where a facility doesn't require any training, your application will progress much quicker.",
-            backdrop: true,
-            placement: "top"
-        });
-
-        @endif
-
-        @if(Request::segment(2) == "referees")
-
-            tour.addStep({
-            element: "#minReferencesHelp",
-            title: "Minimum References",
-            content: "There is a minimum reference requirement for this application.",
-            backdrop: true,
-            placement: "top"
-        });
-
-        tour.addStep({
-            element: "#divisionStaffHelp",
-            title: "Division Staff",
-            content: "Your referees <strong>must</strong> be staff within your home division.",
-            backdrop: true,
-            placement: "top"
-        });
-
-        tour.addStep({
-            element: "#trainingStaffHelp",
-            title: "Training Director",
-            content: "One of your referees <strong>must</strong> be your training director.",
-            backdrop: true,
-            placement: "top"
-        });
-
-        tour.addStep({
-            element: "#refereeCidHelp",
-            title: "Referee CID",
-            content: "Please enter a valid VATSIM CID for your referee.",
-            backdrop: true,
-            placement: "top"
-        });
-
-        tour.addStep({
-            element: "#refereePositionHelp",
-            title: "Referee Staff Position",
-            content: "Enter a reflective staff title.",
-            backdrop: true,
-            placement: "top"
-        });
-
-        tour.addStep({
-            element: "#refereeEmail",
-            title: "Referee E-Mail",
-            content: "Enter the E-Mail address we should write to.",
             backdrop: true,
             placement: "top"
         });

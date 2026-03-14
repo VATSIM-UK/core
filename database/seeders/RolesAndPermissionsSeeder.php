@@ -99,8 +99,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'vt.application.cancel.*',
             'vt.status.revoke',
             'vt.status.grant.manual',
-            // 'vt.application.reference.accept.*',
-            // 'vt.application.reference.reject.*',
             // 'vt.application.check.modify.*',
 
             // Waiting List System Permissions,

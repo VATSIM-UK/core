@@ -129,7 +129,6 @@ use Watson\Rememberable\Rememberable;
  * @property-read mixed $unread_notifications
  * @property-read \Illuminate\Support\Collection $verified_secondary_emails
  * @property-read mixed $visit_transfer_current
- * @property-read mixed $visit_transfer_referee_pending
  * @property-read mixed $has_controller_rating
  * @property-read mixed $name
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NetworkData\Atc> $networkDataAtc
@@ -171,8 +170,6 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Application> $visitTransferApplications
  * @property-read int|null $visit_transfer_applications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Reference> $visitTransferReferee
- * @property-read int|null $visit_transfer_referee_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList> $waitingLists
  * @property-read int|null $waiting_lists_count
  *

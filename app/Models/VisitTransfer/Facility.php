@@ -22,8 +22,6 @@ use Malahierba\PublicId\PublicId;
  * @property string $training_team
  * @property int|null $training_spaces
  * @property int $stage_statement_enabled
- * @property int $stage_reference_enabled
- * @property int $stage_reference_quantity
  * @property int $stage_checks
  * @property int $auto_acceptance
  * @property int $open
@@ -56,8 +54,6 @@ use Malahierba\PublicId\PublicId;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereOpen($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility wherePublic($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageChecks($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageReferenceEnabled($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageReferenceQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageStatementEnabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereTrainingRequired($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereTrainingSpaces($value)
@@ -86,7 +82,6 @@ class Facility extends Model
         'can_transfer' => 'boolean',
         'training_required' => 'boolean',
         'stage_statement_enabled' => 'boolean',
-        'stage_reference_enabled' => 'boolean',
         'stage_checks' => 'boolean',
         'auto_acceptance' => 'boolean',
         'open' => 'boolean',
@@ -103,8 +98,6 @@ class Facility extends Model
         'training_team',
         'training_spaces',
         'stage_statement_enabled',
-        'stage_reference_enabled',
-        'stage_reference_quantity',
         'stage_checks',
         'auto_acceptance',
         'minimum_atc_qualification_id',
