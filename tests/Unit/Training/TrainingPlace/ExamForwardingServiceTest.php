@@ -61,9 +61,10 @@ class ExamForwardingServiceTest extends TestCase
     {
         $member = $this->createTestMember();
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
+        $trainingPosition = TrainingPosition::factory()->create(['position_id' => $position->id]);
         $userId = Account::factory()->create()->id;
 
-        $result = $this->service->forwardForExam($member, $position, $userId);
+        $result = $this->service->forwardForExam($member, $trainingPosition, $userId);
 
         $this->assertEquals($position->callsign, $result['setup']->position_1);
         $this->assertEquals($position->examLevel, $result['setup']->exam);
@@ -87,14 +88,19 @@ class ExamForwardingServiceTest extends TestCase
     public function it_creates_obs_exam_records()
     {
         $member = $this->createTestMember();
-        $obsPosition = \App\Models\Cts\Position::factory()->create(['callsign' => 'OBS_SC_PT3']);
+        $position = Position::factory()->create(['callsign' => 'SC_GND']);
+        $trainingPosition = TrainingPosition::factory()->create([
+            'position_id' => $position->id,
+            'exam_callsign' => 'OBS_SC_PT3',
+        ]);
 
-        $result = $this->service->forwardForObsExam($member, $obsPosition);
+        $result = $this->service->forwardForObsExam($member, $trainingPosition);
 
         $this->assertInstanceOf(ExamSetup::class, $result['setup']);
         $this->assertInstanceOf(ExamBooking::class, $result['examBooking']);
         $this->assertEquals('OBS', $result['setup']->exam);
         $this->assertEquals(14, $result['setup']->rts_id);
+        $this->assertEquals('OBS_SC_PT3', $result['setup']->position_1);
         $this->assertEquals($result['examBooking']->id, $result['setup']->bookid);
     }
 
@@ -104,10 +110,12 @@ class ExamForwardingServiceTest extends TestCase
         $member = $this->createTestMember();
         $position1 = Position::factory()->create(['callsign' => 'EGKK_TWR']);
         $position2 = Position::factory()->create(['callsign' => 'EGKK_APP']);
+        $trainingPosition1 = TrainingPosition::factory()->create(['position_id' => $position1->id]);
+        $trainingPosition2 = TrainingPosition::factory()->create(['position_id' => $position2->id]);
         $userId = Account::factory()->create()->id;
 
-        $result1 = $this->service->forwardForExam($member, $position1, $userId);
-        $result2 = $this->service->forwardForExam($member, $position2, $userId);
+        $result1 = $this->service->forwardForExam($member, $trainingPosition1, $userId);
+        $result2 = $this->service->forwardForExam($member, $trainingPosition2, $userId);
 
         $this->assertNotEquals($result1['setup']->id, $result2['setup']->id);
         $this->assertNotEquals($result1['examBooking']->id, $result2['examBooking']->id);
