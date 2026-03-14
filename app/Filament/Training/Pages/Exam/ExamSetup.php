@@ -5,6 +5,7 @@ namespace App\Filament\Training\Pages\Exam;
 use App\Models\Atc\Position;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
@@ -18,7 +19,6 @@ use Filament\Pages\Page;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use App\Models\Training\TrainingPosition\TrainingPosition;
 
 class ExamSetup extends Page implements HasForms
 {

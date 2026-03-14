@@ -26,7 +26,7 @@ class ExamForwardingService
     {
         $position = $trainingPosition->position;
         $callsign = $trainingPosition->exam_callsign ?? $position->callsign;
-        
+
         // Create the exam setup record
         $setup = ExamSetup::create([
             'rts_id' => $position->rts,

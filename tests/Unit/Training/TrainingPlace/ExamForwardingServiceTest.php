@@ -7,6 +7,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\ExamForwardingService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
@@ -31,9 +32,14 @@ class ExamForwardingServiceTest extends TestCase
         return Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
     }
 
-    private function createTestPosition(): Position
+    private function createTestPosition(): TrainingPosition
     {
-        return Position::factory()->create(['callsign' => 'EGKK_TWR']);
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+
+        return TrainingPosition::factory()->create([
+            'position_id' => $position->id,
+            'exam_callsign' => 'EGKK_TWR',
+        ]);
     }
 
     #[Test]
