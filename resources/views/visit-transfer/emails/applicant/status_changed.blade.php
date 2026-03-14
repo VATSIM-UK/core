@@ -9,7 +9,6 @@
 <p>
     Your application will now undergo a series of automated checks to ensure you are compliant with the Visiting &amp; Transferring policy.
 </p>
-@endif
 @elseif($application->is_under_review)
 <p>
     Your application will now be reviewed by a member of the Community Department. You do not need to do anything further at this stage.
