@@ -161,6 +161,9 @@ class RolesAndPermissionsSeeder extends Seeder
             // Operations System Permissions
             'operations.access',
 
+            // Pilot System Permissions
+            'pilot.access',
+
             // // TeamSpeak Permissions
             // 'teamspeak.servergroup.serveradmin',
             // 'teamspeak.idle.extended',
