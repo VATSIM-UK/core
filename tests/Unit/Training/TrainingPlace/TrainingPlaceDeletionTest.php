@@ -54,7 +54,7 @@ class TrainingPlaceDeletionTest extends TestCase
                 ->exists()
         );
 
-        $trainingPlace->deletePendingSessionRequests();
+        $trainingPlace->delete();
 
         $this->assertFalse(
             CtsSession::query()
