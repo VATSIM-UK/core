@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\VisitTransfer;
 
+use App\Enums\VTCheckStatus;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -27,13 +28,13 @@ class ApplicationPolicyTest extends TestCase
     {
         // Application Status, Checks Met, Can Accept, Can Reject, Can Complete, Can Cancel
         return [
-            [Application::STATUS_CANCELLED, false, false, false, false],
-            [Application::STATUS_IN_PROGRESS, false, false, true, false],
-            [Application::STATUS_SUBMITTED, true, true, true, false],
-            [Application::STATUS_SUBMITTED, true, true, true, false],
-            [Application::STATUS_SUBMITTED, true, true, true, false],
-            [Application::STATUS_UNDER_REVIEW, true, true, true, false],
-            [Application::STATUS_ACCEPTED, true, false, false, true],
+            [Application::STATUS_CANCELLED, VTCheckStatus::Failed, false, false, false],
+            [Application::STATUS_IN_PROGRESS, VTCheckStatus::Failed, false, true, false],
+            [Application::STATUS_SUBMITTED, VTCheckStatus::Passed, true, true, false],
+            [Application::STATUS_SUBMITTED, VTCheckStatus::Passed, true, true, false],
+            [Application::STATUS_SUBMITTED, VTCheckStatus::Passed, true, true, false],
+            [Application::STATUS_UNDER_REVIEW, VTCheckStatus::Passed, true, true, false],
+            [Application::STATUS_ACCEPTED, VTCheckStatus::Passed, false, false, true],
         ];
     }
 

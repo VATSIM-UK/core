@@ -2,6 +2,7 @@
 
 namespace App\Policies\VisitTransfer;
 
+use App\Enums\VTCheckStatus;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -32,9 +33,9 @@ class ApplicationPolicy
     public function accept(Account $user, Application $application)
     {
         return $user->can('vt.application.accept.*')
-        && $application->check_outcome_90_day
-        && $application->check_outcome_50_hours
-        && $application->can_accept;
+        && $application->can_accept
+        && $this->checkIsSatisfied($application->check_outcome_90_day)
+        && $this->checkIsSatisfied($application->check_outcome_50_hours);
     }
 
     public function reject(Account $user, Application $application)
@@ -56,12 +57,11 @@ class ApplicationPolicy
     {
         return $user->can('vt.application.accept.*')
         && $application->can_accept
-        && (! $application->check_outcome_90_day || ! $application->check_outcome_50_hours);
+        && (! $this->checkIsSatisfied($application->check_outcome_90_day) || ! $this->checkIsSatisfied($application->check_outcome_50_hours));
     }
 
     public function create(Account $user, Application $application)
     {
-        // If they are currently a division member, they are not authorised.
         if ($user->hasState('DIVISION')) {
             return false;
         }
@@ -143,5 +143,10 @@ class ApplicationPolicy
     public function settingToggle(Account $user, Application $application)
     {
         return $application->is_editable;
+    }
+
+    private function checkIsSatisfied(?VTCheckStatus $status): bool
+    {
+        return $status === VTCheckStatus::Passed || $status === VTCheckStatus::NotRequired;
     }
 }
