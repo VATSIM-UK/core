@@ -1,7 +1,7 @@
 <x-markdown>
 # VATSIM UK ATC Training Policy
 
-**Version 1.0**  
+**Version 1.0**
 **Effective Date:** 25th February 2025
 
 ---
@@ -113,7 +113,7 @@ To be eligible for Military CTR Training, C1+ members must:
 
 - Be on the active controlling roster;
 - Not have significant negative feedback;
-- Hold a Military APP/PAR endorsement.
+- Hold a Military APP endorsement.
 
 ### 1.11 AC Bandbox (LON_CTR)
 
