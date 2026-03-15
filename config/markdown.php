@@ -15,5 +15,5 @@ return [
     ],
     'html_input' => 'strip',
     'max_nesting_level' => 100,
-    'renderer_class' => \App\Services\Markdown\CustomMarkdownRenderer::class,
+    'renderer_class' => App\Services\Markdown\CustomMarkdownRenderer::class,
 ];

@@ -12,8 +12,8 @@ use App\Models\Model;
  * @property int $question_id
  * @property string|null $response
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
- * @property-read \App\Models\Mship\Feedback\Feedback $feedback
- * @property-read \App\Models\Mship\Feedback\Question $question
+ * @property-read Feedback $feedback
+ * @property-read Question $question
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer notPermanent()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer whereFeedbackId($value)
@@ -49,11 +49,11 @@ class Answer extends Model
 
     public function feedback()
     {
-        return $this->belongsTo(\App\Models\Mship\Feedback\Feedback::class);
+        return $this->belongsTo(Feedback::class);
     }
 
     public function question()
     {
-        return $this->belongsTo(\App\Models\Mship\Feedback\Question::class)->withTrashed();
+        return $this->belongsTo(Question::class)->withTrashed();
     }
 }

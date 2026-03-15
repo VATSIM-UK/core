@@ -2,11 +2,11 @@
 
 use Carbon\Carbon;
 
-class SnowTest extends \Tests\TestCase
+class SnowTest extends Tests\TestCase
 {
     public function test_snow_during_period()
     {
-        \Carbon\Carbon::setTestNow(new Carbon('1st December 2019'));
+        Carbon::setTestNow(new Carbon('1st December 2019'));
 
         $home = $this->get(route('site.home'))
             ->assertOk()
@@ -14,7 +14,7 @@ class SnowTest extends \Tests\TestCase
 
         $this->assertTrue((bool) preg_match('/snow-.*\.js/', $home));
 
-        \Carbon\Carbon::setTestNow(new Carbon('5th January 2019'));
+        Carbon::setTestNow(new Carbon('5th January 2019'));
 
         $main = $this->get(route('site.join'))
             ->assertOk()
@@ -25,7 +25,7 @@ class SnowTest extends \Tests\TestCase
 
     public function test_no_snow_outside_period()
     {
-        \Carbon\Carbon::setTestNow(new Carbon('10th January 2020'));
+        Carbon::setTestNow(new Carbon('10th January 2020'));
 
         $main = $this->get(route('site.home'))
             ->assertOk()

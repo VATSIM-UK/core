@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $name_long
  * @property string $name_grp
  * @property int $vatsim
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|Account[] $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $is_c1
  * @property-read mixed $is_c3

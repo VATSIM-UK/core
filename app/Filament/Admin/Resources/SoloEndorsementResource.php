@@ -84,7 +84,7 @@ class SoloEndorsementResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\SoloEndorsementResource\Pages\ListSoloEndorsements::route('/'),
+            'index' => SoloEndorsementResource\Pages\ListSoloEndorsements::route('/'),
         ];
     }
 }

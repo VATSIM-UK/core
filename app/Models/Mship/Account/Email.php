@@ -15,14 +15,14 @@ use Carbon\Carbon;
  * @property int $id
  * @property string $email
  * @property int $account_id
- * @property \Carbon\Carbon|null $verified_at
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property Carbon|null $verified_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $is_verified
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
+ * @property-read \Illuminate\Database\Eloquent\Collection|SSOEmail[] $ssoEmails
+ * @property-read \Illuminate\Database\Eloquent\Collection|Token[] $tokens
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email emailMatches($email)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email verified()
@@ -66,12 +66,12 @@ class Email extends Model
 
     public function tokens()
     {
-        return $this->morphMany(\App\Models\Sys\Token::class, 'related');
+        return $this->morphMany(Token::class, 'related');
     }
 
     public function ssoEmails()
     {
-        return $this->hasMany(\App\Models\Sso\Email::class, 'account_email_id');
+        return $this->hasMany(SSOEmail::class, 'account_email_id');
     }
 
     public function assignToSso($ssoAccount)
