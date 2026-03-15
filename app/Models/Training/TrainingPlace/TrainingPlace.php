@@ -94,7 +94,6 @@ class TrainingPlace extends Model
     public function revokeTrainingPlace(string $reason, Account $admin): void
     {
         $this->waitingListAccount->account->addNote('training', "Training place revoked on {$this->trainingPosition->position->callsign}. Reason: {$reason}", $admin->id);
-        $this->deletePendingSessionRequests();
         $this->delete();
     }
 }

@@ -391,7 +391,6 @@ class ConductExam extends Page implements HasForms, HasInfolists
             return;
         }
 
-        $trainingPlace->deletePendingSessionRequests();
         $trainingPlace->delete();
     }
 }

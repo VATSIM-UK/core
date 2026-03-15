@@ -28,6 +28,14 @@ class TrainingPlaceObserver
     }
 
     /**
+     * Handle the TrainingPlace "deleting" event (before the record is soft-deleted).
+     */
+    public function deleting(TrainingPlace $trainingPlace): void
+    {
+        $trainingPlace->deletePendingSessionRequests();
+    }
+
+    /**
      * Handle the TrainingPlace "deleted" event.
      */
     public function deleted(TrainingPlace $trainingPlace): void
