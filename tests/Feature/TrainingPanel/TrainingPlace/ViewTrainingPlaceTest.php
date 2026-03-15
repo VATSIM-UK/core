@@ -514,4 +514,83 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'content' => "Training place revoked on {$trainingPlace->trainingPosition->position->callsign}. Reason: {$reason}",
         ]);
     }
+
+    #[Test]
+    public function it_shows_solo_endorsement_section_when_toggle_is_enabled()
+    {
+        $trainingPlace = $this->createTrainingPlaceWithToggles(
+            showSoloEndorsement: true,
+            showRecentControlling: true,
+        );
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSee(\App\Livewire\Training\TrainingPlaceSoloEndorsement::class);
+    }
+
+    #[Test]
+    public function it_hides_solo_endorsement_section_when_toggle_is_disabled()
+    {
+        $trainingPlace = $this->createTrainingPlaceWithToggles(
+            showSoloEndorsement: false,
+            showRecentControlling: true,
+        );
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertDontSee(\App\Livewire\Training\TrainingPlaceSoloEndorsement::class);
+    }
+
+    #[Test]
+    public function it_shows_recent_controlling_section_when_toggle_is_enabled()
+    {
+        $trainingPlace = $this->createTrainingPlaceWithToggles(
+            showSoloEndorsement: true,
+            showRecentControlling: true,
+        );
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSee(\App\Livewire\Training\RecentControllingTable::class);
+    }
+
+    #[Test]
+    public function it_hides_recent_controlling_section_when_toggle_is_disabled()
+    {
+        $trainingPlace = $this->createTrainingPlaceWithToggles(
+            showSoloEndorsement: true,
+            showRecentControlling: false,
+        );
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertDontSee(\App\Livewire\Training\RecentControllingTable::class);
+    }
+
+    private function createTrainingPlaceWithToggles(bool $showSoloEndorsement, bool $showRecentControlling): TrainingPlace
+    {
+        $student = Account::factory()->create();
+        $student->addState(State::findByCode('DIVISION'));
+        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+
+        $waitingList = WaitingList::factory()->create([
+            'department' => 'atc',
+            'feature_toggles' => [
+                'show_solo_endorsement' => $showSoloEndorsement,
+                'show_recent_controlling' => $showRecentControlling,
+            ],
+        ]);
+
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->panelUser);
+
+        $position = Position::factory()->create();
+        $trainingPosition = TrainingPosition::factory()
+            ->withCtsPositions(['EGLL_APP'])
+            ->create(['position_id' => $position->id]);
+
+        return TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]);
+    }
 }

@@ -316,6 +316,16 @@ class WaitingList extends Model
         return $this->feature_toggles['check_cts_theory_exam'] ?? true;
     }
 
+    public function getShouldShowRecentControllingAttribute(): bool
+    {
+        return $this->feature_toggles['show_recent_controlling'] ?? true;
+    }
+
+    public function getShouldShowSoloEndorsementAttribute(): bool
+    {
+        return $this->feature_toggles['show_solo_endorsement'] ?? true;
+    }
+
     public function getFeatureTogglesFormattedAttribute(): object
     {
         return (object) [

@@ -112,6 +112,21 @@ class WaitingListResource extends Resource
                             ->integer()
                             ->minValue(0),
                     ])->collapsible()->collapsed()->visible(fn (callable $get) => $get('self_enrolment_enabled') === true),
+                
+                Section::make('Associated Training Place Settings')
+                    ->schema([
+                        Toggle::make('feature_toggles.show_recent_controlling')
+                            ->label('Show Recent Controlling')
+                            ->helperText('Training places created from this list will show the recent controlling section.')
+                            ->default(true),
+
+                        Toggle::make('feature_toggles.show_solo_endorsement')
+                            ->label('Show Solo Endorsement')
+                            ->helperText('Training places created from this list will show the solo endorsement section.')
+                            ->default(true),
+                    ])
+                    ->collapsible()
+                    ->collapsed(),
             ]);
     }
 
