@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Training;
 
+use App\Enums\AvailabilityCheckStatus;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -36,5 +37,15 @@ class AvailabilityWarnings
         ]);
 
         return $warning->fresh();
+    }
+
+    public static function deleteWarning(AvailabilityWarning $warning): void
+    {
+        // update the linked availability check to passed
+        $warning->availabilityCheck->update([
+            'status' => AvailabilityCheckStatus::Passed->value,
+        ]);
+
+        $warning->delete();
     }
 }

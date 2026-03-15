@@ -140,6 +140,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'training-places.revoke.*',
             'training-places.loas.create.*',
             'training-places.loas.end-early.*',
+            'training-places.availability-warnings.delete',
 
             // // Feedback System Permissions
             'feedback.access',
