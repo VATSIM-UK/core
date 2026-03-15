@@ -56,6 +56,10 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(30)
             ->graceTimeInMinutes(5);
 
+        $schedule->command('training-places:create-cts-session-requests')
+            ->hourlyAt(5)
+            ->graceTimeInMinutes(10);
+
         // === By Day === //
         $schedule->command('telescope:prune')
             ->dailyAt('03:30')
