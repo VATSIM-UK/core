@@ -525,7 +525,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
-            ->assertSee(\App\Livewire\Training\TrainingPlaceSoloEndorsement::class);
+            ->assertSee('Solo endorsements');
     }
 
     #[Test]
@@ -538,7 +538,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
-            ->assertDontSee(\App\Livewire\Training\TrainingPlaceSoloEndorsement::class);
+            ->assertDontSee('Solo endorsements');
     }
 
     #[Test]
@@ -551,7 +551,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
-            ->assertSee(\App\Livewire\Training\RecentControllingTable::class);
+            ->assertSee('Controlling during training');
     }
 
     #[Test]
@@ -564,7 +564,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
-            ->assertDontSee(\App\Livewire\Training\RecentControllingTable::class);
+            ->assertDontSee('Controlling during training');
     }
 
     private function createTrainingPlaceWithToggles(bool $showSoloEndorsement, bool $showRecentControlling): TrainingPlace
@@ -573,20 +573,20 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $student->addState(State::findByCode('DIVISION'));
         Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
 
-        $waitingList = WaitingList::factory()->create([
-            'department' => 'atc',
-            'feature_toggles' => [
-                'show_solo_endorsement' => $showSoloEndorsement,
-                'show_recent_controlling' => $showRecentControlling,
-            ],
-        ]);
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
         $waitingListAccount = $waitingList->addToWaitingList($student, $this->panelUser);
 
         $position = Position::factory()->create();
         $trainingPosition = TrainingPosition::factory()
             ->withCtsPositions(['EGLL_APP'])
-            ->create(['position_id' => $position->id]);
+            ->create([
+                'position_id' => $position->id,
+                'feature_toggles' => [
+                    'show_solo_endorsement' => $showSoloEndorsement,
+                    'show_recent_controlling' => $showRecentControlling,
+                ],
+            ]);
 
         return TrainingPlace::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,

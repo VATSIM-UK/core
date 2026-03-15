@@ -69,11 +69,11 @@ class TrainingPlace extends Model
 
     public function shouldShowRecentControlling(): bool
     {
-        return $this->waitingListAccount?->waitingList?->should_show_recent_controlling;
+        return $this->trainingPosition?->should_show_recent_controlling ?? true;
     }
 
     public function shouldShowSoloEndorsement(): bool
     {
-        return $this->waitingListAccount?->waitingList?->should_show_solo_endorsement;
+        return $this->trainingPosition?->should_show_solo_endorsement ?? true;
     }
 }
