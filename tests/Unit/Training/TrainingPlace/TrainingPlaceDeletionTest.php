@@ -28,11 +28,12 @@ class TrainingPlaceDeletionTest extends TestCase
 
         $position = Position::factory()->create();
         $ctsPosition = CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
+        $callsign = $ctsPosition->callsign;
         $trainingPosition = TrainingPosition::factory()
             ->create([
                 'position_id' => $position->id,
-                'cts_positions' => ['EGLL_APP'],
-                'cts_primary_position' => 'EGLL_APP',
+                'cts_positions' => [$callsign],
+                'cts_primary_position' => $callsign,
             ]);
 
         $trainingPlace = TrainingPlace::factory()->create([
@@ -42,14 +43,14 @@ class TrainingPlaceDeletionTest extends TestCase
 
         CtsSession::factory()->create([
             'student_id' => $member->id,
-            'position' => 'EGLL_APP',
+            'position' => $callsign,
             'taken_date' => null,
         ]);
 
         $this->assertTrue(
             CtsSession::query()
                 ->where('student_id', $member->id)
-                ->where('position', 'EGLL_APP')
+                ->where('position', $callsign)
                 ->whereNull('taken_date')
                 ->exists()
         );
@@ -59,7 +60,7 @@ class TrainingPlaceDeletionTest extends TestCase
         $this->assertFalse(
             CtsSession::query()
                 ->where('student_id', $member->id)
-                ->where('position', 'EGLL_APP')
+                ->where('position', $callsign)
                 ->whereNull('taken_date')
                 ->exists()
         );
