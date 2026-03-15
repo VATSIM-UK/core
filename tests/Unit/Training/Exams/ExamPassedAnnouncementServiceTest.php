@@ -39,7 +39,7 @@ class ExamPassedAnnouncementServiceTest extends TestCase
         $unix = CarbonImmutable::parse($examBooking->start_date)->utc()->getTimestamp();
 
         $this->assertStringContainsString('Please join us in congratulating', $message);
-        $this->assertStringContainsString($examBooking->exam, $message);
+        $this->assertStringContainsString('S2', $message);
         $this->assertStringContainsString("<t:{$unix}:R>", $message);
     }
 
@@ -66,7 +66,7 @@ class ExamPassedAnnouncementServiceTest extends TestCase
         $unix = CarbonImmutable::parse($examBooking->start_date)->utc()->getTimestamp();
 
         $this->assertStringContainsString('Please join us in congratulating', $message);
-        $this->assertStringContainsString($examBooking->exam, $message);
+        $this->assertStringContainsString('S2', $message);
         $this->assertStringContainsString('<@123456789012345678>', $message);
         $this->assertStringContainsString("<t:{$unix}:R>", $message);
     }
