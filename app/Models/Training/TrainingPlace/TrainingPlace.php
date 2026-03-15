@@ -66,14 +66,4 @@ class TrainingPlace extends Model
         $this->waitingListAccount->account->addNote('training', "Training place revoked on {$this->trainingPosition->position->callsign}. Reason: {$reason}", $admin->id);
         $this->delete();
     }
-
-    public function shouldShowRecentControlling(): bool
-    {
-        return $this->trainingPosition?->should_show_recent_controlling ?? true;
-    }
-
-    public function shouldShowSoloEndorsement(): bool
-    {
-        return $this->trainingPosition?->should_show_solo_endorsement ?? true;
-    }
 }

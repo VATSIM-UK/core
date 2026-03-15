@@ -11,11 +11,11 @@
 
     @livewire(\App\Livewire\Training\AvailabilityChecksTable::class, ['trainingPlace' => $this->trainingPlace], key('availability-checks-table'))
 
-    @if($this->trainingPlace->shouldShowSoloEndorsement())
+    @if($this->trainingPlace->trainingPosition->should_show_solo_endorsement ?? true)
         @livewire(\App\Livewire\Training\TrainingPlaceSoloEndorsement::class, ['trainingPlace' => $this->trainingPlace], key('training-place-solo-endorsement'))
     @endif
 
-    @if($this->trainingPlace->shouldShowRecentControlling())
+    @if($this->trainingPlace->trainingPosition->should_show_recent_controlling ?? true)
         @livewire(\App\Livewire\Training\RecentControllingTable::class, ['trainingPlace' => $this->trainingPlace], key('recent-controlling-table'))
     @endif
 
