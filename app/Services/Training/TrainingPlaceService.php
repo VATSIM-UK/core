@@ -117,7 +117,23 @@ class TrainingPlaceService
             return false;
         }
 
-        $examPosition = $trainingPlace->trainingPosition->exam_callsign ?? $trainingPlace->trainingPosition->position->callsign;
+        $trainingPosition = $trainingPlace->trainingPosition;
+
+        if (! $trainingPosition) {
+            Log::error('Training position not found');
+
+            return false;
+        }
+
+        $examPosition = $trainingPosition->exam_callsign
+            ?? $trainingPosition->position?->callsign
+            ?? null;
+
+        if (! $examPosition) {
+            Log::error('Exam position not found');
+
+            return false;
+        }
 
         return ExamBooking::where('student_id', $trainingPlace->waitingListAccount->account->member->id)
             ->where('position_1', $examPosition)

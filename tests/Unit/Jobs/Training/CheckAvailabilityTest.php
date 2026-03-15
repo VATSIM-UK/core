@@ -579,6 +579,7 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_APP',
         ]);
+        $this->trainingPlace->unsetRelation('trainingPosition');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -613,6 +614,7 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_APP',
         ]);
+        $this->trainingPlace->unsetRelation('trainingPosition');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -643,6 +645,8 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_APP',
         ]);
+        // Clear cached relation so job loads training position with updated exam_callsign (observer may have loaded it at create)
+        $this->trainingPlace->unsetRelation('trainingPosition');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -662,6 +666,7 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGKK_TWR', // Different position; hasPendingExam checks position_1
         ]);
+        $this->trainingPlace->unsetRelation('trainingPosition');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -691,6 +696,7 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_TWR',
         ]);
+        $this->trainingPlace->unsetRelation('trainingPosition');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -720,6 +726,7 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGKK_APP', // Does not match position->callsign (EGLL_TWR)
         ]);
+        $this->trainingPlace->unsetRelation('trainingPosition');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
