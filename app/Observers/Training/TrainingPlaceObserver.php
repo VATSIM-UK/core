@@ -4,8 +4,9 @@ namespace App\Observers\Training;
 
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\TrainingPlaceService;
+use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 
-class TrainingPlaceObserver
+class TrainingPlaceObserver implements ShouldHandleEventsAfterCommit
 {
     public function __construct(
         private TrainingPlaceService $trainingPlaceService
@@ -29,10 +30,13 @@ class TrainingPlaceObserver
 
     /**
      * Handle the TrainingPlace "deleting" event (before the record is soft-deleted).
+     *
+     * Note: Side effects that must only run after a successful commit
+     * are handled in the "deleted" event instead.
      */
     public function deleting(TrainingPlace $trainingPlace): void
     {
-        $trainingPlace->deletePendingSessionRequests();
+        //
     }
 
     /**
@@ -40,6 +44,7 @@ class TrainingPlaceObserver
      */
     public function deleted(TrainingPlace $trainingPlace): void
     {
+        $trainingPlace->deletePendingSessionRequests();
         $this->trainingPlaceService->revokeMentoringPermissions($trainingPlace);
     }
 
