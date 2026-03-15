@@ -29,17 +29,6 @@ class TrainingPlaceObserver implements ShouldHandleEventsAfterCommit
     }
 
     /**
-     * Handle the TrainingPlace "deleting" event (before the record is soft-deleted).
-     *
-     * Note: Side effects that must only run after a successful commit
-     * are handled in the "deleted" event instead.
-     */
-    public function deleting(TrainingPlace $trainingPlace): void
-    {
-        //
-    }
-
-    /**
      * Handle the TrainingPlace "deleted" event.
      */
     public function deleted(TrainingPlace $trainingPlace): void
