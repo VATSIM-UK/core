@@ -385,6 +385,13 @@ class ConductExam extends Page implements HasForms, HasInfolists
         $studentAccount = $this->examBooking->studentAccount();
         $waitingListAccountIds = $studentAccount->waitingListAccounts()->pluck('id');
 
-        TrainingPlace::whereIn('waiting_list_account_id', $waitingListAccountIds)->first()?->delete();
+        $trainingPlace = TrainingPlace::whereIn('waiting_list_account_id', $waitingListAccountIds)->first();
+
+        if (! $trainingPlace) {
+            return;
+        }
+
+        $trainingPlace->deletePendingSessionRequests();
+        $trainingPlace->delete();
     }
 }

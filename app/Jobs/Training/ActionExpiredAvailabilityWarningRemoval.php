@@ -50,6 +50,7 @@ class ActionExpiredAvailabilityWarningRemoval implements ShouldQueue
 
         try {
             DB::transaction(function () use ($trainingPlace, $account): void {
+                $trainingPlace->deletePendingSessionRequests();
                 $trainingPlace->delete();
                 AvailabilityWarnings::markWarningAsExpired($this->availabilityWarning);
                 $account->notify(new TrainingPlaceRemovedDueToExpiredAvailability($this->availabilityWarning));
