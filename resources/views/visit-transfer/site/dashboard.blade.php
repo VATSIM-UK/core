@@ -151,7 +151,7 @@
                 'title' => 'Start a new Application',
                 'icon' => ['type' => 'fa', 'key' => 'exclamation']
             ])
-            <p class="text-center">You can only complete your application and references on a non-mobile device.</p>
+            <p class="text-center">You can only complete your application on a non-mobile device.</p>
             @include('components.html.panel_close')
         </div>
     </div>
@@ -245,71 +245,6 @@
             @include('components.html.panel_close')
         </div>
     </div>
-
-    @if($pendingReferences->count() > 0)
-        <div class="row" id="pendingReferences">
-            <div class="col-md-12">
-                @include('components.html.panel_open', [
-                    'title' => 'Pending References',
-                    'icon' => ['type' => 'fa', 'key' => 'list-alt']
-                ])
-                <div class="row">
-                    <div class="col-md-10 col-md-offset-1">
-
-                        <table class="table table-bordered table-striped table-hover">
-                            <thead>
-                            <tr>
-                                <th width="col-md-2">Applicant Name (CID)</th>
-                                <th width="col-md-1">Type</th>
-                                <th width="col-md-2">Facility</th>
-                                <th width="col-md-2" class="hidden-xs hidden-sm">Submitted</th>
-                                <th width="col-md-2" class="hidden-xs hidden-sm">Reference Due By</th>
-                                <th class="col-md-1 text-center">Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @if(count($pendingReferences) < 1)
-                                <tr>
-                                    <td colspan="6" class="text-center">You have no applications to display.</td>
-                                </tr>
-                            @else
-                                @foreach($pendingReferences as $reference)
-                                    <tr>
-                                        <td>{{ $reference->application->account->name }}
-                                            ({{ $reference->application->account->id }})
-                                        </td>
-                                        <td>{{ $reference->application->type_string }}</td>
-                                        <td>{{ $reference->application->facility_name }}</td>
-                                        <td class="hidden-xs hidden-sm">
-                                            <span class="hidden-xs">{{ $reference->application->submitted_at }} UTC</span>
-                                            <span class="visible-xs">{{ $reference->application->submitted_at->toFormattedDateString() }}
-                                                UTC</span>
-                                        </td>
-                                        <td class="hidden-xs hidden-sm">
-                                            <span class="hidden-xs">{{ $reference->application->submitted_at->addDays(10) }} UTC</span>
-                                            <span class="visible-xs">{{ $reference->application->submitted_at->addDays(10)->toFormattedDateString() }}
-                                                UTC</span>
-                                        </td>
-                                        <td class="text-center">
-                                            @if ($reference->token)
-                                              <a href="{{ route('visiting.reference.complete', [$reference->token->code]) }}">Complete</a>
-                                            @else
-                                              <i>This reference has expired</i>
-                                            @endif
-
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endif
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div>
-                @include('components.html.panel_close')
-            </div>
-        </div>
-    @endif
 @stop
 
 @section("scripts")

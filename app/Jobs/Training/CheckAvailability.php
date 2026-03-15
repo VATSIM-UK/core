@@ -122,6 +122,7 @@ class CheckAvailability implements ShouldQueue
         // Check if a session exists for this student with a matching callsign
         $sessionExists = Session::where('student_id', $memberId)
             ->whereIn('position', $trainingPosition->cts_positions)
+            ->whereNull('taken_time')
             ->exists();
 
         return $sessionExists;

@@ -41,10 +41,4 @@ class DivisionMemberTest extends TestCase
         $this->get(route('visiting.landing'))
             ->assertSeeText(trans('application.dashboard.apply.atc.transfer.unable'));
     }
-
-    public function test_it_doesnt_display_references_table_if_not_a_referee()
-    {
-        $this->get(route('visiting.landing'))
-            ->assertDontSeeText('Pending References');
-    }
 }

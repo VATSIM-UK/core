@@ -30,7 +30,6 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [
             \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
-            \App\Listeners\VisitTransfer\NotifyAllReferees::class,
         ],
 
         \App\Events\VisitTransfer\ApplicationUnderReview::class => [
@@ -62,27 +61,6 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\VisitTransfer\ApplicationStatusChanged::class => [
             \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
-        ],
-
-        \App\Events\VisitTransfer\ReferenceCancelled::class => [
-            \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceCancellation::class,
-        ],
-
-        \App\Events\VisitTransfer\ReferenceUnderReview::class => [
-            \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceCompletion::class,
-            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceCompletion::class,
-        ],
-
-        \App\Events\VisitTransfer\ReferenceAccepted::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceAcceptance::class,
-        ],
-
-        \App\Events\VisitTransfer\ReferenceRejected::class => [
-            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceRejection::class,
-        ],
-
-        \App\Events\VisitTransfer\ReferenceDeleted::class => [
-            \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceDeletion::class,
         ],
 
         DiscordLinked::class => [

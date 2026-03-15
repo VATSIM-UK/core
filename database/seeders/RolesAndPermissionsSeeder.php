@@ -99,8 +99,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'vt.application.cancel.*',
             'vt.status.revoke',
             'vt.status.grant.manual',
-            // 'vt.application.reference.accept.*',
-            // 'vt.application.reference.reject.*',
             // 'vt.application.check.modify.*',
 
             // Waiting List System Permissions,
@@ -121,6 +119,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'waiting-lists.training-place.offer.*',
             'waiting-lists.training-place.offer.atc',
             'waiting-lists.training-place.offer.pilot',
+            'waiting-lists.training-place.view-offer.*',
+            'waiting-lists.training-place.view-offer.atc',
+            'waiting-lists.training-place.view-offer.pilot',
             'waiting-lists.training-place.rescind-offer.*',
             'waiting-lists.training-place.rescind-offer.atc',
             'waiting-lists.training-place.rescind-offer.pilot',

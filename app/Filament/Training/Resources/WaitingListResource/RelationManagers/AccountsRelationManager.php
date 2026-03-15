@@ -164,7 +164,7 @@ class AccountsRelationManager extends RelationManager
                     ->color('success'),
 
                 Tables\Actions\ViewAction::make()
-                    ->modalHeading(fn (?WaitingListAccount $record) => "Waiting List Account — {$record?->account->name}")
+                    ->modalHeading(fn (?WaitingListAccount $record) => "{$record?->account->name} - Waiting List Account")
                     ->extraModalFooterActions(function (?WaitingListAccount $record) {
                         if (! $record) {
                             return [];

@@ -6,17 +6,9 @@
 </p>
 
 @if($application->is_submitted)
-@if($application->references_required > 0)
-<p>
-    We will now contact your references and request that they complete a reference for you within 14 days. If the details you have provided are invalid, unacceptable,
-    or your referees fail to complete their reference within the given time frame, your application will be automatically rejected. Following completion of these, your
-    application will undergo a series of automated checks to ensure you are compliant with the Visiting &amp; Transferring policy.
-</p>
-@else
 <p>
     Your application will now undergo a series of automated checks to ensure you are compliant with the Visiting &amp; Transferring policy.
 </p>
-@endif
 @elseif($application->is_under_review)
 <p>
     Your application will now be reviewed by a member of the Community Department. You do not need to do anything further at this stage.
@@ -75,7 +67,7 @@
 </p>
 @elseif($application->is_withdrawn)
 <p>
-    Your application will not be processed any further and no further action will be taken. Your referee(s) have been notified that their reference is no longer required.
+    Your application will not be processed any further and no further action will be taken.
 </p>
 @endif
 @stop
