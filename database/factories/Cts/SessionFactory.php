@@ -36,6 +36,7 @@ class SessionFactory extends Factory
             'taken_date' => now(),
             'taken_from' => now()->addHour(),
             'taken_to' => now()->addHours(2),
+            'session_done' => 0,
         ]);
     }
 }
