@@ -18,6 +18,7 @@ class UKCPLibraryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        config(['services.ukcp.key' => 'test-key']);
         Carbon::setTestNow(Carbon::now()->addMinutes(30));
     }
 
@@ -50,7 +51,7 @@ class UKCPLibraryTest extends TestCase
             $mock->shouldReceive('put')
                 ->with("https://ukcp.vatsim.uk/api/user/{$this->user->id}/notifications/read/{$notificationId}", [
                     'headers' => [
-                        'Authorization' => 'Bearer ',
+                        'Authorization' => 'Bearer test-key',
                     ],
                 ])
                 ->andReturn(new \GuzzleHttp\Psr7\Response(200, [], true));
@@ -69,7 +70,7 @@ class UKCPLibraryTest extends TestCase
             $mock->shouldReceive('put')
                 ->with("https://ukcp.vatsim.uk/api/user/{$this->user->id}/notifications/read/{$notificationId}", [
                     'headers' => [
-                        'Authorization' => 'Bearer ',
+                        'Authorization' => 'Bearer test-key',
                     ],
                 ])
                 ->andThrow(
