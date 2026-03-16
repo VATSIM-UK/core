@@ -111,7 +111,7 @@ class TrainingPlaceResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->getStateUsing(fn (TrainingPlace $record): string => $record->deleted_at ? 'deleted' : 'active')
+                    ->getStateUsing(fn (TrainingPlace $record): string => $record->deleted_at ? 'inactive' : 'active')
                     ->color(fn (string $state): string => $state === 'active' ? 'success' : 'danger')
                     ->icon(fn (string $state): string => $state === 'active' ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
                     ->formatStateUsing(fn (string $state): string => Str::title($state)),
@@ -129,8 +129,8 @@ class TrainingPlaceResource extends Resource
                 Tables\Filters\TrashedFilter::make()
                     ->label('Training Place Status')
                     ->placeholder('Active only')
-                    ->trueLabel('Active & removed')
-                    ->falseLabel('Removed only'),
+                    ->trueLabel('Active & Inactive')
+                    ->falseLabel('Inactive only'),
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make()

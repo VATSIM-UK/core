@@ -197,7 +197,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
     {
 
         return $infolist->record($this->trainingPlace)->schema([
-            Section::make('This training place has been removed')
+            Section::make('This training place is inactive')
                 ->icon('heroicon-o-exclamation-triangle')
                 ->description('This training place is now read only.')
                 ->iconColor('danger')
