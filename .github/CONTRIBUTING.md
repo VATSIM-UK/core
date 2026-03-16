@@ -30,11 +30,10 @@ See [LICENSE.md](https://github.com/VATSIM-UK/core/blob/main/LICENSE.md) for the
 ## Pull Request Workflow
 
 1. Fork the repository.
-2. Create a branch named `issue-[issue_number]` (for example, `issue-1234`).
-3. Implement a focused change set for one issue.
-4. Add or update tests as required.
-5. Push to your fork and open a PR to `main`.
-6. Link the related issue in the PR description.
+2. Implement a focused change set for one issue.
+3. Add or update tests as required.
+4. Push to your fork and open a PR to `main`.
+5. Link the related issue in the PR description.
 
 ### PR Expectations
 
