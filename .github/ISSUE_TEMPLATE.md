@@ -26,19 +26,6 @@ Expected behavior:
 
 < Enter text here >
 
-## Architectural Impact (if known)
-
-- [ ] Controller/service boundary
-- [ ] Service layer / business logic
-- [ ] Queue/jobs/integrations
-- [ ] Service provider bindings
-- [ ] API response contract
-- [ ] None / unsure
-
-## Risks and Regressions
-
-< Any likely regressions, side effects, or migration concerns? >
-
 ## Verification Plan
 
 < How should this be tested? Include automated and manual checks where possible. >
