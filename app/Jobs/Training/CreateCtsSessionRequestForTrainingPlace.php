@@ -7,6 +7,7 @@ namespace App\Jobs\Training;
 use App\Models\Cts\Position as CtsPosition;
 use App\Models\Cts\Session as CtsSession;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Services\Training\TrainingPlaceService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -72,7 +73,10 @@ class CreateCtsSessionRequestForTrainingPlace implements ShouldQueue
             ->where('taken_date', '>=', now()->toDateString())
             ->exists();
 
-        if ($hasOpenSessionRequest || $hasSessionBooked) {
+        // Check if the student has a pending exam, if so they should not have a session request created
+        $hasPendingExam = app(TrainingPlaceService::class)->hasPendingExam($this->trainingPlace);
+
+        if ($hasOpenSessionRequest || $hasSessionBooked || $hasPendingExam) {
             return;
         }
 
