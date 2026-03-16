@@ -15,7 +15,7 @@
                             <th class="text-center">On Roster</th>
                             <th class="text-center">Theory Exam Passed</th>
                         @endif
-                        <th></th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +55,12 @@
                                 @endif
                             </td>
                         @endif
+                            <td>
+                                <form action="{{route('mship.waiting-lists.self-remove', ['waitingList' => $waitingListAccount->waitingList])}}" method="POST">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <button class="btn btn-danger" type="submit">Leave Waiting List</button>
+                                </form>
+                            </td>
                     </tr>
                     @endforeach
                     @if(count($waitingListAccounts) == 0)
