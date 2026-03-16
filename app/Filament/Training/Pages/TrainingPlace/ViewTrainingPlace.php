@@ -8,6 +8,7 @@ use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
 use Filament\Actions\Action;
@@ -147,10 +148,10 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
     {
         try {
             // Get the position from the provided ID
-            $position = Position::findOrFail($positionId);
+            $trainingPosition = TrainingPosition::where('position_id', $positionId)->firstOrFail();
             $ctsMember = $this->trainingPlace->waitingListAccount->account->member;
 
-            if (! $position || ! $ctsMember) {
+            if (! $trainingPosition || ! $ctsMember) {
                 Notification::make()
                     ->title('Error')
                     ->danger()
@@ -176,12 +177,12 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
 
             // Use the service to forward for exam
             $service = new ExamForwardingService;
-            $service->forwardForExam($ctsMember, $position, $user->id);
+            $service->forwardForExam($ctsMember, $trainingPosition, $user->id);
 
             Notification::make()
                 ->title('Success')
                 ->success()
-                ->body('Exam setup for '.$position->callsign.' has been created.')
+                ->body('Exam setup for '.($trainingPosition->exam_callsign ?? $trainingPosition->position->callsign).' has been created.')
                 ->send();
         } catch (\Exception $e) {
             Notification::make()

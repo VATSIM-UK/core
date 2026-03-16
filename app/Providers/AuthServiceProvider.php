@@ -23,7 +23,6 @@ use App\Policies\Training\WaitingListFlagsPolicy;
 use App\Policies\Training\WaitingListPolicy;
 use App\Policies\TrainingPlacePolicy;
 use App\Policies\VisitTransfer\ApplicationPolicy;
-use App\Policies\VisitTransfer\ReferencePolicy;
 use App\Registrars\PermissionRegistrar as RegistrarsPermissionRegistrar;
 use Illuminate\Contracts\Auth\Access\Gate as AccessGate;
 use Illuminate\Contracts\Foundation\Application;
@@ -43,7 +42,6 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'password' => PasswordPolicy::class,
         VisitTransfer\Application::class => ApplicationPolicy::class,
-        VisitTransfer\Reference::class => ReferencePolicy::class,
         WaitingList::class => WaitingListPolicy::class,
         WaitingList\WaitingListFlag::class => WaitingListFlagsPolicy::class,
         Qualification::class => QualificationPolicy::class,

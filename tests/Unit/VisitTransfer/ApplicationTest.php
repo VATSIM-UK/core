@@ -2,16 +2,19 @@
 
 namespace Tests\Unit\VisitTransfer;
 
+use App\Enums\VTCheckStatus;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransfer\Facility;
 use App\Notifications\ApplicationAccepted;
 use App\Notifications\ApplicationStatusChanged;
 use Carbon\Carbon;
 use Faker\Provider\Base;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
@@ -104,15 +107,14 @@ class ApplicationTest extends TestCase
             'minutes_online' => $start->diffInMinutes($end),
         ]);
 
-        $this->assertFalse($application->check50Hours());
+        $this->assertEquals(VTCheckStatus::Failed, $application->check50Hours());
 
-        // Add 1 hour of ATC
-        $end = new Carbon('30 hour ago');
+        $end = new Carbon('30 hours ago');
         $atc->disconnected_at = $end;
         $atc->minutes_online = $start->diffInMinutes($end);
         $atc->save();
 
-        $this->assertTrue($application->check50Hours());
+        $this->assertEquals(VTCheckStatus::Passed, $application->check50Hours());
     }
 
     #[Test]
@@ -130,7 +132,6 @@ class ApplicationTest extends TestCase
             'should_perform_checks' => 1,
         ]);
 
-        // Add 60 hours of ATC
         $start = new Carbon('80 hours ago');
         $end = new Carbon('20 hours ago');
         factory(Atc::class, 'offline')->create([
@@ -141,7 +142,25 @@ class ApplicationTest extends TestCase
             'minutes_online' => $start->diffInMinutes($end),
         ]);
 
-        $this->assertFalse($application->check50Hours());
+        $this->assertEquals(VTCheckStatus::Failed, $application->check50Hours());
+    }
+
+    #[Test]
+    public function it_returns_not_required_for50_hour_check_when_already_set_to_not_required()
+    {
+        $qual = Qualification::code('S2')->first();
+        $this->user->addQualification($qual)->save();
+
+        $application = Application::factory()->transfer('atc')->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_SUBMITTED,
+            'should_perform_checks' => 1,
+            'check_outcome_50_hours' => VTCheckStatus::NotRequired,
+        ]);
+
+        $result = $application->check50Hours();
+
+        $this->assertEquals(VTCheckStatus::NotRequired, $result);
     }
 
     #[Test]
@@ -159,9 +178,61 @@ class ApplicationTest extends TestCase
             'submitted_at' => now(),
         ]);
 
-        $this->assertFalse($application->fresh()->check90DayQualification());
+        $this->assertEquals(VTCheckStatus::Failed, $application->fresh()->check90DayQualification());
         $this->user->qualifications()->updateExistingPivot($qual->id, ['created_at' => new Carbon('100 days ago')]);
-        $this->assertTrue($application->fresh()->check90DayQualification());
+        $this->assertEquals(VTCheckStatus::Passed, $application->fresh()->check90DayQualification());
+    }
+
+    #[Test]
+    public function set_facility_marks90_day_check_as_not_required_when_facility_has_it_disabled()
+    {
+        $qual = Qualification::code('S2')->first();
+        $this->user->addQualification($qual)->save();
+
+        $facility = Facility::factory()->visit('atc')->create([
+            'stage_checks' => true,
+            'training_required' => true,
+            'stage_statement_enabled' => false,
+            'auto_acceptance' => false,
+            'enable_90_day_check' => false,
+            'enable_50_hours_check' => true,
+        ]);
+
+        $application = Application::factory()->visit('atc')->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_IN_PROGRESS,
+        ]);
+
+        $application->setFacility($facility);
+
+        $this->assertEquals(VTCheckStatus::NotRequired, $application->fresh()->check_outcome_90_day);
+        $this->assertNotEquals(VTCheckStatus::NotRequired, $application->fresh()->check_outcome_50_hours);
+    }
+
+    #[Test]
+    public function set_facility_does_not_set_not_required_when_all_checks_are_enabled()
+    {
+        $qual = Qualification::code('S2')->first();
+        $this->user->addQualification($qual)->save();
+
+        $facility = Facility::factory()->visit('atc')->create([
+            'stage_checks' => true,
+            'training_required' => true,
+            'stage_statement_enabled' => false,
+            'auto_acceptance' => false,
+            'enable_90_day_check' => true,
+            'enable_50_hours_check' => true,
+        ]);
+
+        $application = Application::factory()->visit('atc')->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_IN_PROGRESS,
+        ]);
+
+        $application->setFacility($facility);
+
+        $this->assertNotEquals(VTCheckStatus::NotRequired, $application->fresh()->check_outcome_90_day);
+        $this->assertNotEquals(VTCheckStatus::NotRequired, $application->fresh()->check_outcome_50_hours);
     }
 
     #[Test]
@@ -223,6 +294,8 @@ class ApplicationTest extends TestCase
     #[Test]
     public function it_reports_statistics_correctly()
     {
+        DB::table('vt_application')->truncate();
+
         $openNotInProgressApplications = collect(Application::$APPLICATION_IS_CONSIDERED_OPEN)->search(function ($status) {
             return $status == Application::STATUS_IN_PROGRESS;
         });
@@ -263,5 +336,52 @@ class ApplicationTest extends TestCase
         foreach ($applicationTypes as $function => $status) {
             Application::$function();
         }
+    }
+
+    #[Test]
+    public function completing_a_pilot_application_removes_visiting_state_if_no_atc_applications_exist()
+    {
+        $visiting = \App\Models\Mship\State::findByCode('VISITING');
+        $pilotFacility = \App\Models\VisitTransfer\Facility::factory()->visit('pilot')->create();
+
+        $application = Application::factory()->visit('pilot')->create([
+            'account_id' => $this->user->id,
+            'facility_id' => $pilotFacility->id,
+            'status' => Application::STATUS_UNDER_REVIEW,
+        ]);
+        $application->accept();
+
+        $this->assertTrue($this->user->fresh()->hasState($visiting));
+        $application->complete();
+        $this->assertFalse($this->user->fresh()->hasState($visiting));
+    }
+
+    public function completing_a_pilot_application_does_not_remove_visiting_state_if_an_atc_application_exists()
+    {
+        $visiting = \App\Models\Mship\State::findByCode('VISITING');
+        $pilotFacility = \App\Models\VisitTransfer\Facility::factory()->visit('pilot')->create();
+        $atcFacility = \App\Models\VisitTransfer\Facility::factory()->visit('atc')->create();
+
+        $atcApplication = Application::factory()->visit('atc')->create([
+            'account_id' => $this->user->id,
+            'facility_id' => $atcFacility->id,
+            'status' => Application::STATUS_UNDER_REVIEW,
+        ]);
+
+        $pilotApplication = Application::factory()->visit('pilot')->create([
+            'account_id' => $this->user->id,
+            'facility_id' => $pilotFacility->id,
+            'status' => Application::STATUS_UNDER_REVIEW,
+        ]);
+
+        $atcApplication->accept();
+        $this->assertTrue($this->user->fresh()->hasState($visiting));
+        $atcApplication->complete();
+        $this->assertTrue($this->user->fresh()->hasState($visiting));
+
+        $pilotApplication->accept();
+        $pilotApplication->complete();
+        $this->assertTrue($this->user->fresh()->hasState($visiting));
+
     }
 }

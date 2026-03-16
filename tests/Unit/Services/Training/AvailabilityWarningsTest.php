@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services\Training;
 
+use App\Enums\AvailabilityCheckStatus;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
@@ -127,5 +128,25 @@ class AvailabilityWarningsTest extends TestCase
         $this->assertEquals('resolved', $updated->status);
         $this->assertNotNull($updated->resolved_at);
         $this->assertEquals($passedCheck->id, $updated->resolved_availability_check_id);
+    }
+
+    #[Test]
+    public function it_deletes_warning_and_updates_linked_availability_check_to_passed(): void
+    {
+        $trainingPlace = $this->createTrainingPlaceWithFullRelations();
+        $check = AvailabilityCheck::factory()->failed()->create(['training_place_id' => $trainingPlace->id]);
+        $warning = AvailabilityWarning::factory()->pending()->create([
+            'training_place_id' => $trainingPlace->id,
+            'availability_check_id' => $check->id,
+            'expires_at' => now()->addDays(1),
+        ]);
+
+        AvailabilityWarnings::deleteWarning($warning);
+
+        $this->assertDatabaseMissing('availability_warnings', ['id' => $warning->id]);
+        $this->assertEquals(
+            AvailabilityCheckStatus::Passed,
+            $check->fresh()->status
+        );
     }
 }
