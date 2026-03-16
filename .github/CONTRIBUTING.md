@@ -16,9 +16,9 @@ If you are new to the project, start with issues labeled `good-first-issue` or `
 
 ## Contributor License Agreement
 
-By submitting code as an individual, you agree that VATSIM UK can use your amendments, fixes, patches, changes, modifications, submissions, and creations in Core, and that ownership of your submitted changes transfers to VATSIM UK in full.
+By submitting a contribution (including amendments, fixes, patches, changes, modifications, submissions, and creations) to this repository, you agree to license your contribution under the same terms as the project: the MIT License. You retain ownership of your contributions, but grant VATSIM UK and all recipients of the software a perpetual, worldwide, non-exclusive, royalty-free license to use, modify, and distribute your contributions as part of the project.
 
-See [LICENSE.md](https://github.com/VATSIM-UK/core/blob/main/LICENSE.md) for licensing information.
+See [LICENSE.md](https://github.com/VATSIM-UK/core/blob/main/LICENSE.md) for the full license text.
 
 ## Issue Workflow
 
