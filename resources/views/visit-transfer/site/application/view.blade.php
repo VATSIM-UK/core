@@ -43,49 +43,6 @@
 
                 </div>
 
-                <div class="col-md-6">
-
-                    @if($application->referees->count() > 0)
-                        <table class="table table-striped table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>CID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Position</th>
-                                <th>Status</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($application->referees as $referee)
-                                <tr>
-                                    <td>{{ $referee->account_id }}</td>
-                                    <td>{{ $referee->account->name }}</td>
-                                    <td>{{ $referee->email }}</td>
-                                    <td>{{ $referee->relationship }}</td>
-                                    <td>{{ $referee->status_string }}</td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <table class="table table-striped table-hover">
-                            <tbody>
-                                <tr>
-                                    <th class="text-center">
-                                        @if($application->references_required > 0)
-                                            You have no referees/references.
-                                        @else
-                                            Your application does not require any references.
-                                        @endif
-                                    </th>
-                                </tr>
-                            </tbody>
-                        </table>
-                    @endif
-
-                </div>
-
                 <div class="col-md-10 col-md-offset-1">
                     <pre><strong>Supporting Statement</strong><br />{{ $application->statement_required ? $application->statement : "No statement required." }}</pre>
                 </div>
@@ -105,16 +62,10 @@
                                 This application has been cancelled.
                             </p>
                         </p>
-                    @elseif($application->is_pending_references)
-                        <div class="alert alert-danger" role="alert">
-                            <p>
-                                Your references have been contacted and we are awaiting submission of their reference details.  We will notify you when this occurs.
-                            </p>
-                        </div>
                     @elseif($application->is_under_review)
                         <div class="alert alert-warning" role="alert">
                             <p>
-                                We have received your references and we are reviewing your application.  You will be notified of the outcome.
+                                We are reviewing your application. You will be notified of the outcome.
                             </p>
                         </div>
                     @elseif($application->is_rejected)

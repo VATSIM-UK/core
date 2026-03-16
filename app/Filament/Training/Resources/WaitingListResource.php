@@ -75,6 +75,12 @@ class WaitingListResource extends Resource
                             ->helperText('Leave empty for unlimited capacity. Set a number to limit how many users can be on this waiting list.')
                             ->integer()
                             ->minValue(1),
+                        Select::make('requiredEndorsement')
+                            ->label('Required Endorsement')
+                            ->helperText('If set, only members with this endorsement can be on the waiting list.')
+                            ->nullable()
+                            ->relationship('requiredEndorsement', 'name')
+                            ->searchable(),
 
                     ])
                     ->collapsible()

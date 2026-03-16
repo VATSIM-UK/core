@@ -2,15 +2,11 @@
 
 namespace App\Services\VisitTransfer;
 
-use App\Exceptions\Mship\InvalidCIDException;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
-use App\Models\VisitTransfer\Reference;
 use App\Services\VisitTransfer\DTO\ApplicationActionResult;
 use App\Services\VisitTransfer\DTO\ApplicationContinueRedirectData;
-use App\Services\VisitTransfer\DTO\RefereeAddExceptionData;
-use ErrorException;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Gate;
@@ -25,15 +21,6 @@ class ApplicationFlowService
     public function shouldRedirectToLanding(string $route): bool
     {
         return $route === 'visiting.landing';
-    }
-
-    public function mapRefereeAddException(Exception $exception): RefereeAddExceptionData
-    {
-        if ($exception->getMessage() === 'Your referee must be in your home region.') {
-            return new RefereeAddExceptionData('Your referee must be in your home region.', true);
-        }
-
-        return new RefereeAddExceptionData($exception->getMessage(), false);
     }
 
     public function getCurrentOpenApplicationForUser(?Authenticatable $account): Application
@@ -78,10 +65,6 @@ class ApplicationFlowService
 
         if (Gate::allows('add-statement', $application) && $application->statement == null) {
             return 'visiting.application.statement';
-        }
-
-        if (Gate::allows('add-referee', $application) && $application->number_references_required_relative > 0) {
-            return 'visiting.application.referees';
         }
 
         if (Gate::allows('submit-application', $application)) {
@@ -157,65 +140,6 @@ class ApplicationFlowService
         }
 
         return new ApplicationActionResult(false, 'visiting.application.continue', [$application->public_id], 'success', 'Statement completed');
-    }
-
-    /**
-     * @return array{redirectRoute: string}
-     */
-    public function addReferee(Application $application, Account $actor, string $refereeCid, ?string $refereeEmail, ?string $refereeRelationship): array
-    {
-        $referee = Account::findOrRetrieve($refereeCid);
-
-        try {
-            if ($referee->primary_permanent_state->pivot->region != $actor->primary_permanent_state->pivot->region) {
-                throw new Exception('Your referee must be in your home region.');
-            }
-        } catch (ErrorException) {
-            // ignore missing region data
-        }
-
-        $application->addReferee($referee, $refereeEmail, $refereeRelationship);
-
-        return [
-            'redirectRoute' => $application->fresh()->number_references_required_relative == 0
-                ? 'visiting.application.submit'
-                : 'visiting.application.referees',
-        ];
-    }
-
-    public function addRefereeAction(
-        Application $application,
-        Account $actor,
-        string $refereeCid,
-        ?string $refereeEmail,
-        ?string $refereeRelationship
-    ): ApplicationActionResult {
-        try {
-            $flowResult = $this->addReferee($application, $actor, $refereeCid, $refereeEmail, $refereeRelationship);
-        } catch (InvalidCIDException) {
-            return new ApplicationActionResult(true, '', [], 'error', "There doesn't seem to be a VATSIM user with that ID.", true);
-        } catch (Exception $exception) {
-            $error = $this->mapRefereeAddException($exception);
-
-            if ($error->useBackRedirect) {
-                return new ApplicationActionResult(true, '', [], 'error', $error->message, true);
-            }
-
-            return new ApplicationActionResult(false, 'visiting.application.referees', [$application->public_id], 'error', $error->message);
-        }
-
-        return new ApplicationActionResult(
-            false,
-            (string) $flowResult['redirectRoute'],
-            [$application->public_id],
-            'success',
-            sprintf('Referee %s added successfully! They will not be contacted until you submit your application.', $refereeCid)
-        );
-    }
-
-    public function deleteReferee(Reference $reference): void
-    {
-        $reference->delete();
     }
 
     public function submitAction(Application $application): ApplicationActionResult

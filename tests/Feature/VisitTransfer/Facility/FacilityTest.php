@@ -386,4 +386,80 @@ class FacilityTest extends BaseAdminTestCase
             'waiting_list_id' => $waitingList->id,
         ]);
     }
+
+    #[Test]
+    public function atc_facility_accepts_instructor_rated_user_when_s3_falls_in_range()
+    {
+        $minQual = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 3)
+            ->first();
+
+        $maxQual = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 4)
+            ->first();
+
+        $facility = Facility::factory()->create([
+            'training_team' => 'atc',
+            'minimum_atc_qualification_id' => $minQual->id,
+            'maximum_atc_qualification_id' => $maxQual->id,
+        ]);
+
+        $application = new Application(['account_id' => $this->internationalUser->id]);
+
+        $i1 = Qualification::ofType(QualificationTypeEnum::ATCTraining->value)
+            ->where('code', 'I1')
+            ->first();
+
+        $this->internationalUser->addQualification($i1);
+
+        $this->assertTrue($application->meetsRatingRequirements($facility->fresh()));
+    }
+
+    #[Test]
+    public function atc_facility_accepts_instructor_rated_user_when_c1_falls_in_range()
+    {
+        $minQual = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 5)
+            ->first();
+
+        $facility = Facility::factory()->create([
+            'training_team' => 'atc',
+            'minimum_atc_qualification_id' => $minQual->id,
+            'maximum_atc_qualification_id' => null,
+        ]);
+
+        $application = new Application(['account_id' => $this->internationalUser->id]);
+
+        $i1 = Qualification::ofType(QualificationTypeEnum::ATCTraining->value)
+            ->where('code', 'I1')
+            ->first();
+
+        $this->internationalUser->addQualification($i1);
+
+        $this->assertTrue($application->meetsRatingRequirements($facility->fresh()));
+    }
+
+    #[Test]
+    public function atc_facility_rejects_instructor_rated_user_when_neither_s3_nor_c1_fall_in_range()
+    {
+        $maxQual = Qualification::ofType(QualificationTypeEnum::ATC->value)
+            ->where('vatsim', 2)
+            ->first();
+
+        $facility = Facility::factory()->create([
+            'training_team' => 'atc',
+            'minimum_atc_qualification_id' => null,
+            'maximum_atc_qualification_id' => $maxQual->id,
+        ]);
+
+        $application = new Application(['account_id' => $this->internationalUser->id]);
+
+        $i1 = Qualification::ofType(QualificationTypeEnum::ATCTraining->value)
+            ->where('code', 'I1')
+            ->first();
+
+        $this->internationalUser->addQualification($i1);
+
+        $this->assertFalse($application->meetsRatingRequirements($facility->fresh()));
+    }
 }

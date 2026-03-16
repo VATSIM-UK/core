@@ -3,8 +3,8 @@
 namespace App\Services\Training;
 
 use App\Enums\ExamResultEnum;
-use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\DTO\ExamResubmissionDecision;
 
 class ExamResubmissionService
@@ -21,9 +21,7 @@ class ExamResubmissionService
         }
 
         $student = $examBooking->student;
-        $position = Position::query()
-            ->where('callsign', $examBooking->position_1)
-            ->first();
+        $position = $this->resolveTrainingPosition($examBooking);
 
         if ($decision->isObservationExam) {
             $this->examForwardingService->forwardForObsExam($student, $position);
@@ -32,6 +30,17 @@ class ExamResubmissionService
         }
 
         $this->examForwardingService->forwardForExam($student, $position, $userId);
+    }
+
+    private function resolveTrainingPosition(ExamBooking $examBooking): TrainingPosition
+    {
+        if ($examBooking->exam === 'OBS') {
+            return TrainingPosition::whereJsonContains('cts_positions', $examBooking->position_1)->firstOrFail();
+        }
+
+        return TrainingPosition::whereHas('position', fn ($q) => $q
+            ->where('callsign', $examBooking->position_1))
+            ->firstOrFail();
     }
 
     public function getResubmissionDecision(ExamBooking $examBooking, string $result): ExamResubmissionDecision

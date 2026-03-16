@@ -13,6 +13,7 @@ use App\Models\Cts\PracticalResult;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
@@ -269,6 +270,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
 
         $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+        TrainingPosition::factory()->create(['position_id' => $position->id]);
 
         // Create exam booking
         $exam = ExamBooking::factory()->create([
@@ -334,6 +336,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
 
         // Create OBS position
         $position = Position::factory()->create(['callsign' => 'OBS_PH_PT3']);
+        TrainingPosition::factory()->withCtsPositions(['OBS_PH_PT3'])->create(['position_id' => $position->id]);
 
         // Create exam booking
         $exam = ExamBooking::factory()->create([

@@ -3,6 +3,7 @@
 namespace App\Services\Training;
 
 use App\Enums\PositionValidationStatusEnum;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Models\Training\TrainingPlace\TrainingPlace;
@@ -116,5 +117,37 @@ class TrainingPlaceService
         $removal = new Removal(RemovalReason::TrainingPlace, $actorId);
 
         $trainingPlace->waitingListAccount->waitingList->removeFromWaitingList($trainingPlace->waitingListAccount->account, $removal);
+    }
+
+    public function hasPendingExam(TrainingPlace $trainingPlace): bool
+    {
+        if (! $trainingPlace->waitingListAccount?->account?->member) {
+            Log::error('Student does not have a CTS member model attached');
+
+            return false;
+        }
+
+        $trainingPosition = $trainingPlace->trainingPosition;
+
+        if (! $trainingPosition) {
+            Log::error('Training position not found');
+
+            return false;
+        }
+
+        $examPosition = $trainingPosition->exam_callsign
+            ?? $trainingPosition->position?->callsign
+            ?? null;
+
+        if (! $examPosition) {
+            Log::error('Exam position not found');
+
+            return false;
+        }
+
+        return ExamBooking::where('student_id', $trainingPlace->waitingListAccount->account->member->id)
+            ->where('position_1', $examPosition)
+            ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->exists();
     }
 }

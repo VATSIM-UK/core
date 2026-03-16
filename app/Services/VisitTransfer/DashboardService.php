@@ -12,9 +12,6 @@ class DashboardService
             'allApplications' => $account->visitTransferApplications,
             'currentVisitApplication' => $account->visitTransferApplications()->visit()->open()->latest()->first(),
             'currentTransferApplication' => $account->visitTransferApplications()->transfer()->open()->latest()->first(),
-            'pendingReferences' => $account->visitTransferReferee->filter(function ($reference) {
-                return $reference->is_requested;
-            }),
         ];
     }
 }

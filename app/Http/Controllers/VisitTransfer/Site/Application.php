@@ -5,13 +5,10 @@ namespace App\Http\Controllers\VisitTransfer\Site;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\VisitTransfer\ApplicationFacilitySelectedRequested;
 use App\Http\Requests\VisitTransfer\ApplicationManualFacilityRequest;
-use App\Http\Requests\VisitTransfer\ApplicationRefereeAddRequest;
-use App\Http\Requests\VisitTransfer\ApplicationRefereeDeleteRequest;
 use App\Http\Requests\VisitTransfer\ApplicationStartRequest;
 use App\Http\Requests\VisitTransfer\ApplicationStatementSubmitRequest;
 use App\Http\Requests\VisitTransfer\ApplicationSubmitRequest;
 use App\Http\Requests\VisitTransfer\ApplicationWithdrawRequest;
-use App\Models\VisitTransfer\Reference;
 use App\Services\VisitTransfer\ApplicationFlowService;
 use App\Services\VisitTransfer\DTO\ApplicationActionResult;
 use Auth;
@@ -112,48 +109,6 @@ class Application extends BaseController
         );
     }
 
-    public function getReferees(\App\Models\VisitTransfer\Application $application)
-    {
-        $this->authorize('add-referee', $application);
-
-        $application->load('referees.account');
-
-        $this->setTitle('Referees - Visit/Transfer Application');
-
-        return $this->viewMake('visit-transfer.site.application.referees')
-            ->with('application', $application);
-    }
-
-    public function postReferees(ApplicationRefereeAddRequest $request, \App\Models\VisitTransfer\Application $application)
-    {
-        $result = $this->applicationFlowService->addRefereeAction(
-            $application,
-            Auth::user(),
-            (string) Request::input('referee_cid'),
-            Request::input('referee_email'),
-            Request::input('referee_relationship')
-        );
-
-        if ($result->useBackRedirect) {
-            $redirect = Redirect::back()->with((string) $result->level, (string) $result->message);
-
-            if ($result->withInput) {
-                return $redirect->withInput();
-            }
-
-            return $redirect;
-        }
-
-        return Redirect::route($result->route, $result->routeParameters)->with((string) $result->level, (string) $result->message);
-    }
-
-    public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, \App\Models\VisitTransfer\Application $application, Reference $reference)
-    {
-        $this->applicationFlowService->deleteReferee($reference);
-
-        return Redirect::route('visiting.application.referees', [$application->public_id])->withSuccess('Referee '.$reference->account->name.' deleted.');
-    }
-
     public function getSubmit(\App\Models\VisitTransfer\Application $application)
     {
         $this->authorize('submit-application', $application);
@@ -188,7 +143,7 @@ class Application extends BaseController
     {
         $this->authorize('view', $application);
 
-        $application->load('facility')->load('referees.account');
+        $application->load('facility');
 
         $this->setTitle('View Visit/Transfer Application');
 

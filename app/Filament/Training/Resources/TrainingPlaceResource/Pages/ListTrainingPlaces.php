@@ -4,6 +4,7 @@ namespace App\Filament\Training\Resources\TrainingPlaceResource\Pages;
 
 use App\Filament\Training\Resources\TrainingPlaceResource;
 use App\Filament\Training\Resources\TrainingPlaceResource\Widgets\TrainingPlaceCategoryChart;
+use App\Filament\Training\Resources\TrainingPlaceResource\Widgets\TrainingPlaceOffersOverview;
 use Filament\Resources\Pages\ListRecords;
 
 class ListTrainingPlaces extends ListRecords
@@ -16,6 +17,13 @@ class ListTrainingPlaces extends ListRecords
     {
         return [
             TrainingPlaceCategoryChart::class,
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            TrainingPlaceOffersOverview::class,
         ];
     }
 }

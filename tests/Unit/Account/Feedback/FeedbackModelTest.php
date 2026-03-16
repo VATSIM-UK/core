@@ -98,4 +98,16 @@ class FeedbackModelTest extends TestCase
         $this->feedback->markActioned($this->privacc);
         $this->assertTrue($this->feedback->fresh()->actioned);
     }
+
+    #[Test]
+    public function it_returns_the_account_atc_qualification()
+    {
+        $qualification = \App\Models\Mship\Qualification::factory()->create(['type' => 'atc']);
+
+        $feedback = factory(Feedback::class)->create([
+            'account_atc_qualification_id' => $qualification->id,
+        ]);
+
+        $this->assertEquals($qualification->id, $feedback->accountAtcQualification->id);
+    }
 }

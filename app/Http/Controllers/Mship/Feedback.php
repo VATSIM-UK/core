@@ -80,5 +80,7 @@ class Feedback extends \App\Http\Controllers\BaseController
         }
 
         return $redirect;
+
+        return $redirect;
     }
 }

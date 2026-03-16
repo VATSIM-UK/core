@@ -88,6 +88,10 @@ class WaitingListSelfEnrolment
             }
         }
 
+        if (! $waitingList->accountHasRequiredEndorsement($account)) {
+            return WaitingListSelfEnrolmentEligibility::deny('required_endorsement_not_met');
+        }
+
         return WaitingListSelfEnrolmentEligibility::allow();
     }
 

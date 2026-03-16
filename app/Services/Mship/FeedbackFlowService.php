@@ -7,9 +7,11 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Answer;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
+use App\Models\NetworkData\Atc;
 use App\Services\Mship\DTO\FeedbackSubmitRedirectData;
 use App\Services\Mship\DTO\FeedbackSubmitResult;
 use App\Services\Mship\DTO\QuestionRenderContext;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class FeedbackFlowService
@@ -92,6 +94,7 @@ class FeedbackFlowService
     {
         $questions = $form->questions;
         $cidfield = null;
+        $datetimefield = null;
         $ruleset = [];
         $errormessages = [];
         $answerdata = [];
@@ -105,6 +108,10 @@ class FeedbackFlowService
                 if (($input[$question->slug] ?? null) == $submitterId) {
                     return FeedbackSubmitResult::selfFeedbackError();
                 }
+            }
+
+            if ($question->type->name == 'datetime') {
+                $datetimefield = $question->slug;
             }
 
             if ($question->type->rules != null) {
@@ -150,9 +157,36 @@ class FeedbackFlowService
             return FeedbackSubmitResult::targetResolutionFailed();
         }
 
+        $eventDatetime = $datetimefield && isset($input[$datetimefield])
+            ? Carbon::parse((string) $input[$datetimefield])
+            : now();
+
+        if ($form->slug == 'atc') {
+            $windowStart = $eventDatetime->copy()->subMinutes(30);
+            $windowEnd = $eventDatetime->copy()->addMinutes(30);
+
+            $hasFeedbackSession = Atc::query()->where('account_id', $account->id)
+                ->where('connected_at', '<=', $windowEnd)
+                ->where(function ($query) use ($windowStart) {
+                    $query->whereNull('disconnected_at')
+                        ->orWhere('disconnected_at', '>=', $windowStart);
+                })
+                ->isUk()
+                ->exists();
+
+            if (! $hasFeedbackSession) {
+                return new FeedbackSubmitResult(
+                    'target_resolution_failed',
+                    [],
+                    'We could not find a controlling session for the specified user around the time you submitted the feedback. Please ensure you have entered the correct CID, and that the controller was online around the time you submitted the feedback (within 30 minutes either side).'
+                );
+            }
+        }
+
         $feedback = $account->feedback()->create([
             'submitter_account_id' => $submitterId,
             'form_id' => $form->id,
+            'account_atc_qualification_id' => $account->qualification_atc?->id,
         ]);
 
         $feedback->answers()->saveMany($answerdata);
