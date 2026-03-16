@@ -186,7 +186,7 @@ return [
             '1' => [
                 'connection' => 'redis',
                 // Include dedicated service queues so tuned job routing is actually consumed by workers.
-                'queue' => ['high', 'default', 'discord', 'helpdesk', 'moodle', 'forums', 'cts', 'training-retention', 'training-eligibility'],
+                'queue' => ['high', 'default', 'discord', 'helpdesk', 'moodle', 'cts', 'training-retention', 'training-eligibility'],
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 10,

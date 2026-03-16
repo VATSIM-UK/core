@@ -32,11 +32,11 @@ class SyncToCTS extends Job implements ShouldQueue
 
     public function handle(): void
     {
-        Log::info('Starting MSHIP sync job.', $this->logContext());
+        Log::info('Starting MSHIP CTS sync job.', $this->logContext());
 
         $this->account->syncToCTS();
 
-        Log::info('Completed MSHIP sync job.', $this->logContext());
+        Log::info('Completed MSHIP CTS sync job.', $this->logContext());
     }
 
     public function getAccountId(): int
@@ -55,7 +55,7 @@ class SyncToCTS extends Job implements ShouldQueue
 
     public function failed(Throwable $exception): void
     {
-        Log::error('MSHIP sync job failed.', array_merge($this->logContext(), [
+        Log::error('MSHIP CTS sync job failed.', array_merge($this->logContext(), [
             'error' => $exception->getMessage(),
         ]));
     }
