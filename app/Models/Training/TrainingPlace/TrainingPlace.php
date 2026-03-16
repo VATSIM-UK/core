@@ -88,6 +88,7 @@ class TrainingPlace extends Model
             ->where('student_id', $member->id)
             ->where('position', $callsign)
             ->whereNull('taken_date')
+            ->where('session_done', 1)
             ->delete();
     }
 
