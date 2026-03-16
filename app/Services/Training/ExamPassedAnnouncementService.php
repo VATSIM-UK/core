@@ -37,6 +37,14 @@ class ExamPassedAnnouncementService
         $emoji = config('training.discord.vatuk_emoji_name_and_id');
         $mention = filled($examBooking->studentAccount()?->discord_id) ? "<@{$examBooking->studentAccount()?->discord_id}>" : $examBooking->studentAccount()?->name;
 
-        return "<:{$emoji}> Please join us in congratulating **{$mention}** on passing their **{$examBooking->exam}** exam (<t:{$unix}:R>)!";
+        $rating = match ($examBooking->exam) {
+            'OBS' => 'S1',
+            'TWR' => 'S2',
+            'APP' => 'S3',
+            'CTR' => 'C1',
+            default => $examBooking->exam,
+        };
+
+        return "<:{$emoji}> Please join us in congratulating **{$mention}** on passing their **{$rating}** exam (<t:{$unix}:R>)!";
     }
 }

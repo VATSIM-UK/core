@@ -81,7 +81,7 @@
                         </tr>
                         <tr>
                             <td>Sector File Coordinator</td>
-                            <td>Ben Walker</td>
+                            <td>Lily Unitt</td>
                         </tr>
                         <tr>
                             <td>Events Manager</td>
@@ -118,10 +118,6 @@
                         <tr>
                             <td>Operations Assistant</td>
                             <td>Sonny Nixon</td>
-                        </tr>
-                        <tr>
-                            <td>Operations Assistant</td>
-                            <td>Lily Unitt</td>
                         </tr>
                         <tr>
                             <td>Operations Assistant</td>
@@ -178,7 +174,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (TWR)</td>
-                                <td>Reece Buckley</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>

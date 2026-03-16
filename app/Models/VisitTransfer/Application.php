@@ -2,6 +2,7 @@
 
 namespace App\Models\VisitTransfer;
 
+use App\Enums\VTCheckStatus;
 use App\Events\VisitTransfer\ApplicationAccepted;
 use App\Events\VisitTransfer\ApplicationCancelled;
 use App\Events\VisitTransfer\ApplicationCompleted;
@@ -18,12 +19,11 @@ use App\Exceptions\VisitTransfer\Application\ApplicationNotRejectableException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotUnderReviewException;
 use App\Exceptions\VisitTransfer\Application\AttemptingToTransferToNonTrainingFacilityException;
 use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
-use App\Exceptions\VisitTransfer\Application\DuplicateRefereeException;
 use App\Exceptions\VisitTransfer\Application\FacilityHasNoCapacityException;
 use App\Exceptions\VisitTransfer\Application\RatingRequirementNotMetException;
-use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\RemovalReason;
@@ -44,7 +44,6 @@ use Malahierba\PublicId\PublicId;
  * @property int|null $facility_id
  * @property int $training_required
  * @property int $statement_required
- * @property int $references_required
  * @property int $should_perform_checks
  * @property int|null $check_outcome_90_day
  * @property int|null $check_outcome_50_hours
@@ -70,7 +69,6 @@ use Malahierba\PublicId\PublicId;
  * @property-read mixed $is_lapsed
  * @property-read mixed $is_not_editable
  * @property-read mixed $is_open
- * @property-read mixed $is_pending_references
  * @property-read mixed $is_pilot
  * @property-read mixed $is_rejected
  * @property-read mixed $is_submitted
@@ -78,18 +76,12 @@ use Malahierba\PublicId\PublicId;
  * @property-read mixed $is_under_review
  * @property-read mixed $is_withdrawable
  * @property-read mixed $is_visit
- * @property-read mixed $number_references_required_relative
  * @property-read mixed $potential_facilities
  * @property-read string $public_id
- * @property-read mixed $references_accepted
- * @property-read mixed $references_not_written
- * @property-read mixed $references_rejected
- * @property-read mixed $references_under_review
  * @property-read mixed $requires_action
  * @property-read mixed $status_string
  * @property-read mixed $type_string
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $referees
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application closed()
  * @method static bool|null forceDelete()
@@ -113,7 +105,6 @@ use Malahierba\PublicId\PublicId;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereExpiresAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereFacilityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereReferencesRequired($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereShouldPerformChecks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereStatement($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application whereStatementRequired($value)
@@ -157,8 +148,8 @@ class Application extends Model
     public $timestamps = true;
 
     protected $casts = [
-        'check_outcome_90_day' => 'boolean',
-        'check_outcome_50_hours' => 'boolean',
+        'check_outcome_90_day' => VTCheckStatus::class,
+        'check_outcome_50_hours' => VTCheckStatus::class,
         'expires_at' => 'datetime',
         'submitted_at' => 'datetime',
         'created_at' => 'datetime',
@@ -177,7 +168,7 @@ class Application extends Model
 
     const STATUS_SUBMITTED = 30; // Member has formally submitted application.
 
-    const STATUS_UNDER_REVIEW = 50; // References and checks have been completed.
+    const STATUS_UNDER_REVIEW = 50; // Checks have been completed.
 
     const STATUS_ACCEPTED = 60; // Application has been accepted by staff
 
@@ -307,11 +298,6 @@ class Application extends Model
         return $this->belongsTo(\App\Models\VisitTransfer\Facility::class);
     }
 
-    public function referees()
-    {
-        return $this->hasMany(\App\Models\VisitTransfer\Reference::class);
-    }
-
     public function notes()
     {
         return $this->morphMany(\App\Models\Mship\Account\Note::class, 'attachment');
@@ -403,11 +389,6 @@ class Application extends Model
     public function getIsWithdrawnAttribute()
     {
         return $this->isStatus(self::STATUS_WITHDRAWN);
-    }
-
-    public function getIsPendingReferencesAttribute()
-    {
-        return $this->references_not_written->count() > 0;
     }
 
     public function getIsUnderReviewAttribute()
@@ -518,31 +499,6 @@ class Application extends Model
         return $this->training_team.' Transfer';
     }
 
-    public function getNumberReferencesRequiredRelativeAttribute()
-    {
-        return $this->references_required - $this->referees->count();
-    }
-
-    public function getReferencesNotWrittenAttribute()
-    {
-        return $this->referees()->pending()->get();
-    }
-
-    public function getReferencesUnderReviewAttribute()
-    {
-        return $this->referees()->underReview()->get();
-    }
-
-    public function getReferencesAcceptedAttribute()
-    {
-        return $this->referees()->accepted()->get();
-    }
-
-    public function getReferencesRejectedAttribute()
-    {
-        return $this->referees()->rejected()->get();
-    }
-
     public function getFacilityNameAttribute()
     {
         return $this->facility ? $this->facility->name : 'Not selected';
@@ -551,9 +507,19 @@ class Application extends Model
     public function meetsRatingRequirements(Facility $facility)
     {
         if ($facility->training_team === 'atc') {
-            $userRating = $this->account->qualification_atc?->vatsim;
             $minQual = $facility->minimumATCQualification?->vatsim;
             $maxQual = $facility->maximumATCQualification?->vatsim;
+
+            // Members with an I1 or I3 rating should be treated as both a S3 and C1 when doing an ATC application
+            if ($this->account->qualifications_atc_training->isNotEmpty()) {
+                $s3 = Qualification::where('code', 'S3')->first()?->vatsim;
+                $c1 = Qualification::where('code', 'C1')->first()?->vatsim;
+
+                return $this->ratingFallsInRange($s3, $minQual, $maxQual)
+                    || ($this->ratingFallsInRange($c1, $minQual, $maxQual));
+            }
+
+            $userRating = $this->account->qualification_atc?->vatsim;
         } else {
             $userRating = $this->account->qualification_pilot?->vatsim;
             $minQual = $facility->minimumPilotQualification?->vatsim;
@@ -564,11 +530,16 @@ class Application extends Model
             return false;
         }
 
-        if ($minQual && $userRating < $minQual) {
+        return $this->ratingFallsInRange($userRating, $minQual, $maxQual);
+    }
+
+    private function ratingFallsInRange(int $rating, ?int $minQual, ?int $maxQual): bool
+    {
+        if ($minQual && $rating < $minQual) {
             return false;
         }
 
-        if ($maxQual && $userRating > $maxQual) {
+        if ($maxQual && $rating > $maxQual) {
             return false;
         }
 
@@ -588,27 +559,17 @@ class Application extends Model
 
         $this->training_required = $facility->training_required;
         $this->statement_required = $facility->stage_statement_enabled;
-        $this->references_required = $facility->stage_reference_enabled ? $facility->stage_reference_quantity : 0;
         $this->should_perform_checks = $facility->stage_checks;
         $this->will_auto_accept = $facility->auto_acceptance;
 
+        if (! $facility->enable_90_day_check) {
+            $this->check_outcome_90_day = VTCheckStatus::NotRequired;
+        }
+        if (! $facility->enable_50_hours_check) {
+            $this->check_outcome_50_hours = VTCheckStatus::NotRequired;
+        }
+
         $facility->applications()->save($this);
-    }
-
-    public function addReferee(Account $refereeAccount, $email, $relationship)
-    {
-        $this->guardAgainstDuplicateReferee($refereeAccount);
-
-        $this->guardAgainstTooManyReferees();
-
-        $reference = new Reference([
-            'email' => $email,
-            'relationship' => $relationship,
-        ]);
-
-        $reference->account()->associate($refereeAccount);
-
-        $this->referees()->save($reference);
     }
 
     public function setStatement($statement)
@@ -625,11 +586,6 @@ class Application extends Model
         $this->attributes['status'] = self::STATUS_WITHDRAWN;
         $this->save();
 
-        // Cancel references
-        foreach ($this->referees as $reference) {
-            $reference->cancel();
-        }
-
         event(new ApplicationWithdrawn($this));
 
         if ($this->facility) {
@@ -643,11 +599,6 @@ class Application extends Model
 
         $this->attributes['status'] = self::STATUS_EXPIRED;
         $this->save();
-
-        // Cancel references
-        foreach ($this->referees as $reference) {
-            $reference->cancel();
-        }
 
         event(new ApplicationExpired($this));
 
@@ -671,10 +622,6 @@ class Application extends Model
 
         if ($this->is_transfer) {
             $this->account->removeState(State::findByCode('TRANSFERRING'));
-        }
-
-        foreach ($this->referees as $reference) {
-            $reference->delete();
         }
     }
 
@@ -721,11 +668,6 @@ class Application extends Model
             // TODO: Investigate why this is required!!!!
         }
 
-        // Cancel any outstanding references
-        foreach ($this->referees as $reference) {
-            $reference->cancel();
-        }
-
         event(new ApplicationRejected($this));
 
         if ($this->is_transfer) {
@@ -736,16 +678,6 @@ class Application extends Model
     public function accept($staffComment = null, ?Account $actor = null, bool $addToWaitingList = false)
     {
         $this->guardAgainstUnAcceptableApplication();
-
-        // Deal with refereneces
-        foreach ($this->referees as $reference) {
-            if ($reference->isStatusIn(Reference::$REFERENCE_IS_PENDING)) {
-                $reference->cancel();
-            }
-            if ($reference->isStatus(Reference::STATUS_UNDER_REVIEW)) {
-                $reference->accept();
-            }
-        }
 
         $this->changeStatus(self::STATUS_ACCEPTED, null, $staffComment, $actor);
 
@@ -771,6 +703,16 @@ class Application extends Model
     {
         $this->guardAgainstNonAcceptedApplication();
         $this->changeStatus(self::STATUS_COMPLETED, null, $staffComment, $actor);
+
+        if ($this->facility?->training_team == 'pilot') {
+            $hasCompletedAtc = $this->account->visitApplications()->whereHas('facility', function ($query) {
+                $query->where('training_team', 'atc');
+            })->statusIn([self::STATUS_COMPLETED, self::STATUS_ACCEPTED])->exists();
+
+            if (! $hasCompletedAtc) {
+                $this->account->removeState(State::findByCode('VISITING'));
+            }
+        }
         event(new ApplicationCompleted($this));
     }
 
@@ -819,13 +761,18 @@ class Application extends Model
         $this->notes()->save($note);
     }
 
-    public function setCheckOutcome($check, $outcome)
+    public function setCheckOutcome($check, VTCheckStatus $outcome)
     {
         // $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
 
         $columnName = 'check_outcome_'.$check;
-        $this->{$columnName} = (int) $outcome;
+        $this->{$columnName} = $outcome;
         $this->save();
+    }
+
+    public function disableCheck(string $check): void
+    {
+        $this->setCheckOutcome($check, VTCheckStatus::NotRequired);
     }
 
     public function settingToggle($setting)
@@ -837,30 +784,11 @@ class Application extends Model
                 $this->statement = null;
 
                 return $this->settingToggleGenericBoolean('statement_required');
-            case 'references_required':
-                return $this->settingToggleReferencesRequired();
             case 'should_perform_checks':
                 return $this->settingToggleGenericBoolean('should_perform_checks');
             case 'will_auto_accept':
                 return $this->settingToggleGenericBoolean('will_auto_accept');
         }
-    }
-
-    private function settingToggleReferencesRequired()
-    {
-        if ($this->references_required == 0) {
-            $this->references_required = $this->facility->stage_reference_enabled ? $this->facility->stage_reference_quantity : 0;
-
-            return $this->save();
-        }
-
-        foreach ($this->referees as $reference) {
-            $reference->delete();
-        }
-
-        $this->references_required = 0;
-
-        return $this->save();
     }
 
     private function settingToggleGenericBoolean($columnName)
@@ -878,22 +806,30 @@ class Application extends Model
 
     public function check90DayQualification()
     {
+        if ($this->check_outcome_90_day === VTCheckStatus::NotRequired) {
+            return VTCheckStatus::NotRequired;
+        }
+
         if (! $this->submitted_at) {
-            return false;
+            return VTCheckStatus::Pending;
         }
 
         $currentATCQualification = $this->account->qualification_atc;
         $application90DayCutOff = $this->submitted_at->subDays(90);
 
-        return $currentATCQualification->pivot->created_at->lt($application90DayCutOff);
+        return $currentATCQualification->pivot->created_at->lt($application90DayCutOff) ? VTCheckStatus::Passed : VTCheckStatus::Failed;
     }
 
     public function check50Hours()
     {
+        if ($this->check_outcome_50_hours === VTCheckStatus::NotRequired) {
+            return VTCheckStatus::NotRequired;
+        }
+
         $qualificationId = $this->account->qualification_atc->id;
         $timeOnline = $this->account->networkDataAtc()->forQualificationId($qualificationId)->offline()->sum('minutes_online');
 
-        return $timeOnline >= (50 * 60);
+        return $timeOnline >= (50 * 60) ? VTCheckStatus::Passed : VTCheckStatus::Failed;
     }
 
     /** Statistics */
@@ -944,24 +880,6 @@ class Application extends Model
     {
         if ($requestedFacility->training_required == 1 && $requestedFacility->training_spaces === 0) {
             throw new FacilityHasNoCapacityException($requestedFacility);
-        }
-    }
-
-    private function guardAgainstDuplicateReferee($refereeAccount)
-    {
-        $checkContains = $this->referees->filter(function ($referee) use ($refereeAccount) {
-            return $referee->account_id == $refereeAccount->id;
-        })->count() > 0;
-
-        if ($checkContains) {
-            throw new DuplicateRefereeException($refereeAccount);
-        }
-    }
-
-    private function guardAgainstTooManyReferees()
-    {
-        if ($this->number_references_required_relative == 0) {
-            throw new TooManyRefereesException($this);
         }
     }
 

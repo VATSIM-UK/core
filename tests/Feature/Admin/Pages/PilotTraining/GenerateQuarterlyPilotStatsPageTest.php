@@ -13,6 +13,9 @@ class GenerateQuarterlyPilotStatsPageTest extends BaseAdminTestCase
     public function test_it_loads_if_authorised()
     {
         $this->actingAsAdminUser();
+        $this->get(GeneratePilotQuarterlyStats::getUrl())->assertForbidden();
+
+        $this->adminUser->givePermissionTo('pilot.access');
         $this->get(GeneratePilotQuarterlyStats::getUrl())->assertSuccessful();
     }
 
