@@ -50,12 +50,19 @@ class VatsimLoginService
 
     private function hasVatsimAndValidOauthToken(object $resourceOwner): bool
     {
-        return isset($resourceOwner->data->vatsim) && $resourceOwner->data->oauth->token_valid === 'true';
+        return isset($resourceOwner->data->vatsim)
+            && $this->isOauthTokenValid($resourceOwner);
     }
 
     private function isOauthTokenValid(object $resourceOwner): bool
     {
-        return (bool) $resourceOwner->data->oauth->token_valid;
+        if (! isset($resourceOwner->data->oauth->token_valid)) {
+            return false;
+        }
+
+        $tokenValid = $resourceOwner->data->oauth->token_valid;
+
+        return $tokenValid === true || $tokenValid === 'true' || $tokenValid === 1 || $tokenValid === '1';
     }
 
     private function setAccountTokens(Account $account, object $token): void

@@ -19,6 +19,11 @@ class ProcessWebhookResult
         return new self('unknown_action', $action);
     }
 
+    public static function invalidPayload(string $reason): self
+    {
+        return new self('invalid_payload', $reason);
+    }
+
     public function isOk(): bool
     {
         return $this->status === 'ok';

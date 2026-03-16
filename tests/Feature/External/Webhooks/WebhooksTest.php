@@ -68,6 +68,101 @@ class WebhooksTest extends TestCase
         ]);
     }
 
+    public function test_unknown_action_returns_bad_request()
+    {
+        \Queue::fake();
+        \Bus::fake();
+
+        $response = $this->post(
+            route('external.vatsim-net.webhook'),
+            [
+                'resource' => 1851903,
+                'actions' => [[
+                    'action' => 'some_unknown_action',
+                    'deltas' => [],
+                    'timestamp' => 1966113574.577162,
+                ]],
+            ],
+            $this->authHeaders()
+        );
+
+        $response->assertStatus(400);
+    }
+
+    public function test_missing_resource_returns_bad_request()
+    {
+        \Queue::fake();
+        \Bus::fake();
+
+        $response = $this->post(
+            route('external.vatsim-net.webhook'),
+            [
+                'actions' => [[
+                    'action' => 'member_created_action',
+                    'deltas' => [],
+                    'timestamp' => 1966113574.577162,
+                ]],
+            ],
+            $this->authHeaders()
+        );
+
+        $response->assertStatus(400);
+    }
+
+    public function test_actions_must_be_an_array()
+    {
+        \Queue::fake();
+        \Bus::fake();
+
+        $response = $this->post(
+            route('external.vatsim-net.webhook'),
+            [
+                'resource' => 1851903,
+                'actions' => 'not-an-array',
+            ],
+            $this->authHeaders()
+        );
+
+        $response->assertStatus(400);
+    }
+
+    public function test_action_items_must_be_arrays()
+    {
+        \Queue::fake();
+        \Bus::fake();
+
+        $response = $this->post(
+            route('external.vatsim-net.webhook'),
+            [
+                'resource' => 1851903,
+                'actions' => ['invalid-action-item'],
+            ],
+            $this->authHeaders()
+        );
+
+        $response->assertStatus(400);
+    }
+
+    public function test_action_timestamp_is_required()
+    {
+        \Queue::fake();
+        \Bus::fake();
+
+        $response = $this->post(
+            route('external.vatsim-net.webhook'),
+            [
+                'resource' => 1851903,
+                'actions' => [[
+                    'action' => 'member_created_action',
+                    'deltas' => [],
+                ]],
+            ],
+            $this->authHeaders()
+        );
+
+        $response->assertStatus(400);
+    }
+
     public function test_creation_handler()
     {
         $webhook = $this->buildCreatedSample();
