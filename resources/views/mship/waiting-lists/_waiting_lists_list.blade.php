@@ -56,10 +56,7 @@
                             </td>
                         @endif
                             <td>
-                                <form action="{{route('mship.waiting-lists.self-remove', ['waitingList' => $waitingListAccount->waitingList])}}" method="POST">
-                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                    <button class="btn btn-danger" type="submit">Leave Waiting List</button>
-                                </form>
+                                <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#leaveConfirmModal" onclick="document.getElementById('leaveConfirmForm').action='{{route('mship.waiting-lists.self-remove', ['waitingList' => $waitingListAccount->waitingList])}}'">Leave Waiting List</button>
                             </td>
                     </tr>
                     @endforeach
@@ -111,3 +108,5 @@
         </div>
     </div>
 </div>
+
+@include('mship.waiting-lists._leave_confirm_modal')
