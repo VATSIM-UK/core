@@ -26,10 +26,27 @@ class ProcessVatsimNetWebhook extends BaseController
         $this->validateAuth($request);
 
         $webhook = $request->all();
-        $memberId = (int) ($webhook['resource'] ?? 0);
+        $resource = $webhook['resource'] ?? null;
+         if (! is_numeric($resource) || (int) $resource <= 0) {
+             Log::error('VATSIM.net webhook received with invalid or missing resource', [
+                'resource' => $resource,
+             ]);
+             abort(400);
+         }
+         $memberId = (int) $resource;
+
+
+        $rawActions = $webhook['actions'] ?? [];
+         if (! is_array($rawActions)) {
+             Log::error('Malformed VATSIM.net webhook payload: actions is not an array', [
+                 'resource' => $memberId,
+                 'actions_type' => gettype($rawActions),
+             ]);
+             abort(400);
+         }
 
         // Sort the actions by timestamp to make sure we process them in order.
-        $actions = collect($webhook['actions'] ?? [])->sortBy('timestamp')->values();
+        $actions = collect($rawActions)->sortBy('timestamp')->values();
 
         Log::info('VATSIM.net webhook received', [
             'resource' => $memberId,
@@ -45,6 +62,16 @@ class ProcessVatsimNetWebhook extends BaseController
             return response()->json([
                 'status' => 'ok',
             ]);
+        }
+        
+        if ($actions->contains(fn ($action) => ! is_array($action))) {
+            Log::error('Malformed VATSIM.net webhook payload: action item is not an array', [
+                'resource' => $memberId,
+                'invalid_actions' => $actions
+                    ->filter(fn ($action) => ! is_array($action))
+                    ->values(),
+                ]);
+            abort(400);
         }
 
         $jobs = $actions

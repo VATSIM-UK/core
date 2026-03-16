@@ -70,6 +70,8 @@ class WebhooksTest extends TestCase
 
     public function test_unknown_action_returns_bad_request()
     {
+        \Queue::fake();
+        \Bus::fake();
         $response = $this->post(
             route('external.vatsim-net.webhook'),
             [

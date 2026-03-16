@@ -26,7 +26,14 @@ class MemberCreatedAction implements ShouldQueue
      */
     public function handle(): void
     {
-        $account = Account::updateOrCreate(['id' => $this->getDeltaAfter('id')], [
+         $deltaId = $this->getDeltaAfter('id');
+         if ($deltaId !== null && (int) $deltaId !== $this->memberId) {
+             Log::warning('VATSIM.net member_created_action id mismatch', [
+                 'member_id' => $this->memberId,
+                 'delta_id' => $deltaId,
+             ]);
+         }
+         $account = Account::updateOrCreate(['id' => $this->memberId], [
             'name_first' => $this->getDeltaAfter('name_first'),
             'name_last' => $this->getDeltaAfter('name_last'),
             'email' => $this->getDeltaAfter('email'),

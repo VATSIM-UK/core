@@ -16,7 +16,7 @@ class MemberChangedAction implements ShouldQueue
 {
     use Dispatchable, InteractsWithMemberDeltas, InteractsWithQueue, Queueable, SerializesModels;
 
-    private const ACCOUNT_FIELDS = ['id', 'name_first', 'name_last', 'email', 'reg_date'];
+    private const ACCOUNT_FIELDS = ['name_first', 'name_last', 'email'];
 
     private Account $account;
 
@@ -55,6 +55,10 @@ class MemberChangedAction implements ShouldQueue
         $accountChanges = $changes
             ->only(self::ACCOUNT_FIELDS)
             ->reject(fn (mixed $value, string $field) => $this->account->getAttribute($field) === $value);
+
+        if ($changes->has('reg_date')) {
+            $accountChanges->put('joined_at', $changes->get('reg_date'));
+        }
 
         if ($accountChanges->isNotEmpty()) {
             $this->account->update($accountChanges->all());
