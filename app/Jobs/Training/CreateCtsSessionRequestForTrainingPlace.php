@@ -7,10 +7,10 @@ namespace App\Jobs\Training;
 use App\Models\Cts\Position as CtsPosition;
 use App\Models\Cts\Session as CtsSession;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Services\Training\TrainingPlaceService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
-use App\Services\Training\TrainingPlaceService;
 
 class CreateCtsSessionRequestForTrainingPlace implements ShouldQueue
 {
