@@ -47,6 +47,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.exams.conduct.twr',
             'training.exams.conduct.app',
             'training.exams.conduct.ctr',
+            'training.exams.conduct.p1',
+            'training.exams.conduct.p2',
+            'training.exams.conduct.p3',
             'training.exams.override-result',
             'training.theory.access',
             'training.theory.view.*',
@@ -140,6 +143,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'training-places.revoke.*',
             'training-places.loas.create.*',
             'training-places.loas.end-early.*',
+            'training-places.availability-warnings.delete',
 
             // // Feedback System Permissions
             'feedback.access',
