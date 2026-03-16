@@ -3,8 +3,8 @@
 namespace App\Services\Training;
 
 use App\Enums\ExamResultEnum;
-use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 
 class ExamResubmissionService
 {
@@ -16,16 +16,16 @@ class ExamResubmissionService
         }
 
         $service = new ExamForwardingService;
-
         $student = $examBooking->student;
-        $position = Position::query()
-            ->where('callsign', $examBooking->position_1)
-            ->first();
 
         if ($examBooking->exam === 'OBS') {
-            $service->forwardForObsExam($student, $position);
+            $trainingPosition = TrainingPosition::whereJsonContains('cts_positions', $examBooking->position_1)->firstOrFail();
+            $service->forwardForObsExam($student, $trainingPosition);
         } else {
-            $service->forwardForExam($student, $position, $userId);
+            $trainingPosition = TrainingPosition::whereHas('position', fn ($q) => $q
+                ->where('callsign', $examBooking->position_1))
+                ->firstOrFail();
+            $service->forwardForExam($student, $trainingPosition, $userId);
         }
     }
 }

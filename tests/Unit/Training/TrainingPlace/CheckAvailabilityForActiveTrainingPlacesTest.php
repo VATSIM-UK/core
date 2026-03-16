@@ -43,12 +43,12 @@ class CheckAvailabilityForActiveTrainingPlacesTest extends TestCase
 
     private function createActiveTrainingPlace(): TrainingPlace
     {
-        $account = Account::factory()->create();
-        // create cts member first as the cid is not overwritten when using a factory
-        Member::factory()->create(['cid' => $account->id]);
+        // Create CTS member first so account id can match member cid (required for $account->member in CheckAvailability)
+        $ctsMember = Member::factory()->create();
+        $account = Account::factory()->create(['id' => $ctsMember->cid]);
 
         $waitingList = WaitingList::factory()->create();
-        $waitingListAccount = $waitingList->addToWaitingList($account, $account);
+        $waitingListAccount = $waitingList->addToWaitingList($account, Account::factory()->create());
         $trainingPosition = TrainingPosition::factory()->create(['cts_positions' => []]);
 
         return TrainingPlace::factory()->create([

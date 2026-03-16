@@ -2,6 +2,7 @@
 
 namespace Database\Factories\VisitTransfer;
 
+use App\Enums\VTCheckStatus;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
@@ -27,6 +28,8 @@ class ApplicationFactory extends Factory
                 'type' => Application::TYPE_VISIT,
                 'facility_id' => Facility::factory()->visit($team),
                 'training_team' => $team,
+                'check_outcome_90_day' => VTCheckStatus::Pending,
+                'check_outcome_50_hours' => VTCheckStatus::Pending,
                 'status' => Application::STATUS_SUBMITTED,
                 'statement' => fake()->paragraph,
             ];
@@ -42,6 +45,8 @@ class ApplicationFactory extends Factory
                 'type' => Application::TYPE_TRANSFER,
                 'facility_id' => Facility::factory()->transfer($team),
                 'training_team' => $team,
+                'check_outcome_90_day' => VTCheckStatus::Pending,
+                'check_outcome_50_hours' => VTCheckStatus::Pending,
                 'status' => Application::STATUS_SUBMITTED,
                 'statement' => fake()->paragraph,
             ];

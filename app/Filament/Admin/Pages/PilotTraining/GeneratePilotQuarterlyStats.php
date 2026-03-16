@@ -154,4 +154,9 @@ class GeneratePilotQuarterlyStats extends BasePage
         $quarter = $this->quarterMappings[$this->quarter];
         $this->dispatch('download-csv', filename: "pilot-training_{$this->year}_{$quarter}.csv", csv: $csvData);
     }
+
+    protected static function canUse(): bool
+    {
+        return auth()->user()->can('pilot.access');
+    }
 }
