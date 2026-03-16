@@ -12,6 +12,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\PracticalResult;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
@@ -514,6 +515,7 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
         $position = Position::factory()->create([
             'callsign' => 'EGKK_TWR',
         ]);
+        TrainingPosition::factory()->create(['position_id' => $position->id]);
 
         $exam = ExamBooking::factory()->create([
             'taken' => 1,

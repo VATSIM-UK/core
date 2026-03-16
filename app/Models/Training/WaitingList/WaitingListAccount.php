@@ -2,9 +2,11 @@
 
 namespace App\Models\Training\WaitingList;
 
+use App\Enums\TrainingPlaceOfferStatus;
 use App\Models\Cts\TheoryResult;
 use App\Models\Model;
 use App\Models\Mship\Account;
+use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -108,6 +110,11 @@ class WaitingListAccount extends Model
         return $this->hasMany(WaitingListRetentionCheck::class, 'waiting_list_account_id');
     }
 
+    public function trainingPlaceOffers(): HasMany
+    {
+        return $this->hasMany(TrainingPlaceOffer::class);
+    }
+
     /**
      * Mark a Flag as true.
      */
@@ -175,5 +182,12 @@ class WaitingListAccount extends Model
     private function cacheKey()
     {
         return "waiting-list-account:{$this->id}";
+    }
+
+    public function hasPendingTrainingPlaceOffer(): bool
+    {
+        return $this->trainingPlaceOffers()
+            ->where('status', TrainingPlaceOfferStatus::Pending->value)
+            ->exists();
     }
 }

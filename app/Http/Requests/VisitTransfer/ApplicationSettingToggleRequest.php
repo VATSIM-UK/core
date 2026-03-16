@@ -15,7 +15,7 @@ class ApplicationSettingToggleRequest extends FormRequest
     public function rules()
     {
         return [
-            'setting' => 'required|in:training_required,statement_required,references_required,should_perform_checks,will_auto_accept',
+            'setting' => 'required|in:training_required,statement_required,should_perform_checks,will_auto_accept',
         ];
     }
 

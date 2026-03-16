@@ -5,6 +5,7 @@ namespace App\Filament\Training\Pages\Exam;
 use App\Models\Atc\Position;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
@@ -59,14 +60,12 @@ class ExamSetup extends Page implements HasForms
             'data.student' => 'required',
         ]);
 
-        $positionId = $validated['data']['position'];
-        $position = Position::find($positionId);
-
+        $trainingPosition = TrainingPosition::where('position_id', $validated['data']['position'])->firstOrFail();
         $ctsMember = Member::where('id', $validated['data']['student'])->first();
 
         $service = new ExamForwardingService;
-        $service->forwardForExam($ctsMember, $position, Auth::user()->id);
-        $service->notifySuccess($position->callsign);
+        $service->forwardForExam($ctsMember, $trainingPosition, Auth::user()->id);
+        $service->notifySuccess($trainingPosition->exam_callsign ?? $trainingPosition->position->callsign);
 
         return redirect()->route('filament.training.pages.exam-setup');
     }
@@ -81,11 +80,12 @@ class ExamSetup extends Page implements HasForms
         $positionId = $validated['dataOBS']['position_obs'];
         $position = CtsPosition::find($positionId);
 
+        $trainingPosition = TrainingPosition::whereJsonContains('cts_positions', $position->callsign)->firstOrFail();
         $ctsMember = Member::where('id', $this->dataOBS['student_obs'])->first();
 
         $service = new ExamForwardingService;
-        $service->forwardForObsExam($ctsMember, $position);
-        $service->notifySuccess($position->callsign);
+        $service->forwardForObsExam($ctsMember, $trainingPosition);
+        $service->notifySuccess($trainingPosition->exam_callsign ?? $trainingPosition->position->callsign);
 
         return redirect()->route('filament.training.pages.exam-setup');
     }

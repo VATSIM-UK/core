@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\VisitTransfer\Application;
 
+use App\Enums\VTCheckStatus;
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplicationResource\Pages\ViewVisitTransferApplication;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
@@ -77,8 +78,8 @@ class ViewApplicationPageTest extends BaseAdminTestCase
     {
         $this->adminUser->givePermissionTo('vt.application.accept.*');
 
-        $this->application->check_outcome_90_day = true;
-        $this->application->check_outcome_50_hours = true;
+        $this->application->check_outcome_90_day = VTCheckStatus::Passed;
+        $this->application->check_outcome_50_hours = VTCheckStatus::Passed;
         $this->application->save();
 
         $component = Livewire::actingAs($this->adminUser)
@@ -91,8 +92,8 @@ class ViewApplicationPageTest extends BaseAdminTestCase
     #[Test]
     public function it_hides_accept_action_if_user_cannot_accept_due_permission()
     {
-        $this->application->check_outcome_90_day = true;
-        $this->application->check_outcome_50_hours = true;
+        $this->application->check_outcome_90_day = VTCheckStatus::Passed;
+        $this->application->check_outcome_50_hours = VTCheckStatus::Passed;
         $this->application->save();
 
         $component = Livewire::actingAs($this->adminUser)
@@ -107,8 +108,8 @@ class ViewApplicationPageTest extends BaseAdminTestCase
     {
         $this->adminUser->givePermissionTo('vt.application.accept.*');
 
-        $this->application->check_outcome_90_day = false;
-        $this->application->check_outcome_50_hours = true;
+        $this->application->check_outcome_90_day = VTCheckStatus::Failed;
+        $this->application->check_outcome_50_hours = VTCheckStatus::Passed;
         $this->application->save();
 
         $component = Livewire::actingAs($this->adminUser)
@@ -123,8 +124,8 @@ class ViewApplicationPageTest extends BaseAdminTestCase
     {
         $this->adminUser->givePermissionTo('vt.application.accept.*');
 
-        $this->application->check_outcome_90_day = true;
-        $this->application->check_outcome_50_hours = true;
+        $this->application->check_outcome_90_day = VTCheckStatus::Passed;
+        $this->application->check_outcome_50_hours = VTCheckStatus::Passed;
         $this->application->status = Application::STATUS_IN_PROGRESS;
         $this->application->save();
 
@@ -140,8 +141,8 @@ class ViewApplicationPageTest extends BaseAdminTestCase
     {
         $this->adminUser->givePermissionTo('vt.application.reject.*');
 
-        $this->application->check_outcome_90_day = false;
-        $this->application->check_outcome_50_hours = false;
+        $this->application->check_outcome_90_day = VTCheckStatus::Failed;
+        $this->application->check_outcome_50_hours = VTCheckStatus::Failed;
         $this->application->save();
 
         $component = Livewire::actingAs($this->adminUser)
@@ -246,8 +247,8 @@ class ViewApplicationPageTest extends BaseAdminTestCase
     public function it_shows_override_checks_action_if_user_can_override_checks()
     {
         $this->adminUser->givePermissionTo('vt.application.accept.*');
-        $this->application->check_outcome_90_day = false;
-        $this->application->check_outcome_50_hours = false;
+        $this->application->check_outcome_90_day = VTCheckStatus::Failed;
+        $this->application->check_outcome_50_hours = VTCheckStatus::Failed;
         $this->application->save();
         $component = Livewire::actingAs($this->adminUser)
             ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
@@ -258,8 +259,8 @@ class ViewApplicationPageTest extends BaseAdminTestCase
     #[Test]
     public function it_hides_override_checks_action_if_user_cannot_override_checks_due_permission()
     {
-        $this->application->check_outcome_90_day = false;
-        $this->application->check_outcome_50_hours = false;
+        $this->application->check_outcome_90_day = VTCheckStatus::Failed;
+        $this->application->check_outcome_50_hours = VTCheckStatus::Failed;
         $this->application->save();
         $component = Livewire::actingAs($this->adminUser)
             ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
@@ -271,8 +272,8 @@ class ViewApplicationPageTest extends BaseAdminTestCase
     public function it_hides_override_checks_action_if_user_cannot_override_checks_due_checks()
     {
         $this->adminUser->givePermissionTo('vt.application.accept.*');
-        $this->application->check_outcome_90_day = true;
-        $this->application->check_outcome_50_hours = true;
+        $this->application->check_outcome_90_day = VTCheckStatus::Passed;
+        $this->application->check_outcome_50_hours = VTCheckStatus::Passed;
         $this->application->save();
         $component = Livewire::actingAs($this->adminUser)
             ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
@@ -289,8 +290,8 @@ class ViewApplicationPageTest extends BaseAdminTestCase
         $facility = Facility::factory()->transfer('atc')->create(['waiting_list_id' => $waitingList->id]);
 
         $application = Application::factory()->create([
-            'check_outcome_90_day' => true,
-            'check_outcome_50_hours' => true,
+            'check_outcome_90_day' => VTCheckStatus::Passed,
+            'check_outcome_50_hours' => VTCheckStatus::Passed,
             'status' => Application::STATUS_SUBMITTED,
             'facility_id' => $facility->id,
         ]);
@@ -322,8 +323,8 @@ class ViewApplicationPageTest extends BaseAdminTestCase
         $facility = Facility::factory()->transfer('atc')->create(['waiting_list_id' => $waitingList->id]);
 
         $application = Application::factory()->create([
-            'check_outcome_90_day' => true,
-            'check_outcome_50_hours' => true,
+            'check_outcome_90_day' => VTCheckStatus::Passed,
+            'check_outcome_50_hours' => VTCheckStatus::Passed,
             'status' => Application::STATUS_ACCEPTED,
             'facility_id' => $facility->id,
         ]);
