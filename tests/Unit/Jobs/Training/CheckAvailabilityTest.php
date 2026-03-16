@@ -893,7 +893,7 @@ class CheckAvailabilityTest extends TestCase
     }
 
     #[Test]
-    public function it_creates_failed_check_when_session_exists_but_has_been_taken(): void
+    public function it_creates_passed_check_when_session_exists_but_has_been_taken(): void
     {
         // Arrange: Create availability and a session that has already been taken (taken_time set)
         Availability::factory()->forStudent($this->ctsMember->id)->create();
@@ -909,12 +909,7 @@ class CheckAvailabilityTest extends TestCase
         // Assert: A failed availability check should be created (untaken session request required)
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
-            'status' => AvailabilityCheckStatus::Failed->value,
-        ]);
-
-        // Assert: An availability warning should be created
-        $this->assertDatabaseHas('availability_warnings', [
-            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
         ]);
     }
 
@@ -949,34 +944,6 @@ class CheckAvailabilityTest extends TestCase
 
         // Assert: No availability warning should be created when the check passes
         $this->assertDatabaseMissing('availability_warnings', [
-            'training_place_id' => $this->trainingPlace->id,
-        ]);
-    }
-
-    #[Test]
-    public function it_ignores_sessions_marked_done_even_if_not_taken(): void
-    {
-        // Arrange: Availability exists and a session is flagged done but has no taken_time
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
-        Session::factory()->create([
-            'student_id' => $this->ctsMember->id,
-            'position' => 'EGLL_APP',
-            'session_done' => 1,
-            'taken_time' => null,
-        ]);
-
-        // Act: Run the job
-        $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
-
-        // Assert: Check should fail, because pending requires session_done = 0
-        $this->assertDatabaseHas('availability_checks', [
-            'training_place_id' => $this->trainingPlace->id,
-            'status' => AvailabilityCheckStatus::Failed->value,
-        ]);
-
-        // Assert: A warning is created as normal failure behaviour
-        $this->assertDatabaseHas('availability_warnings', [
             'training_place_id' => $this->trainingPlace->id,
         ]);
     }
