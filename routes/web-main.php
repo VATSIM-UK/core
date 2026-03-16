@@ -85,6 +85,15 @@ Route::group([
     ], function () {
         Route::get('')->uses('WaitingLists@index')->name('index');
         Route::post('self-enrol/{waitingList}')->uses('WaitingLists@selfEnrol')->name('self-enrol');
+
+        // Training place offers
+        Route::get('training-place-offer/{token}/accept')
+            ->uses('\App\Http\Controllers\Mship\Training\TrainingPlaceOfferController@accept')
+            ->name('training-place-offer.accept');
+
+        Route::get('training-place-offer/{token}/decline')
+            ->uses('\App\Http\Controllers\Mship\Training\TrainingPlaceOfferController@decline')
+            ->name('training-place-offer.decline');
     });
 
     // Other
@@ -192,23 +201,10 @@ Route::group([
             Route::post('facility/manual')->uses('Application@postManualFacility')->name('facility.manual.post');
             Route::get('statement')->uses('Application@getStatement')->name('statement');
             Route::post('statement')->uses('Application@postStatement')->name('statement.post');
-            Route::get('referees')->uses('Application@getReferees')->name('referees');
-            Route::post('referees')->uses('Application@postReferees')->name('referees.post');
-            Route::post('referees/{reference}/delete')->uses('Application@postRefereeDelete')->name('referees.delete.post');
             Route::get('submit')->uses('Application@getSubmit')->name('submit');
             Route::post('submit')->uses('Application@postSubmit')->name('submit.post');
             Route::get('withdraw')->uses('Application@getWithdraw')->name('withdraw');
             Route::post('withdraw')->uses('Application@postWithdraw')->name('withdraw.post');
         });
-    });
-
-    // References
-    Route::group([
-        'as' => 'reference.',
-        'prefix' => 'reference',
-    ], function () {
-        Route::get('complete/{token}')->uses('Reference@getComplete')->name('complete');
-        Route::post('complete/{token}')->uses('Reference@postComplete')->name('complete.post');
-        Route::post('complete/{token}/cancel')->uses('Reference@postCancel')->name('complete.cancel');
     });
 });

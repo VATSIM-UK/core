@@ -65,18 +65,4 @@ trait HasVisitTransferApplications
             );
         });
     }
-
-    public function visitTransferReferee()
-    {
-        return $this->hasMany(\App\Models\VisitTransfer\Reference::class);
-    }
-
-    public function getVisitTransferRefereePendingAttribute()
-    {
-        return $this->visitTransferReferee->filter(function ($ref) {
-            return $ref->is_requested;
-        })->sortBy(function ($ref) {
-            return $ref->application->submitted_at;
-        });
-    }
 }

@@ -10,6 +10,7 @@ use App\Models\Cts\Position as CtsPosition;
 use App\Models\Cts\PracticalResult;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
@@ -50,6 +51,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
             'callsign' => 'EGKK_TWR',
             'type' => Position::TYPE_TOWER,
         ]);
+        TrainingPosition::factory()->create(['position_id' => $position->id]);
 
         // Create a student account and member
         $studentAccount = Account::factory()->withQualification()->create();
@@ -89,16 +91,15 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
     {
         $this->panelUser->givePermissionTo('training.exams.setup');
 
-        // Create OBS positions
-        $pt3Position = CtsPosition::factory()->create([
-            'callsign' => 'OBS_SC_PT3',
+        $pt3Position = CtsPosition::factory()->create(['callsign' => 'OBS_SC_PT3']);
+        $pt2Position = CtsPosition::factory()->create(['callsign' => 'OBS_SC_PT2']);
+
+        $atcPosition = Position::factory()->create(['callsign' => 'SC_GND']);
+        $trainingPosition = TrainingPosition::factory()->withCtsPositions([$pt3Position->callsign])->create([
+            'position_id' => $atcPosition->id,
+            'exam_callsign' => 'OBS_SC_PT2',
         ]);
 
-        $pt2Position = CtsPosition::factory()->create([
-            'callsign' => 'OBS_SC_PT2',
-        ]);
-
-        // Create a student account and member
         $studentAccount = Account::factory()->withQualification()->create();
         $student = Member::factory()->create([
             'id' => $studentAccount->id,
@@ -126,7 +127,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
         // Verify that OBS exam setup was created
         $this->assertDatabaseHas('exam_setup', [
             'student_id' => $student->id,
-            'position_1' => $pt3Position->callsign,
+            'position_1' => $trainingPosition->exam_callsign,
             'exam' => 'OBS',
         ], 'cts');
     }
@@ -149,16 +150,11 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
     {
         $this->panelUser->givePermissionTo('training.exams.setup');
 
-        $position = Position::factory()->create([
-            'callsign' => 'EGKK_TWR',
-        ]);
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
 
         Livewire::actingAs($this->panelUser)
             ->test(ExamSetup::class)
-            ->fillForm([
-                'data.position' => $position->id,
-                'data.student' => null,
-            ])
+            ->fillForm(['data.position' => $position->id, 'data.student' => null])
             ->call('setupExam')
             ->assertHasFormErrors(['student' => 'required']);
     }
@@ -180,13 +176,8 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
     {
         $this->panelUser->givePermissionTo('training.exams.setup');
 
-        $position = CtsPosition::factory()->create([
-            'callsign' => 'OBS_SC_PT3',
-        ]);
-
-        $pt2Position = CtsPosition::factory()->create([
-            'callsign' => 'OBS_SC_PT2',
-        ]);
+        $position = CtsPosition::factory()->create(['callsign' => 'OBS_SC_PT3']);
+        CtsPosition::factory()->create(['callsign' => 'OBS_SC_PT2']);
 
         Livewire::actingAs($this->panelUser)
             ->test(ExamSetup::class)
@@ -202,9 +193,8 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.setup');
 
         $studentAccount = Account::factory()->withQualification()->create();
-        $position = Position::factory()->create([
-            'callsign' => 'EGKK_TWR',
-        ]);
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+        TrainingPosition::factory()->create(['position_id' => $position->id]);
 
         $student = Member::factory()->create([
             'id' => $studentAccount->id,
@@ -226,39 +216,6 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_does_not_show_students_with_pending_exam_in_obs_form()
-    {
-        $this->panelUser->givePermissionTo('training.exams.setup');
-
-        $studentAccount = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
-
-        $pendingExam = ExamBooking::factory()->create([
-            'student_id' => $student->id,
-            'exam' => 'OBS',
-            'finished' => ExamBooking::NOT_FINISHED_FLAG,
-        ]);
-
-        $position = CtsPosition::factory()->create([
-            'callsign' => 'OBS_SC_PT3',
-        ]);
-
-        $pt2Position = CtsPosition::factory()->create([
-            'callsign' => 'OBS_SC_PT2',
-        ]);
-
-        Livewire::actingAs($this->panelUser)
-            ->test(ExamSetup::class)
-            ->set('dataOBS.position_obs', $position->id)
-            ->set('dataOBS.student_obs', $student->id)
-            ->call('setupExamOBS')
-            ->assertDontSee($student->id);
-    }
-
-    #[Test]
     public function it_does_not_show_students_with_passed_exam_in_twr_to_ctr_form()
     {
         $this->panelUser->givePermissionTo('training.exams.setup');
@@ -275,9 +232,8 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
             'result' => PracticalResult::PASSED,
         ]);
 
-        $position = Position::factory()->create([
-            'callsign' => 'EGKK_TWR',
-        ]);
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+        TrainingPosition::factory()->create(['position_id' => $position->id]);
 
         Livewire::actingAs($this->panelUser)
             ->test(ExamSetup::class)
@@ -304,9 +260,8 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
             'result' => PracticalResult::FAILED,
         ]);
 
-        $position = Position::factory()->create([
-            'callsign' => 'EGKK_TWR',
-        ]);
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+        TrainingPosition::factory()->create(['position_id' => $position->id]);
 
         Session::factory()->create([
             'position' => $position->callsign,

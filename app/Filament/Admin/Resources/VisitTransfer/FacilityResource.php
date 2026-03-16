@@ -82,6 +82,7 @@ class FacilityResource extends Resource
                         ->live(),
                     Textarea::make('description')
                         ->label('Description')
+                        ->required()
                         ->rows(3)
                         ->maxLength(1000)
                         ->minLength(25),
@@ -232,6 +233,20 @@ class FacilityResource extends Resource
                             ->helperText('If selected, applicants to this facility will be added to the selected waiting list upon application.'),
                     ]),
                 ]),
+
+                Section::make('Manage Specific Checks')
+                    ->description('Control which checks run for future applications to this facility.')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            Toggle::make('enable_90_day_check')
+                                ->label('Enable 90-Day Check')
+                                ->default(true),
+                            Toggle::make('enable_50_hours_check')
+                                ->label('Enable 50-Hours Check')
+                                ->default(true),
+                        ]),
+                    ]),
+
                 Section::make('Notification Emails')
                     ->description(fn ($record) => "These email addresses will be sent an email once an application to this facility is succesful. If no email addresses are entered, this will default to {$record?->training_team}-team@vatsim.uk")
                     ->schema([

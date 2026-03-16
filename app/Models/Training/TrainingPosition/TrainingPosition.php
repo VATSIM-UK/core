@@ -18,6 +18,7 @@ class TrainingPosition extends Model
 
     protected $casts = [
         'cts_positions' => 'array',
+        'feature_toggles' => 'array',
     ];
 
     protected $guarded = [];
@@ -40,5 +41,15 @@ class TrainingPosition extends Model
             'training_position_id',
             'waiting_list_id'
         )->withTimestamps();
+    }
+
+    public function getShouldShowRecentControllingAttribute(): bool
+    {
+        return $this->feature_toggles['show_recent_controlling'] ?? true;
+    }
+
+    public function getShouldShowSoloEndorsementAttribute(): bool
+    {
+        return $this->feature_toggles['show_solo_endorsement'] ?? true;
     }
 }

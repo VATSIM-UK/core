@@ -5,6 +5,8 @@ namespace App\Models\Training;
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Events\Training\FlagAddedToWaitingList;
 use App\Events\Training\WaitingListCreated;
+use App\Models\Atc\Position;
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
 use App\Models\Training\TrainingPosition\TrainingPosition;
@@ -92,7 +94,7 @@ class WaitingList extends Model
 
     public $table = 'training_waiting_list';
 
-    protected $fillable = ['name', 'slug', 'department', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours', 'max_capacity', 'retention_checks_enabled', 'retention_checks_months'];
+    protected $fillable = ['name', 'slug', 'department', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours', 'max_capacity', 'retention_checks_enabled', 'retention_checks_months', 'required_endorsement_id'];
 
     const ATC_DEPARTMENT = 'atc';
 
@@ -115,6 +117,7 @@ class WaitingList extends Model
         'max_capacity' => 'integer',
         'retention_checks_enabled' => 'boolean',
         'retention_checks_months' => 'integer',
+        'required_endorsement_id' => 'integer',
     ];
 
     /**
@@ -214,6 +217,10 @@ class WaitingList extends Model
         // Check if the waiting list is at capacity
         if ($this->isAtCapacity()) {
             throw new \InvalidArgumentException("Cannot add account to waiting list '{$this->name}' as it has reached its maximum capacity of {$this->max_capacity} users.");
+        }
+
+        if (! $this->accountHasRequiredEndorsement($account)) {
+            throw new \InvalidArgumentException("Cannot add account to waiting list '{$this->name}' as they do not have the endorsement: {$this->requiredEndorsement->name}.");
         }
 
         $timestamp = $createdAt != null ? $createdAt : Carbon::now();
@@ -376,5 +383,20 @@ class WaitingList extends Model
     public function __toString()
     {
         return (string) $this->name;
+    }
+
+    public function requiredEndorsement()
+    {
+        return $this->belongsTo(PositionGroup::class, 'required_endorsement_id');
+    }
+
+    public function accountHasRequiredEndorsement(Account $account): bool
+    {
+        if (! $this->required_endorsement_id) {
+            return true; // If no endorsement is required, return true
+        }
+
+        return $account->endorsements()->active()->whereHasMorph('endorsable', PositionGroup::class, fn ($query) => $query->where('id', $this->required_endorsement_id))
+            ->exists();
     }
 }

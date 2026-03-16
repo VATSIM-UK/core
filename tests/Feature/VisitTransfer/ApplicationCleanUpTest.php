@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\VisitTransfer;
 
+use App\Enums\VTCheckStatus;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
@@ -57,16 +58,16 @@ class ApplicationCleanUpTest extends TestCase
     #[Test]
     public function test_it_will_set50_hour_check_as_passed()
     {
-        $this->assertNull($this->application->check_outcome_50_hours);
+        $this->assertEquals(VTCheckStatus::Pending, $this->application->check_outcome_50_hours);
         Artisan::call('visit-transfer:cleanup');
-        $this->assertTrue($this->application->fresh()->check_outcome_50_hours);
+        $this->assertEquals(VTCheckStatus::Passed, $this->application->fresh()->check_outcome_50_hours);
     }
 
     #[Test]
     public function test_it_will_set90_day_check_as_passed()
     {
-        $this->assertNull($this->application->check_outcome_90_day);
+        $this->assertEquals(VTCheckStatus::Pending, $this->application->check_outcome_90_day);
         Artisan::call('visit-transfer:cleanup');
-        $this->assertTrue($this->application->fresh()->check_outcome_90_day);
+        $this->assertEquals(VTCheckStatus::Passed, $this->application->fresh()->check_outcome_90_day);
     }
 }

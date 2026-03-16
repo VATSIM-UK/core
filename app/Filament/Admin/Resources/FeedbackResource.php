@@ -43,6 +43,10 @@ class FeedbackResource extends Resource
                     ->label('Subject')
                     ->content(fn ($record) => $record->account?->name),
 
+                Forms\Components\Placeholder::make('accountAtcQualification.name')
+                    ->label('Subject\'s ATC Qualification')
+                    ->content(fn ($record) => $record->accountAtcQualification?->name ?? 'Not Found'),
+
                 Forms\Components\Placeholder::make('submitter.name')
                     ->label('Submitted by')
                     ->visible(self::canSeeSubmitter())
@@ -155,6 +159,13 @@ class FeedbackResource extends Resource
                     ->queries(
                         true: fn ($query) => $query->whereNotNull('actioned_at'),
                         false: fn ($query) => $query->whereNull('actioned_at'),
+                    ),
+
+                Tables\Filters\SelectFilter::make('account_atc_qualification_id')
+                    ->placeholder('All ATC Qualifications')
+                    ->label('Subject ATC Qualification')
+                    ->options(
+                        \App\Models\Mship\Qualification::whereType('atc')->get()->mapWithKeys(fn ($qualification) => [$qualification->id => $qualification->name])
                     ),
             ])
             ->actions([
