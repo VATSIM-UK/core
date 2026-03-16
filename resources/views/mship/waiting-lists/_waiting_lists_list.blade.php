@@ -15,7 +15,7 @@
                             <th class="text-center">On Roster</th>
                             <th class="text-center">Theory Exam Passed</th>
                         @endif
-                        <th></th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +55,9 @@
                                 @endif
                             </td>
                         @endif
+                            <td>
+                                <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#leaveConfirmModal" onclick="document.getElementById('leaveConfirmForm').action='{{route('mship.waiting-lists.self-remove', ['waitingList' => $waitingListAccount->waitingList])}}'">Leave Waiting List</button>
+                            </td>
                     </tr>
                     @endforeach
                     @if(count($waitingListAccounts) == 0)
@@ -105,3 +108,5 @@
         </div>
     </div>
 </div>
+
+@include('mship.waiting-lists._leave_confirm_modal')
