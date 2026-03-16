@@ -107,7 +107,7 @@ class TrainingPlaceResource extends Resource
                     ->label('Position')
                     ->searchable()
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
