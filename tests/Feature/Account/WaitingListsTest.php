@@ -146,27 +146,27 @@ class WaitingListsTest extends TestCase
     {
         $list = WaitingList::factory()->create(['name' => 'My List']);
         $list->addToWaitingList($this->user, $this->privacc);
- 
+
         $this->actingAs($this->user)
             ->post(route('mship.waiting-lists.self-remove', $list))
             ->assertRedirect(route('mship.waiting-lists.index'))
             ->assertSessionHas('success');
- 
+
         $this->assertSoftDeleted('training_waiting_list_account', [
             'account_id' => $this->user->id,
             'list_id' => $list->id,
         ]);
     }
- 
+
     #[Test]
     public function test_self_removal_is_recorded_with_correct_reason()
     {
         $list = WaitingList::factory()->create(['name' => 'My List']);
         $list->addToWaitingList($this->user, $this->privacc);
- 
+
         $this->actingAs($this->user)
             ->post(route('mship.waiting-lists.self-remove', $list));
- 
+
         $this->assertDatabaseHas('training_waiting_list_account', [
             'account_id' => $this->user->id,
             'list_id' => $list->id,
