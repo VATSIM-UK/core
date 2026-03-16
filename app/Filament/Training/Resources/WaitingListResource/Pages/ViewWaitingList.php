@@ -97,7 +97,9 @@ class ViewWaitingList extends ViewRecord
                 })
                 ->successNotificationTitle('Flag added to waiting list')
                 ->form([
-                    TextInput::make('name')->rules(['required', 'min:3', 'unique:training_waiting_list_flags,name']),
+                    TextInput::make('name')->rules(['required', 'min:3',
+                        fn () => fn ($attribute, $value, $fail) => $this->record->flags()->where('name', $value)->exists() && $fail('A flag with this name already exists on this waiting list.'),
+                    ]),
 
                     Select::make('position_group_id')->label('Position Group')->options(fn () => PositionGroup::all()->mapWithKeys(function ($item) {
                         return [$item['id'] => $item['name']];
