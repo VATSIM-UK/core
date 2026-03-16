@@ -57,7 +57,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             abort(403, 'You do not have permission to view training places.');
         }
 
-        $this->trainingPlace = TrainingPlace::where('id', $this->trainingPlaceId)->with('waitingListAccount', 'trainingPosition')->firstOrFail();
+        $this->trainingPlace = TrainingPlace::withTrashed()->where('id', $this->trainingPlaceId)->with('waitingListAccount', 'trainingPosition')->firstOrFail();
     }
 
     public function getTitle(): string|Htmlable
@@ -82,7 +82,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             Action::make('forwardForExam')
                 ->label('Forward for Practical Exam')
                 ->icon('heroicon-o-arrow-right')
-                ->visible(fn () => $user->can('training.exams.setup'))
+                ->visible(fn () => ! $this->trainingPlace->trashed() && $user->can('training.exams.setup'))
                 ->disabled(fn () => $this->hasPendingExam())
                 ->tooltip(fn () => $this->hasPendingExam() ? 'This member already has a pending exam booking.' : 'Forward the member for a practical exam on their primary training position')
                 ->form([
@@ -113,7 +113,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 ->label('Revoke Training Place')
                 ->icon('heroicon-o-x-circle')
                 ->color('danger')
-                ->visible(fn () => $user->can('training-places.revoke.*'))
+                ->visible(fn () => ! $this->trainingPlace->trashed() && $user->can('training-places.revoke.*'))
                 ->modalHeading('Revoke Training Place')
                 ->modalDescription('Are you sure you want to revoke this members training place?')
                 ->modalSubmitActionLabel('Revoke Training Place')
@@ -197,6 +197,18 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
     {
 
         return $infolist->record($this->trainingPlace)->schema([
+            Section::make('This training place has been removed')
+                ->icon('heroicon-o-exclamation-triangle')
+                ->description('This training place is now read only.')
+                ->iconColor('danger')
+                ->collapsible()
+                ->collapsed(true)
+                ->visible(fn (): bool => (bool) $this->trainingPlace->deleted_at)
+                ->schema([
+                    TextEntry::make('deleted_at')
+                        ->label('Removed on')
+                        ->dateTime('d/m/Y \a\t H:i'),
+                ]),
             Section::make('Training Place Details')->schema([
                 TextEntry::make('waitingListAccount.account.name')->label('Name'),
                 TextEntry::make('waitingListAccount.account.id')->label('CID'),

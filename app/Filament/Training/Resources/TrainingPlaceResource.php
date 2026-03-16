@@ -107,6 +107,14 @@ class TrainingPlaceResource extends Resource
                     ->label('Position')
                     ->searchable()
                     ->sortable(),
+                    
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->getStateUsing(fn (TrainingPlace $record): string => $record->deleted_at ? 'deleted' : 'active')
+                    ->color(fn (string $state): string => $state === 'active' ? 'success' : 'danger')
+                    ->icon(fn (string $state): string => $state === 'active' ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+                    ->formatStateUsing(fn (string $state): string => Str::title($state)),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('trainingPosition.category')
@@ -117,6 +125,12 @@ class TrainingPlaceResource extends Resource
                     ->query(fn (Builder $query, array $data): Builder => filled($data['value'] ?? null)
                         ? $query->whereHas('trainingPosition', fn (Builder $q): Builder => $q->where('category', $data['value']))
                         : $query),
+
+                Tables\Filters\TrashedFilter::make()
+                    ->label('Training Place Status')
+                    ->placeholder('Active only')
+                    ->trueLabel('Active & removed')
+                    ->falseLabel('Removed only'),
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make()
