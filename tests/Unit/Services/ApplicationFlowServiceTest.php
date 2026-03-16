@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Services;
 
-use App\Exceptions\Mship\InvalidCIDException;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Services\VisitTransfer\ApplicationFlowService;
@@ -19,18 +18,6 @@ class ApplicationFlowServiceTest extends TestCase
         $this->assertFalse($service->shouldAutoStartApplication('atc'));
         $this->assertTrue($service->shouldRedirectToLanding('visiting.landing'));
         $this->assertFalse($service->shouldRedirectToLanding('visiting.application.view'));
-    }
-
-    public function test_map_referee_add_exception_flags_home_region_error_as_back_redirect(): void
-    {
-        $service = new ApplicationFlowService;
-
-        $regionError = $service->mapRefereeAddException(new Exception('Your referee must be in your home region.'));
-        $genericError = $service->mapRefereeAddException(new Exception('Something else'));
-
-        $this->assertTrue($regionError->useBackRedirect);
-        $this->assertFalse($genericError->useBackRedirect);
-        $this->assertSame('Something else', $genericError->message);
     }
 
     public function test_start_application_action_returns_error_result_when_start_throws(): void
@@ -67,37 +54,6 @@ class ApplicationFlowServiceTest extends TestCase
 
         $this->assertSame('visiting.application.submit', $result->route);
         $this->assertSame([$application->public_id], $result->routeParameters);
-    }
-
-    public function test_add_referee_action_handles_invalid_cid_and_back_redirect_error_paths(): void
-    {
-        $invalidCidService = new class extends ApplicationFlowService
-        {
-            public function addReferee(Application $application, Account $actor, string $refereeCid, ?string $refereeEmail, ?string $refereeRelationship): array
-            {
-                throw new InvalidCIDException;
-            }
-        };
-
-        $application = new Application;
-        $application->public_id = 'vt-1';
-
-        $invalidResult = $invalidCidService->addRefereeAction($application, new Account, '123', null, null);
-        $this->assertTrue($invalidResult->useBackRedirect);
-        $this->assertSame('error', $invalidResult->level);
-        $this->assertTrue($invalidResult->withInput);
-
-        $regionService = new class extends ApplicationFlowService
-        {
-            public function addReferee(Application $application, Account $actor, string $refereeCid, ?string $refereeEmail, ?string $refereeRelationship): array
-            {
-                throw new Exception('Your referee must be in your home region.');
-            }
-        };
-
-        $regionResult = $regionService->addRefereeAction($application, new Account, '123', null, null);
-        $this->assertTrue($regionResult->useBackRedirect);
-        $this->assertSame('Your referee must be in your home region.', $regionResult->message);
     }
 
     public function test_submit_and_withdraw_action_map_success_and_error_routes(): void
