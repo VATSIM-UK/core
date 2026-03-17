@@ -130,8 +130,16 @@ class Position extends Model implements Endorseable
 
     protected function examLevel(): Attribute
     {
+        $mapping = [
+            'GND' => 'OBS',
+            'TWR' => 'TWR',
+            'APP' => 'APP',
+            'CTR' => 'CTR',
+            'PT3' => 'OBS',
+        ];
+
         return Attribute::make(
-            get: fn () => Arr::last(explode('_', $this->callsign)),
+            get: fn () => $mapping[Arr::last(explode('_', $this->callsign))] ?? null,
         );
     }
 }
