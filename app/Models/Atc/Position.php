@@ -112,6 +112,8 @@ class Position extends Model implements Endorseable
         // use the position callsign to determine the rts for the position.
         // the callsign is in the format of EGXX_TWR, EGXX_APP, EGXX_CTR
         $mapping = [
+            'PT3' => 14,
+            'GND' => 14,
             'TWR' => 18,
             'APP' => 19,
             'CTR' => 17,
