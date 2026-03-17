@@ -4,6 +4,7 @@
     </div>
     <div class="panel-body">
         <div class="row pl-4 pr-4">
+            <div class="table-responsive">
             <table class="table text-center">
                 <thead>
                     <tr>
@@ -67,12 +68,14 @@
                     @endempty
                 </tbody>
             </table>
+            </div>
 
             <div>
                 <h3>Self-enrolment</h3>
                 <p>Some waiting lists have the ability to 'self-enrol' without having to contact the Training team.
                     If you are eligible to self-enrol, you will see a button below.</p>
 
+                <div class="table-responsive">
                 <table class="table text-center">
                     <thead>
                         <tr>
@@ -104,6 +107,7 @@
                         @endempty
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>
