@@ -1,7 +1,7 @@
 <x-markdown>
 # VATSIM UK ATC Training Policy
 
-**Version 1.0**  
+**Version 1.0**
 **Effective Date:** 25th February 2025
 
 ---
@@ -99,9 +99,9 @@ To be eligible for Military ADC Training, S2+ members must:
 - Be on the active controlling roster;
 - Not have significant negative feedback.
 
-### 1.9 Military APP/PAR (S3+)
+### 1.9 Military APP (S3+)
 
-To be eligible for Military APP/PAR Training, S 3 + members must:
+To be eligible for Military APP Training, S 3 + members must:
 
 - Be on the active controlling roster;
 - Not have significant negative feedback;
@@ -113,7 +113,7 @@ To be eligible for Military CTR Training, C1+ members must:
 
 - Be on the active controlling roster;
 - Not have significant negative feedback;
-- Hold a Military APP/PAR endorsement.
+- Hold a Military APP endorsement.
 
 ### 1.11 AC Bandbox (LON_CTR)
 
