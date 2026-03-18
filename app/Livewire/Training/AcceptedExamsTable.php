@@ -56,10 +56,10 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                     ->icon('heroicon-o-megaphone')
                     ->color('info')
                     ->visible(function (ExamBooking $examBooking): bool {
-                        if ($examBooking->exam === 'OBS') {
+                        if (in_array($examBooking->exam, ['OBS', 'P1', 'P2', 'P3'])) {
                             return false;
                         }
-                        // use CTS member ID rather than Core acocunt ID.
+                        // use CTS member ID rather than Core account ID.
                         $memberId = auth()->user()->member->id;
 
                         return app(ExamAnnouncementService::class)->canPostAnnouncement($examBooking, $memberId);

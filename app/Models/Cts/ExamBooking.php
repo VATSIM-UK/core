@@ -60,7 +60,9 @@ class ExamBooking extends Model
     public function studentQualification(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Qualification::ofType('atc')->where('vatsim', $this->student_rating)->first()
+            get: fn ($value) => in_array($this->exam, ['P1', 'P2', 'P3'])
+                ? Qualification::ofType('pilot')->where('vatsim', $this->student_rating)->first()
+                : Qualification::ofType('atc')->where('vatsim', $this->student_rating)->first()
         );
     }
 

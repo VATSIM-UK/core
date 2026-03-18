@@ -23,6 +23,9 @@ class ExamHistoryService
             'twr' => 'training.exams.conduct.twr',
             'app' => 'training.exams.conduct.app',
             'ctr' => 'training.exams.conduct.ctr',
+            'p1' => 'training.exams.conduct.p1',
+            'p2' => 'training.exams.conduct.p2',
+            'p3' => 'training.exams.conduct.p3',
         ];
 
         return collect($permissionMap)
