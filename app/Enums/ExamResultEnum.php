@@ -5,7 +5,7 @@ namespace App\Enums;
 enum ExamResultEnum: string
 {
     case Pass = 'P';
-    case PartialPass = 'PP';
+    case PartialPass = 'S';
     case Fail = 'F';
     case Incomplete = 'N';
 

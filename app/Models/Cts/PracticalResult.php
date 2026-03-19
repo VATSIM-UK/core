@@ -17,6 +17,8 @@ class PracticalResult extends Model
 
     public const PASSED = 'P';
 
+    public const PARTIAL_PASS = 'S';
+
     public const FAILED = 'F';
 
     public const INCOMPLETE = 'N';
@@ -43,6 +45,7 @@ class PracticalResult extends Model
     {
         return match ($this->result) {
             self::PASSED => 'Passed',
+            self::PARTIAL_PASS => 'Partial Pass',
             self::FAILED => 'Failed',
             self::INCOMPLETE => 'Incomplete',
             self::FAILRESUBMIT => 'Failed - Resubmit',

@@ -38,6 +38,7 @@ class ExamHistoryService
         return match ($result) {
             'Passed' => 'success',
             'Failed' => 'danger',
+            'Partial Pass' => 'warning',
             'Incomplete' => 'warning',
             'Failed - Resubmit' => 'danger',
             default => 'gray',
