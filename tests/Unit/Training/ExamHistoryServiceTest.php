@@ -26,7 +26,7 @@ class ExamHistoryServiceTest extends TestCase
 
         $this->assertSame(['obs', 'app'], $service->getTypesToShow($user)->all());
     }
-    
+
     public function test_get_result_badge_color_maps_known_exam_results(): void
     {
         $repository = Mockery::mock(ExamResultRepository::class);

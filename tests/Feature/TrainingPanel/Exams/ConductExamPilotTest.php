@@ -7,7 +7,6 @@ use App\Events\Training\Exams\PracticalExamCompleted;
 use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
-use App\Models\Cts\PracticalResult;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use Illuminate\Support\Facades\Event;
