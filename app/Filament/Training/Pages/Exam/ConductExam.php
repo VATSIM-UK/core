@@ -219,11 +219,10 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
                 Select::make('exam_result')
                     ->label('Result')
-                    ->options([
-                        ExamResultEnum::Pass->value => ExamResultEnum::Pass->human(),
-                        ExamResultEnum::Fail->value => ExamResultEnum::Fail->human(),
-                        ExamResultEnum::Incomplete->value => ExamResultEnum::Incomplete->human(),
-                    ])
+                    ->options(fn () => $this->examBooking->isPilotExam()
+                        ? ExamResultEnum::pilotOptions()
+                        : ExamResultEnum::atcOptions()
+                    )
                     ->live()
                     ->columnSpan(3)
                     ->required(),
@@ -284,6 +283,11 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function validateGradesBeforeSubmission(string $result): bool
     {
+        // Pilot exams should pass validation always
+        if ($this->examBooking->isPilotExam()) {
+            return true;
+        }
+
         $formData = collect($this->form->getState())['form'];
 
         $hasNotAssessed = collect($formData)->contains(
