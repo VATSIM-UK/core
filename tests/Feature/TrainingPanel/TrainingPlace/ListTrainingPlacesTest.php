@@ -138,4 +138,60 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
             ->searchTable('John')
             ->assertCanSeeTableRecords([$trainingPlace]);
     }
+
+    #[Test]
+    public function it_does_not_show_deleted_training_places_by_default()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->delete();
+
+        Livewire::actingAs($this->privacc)
+            ->test(ListTrainingPlaces::class)
+            ->assertCanNotSeeTableRecords([$trainingPlace]);
+    }
+
+    #[Test]
+    public function it_shows_both_active_and_deleted_training_places_with_trashed_filter()
+    {
+        $activeTrainingPlace = $this->createTrainingPlace();
+        $deletedTrainingPlace = $this->createTrainingPlace();
+        $deletedTrainingPlace->delete();
+
+        Livewire::actingAs($this->privacc)
+            ->test(ListTrainingPlaces::class)
+            ->filterTable('trashed', true)
+            ->assertCanSeeTableRecords([$activeTrainingPlace, $deletedTrainingPlace]);
+    }
+
+    #[Test]
+    public function it_shows_only_deleted_training_places_when_only_trashed_filter_is_applied()
+    {
+        $activeTrainingPlace = $this->createTrainingPlace();
+        $deletedTrainingPlace = $this->createTrainingPlace();
+        $deletedTrainingPlace->delete();
+
+        Livewire::actingAs($this->privacc)
+            ->test(ListTrainingPlaces::class)
+            ->filterTable('trashed', false)
+            ->assertCanSeeTableRecords([$deletedTrainingPlace])
+            ->assertCanNotSeeTableRecords([$activeTrainingPlace]);
+    }
+
+    private function createTrainingPlace(): TrainingPlace
+    {
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        $waitingList = WaitingList::factory()->create();
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
+
+        $trainingPosition = TrainingPosition::factory()
+            ->withCtsPositions(['EGLL_APP'])
+            ->create();
+
+        return TrainingPlace::create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]);
+    }
 }

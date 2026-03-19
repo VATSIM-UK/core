@@ -593,4 +593,26 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'training_position_id' => $trainingPosition->id,
         ]);
     }
+
+    #[Test]
+    public function it_can_view_a_deleted_training_place()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->delete();
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200);
+    }
+
+    #[Test]
+    public function it_displays_details_for_a_deleted_training_place()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->delete();
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSee($trainingPlace->waitingListAccount->account->name)
+            ->assertSee($trainingPlace->trainingPosition->position->name);
+    }
 }

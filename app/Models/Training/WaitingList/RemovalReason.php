@@ -13,6 +13,7 @@ enum RemovalReason: string
     case DeclinedTrainingPlaceOffer = 'declined_training_place_offer';
     case TrainingPlaceOfferRescinded = 'training_place_offer_rescinded';
     case TrainingPlaceOfferExpired = 'training_place_offer_expired';
+    case SelfRemoved = 'self_removed';
     case Other = 'other';
 
     public function label(): string
@@ -27,6 +28,7 @@ enum RemovalReason: string
             self::DeclinedTrainingPlaceOffer => 'Declined training place offer',
             self::TrainingPlaceOfferRescinded => 'Training place offer rescinded',
             self::TrainingPlaceOfferExpired => 'Training place offer expired',
+            self::SelfRemoved => 'Member removed themselves',
             self::Other => 'Other (please specify)',
         };
     }
