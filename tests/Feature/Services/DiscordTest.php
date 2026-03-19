@@ -92,6 +92,31 @@ class DiscordTest extends TestCase
     }
 
     #[Test]
+    public function test_it_redirects_when_state_missing()
+    {
+        $this->actingAs($this->user)
+            ->withSession(['discordauthstate' => 'expected-state'])
+            ->from(route('mship.manage.dashboard'))
+            ->get(route('discord.store', ['code' => '123456789']))
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHasErrors('state');
+    }
+
+    #[Test]
+    public function test_it_rejects_request_when_state_is_invalid()
+    {
+        $this->actingAs($this->user)
+            ->withSession(['discordauthstate' => 'expected-state'])
+            ->from(route('mship.manage.dashboard'))
+            ->get(route('discord.store', [
+                'code' => '123456789',
+                'state' => 'unexpected-state',
+            ]))
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('error', 'Something went wrong. Please try again.');
+    }
+
+    #[Test]
     public function test_it_reports_when_user_in_too_many_servers()
     {
         $this->instance(\Wohali\OAuth2\Client\Provider\Discord::class, Mockery::mock(\Wohali\OAuth2\Client\Provider\Discord::class, function (MockInterface $mock) {
@@ -106,8 +131,10 @@ class DiscordTest extends TestCase
         ]);
 
         $this->actingAs($this->user)
+            ->withSession(['discordauthstate' => 'valid-state'])
             ->get(route('discord.store', [
                 'code' => '123456789',
+                'state' => 'valid-state',
             ]))
             ->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('error', 'You have reached your Discord server limit! You must leave a server before you can join another one');

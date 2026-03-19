@@ -56,7 +56,7 @@ Route::group([
         'prefix' => 'manage',
     ], function () {
         Route::get('dashboard')->uses('Management@getDashboard')->name('dashboard');
-        Route::get('cert/update')->uses('Management@requestCertCheck')->name('cert.update');
+        Route::post('cert/update')->uses('Management@requestCertCheck')->name('cert.update');
         Route::get('email/verify/{code}')->uses('Management@getVerifyEmail')->name('email.verify');
         Route::get('email/add')->uses('Management@getEmailAdd')->name('email.add');
         Route::post('email/add')->uses('Management@postEmailAdd')->name('email.add.post');
@@ -126,7 +126,7 @@ Route::group([
     Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
     Route::get('new', ['as' => 'teamspeak.new', 'uses' => 'Registration@getNew']);
     Route::get('success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
-    Route::get('{mshipRegistration}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
+    Route::post('{mshipRegistration}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
     Route::post('{mshipRegistration}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
 });
 
@@ -140,7 +140,7 @@ Route::group([
     Route::get('/')->uses('Registration@show')->name('show');
     Route::get('/create')->uses('Registration@create')->name('create');
     Route::get('/store')->uses('Registration@store')->name('store');
-    Route::get('/destroy')->uses('Registration@destroy')->name('destroy');
+    Route::post('/destroy')->uses('Registration@destroy')->name('destroy');
 });
 
 // UKCP
@@ -151,7 +151,7 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/')->uses('Token@show')->name('guide');
-    Route::get('/token/invalidate')->uses('Token@invalidate')->name('token.invalidate');
+    Route::post('/token/invalidate')->uses('Token@invalidate')->name('token.invalidate');
 });
 
 // Controllers

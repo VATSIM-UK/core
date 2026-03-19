@@ -18,6 +18,7 @@ class UKCPLibraryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        config(['services.ukcp.key' => 'test-key']);
         Carbon::setTestNow(Carbon::now()->addMinutes(30));
     }
 
@@ -39,6 +40,50 @@ class UKCPLibraryTest extends TestCase
 
         $ukcp = resolve(UKCP::class);
         $this->assertTrue($ukcp->deleteToken($currentTokenID, $this->user));
+    }
+
+    #[Test]
+    public function it_marks_notification_as_read()
+    {
+        $notificationId = 12345;
+
+        $this->mock(Client::class, function (MockInterface $mock) use ($notificationId) {
+            $mock->shouldReceive('put')
+                ->with("https://ukcp.vatsim.uk/api/user/{$this->user->id}/notifications/read/{$notificationId}", [
+                    'headers' => [
+                        'Authorization' => 'Bearer test-key',
+                    ],
+                ])
+                ->andReturn(new \GuzzleHttp\Psr7\Response(200, [], true));
+        })->makePartial();
+
+        $ukcp = resolve(UKCP::class);
+        $this->assertTrue($ukcp->markNotificationReadForUser($this->user, $notificationId));
+    }
+
+    #[Test]
+    public function it_returns_false_when_marking_notification_read_fails()
+    {
+        $notificationId = 12345;
+
+        $this->mock(Client::class, function (MockInterface $mock) use ($notificationId) {
+            $mock->shouldReceive('put')
+                ->with("https://ukcp.vatsim.uk/api/user/{$this->user->id}/notifications/read/{$notificationId}", [
+                    'headers' => [
+                        'Authorization' => 'Bearer test-key',
+                    ],
+                ])
+                ->andThrow(
+                    new ClientException(
+                        'Bang',
+                        new Request('PUT', "https://ukcp.vatsim.uk/api/user/{$this->user->id}/notifications/read/{$notificationId}"),
+                        new Response(500, [], 'Bang')
+                    )
+                );
+        })->makePartial();
+
+        $ukcp = resolve(UKCP::class);
+        $this->assertFalse($ukcp->markNotificationReadForUser($this->user, $notificationId));
     }
 
     public function test_it_returns_cached_stand_status()

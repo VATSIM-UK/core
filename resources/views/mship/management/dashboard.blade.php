@@ -40,14 +40,18 @@
                 <div class="panel-heading"><i class="fa fa-male"></i> &thinsp; Personal Details
 
                     <div class="pull-right">
-                        <a
-                        class="tooltip_displays"
-                        href="{{ route('mship.manage.cert.update') }}"
-                        data-toggle="tooltip"
-                        title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} "
-                        >
-                            <i class="fa fa-sync"></i>
-                        </a>
+                        <form method="POST" action="{{ route('mship.manage.cert.update') }}" style="display: inline;">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="tooltip_displays"
+                                style="border: none; background: transparent; padding: 0;"
+                                data-toggle="tooltip"
+                                title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} "
+                            >
+                                <i class="fa fa-sync"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
                 <div class="panel-body">
@@ -105,9 +109,12 @@
                 <div class="panel-footer panel-footer-primary">
                     <div class="row">
                         <div class="col-xs-12">
-                            <a href="{{ route('mship.manage.cert.update') }}">
-                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net.
-                            </a>
+                            <form method="POST" action="{{ route('mship.manage.cert.update') }}">
+                                @csrf
+                                <button type="submit" class="btn btn-link" style="padding: 0;">
+                                    <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net.
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -245,14 +252,18 @@
                 <div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications
 
                     <div class="pull-right">
-                        <a
-                        class="tooltip_displays"
-                        href="{{ route('mship.manage.cert.update') }}"
-                        data-toggle="tooltip"
-                        title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} "
-                        >
-                            <i class="fa fa-sync"></i>
-                        </a>
+                        <form method="POST" action="{{ route('mship.manage.cert.update') }}" style="display: inline;">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="tooltip_displays"
+                                style="border: none; background: transparent; padding: 0;"
+                                data-toggle="tooltip"
+                                title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} "
+                            >
+                                <i class="fa fa-sync"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
                 <div class="panel-body">
@@ -334,9 +345,12 @@
                 <div class="panel-footer panel-footer-primary">
                     <div class="row">
                         <div class="col-xs-12">
-                            <a href="{{ route('mship.manage.cert.update') }}">
-                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net.
-                            </a>
+                            <form method="POST" action="{{ route('mship.manage.cert.update') }}">
+                                @csrf
+                                <button type="submit" class="btn btn-link" style="padding: 0;">
+                                    <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net.
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -381,8 +395,12 @@
                                                 <strong>LAST LOGIN</strong>: {{ $tsreg->last_login }}<br/>
                                                 <strong>OPERATING SYSTEM</strong>: {{ $tsreg->last_os }}<br/>
                                             @endif
-                                            [ <a href="{{ route('teamspeak.delete', [$tsreg->id]) }}">Remove Registration</a>
-                                            ]<br/>&nbsp;
+                                            [ <form method="POST" action="{{ route('teamspeak.delete', [$tsreg->id]) }}" style="display: inline;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-link" style="padding: 0; vertical-align: baseline;">
+                                                    Remove Registration
+                                                </button>
+                                            </form> ]<br/>&nbsp;
                                         </div>
                                     @endforeach
                                 </div>
@@ -433,7 +451,14 @@
                                         Currently registered with Discord account {{ $_account->discord_user ? '@' . $_account->discord_user['username'] : $_account->discord_id }}.
                                     </button>
                                 </a>
-                                <p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
+                                <div class="text-center">
+                                    <form method="POST" action="{{ route('discord.destroy') }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-link" style="padding: 0;">
+                                            Unlink Account
+                                        </button>
+                                    </form>
+                                </div>
                             @endif
                         </div>
                     </div>
@@ -450,9 +475,12 @@
                             <b>UK CONTROLLER<br/>PLUGIN KEYS</b>
                             @if(count($pluginKeys))
                                 <div class="text-center pt-4">
-                                    <a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.invalidate') }}">
-                                        Invalidate Token(s)
-                                    </a>
+                                    <form method="POST" action="{{ route('ukcp.token.invalidate') }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-warning btn-sm">
+                                            Invalidate Token(s)
+                                        </button>
+                                    </form>
                                     </br>
                                     <small>
                                         Note: If you are currently online, some operations, such as squawk assignments, will fail.
