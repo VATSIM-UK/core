@@ -20,10 +20,13 @@ class ExamHistoryServiceTest extends TestCase
         $user->shouldReceive('can')->with('training.exams.conduct.twr')->andReturn(false);
         $user->shouldReceive('can')->with('training.exams.conduct.app')->andReturn(true);
         $user->shouldReceive('can')->with('training.exams.conduct.ctr')->andReturn(false);
+        $user->shouldReceive('can')->with('training.exams.conduct.p1')->andReturn(false);
+        $user->shouldReceive('can')->with('training.exams.conduct.p2')->andReturn(false);
+        $user->shouldReceive('can')->with('training.exams.conduct.p3')->andReturn(false);
 
         $this->assertSame(['obs', 'app'], $service->getTypesToShow($user)->all());
     }
-
+    
     public function test_get_result_badge_color_maps_known_exam_results(): void
     {
         $repository = Mockery::mock(ExamResultRepository::class);
@@ -32,6 +35,7 @@ class ExamHistoryServiceTest extends TestCase
         $this->assertSame('success', $service->getResultBadgeColor('Passed'));
         $this->assertSame('danger', $service->getResultBadgeColor('Failed'));
         $this->assertSame('warning', $service->getResultBadgeColor('Incomplete'));
+        $this->assertSame('warning', $service->getResultBadgeColor('Partial Pass'));
         $this->assertSame('gray', $service->getResultBadgeColor('Unknown'));
     }
 }

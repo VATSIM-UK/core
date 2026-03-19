@@ -425,7 +425,7 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
         // Reset and filter for multiple positions
         $component->resetTableFilters()
             ->filterTable('position', [
-                'position' => ['OBS', 'APP'],
+                'atc_positions' => ['OBS', 'APP'],
             ]);
 
         // Should find OBS and APP exams
