@@ -5,6 +5,7 @@ namespace App\Filament\Training\Pages\Exam;
 use App\Models\Atc\Position;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
+use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Repositories\Cts\SessionRepository;
@@ -19,6 +20,7 @@ use Filament\Pages\Page;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\Models\Mship\Qualification;
 
 class ExamSetup extends Page implements HasForms
 {
@@ -39,10 +41,13 @@ class ExamSetup extends Page implements HasForms
 
     public ?array $dataOBS = [];
 
+    public ?array $dataPilot = [];
+
     public function mount(): void
     {
         $this->form->fill();
         $this->formOBS->fill();
+        $this->formPilot->fill();
     }
 
     protected function getForms(): array
@@ -50,6 +55,7 @@ class ExamSetup extends Page implements HasForms
         return [
             'formOBS',
             'form',
+            'formPilot',
         ];
     }
 
@@ -195,6 +201,81 @@ class ExamSetup extends Page implements HasForms
                     ]),
             ])
             ->statePath('data');
+    }
+
+    public function setupExamPilot()
+    {
+        $validated = $this->validate([
+            'dataPilot.exam_type' => 'required',
+            'dataPilot.student_pilot' => 'required',
+        ]);
+
+        $ctsMember = Member::where('id', $validated['dataPilot']['student_pilot'])->first();
+
+        $service = new ExamForwardingService;
+        $service->forwardForPilotExam($ctsMember, $validated['dataPilot']['exam_type'], Auth::user()->id);
+        $service->notifySuccess($validated['dataPilot']['exam_type']);
+
+        return redirect()->route('filament.training.pages.exam-setup');
+    }
+
+    public function formPilot(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make('Exam Setup - Pilot')
+                    ->schema([
+                        Select::make('exam_type')
+                            ->label('Exam Type')
+                            ->options([
+                                'P1' => 'P1',
+                                'P2' => 'P2',
+                                'P3' => 'P3',
+                            ])
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(fn (callable $set) => $set('student_pilot', null)),
+
+                        Select::make('student_pilot')
+                            ->label('Student')
+                            ->getSearchResultsUsing(function (string $search, Get $get): array {
+                                $examType = $get('exam_type');
+                                if (! $examType) {
+                                    return [];
+                                }
+
+                                // Pilot exams require the student to hold the preceding pilot rating.
+                                $prerequisiteRating = [
+                                    'P1' => 'P0',
+                                    'P2' => 'P1',
+                                    'P3' => 'P2',
+                                ][$examType];
+
+                                // Need to decide who shows up in searches here
+                                $eligibleCids = Account::whereHas('qualifications', fn ($q) => $q
+                                    ->where('type', 'pilot')
+                                    ->where('code', $prerequisiteRating)
+                                )->pluck('id');
+
+                                return Member::whereIn('cid', $eligibleCids)
+                                    ->where(fn ($query) => $query
+                                        ->where('name', 'LIKE', "%{$search}%")
+                                        ->orWhere('cid', 'LIKE', "%{$search}%")
+                                    )
+                                    ->limit(50)
+                                    ->get()
+                                    ->mapWithKeys(fn ($member) => [$member->id => "{$member->name} ({$member->cid})"])
+                                    ->toArray();
+                            })
+                            ->getOptionLabelUsing(fn ($value): ?string => Member::find($value)?->name)
+                            ->searchable()
+                            ->placeholder('Select an exam type first')
+                            ->disabled(fn (Get $get): bool => ! $get('exam_type'))
+                            ->required()
+                            ->live(),
+                    ]), 
+            ])
+            ->statePath('dataPilot');
     }
 
     protected function generateStudentOptions(string $positionCallsign, int $daysConsideredRecent, Collection $recentPassedStudentIds, ?Collection $pendingStudentIds = null): Collection

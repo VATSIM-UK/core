@@ -34,7 +34,6 @@ enum ExamResultEnum: string
             self::Pass->value => self::Pass->human(),
             self::PartialPass->value => self::PartialPass->human(),
             self::Fail->value => self::Fail->human(),
-            self::Incomplete->value => self::Incomplete->human(),
         ];
     }
 }

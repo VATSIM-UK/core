@@ -325,7 +325,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
     {
         $this->isSaving = true;
 
-        $formData = collect($this->form->getState())['form'];
+        $formData = collect($this->form->getState())['form'] ?? [];
 
         $flattenedFormData = collect($formData)->map(
             fn ($item, $key) => [

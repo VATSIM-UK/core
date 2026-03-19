@@ -92,25 +92,24 @@ class ViewExamReport extends Page implements HasInfolists
                                 Select::make('previous_exam_result')
                                     ->label('Previous Result')
                                     ->default($this->practicalResult->result)
-                                    ->options([
-                                        ExamResultEnum::Pass->value => ExamResultEnum::Pass->human(),
-                                        ExamResultEnum::Fail->value => ExamResultEnum::Fail->human(),
-                                        ExamResultEnum::Incomplete->value => ExamResultEnum::Incomplete->human(),
-                                    ])
+                                    ->options(fn () => $this->practicalResult->examBooking->isPilotExam()
+                                        ? ExamResultEnum::pilotOptions()
+                                        : ExamResultEnum::atcOptions()
+                                    )
                                     ->required()
                                     ->disabled()
                                     ->columns(1)
                                     ->dehydrated(true),
+
                                 Select::make('exam_result')
                                     ->label('New Result')
                                     ->default($this->practicalResult->result)
                                     ->live()
                                     ->columns(1)
-                                    ->options([
-                                        ExamResultEnum::Pass->value => ExamResultEnum::Pass->human(),
-                                        ExamResultEnum::Fail->value => ExamResultEnum::Fail->human(),
-                                        ExamResultEnum::Incomplete->value => ExamResultEnum::Incomplete->human(),
-                                    ])
+                                    ->options(fn () => $this->practicalResult->examBooking->isPilotExam()
+                                        ? ExamResultEnum::pilotOptions()
+                                        : ExamResultEnum::atcOptions()
+                                    )
                                     ->required(),
                                 Textarea::make('reason')
                                     ->label('Reason for exam result change')
@@ -120,7 +119,8 @@ class ViewExamReport extends Page implements HasInfolists
                             ]),
 
                             \Filament\Forms\Components\Section::make('Exam Criteria')
-                                ->visible(fn ($get) => $get('exam_result') !== $this->practicalResult->result
+                                ->visible(fn ($get) => ! $this->practicalResult->examBooking->isPilotExam()
+                                    && $get('exam_result') !== $this->practicalResult->result
                                 )
                                 ->schema(function () {
                                     $criteria = ExamCriteria::byType($this->practicalResult->examBooking->exam)->get();
@@ -162,6 +162,7 @@ class ViewExamReport extends Page implements HasInfolists
                 ->schema([
                     TextEntry::make('result')->label('Result')->badge()->color(fn ($state) => match ($state) {
                         'Passed' => 'success',
+                        'Partial Pass' => 'warning',
                         'Failed' => 'danger',
                         'Incomplete' => 'warning',
                         default => 'gray',
