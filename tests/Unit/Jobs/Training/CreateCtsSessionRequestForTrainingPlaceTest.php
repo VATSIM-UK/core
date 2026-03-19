@@ -10,6 +10,7 @@ use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
+use App\Services\Training\TrainingPlaceService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -173,6 +174,26 @@ class CreateCtsSessionRequestForTrainingPlaceTest extends TestCase
             CtsSession::query()
                 ->where('student_id', $this->ctsMember->id)
                 ->where('position', 'NON_EXISTENT')
+                ->whereNull('taken_date')
+                ->count()
+        );
+    }
+
+    #[Test]
+    public function it_does_not_create_a_session_request_when_student_has_a_pending_exam(): void
+    {
+        $this->mock(TrainingPlaceService::class)
+            ->shouldReceive('hasPendingExam')
+            ->once()
+            ->with($this->trainingPlace)
+            ->andReturn(true);
+
+        (new CreateCtsSessionRequestForTrainingPlace($this->trainingPlace))->handle();
+
+        $this->assertSame(0,
+            CtsSession::query()
+                ->where('student_id', $this->ctsMember->id)
+                ->where('position', $this->callsign)
                 ->whereNull('taken_date')
                 ->count()
         );

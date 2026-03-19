@@ -333,15 +333,30 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
     private function addAvailabilityAndSession(): void
     {
         Availability::factory()->forStudent($this->ctsMember->id)->create();
-        Session::factory()->create([
-            'student_id' => $this->ctsMember->id,
-            'position' => 'EGLL_APP',
-        ]);
+        $this->createPendingSession();
+        $this->createTakenSession();
     }
 
     private function removeAvailabilityAndSession(): void
     {
         Availability::where('student_id', $this->ctsMember->id)->delete();
         Session::where('student_id', $this->ctsMember->id)->delete();
+    }
+
+    private function createPendingSession(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => null,
+        ]);
+    }
+
+    private function createTakenSession(): void
+    {
+        Session::factory()->accepted()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+        ]);
     }
 }
