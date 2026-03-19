@@ -186,10 +186,11 @@ class WaitingListRetentionChecksNotificationsTest extends TestCase
         // Assert that the error was logged correctly
         Log::shouldHaveReceived('error')
             ->once()
-            ->withArgs(function ($message) use ($account) {
+            ->withArgs(function ($message, $context = []) use ($account) {
                 return str_contains($message, "Failed to notify account {$account->id}") &&
                        str_contains($message, 'of retention check') &&
-                       str_contains($message, 'Notification failed');
+                       str_contains($message, 'Notification failed') &&
+                       isset($context['job']);
             });
     }
 

@@ -12,41 +12,44 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\RateLimitedWithRedis;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ActionWaitingListRetentionCheckRemoval implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct(public WaitingListRetentionCheck $retentionCheck) {}
+    public $tries = 3;
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
+    public $backoff = 30;
+
+    public function __construct(public WaitingListRetentionCheck $retentionCheck)
     {
+        $this->onQueue('training-retention');
+    }
+
+    public function handle(): void
+    {
+        Log::info('Starting waiting list retention check removal job.', $this->logContext());
+
         if (! $this->retentionCheck->waitingListAccount) {
-            Log::warning("WaitingListAccount not found for retention check {$this->retentionCheck->id}. Cannot remove from waiting list.");
+            Log::warning('WaitingListAccount not found. Cannot remove from waiting list.', $this->logContext());
 
             return;
         }
 
-        /** @var Account $account */
         $account = $this->retentionCheck->waitingListAccount->account;
+
         try {
             $account->notify(new RemovedFromWaitingListFailedRetention($this->retentionCheck));
-        } catch (Exception $e) {
-            Log::error("Failed to notify account {$account->id} of failed retention check {$this->retentionCheck->id}: {$e->getMessage()}");
-            // deliberately return here to avoid removing the account from the waiting list
-            $this->fail($e);
+        } catch (Exception $exception) {
+            Log::error("Failed to notify account {$account->id} of failed retention check {$this->retentionCheck->id}: {$exception->getMessage()}", $this->logContext());
+
+            // Deliberately fail and stop here to avoid removing the account when the notification did not send.
+            $this->fail($exception);
 
             return;
         }
@@ -54,8 +57,36 @@ class ActionWaitingListRetentionCheckRemoval implements ShouldQueue
         $waitingList = $this->retentionCheck->waitingListAccount->waitingList;
         $waitingList->removeFromWaitingList($account, new Removal(RemovalReason::FailedRetention, null));
 
-        Log::info("Member {$account->id} was removed from waiting list  {$waitingList->id} due to failed retention check {$this->retentionCheck->id}");
+        Log::info("Member {$account->id} was removed from waiting list {$waitingList->id} due to failed retention check {$this->retentionCheck->id}", $this->logContext());
 
         WaitingListRetentionChecks::markRetentionCheckAsExpired($this->retentionCheck);
+
+        Log::info('Completed waiting list retention check removal job.', $this->logContext());
+    }
+
+    public function middleware(): array
+    {
+        // Allow concurrent removals for different checks while avoiding duplicate processing of the same check.
+        return [
+            new RateLimitedWithRedis('training-retention-check-removal'),
+            (new WithoutOverlapping("retention-check:{$this->retentionCheck->id}"))->releaseAfter(5)->expireAfter(180),
+        ];
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        Log::error('Waiting list retention check removal job failed.', [
+            ...$this->logContext(),
+            'error' => $exception->getMessage(),
+        ]);
+    }
+
+    private function logContext(): array
+    {
+        return [
+            'job' => static::class,
+            'retention_check_id' => $this->retentionCheck->id,
+            'waiting_list_account_id' => $this->retentionCheck->waiting_list_account_id,
+        ];
     }
 }

@@ -41,6 +41,7 @@ class SetupDiscordUser implements ShouldQueue
             throw $e;
         }
 
-        SyncToDiscord::dispatch($event->account)->onQueue('default');
+        // Allow the job class to route itself to the dedicated Discord queue.
+        SyncToDiscord::dispatch($event->account);
     }
 }
