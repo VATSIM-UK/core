@@ -59,18 +59,23 @@ class ExamHistory extends Page implements HasTable
                     Forms\Components\DatePicker::make('exam_date_to')->label('To'),
                 ])->query(fn ($query, array $data) => $examHistoryService->applyExamDateFilter($query, $data))->label('Exam date'),
                 Filter::make('position')->form([
-                    Forms\Components\Select::make('position')
+                    Forms\Components\Select::make('atc_positions')
                         ->options([
                             'OBS' => 'Observer',
                             'TWR' => 'Tower',
                             'APP' => 'Approach',
                             'CTR' => 'Enroute',
+                        ])
+                        ->multiple()
+                        ->label('ATC position'),
+                    Forms\Components\Select::make('pilot_positions')
+                        ->options([
                             'P1' => 'P1',
                             'P2' => 'P2',
                             'P3' => 'P3',
                         ])
                         ->multiple()
-                        ->label('Position'),
+                        ->label('Pilot rating'),
                 ])->query(fn ($query, array $data) => $examHistoryService->applyPositionFilter($query, $data))->label('Position'),
                 Filter::make('conducted_by_me')->form([
                     Forms\Components\Checkbox::make('conducted_by_me')

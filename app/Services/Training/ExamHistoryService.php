@@ -53,7 +53,9 @@ class ExamHistoryService
 
     public function applyPositionFilter(Builder $query, array $data): Builder
     {
-        return $query->when($data['position'] ?? null, function (Builder $query, array $positions) {
+        $positions = array_merge($data['atc_positions'] ?? [], $data['pilot_positions'] ?? []);
+
+        return $query->when(! empty($positions), function (Builder $query) use ($positions) {
             $query->whereHas('examBooking', function (Builder $q) use ($positions) {
                 $q->where(function (Builder $subQuery) use ($positions) {
                     foreach ($positions as $position) {
