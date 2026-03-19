@@ -4,6 +4,7 @@
     </div>
     <div class="panel-body">
         <div class="row pl-4 pr-4">
+            <div class="table-responsive">
             <table class="table text-center">
                 <thead>
                     <tr>
@@ -15,7 +16,7 @@
                             <th class="text-center">On Roster</th>
                             <th class="text-center">Theory Exam Passed</th>
                         @endif
-                        <th></th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +56,9 @@
                                 @endif
                             </td>
                         @endif
+                            <td>
+                                <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#leaveConfirmModal" onclick="document.getElementById('leaveConfirmForm').action='{{route('mship.waiting-lists.self-remove', ['waitingList' => $waitingListAccount->waitingList])}}'">Leave Waiting List</button>
+                            </td>
                     </tr>
                     @endforeach
                     @if(count($waitingListAccounts) == 0)
@@ -64,12 +68,14 @@
                     @endempty
                 </tbody>
             </table>
+            </div>
 
             <div>
                 <h3>Self-enrolment</h3>
                 <p>Some waiting lists have the ability to 'self-enrol' without having to contact the Training team.
                     If you are eligible to self-enrol, you will see a button below.</p>
 
+                <div class="table-responsive">
                 <table class="table text-center">
                     <thead>
                         <tr>
@@ -101,7 +107,10 @@
                         @endempty
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@include('mship.waiting-lists._leave_confirm_modal')

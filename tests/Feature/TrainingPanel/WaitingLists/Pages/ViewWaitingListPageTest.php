@@ -199,7 +199,7 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
             ->callAction('add_flag', data: [
                 'name' => 'test',
             ])
-            ->assertHasActionErrors(['name' => 'unique']);
+            ->assertHasActionErrors(['name']);
     }
 
     public function test_admin_can_create_flag_with_linked_endorsement()

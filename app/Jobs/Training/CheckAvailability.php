@@ -141,6 +141,15 @@ class CheckAvailability implements ShouldQueue
             ->whereNull('taken_time')
             ->exists();
 
-        return $sessionExists;
+        // If a session is pending, return true as they are committed to
+        // a session in the future.
+        $hasPendingSession = Session::where('student_id', $memberId)
+            ->whereIn('position', $trainingPosition->cts_positions)
+            ->whereNotNull('taken_time')
+            ->where('taken_date', '>=', now()->toDateString())
+            ->where('session_done', 0)
+            ->exists();
+
+        return $hasPendingSession || $sessionExists;
     }
 }
