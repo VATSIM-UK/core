@@ -4,8 +4,9 @@ namespace App\Observers\Training;
 
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\TrainingPlaceService;
+use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 
-class TrainingPlaceObserver
+class TrainingPlaceObserver implements ShouldHandleEventsAfterCommit
 {
     public function __construct(
         private TrainingPlaceService $trainingPlaceService
@@ -32,6 +33,7 @@ class TrainingPlaceObserver
      */
     public function deleted(TrainingPlace $trainingPlace): void
     {
+        $trainingPlace->deletePendingSessionRequests();
         $this->trainingPlaceService->revokeMentoringPermissions($trainingPlace);
     }
 

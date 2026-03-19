@@ -2,6 +2,7 @@
 
 namespace App\Models\Training\TrainingPlace;
 
+use App\Models\Cts\Session as CtsSession;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\WaitingListAccount;
@@ -59,6 +60,36 @@ class TrainingPlace extends Model
     public function currentLeaveOfAbsence()
     {
         return $this->leaveOfAbsences()->current()->first();
+    }
+
+    public function deletePendingSessionRequests(): void
+    {
+        $this->loadMissing([
+            'trainingPosition',
+            'waitingListAccount.account',
+        ]);
+
+        $account = $this->waitingListAccount?->account;
+        $member = $account?->member;
+
+        if (! $member) {
+            return;
+        }
+
+        $callsign = $this->trainingPosition?->cts_primary_position;
+
+        if (! is_string($callsign) || trim($callsign) === '') {
+            return;
+        }
+
+        $callsign = trim($callsign);
+
+        CtsSession::query()
+            ->where('student_id', $member->id)
+            ->where('position', $callsign)
+            ->whereNull('taken_date')
+            ->where('session_done', 1)
+            ->delete();
     }
 
     public function revokeTrainingPlace(string $reason, Account $admin): void
