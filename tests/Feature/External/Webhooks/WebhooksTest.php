@@ -68,6 +68,26 @@ class WebhooksTest extends TestCase
         ]);
     }
 
+    public function test_unknown_action_returns_bad_request()
+    {
+        \Queue::fake();
+        \Bus::fake();
+        $response = $this->post(
+            route('external.vatsim-net.webhook'),
+            [
+                'resource' => 1851903,
+                'actions' => [[
+                    'action' => 'some_unknown_action',
+                    'deltas' => [],
+                    'timestamp' => 1966113574.577162,
+                ]],
+            ],
+            $this->authHeaders()
+        );
+
+        $response->assertStatus(400);
+    }
+
     public function test_creation_handler()
     {
         $webhook = $this->buildCreatedSample();
