@@ -56,7 +56,7 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                     ->icon('heroicon-o-megaphone')
                     ->color('info')
                     ->visible(function (ExamBooking $examBooking): bool {
-                        if (in_array($examBooking->exam, ['OBS', 'P1', 'P2', 'P3'])) {
+                        if ($examBooking->exam === 'OBS') {
                             return false;
                         }
                         // use CTS member ID rather than Core account ID.
