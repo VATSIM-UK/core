@@ -56,6 +56,16 @@ class WaitingLists extends BaseController
             ->with('success', 'You have been added to the waiting list.');
     }
 
+    public function selfRemove(WaitingList $waitingList, Request $request)
+    {
+        $removal = new WaitingList\Removal(WaitingList\RemovalReason::SelfRemoved, auth()->user()->id);
+        $waitingList->removeFromWaitingList($request->user(), $removal);
+
+        return redirect()
+            ->route('mship.waiting-lists.index')
+            ->with('success', 'You have been removed from the waiting list.');
+    }
+
     public function getRetentionWithToken()
     {
         $token = request()->query('token');
