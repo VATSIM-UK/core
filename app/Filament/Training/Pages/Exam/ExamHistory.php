@@ -2,6 +2,7 @@
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Enums\PilotExamType;
 use App\Filament\Training\Pages\Exam\Widgets\ExamOverview;
 use App\Services\Training\ExamHistoryService;
 use Filament\Forms;
@@ -69,11 +70,10 @@ class ExamHistory extends Page implements HasTable
                         ->multiple()
                         ->label('ATC position'),
                     Forms\Components\Select::make('pilot_positions')
-                        ->options([
-                            'P1' => 'P1',
-                            'P2' => 'P2',
-                            'P3' => 'P3',
-                        ])
+                        ->options(collect(PilotExamType::cases())
+                            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
+                            ->toArray()
+                        )
                         ->multiple()
                         ->label('Pilot rating'),
                 ])->query(fn ($query, array $data) => $examHistoryService->applyPositionFilter($query, $data))->label('Position'),

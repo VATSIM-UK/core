@@ -2,6 +2,7 @@
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Enums\PilotExamType;
 use App\Models\Atc\Position;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
@@ -226,11 +227,10 @@ class ExamSetup extends Page implements HasForms
                     ->schema([
                         Select::make('exam_type')
                             ->label('Exam Type')
-                            ->options([
-                                'P1' => 'P1',
-                                'P2' => 'P2',
-                                'P3' => 'P3',
-                            ])
+                            ->options(collect(PilotExamType::cases())
+                                ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
+                                ->toArray()
+                            )
                             ->required()
                             ->live()
                             ->afterStateUpdated(fn (callable $set) => $set('student_pilot', null)),

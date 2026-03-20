@@ -2,6 +2,7 @@
 
 namespace App\Services\Training;
 
+use App\Enums\PilotExamType;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Models\Cts\Member;
@@ -117,10 +118,11 @@ class ExamForwardingService
      */
     public function forwardForPilotExam(Member $ctsMember, string $examType, int $setupByUserId): array
     {
+        // RTS ID NEEDS CHANGING
         $setup = ExamSetup::create([
             'rts_id' => 0,
             'student_id' => $ctsMember->id,
-            'position_1' => $examType,
+            'position_1' => PilotExamType::labelFor($examType),
             'position_2' => null,
             'exam' => $examType,
             'setup_by' => $setupByUserId,
@@ -134,7 +136,7 @@ class ExamForwardingService
             'rts_id' => 0,
             'student_id' => $ctsMember->id,
             'student_rating' => $ctsMember->account->qualification_pilot?->vatsim,
-            'position_1' => $examType,
+            'position_1' => PilotExamType::labelFor($examType),
             'position_2' => null,
             'exam' => $examType,
         ]);

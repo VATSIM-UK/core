@@ -2,6 +2,7 @@
 
 namespace App\Models\Cts;
 
+use App\Enums\PilotExamType;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use Carbon\Carbon;
@@ -68,7 +69,7 @@ class ExamBooking extends Model
 
     public function isPilotExam(): bool
     {
-        return in_array($this->exam, ['P1', 'P2', 'P3']);
+        return in_array($this->exam, PilotExamType::values());
     }
 
     #[Scope]

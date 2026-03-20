@@ -2,6 +2,7 @@
 
 namespace App\Services\Training;
 
+use App\Enums\PilotExamType;
 use App\Libraries\Discord;
 use App\Models\Cts\ExamBooking;
 use Carbon\CarbonImmutable;
@@ -34,6 +35,17 @@ class ExamAnnouncementService
 
     public function buildMessage(ExamBooking $examBooking, array $data): string
     {
+        if ($examBooking->isPilotExam())
+        {
+            return $this->buildPilotMessage($examBooking, $data);
+        } else
+        {
+            return $this->buildAtcMessage($examBooking, $data);
+        }
+    }
+
+    public function buildAtcMessage(ExamBooking $examBooking, array $data)
+    {
         $startUtc = CarbonImmutable::parse($examBooking->start_date)->utc();
         $unix = $startUtc->getTimestamp();
 
@@ -45,6 +57,24 @@ class ExamAnnouncementService
         return ($mentions !== '' ? $mentions."\n" : '')
             ."**Upcoming {$examBooking->exam} Exam**\n"
             ."There will be an exam on **{$examBooking->position_1}** on **<t:{$unix}:F>** (<t:{$unix}:R>)"
+            .$notesBlock;
+    }
+
+    public function buildPilotMessage(ExamBooking $examBooking, array $data): string
+    {
+        $startUtc = CarbonImmutable::parse($examBooking->start_date)->utc();
+        $unix = $startUtc->getTimestamp();
+
+        $mentions = $this->buildMentions($data);
+
+        $notes = trim($data['notes'] ?? '');
+        $notesBlock = $notes !== '' ? "\n\n**Notes:**\n{$notes}" : '';
+
+        $label = PilotExamType::labelFor($examBooking->exam);
+
+        return ($mentions !== '' ? $mentions."\n" : '')
+            ."**Upcoming {$label} Exam**\n"
+            ."There will be a **{$label}** pilot exam on **<t:{$unix}:F>** (<t:{$unix}:R>)"
             .$notesBlock;
     }
 

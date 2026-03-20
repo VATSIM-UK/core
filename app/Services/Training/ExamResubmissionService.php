@@ -11,21 +11,28 @@ class ExamResubmissionService
     // Handles resubmitting a member for an exam if they recieve an incomplete result
     public function handle(ExamBooking $examBooking, string $result, int $userId): void
     {
-        if ($result !== ExamResultEnum::Incomplete->value) {
+        if (! in_array($result, [ExamResultEnum::Incomplete->value, ExamResultEnum::PartialPass->value])) {
             return;
         }
 
         $service = new ExamForwardingService;
         $student = $examBooking->student;
 
-        if ($examBooking->exam === 'OBS') {
+        if ($examBooking->isPilotExam()) {
+            $service->forwardForPilotExam($student, $examBooking->exam, $userId);
+        } 
+        elseif ($examBooking->exam === 'OBS') 
+        {
             $trainingPosition = TrainingPosition::whereJsonContains('cts_positions', $examBooking->position_1)->firstOrFail();
             $service->forwardForObsExam($student, $trainingPosition);
-        } else {
+        } 
+        else
+        {
             $trainingPosition = TrainingPosition::whereHas('position', fn ($q) => $q
                 ->where('callsign', $examBooking->position_1))
                 ->firstOrFail();
             $service->forwardForExam($student, $trainingPosition, $userId);
         }
     }
+
 }
