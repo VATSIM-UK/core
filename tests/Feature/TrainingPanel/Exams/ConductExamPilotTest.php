@@ -24,7 +24,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
 
     private function createPilotExamBooking(string $examType = 'P1'): array
     {
-        $account = Account::factory()->create();
+        $account = Account::factory()->withQualification()->create();
         $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
 
         $exam = ExamBooking::factory()->create([

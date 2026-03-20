@@ -71,7 +71,7 @@ class ExamHistory extends Page implements HasTable
                         ->label('ATC position'),
                     Forms\Components\Select::make('pilot_positions')
                         ->options(collect(PilotExamType::cases())
-                            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
+                            ->mapWithKeys(fn ($type) => [$type->label() => $type->label()])
                             ->toArray()
                         )
                         ->multiple()
