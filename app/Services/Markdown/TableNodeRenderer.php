@@ -12,12 +12,17 @@ class TableNodeRenderer implements NodeRendererInterface
 {
     public function render(Node $node, ChildNodeRendererInterface $childRenderer)
     {
+        $tableNode = $this->asTableNode($node);
+
+        return new HtmlElement('table', ['class' => 'markdown-table'], $childRenderer->renderNodes($tableNode->children()));
+    }
+
+    private function asTableNode(Node $node): Table
+    {
         if (! $node instanceof Table) {
             throw new \InvalidArgumentException('Expected Table node');
         }
 
-        $attrs = ['class' => 'markdown-table'];
-
-        return new HtmlElement('table', $attrs, $childRenderer->renderNodes($node->children()));
+        return $node;
     }
 }

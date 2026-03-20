@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\CTS;
+namespace Tests\Unit\Cts;
 
 use App\Models\Cts\ExaminerSettings;
 use App\Models\Cts\Member;

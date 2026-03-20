@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
-use Auth;
+use App\Services\Auth\PasswordManagementService;
 use Illuminate\Http\Request;
 
 /**
@@ -24,7 +24,7 @@ class ChangePasswordController extends BaseController
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(private PasswordManagementService $passwordManagementService)
     {
         parent::__construct();
 
@@ -67,7 +67,7 @@ class ChangePasswordController extends BaseController
         $this->authorize('create', 'password');
         $this->validateNew($request);
 
-        Auth::user()->setPassword($request->input('new_password'));
+        $this->passwordManagementService->setPassword($this->account, (string) $request->input('new_password'));
 
         return redirect($this->redirectPath())->withSuccess('Password set successfully.');
     }
@@ -84,7 +84,7 @@ class ChangePasswordController extends BaseController
         $this->authorize('change', 'password');
         $this->validateBoth($request);
 
-        Auth::user()->setPassword($request->input('new_password'));
+        $this->passwordManagementService->setPassword($this->account, (string) $request->input('new_password'));
 
         return redirect($this->redirectPath())->withSuccess('Password reset successfully.');
     }
@@ -101,7 +101,7 @@ class ChangePasswordController extends BaseController
         $this->authorize('delete', 'password');
         $this->validateOld($request);
 
-        $this->account->removePassword();
+        $this->passwordManagementService->removePassword($this->account);
 
         return redirect($this->redirectPath())->withSuccess('Password deleted successfully.');
     }

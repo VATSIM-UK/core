@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers\NetworkData;
 
-use App\Models\NetworkData\Atc;
+use App\Services\NetworkData\OnlineAtcFeedService;
 use Illuminate\Routing\Controller as BaseController;
 
 class Feed extends BaseController
 {
+    public function __construct(private OnlineAtcFeedService $onlineAtcFeedService) {}
+
     public function getOnline()
     {
-        $atcSessions = Atc::remember(2)
-            ->online()
-            ->onFrequency()
-            ->isUK()
-            ->get();
-
-        return response()->json($atcSessions->toArray());
+        return response()->json($this->onlineAtcFeedService->getOnlineAtcSessions());
     }
 }

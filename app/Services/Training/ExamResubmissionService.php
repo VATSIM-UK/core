@@ -5,27 +5,50 @@ namespace App\Services\Training;
 use App\Enums\ExamResultEnum;
 use App\Models\Cts\ExamBooking;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use App\Services\Training\DTO\ExamResubmissionDecision;
 
 class ExamResubmissionService
 {
+    public function __construct(private readonly ExamForwardingService $examForwardingService) {}
+
     // Handles resubmitting a member for an exam if they recieve an incomplete result
     public function handle(ExamBooking $examBooking, string $result, int $userId): void
     {
-        if ($result !== ExamResultEnum::Incomplete->value) {
+        $decision = $this->getResubmissionDecision($examBooking, $result);
+
+        if (! $decision->shouldResubmit) {
             return;
         }
 
-        $service = new ExamForwardingService;
         $student = $examBooking->student;
+        $position = $this->resolveTrainingPosition($examBooking);
 
-        if ($examBooking->exam === 'OBS') {
-            $trainingPosition = TrainingPosition::whereJsonContains('cts_positions', $examBooking->position_1)->firstOrFail();
-            $service->forwardForObsExam($student, $trainingPosition);
-        } else {
-            $trainingPosition = TrainingPosition::whereHas('position', fn ($q) => $q
-                ->where('callsign', $examBooking->position_1))
-                ->firstOrFail();
-            $service->forwardForExam($student, $trainingPosition, $userId);
+        if ($decision->isObservationExam) {
+            $this->examForwardingService->forwardForObsExam($student, $position);
+
+            return;
         }
+
+        $this->examForwardingService->forwardForExam($student, $position, $userId);
+    }
+
+    private function resolveTrainingPosition(ExamBooking $examBooking): TrainingPosition
+    {
+        if ($examBooking->exam === 'OBS') {
+            return TrainingPosition::whereJsonContains('cts_positions', $examBooking->position_1)->firstOrFail();
+        }
+
+        return TrainingPosition::whereHas('position', fn ($q) => $q
+            ->where('callsign', $examBooking->position_1))
+            ->firstOrFail();
+    }
+
+    public function getResubmissionDecision(ExamBooking $examBooking, string $result): ExamResubmissionDecision
+    {
+        if ($result !== ExamResultEnum::Incomplete->value) {
+            return ExamResubmissionDecision::skip();
+        }
+
+        return ExamResubmissionDecision::forExamType($examBooking->exam === 'OBS');
     }
 }

@@ -3,15 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mship\Account;
-use Auth;
-use Carbon\Carbon;
+use App\Services\Http\BaseControllerContextService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Support\Facades\Cache;
-use Session;
 use View;
 
 class BaseController extends \Illuminate\Routing\Controller
@@ -34,13 +31,10 @@ class BaseController extends \Illuminate\Routing\Controller
 
     public function __construct()
     {
-        $this->middleware(function ($request, $next) {
-            if (Auth::check() || Auth::guard('web')->check()) {
-                $this->account = Auth::user();
-                $this->account->load('roles', 'roles.permissions');
-            } else {
-                $this->account = new Account;
-            }
+        $contextService = app(BaseControllerContextService::class);
+
+        $this->middleware(function ($request, $next) use ($contextService) {
+            $this->account = $contextService->resolveAuthenticatedAccount();
 
             return $next($request);
         });
@@ -48,11 +42,7 @@ class BaseController extends \Illuminate\Routing\Controller
 
     public function redirectTo()
     {
-        if (Session::has('url.intended')) {
-            return Session::pull('url.intended');
-        }
-
-        return $this->redirectTo;
+        return app(BaseControllerContextService::class)->resolveRedirectTo($this->redirectTo);
     }
 
     /**
@@ -69,14 +59,16 @@ class BaseController extends \Illuminate\Routing\Controller
         try {
             return $this->doAuthorize($ability, $arguments);
         } catch (AuthorizationException $e) {
-            if (Session::has('authorization.error')) {
+            $contextService = app(BaseControllerContextService::class);
+
+            if ($contextService->hasAuthorizationErrorMessage()) {
                 $class = get_class($e);
 
                 // throw the same exception with the reason for authorization failure
-                throw new $class(Session::get('authorization.error'), $e->getCode(), $e->getPrevious());
-            } else {
-                throw $e;
+                throw new $class($contextService->getAuthorizationErrorMessage(), $e->getCode(), $e->getPrevious());
             }
+
+            throw $e;
         }
     }
 
@@ -89,7 +81,7 @@ class BaseController extends \Illuminate\Routing\Controller
         $this->buildBreadcrumb('Home', '/');
 
         $view->with('_breadcrumb', $this->breadcrumb);
-        $view->with('_bannerUrl', self::generateBannerUrl());
+        $view->with('_bannerUrl', app(\App\Services\Site\BannerService::class)->generateBannerUrl());
 
         $view->with('_pageTitle', $this->getTitle());
         $view->with('_pageSubTitle', $this->getSubTitle());
@@ -119,48 +111,6 @@ class BaseController extends \Illuminate\Routing\Controller
     public function getSubTitle()
     {
         return $this->pageSubTitle;
-    }
-
-    /**
-     * Generate CORE banner from time of day.
-     */
-    public static function generateBannerUrl()
-    {
-        $key = 'CORE_BANNER_URL';
-
-        if ($url = Cache::get($key)) {
-            return $url;
-        }
-
-        // Work out time of day
-        $time = Carbon::now();
-
-        switch ($time) {
-            case $time->hour < 7:
-                $time = 'night';
-                break;
-            case $time->hour < 9:
-                $time = 'morning';
-                break;
-            case $time->hour < 17:
-                $time = 'day';
-                break;
-            case $time->hour < 21:
-                $time = 'evening';
-                break;
-            default:
-                $time = 'night';
-        }
-
-        $dir = public_path('images/banner/'.$time);
-        $images = array_diff(scandir($dir), ['.', '..']);
-        if (count($images) == 0) {
-            return asset('images/banner/fallback.jpg');
-        }
-        $url = asset("images/banner/$time/".$images[array_rand($images)]);
-        Cache::put($key, $url, 60 * 60);
-
-        return $url;
     }
 
     protected function setupLayout()
