@@ -35,11 +35,9 @@ class ExamAnnouncementService
 
     public function buildMessage(ExamBooking $examBooking, array $data): string
     {
-        if ($examBooking->isPilotExam())
-        {
+        if ($examBooking->isPilotExam()) {
             return $this->buildPilotMessage($examBooking, $data);
-        } else
-        {
+        } else {
             return $this->buildAtcMessage($examBooking, $data);
         }
     }

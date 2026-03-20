@@ -412,7 +412,7 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ->test(ExamHistory::class)
             ->assertSuccessful()
             ->filterTable('position', [
-                'position' => ['TWR'],
+                'atc_positions' => ['TWR'],
             ]);
 
         // Should find the TWR exam

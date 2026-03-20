@@ -20,19 +20,14 @@ class ExamResubmissionService
 
         if ($examBooking->isPilotExam()) {
             $service->forwardForPilotExam($student, $examBooking->exam, $userId);
-        } 
-        elseif ($examBooking->exam === 'OBS') 
-        {
+        } elseif ($examBooking->exam === 'OBS') {
             $trainingPosition = TrainingPosition::whereJsonContains('cts_positions', $examBooking->position_1)->firstOrFail();
             $service->forwardForObsExam($student, $trainingPosition);
-        } 
-        else
-        {
+        } else {
             $trainingPosition = TrainingPosition::whereHas('position', fn ($q) => $q
                 ->where('callsign', $examBooking->position_1))
                 ->firstOrFail();
             $service->forwardForExam($student, $trainingPosition, $userId);
         }
     }
-
 }
