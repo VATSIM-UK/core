@@ -15,7 +15,7 @@ use App\Models\Model;
  * @property string|null $data_old
  * @property string|null $data_new
  * @property \Carbon\Carbon|null $created_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ * @property-read \Illuminate\Database\Eloquent\Collection|Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $model
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Data\Change whereCreatedAt($value)

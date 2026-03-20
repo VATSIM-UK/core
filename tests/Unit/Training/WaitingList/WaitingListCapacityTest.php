@@ -134,8 +134,8 @@ class WaitingListCapacityTest extends TestCase
         $this->assertTrue($this->waitingList->isAtCapacity());
 
         // Remove one user
-        $removal = new \App\Models\Training\WaitingList\Removal(
-            \App\Models\Training\WaitingList\RemovalReason::TrainingPlace,
+        $removal = new WaitingList\Removal(
+            WaitingList\RemovalReason::TrainingPlace,
             $this->privacc->id
         );
         $this->waitingList->removeFromWaitingList($account1, $removal);

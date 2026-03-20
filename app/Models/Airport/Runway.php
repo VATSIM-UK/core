@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $surface_type
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Airport $airport
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Procedure[] $procedures
+ * @property-read Airport $airport
+ * @property-read \Illuminate\Database\Eloquent\Collection|Procedure[] $procedures
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereAirportId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Runway whereCreatedAt($value)

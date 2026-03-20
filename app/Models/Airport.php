@@ -17,7 +17,7 @@ use App\Models\NetworkData\Pilot;
  * @property float|null $latitude
  * @property float|null $longitude
  * @property int|null $elevation
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ * @property-read \Illuminate\Database\Eloquent\Collection|Sys\Data\Change[] $dataChanges
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereElevation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereId($value)
@@ -41,10 +41,10 @@ use App\Models\NetworkData\Pilot;
  * @property \Carbon\Carbon|null $updated_at
  * @property-read mixed $controllers
  * @property-read mixed $pilots
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Navaid[] $navaids
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Procedure[] $procedures
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Runway[] $runways
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Atc\Position[] $positions
+ * @property-read \Illuminate\Database\Eloquent\Collection|Navaid[] $navaids
+ * @property-read \Illuminate\Database\Eloquent\Collection|Procedure[] $procedures
+ * @property-read \Illuminate\Database\Eloquent\Collection|Runway[] $runways
+ * @property-read \Illuminate\Database\Eloquent\Collection|Position[] $positions
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport iCAO($icao)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport uK()

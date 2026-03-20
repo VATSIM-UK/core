@@ -2,12 +2,12 @@
 
 use Illuminate\Support\Facades\Http;
 
-class MetarTest extends \Tests\TestCase
+class MetarTest extends Tests\TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        \Illuminate\Support\Facades\Cache::flush();
+        Illuminate\Support\Facades\Cache::flush();
     }
 
     public function test_it_returns_metar()

@@ -2,10 +2,10 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(\App\Models\Airport\Navaid::class, function (Faker $faker) {
+$factory->define(App\Models\Airport\Navaid::class, function (Faker $faker) {
     return [
         'airport_id' => function () {
-            return factory(\App\Models\Airport::class)->create()->id;
+            return factory(App\Models\Airport::class)->create()->id;
         },
         'type' => $faker->numberBetween(1, 6),
         'name' => $faker->optional(0.5)->passthrough('RWY'.$faker->numberBetween(1, 36)),

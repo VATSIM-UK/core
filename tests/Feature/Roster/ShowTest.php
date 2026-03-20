@@ -17,7 +17,7 @@ class ShowTest extends TestCase
     {
         $account = Account::factory()->create();
         $qualification = Qualification::code('S2')->first();
-        $account->addState(\App\Models\Mship\State::findByCode('DIVISION'));
+        $account->addState(State::findByCode('DIVISION'));
         $account->addQualification($qualification);
 
         Roster::create([

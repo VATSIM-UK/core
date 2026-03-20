@@ -15,7 +15,7 @@ namespace App\Models\Mship;
  * @property int $priority
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|Account[] $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $is_division
  * @property-read mixed $is_permanent

@@ -51,14 +51,14 @@ use Malahierba\PublicId\PublicId;
  * @property string|null $statement
  * @property int $status
  * @property string|null $status_note
- * @property \Carbon\Carbon|null $expires_at
- * @property \Carbon\Carbon|null $submitted_at
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property Carbon|null $expires_at
+ * @property Carbon|null $submitted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string|null $deleted_at
- * @property-read \App\Models\Mship\Account $account
+ * @property-read Account $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
- * @property-read \App\Models\VisitTransfer\Facility|null $facility
+ * @property-read Facility|null $facility
  * @property-read mixed $facility_name
  * @property-read mixed $is_accepted
  * @property-read mixed $is_atc
@@ -81,7 +81,7 @@ use Malahierba\PublicId\PublicId;
  * @property-read mixed $requires_action
  * @property-read mixed $status_string
  * @property-read mixed $type_string
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|Account\Note[] $notes
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Application closed()
  * @method static bool|null forceDelete()
@@ -226,7 +226,7 @@ class Application extends Model
 
     public function __construct(array $attributes = [])
     {
-        $attributes['expires_at'] = \Carbon\Carbon::now()->addHour();
+        $attributes['expires_at'] = Carbon::now()->addHour();
 
         parent::__construct($attributes);
     }
@@ -290,17 +290,17 @@ class Application extends Model
     /** All Laravel relationships */
     public function account()
     {
-        return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');
+        return $this->belongsTo(Account::class, 'account_id', 'id');
     }
 
     public function facility()
     {
-        return $this->belongsTo(\App\Models\VisitTransfer\Facility::class);
+        return $this->belongsTo(Facility::class);
     }
 
     public function notes()
     {
-        return $this->morphMany(\App\Models\Mship\Account\Note::class, 'attachment');
+        return $this->morphMany(Account\Note::class, 'attachment');
     }
 
     /** All Laravel magic attributes **/

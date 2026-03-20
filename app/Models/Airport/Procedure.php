@@ -19,9 +19,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $remarks
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Airport $airport
+ * @property-read Airport $airport
  * @property-read mixed $procedure_type
- * @property-read \App\Models\Airport\Runway|null $runway
+ * @property-read Runway|null $runway
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereAirportId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Procedure whereCreatedAt($value)
