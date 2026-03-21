@@ -174,7 +174,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (TWR)</td>
-                                <td><em>Vacant</em></td>
+                                <td><em>Matthew Owen</em></td>
                             </tr>
                             <tr>
                                 <td>TG Instructor (APP)</td>
