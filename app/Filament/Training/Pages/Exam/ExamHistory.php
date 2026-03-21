@@ -2,6 +2,7 @@
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Enums\PilotExamType;
 use App\Filament\Training\Pages\Exam\Widgets\ExamOverview;
 use App\Services\Training\ExamHistoryService;
 use Filament\Forms;
@@ -59,7 +60,7 @@ class ExamHistory extends Page implements HasTable
                     Forms\Components\DatePicker::make('exam_date_to')->label('To'),
                 ])->query(fn ($query, array $data) => $examHistoryService->applyExamDateFilter($query, $data))->label('Exam date'),
                 Filter::make('position')->form([
-                    Forms\Components\Select::make('position')
+                    Forms\Components\Select::make('atc_positions')
                         ->options([
                             'OBS' => 'Observer',
                             'TWR' => 'Tower',
@@ -67,7 +68,14 @@ class ExamHistory extends Page implements HasTable
                             'CTR' => 'Enroute',
                         ])
                         ->multiple()
-                        ->label('Position'),
+                        ->label('ATC position'),
+                    Forms\Components\Select::make('pilot_positions')
+                        ->options(collect(PilotExamType::cases())
+                            ->mapWithKeys(fn ($type) => [$type->label() => $type->label()])
+                            ->toArray()
+                        )
+                        ->multiple()
+                        ->label('Pilot rating'),
                 ])->query(fn ($query, array $data) => $examHistoryService->applyPositionFilter($query, $data))->label('Position'),
                 Filter::make('conducted_by_me')->form([
                     Forms\Components\Checkbox::make('conducted_by_me')

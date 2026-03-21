@@ -1,7 +1,9 @@
 <x-filament-panels::page>
     {{ $this->infolist }}
 
-    <h1 class="text-xl font-bold">Grades</h1>
+    @if (!$this->practicalResult->examBooking->isPilotExam())
+        <h1 class="text-xl font-bold">Grades</h1>
 
-    {{ $this->criteriaInfoList}}
+        {{ $this->criteriaInfoList }}
+    @endif
 </x-filament-panels::page>

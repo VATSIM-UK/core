@@ -55,6 +55,21 @@ class ExaminerSettings extends Model
         return $query->where('S3', '=', 1);
     }
 
+    public function scopeP1($query)
+    {
+        return $query->where('P1', '=', 1);
+    }
+
+    public function scopeP2($query)
+    {
+        return $query->where('P2', '=', 1);
+    }
+
+    public function scopeP3($query)
+    {
+        return $query->where('P3', '=', 1);
+    }
+
     public function scopeAtc($query)
     {
         return $query->where('OBS', '=', 1) // OBS to S1 examiner

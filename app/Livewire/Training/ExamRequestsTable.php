@@ -420,7 +420,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
      */
     protected function getAllowedExamLevels(): array
     {
-        $examLevels = ['OBS', 'TWR', 'APP', 'CTR']; // Common exam levels
+        $examLevels = ['OBS', 'TWR', 'APP', 'CTR', 'P1', 'P2', 'P3']; // Common exam levels
         $allowedLevels = [];
 
         foreach ($examLevels as $level) {

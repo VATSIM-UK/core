@@ -2,6 +2,7 @@
 
 namespace App\Models\Cts;
 
+use App\Enums\PilotExamType;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use Carbon\Carbon;
@@ -60,8 +61,15 @@ class ExamBooking extends Model
     public function studentQualification(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Qualification::ofType('atc')->where('vatsim', $this->student_rating)->first()
+            get: fn ($value) => $this->isPilotExam()
+                ? Qualification::ofType('pilot')->where('vatsim', $this->student_rating)->first()
+                : Qualification::ofType('atc')->where('vatsim', $this->student_rating)->first()
         );
+    }
+
+    public function isPilotExam(): bool
+    {
+        return in_array($this->exam, PilotExamType::values());
     }
 
     #[Scope]
