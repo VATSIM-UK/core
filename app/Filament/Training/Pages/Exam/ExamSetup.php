@@ -226,7 +226,7 @@ class ExamSetup extends Page implements HasForms
                 Section::make('Exam Setup - Pilot')
                     ->schema([
                         Select::make('exam_type')
-                            ->label('Exam Type')
+                            ->label('Exam')
                             ->options(collect(PilotExamType::cases())
                                 ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
                                 ->toArray()
@@ -243,14 +243,8 @@ class ExamSetup extends Page implements HasForms
                                     return [];
                                 }
 
-                                // Pilot exams require the student to hold the preceding pilot rating.
-                                $prerequisiteRating = [
-                                    'P1' => 'P0',
-                                    'P2' => 'P1',
-                                    'P3' => 'P2',
-                                ][$examType];
+                                $prerequisiteRating = PilotExamType::from($examType)->prerequisiteRating();
 
-                                // Need to decide who shows up in searches here
                                 $eligibleCids = Account::whereHas('qualifications', fn ($q) => $q
                                     ->where('type', 'pilot')
                                     ->where('code', $prerequisiteRating)

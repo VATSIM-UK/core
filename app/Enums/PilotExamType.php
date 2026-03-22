@@ -17,6 +17,15 @@ enum PilotExamType: string
         };
     }
 
+    public function prerequisiteRating(): string
+    {
+        return match ($this) {
+            self::P1 => 'P0',
+            self::P2 => 'P1',
+            self::P3 => 'P2',
+        };
+    }
+
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
