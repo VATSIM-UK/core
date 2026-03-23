@@ -246,7 +246,7 @@ class ExamSetup extends Page implements HasForms
 
                                 $prerequisiteRating = PilotExamType::from($examType)->prerequisiteRating();
 
-                               $members = Member::query()
+                                $members = Member::query()
                                     ->where(fn ($query) => $query
                                         ->where('name', 'LIKE', "%{$search}%")
                                         ->orWhere('cid', 'LIKE', "%{$search}%")
@@ -269,7 +269,7 @@ class ExamSetup extends Page implements HasForms
                                     ->whereIn('cid', $eligibleCids)
                                     ->take(25)
                                     ->mapWithKeys(fn ($member) => [
-                                        $member->id => "{$member->name} ({$member->cid})"
+                                        $member->id => "{$member->name} ({$member->cid})",
                                     ])
                                     ->toArray();
                             })
