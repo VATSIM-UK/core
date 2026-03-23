@@ -255,7 +255,7 @@ class ExamSetup extends Page implements HasForms
                                         ->where('name', 'LIKE', "%{$search}%")
                                         ->orWhere('cid', 'LIKE', "%{$search}%")
                                     )
-                                    ->limit(50)
+                                    ->limit(25)
                                     ->get()
                                     ->mapWithKeys(fn ($member) => [$member->id => "{$member->name} ({$member->cid})"])
                                     ->toArray();
