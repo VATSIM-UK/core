@@ -14,4 +14,12 @@
             <x-filament::button type="submit" class="my-4 bg-brand">Setup exam</x-filament::button>
         </div>
     </form>
+
+    <form wire:submit.prevent="setupExamPilot">
+        {{ $this->formPilot }}
+
+        <div class="flex justify-end">
+            <x-filament::button type="submit" class="my-4 bg-brand">Setup exam</x-filament::button>
+        </div>
+    </form>
 </x-filament-panels::page>

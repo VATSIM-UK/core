@@ -23,6 +23,9 @@ class ExamHistoryService
             'twr' => 'training.exams.conduct.twr',
             'app' => 'training.exams.conduct.app',
             'ctr' => 'training.exams.conduct.ctr',
+            'p1' => 'training.exams.conduct.p1',
+            'p2' => 'training.exams.conduct.p2',
+            'p3' => 'training.exams.conduct.p3',
         ];
 
         return collect($permissionMap)
@@ -35,6 +38,7 @@ class ExamHistoryService
         return match ($result) {
             'Passed' => 'success',
             'Failed' => 'danger',
+            'Partial Pass' => 'warning',
             'Incomplete' => 'warning',
             'Failed - Resubmit' => 'danger',
             default => 'gray',
@@ -50,7 +54,9 @@ class ExamHistoryService
 
     public function applyPositionFilter(Builder $query, array $data): Builder
     {
-        return $query->when($data['position'] ?? null, function (Builder $query, array $positions) {
+        $positions = array_merge($data['atc_positions'] ?? [], $data['pilot_positions'] ?? []);
+
+        return $query->when(! empty($positions), function (Builder $query) use ($positions) {
             $query->whereHas('examBooking', function (Builder $q) use ($positions) {
                 $q->where(function (Builder $subQuery) use ($positions) {
                     foreach ($positions as $position) {
