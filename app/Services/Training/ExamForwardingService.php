@@ -118,9 +118,8 @@ class ExamForwardingService
      */
     public function forwardForPilotExam(Member $ctsMember, string $examType, int $setupByUserId): array
     {
-        // RTS ID NEEDS CHANGING
         $setup = ExamSetup::create([
-            'rts_id' => 0,
+            'rts_id' => 13,
             'student_id' => $ctsMember->id,
             'position_1' => PilotExamType::labelFor($examType),
             'position_2' => null,
@@ -133,7 +132,7 @@ class ExamForwardingService
         ]);
 
         $examBooking = ExamBooking::create([
-            'rts_id' => 0,
+            'rts_id' => 13,
             'student_id' => $ctsMember->id,
             'student_rating' => $ctsMember->account->qualification_pilot?->vatsim,
             'position_1' => PilotExamType::labelFor($examType),
