@@ -245,19 +245,31 @@ class ExamSetup extends Page implements HasForms
 
                                 $prerequisiteRating = PilotExamType::from($examType)->prerequisiteRating();
 
-                                $eligibleCids = Account::whereHas('qualifications', fn ($q) => $q
-                                    ->where('type', 'pilot')
-                                    ->where('code', $prerequisiteRating)
-                                )->pluck('id');
-
-                                return Member::whereIn('cid', $eligibleCids)
+                               $members = Member::query()
                                     ->where(fn ($query) => $query
                                         ->where('name', 'LIKE', "%{$search}%")
                                         ->orWhere('cid', 'LIKE', "%{$search}%")
                                     )
                                     ->limit(25)
-                                    ->get()
-                                    ->mapWithKeys(fn ($member) => [$member->id => "{$member->name} ({$member->cid})"])
+                                    ->get();
+
+                                if ($members->isEmpty()) {
+                                    return [];
+                                }
+
+                                $eligibleCids = Account::whereIn('id', $members->pluck('cid'))
+                                    ->whereHas('qualifications', fn ($q) => $q
+                                        ->where('type', 'pilot')
+                                        ->where('code', $prerequisiteRating)
+                                    )
+                                    ->pluck('id');
+
+                                return $members
+                                    ->whereIn('cid', $eligibleCids)
+                                    ->take(25)
+                                    ->mapWithKeys(fn ($member) => [
+                                        $member->id => "{$member->name} ({$member->cid})"
+                                    ])
                                     ->toArray();
                             })
                             ->getOptionLabelUsing(fn ($value): ?string => Member::find($value)?->name)
