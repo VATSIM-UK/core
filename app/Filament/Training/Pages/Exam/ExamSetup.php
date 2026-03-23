@@ -211,10 +211,11 @@ class ExamSetup extends Page implements HasForms
         ]);
 
         $ctsMember = Member::where('id', $validated['dataPilot']['student_pilot'])->first();
+        $examType = $validated['dataPilot']['exam_type'];
 
         $service = new ExamForwardingService;
-        $service->forwardForPilotExam($ctsMember, $validated['dataPilot']['exam_type'], Auth::user()->id);
-        $service->notifySuccess($validated['dataPilot']['exam_type']);
+        $service->forwardForPilotExam($ctsMember, $examType, Auth::user()->id);
+        $service->notifySuccess(PilotExamType::from($examType)->label());
 
         return redirect()->route('filament.training.pages.exam-setup');
     }
