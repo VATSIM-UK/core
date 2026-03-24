@@ -235,7 +235,6 @@
                     <ul>
                         <li>Tower and Ground</li>
                         <li>Approach</li>
-                        <li>Precision Approach Radar (PAR)</li>
                         <li>Area Radar (CTR).</li>
                     </ul>
 
@@ -261,7 +260,6 @@
                         <li>Must be a home member or a visitor that has completed a visiting application</li>
                         <li>Must be rated S2 or higher</li>
                         <li>Must hold the equivalent permanent controller rating to the endorsement that they wish to undertake</li>
-                        <li>Members wishing to undertake the PAR endorsement must hold the Approach endorsement.</li>
                     </ul>
 
                     <h3>Endorsement Process</h3>
