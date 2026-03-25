@@ -45,7 +45,7 @@ class TrainingPlaceDeletionTest extends TestCase
             'student_id' => $member->id,
             'position' => $callsign,
             'taken_date' => null,
-            'session_done' => 1,
+            'session_done' => 0,
         ]);
 
         $this->assertTrue(
