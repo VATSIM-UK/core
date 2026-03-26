@@ -262,8 +262,7 @@ class ExamSetup extends Page implements HasForms
                                     ->whereHas('qualifications', function ($q) use ($prerequisiteRating) {
                                         $q->where('type', 'pilot')
                                         ->where(function ($q) use ($prerequisiteRating) {
-                                            // Students must hold either the previous rating
-                                            // Students with a P6 rating are able to be forwarded for any pilot exam
+                                            // Students must hold either the previous rating or hold a P6 rating to be able to be forwarded for any pilot exam
                                             $q->where('code', $prerequisiteRating)
                                                 ->orWhere('code', 'P6');
                                         });
