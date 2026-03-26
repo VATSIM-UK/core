@@ -244,7 +244,7 @@ class ExamSetup extends Page implements HasForms
                                     return [];
                                 }
 
-                                $prerequisiteRating = PilotExamType::from($examType)->prerequisiteRating();
+                                $prerequisiteRating = PilotExamType::from($examType)->prerequisiteQualification();
 
                                 $members = Member::query()
                                     ->where(fn ($query) => $query
