@@ -261,11 +261,11 @@ class ExamSetup extends Page implements HasForms
                                 $eligibleCids = Account::whereIn('id', $members->pluck('cid'))
                                     ->whereHas('qualifications', function ($q) use ($prerequisiteRating) {
                                         $q->where('type', 'pilot')
-                                        ->where(function ($q) use ($prerequisiteRating) {
-                                            // Students must hold either the previous rating or hold a P6 rating to be able to be forwarded for any pilot exam
-                                            $q->where('code', $prerequisiteRating)
-                                                ->orWhere('code', 'P6');
-                                        });
+                                            ->where(function ($q) use ($prerequisiteRating) {
+                                                // Students must hold either the previous rating or hold a P6 rating to be able to be forwarded for any pilot exam
+                                                $q->where('code', $prerequisiteRating)
+                                                    ->orWhere('code', 'P6');
+                                            });
                                     })
                                     ->pluck('id');
 
