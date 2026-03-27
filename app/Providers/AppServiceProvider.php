@@ -134,9 +134,9 @@ class AppServiceProvider extends ServiceProvider
 
         Validator::extend('numbers', function ($attribute, $value, $parameters, $validator) {
             if (isset($parameters[0])) {
-                return str_has_lower($value, $parameters[0]);
+                return str_has_numeric($value, $parameters[0]);
             } else {
-                return str_has_lower($value);
+                return str_has_numeric($value);
             }
         });
 
