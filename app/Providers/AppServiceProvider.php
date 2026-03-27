@@ -19,9 +19,29 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Whitecube\LaravelCookieConsent\Facades\Cookies;
+use Wohali\OAuth2\Client\Provider\Discord as DiscordOAuthProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * The container bindings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    public $bindings = [
+        LogoutResponseContract::class => LogoutResponse::class,
+    ];
+
+    /**
+     * The singletons for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    public $singletons = [
+        UKCP::class => UKCP::class,
+        Discord::class => Discord::class,
+    ];
+
     /**
      * Bootstrap any application services.
      *
@@ -75,11 +95,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->register(TelescopeServiceProvider::class);
 
-        $this->app->singleton(UKCP::class);
-        $this->app->singleton(Discord::class);
-        $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
-        $this->app->singleton(\Wohali\OAuth2\Client\Provider\Discord::class, function () {
-            return new \Wohali\OAuth2\Client\Provider\Discord([
+        $this->app->singleton(DiscordOAuthProvider::class, function (): DiscordOAuthProvider {
+            return new DiscordOAuthProvider([
                 'clientId' => Config::get('services.discord.client_id'),
                 'clientSecret' => Config::get('services.discord.client_secret'),
                 'redirectUri' => Config::get('services.discord.redirect_uri'),
