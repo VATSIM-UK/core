@@ -2,48 +2,51 @@
 
 namespace App\Jobs\ExternalServices\VatsimNet\Webhooks;
 
+use App\Jobs\ExternalServices\VatsimNet\Webhooks\Concerns\InteractsWithMemberDeltas;
 use App\Models\Mship\Account;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class MemberCreatedAction implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithMemberDeltas, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * @param  int  $memberId  VATSIM member CID the action applies to
+     * @param  array<string, mixed>  $data  Webhook action payload
+     */
     public function __construct(private readonly int $memberId, private readonly array $data) {}
 
+    /**
+     * Create or update account details from a member creation webhook action.
+     */
     public function handle(): void
     {
-        $fields = $this->collectFields();
-
-        $account = Account::updateOrCreate(['id' => $this->getField($fields, 'id')], [
-            'name_first' => $this->getField($fields, 'name_first'),
-            'name_last' => $this->getField($fields, 'name_last'),
-            'email' => $this->getField($fields, 'email'),
-            'joined_at' => $this->getField($fields, 'reg_date'),
-        ]);
-        $account->updateVatsimRatings($this->getField($fields, 'rating'), $this->getField($fields, 'pilotrating'));
-        $account->updateDivision($this->getField($fields, 'division_id'), $this->getField($fields, 'region_id'));
-        $account->save();
-    }
-
-    private function collectFields(): Collection
-    {
-        return collect($this->data['deltas']);
-    }
-
-    private function getField(Collection $fields, string $name): mixed
-    {
-        $field = $fields->firstWhere('field', $name);
-        if (! $field) {
-            return null;
+        $deltaId = $this->getDeltaAfter('id');
+        if ($deltaId !== null && (int) $deltaId !== $this->memberId) {
+            Log::warning('VATSIM.net member_created_action id mismatch', [
+                'member_id' => $this->memberId,
+                'delta_id' => $deltaId,
+            ]);
         }
+        $account = Account::updateOrCreate(['id' => $this->memberId], [
+            'name_first' => $this->getDeltaAfter('name_first'),
+            'name_last' => $this->getDeltaAfter('name_last'),
+            'email' => $this->getDeltaAfter('email'),
+            'joined_at' => $this->getDeltaAfter('reg_date'),
+        ]);
 
-        return Arr::get($field, 'after');
+        $account->updateVatsimRatings($this->getDeltaAfter('rating'), $this->getDeltaAfter('pilotrating'));
+        $account->updateDivision($this->getDeltaAfter('division_id'), $this->getDeltaAfter('region_id'));
+        $account->save();
+
+        Log::debug('Processed VATSIM.net member_created_action', [
+            'resource' => $this->memberId,
+            'account_id' => $account->id,
+        ]);
     }
 }
