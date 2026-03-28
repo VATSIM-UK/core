@@ -73,20 +73,20 @@ class PositionTest extends TestCase
     public function test_defaults_to_not_virtual()
     {
         $position = Position::factory()->create();
- 
+
         $this->assertFalse($position->isVirtual());
     }
- 
+
     public function test_retrieves_only_virtual_positions()
     {
         $virtualPosition = Position::factory()->create([
             'virtual' => true,
         ]);
- 
+
         $realPosition = Position::factory()->create();
- 
+
         $result = Position::virtual()->get();
- 
+
         $this->assertTrue($result->contains($virtualPosition));
         $this->assertFalse($result->contains($realPosition));
     }
