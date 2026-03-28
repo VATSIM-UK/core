@@ -55,7 +55,7 @@ class TrainingSuccessAnnouncementServiceTest extends TestCase
             'exam' => 'TWR',
             'position_1' => 'EGKK_TWR',
         ]);
-        
+
         $examBooking->setRelation('student', $student);
         $examBooking->setRelation('studentAccount', $account);
 
