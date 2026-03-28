@@ -29,7 +29,7 @@ class Show extends Component
 
     public function search()
     {
-        $this->positions = Position::where('callsign', 'LIKE', "%{$this->searchTerm}%")->take(10)->get()->all();
+        $this->positions = Position::real()->where('callsign', 'LIKE', "%{$this->searchTerm}%")->take(10)->get()->all();
 
         if (! $this->positions) {
             $this->searchTerm = null;

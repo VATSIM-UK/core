@@ -21,10 +21,12 @@ class Position extends Model implements Endorseable
         'type',
         'sub_station',
         'temporarily_endorsable',
+        'virtual',
     ];
 
     protected $casts = [
         'sub_station' => 'boolean',
+        'virtual' => 'boolean',
     ];
 
     const TYPE_ATIS = 1;
@@ -83,9 +85,24 @@ class Position extends Model implements Endorseable
         }
     }
 
+    public function isVirtual(): bool
+    {
+        return $this->virtual ?? false;
+    }
+
     public function isTemporarilyEndorsable(): bool
     {
         return $this->temporarily_endorsable ?? false;
+    }
+
+    public function scopeVirtual(Builder $query): Builder
+    {
+        return $query->where('virtual', true);
+    }
+
+    public function scopeReal(Builder $query): Builder
+    {
+        return $query->where('virtual', false);
     }
 
     public function scopeTemporarilyEndorsable(Builder $query): Builder
