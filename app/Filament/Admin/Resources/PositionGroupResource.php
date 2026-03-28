@@ -56,8 +56,8 @@ class PositionGroupResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\PositionGroupResource\Pages\ListPositionGroups::route('/'),
-            'view' => \App\Filament\Admin\Resources\PositionGroupResource\Pages\ViewPositionGroup::route('/{record}'),
+            'index' => PositionGroupResource\Pages\ListPositionGroups::route('/'),
+            'view' => PositionGroupResource\Pages\ViewPositionGroup::route('/{record}'),
         ];
     }
 }

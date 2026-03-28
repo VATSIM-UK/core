@@ -6,15 +6,17 @@ use App\Models\Mship\Account;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Access\Response as AuthResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 use Session;
 use View;
 
-class BaseController extends \Illuminate\Routing\Controller
+class BaseController extends Controller
 {
     use AuthorizesRequests {
         authorize as protected doAuthorize;
@@ -60,9 +62,9 @@ class BaseController extends \Illuminate\Routing\Controller
      *
      * @param  mixed  $ability
      * @param  mixed|array  $arguments
-     * @return \Illuminate\Auth\Access\Response
+     * @return AuthResponse
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function authorize($ability, $arguments = [])
     {

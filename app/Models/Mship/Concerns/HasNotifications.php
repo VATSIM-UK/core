@@ -4,16 +4,17 @@ namespace App\Models\Mship\Concerns;
 
 use App\Models\Sys\Notification as SysNotification;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait HasNotifications
 {
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function readSystemNotifications()
     {
         return $this->belongsToMany(
-            \App\Models\Sys\Notification::class,
+            SysNotification::class,
             'sys_notification_read',
             'account_id',
             'notification_id'

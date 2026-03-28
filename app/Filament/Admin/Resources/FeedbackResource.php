@@ -177,8 +177,8 @@ class FeedbackResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\FeedbackResource\Pages\ListFeedback::route('/'),
-            'view' => \App\Filament\Admin\Resources\FeedbackResource\Pages\ViewFeedback::route('/{record}'),
+            'index' => FeedbackResource\Pages\ListFeedback::route('/'),
+            'view' => FeedbackResource\Pages\ViewFeedback::route('/{record}'),
         ];
     }
 

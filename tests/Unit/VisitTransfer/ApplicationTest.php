@@ -242,7 +242,7 @@ class ApplicationTest extends TestCase
 
         $this->user->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
 
-        $facility = \App\Models\VisitTransfer\Facility::factory()->visit('atc')->create();
+        $facility = Facility::factory()->visit('atc')->create();
 
         $application = $this->user->fresh()->createVisitingTransferApplication([
             'type' => Application::TYPE_VISIT,
@@ -342,7 +342,7 @@ class ApplicationTest extends TestCase
     public function completing_a_pilot_application_removes_visiting_state_if_no_atc_applications_exist()
     {
         $visiting = \App\Models\Mship\State::findByCode('VISITING');
-        $pilotFacility = \App\Models\VisitTransfer\Facility::factory()->visit('pilot')->create();
+        $pilotFacility = Facility::factory()->visit('pilot')->create();
 
         $application = Application::factory()->visit('pilot')->create([
             'account_id' => $this->user->id,
@@ -359,8 +359,8 @@ class ApplicationTest extends TestCase
     public function completing_a_pilot_application_does_not_remove_visiting_state_if_an_atc_application_exists()
     {
         $visiting = \App\Models\Mship\State::findByCode('VISITING');
-        $pilotFacility = \App\Models\VisitTransfer\Facility::factory()->visit('pilot')->create();
-        $atcFacility = \App\Models\VisitTransfer\Facility::factory()->visit('atc')->create();
+        $pilotFacility = Facility::factory()->visit('pilot')->create();
+        $atcFacility = Facility::factory()->visit('atc')->create();
 
         $atcApplication = Application::factory()->visit('atc')->create([
             'account_id' => $this->user->id,

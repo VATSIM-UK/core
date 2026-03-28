@@ -7,6 +7,7 @@ use App\Exceptions\Mship\InvalidStateException;
 use App\Models\Mship\AccountState;
 use App\Models\Mship\State;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 trait HasStates
 {
@@ -92,7 +93,7 @@ trait HasStates
     /**
      * Get all temporary states.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getTemporaryStatesAttribute()
     {
@@ -102,7 +103,7 @@ trait HasStates
     /**
      * Get all permanent states.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getPermanentStatesAttribute()
     {
@@ -117,7 +118,7 @@ trait HasStates
      * @param  string|null  $division  Member's division
      * @return mixed
      *
-     * @throws \App\Exceptions\Mship\InvalidStateException
+     * @throws InvalidStateException
      */
     public function addState(State $state, $region = null, $division = null)
     {

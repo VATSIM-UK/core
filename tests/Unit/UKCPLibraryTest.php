@@ -34,7 +34,7 @@ class UKCPLibraryTest extends TestCase
 
         $this->mock(Client::class, function (MockInterface $mock) {
             $mock->shouldReceive('delete')
-                ->andReturn(new \GuzzleHttp\Psr7\Response(200, [], true));
+                ->andReturn(new Response(200, [], true));
         })->makePartial();
 
         $ukcp = resolve(UKCP::class);
@@ -55,7 +55,7 @@ class UKCPLibraryTest extends TestCase
             $mock->shouldReceive('get')
                 ->with('https://ukcp.vatsim.uk/api/stand/status?airfield=EGLL', ['timeout' => 8])
                 ->andReturn(
-                    new \GuzzleHttp\Psr7\Response(200, [], json_encode([
+                    new Response(200, [], json_encode([
                         'refresh_at' => $expiry,
                         'stands' => [
                             [

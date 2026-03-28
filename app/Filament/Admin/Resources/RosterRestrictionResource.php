@@ -48,7 +48,7 @@ class RosterRestrictionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\RosterRestrictionResource\Pages\ListRosterRestrictions::route('/'),
+            'index' => RosterRestrictionResource\Pages\ListRosterRestrictions::route('/'),
         ];
     }
 }

@@ -27,7 +27,7 @@ trait HasBans
 
     public function bans()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'account_id')->orderBy(
+        return $this->hasMany(Ban::class, 'account_id')->orderBy(
             'created_at',
             'DESC'
         );
@@ -100,7 +100,7 @@ trait HasBans
     public function addNetworkBan($reason = 'Network ban discovered.')
     {
         if ($this->is_network_banned === false) {
-            $ban = new \App\Models\Mship\Account\Ban;
+            $ban = new Ban;
             $ban->type = BanTypeEnum::Network;
             $ban->reason_extra = $reason;
             $ban->period_start = Carbon::now();

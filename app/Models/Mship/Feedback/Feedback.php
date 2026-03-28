@@ -14,22 +14,22 @@ use Illuminate\Notifications\Notifiable;
  * @property int $form_id
  * @property int $account_id
  * @property int $submitter_account_id
- * @property \Carbon\Carbon|null $actioned_at
+ * @property Carbon|null $actioned_at
  * @property string|null $actioned_comment
  * @property int|null $actioned_by_id
- * @property \Carbon\Carbon|null $sent_at
+ * @property Carbon|null $sent_at
  * @property string|null $sent_comment
  * @property int|null $sent_by_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \Carbon\Carbon|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property int|null $deleted_by
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Mship\Account $actioner
  * @property-read \App\Models\Mship\Account|null $deleter
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Answer[] $answers
+ * @property-read \Illuminate\Database\Eloquent\Collection|Answer[] $answers
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
- * @property-read \App\Models\Mship\Feedback\Form $form
+ * @property-read Form $form
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \App\Models\Mship\Account $submitter
  *
@@ -104,7 +104,7 @@ class Feedback extends Model
 
     public function form()
     {
-        return $this->belongsTo(\App\Models\Mship\Feedback\Form::class);
+        return $this->belongsTo(Form::class);
     }
 
     public function questions()
@@ -114,12 +114,12 @@ class Feedback extends Model
 
     public function answers()
     {
-        return $this->hasMany(\App\Models\Mship\Feedback\Answer::class);
+        return $this->hasMany(Answer::class);
     }
 
     public function position()
     {
-        return $this->hasOne(\App\Models\Mship\Feedback\Answer::class)->whereHas('question', function ($query) {
+        return $this->hasOne(Answer::class)->whereHas('question', function ($query) {
             $query->where('slug', ['callsign3', 'sessionposition2']);
         });
     }

@@ -103,8 +103,8 @@ class BanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\BanResource\Pages\ListBans::route('/'),
-            'view' => \App\Filament\Admin\Resources\BanResource\Pages\ViewBan::route('/{record}'),
+            'index' => BanResource\Pages\ListBans::route('/'),
+            'view' => BanResource\Pages\ViewBan::route('/{record}'),
         ];
     }
 }
