@@ -246,6 +246,14 @@ class ExamSetup extends Page implements HasForms
 
                                 $prerequisiteRating = PilotExamType::from($examType)->prerequisiteQualification();
 
+                                $passedStudentIds = (new ExamResultRepository)
+                                    ->getPassedExamsOfType($examType)
+                                    ->pluck('student_id');
+
+                                $pendingStudentIds = (new ExamResultRepository)
+                                    ->getPendingExamsOfType($examType, daysConsideredRecent: 180)
+                                    ->pluck('student_id');
+
                                 $members = Member::query()
                                     ->where(fn ($query) => $query
                                         ->where('name', 'LIKE', "%{$search}%")
@@ -271,6 +279,8 @@ class ExamSetup extends Page implements HasForms
 
                                 return $members
                                     ->whereIn('cid', $eligibleCids)
+                                    ->whereNotIn('id', $passedStudentIds)
+                                    ->whereNotIn('id', $pendingStudentIds)
                                     ->take(25)
                                     ->mapWithKeys(fn ($member) => [
                                         $member->id => "{$member->name} ({$member->cid})",

@@ -280,7 +280,9 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                             'taken_from' => $examStartDateTime->format('H:i:s'),
                             'taken_to' => $examEndDateTime->format('H:i:s'),
                             'exmr_id' => auth()->user()->member->id,
-                            'exmr_rating' => auth()->user()->member->account->qualification_atc->vatsim,
+                            'exmr_rating' => $record->isPilotExam()
+                                ? auth()->user()->member->account->qualification_pilot?->vatsim
+                                : auth()->user()->member->account->qualification_atc->vatsim,
                             'time_book' => now(),
                             'second_examiner_req' => $this->isSecondaryExaminerRequired($record->exam) || ! empty($data['secondary_examiner']) ? 1 : 0,
                         ]);
