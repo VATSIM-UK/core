@@ -18,6 +18,13 @@ class ExamResultRepository
             ->get();
     }
 
+    public function getPassedExamsOfType(string $type): Collection
+    {
+        return PracticalResult::where('result', PracticalResult::PASSED)
+            ->where('exam', $type)
+            ->get();
+    }
+
     public function getPendingExamsOfType(string $type, int $daysConsideredRecent = 180): Collection
     {
         return ExamBooking::where('exam', $type)

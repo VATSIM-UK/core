@@ -246,6 +246,14 @@ class ExamSetup extends Page implements HasForms
 
                                 $prerequisiteRating = PilotExamType::from($examType)->prerequisiteQualification();
 
+                                $passedStudentIds = (new ExamResultRepository)
+                                    ->getPassedExamsOfType($examType)
+                                    ->pluck('student_id');
+
+                                $pendingStudentIds = (new ExamResultRepository)
+                                    ->getPendingExamsOfType($examType, daysConsideredRecent: 180)
+                                    ->pluck('student_id');
+
                                 $members = Member::query()
                                     ->where(fn ($query) => $query
                                         ->where('name', 'LIKE', "%{$search}%")
@@ -259,14 +267,20 @@ class ExamSetup extends Page implements HasForms
                                 }
 
                                 $eligibleCids = Account::whereIn('id', $members->pluck('cid'))
-                                    ->whereHas('qualifications', fn ($q) => $q
-                                        ->where('type', 'pilot')
-                                        ->where('code', $prerequisiteRating)
-                                    )
+                                    ->whereHas('qualifications', function ($q) use ($prerequisiteRating) {
+                                        $q->where('type', 'pilot')
+                                            ->where(function ($q) use ($prerequisiteRating) {
+                                                // Students must hold either the previous rating or hold a P6 rating to be able to be forwarded for any pilot exam
+                                                $q->where('code', $prerequisiteRating)
+                                                    ->orWhere('code', 'P6');
+                                            });
+                                    })
                                     ->pluck('id');
 
                                 return $members
                                     ->whereIn('cid', $eligibleCids)
+                                    ->whereNotIn('id', $passedStudentIds)
+                                    ->whereNotIn('id', $pendingStudentIds)
                                     ->take(25)
                                     ->mapWithKeys(fn ($member) => [
                                         $member->id => "{$member->name} ({$member->cid})",
