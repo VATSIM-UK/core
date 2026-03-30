@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Redirect;
 
 class EndorsementController extends BaseController
 {
-    const HEATHROW_S1_HOURS_REQUIREMENT = 50;
+    const HEATHROW_S1_HOURS_TOTAL = 100;
+    const HEATHROW_S1_HOURS_GATWICK = 30;
+    const HEATHROW_S1_HOURS_MANCHESTER = 30;
 
     public function getHeathrowGroundS1Index()
     {
@@ -22,23 +24,35 @@ class EndorsementController extends BaseController
         // active on roster
         $onRoster = Roster::where('account_id', $this->account->id)->exists();
 
-        // 50 hours on _GND or _DEL
-        $minutesOnline = $this->account->networkDataAtc()
+        $baseQuery = fn () => $this->account->networkDataAtc()
             ->isUK()
             ->where(function (Builder $builder) {
                 $builder->where('facility_type', Atc::TYPE_GND)
                     ->orWhere('facility_type', Atc::TYPE_DEL);
-            })
-            ->sum('minutes_online');
+            });
 
-        $totalHours = $minutesOnline / 60;
-        $hoursMet = $totalHours >= self::HEATHROW_S1_HOURS_REQUIREMENT;
+        $gatwickMinutes = (clone $baseQuery())->where('callsign', 'like', 'EGKK%')->sum('minutes_online');
+        $manchesterMinutes = (clone $baseQuery())->where('callsign', 'like', 'EGCC%')->sum('minutes_online');
+        $totalMinutes = $baseQuery()->sum('minutes_online');
+
+        $gatwickHours = $gatwickMinutes / 60;
+        $manchesterHours = $manchesterMinutes / 60;
+        $totalHours = $totalMinutes / 60;
+
+        $gatwickMet = $gatwickHours >= self::HEATHROW_S1_HOURS_GATWICK;
+        $manchesterMet = $manchesterHours >= self::HEATHROW_S1_HOURS_MANCHESTER;
+        $totalMet = $totalHours >= self::HEATHROW_S1_HOURS_TOTAL;
+        $hoursMet = $gatwickMet && $manchesterMet && $totalMet;
 
         $this->setTitle('Heathrow Ground (S1) Endorsement');
 
         return $this->viewMake('controllers.endorsements.heathrow_ground_s1')
+            ->with('gatwickHours', $gatwickHours)
+            ->with('manchesterHours', $manchesterHours)
             ->with('totalHours', $totalHours)
-            ->with('progress', ($totalHours / self::HEATHROW_S1_HOURS_REQUIREMENT) * 100)
+            ->with('gatwickMet', $gatwickMet)
+            ->with('manchesterMet', $manchesterMet)
+            ->with('totalMet', $totalMet)
             ->with('hoursMet', $hoursMet)
             ->with('onRoster', $onRoster)
             ->with('conditionsMet', $hoursMet && $onRoster);
