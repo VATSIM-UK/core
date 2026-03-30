@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Redirect;
 class EndorsementController extends BaseController
 {
     const HEATHROW_S1_HOURS_TOTAL = 100;
+
     const HEATHROW_S1_HOURS_GATWICK = 30;
+
     const HEATHROW_S1_HOURS_MANCHESTER = 30;
 
     public function getHeathrowGroundS1Index()

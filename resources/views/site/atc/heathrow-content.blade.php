@@ -35,18 +35,17 @@ You must be on the active controlling roster and must not have significant negat
 
 ### Heathrow DEL/GND (S2+)
 
-A minimum of **40 hours** on domestic UK DEL/GND/TWR positions, post the award of your S1 rating, made up of:
-
-- At least **10 hours** on Gatwick DEL/GND/TWR positions
-- At least **10 hours** on Manchester DEL/GND/TWR positions
-- The remaining hours on relevant, domestic UK DEL/GND positions (i.e. not overseas), excluding AFIS/AGCS and Military positions.
+- A minimum of **40 hours** on domestic UK DEL/GND/TWR positions, post the award of your S1 rating, which must be made up of:
+  - At least **10 hours** on Gatwick DEL/GND/TWR positions
+  - At least **10 hours** on Manchester DEL/GND/TWR positions
+  - The remaining hours on relevant, domestic UK DEL/GND positions (i.e. not overseas), excluding AFIS/AGCS and Military positions.
 
 ---
 
 ### Heathrow TWR (S2+)
 
 - Hold a **Heathrow DEL/GND endorsement**, and have controlled a minimum of **10 hours** on Heathrow GND positions in the three months preceding the award of their training place
-- A minimum of **100 hours** on UK TWR positions, logged after the award of your S2 rating, made up of:
+- A minimum of **100 hours** on UK TWR positions, post the award of your S2 rating, which must be made up of:
   - At least **30 hours** on Manchester TWR positions
   - At least **30 hours** on Gatwick TWR positions
   - The remaining hours on relevant, domestic UK TWR positions (i.e. not overseas), excluding AFIS/AGCS and Military positions.
@@ -56,7 +55,7 @@ A minimum of **40 hours** on domestic UK DEL/GND/TWR positions, post the award o
 ### Approach (S3+)
 
 - Hold a **Heathrow TWR endorsement**, and have controlled a minimum of **10 hours** on Heathrow TWR positions in the three months preceding the award of their training place
-- A minimum of **120 hours** on UK APP positions, post the award of your S3 rating, made up of:
+- A minimum of **120 hours** on UK APP positions, post the award of your S3 rating, which must be made up of:
   - At least **30 hours** on Manchester APP positions
   - At least **30 hours** on Gatwick APP positions
   - The remaining hours on relevant, domestic UK APP positions (i.e. not overseas), excluding Military positions.
