@@ -173,7 +173,7 @@ progression.
 | Resources      | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
 | Covered Topics | 1.Transfer of Traffic / Handoffs and Sector Ownership<br>2.Traffic Information<br>3.Altimetry and Meteorology<br>4.VFR Departures<br>5.VFR Arrivals<br>6.VFR Transits<br>7.Non-Standard IFR Departures |
 
-### 4.1 Lesson Three
+### 4.3 Lesson Three
 | Title       | VFR Circuits and Integration With IFR                              |
 | ----------- | ------------------------------------------------------------------ |
 | Duration    | 2 hours                                                            |
