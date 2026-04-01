@@ -23,17 +23,17 @@
                         the following requirements:
                     </p>
                     <ul>
+                        <li>You must be active on the controller roster</li>
+                        <li>You must be a home member of the UK</li>
+                        <li>You must hold an S1 rating</li>                   
+                        <li>You must not have significant negative feedback</li>
                         <li>
-                            You must be a home member of the UK
-                        </li>
-                        <li>
-                            You must hold an S1 rating
-                        </li>
-                        <li>
-                            You must be active on the controller roster
-                        </li>
-                        <li>
-                            You must have controlled for at least 50 hours on any UK ground or delivery position
+                            You must have a minimum of 100 hours on UK DEL/GND positions post the award of your S1, which must be made up of:
+                            <ul>
+                                <li>At least 30 hours on Gatwick DEL/GND positions</li>
+                                <li>At least 30 hours on Manchester DEL/GND positions</li>
+                                <li>The remaining hours on relevant, domestic UK DEL/GND positions (i.e. not overseas), excluding AFIS/AGCS and Military positions</li>
+                            </ul>
                         </li>
                     </ul>
                     <h4>Step Two</h4>
@@ -43,7 +43,7 @@
                         Heathrow specific procedures, radiotelephony, and local flight planning restrictions.
                     </p>
                     <p>
-                        Once you are close to the top of the waiting list you will be given access to to the
+                        Once you are close to the top of the waiting list you will be given access to the
                         Moodle exam.
                     </p>
                     <p>
@@ -88,26 +88,42 @@
 
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-info"></i> 50 Hours Controlling delivery or ground positions</div>
+                <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Hours Requirement</div>
                 <div class="panel-body">
-                    <div class="progress" data-toggle="tooltip" title="Hours Controlling DEL and GND">
-                        @if($hoursMet)
-                            <div
-                                class="progress-bar progress-bar-success"
-                                role="progressbar"
-                                style="width: 100%"
-                                aria-valuemin="0"
-                                aria-valuemax="50">
-                                50+ Hrs
-                            </div>
-                        @endif
+
+                    <p><strong>Gatwick DEL/GND</strong>
+                    <div class="progress" data-toggle="tooltip" title="Hours on Gatwick DEL/GND">
                         <div
-                            class="progress-bar {{ $hoursMet ? 'progress-bar-success' : '' }}"
+                            class="progress-bar {{ $gatwickMet ? 'progress-bar-success' : 'progress-bar-warning' }}"
                             role="progressbar"
-                            style="width: {{ $progress }}%"
+                            style="width: {{ min(($gatwickHours / 30) * 100, 100) }}%"
                             aria-valuemin="0"
-                            aria-valuemax="50">
-                            {{ (round($totalHours,2)) .' Hrs' }}
+                            aria-valuemax="30">
+                            {{ floor($gatwickHours) }} Hrs
+                        </div>
+                    </div>
+
+                    <p><strong>Manchester DEL/GND</strong>
+                    <div class="progress" data-toggle="tooltip" title="Hours on Manchester DEL/GND">
+                        <div
+                            class="progress-bar {{ $manchesterMet ? 'progress-bar-success' : 'progress-bar-warning' }}"
+                            role="progressbar"
+                            style="width: {{ min(($manchesterHours / 30) * 100, 100) }}%"
+                            aria-valuemin="0"
+                            aria-valuemax="30">
+                            {{ floor($manchesterHours) }} Hrs
+                        </div>
+                    </div>
+
+                    <p><strong>Total UK DEL/GND</strong>
+                    <div class="progress" data-toggle="tooltip" title="Total hours on UK DEL/GND">
+                        <div
+                            class="progress-bar {{ $totalMet ? 'progress-bar-success' : 'progress-bar-warning' }}"
+                            role="progressbar"
+                            style="width: {{ min(($totalHours / 100) * 100, 100) }}%"
+                            aria-valuemin="0"
+                            aria-valuemax="100">
+                            {{ floor($totalHours) }} Hrs
                         </div>
                     </div>
                 </div>
