@@ -50,18 +50,18 @@ class ATCTrainingStats
     }
 
     public static function endorsementHolders(string $position)
-{
-    $sub = DB::table('mship_account_endorsement')
-        ->join('position_groups', 'position_groups.id', '=', 'mship_account_endorsement.endorsable_id')
-        ->join('mship_account_qualification', 'mship_account_qualification.account_id', '=', 'mship_account_endorsement.account_id')
-        ->join('mship_qualification', function ($join) {
-            $join->on('mship_qualification.id', '=', 'mship_account_qualification.qualification_id')
-                ->where('mship_qualification.type', '=', 'atc');
-        })
-        ->where('position_groups.name', 'LIKE', "{$position}%")
-        ->whereNull('mship_account_endorsement.deleted_at')
-        ->whereNull('mship_account_qualification.deleted_at')
-        ->selectRaw("
+    {
+        $sub = DB::table('mship_account_endorsement')
+            ->join('position_groups', 'position_groups.id', '=', 'mship_account_endorsement.endorsable_id')
+            ->join('mship_account_qualification', 'mship_account_qualification.account_id', '=', 'mship_account_endorsement.account_id')
+            ->join('mship_qualification', function ($join) {
+                $join->on('mship_qualification.id', '=', 'mship_account_qualification.qualification_id')
+                    ->where('mship_qualification.type', '=', 'atc');
+            })
+            ->where('position_groups.name', 'LIKE', "{$position}%")
+            ->whereNull('mship_account_endorsement.deleted_at')
+            ->whereNull('mship_account_qualification.deleted_at')
+            ->selectRaw("
             mship_account_endorsement.account_id AS account_id,
             position_groups.name AS endorsement_name,
             mship_qualification.code AS rating,
@@ -85,25 +85,25 @@ class ATCTrainingStats
             ) AS rating_rank
         ");
 
-    return DB::query()
-        ->fromSub($sub, 't')
-        ->where('endorsement_rank', 1)
-        ->where('rating_rank', 1)
-        ->groupBy('rating', 'endorsement_name', 'vatsim')
-        ->orderBy('vatsim', 'desc')
-        ->selectRaw('rating, endorsement_name, vatsim, COUNT(*) AS total')
-        ->get()
-        ->groupBy('rating')
-        ->map(fn ($group, $rating) => [
-            'rating' => $rating,
-            'endorsements' => $group->map(fn ($item) => [
-                'endorsement' => $item->endorsement_name,
-                'count' => $item->total,
-            ])->values()->toArray(),
-        ])
-        ->values()
-        ->toArray();
-}
+        return DB::query()
+            ->fromSub($sub, 't')
+            ->where('endorsement_rank', 1)
+            ->where('rating_rank', 1)
+            ->groupBy('rating', 'endorsement_name', 'vatsim')
+            ->orderBy('vatsim', 'desc')
+            ->selectRaw('rating, endorsement_name, vatsim, COUNT(*) AS total')
+            ->get()
+            ->groupBy('rating')
+            ->map(fn ($group, $rating) => [
+                'rating' => $rating,
+                'endorsements' => $group->map(fn ($item) => [
+                    'endorsement' => $item->endorsement_name,
+                    'count' => $item->total,
+                ])->values()->toArray(),
+            ])
+            ->values()
+            ->toArray();
+    }
 
     public static function rosterCountByRating()
     {

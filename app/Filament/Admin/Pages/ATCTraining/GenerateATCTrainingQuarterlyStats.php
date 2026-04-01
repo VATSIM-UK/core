@@ -87,7 +87,7 @@ class GenerateATCTrainingQuarterlyStats extends BasePage
             ],
         ]);
     }
-    
+
     public static function canAccess(): bool
     {
 
