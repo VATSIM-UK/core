@@ -68,8 +68,8 @@ class TrainingPlaceLeaveOfAbsenceTest extends BaseTrainingPanelTestCase
 
         Livewire::test(LeaveOfAbsencesTable::class, ['trainingPlace' => $this->trainingPlace])
             ->callTableAction('create', data: [
-                'begins_at' => '2026-04-01',
-                'ends_at' => '2026-04-10',
+                'begins_at' => Carbon::today()->toDateString(),
+                'ends_at' => Carbon::today()->addDays(9)->toDateString(),
                 'reason' => 'Taking a short break.',
             ])
             ->assertHasNoTableActionErrors();
@@ -86,14 +86,14 @@ class TrainingPlaceLeaveOfAbsenceTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training-places.loas.create.*');
 
         $this->createLoa([
-            'begins_at' => Carbon::parse('2026-04-01'),
-            'ends_at' => Carbon::parse('2026-04-15')->endOfDay(),
+            'begins_at' => Carbon::today(),
+            'ends_at' => Carbon::today()->addDays(14)->endOfDay(),
         ]);
 
         Livewire::test(LeaveOfAbsencesTable::class, ['trainingPlace' => $this->trainingPlace])
             ->callTableAction('create', data: [
-                'begins_at' => '2026-04-10',
-                'ends_at' => '2026-04-20',
+                'begins_at' => Carbon::today()->addDays(9)->toDateString(),
+                'ends_at' => Carbon::today()->addDays(19)->toDateString(),
                 'reason' => 'This should be blocked.',
             ]);
 
