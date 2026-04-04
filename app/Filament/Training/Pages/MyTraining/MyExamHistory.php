@@ -26,7 +26,7 @@ class MyExamHistory extends Page implements HasTable
 
     public static function canAccess(): bool
     {
-        return auth()->user()->can('training.access');
+        return auth()->user()->can('training.access') ?? false;
     }
 
     public function table(Table $table): Table
