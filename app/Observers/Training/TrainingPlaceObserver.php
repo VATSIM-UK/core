@@ -42,7 +42,7 @@ class TrainingPlaceObserver implements ShouldHandleEventsAfterCommit
      */
     public function restored(TrainingPlace $trainingPlace): void
     {
-        //
+        $this->trainingPlaceService->assignMentoringPermissions($trainingPlace);
     }
 
     /**

@@ -135,6 +135,7 @@ class TrainingPlaceResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->url(fn (TrainingPlace $record) => url("/training/training-places/{$record->id}")),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->defaultSort('created_at', 'desc')
             ->persistSearchInSession()
