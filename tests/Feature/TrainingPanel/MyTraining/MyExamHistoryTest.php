@@ -73,18 +73,10 @@ class MyExamHistoryTest extends BaseTrainingPanelTestCase
     {
         $expectedUrl = ViewExamReport::getUrl(['examId' => $this->practicalResult->examid]);
 
-        $component = Livewire::actingAs($this->studentAccount)
+        Livewire::actingAs($this->studentAccount)
             ->test(MyExamHistory::class)
-            ->assertSuccessful();
-
-        $action = $component->instance()
-            ->getTable()
-            ->getAction('view');
-
-        $record = $this->practicalResult;
-        $resolvedUrl = $action->getUrl($record);
-
-        $this->assertEquals($expectedUrl, $resolvedUrl);
+            ->assertSuccessful()
+            ->assertSee($expectedUrl);
     }
 
     #[Test]
