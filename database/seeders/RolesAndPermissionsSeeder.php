@@ -64,6 +64,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.theory.manage.ctr',
             'training.examiners.view.*',
             'training.examiners.view.atc',
+            'training.examiners.manage.*',
+            'training.examiners.manage.atc',
 
             // Account Permissions
             'account.self',
