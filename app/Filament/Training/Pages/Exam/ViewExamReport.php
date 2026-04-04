@@ -41,21 +41,30 @@ class ViewExamReport extends Page implements HasInfolists
 
     public function mount(): void
     {
-        // Check basic training exams access
-        if (! auth()->user()->can('training.exams.access')) {
+        $this->practicalResult = PracticalResult::where('examid', $this->examId)
+            ->with('examBooking')
+            ->firstOrFail();
+
+        $user = auth()->user();
+
+        // Students may always view their own report
+        if ($this->practicalResult->student?->cid === $user->id) {
+            return;
+        }
+
+        // Examiner path
+        if (! $user->can('training.exams.access')) {
             abort(403, 'You do not have permission to access training exams.');
         }
 
-        $this->practicalResult = PracticalResult::where('examid', $this->examId)->firstOrFail();
+        if (! $this->practicalResult->examBooking) {
+            abort(404, 'Invalid exam booking.');
+        }
 
-        // Check specific conduct permission for this exam level
-        if ($this->practicalResult->examBooking) {
-            $examLevel = strtolower($this->practicalResult->examBooking->exam);
-            if (! auth()->user()->can("training.exams.conduct.{$examLevel}")) {
-                abort(403, 'You do not have permission to view this exam report.');
-            }
-        } else {
-            abort(403, 'Invalid exam booking.');
+        $examLevel = strtolower($this->practicalResult->examBooking->exam);
+
+        if (! $user->can("training.exams.conduct.{$examLevel}")) {
+            abort(403, 'You do not have permission to view this exam report.');
         }
     }
 
