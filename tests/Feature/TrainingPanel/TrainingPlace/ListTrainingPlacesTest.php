@@ -177,6 +177,37 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
             ->assertCanNotSeeTableRecords([$activeTrainingPlace]);
     }
 
+    #[Test]
+    public function it_shows_table_restore_action_for_deleted_training_place_when_user_has_permission()
+    {
+        $user = Account::factory()->create();
+        $user->givePermissionTo('training-places.view.*');
+        $user->givePermissionTo('training-places.restore.*');
+
+        $deletedTrainingPlace = $this->createTrainingPlace();
+        $deletedTrainingPlace->delete();
+
+        Livewire::actingAs($user)
+            ->test(ListTrainingPlaces::class)
+            ->filterTable('trashed', false)
+            ->assertTableActionVisible('restore', $deletedTrainingPlace);
+    }
+
+    #[Test]
+    public function it_hides_table_restore_action_for_deleted_training_place_without_restore_permission()
+    {
+        $user = Account::factory()->create();
+        $user->givePermissionTo('training-places.view.*');
+
+        $deletedTrainingPlace = $this->createTrainingPlace();
+        $deletedTrainingPlace->delete();
+
+        Livewire::actingAs($user)
+            ->test(ListTrainingPlaces::class)
+            ->filterTable('trashed', false)
+            ->assertTableActionHidden('restore', $deletedTrainingPlace);
+    }
+
     private function createTrainingPlace(): TrainingPlace
     {
         $student = Account::factory()->create();

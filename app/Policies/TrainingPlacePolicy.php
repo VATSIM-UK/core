@@ -52,7 +52,7 @@ class TrainingPlacePolicy
      */
     public function restore(Account $account, TrainingPlace $trainingPlace): bool
     {
-        return false;
+        return $account->hasPermissionTo('training-places.restore.*');
     }
 
     /**

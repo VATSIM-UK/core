@@ -109,6 +109,31 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 ->modalDescription('Confirm the details below to forward this member for a practical exam.')
                 ->modalSubmitActionLabel('Forward for Exam'),
 
+            Action::make('restoreTrainingPlace')
+                ->label('Restore Training Place')
+                ->icon('heroicon-o-arrow-uturn-left')
+                ->color('success')
+                ->visible(fn () => $this->trainingPlace->trashed() && $user->can('training-places.restore.*'))
+                ->modalHeading('Restore Training Place')
+                ->modalDescription('This will make the training place active again and re-assign mentoring permissions. The student will not be re-added to any waiting list.')
+                ->modalSubmitActionLabel('Restore')
+                ->requiresConfirmation()
+                ->action(function () {
+                    $studentAccount = $this->trainingPlace->waitingListAccount->account;
+                    $callsign = $this->trainingPlace->trainingPosition->position->callsign;
+
+                    $this->trainingPlace->restore();
+
+                    $studentAccount->addNote('training', "Training place restored on {$callsign}.", Auth::user()->id);
+
+                    Notification::make()
+                        ->title('Training place restored successfully')
+                        ->success()
+                        ->send();
+
+                    $this->redirect(ListTrainingPlaces::getUrl());
+                }),
+
             Action::make('revokeTrainingPlace')
                 ->label('Revoke Training Place')
                 ->icon('heroicon-o-x-circle')

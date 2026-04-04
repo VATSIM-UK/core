@@ -615,4 +615,40 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             ->assertSee($trainingPlace->waitingListAccount->account->name)
             ->assertSee($trainingPlace->trainingPosition->position->name);
     }
+
+    #[Test]
+    public function it_does_not_show_restore_training_place_action_without_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->delete();
+
+        $this->panelUser->roles()->detach();
+        $this->panelUser->refresh();
+        $this->panelUser->givePermissionTo('training-places.view.*');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertActionHidden('restoreTrainingPlace');
+    }
+
+    #[Test]
+    public function it_hides_restore_training_place_action_when_training_place_is_active()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training-places.restore.*');
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertActionHidden('restoreTrainingPlace');
+    }
+
+    #[Test]
+    public function it_shows_restore_training_place_action_when_trashed_and_user_has_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->delete();
+        $this->panelUser->givePermissionTo('training-places.restore.*');
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertActionVisible('restoreTrainingPlace');
+    }
 }
