@@ -62,13 +62,6 @@ class SyncCtsRoles extends Command
         $this->syncStudentsByRts(19, Role::findByName('ATC Students (APP)')->id); // APP Students
         $this->syncStudentsByRts(17, Role::findByName('ATC Students (ENR)')->id); // Enroute Students
 
-        // Sync Examiners
-        // Split ATC Examiner roles per level
-        $this->syncObsExaminers(Role::findByName('ATC Examiner (OBS)')->id);
-        $this->syncTwrExaminers(Role::findByName('ATC Examiner (TWR)')->id);
-        $this->syncAppExaminers(Role::findByName('ATC Examiner (APP)')->id);
-        $this->syncCtrExaminers(Role::findByName('ATC Examiner (CTR)')->id);
-
         $this->syncPilotExaminers(40); // Pilot
     }
 
@@ -83,34 +76,6 @@ class SyncCtsRoles extends Command
     {
         $hasRole = $this->getAccountsWithRoleId($roleId);
         $shouldHaveRole = (new MentorRepository)->getMentorsFor($search);
-        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
-    }
-
-    private function syncObsExaminers(int $roleId): void
-    {
-        $hasRole = $this->getAccountsWithRoleId($roleId);
-        $shouldHaveRole = (new ExaminerRepository)->getObsExaminers();
-        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
-    }
-
-    private function syncTwrExaminers(int $roleId): void
-    {
-        $hasRole = $this->getAccountsWithRoleId($roleId);
-        $shouldHaveRole = (new ExaminerRepository)->getTwrExaminers();
-        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
-    }
-
-    private function syncAppExaminers(int $roleId): void
-    {
-        $hasRole = $this->getAccountsWithRoleId($roleId);
-        $shouldHaveRole = (new ExaminerRepository)->getAppExaminers();
-        $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
-    }
-
-    private function syncCtrExaminers(int $roleId): void
-    {
-        $hasRole = $this->getAccountsWithRoleId($roleId);
-        $shouldHaveRole = (new ExaminerRepository)->getCtrExaminers();
         $this->syncRoles($hasRole, $shouldHaveRole, $roleId);
     }
 
