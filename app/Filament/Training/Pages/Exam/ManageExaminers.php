@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Mship\Account;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Tables\Actions\Action as TableAction;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
 
 class ManageExaminers extends Page implements HasTable
@@ -91,6 +97,79 @@ class ManageExaminers extends Page implements HasTable
             ->columns([
                 TextColumn::make('id')->label('CID')->searchable(),
                 TextColumn::make('name')->searchable(),
+            ])
+            ->headerActions([
+                TableAction::make('addMember')
+                    ->label('Add member')
+                    ->icon('heroicon-o-plus')
+                    ->visible(fn () => auth()->user()->can('training.examiners.manage.atc'))
+                    ->form([
+                        Select::make('account_id')
+                            ->label('Account')
+                            ->searchable()
+                            ->getSearchResultsUsing(fn (string $search): array => TrainingMemberAccountSearch::searchAccountsForSelect($search, 50))
+                            ->getOptionLabelUsing(fn ($value): ?string => Account::query()->find($value)?->name.' ('.$value.')')
+                            ->required(),
+                    ])
+                    ->action(function (array $data) use ($roleName): void {
+                        $account = Account::query()->findOrFail($data['account_id']);
+
+                        if ($account->hasRole($roleName)) {
+                            Notification::make()
+                                ->title('Already assigned')
+                                ->body('This account already has this examiner role.')
+                                ->warning()
+                                ->send();
+
+                            return;
+                        }
+
+                        $account->assignRole($roleName);
+
+                        Notification::make()
+                            ->title('Member added')
+                            ->success()
+                            ->send();
+                    })
+                    ->successNotificationTitle(null),
+            ])
+            ->actions([
+                TableAction::make('remove')
+                    ->label('Remove')
+                    ->icon('heroicon-o-x-mark')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->visible(fn () => auth()->user()->can('training.examiners.manage.atc'))
+                    ->action(function (Account $record) use ($roleName): void {
+                        $record->removeRole($roleName);
+
+                        Notification::make()
+                            ->title('Member removed')
+                            ->success()
+                            ->send();
+                    })
+                    ->successNotificationTitle(null),
+            ])
+            ->bulkActions([
+                BulkAction::make('detach')
+                    ->label('Remove from role')
+                    ->icon('heroicon-o-x-mark')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->visible(fn () => auth()->user()->can('training.examiners.manage.atc'))
+                    ->action(function (Collection $records) use ($roleName): void {
+                        /** @var Collection<int, Account> $records */
+                        foreach ($records as $record) {
+                            $record->removeRole($roleName);
+                        }
+
+                        Notification::make()
+                            ->title('Members removed from role')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion()
+                    ->successNotificationTitle(null),
             ])
             ->paginated([10, 25, 50])
             ->defaultPaginationPageOption(25);

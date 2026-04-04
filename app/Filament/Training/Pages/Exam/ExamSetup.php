@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Pages\Exam;
 
 use App\Enums\PilotExamType;
+use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Atc\Position;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
@@ -254,13 +255,7 @@ class ExamSetup extends Page implements HasForms
                                     ->getPendingExamsOfType($examType, daysConsideredRecent: 180)
                                     ->pluck('student_id');
 
-                                $members = Member::query()
-                                    ->where(fn ($query) => $query
-                                        ->where('name', 'LIKE', "%{$search}%")
-                                        ->orWhere('cid', 'LIKE', "%{$search}%")
-                                    )
-                                    ->limit(25)
-                                    ->get();
+                                $members = TrainingMemberAccountSearch::membersMatchingSearch($search, 25);
 
                                 if ($members->isEmpty()) {
                                     return [];
