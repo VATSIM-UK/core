@@ -59,6 +59,10 @@ class CheckAvailabilityTest extends TestCase
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $this->trainingPosition->id,
         ]);
+
+        $this->trainingPlace->forceFill([
+            'created_at' => now()->subHours(TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS + 1),
+        ])->saveQuietly();
     }
 
     #[Test]
@@ -90,6 +94,46 @@ class CheckAvailabilityTest extends TestCase
         ]);
 
         // Assert: No availability warning notification is sent
+        Notification::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_does_not_create_availability_check_when_within_grace_period_after_creation(): void
+    {
+        Notification::fake();
+
+        $this->trainingPlace->forceFill(['created_at' => now()])->saveQuietly();
+
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        $this->assertDatabaseMissing('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+        Notification::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_still_records_on_leave_check_when_within_grace_period_after_creation(): void
+    {
+        $this->trainingPlace->forceFill(['created_at' => now()])->saveQuietly();
+
+        TrainingPlaceLeaveOfAbsence::create([
+            'training_place_id' => $this->trainingPlace->id,
+            'begins_at' => now()->subDay(),
+            'ends_at' => now()->addDays(7),
+            'reason' => 'Annual leave',
+        ]);
+
+        Notification::fake();
+
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::OnLeave->value,
+        ]);
         Notification::assertNothingSent();
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands\Training;
 
 use App\Jobs\Training\CheckAvailability;
@@ -25,10 +27,11 @@ class CheckAvailabilityForActiveTrainingPlaces extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
-        // training places have soft deletes, so we need to get all active training places
-        $trainingPlaces = TrainingPlace::whereNull('deleted_at')->get();
+        $trainingPlaces = TrainingPlace::query()
+            ->whereNull('deleted_at')
+            ->get();
 
         foreach ($trainingPlaces as $trainingPlace) {
             CheckAvailability::dispatch($trainingPlace);

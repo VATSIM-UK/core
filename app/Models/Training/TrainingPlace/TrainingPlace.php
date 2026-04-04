@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Observers\Training\TrainingPlaceObserver;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,6 +24,11 @@ class TrainingPlace extends Model
 
     use HasUlids;
     use SoftDeletes;
+
+    /**
+     * Hours after creation during which scheduled availability checks are skipped (not including on-leave checks).
+     */
+    public const AVAILABILITY_CHECK_GRACE_PERIOD_HOURS = 48;
 
     protected $guarded = [];
 
@@ -55,6 +61,16 @@ class TrainingPlace extends Model
     public function isOnLeaveOfAbsence()
     {
         return $this->leaveOfAbsences()->current()->exists();
+    }
+
+    public function availabilityCheckGracePeriodEndsAt(): Carbon
+    {
+        return $this->created_at->copy()->addHours(self::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS);
+    }
+
+    public function isWithinAvailabilityCheckGracePeriod(): bool
+    {
+        return now()->lt($this->availabilityCheckGracePeriodEndsAt());
     }
 
     public function currentLeaveOfAbsence()

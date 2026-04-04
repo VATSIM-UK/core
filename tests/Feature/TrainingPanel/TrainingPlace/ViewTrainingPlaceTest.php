@@ -651,4 +651,31 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertActionVisible('restoreTrainingPlace');
     }
+
+    #[Test]
+    public function it_shows_availability_grace_period_notice_while_within_grace(): void
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->forceFill(['created_at' => now()])->saveQuietly();
+        $endsAt = $trainingPlace->fresh()->availabilityCheckGracePeriodEndsAt()->format('d/m/Y, H:i');
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSee('Availability warnings')
+            ->assertSee('No automated availability checks are run')
+            ->assertSee($endsAt);
+    }
+
+    #[Test]
+    public function it_hides_availability_grace_period_notice_after_grace_elapses(): void
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->forceFill([
+            'created_at' => now()->subHours(TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS + 1),
+        ])->saveQuietly();
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertDontSee('No automated availability checks are run');
+    }
 }
