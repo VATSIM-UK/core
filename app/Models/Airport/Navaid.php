@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $remarks
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Airport $airport
+ * @property-read Airport $airport
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereAirportId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereCreatedAt($value)

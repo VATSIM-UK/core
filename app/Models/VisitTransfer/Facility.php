@@ -27,9 +27,9 @@ use Malahierba\PublicId\PublicId;
  * @property int $open
  * @property int $public
  * @property string|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $applications
+ * @property-read \Illuminate\Database\Eloquent\Collection|Application[] $applications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Facility\Email[] $emails
+ * @property-read \Illuminate\Database\Eloquent\Collection|Facility\Email[] $emails
  * @property-read string $public_id
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  *
@@ -244,7 +244,7 @@ class Facility extends Model
 
     public function applications()
     {
-        return $this->hasMany(\App\Models\VisitTransfer\Application::class);
+        return $this->hasMany(Application::class);
     }
 
     public function emails()

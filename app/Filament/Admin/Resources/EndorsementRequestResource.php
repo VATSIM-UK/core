@@ -154,8 +154,8 @@ class EndorsementRequestResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\EndorsementRequestResource\Pages\ListEndorsementRequests::route('/'),
-            'create' => \App\Filament\Admin\Resources\EndorsementRequestResource\Pages\CreateEndorsementRequest::route('/create'),
+            'index' => EndorsementRequestResource\Pages\ListEndorsementRequests::route('/'),
+            'create' => EndorsementRequestResource\Pages\CreateEndorsementRequest::route('/create'),
         ];
     }
 }

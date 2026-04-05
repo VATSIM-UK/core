@@ -92,17 +92,17 @@ class RoleResource extends Resource
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Admin\Resources\RoleResource\RelationManagers\UsersRelationManager::class,
-            \App\Filament\Admin\Resources\RoleResource\RelationManagers\DelegatesRelationManager::class,
+            RoleResource\RelationManagers\UsersRelationManager::class,
+            RoleResource\RelationManagers\DelegatesRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\RoleResource\Pages\ListRoles::route('/'),
-            'create' => \App\Filament\Admin\Resources\RoleResource\Pages\CreateRole::route('/create'),
-            'edit' => \App\Filament\Admin\Resources\RoleResource\Pages\EditRole::route('/{record}/edit'),
+            'index' => RoleResource\Pages\ListRoles::route('/'),
+            'create' => RoleResource\Pages\CreateRole::route('/create'),
+            'edit' => RoleResource\Pages\EditRole::route('/{record}/edit'),
         ];
     }
 }

@@ -16,7 +16,7 @@ trait HasEmails
      */
     public function secondaryEmails()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Email::class, 'account_id');
+        return $this->hasMany(AccountEmail::class, 'account_id');
     }
 
     public function ssoEmails()

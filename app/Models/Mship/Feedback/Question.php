@@ -20,10 +20,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Answer[] $answers
+ * @property-read \Illuminate\Database\Eloquent\Collection|Answer[] $answers
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
- * @property-read \App\Models\Mship\Feedback\Form $form
- * @property-read \App\Models\Mship\Feedback\Question\Type $type
+ * @property-read Form $form
+ * @property-read Question\Type $type
  *
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question notActioned()
@@ -81,17 +81,17 @@ class Question extends Model
 
     public function form()
     {
-        return $this->belongsTo(\App\Models\Mship\Feedback\Form::class);
+        return $this->belongsTo(Form::class);
     }
 
     public function answers()
     {
-        return $this->hasMany(\App\Models\Mship\Feedback\Answer::class);
+        return $this->hasMany(Answer::class);
     }
 
     public function type()
     {
-        return $this->belongsTo(\App\Models\Mship\Feedback\Question\Type::class);
+        return $this->belongsTo(Question\Type::class);
     }
 
     public function optionValues()

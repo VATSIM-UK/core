@@ -17,11 +17,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property BanTypeEnum $type
  * @property int|null $reason_id
  * @property string $reason_extra
- * @property \Carbon\Carbon|null $period_start
- * @property \Carbon\Carbon|null $period_finish
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \Carbon\Carbon|null $repealed_at
+ * @property Carbon|null $period_start
+ * @property Carbon|null $period_finish
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $repealed_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Mship\Account|null $banner
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
@@ -34,7 +34,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read mixed $period_amount_string
  * @property-read mixed $period_left
  * @property-read mixed $type_string
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|Note[] $notes
  * @property-read \App\Models\Mship\Ban\Reason|null $reason
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isActive()
@@ -90,7 +90,7 @@ class Ban extends Model
 
     public static function scopeIsActive($query)
     {
-        return $query->isNotRepealed()->where(fn ($query) => $query->where('period_finish', '>=', \Carbon\Carbon::now())->orWhereNull('period_finish'));
+        return $query->isNotRepealed()->where(fn ($query) => $query->where('period_finish', '>=', Carbon::now())->orWhereNull('period_finish'));
     }
 
     public static function scopeIsInActive($query)
@@ -100,7 +100,7 @@ class Ban extends Model
 
     public static function scopeIsHistoric($query)
     {
-        return $query->isNotRepealed()->where('period_finish', '<', \Carbon\Carbon::now());
+        return $query->isNotRepealed()->where('period_finish', '<', Carbon::now());
     }
 
     public static function scopeIsRepealed($query)
@@ -130,12 +130,12 @@ class Ban extends Model
 
     public function notes()
     {
-        return $this->morphMany(\App\Models\Mship\Account\Note::class, 'attachment');
+        return $this->morphMany(Note::class, 'attachment');
     }
 
     public function repeal()
     {
-        $this->repealed_at = \Carbon\Carbon::now();
+        $this->repealed_at = Carbon::now();
         $this->save();
         event(new BanUpdated($this));
     }
@@ -159,7 +159,7 @@ class Ban extends Model
     {
         $period_start = $this->period_start;
         $period_finish = $this->period_finish;
-        $now = \Carbon\Carbon::now();
+        $now = Carbon::now();
 
         return ! $this->is_repealed && (! $period_finish || $now->between($period_start, $period_finish));
     }

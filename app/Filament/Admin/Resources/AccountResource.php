@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Enums\QualificationTypeEnum;
 use App\Filament\Admin\Helpers\Resources\DefinesGatedAttributes;
+use App\Filament\Training\Resources\AccountResource\RelationManagers\WaitingListsRelationManager;
 use App\Models\Mship\Account;
 use App\Models\Roster;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
@@ -158,25 +159,25 @@ class AccountResource extends Resource implements DefinesGatedAttributes
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Admin\Resources\AccountResource\RelationManagers\StatesRelationManager::class,
-            \App\Filament\Admin\Resources\AccountResource\RelationManagers\QualificationsRelationManager::class,
-            \App\Filament\Admin\Resources\AccountResource\RelationManagers\FeedbackRelationManager::class,
-            \App\Filament\Admin\Resources\AccountResource\RelationManagers\RolesRelationManager::class,
-            \App\Filament\Admin\Resources\AccountResource\RelationManagers\BansRelationManager::class,
-            \App\Filament\Admin\Resources\AccountResource\RelationManagers\NotesRelationManager::class,
-            \App\Filament\Admin\Resources\AccountResource\RelationManagers\EndorsementsRelationManager::class,
-            \App\Filament\Training\Resources\AccountResource\RelationManagers\WaitingListsRelationManager::class,
-            \App\Filament\Admin\Resources\AccountResource\RelationManagers\RetentionChecksRelationManager::class,
-            \App\Filament\Admin\Resources\AccountResource\RelationManagers\VisitTransferRelationManager::class,
+            AccountResource\RelationManagers\StatesRelationManager::class,
+            AccountResource\RelationManagers\QualificationsRelationManager::class,
+            AccountResource\RelationManagers\FeedbackRelationManager::class,
+            AccountResource\RelationManagers\RolesRelationManager::class,
+            AccountResource\RelationManagers\BansRelationManager::class,
+            AccountResource\RelationManagers\NotesRelationManager::class,
+            AccountResource\RelationManagers\EndorsementsRelationManager::class,
+            WaitingListsRelationManager::class,
+            AccountResource\RelationManagers\RetentionChecksRelationManager::class,
+            AccountResource\RelationManagers\VisitTransferRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\AccountResource\Pages\ListAccounts::route('/'),
-            'view' => \App\Filament\Admin\Resources\AccountResource\Pages\ViewAccount::route('/{record}'),
-            'edit' => \App\Filament\Admin\Resources\AccountResource\Pages\EditAccount::route('/{record}/edit'),
+            'index' => AccountResource\Pages\ListAccounts::route('/'),
+            'view' => AccountResource\Pages\ViewAccount::route('/{record}'),
+            'edit' => AccountResource\Pages\EditAccount::route('/{record}/edit'),
         ];
     }
 

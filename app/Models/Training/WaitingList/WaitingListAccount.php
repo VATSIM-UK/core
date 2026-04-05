@@ -26,8 +26,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property array|null $flags_status_summary
  * @property-read Account|null $account
- * @property-read \App\Models\Training\WaitingList\WaitingListAccountFlag $pivot
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList\WaitingListFlag> $flags
+ * @property-read WaitingListAccountFlag $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListFlag> $flags
  * @property-read int|null $flags_count
  * @property-read mixed $atc_hour_check
  * @property-read mixed $position
@@ -51,7 +51,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount withoutTrashed()
  *
  * @property int|null $removed_by
- * @property \App\Models\Training\WaitingList\RemovalReason|null $removal_type
+ * @property RemovalReason|null $removal_type
  * @property string|null $removal_comment
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Data\Change> $dataChanges
  * @property-read int|null $data_changes_count
