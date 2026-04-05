@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\TrainingPanel\WaitingLists;
 
-use App\Filament\Training\Resources\WaitingListResource\Pages\ViewWaitingList;
-use App\Filament\Training\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
+use App\Filament\Training\Resources\WaitingLists\Pages\ViewWaitingList;
+use App\Filament\Training\Resources\WaitingLists\RelationManagers\AccountsRelationManager;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;

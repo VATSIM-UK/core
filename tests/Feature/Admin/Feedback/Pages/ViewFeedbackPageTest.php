@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Feedback;
 
-use App\Filament\Admin\Resources\FeedbackResource\Pages\ViewFeedback;
+use App\Filament\Admin\Resources\Feedback\Pages\ViewFeedback;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Forms\Components;
 
-use App\Filament\Admin\Resources\AccountResource;
+use App\Filament\Admin\Resources\Accounts\AccountResource;
 use Filament\Forms\Components\Select;
 
 class AccountSelect extends Select

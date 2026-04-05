@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\EndorsementRequest;
 
-use App\Filament\Admin\Resources\EndorsementRequestResource\Pages\ListEndorsementRequests;
+use App\Filament\Admin\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;

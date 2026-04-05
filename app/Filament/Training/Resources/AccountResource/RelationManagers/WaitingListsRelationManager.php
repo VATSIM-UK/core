@@ -2,7 +2,7 @@
 
 namespace App\Filament\Training\Resources\AccountResource\RelationManagers;
 
-use App\Filament\Training\Resources\WaitingListResource;
+use App\Filament\Training\Resources\WaitingLists\WaitingListResource;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;

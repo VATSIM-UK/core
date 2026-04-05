@@ -3,7 +3,7 @@
 namespace Tests\Unit\Training\TrainingPlace;
 
 use App\Enums\TrainingPlaceOfferStatus;
-use App\Filament\Training\Resources\TrainingPlaceResource\Widgets\TrainingPlaceOffersOverview;
+use App\Filament\Training\Resources\TrainingPlaces\Widgets\TrainingPlaceOffersOverview;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
