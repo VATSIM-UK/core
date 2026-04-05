@@ -6,10 +6,14 @@ use App\Enums\QualificationTypeEnum;
 use App\Models\Mship\Qualification;
 use App\Services\Training\ManualAtcUpgradeService;
 use Carbon\CarbonImmutable;
-use Filament\Forms;
+use Filament\Actions\Action;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,38 +27,38 @@ class QualificationsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('code'),
-                Tables\Columns\TextColumn::make('name_long')->label('Name'),
-                Tables\Columns\TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at)->label('Awarded')->sortable(),
+                TextColumn::make('code'),
+                TextColumn::make('name_long')->label('Name'),
+                TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at)->label('Awarded')->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('type')->options(collect(QualificationTypeEnum::cases())->mapWithKeys(fn ($enum) => [$enum->value => $enum->name]))->multiple(),
+                SelectFilter::make('type')->options(collect(QualificationTypeEnum::cases())->mapWithKeys(fn ($enum) => [$enum->value => $enum->name]))->multiple(),
             ])->defaultSort('created_at')
             ->headerActions([
-                Tables\Actions\Action::make('manual_atc_rating_upgrade')
+                Action::make('manual_atc_rating_upgrade')
                     ->label('Manual ATC rating upgrade')
                     ->visible(fn () => Auth::user()->can('account.qualification.manual-upgrade.atc'))
                     ->modalHeading('Manual ATC rating upgrade')
                     ->modalDescription('This only updates the member’s rating within VATSIM UK systems and does not sync to VATSIM.net.')
-                    ->form(function (): array {
+                    ->schema(function (): array {
                         $account = $this->getOwnerRecord();
 
                         $nextRating = $this->getNextAtcQualification($account);
                         $hasAdminRating = $this->accountHasAdministrativeRating($account);
 
                         return [
-                            Forms\Components\Placeholder::make('warning_admin_rating')
+                            Placeholder::make('warning_admin_rating')
                                 ->label('')
                                 ->content('Warning: This member does not currently have an administrative rating.')
                                 ->visible(fn () => ! $hasAdminRating),
 
-                            Forms\Components\TextInput::make('next_qualification')
+                            TextInput::make('next_qualification')
                                 ->label('Next rating')
                                 ->disabled()
                                 ->dehydrated(false)
                                 ->default(fn () => $nextRating->name_long ?? 'No ATC rating upgrade is available. This account already holds the highest ATC rating.'),
 
-                            Forms\Components\DatePicker::make('awarded_on')
+                            DatePicker::make('awarded_on')
                                 ->label('Awarded date')
                                 ->default(now()->toDateString())
                                 ->maxDate(now())

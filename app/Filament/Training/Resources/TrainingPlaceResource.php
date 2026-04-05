@@ -3,28 +3,33 @@
 namespace App\Filament\Training\Resources;
 
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
-use App\Filament\Training\Resources\TrainingPlaceResource\Pages;
+use App\Filament\Training\Resources\TrainingPlaceResource\Pages\ListTrainingPlaces;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Summarizer;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
 
 class TrainingPlaceResource extends Resource
 {
     protected static ?string $model = TrainingPlace::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
 
     protected static ?string $navigationLabel = 'Training Places';
 
-    protected static ?string $navigationGroup = 'Training';
+    protected static string|\UnitEnum|null $navigationGroup = 'Training';
 
     protected static ?int $navigationSort = 2;
 
@@ -63,24 +68,24 @@ class TrainingPlaceResource extends Resource
             ->groups([$categoryGroup])
             ->defaultGroup($categoryGroup)
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label('ID')
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('waitingListAccount.account.name')
+                TextColumn::make('waitingListAccount.account.name')
                     ->label('Student')
                     ->searchable(['name_first', 'name_last'])
                     ->sortable()
                     ->url(fn (TrainingPlace $record) => ViewTrainingPlace::getUrl(['trainingPlaceId' => $record->id])),
 
-                Tables\Columns\TextColumn::make('waitingListAccount.account_id')
+                TextColumn::make('waitingListAccount.account_id')
                     ->label('CID')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Training Start')
                     ->date('d/m/Y')
                     ->sortable()
@@ -90,7 +95,7 @@ class TrainingPlaceResource extends Resource
                             ->using(function (QueryBuilder $query): float {
                                 $alias = (new TrainingPlace)->getTable();
                                 $clone = clone $query;
-                                $clone->columns = [new \Illuminate\Database\Query\Expression("AVG(DATEDIFF(NOW(), `{$alias}`.`created_at`)) as avg_days")];
+                                $clone->columns = [new Expression("AVG(DATEDIFF(NOW(), `{$alias}`.`created_at`)) as avg_days")];
 
                                 return (float) ($clone->value('avg_days') ?? 0.0);
                             })
@@ -103,12 +108,12 @@ class TrainingPlaceResource extends Resource
                             })
                     ),
 
-                Tables\Columns\TextColumn::make('trainingPosition.position.callsign')
+                TextColumn::make('trainingPosition.position.callsign')
                     ->label('Position')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->label('Status')
                     ->badge()
                     ->getStateUsing(fn (TrainingPlace $record): string => $record->deleted_at ? 'inactive' : 'active')
@@ -117,7 +122,7 @@ class TrainingPlaceResource extends Resource
                     ->formatStateUsing(fn (string $state): string => Str::title($state)),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('trainingPosition.category')
+                SelectFilter::make('trainingPosition.category')
                     ->label('Category')
                     ->options(TrainingPosition::all()->pluck('category', 'category')->map(fn ($category) => Str::title($category ?? 'Uncategorised')))
                     ->preload()
@@ -126,16 +131,16 @@ class TrainingPlaceResource extends Resource
                         ? $query->whereHas('trainingPosition', fn (Builder $q): Builder => $q->where('category', $data['value']))
                         : $query),
 
-                Tables\Filters\TrashedFilter::make()
+                TrashedFilter::make()
                     ->label('Training Place Status')
                     ->placeholder('Active only')
                     ->trueLabel('Active & Inactive')
                     ->falseLabel('Inactive only'),
             ], layout: FiltersLayout::AboveContent)
-            ->actions([
-                Tables\Actions\ViewAction::make()
+            ->recordActions([
+                ViewAction::make()
                     ->url(fn (TrainingPlace $record) => url("/training/training-places/{$record->id}")),
-                Tables\Actions\RestoreAction::make(),
+                RestoreAction::make(),
             ])
             ->defaultSort('created_at', 'desc')
             ->persistSearchInSession()
@@ -148,7 +153,7 @@ class TrainingPlaceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTrainingPlaces::route('/'),
+            'index' => ListTrainingPlaces::route('/'),
         ];
     }
 }

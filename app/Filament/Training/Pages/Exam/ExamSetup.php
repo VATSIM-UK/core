@@ -12,13 +12,13 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -27,11 +27,11 @@ class ExamSetup extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.training.pages.exam-setup';
+    protected string $view = 'filament.training.pages.exam-setup';
 
-    protected static ?string $navigationGroup = 'Exams';
+    protected static string|\UnitEnum|null $navigationGroup = 'Exams';
 
     public static function canAccess(): bool
     {
@@ -97,10 +97,10 @@ class ExamSetup extends Page implements HasForms
         return redirect()->route('filament.training.pages.exam-setup');
     }
 
-    public function formOBS(Form $form): Form
+    public function formOBS(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('Exam Setup - OBS PT3')
                     ->schema([
                         Select::make('position_obs')
@@ -156,10 +156,10 @@ class ExamSetup extends Page implements HasForms
             ->statePath('dataOBS');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('Exam Setup - TWR to CTR')
                     ->schema([
                         Select::make('position')
@@ -221,10 +221,10 @@ class ExamSetup extends Page implements HasForms
         return redirect()->route('filament.training.pages.exam-setup');
     }
 
-    public function formPilot(Form $form): Form
+    public function formPilot(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('Exam Setup - Pilot')
                     ->schema([
                         Select::make('exam_type')

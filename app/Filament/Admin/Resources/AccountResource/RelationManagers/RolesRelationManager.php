@@ -4,10 +4,13 @@ namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
 use App\Filament\Admin\Resources\RoleResource;
 use App\Services\Roles\DelegateRoleManagementService;
+use Filament\Actions\AttachAction;
+use Filament\Actions\BulkAction;
+use Filament\Actions\DetachAction;
+use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
-use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -31,16 +34,16 @@ class RolesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                TextColumn::make('name'),
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()->preloadRecordSelect()->label('Add / Attach')->color('primary')
+                AttachAction::make()->preloadRecordSelect()->label('Add / Attach')->color('primary')
                     ->recordSelectOptionsQuery(function (Builder $query) {
                         $service = new DelegateRoleManagementService;
 
                         return $service->getManageableRolesQuery($query, auth()->user());
                     })
-                    ->before(function (Tables\Actions\AttachAction $action, array $data) {
+                    ->before(function (AttachAction $action, array $data) {
                         $service = new DelegateRoleManagementService;
                         $role = Role::find($data['recordId']);
 
@@ -55,10 +58,10 @@ class RolesRelationManager extends RelationManager
                         }
                     }),
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make()->resource(RoleResource::class),
-                Tables\Actions\DetachAction::make()->label('Remove'),
-            ])->bulkActions([
+            ->recordActions([
+                ViewAction::make()->resource(RoleResource::class),
+                DetachAction::make()->label('Remove'),
+            ])->toolbarActions([
                 BulkAction::make('detach')
                     ->requiresConfirmation()
                     ->deselectRecordsAfterCompletion()

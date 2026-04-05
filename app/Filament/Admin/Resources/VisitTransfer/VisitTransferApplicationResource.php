@@ -2,11 +2,12 @@
 
 namespace App\Filament\Admin\Resources\VisitTransfer;
 
-use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplicationResource\Pages;
+use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplicationResource\Pages\ListVisitTransferApplications;
+use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplicationResource\Pages\ViewVisitTransferApplication;
 use App\Models\VisitTransfer\Application;
-use Filament\Forms\Form;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -15,9 +16,9 @@ class VisitTransferApplicationResource extends Resource
 {
     protected static ?string $model = Application::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-right-end-on-rectangle';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-right-end-on-rectangle';
 
-    protected static ?string $navigationGroup = 'Visiting / Transferring';
+    protected static string|\UnitEnum|null $navigationGroup = 'Visiting / Transferring';
 
     protected static ?string $label = 'Applications';
 
@@ -27,10 +28,10 @@ class VisitTransferApplicationResource extends Resource
         return auth()->user()->can('vt.application.view.*');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 //
             ]);
     }
@@ -70,8 +71,8 @@ class VisitTransferApplicationResource extends Resource
                     ->searchable()
                     ->preload(),
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
+            ->recordActions([
+                ViewAction::make(),
             ])->paginationPageOptions([10, 25, 50]);
     }
 
@@ -85,8 +86,8 @@ class VisitTransferApplicationResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListVisitTransferApplications::route('/'),
-            'view' => Pages\ViewVisitTransferApplication::route('/{record}'),
+            'index' => ListVisitTransferApplications::route('/'),
+            'view' => ViewVisitTransferApplication::route('/{record}'),
         ];
     }
 }

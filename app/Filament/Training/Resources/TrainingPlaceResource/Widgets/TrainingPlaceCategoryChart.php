@@ -10,13 +10,13 @@ use Illuminate\Support\Str;
 
 class TrainingPlaceCategoryChart extends ChartWidget
 {
-    protected static ?string $heading = 'Training Places by Category';
+    protected ?string $heading = 'Training Places by Category';
 
-    protected static ?string $description = 'Distribution of active training places by category.';
+    protected ?string $description = 'Distribution of active training places by category.';
 
-    protected static ?string $maxHeight = '200px';
+    protected ?string $maxHeight = '200px';
 
-    protected static ?string $pollingInterval = null;
+    protected ?string $pollingInterval = null;
 
     protected bool $isCollapsible = true;
 

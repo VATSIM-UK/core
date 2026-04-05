@@ -5,9 +5,11 @@ namespace App\Filament\Training\Pages\Exam;
 use App\Enums\PilotExamType;
 use App\Filament\Training\Pages\Exam\Widgets\ExamOverview;
 use App\Services\Training\ExamHistoryService;
-use Filament\Forms;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -18,11 +20,11 @@ class ExamHistory extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.training.pages.exam-history';
+    protected string $view = 'filament.training.pages.exam-history';
 
-    protected static ?string $navigationGroup = 'Exams';
+    protected static string|\UnitEnum|null $navigationGroup = 'Exams';
 
     public static function canAccess(): bool
     {
@@ -51,16 +53,16 @@ class ExamHistory extends Page implements HasTable
             TextColumn::make('examBooking.start_date')->label('Exam date'),
             TextColumn::make('date')->label('Report filed'),
         ])->defaultSort('date', 'desc')
-            ->actions([
+            ->recordActions([
                 Action::make('view')->label('View')->url(fn ($record) => ViewExamReport::getUrl(['examId' => $record->examid])),
             ])
             ->filters([
-                Filter::make('exam_date')->form([
-                    Forms\Components\DatePicker::make('exam_date_from')->label('From'),
-                    Forms\Components\DatePicker::make('exam_date_to')->label('To'),
+                Filter::make('exam_date')->schema([
+                    DatePicker::make('exam_date_from')->label('From'),
+                    DatePicker::make('exam_date_to')->label('To'),
                 ])->query(fn ($query, array $data) => $examHistoryService->applyExamDateFilter($query, $data))->label('Exam date'),
-                Filter::make('position')->form([
-                    Forms\Components\Select::make('atc_positions')
+                Filter::make('position')->schema([
+                    Select::make('atc_positions')
                         ->options([
                             'OBS' => 'Observer',
                             'TWR' => 'Tower',
@@ -69,7 +71,7 @@ class ExamHistory extends Page implements HasTable
                         ])
                         ->multiple()
                         ->label('ATC position'),
-                    Forms\Components\Select::make('pilot_positions')
+                    Select::make('pilot_positions')
                         ->options(collect(PilotExamType::cases())
                             ->mapWithKeys(fn ($type) => [$type->label() => $type->label()])
                             ->toArray()
@@ -77,8 +79,8 @@ class ExamHistory extends Page implements HasTable
                         ->multiple()
                         ->label('Pilot rating'),
                 ])->query(fn ($query, array $data) => $examHistoryService->applyPositionFilter($query, $data))->label('Position'),
-                Filter::make('conducted_by_me')->form([
-                    Forms\Components\Checkbox::make('conducted_by_me')
+                Filter::make('conducted_by_me')->schema([
+                    Checkbox::make('conducted_by_me')
                         ->label('Show exams I conducted'),
                 ])->query(fn ($query, array $data) => $examHistoryService->applyConductedByMeFilter($query, $data, $user->id))->label('Conducted by me'),
             ]);

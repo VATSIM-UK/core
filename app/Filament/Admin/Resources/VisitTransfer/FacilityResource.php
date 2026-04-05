@@ -3,20 +3,22 @@
 namespace App\Filament\Admin\Resources\VisitTransfer;
 
 use App\Enums\QualificationTypeEnum;
-use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages;
+use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\CreateFacility;
+use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\EditFacility;
+use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\ListFacilities;
 use App\Models\Mship\Qualification;
 use App\Models\VisitTransfer\Facility;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Grid;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -25,9 +27,9 @@ class FacilityResource extends Resource
 {
     protected static ?string $model = Facility::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map-pin';
 
-    protected static ?string $navigationGroup = 'Visiting / Transferring';
+    protected static string|\UnitEnum|null $navigationGroup = 'Visiting / Transferring';
 
     public static function canAccess(): bool
     {
@@ -45,10 +47,10 @@ class FacilityResource extends Resource
         return auth()->user()->can('vt.facility.update.*');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('Facility Details')->schema([
                     Grid::make(2)->schema([
                         TextInput::make('name')
@@ -313,8 +315,8 @@ class FacilityResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ]);
     }
 
@@ -328,9 +330,9 @@ class FacilityResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListFacilities::route('/'),
-            'create' => Pages\CreateFacility::route('/create'),
-            'edit' => Pages\EditFacility::route('/{record}/edit'),
+            'index' => ListFacilities::route('/'),
+            'create' => CreateFacility::route('/create'),
+            'edit' => EditFacility::route('/{record}/edit'),
         ];
     }
 }

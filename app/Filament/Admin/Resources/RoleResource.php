@@ -2,32 +2,45 @@
 
 namespace App\Filament\Admin\Resources;
 
-use Filament\Forms;
+use App\Filament\Admin\Resources\RoleResource\Pages\CreateRole;
+use App\Filament\Admin\Resources\RoleResource\Pages\EditRole;
+use App\Filament\Admin\Resources\RoleResource\Pages\ListRoles;
+use App\Filament\Admin\Resources\RoleResource\RelationManagers\DelegatesRelationManager;
+use App\Filament\Admin\Resources\RoleResource\RelationManagers\UsersRelationManager;
+use App\Jobs\UpdateMember;
+use DB;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Form;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-swatch';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-swatch';
 
-    protected static ?string $navigationGroup = 'User Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'User Management';
 
     protected static ?int $navigationSort = 2;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')->required()->unique(ignorable: fn ($record) => $record),
-                Forms\Components\TextInput::make('guard_name')->default('web')->in(array_keys(config('auth.guards'))),
+        return $schema
+            ->components([
+                TextInput::make('name')->required()->unique(ignorable: fn ($record) => $record),
+                TextInput::make('guard_name')->default('web')->in(array_keys(config('auth.guards'))),
                 Grid::make(1)->schema([
                     CheckboxList::make('permissions')->relationship('permissions', 'name')->columns(3)->searchable()->bulkToggleable(),
                 ]),
@@ -38,20 +51,20 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->searchable(),
-                Tables\Columns\BadgeColumn::make('users_count')->counts('users')->label('Assigned Users'),
+                TextColumn::make('name')->searchable(),
+                BadgeColumn::make('users_count')->counts('users')->label('Assigned Users'),
             ])
-            ->actions([
-                Tables\Actions\Action::make('syncDiscord')
+            ->recordActions([
+                Action::make('syncDiscord')
                     ->label('Sync Discord')
                     ->visible(fn () => auth()->user()?->can('syncDiscord'))
                     ->action(function (Role $record) {
                         // Get all user IDs for this role
-                        $userIds = \DB::table('mship_account_role')
+                        $userIds = DB::table('mship_account_role')
                             ->where('role_id', $record->id)
                             ->pluck('model_id');
                         foreach ($userIds as $userId) {
-                            \App\Jobs\UpdateMember::dispatch($userId);
+                            UpdateMember::dispatch($userId);
                         }
                         Notification::make()
                             ->title('Central details refresh & service sync queued for all users with this role.')
@@ -60,17 +73,17 @@ class RoleResource extends Resource
                     })
                     ->icon('heroicon-o-arrow-path')
                     ->requiresConfirmation(),
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make()->visible(fn () => auth()->user()?->can('role.delete.*')),
-                Tables\Actions\BulkAction::make('assignPermissions')
+            ->toolbarActions([
+                DeleteBulkAction::make()->visible(fn () => auth()->user()?->can('role.delete.*')),
+                BulkAction::make('assignPermissions')
                     ->icon('heroicon-o-shield-check')
                     ->label('Assign Permissions')
                     ->visible(fn () => auth()->user()?->can('role.edit.*'))
                     ->form([
                         CheckboxList::make('permissions')
-                            ->options(\Spatie\Permission\Models\Permission::orderBy('name')->pluck('name', 'name'))
+                            ->options(Permission::orderBy('name')->pluck('name', 'name'))
                             ->columns(3)
                             ->searchable()
                             ->bulkToggleable()
@@ -92,17 +105,17 @@ class RoleResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RoleResource\RelationManagers\UsersRelationManager::class,
-            RoleResource\RelationManagers\DelegatesRelationManager::class,
+            UsersRelationManager::class,
+            DelegatesRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => RoleResource\Pages\ListRoles::route('/'),
-            'create' => RoleResource\Pages\CreateRole::route('/create'),
-            'edit' => RoleResource\Pages\EditRole::route('/{record}/edit'),
+            'index' => ListRoles::route('/'),
+            'create' => CreateRole::route('/create'),
+            'edit' => EditRole::route('/{record}/edit'),
         ];
     }
 }

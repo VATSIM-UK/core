@@ -9,13 +9,13 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\Split;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ViewVisitTransferApplication extends ViewRecord
 {
@@ -39,7 +39,7 @@ class ViewVisitTransferApplication extends ViewRecord
                 ->action(function ($record, array $data) {
                     $record->accept($data['staff_note'], auth()->user(), $data['add_to_waiting_list'] ?? false);
                 })
-                ->form([
+                ->schema([
                     Textarea::make('staff_note')
                         ->label('Staff Note (optional)'),
                     Checkbox::make('add_to_waiting_list')
@@ -72,7 +72,7 @@ class ViewVisitTransferApplication extends ViewRecord
                 ->modalHeading(fn ($record) => "Reject Application #{$record->public_id}")
                 ->modalDescription('This action cannot be undone. If you reject this application the applicant will be notified.')
                 ->action(fn ($record, array $data) => $record->reject($data['reason'], $data['staff_note']))
-                ->form([
+                ->schema([
                     Select::make('reason')
                         ->label('Reason for Rejection (required)')
                         ->options([
@@ -98,7 +98,7 @@ class ViewVisitTransferApplication extends ViewRecord
                 ->modalHeading(fn ($record) => "Mark Application #{$record->public_id} as Completed")
                 ->modalDescription('This action cannot be undone. This will mark the application as completed.')
                 ->action(fn ($record, array $data) => $record->complete($data['staff_note']))
-                ->form([
+                ->schema([
                     Textarea::make('staff_note')
                         ->label('Staff Note (required)')
                         ->required(),
@@ -110,7 +110,7 @@ class ViewVisitTransferApplication extends ViewRecord
                 ->modalHeading(fn ($record) => "Cancel Application #{$record->public_id}")
                 ->modalDescription('This action cannot be undone. This will cancel the application.')
                 ->action(fn ($record, array $data) => $record->cancel($data['cancel_reason'], $data['staff_note']))
-                ->form([
+                ->schema([
                     Textarea::make('cancel_reason')
                         ->label('Reason for Cancellation (required)')
                         ->required(),
@@ -121,7 +121,7 @@ class ViewVisitTransferApplication extends ViewRecord
         ];
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
 
         $application = $this->record;
@@ -130,7 +130,7 @@ class ViewVisitTransferApplication extends ViewRecord
             TextEntry::make('status')->label('Status')->formatStateUsing(fn ($state, $record) => $record->status_string)->badge()->color(fn ($record) => $record->status_color),
             Section::make('Application Content #'.$application->public_id)
                 ->schema([
-                    Split::make([
+                    Flex::make([
                         Section::make('Member Overview')
                             ->schema([
                                 Grid::make(2)->schema([
@@ -167,7 +167,7 @@ class ViewVisitTransferApplication extends ViewRecord
                             ]),
                     ])->from('md'), // stacks on smaller screens
 
-                    Split::make([
+                    Flex::make([
                         Section::make('Memberships')
                             ->description('Current and Past Memberships of the Applicant')
                             ->schema([

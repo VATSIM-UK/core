@@ -9,7 +9,9 @@ use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
-use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -35,7 +37,7 @@ class ViewWaitingList extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('add_student')
+            Action::make('add_student')
                 ->action(function ($data, $action) {
                     $account = Account::find($data['account_id']);
                     $joinDate = Arr::get($data, 'join_date');
@@ -46,7 +48,7 @@ class ViewWaitingList extends ViewRecord
                 })
                 ->successNotificationTitle('Student added to waiting list')
                 ->after(fn ($livewire) => $livewire->dispatch('refreshWaitingList'))
-                ->form([
+                ->schema([
                     TextInput::make('account_id')
                         ->label('Account CID')
                         ->rule(fn () => function ($attribute, $value, $fail) {
@@ -83,7 +85,7 @@ class ViewWaitingList extends ViewRecord
                 ])
                 ->visible(fn () => auth()->user()->can('addAccounts', $this->record)),
 
-            Actions\Action::make('add_flag')
+            Action::make('add_flag')
                 ->action(function ($data, $action) {
                     $flag = WaitingListFlag::create([
                         'name' => $data['name'],
@@ -96,7 +98,7 @@ class ViewWaitingList extends ViewRecord
                     $action->success();
                 })
                 ->successNotificationTitle('Flag added to waiting list')
-                ->form([
+                ->schema([
                     TextInput::make('name')->rules(['required', 'min:3',
                         fn () => fn ($attribute, $value, $fail) => $this->record->flags()->where('name', $value)->exists() && $fail('A flag with this name already exists on this waiting list.'),
                     ]),
@@ -110,8 +112,8 @@ class ViewWaitingList extends ViewRecord
                         ->default(false),
                 ])
                 ->visible(fn () => auth()->user()->can('addFlags', $this->record)),
-            Actions\EditAction::make()->label('Edit settings')->visible(fn () => auth()->user()->can('update', $this->record)),
-            Actions\DeleteAction::make()->label('Delete Waiting List')->requiresConfirmation()->visible(fn () => auth()->user()->can('delete', $this->record)),
+            EditAction::make()->label('Edit settings')->visible(fn () => auth()->user()->can('update', $this->record)),
+            DeleteAction::make()->label('Delete Waiting List')->requiresConfirmation()->visible(fn () => auth()->user()->can('delete', $this->record)),
         ];
     }
 }

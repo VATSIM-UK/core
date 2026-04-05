@@ -4,7 +4,8 @@ namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 
@@ -28,10 +29,10 @@ class RetentionChecksRelationManager extends RelationManager
                 return $query->with(['waitingListAccount.waitingList']);
             })
             ->columns([
-                Tables\Columns\TextColumn::make('waitingListAccount.waitingList.name')
+                TextColumn::make('waitingListAccount.waitingList.name')
                     ->label('Waiting List')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status_human')
+                TextColumn::make('status_human')
                     ->label('Status')
                     ->badge()
                     ->color(fn ($state, WaitingListRetentionCheck $record) => match ($record->status) {
@@ -41,12 +42,12 @@ class RetentionChecksRelationManager extends RelationManager
                         default => 'gray',
                     })
                     ->sortable('status'),
-                Tables\Columns\TextColumn::make('email_sent_at')->dateTime()->label('Email Sent')->sortable(),
-                Tables\Columns\TextColumn::make('expires_at')->dateTime()->label('Expires')->sortable(),
-                Tables\Columns\TextColumn::make('response_at')->dateTime()->label('Responded')->sortable(),
-                Tables\Columns\TextColumn::make('removal_actioned_at')->dateTime()->label('Removal Actioned')->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created')->toggleable(isToggledHiddenByDefault: true)->sortable(),
-                Tables\Columns\TextColumn::make('token')->label('Token')->toggleable(isToggledHiddenByDefault: true)->copyable(),
+                TextColumn::make('email_sent_at')->dateTime()->label('Email Sent')->sortable(),
+                TextColumn::make('expires_at')->dateTime()->label('Expires')->sortable(),
+                TextColumn::make('response_at')->dateTime()->label('Responded')->sortable(),
+                TextColumn::make('removal_actioned_at')->dateTime()->label('Removal Actioned')->sortable(),
+                TextColumn::make('created_at')->dateTime()->label('Created')->toggleable(isToggledHiddenByDefault: true)->sortable(),
+                TextColumn::make('token')->label('Token')->toggleable(isToggledHiddenByDefault: true)->copyable(),
             ])
             ->groups([
                 Group::make('waitingListAccount.waitingList.name')
@@ -56,7 +57,7 @@ class RetentionChecksRelationManager extends RelationManager
             ->groupingSettingsHidden()
             ->defaultGroup('waitingListAccount.waitingList.name')
             ->filters([
-                Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',
                         'used' => 'Used',
@@ -64,7 +65,7 @@ class RetentionChecksRelationManager extends RelationManager
                     ])
                     ->label('Status'),
             ])
-            ->bulkActions([])
+            ->toolbarActions([])
             ->headerActions([]);
     }
 }

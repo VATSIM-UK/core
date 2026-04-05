@@ -2,17 +2,22 @@
 
 namespace App\Filament\Training\Resources;
 
+use App\Filament\Training\Resources\WaitingListResource\Pages\CreateWaitingList;
+use App\Filament\Training\Resources\WaitingListResource\Pages\EditWaitingList;
+use App\Filament\Training\Resources\WaitingListResource\Pages\ListWaitingLists;
+use App\Filament\Training\Resources\WaitingListResource\Pages\ViewWaitingList;
 use App\Filament\Training\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
-use Filament\Forms\Components\Section;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 
@@ -20,16 +25,16 @@ class WaitingListResource extends Resource
 {
     protected static ?string $model = WaitingList::class;
 
-    protected static ?string $navigationGroup = 'Training';
+    protected static string|\UnitEnum|null $navigationGroup = 'Training';
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-queue-list';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')->autofocus()->required()->live(onBlur: true)
                     ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
                 TextInput::make('slug')->required(),
@@ -119,10 +124,10 @@ class WaitingListResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable(),
+                TextColumn::make('name')->sortable(),
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
+            ->recordActions([
+                ViewAction::make(),
             ]);
     }
 
@@ -138,10 +143,10 @@ class WaitingListResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => WaitingListResource\Pages\ListWaitingLists::route('/'),
-            'create' => WaitingListResource\Pages\CreateWaitingList::route('/create'),
-            'edit' => WaitingListResource\Pages\EditWaitingList::route('/{record}/edit'),
-            'view' => WaitingListResource\Pages\ViewWaitingList::route('/{record}'),
+            'index' => ListWaitingLists::route('/'),
+            'create' => CreateWaitingList::route('/create'),
+            'edit' => EditWaitingList::route('/{record}/edit'),
+            'view' => ViewWaitingList::route('/{record}'),
         ];
     }
 }

@@ -2,14 +2,24 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\FeedbackResource\Pages\ListFeedback;
+use App\Filament\Admin\Resources\FeedbackResource\Pages\ViewFeedback;
 use App\Filament\Admin\Resources\FeedbackResource\Widgets\FeedbackOverview;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form as FeedbackForm;
+use App\Models\Mship\Qualification;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -17,9 +27,9 @@ class FeedbackResource extends Resource
 {
     protected static ?string $model = Feedback::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
-    protected static ?string $navigationGroup = 'Feedback';
+    protected static string|\UnitEnum|null $navigationGroup = 'Feedback';
 
     public static function getEloquentQuery(): Builder
     {
@@ -28,82 +38,82 @@ class FeedbackResource extends Resource
         return $query->with(['account', 'submitter', 'form']);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Placeholder::make('ID')
+        return $schema
+            ->components([
+                Placeholder::make('ID')
                     ->label('ID')
                     ->content(fn ($record) => $record->id),
 
-                Forms\Components\Placeholder::make('Form Name')
+                Placeholder::make('Form Name')
                     ->content(fn ($record) => $record->form?->name),
 
-                Forms\Components\Placeholder::make('account.name')
+                Placeholder::make('account.name')
                     ->label('Subject')
                     ->content(fn ($record) => $record->account?->name),
 
-                Forms\Components\Placeholder::make('accountAtcQualification.name')
+                Placeholder::make('accountAtcQualification.name')
                     ->label('Subject\'s ATC Qualification')
                     ->content(fn ($record) => $record->accountAtcQualification?->name ?? 'Not Found'),
 
-                Forms\Components\Placeholder::make('submitter.name')
+                Placeholder::make('submitter.name')
                     ->label('Submitted by')
                     ->visible(self::canSeeSubmitter())
                     ->content(fn ($record) => $record->submitter?->name),
 
-                Forms\Components\Placeholder::make('created_at')
+                Placeholder::make('created_at')
                     ->label('Submitted at')
                     ->content(fn ($record) => $record->created_at->format('d/m/Y H:i')),
 
-                Forms\Components\Fieldset::make('Sent Information')
+                Fieldset::make('Sent Information')
                     ->schema([
-                        Forms\Components\Placeholder::make('sent_at')
+                        Placeholder::make('sent_at')
                             ->label('Sent At')
                             ->content(fn ($record) => $record->sent_at ? $record->sent_at->format('d/m/Y H:i') : null),
 
-                        Forms\Components\Placeholder::make('sent_by')
+                        Placeholder::make('sent_by')
                             ->label('Sent By')
                             ->content(fn ($record) => $record->sent_by_id ? $record->sender?->name : null),
 
-                        Forms\Components\Placeholder::make('sent_comment')
+                        Placeholder::make('sent_comment')
                             ->label('Sent Notes')
                             ->content(fn ($record) => $record->sent_comment),
                     ])->hidden(fn ($record) => $record->sent_at === null),
 
-                Forms\Components\Fieldset::make('Actioned Information')
+                Fieldset::make('Actioned Information')
                     ->schema([
-                        Forms\Components\Placeholder::make('actioned_at')
+                        Placeholder::make('actioned_at')
                             ->label('Actioned At')
                             ->content(fn ($record) => $record->actioned_at ? $record->actioned_at->format('d/m/Y H:i') : null),
 
-                        Forms\Components\Placeholder::make('actioned_by')
+                        Placeholder::make('actioned_by')
                             ->label('Actioned By')
                             ->content(fn ($record) => $record->actioned_by_id ? $record->actioner?->name : null),
 
-                        Forms\Components\Placeholder::make('actioned_comment')
+                        Placeholder::make('actioned_comment')
                             ->label('Actioned Comment')
                             ->content(fn ($record) => $record->actioned_comment),
                     ])->hidden(fn ($record) => $record->actioned_at === null),
 
-                Forms\Components\Fieldset::make('Rejection Information')
+                Fieldset::make('Rejection Information')
                     ->schema([
-                        Forms\Components\Placeholder::make('rejected_by')
+                        Placeholder::make('rejected_by')
                             ->label('Rejected By')
                             ->content(fn ($record) => $record->deleted_by ? $record->deleter?->name : null),
 
-                        Forms\Components\Placeholder::make('reject_reason')
+                        Placeholder::make('reject_reason')
                             ->label('Rejection Reason')
                             ->content(fn ($record) => $record->reject_reason),
                     ])->hidden(fn ($record) => ! $record->trashed()),
 
-                Forms\Components\Section::make('Answers')
+                Section::make('Answers')
                     ->schema([
-                        Forms\Components\Repeater::make('Answers')
+                        Repeater::make('Answers')
                             ->relationship('answers')
                             ->label('')
                             ->schema([
-                                Forms\Components\Placeholder::make('question')
+                                Placeholder::make('question')
                                     ->label('Question')
                                     ->content(fn ($record) => $record->question?->question),
 
@@ -122,35 +132,35 @@ class FeedbackResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('form.name')->label('Feedback Type')
+                TextColumn::make('form.name')->label('Feedback Type')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('account.name')->label('Subject')->searchable(['name_first', 'name_last']),
-                Tables\Columns\TextColumn::make('submitter.name')->label('Submitted By')->visible(self::canSeeSubmitter()),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('account.name')->label('Subject')->searchable(['name_first', 'name_last']),
+                TextColumn::make('submitter.name')->label('Submitted By')->visible(self::canSeeSubmitter()),
+                TextColumn::make('created_at')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
-                Tables\Columns\IconColumn::make('actioned_at')
+                IconColumn::make('actioned_at')
                     ->timestampBoolean()
                     ->trueIcon('heroicon-s-check-circle')
                     ->falseIcon('heroicon-s-x-circle')
                     ->label('Actioned'),
-                Tables\Columns\IconColumn::make('sent_at')
+                IconColumn::make('sent_at')
                     ->timestampBoolean()
                     ->trueIcon('heroicon-s-check-circle')
                     ->falseIcon('heroicon-s-x-circle')
                     ->label('Sent to User'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('form')
+                SelectFilter::make('form')
                     ->placeholder('All Forms')
                     ->label('Feedback Form')
                     ->options(
                         FeedbackForm::all()->mapWithKeys(fn ($form) => [$form->id => $form->name])
                     )
                     ->attribute('form_id'),
-                Tables\Filters\TernaryFilter::make('actioned')
+                TernaryFilter::make('actioned')
                     ->placeholder('All')
                     ->options([
                         'Actioned' => true,
@@ -161,15 +171,15 @@ class FeedbackResource extends Resource
                         false: fn ($query) => $query->whereNull('actioned_at'),
                     ),
 
-                Tables\Filters\SelectFilter::make('account_atc_qualification_id')
+                SelectFilter::make('account_atc_qualification_id')
                     ->placeholder('All ATC Qualifications')
                     ->label('Subject ATC Qualification')
                     ->options(
-                        \App\Models\Mship\Qualification::whereType('atc')->get()->mapWithKeys(fn ($qualification) => [$qualification->id => $qualification->name])
+                        Qualification::whereType('atc')->get()->mapWithKeys(fn ($qualification) => [$qualification->id => $qualification->name])
                     ),
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
+            ->recordActions([
+                ViewAction::make(),
             ])
             ->defaultSort('created_at', 'desc');
     }
@@ -177,8 +187,8 @@ class FeedbackResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => FeedbackResource\Pages\ListFeedback::route('/'),
-            'view' => FeedbackResource\Pages\ViewFeedback::route('/{record}'),
+            'index' => ListFeedback::route('/'),
+            'view' => ViewFeedback::route('/{record}'),
         ];
     }
 

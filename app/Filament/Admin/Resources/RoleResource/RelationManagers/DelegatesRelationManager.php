@@ -5,9 +5,10 @@ namespace App\Filament\Admin\Resources\RoleResource\RelationManagers;
 use App\Filament\Admin\Forms\Components\AccountSelect;
 use App\Models\Mship\Account;
 use App\Services\Roles\DelegateRoleManagementService;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -34,19 +35,19 @@ class DelegatesRelationManager extends RelationManager
                 return $service->getDelegates($role);
             })
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label('CID')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Name')
                     ->searchable(),
             ])
             ->headerActions([
-                Tables\Actions\Action::make('add_delegate')
+                Action::make('add_delegate')
                     ->label('Add Delegate')
                     ->icon('heroicon-o-user-plus')
                     ->color('success')
-                    ->form([
+                    ->schema([
                         AccountSelect::make('users')
                             ->label('Member')
                             ->searchable()
@@ -70,7 +71,7 @@ class DelegatesRelationManager extends RelationManager
                     })
                     ->visible(fn () => $service->delegatePermissionExists($this->getOwnerRecord()) && Auth()->user()->can('role.manage-delegates.*')),
 
-                Tables\Actions\Action::make('remove_delegate_permission')
+                Action::make('remove_delegate_permission')
                     ->label('Remove Delegate Permission')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
@@ -90,8 +91,8 @@ class DelegatesRelationManager extends RelationManager
                     })
                     ->visible(fn () => $service->delegatePermissionExists($this->getOwnerRecord()) && Auth()->user()->can('role.manage-delegates.*')),
             ])
-            ->actions([
-                Tables\Actions\Action::make('remove_delegate')
+            ->recordActions([
+                Action::make('remove_delegate')
                     ->label('Remove')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
@@ -122,7 +123,7 @@ class DelegatesRelationManager extends RelationManager
             })
             ->emptyStateIcon('heroicon-o-user-group')
             ->emptyStateActions([
-                Tables\Actions\Action::make('create_permission')
+                Action::make('create_permission')
                     ->label('Create Delegate Permission')
                     ->icon('heroicon-o-key')
                     ->color('info')

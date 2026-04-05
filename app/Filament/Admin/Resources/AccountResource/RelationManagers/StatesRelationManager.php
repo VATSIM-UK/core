@@ -3,7 +3,7 @@
 namespace App\Filament\Admin\Resources\AccountResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class StatesRelationManager extends RelationManager
@@ -16,7 +16,7 @@ class StatesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('status')->badge()->getStateUsing(function ($record) {
+                TextColumn::make('status')->badge()->getStateUsing(function ($record) {
                     if ($record->pivot->end_at) {
                         return 'Old';
                     }
@@ -27,11 +27,11 @@ class StatesRelationManager extends RelationManager
                     'Active - Permenant' => 'success',
                     'Active - Temporary' => 'success',
                 }),
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('pivot.region')->label('Region'),
-                Tables\Columns\TextColumn::make('pivot.division')->label('Divison'),
-                Tables\Columns\TextColumn::make('start_at')->label('Start')->dateTime()->since()->description(fn ($record) => $record->start_at)->sortable(),
-                Tables\Columns\TextColumn::make('end_at')->label('End')->dateTime()->since()->description(fn ($record) => $record->end_at),
+                TextColumn::make('name'),
+                TextColumn::make('pivot.region')->label('Region'),
+                TextColumn::make('pivot.division')->label('Divison'),
+                TextColumn::make('start_at')->label('Start')->dateTime()->since()->description(fn ($record) => $record->start_at)->sortable(),
+                TextColumn::make('end_at')->label('End')->dateTime()->since()->description(fn ($record) => $record->end_at),
             ])->defaultSort('start_at', 'asc');
     }
 }

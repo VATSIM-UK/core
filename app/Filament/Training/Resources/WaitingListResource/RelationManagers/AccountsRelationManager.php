@@ -6,16 +6,28 @@ use App\Enums\TrainingPlaceOfferStatus;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\Removal;
+use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Services\Training\TrainingPlaceOfferService;
 use App\Services\Training\TrainingPlaceService;
 use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Notifications\Actions\Action as NotificationAction;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DetachAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -30,11 +42,11 @@ class AccountsRelationManager extends RelationManager
 
     protected $listeners = ['refreshWaitingList' => '$refresh'];
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Fieldset::make('base_information')
+        return $schema
+            ->components([
+                Fieldset::make('base_information')
                     ->label('Base Information')
                     ->schema([
                         CopyablePlaceholder::make('id')
@@ -47,7 +59,7 @@ class AccountsRelationManager extends RelationManager
                             ->content(fn (WaitingListAccount $record) => $record->account->name)
                             ->iconOnly(),
 
-                        Forms\Components\Placeholder::make('position')
+                        Placeholder::make('position')
                             ->label('Position')
                             ->content(function (WaitingListAccount $record) {
                                 return sprintf(
@@ -57,18 +69,18 @@ class AccountsRelationManager extends RelationManager
                                 );
                             }),
 
-                        Forms\Components\Textarea::make('notes')
+                        Textarea::make('notes')
                             ->label('Notes')
                             ->rows(3)
                             ->placeholder('Add notes here'),
 
                     ]),
 
-                Forms\Components\Fieldset::make('cts_theory_exam')
+                Fieldset::make('cts_theory_exam')
                     ->label('CTS Theory Exam')
                     ->schema(function (WaitingListAccount $record) {
                         return [
-                            Forms\Components\Toggle::make('cts_theory_exam')
+                            Toggle::make('cts_theory_exam')
                                 ->label('Passed')
                                 ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $record->theory_exam_passed))
                                 ->disabled(),
@@ -76,11 +88,11 @@ class AccountsRelationManager extends RelationManager
                     })
                     ->visible(fn ($record) => $record->waitingList->feature_toggles['check_cts_theory_exam'] ?? true),
 
-                Forms\Components\Fieldset::make('manual_flags')
+                Fieldset::make('manual_flags')
                     ->label('Manual Flags')
                     ->schema(function (WaitingListAccount $record) {
                         return $record->flags->filter(fn ($flag) => $flag->position_group_id == null)->map(function ($flag) {
-                            return Forms\Components\Toggle::make('flags.'.$flag->id)
+                            return Toggle::make('flags.'.$flag->id)
                                 ->label($flag->name)
                                 ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $flag->pivot->value));
                         })->all();
@@ -94,22 +106,22 @@ class AccountsRelationManager extends RelationManager
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'account.roster', 'waitingList', 'flags']))
             ->columns([
-                Tables\Columns\TextColumn::make('position')->getStateUsing(fn (WaitingListAccount $record) => $this->ownerRecord->positionOf($record) ?? '-')->label('Position'),
-                Tables\Columns\TextColumn::make('account_id')->label('CID')->searchable(),
-                Tables\Columns\TextColumn::make('account.name')->label('Name')->searchable(['name_first', 'name_last']),
-                Tables\Columns\IconColumn::make('on_roster')->boolean()->label('On Roster')->getStateUsing(fn (WaitingListAccount $record) => $record->account->onRoster())->visible(fn () => $this->ownerRecord->feature_toggles['display_on_roster'] ?? true),
-                Tables\Columns\TextColumn::make('created_at')->label('Added On')->dateTime('d/m/Y H:i:s'),
-                Tables\Columns\IconColumn::make('cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn (WaitingListAccount $record) => $record->theory_exam_passed)->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
+                TextColumn::make('position')->getStateUsing(fn (WaitingListAccount $record) => $this->ownerRecord->positionOf($record) ?? '-')->label('Position'),
+                TextColumn::make('account_id')->label('CID')->searchable(),
+                TextColumn::make('account.name')->label('Name')->searchable(['name_first', 'name_last']),
+                IconColumn::make('on_roster')->boolean()->label('On Roster')->getStateUsing(fn (WaitingListAccount $record) => $record->account->onRoster())->visible(fn () => $this->ownerRecord->feature_toggles['display_on_roster'] ?? true),
+                TextColumn::make('created_at')->label('Added On')->dateTime('d/m/Y H:i:s'),
+                IconColumn::make('cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn (WaitingListAccount $record) => $record->theory_exam_passed)->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
                 ...$this->getFlagColumns(),
             ])
-            ->actions([
-                Tables\Actions\Action::make('offerTrainingPlace')
+            ->recordActions([
+                Action::make('offerTrainingPlace')
                     ->label('Offer Training Place')
                     ->icon('heroicon-o-academic-cap')
                     ->visible(function (WaitingListAccount $record) {
                         return $this->can('offerTrainingPlace', $record->waitingList) && ! $record->hasPendingTrainingPlaceOffer();
                     })
-                    ->form(function (WaitingListAccount $record) {
+                    ->schema(function (WaitingListAccount $record) {
                         $recentFeedback = Feedback::ATC()
                             ->where('account_id', $record->account_id)
                             ->with(['answers.question'])
@@ -117,9 +129,9 @@ class AccountsRelationManager extends RelationManager
                             ->latest()
                             ->get();
 
-                        $feedbackEntries = $recentFeedback->map(fn (Feedback $feedback) => Forms\Components\Section::make("Feedback - {$feedback->created_at->format('d/m/Y H:i')}")
+                        $feedbackEntries = $recentFeedback->map(fn (Feedback $feedback) => Section::make("Feedback - {$feedback->created_at->format('d/m/Y H:i')}")
                             ->schema([
-                                ...$feedback->answers->map(fn ($answer) => Forms\Components\Placeholder::make("answer_{$answer->id}")
+                                ...$feedback->answers->map(fn ($answer) => Placeholder::make("answer_{$answer->id}")
                                     ->label($answer->question?->question ?? 'Unknown Question')
                                     ->content($answer->response ?? 'Question not answered')
                                 )->all(),
@@ -129,17 +141,17 @@ class AccountsRelationManager extends RelationManager
                         )->all();
 
                         return [
-                            Forms\Components\Section::make('Member Feedback')
+                            Section::make('Member Feedback')
                                 ->description('Displaying ATC feedback entries from the last 3 months only.')
                                 ->schema($feedbackEntries ?: [
-                                    Forms\Components\Placeholder::make('no_feedback')
+                                    Placeholder::make('no_feedback')
                                         ->label('')
                                         ->content('No feedback on record for this member.'),
                                 ])
                                 ->collapsible()
                                 ->columns(3),
 
-                            Forms\Components\Select::make('training_position_id')
+                            Select::make('training_position_id')
                                 ->label('Training Position')
                                 ->options(function ($livewire) {
                                     return $livewire->ownerRecord->trainingPositions
@@ -163,7 +175,7 @@ class AccountsRelationManager extends RelationManager
                     ->modalCancelActionLabel('Cancel')
                     ->color('success'),
 
-                Tables\Actions\ViewAction::make()
+                ViewAction::make()
                     ->modalHeading(fn (?WaitingListAccount $record) => "{$record?->account->name} - Waiting List Account")
                     ->extraModalFooterActions(function (?WaitingListAccount $record) {
                         if (! $record) {
@@ -180,7 +192,7 @@ class AccountsRelationManager extends RelationManager
                         }
 
                         return [
-                            Tables\Actions\Action::make('rescind')
+                            Action::make('rescind')
                                 ->label('Rescind Offer')
                                 ->color('danger')
                                 ->icon('heroicon-o-x-circle')
@@ -188,8 +200,8 @@ class AccountsRelationManager extends RelationManager
                                 ->modalHeading('Rescind Training Place Offer')
                                 ->modalDescription('The member will be notified. Their waiting list position will be retained.')
                                 ->modalSubmitActionLabel('Rescind Offer')
-                                ->form([
-                                    Forms\Components\Textarea::make('reason')
+                                ->schema([
+                                    Textarea::make('reason')
                                         ->label('Reason for rescinding')
                                         ->placeholder('Please provide a reason, this will be included in the email to the member.')
                                         ->required()
@@ -202,7 +214,7 @@ class AccountsRelationManager extends RelationManager
                                 })
                                 ->successNotificationTitle('Offer rescinded'),
 
-                            Tables\Actions\Action::make('rescindAndRemove')
+                            Action::make('rescindAndRemove')
                                 ->label('Rescind Offer & Remove')
                                 ->color('danger')
                                 ->icon('heroicon-o-trash')
@@ -210,8 +222,8 @@ class AccountsRelationManager extends RelationManager
                                 ->modalHeading('Rescind Offer & Remove from Waiting List')
                                 ->modalDescription('The member will be removed from the waiting list entirely. This cannot be undone.')
                                 ->modalSubmitActionLabel('Rescind & Remove')
-                                ->form([
-                                    Forms\Components\Textarea::make('reason')
+                                ->schema([
+                                    Textarea::make('reason')
                                         ->label('Reason for rescinding')
                                         ->placeholder('Please provide a reason, this will be included in the email to the member.')
                                         ->required()
@@ -228,7 +240,7 @@ class AccountsRelationManager extends RelationManager
                                 ->successNotificationTitle('Offer rescinded and member removed from waiting list'),
                         ];
                     })
-                    ->form(function (?WaitingListAccount $record) {
+                    ->schema(function (?WaitingListAccount $record) {
                         if (! $record) {
                             return [];
                         }
@@ -239,22 +251,22 @@ class AccountsRelationManager extends RelationManager
                             ->first();
 
                         $offerFields = $offer ? [
-                            Forms\Components\Fieldset::make('training_place_offer')
+                            Fieldset::make('training_place_offer')
                                 ->label('Active Training Place Offer')
                                 ->schema([
-                                    Forms\Components\Placeholder::make('offer_status')
+                                    Placeholder::make('offer_status')
                                         ->label('Status')
                                         ->content($offer->status->label()),
 
-                                    Forms\Components\Placeholder::make('offer_position')
+                                    Placeholder::make('offer_position')
                                         ->label('Position')
                                         ->content($offer->trainingPosition->position->name),
 
-                                    Forms\Components\Placeholder::make('offer_expires_at')
+                                    Placeholder::make('offer_expires_at')
                                         ->label('Expires At')
                                         ->content($offer->expires_at->format('d/m/Y H:i').' UTC'),
 
-                                    Forms\Components\Placeholder::make('offer_responded_at')
+                                    Placeholder::make('offer_responded_at')
                                         ->label('Member Responded At')
                                         ->content($offer->response_at?->format('d/m/Y H:i') ?? '—'),
                                 ])
@@ -262,7 +274,7 @@ class AccountsRelationManager extends RelationManager
                         ] : [];
 
                         return [
-                            Forms\Components\Fieldset::make('base_information')
+                            Fieldset::make('base_information')
                                 ->label('Base Information')
                                 ->schema([
                                     CopyablePlaceholder::make('id')
@@ -275,7 +287,7 @@ class AccountsRelationManager extends RelationManager
                                         ->content(fn (WaitingListAccount $record) => $record->account->name)
                                         ->iconOnly(),
 
-                                    Forms\Components\Placeholder::make('position')
+                                    Placeholder::make('position')
                                         ->label('Position')
                                         ->content(function (WaitingListAccount $record) {
                                             return sprintf(
@@ -290,7 +302,7 @@ class AccountsRelationManager extends RelationManager
                         ];
                     }),
 
-                Tables\Actions\EditAction::make()
+                EditAction::make()
                     ->using(function (WaitingListAccount $record, $data, $livewire) {
                         $record->update([
                             'notes' => $data['notes'],
@@ -311,16 +323,16 @@ class AccountsRelationManager extends RelationManager
                     })
                     ->visible(fn ($record) => $this->can('updateAccounts', $record->waitingList)),
 
-                Tables\Actions\DetachAction::make('detachWithReason')
+                DetachAction::make('detachWithReason')
                     ->label('Remove')
                     ->form([
-                        Forms\Components\Select::make('reason_type')
+                        Select::make('reason_type')
                             ->label('Reason for removal')
                             ->options(self::removalReasonOptions())
                             ->required()
                             ->reactive(),
 
-                        Forms\Components\Textarea::make('custom_reason')
+                        Textarea::make('custom_reason')
                             ->label('Custom reason')
                             ->rows(3)
                             ->required()
@@ -329,7 +341,7 @@ class AccountsRelationManager extends RelationManager
                     ->action(function (WaitingListAccount $record, array $data, $livewire) {
                         $removalType = $data['reason_type'];
 
-                        $removal = new WaitingList\Removal(WaitingList\RemovalReason::from($removalType), auth()->user()->id, $data['custom_reason'] ?? '');
+                        $removal = new Removal(RemovalReason::from($removalType), auth()->user()->id, $data['custom_reason'] ?? '');
 
                         $livewire->ownerRecord->removeFromWaitingList($record->account, $removal);
                         $livewire->dispatch('refreshWaitingList');
@@ -340,13 +352,13 @@ class AccountsRelationManager extends RelationManager
                     ->modalSubmitActionLabel('Remove')
                     ->modalCancelActionLabel('Cancel')
                     ->visible(fn ($record) => $this->can('removeAccounts', $record->waitingList)),
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('manualSetupTrainingPlace')
+                ActionGroup::make([
+                    Action::make('manualSetupTrainingPlace')
                         ->label('Manual Setup Training Place')
                         ->icon('heroicon-o-academic-cap')
                         ->visible(fn ($record) => $this->can('trainingPlacesManualSetup', $record->waitingList))
-                        ->form([
-                            Forms\Components\Select::make('training_position_id')
+                        ->schema([
+                            Select::make('training_position_id')
                                 ->label('Training Position')
                                 ->options(function ($livewire) {
                                     return $livewire->ownerRecord->trainingPositions
@@ -366,7 +378,7 @@ class AccountsRelationManager extends RelationManager
                                 ->title('Training place offered successfully')
                                 ->success()
                                 ->actions([
-                                    NotificationAction::make('view')
+                                    Action::make('view')
                                         ->label('View Training Place')
                                         ->url(ViewTrainingPlace::getUrl(['trainingPlaceId' => $trainingPlace->id]))
                                         ->markAsRead(),
@@ -420,7 +432,7 @@ class AccountsRelationManager extends RelationManager
 
     public static function removalReasonOptions(): array
     {
-        return WaitingList\RemovalReason::formOptions();
+        return RemovalReason::formOptions();
     }
 
     // Display All Manual Flags where display option is enabled
@@ -430,7 +442,7 @@ class AccountsRelationManager extends RelationManager
             ->where('display_in_table', true)
             ->get()
             ->map(function ($flag) {
-                return Tables\Columns\IconColumn::make("flag_{$flag->id}")
+                return IconColumn::make("flag_{$flag->id}")
                     ->label($flag->name)
                     ->boolean()
                     ->getStateUsing(function (WaitingListAccount $record) use ($flag) {

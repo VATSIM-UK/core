@@ -4,7 +4,7 @@ namespace App\Filament\Admin\Resources\AccountResource\Pages;
 
 use App\Filament\Admin\Helpers\Pages\BaseEditRecordPage;
 use App\Filament\Admin\Resources\AccountResource;
-use Filament\Actions;
+use Filament\Actions\ViewAction;
 
 class EditAccount extends BaseEditRecordPage
 {
@@ -13,7 +13,7 @@ class EditAccount extends BaseEditRecordPage
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ViewAction::make(),
+            ViewAction::make(),
         ];
     }
 }

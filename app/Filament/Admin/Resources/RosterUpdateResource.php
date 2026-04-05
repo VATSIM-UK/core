@@ -6,12 +6,12 @@ use App\Filament\Admin\Resources\RosterUpdates\Pages\ListRosterUpdates;
 use App\Filament\Admin\Resources\RosterUpdates\Pages\ViewRosterUpdate;
 use App\Models\RosterUpdate;
 use App\Models\Training\WaitingList;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\ViewAction;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -19,16 +19,16 @@ class RosterUpdateResource extends Resource
 {
     protected static ?string $model = RosterUpdate::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-list-bullet';
 
-    protected static ?string $navigationGroup = 'User Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'User Management';
 
     protected static ?int $navigationSort = 2;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('Details')->schema([
                     DatePicker::make('created_at')->label('Ran'),
                     DatePicker::make('period_start'),
@@ -60,7 +60,7 @@ class RosterUpdateResource extends Resource
                 TextColumn::make('period_start'),
                 TextColumn::make('period_end'),
             ])
-            ->actions([
+            ->recordActions([
                 ViewAction::make(),
             ])->defaultSort('created_at', 'DESC');
     }
