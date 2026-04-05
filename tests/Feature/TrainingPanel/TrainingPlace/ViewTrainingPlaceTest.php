@@ -252,11 +252,12 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         $session = Session::factory()->create([
             'position' => $cts_positions[0],
+            'taken' => 1,
             'taken_date' => now()->subDays(5),
             'student_id' => $trainingPlace->waitingListAccount->account->member->id,
         ]);
 
-        $expectedUrl = "https://cts.vatsim.uk/mentors/report.php?id={$session->id}&view=report";
+        $expectedUrl = "https://cts.vatsim.uk/mentors/report.php?id={$session->getKey()}&view=report";
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
