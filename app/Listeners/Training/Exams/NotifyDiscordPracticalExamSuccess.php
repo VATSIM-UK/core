@@ -3,11 +3,11 @@
 namespace App\Listeners\Training\Exams;
 
 use App\Events\Training\Exams\PracticalExamCompleted;
-use App\Services\Training\ExamPassedAnnouncementService;
+use App\Services\Training\TrainingSuccessesAnnouncementService;
 
 class NotifyDiscordPracticalExamSuccess
 {
-    public function __construct(private ExamPassedAnnouncementService $examPassedAnnouncementService) {}
+    public function __construct(private TrainingSuccessesAnnouncementService $trainingSuccessesAnnouncementService) {}
 
     /**
      * Handle the event.
@@ -19,7 +19,7 @@ class NotifyDiscordPracticalExamSuccess
         $examBooking = $event->examBooking;
 
         if ($practicalResult->isPassed() && $studentAccount) {
-            $this->examPassedAnnouncementService->postAnnouncement($examBooking, []);
+            $this->trainingSuccessesAnnouncementService->announceExamPassed($examBooking);
         }
     }
 }

@@ -165,7 +165,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                                 Select::make('end_hour')
                                     ->label('End Hour')
                                     ->required()
-                                    ->options(function (Get $get) {
+                                    ->options(function (ExamBooking $record, Get $get) {
                                         $availability = $this->getAvailabilityFromForm($get);
                                         $startHour = $get('start_hour');
                                         $startMinute = $get('start_minute');
@@ -181,10 +181,9 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
 
                                         $startTime = Carbon::create(null, null, null, $startHour, $startMinute);
                                         $minEndTime = $startTime->copy()->addMinutes(60); // Minimum 60 minutes
-                                        $maxEndTime = $startTime->copy()->addMinutes(120); // Maximum 120 minutes (2 hours)
 
-                                        // Use the earliest of max exam duration or availability end
-                                        $effectiveEndTime = $maxEndTime->lessThan($availEnd) ? $maxEndTime : $availEnd;
+                                        // Pilot exams have no maximum duration, while ATC exams are capped at 120
+                                        $effectiveEndTime = $record->isPilotExam() ? $availEnd : (($startTime->copy()->addMinutes(120))->lessThan($availEnd) ? $startTime->copy()->addMinutes(120) : $availEnd);
 
                                         return $this->generateHourOptions($minEndTime->hour, $effectiveEndTime->hour);
                                     })
@@ -197,7 +196,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                                 Select::make('end_minute')
                                     ->label('End Minute')
                                     ->required()
-                                    ->options(function (Get $get) {
+                                    ->options(function (ExamBooking $record, Get $get) {
                                         $availability = $this->getAvailabilityFromForm($get);
                                         $startHour = $get('start_hour');
                                         $startMinute = $get('start_minute');
@@ -214,10 +213,8 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
 
                                         $startTime = Carbon::create(null, null, null, $startHour, $startMinute);
                                         $minEndTime = $startTime->copy()->addMinutes(60);
-                                        $maxEndTime = $startTime->copy()->addMinutes(120); // Maximum 120 minutes (2 hours)
 
-                                        // Use the earliest of max exam duration or availability end
-                                        $effectiveEndTime = $maxEndTime->lessThan($availEnd) ? $maxEndTime : $availEnd;
+                                        $effectiveEndTime = $record->isPilotExam() ? $availEnd : (($startTime->copy()->addMinutes(120))->lessThan($availEnd) ? $startTime->copy()->addMinutes(120) : $availEnd);
 
                                         return $this->generateEndMinuteOptions($endHour, $minEndTime, $effectiveEndTime);
                                     })
@@ -267,7 +264,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                             throw new \Exception('Exam duration must be at least 60 minutes.');
                         }
 
-                        if ($durationMinutes > 120) {
+                        if (! $record->isPilotExam() && $durationMinutes > 120) {
                             throw new \Exception('Exam duration cannot exceed 120 minutes (2 hours).');
                         }
 
@@ -280,7 +277,9 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                             'taken_from' => $examStartDateTime->format('H:i:s'),
                             'taken_to' => $examEndDateTime->format('H:i:s'),
                             'exmr_id' => auth()->user()->member->id,
-                            'exmr_rating' => auth()->user()->member->account->qualification_atc->vatsim,
+                            'exmr_rating' => $record->isPilotExam()
+                                ? auth()->user()->member->account->qualification_pilot?->vatsim
+                                : auth()->user()->member->account->qualification_atc->vatsim,
                             'time_book' => now(),
                             'second_examiner_req' => $this->isSecondaryExaminerRequired($record->exam) || ! empty($data['secondary_examiner']) ? 1 : 0,
                         ]);
@@ -420,7 +419,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
      */
     protected function getAllowedExamLevels(): array
     {
-        $examLevels = ['OBS', 'TWR', 'APP', 'CTR']; // Common exam levels
+        $examLevels = ['OBS', 'TWR', 'APP', 'CTR', 'P1', 'P2', 'P3']; // Common exam levels
         $allowedLevels = [];
 
         foreach ($examLevels as $level) {

@@ -412,7 +412,7 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ->test(ExamHistory::class)
             ->assertSuccessful()
             ->filterTable('position', [
-                'position' => ['TWR'],
+                'atc_positions' => ['TWR'],
             ]);
 
         // Should find the TWR exam
@@ -425,7 +425,7 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
         // Reset and filter for multiple positions
         $component->resetTableFilters()
             ->filterTable('position', [
-                'position' => ['OBS', 'APP'],
+                'atc_positions' => ['OBS', 'APP'],
             ]);
 
         // Should find OBS and APP exams

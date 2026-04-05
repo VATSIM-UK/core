@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\PositionGroupResource\RelationManagers;
 
 use App\Services\Training\EndorsementService;
+use App\Services\Training\TrainingSuccessesAnnouncementService;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -42,7 +43,10 @@ class MembershipEndorsementRelationManager extends RelationManager
                         return;
                     }
 
-                    EndorsementService::createPermanent($this->getOwnerRecord(), $account, auth()->user());
+                    $positionGroup = $this->getOwnerRecord();
+                    EndorsementService::createPermanent($positionGroup, $account, auth()->user());
+
+                    app(TrainingSuccessesAnnouncementService::class)->announceTierEndorsement($account, $positionGroup);
                 })->visible(fn () => auth()->user()->can('endorse', $this->getOwnerRecord())),
             ]);
     }

@@ -21,10 +21,12 @@ class Position extends Model implements Endorseable
         'type',
         'sub_station',
         'temporarily_endorsable',
+        'virtual',
     ];
 
     protected $casts = [
         'sub_station' => 'boolean',
+        'virtual' => 'boolean',
     ];
 
     const TYPE_ATIS = 1;
@@ -83,9 +85,24 @@ class Position extends Model implements Endorseable
         }
     }
 
+    public function isVirtual(): bool
+    {
+        return $this->virtual ?? false;
+    }
+
     public function isTemporarilyEndorsable(): bool
     {
         return $this->temporarily_endorsable ?? false;
+    }
+
+    public function scopeVirtual(Builder $query): Builder
+    {
+        return $query->where('virtual', true);
+    }
+
+    public function scopeReal(Builder $query): Builder
+    {
+        return $query->where('virtual', false);
     }
 
     public function scopeTemporarilyEndorsable(Builder $query): Builder
@@ -112,6 +129,8 @@ class Position extends Model implements Endorseable
         // use the position callsign to determine the rts for the position.
         // the callsign is in the format of EGXX_TWR, EGXX_APP, EGXX_CTR
         $mapping = [
+            'PT3' => 14,
+            'GND' => 14,
             'TWR' => 18,
             'APP' => 19,
             'CTR' => 17,
@@ -128,8 +147,16 @@ class Position extends Model implements Endorseable
 
     protected function examLevel(): Attribute
     {
+        $mapping = [
+            'GND' => 'OBS',
+            'TWR' => 'TWR',
+            'APP' => 'APP',
+            'CTR' => 'CTR',
+            'PT3' => 'OBS',
+        ];
+
         return Attribute::make(
-            get: fn () => Arr::last(explode('_', $this->callsign)),
+            get: fn () => $mapping[Arr::last(explode('_', $this->callsign))] ?? null,
         );
     }
 }

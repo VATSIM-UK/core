@@ -19,6 +19,9 @@
 
                     <p>The programme consists of 3 different areas for members to engage with a mandatory Moodle course,
                         one-on-one sessions, and group sessions.</p>
+                    
+                    <p>As part of the VATSIM Achievement Badge Programme, pilots who successfully complete both theory and practical training
+                        are recognised with an official achievement badge, which will be displayed on their VATSIM Radar profile.</p>
 
                     <h3>The Moodle</h3>
 

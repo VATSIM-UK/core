@@ -16,60 +16,99 @@ class HeathrowS1EndorsementTest extends TestCase
 
     private const ROUTE = 'controllers.endorsements.heathrow_ground_s1';
 
-    public function test_it_passes_for55_hours()
+    public function test_it_passes_when_all_hour_requirements_met()
     {
         $account = $this->getS1Account();
 
         factory(Atc::class)->create([
             'account_id' => $account->id,
-            'callsign' => 'EGPH_DEL',
-            'minutes_online' => 25 * 60,
+            'callsign' => 'EGKK_GND',
+            'minutes_online' => 30 * 60,
+            'facility_type' => Atc::TYPE_GND,
+        ]);
+        factory(Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGCC_DEL',
+            'minutes_online' => 30 * 60,
             'facility_type' => Atc::TYPE_DEL,
         ]);
         factory(Atc::class)->create([
             'account_id' => $account->id,
             'callsign' => 'EGPH_GND',
-            'minutes_online' => 25 * 60,
-            'facility_type' => Atc::TYPE_GND,
-        ]);
-        factory(Atc::class)->create([
-            'account_id' => $account->id,
-            'callsign' => 'EGCC_GND',
-            'minutes_online' => 5 * 60,
+            'minutes_online' => 40 * 60,
             'facility_type' => Atc::TYPE_GND,
         ]);
 
         $this->actingAs($account->fresh())
             ->get(route(self::ROUTE))
             ->assertStatus(200)
+            ->assertViewHas('gatwickMet', true)
+            ->assertViewHas('manchesterMet', true)
+            ->assertViewHas('totalMet', true)
             ->assertViewHas('hoursMet', true)
             ->assertViewHas('onRoster', true)
             ->assertViewHas('conditionsMet', true);
-
     }
 
-    public function test_it_fails_for30_hours()
+    public function test_it_fails_when_total_hours_insufficient()
     {
         $account = $this->getS1Account();
 
         factory(Atc::class)->create([
             'account_id' => $account->id,
-            'callsign' => 'EGPH_DEL',
-            'minutes_online' => 25 * 60,
-            'facility_type' => Atc::TYPE_DEL,
+            'callsign' => 'EGKK_GND',
+            'minutes_online' => 30 * 60,
+            'facility_type' => Atc::TYPE_GND,
         ]);
         factory(Atc::class)->create([
             'account_id' => $account->id,
             'callsign' => 'EGCC_GND',
-            'minutes_online' => 5 * 60,
+            'minutes_online' => 30 * 60,
+            'facility_type' => Atc::TYPE_GND,
+        ]);
+        factory(Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGPH_GND',
+            'minutes_online' => 10 * 60,
             'facility_type' => Atc::TYPE_GND,
         ]);
 
         $this->actingAs($account->fresh())
             ->get(route(self::ROUTE))
             ->assertStatus(200)
+            ->assertViewHas('totalMet', false)
             ->assertViewHas('hoursMet', false)
-            ->assertViewHas('onRoster', true)
+            ->assertViewHas('conditionsMet', false);
+    }
+
+    public function test_it_fails_when_gatwick_hours_insufficient()
+    {
+        $account = $this->getS1Account();
+
+        factory(Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGKK_GND',
+            'minutes_online' => 29 * 60,
+            'facility_type' => Atc::TYPE_GND,
+        ]);
+        factory(Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGCC_GND',
+            'minutes_online' => 30 * 60,
+            'facility_type' => Atc::TYPE_GND,
+        ]);
+        factory(Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGPH_GND',
+            'minutes_online' => 41 * 60,
+            'facility_type' => Atc::TYPE_GND,
+        ]);
+
+        $this->actingAs($account->fresh())
+            ->get(route(self::ROUTE))
+            ->assertStatus(200)
+            ->assertViewHas('gatwickMet', false)
+            ->assertViewHas('hoursMet', false)
             ->assertViewHas('conditionsMet', false);
     }
 
@@ -79,14 +118,14 @@ class HeathrowS1EndorsementTest extends TestCase
 
         factory(Atc::class)->create([
             'account_id' => $account->id,
-            'callsign' => 'EGPH_DEL',
-            'minutes_online' => 25 * 60,
-            'facility_type' => Atc::TYPE_DEL,
+            'callsign' => 'EGKK_GND',
+            'minutes_online' => 30 * 60,
+            'facility_type' => Atc::TYPE_GND,
         ]);
         factory(Atc::class)->create([
             'account_id' => $account->id,
-            'callsign' => 'EGPH_GND',
-            'minutes_online' => 10 * 60,
+            'callsign' => 'EGCC_GND',
+            'minutes_online' => 30 * 60,
             'facility_type' => Atc::TYPE_GND,
         ]);
         factory(Atc::class)->create([
@@ -108,20 +147,20 @@ class HeathrowS1EndorsementTest extends TestCase
 
         factory(Atc::class)->create([
             'account_id' => $account->id,
-            'callsign' => 'EGPH_DEL',
-            'minutes_online' => 25 * 60,
-            'facility_type' => Atc::TYPE_DEL,
-        ]);
-        factory(Atc::class)->create([
-            'account_id' => $account->id,
-            'callsign' => 'EGPH_GND',
-            'minutes_online' => 25 * 60,
+            'callsign' => 'EGKK_GND',
+            'minutes_online' => 30 * 60,
             'facility_type' => Atc::TYPE_GND,
         ]);
         factory(Atc::class)->create([
             'account_id' => $account->id,
             'callsign' => 'EGCC_GND',
-            'minutes_online' => 5 * 60,
+            'minutes_online' => 30 * 60,
+            'facility_type' => Atc::TYPE_GND,
+        ]);
+        factory(Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGPH_GND',
+            'minutes_online' => 40 * 60,
             'facility_type' => Atc::TYPE_GND,
         ]);
 

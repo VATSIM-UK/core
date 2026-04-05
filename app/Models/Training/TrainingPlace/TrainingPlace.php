@@ -2,10 +2,12 @@
 
 namespace App\Models\Training\TrainingPlace;
 
+use App\Models\Cts\Session as CtsSession;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Observers\Training\TrainingPlaceObserver;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,6 +24,11 @@ class TrainingPlace extends Model
 
     use HasUlids;
     use SoftDeletes;
+
+    /**
+     * Hours after creation during which scheduled availability checks are skipped (not including on-leave checks).
+     */
+    public const AVAILABILITY_CHECK_GRACE_PERIOD_HOURS = 48;
 
     protected $guarded = [];
 
@@ -56,9 +63,49 @@ class TrainingPlace extends Model
         return $this->leaveOfAbsences()->current()->exists();
     }
 
+    public function availabilityCheckGracePeriodEndsAt(): Carbon
+    {
+        return $this->created_at->copy()->addHours(self::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS);
+    }
+
+    public function isWithinAvailabilityCheckGracePeriod(): bool
+    {
+        return now()->lt($this->availabilityCheckGracePeriodEndsAt());
+    }
+
     public function currentLeaveOfAbsence()
     {
         return $this->leaveOfAbsences()->current()->first();
+    }
+
+    public function deletePendingSessionRequests(): void
+    {
+        $this->loadMissing([
+            'trainingPosition',
+            'waitingListAccount.account',
+        ]);
+
+        $account = $this->waitingListAccount?->account;
+        $member = $account?->member;
+
+        if (! $member) {
+            return;
+        }
+
+        $callsign = $this->trainingPosition?->cts_primary_position;
+
+        if (! is_string($callsign) || trim($callsign) === '') {
+            return;
+        }
+
+        $callsign = trim($callsign);
+
+        CtsSession::query()
+            ->where('student_id', $member->id)
+            ->where('position', $callsign)
+            ->whereNull('taken_date')
+            ->where('session_done', 0)
+            ->delete();
     }
 
     public function revokeTrainingPlace(string $reason, Account $admin): void
