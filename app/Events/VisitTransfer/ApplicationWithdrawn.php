@@ -15,6 +15,6 @@ class ApplicationWithdrawn extends ApplicationStatusChanged
     {
         $this->application = $application;
 
-        $this->application->load('referees.account')->load('facility');
+        $this->application->load('facility');
     }
 }

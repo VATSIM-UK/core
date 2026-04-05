@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Livewire\Training;
 
+use App\Livewire\Training\Support\TrainingPlaceAvailabilityGraceNotice;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Services\Training\AvailabilityWarnings;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Contracts\TranslatableContentDriver;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -31,6 +35,10 @@ class AvailabilityWarningsTable extends Component implements HasForms, HasTable
     {
         return $table
             ->heading('Availability warnings')
+            ->description(fn (): ?string => TrainingPlaceAvailabilityGraceNotice::message(
+                $this->trainingPlace,
+                onlyForActivePlace: true
+            ))
             ->queryStringIdentifier('availability-warnings')
             ->query(
                 AvailabilityWarning::query()
@@ -69,6 +77,21 @@ class AvailabilityWarningsTable extends Component implements HasForms, HasTable
                     ->label('Resolved')
                     ->date('d/m/Y')
                     ->placeholder('—'),
+            ])
+            ->actions([
+                ActionGroup::make([
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading('Delete Availability Warning')
+                        ->modalDescription('Are you sure you want to delete this availability warning? This action cannot be undone. The linked availability check will be updated to passed.')
+                        ->modalSubmitActionLabel('Delete')
+                        ->modalCancelActionLabel('Cancel')
+                        ->visible(fn () => auth()->user()?->can('training-places.availability-warnings.delete'))
+                        ->action(fn (AvailabilityWarning $record) => AvailabilityWarnings::deleteWarning($record)),
+                ]),
             ])
             ->emptyStateHeading('No availability warnings');
     }

@@ -219,7 +219,7 @@ class TeamSpeak
      * Check a member has accepted any necessary notifications.
      *
      *
-     * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
+     * @throws ClientKickedFromServerException
      */
     public static function checkMemberMandatoryNotifications(Client $client, Account $member)
     {
@@ -251,7 +251,7 @@ class TeamSpeak
      * Check the client's nickname is correct.
      *
      *
-     * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
+     * @throws ClientKickedFromServerException
      */
     public static function checkClientNickname(Client $client, Account $member)
     {
@@ -380,7 +380,7 @@ class TeamSpeak
      * Check the client's (allowed) idle time.
      *
      *
-     * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
+     * @throws ClientKickedFromServerException
      */
     public static function checkClientIdleTime(Client $client, Account $member)
     {
@@ -483,7 +483,7 @@ class TeamSpeak
      *
      * @param  string  $reason
      *
-     * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
+     * @throws ClientKickedFromServerException
      */
     public static function deactivateClient(Client $client, $reason)
     {

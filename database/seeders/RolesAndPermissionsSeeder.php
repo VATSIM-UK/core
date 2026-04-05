@@ -47,6 +47,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.exams.conduct.twr',
             'training.exams.conduct.app',
             'training.exams.conduct.ctr',
+            'training.exams.conduct.p1',
+            'training.exams.conduct.p2',
+            'training.exams.conduct.p3',
             'training.exams.override-result',
             'training.theory.access',
             'training.theory.view.*',
@@ -59,6 +62,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.theory.manage.twr',
             'training.theory.manage.app',
             'training.theory.manage.ctr',
+            'training.examiners.view.*',
+            'training.examiners.view.atc',
+            'training.examiners.manage.*',
+            'training.examiners.manage.atc',
 
             // Account Permissions
             'account.self',
@@ -99,8 +106,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'vt.application.cancel.*',
             'vt.status.revoke',
             'vt.status.grant.manual',
-            // 'vt.application.reference.accept.*',
-            // 'vt.application.reference.reject.*',
             // 'vt.application.check.modify.*',
 
             // Waiting List System Permissions,
@@ -118,6 +123,15 @@ class RolesAndPermissionsSeeder extends Seeder
             'waiting-lists.remove-accounts.*',
             'waiting-lists.remove-accounts.atc',
             'waiting-lists.remove-accounts.pilot',
+            'waiting-lists.training-place.offer.*',
+            'waiting-lists.training-place.offer.atc',
+            'waiting-lists.training-place.offer.pilot',
+            'waiting-lists.training-place.view-offer.*',
+            'waiting-lists.training-place.view-offer.atc',
+            'waiting-lists.training-place.view-offer.pilot',
+            'waiting-lists.training-place.rescind-offer.*',
+            'waiting-lists.training-place.rescind-offer.atc',
+            'waiting-lists.training-place.rescind-offer.pilot',
             'waiting-lists.add-flags.*',
             'waiting-lists.delete.*',
             'waiting-lists.delete.atc',
@@ -131,8 +145,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'training-places.view.*',
             'training-places.manual-setup',
             'training-places.revoke.*',
+            'training-places.restore.*',
             'training-places.loas.create.*',
             'training-places.loas.end-early.*',
+            'training-places.availability-warnings.delete',
 
             // // Feedback System Permissions
             'feedback.access',
@@ -153,6 +169,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Operations System Permissions
             'operations.access',
+
+            // Pilot System Permissions
+            'pilot.access',
 
             // // TeamSpeak Permissions
             // 'teamspeak.servergroup.serveradmin',
@@ -231,6 +250,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'roster.manage',
             'roster.restriction.create',
             'roster.restriction.remove',
+            'atc.stats',
 
         ];
 

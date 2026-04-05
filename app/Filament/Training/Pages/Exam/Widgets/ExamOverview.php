@@ -37,7 +37,7 @@ class ExamOverview extends BaseWidget
                 ->description("$overall->passed Passed, $overall->failed Failed, $overall->incomplete Incomplete"),
         ];
 
-        $examOrder = ['OBS', 'TWR', 'APP', 'CTR'];
+        $examOrder = ['OBS', 'TWR', 'APP', 'CTR', 'P1', 'P2', 'P3'];
 
         foreach ($examOrder as $exam) {
             $results = $examStats->get($exam, collect());

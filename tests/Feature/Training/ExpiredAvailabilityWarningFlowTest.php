@@ -58,12 +58,37 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $trainingPosition->id,
         ]);
+
+        $this->trainingPlace->forceFill([
+            'created_at' => $this->dayZero->copy()->subHours(TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS + 1),
+        ])->saveQuietly();
     }
 
     protected function tearDown(): void
     {
         Carbon::setTestNow();
         parent::tearDown();
+    }
+
+    #[Test]
+    public function it_skips_availability_checks_until_grace_period_has_elapsed(): void
+    {
+        $this->trainingPlace->forceFill(['created_at' => $this->dayZero->copy()])->saveQuietly();
+
+        Artisan::call('training-places:check-availability');
+        $this->assertSame(0, $this->availabilityCheckCount());
+
+        Carbon::setTestNow($this->dayZero->copy()->addHours(47));
+        Artisan::call('training-places:check-availability');
+        $this->assertSame(0, $this->availabilityCheckCount());
+
+        Carbon::setTestNow($this->dayZero->copy()->addHours(TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS));
+        Artisan::call('training-places:check-availability');
+        $this->assertSame(1, $this->availabilityCheckCount());
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
     }
 
     #[Test]
@@ -333,15 +358,30 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
     private function addAvailabilityAndSession(): void
     {
         Availability::factory()->forStudent($this->ctsMember->id)->create();
-        Session::factory()->create([
-            'student_id' => $this->ctsMember->id,
-            'position' => 'EGLL_APP',
-        ]);
+        $this->createPendingSession();
+        $this->createTakenSession();
     }
 
     private function removeAvailabilityAndSession(): void
     {
         Availability::where('student_id', $this->ctsMember->id)->delete();
         Session::where('student_id', $this->ctsMember->id)->delete();
+    }
+
+    private function createPendingSession(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => null,
+        ]);
+    }
+
+    private function createTakenSession(): void
+    {
+        Session::factory()->accepted()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+        ]);
     }
 }

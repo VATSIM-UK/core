@@ -2,10 +2,10 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(\App\Models\Airport\Runway::class, function (Faker $faker) {
+$factory->define(App\Models\Airport\Runway::class, function (Faker $faker) {
     return [
         'airport_id' => function () {
-            return factory(\App\Models\Airport::class)->create()->id;
+            return factory(App\Models\Airport::class)->create()->id;
         },
         'ident' => $faker->numberBetween(0, 3).$faker->numberBetween(0, 9).$faker->optional(0.5)->randomLetter,
         'heading' => $faker->numberBetween(0, 360),

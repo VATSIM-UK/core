@@ -59,7 +59,7 @@ class AcceptedExamsTable extends Component implements HasForms, HasTable
                         if ($examBooking->exam === 'OBS') {
                             return false;
                         }
-                        // use CTS member ID rather than Core acocunt ID.
+                        // use CTS member ID rather than Core account ID.
                         $memberId = auth()->user()->member->id;
 
                         return app(ExamAnnouncementService::class)->canPostAnnouncement($examBooking, $memberId);

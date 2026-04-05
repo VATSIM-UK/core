@@ -17,7 +17,7 @@ use Request;
  * @property string $ip
  * @property \Carbon\Carbon|null $created_at
  * @property-read \App\Models\Mship\Account|null $actor
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ * @property-read \Illuminate\Database\Eloquent\Collection|Data\Change[] $dataChanges
  * @property-read mixed $extra_data
  * @property-read mixed $type
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject

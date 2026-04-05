@@ -2,9 +2,11 @@
 
 namespace App\Models\Training\WaitingList;
 
+use App\Enums\TrainingPlaceOfferStatus;
 use App\Models\Cts\TheoryResult;
 use App\Models\Model;
 use App\Models\Mship\Account;
+use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -24,8 +26,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property array|null $flags_status_summary
  * @property-read Account|null $account
- * @property-read \App\Models\Training\WaitingList\WaitingListAccountFlag $pivot
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList\WaitingListFlag> $flags
+ * @property-read WaitingListAccountFlag $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListFlag> $flags
  * @property-read int|null $flags_count
  * @property-read mixed $atc_hour_check
  * @property-read mixed $position
@@ -49,7 +51,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingListAccount withoutTrashed()
  *
  * @property int|null $removed_by
- * @property \App\Models\Training\WaitingList\RemovalReason|null $removal_type
+ * @property RemovalReason|null $removal_type
  * @property string|null $removal_comment
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Data\Change> $dataChanges
  * @property-read int|null $data_changes_count
@@ -106,6 +108,11 @@ class WaitingListAccount extends Model
     public function retentionChecks(): HasMany
     {
         return $this->hasMany(WaitingListRetentionCheck::class, 'waiting_list_account_id');
+    }
+
+    public function trainingPlaceOffers(): HasMany
+    {
+        return $this->hasMany(TrainingPlaceOffer::class);
     }
 
     /**
@@ -175,5 +182,12 @@ class WaitingListAccount extends Model
     private function cacheKey()
     {
         return "waiting-list-account:{$this->id}";
+    }
+
+    public function hasPendingTrainingPlaceOffer(): bool
+    {
+        return $this->trainingPlaceOffers()
+            ->where('status', TrainingPlaceOfferStatus::Pending->value)
+            ->exists();
     }
 }

@@ -76,17 +76,17 @@ use Watson\Rememberable\Rememberable;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Activity> $activityRecent
  * @property-read int|null $activity_recent_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Account\Ban> $bans
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Account\Ban> $bans
  * @property-read int|null $bans_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Account\Ban> $bansAsInstigator
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Account\Ban> $bansAsInstigator
  * @property-read int|null $bans_as_instigator_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\Client> $clients
  * @property-read int|null $clients_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Data\Change> $dataChanges
  * @property-read int|null $data_changes_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Account\Endorsement> $endorsements
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Account\Endorsement> $endorsements
  * @property-read int|null $endorsements_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Feedback\Feedback> $feedback
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Feedback\Feedback> $feedback
  * @property-read int|null $feedback_count
  * @property-read mixed $active_qualifications
  * @property-read mixed $discord_name
@@ -129,7 +129,6 @@ use Watson\Rememberable\Rememberable;
  * @property-read mixed $unread_notifications
  * @property-read \Illuminate\Support\Collection $verified_secondary_emails
  * @property-read mixed $visit_transfer_current
- * @property-read mixed $visit_transfer_referee_pending
  * @property-read mixed $has_controller_rating
  * @property-read mixed $name
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NetworkData\Atc> $networkDataAtc
@@ -149,21 +148,21 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $o_auth_tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \App\Models\Training\WaitingList\WaitingListAccount $pivot
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Qualification> $qualifications
+ * @property-read WaitingListAccount $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Qualification> $qualifications
  * @property-read int|null $qualifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Notification> $readSystemNotifications
  * @property-read int|null $read_system_notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Role> $roles
  * @property-read int|null $roles_count
  * @property-read Roster|null $roster
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\Account\Email> $secondaryEmails
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Account\Email> $secondaryEmails
  * @property-read int|null $secondary_emails_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sso\Email> $ssoEmails
  * @property-read int|null $sso_emails_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\State> $states
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, State> $states
  * @property-read int|null $states_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mship\State> $statesHistory
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, State> $statesHistory
  * @property-read int|null $states_history_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TeamSpeak\Registration> $teamspeakRegistrations
  * @property-read int|null $teamspeak_registrations_count
@@ -171,8 +170,6 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Application> $visitTransferApplications
  * @property-read int|null $visit_transfer_applications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Reference> $visitTransferReferee
- * @property-read int|null $visit_transfer_referee_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList> $waitingLists
  * @property-read int|null $waiting_lists_count
  *
@@ -357,19 +354,19 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     public function bansAsInstigator()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'banned_by')
+        return $this->hasMany(Account\Ban::class, 'banned_by')
             ->orderBy('created_at', 'DESC');
     }
 
     public function notes()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Note::class, 'account_id')
+        return $this->hasMany(AccountNoteData::class, 'account_id')
             ->orderBy('created_at', 'DESC');
     }
 
     public function noteWriter()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Note::class, 'writer_id');
+        return $this->hasMany(AccountNoteData::class, 'writer_id');
     }
 
     public function tokens()
@@ -384,7 +381,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     public function feedback()
     {
-        return $this->hasMany(\App\Models\Mship\Feedback\Feedback::class);
+        return $this->hasMany(Feedback\Feedback::class);
     }
 
     public function addNote($noteType, $noteContent, $writer = null, $attachment = null)

@@ -123,7 +123,7 @@ class WaitingList extends Model
     /**
      * A Waiting List can be managed by many Staff Members (Accounts).
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function staff()
     {
@@ -151,7 +151,7 @@ class WaitingList extends Model
     /**
      * One WaitingList can have many flags associated with it.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function flags()
     {

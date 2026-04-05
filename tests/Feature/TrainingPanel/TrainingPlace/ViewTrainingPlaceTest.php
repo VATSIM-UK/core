@@ -514,4 +514,168 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'content' => "Training place revoked on {$trainingPlace->trainingPosition->position->callsign}. Reason: {$reason}",
         ]);
     }
+
+    #[Test]
+    public function it_shows_solo_endorsement_section_when_toggle_is_enabled()
+    {
+        $trainingPlace = $this->createTrainingPlaceWithToggles(
+            showSoloEndorsement: true,
+            showRecentControlling: true,
+        );
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSee('Solo endorsements');
+    }
+
+    #[Test]
+    public function it_hides_solo_endorsement_section_when_toggle_is_disabled()
+    {
+        $trainingPlace = $this->createTrainingPlaceWithToggles(
+            showSoloEndorsement: false,
+            showRecentControlling: true,
+        );
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertDontSee('Solo endorsements');
+    }
+
+    #[Test]
+    public function it_shows_recent_controlling_section_when_toggle_is_enabled()
+    {
+        $trainingPlace = $this->createTrainingPlaceWithToggles(
+            showSoloEndorsement: true,
+            showRecentControlling: true,
+        );
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSee('Controlling during training');
+    }
+
+    #[Test]
+    public function it_hides_recent_controlling_section_when_toggle_is_disabled()
+    {
+        $trainingPlace = $this->createTrainingPlaceWithToggles(
+            showSoloEndorsement: true,
+            showRecentControlling: false,
+        );
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertDontSee('Controlling during training');
+    }
+
+    private function createTrainingPlaceWithToggles(bool $showSoloEndorsement, bool $showRecentControlling): TrainingPlace
+    {
+        $student = Account::factory()->create();
+        $student->addState(State::findByCode('DIVISION'));
+        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
+
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->panelUser);
+
+        $position = Position::factory()->create();
+        $trainingPosition = TrainingPosition::factory()
+            ->withCtsPositions(['EGLL_APP'])
+            ->create([
+                'position_id' => $position->id,
+                'feature_toggles' => [
+                    'show_solo_endorsement' => $showSoloEndorsement,
+                    'show_recent_controlling' => $showRecentControlling,
+                ],
+            ]);
+
+        return TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_can_view_a_deleted_training_place()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->delete();
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200);
+    }
+
+    #[Test]
+    public function it_displays_details_for_a_deleted_training_place()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->delete();
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSee($trainingPlace->waitingListAccount->account->name)
+            ->assertSee($trainingPlace->trainingPosition->position->name);
+    }
+
+    #[Test]
+    public function it_does_not_show_restore_training_place_action_without_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->delete();
+
+        $this->panelUser->roles()->detach();
+        $this->panelUser->refresh();
+        $this->panelUser->givePermissionTo('training-places.view.*');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertActionHidden('restoreTrainingPlace');
+    }
+
+    #[Test]
+    public function it_hides_restore_training_place_action_when_training_place_is_active()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training-places.restore.*');
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertActionHidden('restoreTrainingPlace');
+    }
+
+    #[Test]
+    public function it_shows_restore_training_place_action_when_trashed_and_user_has_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->delete();
+        $this->panelUser->givePermissionTo('training-places.restore.*');
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertActionVisible('restoreTrainingPlace');
+    }
+
+    #[Test]
+    public function it_shows_availability_grace_period_notice_while_within_grace(): void
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->forceFill(['created_at' => now()])->saveQuietly();
+        $endsAt = $trainingPlace->fresh()->availabilityCheckGracePeriodEndsAt()->format('d/m/Y, H:i');
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSee('Availability warnings')
+            ->assertSee('No automated availability checks are run')
+            ->assertSee($endsAt);
+    }
+
+    #[Test]
+    public function it_hides_availability_grace_period_notice_after_grace_elapses(): void
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $trainingPlace->forceFill([
+            'created_at' => now()->subHours(TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS + 1),
+        ])->saveQuietly();
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertDontSee('No automated availability checks are run');
+    }
 }

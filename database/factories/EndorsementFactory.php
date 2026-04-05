@@ -1,15 +1,15 @@
 <?php
 
-$factory->define(\App\Models\Atc\PositionGroup::class, function ($faker) {
+$factory->define(App\Models\Atc\PositionGroup::class, function ($faker) {
     return [
         'name' => $faker->name,
     ];
 });
 
-$factory->define(\App\Models\Atc\PositionGroupCondition::class, function ($faker) {
+$factory->define(App\Models\Atc\PositionGroupCondition::class, function ($faker) {
     return [
         'position_group_id' => function () {
-            return factory(\App\Models\Atc\PositionGroup::class)->create()->id;
+            return factory(App\Models\Atc\PositionGroup::class)->create()->id;
         },
         'positions' => ['EGLL_%'],
         'required_hours' => $faker->numberBetween(1, 100),

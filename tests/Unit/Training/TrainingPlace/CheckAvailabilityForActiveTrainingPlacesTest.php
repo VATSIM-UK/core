@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Training\TrainingPlace;
 
 use App\Models\Cts\Member;
@@ -19,6 +21,9 @@ class CheckAvailabilityForActiveTrainingPlacesTest extends TestCase
     public function it_can_check_availability_for_active_training_places()
     {
         $trainingPlace = $this->createActiveTrainingPlace();
+        $trainingPlace->forceFill([
+            'created_at' => now()->subHours(TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS + 1),
+        ])->saveQuietly();
 
         $this->artisan('training-places:check-availability');
 
@@ -26,6 +31,23 @@ class CheckAvailabilityForActiveTrainingPlacesTest extends TestCase
             'training_place_id' => $trainingPlace->id,
         ]);
 
+    }
+
+    #[Test]
+    public function it_does_not_create_availability_checks_during_grace_period_after_creation(): void
+    {
+        $trainingPlace = $this->createActiveTrainingPlace();
+
+        $this->assertTrue(
+            $trainingPlace->fresh()->isWithinAvailabilityCheckGracePeriod(),
+            'Fixture must be within grace; created_at='.$trainingPlace->fresh()->created_at->toIso8601String().', now='.now()->toIso8601String()
+        );
+
+        $this->artisan('training-places:check-availability');
+
+        $this->assertDatabaseMissing('availability_checks', [
+            'training_place_id' => $trainingPlace->id,
+        ]);
     }
 
     #[Test]
@@ -43,12 +65,12 @@ class CheckAvailabilityForActiveTrainingPlacesTest extends TestCase
 
     private function createActiveTrainingPlace(): TrainingPlace
     {
-        $account = Account::factory()->create();
-        // create cts member first as the cid is not overwritten when using a factory
-        Member::factory()->create(['cid' => $account->id]);
+        // Create CTS member first so account id can match member cid (required for $account->member in CheckAvailability)
+        $ctsMember = Member::factory()->create();
+        $account = Account::factory()->create(['id' => $ctsMember->cid]);
 
         $waitingList = WaitingList::factory()->create();
-        $waitingListAccount = $waitingList->addToWaitingList($account, $account);
+        $waitingListAccount = $waitingList->addToWaitingList($account, Account::factory()->create());
         $trainingPosition = TrainingPosition::factory()->create(['cts_positions' => []]);
 
         return TrainingPlace::factory()->create([

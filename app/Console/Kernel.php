@@ -56,6 +56,10 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(30)
             ->graceTimeInMinutes(5);
 
+        $schedule->command('training-places:create-cts-session-requests')
+            ->hourlyAt(5)
+            ->graceTimeInMinutes(10);
+
         // === By Day === //
         $schedule->command('telescope:prune')
             ->dailyAt('03:30')
@@ -87,6 +91,10 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('training-places:check-availability')
             ->dailyAt('10:00')
+            ->graceTimeInMinutes(15);
+
+        $schedule->command('training:check-for-expired-training-place-offers')
+            ->dailyAt('11:00')
             ->graceTimeInMinutes(15);
 
         // === By Quarter === //

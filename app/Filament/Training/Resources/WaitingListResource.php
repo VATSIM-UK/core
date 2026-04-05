@@ -138,10 +138,10 @@ class WaitingListResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Training\Resources\WaitingListResource\Pages\ListWaitingLists::route('/'),
-            'create' => \App\Filament\Training\Resources\WaitingListResource\Pages\CreateWaitingList::route('/create'),
-            'edit' => \App\Filament\Training\Resources\WaitingListResource\Pages\EditWaitingList::route('/{record}/edit'),
-            'view' => \App\Filament\Training\Resources\WaitingListResource\Pages\ViewWaitingList::route('/{record}'),
+            'index' => WaitingListResource\Pages\ListWaitingLists::route('/'),
+            'create' => WaitingListResource\Pages\CreateWaitingList::route('/create'),
+            'edit' => WaitingListResource\Pages\EditWaitingList::route('/{record}/edit'),
+            'view' => WaitingListResource\Pages\ViewWaitingList::route('/{record}'),
         ];
     }
 }

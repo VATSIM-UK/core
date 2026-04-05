@@ -14,7 +14,7 @@ trait HasVisitTransferApplications
      */
     public function visitTransferApplications()
     {
-        return $this->hasMany(\App\Models\VisitTransfer\Application::class)->orderBy('created_at', 'DESC');
+        return $this->hasMany(Application::class)->orderBy('created_at', 'DESC');
     }
 
     public function visitApplications()
@@ -61,22 +61,8 @@ trait HasVisitTransferApplications
         return $this->visitTransferApplications->contains(function ($application, $key) {
             return in_array(
                 $application->status,
-                \App\Models\VisitTransfer\Application::$APPLICATION_IS_CONSIDERED_OPEN
+                Application::$APPLICATION_IS_CONSIDERED_OPEN
             );
-        });
-    }
-
-    public function visitTransferReferee()
-    {
-        return $this->hasMany(\App\Models\VisitTransfer\Reference::class);
-    }
-
-    public function getVisitTransferRefereePendingAttribute()
-    {
-        return $this->visitTransferReferee->filter(function ($ref) {
-            return $ref->is_requested;
-        })->sortBy(function ($ref) {
-            return $ref->application->submitted_at;
         });
     }
 }

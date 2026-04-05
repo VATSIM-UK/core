@@ -6,7 +6,9 @@ use App\Enums\AvailabilityCheckStatus;
 use App\Jobs\Training\ActionExpiredAvailabilityWarningRemoval;
 use App\Jobs\Training\ActionFourthAvailabilityFailureRemoval;
 use App\Jobs\Training\CheckAvailability;
+use App\Models\Atc\Position as AtcPosition;
 use App\Models\Cts\Availability;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
@@ -57,6 +59,10 @@ class CheckAvailabilityTest extends TestCase
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $this->trainingPosition->id,
         ]);
+
+        $this->trainingPlace->forceFill([
+            'created_at' => now()->subHours(TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS + 1),
+        ])->saveQuietly();
     }
 
     #[Test]
@@ -88,6 +94,46 @@ class CheckAvailabilityTest extends TestCase
         ]);
 
         // Assert: No availability warning notification is sent
+        Notification::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_does_not_create_availability_check_when_within_grace_period_after_creation(): void
+    {
+        Notification::fake();
+
+        $this->trainingPlace->forceFill(['created_at' => now()])->saveQuietly();
+
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        $this->assertDatabaseMissing('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+        Notification::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_still_records_on_leave_check_when_within_grace_period_after_creation(): void
+    {
+        $this->trainingPlace->forceFill(['created_at' => now()])->saveQuietly();
+
+        TrainingPlaceLeaveOfAbsence::create([
+            'training_place_id' => $this->trainingPlace->id,
+            'begins_at' => now()->subDay(),
+            'ends_at' => now()->addDays(7),
+            'reason' => 'Annual leave',
+        ]);
+
+        Notification::fake();
+
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::OnLeave->value,
+        ]);
         Notification::assertNothingSent();
     }
 
@@ -567,6 +613,180 @@ class CheckAvailabilityTest extends TestCase
     }
 
     #[Test]
+    public function it_creates_passed_check_when_member_has_pending_exam(): void
+    {
+        // Arrange: No availability or session, but member has a pending (unfinished) exam booking
+        // hasPendingExam matches on position_1 vs training position's exam_callsign (or position->callsign)
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+        ExamBooking::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+        ]);
+        $this->trainingPlace->unsetRelation('trainingPosition');
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A passed availability check should be created
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
+        ]);
+
+        // Assert: No availability warning should be created
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_resolves_pending_warning_when_check_passes_due_to_pending_exam(): void
+    {
+        // Arrange: Existing pending warning and a pending exam (no availability/session)
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+        $existingCheck = AvailabilityCheck::factory()->failed()->create([
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+        AvailabilityWarning::factory()->pending()->create([
+            'training_place_id' => $this->trainingPlace->id,
+            'availability_check_id' => $existingCheck->id,
+        ]);
+        ExamBooking::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+        ]);
+        $this->trainingPlace->unsetRelation('trainingPosition');
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A passed check was created
+        $passedCheck = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)
+            ->where('status', AvailabilityCheckStatus::Passed)
+            ->first();
+        $this->assertNotNull($passedCheck);
+
+        // Assert: The pending warning was resolved and linked to the passed check
+        $resolvedWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
+            ->where('status', 'resolved')
+            ->first();
+        $this->assertNotNull($resolvedWarning, 'Job should resolve the pending warning when check passes due to pending exam');
+        $this->assertEquals($passedCheck->id, $resolvedWarning->resolved_availability_check_id);
+    }
+
+    #[Test]
+    public function it_does_not_send_notification_when_check_passes_due_to_pending_exam(): void
+    {
+        // Arrange: Pending exam, no availability or session; fake notifications
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+        Notification::fake();
+        ExamBooking::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+        ]);
+        // Clear cached relation so job loads training position with updated exam_callsign (observer may have loaded it at create)
+        $this->trainingPlace->unsetRelation('trainingPosition');
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: No notification should be sent (check passed due to pending exam)
+        Notification::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_creates_failed_check_when_member_has_pending_exam_for_different_position(): void
+    {
+        // Arrange: Pending exam exists but position_1 does not match training position's exam_callsign
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+        ExamBooking::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGKK_TWR', // Different position; hasPendingExam checks position_1
+        ]);
+        $this->trainingPlace->unsetRelation('trainingPosition');
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: Check fails (pending exam is for a different position)
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
+        $this->assertDatabaseHas('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_passed_check_when_member_has_pending_exam_and_exam_callsign_falls_back_to_position(): void
+    {
+        // Arrange: exam_callsign is not set; hasPendingExam falls back to training position's position->callsign
+        $atcPosition = AtcPosition::factory()->create(['callsign' => 'EGLL_TWR']);
+        $this->trainingPosition->update([
+            'position_id' => $atcPosition->id,
+            'exam_callsign' => null,
+        ]);
+        ExamBooking::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_TWR',
+        ]);
+        $this->trainingPlace->unsetRelation('trainingPosition');
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: Passed check (pending exam matched via position->callsign fallback)
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
+        ]);
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_failed_check_when_exam_callsign_falls_back_to_position_but_exam_position_does_not_match(): void
+    {
+        // Arrange: exam_callsign not set (fallback to position->callsign), but exam is for a different position
+        $atcPosition = AtcPosition::factory()->create(['callsign' => 'EGLL_TWR']);
+        $this->trainingPosition->update([
+            'position_id' => $atcPosition->id,
+            'exam_callsign' => null,
+        ]);
+        ExamBooking::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGKK_APP', // Does not match position->callsign (EGLL_TWR)
+        ]);
+        $this->trainingPlace->unsetRelation('trainingPosition');
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: Check fails (pending exam position_1 does not match fallback position->callsign)
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
+        $this->assertDatabaseHas('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
     public function it_creates_passed_check_when_session_matches_any_cts_position(): void
     {
         // Arrange: Create availability and session with second callsign
@@ -711,6 +931,116 @@ class CheckAvailabilityTest extends TestCase
         ]);
 
         // Assert: An availability warning should be created
+        $this->assertDatabaseHas('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_passed_check_when_session_exists_but_has_been_taken(): void
+    {
+        // Arrange: Create availability and a session that has already been taken (taken_time set)
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Session::factory()->accepted()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+        ]);
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A failed availability check should be created (untaken session request required)
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_passed_check_when_pending_and_taken_sessions_exist_for_same_position(): void
+    {
+        // Arrange: Create availability and two sessions for the same position:
+        // one pending (no taken_time) and one already taken (taken_time set).
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+
+        // Pending session – should satisfy the session request requirement.
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+        ]);
+
+        // Completed session for the same position – should not prevent the check from passing.
+        Session::factory()->accepted()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+        ]);
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: A passed availability check should be created because there is at least one pending session
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
+        ]);
+
+        // Assert: No availability warning should be created when the check passes
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_treats_future_taken_session_with_session_done_zero_as_pending(): void
+    {
+        // Arrange: Availability and a future session with taken_time set and session_done = 0
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+            'taken_time' => now()->addDay(),
+            'taken_date' => now()->addDay(),
+            'session_done' => 0,
+        ]);
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: Check passes because hasPendingSession matches future taken_date/session_done = 0
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
+        ]);
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_does_not_treat_past_taken_session_as_pending_even_with_session_done_zero(): void
+    {
+        // Arrange: Availability and a past session with taken_time set and session_done = 0
+        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'EGLL_APP',
+            'taken_time' => now()->subDay(),
+            'taken_date' => now()->subDay(),
+            'session_done' => 0,
+        ]);
+
+        // Act: Run the job
+        $job = new CheckAvailability($this->trainingPlace);
+        $job->handle();
+
+        // Assert: Check fails because hasPendingSession excludes past taken_date
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
         $this->assertDatabaseHas('availability_warnings', [
             'training_place_id' => $this->trainingPlace->id,
         ]);

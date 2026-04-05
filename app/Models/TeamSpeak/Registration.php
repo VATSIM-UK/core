@@ -23,8 +23,8 @@ use PlanetTeamSpeak\TeamSpeak3Framework\TeamSpeak3;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $deleted_at
- * @property-read \App\Models\Mship\Account $account
- * @property-read \App\Models\TeamSpeak\Confirmation $confirmation
+ * @property-read Account $account
+ * @property-read Confirmation $confirmation
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  *
  * @method static bool|null forceDelete()
@@ -62,7 +62,7 @@ class Registration extends Model
 
     public function delete($tscon = null)
     {
-        if (Teamspeak::enabled()) {
+        if (TeamSpeak::enabled()) {
             if ($tscon == null) {
                 $tscon = TeamSpeak::run('VATSIM UK Registrations');
             }

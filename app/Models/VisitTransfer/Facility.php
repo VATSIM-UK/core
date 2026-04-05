@@ -22,16 +22,14 @@ use Malahierba\PublicId\PublicId;
  * @property string $training_team
  * @property int|null $training_spaces
  * @property int $stage_statement_enabled
- * @property int $stage_reference_enabled
- * @property int $stage_reference_quantity
  * @property int $stage_checks
  * @property int $auto_acceptance
  * @property int $open
  * @property int $public
  * @property string|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $applications
+ * @property-read \Illuminate\Database\Eloquent\Collection|Application[] $applications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Facility\Email[] $emails
+ * @property-read \Illuminate\Database\Eloquent\Collection|Facility\Email[] $emails
  * @property-read string $public_id
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  *
@@ -56,8 +54,6 @@ use Malahierba\PublicId\PublicId;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereOpen($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility wherePublic($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageChecks($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageReferenceEnabled($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageReferenceQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageStatementEnabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereTrainingRequired($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereTrainingSpaces($value)
@@ -86,8 +82,9 @@ class Facility extends Model
         'can_transfer' => 'boolean',
         'training_required' => 'boolean',
         'stage_statement_enabled' => 'boolean',
-        'stage_reference_enabled' => 'boolean',
         'stage_checks' => 'boolean',
+        'enable_90_day_check' => 'boolean',
+        'enable_50_hours_check' => 'boolean',
         'auto_acceptance' => 'boolean',
         'open' => 'boolean',
         'public' => 'boolean',
@@ -103,9 +100,9 @@ class Facility extends Model
         'training_team',
         'training_spaces',
         'stage_statement_enabled',
-        'stage_reference_enabled',
-        'stage_reference_quantity',
         'stage_checks',
+        'enable_90_day_check',
+        'enable_50_hours_check',
         'auto_acceptance',
         'minimum_atc_qualification_id',
         'maximum_atc_qualification_id',
@@ -247,7 +244,7 @@ class Facility extends Model
 
     public function applications()
     {
-        return $this->hasMany(\App\Models\VisitTransfer\Application::class);
+        return $this->hasMany(Application::class);
     }
 
     public function emails()
