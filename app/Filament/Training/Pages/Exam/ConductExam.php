@@ -116,7 +116,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     return [
                         $item->id => [
                             'grade' => $existingAssessment['grade'] ?? 'N',
-                            'comments' => $existingAssessment['comments'] ?? '',
+                            'comments' => $this->richEditorHtmlForHydration($existingAssessment['comments'] ?? null),
                         ],
                     ];
                 }
@@ -179,7 +179,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->schema([
                         RichEditor::make("form.{$criteria->id}.comments")
                             ->label('Comments')
-                            ->default('')
+                            ->default('<p></p>')
                             ->columnSpan(9)
                             ->disableToolbarButtons(['attachFiles', 'blockquote'])
                             ->live(debounce: 500)
@@ -215,7 +215,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->columnSpan(9)
                     ->live(debounce: 1000)
                     // save additional comments in session to persist in session in case navigation occurs
-                    ->afterStateHydrated(fn ($component) => $component->state($this->additionalComments))
+                    ->afterStateHydrated(fn ($component) => $component->state(
+                        $this->richEditorHtmlForHydration($this->additionalComments)
+                    ))
                     ->afterStateUpdated(fn ($state, $livewire) => ($this->additionalComments = $state)),
 
                 Select::make('exam_result')
@@ -259,7 +261,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
         (new ExamResultRepository)->createPracticalResult(
             examBooking: $this->examBooking,
             result: $examResultFormData['exam_result'],
-            additionalComments: $examResultFormData['additional_comments'] ?? ''
+            additionalComments: $this->richContentNotesForCts($examResultFormData['additional_comments'] ?? null),
         );
 
         Notification::make()
@@ -332,7 +334,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
             fn ($item, $key) => [
                 'criteria_id' => $key,
                 'grade' => $item['grade'],
-                'comments' => $item['comments'],
+                'comments' => $this->richContentNotesForCts($item['comments'] ?? null),
             ]
         )
             ->values()
@@ -343,7 +345,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                 examId: $this->examId,
                 criteriaId: $item['criteria_id'],
                 grade: $item['grade'],
-                comments: $item['comments'] ?? null,
+                comments: $item['comments'] !== '' ? $item['comments'] : null,
             )
         );
 
@@ -391,5 +393,34 @@ class ConductExam extends Page implements HasForms, HasInfolists
         $waitingListAccountIds = $studentAccount->waitingListAccounts()->pluck('id');
 
         TrainingPlace::whereIn('waiting_list_account_id', $waitingListAccountIds)->first()?->delete();
+    }
+
+    /**
+     * Filament v4 / Tiptap PHP parse HTML via DOMDocument::loadHTML; empty or whitespace-only strings
+     * yield no &lt;body&gt; node, so DOMParser::getDocumentBody() returns null and crashes.
+     */
+    private function richEditorHtmlForHydration(mixed $html): mixed
+    {
+        if ($html === null || $html === '' || (is_string($html) && trim($html) === '')) {
+            return '<p></p>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * CTS stores criteria / result notes as plain text; Filament RichEditor state is HTML.
+     */
+    private function richContentNotesForCts(mixed $html): string
+    {
+        if (! is_string($html) || trim($html) === '') {
+            return '';
+        }
+
+        $withNewlines = preg_replace('/<\/p>\s*<p>/i', "\n", $html);
+        $text = html_entity_decode(strip_tags($withNewlines), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = str_replace("\xc2\xa0", ' ', $text);
+
+        return trim($text);
     }
 }
