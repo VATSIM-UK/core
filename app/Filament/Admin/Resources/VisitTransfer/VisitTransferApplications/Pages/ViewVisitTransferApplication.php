@@ -126,7 +126,7 @@ class ViewVisitTransferApplication extends ViewRecord
 
         $application = $this->record;
 
-        return $infolist->record($application)->schema([
+        return $schema->record($application)->components([
             TextEntry::make('status')->label('Status')->formatStateUsing(fn ($state, $record) => $record->status_string)->badge()->color(fn ($record) => $record->status_color),
             Section::make('Application Content #'.$application->public_id)
                 ->columnSpanFull()
