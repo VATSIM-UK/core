@@ -68,9 +68,9 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         $noAccessAccount = Account::factory()->create();
         Member::factory()->recycle($noAccessAccount)->create(['cid' => $noAccessAccount->id]);
 
-        Livewire::actingAs($noAccessAccount)
-            ->test(MyPendingExams::class)
-            ->assertForbidden();
+        $this->actingAs($noAccessAccount)
+            ->get('/training/my-pending-exams')
+            ->assertNotFound();
     }
 
     #[Test]

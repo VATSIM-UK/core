@@ -24,6 +24,8 @@ class MyExamHistory extends Page implements HasTable
 
     protected static ?string $navigationLabel = 'My Exam History';
 
+    protected static ?int $navigationSort = 2;
+
     public static function canAccess(): bool
     {
         return auth()->user()->can('training.access') ?? false;

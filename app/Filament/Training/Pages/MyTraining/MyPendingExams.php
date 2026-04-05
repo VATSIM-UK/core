@@ -23,6 +23,8 @@ class MyPendingExams extends Page implements HasTable
 
     protected static ?string $navigationLabel = 'My Pending Exams';
 
+    protected static ?int $navigationSort = 1;
+
     public static function canAccess(): bool
     {
         return auth()->user()?->can('training.access') ?? false;
@@ -61,7 +63,7 @@ class MyPendingExams extends Page implements HasTable
                     ->placeholder('Not yet scheduled'),
             ])
             ->paginated(false)
-            ->emptyStateHeading('No pending exams')
-            ->emptyStateDescription('You have no exams currently awaiting a booking.');
+            ->emptyStateHeading('No pending exam requests')
+            ->emptyStateDescription('You have no pending exam requests.');
     }
 }
