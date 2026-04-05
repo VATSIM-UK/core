@@ -231,12 +231,13 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 ->collapsible()
                 ->collapsed(true)
                 ->visible(fn (): bool => (bool) $this->trainingPlace->deleted_at)
+                ->columnSpanFull()
                 ->schema([
                     TextEntry::make('deleted_at')
                         ->label('Removed on')
                         ->dateTime('d/m/Y \a\t H:i'),
                 ]),
-            Section::make('Training Place Details')->schema([
+            Section::make('Training Place Details')->columnSpanFull()->schema([
                 TextEntry::make('waitingListAccount.account.name')->label('Name'),
                 TextEntry::make('waitingListAccount.account.id')->label('CID'),
                 TextEntry::make('trainingPosition.position.name')->label('Position'),

@@ -129,11 +129,13 @@ class ViewVisitTransferApplication extends ViewRecord
         return $infolist->record($application)->schema([
             TextEntry::make('status')->label('Status')->formatStateUsing(fn ($state, $record) => $record->status_string)->badge()->color(fn ($record) => $record->status_color),
             Section::make('Application Content #'.$application->public_id)
+                ->columnSpanFull()
                 ->schema([
                     Flex::make([
                         Section::make('Member Overview')
+                            ->columnSpanFull()
                             ->schema([
-                                Grid::make(2)->schema([
+                                Grid::make(2)->columnSpanFull()->schema([
                                     TextEntry::make('account.full_name')->label('Applicant Name'),
                                     TextEntry::make('account.id')->label('Applicant ID'),
                                     TextEntry::make('atc_rating')->label('ATC Rating')->getStateUsing(fn ($record) => ($record->account?->qualification_atc?->name_long ?? 'Unknown ATC')),
@@ -145,8 +147,9 @@ class ViewVisitTransferApplication extends ViewRecord
                                 ]),
                             ]),
                         Section::make('Stages & Automated Checks')
+                            ->columnSpanFull()
                             ->schema([
-                                Grid::make(4)->schema([
+                                Grid::make(4)->columnSpanFull()->schema([
                                     IconEntry::make('training_required')->label('Training Required')->getStateUsing(fn ($record) => $record->training_required)->boolean(),
                                     IconEntry::make('statement_required')->label('Statement Required')->getStateUsing(fn ($record) => $record->statement_required)->boolean(),
                                     IconEntry::make('should_perform_checks')->label('Auto Check')->getStateUsing(fn ($record) => $record->should_perform_checks)->boolean(),
@@ -170,8 +173,9 @@ class ViewVisitTransferApplication extends ViewRecord
                     Flex::make([
                         Section::make('Memberships')
                             ->description('Current and Past Memberships of the Applicant')
+                            ->columnSpanFull()
                             ->schema([
-                                Grid::make(1)->schema(
+                                Grid::make(1)->columnSpanFull()->schema(
                                     ($application->account?->statesHistory ?? collect())
                                         ->sortByDesc('pivot.start_at')
                                         ->map(function ($state) {
@@ -185,8 +189,9 @@ class ViewVisitTransferApplication extends ViewRecord
                             ]),
                         Section::make('Member Notes')
                             ->description('Check for any recent notes that may be relevant to this application')
+                            ->columnSpanFull()
                             ->schema([
-                                Grid::make(1)->schema(
+                                Grid::make(1)->columnSpanFull()->schema(
                                     ($application->account?->notes ?? collect())
                                         ->map(function ($note) {
                                             return TextEntry::make("note_{$note->id}")
@@ -199,13 +204,14 @@ class ViewVisitTransferApplication extends ViewRecord
 
                     Section::make('Previous Applications')
                         ->description('Previous Visiting & Transferring Applications by this Member')
+                        ->columnSpanFull()
                         ->schema([
-                            Grid::make(1)->schema(
+                            Grid::make(1)->columnSpanFull()->schema(
                                 ($application->account?->visitTransferApplications ?? collect())
                                     ->where('id', '!=', $application->id)
                                     ->sortByDesc('created_at')
                                     ->map(function ($oldapp) {
-                                        return Grid::make(5)->schema([
+                                        return Grid::make(5)->columnSpanFull()->schema([
                                             TextEntry::make("app_{$oldapp->id}_id")
                                                 ->label('Application ID')
                                                 ->getStateUsing(fn () => $oldapp->public_id ?? 'Unknown')

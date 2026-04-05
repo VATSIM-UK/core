@@ -45,6 +45,7 @@ class WaitingListResource extends Resource
                 ])->disabledOn('edit')->required(),
 
                 Section::make('Additional Settings')
+                    ->columnSpanFull()
                     ->schema([
                         Select::make('trainingPositions')
                             ->label('Training Positions')
@@ -92,6 +93,7 @@ class WaitingListResource extends Resource
                     ->collapsed(),
 
                 Section::make('Self-Enrolment Requirements')
+                    ->columnSpanFull()
                     ->schema([
                         Select::make('self_enrolment_minimum_qualification_id')
                             ->label('Minimum Rating')

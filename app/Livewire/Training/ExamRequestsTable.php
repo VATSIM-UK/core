@@ -51,6 +51,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                     )
                     ->form([
                         Grid::make(3)
+                            ->columnSpanFull()
                             ->schema([
                                 Placeholder::make('student_name')
                                     ->label('Student Name')
@@ -104,6 +105,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
 
                         Grid::make(2)
                             ->visible(fn (Get $get) => $get('availability_slot'))
+                            ->columnSpanFull()
                             ->schema([
                                 Select::make('start_hour')
                                     ->label('Start Hour')
@@ -161,6 +163,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
 
                         Grid::make(2)
                             ->visible(fn (Get $get) => $get('availability_slot') && $get('start_hour') !== null && $get('start_minute') !== null)
+                            ->columnSpanFull()
                             ->schema([
                                 Select::make('end_hour')
                                     ->label('End Hour')

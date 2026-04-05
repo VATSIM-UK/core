@@ -66,7 +66,7 @@ class FeedbackResource extends Resource
                     ->label('Submitted at')
                     ->content(fn ($record) => $record->created_at->format('d/m/Y H:i')),
 
-                Fieldset::make('Sent Information')
+                Fieldset::make('Sent Information')->columnSpanFull()
                     ->schema([
                         Placeholder::make('sent_at')
                             ->label('Sent At')
@@ -82,6 +82,7 @@ class FeedbackResource extends Resource
                     ])->hidden(fn ($record) => $record->sent_at === null),
 
                 Fieldset::make('Actioned Information')
+                    ->columnSpanFull()
                     ->schema([
                         Placeholder::make('actioned_at')
                             ->label('Actioned At')
@@ -97,6 +98,7 @@ class FeedbackResource extends Resource
                     ])->hidden(fn ($record) => $record->actioned_at === null),
 
                 Fieldset::make('Rejection Information')
+                    ->columnSpanFull()
                     ->schema([
                         Placeholder::make('rejected_by')
                             ->label('Rejected By')
@@ -108,6 +110,7 @@ class FeedbackResource extends Resource
                     ])->hidden(fn ($record) => ! $record->trashed()),
 
                 Section::make('Answers')
+                    ->columnSpanFull()
                     ->schema([
                         Repeater::make('Answers')
                             ->relationship('answers')

@@ -48,6 +48,7 @@ class AccountsRelationManager extends RelationManager
             ->components([
                 Fieldset::make('base_information')
                     ->label('Base Information')
+                    ->columnSpanFull()
                     ->schema([
                         TextEntry::make('id')
                             ->label('CID')
@@ -78,6 +79,7 @@ class AccountsRelationManager extends RelationManager
 
                 Fieldset::make('cts_theory_exam')
                     ->label('CTS Theory Exam')
+                    ->columnSpanFull()
                     ->schema(function (WaitingListAccount $record) {
                         return [
                             Toggle::make('cts_theory_exam')
@@ -90,6 +92,7 @@ class AccountsRelationManager extends RelationManager
 
                 Fieldset::make('manual_flags')
                     ->label('Manual Flags')
+                    ->columnSpanFull()
                     ->schema(function (WaitingListAccount $record) {
                         return $record->flags->filter(fn ($flag) => $flag->position_group_id == null)->map(function ($flag) {
                             return Toggle::make('flags.'.$flag->id)
@@ -130,6 +133,7 @@ class AccountsRelationManager extends RelationManager
                             ->get();
 
                         $feedbackEntries = $recentFeedback->map(fn (Feedback $feedback) => Section::make("Feedback - {$feedback->created_at->format('d/m/Y H:i')}")
+                            ->columnSpanFull()
                             ->schema([
                                 ...$feedback->answers->map(fn ($answer) => Placeholder::make("answer_{$answer->id}")
                                     ->label($answer->question?->question ?? 'Unknown Question')
@@ -143,6 +147,7 @@ class AccountsRelationManager extends RelationManager
                         return [
                             Section::make('Member Feedback')
                                 ->description('Displaying ATC feedback entries from the last 3 months only.')
+                                ->columnSpanFull()
                                 ->schema($feedbackEntries ?: [
                                     Placeholder::make('no_feedback')
                                         ->label('')
@@ -253,6 +258,7 @@ class AccountsRelationManager extends RelationManager
                         $offerFields = $offer ? [
                             Fieldset::make('training_place_offer')
                                 ->label('Active Training Place Offer')
+                                ->columnSpanFull()
                                 ->schema([
                                     Placeholder::make('offer_status')
                                         ->label('Status')
@@ -276,6 +282,7 @@ class AccountsRelationManager extends RelationManager
                         return [
                             Fieldset::make('base_information')
                                 ->label('Base Information')
+                                ->columnSpanFull()
                                 ->schema([
                                     TextEntry::make('id')
                                         ->label('CID')

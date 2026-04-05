@@ -35,7 +35,7 @@ class EndorsementRequestResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('Request details')->columns(2)->schema([
+                Section::make('Request details')->columns(2)->columnSpanFull()->schema([
                     TextInput::make('account_id')->label('CID')->required(),
 
                     Select::make('endorsable_type')->options([
@@ -47,25 +47,25 @@ class EndorsementRequestResource extends Resource
                     Hidden::make('requested_by')->default(auth()->id()),
                 ]),
 
-                Section::make('Tier 1 Endorsement')->schema([
+                Section::make('Tier 1 Endorsement')->columnSpanFull()->schema([
                     Select::make('endorsable_id')->label('Tier 1 / 2 Name')->options(function () {
                         return PositionGroup::orderBy('name')->pluck('name', 'id');
                     })->required()->searchable(),
                 ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\PositionGroup'),
 
-                Section::make('Solo Endorsement')->schema([
+                Section::make('Solo Endorsement')->columnSpanFull()->schema([
                     Select::make('endorsable_id')->label('Endorsement Name')->options(function () {
                         return Position::temporarilyEndorsable()->orderBy('callsign')->pluck('callsign', 'id');
                     })->required()->searchable(),
                 ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Atc\Position'),
 
-                Section::make('Rating Endorsement')->schema([
+                Section::make('Rating Endorsement')->columnSpanFull()->schema([
                     Select::make('endorsable_id')->label('Rating')->options(function () {
                         return Qualification::ofType('atc')->orderBy('vatsim')->pluck('code', 'id');
                     })->required()->searchable(),
                 ])->visible(fn (Get $get): bool => $get('endorsable_type') === 'App\Models\Mship\Qualification'),
 
-                Section::make('Additional details')->schema([
+                Section::make('Additional details')->columnSpanFull()->schema([
                     Textarea::make('notes'),
                 ]),
             ]);

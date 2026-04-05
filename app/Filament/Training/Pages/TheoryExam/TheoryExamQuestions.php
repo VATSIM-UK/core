@@ -169,6 +169,7 @@ class TheoryExamQuestions extends Page implements HasTable
             Section::make('Additional Information')
                 ->collapsed()
                 ->columns(2)
+                ->columnSpanFull()
                 ->schema([
                     TextInput::make('added_by')->disabled(),
                     TextInput::make('added_date')->disabled(),

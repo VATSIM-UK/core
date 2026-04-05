@@ -27,7 +27,7 @@ class ViewBan extends BaseViewRecordPage
                 ->visible(auth()->user()->can('update', $this->record))
                 ->schema([
                     DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->required()->notIn($this->record->period_finish ?? ''),
-                    Grid::make(2)->schema([
+                    Grid::make(2)->columnSpanFull()->schema([
                         Textarea::make('extra_info')
                             ->required()
                             ->label('Reason')

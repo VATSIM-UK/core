@@ -29,13 +29,14 @@ class RosterUpdateResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('Details')->schema([
+                Section::make('Details')->columnSpanFull()->schema([
                     DatePicker::make('created_at')->label('Ran'),
                     DatePicker::make('period_start'),
                     DatePicker::make('period_end'),
                 ]),
                 Section::make('Data')
                     ->statePath('data')
+                    ->columnSpanFull()
                     ->schema([
                         TextInput::make('meetHourRequirement')->label('Controllers meeting requirement'),
                         TextInput::make('ganderControllers')->label('Eligible Gander/Oceanic controllers'),

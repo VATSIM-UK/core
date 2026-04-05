@@ -71,14 +71,14 @@ class ViewExamReport extends Page implements HasInfolists
     public function infolist(Schema $schema): Schema
     {
         return $schema->record($this->practicalResult)->components([
-            Section::make('')->schema([
-                Section::make('Student')->schema([
+            Section::make('')->columnSpanFull()->schema([
+                Section::make('Student')->columnSpanFull()->schema([
                     TextEntry::make('student.account.name')->label('Name'),
                     TextEntry::make('student.account.id')->label('CID'),
                     TextEntry::make('examBooking.studentQualification.name')->label('Qualification'),
                 ])->columns(2)->columnSpan(1)->extraAttributes(['class' => 'h-full']),
 
-                Section::make('Exam')->schema([
+                Section::make('Exam')->columnSpanFull()->schema([
                     TextEntry::make('examBooking.exam')->label('Exam'),
                     TextEntry::make('examBooking.position_1')->label('Position'),
                     TextEntry::make('examBooking.start_date')->label('Date'),
@@ -89,6 +89,7 @@ class ViewExamReport extends Page implements HasInfolists
             ])->columns(2)->extraAttributes(['class' => 'items-stretch']),
 
             Section::make('Exam Result')
+                ->columnSpanFull()
                 ->headerActions([
                     Action::make('override_result')
                         ->icon('heroicon-m-pencil-square')
@@ -97,7 +98,7 @@ class ViewExamReport extends Page implements HasInfolists
                         ->modalSubmitActionLabel('Override')
                         ->visible(fn () => auth()->user()->can('training.exams.override-result'))
                         ->schema([
-                            Section::make('Exam Result')->columns(2)->schema([
+                            Section::make('Exam Result')->columns(2)->columnSpanFull()->schema([
                                 Select::make('previous_exam_result')
                                     ->label('Previous Result')
                                     ->default($this->practicalResult->result)
@@ -128,6 +129,7 @@ class ViewExamReport extends Page implements HasInfolists
                             ]),
 
                             Section::make('Exam Criteria')
+                                ->columnSpanFull()
                                 ->visible(fn ($get) => ! $this->practicalResult->examBooking->isPilotExam()
                                     && $get('exam_result') !== $this->practicalResult->result
                                 )
@@ -138,6 +140,7 @@ class ViewExamReport extends Page implements HasInfolists
                                     return $criteria->map(function (ExamCriteria $criteria) use ($existingAssessments) {
                                         return Fieldset::make("criteria_updates.{$criteria->id}")
                                             ->label($criteria->criteria)
+                                            ->columnSpanFull()
                                             ->schema([
                                                 Select::make("criteria_updates.previous_{$criteria->id}.grade")
                                                     ->label('Previous Grade')

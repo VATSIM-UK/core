@@ -49,7 +49,7 @@ class BanResource extends Resource
             AccountSelect::make('account')->label('Subject')->disabled(),
             AccountSelect::make('banner')->label('Banned By')->disabled(),
 
-            Fieldset::make('Reason')->schema([
+            Fieldset::make('Reason')->columnSpanFull()->schema([
                 Select::make('reason_id')
                     ->label('Category')
                     ->required()
@@ -62,7 +62,7 @@ class BanResource extends Resource
                 Textarea::make('reason_extra'),
             ]),
 
-            Fieldset::make('Timings')->schema([
+            Fieldset::make('Timings')->columnSpanFull()->schema([
                 DateTimePicker::make('period_start')->required()->disabled(),
                 DateTimePicker::make('period_finish')->disabled(),
                 DateTimePicker::make('repealed_at')->visible(fn ($record) => $record->repealed_at),

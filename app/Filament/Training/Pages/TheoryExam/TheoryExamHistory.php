@@ -61,6 +61,7 @@ class TheoryExamHistory extends Page implements HasTable
             $isCorrect = $answer->answer_given == ($question->answer ?? null);
 
             return Fieldset::make("Question {$number}")
+                ->columnSpanFull()
                 ->schema([
                     TextEntry::make("question_{$number}_text")
                         ->label('Question')
@@ -114,6 +115,7 @@ class TheoryExamHistory extends Page implements HasTable
                     ->modalHeading(fn ($record) => (($record->student?->account?->name) ?? 'Unknown')."'s {$record->exam} Theory Exam")
                     ->schema([
                         Fieldset::make('Exam Information')
+                            ->columnSpanFull()
                             ->schema([
                                 TextEntry::make('cid')->label('CID')->getStateUsing(fn ($record) => $record->student_id),
 
@@ -128,6 +130,7 @@ class TheoryExamHistory extends Page implements HasTable
                             ]),
 
                         Fieldset::make('Details')
+                            ->columnSpanFull()
                             ->schema([
                                 TextEntry::make('started')->label('Started')->getStateUsing(fn ($record) => Carbon::parse($record->started)->isoFormat('lll')),
                                 TextEntry::make('submitted_time')->label('Submitted Time')->getStateUsing(fn ($record) => $record->submitted_time ? Carbon::parse($record->submitted_time)->isoFormat('lll') : 'N/A'), // Some exams will not be submitted if they run out of time etc
@@ -135,7 +138,7 @@ class TheoryExamHistory extends Page implements HasTable
                                 TextEntry::make('time_mins')->label('Time Limit')->getStateUsing(fn ($record) => "{$record->time_mins} Mins"),
                             ]),
 
-                        Section::make('Questions')->collapsible()->collapsed()->schema(fn ($record) => $this->buildQuestionPlaceholders($record)),
+                        Section::make('Questions')->collapsible()->collapsed()->columnSpanFull()->schema(fn ($record) => $this->buildQuestionPlaceholders($record)),
                     ]),
             ])
             ->filters([

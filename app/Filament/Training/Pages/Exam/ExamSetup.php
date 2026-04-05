@@ -102,6 +102,7 @@ class ExamSetup extends Page implements HasForms
         return $schema
             ->components([
                 Section::make('Exam Setup - OBS PT3')
+                    ->columnSpanFull()
                     ->schema([
                         Select::make('position_obs')
                             ->label('Position')
@@ -161,6 +162,7 @@ class ExamSetup extends Page implements HasForms
         return $schema
             ->components([
                 Section::make('Exam Setup - TWR to CTR')
+                    ->columnSpanFull()
                     ->schema([
                         Select::make('position')
                             ->options(Position::where('callsign', 'NOT LIKE', '%ATIS%')->orderBy('callsign')->pluck('callsign', 'id'))
@@ -226,6 +228,7 @@ class ExamSetup extends Page implements HasForms
         return $schema
             ->components([
                 Section::make('Exam Setup - Pilot')
+                    ->columnSpanFull()
                     ->schema([
                         Select::make('exam_type')
                             ->label('Exam')

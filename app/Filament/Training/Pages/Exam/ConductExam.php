@@ -146,7 +146,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
         return $schema
             ->record($this->examBooking)
             ->components([
-                Section::make('Exam Details')->schema([
+                Section::make('Exam Details')->columnSpanFull()->schema([
                     TextEntry::make('Student')->getStateUsing(fn () => "{$this->examBooking->studentAccount()->name} ({$this->examBooking->studentAccount()->id})"),
                     TextEntry::make('Student Rating')->getStateUsing(fn () => $this->examBooking->studentQualification->name),
                     TextEntry::make('position_1')->label('Position'),
@@ -155,7 +155,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     TextEntry::make('Exam Accepted At')->getStateUsing(fn () => $this->examBooking->time_taken),
                 ])
                     ->columns(3),
-                Section::make('Examiner Details')->schema([
+                Section::make('Examiner Details')->columnSpanFull()->schema([
                     TextEntry::make('Primary Examiner')
                         ->getStateUsing($examinerFormat($this->examBooking->examiners->primaryExaminer)),
                     TextEntry::make('Secondary Examiner')
@@ -175,6 +175,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
             function (ExamCriteria $criteria) {
                 return Fieldset::make("form.{$criteria->id}")
                     ->label($criteria->criteria)
+                    ->columnSpanFull()
                     ->schema([
                         RichEditor::make("form.{$criteria->id}.comments")
                             ->label('Comments')
@@ -206,6 +207,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
     {
         $completionComponents = Fieldset::make('completion')
             ->label('Exam Result')
+            ->columnSpanFull()
             ->schema([
                 RichEditor::make('additional_comments')
                     ->label('Additional Comments')

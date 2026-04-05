@@ -39,7 +39,7 @@ class GenerateQuarterlyStats extends BasePage
         $yearOptions = range(now()->year, 2016, -1);
 
         return [
-            Grid::make()->schema([
+            Grid::make()->columnSpanFull()->schema([
                 Select::make('quarter')
                     ->required()
                     ->inOptions()

@@ -77,8 +77,8 @@ class AccountResource extends Resource implements DefinesGatedAttributes
     {
         return $schema
             ->components([
-                Fieldset::make('Basic Details')->schema([
-                    Grid::make(3)->schema([
+                Fieldset::make('Basic Details')->columnSpanFull()->schema([
+                    Grid::make(3)->columnSpanFull()->schema([
                         Placeholder::make('central_account_name')
                             ->content(fn ($record) => $record->name_first.' '.$record->name_last)
                             ->visibleOn('view'),
@@ -96,7 +96,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                     Placeholder::make('roster_status')->label('Roster Status')->content(fn ($record) => Roster::where('account_id', $record->id)->exists() ? 'Active' : 'Inactive'),
                     Placeholder::make('last_seen_controlling_uk')->label('Last UK Controlling Session')->content(fn ($record) => $record->lastSeenControllingUK()?->format('d M Y, H:i') ?? 'Never Controlled'),
 
-                    Fieldset::make('Emails')->schema([
+                    Fieldset::make('Emails')->columnSpanFull()->schema([
                         TextInput::make('email')
                             ->label('Primary Email')
                             ->disabled()
@@ -107,8 +107,8 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                             ->schema([TextInput::make('email')])->disabled(),
                     ])->visible(fn ($record, $context) => auth()->user()->can('viewSensitive', $record) && $context === 'view'),
 
-                    Fieldset::make('State')->schema([
-                        Grid::make(3)->schema([
+                    Fieldset::make('State')->columnSpanFull()->schema([
+                        Grid::make(3)->columnSpanFull()->schema([
                             Placeholder::make('vatsim_region')
                                 ->label('VATSIM Region')
                                 ->content(fn ($record) => $record->primary_permanent_state?->pivot?->region),
@@ -121,9 +121,10 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                         ]),
                     ])->visibleOn('view'),
 
-                    Fieldset::make('Qualifications')->schema(function ($record) {
+                    Fieldset::make('Qualifications')->columnSpanFull()->schema(function ($record) {
                         return [
                             Grid::make(3)
+                                ->columnSpanFull()
                                 ->schema(static::makeQualificationSummaryPlaceholders($record))
                                 ->visibleOn('view'),
                         ];

@@ -46,7 +46,7 @@ class BansRelationManager extends RelationManager
                 ->options(Reason::all()->mapWithKeys(function (Reason $model) {
                     return [$model->getKey() => str($model)];
                 })),
-            Grid::make(2)->schema([
+            Grid::make(2)->columnSpanFull()->schema([
                 Textarea::make('extra_info')
                     ->required()
                     ->helperText('This is sent to the member')

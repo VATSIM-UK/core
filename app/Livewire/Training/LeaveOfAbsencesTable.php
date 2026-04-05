@@ -74,7 +74,7 @@ class LeaveOfAbsencesTable extends Component implements HasForms, HasTable
                     ->createAnother(false)
                     ->visible(fn () => auth()->user()->can('training-places.loas.create.*'))
                     ->form([
-                        Grid::make(2)->schema([
+                        Grid::make(2)->columnSpanFull()->schema([
                             DatePicker::make('begins_at')
                                 ->label('Start Date')
                                 ->required()

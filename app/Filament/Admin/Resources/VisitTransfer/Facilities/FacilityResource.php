@@ -51,8 +51,8 @@ class FacilityResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('Facility Details')->schema([
-                    Grid::make(2)->schema([
+                Section::make('Facility Details')->columnSpanFull()->schema([
+                    Grid::make(2)->columnSpanFull()->schema([
                         TextInput::make('name')
                             ->label('Facility Name')
                             ->required()
@@ -89,8 +89,8 @@ class FacilityResource extends Resource
                         ->maxLength(1000)
                         ->minLength(25),
                 ]),
-                Section::make('Application Settings')->schema([
-                    Grid::make(2)->schema([
+                Section::make('Application Settings')->columnSpanFull()->schema([
+                    Grid::make(2)->columnSpanFull()->schema([
                         Toggle::make('open')
                             ->label('Open for Applications')
                             ->required(),
@@ -136,7 +136,7 @@ class FacilityResource extends Resource
                             ->helperText('Automatically accept all applicants.')
                             ->required(),
 
-                        Grid::make(2)->reactive()->visible(fn ($get) => $get('training_team') === 'atc')->schema([
+                        Grid::make(2)->reactive()->visible(fn ($get) => $get('training_team') === 'atc')->columnSpanFull()->schema([
                             Select::make('minimum_atc_qualification_id')
                                 ->label('Minimum ATC Qualification')
                                 ->options(
@@ -181,7 +181,7 @@ class FacilityResource extends Resource
                                 ]),
                         ]),
 
-                        Grid::make(2)->reactive()->visible(fn ($get) => $get('training_team') === 'pilot')->schema([
+                        Grid::make(2)->reactive()->visible(fn ($get) => $get('training_team') === 'pilot')->columnSpanFull()->schema([
                             Select::make('minimum_pilot_qualification_id')
                                 ->label('Minimum Pilot Qualification')
                                 ->options(
@@ -238,8 +238,9 @@ class FacilityResource extends Resource
 
                 Section::make('Manage Specific Checks')
                     ->description('Control which checks run for future applications to this facility.')
+                    ->columnSpanFull()
                     ->schema([
-                        Grid::make(2)->schema([
+                        Grid::make(2)->columnSpanFull()->schema([
                             Toggle::make('enable_90_day_check')
                                 ->label('Enable 90-Day Check')
                                 ->default(true),
@@ -251,6 +252,7 @@ class FacilityResource extends Resource
 
                 Section::make('Notification Emails')
                     ->description(fn ($record) => "These email addresses will be sent an email once an application to this facility is succesful. If no email addresses are entered, this will default to {$record?->training_team}-team@vatsim.uk")
+                    ->columnSpanFull()
                     ->schema([
                         Repeater::make('acceptance_emails')
                             ->label('Notification Emails')
