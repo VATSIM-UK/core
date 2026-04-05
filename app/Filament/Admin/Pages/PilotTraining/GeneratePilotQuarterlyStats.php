@@ -8,11 +8,12 @@ use App\Services\Admin\PilotTrainingStats;
 use Carbon\Carbon;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Components\Grid;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class GeneratePilotQuarterlyStats extends BasePage
+class GeneratePilotQuarterlyStats extends BasePage implements HasForms
 {
     use InteractsWithForms;
 

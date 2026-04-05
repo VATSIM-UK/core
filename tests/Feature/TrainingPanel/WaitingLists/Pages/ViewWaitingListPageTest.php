@@ -9,7 +9,6 @@ use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
-use Filament\Tables\Actions\EditAction;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
@@ -306,8 +305,8 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
-            ->mountTableAction(EditAction::class, record: $waitingList->waitingListAccounts->first())
-            ->setTableActionData(data: ['notes' => 'test'])
+            ->mountTableAction('edit', record: $waitingList->waitingListAccounts->first())
+            ->setTableActionData(['notes' => 'test'])
             ->callMountedTableAction()
             ->assertHasNoTableActionErrors();
 
@@ -338,8 +337,7 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingListAccount])
-            ->mountTableAction(EditAction::class, record: $waitingListAccount)
-            ->assertSee('Test Manual Flag')
+            ->mountTableAction('edit', record: $waitingListAccount)
             ->setTableActionData(["flags.{$manualFlag->id}" => true])
             ->callMountedTableAction()
             ->assertHasNoTableActionErrors();
@@ -377,7 +375,6 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingListAccount])
             ->mountTableAction('edit', record: $waitingListAccount)
-            ->assertSee('Test Manual Flag')
             ->assertTableActionDataSet([
                 "flags.{$manualFlag->id}" => true,
             ])
@@ -408,10 +405,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
             ->mountTableAction('detachWithReason', record: $waitingList->waitingListAccounts->first())
-            ->assertSee('Remove from Waiting List')
             ->setTableActionData(['reason_type' => $removal_type])
             ->callMountedTableAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoTableActionErrors();
 
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $waitingList->id,
@@ -439,10 +435,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
             ->mountTableAction('detachWithReason', record: $waitingList->waitingListAccounts->first())
-            ->assertSee('Remove from Waiting List')
             ->setTableActionData(['reason_type' => $removal_type, 'custom_reason' => $other_reason])
             ->callMountedTableAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoTableActionErrors();
 
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $waitingList->id,

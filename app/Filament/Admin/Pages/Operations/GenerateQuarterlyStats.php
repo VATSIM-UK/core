@@ -7,11 +7,15 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
 use Carbon\Carbon;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Components\Grid;
 use Illuminate\Support\Facades\DB;
 
-class GenerateQuarterlyStats extends BasePage
+class GenerateQuarterlyStats extends BasePage implements HasForms
 {
+    use InteractsWithForms;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Operations';

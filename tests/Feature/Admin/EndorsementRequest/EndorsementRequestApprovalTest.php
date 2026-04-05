@@ -174,9 +174,10 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
-            ->assertTableActionVisible('approve', $endorsementRequest->id)
-            ->callTableAction('approve', $endorsementRequest->id)
-            ->assertTableActionVisible('approve', $endorsementRequest->id);
+            ->assertTableActionVisible('approve', record: $endorsementRequest)
+            ->mountTableAction('approve', record: $endorsementRequest)
+            ->callMountedTableAction()
+            ->assertHasTableActionErrors(['days']);
 
         $this->assertDatabaseHas('endorsement_requests', [
             'id' => $endorsementRequest->id,

@@ -64,7 +64,7 @@ class TheoryExamQuestions extends Page implements HasTable
                     ->label($level)
                     ->url(fn () => static::getUrl(['level' => $level]))
                     ->color($this->level === $level ? 'primary' : 'gray');
-            })->toArray();
+            })->all();
 
         $createButton = CreateAction::make('create')
             ->label('Create Question')

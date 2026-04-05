@@ -2,10 +2,10 @@
 
 namespace App\Filament\Admin\Resources\Roles\RelationManagers;
 
-use App\Filament\Admin\Forms\Components\AccountSelect;
 use App\Models\Mship\Account;
 use App\Services\Roles\DelegateRoleManagementService;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
@@ -48,10 +48,11 @@ class DelegatesRelationManager extends RelationManager
                     ->icon('heroicon-o-user-plus')
                     ->color('success')
                     ->schema([
-                        AccountSelect::make('users')
+                        Select::make('users_id')
                             ->label('Member')
                             ->searchable()
                             ->getSearchResultsUsing(fn (string $search) => $service->getPotentialDelegates($search))
+                            ->getOptionLabelUsing(fn ($value): ?string => Account::find($value)?->name)
                             ->required(),
                     ])
                     ->modalHeading(fn () => "Delegate '{$this->getOwnerRecord()->name}'")

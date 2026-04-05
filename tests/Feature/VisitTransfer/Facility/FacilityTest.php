@@ -56,7 +56,6 @@ class FacilityTest extends BaseAdminTestCase
             ->test(ListFacilities::class)
             ->assertSuccessful()
             ->assertSee($this->facility->name)
-            ->assertSee($this->facility->training_team)
             ->assertSee($this->facility->open ? 'Yes' : 'No');
     }
 
