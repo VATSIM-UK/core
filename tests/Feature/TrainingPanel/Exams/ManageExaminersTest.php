@@ -174,4 +174,153 @@ class ManageExaminersTest extends BaseTrainingPanelTestCase
 
         $this->assertFalse($examiner->fresh()->hasRole($obsRole));
     }
+
+    #[Test]
+    public function it_loads_when_user_has_view_pilot_permission(): void
+    {
+        $this->panelUser->givePermissionTo('training.examiners.view.pilot');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageExaminers::class)
+            ->assertSuccessful();
+    }
+
+    #[Test]
+    public function it_defaults_to_pilot_role_when_user_lacks_atc_view_permission(): void
+    {
+        $this->panelUser->givePermissionTo('training.examiners.view.pilot');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageExaminers::class)
+            ->assertSet('role', 'pilot');
+    }
+
+    #[Test]
+    public function it_lists_pilot_examiners_when_pilot_role_is_selected(): void
+    {
+        $this->panelUser->givePermissionTo('training.examiners.view.pilot');
+
+        $pilotExaminer = Account::factory()->create();
+        $pilotExaminer->assignRole(Role::findByName('Pilot Examiner', 'web'));
+
+        $atcExaminer = Account::factory()->create();
+        $atcExaminer->assignRole(Role::findByName('ATC Examiner (OBS)', 'web'));
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageExaminers::class, ['role' => 'pilot'])
+            ->assertSet('role', 'pilot')
+            ->assertSee($pilotExaminer->name)
+            ->assertDontSee($atcExaminer->name);
+    }
+
+    #[Test]
+    public function it_hides_manage_actions_for_pilot_role_when_user_lacks_manage_pilot_permission(): void
+    {
+        $this->panelUser->givePermissionTo([
+            'training.examiners.view.atc',
+            'training.examiners.view.pilot',
+        ]);
+
+        $pilotExaminer = Account::factory()->create();
+        $pilotExaminer->assignRole(Role::findByName('Pilot Examiner', 'web'));
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageExaminers::class, ['role' => 'pilot'])
+            ->assertTableActionHidden('addMember')
+            ->assertTableActionHidden('remove', $pilotExaminer);
+    }
+
+    #[Test]
+    public function it_shows_manage_actions_for_pilot_role_when_user_has_manage_pilot_permission(): void
+    {
+        $this->panelUser->givePermissionTo([
+            'training.examiners.view.pilot',
+            'training.examiners.manage.pilot',
+        ]);
+
+        $pilotExaminer = Account::factory()->create();
+        $pilotExaminer->assignRole(Role::findByName('Pilot Examiner', 'web'));
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageExaminers::class, ['role' => 'pilot'])
+            ->assertTableActionVisible('addMember')
+            ->assertTableActionVisible('remove', $pilotExaminer);
+    }
+
+    #[Test]
+    public function it_can_assign_pilot_examiner_role_to_an_account(): void
+    {
+        $this->panelUser->givePermissionTo([
+            'training.examiners.view.pilot',
+            'training.examiners.manage.pilot',
+        ]);
+
+        $target = Account::factory()->create();
+        $pilotRole = Role::findByName('Pilot Examiner', 'web');
+
+        $this->assertFalse($target->hasRole($pilotRole));
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageExaminers::class, ['role' => 'pilot'])
+            ->callTableAction('addMember', data: ['account_id' => $target->id])
+            ->assertHasNoTableActionErrors();
+
+        $this->assertTrue($target->fresh()->hasRole($pilotRole));
+    }
+
+    #[Test]
+    public function it_can_remove_pilot_examiner_role_from_an_account(): void
+    {
+        $this->panelUser->givePermissionTo([
+            'training.examiners.view.pilot',
+            'training.examiners.manage.pilot',
+        ]);
+
+        $pilotExaminer = Account::factory()->create();
+        $pilotRole = Role::findByName('Pilot Examiner', 'web');
+        $pilotExaminer->assignRole($pilotRole);
+
+        $this->assertTrue($pilotExaminer->hasRole($pilotRole));
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageExaminers::class, ['role' => 'pilot'])
+            ->callTableAction('remove', $pilotExaminer)
+            ->assertHasNoTableActionErrors();
+
+        $this->assertFalse($pilotExaminer->fresh()->hasRole($pilotRole));
+    }
+
+    #[Test]
+    public function atc_manage_permission_does_not_grant_manage_access_to_pilot_role(): void
+    {
+        $this->panelUser->givePermissionTo([
+            'training.examiners.view.pilot',
+            'training.examiners.manage.atc',
+        ]);
+
+        $pilotExaminer = Account::factory()->create();
+        $pilotExaminer->assignRole(Role::findByName('Pilot Examiner', 'web'));
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageExaminers::class, ['role' => 'pilot'])
+            ->assertTableActionHidden('addMember')
+            ->assertTableActionHidden('remove', $pilotExaminer);
+    }
+
+    #[Test]
+    public function pilot_manage_permission_does_not_grant_manage_access_to_atc_roles(): void
+    {
+        $this->panelUser->givePermissionTo([
+            'training.examiners.view.atc',
+            'training.examiners.manage.pilot',
+        ]);
+
+        $atcExaminer = Account::factory()->create();
+        $atcExaminer->assignRole(Role::findByName('ATC Examiner (OBS)', 'web'));
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageExaminers::class)
+            ->assertTableActionHidden('addMember')
+            ->assertTableActionHidden('remove', $atcExaminer);
+    }
 }
