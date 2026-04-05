@@ -8,10 +8,10 @@ use App\Filament\Admin\Resources\Feedback\Widgets\FeedbackOverview;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form as FeedbackForm;
 use App\Models\Mship\Qualification;
-use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
@@ -117,12 +117,11 @@ class FeedbackResource extends Resource
                                     ->label('Question')
                                     ->content(fn ($record) => $record->question?->question),
 
-                                CopyablePlaceholder::make('response')
+                                TextEntry::make('response')
                                     ->label('Answer')
-                                    // FIXME: Tailwind classes defined in filament php files aren't being added to stylesheet.
                                     ->extraAttributes(['style' => 'white-space: pre-line;'])
-                                    ->content(fn ($record) => $record->response)
-                                    ->iconOnly(),
+                                    ->state(fn ($record) => $record->response)
+                                    ->copyable(),
                             ]),
                     ]),
             ]);

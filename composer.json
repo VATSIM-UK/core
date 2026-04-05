@@ -60,7 +60,6 @@
     ],
     "require": {
         "php": "^8.3.0",
-        "axonc/filament-copyable-placeholder": "^0.4.0",
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^3.0",
         "bugsnag/bugsnag-laravel": "^2.0",

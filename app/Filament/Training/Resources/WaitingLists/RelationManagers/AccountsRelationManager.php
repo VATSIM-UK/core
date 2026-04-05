@@ -11,7 +11,6 @@ use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Services\Training\TrainingPlaceOfferService;
 use App\Services\Training\TrainingPlaceService;
-use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DetachAction;
@@ -21,6 +20,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Fieldset;
@@ -49,15 +49,15 @@ class AccountsRelationManager extends RelationManager
                 Fieldset::make('base_information')
                     ->label('Base Information')
                     ->schema([
-                        CopyablePlaceholder::make('id')
+                        TextEntry::make('id')
                             ->label('CID')
-                            ->content(fn (WaitingListAccount $record) => $record->account_id)
-                            ->iconOnly(),
+                            ->state(fn (WaitingListAccount $record) => (string) $record->account_id)
+                            ->copyable(),
 
-                        CopyablePlaceholder::make('name')
+                        TextEntry::make('name')
                             ->label('Name')
-                            ->content(fn (WaitingListAccount $record) => $record->account->name)
-                            ->iconOnly(),
+                            ->state(fn (WaitingListAccount $record) => $record->account->name)
+                            ->copyable(),
 
                         Placeholder::make('position')
                             ->label('Position')
@@ -277,15 +277,15 @@ class AccountsRelationManager extends RelationManager
                             Fieldset::make('base_information')
                                 ->label('Base Information')
                                 ->schema([
-                                    CopyablePlaceholder::make('id')
+                                    TextEntry::make('id')
                                         ->label('CID')
-                                        ->content(fn (WaitingListAccount $record) => $record->account_id)
-                                        ->iconOnly(),
+                                        ->state(fn (WaitingListAccount $record) => (string) $record->account_id)
+                                        ->copyable(),
 
-                                    CopyablePlaceholder::make('name')
+                                    TextEntry::make('name')
                                         ->label('Name')
-                                        ->content(fn (WaitingListAccount $record) => $record->account->name)
-                                        ->iconOnly(),
+                                        ->state(fn (WaitingListAccount $record) => $record->account->name)
+                                        ->copyable(),
 
                                     Placeholder::make('position')
                                         ->label('Position')

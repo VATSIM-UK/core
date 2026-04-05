@@ -4,77 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f2bed2c762685ff35b0faef3e2c4ba76",
+    "content-hash": "4be16e1663c185723f8dddccbfd8b5d4",
     "packages": [
-        {
-            "name": "axonc/filament-copyable-placeholder",
-            "version": "v0.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/AxonC/filament-copyable-placeholder.git",
-                "reference": "2e78ff23100e73df31850a4ad5a4ba1505191b77"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/AxonC/filament-copyable-placeholder/zipball/2e78ff23100e73df31850a4ad5a4ba1505191b77",
-                "reference": "2e78ff23100e73df31850a4ad5a4ba1505191b77",
-                "shasum": ""
-            },
-            "require": {
-                "filament/filament": "^4.0",
-                "php": "^8.2",
-                "spatie/laravel-package-tools": "^1.14.0"
-            },
-            "require-dev": {
-                "larastan/larastan": "^3.0",
-                "laravel/pint": "^1.0",
-                "nunomaduro/collision": "^8.0",
-                "orchestra/testbench": "^9.0",
-                "pestphp/pest": "^3.0",
-                "pestphp/pest-plugin-arch": "^3.0",
-                "pestphp/pest-plugin-laravel": "^3.0",
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan-deprecation-rules": "^2.0",
-                "phpstan/phpstan-phpunit": "^2.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "AxonC\\FilamentCopyablePlaceholder\\FilamentCopyablePlaceholderServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "AxonC\\FilamentCopyablePlaceholder\\": "src/",
-                    "AxonC\\FilamentCopyablePlaceholder\\Database\\Factories\\": "database/factories/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Callum Axon",
-                    "email": "git@callumaxon.uk",
-                    "role": "Developer"
-                }
-            ],
-            "description": "This is my package filament-copyable-placeholder",
-            "homepage": "https://github.com/axonc/filament-copyable-placeholder",
-            "keywords": [
-                "AxonC",
-                "filament-copyable-placeholder",
-                "laravel"
-            ],
-            "support": {
-                "issues": "https://github.com/AxonC/filament-copyable-placeholder/issues",
-                "source": "https://github.com/AxonC/filament-copyable-placeholder/tree/v0.4.0"
-            },
-            "time": "2026-04-05T08:14:49+00:00"
-        },
         {
             "name": "barryvdh/laravel-debugbar",
             "version": "v3.16.5",

@@ -4,7 +4,6 @@ namespace App\Filament\Admin\Resources\Accounts;
 
 use App\Enums\QualificationTypeEnum;
 use App\Filament\Admin\Helpers\Resources\DefinesGatedAttributes;
-use App\Filament\Admin\Resources\Accounts\AccountResource;
 use App\Filament\Admin\Resources\Accounts\Pages\EditAccount;
 use App\Filament\Admin\Resources\Accounts\Pages\ListAccounts;
 use App\Filament\Admin\Resources\Accounts\Pages\ViewAccount;
@@ -20,14 +19,13 @@ use App\Filament\Admin\Resources\Accounts\RelationManagers\VisitTransferRelation
 use App\Filament\Training\Resources\AccountResource\RelationManagers\WaitingListsRelationManager;
 use App\Models\Mship\Account;
 use App\Models\Roster;
-use AxonC\FilamentCopyablePlaceholder\Forms\Components\CopyablePlaceholder;
 use Carbon\CarbonInterface;
-use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
@@ -86,14 +84,11 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                             ->visibleOn('view'),
                         TextInput::make('nickname')
                             ->label('Preferred Name'),
-                        CopyablePlaceholder::make('id')
+                        TextEntry::make('id')
                             ->label('CID')
-                            ->iconOnly()
-                            ->content(fn ($record) => $record->id)
+                            ->state(fn (Account $record) => (string) $record->id)
                             ->visibleOn('view')
-                            ->extraAttributes([
-                                'class' => 'flex items-center space-x-2',
-                            ]),
+                            ->copyable(),
                     ]),
 
                     Placeholder::make('has_secondary_password')->content(fn ($record) => $record->hasPassword() ? 'Yes' : 'No'),
@@ -105,13 +100,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                         TextInput::make('email')
                             ->label('Primary Email')
                             ->disabled()
-                            ->suffixAction(
-                                Action::make('copy')
-                                    ->icon('heroicon-m-clipboard')
-                                    ->tooltip('Copy')
-                                    ->action(fn ($record, $livewire) => $livewire->js('navigator.clipboard.writeText("'.$record->email.'")')
-                                    )
-                            ),
+                            ->copyable(),
 
                         Repeater::make('secondaryEmails')
                             ->relationship()
