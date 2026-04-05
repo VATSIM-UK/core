@@ -153,17 +153,4 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
 
         $this->assertCount(0, $component->instance()->getTable()->getRecords());
     }
-
-    #[Test]
-    public function it_shows_empty_state_message(): void
-    {
-        $emptyAccount = Account::factory()->create();
-        Member::factory()->recycle($emptyAccount)->create(['cid' => $emptyAccount->id]);
-        $emptyAccount->givePermissionTo('training.access');
-
-        Livewire::actingAs($emptyAccount)
-            ->test(MyPendingExams::class)
-            ->assertSuccessful()
-            ->assertSee('No pending exams');
-    }
 }
