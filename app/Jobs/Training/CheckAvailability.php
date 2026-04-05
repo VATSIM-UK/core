@@ -41,6 +41,10 @@ class CheckAvailability implements ShouldQueue
             return;
         }
 
+        if ($this->trainingPlace->isWithinAvailabilityCheckGracePeriod()) {
+            return;
+        }
+
         $account = $this->trainingPlace->waitingListAccount->account;
         $memberId = $account->member->id;
 

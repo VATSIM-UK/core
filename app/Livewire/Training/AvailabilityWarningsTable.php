@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Training;
 
+use App\Livewire\Training\Support\TrainingPlaceAvailabilityGraceNotice;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\AvailabilityWarnings;
@@ -34,6 +35,10 @@ class AvailabilityWarningsTable extends Component implements HasForms, HasTable
     {
         return $table
             ->heading('Availability warnings')
+            ->description(fn (): ?string => TrainingPlaceAvailabilityGraceNotice::message(
+                $this->trainingPlace,
+                onlyForActivePlace: true
+            ))
             ->queryStringIdentifier('availability-warnings')
             ->query(
                 AvailabilityWarning::query()

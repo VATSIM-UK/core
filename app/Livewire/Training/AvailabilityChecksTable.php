@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Training;
 
 use App\Enums\AvailabilityCheckStatus;
+use App\Livewire\Training\Support\TrainingPlaceAvailabilityGraceNotice;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -49,7 +50,8 @@ class AvailabilityChecksTable extends Component implements HasForms, HasTable
                         AvailabilityCheckStatus::OnLeave => 'info',
                     }),
             ])
-            ->emptyStateHeading('No availability checks');
+            ->emptyStateHeading('No availability checks')
+            ->emptyStateDescription(fn (): ?string => TrainingPlaceAvailabilityGraceNotice::message($this->trainingPlace));
     }
 
     public function render()
