@@ -44,12 +44,12 @@ jobs:
       - name: Discord Notification (Start)
         uses: rjstone/discord-webhook-notify@v2
         with:
-            severity: warn
-            description: ${{ format('Starting Deployment of **{0}**', github.repository) }}
-            details: >
-              ${{ format(':rocket: Starting Deployment of commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, github.actor, env.APP_URL) }}
-            footer: ${{ format('https://{0}/actions/runs/{1}', github.repository, github.run_id) }}
-            webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
+          severity: warn
+          description: ${{ format('Starting Deployment of **{0}**', github.repository) }}
+          details: >
+            ${{ format(':rocket: Starting Deployment of commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, github.actor, env.APP_URL) }}
+          footer: ${{ format('https://{0}/actions/runs/{1}', github.repository, github.run_id) }}
+          webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 
       - uses: chrnorm/deployment-action@v2
         name: Create GitHub Deployment
@@ -69,7 +69,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: '24'
+          node-version: "24"
 
       - name: Composer Cache
         uses: actions/cache@v5
@@ -91,6 +91,9 @@ jobs:
 
       - name: Install npm dependencies
         run: npm ci
+
+      - name: Install composer dependencies
+        run: composer install --no-interaction --no-dev --prefer-dist
 
       - name: Build assets
         run: npm run build
@@ -253,20 +256,20 @@ jobs:
         if: failure()
         uses: rjstone/discord-webhook-notify@v2
         with:
-            severity: error
-            description: ${{ format('Deployment **FAILED** of **{0}**', github.repository) }}
-            details: >
-              ${{ format(':fire: Deployment **FAILED** for commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, github.actor, env.APP_URL) }}
-            footer: ${{ format('https://github.com/{0}/actions/runs/{1}', github.repository, github.run_id) }}
-            webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
+          severity: error
+          description: ${{ format('Deployment **FAILED** of **{0}**', github.repository) }}
+          details: >
+            ${{ format(':fire: Deployment **FAILED** for commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, github.actor, env.APP_URL) }}
+          footer: ${{ format('https://github.com/{0}/actions/runs/{1}', github.repository, github.run_id) }}
+          webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 
       - name: Discord Notification (Success)
         if: success()
         uses: rjstone/discord-webhook-notify@v2
         with:
-            severity: info
-            description: ${{ format('Deployment **SUCCEEDED** of **{0}**', github.repository) }}
-            details: >
-              ${{ format(':white_check_mark: Deployment **SUCCEEDED** for commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, github.actor, env.APP_URL) }}
-            footer: ${{ format('https://github.com/{0}/actions/runs/{1}', github.repository, github.run_id) }}
-            webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
+          severity: info
+          description: ${{ format('Deployment **SUCCEEDED** of **{0}**', github.repository) }}
+          details: >
+            ${{ format(':white_check_mark: Deployment **SUCCEEDED** for commit `{0}` by :technologist: *{1}* to **Production** ({2})', env.COMMIT, github.actor, env.APP_URL) }}
+          footer: ${{ format('https://github.com/{0}/actions/runs/{1}', github.repository, github.run_id) }}
+          webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
