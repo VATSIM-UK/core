@@ -183,6 +183,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
                             ->columnSpan(9)
                             ->disableToolbarButtons(['attachFiles', 'blockquote'])
                             ->live(debounce: 500)
+                            ->extraInputAttributes([
+                                'style' => 'height: 200px;',
+                            ])
                             ->afterStateUpdated(fn () => $this->markDirty()),
                         Select::make("form.{$criteria->id}.grade")
                             ->label('Grade')
@@ -215,6 +218,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->columnSpan(9)
                     ->live(debounce: 1000)
                     // save additional comments in session to persist in session in case navigation occurs
+                    ->extraInputAttributes([
+                        'style' => 'height: 200px;',
+                    ])
                     ->afterStateHydrated(fn ($component) => $component->state(
                         $this->richEditorHtmlForHydration($this->additionalComments)
                     ))
