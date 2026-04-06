@@ -92,9 +92,6 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Install composer dependencies
-        run: composer install --no-interaction --no-dev --prefer-dist
-
       - name: Build assets
         run: npm run build
 
