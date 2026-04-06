@@ -3,9 +3,9 @@
 namespace App\Filament\Training\Support;
 
 use Carbon\Carbon;
-use Filament\Infolists\Components\Fieldset;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Section;
 
 trait TheoryExamViewTrait
 {
@@ -53,6 +53,7 @@ trait TheoryExamViewTrait
     {
         return [
             Fieldset::make('Exam Information')
+                ->columnSpanFull()
                 ->schema([
                     TextEntry::make('cid')->label('CID')->getStateUsing(fn ($record) => $record->student_id),
 
@@ -67,6 +68,7 @@ trait TheoryExamViewTrait
                 ]),
 
             Fieldset::make('Details')
+                ->columnSpanFull()
                 ->schema([
                     TextEntry::make('started')->label('Started')->getStateUsing(fn ($record) => Carbon::parse($record->started)->isoFormat('lll')),
                     TextEntry::make('submitted_time')->label('Submitted Time')->getStateUsing(fn ($record) => $record->submitted_time ? Carbon::parse($record->submitted_time)->isoFormat('lll') : 'N/A'), // Some exams will not be submitted if they run out of time etc
@@ -74,7 +76,7 @@ trait TheoryExamViewTrait
                     TextEntry::make('time_mins')->label('Time Limit')->getStateUsing(fn ($record) => "{$record->time_mins} Mins"),
                 ]),
 
-            Section::make('Questions')->collapsible()->collapsed()->schema(fn ($record) => $this->buildQuestionPlaceholders($record)),
+            Section::make('Questions')->collapsible()->collapsed()->columnSpanFull()->schema(fn ($record) => $this->buildQuestionPlaceholders($record)),
         ];
     }
 }
