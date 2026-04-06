@@ -918,4 +918,84 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         $this->assertEquals($this->panelUser->member->id, $practicalExaminer->senior);
         $this->assertEquals($secondaryExaminerMember->id, $practicalExaminer->other);
     }
+
+    #[Test]
+    public function it_shows_delete_request_action_when_user_has_permission()
+    {
+        $this->panelUser->givePermissionTo('training.exams.delete-request');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamRequestsTable::class)
+            ->assertTableActionVisible('deleteRequest', $this->examBooking);
+    }
+
+    #[Test]
+    public function it_hides_delete_request_action_when_user_lacks_permission()
+    {
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamRequestsTable::class)
+            ->assertTableActionHidden('deleteRequest', $this->examBooking);
+    }
+
+    #[Test]
+    public function it_deletes_exam_booking_when_delete_request_action_is_performed()
+    {
+        $this->panelUser->givePermissionTo('training.exams.delete-request');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamRequestsTable::class)
+            ->callTableAction('deleteRequest', $this->examBooking, [
+                'reason' => 'Duplicate booking.',
+            ]);
+
+        $this->assertDatabaseMissing('exam_book', [
+            'id' => $this->examBooking->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_deletes_associated_exam_setup_when_delete_request_action_is_performed()
+    {
+        $this->panelUser->givePermissionTo('training.exams.delete-request');
+
+        $examSetup = \App\Models\Cts\ExamSetup::create([
+            'rts_id' => 1,
+            'student_id' => $this->studentMember->id,
+            'position_1' => 'EGKK_TWR',
+            'exam' => 'TWR',
+            'bookid' => $this->examBooking->id,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamRequestsTable::class)
+            ->callTableAction('deleteRequest', $this->examBooking, [
+                'reason' => 'Duplicate booking.',
+            ]);
+
+        $this->assertDatabaseMissing('exam_setup', [
+            'id' => $examSetup->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_adds_training_note_to_student_account_when_delete_request_action_is_performed()
+    {
+        $this->panelUser->givePermissionTo('training.exams.delete-request');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamRequestsTable::class)
+            ->callTableAction('deleteRequest', $this->examBooking, [
+                'reason' => 'Duplicate booking',
+            ]);
+
+        $note = $this->studentAccount->notes()
+            ->whereHas('type', fn ($q) => $q->where('short_code', 'training'))
+            ->latest()
+            ->first();
+
+        $this->assertNotNull($note);
+        $this->assertStringContainsString('TWR', $note->content);
+        $this->assertStringContainsString('Duplicate booking', $note->content);
+        $this->assertStringContainsString($this->panelUser->name, $note->content);
+    }
 }
