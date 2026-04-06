@@ -30,7 +30,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -145,12 +144,14 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                 TextColumn::make('name')->sortable()->searchable(['name_first', 'name_last']),
                 TextColumn::make('qualification_atc')->sortable()->label('ATC Rating'),
                 TextColumn::make('qualification_pilot')->sortable()->label('Pilot Rating'),
-                BadgeColumn::make('state')
+                TextColumn::make('state')
+                    ->badge()
                     ->getStateUsing(fn ($record) => $record->primary_state?->name)
-                    ->colors([
-                        'primary' => static fn ($state) => in_array($state, ['Division', 'Transferring']),
-                        'secondary' => static fn ($state) => in_array($state, ['Visiting']),
-                    ]),
+                    ->color(static fn (?string $state): ?string => match (true) {
+                        in_array($state, ['Division', 'Transferring'], true) => 'primary',
+                        in_array($state, ['Visiting'], true) => 'secondary',
+                        default => null,
+                    }),
                 IconColumn::make('is_banned')->label('Banned')
                     ->boolean()
                     ->falseIcon('')

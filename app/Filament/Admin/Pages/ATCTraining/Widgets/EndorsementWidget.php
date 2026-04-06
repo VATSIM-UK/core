@@ -7,7 +7,7 @@ use Filament\Widgets\Widget;
 
 class EndorsementWidget extends Widget
 {
-    protected static string $view = 'filament.pages.atc-training.widgets.endorsement-widget';
+    protected string $view = 'filament.pages.atc-training.widgets.endorsement-widget';
 
     protected string $position;
 

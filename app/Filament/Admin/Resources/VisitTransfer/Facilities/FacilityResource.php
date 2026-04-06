@@ -19,7 +19,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -276,43 +275,68 @@ class FacilityResource extends Resource
             ->columns([
                 TextColumn::make('id')->label('ID'),
                 TextColumn::make('name')->label('Facility Name'),
-                BadgeColumn::make('type')->label('Type')->getStateUsing(function ($record) {
-                    if ($record->can_visit && $record->can_transfer) {
-                        return 'Visit & Transfer';
-                    } elseif ($record->can_visit) {
-                        return 'Visit Only';
-                    } elseif ($record->can_transfer) {
-                        return 'Transfer Only';
-                    } else {
-                        return 'N/A';
-                    }
-                })->colors([
-                    'warning' => 'Visit & Transfer',
-                    'success' => 'Transfer Only',
-                    'primary' => 'Visit Only',
-                    'danger' => 'N/A',
-                ])->alignCenter(),
+                TextColumn::make('type')
+                    ->label('Type')
+                    ->badge()
+                    ->getStateUsing(function ($record) {
+                        if ($record->can_visit && $record->can_transfer) {
+                            return 'Visit & Transfer';
+                        } elseif ($record->can_visit) {
+                            return 'Visit Only';
+                        } elseif ($record->can_transfer) {
+                            return 'Transfer Only';
+                        } else {
+                            return 'N/A';
+                        }
+                    })
+                    ->color(static fn (string $state): string => match ($state) {
+                        'Visit & Transfer' => 'warning',
+                        'Transfer Only' => 'success',
+                        'Visit Only' => 'primary',
+                        default => 'danger',
+                    })
+                    ->alignCenter(),
                 TextColumn::make('training_team')->label('Team')->formatStateUsing(fn ($state) => strtoupper($state))->alignCenter(),
-                BadgeColumn::make('stage_statement_enabled')->label('Statement')->getStateUsing(fn ($record) => $record->stage_statement_enabled ? 'Required' : 'Disabled')->colors([
-                    'success' => 'Required',
-                    'danger' => 'Disabled',
-                ]),
-                BadgeColumn::make('stage_checks')->label('Checks')->getStateUsing(fn ($record) => $record->stage_checks ? 'Auto' : 'Manual')->colors([
-                    'success' => 'Auto',
-                    'danger' => 'Manual',
-                ]),
-                BadgeColumn::make('auto_acceptance')->label('Auto Accept')->getStateUsing(fn ($record) => $record->auto_acceptance ? 'Enabled' : 'Disabled')->colors([
-                    'success' => 'Enabled',
-                    'danger' => 'Disabled',
-                ]),
-                BadgeColumn::make('open')->label('Open')->getStateUsing(fn ($record) => $record->open ? 'Yes' : 'No')->colors([
-                    'success' => 'Yes',
-                    'danger' => 'No',
-                ]),
-                BadgeColumn::make('public')->label('Visibility')->getStateUsing(fn ($record) => $record->public ? 'Public' : 'Private')->colors([
-                    'success' => 'Public',
-                    'danger' => 'Private',
-                ]),
+                TextColumn::make('stage_statement_enabled')
+                    ->label('Statement')
+                    ->badge()
+                    ->getStateUsing(fn ($record) => $record->stage_statement_enabled ? 'Required' : 'Disabled')
+                    ->color(static fn (string $state): string => match ($state) {
+                        'Required' => 'success',
+                        default => 'danger',
+                    }),
+                TextColumn::make('stage_checks')
+                    ->label('Checks')
+                    ->badge()
+                    ->getStateUsing(fn ($record) => $record->stage_checks ? 'Auto' : 'Manual')
+                    ->color(static fn (string $state): string => match ($state) {
+                        'Auto' => 'success',
+                        default => 'danger',
+                    }),
+                TextColumn::make('auto_acceptance')
+                    ->label('Auto Accept')
+                    ->badge()
+                    ->getStateUsing(fn ($record) => $record->auto_acceptance ? 'Enabled' : 'Disabled')
+                    ->color(static fn (string $state): string => match ($state) {
+                        'Enabled' => 'success',
+                        default => 'danger',
+                    }),
+                TextColumn::make('open')
+                    ->label('Open')
+                    ->badge()
+                    ->getStateUsing(fn ($record) => $record->open ? 'Yes' : 'No')
+                    ->color(static fn (string $state): string => match ($state) {
+                        'Yes' => 'success',
+                        default => 'danger',
+                    }),
+                TextColumn::make('public')
+                    ->label('Visibility')
+                    ->badge()
+                    ->getStateUsing(fn ($record) => $record->public ? 'Public' : 'Private')
+                    ->color(static fn (string $state): string => match ($state) {
+                        'Public' => 'success',
+                        default => 'danger',
+                    }),
             ])
             ->filters([
                 //

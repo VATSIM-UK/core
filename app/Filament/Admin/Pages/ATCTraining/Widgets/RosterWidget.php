@@ -7,7 +7,7 @@ use Filament\Widgets\Widget;
 
 class RosterWidget extends Widget
 {
-    protected static string $view = 'filament.pages.atc-training.widgets.roster-widget';
+    protected string $view = 'filament.pages.atc-training.widgets.roster-widget';
 
     protected array $ratingOrder = ['S1', 'S2', 'S3', 'C1', 'C3'];
 

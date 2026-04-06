@@ -19,7 +19,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Spatie\Permission\Models\Permission;
@@ -52,7 +51,7 @@ class RoleResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->searchable(),
-                BadgeColumn::make('users_count')->counts('users')->label('Assigned Users'),
+                TextColumn::make('users_count')->counts('users')->label('Assigned Users')->badge(),
             ])
             ->recordActions([
                 Action::make('syncDiscord')
