@@ -6,11 +6,11 @@ use Filament\Pages\Page;
 
 class Exams extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.training.pages.exams';
+    protected string $view = 'filament.training.pages.exams';
 
-    protected static ?string $navigationGroup = 'Exams';
+    protected static string|\UnitEnum|null $navigationGroup = 'Exams';
 
     public static function canAccess(): bool
     {

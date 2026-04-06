@@ -3,7 +3,7 @@
 namespace Tests\Feature\VisitTransfer\Application;
 
 use App\Enums\VTCheckStatus;
-use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplicationResource\Pages\ViewVisitTransferApplication;
+use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\Pages\ViewVisitTransferApplication;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;

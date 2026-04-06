@@ -12,21 +12,20 @@ use App\Repositories\Cts\ExamAssessmentRepository;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Services\Training\ExamResubmissionService;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
@@ -36,11 +35,11 @@ class ConductExam extends Page implements HasForms, HasInfolists
 {
     use InteractsWithForms, InteractsWithInfolists;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static string $view = 'filament.training.pages.conduct-exam';
+    protected string $view = 'filament.training.pages.conduct-exam';
 
     protected static ?string $slug = 'exams/conduct/{examId}';
 
@@ -117,7 +116,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     return [
                         $item->id => [
                             'grade' => $existingAssessment['grade'] ?? 'N',
-                            'comments' => $existingAssessment['comments'] ?? '',
+                            'comments' => $this->richEditorHtmlForHydration($existingAssessment['comments'] ?? null),
                         ],
                     ];
                 }
@@ -138,16 +137,16 @@ class ConductExam extends Page implements HasForms, HasInfolists
         ];
     }
 
-    public function examDetailsInfoList(Infolist $infolist)
+    public function examDetailsInfoList(Schema $schema)
     {
         $examinerFormat = function ($examiner) {
             return $examiner ? "{$examiner->account->name} ({$examiner->account->id})" : 'N/A';
         };
 
-        return $infolist
+        return $schema
             ->record($this->examBooking)
-            ->schema([
-                Section::make('Exam Details')->schema([
+            ->components([
+                Section::make('Exam Details')->columnSpanFull()->schema([
                     TextEntry::make('Student')->getStateUsing(fn () => "{$this->examBooking->studentAccount()->name} ({$this->examBooking->studentAccount()->id})"),
                     TextEntry::make('Student Rating')->getStateUsing(fn () => $this->examBooking->studentQualification->name),
                     TextEntry::make('position_1')->label('Position'),
@@ -156,7 +155,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     TextEntry::make('Exam Accepted At')->getStateUsing(fn () => $this->examBooking->time_taken),
                 ])
                     ->columns(3),
-                Section::make('Examiner Details')->schema([
+                Section::make('Examiner Details')->columnSpanFull()->schema([
                     TextEntry::make('Primary Examiner')
                         ->getStateUsing($examinerFormat($this->examBooking->examiners->primaryExaminer)),
                     TextEntry::make('Secondary Examiner')
@@ -168,7 +167,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $criteria = ExamCriteria::byType($this->examBooking->exam)->get();
 
@@ -176,10 +175,11 @@ class ConductExam extends Page implements HasForms, HasInfolists
             function (ExamCriteria $criteria) {
                 return Fieldset::make("form.{$criteria->id}")
                     ->label($criteria->criteria)
+                    ->columnSpanFull()
                     ->schema([
                         RichEditor::make("form.{$criteria->id}.comments")
                             ->label('Comments')
-                            ->default('')
+                            ->default('<p></p>')
                             ->columnSpan(9)
                             ->disableToolbarButtons(['attachFiles', 'blockquote'])
                             ->live(debounce: 500)
@@ -196,17 +196,18 @@ class ConductExam extends Page implements HasForms, HasInfolists
             }
         );
 
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 ...$criteriaComponents,
             ])
             ->statePath('data');
     }
 
-    public function examResultForm(Form $form): Form
+    public function examResultForm(Schema $schema): Schema
     {
         $completionComponents = Fieldset::make('completion')
             ->label('Exam Result')
+            ->columnSpanFull()
             ->schema([
                 RichEditor::make('additional_comments')
                     ->label('Additional Comments')
@@ -214,7 +215,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->columnSpan(9)
                     ->live(debounce: 1000)
                     // save additional comments in session to persist in session in case navigation occurs
-                    ->afterStateHydrated(fn ($component) => $component->state($this->additionalComments))
+                    ->afterStateHydrated(fn ($component) => $component->state(
+                        $this->richEditorHtmlForHydration($this->additionalComments)
+                    ))
                     ->afterStateUpdated(fn ($state, $livewire) => ($this->additionalComments = $state)),
 
                 Select::make('exam_result')
@@ -228,7 +231,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->required(),
 
                 Actions::make([
-                    Actions\Action::make('submit_report')->action(fn () => $this->completeExam())
+                    Action::make('submit_report')->action(fn () => $this->completeExam())
                         ->extraAttributes(['class' => 'w-full'])
                         ->label('Submit Report')
                         ->icon('heroicon-o-check')
@@ -238,8 +241,8 @@ class ConductExam extends Page implements HasForms, HasInfolists
                 ])->id('submit_report_action')->alignment(Alignment::End)->columnSpan(12),
             ])->columns(12);
 
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 $completionComponents,
             ])->statePath('examResultData');
     }
@@ -258,7 +261,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
         (new ExamResultRepository)->createPracticalResult(
             examBooking: $this->examBooking,
             result: $examResultFormData['exam_result'],
-            additionalComments: $examResultFormData['additional_comments'] ?? ''
+            additionalComments: $this->richContentNotesForCts($examResultFormData['additional_comments'] ?? null),
         );
 
         Notification::make()
@@ -331,7 +334,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
             fn ($item, $key) => [
                 'criteria_id' => $key,
                 'grade' => $item['grade'],
-                'comments' => $item['comments'],
+                'comments' => $this->richContentNotesForCts($item['comments'] ?? null),
             ]
         )
             ->values()
@@ -342,7 +345,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                 examId: $this->examId,
                 criteriaId: $item['criteria_id'],
                 grade: $item['grade'],
-                comments: $item['comments'] ?? null,
+                comments: $item['comments'] !== '' ? $item['comments'] : null,
             )
         );
 
@@ -390,5 +393,34 @@ class ConductExam extends Page implements HasForms, HasInfolists
         $waitingListAccountIds = $studentAccount->waitingListAccounts()->pluck('id');
 
         TrainingPlace::whereIn('waiting_list_account_id', $waitingListAccountIds)->first()?->delete();
+    }
+
+    /**
+     * Filament v4 / Tiptap PHP parse HTML via DOMDocument::loadHTML; empty or whitespace-only strings
+     * yield no &lt;body&gt; node, so DOMParser::getDocumentBody() returns null and crashes.
+     */
+    private function richEditorHtmlForHydration(mixed $html): mixed
+    {
+        if ($html === null || $html === '' || (is_string($html) && trim($html) === '')) {
+            return '<p></p>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * CTS stores criteria / result notes as plain text; Filament RichEditor state is HTML.
+     */
+    private function richContentNotesForCts(mixed $html): string
+    {
+        if (! is_string($html) || trim($html) === '') {
+            return '';
+        }
+
+        $withNewlines = preg_replace('/<\/p>\s*<p>/i', "\n", $html);
+        $text = html_entity_decode(strip_tags($withNewlines), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = str_replace("\xc2\xa0", ' ', $text);
+
+        return trim($text);
     }
 }

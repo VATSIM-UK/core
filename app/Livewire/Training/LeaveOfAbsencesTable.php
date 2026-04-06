@@ -5,16 +5,18 @@ namespace App\Livewire\Training;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPlace\TrainingPlaceLeaveOfAbsence;
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\CreateAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\CreateAction;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -22,8 +24,9 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class LeaveOfAbsencesTable extends Component implements HasForms, HasTable
+class LeaveOfAbsencesTable extends Component implements HasActions, HasForms, HasTable
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
 
@@ -74,7 +77,7 @@ class LeaveOfAbsencesTable extends Component implements HasForms, HasTable
                     ->createAnother(false)
                     ->visible(fn () => auth()->user()->can('training-places.loas.create.*'))
                     ->form([
-                        Grid::make(2)->schema([
+                        Grid::make(2)->columnSpanFull()->schema([
                             DatePicker::make('begins_at')
                                 ->label('Start Date')
                                 ->required()
@@ -113,7 +116,7 @@ class LeaveOfAbsencesTable extends Component implements HasForms, HasTable
                         $this->abortIfOverlapping($action, $data);
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('end_loa_early')
                     ->label('End Early')
                     ->icon('heroicon-o-x-circle')

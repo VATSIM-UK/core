@@ -13,7 +13,13 @@ class Session extends Model
 
     public $timestamps = false;
 
-    public $incrementing = false;
+    /**
+     * CTS assigns numeric primary keys on insert; Eloquent must treat the key as incrementing
+     * so create()/factory() hydrate `id` for URLs, Filament table keys, and refresh().
+     */
+    public $incrementing = true;
+
+    protected $keyType = 'int';
 
     protected $guarded = [];
 
