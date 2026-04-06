@@ -89,6 +89,9 @@ jobs:
             npm-${{ hashFiles('**/package-lock.json') }}
             npm-
 
+      - name: Install composer dependencies (for asset build)
+        run: composer install --no-interaction --no-progress --no-dev
+
       - name: Install npm dependencies
         run: npm ci
 
