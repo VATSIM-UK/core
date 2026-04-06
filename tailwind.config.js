@@ -1,12 +1,9 @@
-import preset from './vendor/filament/support/tailwind.config.preset';
+import colors from 'tailwindcss/colors';
+import preset from './vendor/filament/support/tailwind.config.preset.js';
 
-const defaultTheme = require('tailwindcss/defaultTheme');
-const colors = require('tailwindcss/colors');
-
-module.exports = {
+export default {
     presets: [preset],
     darkMode: 'class',
-    mode: 'jit',
     theme: {
         colors: {
             // Core
@@ -46,18 +43,6 @@ module.exports = {
             fuchsia: colors.fuchsia,
             pink: colors.pink,
             rose: colors.rose,
-        }
+        },
     },
-    content: [
-        './app/**/*.php',
-        './resources/**/*.php',
-        './resources/**/*.blade.php',
-        './resources/**/*.js',
-        './app/Filament/**/*.php',
-        './app/Livewire/**/*.php',
-        './vendor/filament/**/*.blade.php',
-        './vendor/wire-elements/modal/resources/views/*.blade.php',
-        './storage/framework/views/*.php'
-    ],
-    plugins: [require("@tailwindcss/forms")],
 };
