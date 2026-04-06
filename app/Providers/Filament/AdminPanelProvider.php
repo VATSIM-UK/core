@@ -56,7 +56,8 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 AdminPanelFilamentAccessMiddleware::class,
             ])
-            ->brandLogo(asset('images/branding/vatsimuk_whiteblue.png'))
+            ->brandLogo(asset('images/branding/vatsimuk_blackblue.png'))
+            ->darkModeBrandLogo(asset('images/branding/vatsimuk_whiteblue.png'))
             ->navigationGroups([
                 NavigationGroup::make('Technology'),
             ])
