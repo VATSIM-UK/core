@@ -63,8 +63,8 @@ jobs:
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          tools: composer:${{ matrix.composer }}
+          php-version: '8.4'
+          tools: composer:v2
 
       - name: Setup Node
         uses: actions/setup-node@v6
