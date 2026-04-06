@@ -224,6 +224,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->afterStateHydrated(fn ($component) => $component->state(
                         $this->richEditorHtmlForHydration($this->additionalComments)
                     ))
+                    // save additional comments in session to persist in session in case navigation occurs
                     ->afterStateUpdated(fn ($state, $livewire) => ($this->additionalComments = $state)),
 
                 Select::make('exam_result')
