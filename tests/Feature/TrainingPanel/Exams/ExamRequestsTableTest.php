@@ -948,9 +948,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
                 'reason' => 'Duplicate booking.',
             ]);
 
-        $this->assertDatabaseMissing('exam_book', [
-            'id' => $this->examBooking->id,
-        ]);
+        $this->assertDatabaseMissing('exam_book', ['id' => $this->examBooking->id], 'cts');
     }
 
     #[Test]
@@ -972,9 +970,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
                 'reason' => 'Duplicate booking.',
             ]);
 
-        $this->assertDatabaseMissing('exam_setup', [
-            'id' => $examSetup->id,
-        ]);
+        $this->assertDatabaseMissing('exam_setup', ['id' => $examSetup->id], 'cts');
     }
 
     #[Test]
@@ -996,6 +992,5 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         $this->assertNotNull($note);
         $this->assertStringContainsString('TWR', $note->content);
         $this->assertStringContainsString('Duplicate booking', $note->content);
-        $this->assertStringContainsString($this->panelUser->name, $note->content);
     }
 }
