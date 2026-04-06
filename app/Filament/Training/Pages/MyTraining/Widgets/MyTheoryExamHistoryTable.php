@@ -4,9 +4,9 @@ namespace App\Filament\Training\Pages\MyTraining\Widgets;
 
 use App\Filament\Training\Support\TheoryExamViewTrait;
 use App\Repositories\Cts\TheoryExamResultRepository;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\ViewAction;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class MyTheoryExamHistoryTable extends BaseWidget
@@ -37,7 +37,7 @@ class MyTheoryExamHistoryTable extends BaseWidget
                 TextColumn::make('submitted_time')->label('Exam date')->isoDateTimeFormat('lll'),
             ])
             ->defaultSort('submitted_time', 'desc')
-            ->actions([
+            ->recordActions([
                 ViewAction::make('view')
                     ->label('View')
                     ->icon(null)

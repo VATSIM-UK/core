@@ -5,7 +5,7 @@ namespace App\Filament\Training\Pages\MyTraining\Widgets;
 use App\Filament\Training\Pages\Exam\ViewExamReport;
 use App\Models\Cts\PracticalResult;
 use App\Services\Training\ExamHistoryService;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -39,7 +39,7 @@ class MyPracticalExamHistoryTable extends BaseWidget
                 TextColumn::make('examBooking.start_date')->label('Exam date'),
             ])
             ->defaultSort('date', 'desc')
-            ->actions([
+            ->recordActions([
                 Action::make('view')->label('View Report')->url(fn ($record) => ViewExamReport::getUrl(['examId' => $record->examid])),
             ]);
     }
