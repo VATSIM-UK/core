@@ -4,11 +4,13 @@ namespace App\Livewire\Training;
 
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\EndorsementService;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -17,8 +19,9 @@ use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class TrainingPlaceSoloEndorsement extends Component implements HasForms, HasTable
+class TrainingPlaceSoloEndorsement extends Component implements HasActions, HasForms, HasTable
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
 

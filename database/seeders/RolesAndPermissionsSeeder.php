@@ -254,6 +254,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'roster.manage',
             'roster.restriction.create',
             'roster.restriction.remove',
+            'atc.stats',
 
         ];
 

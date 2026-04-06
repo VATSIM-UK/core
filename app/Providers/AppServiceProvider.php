@@ -7,7 +7,6 @@ use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
 use App\Libraries\UKCP;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
-use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +17,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Testing\ParallelTesting;
+use Spatie\Permission\PermissionRegistrar;
 use Whitecube\LaravelCookieConsent\Facades\Cookies;
 
 class AppServiceProvider extends ServiceProvider
@@ -77,7 +78,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(UKCP::class);
         $this->app->singleton(Discord::class);
-        $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
+        $this->app->bind(\Filament\Auth\Http\Responses\Contracts\LogoutResponse::class, LogoutResponse::class);
         $this->app->singleton(\Wohali\OAuth2\Client\Provider\Discord::class, function () {
             return new \Wohali\OAuth2\Client\Provider\Discord([
                 'clientId' => Config::get('services.discord.client_id'),
@@ -93,14 +94,14 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        if (! class_exists(\Illuminate\Testing\ParallelTesting::class)) {
+        if (! class_exists(ParallelTesting::class)) {
             return;
         }
 
-        $this->app->make(\Illuminate\Testing\ParallelTesting::class)
+        $this->app->make(ParallelTesting::class)
             ->setUpTestDatabase(function () {
                 Artisan::call('db:seed', ['--force' => true]);
-                $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+                $this->app->make(PermissionRegistrar::class)->forgetCachedPermissions();
             });
     }
 

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\TrainingPlace;
 
-use App\Filament\Training\Resources\TrainingPlaceResource\Pages\ListTrainingPlaces;
+use App\Filament\Training\Resources\TrainingPlaces\Pages\ListTrainingPlaces;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
 use App\Models\Mship\Account;

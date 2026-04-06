@@ -122,7 +122,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
             ->set('examResultData.exam_result', ExamResultEnum::Pass->value)
             ->set('examResultData.additional_comments', 'Student passed all sections.')
             ->call('completeExam')
-            ->assertHasNoFormErrors(formName: 'examResultForm');
+            ->assertHasNoFormErrors([], 'examResultForm');
 
         $this->assertDatabaseHas('practical_results', connection: 'cts', data: [
             'examid' => $exam->id,
@@ -146,7 +146,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
             ->set('examResultData.exam_result', ExamResultEnum::PartialPass->value)
             ->set('examResultData.additional_comments', 'Some sections not completed.')
             ->call('completeExam')
-            ->assertHasNoFormErrors(formName: 'examResultForm');
+            ->assertHasNoFormErrors([], 'examResultForm');
 
         $this->assertDatabaseHas('practical_results', connection: 'cts', data: [
             'examid' => $exam->id,
@@ -167,7 +167,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
             ->set('examResultData.exam_result', ExamResultEnum::Fail->value)
             ->set('examResultData.additional_comments', 'Did not meet required standard.')
             ->call('completeExam')
-            ->assertHasNoFormErrors(formName: 'examResultForm');
+            ->assertHasNoFormErrors([], 'examResultForm');
 
         $this->assertDatabaseHas('practical_results', connection: 'cts', data: [
             'examid' => $exam->id,

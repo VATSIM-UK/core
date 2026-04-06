@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\VisitTransfer\Application;
 
-use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplicationResource\Pages\ListVisitTransferApplications;
+use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\Pages\ListVisitTransferApplications;
 use App\Models\VisitTransfer\Application;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;

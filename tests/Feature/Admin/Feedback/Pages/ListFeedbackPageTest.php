@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Feedback\Pages;
 
-use App\Filament\Admin\Resources\FeedbackResource\Pages\ListFeedback;
+use App\Filament\Admin\Resources\Feedback\Pages\ListFeedback;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
