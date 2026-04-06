@@ -63,8 +63,8 @@ jobs:
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          tools: composer:${{ matrix.composer }}
+          php-version: '8.4'
+          tools: composer:v2
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -88,6 +88,9 @@ jobs:
           restore-keys: |
             npm-${{ hashFiles('**/package-lock.json') }}
             npm-
+
+      - name: Install composer dependencies (for asset build)
+        run: composer install --no-interaction --no-progress --no-dev
 
       - name: Install npm dependencies
         run: npm ci
