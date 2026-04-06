@@ -5,12 +5,13 @@ namespace App\Filament\Training\Pages\TheoryExam;
 use App\Filament\Training\Pages\TheoryExam\Widgets\TheoryExamOverview;
 use App\Repositories\Cts\TheoryExamResultRepository;
 use Carbon\Carbon;
-use Filament\Forms;
-use Filament\Infolists\Components\Fieldset;
-use Filament\Infolists\Components\Section;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\ViewAction;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -21,11 +22,11 @@ class TheoryExamHistory extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.training.pages.theory-exam-history';
+    protected string $view = 'filament.training.pages.theory-exam-history';
 
-    protected static ?string $navigationGroup = 'Theory';
+    protected static string|\UnitEnum|null $navigationGroup = 'Theory';
 
     public static function canAccess(): bool
     {
@@ -60,6 +61,7 @@ class TheoryExamHistory extends Page implements HasTable
             $isCorrect = $answer->answer_given == ($question->answer ?? null);
 
             return Fieldset::make("Question {$number}")
+                ->columnSpanFull()
                 ->schema([
                     TextEntry::make("question_{$number}_text")
                         ->label('Question')
@@ -105,14 +107,15 @@ class TheoryExamHistory extends Page implements HasTable
             })->label('Result'),
             TextColumn::make('submitted_time')->label('Submitted')->isoDateTimeFormat('lll'),
         ])->defaultSort('submitted_time', 'desc')
-            ->actions([
+            ->recordActions([
                 ViewAction::make()
                     ->label('View')
                     ->icon(null)
                     ->color('primary')
                     ->modalHeading(fn ($record) => (($record->student?->account?->name) ?? 'Unknown')."'s {$record->exam} Theory Exam")
-                    ->infoList([
+                    ->schema([
                         Fieldset::make('Exam Information')
+                            ->columnSpanFull()
                             ->schema([
                                 TextEntry::make('cid')->label('CID')->getStateUsing(fn ($record) => $record->student_id),
 
@@ -127,6 +130,7 @@ class TheoryExamHistory extends Page implements HasTable
                             ]),
 
                         Fieldset::make('Details')
+                            ->columnSpanFull()
                             ->schema([
                                 TextEntry::make('started')->label('Started')->getStateUsing(fn ($record) => Carbon::parse($record->started)->isoFormat('lll')),
                                 TextEntry::make('submitted_time')->label('Submitted Time')->getStateUsing(fn ($record) => $record->submitted_time ? Carbon::parse($record->submitted_time)->isoFormat('lll') : 'N/A'), // Some exams will not be submitted if they run out of time etc
@@ -134,20 +138,20 @@ class TheoryExamHistory extends Page implements HasTable
                                 TextEntry::make('time_mins')->label('Time Limit')->getStateUsing(fn ($record) => "{$record->time_mins} Mins"),
                             ]),
 
-                        Section::make('Questions')->collapsible()->collapsed()->schema(fn ($record) => $this->buildQuestionPlaceholders($record)),
+                        Section::make('Questions')->collapsible()->collapsed()->columnSpanFull()->schema(fn ($record) => $this->buildQuestionPlaceholders($record)),
                     ]),
             ])
             ->filters([
-                Filter::make('exam_date')->form([
-                    Forms\Components\DatePicker::make('exam_date_from')->label('From'),
-                    Forms\Components\DatePicker::make('exam_date_to')->label('To'),
+                Filter::make('exam_date')->schema([
+                    DatePicker::make('exam_date_from')->label('From'),
+                    DatePicker::make('exam_date_to')->label('To'),
                 ])->query(function ($query, array $data) {
                     return $query
                         ->when($data['exam_date_from'], fn ($query, $date) => $query->whereDate('submitted_time', '>=', $date))
                         ->when($data['exam_date_to'], fn ($query, $date) => $query->whereDate('submitted_time', '<=', $date));
                 })->label('Exam date'),
-                Filter::make('exam_rating')->form([
-                    Forms\Components\Select::make('exam_rating')
+                Filter::make('exam_rating')->schema([
+                    Select::make('exam_rating')
                         ->options([
                             'S1' => 'OBS/Student (S1)',
                             'S2' => 'Tower (S2)',

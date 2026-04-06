@@ -257,7 +257,8 @@ class TheoryExamQuestionsTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(TheoryExamQuestions::class, ['level' => 'S1'])
             ->assertSuccessful()
-            ->callTableAction('delete', $question);
+            ->mountTableAction('delete', $question)
+            ->callMountedTableAction();
 
         $this->assertDatabaseHas('theory_questions', [
             'id' => $question->id,

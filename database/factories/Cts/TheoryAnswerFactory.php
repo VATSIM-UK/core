@@ -18,6 +18,7 @@ class TheoryAnswerFactory extends Factory
             'theory_id' => null, // overide in test
             'question_id' => null, // overide in test
             'answer_given' => $this->faker->numberBetween(1, 4),
+            'submitted_time' => now(),
         ];
     }
 }

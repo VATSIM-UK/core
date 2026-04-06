@@ -5,8 +5,8 @@ namespace App\Filament\Training\Pages\MyTraining;
 use App\Filament\Training\Pages\Exam\ViewExamReport;
 use App\Models\Cts\PracticalResult;
 use App\Services\Training\ExamHistoryService;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -16,11 +16,11 @@ class MyExamHistory extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.training.pages.my-training.my-exam-history';
+    protected string $view = 'filament.training.pages.my-training.my-exam-history';
 
-    protected static ?string $navigationGroup = 'My Training';
+    protected static string|\UnitEnum|null $navigationGroup = 'My Training';
 
     protected static ?string $navigationLabel = 'My Exam History';
 
@@ -54,7 +54,7 @@ class MyExamHistory extends Page implements HasTable
                 TextColumn::make('examBooking.start_date')->label('Exam date'),
             ])
             ->defaultSort('date', 'desc')
-            ->actions([
+            ->recordActions([
                 Action::make('view')->label('View Report')->url(fn ($record) => ViewExamReport::getUrl(['examId' => $record->examid])),
             ]);
     }

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\WaitingLists\Pages;
 
-use App\Filament\Training\Resources\WaitingListResource\RelationManagers\AccountsRelationManager;
+use App\Filament\Training\Resources\WaitingLists\RelationManagers\AccountsRelationManager;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
