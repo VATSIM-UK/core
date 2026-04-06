@@ -5,9 +5,10 @@ namespace App\Filament\Training\Pages\TheoryExam;
 use App\Filament\Training\Pages\TheoryExam\Widgets\TheoryExamOverview;
 use App\Filament\Training\Support\TheoryExamViewTrait;
 use App\Repositories\Cts\TheoryExamResultRepository;
-use Filament\Forms;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -19,11 +20,11 @@ class TheoryExamHistory extends Page implements HasTable
     use InteractsWithTable;
     use TheoryExamViewTrait;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.training.pages.theory-exam-history';
+    protected string $view = 'filament.training.pages.theory-exam-history';
 
-    protected static ?string $navigationGroup = 'Theory';
+    protected static string|\UnitEnum|null $navigationGroup = 'Theory';
 
     public static function canAccess(): bool
     {
@@ -63,27 +64,27 @@ class TheoryExamHistory extends Page implements HasTable
             })->label('Result'),
             TextColumn::make('submitted_time')->label('Submitted')->isoDateTimeFormat('lll'),
         ])->defaultSort('submitted_time', 'desc')
-            ->actions([
+            ->recordActions([
                 ViewAction::make()
                     ->label('View')
                     ->icon(null)
                     ->color('primary')
                     ->modalHeading(fn ($record) => (($record->student?->account?->name) ?? 'Unknown')."'s {$record->exam} Theory Exam")
-                    ->infoList([
+                    ->schema([
                         ...$this->theoryExamInfoList(),
                     ]),
             ])
             ->filters([
-                Filter::make('exam_date')->form([
-                    Forms\Components\DatePicker::make('exam_date_from')->label('From'),
-                    Forms\Components\DatePicker::make('exam_date_to')->label('To'),
+                Filter::make('exam_date')->schema([
+                    DatePicker::make('exam_date_from')->label('From'),
+                    DatePicker::make('exam_date_to')->label('To'),
                 ])->query(function ($query, array $data) {
                     return $query
                         ->when($data['exam_date_from'], fn ($query, $date) => $query->whereDate('submitted_time', '>=', $date))
                         ->when($data['exam_date_to'], fn ($query, $date) => $query->whereDate('submitted_time', '<=', $date));
                 })->label('Exam date'),
-                Filter::make('exam_rating')->form([
-                    Forms\Components\Select::make('exam_rating')
+                Filter::make('exam_rating')->schema([
+                    Select::make('exam_rating')
                         ->options([
                             'S1' => 'OBS/Student (S1)',
                             'S2' => 'Tower (S2)',

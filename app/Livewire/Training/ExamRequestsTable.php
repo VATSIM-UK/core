@@ -5,17 +5,22 @@ namespace App\Livewire\Training;
 use App\Events\Training\Exams\ExamAccepted;
 use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
+use App\Models\Cts\ExamSetup;
 use App\Models\Cts\PracticalExaminers;
 use App\Repositories\Cts\ExaminerRepository;
 use Carbon\Carbon;
-use Filament\Forms\Components\Grid;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\Action;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -23,8 +28,9 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class ExamRequestsTable extends Component implements HasForms, HasTable
+class ExamRequestsTable extends Component implements HasActions, HasForms, HasTable
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
 
@@ -42,7 +48,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                 TextColumn::make('exam')->label('Level'),
                 TextColumn::make('position_1')->label('Position'),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('Accept')
                     ->color('success')
                     ->icon('heroicon-o-check')
@@ -51,6 +57,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                     )
                     ->form([
                         Grid::make(3)
+                            ->columnSpanFull()
                             ->schema([
                                 Placeholder::make('student_name')
                                     ->label('Student Name')
@@ -104,6 +111,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
 
                         Grid::make(2)
                             ->visible(fn (Get $get) => $get('availability_slot'))
+                            ->columnSpanFull()
                             ->schema([
                                 Select::make('start_hour')
                                     ->label('Start Hour')
@@ -161,6 +169,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
 
                         Grid::make(2)
                             ->visible(fn (Get $get) => $get('availability_slot') && $get('start_hour') !== null && $get('start_minute') !== null)
+                            ->columnSpanFull()
                             ->schema([
                                 Select::make('end_hour')
                                     ->label('End Hour')
@@ -306,6 +315,41 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
 
                         $this->dispatch('exam-accepted');
                     }),
+                ActionGroup::make([
+                    Action::make('removeRequest')
+                        ->label('Remove Exam Request')
+                        ->color('danger')
+                        ->icon('heroicon-o-x-circle')
+                        ->visible(auth()->user()->can('training.exams.request.remove'))
+                        ->requiresConfirmation()
+                        ->modalHeading('Remove Exam Request')
+                        ->modalDescription(fn (ExamBooking $record) => "Are you sure you want to remove the {$record->exam} exam request for {$record->student->name} ({$record->student->cid})? This cannot be undone.")
+                        ->modalSubmitActionLabel('Yes, remove request')
+                        ->form([
+                            Textarea::make('reason')
+                                ->label('Reason')
+                                ->required()
+                                ->rows(3),
+                        ])
+                        ->action(function (array $data, ExamBooking $record): void {
+                            $studentName = $record->student->name;
+                            $examLevel = $record->exam;
+
+                            $studentAccount = $record->studentAccount();
+                            $studentAccount->addNote('training', "{$examLevel} exam request removed.".". Reason: {$data['reason']}", auth()->user()->id);
+
+                            ExamSetup::where('bookid', $record->id)->delete();
+                            $record->delete();
+
+                            Notification::make()
+                                ->title('Exam Request Deleted')
+                                ->success()
+                                ->body("The {$examLevel} exam request for {$studentName} has been removed.")
+                                ->send();
+
+                            $this->dispatch('exam-accepted');
+                        }),
+                ]),
             ]);
     }
 

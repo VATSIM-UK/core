@@ -10,8 +10,6 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\Action as TableAction;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -24,11 +22,11 @@ class ManageExaminers extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
-    protected static string $view = 'filament.training.pages.manage-examiners';
+    protected string $view = 'filament.training.pages.manage-examiners';
 
-    protected static ?string $navigationGroup = 'Exams';
+    protected static string|\UnitEnum|null $navigationGroup = 'Exams';
 
     protected static ?string $navigationLabel = 'Manage Examiners';
 
@@ -99,11 +97,11 @@ class ManageExaminers extends Page implements HasTable
                 TextColumn::make('name')->searchable(),
             ])
             ->headerActions([
-                TableAction::make('addMember')
+                Action::make('addMember')
                     ->label('Add member')
                     ->icon('heroicon-o-plus')
                     ->visible(fn () => auth()->user()->can('training.examiners.manage.atc'))
-                    ->form([
+                    ->schema([
                         Select::make('account_id')
                             ->label('Account')
                             ->searchable()
@@ -133,8 +131,8 @@ class ManageExaminers extends Page implements HasTable
                     })
                     ->successNotificationTitle(null),
             ])
-            ->actions([
-                TableAction::make('remove')
+            ->recordActions([
+                Action::make('remove')
                     ->label('Remove')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
@@ -150,8 +148,8 @@ class ManageExaminers extends Page implements HasTable
                     })
                     ->successNotificationTitle(null),
             ])
-            ->bulkActions([
-                BulkAction::make('detach')
+            ->toolbarActions([
+                \Filament\Actions\BulkAction::make('detach')
                     ->label('Remove from role')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')

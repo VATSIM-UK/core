@@ -5,6 +5,8 @@ namespace App\Livewire\Training;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use Carbon\CarbonInterval;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
@@ -13,8 +15,9 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class RecentControllingTable extends Component implements HasForms, HasTable
+class RecentControllingTable extends Component implements HasActions, HasForms, HasTable
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
 

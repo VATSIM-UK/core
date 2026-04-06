@@ -142,7 +142,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
             ->set('data.position', null)
             ->set('data.student', null)
             ->call('setupExam')
-            ->assertHasFormErrors(['position' => 'required']);
+            ->assertHasFormErrors(['position' => 'required'], 'form');
     }
 
     #[Test]
@@ -154,9 +154,9 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->panelUser)
             ->test(ExamSetup::class)
-            ->fillForm(['data.position' => $position->id, 'data.student' => null])
+            ->fillForm(['position' => $position->id, 'student' => null], 'form')
             ->call('setupExam')
-            ->assertHasFormErrors(['student' => 'required']);
+            ->assertHasFormErrors(['student' => 'required'], 'form');
     }
 
     #[Test]
@@ -168,7 +168,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
             ->test(ExamSetup::class)
             ->set('dataOBS.position_obs', null)
             ->call('setupExamOBS')
-            ->assertHasFormErrors(['position_obs' => 'required'], formName: 'formOBS');
+            ->assertHasFormErrors(['position_obs' => 'required'], 'formOBS');
     }
 
     #[Test]
@@ -184,7 +184,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
             ->set('dataOBS.position_obs', $position->id)
             ->set('dataOBS.student_obs', null)
             ->call('setupExamOBS')
-            ->assertHasFormErrors(['student_obs' => 'required'], formName: 'formOBS');
+            ->assertHasFormErrors(['student_obs' => 'required'], 'formOBS');
     }
 
     #[Test]
@@ -201,18 +201,25 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
             'cid' => $studentAccount->id,
         ]);
 
-        $pendingExam = ExamBooking::factory()->create([
+        ExamBooking::factory()->create([
             'student_id' => $student->id,
             'exam' => $position->examLevel,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
         ]);
 
+        Session::factory()->create([
+            'position' => $position->callsign,
+            'student_id' => $student->id,
+            'taken_date' => now()->subDays(30),
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+            'session_done' => 1,
+        ]);
+
         Livewire::actingAs($this->panelUser)
             ->test(ExamSetup::class)
             ->set('data.position', $position->id)
-            ->set('data.student', $student->id)
-            ->call('setupExam')
-            ->assertDontSee($student->id);
+            ->assertDontSee((string) $student->cid);
     }
 
     #[Test]
@@ -230,17 +237,25 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
             'student_id' => $student->id,
             'exam' => 'TWR',
             'result' => PracticalResult::PASSED,
+            'date' => now()->subDays(10),
         ]);
 
         $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
         TrainingPosition::factory()->create(['position_id' => $position->id]);
 
+        Session::factory()->create([
+            'position' => $position->callsign,
+            'student_id' => $student->id,
+            'taken_date' => now()->subDays(30),
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+            'session_done' => 1,
+        ]);
+
         Livewire::actingAs($this->panelUser)
             ->test(ExamSetup::class)
             ->set('data.position', $position->id)
-            ->set('data.student', $student->id)
-            ->call('setupExam')
-            ->assertDontSee($student->id);
+            ->assertDontSee((string) $student->cid);
     }
 
     #[Test]
@@ -275,9 +290,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(ExamSetup::class)
             ->set('data.position', $position->id)
-            ->set('data.student', $student->id)
-            ->call('setupExam')
-            ->assertSee($student->id);
+            ->assertSee((string) $student->cid);
     }
 
     #[Test]

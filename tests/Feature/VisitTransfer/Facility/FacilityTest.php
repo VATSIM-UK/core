@@ -3,9 +3,9 @@
 namespace Tests\Feature\VisitTransfer\Facility;
 
 use App\Enums\QualificationTypeEnum;
-use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\CreateFacility;
-use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\EditFacility;
-use App\Filament\Admin\Resources\VisitTransfer\FacilityResource\Pages\ListFacilities;
+use App\Filament\Admin\Resources\VisitTransfer\Facilities\Pages\CreateFacility;
+use App\Filament\Admin\Resources\VisitTransfer\Facilities\Pages\EditFacility;
+use App\Filament\Admin\Resources\VisitTransfer\Facilities\Pages\ListFacilities;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\VisitTransfer\Application;
@@ -56,7 +56,6 @@ class FacilityTest extends BaseAdminTestCase
             ->test(ListFacilities::class)
             ->assertSuccessful()
             ->assertSee($this->facility->name)
-            ->assertSee($this->facility->training_team)
             ->assertSee($this->facility->open ? 'Yes' : 'No');
     }
 

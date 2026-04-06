@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Admin\Account\Pages;
 
-use App\Filament\Admin\Resources\AccountResource\Pages\ViewAccount;
+use App\Filament\Admin\Resources\Accounts\Pages\ViewAccount;
 use App\Jobs\UpdateMember;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\State;
@@ -70,11 +70,33 @@ class ViewAccountPageTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->user);
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-            ->assertFormFieldIsHidden('email');
+            ->assertDontSee('Primary Email')
+            ->assertDontSee('Secondary Emails');
 
         $this->user->givePermissionTo('account.view-sensitive.*');
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-            ->assertFormFieldExists('email');
+            ->assertSee('Primary Email')
+            ->assertSee('Secondary Emails');
+    }
+
+    public function test_roster_status_shows_active_when_on_roster_and_inactive_when_not(): void
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+
+        Livewire::actingAs($this->user);
+
+        // Not on roster
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertSee('Roster Status')
+            ->assertSee('Inactive');
+
+        // On roster
+        $this->privacc->addState(State::findByCode('DIVISION'));
+        Roster::create(['account_id' => $this->privacc->getKey()]);
+
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
+            ->assertSee('Roster Status')
+            ->assertSee('Active');
     }
 
     public function test_cant_see_ban_relation_manager_without_permission()

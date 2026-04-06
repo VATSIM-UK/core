@@ -5,17 +5,21 @@ namespace App\Filament\Admin\Pages\Operations;
 use App\Filament\Admin\Helpers\Pages\BasePage;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Grid;
 use Illuminate\Support\Facades\DB;
 
-class GenerateQuarterlyStats extends BasePage
+class GenerateQuarterlyStats extends BasePage implements HasForms
 {
-    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+    use InteractsWithForms;
 
-    protected static ?string $navigationGroup = 'Operations';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static string $view = 'filament.pages.operations.generate-quarterly-stats';
+    protected static string|\UnitEnum|null $navigationGroup = 'Operations';
+
+    protected string $view = 'filament.pages.operations.generate-quarterly-stats';
 
     protected static ?string $navigationLabel = 'Quarterly Stats';
 
@@ -38,7 +42,7 @@ class GenerateQuarterlyStats extends BasePage
         $yearOptions = range(now()->year, 2016, -1);
 
         return [
-            Grid::make()->schema([
+            Grid::make()->columnSpanFull()->schema([
                 Select::make('quarter')
                     ->required()
                     ->inOptions()

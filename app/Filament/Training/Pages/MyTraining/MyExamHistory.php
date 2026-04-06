@@ -6,11 +6,11 @@ use Filament\Pages\Page;
 
 class MyExamHistory extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.training.pages.my-training.my-exam-history';
+    protected string $view = 'filament.training.pages.my-training.my-exam-history';
 
-    protected static ?string $navigationGroup = 'My Training';
+    protected static string|\UnitEnum|null $navigationGroup = 'My Training';
 
     protected static ?string $navigationLabel = 'My Exam History';
 
