@@ -17,7 +17,6 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -40,9 +39,12 @@ class RoleResource extends Resource
             ->components([
                 TextInput::make('name')->required()->unique(ignorable: fn ($record) => $record),
                 TextInput::make('guard_name')->default('web')->in(array_keys(config('auth.guards'))),
-                Grid::make(1)->columnSpanFull()->schema([
-                    CheckboxList::make('permissions')->relationship('permissions', 'name')->columns(3)->searchable()->bulkToggleable(),
-                ]),
+                CheckboxList::make('permissions')
+                    ->relationship('permissions', 'name')
+                    ->columns(3)
+                    ->searchable()
+                    ->bulkToggleable()
+                    ->columnSpanFull(),
             ]);
     }
 
