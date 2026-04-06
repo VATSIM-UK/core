@@ -117,7 +117,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->panelUser)
             ->test(AcceptedExamsTable::class)
-            ->assertTableActionHasUrl(name: 'Conduct', record: $exam, url: ConductExam::getUrl(['examId' => $exam->id]))
-            ->callTableAction('Conduct', record: $exam);
+            ->assertTableActionHasUrl('Conduct', ConductExam::getUrl(['examId' => $exam->id]), $exam)
+            ->callTableAction('Conduct', $exam);
     }
 }

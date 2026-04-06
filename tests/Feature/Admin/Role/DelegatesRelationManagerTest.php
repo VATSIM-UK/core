@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Admin\Role\RelationManagers;
 
-use App\Filament\Admin\Resources\RoleResource\Pages\EditRole;
-use App\Filament\Admin\Resources\RoleResource\RelationManagers\DelegatesRelationManager;
+use App\Filament\Admin\Resources\Roles\Pages\EditRole;
+use App\Filament\Admin\Resources\Roles\RelationManagers\DelegatesRelationManager;
 use App\Models\Mship\Account;
 use App\Services\Roles\DelegateRoleManagementService;
 use Illuminate\Foundation\Testing\RefreshDatabase;

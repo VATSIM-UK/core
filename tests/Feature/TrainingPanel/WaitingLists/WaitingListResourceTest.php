@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\WaitingLists;
 
-use App\Filament\Training\Resources\WaitingListResource;
+use App\Filament\Training\Resources\WaitingLists\WaitingListResource;
 use App\Policies\Training\WaitingListPolicy;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelResourceTestCase;
 

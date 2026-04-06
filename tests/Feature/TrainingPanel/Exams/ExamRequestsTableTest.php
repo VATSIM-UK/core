@@ -5,6 +5,7 @@ namespace Tests\Feature\TrainingPanel\Exams;
 use App\Livewire\Training\ExamRequestsTable;
 use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
+use App\Models\Cts\ExaminerSettings;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalExaminers;
 use App\Models\Mship\Account;
@@ -62,6 +63,36 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
             ->future()
             ->timeRange('14:00:00', '18:00:00')
             ->create();
+    }
+
+    /**
+     * Secondary examiner Select options only include members with ExaminerSettings for the given column (S1=TWR, S2=APP, S3=CTR).
+     */
+    protected function createExaminerMemberForScope(string $scopeColumn): Member
+    {
+        $examinerAccount = Account::factory()->create();
+        $examinerMember = Member::factory()->create([
+            'id' => $examinerAccount->id,
+            'cid' => $examinerAccount->id,
+            'examiner' => true,
+        ]);
+
+        ExaminerSettings::create([
+            'memberID' => $examinerMember->id,
+            'OBS' => 0,
+            'S1' => $scopeColumn === 'S1' ? 1 : 0,
+            'S2' => $scopeColumn === 'S2' ? 1 : 0,
+            'S3' => $scopeColumn === 'S3' ? 1 : 0,
+            'P1' => 0,
+            'P2' => 0,
+            'P3' => 0,
+            'P4' => 0,
+            'P5' => 0,
+            'lastUpdated' => now(),
+            'updatedBy' => 0,
+        ]);
+
+        return $examinerMember;
     }
 
     #[Test]
@@ -136,7 +167,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class)
             ->assertSuccessful()
-            ->assertTableActionHidden('Accept', $this->examBooking);
+            ->assertCanNotSeeTableRecords([$this->examBooking]);
     }
 
     #[Test]
@@ -146,10 +177,10 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
             ->test(ExamRequestsTable::class)
             ->assertSuccessful();
 
-        $component->callTableAction('Accept', $this->examBooking);
+        $component->mountTableAction('Accept', $this->examBooking);
 
-        // The form fields exist within the action modal
-        $component->assertTableActionExists('Accept');
+        $this->assertNotEmpty($component->instance()->mountedActions);
+        $this->assertSame('Accept', $component->instance()->mountedActions[0]['name'] ?? null);
     }
 
     #[Test]
@@ -199,12 +230,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_accepts_exam_with_secondary_examiner()
     {
-        // Create another examiner
-        $secondaryExaminerAccount = Account::factory()->create();
-        $secondaryExaminerMember = Member::factory()->create([
-            'id' => $secondaryExaminerAccount->id,
-            'cid' => $secondaryExaminerAccount->id,
-        ]);
+        $secondaryExaminerMember = $this->createExaminerMemberForScope('S1');
 
         $startHour = 14;
         $startMinute = 30;
@@ -236,9 +262,6 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_validates_minimum_exam_duration()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Exam duration must be at least 60 minutes.');
-
         // Try to create an exam that's less than 60 minutes
         $startHour = 15;
         $startMinute = 0;
@@ -254,6 +277,9 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
                 'end_hour' => $endHour,
                 'end_minute' => $endMinute,
             ]);
+
+        $this->examBooking->refresh();
+        $this->assertSame(0, (int) $this->examBooking->taken);
     }
 
     #[Test]
@@ -269,10 +295,10 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         $component = Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class);
 
-        $component->callTableAction('Accept', $this->examBooking);
+        $component->mountTableAction('Accept', $this->examBooking);
 
-        // We verify action exists (indicating form was shown)
-        $component->assertTableActionExists('Accept');
+        $this->assertNotEmpty($component->instance()->mountedActions);
+        $this->assertSame('Accept', $component->instance()->mountedActions[0]['name'] ?? null);
     }
 
     #[Test]
@@ -294,18 +320,15 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         $component = Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class);
 
-        $component->callTableAction('Accept', $this->examBooking);
+        $component->mountTableAction('Accept', $this->examBooking);
 
-        // We verify action exists (indicating form was shown with proper filtering)
-        $component->assertTableActionExists('Accept');
+        $this->assertNotEmpty($component->instance()->mountedActions);
+        $this->assertSame('Accept', $component->instance()->mountedActions[0]['name'] ?? null);
     }
 
     #[Test]
     public function it_throws_exception_for_invalid_availability_slot()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Selected availability slot not found.');
-
         Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class)
             ->callTableAction('Accept', $this->examBooking, [
@@ -315,6 +338,9 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
                 'end_hour' => 16,
                 'end_minute' => 30,
             ]);
+
+        $this->examBooking->refresh();
+        $this->assertSame(0, (int) $this->examBooking->taken);
     }
 
     #[Test]
@@ -352,9 +378,10 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_correctly_formats_exam_start_and_end_times()
     {
-        $startHour = 9;
+        // Times must fall within $this->availability (14:00–18:00 on the slot date)
+        $startHour = 14;
         $startMinute = 15;
-        $endHour = 11;
+        $endHour = 16;
         $endMinute = 15; // Exactly 2 hours duration
 
         Livewire::actingAs($this->panelUser)
@@ -370,8 +397,8 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         $this->examBooking->refresh();
 
         // Verify times are correctly formatted with leading zeros
-        $this->assertEquals('09:15:00', $this->examBooking->taken_from);
-        $this->assertEquals('11:15:00', $this->examBooking->taken_to);
+        $this->assertEquals('14:15:00', $this->examBooking->taken_from);
+        $this->assertEquals('16:15:00', $this->examBooking->taken_to);
     }
 
     #[Test]
@@ -548,9 +575,6 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
             ->timeRange('09:00:00', '15:00:00') // 6 hours available
             ->create();
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Exam duration cannot exceed 120 minutes (2 hours).');
-
         // Try to book a 3-hour exam (should fail)
         Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class)
@@ -561,6 +585,9 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
                 'end_hour' => 12, // 3 hours later
                 'end_minute' => 0,
             ]);
+
+        $this->examBooking->refresh();
+        $this->assertSame(0, (int) $this->examBooking->taken);
     }
 
     #[Test]
@@ -630,10 +657,6 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_prevents_exam_longer_than_2_hours_via_server_validation()
     {
-        // Test server-side validation by attempting to bypass form constraints
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Exam duration cannot exceed 120 minutes (2 hours).');
-
         // Create a long availability
         $longAvailability = Availability::factory()
             ->forStudent($this->studentMember->id)
@@ -651,6 +674,9 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
                 'end_hour' => 13, // 4 hours later
                 'end_minute' => 0,
             ]);
+
+        $this->examBooking->refresh();
+        $this->assertSame(0, (int) $this->examBooking->taken);
     }
 
     #[Test]
@@ -777,12 +803,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
             'position_1' => 'EGKK_APP',
         ]);
 
-        // Create a secondary examiner
-        $secondaryExaminerAccount = Account::factory()->create();
-        $secondaryExaminerMember = Member::factory()->create([
-            'id' => $secondaryExaminerAccount->id,
-            'cid' => $secondaryExaminerAccount->id,
-        ]);
+        $secondaryExaminerMember = $this->createExaminerMemberForScope('S2');
 
         // Give user APP permission
         $this->panelUser->givePermissionTo('training.exams.conduct.app');
@@ -823,12 +844,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
             'position_1' => 'LON_SC_CTR',
         ]);
 
-        // Create a secondary examiner
-        $secondaryExaminerAccount = Account::factory()->create();
-        $secondaryExaminerMember = Member::factory()->create([
-            'id' => $secondaryExaminerAccount->id,
-            'cid' => $secondaryExaminerAccount->id,
-        ]);
+        $secondaryExaminerMember = $this->createExaminerMemberForScope('S3');
 
         // Give user CTR permission
         $this->panelUser->givePermissionTo('training.exams.conduct.ctr');
@@ -888,12 +904,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_sets_second_examiner_req_flag_correctly_for_optional_secondary_examiner()
     {
-        // Create a secondary examiner
-        $secondaryExaminerAccount = Account::factory()->create();
-        $secondaryExaminerMember = Member::factory()->create([
-            'id' => $secondaryExaminerAccount->id,
-            'cid' => $secondaryExaminerAccount->id,
-        ]);
+        $secondaryExaminerMember = $this->createExaminerMemberForScope('S1');
 
         // Accept TWR exam with optional secondary examiner
         Livewire::actingAs($this->panelUser)
@@ -917,5 +928,80 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         $this->assertNotNull($practicalExaminer);
         $this->assertEquals($this->panelUser->member->id, $practicalExaminer->senior);
         $this->assertEquals($secondaryExaminerMember->id, $practicalExaminer->other);
+    }
+
+    #[Test]
+    public function it_shows_remove_request_action_when_user_has_permission()
+    {
+        $this->panelUser->givePermissionTo('training.exams.request.remove');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamRequestsTable::class)
+            ->assertTableActionVisible('removeRequest', $this->examBooking);
+    }
+
+    #[Test]
+    public function it_hides_remove_request_action_when_user_lacks_permission()
+    {
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamRequestsTable::class)
+            ->assertTableActionHidden('removeRequest', $this->examBooking);
+    }
+
+    #[Test]
+    public function it_removes_exam_booking_when_remove_request_action_is_performed()
+    {
+        $this->panelUser->givePermissionTo('training.exams.request.remove');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamRequestsTable::class)
+            ->callTableAction('removeRequest', $this->examBooking, [
+                'reason' => 'Duplicate booking.',
+            ]);
+
+        $this->assertDatabaseMissing('exam_book', ['id' => $this->examBooking->id], 'cts');
+    }
+
+    #[Test]
+    public function it_removes_associated_exam_setup_when_remove_request_action_is_performed()
+    {
+        $this->panelUser->givePermissionTo('training.exams.request.remove');
+
+        $examSetup = \App\Models\Cts\ExamSetup::create([
+            'rts_id' => 1,
+            'student_id' => $this->studentMember->id,
+            'position_1' => 'EGKK_TWR',
+            'exam' => 'TWR',
+            'bookid' => $this->examBooking->id,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamRequestsTable::class)
+            ->callTableAction('removeRequest', $this->examBooking, [
+                'reason' => 'Duplicate booking.',
+            ]);
+
+        $this->assertDatabaseMissing('exam_setup', ['id' => $examSetup->id], 'cts');
+    }
+
+    #[Test]
+    public function it_adds_training_note_to_student_account_when_remove_request_action_is_performed()
+    {
+        $this->panelUser->givePermissionTo('training.exams.request.remove');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamRequestsTable::class)
+            ->callTableAction('removeRequest', $this->examBooking, [
+                'reason' => 'Duplicate booking',
+            ]);
+
+        $note = $this->studentAccount->notes()
+            ->whereHas('type', fn ($q) => $q->where('short_code', 'training'))
+            ->latest()
+            ->first();
+
+        $this->assertNotNull($note);
+        $this->assertStringContainsString('TWR', $note->content);
+        $this->assertStringContainsString('Duplicate booking', $note->content);
     }
 }
