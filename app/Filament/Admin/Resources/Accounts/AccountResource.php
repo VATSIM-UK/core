@@ -22,20 +22,18 @@ use App\Models\Roster;
 use Carbon\CarbonInterface;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
 
 class AccountResource extends Resource implements DefinesGatedAttributes
 {
@@ -76,59 +74,80 @@ class AccountResource extends Resource implements DefinesGatedAttributes
     {
         return $schema
             ->components([
-                Fieldset::make('Basic Details')->columnSpanFull()->schema([
-                    Grid::make(3)->columnSpanFull()->schema([
-                        Placeholder::make('central_account_name')
-                            ->content(fn ($record) => $record->name_first.' '.$record->name_last)
-                            ->visibleOn('view'),
+                Fieldset::make('Basic Details')
+                    ->columnSpanFull()
+                    ->schema([
                         TextInput::make('nickname')
+                            ->label('Preferred Name'),
+                    ]),
+            ]);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Section::make('Basic Details')
+                    ->columnSpanFull()
+                    ->columns(3)
+                    ->schema([
+                        TextEntry::make('name')
+                            ->label('Name')
+                            ->getStateUsing(fn (Account $record) => $record->name_first.' '.$record->name_last),
+                        TextEntry::make('nickname')
                             ->label('Preferred Name'),
                         TextEntry::make('id')
                             ->label('CID')
-                            ->state(fn (Account $record) => (string) $record->id)
-                            ->visibleOn('view')
                             ->copyable(),
+
+                        TextEntry::make('email')
+                            ->label('Primary Email')
+                            ->copyable()
+                            ->visible(fn (Account $record) => auth()->user()->can('viewSensitive', $record)),
+                        TextEntry::make('secondaryEmails.email')
+                            ->label('Secondary Emails')
+                            ->listWithLineBreaks()
+                            ->copyable()
+                            ->visible(fn (Account $record) => auth()->user()->can('viewSensitive', $record)),
+
+                        TextEntry::make('has_secondary_password')
+                            ->label('Has Secondary Password')
+                            ->getStateUsing(fn (Account $record) => $record->hasPassword() ? 'Yes' : 'No'),
+                        TextEntry::make('discord_id')
+                            ->label('Discord ID')
+                            ->getStateUsing(fn (Account $record) => $record->discord_id ?? 'Not Linked'),
+                        TextEntry::make('roster_status')
+                            ->label('Roster Status')
+                            ->badge()
+                            ->getStateUsing(fn (Account $record) => Roster::where('account_id', $record->id)->exists() ? 'Active' : 'Inactive')
+                            ->icon(fn (string $state): string => $state === 'Active' ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+                            ->color(fn (string $state): string => $state === 'Active' ? 'success' : 'danger'),
+                        TextEntry::make('last_seen_controlling_uk')
+                            ->label('Last UK Controlling Session')
+                            ->getStateUsing(fn (Account $record) => $record->lastSeenControllingUK()?->format('d M Y, H:i') ?? 'Never Controlled'),
                     ]),
 
-                    Placeholder::make('has_secondary_password')->content(fn ($record) => $record->hasPassword() ? 'Yes' : 'No'),
-                    Placeholder::make('discord_id')->label('Discord ID')->content(fn ($record) => $record->discord_id ?? new HtmlString('<i>Not Linked</i>')),
-                    Placeholder::make('roster_status')->label('Roster Status')->content(fn ($record) => Roster::where('account_id', $record->id)->exists() ? 'Active' : 'Inactive'),
-                    Placeholder::make('last_seen_controlling_uk')->label('Last UK Controlling Session')->content(fn ($record) => $record->lastSeenControllingUK()?->format('d M Y, H:i') ?? 'Never Controlled'),
+                Grid::make(2)
+                    ->columnSpanFull()
+                    ->schema([
+                        Section::make('State')
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('vatsim_region')
+                                    ->label('VATSIM Region')
+                                    ->getStateUsing(fn (Account $record) => $record->primary_permanent_state?->pivot?->region),
+                                TextEntry::make('vatsim_division')
+                                    ->label('VATSIM Division')
+                                    ->getStateUsing(fn (Account $record) => $record->primary_permanent_state?->pivot?->division),
+                                TextEntry::make('uk_primary_state')
+                                    ->label('UK Primary State')
+                                    ->getStateUsing(fn (Account $record) => $record->primary_state?->name),
+                            ]),
 
-                    Fieldset::make('Emails')->columnSpanFull()->schema([
-                        TextInput::make('email')
-                            ->label('Primary Email')
-                            ->disabled()
-                            ->copyable(),
-
-                        Repeater::make('secondaryEmails')
-                            ->relationship()
-                            ->schema([TextInput::make('email')])->disabled(),
-                    ])->visible(fn ($record, $context) => auth()->user()->can('viewSensitive', $record) && $context === 'view'),
-
-                    Fieldset::make('State')->columnSpanFull()->schema([
-                        Grid::make(3)->columnSpanFull()->schema([
-                            Placeholder::make('vatsim_region')
-                                ->label('VATSIM Region')
-                                ->content(fn ($record) => $record->primary_permanent_state?->pivot?->region),
-                            Placeholder::make('vatsim_division')
-                                ->label('VATSIM Division')
-                                ->content(fn ($record) => $record->primary_permanent_state?->pivot?->division),
-                            Placeholder::make('uk_primary_state')
-                                ->label('UK Primary State')
-                                ->content(fn ($record) => $record->primary_state?->name),
-                        ]),
-                    ])->visibleOn('view'),
-
-                    Fieldset::make('Qualifications')->columnSpanFull()->schema(function ($record) {
-                        return [
-                            Grid::make(3)
-                                ->columnSpanFull()
-                                ->schema(static::makeQualificationSummaryPlaceholders($record))
-                                ->visibleOn('view'),
-                        ];
-                    })->visibleOn('view'),
-                ]),
+                        Section::make('Qualifications')
+                            ->columns(1)
+                            ->schema(fn (Account $record) => static::makeQualificationSummaryEntries($record)),
+                    ]),
             ]);
     }
 
@@ -196,12 +215,14 @@ class AccountResource extends Resource implements DefinesGatedAttributes
     }
 
     /** Maps the account's active qualifications into a set of placeholder fields */
-    private static function makeQualificationSummaryPlaceholders($record): array
+    private static function makeQualificationSummaryEntries(Account $record): array
     {
-        return $record->active_qualifications->map(function ($qualification) {
-            return Placeholder::make("qualification_{$qualification->type}")
-                ->label(QualificationTypeEnum::from($qualification->type)->human())
-                ->content("{$qualification->name_long} ({$qualification->code})");
-        })->all();
+        return $record->active_qualifications
+            ->map(function ($qualification) {
+                return TextEntry::make("qualification_{$qualification->type}")
+                    ->label(QualificationTypeEnum::from($qualification->type)->human())
+                    ->state("{$qualification->name_long} ({$qualification->code})");
+            })
+            ->all();
     }
 }
