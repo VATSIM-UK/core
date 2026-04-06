@@ -920,31 +920,31 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_shows_delete_request_action_when_user_has_permission()
+    public function it_shows_remove_request_action_when_user_has_permission()
     {
-        $this->panelUser->givePermissionTo('training.exams.delete-request');
+        $this->panelUser->givePermissionTo('training.exams.remove-request');
 
         Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class)
-            ->assertTableActionVisible('deleteRequest', $this->examBooking);
+            ->assertTableActionVisible('removeRequest', $this->examBooking);
     }
 
     #[Test]
-    public function it_hides_delete_request_action_when_user_lacks_permission()
+    public function it_hides_remove_request_action_when_user_lacks_permission()
     {
         Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class)
-            ->assertTableActionHidden('deleteRequest', $this->examBooking);
+            ->assertTableActionHidden('removeRequest', $this->examBooking);
     }
 
     #[Test]
-    public function it_deletes_exam_booking_when_delete_request_action_is_performed()
+    public function it_removes_exam_booking_when_remove_request_action_is_performed()
     {
-        $this->panelUser->givePermissionTo('training.exams.delete-request');
+        $this->panelUser->givePermissionTo('training.exams.remove-request');
 
         Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class)
-            ->callTableAction('deleteRequest', $this->examBooking, [
+            ->callTableAction('removeRequest', $this->examBooking, [
                 'reason' => 'Duplicate booking.',
             ]);
 
@@ -954,9 +954,9 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_deletes_associated_exam_setup_when_delete_request_action_is_performed()
+    public function it_removes_associated_exam_setup_when_remove_request_action_is_performed()
     {
-        $this->panelUser->givePermissionTo('training.exams.delete-request');
+        $this->panelUser->givePermissionTo('training.exams.remove-request');
 
         $examSetup = \App\Models\Cts\ExamSetup::create([
             'rts_id' => 1,
@@ -968,7 +968,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class)
-            ->callTableAction('deleteRequest', $this->examBooking, [
+            ->callTableAction('removeRequest', $this->examBooking, [
                 'reason' => 'Duplicate booking.',
             ]);
 
@@ -978,13 +978,13 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_adds_training_note_to_student_account_when_delete_request_action_is_performed()
+    public function it_adds_training_note_to_student_account_when_remove_request_action_is_performed()
     {
-        $this->panelUser->givePermissionTo('training.exams.delete-request');
+        $this->panelUser->givePermissionTo('training.exams.remove-request');
 
         Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class)
-            ->callTableAction('deleteRequest', $this->examBooking, [
+            ->callTableAction('removeRequest', $this->examBooking, [
                 'reason' => 'Duplicate booking',
             ]);
 
