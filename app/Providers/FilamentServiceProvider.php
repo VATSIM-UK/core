@@ -2,7 +2,12 @@
 
 namespace App\Providers;
 
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
+use Filament\Resources\Resource;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -34,8 +39,8 @@ class FilamentServiceProvider extends ServiceProvider
         /**
          * Returns a URL to view the resource
          */
-        \Filament\Resources\Resource::macro('urlToView', function (?Model $record): ?string {
-            /** @var \Filament\Resources\Resource $this */
+        Resource::macro('urlToView', function (?Model $record): ?string {
+            /** @var resource $this */
             if (! $record) {
                 return null;
             }
@@ -46,7 +51,7 @@ class FilamentServiceProvider extends ServiceProvider
         /**
          * Configures a text column with a link which routes to the resource's view page
          */
-        \Filament\Tables\Columns\TextColumn::macro('viewResource', function (string $resourceClass, ?string $attribute = null): \Filament\Tables\Columns\TextColumn {
+        TextColumn::macro('viewResource', function (string $resourceClass, ?string $attribute = null): TextColumn {
             /** @var \Filament\Tables\Actions\TextColumn $this */
             $attribute = $attribute ?? explode('.', $this->getName())[0]; // We assume that the column name is like user or user.name - we want the first part to get the relation
 
@@ -58,7 +63,7 @@ class FilamentServiceProvider extends ServiceProvider
         /**
          * Configures a table view action to route to the resource's view page
          */
-        \Filament\Tables\Actions\ViewAction::macro('resource', function (string $resourceClass): \Filament\Tables\Actions\ViewAction {
+        ViewAction::macro('resource', function (string $resourceClass): ViewAction {
             /** @var \Filament\Tables\Actions\ViewAction $this */
             return $this->url(fn ($record) => $resourceClass::urlToView($record));
         });
@@ -66,8 +71,8 @@ class FilamentServiceProvider extends ServiceProvider
         /**
          * Defines a relationship that is linked to a resource
          */
-        \Filament\Forms\Components\Select::macro('resourceRelationship', function (string $resourceClass, ?string $relationName = null, ?string $titleAttribute = null): \Filament\Forms\Components\Select {
-            /** @var \Filament\Forms\Components\Select $this */
+        Select::macro('resourceRelationship', function (string $resourceClass, ?string $relationName = null, ?string $titleAttribute = null): Select {
+            /** @var Select $this */
             $relationModelName = class_basename($resourceClass::getModel());
 
             // Define the relationship for the selection, using the relation name (guessed from the model if required)
@@ -90,18 +95,18 @@ class FilamentServiceProvider extends ServiceProvider
         /**
          * Defines a suitable "in" validation requirement that the selected value exists in the given options
          */
-        \Filament\Forms\Components\Select::macro('inOptions', function (): \Filament\Forms\Components\Select {
-            /** @var \Filament\Forms\Components\Select $this */
+        Select::macro('inOptions', function (): Select {
+            /** @var Select $this */
             return $this->in(fn ($component) => array_keys($component->getOptions()));
         });
 
-        \Filament\Tables\Columns\IconColumn::macro('timestampBoolean', function (): \Filament\Tables\Columns\IconColumn {
-            /** @var \Filament\Tables\Columns\IconColumn $this */
+        IconColumn::macro('timestampBoolean', function (): IconColumn {
+            /** @var IconColumn $this */
             return $this->getStateUsing(fn ($record) => $record->{$this->getName()} !== null)->boolean();
         });
 
-        \Filament\Tables\Columns\TextColumn::macro('isoDateTimeFormat', function (string $format): \Filament\Tables\Columns\TextColumn {
-            /** @var \Filament\Tables\Columns\TextColumn $this */
+        TextColumn::macro('isoDateTimeFormat', function (string $format): TextColumn {
+            /** @var TextColumn $this */
             return $this->formatStateUsing(fn ($state) => $state->settings(['formatFunction' => 'isoFormat'])->format($format));
         });
     }

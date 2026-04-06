@@ -6,20 +6,22 @@ use App\Filament\Admin\Helpers\Pages\BasePage;
 use App\Filament\Pages\PilotTraining\Js;
 use App\Services\Admin\PilotTrainingStats;
 use Carbon\Carbon;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Grid;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class GeneratePilotQuarterlyStats extends BasePage
+class GeneratePilotQuarterlyStats extends BasePage implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static ?string $navigationGroup = 'Pilot Training';
+    protected static string|\UnitEnum|null $navigationGroup = 'Pilot Training';
 
-    protected static string $view = 'filament.pages.pilot-training.generate-pilot-quarterly-stats';
+    protected string $view = 'filament.pages.pilot-training.generate-pilot-quarterly-stats';
 
     protected static ?string $navigationLabel = 'Quarterly Stats';
 
@@ -27,7 +29,7 @@ class GeneratePilotQuarterlyStats extends BasePage
 
     public ?string $year = null;
 
-    /** @var \Illuminate\Support\Collection|null */
+    /** @var Collection|null */
     public $statistics = null;
 
     private $quarterMappings = ['01-01' => 'Q1', '04-01' => 'Q2', '07-01' => 'Q3', '10-01' => 'Q4'];
@@ -43,7 +45,7 @@ class GeneratePilotQuarterlyStats extends BasePage
         $yearOptions = range(now()->year, 2016, -1);
 
         return [
-            Grid::make()->schema([
+            Grid::make()->columnSpanFull()->schema([
                 Select::make('quarter')
                     ->required()
                     ->inOptions()

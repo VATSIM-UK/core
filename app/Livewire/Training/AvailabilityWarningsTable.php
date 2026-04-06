@@ -8,28 +8,25 @@ use App\Livewire\Training\Support\TrainingPlaceAvailabilityGraceNotice;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\AvailabilityWarnings;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Support\Contracts\TranslatableContentDriver;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class AvailabilityWarningsTable extends Component implements HasForms, HasTable
+class AvailabilityWarningsTable extends Component implements HasActions, HasForms, HasTable
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
 
     public TrainingPlace $trainingPlace;
-
-    public function makeFilamentTranslatableContentDriver(): ?TranslatableContentDriver
-    {
-        return null;
-    }
 
     public function table(Table $table): Table
     {
@@ -78,7 +75,7 @@ class AvailabilityWarningsTable extends Component implements HasForms, HasTable
                     ->date('d/m/Y')
                     ->placeholder('—'),
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     Action::make('delete')
                         ->label('Delete')

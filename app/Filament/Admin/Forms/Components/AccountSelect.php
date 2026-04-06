@@ -2,15 +2,17 @@
 
 namespace App\Filament\Admin\Forms\Components;
 
-use App\Filament\Admin\Resources\AccountResource;
+use App\Filament\Admin\Resources\Accounts\AccountResource;
 use Filament\Forms\Components\Select;
 
 class AccountSelect extends Select
 {
     protected string $relationshipName = 'account';
 
-    public static function make(string $relationshipName = 'account'): static
+    public static function make(?string $relationshipName = null): static
     {
+        $relationshipName ??= 'account';
+
         return parent::make($relationshipName.'_id')
             ->searchable(AccountResource::getGloballySearchableAttributes())
             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)

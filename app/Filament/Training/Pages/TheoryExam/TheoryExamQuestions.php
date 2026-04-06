@@ -4,13 +4,14 @@ namespace App\Filament\Training\Pages\TheoryExam;
 
 use App\Models\Cts\TheoryQuestion;
 use Carbon\Carbon;
-use Filament\Forms\Components\Section;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\Action;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -21,11 +22,11 @@ class TheoryExamQuestions extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-book-open';
 
-    protected static string $view = 'filament.training.pages.theory-exam-questions';
+    protected string $view = 'filament.training.pages.theory-exam-questions';
 
-    protected static ?string $navigationGroup = 'Theory';
+    protected static string|\UnitEnum|null $navigationGroup = 'Theory';
 
     public string $level = 'S1';
 
@@ -59,15 +60,15 @@ class TheoryExamQuestions extends Page implements HasTable
         $levelButtons = collect($this->levels)
             ->filter(fn ($level) => in_array($level, $this->allowedLevels))
             ->map(function ($level) {
-                return \Filament\Actions\Action::make($level)
+                return Action::make($level)
                     ->label($level)
                     ->url(fn () => static::getUrl(['level' => $level]))
                     ->color($this->level === $level ? 'primary' : 'gray');
-            })->toArray();
+            })->all();
 
-        $createButton = \Filament\Actions\CreateAction::make('create')
+        $createButton = CreateAction::make('create')
             ->label('Create Question')
-            ->form($this->getQuestionFormSchema())
+            ->schema($this->getQuestionFormSchema())
             ->color('success')
             ->using(function (array $data, $action) {
                 TheoryQuestion::create([
@@ -106,9 +107,9 @@ class TheoryExamQuestions extends Page implements HasTable
                     ->boolean()
                     ->label('Active')->sortable(),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
-                    ->form($this->getQuestionFormSchema())
+                    ->schema($this->getQuestionFormSchema())
                     ->icon('heroicon-o-pencil')
                     ->fillForm(fn ($record) => [
                         ...$record->toArray(),
@@ -168,6 +169,7 @@ class TheoryExamQuestions extends Page implements HasTable
             Section::make('Additional Information')
                 ->collapsed()
                 ->columns(2)
+                ->columnSpanFull()
                 ->schema([
                     TextInput::make('added_by')->disabled(),
                     TextInput::make('added_date')->disabled(),

@@ -7,25 +7,26 @@ use App\Filament\Admin\Pages\ATCTraining\Widgets\EndorsementWidget;
 use App\Filament\Admin\Pages\ATCTraining\Widgets\RosterWidget;
 use App\Services\Admin\ATCTrainingStats;
 use Carbon\Carbon;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Grid;
 
-class GenerateATCTrainingQuarterlyStats extends BasePage
+class GenerateATCTrainingQuarterlyStats extends BasePage implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static ?string $navigationGroup = 'ATC Training';
+    protected static string|\UnitEnum|null $navigationGroup = 'ATC Training';
 
-    protected static string $view = 'filament.pages.atc-training.generate-atc-quarterly-stats';
+    protected string $view = 'filament.pages.atc-training.generate-atc-quarterly-stats';
 
     protected static ?string $navigationLabel = 'Quarterly Stats';
 
     protected static ?string $title = 'ATC Quarterly Stats';
 
-    public static function getSlug(): string
+    public static function getSlug(?\Filament\Panel $panel = null): string
     {
         return 'generate-atc-quarterly-stats';
     }

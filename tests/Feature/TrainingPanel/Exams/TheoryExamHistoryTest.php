@@ -434,7 +434,7 @@ class TheoryExamHistoryTest extends BaseTrainingPanelTestCase
         $component = Livewire::actingAs($this->panelUser)
             ->test(TheoryExamHistory::class)
             ->mountTableAction('view', $result)
-            ->assertSee('What is the correct ATC phrase for climb?')
-            ->assertSee('Climb flight level 130');
+            ->assertMountedActionModalSee('What is the correct ATC phrase for climb?')
+            ->assertMountedActionModalSee('Climb flight level 130');
     }
 }

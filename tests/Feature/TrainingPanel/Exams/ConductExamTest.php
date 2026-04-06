@@ -245,8 +245,8 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             ->set('examResultData.exam_result', PracticalResult::PASSED)
             ->set('examResultData.additional_comments', 'Test notes for test result')
             ->call('completeExam')
-            ->assertHasNoFormErrors(formName: 'form')
-            ->assertHasNoFormErrors(formName: 'examResultForm');
+            ->assertHasNoFormErrors(form: 'form')
+            ->assertHasNoFormErrors(form: 'examResultForm');
 
         $this->assertDatabaseHas('practical_results', data: [
             'examid' => $exam->id,

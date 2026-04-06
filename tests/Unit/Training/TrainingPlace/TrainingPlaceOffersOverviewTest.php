@@ -3,12 +3,13 @@
 namespace Tests\Unit\Training\TrainingPlace;
 
 use App\Enums\TrainingPlaceOfferStatus;
-use App\Filament\Training\Resources\TrainingPlaceResource\Widgets\TrainingPlaceOffersOverview;
+use App\Filament\Training\Resources\TrainingPlaces\Widgets\TrainingPlaceOffersOverview;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
@@ -104,7 +105,9 @@ class TrainingPlaceOffersOverviewTest extends TestCase
         $declinedOffer = $this->createOffer($this->atcWaitingList, ['status' => TrainingPlaceOfferStatus::Declined]);
 
         Livewire::test(TrainingPlaceOffersOverview::class)
-            ->assertTableActionHidden('rescind', $declinedOffer);
+            ->filterTable('status', TrainingPlaceOfferStatus::Declined)
+            ->assertCanSeeTableRecords([$declinedOffer])
+            ->assertActionHidden(TestAction::make('rescind')->table($declinedOffer));
     }
 
     #[Test]

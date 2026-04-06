@@ -3,7 +3,7 @@
 namespace App\Filament\Admin\Resources\RosterUpdates\Pages;
 
 use App\Filament\Admin\Helpers\Pages\BaseListRecordsPage;
-use App\Filament\Admin\Resources\RosterUpdateResource;
+use App\Filament\Admin\Resources\RosterUpdates\RosterUpdateResource;
 
 class ListRosterUpdates extends BaseListRecordsPage
 {

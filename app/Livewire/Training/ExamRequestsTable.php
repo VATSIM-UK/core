@@ -8,14 +8,16 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\PracticalExaminers;
 use App\Repositories\Cts\ExaminerRepository;
 use Carbon\Carbon;
-use Filament\Forms\Components\Grid;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\Action;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -23,8 +25,9 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class ExamRequestsTable extends Component implements HasForms, HasTable
+class ExamRequestsTable extends Component implements HasActions, HasForms, HasTable
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
 
@@ -42,7 +45,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                 TextColumn::make('exam')->label('Level'),
                 TextColumn::make('position_1')->label('Position'),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('Accept')
                     ->color('success')
                     ->icon('heroicon-o-check')
@@ -51,6 +54,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
                     )
                     ->form([
                         Grid::make(3)
+                            ->columnSpanFull()
                             ->schema([
                                 Placeholder::make('student_name')
                                     ->label('Student Name')
@@ -104,6 +108,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
 
                         Grid::make(2)
                             ->visible(fn (Get $get) => $get('availability_slot'))
+                            ->columnSpanFull()
                             ->schema([
                                 Select::make('start_hour')
                                     ->label('Start Hour')
@@ -161,6 +166,7 @@ class ExamRequestsTable extends Component implements HasForms, HasTable
 
                         Grid::make(2)
                             ->visible(fn (Get $get) => $get('availability_slot') && $get('start_hour') !== null && $get('start_minute') !== null)
+                            ->columnSpanFull()
                             ->schema([
                                 Select::make('end_hour')
                                     ->label('End Hour')
