@@ -4,7 +4,6 @@ namespace App\Filament\Admin\Pages\Operations;
 
 use App\Filament\Admin\Helpers\Pages\BasePage;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Endorsement;
 use Carbon\Carbon;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -72,9 +71,6 @@ class GenerateQuarterlyStats extends BasePage implements HasForms
                 ['name' => 'Visiting Controllers Above S1', 'value' => $this->visitingControllersAboveS1($startDate, $endDate)],
                 ['name' => 'Completed Transfer (Ex OBS)', 'value' => $this->completedTransfersExObs($startDate, $endDate)],
             ],
-            'Completed Mentoring Sessions' => $this->completedMentoringSessions($startDate, $endDate),
-            'Exam Passes' => $this->examPasses($startDate, $endDate),
-            'Issued Position Group Endorsements' => $this->issuedPositionGroupEndorsements($startDate, $endDate),
         ]);
     }
 
@@ -147,45 +143,5 @@ class GenerateQuarterlyStats extends BasePage implements HasForms
         })->whereHas('qualifications', function ($q) {
             $q->whereBetween('mship_qualification.id', [3, 10]);
         })->count();
-    }
-
-    private function completedMentoringSessions(Carbon $startDate, Carbon $endDate)
-    {
-        return DB::connection('cts')
-            ->table('sessions')
-            ->select('rts.name', DB::raw('count(*) as total'))
-            ->join('rts', 'sessions.rts_id', '=', 'rts.id')
-            ->whereBetween('taken_date', [$startDate, $endDate])
-            ->whereNull('cancelled_datetime')
-            ->where('noShow', '=', 0)
-            ->groupBy('rts_id')
-            ->get()
-            ->flatMap(fn ($value) => [['name' => $value->name, 'value' => $value->total]])
-            ->toArray();
-    }
-
-    private function issuedPositionGroupEndorsements(Carbon $startDate, Carbon $endDate)
-    {
-        return Endorsement::with('endorsable')
-            ->whereBetween('mship_account_endorsement.created_at', [$startDate, $endDate])
-            ->join('position_groups', 'position_groups.id', 'mship_account_endorsement.endorsable_id')
-            ->groupBy('position_groups.id', 'position_groups.name')
-            ->select(['position_groups.name', 'position_groups.id', DB::raw('count(*) as total')])
-            ->get()
-            ->flatMap(fn ($value) => [['name' => $value->name, 'value' => $value->total]])
-            ->toArray();
-    }
-
-    private function examPasses(Carbon $startDate, Carbon $endDate)
-    {
-        return DB::connection('cts')
-            ->table('practical_results')
-            ->select('exam', DB::raw('count(*) as total'))
-            ->whereBetween('date', [$startDate, $endDate])
-            ->where('result', '=', 'P')
-            ->groupBy('exam')
-            ->get()
-            ->flatMap(fn ($value) => [['name' => $value->exam, 'value' => $value->total]])
-            ->toArray();
     }
 }
