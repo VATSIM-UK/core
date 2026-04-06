@@ -15,11 +15,11 @@ class MyPendingExams extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
 
-    protected static string $view = 'filament.training.pages.my-training.my-pending-exams';
+    protected string $view = 'filament.training.pages.my-training.my-pending-exams';
 
-    protected static ?string $navigationGroup = 'My Training';
+    protected static string|\UnitEnum|null $navigationGroup = 'My Training';
 
     protected static ?string $navigationLabel = 'My Pending Exams';
 
@@ -45,21 +45,32 @@ class MyPendingExams extends Page implements HasTable
                         'setup_date'
                     )
                     ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
-                    ->whereHas('student', fn ($q) => $q->where('cid', $user->id))
+                    ->whereHas('student', fn ($query) => $query->where('cid', $user->id))
                     ->with(['student'])
                     ->orderByDesc('setup_date')
             )
             ->columns([
-                TextColumn::make('exam')->label('Exam'),
-                TextColumn::make('position_1')->label('Position'),
+                TextColumn::make('exam')
+                    ->label('Exam'),
+
+                TextColumn::make('position_1')
+                    ->label('Position'),
+
                 TextColumn::make('taken_date')
                     ->label('Exam Date')
-                    ->getStateUsing(fn ($record) => $record->taken_date ?? null)
+                    ->state(fn ($record) => $record->taken_date)
                     ->date()
                     ->placeholder('Not yet scheduled'),
+
                 TextColumn::make('taken_time')
                     ->label('Exam Time')
-                    ->getStateUsing(fn ($record) => $record->taken ? Carbon::parse($record->start_date)->format('H:i').'Z – '.Carbon::parse($record->end_date)->format('H:i').'Z' : null)
+                    ->state(function ($record): ?string {
+                        if (! $record->taken) {
+                            return null;
+                        }
+
+                        return Carbon::parse($record->start_date)->format('H:i').'Z – '.Carbon::parse($record->end_date)->format('H:i').'Z';
+                    })
                     ->placeholder('Not yet scheduled'),
             ])
             ->paginated(false)
