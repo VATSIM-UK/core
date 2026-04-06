@@ -51,7 +51,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.exams.conduct.p2',
             'training.exams.conduct.p3',
             'training.exams.override-result',
-            'training.exams.remove-request',
+            'training.exams.request.remove',
             'training.theory.access',
             'training.theory.view.*',
             'training.theory.view.obs',

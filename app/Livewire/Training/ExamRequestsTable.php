@@ -320,7 +320,7 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                         ->label('Remove Exam Request')
                         ->color('danger')
                         ->icon('heroicon-o-x-circle')
-                        ->visible(auth()->user()->can('training.exams.remove-request'))
+                        ->visible(auth()->user()->can('training.exams.request.remove'))
                         ->requiresConfirmation()
                         ->modalHeading('Remove Exam Request')
                         ->modalDescription(fn (ExamBooking $record) => "Are you sure you want to remove the {$record->exam} exam request for {$record->student->name} ({$record->student->cid})? This cannot be undone.")
