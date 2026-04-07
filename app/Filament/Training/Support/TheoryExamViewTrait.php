@@ -25,8 +25,7 @@ trait TheoryExamViewTrait
 
             $givenAnswer = $record->getOptionText($question, $answer->answer_given);
             $correctAnswer = $record->getOptionText($question, $question->answer ?? null);
-
-            $isCorrect = $answer->answer_given == ($question->answer ?? null);
+            $isCorrect = (int) $answer->correct === 1;
 
             return Fieldset::make("Question {$number}")
                 ->schema([
