@@ -98,7 +98,7 @@
         "ext-json": "*",
         "brianium/paratest": "^7.17.0",
         "fakerphp/faker": "^1.9.1",
-        "filament/upgrade": "^4.0",
+        "filament/upgrade": "^5.4",
         "laravel/homestead": "^15.0.1",
         "laravel/legacy-factories": "^1.1",
         "laravel/pint": "^1.10",
