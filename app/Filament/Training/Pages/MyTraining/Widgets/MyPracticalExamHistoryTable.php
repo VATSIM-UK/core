@@ -16,6 +16,8 @@ class MyPracticalExamHistoryTable extends BaseWidget
 
     protected int|string|array $columnSpan = 'full';
 
+    protected static ?string $id = 'my-practical-exam-history-table';
+
     public function table(Table $table): Table
     {
         $examHistoryService = app(ExamHistoryService::class);

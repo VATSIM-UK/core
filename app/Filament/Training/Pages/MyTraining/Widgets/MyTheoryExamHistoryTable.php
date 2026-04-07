@@ -4,9 +4,9 @@ namespace App\Filament\Training\Pages\MyTraining\Widgets;
 
 use App\Filament\Training\Support\TheoryExamViewTrait;
 use App\Repositories\Cts\TheoryExamResultRepository;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Actions\ViewAction;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class MyTheoryExamHistoryTable extends BaseWidget
@@ -16,6 +16,8 @@ class MyTheoryExamHistoryTable extends BaseWidget
     protected static ?string $heading = 'Theory Exam History';
 
     protected int|string|array $columnSpan = 'full';
+
+    protected static ?string $id = 'my-theory-exam-history-table';
 
     public function table(Table $table): Table
     {
