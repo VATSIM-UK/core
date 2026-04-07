@@ -3,7 +3,7 @@
 namespace App\Jobs\Middleware;
 
 use Illuminate\Support\Facades\Redis;
-use Predis\Connection\ConnectionException;
+use Predis\PredisException;
 
 class RateLimited
 {
@@ -41,7 +41,7 @@ class RateLimited
 
                     $job->release($this->retryAfter);
                 });
-        } catch (ConnectionException $exception) {
+        } catch (PredisException $exception) {
             // Redis probably not installed. We will send the job anyway
             $next($job);
         }
