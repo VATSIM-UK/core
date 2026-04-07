@@ -71,7 +71,7 @@
         "laravel/horizon": "^5.0",
         "laravel/passport": "^12.0",
         "laravel/telescope": "^5.0",
-        "laravel/tinker": "^2.0",
+        "laravel/tinker": "^3.0",
         "laravel/ui": "^4.0",
         "league/csv": "^9.0",
         "league/oauth2-client": "^2.4",
