@@ -59,7 +59,7 @@ trait TheoryExamViewTrait
 
                     TextEntry::make('Name')->label('Name')->getStateUsing(fn ($record) => $record->student?->account?->name ?? 'Unknown'),
 
-                    TextEntry::make('Exam')->label('Exam')->getStateUsing(fn ($record) => $record->exam),
+                    TextEntry::make('Exam')->label('Exam')->getStateUsing(fn ($record) => $record->exam_label),
 
                     TextEntry::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => match ($state) {
                         'Passed' => 'success',

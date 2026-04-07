@@ -29,8 +29,8 @@ class MyTheoryExamHistoryTable extends BaseWidget
                 $repo->getTheoryExamHistoryQueryForLevels(collect(['s1', 's2', 's3', 'c1']))->whereHas('student', fn ($q) => $q->where('cid', $user->id))
             )
             ->columns([
-                TextColumn::make('exam')->label('Exam'),
-                TextColumn::make('score')->label('Score')->getStateUsing(fn ($record) => "{$record->correct} / {$record->questions}"),
+                TextColumn::make('exam_label')->label('Exam'),
+                TextColumn::make('score')->label('Score')->getStateUsing(fn ($record) => "{$record->correct} / {$record->questions} (".round(($record->correct / $record->questions) * 100).'%)'),
                 TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => match ($state) {
                     'Passed' => 'success',
                     'Failed' => 'danger',
@@ -41,7 +41,7 @@ class MyTheoryExamHistoryTable extends BaseWidget
             ->defaultSort('submitted_time', 'desc')
             ->recordActions([
                 ViewAction::make('view')
-                    ->label('View')
+                    ->label('View Report')
                     ->icon(null)
                     ->color('primary')
                     ->modalHeading(fn ($record) => (($record->student?->account?->name) ?? 'Unknown')."'s {$record->exam} Theory Exam")

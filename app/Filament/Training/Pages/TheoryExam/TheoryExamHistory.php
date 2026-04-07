@@ -56,7 +56,7 @@ class TheoryExamHistory extends Page implements HasTable
         return $table->query($query)->columns([
             TextColumn::make('student.cid')->label('CID')->searchable(),
             TextColumn::make('student.account.name')->label('Name'),
-            TextColumn::make('exam')->label('Exam'),
+            TextColumn::make('exam_label')->label('Exam'),
             TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => match ($state) {
                 'Passed' => 'success',
                 'Failed' => 'danger',
