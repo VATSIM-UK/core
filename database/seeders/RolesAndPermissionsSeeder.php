@@ -29,7 +29,9 @@ class RolesAndPermissionsSeeder extends Seeder
         $appExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (APP)', 'guard_name' => 'web', 'default' => false]);
         $ctrExaminer = Role::firstOrCreate(['name' => 'ATC Examiner (CTR)', 'guard_name' => 'web', 'default' => false]);
 
-        $pilotExaminer = Role::firstOrCreate(['name' => 'Pilot Examiner', 'guard_name' => 'web', 'default' => false]);
+        $pilotExaminer = Role::firstOrCreate(['name' => 'Pilot Examiner (P1)', 'guard_name' => 'web', 'default' => false]);
+        $pilotExaminer = Role::firstOrCreate(['name' => 'Pilot Examiner (P2)', 'guard_name' => 'web', 'default' => false]);
+        $pilotExaminer = Role::firstOrCreate(['name' => 'Pilot Examiner (P3)', 'guard_name' => 'web', 'default' => false]);
 
         // Add All Permissions
         $permissions = [

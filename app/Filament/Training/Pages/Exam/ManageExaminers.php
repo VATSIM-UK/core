@@ -46,12 +46,14 @@ class ManageExaminers extends Page implements HasTable
         'twr' => 'ATC Examiner (TWR)',
         'app' => 'ATC Examiner (APP)',
         'ctr' => 'ATC Examiner (CTR)',
-        'pilot' => 'Pilot Examiner',
+        'p1' => 'Pilot Examiner (P1)',
+        'p2' => 'Pilot Examiner (P2)',
+        'p3' => 'Pilot Examiner (P3)',
     ];
 
     private const ATC_ROLE_KEYS = ['obs', 'twr', 'app', 'ctr'];
 
-    private const PILOT_ROLE_KEYS = ['pilot'];
+    private const PILOT_ROLE_KEYS = ['p1', 'p2', 'p3'];
 
     public static function canAccess(): bool
     {
