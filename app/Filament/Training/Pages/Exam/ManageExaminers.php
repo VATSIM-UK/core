@@ -32,7 +32,7 @@ class ManageExaminers extends Page implements HasTable
 
     protected static ?string $title = 'Manage Examiners';
 
-    /** @var 'obs'|'twr'|'app'|'ctr'|'pilot' */
+    /** @var 'obs'|'twr'|'app'|'ctr'|'p1'|'p2'|'p3' */
     #[Url]
     public string $role = 'obs';
 
