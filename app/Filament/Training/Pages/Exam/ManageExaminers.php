@@ -67,7 +67,7 @@ class ManageExaminers extends Page implements HasTable
         }
 
         if (! auth()->user()->can('training.examiners.view.atc') && $this->isAtcRole($this->role)) {
-            $this->role = 'pilot';
+            $this->role = 'p1';
         }
     }
 
