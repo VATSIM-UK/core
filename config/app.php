@@ -155,7 +155,7 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
-        Barryvdh\Debugbar\ServiceProvider::class,
+        Fruitcake\LaravelDebugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         /*
          * Application Service Providers...
@@ -231,7 +231,7 @@ return [
         /*
          * Third Party Aliases
          */
-        'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Debugbar' => Fruitcake\LaravelDebugbar\Facades\Debugbar::class,
     ],
 
 ];

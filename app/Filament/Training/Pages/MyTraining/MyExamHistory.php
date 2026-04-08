@@ -2,20 +2,10 @@
 
 namespace App\Filament\Training\Pages\MyTraining;
 
-use App\Filament\Training\Pages\Exam\ViewExamReport;
-use App\Models\Cts\PracticalResult;
-use App\Services\Training\ExamHistoryService;
-use Filament\Actions\Action;
 use Filament\Pages\Page;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 
-class MyExamHistory extends Page implements HasTable
+class MyExamHistory extends Page
 {
-    use InteractsWithTable;
-
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected string $view = 'filament.training.pages.my-training.my-exam-history';
@@ -24,36 +14,18 @@ class MyExamHistory extends Page implements HasTable
 
     protected static ?string $navigationLabel = 'My Exam History';
 
+    protected static ?int $navigationSort = 2;
+
     public static function canAccess(): bool
     {
         return auth()->user()->can('training.access') ?? false;
     }
 
-    public function table(Table $table): Table
+    protected function getHeaderWidgets(): array
     {
-        $examHistoryService = app(ExamHistoryService::class);
-        $user = auth()->user();
-
-        return $table
-            ->query(
-                PracticalResult::query()
-                    ->whereHas('student', fn ($q) => $q->where('cid', $user->id))
-                    ->with(['student', 'examBooking'])
-            )
-            ->columns([
-                TextColumn::make('examBooking.exam')->label('Exam'),
-                TextColumn::make('examBooking.position_1')->label('Position'),
-                TextColumn::make('result')
-                    ->getStateUsing(fn ($record) => $record->resultHuman())
-                    ->badge()
-                    ->color(fn ($state) => $examHistoryService->getResultBadgeColor($state))
-                    ->label('Result'),
-
-                TextColumn::make('examBooking.start_date')->label('Exam date'),
-            ])
-            ->defaultSort('date', 'desc')
-            ->recordActions([
-                Action::make('view')->label('View Report')->url(fn ($record) => ViewExamReport::getUrl(['examId' => $record->examid])),
-            ]);
+        return [
+            Widgets\MyPracticalExamHistoryTable::class,
+            Widgets\MyTheoryExamHistoryTable::class,
+        ];
     }
 }
