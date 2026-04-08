@@ -78,4 +78,15 @@ class TheoryResult extends Model
 
         return $options[$optionNumber] ?? 'Unknown';
     }
+
+    public function getExamLabelAttribute(): string
+    {
+        return match ($this->exam) {
+            'S1' => 'OBS',
+            'S2' => 'TWR',
+            'S3' => 'APP',
+            'C1' => 'CTR',
+            default => $this->exam,
+        };
+    }
 }
