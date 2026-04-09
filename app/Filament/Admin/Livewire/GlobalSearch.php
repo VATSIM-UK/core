@@ -13,7 +13,10 @@ class GlobalSearch extends BaseGlobalSearch
             return;
         }
 
-        if (blank(trim($this->search))) {
+        $search = trim($this->search);
+
+        // Enforce cid only
+        if (blank($search) || ! ctype_digit($search)) {
             return;
         }
 
