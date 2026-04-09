@@ -253,7 +253,7 @@
                     <div class="row">
                         <div class="col-12 col-md-4 mb-3">
                             <a class="btn btn-xl btn-round btn-primary px-7"
-                               href="https://community.vatsim.uk/downloads">Downloads</a>
+                               href="https://docs.vatsim.uk">Documents</a>
                         </div>
 
                         <div class="col-12 col-md-4 mb-3">
