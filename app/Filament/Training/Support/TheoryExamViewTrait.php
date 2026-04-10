@@ -54,7 +54,7 @@ trait TheoryExamViewTrait
             Fieldset::make('Exam Information')
                 ->columnSpanFull()
                 ->schema([
-                    TextEntry::make('cid')->label('CID')->getStateUsing(fn ($record) => $record->student_id),
+                    TextEntry::make('cid')->label('CID')->getStateUsing(fn ($record) => $record->student?->account?->id),
 
                     TextEntry::make('Name')->label('Name')->getStateUsing(fn ($record) => $record->student?->account?->name ?? 'Unknown'),
 
