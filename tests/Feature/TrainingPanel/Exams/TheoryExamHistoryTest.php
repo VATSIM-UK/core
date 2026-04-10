@@ -46,6 +46,7 @@ class TheoryExamHistoryTest extends BaseTrainingPanelTestCase
                 'exam' => $level,
                 'pass' => 1,
                 'submitted_time' => now()->subDays(rand(1, 30)),
+                'submitted' => 1,
             ]);
 
             $this->theoryResults[$level] = $theoryResult;
