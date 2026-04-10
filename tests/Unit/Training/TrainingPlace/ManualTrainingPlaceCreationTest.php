@@ -44,10 +44,12 @@ class ManualTrainingPlaceCreationTest extends TestCase
         // Assert: The training place should be created
         $this->assertInstanceOf(TrainingPlace::class, $trainingPlace);
         $this->assertEquals($waitingListAccount->id, $trainingPlace->waiting_list_account_id);
+        $this->assertEquals($student->id, $trainingPlace->account_id);
         $this->assertEquals($trainingPosition->id, $trainingPlace->training_position_id);
         $this->assertDatabaseHas('training_places', [
             'id' => $trainingPlace->id,
             'waiting_list_account_id' => $waitingListAccount->id,
+            'account_id' => $student->id,
             'training_position_id' => $trainingPosition->id,
         ]);
     }
@@ -98,5 +100,6 @@ class ManualTrainingPlaceCreationTest extends TestCase
         $this->assertInstanceOf(TrainingPlace::class, $result);
         $this->assertTrue($result->exists);
         $this->assertEquals($waitingListAccount->id, $result->waiting_list_account_id);
+        $this->assertEquals($student->id, $result->account_id);
     }
 }

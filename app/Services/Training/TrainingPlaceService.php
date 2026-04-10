@@ -6,6 +6,7 @@ use App\Enums\PositionValidationStatusEnum;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
+use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\Removal;
@@ -18,7 +19,13 @@ class TrainingPlaceService
 {
     public function assignMentoringPermissions(TrainingPlace $trainingPlace): void
     {
-        $student = $trainingPlace->waitingListAccount->account;
+        $student = $trainingPlace->studentAccount();
+
+        if (! $student) {
+            Log::error('Training place does not have an account associated');
+
+            return;
+        }
 
         if (! $student->member) {
             Log::error('Student does not have a CTS member model attached');
@@ -60,7 +67,13 @@ class TrainingPlaceService
 
     public function revokeMentoringPermissions(TrainingPlace $trainingPlace): void
     {
-        $student = $trainingPlace->waitingListAccount->account;
+        $student = $trainingPlace->studentAccount();
+
+        if (! $student) {
+            Log::error('Training place does not have an account associated');
+
+            return;
+        }
 
         if (! $student->member) {
             Log::error('Student does not have a CTS member model attached');
@@ -90,12 +103,22 @@ class TrainingPlaceService
     {
         $trainingPlace = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount->id,
+            'account_id' => $waitingListAccount->account_id,
             'training_position_id' => $trainingPosition->id,
         ]);
 
         $this->removeFromWaitingList($trainingPlace);
 
         return $trainingPlace;
+    }
+
+    public function createAdhocTrainingPlace(Account $account, TrainingPosition $trainingPosition): TrainingPlace
+    {
+        return TrainingPlace::create([
+            'account_id' => $account->id,
+            'training_position_id' => $trainingPosition->id,
+            'waiting_list_account_id' => null,
+        ]);
     }
 
     public function removeFromWaitingList(TrainingPlace $trainingPlace): void
@@ -111,7 +134,9 @@ class TrainingPlaceService
 
     public function hasPendingExam(TrainingPlace $trainingPlace): bool
     {
-        if (! $trainingPlace->waitingListAccount?->account?->member) {
+        $student = $trainingPlace->studentAccount();
+
+        if (! $student?->member) {
             Log::error('Student does not have a CTS member model attached');
 
             return false;
@@ -135,7 +160,7 @@ class TrainingPlaceService
             return false;
         }
 
-        return ExamBooking::where('student_id', $trainingPlace->waitingListAccount->account->member->id)
+        return ExamBooking::where('student_id', $student->member->id)
             ->where('position_1', $examPosition)
             ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
             ->exists();
