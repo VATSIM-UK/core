@@ -38,6 +38,20 @@ class TrainingPlace extends Model
             ->withTrashed();
     }
 
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'account_id');
+    }
+
+    /**
+     * Transitional accessor to resolve the student account from the new direct FK
+     * (preferred) or the legacy waiting-list relationship (fallback).
+     */
+    public function studentAccount(): ?Account
+    {
+        return $this->account ?? $this->waitingListAccount?->account;
+    }
+
     public function trainingPosition(): BelongsTo
     {
         return $this->belongsTo(TrainingPosition::class, 'training_position_id');
