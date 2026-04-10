@@ -49,7 +49,6 @@ class SessionRepository
     public function getTotalNoShowSessionsForPositions(array $positionCallsigns)
     {
         return Session::whereIn('position', $positionCallsigns)
-            ->where('taken_date', '>=', now()->subDays(180))
             ->whereNull('cancelled_datetime')
             ->where('noShow', '=', 1)
             ->count();
