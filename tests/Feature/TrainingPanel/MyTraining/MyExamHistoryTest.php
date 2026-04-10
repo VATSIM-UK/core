@@ -222,6 +222,7 @@ class MyExamHistoryTest extends BaseTrainingPanelTestCase
             'correct' => 1,
             'questions' => 2,
             'pass' => 0,
+            'submitted' => 1,
         ]);
 
         $component = Livewire::actingAs($this->studentAccount)
@@ -241,6 +242,7 @@ class MyExamHistoryTest extends BaseTrainingPanelTestCase
             'correct' => 2,
             'questions' => 2,
             'pass' => 1,
+            'submitted' => 1,
         ]);
 
         $component = Livewire::actingAs($this->studentAccount)
