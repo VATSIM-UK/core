@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ExamCancelledStudentNotification extends Notification
+class ExamCancelledExaminerNotification extends Notification
 {
     use Queueable;
 
@@ -16,6 +16,9 @@ class ExamCancelledStudentNotification extends Notification
         private string $reason,
     ) {}
 
+    /**
+     * @return array<int, string>
+     */
     public function via(object $notifiable): array
     {
         return ['mail'];
@@ -25,6 +28,9 @@ class ExamCancelledStudentNotification extends Notification
     {
         $examBooking = $this->examBooking->load(['student']);
 
+        $studentName = $examBooking->student?->account?->name ?? 'Unknown';
+        $studentCid = $examBooking->student?->account?->id ?? 'Unknown';
+
         $position = collect([$examBooking->position_1, $examBooking->position_2])
             ->filter()
             ->implode(' / ');
@@ -32,7 +38,7 @@ class ExamCancelledStudentNotification extends Notification
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject("{$examBooking->exam} Practical Exam Cancelled")
-            ->view('emails.training.exams.exam_cancelled_student', [
+            ->view('emails.training.exams.exam_cancelled_examiner', [
                 'recipient' => $notifiable,
                 'examBooking' => $examBooking,
                 'examType' => $examBooking->exam,
@@ -40,6 +46,9 @@ class ExamCancelledStudentNotification extends Notification
                 'takenDate' => $examBooking->taken_date,
                 'takenFrom' => $examBooking->taken_from,
                 'takenTo' => $examBooking->taken_to,
+                'studentName' => $studentName,
+                'studentCid' => $studentCid,
+                'reason' => $this->reason,
             ]);
     }
 }

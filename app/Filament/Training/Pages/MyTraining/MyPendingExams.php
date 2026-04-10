@@ -2,12 +2,9 @@
 
 namespace App\Filament\Training\Pages\MyTraining;
 
-use App\Models\Cts\Booking;
-use App\Models\Cts\CancelReason;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
-use App\Models\Cts\Reminder;
-use App\Notifications\Training\Exams\ExamCancelledStudentNotification;
+use App\Services\Training\CancelPendingExamService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -18,7 +15,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\DB;
 
 class MyPendingExams extends Page implements HasTable
 {
@@ -85,42 +81,27 @@ class MyPendingExams extends Page implements HasTable
             ->actions([
                 ActionGroup::make([
                     Action::make('cancelExamRequest')
-                        ->label('Cancel Exam Request')
+                        ->label('Cancel Exam')
                         ->color('danger')
                         ->icon('heroicon-o-x-circle')
-                        ->visible(fn (ExamBooking $record) => ! $record->taken)
+                        ->visible(fn (ExamBooking $record) => $record->taken)
                         ->requiresConfirmation()
-                        ->modalHeading('Cancel Exam Request')
-                        ->modalDescription('Are you sure you want to cancel this exam request? This action cannot be undone.')
+                        ->modalHeading(fn (ExamBooking $record) => "Cancel {$record->exam} Exam")
+                        ->modalDescription(fn (ExamBooking $record) => implode(' ', [
+                            'You are about to cancel your', $record->exam, 'scheduled for', Carbon::parse($record->taken_date)->format('l jS M Y'), 'at', Carbon::parse($record->taken_from)->format('H:i').'Z –', Carbon::parse($record->taken_to)->format('H:i').'Z.', 'Your examiner will be notified.']))
                         ->form([
                             Textarea::make('reason')
                                 ->label('Reason for cancellation')
+                                ->helperText('This will be sent to your examiner.')
                                 ->required()
                                 ->rows(4),
                         ])
-                        ->action(function (ExamBooking $record, array $data): void {
-                            $user = auth()->user();
-                            $reason = strip_tags($data['reason']);
-
-                            DB::connection('cts')->transaction(function () use ($record, $reason, $user) {
-                                CancelReason::create([
-                                    'sesh_id' => $record->id,
-                                    'sesh_type' => 'EX',
-                                    'reason' => $reason,
-                                    'reason_by' => $user->id,
-                                ]);
-
-                                $record->setup()->update(['booked' => 0]);
-
-                                Booking::where('type_id', $record->id)->where('type', 'EX')->delete();
-                                Reminder::where('sesh_id', $record->id)->where('sesh_type', 'E')->delete();
-
-                                $user->notify(new ExamCancelledStudentNotification($record, $reason));
-                                $record->delete();
-                            });
+                        ->action(function (ExamBooking $record, array $data, CancelPendingExamService $service): void {
+                            $service->cancel($record, strip_tags($data['reason']), auth()->user());
 
                             Notification::make()
-                                ->title('Exam request cancelled')
+                                ->title('Exam cancelled')
+                                ->body('Your examiner has been notified.')
                                 ->success()
                                 ->send();
                         }),
