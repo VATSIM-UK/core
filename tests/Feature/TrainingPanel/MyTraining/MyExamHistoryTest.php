@@ -66,6 +66,7 @@ class MyExamHistoryTest extends BaseTrainingPanelTestCase
             'correct' => 2,
             'questions' => 2,
             'pass' => 1,
+            'submitted' => 1,
             'submitted_time' => now()->subDays(10),
         ]);
 
