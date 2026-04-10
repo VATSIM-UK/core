@@ -18,6 +18,7 @@ class TrainingPlaceFactory extends Factory
     {
         return [
             'waiting_list_account_id' => null,
+            'account_id' => null,
             'training_position_id' => null,
         ];
     }
