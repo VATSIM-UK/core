@@ -44,6 +44,11 @@ class ExamBooking extends Model
         return $this->hasOne(PracticalExaminers::class, 'examid', 'id');
     }
 
+    public function setup(): HasOne
+    {
+        return $this->hasOne(ExamSetup::class, 'bookid', 'id');
+    }
+
     public function startDate(): Attribute
     {
         return Attribute::make(

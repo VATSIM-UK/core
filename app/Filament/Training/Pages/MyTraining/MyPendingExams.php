@@ -2,14 +2,23 @@
 
 namespace App\Filament\Training\Pages\MyTraining;
 
+use App\Models\Cts\Booking;
+use App\Models\Cts\CancelReason;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
+use App\Models\Cts\Reminder;
+use App\Notifications\Training\Exams\ExamCancelledStudentNotification;
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Forms\Components\Textarea;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\DB;
 
 class MyPendingExams extends Page implements HasTable
 {
@@ -72,6 +81,50 @@ class MyPendingExams extends Page implements HasTable
                         return Carbon::parse($record->start_date)->format('H:i').'Z – '.Carbon::parse($record->end_date)->format('H:i').'Z';
                     })
                     ->placeholder('Not yet scheduled'),
+            ])
+            ->actions([
+                ActionGroup::make([
+                    Action::make('cancelExamRequest')
+                        ->label('Cancel Exam Request')
+                        ->color('danger')
+                        ->icon('heroicon-o-x-circle')
+                        ->visible(fn (ExamBooking $record) => ! $record->taken)
+                        ->requiresConfirmation()
+                        ->modalHeading('Cancel Exam Request')
+                        ->modalDescription('Are you sure you want to cancel this exam request? This action cannot be undone.')
+                        ->form([
+                            Textarea::make('reason')
+                                ->label('Reason for cancellation')
+                                ->required()
+                                ->rows(4),
+                        ])
+                        ->action(function (ExamBooking $record, array $data): void {
+                            $user = auth()->user();
+                            $reason = strip_tags($data['reason']);
+
+                            DB::connection('cts')->transaction(function () use ($record, $reason, $user) {
+                                CancelReason::create([
+                                    'sesh_id' => $record->id,
+                                    'sesh_type' => 'EX',
+                                    'reason' => $reason,
+                                    'reason_by' => $user->id,
+                                ]);
+
+                                $record->setup()->update(['booked' => 0]);
+
+                                Booking::where('type_id', $record->id)->where('type', 'EX')->delete();
+                                Reminder::where('sesh_id', $record->id)->where('sesh_type', 'E')->delete();
+
+                                $user->notify(new ExamCancelledStudentNotification($record, $reason));
+                                $record->delete();
+                            });
+
+                            Notification::make()
+                                ->title('Exam request cancelled')
+                                ->success()
+                                ->send();
+                        }),
+                ]),
             ])
             ->paginated(false)
             ->emptyStateHeading('No pending exam requests')
