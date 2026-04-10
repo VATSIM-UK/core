@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Filament\Admin\Livewire\GlobalSearch;
 use App\Http\Controllers\BaseController;
 use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Testing\ParallelTesting;
+use Livewire\Livewire;
 use Spatie\Permission\PermissionRegistrar;
 use Whitecube\LaravelCookieConsent\Facades\Cookies;
 
@@ -59,6 +61,8 @@ class AppServiceProvider extends ServiceProvider
                 ->perHour(1000)
                 ->by('discord-api-call');
         });
+
+        Livewire::component('filament.livewire.global-search', GlobalSearch::class);
 
         Cookies::essentials()
             ->session()
