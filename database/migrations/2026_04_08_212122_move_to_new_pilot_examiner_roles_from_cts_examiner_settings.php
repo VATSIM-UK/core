@@ -27,7 +27,7 @@ return new class extends Migration
                 }
             })
             ->each(function (ExaminerSettings $settings) {
-                $account = Account::query()->find($settings->memberID);
+                $account = Account::query()->find($settings->member->account->id);
 
                 if (! $account) {
                     return;
