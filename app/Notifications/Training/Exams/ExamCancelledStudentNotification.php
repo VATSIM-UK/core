@@ -25,10 +25,6 @@ class ExamCancelledStudentNotification extends Notification
     {
         $examBooking = $this->examBooking->load(['student']);
 
-        $position = collect([$examBooking->position_1, $examBooking->position_2])
-            ->filter()
-            ->implode(' / ');
-
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject("{$examBooking->exam} Practical Exam Cancelled")
@@ -36,7 +32,7 @@ class ExamCancelledStudentNotification extends Notification
                 'recipient' => $notifiable,
                 'examBooking' => $examBooking,
                 'examType' => $examBooking->exam,
-                'position' => $position,
+                'position' => $examBooking->position_1,
                 'takenDate' => $examBooking->taken_date,
                 'takenFrom' => $examBooking->taken_from,
                 'takenTo' => $examBooking->taken_to,
