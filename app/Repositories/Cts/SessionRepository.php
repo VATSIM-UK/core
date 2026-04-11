@@ -46,10 +46,10 @@ class SessionRepository
             ->count();
     }
 
-    public function getTotalNoShowSessionsForPositions(array $positionCallsigns)
+    public function getTotalNoShowSessionsForPositions(array $positionCallsigns, int $studentId)
     {
         return Session::whereIn('position', $positionCallsigns)
-            ->where('taken_date', '>=', now()->subDays(180))
+            ->where('student_id', $studentId)
             ->whereNull('cancelled_datetime')
             ->where('noShow', '=', 1)
             ->count();

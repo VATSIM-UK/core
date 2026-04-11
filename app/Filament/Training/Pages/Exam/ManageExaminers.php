@@ -32,7 +32,7 @@ class ManageExaminers extends Page implements HasTable
 
     protected static ?string $title = 'Manage Examiners';
 
-    /** @var 'obs'|'twr'|'app'|'ctr' */
+    /** @var 'obs'|'twr'|'app'|'ctr'|'p1'|'p2'|'p3' */
     #[Url]
     public string $role = 'obs';
 
@@ -46,16 +46,18 @@ class ManageExaminers extends Page implements HasTable
         'twr' => 'ATC Examiner (TWR)',
         'app' => 'ATC Examiner (APP)',
         'ctr' => 'ATC Examiner (CTR)',
+        'p1' => 'Pilot Examiner (P1)',
+        'p2' => 'Pilot Examiner (P2)',
+        'p3' => 'Pilot Examiner (P3)',
     ];
 
-    /**
-     * @var list<string>
-     */
-    private const EXAMINER_ROLE_KEYS = ['obs', 'twr', 'app', 'ctr'];
+    private const ATC_ROLE_KEYS = ['obs', 'twr', 'app', 'ctr'];
+
+    private const PILOT_ROLE_KEYS = ['p1', 'p2', 'p3'];
 
     public static function canAccess(): bool
     {
-        return auth()->user()->can('training.examiners.view.atc');
+        return auth()->user()->can('training.examiners.view.atc') || auth()->user()->can('training.examiners.view.pilot');
     }
 
     public function mount(): void
@@ -63,23 +65,54 @@ class ManageExaminers extends Page implements HasTable
         if (! array_key_exists($this->role, self::EXAMINER_ROLE_MAP)) {
             $this->role = 'obs';
         }
+
+        if (! auth()->user()->can('training.examiners.view.atc') && $this->isAtcRole($this->role)) {
+            $this->role = 'p1';
+        }
+
+        if (! auth()->user()->can('training.examiners.view.pilot') && $this->isPilotRole($this->role)) {
+            $this->role = 'obs';
+        }
     }
 
     protected function getHeaderActions(): array
     {
-        return collect(self::EXAMINER_ROLE_KEYS)
-            ->map(function (string $key): Action {
-                return Action::make($key)
+        $actions = [];
+
+        if (auth()->user()->can('training.examiners.view.atc')) {
+            foreach (self::ATC_ROLE_KEYS as $key) {
+                $actions[] = Action::make($key)
                     ->label(strtoupper($key))
                     ->url(static::getUrl(['role' => $key]))
                     ->color($this->role === $key ? 'primary' : 'gray');
-            })
-            ->all();
+            }
+        }
+
+        if (auth()->user()->can('training.examiners.view.pilot')) {
+            foreach (self::PILOT_ROLE_KEYS as $key) {
+                $actions[] = Action::make($key)
+                    ->label(strtoupper($key))
+                    ->url(static::getUrl(['role' => $key]))
+                    ->color($this->role === $key ? 'primary' : 'gray');
+            }
+        }
+
+        return $actions;
     }
 
     public function updatedRole(): void
     {
         if (! array_key_exists($this->role, self::EXAMINER_ROLE_MAP)) {
+            $this->role = 'obs';
+        }
+
+        // Prevent accessing ATC roles without ATC permission
+        if ($this->isAtcRole($this->role) && ! auth()->user()->can('training.examiners.view.atc')) {
+            $this->role = 'p1';
+        }
+
+        // Prevent accessing pilot roles without pilot permission
+        if ($this->isPilotRole($this->role) && ! auth()->user()->can('training.examiners.view.pilot')) {
             $this->role = 'obs';
         }
 
@@ -89,6 +122,7 @@ class ManageExaminers extends Page implements HasTable
     public function table(Table $table): Table
     {
         $roleName = self::EXAMINER_ROLE_MAP[$this->role] ?? self::EXAMINER_ROLE_MAP['obs'];
+        $canManage = $this->canManageCurrentRole();
 
         return $table
             ->query($this->examinersQuery($roleName))
@@ -100,8 +134,8 @@ class ManageExaminers extends Page implements HasTable
                 Action::make('addMember')
                     ->label('Add member')
                     ->icon('heroicon-o-plus')
-                    ->visible(fn () => auth()->user()->can('training.examiners.manage.atc'))
-                    ->schema([
+                    ->visible(fn () => $canManage)
+                    ->form([
                         Select::make('account_id')
                             ->label('Account')
                             ->searchable()
@@ -137,7 +171,7 @@ class ManageExaminers extends Page implements HasTable
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->visible(fn () => auth()->user()->can('training.examiners.manage.atc'))
+                    ->visible(fn () => $canManage)
                     ->action(function (Account $record) use ($roleName): void {
                         $record->removeRole($roleName);
 
@@ -154,9 +188,8 @@ class ManageExaminers extends Page implements HasTable
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->visible(fn () => auth()->user()->can('training.examiners.manage.atc'))
+                    ->visible(fn () => $canManage)
                     ->action(function (Collection $records) use ($roleName): void {
-                        /** @var Collection<int, Account> $records */
                         foreach ($records as $record) {
                             $record->removeRole($roleName);
                         }
@@ -176,5 +209,24 @@ class ManageExaminers extends Page implements HasTable
     private function examinersQuery(string $roleName): Builder
     {
         return Account::query()->role($roleName);
+    }
+
+    private function isAtcRole(string $key): bool
+    {
+        return in_array($key, self::ATC_ROLE_KEYS, true);
+    }
+
+    private function isPilotRole(string $key): bool
+    {
+        return in_array($key, self::PILOT_ROLE_KEYS, true);
+    }
+
+    private function canManageCurrentRole(): bool
+    {
+        if ($this->isAtcRole($this->role)) {
+            return auth()->user()->can('training.examiners.manage.atc');
+        }
+
+        return auth()->user()->can('training.examiners.manage.pilot');
     }
 }

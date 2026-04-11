@@ -15,6 +15,7 @@ class TheoryExamResultRepository
     {
         return TheoryResult::query()
             ->with('student')
-            ->whereIn('exam', $examLevels);
+            ->whereIn('exam', $examLevels)
+            ->where('submitted', '1');
     }
 }
