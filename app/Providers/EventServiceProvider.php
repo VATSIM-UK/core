@@ -20,10 +20,6 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Training\WaitingList\CheckWaitingListAccountMshipState::class,
         ],
 
-        \App\Events\Mship\Qualifications\QualificationAdded::class => [
-            \App\Listeners\Mship\SendS1Email::class,
-        ],
-
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
             // \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
