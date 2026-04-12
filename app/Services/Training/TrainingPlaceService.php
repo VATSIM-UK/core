@@ -19,13 +19,7 @@ class TrainingPlaceService
 {
     public function assignMentoringPermissions(TrainingPlace $trainingPlace): void
     {
-        $student = $trainingPlace->studentAccount();
-
-        if (! $student) {
-            Log::error('Training place does not have an account associated');
-
-            return;
-        }
+        $student = $trainingPlace->account;
 
         if (! $student->member) {
             Log::error('Student does not have a CTS member model attached');
@@ -67,13 +61,7 @@ class TrainingPlaceService
 
     public function revokeMentoringPermissions(TrainingPlace $trainingPlace): void
     {
-        $student = $trainingPlace->studentAccount();
-
-        if (! $student) {
-            Log::error('Training place does not have an account associated');
-
-            return;
-        }
+        $student = $trainingPlace->account;
 
         if (! $student->member) {
             Log::error('Student does not have a CTS member model attached');
@@ -146,14 +134,14 @@ class TrainingPlaceService
 
         $removal = new Removal(RemovalReason::TrainingPlace, Auth::user()->id);
 
-        $trainingPlace->waitingListAccount->waitingList->removeFromWaitingList($trainingPlace->waitingListAccount->account, $removal);
+        $trainingPlace->waitingListAccount->waitingList->removeFromWaitingList($trainingPlace->account, $removal);
     }
 
     public function hasPendingExam(TrainingPlace $trainingPlace): bool
     {
-        $student = $trainingPlace->studentAccount();
+        $student = $trainingPlace->account;
 
-        if (! $student?->member) {
+        if (! $student->member) {
             Log::error('Student does not have a CTS member model attached');
 
             return false;

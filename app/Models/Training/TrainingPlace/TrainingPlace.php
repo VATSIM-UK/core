@@ -43,15 +43,6 @@ class TrainingPlace extends Model
         return $this->belongsTo(Account::class, 'account_id');
     }
 
-    /**
-     * Transitional accessor to resolve the student account from the new direct FK
-     * (preferred) or the legacy waiting-list relationship (fallback).
-     */
-    public function studentAccount(): ?Account
-    {
-        return $this->account ?? $this->waitingListAccount?->account;
-    }
-
     public function trainingPosition(): BelongsTo
     {
         return $this->belongsTo(TrainingPosition::class, 'training_position_id');
@@ -96,11 +87,10 @@ class TrainingPlace extends Model
     {
         $this->loadMissing([
             'trainingPosition',
-            'waitingListAccount.account',
+            'account',
         ]);
 
-        $account = $this->waitingListAccount?->account;
-        $member = $account?->member;
+        $member = $this->account->member;
 
         if (! $member) {
             return;
@@ -124,7 +114,8 @@ class TrainingPlace extends Model
 
     public function revokeTrainingPlace(string $reason, Account $admin): void
     {
-        $this->waitingListAccount->account->addNote('training', "Training place revoked on {$this->trainingPosition->position->callsign}. Reason: {$reason}", $admin->id);
+        $this->account->addNote('training', "Training place revoked on {$this->trainingPosition->position->callsign}. Reason: {$reason}", $admin->id);
+
         $this->delete();
     }
 }

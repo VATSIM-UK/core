@@ -74,7 +74,7 @@ class TrainingPlaceSoloEndorsement extends Component implements HasActions, HasF
                     ->visible(fn () => auth()->check() && auth()->user()->can('endorsement.create.temporary'))
                     ->disabled(fn () => EndorsementService::hasActiveSoloEndorsement(
                         $this->trainingPlace->trainingPosition->position,
-                        $this->trainingPlace->waitingListAccount->account
+                        $this->trainingPlace->account
                     ))
                     ->form([
                         TextInput::make('days')
@@ -88,8 +88,17 @@ class TrainingPlaceSoloEndorsement extends Component implements HasActions, HasF
                     ])
                     ->action(function (array $data) {
                         $position = $this->trainingPlace->trainingPosition->position;
-                        $account = $this->trainingPlace->waitingListAccount->account;
+                        $account = $this->trainingPlace->account;
                         $creator = auth()->user();
+
+                        if (! $creator) {
+                            Notification::make()
+                                ->title('Unable to issue solo endorsement')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
 
                         EndorsementService::createTemporary(
                             $position,
@@ -105,7 +114,7 @@ class TrainingPlaceSoloEndorsement extends Component implements HasActions, HasF
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Issue Solo Endorsement')
-                    ->modalDescription(fn () => 'Issue a solo endorsement for '.$this->trainingPlace->trainingPosition->position->name.' to '.$this->trainingPlace->waitingListAccount->account->name)
+                    ->modalDescription(fn () => 'Issue a solo endorsement for '.$this->trainingPlace->trainingPosition->position->name.' to '.$this->trainingPlace->account->name)
                     ->modalSubmitActionLabel('Issue Endorsement'),
             ])
             ->emptyStateHeading('No solo endorsements found');

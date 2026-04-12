@@ -89,8 +89,8 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
-            ->assertSee($trainingPlace->waitingListAccount->account->name)
-            ->assertSee($trainingPlace->waitingListAccount->account->id)
+            ->assertSee($trainingPlace->account->name)
+            ->assertSee($trainingPlace->account->id)
             ->assertSee($trainingPlace->trainingPosition->position->name);
     }
 
@@ -117,7 +117,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'position' => $cts_positions[0],
             'taken' => 1,
             'taken_date' => now()->subDays(5),
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
         ]);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
@@ -132,7 +132,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         // Create a session for a different position
         $otherSession = Session::factory()->create([
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
             'position' => 'EGKK_TWR', // Different position
             'taken' => 1,
             'taken_date' => now()->subDays(5),
@@ -150,7 +150,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         $mentor = Member::factory()->create();
         $session = Session::factory()->create([
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
             'position' => $cts_positions[0],
             'taken_date' => now()->subDays(5),
             'taken' => 1,
@@ -171,7 +171,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $session = Session::factory()->create([
             'position' => $cts_positions[0],
             'taken_date' => now()->subDays(5),
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
             'noShow' => 0, // Explicitly set to 0 to ensure it's false
             'cancelled_datetime' => null, // Explicitly set to null
             'session_done' => 0, // Explicitly set to 0 to ensure it's false
@@ -189,7 +189,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $cts_positions = $trainingPlace->trainingPosition->cts_positions;
 
         $session = Session::factory()->create([
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
             'position' => $cts_positions[0],
             'taken_date' => now()->subDays(5),
             'noShow' => 0,
@@ -210,7 +210,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $cts_positions = $trainingPlace->trainingPosition->cts_positions;
 
         $session = Session::factory()->create([
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
             'position' => $cts_positions[0],
             'taken_date' => now()->subDays(5),
             'noShow' => 1, // Explicitly set to 1 to ensure it's true
@@ -230,7 +230,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $cts_positions = $trainingPlace->trainingPosition->cts_positions;
 
         $session = Session::factory()->create([
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
             'position' => $cts_positions[0],
             'taken_date' => now()->subDays(5),
             'cancelled_datetime' => now()->subDays(6)->toDateTimeString(),
@@ -254,7 +254,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'position' => $cts_positions[0],
             'taken' => 1,
             'taken_date' => now()->subDays(5),
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
         ]);
 
         $expectedUrl = "https://cts.vatsim.uk/mentors/report.php?id={$session->getKey()}&view=report";
@@ -279,14 +279,14 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         // Create sessions for both positions
         $session1 = Session::factory()->create([
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
             'position' => 'EGLL_APP',
             'taken_date' => now()->subDays(5),
             'taken' => 1,
         ]);
 
         $session2 = Session::factory()->create([
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
             'position' => 'EGLL_TWR',
             'taken_date' => now()->subDays(3),
             'taken' => 1,
@@ -337,7 +337,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         // Create a pending exam booking for the student
         ExamBooking::factory()->create([
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
         ]);
 
@@ -382,7 +382,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.setup');
 
         // Remove ATC qualification from the member's account
-        $trainingPlace->waitingListAccount->account->update(['qualification_atc' => 0]);
+        $trainingPlace->account->update(['qualification_atc' => 0]);
 
         $position = Position::factory()->create([
             'callsign' => 'EGKK_TWR',
@@ -404,7 +404,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         // Create a pending exam booking
         ExamBooking::factory()->create([
-            'student_id' => $trainingPlace->waitingListAccount->account->member->id,
+            'student_id' => $trainingPlace->account->member->id,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
         ]);
 
@@ -422,8 +422,8 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
-            ->assertSee($trainingPlace->waitingListAccount->account->name)
-            ->assertSee((string) $trainingPlace->waitingListAccount->account->id);
+            ->assertSee($trainingPlace->account->name)
+            ->assertSee((string) $trainingPlace->account->id);
     }
 
     /**
@@ -457,6 +457,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         // Create and return training place
         return TrainingPlace::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,
+            'account_id' => $student->id,
             'training_position_id' => $trainingPosition->id,
         ]);
     }
@@ -511,7 +512,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             ->callAction('revokeTrainingPlace', data: ['reason' => $reason]);
 
         $this->assertDatabaseHas('mship_account_note', [
-            'account_id' => $trainingPlace->waitingListAccount->account->id,
+            'account_id' => $trainingPlace->account->id,
             'content' => "Training place revoked on {$trainingPlace->trainingPosition->position->callsign}. Reason: {$reason}",
         ]);
     }
@@ -591,6 +592,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         return TrainingPlace::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,
+            'account_id' => $student->id,
             'training_position_id' => $trainingPosition->id,
         ]);
     }
@@ -613,7 +615,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
-            ->assertSee($trainingPlace->waitingListAccount->account->name)
+            ->assertSee($trainingPlace->account->name)
             ->assertSee($trainingPlace->trainingPosition->position->name);
     }
 

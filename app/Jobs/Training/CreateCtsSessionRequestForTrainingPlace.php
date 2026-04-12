@@ -25,11 +25,10 @@ class CreateCtsSessionRequestForTrainingPlace implements ShouldQueue
     {
         $this->trainingPlace->loadMissing([
             'trainingPosition',
-            'waitingListAccount.account',
+            'account',
         ]);
 
-        $account = $this->trainingPlace->waitingListAccount?->account;
-        $member = $account?->member;
+        $member = $this->trainingPlace->account->member;
 
         if (! $member) {
             Log::warning('Skipping training place without CTS member attached', [

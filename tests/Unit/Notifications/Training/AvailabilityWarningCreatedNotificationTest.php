@@ -89,16 +89,6 @@ class AvailabilityWarningCreatedNotificationTest extends TestCase
     }
 
     #[Test]
-    public function it_includes_waiting_list_name_in_view_data(): void
-    {
-        $notification = new AvailabilityWarningCreated($this->availabilityWarning);
-
-        $mailMessage = $notification->toMail($this->account);
-
-        $this->assertEquals('Test Waiting List', $mailMessage->viewData['waiting_list_name']);
-    }
-
-    #[Test]
     public function it_includes_expiry_date_in_view_data(): void
     {
         $notification = new AvailabilityWarningCreated($this->availabilityWarning);

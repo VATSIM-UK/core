@@ -60,6 +60,7 @@ class TrainingPlaceResource extends Resource
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query
                 ->with([
+                    'account',
                     'waitingListAccount.account',
                     'waitingListAccount.waitingList',
                     'trainingPosition.position',
@@ -74,13 +75,13 @@ class TrainingPlaceResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('waitingListAccount.account.name')
+                TextColumn::make('account.name')
                     ->label('Student')
                     ->searchable(['name_first', 'name_last'])
                     ->sortable()
                     ->url(fn (TrainingPlace $record) => ViewTrainingPlace::getUrl(['trainingPlaceId' => $record->id])),
 
-                TextColumn::make('waitingListAccount.account_id')
+                TextColumn::make('account_id')
                     ->label('CID')
                     ->searchable()
                     ->sortable(),
