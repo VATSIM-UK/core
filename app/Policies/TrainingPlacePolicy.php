@@ -55,6 +55,11 @@ class TrainingPlacePolicy
         return $account->hasPermissionTo('training-places.restore.*');
     }
 
+    public function createAdhoc(Account $account): bool
+    {
+        return $account->hasPermissionTo('training-places.create-adhoc');
+    }
+
     /**
      * Determine whether the user can permanently delete the model.
      */
