@@ -4,7 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use RuntimeException;
 
 return new class extends Migration
 {
@@ -19,13 +18,6 @@ return new class extends Migration
             WHERE tp.account_id IS NULL
               AND tp.waiting_list_account_id IS NOT NULL
         SQL);
-
-        if (DB::table('training_places')->whereNull('account_id')->exists()) {
-            throw new RuntimeException(
-                'Cannot make training_places.account_id NOT NULL: rows still exist with NULL account_id. '.
-                'Fix or backfill these records before re-running this migration.'
-            );
-        }
 
         $this->dropAccountForeignKeyIfExists();
 
