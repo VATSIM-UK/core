@@ -462,6 +462,35 @@ class MockCtsDatabase
             PRIMARY KEY (`answer_id`)
             ) ENGINE=InnoDB AUTO_INCREMENT=479361 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `cancel_reason` (
+            `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+            `sesh_id` smallint(5) unsigned NOT NULL DEFAULT '0',
+            `sesh_type` char(2) NOT NULL DEFAULT '',
+            `reason` longtext NOT NULL,
+            `used` tinyint(3) unsigned NOT NULL DEFAULT '0',
+            `reason_by` int(10) unsigned NOT NULL DEFAULT '0',
+            `date` datetime DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            KEY `sesh_id` (`sesh_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `reminders` (
+            `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+            `sesh_id` int(11) NOT NULL,
+            `sesh_type` char(1) NOT NULL DEFAULT '',
+            `who` char(3) NOT NULL DEFAULT '',
+            `reminder` char(3) NOT NULL DEFAULT '',
+            `reminder_date` datetime DEFAULT NULL,
+            `set` tinyint(3) unsigned NOT NULL DEFAULT '0',
+            `sent` tinyint(3) unsigned NOT NULL DEFAULT '0',
+            PRIMARY KEY (`id`),
+            KEY `sesh_search` (`sesh_id`, `sesh_type`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
     }
 
     public static function destroy()
