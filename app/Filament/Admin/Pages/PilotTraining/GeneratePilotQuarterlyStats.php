@@ -76,6 +76,11 @@ class GeneratePilotQuarterlyStats extends BasePage implements HasForms
                 ['name' => 'P2 OTS Sessions', 'value' => PilotTrainingStats::sessionCount($startDate, $endDate, 'P2_SEIR(A)_MEN')],
                 ['name' => 'P2 Exams (total / passes)', 'value' => PilotTrainingStats::examCount($startDate, $endDate, 'P2')],
             ],
+            'P3' => [
+                ['name' => 'P3 Sessions', 'value' => PilotTrainingStats::sessionCount($startDate, $endDate, 'P3_CMEL(A)')],
+                ['name' => 'P3 OTS Sessions', 'value' => PilotTrainingStats::sessionCount($startDate, $endDate, 'P3_CMEL(A)_MEN')],
+                ['name' => 'P3 Exams (total / passes)', 'value' => PilotTrainingStats::examCount($startDate, $endDate, 'P3')],
+            ],
             'TFP' => [
                 ['name' => 'TFP Sessions', 'value' => PilotTrainingStats::sessionCount($startDate, $endDate, 'TFP_FLIGHT')],
             ],
