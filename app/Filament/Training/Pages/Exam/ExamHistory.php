@@ -24,7 +24,7 @@ class ExamHistory extends Page implements HasTable
 
     protected string $view = 'filament.training.pages.exam-history';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 30;
 
     protected static string|\UnitEnum|null $navigationGroup = 'Exams';
 
