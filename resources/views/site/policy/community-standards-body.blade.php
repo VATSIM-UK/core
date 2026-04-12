@@ -10,7 +10,6 @@ Members are subject to all VATSIM Network policies when utilising any VATSIM-own
 The VATSIM UK Community Standards expand on VATSIM Network policy and apply to the conduct of all members whilst utilising a VATSIM UK-owned or operated service, or attending a VATSIM UK event. These Standards may be subject to future amendments, however, any changes will be notified to members before coming into effect.
 
 The VATSIM Network Supervisor Department is primarily responsible for the enforcement of VATSIM Network policies. VATSIM UK has appointed a Moderation Team that is similarly responsible for enforcing local policy, such as these Standards. Our Moderators do not wish, nor would they be able, to police all content posted to our services. If you believe that a Moderator has missed something which is in violation of our Community Standards, you may bring it to our attention in the following ways:
-
 - Discord - tag @moderator in the relevant channel for assistance
 - Email - <moderation@vatsim.uk>
 
