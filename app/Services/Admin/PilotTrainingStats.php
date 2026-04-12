@@ -22,12 +22,13 @@ class PilotTrainingStats
     {
         $result = DB::connection('cts')
             ->table('practical_results')
+            ->join('exam_book', 'practical_results.examid', '=', 'exam_book.id')
             ->selectRaw("
                 COUNT(*) as total,
                 COALESCE(SUM(CASE WHEN result = 'P' THEN 1 ELSE 0 END), 0) as passes
             ")
-            ->whereBetween('date', [$startDate, $endDate])
-            ->where('exam', '=', $position)
+            ->whereBetween('exam_book.taken_date', [$startDate, $endDate])
+            ->where('practical_results.exam', '=', $position)
             ->first();
 
         return "{$result->total} / {$result->passes}";
