@@ -20,4 +20,6 @@
     @endif
 
     @livewire(\App\Livewire\Training\LeaveOfAbsencesTable::class, ['trainingPlace' => $this->trainingPlace], key('leave-of-absences-table'))
+
+    @livewire(\App\Livewire\Training\TrainingPlaceExamCancellationsTable::class, ['trainingPlace' => $this->trainingPlace], key('exam-cancellations-table'))
 </x-filament-panels::page>
