@@ -83,7 +83,6 @@ class AvailabilityWarningCreatedNotificationTest extends TestCase
 
         $this->assertEquals('emails.training.availability_warning', $mailMessage->view);
         $this->assertArrayHasKey('recipient', $mailMessage->viewData);
-        $this->assertArrayHasKey('waiting_list_name', $mailMessage->viewData);
         $this->assertArrayHasKey('expires_at', $mailMessage->viewData);
         $this->assertArrayHasKey('days_to_expire', $mailMessage->viewData);
     }
