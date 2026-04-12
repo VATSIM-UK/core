@@ -17,7 +17,7 @@ class MentoringSessionStatsWidget extends BaseWidget
     {
         $sessionRepository = app(SessionRepository::class);
 
-        $ctsStudentId = $this->trainingPlace->waitingListAccount->account->member->id;
+        $ctsStudentId = $this->trainingPlace->account->member?->id ?? 0;
 
         return [
             Stat::make('Total Sessions', $sessionRepository->getTotalSessionsForPositions($this->trainingPlace->trainingPosition->cts_positions, $ctsStudentId))

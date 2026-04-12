@@ -31,6 +31,5 @@ class TrainingPlaceAccountRelationshipTest extends TestCase
         ]);
 
         $this->assertTrue($trainingPlace->account->is($account));
-        $this->assertTrue($trainingPlace->studentAccount()->is($account));
     }
 }

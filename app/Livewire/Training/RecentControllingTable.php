@@ -29,7 +29,7 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
             ->heading('Controlling during training')
             ->queryStringIdentifier('recent-controlling')
             ->query(
-                Atc::query()->where('account_id', $this->trainingPlace->waitingListAccount->account_id)
+                Atc::query()->where('account_id', $this->trainingPlace->account_id)
                     ->where('created_at', '>=', $this->trainingPlace->created_at)
                     ->isUk()
             )

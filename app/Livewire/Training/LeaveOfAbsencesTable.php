@@ -137,7 +137,7 @@ class LeaveOfAbsencesTable extends Component implements HasActions, HasForms, Ha
                     ->action(function (TrainingPlaceLeaveOfAbsence $record, array $data) {
                         $record->update(['ends_at' => now()]);
 
-                        $record->trainingPlace->waitingListAccount->account->addNote('training', "Leave of absence ended early. Reason: {$data['reason']}", auth()->id());
+                        $record->trainingPlace->account->addNote('training', "Leave of absence ended early. Reason: {$data['reason']}", auth()->id());
 
                         Notification::make()
                             ->title('Leave of absence ended early')

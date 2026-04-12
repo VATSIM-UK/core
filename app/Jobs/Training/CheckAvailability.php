@@ -45,7 +45,12 @@ class CheckAvailability implements ShouldQueue
             return;
         }
 
-        $account = $this->trainingPlace->waitingListAccount->account;
+        $account = $this->trainingPlace->account;
+
+        if (! $account->member) {
+            return;
+        }
+
         $memberId = $account->member->id;
 
         // Check if availability exists for the student

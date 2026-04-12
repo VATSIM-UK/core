@@ -59,12 +59,19 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             abort(403, 'You do not have permission to view training places.');
         }
 
-        $this->trainingPlace = TrainingPlace::withTrashed()->where('id', $this->trainingPlaceId)->with('waitingListAccount', 'trainingPosition')->firstOrFail();
+        $this->trainingPlace = TrainingPlace::withTrashed()
+            ->where('id', $this->trainingPlaceId)
+            ->with([
+                'account',
+                'waitingListAccount',
+                'trainingPosition.position',
+            ])
+            ->firstOrFail();
     }
 
     public function getTitle(): string|Htmlable
     {
-        return "View Training Place - {$this->trainingPlace->waitingListAccount->account->name}";
+        return "View Training Place - {$this->trainingPlace->account->name}";
     }
 
     protected function getHeaderWidgets(): array
@@ -97,12 +104,12 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                         ->preload(),
                     TextInput::make('student_name')
                         ->label('Student Name')
-                        ->default(fn () => $this->trainingPlace->waitingListAccount->account->name)
+                        ->default(fn () => $this->trainingPlace->account->name)
                         ->readOnly()
                         ->dehydrated(false),
                     TextInput::make('student_cid')
                         ->label('Student CID')
-                        ->default(fn () => $this->trainingPlace->waitingListAccount->account->id)
+                        ->default(fn () => $this->trainingPlace->account->id)
                         ->readOnly()
                         ->dehydrated(false),
                 ])
@@ -121,12 +128,11 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 ->modalSubmitActionLabel('Restore')
                 ->requiresConfirmation()
                 ->action(function () {
-                    $studentAccount = $this->trainingPlace->waitingListAccount->account;
                     $callsign = $this->trainingPlace->trainingPosition->position->callsign;
 
                     $this->trainingPlace->restore();
 
-                    $studentAccount->addNote('training', "Training place restored on {$callsign}.", Auth::user()->id);
+                    $this->trainingPlace->account->addNote('training', "Training place restored on {$callsign}.", Auth::user()->id);
 
                     Notification::make()
                         ->title('Training place restored successfully')
@@ -152,7 +158,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                         ->required(),
                 ])
                 ->action(function (array $data) {
-                    $this->trainingPlace->revokeTrainingPlace($data['reason'], Auth()->user());
+                    $this->trainingPlace->revokeTrainingPlace($data['reason'], Auth::user());
 
                     Notification::make()
                         ->title('Training place revoked successfully')
@@ -166,7 +172,13 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
 
     private function hasPendingExam(): bool
     {
-        return ExamBooking::where('student_id', $this->trainingPlace->waitingListAccount->account->member->id)
+        $memberId = $this->trainingPlace->account->member?->id;
+
+        if (! $memberId) {
+            return false;
+        }
+
+        return ExamBooking::where('student_id', $memberId)
             ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
             ->exists();
     }
@@ -176,7 +188,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         try {
             // Get the position from the provided ID
             $trainingPosition = TrainingPosition::where('position_id', $positionId)->firstOrFail();
-            $ctsMember = $this->trainingPlace->waitingListAccount->account->member;
+            $ctsMember = $this->trainingPlace->account->member;
 
             if (! $trainingPosition || ! $ctsMember) {
                 Notification::make()
@@ -238,11 +250,14 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                         ->dateTime('d/m/Y \a\t H:i'),
                 ]),
             Section::make('Training Place Details')->columnSpanFull()->schema([
-                TextEntry::make('waitingListAccount.account.name')->label('Name'),
-                TextEntry::make('waitingListAccount.account.id')->label('CID'),
+                TextEntry::make('account.name')->label('Name'),
+                TextEntry::make('account.id')->label('CID'),
                 TextEntry::make('trainingPosition.position.name')->label('Position'),
                 TextEntry::make('created_at')->label('Training Start')->date('d/m/Y'),
-                TextEntry::make('waitingListAccount.created_at')->label('Waiting List Join Date')->date('d/m/Y'),
+                TextEntry::make('waitingListAccount.created_at')
+                    ->label('Waiting List Join Date')
+                    ->date('d/m/Y')
+                    ->visible(fn (): bool => (bool) $this->trainingPlace->waiting_list_account_id),
                 IconEntry::make('has_pending_exam')
                     ->label('Has Pending Exam Booking')
                     ->getStateUsing(fn () => $this->hasPendingExam())
@@ -256,7 +271,10 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         return $table
             ->heading('Mentoring session history')
             ->queryStringIdentifier('mentoring')
-            ->query((new SessionRepository)->getAllAcceptedSessionsForPositionsQuery($this->trainingPlace->trainingPosition->cts_positions, $this->trainingPlace->waitingListAccount->account->member->id))
+            ->query((new SessionRepository)->getAllAcceptedSessionsForPositionsQuery(
+                $this->trainingPlace->trainingPosition->cts_positions,
+                $this->trainingPlace->account->member?->id ?? 0
+            ))
             ->defaultSort('taken_date', 'desc')
             ->paginated([10])
             ->defaultPaginationPageOption(10)

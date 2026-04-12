@@ -40,9 +40,6 @@ class AvailabilityWarningCreated extends Notification
      */
     public function toMail($notifiable)
     {
-        $trainingPlace = $this->availabilityWarning->trainingPlace;
-        $waitingListAccount = $trainingPlace->waitingListAccount;
-        $waitingListName = $waitingListAccount->waitingList->name ?? 'N/A';
         $expiresAt = $this->availabilityWarning->expires_at;
 
         $daysToExpire = (int) ceil(now()->diffInHours($expiresAt, false) / 24);
@@ -52,7 +49,6 @@ class AvailabilityWarningCreated extends Notification
             ->subject('Action Required: Update Your Availability')
             ->view('emails.training.availability_warning', [
                 'recipient' => $notifiable,
-                'waiting_list_name' => $waitingListName,
                 'expires_at' => $expiresAt,
                 'days_to_expire' => $daysToExpire.' '.Str::plural('day', $daysToExpire),
             ]);

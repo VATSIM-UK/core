@@ -50,7 +50,7 @@ class EndorsementService
     public static function getSoloEndorsementsForTrainingPlace(TrainingPlace $trainingPlace): Builder
     {
         return Endorsement::query()
-            ->where('account_id', $trainingPlace->waitingListAccount->account_id)
+            ->where('account_id', $trainingPlace->account_id)
             ->where('endorsable_id', $trainingPlace->trainingPosition->position_id)
             ->where('endorsable_type', Position::class)
             ->whereNotNull('expires_at')
@@ -78,7 +78,7 @@ class EndorsementService
                 END as endorsement_category',
                 [$position->id]
             )
-            ->where('account_id', $trainingPlace->waitingListAccount->account_id)
+            ->where('account_id', $trainingPlace->account_id)
             ->whereIn('endorsable_id', $positionIds)
             ->where('endorsable_type', Position::class)
             ->whereNotNull('expires_at')

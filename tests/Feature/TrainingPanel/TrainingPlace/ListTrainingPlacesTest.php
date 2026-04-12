@@ -129,8 +129,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
             ->test(ListTrainingPlaces::class)
             ->assertSuccessful()
             ->assertCanSeeTableRecords([$trainingPlace])
-            ->assertTableColumnExists('waitingListAccount.account.name')
-            ->assertTableColumnExists('waitingListAccount.account_id')
+            ->assertTableColumnExists('account.name')
+            ->assertTableColumnExists('account_id')
             ->assertTableColumnExists('trainingPosition.position.callsign');
     }
 

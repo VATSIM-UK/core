@@ -46,7 +46,7 @@ class ActionExpiredAvailabilityWarningRemoval implements ShouldQueue
             return;
         }
 
-        $account = $trainingPlace->waitingListAccount->account;
+        $account = $trainingPlace->account;
 
         try {
             DB::transaction(function () use ($trainingPlace, $account): void {
