@@ -23,7 +23,7 @@ class TrainingPlaceExamCancellationsTable extends Component implements HasForms,
 
     public function table(Table $table): Table
     {
-        $position = $this->trainingPlace->trainingPosition->position->callsign;
+        $position = $this->trainingPlace->trainingPosition->exam_callsign;
 
         return $table
             ->heading('Exam Cancellations')
