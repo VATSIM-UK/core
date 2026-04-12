@@ -127,7 +127,8 @@ class TrainingPlaceService
         ]);
 
         $callsign = $trainingPosition->position?->callsign
-            ?? collect($trainingPosition->cts_positions)->filter()->first();
+            ?? collect($trainingPosition->cts_positions)->filter()->first()
+            ?? "Position #{$trainingPosition->id}";
 
         $account->addNote(
             'training',
