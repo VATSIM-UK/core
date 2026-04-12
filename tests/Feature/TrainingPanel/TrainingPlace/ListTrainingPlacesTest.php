@@ -120,6 +120,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
 
         $trainingPlace = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount->id,
+            'account_id' => $student->id,
             'training_position_id' => $trainingPosition->id,
         ]);
 
@@ -157,11 +158,13 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
 
         $trainingPlaceApproach = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount1->id,
+            'account_id' => $student1->id,
             'training_position_id' => $trainingPositionApproach->id,
         ]);
 
         $trainingPlaceTower = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount2->id,
+            'account_id' => $student2->id,
             'training_position_id' => $trainingPositionTower->id,
         ]);
 
@@ -191,6 +194,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
 
         $trainingPlace = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount->id,
+            'account_id' => $student->id,
             'training_position_id' => $trainingPosition->id,
         ]);
 
@@ -284,6 +288,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
 
         return TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount->id,
+            'account_id' => $student->id,
             'training_position_id' => $trainingPosition->id,
         ]);
     }
