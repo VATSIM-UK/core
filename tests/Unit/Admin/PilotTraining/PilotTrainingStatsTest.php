@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Admin\PilotTraining;
 
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalResult;
 use App\Models\Cts\Session;
@@ -43,28 +44,34 @@ class PilotTrainingStatsTest extends TestCase
     #[Test]
     public function it_counts_exams()
     {
+        $p1PassBooking = ExamBooking::factory()->create(['exam' => 'P1', 'taken_date' => '2020-02-01']);
+        $p2PassBooking = ExamBooking::factory()->create(['exam' => 'P2', 'taken_date' => '2020-02-01']);
+        $p1FailBooking = ExamBooking::factory()->create(['exam' => 'P1', 'taken_date' => '2020-02-15']);
+        $outOfRangeBooking = ExamBooking::factory()->create(['exam' => 'P1', 'taken_date' => '2020-04-01']);
+
         PracticalResult::factory()->create([
+            'examid' => $p1PassBooking->id,
             'exam' => 'P1',
             'result' => 'P',
-            'date' => '2020-02-01',
+            'date' => '2020-02-03',
         ]);
         PracticalResult::factory()->create([
+            'examid' => $p2PassBooking->id,
             'exam' => 'P2',
             'result' => 'P',
-            'date' => '2020-02-01',
+            'date' => '2020-02-03',
         ]);
-
-        // failed
         PracticalResult::factory()->create([
+            'examid' => $p1FailBooking->id,
             'exam' => 'P1',
             'result' => 'F',
-            'date' => '2020-02-01',
+            'date' => '2020-02-17',
         ]);
-        // different quarter
         PracticalResult::factory()->create([
+            'examid' => $outOfRangeBooking->id,
             'exam' => 'P1',
             'result' => 'P',
-            'date' => '2020-04-01',
+            'date' => '2020-04-03',
         ]);
 
         $result = PilotTrainingStats::examCount(
@@ -72,7 +79,47 @@ class PilotTrainingStatsTest extends TestCase
             Carbon::parse('2020-03-01'),
             'P1'
         );
-        $this->assertEquals('2 / 1', $result, 'Should count 2 P1 exams (1 pass) in Q1 2020');
+        $this->assertEquals('2 / 1', $result, 'Should count 2 P1 exams (1 pass) in Q1 2020 based on exam taken date');
+    }
+
+    #[Test]
+    public function it_excludes_exams_taken_outside_range_even_if_filed_inside_range()
+    {
+        $lateFiledBooking = ExamBooking::factory()->create(['exam' => 'P1', 'taken_date' => '2019-12-20']);
+
+        PracticalResult::factory()->create([
+            'examid' => $lateFiledBooking->id,
+            'exam' => 'P1',
+            'result' => 'P',
+            'date' => '2020-01-05',
+        ]);
+
+        $result = PilotTrainingStats::examCount(
+            Carbon::parse('2020-01-01'),
+            Carbon::parse('2020-03-31'),
+            'P1'
+        );
+        $this->assertEquals('0 / 0', $result, 'Exam filed in range but taken outside range should not be counted');
+    }
+
+    #[Test]
+    public function it_includes_exams_taken_inside_range_even_if_filed_outside_range()
+    {
+        $earlyExamBooking = ExamBooking::factory()->create(['exam' => 'P1', 'taken_date' => '2020-03-28']);
+
+        PracticalResult::factory()->create([
+            'examid' => $earlyExamBooking->id,
+            'exam' => 'P1',
+            'result' => 'P',
+            'date' => '2020-04-05',
+        ]);
+
+        $result = PilotTrainingStats::examCount(
+            Carbon::parse('2020-01-01'),
+            Carbon::parse('2020-03-31'),
+            'P1'
+        );
+        $this->assertEquals('1 / 1', $result, 'Exam taken in range but filed outside range should still be counted');
     }
 
     #[Test]

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin\Pages\PilotTraining;
 
 use App\Filament\Admin\Pages\PilotTraining\GeneratePilotQuarterlyStats;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\PracticalResult;
 use App\Models\Cts\Session;
 use Livewire\Livewire;
@@ -53,7 +54,13 @@ class GenerateQuarterlyPilotStatsPageTest extends BaseAdminTestCase
 
     public function test_it_returns_exam_count()
     {
+        $booking = ExamBooking::factory()->create([
+            'exam' => 'P1',
+            'taken_date' => '2020-02-01',
+        ]);
+
         PracticalResult::factory()->create([
+            'examid' => $booking->id,
             'exam' => 'P1',
             'result' => 'P',
             'date' => '2020-02-01',
