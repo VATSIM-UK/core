@@ -52,6 +52,12 @@ class TrainingPanelProvider extends PanelProvider
             ])
             ->brandLogo(asset('images/branding/vatsimuk_blackblue.png'))
             ->darkModeBrandLogo(asset('images/branding/vatsimuk_whiteblue.png'))
+            ->navigationGroups([
+                'My Training',
+                'Exams',
+                'Training',
+                'Theory',
+            ])
             ->navigationItems([
                 NavigationItem::make('Admin Panel')
                     ->url(fn () => route('filament.app.pages.dashboard'))

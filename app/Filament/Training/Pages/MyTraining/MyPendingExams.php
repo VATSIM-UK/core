@@ -28,7 +28,7 @@ class MyPendingExams extends Page implements HasTable
 
     protected static ?string $navigationLabel = 'My Pending Exams';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 10;
 
     public static function canAccess(): bool
     {
