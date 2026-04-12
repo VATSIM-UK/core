@@ -2,7 +2,6 @@
 VATSIM UK is a Division of the VATSIM Network within the Europe, Middle East and Asia Region. We are home to a large community of flight simulation hobbyists, enthusiasts and aviation professionals from across the world. Our Community Standards outline the rules which all members must abide by in order to keep our services safe, accessible and enjoyable by everyone.
 
 Members are subject to all VATSIM Network policies when utilising any VATSIM-owned or operated service. This includes, but is not limited to:
-
 - VATSIM Code of Conduct
 - VATSIM Code of Regulations
 - VATSIM User Agreement
@@ -22,7 +21,6 @@ The VATSIM Network Supervisor Department is primarily responsible for the enforc
 1.2. It is expected that all members are familiarised with VATSIM UK policy. All VATSIM UK policies are available on our website.
 
 1.3. If you believe that content on a VATSIM UK service is in violation of these Standards, you should inform a Moderator immediately. You should not attempt to 'moderate' the issue yourself or take part in any retaliatory action.
-
 
 ## Section 2 - Community Standards:
 
