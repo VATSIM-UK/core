@@ -167,7 +167,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $states_history_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TeamSpeak\Registration> $teamspeakRegistrations
  * @property-read int|null $teamspeak_registrations_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Token> $tokens
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Token> $sysTokens
  * @property-read int|null $tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Application> $visitTransferApplications
  * @property-read int|null $visit_transfer_applications_count
@@ -311,7 +311,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             }
         });
 
-        self::created([get_called_class(), 'eventCreated']);
+        self::created(static function ($model) {
+            static::eventCreated($model);
+        });
     }
 
     /**
@@ -370,7 +372,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         return $this->hasMany(AccountNoteData::class, 'writer_id');
     }
 
-    public function tokens()
+    public function sysTokens()
     {
         return $this->morphMany(\App\Models\Sys\Token::class, 'related');
     }
