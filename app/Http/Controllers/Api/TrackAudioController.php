@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class TrackAudioController
-
 {
     public function getLatest(Request $request)
     {
@@ -25,7 +24,7 @@ class TrackAudioController
         if ($latestVersion) {
             return new RedirectResponse("https://github.com/pierr3/TrackAudio/releases/tag/{$latestVersion}");
         } else {
-            return new RedirectResponse("https://github.com/pierr3/TrackAudio/releases");
+            return new RedirectResponse('https://github.com/pierr3/TrackAudio/releases');
         }
 
     }
