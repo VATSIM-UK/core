@@ -242,6 +242,7 @@ class PilotTrainingStatsTest extends TestCase
     #[Test]
     public function it_counts_student_stats()
     {
+        // Create students
         Member::Factory()->create([
             'id' => 1,
             'cid' => '111111',
@@ -258,6 +259,7 @@ class PilotTrainingStatsTest extends TestCase
             'name' => 'Student Three',
         ]);
 
+        // Sessions for students
         Session::factory()->create([
             'student_id' => 1,
             'position' => 'P1_PPL(A)',
