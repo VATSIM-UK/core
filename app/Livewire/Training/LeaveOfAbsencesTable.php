@@ -145,7 +145,8 @@ class LeaveOfAbsencesTable extends Component implements HasActions, HasForms, Ha
                             ->send();
                     }),
             ])
-            ->emptyStateHeading('No leaves of absences');
+            ->emptyStateHeading('No leaves of absences')
+            ->emptyStateDescription('There are no LOAs for this training place');
     }
 
     private function abortIfOverlapping(CreateAction $action, array $data): void
