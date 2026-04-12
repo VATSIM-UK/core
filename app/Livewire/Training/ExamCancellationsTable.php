@@ -28,12 +28,18 @@ class ExamCancellationsTable extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         $examHistoryService = app(ExamHistoryService::class);
+        $user = auth()->user();
+
+        $allowedTypes = $examHistoryService->getTypesToShow($user);
 
         return $table
             ->heading('Exam Cancellations')
             ->query(
                 CancelReason::query()
                     ->where('sesh_type', 'EX')
+                    ->whereHas('examBooking', function (Builder $query) use ($allowedTypes) {
+                        $query->whereIn('exam', $allowedTypes);
+                    })
                     ->with(['examBooking', 'examBooking.student'])
             )
             ->columns([
