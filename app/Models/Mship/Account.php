@@ -40,6 +40,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\Contracts\OAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Models\Role;
 use Watson\Rememberable\Rememberable;
@@ -217,7 +218,7 @@ use Watson\Rememberable\Rememberable;
  *
  * @mixin \Eloquent
  */
-class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
+class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, OAuthenticatable
 {
     use Authenticatable,
         Authorizable,
