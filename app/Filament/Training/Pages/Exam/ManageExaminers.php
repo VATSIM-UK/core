@@ -26,6 +26,8 @@ class ManageExaminers extends Page implements HasTable
 
     protected string $view = 'filament.training.pages.manage-examiners';
 
+    protected static ?int $navigationSort = 4;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Exams';
 
     protected static ?string $navigationLabel = 'Manage Examiners';
