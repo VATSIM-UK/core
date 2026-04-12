@@ -214,7 +214,7 @@
                                     <li class="divider"></li>
 
                                     <li class="dropdown-header">Protecting You</li>
-                                    <li><a href="{{ route('site.policy.terms') }}">Terms & Conditions</a></li>
+                                    <li><a href="{{ route('site.policy.community-standards') }}">Community Standards</a></li>
                                     <li><a href="{{ route('site.policy.privacy') }}">Privacy Policy</a></li>
                                     <li><a href="{{ route('site.policy.data-protection') }}">Data Protection Policy</a></li>
                                     <li class="divider"></li>

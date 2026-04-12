@@ -577,7 +577,7 @@ position they are not authorised.
 ### 6.1 General
 
 6.1.a VATSIM UK provides services accessed through a member’s VATSIM login credentials. These services
-are governed in their use by global VATSIM policies and any additional Terms and Conditions
+are governed in their use by global VATSIM policies and any additional Community Standards
 published by VATSIM UK
 
 6.1.b The Division Director, or a nominated representative, shall appoint a Moderation Team for VATSIM
