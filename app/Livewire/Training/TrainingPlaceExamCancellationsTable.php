@@ -27,14 +27,7 @@ class TrainingPlaceExamCancellationsTable extends Component implements HasForms,
 
         return $table
             ->heading('Exam Cancellations')
-            ->query(
-                CancelReason::query()
-                    ->select('cancel_reason.*')
-                    ->join('exam_book', 'cancel_reason.sesh_id', '=', 'exam_book.id')
-                    ->where('cancel_reason.sesh_type', 'EX')
-                    ->where('exam_book.position_1', $position)
-                    ->orderBy('cancel_reason.date', 'desc')
-            )
+            ->query($this->cancellationsQuery())
             ->columns([
                 TextColumn::make('date')
                     ->label('Date/Time')
@@ -53,5 +46,22 @@ class TrainingPlaceExamCancellationsTable extends Component implements HasForms,
     public function render()
     {
         return view('livewire.training.training-place-exam-cancellations-table');
+    }
+
+    public function hasExamCancellations(): bool
+    {
+        return $this->cancellationsQuery()->exists();
+    }
+
+    private function cancellationsQuery()
+    {
+        $position = $this->trainingPlace->trainingPosition->exam_callsign;
+
+        return CancelReason::query()
+            ->select('cancel_reason.*')
+            ->join('exam_book', 'cancel_reason.sesh_id', '=', 'exam_book.id')
+            ->where('cancel_reason.sesh_type', 'EX')
+            ->where('exam_book.position_1', $position)
+            ->orderBy('cancel_reason.date', 'desc');
     }
 }
