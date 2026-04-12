@@ -22,8 +22,18 @@ class TrainingPlaceStatsWidget extends BaseWidget
         $daysActive = (int) ceil($this->trainingPlace->created_at->diffInRealDays(now()));
         $activeTime = "{$daysActive} ".Str::plural('day', $daysActive);
 
-        $waitingTime = (int) ceil($this->trainingPlace->waitingListAccount?->created_at->diffInDays($this->trainingPlace->waitingListAccount->deleted_at));
-        $waitingTime = "{$waitingTime} ".Str::plural('day', $waitingTime);
+        $waitingListAccount = $this->trainingPlace->waitingListAccount;
+
+        if (! $waitingListAccount) {
+            $waitingTime = 'N/A';
+        } else {
+            $waitingListJoinDate = $waitingListAccount->created_at;
+
+            $waitingListEndDate = $waitingListAccount->deleted_at ?? now();
+
+            $waitingTimeDays = (int) ceil($waitingListJoinDate->diffInDays($waitingListEndDate));
+            $waitingTime = "{$waitingTimeDays} ".Str::plural('day', $waitingTimeDays);
+        }
 
         $warningsCount = $this->trainingPlace->availabilityWarnings()->count();
 
