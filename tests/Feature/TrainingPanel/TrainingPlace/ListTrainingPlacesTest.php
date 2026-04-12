@@ -19,6 +19,68 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     use DatabaseTransactions;
 
     #[Test]
+    public function it_shows_create_adhoc_training_place_action_when_user_has_permission()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training-places.create-adhoc');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->assertSuccessful()
+            ->assertActionVisible('createAdhocTrainingPlace');
+    }
+
+    #[Test]
+    public function it_hides_create_adhoc_training_place_action_without_permission()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->assertSuccessful()
+            ->assertActionHidden('createAdhocTrainingPlace');
+    }
+
+    #[Test]
+    public function it_can_create_an_adhoc_training_place_from_the_list_page()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training-places.create-adhoc');
+
+        $ctsPosition = CtsPosition::factory()->create(['callsign' => 'EGLL_GND']);
+        $trainingPosition = TrainingPosition::factory()->withCtsPositions([$ctsPosition->callsign])->create();
+
+        $student = Account::factory()->create();
+        Member::factory()->create([
+            'cid' => $student->id,
+            'name' => 'Adhoc Student',
+        ]);
+
+        $reason = 'This is a valid reason for creating an ad-hoc training place.';
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->callAction('createAdhocTrainingPlace', data: [
+                'account_id' => $student->id,
+                'training_position_id' => $trainingPosition->id,
+                'reason' => $reason,
+            ])
+            ->assertNotified();
+
+        $this->assertDatabaseHas('training_places', [
+            'account_id' => $student->id,
+            'training_position_id' => $trainingPosition->id,
+            'waiting_list_account_id' => null,
+        ]);
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'account_id' => $student->id,
+            'writer_id' => $this->panelUser->id,
+            'content' => "Ad-hoc training place created on {$ctsPosition->callsign} outside the usual waiting list flow. Reason: {$reason}",
+        ]);
+    }
+
+    #[Test]
     public function it_can_render_training_places_list_page_with_permission()
     {
         // Arrange

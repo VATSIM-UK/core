@@ -112,13 +112,30 @@ class TrainingPlaceService
         return $trainingPlace;
     }
 
-    public function createAdhocTrainingPlace(Account $account, TrainingPosition $trainingPosition): TrainingPlace
-    {
-        return TrainingPlace::create([
+    public function createAdhocTrainingPlace(
+        Account $account,
+        TrainingPosition $trainingPosition,
+        string $reason,
+        Account $actor,
+    ): TrainingPlace {
+        $trainingPosition->loadMissing('position');
+
+        $trainingPlace = TrainingPlace::create([
             'account_id' => $account->id,
             'training_position_id' => $trainingPosition->id,
             'waiting_list_account_id' => null,
         ]);
+
+        $callsign = $trainingPosition->position?->callsign
+            ?? collect($trainingPosition->cts_positions)->filter()->first();
+
+        $account->addNote(
+            'training',
+            "Ad-hoc training place created on {$callsign} outside the usual waiting list flow. Reason: {$reason}",
+            $actor->id,
+        );
+
+        return $trainingPlace;
     }
 
     public function removeFromWaitingList(TrainingPlace $trainingPlace): void
