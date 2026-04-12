@@ -3,9 +3,7 @@
 namespace App\Livewire\Training;
 
 use App\Enums\PilotExamType;
-use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Cts\CancelReason;
-use App\Models\Mship\Account;
 use App\Services\Training\ExamHistoryService;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Forms\Components\Select;
@@ -48,7 +46,8 @@ class ExamCancellationsTable extends Component implements HasForms, HasTable
                     ->searchable(),
 
                 TextColumn::make('examBooking.student.account.name')
-                    ->label('Student Name'),
+                    ->label('Student Name')
+                    ->searchable(),
 
                 TextColumn::make('examBooking.exam')
                     ->label('Exam'),
@@ -69,23 +68,6 @@ class ExamCancellationsTable extends Component implements HasForms, HasTable
                     ->searchable(),
             ])
             ->filters([
-                Filter::make('student')
-                    ->schema([
-                        Select::make('student_id')
-                            ->label('Student')
-                            ->searchable()
-                            ->getSearchResultsUsing(fn (string $search): array => TrainingMemberAccountSearch::searchAccountsForSelect($search, 50))
-                            ->getOptionLabelUsing(fn ($value): ?string => Account::query()->find($value)?->name.' ('.$value.')')
-                            ->required(),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query->when(
-                            $data['student_id'],
-                            fn (Builder $query, $vatsimCid): Builder => $query->whereHas('examBooking.student',
-                                fn ($q) => $q->where('cid', $vatsimCid)
-                            )
-                        );
-                    }),
                 Filter::make('position')->schema([
                     Select::make('atc_positions')
                         ->options([
