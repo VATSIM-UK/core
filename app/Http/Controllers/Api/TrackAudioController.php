@@ -13,7 +13,7 @@ class TrackAudioController
     {
         $latestVersion = Cache::get('trackaudio_latest_version');
 
-        if ($latestVersion == null) {
+        if ($latestVersion === null) {
             $latestVersion = $this->fetchLatestVersion();
 
             if ($latestVersion) {
@@ -21,7 +21,7 @@ class TrackAudioController
             }
         }
 
-        if ($latestVersion) {
+        if ($latestVersion !== null) {
             return new RedirectResponse("https://github.com/pierr3/TrackAudio/releases/tag/{$latestVersion}");
         } else {
             return new RedirectResponse('https://github.com/pierr3/TrackAudio/releases');
