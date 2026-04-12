@@ -57,6 +57,10 @@ class ExamCancellationsTable extends Component implements HasForms, HasTable
                     ->label('Cancelled Date')
                     ->dateTime()
                     ->sortable(),
+
+                TextColumn::make('reason_by')
+                    ->label('Cancelled By CID')
+                    ->searchable(),
             ])
             ->filters([
                 Filter::make('student')
