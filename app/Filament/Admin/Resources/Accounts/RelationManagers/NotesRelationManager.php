@@ -48,13 +48,16 @@ class NotesRelationManager extends RelationManager
 
         return $schema
             ->components([
-                Textarea::make('content')
-                    ->required()
-                    ->minLength(5),
                 Select::make('type')
                     ->required()
                     ->options($usableTypes)
-                    ->default($usableTypes->keys()->first()),
+                    ->default($usableTypes->keys()->first())
+                    ->columnSpanFull(),
+                Textarea::make('content')
+                    ->required()
+                    ->minLength(5)
+                    ->rows(6)
+                    ->columnSpanFull(),
             ]);
     }
 
