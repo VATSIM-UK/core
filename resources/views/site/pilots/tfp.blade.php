@@ -199,9 +199,13 @@
 
                                 <p>
                                     The mandatory Moodle course is available for <i>any member of VATSIM</i> to
-                                    join: <a href="https://moodle.vatsim.uk/course/view.php?id=63"
+                                    join: <br>
+                                    IFR: <a href="https://moodle.vatsim.uk/course/view.php?id=63"
                                         rel="external nofollow noopener"
-                                        target="_blank">https://moodle.vatsim.uk/course/view.php?id=63</a>
+                                        target="_blank">https://moodle.vatsim.uk/course/view.php?id=63</a> <br>
+                                    VFR: <a href="https://moodle.vatsim.uk/course/view.php?id=63"
+                                        rel="external nofollow noopener"
+                                        target="_blank">https://moodle.vatsim.uk/course/view.php?id=76</a>
                                 </p>
 
                                 <p>
