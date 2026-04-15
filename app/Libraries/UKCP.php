@@ -36,7 +36,7 @@ class UKCP
      */
     public function getValidTokensFor(Account $account)
     {
-        $tokens = optional($this->getAccountFor($account))->tokens;
+        $tokens = optional($this->getAccountFor($account))->sysTokens;
 
         return collect($tokens)
             ->filter(function ($item) {

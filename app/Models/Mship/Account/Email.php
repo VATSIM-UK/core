@@ -69,6 +69,11 @@ class Email extends Model
         return $this->morphMany(Token::class, 'related');
     }
 
+    public function sysTokens()
+    {
+        return $this->tokens();
+    }
+
     public function ssoEmails()
     {
         return $this->hasMany(SSOEmail::class, 'account_email_id');
