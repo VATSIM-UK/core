@@ -1,4 +1,9 @@
-<x-filament-panels::page>
+<x-filament-panels::page 
+    x-data="{}" 
+    x-init="
+        if (! $wire.browserTimezone) {
+            $wire.setBrowserTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone)
+        }">
     <style>
         .availability-grid {
             display: grid;

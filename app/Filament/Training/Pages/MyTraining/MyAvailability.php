@@ -60,6 +60,24 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     public ?string $browserTimezone = null;
 
+    public function setBrowserTimezone(string $timezone): void
+    {
+        if (in_array($timezone, timezone_identifiers_list()) && $this->browserTimezone !== $timezone) {
+            $this->browserTimezone = $timezone;
+
+            if (! Session::has('availability_timezone')) {
+                $this->timezone = $timezone;
+                Session::put('availability_timezone', $timezone);
+
+                $this->form->fill([
+                    'date' => now()->setTimezone($timezone)->toDateString(),
+                    'from' => '18:00',
+                    'to' => '21:00',
+                ]);
+            }
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -74,6 +92,11 @@ class MyAvailability extends Page implements HasForms, HasTable
                             $options = array_combine($zones, $zones);
 
                             $topZones = [];
+
+                            if ($this->browserTimezone && isset($options[$this->browserTimezone])) {
+                                $topZones[$this->browserTimezone] = "Detected: {$this->browserTimezone}";
+                                unset($options[$this->browserTimezone]);
+                            }
 
                             if (isset($options['UTC'])) {
                                 $topZones['UTC'] = 'UTC (Zulu)';
