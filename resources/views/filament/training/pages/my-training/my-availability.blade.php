@@ -23,7 +23,7 @@
             <x-filament::section>
                 <x-slot name="heading">Add Availability</x-slot>
                 <x-slot name="description">
-                    All times are in Zulu.
+                    All times are currently entered and shown in <strong>{{ $this->timezone }}</strong>.
                 </x-slot>
 
                 {{ $this->form }}
@@ -45,6 +45,9 @@
         <div class="availability-col">
             <x-filament::section>
                 <x-slot name="heading">My Availability</x-slot>
+                <x-slot name="description">
+                    Future slots adjusted to <strong>{{ $this->timezone }}</strong>.
+                </x-slot>
 
                 {{ $this->table }}
             </x-filament::section>

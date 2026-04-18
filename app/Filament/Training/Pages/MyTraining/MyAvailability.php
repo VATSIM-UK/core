@@ -5,6 +5,7 @@ namespace App\Filament\Training\Pages\MyTraining;
 use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
 use App\Models\Cts\Availability;
 use App\Services\Training\AvailabilityService;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -19,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Session;
 
 class MyAvailability extends Page implements HasForms, HasTable
 {
@@ -37,6 +39,8 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     public ?array $data = [];
 
+    public string $timezone = 'UTC';
+
     public static function canAccess(): bool
     {
         return auth()->user()?->can('training.access') ?? false;
@@ -54,10 +58,53 @@ class MyAvailability extends Page implements HasForms, HasTable
         ];
     }
 
+    // Add this property to your class
+    public ?string $browserTimezone = null;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('changeTimezone')
+                ->label(fn () => "Timezone: {$this->timezone}")
+                ->icon('heroicon-o-globe-alt')
+                ->form([
+                    Select::make('timezone')
+                        ->label('Select your local timezone')
+                        ->options(function () {
+                            $zones = timezone_identifiers_list();
+                            $options = array_combine($zones, $zones);
+
+                            $topZones = [];
+
+                            if (isset($options['UTC'])) {
+                                $topZones['UTC'] = 'UTC (Zulu)';
+                                unset($options['UTC']);
+                            }
+
+                            return $topZones + $options;
+                        })
+                        ->searchable()
+                        ->live()
+                        ->default($this->timezone)
+                        ->required(),
+                ])
+                ->action(function (array $data): void {
+                    $this->timezone = $data['timezone'];
+                    Session::put('availability_timezone', $data['timezone']);
+
+                    Notification::make()->title('Timezone updated')->success()->send();
+                }),
+        ];
+    }
+
     public function mount(): void
     {
+        $this->timezone = Session::get('availability_timezone', 'UTC');
+
+        $now = now()->setTimezone($this->timezone);
+
         $this->form->fill([
-            'date' => today()->toDateString(),
+            'date' => $now->toDateString(),
             'from' => '18:00',
             'to' => '21:00',
         ]);
@@ -71,8 +118,8 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->label('Date')
                     ->required()
                     ->native(false)
-                    ->minDate(now()->startOfDay())
-                    ->default(today()),
+                    ->minDate(now()->setTimezone($this->timezone)->startOfDay())
+                    ->default(now()->setTimezone($this->timezone)),
 
                 Select::make('from')
                     ->label('From')
@@ -100,11 +147,16 @@ class MyAvailability extends Page implements HasForms, HasTable
             return;
         }
 
+        $startLocal = Carbon::parse("{$data['date']} {$data['from']}", $this->timezone);
+        $endLocal = Carbon::parse("{$data['date']} {$data['to']}", $this->timezone);
+
+        $startUtc = $startLocal->clone()->utc();
+        $endUtc = $endLocal->clone()->utc();
+
         [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
             $studentId,
-            $data['date'],
-            $data['from'],
-            $data['to']
+            $startUtc,
+            $endUtc
         );
 
         if (! $valid) {
@@ -116,9 +168,9 @@ class MyAvailability extends Page implements HasForms, HasTable
         Availability::create([
             'student_id' => $studentId,
             'type' => 'S',
-            'date' => $data['date'],
-            'from' => $data['from'],
-            'to' => $data['to'],
+            'date' => $startUtc->toDateString(),
+            'from' => $startUtc->format('H:i:s'),
+            'to' => $endUtc->format('H:i:s'),
         ]);
 
         Notification::make()->title('Availability added')->success()->send();
@@ -135,11 +187,24 @@ class MyAvailability extends Page implements HasForms, HasTable
             ->columns([
                 TextColumn::make('date')
                     ->label('Date')
-                    ->date('D j M Y'),
+                    ->state(function (Availability $record) {
+                        return Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC')
+                            ->setTimezone($this->timezone)
+                            ->format('D j M Y');
+                    }),
 
                 TextColumn::make('time_window')
                     ->label('Time')
-                    ->state(fn (Availability $record): string => $record->from->format('H:i').' - '.$record->to->format('H:i')),
+                    ->state(function (Availability $record): string {
+                        $start = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC')->setTimezone($this->timezone);
+                        $end = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC')->setTimezone($this->timezone);
+
+                        if ($record->to->format('H:i:s') < $record->from->format('H:i:s')) {
+                            $end->addDay();
+                        }
+
+                        return $start->format('H:i').' - '.$end->format('H:i');
+                    }),
 
                 TextColumn::make('duration')
                     ->label('Duration')
@@ -154,10 +219,17 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->successNotification(null)
                     ->modalSubmitActionLabel('Update')
                     ->mutateRecordDataUsing(function (Availability $record): array {
+                        $start = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC')->setTimezone($this->timezone);
+                        $end = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC')->setTimezone($this->timezone);
+
+                        if ($record->to->format('H:i:s') < $record->from->format('H:i:s')) {
+                            $end->addDay();
+                        }
+
                         return [
-                            'date' => $record->date->toDateString(),
-                            'from' => $record->from->format('H:i'),
-                            'to' => $record->to->format('H:i'),
+                            'date' => $start->toDateString(),
+                            'from' => $start->format('H:i'),
+                            'to' => $end->format('H:i'),
                         ];
                     })
                     ->form([
@@ -166,8 +238,14 @@ class MyAvailability extends Page implements HasForms, HasTable
                         Select::make('to')->options($this->generateTimeOptions())->required(),
                     ])
                     ->action(function (Availability $record, array $data): void {
+                        $startLocal = Carbon::parse("{$data['date']} {$data['from']}", $this->timezone);
+                        $endLocal = Carbon::parse("{$data['date']} {$data['to']}", $this->timezone);
+
+                        $startUtc = $startLocal->clone()->utc();
+                        $endUtc = $endLocal->clone()->utc();
+
                         [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
-                            $record->student_id, $data['date'], $data['from'], $data['to'], $record->id
+                            $record->student_id, $startUtc, $endUtc, $record->id
                         );
 
                         if (! $valid) {
@@ -176,7 +254,12 @@ class MyAvailability extends Page implements HasForms, HasTable
                             return;
                         }
 
-                        $record->update($data);
+                        $record->update([
+                            'date' => $startUtc->toDateString(),
+                            'from' => $startUtc->format('H:i:s'),
+                            'to' => $endUtc->format('H:i:s'),
+                        ]);
+
                         Notification::make()->title('Availability updated')->success()->send();
                     }),
                 Action::make('delete')
