@@ -140,7 +140,7 @@ class MyAvailability extends Page implements HasForms, HasTable
 
                 TextColumn::make('time_window')
                     ->label('Time')
-                    ->state(fn (Availability $record): string => $record->from->format('H:i').' – '.$record->to->format('H:i')),
+                    ->state(fn (Availability $record): string => $record->from->format('H:i').' - '.$record->to->format('H:i')),
 
                 TextColumn::make('duration')
                     ->label('Duration')
