@@ -1,0 +1,13 @@
+{
+    "agents": ["copilot"],
+    "mcp": true,
+    "nightwatch_mcp": false,
+    "packages": ["filament/filament"],
+    "sail": false,
+    "skills": [
+        "laravel-best-practices",
+        "configuring-horizon",
+        "livewire-development",
+        "tailwindcss-development"
+    ]
+}

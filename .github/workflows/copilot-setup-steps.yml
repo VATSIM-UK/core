@@ -1,0 +1,94 @@
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+
+      - name: Composer Cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            vendor
+            ~/.composer/cache
+          key: composer-8.4-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-8.4-
+            composer-
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Node Cache
+        id: node-cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            node_modules
+            public/build
+            public/css
+            public/js
+            public/mix-manifest.json
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-
+
+      - name: Configure Composer GitHub auth
+        run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction
+
+      - name: Install Node dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Compile frontend assets
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm run build
+
+      - name: Create environment file
+        run: cp .env.ci .env
+
+      - name: Create databases
+        run: |
+          sudo systemctl start mysql.service
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS core_testing;' -h127.0.0.1 -uroot -proot
+          mysql -e 'CREATE DATABASE IF NOT EXISTS cts;' -h127.0.0.1 -uroot -proot
+
+      - name: Migrate CTS database
+        run: php artisan cts:migrate:fresh
+
+      - name: Run database migrations
+        run: php artisan migrate --force
+
+      - name: Seed database
+        run: php artisan db:seed --force
+
+      - name: Publish Telescope assets
+        run: php artisan telescope:publish
