@@ -2,11 +2,10 @@
 
 namespace App\Filament\Training\Pages\MyTraining;
 
-use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use Carbon\Carbon;
-use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -34,7 +33,7 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     protected static ?string $navigationLabel = 'My Availability';
 
-    protected static ?int $navigationSort = 15;
+    protected static ?int $navigationSort = 5;
 
     public ?array $data = [];
 
@@ -46,45 +45,32 @@ class MyAvailability extends Page implements HasForms, HasTable
     public function mount(): void
     {
         $this->form->fill([
+            'date' => today()->toDateString(),
             'from' => '18:00',
             'to' => '21:00',
         ]);
-    }
-
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            MyAvailabilityStats::class,
-        ];
     }
 
     public function form(Schema $form): Schema
     {
         return $form
             ->schema([
-                DatePicker::make('start_date')
-                    ->label('Start Date')
+                DatePicker::make('date')
+                    ->label('Date')
                     ->required()
                     ->native(false)
                     ->minDate(now()->startOfDay())
                     ->default(today()),
 
-                DatePicker::make('end_date')
-                    ->label('End Date')
-                    ->helperText('Leave blank for a single day, or set a date to add the same slot for every day in the range.')
-                    ->native(false)
-                    ->minDate(now()->startOfDay())
-                    ->afterOrEqual('start_date'),
-
                 Select::make('from')
-                    ->label('From (UTC)')
+                    ->label('From')
                     ->required()
                     ->searchable()
                     ->allowHtml(false)
                     ->options($this->generateTimeOptions()),
 
                 Select::make('to')
-                    ->label('To (UTC)')
+                    ->label('To')
                     ->required()
                     ->searchable()
                     ->allowHtml(false)
@@ -96,7 +82,6 @@ class MyAvailability extends Page implements HasForms, HasTable
     public function create(): void
     {
         $data = $this->form->getState();
-
         $studentId = $this->resolveStudentId();
 
         if (! $studentId) {
@@ -105,6 +90,7 @@ class MyAvailability extends Page implements HasForms, HasTable
 
         $from = $data['from'];
         $to = $data['to'];
+        $date = Carbon::parse($data['date'])->toDateString();
 
         if ($from >= $to) {
             Notification::make()
@@ -116,51 +102,47 @@ class MyAvailability extends Page implements HasForms, HasTable
             return;
         }
 
-        $start = Carbon::parse($data['start_date']);
-        $end = $data['end_date'] ? Carbon::parse($data['end_date']) : $start->copy();
-
-        $createdCount = 0;
-        $skippedCount = 0;
-        $current = $start->copy();
-
-        while ($current->lte($end)) {
-            $date = $current->toDateString();
-            $slotStart = Carbon::parse("{$date} {$from}");
-
-            if ($slotStart->lessThanOrEqualTo(now())) {
-                $skippedCount++;
-                $current->addDay();
-
-                continue;
-            }
-
-            $availability = Availability::query()->firstOrCreate([
-                'student_id' => $studentId,
-                'type' => 'S',
-                'date' => $date,
-                'from' => $from,
-                'to' => $to,
-            ]);
-
-            $availability->wasRecentlyCreated ? $createdCount++ : $skippedCount++;
-
-            $current->addDay();
-        }
-
-        if ($createdCount > 0) {
+        $slotStart = Carbon::parse("{$date} {$from}");
+        if ($slotStart->lessThanOrEqualTo(now())) {
             Notification::make()
-                ->title('Availability added')
-                ->body("Created {$createdCount} slot(s).".($skippedCount > 0 ? " Skipped {$skippedCount} duplicate/past slot(s)." : ''))
-                ->success()
+                ->title('Availability cannot be in the past')
+                ->body('That slot is in the past.')
+                ->warning()
                 ->send();
 
             return;
         }
 
+        $overlapExists = Availability::query()
+            ->where('student_id', $studentId)
+            ->where('date', $date)
+            ->where('type', 'S')
+            ->where(function ($query) use ($from, $to) {
+                $query->where('from', '<', $to)
+                    ->where('to', '>', $from);
+            })
+            ->exists();
+
+        if ($overlapExists) {
+            Notification::make()
+                ->title('Overlapping Availability')
+                ->body('This slot overlaps with an existing availability entry on this day.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+        Availability::create([
+            'student_id' => $studentId,
+            'type' => 'S',
+            'date' => $date,
+            'from' => $from,
+            'to' => $to,
+        ]);
+
         Notification::make()
-            ->title('No availability created')
-            ->body('All selected dates were duplicates or in the past.')
-            ->warning()
+            ->title('Availability added')
+            ->success()
             ->send();
     }
 
@@ -175,7 +157,7 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->date('D j M Y'),
 
                 TextColumn::make('time_window')
-                    ->label('Time (UTC)')
+                    ->label('Time')
                     ->state(fn (Availability $record): string => $record->from->format('H:i').' – '.$record->to->format('H:i')),
 
                 TextColumn::make('duration')
@@ -199,14 +181,18 @@ class MyAvailability extends Page implements HasForms, HasTable
                     }),
             ])
             ->actions([
-                DeleteAction::make()
-                    ->iconButton(),
+                Action::make('delete')
+                    ->icon('heroicon-m-trash')
+                    ->color('danger')
+                    ->iconButton()
+                    ->requiresConfirmation(false)
+                    ->action(fn ($record) => $record->delete()),
             ])
             ->bulkActions([
                 DeleteBulkAction::make(),
             ])
             ->emptyStateHeading('No availability added yet')
-            ->emptyStateDescription('Use the form to add your available training slots.')
+            ->emptyStateDescription('Use the form to add your availability slots.')
             ->paginated([10, 25, 50])
             ->defaultPaginationPageOption(25);
     }
