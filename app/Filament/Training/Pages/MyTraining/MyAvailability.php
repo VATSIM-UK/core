@@ -58,7 +58,6 @@ class MyAvailability extends Page implements HasForms, HasTable
         ];
     }
 
-    // Add this property to your class
     public ?string $browserTimezone = null;
 
     protected function getHeaderActions(): array
