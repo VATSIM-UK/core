@@ -4,7 +4,6 @@ namespace App\Filament\Admin\Resources\PositionGroups\RelationManagers;
 
 use App\Models\Mship\Account;
 use App\Services\Training\EndorsementService;
-use App\Services\Training\TrainingSuccessesAnnouncementService;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -47,8 +46,6 @@ class MembershipEndorsementRelationManager extends RelationManager
 
                     $positionGroup = $this->getOwnerRecord();
                     EndorsementService::createPermanent($positionGroup, $account, auth()->user());
-
-                    app(TrainingSuccessesAnnouncementService::class)->announceTierEndorsement($account, $positionGroup);
                 })->visible(fn () => auth()->user()->can('endorse', $this->getOwnerRecord())),
             ]);
     }
