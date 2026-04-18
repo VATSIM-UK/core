@@ -6,6 +6,7 @@ use App\Filament\Training\Pages\MyTraining\MyAvailability;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
@@ -109,5 +110,29 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
 
         $this->assertCount(1, $records);
         $this->assertEquals(now()->addDay()->toDateString(), $records->first()->date->toDateString());
+    }
+
+    #[Test]
+    public function it_correctly_converts_availability_creation_to_utc(): void
+    {
+        config(['app.timezone' => 'UTC']);
+        $tz = 'America/New_York';
+        session(['availability_timezone' => $tz]);
+
+        $knownUtcTime = Carbon::create(2026, 12, 25, 10, 0, 0, 'UTC');
+        $this->travelTo($knownUtcTime);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->assertSet('timezone', $tz)
+            ->set('data.date', '2026-12-25')
+            ->set('data.from', '12:00')
+            ->set('data.to', '14:00')
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $availability = Availability::where('student_id', $this->studentMember->id)->first();
+
+        $this->assertEquals('17:00:00', $availability->getRawOriginal('from'), 'The database value is incorrect.');
     }
 }
