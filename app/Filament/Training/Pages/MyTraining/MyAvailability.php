@@ -2,11 +2,14 @@
 
 namespace App\Filament\Training\Pages\MyTraining;
 
+use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
+use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -40,6 +43,18 @@ class MyAvailability extends Page implements HasForms, HasTable
     public static function canAccess(): bool
     {
         return auth()->user()?->can('training.access') ?? false;
+    }
+
+    protected function getAvailabilityService(): AvailabilityService
+    {
+        return app(AvailabilityService::class);
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            MyAvailabilityStats::class,
+        ];
     }
 
     public function mount(): void
@@ -88,62 +103,29 @@ class MyAvailability extends Page implements HasForms, HasTable
             return;
         }
 
-        $from = $data['from'];
-        $to = $data['to'];
-        $date = Carbon::parse($data['date'])->toDateString();
+        [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
+            $studentId,
+            $data['date'],
+            $data['from'],
+            $data['to']
+        );
 
-        if ($from >= $to) {
-            Notification::make()
-                ->title('Invalid time range')
-                ->body('The end time must be after the start time.')
-                ->danger()
-                ->send();
-
-            return;
-        }
-
-        $slotStart = Carbon::parse("{$date} {$from}");
-        if ($slotStart->lessThanOrEqualTo(now())) {
-            Notification::make()
-                ->title('Availability cannot be in the past')
-                ->body('That slot is in the past.')
-                ->warning()
-                ->send();
+        if (! $valid) {
+            Notification::make()->title($message)->danger()->send();
 
             return;
         }
 
-        $overlapExists = Availability::query()
-            ->where('student_id', $studentId)
-            ->where('date', $date)
-            ->where('type', 'S')
-            ->where(function ($query) use ($from, $to) {
-                $query->where('from', '<', $to)
-                    ->where('to', '>', $from);
-            })
-            ->exists();
-
-        if ($overlapExists) {
-            Notification::make()
-                ->title('Overlapping Availability')
-                ->body('This slot overlaps with an existing availability entry on this day.')
-                ->danger()
-                ->send();
-
-            return;
-        }
         Availability::create([
             'student_id' => $studentId,
             'type' => 'S',
-            'date' => $date,
-            'from' => $from,
-            'to' => $to,
+            'date' => $data['date'],
+            'from' => $data['from'],
+            'to' => $data['to'],
         ]);
 
-        Notification::make()
-            ->title('Availability added')
-            ->success()
-            ->send();
+        Notification::make()->title('Availability added')->success()->send();
+        $this->form->fill($this->form->getRawState()); // Keep current date for convenience
     }
 
     public function table(Table $table): Table
@@ -181,6 +163,41 @@ class MyAvailability extends Page implements HasForms, HasTable
                     }),
             ])
             ->actions([
+                EditAction::make()
+                    ->iconButton()
+                    ->modalWidth('md')
+                    ->successNotification(null)
+                    ->modalSubmitActionLabel('Update')
+                    ->mutateRecordDataUsing(function (Availability $record): array {
+                        return [
+                            'date' => $record->date->toDateString(),
+                            'from' => $record->from->format('H:i'),
+                            'to' => $record->to->format('H:i'),
+                        ];
+                    })
+                    ->form([
+                        DatePicker::make('date')->required()->native(false),
+                        Select::make('from')->options($this->generateTimeOptions())->required(),
+                        Select::make('to')->options($this->generateTimeOptions())->required(),
+                    ])
+                    ->action(function (Availability $record, array $data): void {
+                        [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
+                            $record->student_id,
+                            $data['date'],
+                            $data['from'],
+                            $data['to'],
+                            $record->id
+                        );
+
+                        if (! $valid) {
+                            Notification::make()->title($message)->danger()->send();
+
+                            return;
+                        }
+
+                        $record->update($data);
+                        Notification::make()->title('Availability updated')->success()->send();
+                    }),
                 Action::make('delete')
                     ->icon('heroicon-m-trash')
                     ->color('danger')

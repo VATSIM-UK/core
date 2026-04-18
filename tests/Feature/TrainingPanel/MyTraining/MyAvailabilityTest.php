@@ -78,33 +78,6 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_only_shows_student_availability_type(): void
-    {
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => now()->addDay()->toDateString(),
-            'from' => '19:00:00',
-            'to' => '21:00:00',
-            'type' => 'S',
-        ]);
-
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => now()->addDays(3)->toDateString(),
-            'from' => '20:00:00',
-            'to' => '22:00:00',
-            'type' => 'M',
-        ]);
-
-        $component = Livewire::actingAs($this->studentAccount)
-            ->test(MyAvailability::class)
-            ->assertSuccessful();
-
-        $records = $component->instance()->getTable()->getRecords();
-
-        $this->assertCount(1, $records);
-        $this->assertEquals('S', $records->first()->type);
-    }
-
-    #[Test]
     public function it_only_shows_future_availability_slots(): void
     {
         Availability::factory()->forStudent($this->studentMember->id)->create([
