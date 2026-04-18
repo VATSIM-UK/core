@@ -4,9 +4,7 @@ namespace App\Filament\Training\Pages\MyTraining;
 
 use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
 use App\Models\Cts\Availability;
-use App\Models\Cts\Member;
 use App\Services\Training\AvailabilityService;
-use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -21,7 +19,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class MyAvailability extends Page implements HasForms, HasTable
 {
@@ -131,7 +128,9 @@ class MyAvailability extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query($this->getAvailabilityQuery())
+            ->query($this->getAvailabilityService()->getFutureAvailabilityQuery(
+                $this->getAvailabilityService()->resolveMemberId(auth()->id()) ?? 0
+            ))
             ->defaultSort('date')
             ->columns([
                 TextColumn::make('date')
@@ -144,23 +143,9 @@ class MyAvailability extends Page implements HasForms, HasTable
 
                 TextColumn::make('duration')
                     ->label('Duration')
-                    ->state(function (Availability $record): string {
-                        $start = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'));
-                        $end = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'));
-                        $minutes = max(0, $start->diffInMinutes($end));
-                        $hours = intdiv($minutes, 60);
-                        $rem = $minutes % 60;
-
-                        if ($hours === 0) {
-                            return "{$rem}m";
-                        }
-
-                        if ($rem === 0) {
-                            return "{$hours}h";
-                        }
-
-                        return "{$hours}h {$rem}m";
-                    }),
+                    ->state(fn (Availability $record) => $this->getAvailabilityService()->formatDuration(
+                        $record->date, $record->from, $record->to
+                    )),
             ])
             ->actions([
                 EditAction::make()
@@ -182,11 +167,7 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ])
                     ->action(function (Availability $record, array $data): void {
                         [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
-                            $record->student_id,
-                            $data['date'],
-                            $data['from'],
-                            $data['to'],
-                            $record->id
+                            $record->student_id, $data['date'], $data['from'], $data['to'], $record->id
                         );
 
                         if (! $valid) {
@@ -228,39 +209,8 @@ class MyAvailability extends Page implements HasForms, HasTable
         return $options;
     }
 
-    protected function getAvailabilityQuery(): Builder
-    {
-        $studentId = $this->resolveStudentId();
-
-        if (! $studentId) {
-            return Availability::query()->whereRaw('1 = 0');
-        }
-
-        return Availability::query()
-            ->where('student_id', $studentId)
-            ->where('type', 'S')
-            ->where(function (Builder $query): void {
-                $today = now()->toDateString();
-                $timeNow = now()->format('H:i:s');
-
-                $query->whereDate('date', '>', $today)
-                    ->orWhere(function (Builder $query) use ($today, $timeNow): void {
-                        $query->whereDate('date', '=', $today)
-                            ->whereTime('from', '>', $timeNow);
-                    });
-            });
-    }
-
     protected function resolveStudentId(): ?int
     {
-        $cid = auth()->id();
-
-        if (! $cid) {
-            return null;
-        }
-
-        return Member::query()
-            ->where('cid', $cid)
-            ->value('id');
+        return $this->getAvailabilityService()->resolveMemberId(auth()->id());
     }
 }
