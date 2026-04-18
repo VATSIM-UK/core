@@ -6,22 +6,24 @@ use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use Carbon\Carbon;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction as ActionsDeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class MyAvailability extends Page implements HasTable
+class MyAvailability extends Page implements HasForms, HasTable
 {
+    use InteractsWithForms;
     use InteractsWithTable;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
@@ -34,9 +36,19 @@ class MyAvailability extends Page implements HasTable
 
     protected static ?int $navigationSort = 15;
 
+    public ?array $data = [];
+
     public static function canAccess(): bool
     {
         return auth()->user()?->can('training.access') ?? false;
+    }
+
+    public function mount(): void
+    {
+        $this->form->fill([
+            'from' => '18:00',
+            'to' => '21:00',
+        ]);
     }
 
     protected function getHeaderWidgets(): array
@@ -44,6 +56,112 @@ class MyAvailability extends Page implements HasTable
         return [
             MyAvailabilityStats::class,
         ];
+    }
+
+    public function form(Schema $form): Schema
+    {
+        return $form
+            ->schema([
+                DatePicker::make('start_date')
+                    ->label('Start Date')
+                    ->required()
+                    ->native(false)
+                    ->minDate(now()->startOfDay())
+                    ->default(today()),
+
+                DatePicker::make('end_date')
+                    ->label('End Date')
+                    ->helperText('Leave blank for a single day, or set a date to add the same slot for every day in the range.')
+                    ->native(false)
+                    ->minDate(now()->startOfDay())
+                    ->afterOrEqual('start_date'),
+
+                Select::make('from')
+                    ->label('From (UTC)')
+                    ->required()
+                    ->searchable()
+                    ->allowHtml(false)
+                    ->options($this->generateTimeOptions()),
+
+                Select::make('to')
+                    ->label('To (UTC)')
+                    ->required()
+                    ->searchable()
+                    ->allowHtml(false)
+                    ->options($this->generateTimeOptions()),
+            ])
+            ->statePath('data');
+    }
+
+    public function create(): void
+    {
+        $data = $this->form->getState();
+
+        $studentId = $this->resolveStudentId();
+
+        if (! $studentId) {
+            return;
+        }
+
+        $from = $data['from'];
+        $to = $data['to'];
+
+        if ($from >= $to) {
+            Notification::make()
+                ->title('Invalid time range')
+                ->body('The end time must be after the start time.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $start = Carbon::parse($data['start_date']);
+        $end = $data['end_date'] ? Carbon::parse($data['end_date']) : $start->copy();
+
+        $createdCount = 0;
+        $skippedCount = 0;
+        $current = $start->copy();
+
+        while ($current->lte($end)) {
+            $date = $current->toDateString();
+            $slotStart = Carbon::parse("{$date} {$from}");
+
+            if ($slotStart->lessThanOrEqualTo(now())) {
+                $skippedCount++;
+                $current->addDay();
+
+                continue;
+            }
+
+            $availability = Availability::query()->firstOrCreate([
+                'student_id' => $studentId,
+                'type' => 'S',
+                'date' => $date,
+                'from' => $from,
+                'to' => $to,
+            ]);
+
+            $availability->wasRecentlyCreated ? $createdCount++ : $skippedCount++;
+
+            $current->addDay();
+        }
+
+        if ($createdCount > 0) {
+            Notification::make()
+                ->title('Availability added')
+                ->body("Created {$createdCount} slot(s).".($skippedCount > 0 ? " Skipped {$skippedCount} duplicate/past slot(s)." : ''))
+                ->success()
+                ->send();
+
+            return;
+        }
+
+        Notification::make()
+            ->title('No availability created')
+            ->body('All selected dates were duplicates or in the past.')
+            ->warning()
+            ->send();
     }
 
     public function table(Table $table): Table
@@ -55,9 +173,11 @@ class MyAvailability extends Page implements HasTable
                 TextColumn::make('date')
                     ->label('Date')
                     ->date('D j M Y'),
+
                 TextColumn::make('time_window')
-                    ->label('Time (Zulu)')
-                    ->state(fn (Availability $record): string => $record->from->format('H:i').' - '.$record->to->format('H:i')),
+                    ->label('Time (UTC)')
+                    ->state(fn (Availability $record): string => $record->from->format('H:i').' – '.$record->to->format('H:i')),
+
                 TextColumn::make('duration')
                     ->label('Duration')
                     ->state(function (Availability $record): string {
@@ -65,73 +185,44 @@ class MyAvailability extends Page implements HasTable
                         $end = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'));
                         $minutes = max(0, $start->diffInMinutes($end));
                         $hours = intdiv($minutes, 60);
-                        $remainingMinutes = $minutes % 60;
+                        $rem = $minutes % 60;
 
                         if ($hours === 0) {
-                            return "{$remainingMinutes}m";
+                            return "{$rem}m";
                         }
 
-                        if ($remainingMinutes === 0) {
+                        if ($rem === 0) {
                             return "{$hours}h";
                         }
 
-                        return "{$hours}h {$remainingMinutes}m";
-                    }),
-            ])
-            ->headerActions([
-                CreateAction::make()
-                    ->label('Add Availability')
-                    ->icon('heroicon-o-plus')
-                    ->form($this->getFormSchema())
-                    ->mutateFormDataUsing(function (array $data): array {
-                        $data['student_id'] = $this->resolveStudentId();
-                        $data['type'] = 'S';
-
-                        return $data;
+                        return "{$hours}h {$rem}m";
                     }),
             ])
             ->actions([
-                EditAction::make()
-                    ->form($this->getFormSchema())
-                    ->mutateRecordDataUsing(function (array $data): array {
-                        $data['from'] = Carbon::parse($data['from'])->format('H:i');
-                        $data['to'] = Carbon::parse($data['to'])->format('H:i');
-
-                        return $data;
-                    }),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->iconButton(),
             ])
             ->bulkActions([
-                ActionsDeleteBulkAction::make(),
+                DeleteBulkAction::make(),
             ])
             ->emptyStateHeading('No availability added yet')
-            ->emptyStateDescription('Add your available training slots so mentors can schedule sessions around your real availability.')
+            ->emptyStateDescription('Use the form to add your available training slots.')
             ->paginated([10, 25, 50])
-            ->defaultPaginationPageOption(10);
+            ->defaultPaginationPageOption(25);
     }
 
-    protected function getFormSchema(): array
+    protected function generateTimeOptions(): array
     {
-        return [
-            DatePicker::make('date')
-                ->label('Date')
-                ->required()
-                ->native(false)
-                ->minDate(now()->startOfDay()),
-            TimePicker::make('from')
-                ->label('From (UTC)')
-                ->required()
-                ->seconds(false)
-                ->native(false),
-            TimePicker::make('to')
-                ->label('To (UTC)')
-                ->required()
-                ->seconds(false)
-                ->native(false)
-                ->after('from'),
-            Hidden::make('type')
-                ->default('S'),
-        ];
+        $options = [];
+
+        for ($h = 0; $h < 24; $h++) {
+            for ($m = 0; $m < 60; $m += 15) {
+                $time = sprintf('%02d:%02d', $h, $m);
+                $options[$time] = $time;
+            }
+        }
+
+        return $options;
     }
 
     protected function getAvailabilityQuery(): Builder
