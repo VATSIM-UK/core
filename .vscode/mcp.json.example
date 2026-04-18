@@ -1,0 +1,18 @@
+{
+    "servers": {
+        "mysql": {
+            "command": "npx",
+            "args": ["-y", "@benborla29/mcp-server-mysql"],
+            "env": {
+                "MYSQL_ROOT_PASSWORD": "root",
+                "MYSQL_HOST": "127.0.0.1",
+                "MYSQL_USER": "root",
+                "MYSQL_PASS": "root"
+            }
+        },
+        "laravel-boost": {
+            "command": "php",
+            "args": ["artisan", "boost:mcp"]
+        }
+    }
+}
