@@ -35,12 +35,12 @@ class PolicyPagesController extends \App\Http\Controllers\BaseController
         return $this->viewMake('site.policy.visiting-and-transferring');
     }
 
-    public function viewTerms()
+    public function viewCommunityStandards()
     {
-        $this->setTitle('Terms & Conditions');
-        $this->addBreadcrumb('Terms & Conditions', route('site.policy.terms'));
+        $this->setTitle('Community Standards');
+        $this->addBreadcrumb('Community Standards', route('site.policy.community-standards'));
 
-        return $this->viewMake('site.policy.terms');
+        return $this->viewMake('site.policy.community-standards');
     }
 
     public function viewPrivacy()
