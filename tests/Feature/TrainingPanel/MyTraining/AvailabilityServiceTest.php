@@ -7,9 +7,10 @@ use App\Models\Cts\Member;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class MyAvailabilityServiceTest extends TestCase
+class AvailabilityServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -38,7 +39,7 @@ class MyAvailabilityServiceTest extends TestCase
         );
 
         $this->assertFalse($valid);
-        $this->assertEquals('The end time must be after the start time.', $message);
+        $this->assertEquals('The availability end time must be after the start time.', $message);
     }
 
     #[Test]
@@ -74,7 +75,7 @@ class MyAvailabilityServiceTest extends TestCase
         );
 
         $this->assertFalse($valid);
-        $this->assertEquals('This slot overlaps with an existing entry.', $message);
+        $this->assertEquals('This availability slot overlaps with an existing entry.', $message);
     }
 
     #[Test]
