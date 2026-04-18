@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
-class AvailabilityServiceTest extends TestCase
+class MyAvailabilityServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
