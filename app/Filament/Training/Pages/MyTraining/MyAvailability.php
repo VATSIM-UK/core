@@ -82,7 +82,7 @@ class MyAvailability extends Page implements HasForms, HasTable
     {
         return [
             Action::make('changeTimezone')
-                ->label(fn () => "Timezone: {$this->timezone}")
+                ->label(fn () => 'Timezone: '.$this->getTimezoneLabel($this->timezone))
                 ->icon('heroicon-o-globe-alt')
                 ->form([
                     Select::make('timezone')
@@ -91,10 +91,15 @@ class MyAvailability extends Page implements HasForms, HasTable
                             $zones = timezone_identifiers_list();
                             $options = array_combine($zones, $zones);
 
+                            // Append (BST) suffix for Europe/London option during British Summer Time
+                            if (isset($options['Europe/London'])) {
+                                $options['Europe/London'] = $this->getTimezoneLabel('Europe/London');
+                            }
+
                             $topZones = [];
 
                             if ($this->browserTimezone && isset($options[$this->browserTimezone])) {
-                                $topZones[$this->browserTimezone] = "Detected: {$this->browserTimezone}";
+                                $topZones[$this->browserTimezone] = 'Detected: '.$this->getTimezoneLabel($this->browserTimezone);
                                 unset($options[$this->browserTimezone]);
                             }
 
@@ -312,6 +317,18 @@ class MyAvailability extends Page implements HasForms, HasTable
         }
 
         return $options;
+    }
+
+    protected function getTimezoneLabel(string $timezone, ?string $prefix = null): string
+    {
+        $label = $prefix ?? $timezone;
+
+        // Add (BST) suffix for Europe/London during British Summer Time
+        if ($timezone === 'Europe/London' && now()->setTimezone('Europe/London')->offsetHours === 1) {
+            $label .= ' (BST)';
+        }
+
+        return $label;
     }
 
     protected function resolveStudentId(): ?int
