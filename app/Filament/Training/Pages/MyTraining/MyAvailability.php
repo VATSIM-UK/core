@@ -91,7 +91,7 @@ class MyAvailability extends Page implements HasForms, HasTable
                             $zones = timezone_identifiers_list();
                             $options = array_combine($zones, $zones);
 
-                            // Append (BST) suffix for Europe/London option during British Summer Time
+                            // Append (not ZULU) suffix for Europe/London option during British Summer Time
                             if (isset($options['Europe/London'])) {
                                 $options['Europe/London'] = $this->getTimezoneLabel('Europe/London');
                             }
@@ -323,9 +323,9 @@ class MyAvailability extends Page implements HasForms, HasTable
     {
         $label = $prefix ?? $timezone;
 
-        // Add (BST) suffix for Europe/London during British Summer Time
+        // Add (not ZULU) suffix for Europe/London during British Summer Time
         if ($timezone === 'Europe/London' && now()->setTimezone('Europe/London')->offsetHours === 1) {
-            $label .= ' (BST)';
+            $label .= ' (not ZULU)';
         }
 
         return $label;
