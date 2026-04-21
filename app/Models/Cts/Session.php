@@ -25,11 +25,11 @@ class Session extends Model
 
     public function mentor()
     {
-        return $this->belongsTo(Member::class, 'mentor_id', 'id');
+        return $this->belongsTo(Member::class, 'mentor_id', 'cid');
     }
 
     public function student()
     {
-        return $this->belongsTo(Member::class, 'student_id', 'id');
+        return $this->belongsTo(Member::class, 'student_id', 'cid');
     }
 }
