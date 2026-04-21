@@ -29,7 +29,7 @@ class MembershipEndorsementRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('account.id')->label('CID')->searchable(),
-                TextColumn::make('account.name')->label('Name')->searchable()->sortable(),
+                TextColumn::make('account.name')->label('Name')->searchable(['name_first', 'name_last'])->sortable(['name_first', 'name_last']),
                 TextColumn::make('created_at')->label('Endorsed')->isoDateTimeFormat('lll'),
             ])
             ->headerActions([
