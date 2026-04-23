@@ -60,11 +60,6 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(5)
             ->graceTimeInMinutes(10);
 
-        // === By Quarter Day === //
-        $schedule->command('sync:cts-mentor-validations')
-            ->everySixHours()
-            ->graceTimeInMinutes(15);
-
         // === By Day === //
         $schedule->command('telescope:prune')
             ->dailyAt('03:30')
