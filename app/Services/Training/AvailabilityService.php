@@ -24,7 +24,7 @@ class AvailabilityService
                 $query->whereDate('date', '>', $now->toDateString())
                     ->orWhere(function ($q) use ($now) {
                         $q->whereDate('date', $now->toDateString())
-                            ->whereTime('from', '>', $now->format('H:i:s'));
+                            ->whereTime('to', '>', $now->format('H:i:s'));
                     });
             });
     }

@@ -153,14 +153,18 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->required()
                     ->searchable()
                     ->allowHtml(false)
-                    ->options($this->generateTimeOptions()),
+                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->options($this->generateTimeOptions())
+                    ->optionsLimit(100),
 
                 Select::make('to')
                     ->label('To')
                     ->required()
                     ->searchable()
                     ->allowHtml(false)
-                    ->options($this->generateTimeOptions()),
+                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->options($this->generateTimeOptions())
+                    ->optionsLimit(100),
             ])
             ->statePath('data');
     }
