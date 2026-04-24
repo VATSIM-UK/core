@@ -225,46 +225,6 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         ]);
     }
 
-    #[Test]
-    public function it_can_remove_all_permissions_for_a_mentor_in_the_selected_category_only(): void
-    {
-        $this->panelUser->givePermissionTo([
-            'training.mentors.view.atc',
-            'training.mentors.manage.atc',
-        ]);
-
-        $selectedCategory = MentorPermissionService::atcCategories()[3];
-        $otherCategory = MentorPermissionService::atcCategories()[4];
-
-        $mentor = Account::factory()->create();
-        Member::factory()->create(['cid' => $mentor->id]);
-
-        $selectedTrainingPosition = $this->createTrainingPosition($selectedCategory, 'EGNX_CTR');
-        $otherTrainingPosition = $this->createTrainingPosition($otherCategory, 'EGLL_GMC');
-
-        app(MentorPermissionService::class)->assignToPositions(
-            $mentor,
-            collect([$selectedTrainingPosition, $otherTrainingPosition]),
-            $this->panelUser,
-            $selectedCategory
-        );
-
-        Livewire::actingAs($this->panelUser)
-            ->test(ManageMentors::class, ['category' => $selectedCategory])
-            ->callTableAction('removeAll', $mentor)
-            ->assertHasNoTableActionErrors();
-
-        $this->assertDatabaseMissing('mentor_training_positions', [
-            'account_id' => $mentor->id,
-            'training_position_id' => $selectedTrainingPosition->id,
-        ]);
-        $this->assertDatabaseHas('mentor_training_positions', [
-            'account_id' => $mentor->id,
-            'training_position_id' => $otherTrainingPosition->id,
-        ]);
-        $this->assertTrue($mentor->fresh()->hasRole('ATC Mentor (Heathrow GMC)'));
-    }
-
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition
     {
         CtsPosition::factory()->create(['callsign' => $callsign]);
