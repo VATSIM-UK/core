@@ -25,7 +25,7 @@ class ManageMentors extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
     protected string $view = 'filament.training.pages.manage-mentors';
 
