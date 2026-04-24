@@ -35,7 +35,7 @@ class MentorPermissionServiceTest extends TestCase
     {
         $actor = Account::factory()->create();
         $mentor = $this->createAccountWithMember();
-        $category = 'Obs To S1 Training';
+        $category = 'OBS To S1 Training';
 
         $trainingPositionOne = $this->createTrainingPosition($category, ['EGLL_GND']);
         $trainingPositionTwo = $this->createTrainingPosition($category, ['EGLL_TWR']);

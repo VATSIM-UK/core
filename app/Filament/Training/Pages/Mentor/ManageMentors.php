@@ -60,12 +60,12 @@ class ManageMentors extends Page implements HasTable
                 $allCategories
                     ->filter(fn (string $cat) => $this->canViewCategory($cat))
                     ->map(fn (string $cat) => Action::make('cat_'.str($cat)->slug('_'))
-                        ->label($this->formatCategoryLabel($cat))
+                        ->label($cat)
                         ->url(static::getUrl(['category' => $cat]))
                         ->icon($this->category === $cat ? 'heroicon-m-check' : null)
                     )
                     ->all())
-                ->label("Training Group: {$this->formatCategoryLabel($this->category)}")
+                ->label("Training Group: {$this->category}")
                 ->icon('heroicon-m-chevron-down')
                 ->color('gray')
                 ->button(),
@@ -82,7 +82,7 @@ class ManageMentors extends Page implements HasTable
                 TextColumn::make('id')->label('CID')->searchable(),
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('mentoring_permissions')
-                    ->label(fn () => $this->formatCategoryLabel($this->category).' Positions')
+                    ->label(fn () => $this->category.' Positions')
                     ->state(fn (Account $record) => $this->resolvePermissionsArray($record, $this->category))
                     ->badge()
                     ->color('gray')
@@ -94,7 +94,7 @@ class ManageMentors extends Page implements HasTable
                 Action::make('addMentor')
                     ->label('Add Mentor')
                     ->icon('heroicon-o-plus')
-                    ->modalHeading(fn () => 'Add Mentor to '.$this->formatCategoryLabel($this->category))
+                    ->modalHeading(fn () => 'Add Mentor to '.$this->category)
                     ->modalSubmitActionLabel('Add Mentor')
                     ->visible(fn () => $canManage && ! empty($this->category))
                     ->form([
@@ -107,7 +107,7 @@ class ManageMentors extends Page implements HasTable
                             ->getOptionLabelUsing(fn ($v) => Account::find($v)?->name.' ('.$v.')')
                             ->required(),
                         CheckboxList::make('position_ids')
-                            ->label(fn () => $this->formatCategoryLabel($this->category).' Mentoring Permissions')
+                            ->label(fn () => $this->category.' Mentoring Permissions')
                             ->options(fn () => $this->positionOptions($this->category))
                             ->bulkToggleable()
                             ->columns(2)
@@ -135,7 +135,7 @@ class ManageMentors extends Page implements HasTable
                     ->modalSubmitActionLabel('Update Permissions')
                     ->form(fn (Account $record) => [
                         CheckboxList::make('position_ids')
-                            ->label(fn () => $this->formatCategoryLabel($this->category).' Mentoring Permissions')
+                            ->label(fn () => $this->category.' Mentoring Permissions')
                             ->options(fn () => $this->positionOptions($this->category))
                             ->bulkToggleable()
                             ->columns(2)
@@ -157,7 +157,7 @@ class ManageMentors extends Page implements HasTable
                     ->label('Remove')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
-                    ->modalHeading(fn () => 'Remove Mentor from '.$this->formatCategoryLabel($this->category))
+                    ->modalHeading(fn () => 'Remove Mentor from '.$this->category)
                     ->modalSubheading('This will revoke all mentoring permissions for this member within this specific training group.')
                     ->modalButton('Remove Mentor')
                     ->modalIcon('heroicon-o-trash')
@@ -171,7 +171,7 @@ class ManageMentors extends Page implements HasTable
 
                         Notification::make()
                             ->title('Mentor Access Revoked')
-                            ->body("All permissions for {$record->name} in {$this->formatCategoryLabel($this->category)} have been removed.")
+                            ->body("All permissions for {$record->name} in {$this->category} have been removed.")
                             ->success()
                             ->send();
                     }),
@@ -232,23 +232,13 @@ class ManageMentors extends Page implements HasTable
     {
         return $record->mentorTrainingPositions
             ->filter(fn ($mtp) => $mtp->trainingPosition?->category === $category)
-            ->map(fn ($mtp) => $mtp->trainingPosition?->position?->callsign)
+            ->map(fn ($mtp) => $mtp->trainingPosition?->name
+                ?? $mtp->trainingPosition?->position?->callsign
+                ?? collect($mtp->trainingPosition?->cts_positions)->first()
+            )
             ->filter()
             ->unique()
+            ->values()
             ->toArray();
-    }
-
-    private function formatCategoryLabel(?string $category): string
-    {
-        if (! $category) {
-            return '';
-        }
-
-        return str($category)
-            ->replace('Obs', 'OBS')
-            ->replace('Air', 'AIR')
-            ->replace('Apc', 'APC')
-            ->replace('Gmc', 'GMC')
-            ->toString();
     }
 }

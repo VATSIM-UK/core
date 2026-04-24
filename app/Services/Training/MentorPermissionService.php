@@ -17,13 +17,13 @@ use Illuminate\Support\Facades\Log;
 class MentorPermissionService
 {
     public const ATC_CATEGORY_ROLE_MAP = [
-        'Obs To S1 Training' => 'ATC Mentor (OBS)',
+        'OBS to S1 Training' => 'ATC Mentor (OBS)',
         'S2 Training' => 'ATC Mentor (TWR)',
         'S3 Training' => 'ATC Mentor (APP)',
         'C1 Training' => 'ATC Mentor (ENR)',
         'Heathrow GMC' => 'ATC Mentor (Heathrow)',
-        'Heathrow Air' => 'ATC Mentor (Heathrow)',
-        'Heathrow Apc' => 'ATC Mentor (Heathrow)',
+        'Heathrow AIR' => 'ATC Mentor (Heathrow)',
+        'Heathrow APC' => 'ATC Mentor (Heathrow)',
     ];
 
     public const PILOT_CATEGORY_ROLE_MAP = [
