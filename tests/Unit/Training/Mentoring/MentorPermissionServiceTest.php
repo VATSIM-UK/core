@@ -35,7 +35,7 @@ class MentorPermissionServiceTest extends TestCase
     {
         $actor = Account::factory()->create();
         $mentor = $this->createAccountWithMember();
-        $category = 'OBS To S1 Training';
+        $category = 'OBS to S1 Training';
 
         $trainingPositionOne = $this->createTrainingPosition($category, ['EGLL_GND']);
         $trainingPositionTwo = $this->createTrainingPosition($category, ['EGLL_TWR']);
@@ -141,7 +141,7 @@ class MentorPermissionServiceTest extends TestCase
         $mentor = $this->createAccountWithMember();
 
         $selectedCategory = 'C1 Training';
-        $otherCategory = 'Heathrow Air';
+        $otherCategory = 'Heathrow AIR';
 
         $selectedTrainingPosition = $this->createTrainingPosition($selectedCategory, ['EGKK_CTR']);
         $otherTrainingPosition = $this->createTrainingPosition($otherCategory, ['EGLL_APP']);
@@ -223,7 +223,7 @@ class MentorPermissionServiceTest extends TestCase
         $actor = Account::factory()->create();
         $mentor = $this->createAccountWithMember();
         $categoryOne = 'Heathrow GMC';
-        $categoryTwo = 'Heathrow Air';
+        $categoryTwo = 'Heathrow AIR';
         $sharedRole = MentorPermissionService::ATC_CATEGORY_ROLE_MAP[$categoryOne];
 
         $positionOne = $this->createTrainingPosition($categoryOne, ['EGLL_GMC']);
