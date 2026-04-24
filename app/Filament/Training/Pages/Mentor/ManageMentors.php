@@ -103,6 +103,7 @@ class ManageMentors extends Page implements HasTable
                     ->label('Add Mentor')
                     ->icon('heroicon-o-plus')
                     ->modalHeading(fn () => 'Add Mentor to '.$this->formatCategoryLabel($this->category))
+                    ->modalSubmitActionLabel('Add Mentor')
                     ->visible(fn () => $canManage && ! empty($this->category))
                     ->form([
                         Select::make('account_id')
@@ -139,6 +140,7 @@ class ManageMentors extends Page implements HasTable
                     ->label('Manage Permissions')
                     ->icon('heroicon-o-pencil-square')
                     ->visible(fn () => $canManage)
+                    ->modalSubmitActionLabel('Update Permissions')
                     ->form(fn (Account $record) => [
                         CheckboxList::make('position_ids')
                             ->label(fn () => $this->formatCategoryLabel($this->category).' Mentoring Permissions')
@@ -166,7 +168,7 @@ class ManageMentors extends Page implements HasTable
                     ->color('danger')
                     ->modalHeading(fn () => 'Remove Mentor from '.$this->formatCategoryLabel($this->category))
                     ->modalSubheading('This will revoke all mentoring permissions for this member within this specific training group.')
-                    ->modalButton('Confirm Removal')
+                    ->modalButton('Remove Mentor')
                     ->modalIcon('heroicon-o-trash')
                     ->requiresConfirmation()
                     ->visible(fn () => $canManage)
