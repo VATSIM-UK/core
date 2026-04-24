@@ -13,6 +13,7 @@ use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -36,16 +37,10 @@ class MentorPermissionServiceTest extends TestCase
         $mentor = $this->createAccountWithMember();
         $category = 'Obs To S1 Training';
 
-        $callsignOne = $this->makeCallsign('EGLL_GND');
-        $callsignTwo = $this->makeCallsign('EGLL_TWR');
+        $trainingPositionOne = $this->createTrainingPosition($category, ['EGLL_GND']);
+        $trainingPositionTwo = $this->createTrainingPosition($category, ['EGLL_TWR']);
 
-        $ctsPositionOne = CtsPosition::factory()->create(['callsign' => $callsignOne]);
-        $ctsPositionTwo = CtsPosition::factory()->create(['callsign' => $callsignTwo]);
-
-        $trainingPositionOne = $this->createTrainingPosition($category, [$callsignOne]);
-        $trainingPositionTwo = $this->createTrainingPosition($category, [$callsignTwo]);
-
-        $this->service->assignToPositions($mentor, collect([$trainingPositionOne, $trainingPositionTwo]), $actor, 'atc');
+        $this->service->assignToPositions($mentor, collect([$trainingPositionOne, $trainingPositionTwo]), $actor, $category);
 
         $this->assertDatabaseHas('mentor_training_positions', [
             'account_id' => $mentor->id,
@@ -60,14 +55,16 @@ class MentorPermissionServiceTest extends TestCase
 
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $mentor->member->id,
-            'position_id' => $ctsPositionOne->id,
+            'position_id' => CtsPosition::where('callsign', 'EGLL_GND')->firstOrFail()->id,
             'status' => PositionValidationStatusEnum::Mentor->value,
         ], 'cts');
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $mentor->member->id,
-            'position_id' => $ctsPositionTwo->id,
+            'position_id' => CtsPosition::where('callsign', 'EGLL_TWR')->firstOrFail()->id,
             'status' => PositionValidationStatusEnum::Mentor->value,
         ], 'cts');
+
+        $this->assertTrue($mentor->fresh()->hasRole('ATC Mentor (OBS)'));
     }
 
     #[Test]
@@ -75,13 +72,11 @@ class MentorPermissionServiceTest extends TestCase
     {
         $actor = Account::factory()->create();
         $mentor = $this->createAccountWithMember();
-        $callsign = $this->makeCallsign('EGPH_APP');
 
-        $ctsPosition = CtsPosition::factory()->create(['callsign' => $callsign]);
-        $trainingPosition = $this->createTrainingPosition('S2 Training', [$callsign]);
+        $trainingPosition = $this->createTrainingPosition('S2 Training', ['EGPH_APP']);
 
-        $this->service->assignToPositions($mentor, collect([$trainingPosition]), $actor, 'atc');
-        $this->service->assignToPositions($mentor, collect([$trainingPosition]), $actor, 'atc');
+        $this->service->assignToPositions($mentor, collect([$trainingPosition]), $actor, 'S2 Training');
+        $this->service->assignToPositions($mentor, collect([$trainingPosition]), $actor, 'S2 Training');
 
         $this->assertSame(
             1,
@@ -93,7 +88,7 @@ class MentorPermissionServiceTest extends TestCase
         $this->assertSame(
             1,
             PositionValidation::where('member_id', $mentor->member->id)
-                ->where('position_id', $ctsPosition->id)
+                ->where('position_id', CtsPosition::where('callsign', 'EGPH_APP')->firstOrFail()->id)
                 ->where('status', PositionValidationStatusEnum::Mentor->value)
                 ->count()
         );
@@ -106,29 +101,17 @@ class MentorPermissionServiceTest extends TestCase
         $mentor = $this->createAccountWithMember();
 
         $selectedCategory = 'S3 Training';
-        $otherCategory = 'Heathrow GMC';
 
-        $callsignOne = $this->makeCallsign('EGCC_GND');
-        $callsignTwo = $this->makeCallsign('EGCC_TWR');
-        $callsignThree = $this->makeCallsign('EGCC_APP');
-        $otherCallsign = $this->makeCallsign('EGLL_GMC');
+        $toRemove = $this->createTrainingPosition($selectedCategory, ['EGCC_GND']);
+        $toKeep = $this->createTrainingPosition($selectedCategory, ['EGCC_TWR']);
+        $toAdd = $this->createTrainingPosition($selectedCategory, ['EGCC_APP']);
+        $otherCategoryPosition = $this->createTrainingPosition('Heathrow GMC', ['EGLL_GMC']);
 
-        CtsPosition::factory()->create(['callsign' => $callsignOne]);
-        CtsPosition::factory()->create(['callsign' => $callsignTwo]);
-        CtsPosition::factory()->create(['callsign' => $callsignThree]);
-        CtsPosition::factory()->create(['callsign' => $otherCallsign]);
-
-        $toRemove = $this->createTrainingPosition($selectedCategory, [$callsignOne]);
-        $toKeep = $this->createTrainingPosition($selectedCategory, [$callsignTwo]);
-        $toAdd = $this->createTrainingPosition($selectedCategory, [$callsignThree]);
-        $otherCategoryPosition = $this->createTrainingPosition($otherCategory, [$otherCallsign]);
-
-        $this->service->assignToPositions($mentor, collect([$toRemove, $toKeep, $otherCategoryPosition]), $actor, 'atc');
+        $this->service->assignToPositions($mentor, collect([$toRemove, $toKeep, $otherCategoryPosition]), $actor, $selectedCategory);
 
         $this->service->syncPositionsInCategory(
             $mentor,
             $selectedCategory,
-            'atc',
             collect([$toKeep->id, $toAdd->id]),
             $actor
         );
@@ -160,38 +143,100 @@ class MentorPermissionServiceTest extends TestCase
         $selectedCategory = 'C1 Training';
         $otherCategory = 'Heathrow Air';
 
-        $selectedCallsign = $this->makeCallsign('EGKK_CTR');
-        $otherCallsign = $this->makeCallsign('EGLL_APP');
+        $selectedTrainingPosition = $this->createTrainingPosition($selectedCategory, ['EGKK_CTR']);
+        $otherTrainingPosition = $this->createTrainingPosition($otherCategory, ['EGLL_APP']);
 
-        $selectedCtsPosition = CtsPosition::factory()->create(['callsign' => $selectedCallsign]);
-        $otherCtsPosition = CtsPosition::factory()->create(['callsign' => $otherCallsign]);
+        $this->service->assignToPositions($mentor, collect([$selectedTrainingPosition]), $actor, $selectedCategory);
+        $this->service->assignToPositions($mentor, collect([$otherTrainingPosition]), $actor, $otherCategory);
 
-        $selectedTrainingPosition = $this->createTrainingPosition($selectedCategory, [$selectedCallsign]);
-        $otherTrainingPosition = $this->createTrainingPosition($otherCategory, [$otherCallsign]);
+        $this->assertTrue($mentor->fresh()->hasRole('ATC Mentor (ENR)'));
+        $this->assertTrue($mentor->fresh()->hasRole('ATC Mentor (Heathrow)'));
 
-        $this->service->assignToPositions($mentor, collect([$selectedTrainingPosition, $otherTrainingPosition]), $actor, 'atc');
-
-        $this->service->revokeFromCategory($mentor, $selectedCategory, 'atc');
+        $this->service->revokeFromCategory($mentor, $selectedCategory);
 
         $this->assertDatabaseMissing('mentor_training_positions', [
             'account_id' => $mentor->id,
             'training_position_id' => $selectedTrainingPosition->id,
         ]);
+
         $this->assertDatabaseHas('mentor_training_positions', [
             'account_id' => $mentor->id,
             'training_position_id' => $otherTrainingPosition->id,
         ]);
 
-        $this->assertDatabaseMissing('position_validations', [
-            'member_id' => $mentor->member->id,
-            'position_id' => $selectedCtsPosition->id,
-            'status' => PositionValidationStatusEnum::Mentor->value,
-        ], 'cts');
-        $this->assertDatabaseHas('position_validations', [
-            'member_id' => $mentor->member->id,
-            'position_id' => $otherCtsPosition->id,
-            'status' => PositionValidationStatusEnum::Mentor->value,
-        ], 'cts');
+        $this->assertFalse($mentor->fresh()->hasRole('ATC Mentor (ENR)'));
+        $this->assertTrue($mentor->fresh()->hasRole('ATC Mentor (Heathrow)'));
+    }
+
+    #[Test]
+    public function it_removes_the_mentor_role_when_no_permissions_remain_in_the_type(): void
+    {
+        $actor = Account::factory()->create();
+        $mentor = $this->createAccountWithMember();
+        $category = 'S2 Training';
+
+        $trainingPosition = $this->createTrainingPosition($category, ['EGPH_APP']);
+
+        $this->service->assignToPositions($mentor, collect([$trainingPosition]), $actor, $category);
+        $this->assertTrue($mentor->fresh()->hasRole('ATC Mentor (TWR)'));
+
+        $this->service->revokeFromCategory($mentor, $category);
+
+        $this->assertFalse($mentor->fresh()->hasRole('ATC Mentor (TWR)'));
+    }
+
+    #[Test]
+    #[DataProvider('atcCategoryRoleProvider')]
+    public function it_assigns_the_expected_role_for_each_atc_category(string $category, string $expectedRole): void
+    {
+        $actor = Account::factory()->create();
+        $mentor = $this->createAccountWithMember();
+
+        $trainingPosition = $this->createTrainingPosition($category, ['EGXX_APP']);
+
+        $this->service->assignToPositions($mentor, collect([$trainingPosition]), $actor, $category);
+
+        $this->assertTrue($mentor->fresh()->hasRole($expectedRole));
+    }
+
+    #[Test]
+    public function it_removes_the_expected_role_for_each_atc_category_when_the_last_permission_is_revoked(): void
+    {
+        $i = 0;
+        foreach (MentorPermissionService::ATC_CATEGORY_ROLE_MAP as $category => $expectedRole) {
+            $actor = Account::factory()->create();
+            $mentor = $this->createAccountWithMember();
+
+            $trainingPosition = $this->createTrainingPosition($category, ['EGXX_'.++$i]);
+
+            $this->service->assignToPositions($mentor, collect([$trainingPosition]), $actor, $category);
+            $this->assertTrue($mentor->fresh()->hasRole($expectedRole));
+
+            $this->service->revokeFromCategory($mentor, $category);
+            $this->assertFalse($mentor->fresh()->hasRole($expectedRole));
+        }
+    }
+
+    #[Test]
+    public function it_keeps_a_shared_role_if_another_category_with_the_same_role_still_has_permissions(): void
+    {
+        $actor = Account::factory()->create();
+        $mentor = $this->createAccountWithMember();
+        $categoryOne = 'Heathrow GMC';
+        $categoryTwo = 'Heathrow Air';
+        $sharedRole = MentorPermissionService::ATC_CATEGORY_ROLE_MAP[$categoryOne];
+
+        $positionOne = $this->createTrainingPosition($categoryOne, ['EGLL_GMC']);
+        $positionTwo = $this->createTrainingPosition($categoryTwo, ['EGLL_APP']);
+
+        $this->service->assignToPositions($mentor, collect([$positionOne]), $actor, $categoryOne);
+        $this->service->assignToPositions($mentor, collect([$positionTwo]), $actor, $categoryTwo);
+
+        $this->assertTrue($mentor->fresh()->hasRole($sharedRole));
+
+        $this->service->revokeFromCategory($mentor, $categoryOne);
+
+        $this->assertTrue($mentor->fresh()->hasRole($sharedRole));
     }
 
     private function createAccountWithMember(): Account
@@ -204,17 +249,21 @@ class MentorPermissionServiceTest extends TestCase
 
     private function createTrainingPosition(string $category, array $ctsCallsigns): TrainingPosition
     {
+        foreach ($ctsCallsigns as $callsign) {
+            CtsPosition::factory()->create(['callsign' => $callsign]);
+        }
+
         return TrainingPosition::factory()->create([
             'category' => $category,
             'cts_positions' => $ctsCallsigns,
         ]);
     }
 
-    private function makeCallsign(string $base): string
+    public static function atcCategoryRoleProvider(): array
     {
-        // Ensure a short, predictable callsign that won't exceed CTS column limits.
-        $prefix = strtoupper(substr($base, 0, 7));
-
-        return $prefix.'_'.substr(md5((string) rand()), 0, 4);
+        return collect(MentorPermissionService::ATC_CATEGORY_ROLE_MAP)
+            ->map(fn (string $role, string $category) => [$category, $role])
+            ->values()
+            ->all();
     }
 }

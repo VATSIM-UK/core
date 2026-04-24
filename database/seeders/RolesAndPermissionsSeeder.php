@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Permission;
+use App\Services\Training\MentorPermissionService;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Models\Role;
@@ -32,6 +33,14 @@ class RolesAndPermissionsSeeder extends Seeder
         $pilotExaminer = Role::firstOrCreate(['name' => 'Pilot Examiner (P1)', 'guard_name' => 'web', 'default' => false]);
         $pilotExaminer = Role::firstOrCreate(['name' => 'Pilot Examiner (P2)', 'guard_name' => 'web', 'default' => false]);
         $pilotExaminer = Role::firstOrCreate(['name' => 'Pilot Examiner (P3)', 'guard_name' => 'web', 'default' => false]);
+
+        foreach (MentorPermissionService::ATC_CATEGORY_ROLE_MAP as $mentorRole) {
+            Role::firstOrCreate(['name' => $mentorRole, 'guard_name' => 'web', 'default' => false]);
+        }
+
+        foreach (MentorPermissionService::PILOT_CATEGORY_ROLE_MAP as $mentorRole) {
+            Role::firstOrCreate(['name' => $mentorRole, 'guard_name' => 'web', 'default' => false]);
+        }
 
         // Add All Permissions
         $permissions = [

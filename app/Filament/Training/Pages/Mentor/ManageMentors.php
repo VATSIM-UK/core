@@ -38,15 +38,6 @@ class ManageMentors extends Page implements HasTable
     #[Url]
     public string $category = '';
 
-    public const ATC_CATEGORIES = [
-        'Obs To S1 Training', 'S2 Training', 'S3 Training', 'C1 Training',
-        'Heathrow GMC', 'Heathrow Air', 'Heathrow Apc',
-    ];
-
-    // Awaiting pilot training positions to be assigned catagories before finalising these labels
-    public const PILOT_CATEGORIES = [
-    ];
-
     public static function canAccess(): bool
     {
         return auth()->user()->can('training.mentors.view.atc') || auth()->user()->can('training.mentors.view.pilot');
@@ -61,7 +52,8 @@ class ManageMentors extends Page implements HasTable
 
     protected function getHeaderActions(): array
     {
-        $allCategories = collect(self::ATC_CATEGORIES)->merge(self::PILOT_CATEGORIES);
+        $allCategories = collect(MentorPermissionService::atcCategories())
+            ->merge(MentorPermissionService::pilotCategories());
 
         return [
             ActionGroup::make(
@@ -129,7 +121,7 @@ class ManageMentors extends Page implements HasTable
                             $account,
                             $positions,
                             auth()->user(),
-                            $this->getCategoryType($this->category)
+                            $this->category
                         );
 
                         Notification::make()->title('Mentor added')->success()->send();
@@ -154,7 +146,6 @@ class ManageMentors extends Page implements HasTable
                         app(MentorPermissionService::class)->syncPositionsInCategory(
                             $record,
                             $this->category,
-                            $this->getCategoryType($this->category),
                             collect($data['position_ids'] ?? []),
                             auth()->user(),
                         );
@@ -175,8 +166,7 @@ class ManageMentors extends Page implements HasTable
                     ->action(function (Account $record): void {
                         app(MentorPermissionService::class)->revokeFromCategory(
                             $record,
-                            $this->category,
-                            $this->getCategoryType($this->category)
+                            $this->category
                         );
 
                         Notification::make()
@@ -190,7 +180,7 @@ class ManageMentors extends Page implements HasTable
 
     private function getCategoryType(string $category): string
     {
-        return in_array($category, self::ATC_CATEGORIES) ? 'atc' : 'pilot';
+        return MentorPermissionService::categoryType($category);
     }
 
     private function canViewCategory(string $category): bool
@@ -205,7 +195,8 @@ class ManageMentors extends Page implements HasTable
 
     private function firstVisibleCategory(): ?string
     {
-        return collect(self::ATC_CATEGORIES)->merge(self::PILOT_CATEGORIES)
+        return collect(MentorPermissionService::atcCategories())
+            ->merge(MentorPermissionService::pilotCategories())
             ->first(fn (string $cat) => $this->canViewCategory($cat));
     }
 

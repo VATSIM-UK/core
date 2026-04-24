@@ -16,16 +16,50 @@ use Illuminate\Support\Facades\Log;
 
 class MentorPermissionService
 {
-    public function assignToPositions(Account $account, Collection $positions, Account $actor, string $categoryType): void
+    public const ATC_CATEGORY_ROLE_MAP = [
+        'Obs To S1 Training' => 'ATC Mentor (OBS)',
+        'S2 Training' => 'ATC Mentor (TWR)',
+        'S3 Training' => 'ATC Mentor (APP)',
+        'C1 Training' => 'ATC Mentor (ENR)',
+        'Heathrow GMC' => 'ATC Mentor (Heathrow)',
+        'Heathrow Air' => 'ATC Mentor (Heathrow)',
+        'Heathrow Apc' => 'ATC Mentor (Heathrow)',
+    ];
+
+    public const PILOT_CATEGORY_ROLE_MAP = [
+        // TODO: add pilot category => role mappings when pilot categories are finalized.
+    ];
+
+    public static function atcCategories(): array
+    {
+        return array_keys(self::ATC_CATEGORY_ROLE_MAP);
+    }
+
+    public static function pilotCategories(): array
+    {
+        return array_keys(self::PILOT_CATEGORY_ROLE_MAP);
+    }
+
+    public static function categoryType(string $category): string
+    {
+        return in_array($category, self::atcCategories(), true) ? 'atc' : 'pilot';
+    }
+
+    public static function roleForCategory(string $category): ?string
+    {
+        return self::ATC_CATEGORY_ROLE_MAP[$category] ?? self::PILOT_CATEGORY_ROLE_MAP[$category] ?? null;
+    }
+
+    public function assignToPositions(Account $account, Collection $positions, Account $actor, string $category): void
     {
         foreach ($positions as $position) {
             $this->assignToPosition($account, $position, $actor);
         }
 
-        $this->syncRole($account, $categoryType);
+        $this->syncRole($account, $category);
     }
 
-    public function syncPositionsInCategory(Account $account, string $category, string $categoryType, Collection $newPositionIds, Account $actor): void
+    public function syncPositionsInCategory(Account $account, string $category, Collection $newPositionIds, Account $actor): void
     {
         $scopedPositions = TrainingPosition::where('category', $category)->get();
 
@@ -37,14 +71,14 @@ class MentorPermissionService
             ->whereIn('id', $newPositionIds)
             ->each(fn (TrainingPosition $pos) => $this->assignToPosition($account, $pos, $actor));
 
-        $this->syncRole($account, $categoryType);
+        $this->syncRole($account, $category);
     }
 
-    public function revokeFromCategory(Account $account, string $category, string $categoryType): void
+    public function revokeFromCategory(Account $account, string $category): void
     {
         $positions = TrainingPosition::where('category', $category)->get();
         $positions->each(fn (TrainingPosition $pos) => $this->revokeFromPosition($account, $pos));
-        $this->syncRole($account, $categoryType);
+        $this->syncRole($account, $category);
     }
 
     private function assignToPosition(Account $account, TrainingPosition $trainingPosition, Account $actor): void
@@ -69,9 +103,31 @@ class MentorPermissionService
         $this->syncCtsRevoke($account, $trainingPosition);
     }
 
-    private function syncRole(Account $account, string $type): void
+    private function syncRole(Account $account, string $category): void
     {
-        // TODO: Add role syncing
+        $roleName = self::roleForCategory($category);
+
+        if (! $roleName) {
+            return;
+        }
+
+        $categoriesSharingRole = array_keys(
+            array_filter(self::ATC_CATEGORY_ROLE_MAP, fn ($role) => $role === $roleName)
+        );
+
+        $hasMentorPermissionsForRole = $account->mentorTrainingPositions()
+            ->whereHas('trainingPosition', fn ($query) => $query->whereIn('category', $categoriesSharingRole))
+            ->exists();
+
+        if ($hasMentorPermissionsForRole) {
+            if (! $account->hasRole($roleName)) {
+                $account->assignRole($roleName);
+            }
+        } else {
+            if ($account->hasRole($roleName)) {
+                $account->removeRole($roleName);
+            }
+        }
     }
 
     private function resolveMember(Account $account): ?Member

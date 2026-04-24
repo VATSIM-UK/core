@@ -46,11 +46,11 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->panelUser)
             ->test(ManageMentors::class)
-            ->assertSet('category', ManageMentors::ATC_CATEGORIES[0]);
+            ->assertSet('category', MentorPermissionService::atcCategories()[0]);
 
         Livewire::actingAs($this->panelUser)
             ->test(ManageMentors::class, ['category' => 'Invalid Category'])
-            ->assertSet('category', ManageMentors::ATC_CATEGORIES[0]);
+            ->assertSet('category', MentorPermissionService::atcCategories()[0]);
     }
 
     #[Test]
@@ -58,8 +58,8 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
     {
         $this->panelUser->givePermissionTo('training.mentors.view.atc');
 
-        $selectedCategory = ManageMentors::ATC_CATEGORIES[0];
-        $otherCategory = ManageMentors::ATC_CATEGORIES[1];
+        $selectedCategory = MentorPermissionService::atcCategories()[0];
+        $otherCategory = MentorPermissionService::atcCategories()[1];
 
         $selectedMentor = Account::factory()->create();
         $otherMentor = Account::factory()->create();
@@ -95,7 +95,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
 
         $mentor = Account::factory()->create();
         $actor = Account::factory()->create();
-        $trainingPosition = $this->createTrainingPosition(ManageMentors::ATC_CATEGORIES[0], 'EGCC_GND');
+        $trainingPosition = $this->createTrainingPosition(MentorPermissionService::atcCategories()[0], 'EGCC_GND');
 
         MentorTrainingPosition::create([
             'account_id' => $mentor->id,
@@ -120,7 +120,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
 
         $mentor = Account::factory()->create();
         $actor = Account::factory()->create();
-        $trainingPosition = $this->createTrainingPosition(ManageMentors::ATC_CATEGORIES[0], 'EGCC_TWR');
+        $trainingPosition = $this->createTrainingPosition(MentorPermissionService::atcCategories()[0], 'EGCC_TWR');
 
         MentorTrainingPosition::create([
             'account_id' => $mentor->id,
@@ -143,7 +143,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
             'training.mentors.manage.atc',
         ]);
 
-        $category = ManageMentors::ATC_CATEGORIES[0];
+        $category = MentorPermissionService::atcCategories()[0];
         $target = Account::factory()->create();
         Member::factory()->create(['cid' => $target->id]);
 
@@ -178,6 +178,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
             'position_id' => CtsPosition::where('callsign', $trainingPositionTwo->cts_positions[0])->firstOrFail()->id,
             'status' => PositionValidationStatusEnum::Mentor->value,
         ], 'cts');
+        $this->assertTrue($target->fresh()->hasRole('ATC Mentor (OBS)'));
     }
 
     #[Test]
@@ -188,7 +189,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
             'training.mentors.manage.atc',
         ]);
 
-        $category = ManageMentors::ATC_CATEGORIES[2];
+        $category = MentorPermissionService::atcCategories()[2];
         $mentor = Account::factory()->create();
         Member::factory()->create(['cid' => $mentor->id]);
 
@@ -200,7 +201,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
             $mentor,
             collect([$trainingPositionOne, $trainingPositionTwo]),
             $this->panelUser,
-            'atc'
+            $category
         );
 
         Livewire::actingAs($this->panelUser)
@@ -232,8 +233,8 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
             'training.mentors.manage.atc',
         ]);
 
-        $selectedCategory = ManageMentors::ATC_CATEGORIES[3];
-        $otherCategory = ManageMentors::ATC_CATEGORIES[4];
+        $selectedCategory = MentorPermissionService::atcCategories()[3];
+        $otherCategory = MentorPermissionService::atcCategories()[4];
 
         $mentor = Account::factory()->create();
         Member::factory()->create(['cid' => $mentor->id]);
@@ -245,7 +246,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
             $mentor,
             collect([$selectedTrainingPosition, $otherTrainingPosition]),
             $this->panelUser,
-            'atc'
+            $selectedCategory
         );
 
         Livewire::actingAs($this->panelUser)
@@ -261,6 +262,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
             'account_id' => $mentor->id,
             'training_position_id' => $otherTrainingPosition->id,
         ]);
+        $this->assertTrue($mentor->fresh()->hasRole('ATC Mentor (Heathrow GMC)'));
     }
 
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition
