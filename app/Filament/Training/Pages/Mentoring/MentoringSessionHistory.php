@@ -6,6 +6,7 @@ use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Services\Training\MentorPermissionService;
+use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
@@ -41,6 +42,26 @@ class MentoringSessionHistory extends Page implements HasTable
         $allowedPositions = app(MentorPermissionService::class)->getAllowedCtsPositionCallsigns($user);
 
         return $table
+            ->recordClasses(function (Session $record) {
+                if ($record->noShow) {
+                    return '!bg-red-300 dark:!bg-red-800';
+                }
+
+                if (filled($record->cancelled_datetime)) {
+                    $sessionDatetime = Carbon::parse($record->taken_date.' '.$record->taken_from);
+                    $cancelledAt = Carbon::parse($record->cancelled_datetime);
+                    $diffInMinutes = $cancelledAt->diffInMinutes($sessionDatetime);
+
+                    return match (true) {
+                        $diffInMinutes >= 1440 => '!bg-gray-200 dark:!bg-gray-600', // 24+ hrs
+                        $diffInMinutes > 300 => '!bg-yellow-100 dark:!bg-yellow-900', // >5h
+                        $diffInMinutes > 60 => '!bg-orange-100 dark:!bg-orange-900', // >1h–5h
+                        default => '!bg-red-200 dark:!bg-red-900', // <=1h
+                    };
+                }
+
+                return null;
+            })
             ->query(
                 Session::query()
                     ->where(function (Builder $query) use ($user, $allowedPositions) {
@@ -57,6 +78,14 @@ class MentoringSessionHistory extends Page implements HasTable
                     ->label('Date')
                     ->date('D j M Y')
                     ->description(function (Session $record) {
+                        if ($record->noShow) {
+                            return 'No-Show';
+                        }
+
+                        if (filled($record->cancelled_datetime)) {
+                            return 'Cancelled at '.$record->cancelled_datetime->format('D j M Y H:i');
+                        }
+
                         return $record->taken_from.' - '.$record->taken_to;
                     })
                     ->sortable(),

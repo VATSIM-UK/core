@@ -25,6 +25,7 @@ class Session extends Model
 
     protected $casts = [
         'filed' => 'datetime',
+        'cancelled_datetime' => 'datetime',
     ];
 
     public function mentor()
@@ -39,7 +40,7 @@ class Session extends Model
 
     public function cancellation()
     {
-        return $this->morphOne(CancelReason::class, 'sesh', 'sesh_type', 'sesh_id');
+        return $this->hasOne(CancelReason::class, 'sesh_id')->where('sesh_type', 'ME');
     }
 
     public function isCancelled(): bool

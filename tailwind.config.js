@@ -2,6 +2,9 @@ import colors from 'tailwindcss/colors';
 
 export default {
     darkMode: 'class',
+    content: [
+        './vendor/filament/**/*.blade.php',
+    ],
     theme: {
         colors: {
             // Core
