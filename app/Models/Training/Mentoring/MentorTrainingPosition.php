@@ -7,12 +7,15 @@ namespace App\Models\Training\Mentoring;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class MentorTrainingPosition extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'account_id',
         'mentorable_type',

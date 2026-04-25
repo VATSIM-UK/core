@@ -5,6 +5,7 @@ namespace App\Filament\Training\Pages\Mentoring;
 use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
@@ -33,7 +34,7 @@ class MentoringSessionHistory extends Page implements HasTable
 
     public static function canAccess(): bool
     {
-        return auth()->user()->can('training.mentoring.access');
+        return MentorTrainingPosition::where('account_id', auth()->id())->exists();
     }
 
     public function table(Table $table): Table
@@ -105,7 +106,7 @@ class MentoringSessionHistory extends Page implements HasTable
                     ->label('Report')
                     ->state(fn (Session $record): bool => filled($record->filed))
                     ->formatStateUsing(fn ($state) => $state ? 'View Report' : 'No Report Filed')
-                    ->color(fn ($state) => $state ? 'info' : 'danger')
+                    ->color(fn ($state) => $state ? 'info' : 'warning')
                     ->url(fn (Session $record) => $record->filed ? "https://cts.vatsim.uk/mentors/report.php?id={$record->id}&view=report" : null) // Once viewMentoringSessionReport exists we can change this
                     ->openUrlInNewTab(),
             ])
