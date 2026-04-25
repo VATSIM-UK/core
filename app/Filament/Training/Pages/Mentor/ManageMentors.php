@@ -80,7 +80,7 @@ class ManageMentors extends Page implements HasTable
             ->query($this->mentorsQuery($this->category))
             ->columns([
                 TextColumn::make('id')->label('CID')->searchable(),
-                TextColumn::make('name')->searchable(),
+                TextColumn::make('name')->searchable(['name_first', 'name_last']),
                 TextColumn::make('mentoring_permissions')
                     ->label(fn () => $this->category.' Permissions')
                     ->state(fn (Account $record) => $this->resolvePermissionsArray($record, $this->category))
