@@ -87,8 +87,8 @@ class ManageMentors extends Page implements HasTable
                     ->badge()
                     ->color('gray')
                     ->separator(',')
-                    ->limitList(3)
-                    ->expandableLimitedList(),
+                    ->limitList(7)
+                    ->wrap(),
             ])
             ->headerActions([
                 Action::make('addMentor')
