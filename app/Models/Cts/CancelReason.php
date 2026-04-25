@@ -30,6 +30,11 @@ class CancelReason extends Model
         return $this->belongsTo(Member::class, 'reason_by', 'id');
     }
 
+    public function sesh()
+    {
+        return $this->morphTo('sesh', 'sesh_type', 'sesh_id');
+    }
+
     public function isExam(): bool
     {
         return $this->sesh_type === 'EX';

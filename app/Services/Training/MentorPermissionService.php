@@ -257,4 +257,46 @@ class MentorPermissionService
                 ->delete();
         }
     }
+
+    public function getAllowedCtsPositionCallsigns(Account $user): array
+    {
+        $allowedPositions = [];
+
+        $mtps = MentorTrainingPosition::with('mentorable')
+            ->where('account_id', $user->id)
+            ->get();
+
+        foreach ($mtps as $mtp) {
+            $mentorable = $mtp->mentorable;
+
+            if ($mentorable instanceof TrainingPosition) {
+                // Ensure any of the CTS positions linked to this training position are included
+                // Most of this logic will be removed once we have fully moved away from cts positions
+
+                $ctsPositions = $mentorable->cts_positions ?? [];
+
+                if (is_string($ctsPositions)) {
+                    $ctsPositions = json_decode($ctsPositions, true) ?? [];
+                }
+
+                $allowedPositions = array_merge($allowedPositions, $ctsPositions);
+
+            } elseif ($mentorable instanceof Qualification) {
+                // Hard coded cts positions for pilot training sessions
+                $pilotMap = [
+                    'PPL' => ['P1_PPL(A)'],
+                    'IR' => ['P2_SEIR(A)'],
+                    'CMEL' => ['P3_CMEL(A)'],
+                ];
+
+                if (isset($pilotMap[$mentorable->code])) {
+                    $allowedPositions = array_merge($allowedPositions, $pilotMap[$mentorable->code]);
+                } else {
+                    $allowedPositions[] = $mentorable->code;
+                }
+            }
+        }
+
+        return array_unique($allowedPositions);
+    }
 }

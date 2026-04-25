@@ -23,6 +23,10 @@ class Session extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'filed' => 'datetime',
+    ];
+
     public function mentor()
     {
         return $this->belongsTo(Member::class, 'mentor_id', 'cid');
@@ -31,5 +35,20 @@ class Session extends Model
     public function student()
     {
         return $this->belongsTo(Member::class, 'student_id', 'cid');
+    }
+
+    public function cancellation()
+    {
+        return $this->morphOne(CancelReason::class, 'sesh', 'sesh_type', 'sesh_id');
+    }
+
+    public function isCancelled(): bool
+    {
+        return ! is_null($this->cancelled_datetime);
+    }
+
+    public function isNoShow(): bool
+    {
+        return $this->noShow;
     }
 }
