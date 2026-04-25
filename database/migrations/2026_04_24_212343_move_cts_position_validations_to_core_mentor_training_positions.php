@@ -8,11 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        $mentorValidations = DB::connection('cts')
-            ->table('position_validations')
-            ->where('status', PositionValidationStatusEnum::Mentor->value)
-            ->get();
-
         $now = now();
 
         $pilotMap = [
@@ -20,6 +15,11 @@ return new class extends Migration
             'P2_MENTOR' => 'IR',
             'P3_MENTOR' => 'CMEL',
         ];
+
+        $mentorValidations = DB::connection('cts')
+            ->table('position_validations')
+            ->where('status', PositionValidationStatusEnum::Mentor->value)
+            ->cursor();
 
         foreach ($mentorValidations as $validation) {
             $cid = DB::connection('cts')
@@ -61,8 +61,9 @@ return new class extends Migration
                     ->value('id');
             } else {
                 $mentorableType = App\Models\Training\TrainingPosition\TrainingPosition::class;
+
                 $mentorableId = DB::table('training_positions')
-                    ->where('position_id', $validation->position_id)
+                    ->whereJsonContains('cts_positions', $position->callsign)
                     ->value('id');
             }
 

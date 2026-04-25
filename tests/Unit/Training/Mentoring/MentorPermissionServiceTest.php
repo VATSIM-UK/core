@@ -209,6 +209,37 @@ class MentorPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_removes_cts_validations_when_atc_permissions_are_revoked(): void
+    {
+        $actor = Account::factory()->create();
+        $mentor = $this->createAccountWithMember();
+        $category = 'S2 Training';
+        $callsign = 'EGCC_TWR';
+
+        $trainingPosition = $this->createTrainingPosition($category, [$callsign]);
+        $this->service->assignToMentorable($mentor, $trainingPosition, $actor, $category);
+
+        $ctsPosition = CtsPosition::where('callsign', $callsign)->firstOrFail();
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $mentor->member->id,
+            'position_id' => $ctsPosition->id,
+            'status' => PositionValidationStatusEnum::Mentor->value,
+        ], 'cts');
+
+        $this->service->revokeFromCategory($mentor, $category);
+
+        $this->assertDatabaseMissing('mentor_training_positions', [
+            'account_id' => $mentor->id,
+            'mentorable_id' => $trainingPosition->id,
+        ]);
+
+        $this->assertDatabaseMissing('position_validations', [
+            'member_id' => $mentor->member->id,
+            'position_id' => $ctsPosition->id,
+        ], 'cts');
+    }
+
+    #[Test]
     #[DataProvider('atcCategoryRoleProvider')]
     public function it_assigns_the_expected_role_for_each_atc_category(string $category, string $expectedRole): void
     {

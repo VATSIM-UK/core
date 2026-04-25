@@ -266,6 +266,45 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         ]);
     }
 
+    #[Test]
+    public function it_removes_cts_validations_when_removing_a_mentor_via_the_table_action(): void
+    {
+        $this->panelUser->givePermissionTo([
+            'training.mentors.view.atc',
+            'training.mentors.manage.atc',
+        ]);
+
+        $category = MentorPermissionService::atcCategories()[0];
+        $mentor = Account::factory()->create();
+        Member::factory()->create(['cid' => $mentor->id]);
+
+        $callsign = 'EGPF_GND';
+        $trainingPosition = $this->createTrainingPosition($category, $callsign);
+
+        app(MentorPermissionService::class)->assignToMentorable($mentor, $trainingPosition, $this->panelUser, $category);
+
+        $ctsPosition = CtsPosition::where('callsign', $callsign)->firstOrFail();
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $mentor->member->id,
+            'position_id' => $ctsPosition->id,
+        ], 'cts');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageMentors::class, ['category' => $category])
+            ->callTableAction('removeAll', $mentor)
+            ->assertHasNoTableActionErrors();
+
+        $this->assertDatabaseMissing('mentor_training_positions', [
+            'account_id' => $mentor->id,
+            'mentorable_id' => $trainingPosition->id,
+        ]);
+
+        $this->assertDatabaseMissing('position_validations', [
+            'member_id' => $mentor->member->id,
+            'position_id' => $ctsPosition->id,
+        ], 'cts');
+    }
+
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition
     {
         CtsPosition::firstOrCreate(['callsign' => $callsign]);

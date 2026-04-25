@@ -95,7 +95,7 @@ class MentorPermissionService
             'created_by' => $actor->id,
         ]);
 
-        $this->syncCtsAssign($account, $mentorable);
+        $this->syncCtsAssign($account, $mentorable, $actor);
         $this->syncRole($account, $category);
     }
 
@@ -195,11 +195,14 @@ class MentorPermissionService
         return [];
     }
 
-    private function syncCtsAssign(Account $account, $mentorable): void
+    private function syncCtsAssign(Account $account, $mentorable, Account $actor): void
     {
         if (($member = $this->resolveMember($account)) === null) {
             return;
         }
+
+        $actorMember = $this->resolveMember($actor);
+        $changedBy = $actorMember ? $actorMember->id : $member->id;
 
         $callsigns = $this->getCtsCallsignsForMentorable($mentorable);
 
@@ -225,7 +228,7 @@ class MentorPermissionService
                 'member_id' => $member->id,
                 'position_id' => $ctsPosition->id,
                 'status' => PositionValidationStatusEnum::Mentor->value,
-                'changed_by' => $member->id, // TODO: Ideally the actor making the change
+                'changed_by' => $changedBy,
                 'date_changed' => now(),
             ]);
         }
