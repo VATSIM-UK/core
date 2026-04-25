@@ -82,7 +82,7 @@ class ManageMentors extends Page implements HasTable
                 TextColumn::make('id')->label('CID')->searchable(),
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('mentoring_permissions')
-                    ->label(fn () => $this->category.' Positions')
+                    ->label(fn () => $this->category.' Permissions')
                     ->state(fn (Account $record) => $this->resolvePermissionsArray($record, $this->category))
                     ->badge()
                     ->color('gray')
@@ -115,14 +115,12 @@ class ManageMentors extends Page implements HasTable
                     ])
                     ->action(function (array $data): void {
                         $account = Account::findOrFail($data['account_id']);
-                        $positions = TrainingPosition::findMany($data['position_ids']);
+                        $modelClass = app(MentorPermissionService::class)->getModelClassForCategory($this->category);
+                        $items = $modelClass::findMany($data['position_ids']);
 
-                        app(MentorPermissionService::class)->assignToPositions(
-                            $account,
-                            $positions,
-                            auth()->user(),
-                            $this->category
-                        );
+                        foreach ($items as $item) {
+                            app(MentorPermissionService::class)->assignToMentorable($account, $item, auth()->user(), $this->category);
+                        }
 
                         Notification::make()->title('Mentor added')->success()->send();
                     }),
@@ -202,28 +200,47 @@ class ManageMentors extends Page implements HasTable
 
     private function mentorsQuery(string $category): Builder
     {
+        $service = app(MentorPermissionService::class);
+        $modelClass = $service->getModelClassForCategory($category);
+
         return Account::query()
-            ->with([
-                'mentorTrainingPositions.trainingPosition.position',
-            ])
-            ->whereHas('mentorTrainingPositions', fn (Builder $q) => $q
-                ->whereHas('trainingPosition', fn (Builder $q2) => $q2->where('category', $category))
-            );
+            ->with(['mentorTrainingPositions.mentorable'])
+            ->whereHas('mentorTrainingPositions', function (Builder $q) use ($category, $modelClass) {
+                $q->where('mentorable_type', $modelClass)
+                    ->whereHasMorph('mentorable', [$modelClass], function ($query) use ($category, $modelClass) {
+                        if ($modelClass === TrainingPosition::class) {
+                            $query->where('category', $category);
+                        } else {
+                            $code = MentorPermissionService::PILOT_CATEGORY_QUALIFICATION_MAP[$category] ?? null;
+                            $query->where('code', $code);
+                        }
+                    });
+            });
     }
 
     private function positionOptions(string $category): array
     {
-        return TrainingPosition::where('category', $category)->get()
-            ->mapWithKeys(fn (TrainingPosition $p) => [
-                $p->id => $p->name ?? $p->position?->callsign ?? collect($p->cts_positions)->first() ?? "Position {$p->id}",
-            ])->toArray();
+        $modelClass = app(MentorPermissionService::class)->getModelClassForCategory($category);
+
+        if ($modelClass === TrainingPosition::class) {
+            $items = $modelClass::where('category', $category)->get();
+        } else {
+            $code = MentorPermissionService::PILOT_CATEGORY_QUALIFICATION_MAP[$category] ?? null;
+            $items = $modelClass::where('code', $code)->get();
+        }
+
+        return $items->mapWithKeys(function ($item) {
+            $label = ($item instanceof TrainingPosition) ? ($item->name ?? $item->position?->callsign ?? "Position {$item->id}") : "({$item->code}) ".($item->name_long ?? $item->name);
+
+            return [(string) $item->id => $label];
+        })->toArray();
     }
 
     private function currentPositionIds(Account $account, string $category): array
     {
-        return $account->mentorTrainingPositions()
-            ->whereHas('trainingPosition', fn ($q) => $q->where('category', $category))
-            ->pluck('training_position_id')
+        return $account->mentorTrainingPositions
+            ->filter(fn ($mtp) => $mtp->mentorable && app(MentorPermissionService::class)->mentorableBelongsToCategory($mtp->mentorable, $category))
+            ->pluck('mentorable_id')
             ->map(fn ($id) => (string) $id)
             ->toArray();
     }
@@ -231,11 +248,14 @@ class ManageMentors extends Page implements HasTable
     private function resolvePermissionsArray(Account $record, string $category): array
     {
         return $record->mentorTrainingPositions
-            ->filter(fn ($mtp) => $mtp->trainingPosition?->category === $category)
-            ->map(fn ($mtp) => $mtp->trainingPosition?->name
-                ?? $mtp->trainingPosition?->position?->callsign
-                ?? collect($mtp->trainingPosition?->cts_positions)->first()
-            )
+            ->filter(fn ($mtp) => $mtp->mentorable && app(MentorPermissionService::class)->mentorableBelongsToCategory($mtp->mentorable, $category))
+            ->map(function ($mtp) {
+                if ($mtp->mentorable instanceof TrainingPosition) {
+                    return $mtp->mentorable->name ?? $mtp->mentorable->position?->callsign ?? "Position {$mtp->mentorable_id}";
+                }
+
+                return $mtp->mentorable->code ?? $mtp->mentorable->name;
+            })
             ->filter()
             ->unique()
             ->values()

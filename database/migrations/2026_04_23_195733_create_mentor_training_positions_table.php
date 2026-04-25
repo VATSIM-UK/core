@@ -13,14 +13,16 @@ return new class extends Migration
         Schema::create('mentor_training_positions', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('account_id');
-            $table->foreignId('training_position_id')->constrained('training_positions')->cascadeOnDelete();
+            $table->string('mentorable_type');
+            $table->unsignedBigInteger('mentorable_id');
             $table->unsignedInteger('created_by');
             $table->timestamps();
 
             $table->foreign('account_id')->references('id')->on('mship_account')->cascadeOnDelete();
             $table->foreign('created_by')->references('id')->on('mship_account');
 
-            $table->unique(['account_id', 'training_position_id']);
+            $table->index(['mentorable_type', 'mentorable_id'], 'mentor_tp_mentorable_index');
+            $table->unique(['account_id', 'mentorable_type', 'mentorable_id'], 'mentor_tp_account_mentorable_unique');
         });
     }
 

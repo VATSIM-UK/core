@@ -15,6 +15,12 @@ return new class extends Migration
 
         $now = now();
 
+        $pilotMap = [
+            'P1_MENTOR' => 'PPL',
+            'P2_MENTOR' => 'IR',
+            'P3_MENTOR' => 'CMEL',
+        ];
+
         foreach ($mentorValidations as $validation) {
             $cid = DB::connection('cts')
                 ->table('members')
@@ -29,25 +35,46 @@ return new class extends Migration
                 continue;
             }
 
-            $trainingPositionId = DB::table('training_positions')
-                ->where('position_id', $validation->position_id)
-                ->value('id');
-
-            if (! $trainingPositionId) {
-                continue;
-            }
-
             $changedByCid = DB::connection('cts')
                 ->table('members')
                 ->where('id', $validation->changed_by)
                 ->value('cid');
 
-            $changedByCid = DB::table('mship_account')->where('id', $changedByCid)->value('id');
+            $actorId = DB::table('mship_account')->where('id', $changedByCid)->value('id');
+
+            $position = DB::connection('cts')
+                ->table('positions')
+                ->where('id', $validation->position_id)
+                ->first();
+
+            if (! $position) {
+                continue;
+            }
+
+            $mentorableType = null;
+            $mentorableId = null;
+
+            if (array_key_exists($position->callsign, $pilotMap)) {
+                $mentorableType = App\Models\Mship\Qualification::class;
+                $mentorableId = DB::table('mship_qualification')
+                    ->where('code', $pilotMap[$position->callsign])
+                    ->value('id');
+            } else {
+                $mentorableType = App\Models\Training\TrainingPosition\TrainingPosition::class;
+                $mentorableId = DB::table('training_positions')
+                    ->where('position_id', $validation->position_id)
+                    ->value('id');
+            }
+
+            if (! $mentorableId) {
+                continue;
+            }
 
             DB::table('mentor_training_positions')->insertOrIgnore([
                 'account_id' => $accountId,
-                'training_position_id' => $trainingPositionId,
-                'created_by' => $changedByCid,
+                'mentorable_type' => $mentorableType,
+                'mentorable_id' => $mentorableId,
+                'created_by' => $actorId,
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);

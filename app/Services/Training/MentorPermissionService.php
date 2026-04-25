@@ -9,6 +9,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use Illuminate\Support\Collection;
@@ -27,7 +28,21 @@ class MentorPermissionService
     ];
 
     public const PILOT_CATEGORY_ROLE_MAP = [
-        // TODO: add pilot category => role mappings when pilot categories are finalized.
+        'P1 Training' => 'Pilot Mentor',
+        'P2 Training' => 'Pilot Mentor',
+        'P3 Training' => 'Pilot Mentor',
+    ];
+
+    public const PILOT_CATEGORY_QUALIFICATION_MAP = [
+        'P1 Training' => 'PPL',
+        'P2 Training' => 'IR',
+        'P3 Training' => 'CMEL',
+    ];
+
+    public const QUALIFICATION_CTS_POSITION_MAP = [
+        'PPL' => 'P1_MENTOR',
+        'IR' => 'P2_MENTOR',
+        'CMEL' => 'P3_MENTOR',
     ];
 
     public static function atcCategories(): array
@@ -50,57 +65,79 @@ class MentorPermissionService
         return self::ATC_CATEGORY_ROLE_MAP[$category] ?? self::PILOT_CATEGORY_ROLE_MAP[$category] ?? null;
     }
 
-    public function assignToPositions(Account $account, Collection $positions, Account $actor, string $category): void
+    public function getModelClassForCategory(string $category): string
     {
-        foreach ($positions as $position) {
-            $this->assignToPosition($account, $position, $actor);
+        return self::categoryType($category) === 'atc' ? TrainingPosition::class : Qualification::class;
+    }
+
+    public function mentorableBelongsToCategory($mentorable, string $category): bool
+    {
+        if ($mentorable instanceof TrainingPosition) {
+            return $mentorable->category === $category;
         }
 
+        if ($mentorable instanceof Qualification) {
+            $allowedCode = self::PILOT_CATEGORY_QUALIFICATION_MAP[$category] ?? null;
+
+            return $allowedCode !== null && $mentorable->code === $allowedCode;
+        }
+
+        return false;
+    }
+
+    public function assignToMentorable(Account $account, $mentorable, Account $actor, string $category): void
+    {
+        MentorTrainingPosition::firstOrCreate([
+            'account_id' => $account->id,
+            'mentorable_type' => get_class($mentorable),
+            'mentorable_id' => $mentorable->id,
+        ], [
+            'created_by' => $actor->id,
+        ]);
+
+        $this->syncCtsAssign($account, $mentorable);
         $this->syncRole($account, $category);
     }
 
-    public function syncPositionsInCategory(Account $account, string $category, Collection $newPositionIds, Account $actor): void
+    public function syncPositionsInCategory(Account $account, string $category, Collection $newIds, Account $actor): void
     {
-        $scopedPositions = TrainingPosition::where('category', $category)->get();
+        $modelClass = $this->getModelClassForCategory($category);
 
-        $scopedPositions
-            ->whereNotIn('id', $newPositionIds)
-            ->each(fn (TrainingPosition $pos) => $this->revokeFromPosition($account, $pos));
+        $currentPermissions = MentorTrainingPosition::where('account_id', $account->id)
+            ->where('mentorable_type', $modelClass)
+            ->get()
+            ->filter(fn ($permission) => $permission->mentorable && $this->mentorableBelongsToCategory($permission->mentorable, $category));
 
-        $scopedPositions
-            ->whereIn('id', $newPositionIds)
-            ->each(fn (TrainingPosition $pos) => $this->assignToPosition($account, $pos, $actor));
+        $currentPermissions->reject(fn ($p) => $newIds->contains($p->mentorable_id))
+            ->each(fn ($p) => $this->revokePermission($p));
 
-        $this->syncRole($account, $category);
+        $newIds->each(function ($id) use ($account, $modelClass, $actor, $category) {
+            $model = $modelClass::find($id);
+            if ($model) {
+                $this->assignToMentorable($account, $model, $actor, $category);
+            }
+        });
     }
 
     public function revokeFromCategory(Account $account, string $category): void
     {
-        $positions = TrainingPosition::where('category', $category)->get();
-        $positions->each(fn (TrainingPosition $pos) => $this->revokeFromPosition($account, $pos));
+        $modelClass = $this->getModelClassForCategory($category);
+
+        MentorTrainingPosition::where('account_id', $account->id)
+            ->where('mentorable_type', $modelClass)
+            ->get()
+            ->filter(fn ($permission) => $permission->mentorable && $this->mentorableBelongsToCategory($permission->mentorable, $category))
+            ->each(fn ($p) => $this->revokePermission($p));
+
         $this->syncRole($account, $category);
     }
 
-    private function assignToPosition(Account $account, TrainingPosition $trainingPosition, Account $actor): void
+    protected function revokePermission(MentorTrainingPosition $permission): void
     {
-        MentorTrainingPosition::firstOrCreate(
-            [
-                'account_id' => $account->id,
-                'training_position_id' => $trainingPosition->id,
-            ],
-            ['created_by' => $actor->id]
-        );
-
-        $this->syncCtsAssign($account, $trainingPosition);
-    }
-
-    private function revokeFromPosition(Account $account, TrainingPosition $trainingPosition): void
-    {
-        MentorTrainingPosition::where('account_id', $account->id)
-            ->where('training_position_id', $trainingPosition->id)
-            ->delete();
-
-        $this->syncCtsRevoke($account, $trainingPosition);
+        if ($permission->mentorable) {
+            $this->syncCtsRevoke($permission->account, $permission->mentorable);
+        }
+        $permission->delete();
     }
 
     private function syncRole(Account $account, string $category): void
@@ -111,13 +148,15 @@ class MentorPermissionService
             return;
         }
 
-        $categoriesSharingRole = array_keys(
-            array_filter(self::ATC_CATEGORY_ROLE_MAP, fn ($role) => $role === $roleName)
-        );
+        $categoriesSharingRole = array_keys(array_filter(array_merge(self::ATC_CATEGORY_ROLE_MAP, self::PILOT_CATEGORY_ROLE_MAP), fn ($role) => $role === $roleName));
 
-        $hasMentorPermissionsForRole = $account->mentorTrainingPositions()
-            ->whereHas('trainingPosition', fn ($query) => $query->whereIn('category', $categoriesSharingRole))
-            ->exists();
+        $hasMentorPermissionsForRole = MentorTrainingPosition::where('account_id', $account->id)
+            ->get()
+            ->contains(function ($permission) use ($categoriesSharingRole) {
+                return collect($categoriesSharingRole)->contains(function ($cat) use ($permission) {
+                    return $permission->mentorable && $this->mentorableBelongsToCategory($permission->mentorable, $cat);
+                });
+            });
 
         if ($hasMentorPermissionsForRole) {
             if (! $account->hasRole($roleName)) {
@@ -141,13 +180,30 @@ class MentorPermissionService
         return $account->member;
     }
 
-    private function syncCtsAssign(Account $account, TrainingPosition $trainingPosition): void
+    private function getCtsCallsignsForMentorable($mentorable): array
+    {
+        if ($mentorable instanceof TrainingPosition) {
+            return $mentorable->cts_positions ?? [];
+        }
+
+        if ($mentorable instanceof Qualification) {
+            $callsign = self::QUALIFICATION_CTS_POSITION_MAP[$mentorable->code] ?? null;
+
+            return $callsign ? [$callsign] : [];
+        }
+
+        return [];
+    }
+
+    private function syncCtsAssign(Account $account, $mentorable): void
     {
         if (($member = $this->resolveMember($account)) === null) {
             return;
         }
 
-        foreach ($trainingPosition->cts_positions as $callsign) {
+        $callsigns = $this->getCtsCallsignsForMentorable($mentorable);
+
+        foreach ($callsigns as $callsign) {
             $ctsPosition = Position::where('callsign', $callsign)->first();
 
             if (! $ctsPosition) {
@@ -169,19 +225,21 @@ class MentorPermissionService
                 'member_id' => $member->id,
                 'position_id' => $ctsPosition->id,
                 'status' => PositionValidationStatusEnum::Mentor->value,
-                'changed_by' => $member->id, // TODO: This should ideally be the actor making the change
+                'changed_by' => $member->id, // TODO: Ideally the actor making the change
                 'date_changed' => now(),
             ]);
         }
     }
 
-    private function syncCtsRevoke(Account $account, TrainingPosition $trainingPosition): void
+    private function syncCtsRevoke(Account $account, $mentorable): void
     {
         if (($member = $this->resolveMember($account)) === null) {
             return;
         }
 
-        foreach ($trainingPosition->cts_positions as $callsign) {
+        $callsigns = $this->getCtsCallsignsForMentorable($mentorable);
+
+        foreach ($callsigns as $callsign) {
             $ctsPosition = Position::where('callsign', $callsign)->first();
 
             if (! $ctsPosition) {
