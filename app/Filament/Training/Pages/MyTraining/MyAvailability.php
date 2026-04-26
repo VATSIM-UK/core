@@ -6,6 +6,7 @@ use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
 use App\Models\Cts\Availability;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
+use CodeWithKyrian\FilamentDateRange\Forms\Components\DateRangePicker;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -69,8 +70,13 @@ class MyAvailability extends Page implements HasForms, HasTable
                 $this->timezone = $timezone;
                 Session::put('availability_timezone', $timezone);
 
+                $now = now()->setTimezone($this->timezone)->toDateString();
+
                 $this->form->fill([
-                    'date' => now()->setTimezone($timezone)->toDateString(),
+                    'date_range' => [
+                        'start' => $now,
+                        'end' => $now,
+                    ],
                     'from' => '18:00',
                     'to' => '21:00',
                 ]);
@@ -128,10 +134,13 @@ class MyAvailability extends Page implements HasForms, HasTable
     {
         $this->timezone = Session::get('availability_timezone', 'UTC');
 
-        $now = now()->setTimezone($this->timezone);
+        $now = now()->setTimezone($this->timezone)->toDateString();
 
         $this->form->fill([
-            'date' => $now->toDateString(),
+            'date_range' => [
+                'start' => $now,
+                'end' => $now,
+            ],
             'from' => '18:00',
             'to' => '21:00',
         ]);
@@ -141,12 +150,10 @@ class MyAvailability extends Page implements HasForms, HasTable
     {
         return $form
             ->schema([
-                DatePicker::make('date')
-                    ->label('Date')
+                DateRangePicker::make('date_range')
+                    ->label('Date(s)')
                     ->required()
-                    ->native(false)
-                    ->minDate(now()->setTimezone($this->timezone)->startOfDay())
-                    ->default(now()->setTimezone($this->timezone)),
+                    ->minDate(now()->setTimezone($this->timezone)->startOfDay()),
 
                 Select::make('from')
                     ->label('From')
@@ -178,34 +185,49 @@ class MyAvailability extends Page implements HasForms, HasTable
             return;
         }
 
-        $startLocal = Carbon::parse("{$data['date']} {$data['from']}", $this->timezone);
-        $endLocal = Carbon::parse("{$data['date']} {$data['to']}", $this->timezone);
+        $startDate = Carbon::parse($data['date_range']['start']);
+        $endDate = Carbon::parse($data['date_range']['end']);
 
-        $startUtc = $startLocal->clone()->utc();
-        $endUtc = $endLocal->clone()->utc();
+        $addedCount = 0;
+        $skippedCount = 0;
 
-        [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
-            $studentId,
-            $startUtc,
-            $endUtc
-        );
+        for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+            $dateString = $date->toDateString();
 
-        if (! $valid) {
-            Notification::make()->title($message)->danger()->send();
+            $startLocal = Carbon::parse("{$dateString} {$data['from']}", $this->timezone);
+            $endLocal = Carbon::parse("{$dateString} {$data['to']}", $this->timezone);
 
-            return;
+            $startUtc = $startLocal->clone()->utc();
+            $endUtc = $endLocal->clone()->utc();
+
+            [$valid, $message] = $this->getAvailabilityService()->isSlotValid($studentId, $startUtc, $endUtc);
+
+            if (! $valid) {
+                $skippedCount++;
+
+                continue;
+            }
+
+            Availability::create([
+                'student_id' => $studentId,
+                'type' => 'S',
+                'date' => $startUtc->toDateString(),
+                'from' => $startUtc->format('H:i:s'),
+                'to' => $endUtc->format('H:i:s'),
+            ]);
+
+            $addedCount++;
         }
 
-        Availability::create([
-            'student_id' => $studentId,
-            'type' => 'S',
-            'date' => $startUtc->toDateString(),
-            'from' => $startUtc->format('H:i:s'),
-            'to' => $endUtc->format('H:i:s'),
-        ]);
+        if ($skippedCount > 0 && $addedCount > 0) {
+            Notification::make()->title("Added {$addedCount} slots, skipped {$skippedCount} conflicting dates")->warning()->send();
+        } elseif ($addedCount === 0 && $skippedCount > 0) {
+            Notification::make()->title('Could not add slots. All selected dates conflict with existing availability.')->danger()->send();
+        } else {
+            Notification::make()->title("{$addedCount} availability slot(s) added")->success()->send();
+        }
 
-        Notification::make()->title('Availability added')->success()->send();
-        $this->form->fill($this->form->getRawState()); // Keep current date for convenience
+        $this->form->fill($this->form->getRawState());
     }
 
     public function table(Table $table): Table
