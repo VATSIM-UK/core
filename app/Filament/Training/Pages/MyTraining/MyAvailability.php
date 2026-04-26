@@ -153,6 +153,12 @@ class MyAvailability extends Page implements HasForms, HasTable
                 DateRangePicker::make('date_range')
                     ->label('Date(s)')
                     ->required()
+                    ->live()
+                    ->afterStateUpdated(function (array $state, callable $set): void {
+                        if (! empty($state['start']) && empty($state['end'])) {
+                            $set('date_range.end', $state['start']);
+                        }
+                    })
                     ->minDate(now()->setTimezone($this->timezone)->startOfDay()),
 
                 Select::make('from')
