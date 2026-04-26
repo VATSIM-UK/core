@@ -24,6 +24,8 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     {
         parent::setUp();
 
+        $this->travelTo(Carbon::create(2026, 5, 10, 12, 0, 0));
+
         $this->studentAccount = Account::factory()->create();
         $this->studentMember = Member::factory()->recycle($this->studentAccount)->create([
             'cid' => $this->studentAccount->id,
@@ -90,8 +92,8 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
 
         Availability::factory()->forStudent($this->studentMember->id)->create([
             'date' => now()->toDateString(),
-            'from' => now()->subHour()->format('H:i:s'),
-            'to' => now()->addHour()->format('H:i:s'),
+            'from' => '09:00:00',
+            'to' => '11:00:00',
             'type' => 'S',
         ]);
 
