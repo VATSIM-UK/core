@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Site;
 
-use Illuminate\Support\Facades\Redirect;
-
 class ATCPagesController extends \App\Http\Controllers\BaseController
 {
     public function __construct()
@@ -38,14 +36,12 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
 
     public function viewHeathrow()
     {
-        if ($this->account->qualification_atc->isS1) {
-            return Redirect::route('controllers.endorsements.heathrow_ground_s1');
-        }
-
         $this->setTitle('Heathrow Endorsements');
         $this->addBreadcrumb('Heathrow Endorsements', route('site.atc.heathrow'));
 
-        return $this->viewMake('site.atc.heathrow');
+        return $this->viewMake('site.atc.heathrow')->with([
+            'account' => $this->account,
+        ]);
     }
 
     public function viewBecomingAMentor()
