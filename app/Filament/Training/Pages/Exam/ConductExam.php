@@ -397,9 +397,8 @@ class ConductExam extends Page implements HasForms, HasInfolists
     public function removeTrainingPlace()
     {
         $studentAccount = $this->examBooking->studentAccount();
-        $waitingListAccountIds = $studentAccount->waitingListAccounts()->withTrashed()->pluck('id');
 
-        TrainingPlace::whereIn('waiting_list_account_id', $waitingListAccountIds)->first()?->delete();
+        TrainingPlace::where('account_id', $studentAccount->id)->get()->each->delete();
     }
 
     /**
