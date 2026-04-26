@@ -431,6 +431,9 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             'waiting_list_account_id' => $waitingListAccount->id,
         ]);
 
+        // Waiting list accounts are deleted when removed from the waiting list, so we need to delete it here to properly test the training place is removed when the exam is passed
+        $waitingListAccount->delete();
+
         Livewire::actingAs($this->panelUser)
             ->test(ConductExam::class, ['examId' => $exam->id])
             ->tap(function ($component) use ($exam) {
