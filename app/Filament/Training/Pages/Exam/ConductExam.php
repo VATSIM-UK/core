@@ -398,7 +398,21 @@ class ConductExam extends Page implements HasForms, HasInfolists
     {
         $studentAccount = $this->examBooking->studentAccount();
 
-        TrainingPlace::where('account_id', $studentAccount->id)->get()->each->delete();
+        if (! $studentAccount) {
+            return;
+        }
+
+        $examCallsign = $this->examBooking->position_1;
+
+        TrainingPlace::query()
+            ->whereBelongsTo($studentAccount, 'account')
+            ->whereHas('trainingPosition', function ($query) use ($examCallsign) {
+                $query->where('exam_callsign', $examCallsign)
+                    ->orWhere(function ($query) use ($examCallsign) {
+                        $query->whereNull('exam_callsign')
+                            ->whereHas('position', fn ($positionQuery) => $positionQuery->where('callsign', $examCallsign));
+                    });
+            })->get()->each->delete();
     }
 
     /**

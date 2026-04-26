@@ -401,6 +401,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
 
         $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+        $trainingPosition = TrainingPosition::factory()->create(['position_id' => $position->id]);
 
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
@@ -429,6 +430,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
 
         $trainingPlace = TrainingPlace::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
         ]);
 
         // Waiting list accounts are deleted when removed from the waiting list, so we need to delete it here to properly test the training place is removed when the exam is passed
@@ -450,6 +452,81 @@ class ConductExamTest extends BaseTrainingPanelTestCase
 
         $this->assertSoftDeleted('training_places', [
             'id' => $trainingPlace->id,
-            'waiting_list_account_id' => $waitingListAccount->id, ]);
+            'waiting_list_account_id' => $waitingListAccount->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_only_removes_the_training_place_associated_with_the_passed_exam_position()
+    {
+        $account = Account::factory()->create();
+        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+
+        $examPosition = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+        $examTrainingPosition = TrainingPosition::factory()->create(['position_id' => $examPosition->id]);
+
+        $examWaitingList = WaitingList::factory()->create();
+        $examWla = $examWaitingList->addToWaitingList($account, $this->privacc);
+        $examTrainingPlace = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $examWla->id,
+            'training_position_id' => $examTrainingPosition->id,
+        ]);
+        $examWla->delete();
+
+        $otherPosition = Position::factory()->create(['callsign' => 'EGLL_TWR']);
+        $otherTrainingPosition = TrainingPosition::factory()->create(['position_id' => $otherPosition->id]);
+
+        $otherWaitingList = WaitingList::factory()->create();
+        $otherWla = $otherWaitingList->addToWaitingList($account, $this->privacc);
+        $otherTrainingPlace = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $otherWla->id,
+            'training_position_id' => $otherTrainingPosition->id,
+        ]);
+        $otherWla->delete();
+
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'exam' => 'TWR',
+            'student_id' => $student->id,
+            'position_1' => $examPosition->callsign,
+            'student_rating' => Qualification::code('S1')->first()->vatsim,
+        ]);
+
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => $this->panelUser->id,
+        ]);
+
+        $this->panelUser->givePermissionTo('training.exams.conduct.twr');
+
+        $criteria = ExamCriteria::create([
+            'exam' => 'TWR',
+            'criteria' => 'Test Criteria',
+            'deleted' => 0,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->tap(function ($component) use ($exam) {
+                $allCriteria = ExamCriteria::byType($exam->exam)->get();
+                foreach ($allCriteria as $criterion) {
+                    $component->set("data.form.{$criterion->id}.grade", 'P');
+                    $component->set("data.form.{$criterion->id}.comments", '');
+                }
+            })
+            ->set('examResultData.exam_result', PracticalResult::PASSED)
+            ->set('examResultData.additional_comments', '')
+            ->call('completeExam')
+            ->assertHasNoFormErrors();
+
+        $this->assertSoftDeleted('training_places', [
+            'id' => $examTrainingPlace->id,
+        ]);
+
+        $this->assertDatabaseHas('training_places', [
+            'id' => $otherTrainingPlace->id,
+            'deleted_at' => null,
+        ]);
     }
 }
