@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-    @if($account->qualification_atc->isS1)
+    @if($account->qualification_atc?->isS1)
             <div class="alert alert-danger">
                 <h3 style="margin-top: 0">Heathrow Ground Endorsement - S1</h3>
                 <p>
