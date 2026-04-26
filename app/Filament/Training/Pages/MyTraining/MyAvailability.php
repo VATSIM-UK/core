@@ -73,10 +73,6 @@ class MyAvailability extends Page implements HasForms, HasTable
                 $now = now()->setTimezone($this->timezone)->toDateString();
 
                 $this->form->fill([
-                    'date_range' => [
-                        'start' => $now,
-                        'end' => $now,
-                    ],
                     'from' => '18:00',
                     'to' => '21:00',
                 ]);
@@ -137,10 +133,6 @@ class MyAvailability extends Page implements HasForms, HasTable
         $now = now()->setTimezone($this->timezone)->toDateString();
 
         $this->form->fill([
-            'date_range' => [
-                'start' => $now,
-                'end' => $now,
-            ],
             'from' => '18:00',
             'to' => '21:00',
         ]);
@@ -189,40 +181,26 @@ class MyAvailability extends Page implements HasForms, HasTable
         $endDate = Carbon::parse($data['date_range']['end']);
 
         $addedCount = 0;
-        $skippedCount = 0;
+        $mergedCount = 0;
 
         for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
             $dateString = $date->toDateString();
 
-            $startLocal = Carbon::parse("{$dateString} {$data['from']}", $this->timezone);
-            $endLocal = Carbon::parse("{$dateString} {$data['to']}", $this->timezone);
+            $startUtc = Carbon::parse("{$dateString} {$data['from']}", $this->timezone)->utc();
+            $endUtc = Carbon::parse("{$dateString} {$data['to']}", $this->timezone)->utc();
 
-            $startUtc = $startLocal->clone()->utc();
-            $endUtc = $endLocal->clone()->utc();
+            $result = $this->getAvailabilityService()->addOrMergeSlot($studentId, $startUtc, $endUtc);
 
-            [$valid, $message] = $this->getAvailabilityService()->isSlotValid($studentId, $startUtc, $endUtc);
-
-            if (! $valid) {
-                $skippedCount++;
-
-                continue;
-            }
-
-            Availability::create([
-                'student_id' => $studentId,
-                'type' => 'S',
-                'date' => $startUtc->toDateString(),
-                'from' => $startUtc->format('H:i:s'),
-                'to' => $endUtc->format('H:i:s'),
-            ]);
-
-            $addedCount++;
+            match ($result) {
+                'added' => $addedCount++,
+                'merged' => $mergedCount++,
+            };
         }
 
-        if ($skippedCount > 0 && $addedCount > 0) {
-            Notification::make()->title("Added {$addedCount} slots, skipped {$skippedCount} conflicting dates")->warning()->send();
-        } elseif ($addedCount === 0 && $skippedCount > 0) {
-            Notification::make()->title('Could not add slots. All selected dates conflict with existing availability.')->danger()->send();
+        if ($addedCount > 0 && $mergedCount > 0) {
+            Notification::make()->title("Added {$addedCount} slot(s) and expanded {$mergedCount} existing slot(s)")->warning()->send();
+        } elseif ($mergedCount > 0) {
+            Notification::make()->title("Expanded {$mergedCount} existing slot(s) to cover the new time")->warning()->send();
         } else {
             Notification::make()->title("{$addedCount} availability slot(s) added")->success()->send();
         }

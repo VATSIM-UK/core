@@ -85,4 +85,40 @@ class AvailabilityService
 
         return [true, 'Valid'];
     }
+
+    public function addOrMergeSlot(int $studentId, Carbon $startUtc, Carbon $endUtc): string
+    {
+        $overlapping = Availability::where('student_id', $studentId)
+            ->where('type', 'S')
+            ->where('date', $startUtc->toDateString())
+            ->where('from', '<', $endUtc->format('H:i:s'))
+            ->where('to', '>', $startUtc->format('H:i:s'))
+            ->first();
+
+        if ($overlapping) {
+            $existingStart = Carbon::parse($overlapping->date->format('Y-m-d').' '.$overlapping->from->format('H:i:s'), 'UTC');
+            $existingEnd = Carbon::parse($overlapping->date->format('Y-m-d').' '.$overlapping->to->format('H:i:s'), 'UTC');
+
+            $mergedStart = $startUtc->min($existingStart);
+            $mergedEnd = $endUtc->max($existingEnd);
+
+            $overlapping->update([
+                'date' => $mergedStart->toDateString(),
+                'from' => $mergedStart->format('H:i:s'),
+                'to' => $mergedEnd->format('H:i:s'),
+            ]);
+
+            return 'merged';
+        }
+
+        Availability::create([
+            'student_id' => $studentId,
+            'type' => 'S',
+            'date' => $startUtc->toDateString(),
+            'from' => $startUtc->format('H:i:s'),
+            'to' => $endUtc->format('H:i:s'),
+        ]);
+
+        return 'added';
+    }
 }
