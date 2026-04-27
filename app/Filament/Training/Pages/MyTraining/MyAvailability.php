@@ -196,7 +196,7 @@ class MyAvailability extends Page implements HasForms, HasTable
         if ($addedCount > 0 && $mergedCount > 0) {
             Notification::make()->title("Added {$addedCount} slot(s) and expanded {$mergedCount} existing slot(s)")->warning()->send();
         } elseif ($mergedCount > 0) {
-            Notification::make()->title("Expanded {$mergedCount} existing slot(s) to cover the new time")->warning()->send();
+            Notification::make()->title("Expanded {$mergedCount} existing slot(s) to cover the new time(s)")->warning()->send();
         } else {
             Notification::make()->title("{$addedCount} availability slot(s) added")->success()->send();
         }
