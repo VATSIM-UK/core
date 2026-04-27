@@ -70,8 +70,6 @@ class MyAvailability extends Page implements HasForms, HasTable
                 $this->timezone = $timezone;
                 Session::put('availability_timezone', $timezone);
 
-                $now = now()->setTimezone($this->timezone)->toDateString();
-
                 $this->form->fill([
                     'from' => '18:00',
                     'to' => '21:00',
@@ -129,8 +127,6 @@ class MyAvailability extends Page implements HasForms, HasTable
     public function mount(): void
     {
         $this->timezone = Session::get('availability_timezone', 'UTC');
-
-        $now = now()->setTimezone($this->timezone)->toDateString();
 
         $this->form->fill([
             'from' => '18:00',
