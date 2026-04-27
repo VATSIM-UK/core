@@ -201,7 +201,10 @@ class MyAvailability extends Page implements HasForms, HasTable
             Notification::make()->title("{$addedCount} availability slot(s) added")->success()->send();
         }
 
-        $this->form->fill($this->form->getRawState());
+        $this->form->fill([
+            'from' => '18:00',
+            'to' => '21:00',
+        ]);
     }
 
     public function table(Table $table): Table
