@@ -3,7 +3,12 @@
     x-init="
         if (! $wire.browserTimezone) {
             $wire.setBrowserTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone)
-        }">
+        }
+        $watch('$wire.data.date_range', (value) => {
+            if (value?.start && !value?.end) {
+                $wire.set('data.date_range', { start: value.start, end: value.start })
+            }
+        })">
     <style>
         .availability-grid {
             display: grid;

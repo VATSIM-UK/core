@@ -57,7 +57,7 @@ Route::group([
         Route::get('/division-policy')->uses('PolicyPagesController@viewDivision')->name('division');
         Route::get('/atc-training-policy')->uses('PolicyPagesController@viewATCTraining')->name('atc-training');
         Route::get('/visiting-and-transferring-policy')->uses('PolicyPagesController@viewVisitTransfer')->name('visiting-and-transferring');
-        Route::get('/terms-and-conditions')->uses('PolicyPagesController@viewTerms')->name('terms');
+        Route::get('/community-standards')->uses('PolicyPagesController@viewCommunityStandards')->name('community-standards');
         Route::get('/privacy-policy')->uses('PolicyPagesController@viewPrivacy')->name('privacy');
         Route::get('/data-protection-policy')->uses('PolicyPagesController@viewDPP')->name('data-protection');
         Route::get('/branding-guidelines')->uses('PolicyPagesController@viewBranding')->name('branding');

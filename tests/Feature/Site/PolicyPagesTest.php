@@ -26,9 +26,9 @@ class PolicyPagesTest extends TestCase
     }
 
     #[Test]
-    public function test_it_loads_the_terms()
+    public function test_it_loads_the_community_standards()
     {
-        $this->get(route('site.policy.terms'))->assertOk();
+        $this->get(route('site.policy.community-standards'))->assertOk();
     }
 
     #[Test]

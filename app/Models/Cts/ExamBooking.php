@@ -83,4 +83,11 @@ class ExamBooking extends Model
         return $this->where('taken', 1)
             ->where('finished', self::NOT_FINISHED_FLAG);
     }
+
+    public function cancelReasons()
+    {
+        return $this->hasMany(CancelReason::class, 'sesh_id', 'id')
+            ->where('sesh_type', 'EX')
+            ->orderBy('date', 'desc');
+    }
 }

@@ -30,6 +30,11 @@ class CancelReason extends Model
         return $this->belongsTo(Member::class, 'reason_by', 'id');
     }
 
+    public function examBooking()
+    {
+        return $this->belongsTo(ExamBooking::class, 'sesh_id', 'id');
+    }
+
     public function isExam(): bool
     {
         return $this->sesh_type === 'EX';

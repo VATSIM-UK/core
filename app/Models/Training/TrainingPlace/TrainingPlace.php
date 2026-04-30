@@ -2,6 +2,7 @@
 
 namespace App\Models\Training\TrainingPlace;
 
+use App\Models\Cts\CancelReason;
 use App\Models\Cts\Session as CtsSession;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
@@ -81,6 +82,21 @@ class TrainingPlace extends Model
     public function currentLeaveOfAbsence()
     {
         return $this->leaveOfAbsences()->current()->first();
+    }
+
+    public function hasExamCancellations(): bool
+    {
+        $position = $this->trainingPosition?->exam_callsign ?? $this->trainingPosition?->position?->callsign;
+
+        if (! $position) {
+            return false;
+        }
+
+        return CancelReason::query()
+            ->join('exam_book', 'cancel_reason.sesh_id', '=', 'exam_book.id')
+            ->where('cancel_reason.sesh_type', 'EX')
+            ->where('exam_book.position_1', $position)
+            ->exists();
     }
 
     public function deletePendingSessionRequests(): void
