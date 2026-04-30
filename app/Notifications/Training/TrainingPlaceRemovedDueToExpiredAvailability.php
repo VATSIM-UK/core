@@ -88,6 +88,6 @@ class TrainingPlaceRemovedDueToExpiredAvailability extends Notification implemen
     {
         $category = $this->availabilityWarning->trainingPlace->trainingPosition?->category;
 
-        return $this->getDiscordChannelForCategory($category);
+        return $this->getDiscordChannelForCategory($category) ?? '';
     }
 }

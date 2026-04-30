@@ -95,6 +95,6 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification im
     {
         $category = $this->availabilityWarning->trainingPlace->trainingPosition?->category;
 
-        return $this->getDiscordChannelForCategory($category);
+        return $this->getDiscordChannelForCategory($category) ?? '';
     }
 }
