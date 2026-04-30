@@ -1,5 +1,3 @@
 <div>
-    @if($this->hasExamCancellations())
-        {{ $this->table }}
-    @endif
+    {{ $this->table }}
 </div>

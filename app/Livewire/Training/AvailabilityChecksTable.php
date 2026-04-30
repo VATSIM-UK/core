@@ -29,7 +29,6 @@ class AvailabilityChecksTable extends Component implements HasActions, HasForms,
     public function table(Table $table): Table
     {
         return $table
-            ->heading('Availability checks')
             ->queryStringIdentifier('availability-checks')
             ->query(
                 AvailabilityCheck::query()
