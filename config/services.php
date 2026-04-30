@@ -52,6 +52,13 @@ return [
         'base_discord_uri' => env('DISCORD_API_BASE', 'https://discord.com/api/v6'),
         'suspended_member_role_id' => env('DISCORD_SUSPENDED_MEMBER_ROLE_ID', null),
         'training_alerts_channel_id' => env('DISCORD_TRAINING_ALERTS_CHANNEL_ID', null),
+
+        // Training Team Notification Channels
+        'tgnc_team_channel_id' => env('DISCORD_TGNC_TEAM_CHANNEL_ID', '705819268067098736'),
+        'twr_team_channel_id' => env('DISCORD_TWR_TEAM_CHANNEL_ID', '705818708018200646'),
+        'app_team_channel_id' => env('DISCORD_APP_TEAM_CHANNEL_ID', '705818720471089262'),
+        'enroute_team_channel_id' => env('DISCORD_ENROUTE_TEAM_CHANNEL_ID', '827491230078337034'),
+        'heathrow_team_channel_id' => env('DISCORD_HEATHROW_TEAM_CHANNEL_ID', '827491193214468106'),
     ],
 
     'google' => [

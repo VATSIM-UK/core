@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Notifications\Training;
 
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
+use App\Notifications\DiscordNotificationChannel;
 use App\Notifications\Notification;
+use App\Notifications\Traits\RoutesDiscordTrainingTeamsChannels;
 use Illuminate\Notifications\Messages\MailMessage;
 
 /**
@@ -15,6 +17,8 @@ use Illuminate\Notifications\Messages\MailMessage;
  */
 class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification
 {
+    use RoutesDiscordTrainingTeamsChannels;
+
     public function __construct(public AvailabilityWarning $availabilityWarning) {}
 
     /**
@@ -25,7 +29,14 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification
      */
     public function via($notifiable): array
     {
-        return ['mail'];
+        $channels = ['mail'];
+
+        // Only add Discord if the training team has a registered discord channel id
+        if (! empty($this->getTrainingTeamChannel())) {
+            $channels[] = DiscordNotificationChannel::class;
+        }
+
+        return $channels;
     }
 
     /**
@@ -46,5 +57,43 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification
                 'training_place_position_name' => $trainingPlace->trainingPosition?->position?->name ?? 'N/A',
                 'removal_date' => $removalDate,
             ]);
+    }
+
+    public function toDiscord($notifiable)
+    {
+        $trainingPlace = $this->availabilityWarning->trainingPlace;
+        $position = $trainingPlace->trainingPosition->position;
+
+        $warningDates = $trainingPlace->availabilityWarnings()
+            ->orderBy('created_at')
+            ->get()
+            ->pluck('created_at')
+            ->map(fn ($date) => $date->format('d/m/Y'))
+            ->implode("\n");
+
+        return [
+            'content' => null,
+            'embeds' => [
+                [
+                    'title' => 'Training Place Automatically Removed',
+                    'description' => "The training place for **{$notifiable->name} ({$notifiable->id})** on **{$position->name} ({$position->callsign})** has been removed for a fourth failed availability check.",
+                    'color' => 15158332,
+                    'fields' => [
+                        [
+                            'name' => 'Failed Check Dates',
+                            'value' => $warningDates,
+                        ],
+                    ],
+                    'timestamp' => now()->toIso8601String(),
+                ],
+            ],
+        ];
+    }
+
+    public function getTrainingTeamChannel()
+    {
+        $category = $this->availabilityWarning->trainingPlace->trainingPosition?->category;
+
+        return $this->getDiscordChannelForCategory($category);
     }
 }

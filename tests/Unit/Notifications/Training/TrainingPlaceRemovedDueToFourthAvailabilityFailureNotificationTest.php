@@ -12,8 +12,10 @@ use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
+use App\Notifications\DiscordNotificationChannel;
 use App\Notifications\Training\TrainingPlaceRemovedDueToFourthAvailabilityFailure;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Config;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -118,5 +120,44 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailureNotificationTest extends
         $mailMessage = $notification->toMail($this->account);
 
         $this->assertEquals($this->account->id, $mailMessage->viewData['recipient']->id);
+    }
+
+    #[Test]
+    public function it_includes_discord_channel_in_via_if_category_is_valid(): void
+    {
+        $this->availabilityWarning->trainingPlace->trainingPosition->update(['category' => 'S2 Training']);
+        Config::set('services.discord.twr_team_channel_id', '123456789');
+
+        $notification = new TrainingPlaceRemovedDueToFourthAvailabilityFailure($this->availabilityWarning);
+
+        $channels = $notification->via($this->account);
+        $this->assertContains(DiscordNotificationChannel::class, $channels);
+    }
+
+    #[Test]
+    public function it_omits_discord_channel_in_via_if_category_is_invalid_or_null(): void
+    {
+        $this->availabilityWarning->trainingPlace->trainingPosition->update(['category' => 'Unknown Category']);
+
+        $notification = new TrainingPlaceRemovedDueToFourthAvailabilityFailure($this->availabilityWarning);
+
+        $channels = $notification->via($this->account);
+        $this->assertNotContains(DiscordNotificationChannel::class, $channels);
+    }
+
+    #[Test]
+    public function it_generates_valid_discord_message_payload(): void
+    {
+        $notification = new TrainingPlaceRemovedDueToFourthAvailabilityFailure($this->availabilityWarning);
+
+        $discordData = $notification->toDiscord($this->account);
+
+        $this->assertNull($discordData['content']);
+        $this->assertCount(1, $discordData['embeds']);
+
+        $embed = $discordData['embeds'][0];
+
+        $this->assertEquals('Training Place Automatically Removed', $embed['title']);
+        $this->assertStringContainsString('EGLL Tower', $embed['description']);
     }
 }
