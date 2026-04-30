@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Notifications\Training;
 
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
+use App\Notifications\DiscordNotification;
 use App\Notifications\DiscordNotificationChannel;
 use App\Notifications\Notification;
 use App\Notifications\Traits\RoutesDiscordTrainingTeamsChannels;
@@ -14,7 +15,7 @@ use Illuminate\Notifications\Messages\MailMessage;
  * This notification is sent to an account when their training place is removed
  * because an availability warning expired without a subsequent successful availability check.
  */
-class TrainingPlaceRemovedDueToExpiredAvailability extends Notification
+class TrainingPlaceRemovedDueToExpiredAvailability extends Notification implements DiscordNotification
 {
     use RoutesDiscordTrainingTeamsChannels;
 
@@ -31,7 +32,7 @@ class TrainingPlaceRemovedDueToExpiredAvailability extends Notification
         $channels = ['mail'];
 
         // Only add Discord if the training team has a registered discord channel id
-        if (! empty($this->getTrainingTeamChannel())) {
+        if (! empty($this->getChannel())) {
             $channels[] = DiscordNotificationChannel::class;
         }
 
@@ -83,7 +84,7 @@ class TrainingPlaceRemovedDueToExpiredAvailability extends Notification
         ];
     }
 
-    public function getTrainingTeamChannel()
+    public function getChannel(): string
     {
         $category = $this->availabilityWarning->trainingPlace->trainingPosition?->category;
 

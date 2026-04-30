@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Notifications\Training;
 
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
+use App\Notifications\DiscordNotification;
 use App\Notifications\DiscordNotificationChannel;
 use App\Notifications\Notification;
 use App\Notifications\Traits\RoutesDiscordTrainingTeamsChannels;
@@ -15,7 +16,7 @@ use Illuminate\Notifications\Messages\MailMessage;
  * because they have failed the availability check on four occasions (having
  * previously resolved three failed checks within the five-day window).
  */
-class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification
+class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification implements DiscordNotification
 {
     use RoutesDiscordTrainingTeamsChannels;
 
@@ -32,7 +33,7 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification
         $channels = ['mail'];
 
         // Only add Discord if the training team has a registered discord channel id
-        if (! empty($this->getTrainingTeamChannel())) {
+        if (! empty($this->getChannel())) {
             $channels[] = DiscordNotificationChannel::class;
         }
 
@@ -90,7 +91,7 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification
         ];
     }
 
-    public function getTrainingTeamChannel()
+    public function getChannel(): string
     {
         $category = $this->availabilityWarning->trainingPlace->trainingPosition?->category;
 
