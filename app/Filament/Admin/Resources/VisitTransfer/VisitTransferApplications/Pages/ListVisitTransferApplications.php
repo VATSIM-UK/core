@@ -19,7 +19,8 @@ class ListVisitTransferApplications extends ListRecords
 
     protected function getTableQuery(): Builder
     {
-        return parent::getTableQuery()->where('type', $this->type);
+        return parent::getTableQuery()->where('type', $this->type)
+            ->whereNotIn('status', [Application::STATUS_WITHDRAWN, Application::STATUS_LAPSED, Application::STATUS_EXPIRED]);
     }
 
     protected function getHeaderActions(): array
@@ -39,22 +40,27 @@ class ListVisitTransferApplications extends ListRecords
 
                 Action::make('all')
                     ->label('All Applications')
-                    ->url(fn () => static::getResource()::getUrl('index', ['type' => $this->type])),
-
-                Action::make('open')
-                    ->label('Open Applications')
-                    ->url(fn () => static::getResource()::getUrl('index', ['type' => $this->type, 'tableFilters' => ['status' => ['values' => [0 => Application::STATUS_SUBMITTED]]]])),
+                    ->action(function () {
+                        $this->tableFilters['status'] = null;
+                    }),
 
                 Action::make('review')
                     ->label('Review Applications')
-                    ->url(fn () => static::getResource()::getUrl('index', ['type' => $this->type, 'tableFilters' => ['status' => ['values' => [0 => Application::STATUS_UNDER_REVIEW]]]])),
+                    ->action(function () {
+                        $this->tableFilters['status'] = ['values' => [Application::STATUS_UNDER_REVIEW, Application::STATUS_SUBMITTED]];
+                    }),
+
                 Action::make('accepted')
                     ->label('Accepted Applications')
-                    ->url(fn () => static::getResource()::getUrl('index', ['type' => $this->type, 'tableFilters' => ['status' => ['values' => [0 => Application::STATUS_ACCEPTED, 1 => Application::STATUS_IN_PROGRESS]]]])),
+                    ->action(function () {
+                        $this->tableFilters['status'] = ['values' => [0 => Application::STATUS_ACCEPTED, 1 => Application::STATUS_IN_PROGRESS]];
+                    }),
 
                 Action::make('closed')
                     ->label('Closed Applications')
-                    ->url(fn () => static::getResource()::getUrl('index', ['type' => $this->type, 'tableFilters' => ['status' => ['values' => [0 => Application::STATUS_COMPLETED, 1 => Application::STATUS_REJECTED, 2 => Application::STATUS_WITHDRAWN, 3 => Application::STATUS_EXPIRED, 4 => Application::STATUS_CANCELLED, 5 => Application::STATUS_LAPSED]]]])),
+                    ->action(function () {
+                        $this->tableFilters['status'] = ['values' => [0 => Application::STATUS_COMPLETED, 1 => Application::STATUS_REJECTED,  2 => Application::STATUS_CANCELLED]];
+                    }),
 
             ])->label('Status')->button()->icon('heroicon-o-flag')->color('gray'),
         ];
