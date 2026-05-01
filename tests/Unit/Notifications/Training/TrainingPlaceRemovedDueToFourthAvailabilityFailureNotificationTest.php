@@ -15,7 +15,6 @@ use App\Models\Training\WaitingList;
 use App\Notifications\DiscordNotificationChannel;
 use App\Notifications\Training\TrainingPlaceRemovedDueToFourthAvailabilityFailure;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Config;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -41,6 +40,7 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailureNotificationTest extends
         $trainingPosition = TrainingPosition::factory()->create([
             'position_id' => $position->id,
             'cts_positions' => [],
+            'training_team_discord_channel_id' => null, // Default state
         ]);
 
         $trainingPlace = TrainingPlace::factory()->create([
@@ -123,10 +123,11 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailureNotificationTest extends
     }
 
     #[Test]
-    public function it_includes_discord_channel_in_via_if_category_is_valid(): void
+    public function it_includes_discord_channel_in_via_if_channel_id_is_set(): void
     {
-        $this->availabilityWarning->trainingPlace->trainingPosition->update(['category' => 'S2 Training']);
-        Config::set('services.discord.twr_team_channel_id', '123456789');
+        $this->availabilityWarning->trainingPlace->trainingPosition->update([
+            'training_team_discord_channel_id' => '123456789',
+        ]);
 
         $notification = new TrainingPlaceRemovedDueToFourthAvailabilityFailure($this->availabilityWarning);
 
@@ -135,9 +136,11 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailureNotificationTest extends
     }
 
     #[Test]
-    public function it_omits_discord_channel_in_via_if_category_is_invalid_or_null(): void
+    public function it_omits_discord_channel_in_via_if_channel_id_is_null_or_empty(): void
     {
-        $this->availabilityWarning->trainingPlace->trainingPosition->update(['category' => 'Unknown Category']);
+        $this->availabilityWarning->trainingPlace->trainingPosition->update([
+            'training_team_discord_channel_id' => null,
+        ]);
 
         $notification = new TrainingPlaceRemovedDueToFourthAvailabilityFailure($this->availabilityWarning);
 

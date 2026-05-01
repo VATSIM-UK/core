@@ -8,7 +8,6 @@ use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Notifications\DiscordNotification;
 use App\Notifications\DiscordNotificationChannel;
 use App\Notifications\Notification;
-use App\Notifications\Traits\RoutesDiscordTrainingTeamsChannels;
 use Illuminate\Notifications\Messages\MailMessage;
 
 /**
@@ -18,8 +17,6 @@ use Illuminate\Notifications\Messages\MailMessage;
  */
 class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification implements DiscordNotification
 {
-    use RoutesDiscordTrainingTeamsChannels;
-
     public function __construct(public AvailabilityWarning $availabilityWarning) {}
 
     /**
@@ -93,8 +90,6 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification im
 
     public function getChannel(): string
     {
-        $category = $this->availabilityWarning->trainingPlace->trainingPosition?->category;
-
-        return $this->getDiscordChannelForCategory($category) ?? '';
+        return $this->availabilityWarning->trainingPlace->trainingPosition->training_team_discord_channel_id ?? '';
     }
 }
