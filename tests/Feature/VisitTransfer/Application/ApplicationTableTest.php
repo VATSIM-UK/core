@@ -49,7 +49,7 @@ class ApplicationTableTest extends BaseAdminTestCase
         $applications = Application::where('type', Application::TYPE_TRANSFER)->get();
 
         foreach ($applications as $application) {
-            $component->assertSee($application->public_id);
+            $component->assertSee($application->cid);
         }
     }
 
@@ -64,7 +64,7 @@ class ApplicationTableTest extends BaseAdminTestCase
         $applications = Application::where('type', Application::TYPE_VISIT)->get();
 
         foreach ($applications as $application) {
-            $component->assertSee($application->public_id);
+            $component->assertSee($application->cid);
         }
     }
 
