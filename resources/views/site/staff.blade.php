@@ -149,6 +149,10 @@
                                 <td>Craig Stewart</td>
                             </tr>
                             <tr>
+                                <td>Training Department Assistant</td>
+                                <td>Alex Anderson</td>
+                            </tr>
+                            <tr>
                                 <td>Division Instructor</td>
                                 <td>Adam Arkley</td>
                             </tr>
@@ -255,10 +259,6 @@
                         <tr>
                             <td>Developer</td>
                             <td>Kristián Kunc</td>
-                        </tr>
-                        <tr>
-                            <td>Developer</td>
-                            <td>Max Brokman</td>
                         </tr>
                         <tr>
                             <td>Developer</td>
