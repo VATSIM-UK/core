@@ -116,6 +116,7 @@ class AccountsRelationManager extends RelationManager
                 TextColumn::make('created_at')->label('Added On')->dateTime('d/m/Y H:i:s'),
                 IconColumn::make('cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn (WaitingListAccount $record) => $record->theory_exam_passed)->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
                 ...$this->getFlagColumns(),
+                IconColumn::make('has_notes')->label('')->getStateUsing(fn (WaitingListAccount $record) => filled($record->notes))->icon(fn (WaitingListAccount $record) => filled($record->notes) ? 'heroicon-o-exclamation-triangle' : null)->color('warning')->tooltip('This user has notes on their waiting list account'),
             ])
             ->recordActions([
                 Action::make('offerTrainingPlace')
@@ -303,6 +304,9 @@ class AccountsRelationManager extends RelationManager
                                                 $this->ownerRecord->waitingListAccounts->count()
                                             );
                                         }),
+                                    TextEntry::make('notes')
+                                        ->label('Notes')
+                                        ->placeholder('No notes'),
                                 ]),
 
                             ...$offerFields,
