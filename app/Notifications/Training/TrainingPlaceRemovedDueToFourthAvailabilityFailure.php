@@ -90,6 +90,6 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification im
 
     public function getChannel(): string
     {
-        return $this->availabilityWarning->trainingPlace->trainingPosition->training_team_discord_channel_id ?? '';
+        return $this->availabilityWarning->trainingPlace->trainingPosition?->training_team_discord_channel_id ?? '';
     }
 }
