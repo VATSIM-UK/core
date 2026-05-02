@@ -12,6 +12,7 @@ use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
+use App\Notifications\DiscordNotificationChannel;
 use App\Notifications\Training\TrainingPlaceRemovedDueToFourthAvailabilityFailure;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
@@ -39,6 +40,7 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailureNotificationTest extends
         $trainingPosition = TrainingPosition::factory()->create([
             'position_id' => $position->id,
             'cts_positions' => [],
+            'training_team_discord_channel_id' => null, // Default state
         ]);
 
         $trainingPlace = TrainingPlace::factory()->create([
@@ -118,5 +120,47 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailureNotificationTest extends
         $mailMessage = $notification->toMail($this->account);
 
         $this->assertEquals($this->account->id, $mailMessage->viewData['recipient']->id);
+    }
+
+    #[Test]
+    public function it_includes_discord_channel_in_via_if_channel_id_is_set(): void
+    {
+        $this->availabilityWarning->trainingPlace->trainingPosition->update([
+            'training_team_discord_channel_id' => '123456789',
+        ]);
+
+        $notification = new TrainingPlaceRemovedDueToFourthAvailabilityFailure($this->availabilityWarning);
+
+        $channels = $notification->via($this->account);
+        $this->assertContains(DiscordNotificationChannel::class, $channels);
+    }
+
+    #[Test]
+    public function it_omits_discord_channel_in_via_if_channel_id_is_null_or_empty(): void
+    {
+        $this->availabilityWarning->trainingPlace->trainingPosition->update([
+            'training_team_discord_channel_id' => null,
+        ]);
+
+        $notification = new TrainingPlaceRemovedDueToFourthAvailabilityFailure($this->availabilityWarning);
+
+        $channels = $notification->via($this->account);
+        $this->assertNotContains(DiscordNotificationChannel::class, $channels);
+    }
+
+    #[Test]
+    public function it_generates_valid_discord_message_payload(): void
+    {
+        $notification = new TrainingPlaceRemovedDueToFourthAvailabilityFailure($this->availabilityWarning);
+
+        $discordData = $notification->toDiscord($this->account);
+
+        $this->assertNull($discordData['content']);
+        $this->assertCount(1, $discordData['embeds']);
+
+        $embed = $discordData['embeds'][0];
+
+        $this->assertEquals('Training Place Automatically Removed', $embed['title']);
+        $this->assertStringContainsString('EGLL Tower', $embed['description']);
     }
 }
