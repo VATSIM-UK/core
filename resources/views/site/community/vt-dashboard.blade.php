@@ -256,7 +256,7 @@
                 </p>
 
                 <p>
-                    All UK APP + ADC positions with the exception of those listed in the ATC Training Policy as requireing an additional endorsement.
+                    All UK APP + ADC positions with the exception of those listed in the ATC Training Policy as requiring an additional endorsement.
                 </p>
 
                 <p>
