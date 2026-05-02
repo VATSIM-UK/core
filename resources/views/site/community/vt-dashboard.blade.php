@@ -273,7 +273,7 @@
                 </p>
 
                 <p>
-                    <strong>Oceanic Endorsment</strong>
+                    <strong>Oceanic Endorsement</strong>
                 </p>
 
                 <p>
