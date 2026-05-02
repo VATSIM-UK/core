@@ -181,7 +181,6 @@
                                     <li class="divider"></li>
 
                                     <li class="dropdown-header">Vist / Transfer</li>
-                                    <li><a href="{{ route('site.community.vt-guide') }}">Guide</a></li>
                                     <li><a href="{{ route('visiting.landing') }}">Dashboard</a></li>
                                 </ul>
                             </li>

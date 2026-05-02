@@ -60,7 +60,7 @@
                         to
                         make
                         an application to change to the UK in order to become a controller with us. Visit our <a
-                                href="https://www.vatsim.uk/community/vt-guide">'Visit
+                                href="https://www.vatsim.uk/visit-transfer">'Visit
                         or
                         Transfer' page</a> for more information.</p>
 
