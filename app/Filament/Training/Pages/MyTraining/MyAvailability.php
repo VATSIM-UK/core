@@ -4,6 +4,7 @@ namespace App\Filament\Training\Pages\MyTraining;
 
 use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
 use App\Models\Cts\Availability;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
 use CodeWithKyrian\FilamentDateRange\Forms\Components\DateRangePicker;
@@ -44,7 +45,15 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->can('training.access') ?? false;
+        $user = auth()->user();
+
+        if (! $user?->can('training.access')) {
+            return false;
+        }
+
+        return TrainingPlace::where('account_id', $user->id)
+            ->whereNull('deleted_at')
+            ->exists();
     }
 
     protected function getAvailabilityService(): AvailabilityService

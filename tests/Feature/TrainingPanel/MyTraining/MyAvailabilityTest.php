@@ -6,6 +6,7 @@ use App\Filament\Training\Pages\MyTraining\MyAvailability;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
@@ -32,6 +33,10 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
         ]);
 
         $this->studentAccount->givePermissionTo('training.access');
+
+        TrainingPlace::factory()->createQuietly([
+            'account_id' => $this->studentAccount->id,
+        ]);
     }
 
     #[Test]
@@ -51,6 +56,18 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
         $this->actingAs($noAccessAccount)
             ->get('/training/my-availability')
             ->assertNotFound();
+    }
+
+    #[Test]
+    public function it_does_not_load_with_training_access_but_no_training_place(): void
+    {
+        $accountWithPermission = Account::factory()->create();
+        Member::factory()->recycle($accountWithPermission)->create(['cid' => $accountWithPermission->id]);
+        $accountWithPermission->givePermissionTo('training.access');
+
+        $this->actingAs($accountWithPermission)
+            ->get('/training/my-availability')
+            ->assertForbidden();
     }
 
     #[Test]
