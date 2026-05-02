@@ -209,3 +209,4 @@ Route::group([
         });
     });
 });
+Route::redirect('/vt', '/visit-transfer');
