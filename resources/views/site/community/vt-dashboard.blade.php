@@ -54,7 +54,7 @@
                         <p class="text-decoration-underline">
                             <u><strong>Pilot Visiting</strong></u>
                         </p>
-                        <p>You will be placed on the waiting list. When a spot is available you will recive full training inline with home members.</p>
+                        <p>You will be placed on the waiting list. When a spot is available you will receive full training inline with home members.</p>
                     </div>
                 </div>
             </div>
