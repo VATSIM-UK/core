@@ -180,7 +180,7 @@
                                     <li><a href="{{ route('mship.waiting-lists.index') }}">My Waiting Lists</a></li>
                                     <li class="divider"></li>
 
-                                    <li class="dropdown-header">Vist / Transfer</li>
+                                    <li class="dropdown-header">Visit / Transfer</li>
                                     <li><a href="{{ route('visiting.landing') }}">Dashboard</a></li>
                                 </ul>
                             </li>
