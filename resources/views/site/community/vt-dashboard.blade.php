@@ -125,12 +125,12 @@
                         </ul>
                         </p>
                         <p class="text-center">
-                            @if(in_array(Auth::user()->qualification_atc, ["S1", "S2"]) || Auth::user()->qualification_atc == "")
+                            @if(!\App\Models\VisitTransfer\Facility::isPossibleToVisitAtc())
+                                <button class="btn btn-danger" disabled="disabled">{{ trans("application.dashboard.apply.atc.visit.no_places") }}</button>
+                            @elseif(in_array(Auth::user()->qualification_atc, ["OBS", "S1", "S2"]))
                                 <button class="btn btn-danger" disabled="disabled">
                                     Only S3+ members can apply to visit as ATC
                                 </button>
-                            @elseif(!\App\Models\VisitTransfer\Facility::isPossibleToVisitAtc())
-                                <button class="btn btn-danger" disabled="disabled">{{ trans("application.dashboard.apply.atc.visit.no_places") }}</button>
                             @else
                                 @can("create", new \App\Models\VisitTransfer\Application)
 
