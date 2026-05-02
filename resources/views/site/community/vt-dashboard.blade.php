@@ -25,7 +25,78 @@
     </div>
 </div>
 
-    <div class="col-md-9">
+<div class="col-md-3 col-md-push-9">
+
+<div class="panel panel-ukblue">
+            <div class="panel-heading">
+                        <i class="fa fa-exclamation"></i> &thinsp; Requirements
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            <strong>Please note:</strong>
+                        </p>
+
+                        <ul>
+                            <li>
+                                All Transferring/Visiting controllers are subject to the global&nbsp;<a
+                                        href="https://vatsim.net/docs/policy/transfer-and-visiting-controller-policy/"
+                                        rel="external nofollow" target="_blank">VATSIM&nbsp;Transfer &amp; Visiting
+                                    Controller Policy</a>&nbsp;and <a
+                                        href="https://www.vatsim.uk/policy/division-policy"
+                                        rel="">VATSIM
+                                    UK Division
+                                    Policy</a>;
+                            </li>
+                            <li>
+                                Only permanent controller ratings are relevant for visiting/transferring ATC
+                                applications
+                                (<strong>non permanent ratings of SUP/ADM/I1/I3 are not relevant</strong>);
+                            </li>
+                        </ul>
+                        
+
+                    </div>
+        </div>
+
+<div class="panel panel-ukblue">
+            <div class="panel-heading"><i class="fa fa-list"></i> &thinsp; Visiting Endorsements (ATC)
+            </div>
+            <div class="panel-body">
+                <p>
+                    <strong>Approach Rating Endorsement</strong>
+                </p>
+
+                <p>
+                    All UK APP + ADC positions with the exception of those listed in the ATC Training Policy as requiring an additional endorsement.
+                </p>
+
+                <p>
+                    <strong>Enroute Rating Endorsement</strong>
+                </p>
+
+                <p>
+                    All UK CTR + APP + ADC positions with the exception of those listed in the ATC Training Policy as requiring an additional endorsement.
+                </p>
+
+                <p>
+                    <strong>Additional endorsements are available on request subject to capacity.</strong>
+                    You must first hold a rating endorsement before you can request any additional endorsements.
+                </p>
+
+                <p>
+                    <strong>Oceanic Endorsement</strong>
+                </p>
+
+                <p>
+                    Shanwick Radio + Gander Radio
+                </p>
+            </div>
+        </div>
+
+
+</div>
+
+    <div class="col-md-9 col-md-pull-3">
 
         <div class="row">
             
@@ -136,7 +207,7 @@
 
                                     @if($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
                                         <a href="{{ route('visiting.application.continue', [$currentVisitApplication->public_id]) }}">
-                                            <button class="btn btn-primary" href="">{{ "X".trans('application.continue') }}</button>
+                                            <button class="btn btn-primary" href="">{{ trans('application.continue') }}</button>
                                         </a>
                                     @elseif($currentTransferApplication)
                                         <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.xfer_open') }}</button>
@@ -213,75 +284,6 @@
 
     </div>
 
-    <div class="col-md-3">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading">
-                        <i class="fa fa-exclamation"></i> &thinsp; Requirements
-                    </div>
-                    <div class="panel-body">
-                        <p>
-                            <strong>Please note:</strong>
-                        </p>
-
-                        <ul>
-                            <li>
-                                All Transferring/Visiting controllers are subject to the global&nbsp;<a
-                                        href="https://vatsim.net/docs/policy/transfer-and-visiting-controller-policy/"
-                                        rel="external nofollow" target="_blank">VATSIM&nbsp;Transfer &amp; Visiting
-                                    Controller Policy</a>&nbsp;and <a
-                                        href="https://www.vatsim.uk/policy/division-policy"
-                                        rel="">VATSIM
-                                    UK Division
-                                    Policy</a>;
-                            </li>
-                            <li>
-                                Only permanent controller ratings are relevant for visiting/transferring ATC
-                                applications
-                                (<strong>non permanent ratings of SUP/ADM/I1/I3 are not relevant</strong>);
-                            </li>
-                        </ul>
-                        
-
-                    </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="fa fa-list"></i> &thinsp; Visiting Endorsements (ATC)
-            </div>
-            <div class="panel-body">
-                <p>
-                    <strong>Approach Rating Endorsement</strong>
-                </p>
-
-                <p>
-                    All UK APP + ADC positions with the exception of those listed in the ATC Training Policy as requiring an additional endorsement.
-                </p>
-
-                <p>
-                    <strong>Enroute Rating Endorsement</strong>
-                </p>
-
-                <p>
-                    All UK CTR + APP + ADC positions with the exception of those listed in the ATC Training Policy as requiring an additional endorsement.
-                </p>
-
-                <p>
-                    <strong>Additional endorsements are available on request subject to capacity.</strong>
-                    You must first hold a rating endorsement before you can request any additional endorsements.
-                </p>
-
-                <p>
-                    <strong>Oceanic Endorsement</strong>
-                </p>
-
-                <p>
-                    Shanwick Radio + Gander Radio
-                </p>
-            </div>
-        </div>
-    </div>
 
     <div class="col-md-12">
             <div class="panel panel-ukblue">
