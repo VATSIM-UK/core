@@ -13,11 +13,11 @@ return [
                         </ul>
                         <small>*Each facility will require a separate application.</small>',
     'dashboard.apply.atc.visit.no_places' => 'THERE ARE NO VISITING ATC PLACES',
-    'dashboard.apply.atc.visit.start' => 'Start Visiting ATC Application',
+    'dashboard.apply.atc.visit.start' => 'Start S3+ Visiting ATC Application',
     'dashboard.apply.atc.visit.unable' => 'You are not able to apply to visit as ATC at this time.',
 
     'dashboard.apply.atc.transfer.no_places' => 'THERE ARE NO TRANSFER PLACES',
-    'dashboard.apply.atc.transfer.start' => 'Start ATC Transfer Application',
+    'dashboard.apply.atc.transfer.start' => 'Start S1/S2/S3/C1/C3 ATC Transfer Application',
     'dashboard.apply.atc.transfer.unable' => 'You are not able to apply to transfer as ATC at this time.',
 
     'dashboard.apply.pilot.visit.no_places' => 'THERE ARE NO VISITING PILOT PLACES',

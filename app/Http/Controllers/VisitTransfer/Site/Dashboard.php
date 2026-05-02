@@ -17,7 +17,7 @@ class Dashboard extends BaseController
 
         $this->setTitle('Visiting and Transfer Dashboard');
 
-        return $this->viewMake('visit-transfer.site.dashboard')
+        return $this->viewMake('site.community.vt-dashboard')
             ->with('allApplications', $allApplications)
             ->with('currentVisitApplication', $currentVisitApplication)
             ->with('currentTransferApplication', $currentTransferApplication);

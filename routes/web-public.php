@@ -46,7 +46,6 @@ Route::group([
         'as' => 'community.',
         'prefix' => 'community',
     ], function () {
-        Route::get('/vt-guide')->uses('CommunityPagesController@viewVtGuide')->name('vt-guide');
         Route::get('/teamspeak')->uses('CommunityPagesController@viewTeamspeak')->name('teamspeak');
     });
 
