@@ -5,13 +5,19 @@ namespace App\Filament\Admin\Resources\Feedback;
 use App\Filament\Admin\Resources\Feedback\Pages\ListFeedback;
 use App\Filament\Admin\Resources\Feedback\Pages\ViewFeedback;
 use App\Filament\Admin\Resources\Feedback\Widgets\FeedbackOverview;
+use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form as FeedbackForm;
 use App\Models\Mship\Qualification;
+use Filament\Actions\BulkAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
@@ -155,6 +161,15 @@ class FeedbackResource extends Resource
                     ->label('Sent to User'),
             ])
             ->filters([
+                SelectFilter::make('account_id')
+                    ->placeholder('All Subjects')
+                    ->label('Subject')
+                    ->searchable(['name_first', 'name_last', 'id'])
+                    ->options(
+                        Feedback::query()->with('account')->get()->mapWithKeys(fn ($feedback) => [
+                            $feedback->account->id => $feedback->account->name.' ('.$feedback->account->id.')',
+                        ])
+                    ),
                 SelectFilter::make('form')
                     ->placeholder('All Forms')
                     ->label('Feedback Form')
@@ -183,6 +198,95 @@ class FeedbackResource extends Resource
             ->recordActions([
                 ViewAction::make(),
             ])
+            ->selectable()
+            ->toolbarActions([
+                BulkAction::make('sendFeedback')
+                    ->label(static::sendFeedbackConfig()['label'])
+                    ->icon(static::sendFeedbackConfig()['icon'])
+                    ->color(static::sendFeedbackConfig()['color'])
+                    ->form(static::sendFeedbackConfig()['form'])
+                    ->visible(fn () => auth()->user()?->can('actionFeedback', self::getModel()))
+                    ->action(function ($records, array $data) {
+                        $count = 0;
+                        foreach ($records as $record) {
+                            if ($record->sent_at === null && ! $record->trashed()) {
+                                $record->markSent(auth()->user(), $data['comment']);
+                                $count++;
+                            }
+                        }
+                        Notification::make()
+                            ->title("{$count} feedback entries sent.")
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
+                BulkAction::make('actionFeedback')
+                    ->label(static::actionFeedbackConfig()['label'])
+                    ->icon(static::actionFeedbackConfig()['icon'])
+                    ->color(static::actionFeedbackConfig()['color'])
+                    ->form(static::actionFeedbackConfig()['form'])
+                    ->visible(fn () => auth()->user()?->can('actionFeedback', self::getModel()))
+                    ->action(function ($records, array $data) {
+                        $count = 0;
+                        foreach ($records as $record) {
+                            if ($record->actioned_at === null && ! $record->trashed()) {
+                                $record->markActioned(auth()->user(), $data['comment']);
+                                $count++;
+                            }
+                        }
+                        Notification::make()
+                            ->title("{$count} feedback entries actioned.")
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
+                BulkAction::make('rejectFeedback')
+                    ->label(static::rejectFeedbackConfig()['label'])
+                    ->icon(static::rejectFeedbackConfig()['icon'])
+                    ->color(static::rejectFeedbackConfig()['color'])
+                    ->form(static::rejectFeedbackConfig()['form'])
+                    ->visible(fn () => auth()->user()?->can('actionFeedback', self::getModel()))
+                    ->action(function ($records, array $data) {
+                        $count = 0;
+                        foreach ($records as $record) {
+                            if (! $record->trashed()) {
+                                $record->markRejected(auth()->user(), $data['reason']);
+                                $count++;
+                            }
+                        }
+                        Notification::make()
+                            ->title("{$count} feedback entries rejected.")
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
+                BulkAction::make('reallocateFeedback')
+                    ->label(static::reallocateFeedbackConfig()['label'])
+                    ->icon(static::reallocateFeedbackConfig()['icon'])
+                    ->color(static::reallocateFeedbackConfig()['color'])
+                    ->form(static::reallocateFeedbackConfig()['form'])
+                    ->visible(fn () => auth()->user()?->can('actionFeedback', self::getModel()))
+                    ->action(function ($records, array $data) {
+                        $count = 0;
+                        foreach ($records as $record) {
+                            if ($record->actioned_at === null && $record->sent_at === null && ! $record->trashed()) {
+                                $record->reallocate($data['account_id']);
+                                $count++;
+                            }
+                        }
+                        Notification::make()
+                            ->title("{$count} feedback entries reallocated.")
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
+                DeleteBulkAction::make()
+                    ->visible(fn () => auth()->user()?->can('delete', self::getModel())),
+            ])
             ->defaultSort('created_at', 'desc');
     }
 
@@ -204,5 +308,74 @@ class FeedbackResource extends Resource
     private static function canSeeSubmitter()
     {
         return auth()->user()->can('seeSubmitter', self::getModel());
+    }
+
+    public static function sendFeedbackConfig(): array
+    {
+        return [
+            'label' => 'Send Feedback',
+            'icon' => 'heroicon-o-paper-airplane',
+            'color' => 'success',
+            'form' => [
+                Textarea::make('comment')
+                    ->label('Comment')
+                    ->required()
+                    ->minLength(10),
+            ],
+        ];
+    }
+
+    public static function actionFeedbackConfig(): array
+    {
+        return [
+            'label' => 'Action Feedback',
+            'icon' => 'heroicon-o-check-circle',
+            'color' => 'info',
+            'form' => [
+                Textarea::make('comment')
+                    ->label('Comment')
+                    ->required()
+                    ->minLength(10),
+            ],
+        ];
+    }
+
+    public static function rejectFeedbackConfig(): array
+    {
+        return [
+            'label' => 'Reject Feedback',
+            'icon' => 'heroicon-o-x-mark',
+            'color' => 'danger',
+            'form' => [
+                Textarea::make('reason')
+                    ->label('Rejection Reason')
+                    ->required()
+                    ->minLength(10),
+            ],
+        ];
+    }
+
+    public static function reallocateFeedbackConfig(): array
+    {
+        return [
+            'label' => 'Reallocate Feedback',
+            'icon' => 'heroicon-o-arrow-right',
+            'color' => 'gray',
+            'form' => [
+                Select::make('account_id')
+                    ->label('New Subject')
+                    ->searchable()
+                    ->getSearchResultsUsing(fn (string $search): array => Account::query()
+                        ->where('name_first', 'like', "%{$search}%")
+                        ->orWhere('name_last', 'like', "%{$search}%")
+                        ->orWhere('id', 'like', "{$search}%")
+                        ->limit(50)
+                        ->get()
+                        ->mapWithKeys(fn ($account) => [$account->id => $account->name.' ('.$account->id.')'])
+                        ->toArray())
+                    ->getOptionLabelUsing(fn ($value): ?string => Account::find($value)?->name.' ('.$value.')')
+                    ->required(),
+            ],
+        ];
     }
 }
