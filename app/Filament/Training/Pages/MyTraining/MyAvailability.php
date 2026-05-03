@@ -4,6 +4,9 @@ namespace App\Filament\Training\Pages\MyTraining;
 
 use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
 use App\Models\Cts\Availability;
+use App\Models\Cts\Member;
+use App\Models\Cts\Position;
+use App\Models\Cts\PositionValidation;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
@@ -51,9 +54,37 @@ class MyAvailability extends Page implements HasForms, HasTable
             return false;
         }
 
-        return TrainingPlace::where('account_id', $user->id)
+        $hasTrainingPlace = TrainingPlace::where('account_id', $user->id)
             ->whereNull('deleted_at')
             ->exists();
+
+        if ($hasTrainingPlace) {
+            return true;
+        }
+
+        // Interm check for pilot position validations
+        $ctsMember = Member::where('cid', $user->id)->first();
+
+        $hasPilotValidation = PositionValidation::where('member_id', $ctsMember->id)
+            ->whereHas('position', function ($query) {
+                $query->where(function ($q) {
+                    $q->where('callsign', 'like', 'P1_%')
+                        ->orWhere('callsign', 'like', 'P2_%')
+                        ->orWhere('callsign', 'like', 'P3_%')
+                        ->orWhere('callsign', 'like', 'P4_%')
+                        ->orWhere('callsign', 'like', 'P5_%')
+                        ->orWhere('callsign', 'like', 'P0_%')
+                        ->orWhere('callsign', 'like', 'PT_%')
+                        ->orWhere('callsign', 'like', 'TFP_%');
+                });
+            })
+            ->exists();
+
+        if ($hasPilotValidation) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function getAvailabilityService(): AvailabilityService

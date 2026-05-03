@@ -5,6 +5,8 @@ namespace Tests\Feature\TrainingPanel\MyTraining;
 use App\Filament\Training\Pages\MyTraining\MyAvailability;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
+use App\Models\Cts\PositionValidation;
+use App\Models\Cts\Position;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use Carbon\Carbon;
@@ -66,6 +68,48 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
         $accountWithPermission->givePermissionTo('training.access');
 
         $this->actingAs($accountWithPermission)
+            ->get('/training/my-availability')
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function it_loads_with_training_access_and_pilot_position_validation_but_no_training_place(): void
+    {
+        $accountWithValidation = Account::factory()->create();
+        $member = Member::factory()->recycle($accountWithValidation)->create(['cid' => $accountWithValidation->id]);
+        $accountWithValidation->givePermissionTo('training.access');
+
+        $pilotPosition = Position::factory()->create([
+            'callsign' => 'P1_PPL(A)',
+        ]);
+
+        PositionValidation::factory()->create([
+            'member_id' => $member->id,
+            'position_id' => $pilotPosition->id,
+        ]);
+
+        $this->actingAs($accountWithValidation)
+            ->get('/training/my-availability')
+            ->assertSuccessful();
+    }
+
+    #[Test]
+    public function it_does_not_load_with_training_access_and_non_pilot_position_validation_only(): void
+    {
+        $accountWithNonPilot = Account::factory()->create();
+        $member = Member::factory()->recycle($accountWithNonPilot)->create(['cid' => $accountWithNonPilot->id]);
+        $accountWithNonPilot->givePermissionTo('training.access');
+
+        $atcPosition = Position::factory()->create([
+            'callsign' => 'EGKK_APP',
+        ]);
+
+        PositionValidation::factory()->create([
+            'member_id' => $member->id,
+            'position_id' => $atcPosition->id,
+        ]);
+
+        $this->actingAs($accountWithNonPilot)
             ->get('/training/my-availability')
             ->assertForbidden();
     }
