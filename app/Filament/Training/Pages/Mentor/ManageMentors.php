@@ -9,6 +9,7 @@ use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\CheckboxList;
@@ -99,6 +100,10 @@ class ManageMentors extends Page implements HasTable
                     ->separator(',')
                     ->limitList(7)
                     ->wrap(),
+                TextColumn::make('last_mentored')
+                    ->label('Last Mentored')
+                    ->state(fn (Account $record) => app(MentorPermissionService::class)->getLastMentoredDate($record, $this->category)?->format('d/m/Y') ?? 'Never')
+                    ->description(fn (string $state) => $state !== 'Never' ? Carbon::createFromFormat('d/m/Y', $state)->diffForHumans() : null),
             ])
             ->headerActions([
                 Action::make('addMentor')
