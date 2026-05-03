@@ -12,4 +12,9 @@ class Position extends Model
     protected $connection = 'cts';
 
     public $timestamps = false;
+
+    protected $fillable = [
+        'callsign',
+        'name',
+    ];
 }

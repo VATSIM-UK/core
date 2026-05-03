@@ -56,6 +56,7 @@ class TrainingPanelProvider extends PanelProvider
             ->navigationGroups([
                 'My Training',
                 'Exams',
+                'Mentoring',
                 'Training',
                 'Theory',
             ])

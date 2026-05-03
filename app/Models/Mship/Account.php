@@ -14,6 +14,7 @@ use App\Models\Mship\Concerns\HasDiscordAccount;
 use App\Models\Mship\Concerns\HasEmails;
 use App\Models\Mship\Concerns\HasEndorsement;
 use App\Models\Mship\Concerns\HasHelpdeskAccount;
+use App\Models\Mship\Concerns\HasMentoringPermissions;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
 use App\Models\Mship\Concerns\HasNotifications;
@@ -228,6 +229,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         HasEndorsement,
         HasFactory,
         HasHelpdeskAccount,
+        HasMentoringPermissions,
         HasMoodleAccount,
         HasNetworkData,
         HasNotifications,
