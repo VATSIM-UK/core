@@ -295,7 +295,7 @@ class MentorPermissionService
 
         $lastMentoredDate = DB::connection('cts')
             ->table('sessions')
-            ->where('mentor_id', $account->id)
+            ->where('mentor_id', $ctsMemberId)
             ->whereIn('position', $callsigns)
             ->where('taken', 1)
             ->where('session_done', 1)
