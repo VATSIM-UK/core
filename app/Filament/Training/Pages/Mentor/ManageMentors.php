@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Mentor;
 
+use App\Filament\Training\Pages\Mentor\Widgets\ManageMentorsStatsWidget;
 use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPosition\TrainingPosition;
@@ -48,6 +49,15 @@ class ManageMentors extends Page implements HasTable
         if (empty($this->category) || ! $this->canViewCategory($this->category)) {
             $this->category = $this->firstVisibleCategory() ?? '';
         }
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ManageMentorsStatsWidget::make([
+                'category' => $this->category,
+            ]),
+        ];
     }
 
     protected function getHeaderActions(): array
@@ -200,22 +210,9 @@ class ManageMentors extends Page implements HasTable
 
     private function mentorsQuery(string $category): Builder
     {
-        $service = app(MentorPermissionService::class);
-        $modelClass = $service->getModelClassForCategory($category);
-
-        return Account::query()
-            ->with(['mentorTrainingPositions.mentorable'])
-            ->whereHas('mentorTrainingPositions', function (Builder $q) use ($category, $modelClass) {
-                $q->where('mentorable_type', $modelClass)
-                    ->whereHasMorph('mentorable', [$modelClass], function ($query) use ($category, $modelClass) {
-                        if ($modelClass === TrainingPosition::class) {
-                            $query->where('category', $category);
-                        } else {
-                            $code = MentorPermissionService::PILOT_CATEGORY_QUALIFICATION_MAP[$category] ?? null;
-                            $query->where('code', $code);
-                        }
-                    });
-            });
+        return app(MentorPermissionService::class)
+            ->accountsWithMentoringInCategoryQuery($category)
+            ->with(['mentorTrainingPositions.mentorable']);
     }
 
     private function positionOptions(string $category): array
