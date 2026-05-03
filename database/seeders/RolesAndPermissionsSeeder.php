@@ -117,6 +117,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'role.edit.*',
             'role.delete.*',
             'role.manage-delegates.*',
+            'role.sync-discord.*',
 
             // Visit Transfer System Permissions
             'vt.access',

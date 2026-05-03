@@ -58,7 +58,7 @@ class RoleResource extends Resource
             ->recordActions([
                 Action::make('syncDiscord')
                     ->label('Sync Discord')
-                    ->visible(fn () => auth()->user()?->can('syncDiscord'))
+                    ->visible(fn () => auth()->user()?->can('role.sync-discord.*'))
                     ->action(function (Role $record) {
                         // Get all user IDs for this role
                         $userIds = DB::table('mship_account_role')
