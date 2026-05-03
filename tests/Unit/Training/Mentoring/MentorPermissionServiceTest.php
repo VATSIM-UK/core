@@ -65,7 +65,7 @@ class MentorPermissionServiceTest extends TestCase
         $mentor = $this->createAccountWithMember();
         $category = 'P1 Training';
 
-        CtsPosition::firstOrCreate(['callsign' => 'P1_MENTOR']);
+        CtsPosition::firstOrCreate(['callsign' => 'P1_PPL(A)']);
         $qualification = $this->getOrCreateQualification('PPL');
 
         $this->service->assignToMentorable($mentor, $qualification, $actor, $category);
@@ -79,7 +79,7 @@ class MentorPermissionServiceTest extends TestCase
 
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $mentor->member->id,
-            'position_id' => CtsPosition::where('callsign', 'P1_MENTOR')->firstOrFail()->id,
+            'position_id' => CtsPosition::where('callsign', 'P1_PPL(A)')->firstOrFail()->id,
             'status' => PositionValidationStatusEnum::Mentor->value,
         ], 'cts');
 
@@ -318,7 +318,7 @@ class MentorPermissionServiceTest extends TestCase
         $actor = Account::factory()->create();
         $mentor = Account::factory()->create();
 
-        CtsPosition::firstOrCreate(['callsign' => 'P2_MENTOR']);
+        CtsPosition::firstOrCreate(['callsign' => 'P2_SEIR(A)']);
         $qualification = $this->getOrCreateQualification('IR');
 
         $this->createMentorAssignment($mentor, $qualification, $actor);

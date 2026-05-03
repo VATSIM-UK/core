@@ -44,9 +44,9 @@ class MentorPermissionService
     ];
 
     public const QUALIFICATION_CTS_POSITION_MAP = [
-        'PPL' => 'P1_MENTOR',
-        'IR' => 'P2_MENTOR',
-        'CMEL' => 'P3_MENTOR',
+        'PPL' => 'P1_PPL(A)',
+        'IR' => 'P2_SEIRA)',
+        'CMEL' => 'P3_CMEL(A)',
     ];
 
     public static function atcCategories(): array

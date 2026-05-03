@@ -199,7 +199,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         $target = Account::factory()->create();
         Member::factory()->create(['cid' => $target->id]);
 
-        CtsPosition::firstOrCreate(['callsign' => 'P1_MENTOR']);
+        CtsPosition::firstOrCreate(['callsign' => 'P1_PPL(A)']);
 
         $pplQual = $this->getOrCreateQualification('PPL');
 
@@ -220,7 +220,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
 
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $target->member->id,
-            'position_id' => CtsPosition::where('callsign', 'P1_MENTOR')->firstOrFail()->id,
+            'position_id' => CtsPosition::where('callsign', 'P1_PPL(A)')->firstOrFail()->id,
             'status' => PositionValidationStatusEnum::Mentor->value,
         ], 'cts');
 
