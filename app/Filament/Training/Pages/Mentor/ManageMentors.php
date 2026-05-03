@@ -104,8 +104,6 @@ class ManageMentors extends Page implements HasTable
                     ->label('Last Mentored')
                     ->state(fn (Account $record) => app(MentorPermissionService::class)->getLastMentoredDate($record, $this->category)?->format('d/m/Y') ?? 'Never')
                     ->description(fn (string $state) => $state !== 'Never' ? Carbon::createFromFormat('d/m/Y', $state)->diffForHumans() : null),
-
-                // ->color(fn (string $state): string => $state === 'warning' ? 'danger' : 'success'),
             ])
             ->headerActions([
                 Action::make('addMentor')
