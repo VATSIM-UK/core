@@ -35,6 +35,7 @@ class TrainingPlaceObserver implements ShouldHandleEventsAfterCommit
     {
         $trainingPlace->deletePendingSessionRequests();
         $this->trainingPlaceService->revokeMentoringPermissions($trainingPlace);
+        $this->trainingPlaceService->removeCtsMembershipsForTrainingPlace($trainingPlace);
     }
 
     /**

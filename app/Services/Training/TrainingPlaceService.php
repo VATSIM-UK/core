@@ -4,6 +4,7 @@ namespace App\Services\Training;
 
 use App\Enums\PositionValidationStatusEnum;
 use App\Models\Cts\ExamBooking;
+use App\Models\Cts\Membership;
 use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Models\Mship\Account;
@@ -85,6 +86,54 @@ class TrainingPlaceService
                 ->where('status', PositionValidationStatusEnum::Student->value)
                 ->delete();
         }
+    }
+
+    public function removeCtsMembershipsForTrainingPlace(TrainingPlace $trainingPlace): void
+    {
+        $trainingPlace->loadMissing(['trainingPosition', 'account']);
+
+        $student = $trainingPlace->account;
+
+        if (! $student->member) {
+            Log::error('Student does not have a CTS member model attached');
+
+            return;
+        }
+
+        $trainingPosition = $trainingPlace->trainingPosition;
+
+        if (! $trainingPosition) {
+            return;
+        }
+
+        $ctsPositions = $trainingPosition->cts_positions ?? [];
+        $rtsIds = [];
+
+        foreach ($ctsPositions as $ctsPositionCallsign) {
+            $ctsPositionModel = Position::where('callsign', $ctsPositionCallsign)->first();
+
+            if (! $ctsPositionModel) {
+                Log::error("CTS position with callsign {$ctsPositionCallsign} not found");
+
+                continue;
+            }
+
+            $rtsId = (int) $ctsPositionModel->rts_id;
+
+            if ($rtsId !== 0) {
+                $rtsIds[$rtsId] = true;
+            }
+        }
+
+        if ($rtsIds === []) {
+            return;
+        }
+
+        Membership::query()
+            ->where('member_id', $student->member->id)
+            ->whereIn('rts_id', array_keys($rtsIds))
+            ->whereIn('type', ['H', 'V'])
+            ->delete();
     }
 
     public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition): TrainingPlace
