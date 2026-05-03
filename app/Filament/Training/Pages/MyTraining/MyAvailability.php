@@ -65,6 +65,10 @@ class MyAvailability extends Page implements HasForms, HasTable
         // Interm check for pilot position validations
         $ctsMember = Member::where('cid', $user->id)->first();
 
+        if (! $ctsMember) {
+            return false;
+        }
+
         $hasPilotValidation = PositionValidation::where('member_id', $ctsMember->id)
             ->whereHas('position', function ($query) {
                 $query->where(function ($q) {
