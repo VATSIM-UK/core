@@ -332,7 +332,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         $category = MentorPermissionService::atcCategories()[0];
 
         $mentor = Account::factory()->create();
-        Member::factory()->create(['cid' => $mentor->id]);
+        $ctsMember = Member::factory()->create(['cid' => $mentor->id]);
 
         $callsign = 'EGKK_GND';
         $trainingPosition = $this->createTrainingPosition($category, $callsign);
@@ -342,7 +342,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         $date = now()->subDays(5);
 
         DB::connection('cts')->table('sessions')->insert([
-            'mentor_id' => $mentor->id,
+            'mentor_id' => $ctsMember->id,
             'position' => $callsign,
             'progress_sheet_id' => 1,
             'taken' => 1,
@@ -363,7 +363,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         $category = MentorPermissionService::atcCategories()[0];
 
         $mentor = Account::factory()->create();
-        Member::factory()->create(['cid' => $mentor->id]);
+        $ctsMember = Member::factory()->create(['cid' => $mentor->id]);
 
         $callsign = 'EGKK_GND';
         $trainingPosition = $this->createTrainingPosition($category, $callsign);
@@ -374,7 +374,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         $invalidDate = now()->subDays(2);
 
         DB::connection('cts')->table('sessions')->insert([
-            'mentor_id' => $mentor->id,
+            'mentor_id' => $ctsMember->id,
             'position' => $callsign,
             'progress_sheet_id' => 1,
             'taken' => 1,
@@ -384,7 +384,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         ]);
 
         DB::connection('cts')->table('sessions')->insert([
-            'mentor_id' => $mentor->id,
+            'mentor_id' => $ctsMember->id,
             'position' => $callsign,
             'progress_sheet_id' => 1,
             'taken' => 1,
@@ -394,7 +394,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         ]);
 
         DB::connection('cts')->table('sessions')->insert([
-            'mentor_id' => $mentor->id,
+            'mentor_id' => $ctsMember->id,
             'position' => $callsign,
             'progress_sheet_id' => 1,
             'taken' => 1,
