@@ -33,6 +33,8 @@ class RolesAndPermissionsSeeder extends Seeder
         $pilotExaminer = Role::firstOrCreate(['name' => 'Pilot Examiner (P2)', 'guard_name' => 'web', 'default' => false]);
         $pilotExaminer = Role::firstOrCreate(['name' => 'Pilot Examiner (P3)', 'guard_name' => 'web', 'default' => false]);
 
+        Role::firstOrCreate(['name' => 'P3 Mentor', 'guard_name' => 'web', 'default' => false]);
+
         // Add All Permissions
         $permissions = [
             app()->isProduction() ? null : '*',
