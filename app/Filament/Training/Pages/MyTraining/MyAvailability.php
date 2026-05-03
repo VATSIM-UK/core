@@ -4,6 +4,10 @@ namespace App\Filament\Training\Pages\MyTraining;
 
 use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
 use App\Models\Cts\Availability;
+use App\Models\Cts\Member;
+use App\Models\Cts\Position;
+use App\Models\Cts\PositionValidation;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
 use CodeWithKyrian\FilamentDateRange\Forms\Components\DateRangePicker;
@@ -44,7 +48,47 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->can('training.access') ?? false;
+        $user = auth()->user();
+
+        if (! $user?->can('training.access')) {
+            return false;
+        }
+
+        $hasTrainingPlace = TrainingPlace::where('account_id', $user->id)
+            ->whereNull('deleted_at')
+            ->exists();
+
+        if ($hasTrainingPlace) {
+            return true;
+        }
+
+        // Interm check for pilot position validations
+        $ctsMember = Member::where('cid', $user->id)->first();
+
+        if (! $ctsMember) {
+            return false;
+        }
+
+        $pilotCallsigns = [
+            'P1_PPL(A)',
+            'P2_SEIR(A)',
+            'P3_CMEL(A)',
+            'P1_PPL(A)_MEN',
+            'P2_SEIR(A)_MEN',
+            'P3_CMEL(A)_MEN',
+        ];
+
+        $hasPilotValidation = PositionValidation::where('member_id', $ctsMember->id)
+            ->whereHas('position', function ($query) use ($pilotCallsigns) {
+                $query->whereIn('callsign', $pilotCallsigns);
+            })
+            ->exists();
+
+        if ($hasPilotValidation) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function getAvailabilityService(): AvailabilityService
