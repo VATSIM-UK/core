@@ -69,18 +69,18 @@ class MyAvailability extends Page implements HasForms, HasTable
             return false;
         }
 
+        $pilotCallsigns = [
+            'P1_PPL(A)',
+            'P2_SEIR(A)',
+            'P3_CMEL(A)',
+            'P1_PPL(A)_MEN',
+            'P2_SEIR(A)_MEN',
+            'P3_CMEL(A)_MEN',
+        ];
+
         $hasPilotValidation = PositionValidation::where('member_id', $ctsMember->id)
-            ->whereHas('position', function ($query) {
-                $query->where(function ($q) {
-                    $q->where('callsign', 'like', 'P1_%')
-                        ->orWhere('callsign', 'like', 'P2_%')
-                        ->orWhere('callsign', 'like', 'P3_%')
-                        ->orWhere('callsign', 'like', 'P4_%')
-                        ->orWhere('callsign', 'like', 'P5_%')
-                        ->orWhere('callsign', 'like', 'P0_%')
-                        ->orWhere('callsign', 'like', 'PT_%')
-                        ->orWhere('callsign', 'like', 'TFP_%');
-                });
+            ->whereHas('position', function ($query) use ($pilotCallsigns) {
+                $query->whereIn('callsign', $pilotCallsigns);
             })
             ->exists();
 
