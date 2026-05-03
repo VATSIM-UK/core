@@ -12,8 +12,11 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class MentorPermissionService
@@ -275,5 +278,59 @@ class MentorPermissionService
                 ->where('status', PositionValidationStatusEnum::Mentor->value)
                 ->delete();
         }
+    }
+
+    public function getLastMentoredDate(Account $account, string $category)
+    {
+        $ctsMemberId = DB::connection('cts')
+            ->table('members')
+            ->where('cid', $account->id)
+            ->value('id');
+
+        $callsigns = $this->getAssignedCtsCallsigns($account, $category);
+
+        if (empty($callsigns)) {
+            return null;
+        }
+
+        $lastMentoredDate = DB::connection('cts')
+            ->table('sessions')
+            ->where('mentor_id', $account->id)
+            ->whereIn('position', $callsigns)
+            ->where('taken', 1)
+            ->where('session_done', 1)
+            ->whereNull('cancelled_datetime')
+            ->max('taken_date');
+
+        if (! $lastMentoredDate) {
+            return null;
+        }
+
+        return Carbon::parse($lastMentoredDate);
+    }
+
+    public function getAssignedCtsCallsigns(Account $account, string $category): array
+    {
+        $callsigns = collect();
+
+        $account->mentorTrainingPositions
+            ->filter(fn ($mtp) => $mtp->mentorable && $this->mentorableBelongsToCategory($mtp->mentorable, $category))
+            ->each(function ($mtp) use ($callsigns) {
+                if ($mtp->mentorable instanceof TrainingPosition) {
+                    $ctsPositions = $mtp->mentorable->cts_positions;
+                    if (is_array($ctsPositions)) {
+                        $callsigns->push(...$ctsPositions);
+                    }
+                } elseif ($mtp->mentorable instanceof Qualification) {
+                    $map = self::QUALIFICATION_CTS_POSITION_MAP;
+
+                    if (array_key_exists($mtp->mentorable->code, $map)) {
+                        $mappedCallsigns = Arr::wrap($map[$mtp->mentorable->code]);
+                        $callsigns->push(...$mappedCallsigns);
+                    }
+                }
+            });
+
+        return $callsigns->unique()->filter()->values()->toArray();
     }
 }
