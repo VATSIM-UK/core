@@ -12,7 +12,6 @@ use App\Models\Mship\Qualification;
 use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -48,71 +47,71 @@ class FeedbackResource extends Resource
     {
         return $schema
             ->components([
-                Placeholder::make('ID')
+                TextEntry::make('ID')
                     ->label('ID')
-                    ->content(fn ($record) => $record->id),
+                    ->state(fn ($record) => $record->id),
 
-                Placeholder::make('Form Name')
-                    ->content(fn ($record) => $record->form?->name),
+                TextEntry::make('Form Name')
+                    ->state(fn ($record) => $record->form?->name),
 
-                Placeholder::make('account.name')
+                TextEntry::make('account.name')
                     ->label('Subject')
-                    ->content(fn ($record) => $record->account?->name),
+                    ->state(fn ($record) => $record->account?->name),
 
-                Placeholder::make('accountAtcQualification.name')
+                TextEntry::make('accountAtcQualification.name')
                     ->label('Subject\'s ATC Qualification')
-                    ->content(fn ($record) => $record->accountAtcQualification?->name ?? 'Not Found'),
+                    ->state(fn ($record) => $record->accountAtcQualification?->name ?? 'Not Found'),
 
-                Placeholder::make('submitter.name')
+                TextEntry::make('submitter.name')
                     ->label('Submitted by')
                     ->visible(self::canSeeSubmitter())
-                    ->content(fn ($record) => $record->submitter?->name),
+                    ->state(fn ($record) => $record->submitter?->name),
 
-                Placeholder::make('created_at')
+                TextEntry::make('created_at')
                     ->label('Submitted at')
-                    ->content(fn ($record) => $record->created_at->format('d/m/Y H:i')),
+                    ->state(fn ($record) => $record->created_at->format('d/m/Y H:i')),
 
                 Fieldset::make('Sent Information')->columnSpanFull()
                     ->schema([
-                        Placeholder::make('sent_at')
+                        TextEntry::make('sent_at')
                             ->label('Sent At')
-                            ->content(fn ($record) => $record->sent_at ? $record->sent_at->format('d/m/Y H:i') : null),
+                            ->state(fn ($record) => $record->sent_at ? $record->sent_at->format('d/m/Y H:i') : null),
 
-                        Placeholder::make('sent_by')
+                        TextEntry::make('sent_by')
                             ->label('Sent By')
-                            ->content(fn ($record) => $record->sent_by_id ? $record->sender?->name : null),
+                            ->state(fn ($record) => $record->sent_by_id ? $record->sender?->name : null),
 
-                        Placeholder::make('sent_comment')
+                        TextEntry::make('sent_comment')
                             ->label('Sent Notes')
-                            ->content(fn ($record) => $record->sent_comment),
+                            ->state(fn ($record) => $record->sent_comment),
                     ])->hidden(fn ($record) => $record->sent_at === null),
 
                 Fieldset::make('Actioned Information')
                     ->columnSpanFull()
                     ->schema([
-                        Placeholder::make('actioned_at')
+                        TextEntry::make('actioned_at')
                             ->label('Actioned At')
-                            ->content(fn ($record) => $record->actioned_at ? $record->actioned_at->format('d/m/Y H:i') : null),
+                            ->state(fn ($record) => $record->actioned_at ? $record->actioned_at->format('d/m/Y H:i') : null),
 
-                        Placeholder::make('actioned_by')
+                        TextEntry::make('actioned_by')
                             ->label('Actioned By')
-                            ->content(fn ($record) => $record->actioned_by_id ? $record->actioner?->name : null),
+                            ->state(fn ($record) => $record->actioned_by_id ? $record->actioner?->name : null),
 
-                        Placeholder::make('actioned_comment')
+                        TextEntry::make('actioned_comment')
                             ->label('Actioned Comment')
-                            ->content(fn ($record) => $record->actioned_comment),
+                            ->state(fn ($record) => $record->actioned_comment),
                     ])->hidden(fn ($record) => $record->actioned_at === null),
 
                 Fieldset::make('Rejection Information')
                     ->columnSpanFull()
                     ->schema([
-                        Placeholder::make('rejected_by')
+                        TextEntry::make('rejected_by')
                             ->label('Rejected By')
-                            ->content(fn ($record) => $record->deleted_by ? $record->deleter?->name : null),
+                            ->state(fn ($record) => $record->deleted_by ? $record->deleter?->name : null),
 
-                        Placeholder::make('reject_reason')
+                        TextEntry::make('reject_reason')
                             ->label('Rejection Reason')
-                            ->content(fn ($record) => $record->reject_reason),
+                            ->state(fn ($record) => $record->reject_reason),
                     ])->hidden(fn ($record) => ! $record->trashed()),
 
                 Section::make('Answers')
@@ -122,9 +121,9 @@ class FeedbackResource extends Resource
                             ->relationship('answers')
                             ->label('')
                             ->schema([
-                                Placeholder::make('question')
+                                TextEntry::make('question')
                                     ->label('Question')
-                                    ->content(fn ($record) => $record->question?->question),
+                                    ->state(fn ($record) => $record->question?->question),
 
                                 TextEntry::make('response')
                                     ->label('Answer')
@@ -204,7 +203,7 @@ class FeedbackResource extends Resource
                     ->label(static::sendFeedbackConfig()['label'])
                     ->icon(static::sendFeedbackConfig()['icon'])
                     ->color(static::sendFeedbackConfig()['color'])
-                    ->form(static::sendFeedbackConfig()['form'])
+                    ->schema(static::sendFeedbackConfig()['form'])
                     ->visible(fn () => auth()->user()?->can('actionFeedback', self::getModel()))
                     ->action(function ($records, array $data) {
                         $count = 0;
@@ -225,7 +224,7 @@ class FeedbackResource extends Resource
                     ->label(static::actionFeedbackConfig()['label'])
                     ->icon(static::actionFeedbackConfig()['icon'])
                     ->color(static::actionFeedbackConfig()['color'])
-                    ->form(static::actionFeedbackConfig()['form'])
+                    ->schema(static::actionFeedbackConfig()['form'])
                     ->visible(fn () => auth()->user()?->can('actionFeedback', self::getModel()))
                     ->action(function ($records, array $data) {
                         $count = 0;
@@ -246,7 +245,7 @@ class FeedbackResource extends Resource
                     ->label(static::rejectFeedbackConfig()['label'])
                     ->icon(static::rejectFeedbackConfig()['icon'])
                     ->color(static::rejectFeedbackConfig()['color'])
-                    ->form(static::rejectFeedbackConfig()['form'])
+                    ->schema(static::rejectFeedbackConfig()['form'])
                     ->visible(fn () => auth()->user()?->can('actionFeedback', self::getModel()))
                     ->action(function ($records, array $data) {
                         $count = 0;
@@ -267,7 +266,7 @@ class FeedbackResource extends Resource
                     ->label(static::reallocateFeedbackConfig()['label'])
                     ->icon(static::reallocateFeedbackConfig()['icon'])
                     ->color(static::reallocateFeedbackConfig()['color'])
-                    ->form(static::reallocateFeedbackConfig()['form'])
+                    ->schema(static::reallocateFeedbackConfig()['form'])
                     ->visible(fn () => auth()->user()?->can('actionFeedback', self::getModel()))
                     ->action(function ($records, array $data) {
                         $count = 0;
