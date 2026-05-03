@@ -4,6 +4,7 @@ namespace Tests\Feature\Training\TrainingPlace;
 
 use App\Enums\PositionValidationStatusEnum;
 use App\Models\Cts\Member;
+use App\Models\Cts\Membership;
 use App\Models\Cts\Position as CtsPosition;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlace;
@@ -335,6 +336,127 @@ class TrainingPlaceObserverTest extends TestCase
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $student2->member->id,
             'position_id' => $ctsPosition2->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_removes_cts_memberships_types_h_and_v_when_training_place_is_deleted(): void
+    {
+        $rtsId = 77;
+        $ctsPosition = CtsPosition::factory()->create([
+            'callsign' => 'EGTEST_TWR',
+            'rts_id' => $rtsId,
+        ]);
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => [$ctsPosition->callsign],
+        ]);
+
+        $waitingList = WaitingList::factory()->create();
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
+
+        $trainingPlace = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]);
+
+        Membership::factory()->create([
+            'member_id' => $student->member->id,
+            'rts_id' => $rtsId,
+            'type' => 'H',
+        ]);
+        Membership::factory()->create([
+            'member_id' => $student->member->id,
+            'rts_id' => $rtsId,
+            'type' => 'V',
+        ]);
+        Membership::factory()->create([
+            'member_id' => $student->member->id,
+            'rts_id' => $rtsId,
+            'type' => 'A',
+        ]);
+        Membership::factory()->create([
+            'member_id' => $student->member->id,
+            'rts_id' => $rtsId,
+            'type' => '',
+        ]);
+
+        $trainingPlace->delete();
+
+        $this->assertDatabaseMissing('memberships', [
+            'member_id' => $student->member->id,
+            'rts_id' => $rtsId,
+            'type' => 'H',
+        ], 'cts');
+        $this->assertDatabaseMissing('memberships', [
+            'member_id' => $student->member->id,
+            'rts_id' => $rtsId,
+            'type' => 'V',
+        ], 'cts');
+        $this->assertDatabaseHas('memberships', [
+            'member_id' => $student->member->id,
+            'rts_id' => $rtsId,
+            'type' => 'A',
+        ], 'cts');
+        $this->assertDatabaseHas('memberships', [
+            'member_id' => $student->member->id,
+            'rts_id' => $rtsId,
+            'type' => '',
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_removes_cts_memberships_for_each_distinct_rts_id_on_training_position(): void
+    {
+        $ctsPositionTower = CtsPosition::factory()->create([
+            'callsign' => 'EGMULTI_TWR',
+            'rts_id' => 91,
+        ]);
+        $ctsPositionApp = CtsPosition::factory()->create([
+            'callsign' => 'EGMULTI_APP',
+            'rts_id' => 92,
+        ]);
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => [$ctsPositionTower->callsign, $ctsPositionApp->callsign],
+        ]);
+
+        $waitingList = WaitingList::factory()->create();
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
+
+        $trainingPlace = TrainingPlace::factory()->create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]);
+
+        Membership::factory()->create([
+            'member_id' => $student->member->id,
+            'rts_id' => 91,
+            'type' => 'H',
+        ]);
+        Membership::factory()->create([
+            'member_id' => $student->member->id,
+            'rts_id' => 92,
+            'type' => 'V',
+        ]);
+
+        $trainingPlace->delete();
+
+        $this->assertDatabaseMissing('memberships', [
+            'member_id' => $student->member->id,
+            'rts_id' => 91,
+            'type' => 'H',
+        ], 'cts');
+        $this->assertDatabaseMissing('memberships', [
+            'member_id' => $student->member->id,
+            'rts_id' => 92,
+            'type' => 'V',
         ], 'cts');
     }
 }
