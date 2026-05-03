@@ -47,6 +47,9 @@ class ViewVisitTransferApplication extends ViewRecord
                         ->visible(fn ($record) => $record->facility?->waitingList !== null)
                         ->default(true)
                         ->helperText('If checked, the applicant will be added to the waiting list associated with this facility.'),
+                    Checkbox::make('staff_acknoledgement')
+                        ->label('I have checked and added a note to terminal before accepting this application.')
+                        ->required(),
                 ])->authorize(fn ($record) => auth()->user()->can('accept', $record)),
 
             Action::make('override_checks')
@@ -71,7 +74,7 @@ class ViewVisitTransferApplication extends ViewRecord
                 ->color('danger')
                 ->modalHeading(fn ($record) => "Reject Application #{$record->public_id}")
                 ->modalDescription('This action cannot be undone. If you reject this application the applicant will be notified.')
-                ->action(fn ($record, array $data) => $record->reject($data['reason'], $data['staff_note']))
+                ->action(fn ($record, array $data) => $record->reject($data['reason'], $data['staff_note'], auth()->user()))
                 ->schema([
                     Select::make('reason')
                         ->label('Reason for Rejection (required)')
@@ -90,6 +93,9 @@ class ViewVisitTransferApplication extends ViewRecord
                     Textarea::make('staff_note')
                         ->label('Staff Note (required)')
                         ->required(),
+                    Checkbox::make('staff_acknoledgement')
+                        ->label('I have added a note to terminal before rejecting this application.')
+                        ->required(),
                 ])->authorize(fn ($record) => auth()->user()->can('reject', $record)),
 
             Action::make('complete')
@@ -97,7 +103,7 @@ class ViewVisitTransferApplication extends ViewRecord
                 ->color('primary')
                 ->modalHeading(fn ($record) => "Mark Application #{$record->public_id} as Completed")
                 ->modalDescription('This action cannot be undone. This will mark the application as completed.')
-                ->action(fn ($record, array $data) => $record->complete($data['staff_note']))
+                ->action(fn ($record, array $data) => $record->complete($data['staff_note'], auth()->user()))
                 ->schema([
                     Textarea::make('staff_note')
                         ->label('Staff Note (required)')
@@ -109,7 +115,7 @@ class ViewVisitTransferApplication extends ViewRecord
                 ->color('danger')
                 ->modalHeading(fn ($record) => "Cancel Application #{$record->public_id}")
                 ->modalDescription('This action cannot be undone. This will cancel the application.')
-                ->action(fn ($record, array $data) => $record->cancel($data['cancel_reason'], $data['staff_note']))
+                ->action(fn ($record, array $data) => $record->cancel($data['cancel_reason'], $data['staff_note'], auth()->user()))
                 ->schema([
                     Textarea::make('cancel_reason')
                         ->label('Reason for Cancellation (required)')
@@ -195,7 +201,7 @@ class ViewVisitTransferApplication extends ViewRecord
                                     ($application->account?->notes ?? collect())
                                         ->map(function ($note) {
                                             return TextEntry::make("note_{$note->id}")
-                                                ->label("Note by {$note->writer?->full_name} on {$note->created_at->toFormattedDateString()}")
+                                                ->label('Note by '.($note->writer?->full_name ?? 'System').' on '.$note->created_at->toFormattedDateString())
                                                 ->getStateUsing(fn () => $note->content);
                                         })->toArray()
                                 ),

@@ -20,18 +20,22 @@ class MyAvailabilityStats extends BaseWidget
 
         $query = Availability::query()
             ->where('student_id', $studentId)
-            ->where('type', 'S');
-
-        $futureSlotsCount = (clone $query)
-            ->where('date', '>=', now()->toDateString())
-            ->count();
-
-        $totalMinutes = (clone $query)
-            ->where('date', '>=', now()->toDateString())
-            ->get()
-            ->sum(function ($availability) {
-                return Carbon::parse($availability->from)->diffInMinutes(Carbon::parse($availability->to));
+            ->where('type', 'S')
+            ->where(function ($q) {
+                $q->where('date', '>', now()->toDateString())
+                    ->orWhere(function ($q) {
+                        $q->where('date', now()->toDateString())
+                            ->where('to', '>', now()->toTimeString());
+                    });
             });
+
+        $futureAvailability = $query->get();
+
+        $futureSlotsCount = $futureAvailability->count();
+
+        $totalMinutes = $futureAvailability->sum(function ($availability) {
+            return Carbon::parse($availability->from)->diffInMinutes(Carbon::parse($availability->to));
+        });
 
         $hours = round($totalMinutes / 60, 1);
 

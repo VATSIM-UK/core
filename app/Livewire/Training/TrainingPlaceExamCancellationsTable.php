@@ -48,14 +48,9 @@ class TrainingPlaceExamCancellationsTable extends Component implements HasForms,
         return view('livewire.training.training-place-exam-cancellations-table');
     }
 
-    public function hasExamCancellations(): bool
-    {
-        return $this->cancellationsQuery()->exists();
-    }
-
     private function cancellationsQuery()
     {
-        $position = $this->trainingPlace->trainingPosition->exam_callsign;
+        $position = $this->trainingPlace->trainingPosition?->exam_callsign ?? $this->trainingPlace->trainingPosition?->position?->callsign;
 
         return CancelReason::query()
             ->select('cancel_reason.*')

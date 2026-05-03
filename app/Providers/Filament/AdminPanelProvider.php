@@ -11,6 +11,7 @@ use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -77,6 +78,12 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-magnifying-glass')
                     ->url(fn () => route('telescope'))
                     ->visible(fn () => request()->user()->can('viewTelescope')),
-            ]);
+            ])
+            ->renderHook(
+                PanelsRenderHook::TOPBAR_LOGO_AFTER,
+                fn (): string => app()->environment('local')
+                ? '<div style="position: absolute; left: 50%; transform: translateX(-50%); color: #ef4444; font-weight: 600; pointer-events: none;">Development environment</div>'
+                : '',
+            );
     }
 }

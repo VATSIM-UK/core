@@ -50,7 +50,7 @@
                             <a href="https://docs.vatsim.uk/General/Software%20Downloads/Controller%20Pack%20%26%20Sector%20File/" rel="">UK Controller Pack</a>
                         </li>
 						<li>
-							<a href="https://github.com/pierr3/TrackAudio/releases/latest" rel="external nofollow">TrackAudio</a>
+							<a href="{{ route('api.trackaudio.latest') }}" rel="external nofollow">TrackAudio</a>
 						</li>
                         <li>
                             <a href="{{ route('site.community.teamspeak') }}" rel="">Teamspeak</a>

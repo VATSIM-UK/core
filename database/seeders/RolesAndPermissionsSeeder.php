@@ -41,6 +41,7 @@ class RolesAndPermissionsSeeder extends Seeder
         foreach (MentorPermissionService::PILOT_CATEGORY_ROLE_MAP as $mentorRole) {
             Role::firstOrCreate(['name' => $mentorRole, 'guard_name' => 'web', 'default' => false]);
         }
+        Role::firstOrCreate(['name' => 'P3 Mentor', 'guard_name' => 'web', 'default' => false]);
 
         // Add All Permissions
         $permissions = [

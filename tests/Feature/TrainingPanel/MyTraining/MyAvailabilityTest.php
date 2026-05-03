@@ -24,6 +24,8 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     {
         parent::setUp();
 
+        $this->travelTo(Carbon::create(2026, 5, 10, 12, 0, 0));
+
         $this->studentAccount = Account::factory()->create();
         $this->studentMember = Member::factory()->recycle($this->studentAccount)->create([
             'cid' => $this->studentAccount->id,
@@ -90,8 +92,8 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
 
         Availability::factory()->forStudent($this->studentMember->id)->create([
             'date' => now()->toDateString(),
-            'from' => now()->subHour()->format('H:i:s'),
-            'to' => now()->addHour()->format('H:i:s'),
+            'from' => '09:00:00',
+            'to' => '11:00:00',
             'type' => 'S',
         ]);
 
@@ -113,6 +115,167 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_adds_a_single_availability_slot(): void
+    {
+        $tomorrow = now()->addDay()->toDateString();
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.date_range', ['start' => $tomorrow, 'end' => $tomorrow])
+            ->set('data.from', '18:00')
+            ->set('data.to', '21:00')
+            ->call('create');
+
+        $this->assertCount(1, Availability::where('student_id', $this->studentMember->id)->get());
+    }
+
+    #[Test]
+    public function it_adds_multiple_slots_across_a_date_range(): void
+    {
+        $start = now()->addDay()->toDateString();
+        $end = now()->addDays(5)->toDateString();
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.date_range', ['start' => $start, 'end' => $end])
+            ->set('data.from', '18:00')
+            ->set('data.to', '21:00')
+            ->call('create');
+
+        $this->assertCount(5, Availability::where('student_id', $this->studentMember->id)->get());
+    }
+
+    #[Test]
+    public function it_merges_a_new_slot_that_overlaps_an_existing_one(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date,
+            'from' => '18:00:00',
+            'to' => '20:00:00',
+            'type' => 'S',
+        ]);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.date_range', ['start' => $date, 'end' => $date])
+            ->set('data.from', '19:00')
+            ->set('data.to', '21:00')
+            ->call('create');
+
+        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+
+        $this->assertCount(1, $slots, 'Should have merged into one slot, not created a second');
+        $this->assertEquals('18:00:00', $slots->first()->getRawOriginal('from'));
+        $this->assertEquals('21:00:00', $slots->first()->getRawOriginal('to'));
+    }
+
+    #[Test]
+    public function it_expands_an_existing_slot_when_new_slot_starts_earlier(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date,
+            'from' => '19:00:00',
+            'to' => '21:00:00',
+            'type' => 'S',
+        ]);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.date_range', ['start' => $date, 'end' => $date])
+            ->set('data.from', '17:00')
+            ->set('data.to', '20:00')
+            ->call('create');
+
+        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+
+        $this->assertCount(1, $slots);
+        $this->assertEquals('17:00:00', $slots->first()->getRawOriginal('from'));
+        $this->assertEquals('21:00:00', $slots->first()->getRawOriginal('to'));
+    }
+
+    #[Test]
+    public function it_expands_an_existing_slot_when_new_slot_ends_later(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date,
+            'from' => '17:00:00',
+            'to' => '19:00:00',
+            'type' => 'S',
+        ]);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.date_range', ['start' => $date, 'end' => $date])
+            ->set('data.from', '18:00')
+            ->set('data.to', '22:00')
+            ->call('create');
+
+        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+
+        $this->assertCount(1, $slots);
+        $this->assertEquals('17:00:00', $slots->first()->getRawOriginal('from'));
+        $this->assertEquals('22:00:00', $slots->first()->getRawOriginal('to'));
+    }
+
+    #[Test]
+    public function it_does_not_duplicate_when_new_slot_is_fully_contained_within_existing(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date,
+            'from' => '17:00:00',
+            'to' => '22:00:00',
+            'type' => 'S',
+        ]);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.date_range', ['start' => $date, 'end' => $date])
+            ->set('data.from', '18:00')
+            ->set('data.to', '21:00')
+            ->call('create');
+
+        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+
+        $this->assertCount(1, $slots);
+        $this->assertEquals('17:00:00', $slots->first()->getRawOriginal('from'));
+        $this->assertEquals('22:00:00', $slots->first()->getRawOriginal('to'));
+    }
+
+    #[Test]
+    public function it_does_not_merge_slots_belonging_to_other_members(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        $otherAccount = Account::factory()->create();
+        $otherMember = Member::factory()->recycle($otherAccount)->create(['cid' => $otherAccount->id]);
+
+        Availability::factory()->forStudent($otherMember->id)->create([
+            'date' => $date,
+            'from' => '18:00:00',
+            'to' => '20:00:00',
+            'type' => 'S',
+        ]);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.date_range', ['start' => $date, 'end' => $date])
+            ->set('data.from', '19:00')
+            ->set('data.to', '21:00')
+            ->call('create');
+
+        $this->assertCount(1, Availability::where('student_id', $this->studentMember->id)->get());
+        $this->assertCount(1, Availability::where('student_id', $otherMember->id)->get());
+    }
+
+    #[Test]
     public function it_correctly_converts_availability_creation_to_utc(): void
     {
         config(['app.timezone' => 'UTC']);
@@ -121,18 +284,20 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
 
         $knownUtcTime = Carbon::create(2026, 12, 25, 10, 0, 0, 'UTC');
         $this->travelTo($knownUtcTime);
+        $date = '2026-12-25';
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
             ->assertSet('timezone', $tz)
-            ->set('data.date', '2026-12-25')
+            ->set('data.date_range', ['start' => $date, 'end' => $date])
             ->set('data.from', '12:00')
             ->set('data.to', '14:00')
-            ->call('create')
-            ->assertHasNoFormErrors();
+            ->call('create');
 
         $availability = Availability::where('student_id', $this->studentMember->id)->first();
 
-        $this->assertEquals('17:00:00', $availability->getRawOriginal('from'), 'The database value is incorrect.');
+        $this->assertNotNull($availability);
+        $this->assertEquals('17:00:00', $availability->getRawOriginal('from'), 'from should be stored as UTC');
+        $this->assertEquals('19:00:00', $availability->getRawOriginal('to'), 'to should be stored as UTC');
     }
 }

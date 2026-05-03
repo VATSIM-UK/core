@@ -6,6 +6,7 @@ use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
 use App\Models\Cts\Availability;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
+use CodeWithKyrian\FilamentDateRange\Forms\Components\DateRangePicker;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -70,7 +71,6 @@ class MyAvailability extends Page implements HasForms, HasTable
                 Session::put('availability_timezone', $timezone);
 
                 $this->form->fill([
-                    'date' => now()->setTimezone($timezone)->toDateString(),
                     'from' => '18:00',
                     'to' => '21:00',
                 ]);
@@ -128,10 +128,7 @@ class MyAvailability extends Page implements HasForms, HasTable
     {
         $this->timezone = Session::get('availability_timezone', 'UTC');
 
-        $now = now()->setTimezone($this->timezone);
-
         $this->form->fill([
-            'date' => $now->toDateString(),
             'from' => '18:00',
             'to' => '21:00',
         ]);
@@ -141,26 +138,28 @@ class MyAvailability extends Page implements HasForms, HasTable
     {
         return $form
             ->schema([
-                DatePicker::make('date')
-                    ->label('Date')
+                DateRangePicker::make('date_range')
+                    ->label('Date(s)')
                     ->required()
-                    ->native(false)
-                    ->minDate(now()->setTimezone($this->timezone)->startOfDay())
-                    ->default(now()->setTimezone($this->timezone)),
+                    ->minDate(now()->setTimezone($this->timezone)->startOfDay()),
 
                 Select::make('from')
                     ->label('From')
                     ->required()
                     ->searchable()
                     ->allowHtml(false)
-                    ->options($this->generateTimeOptions()),
+                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->options($this->generateTimeOptions())
+                    ->optionsLimit(100),
 
                 Select::make('to')
                     ->label('To')
                     ->required()
                     ->searchable()
                     ->allowHtml(false)
-                    ->options($this->generateTimeOptions()),
+                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->options($this->generateTimeOptions())
+                    ->optionsLimit(100),
             ])
             ->statePath('data');
     }
@@ -174,34 +173,38 @@ class MyAvailability extends Page implements HasForms, HasTable
             return;
         }
 
-        $startLocal = Carbon::parse("{$data['date']} {$data['from']}", $this->timezone);
-        $endLocal = Carbon::parse("{$data['date']} {$data['to']}", $this->timezone);
+        $startDate = Carbon::parse($data['date_range']['start']);
+        $endDate = Carbon::parse($data['date_range']['end']);
 
-        $startUtc = $startLocal->clone()->utc();
-        $endUtc = $endLocal->clone()->utc();
+        $addedCount = 0;
+        $mergedCount = 0;
 
-        [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
-            $studentId,
-            $startUtc,
-            $endUtc
-        );
+        for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+            $dateString = $date->toDateString();
 
-        if (! $valid) {
-            Notification::make()->title($message)->danger()->send();
+            $startUtc = Carbon::parse("{$dateString} {$data['from']}", $this->timezone)->utc();
+            $endUtc = Carbon::parse("{$dateString} {$data['to']}", $this->timezone)->utc();
 
-            return;
+            $result = $this->getAvailabilityService()->addOrMergeSlot($studentId, $startUtc, $endUtc);
+
+            match ($result) {
+                'added' => $addedCount++,
+                'merged' => $mergedCount++,
+            };
         }
 
-        Availability::create([
-            'student_id' => $studentId,
-            'type' => 'S',
-            'date' => $startUtc->toDateString(),
-            'from' => $startUtc->format('H:i:s'),
-            'to' => $endUtc->format('H:i:s'),
-        ]);
+        if ($addedCount > 0 && $mergedCount > 0) {
+            Notification::make()->title("Added {$addedCount} slot(s) and expanded {$mergedCount} existing slot(s)")->warning()->send();
+        } elseif ($mergedCount > 0) {
+            Notification::make()->title("Expanded {$mergedCount} existing slot(s) to cover the new time(s)")->warning()->send();
+        } else {
+            Notification::make()->title("{$addedCount} availability slot(s) added")->success()->send();
+        }
 
-        Notification::make()->title('Availability added')->success()->send();
-        $this->form->fill($this->form->getRawState()); // Keep current date for convenience
+        $this->form->fill([
+            'from' => '18:00',
+            'to' => '21:00',
+        ]);
     }
 
     public function table(Table $table): Table
