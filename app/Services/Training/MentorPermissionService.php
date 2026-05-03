@@ -12,6 +12,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -83,6 +84,24 @@ class MentorPermissionService
         }
 
         return false;
+    }
+
+    public function accountsWithMentoringInCategoryQuery(string $category): Builder
+    {
+        $modelClass = $this->getModelClassForCategory($category);
+
+        return Account::query()
+            ->whereHas('mentorTrainingPositions', function (Builder $q) use ($category, $modelClass) {
+                $q->where('mentorable_type', $modelClass)
+                    ->whereHasMorph('mentorable', [$modelClass], function ($query) use ($category, $modelClass) {
+                        if ($modelClass === TrainingPosition::class) {
+                            $query->where('category', $category);
+                        } else {
+                            $code = self::PILOT_CATEGORY_QUALIFICATION_MAP[$category] ?? null;
+                            $query->where('code', $code);
+                        }
+                    });
+            });
     }
 
     public function assignToMentorable(Account $account, $mentorable, Account $actor, string $category): void

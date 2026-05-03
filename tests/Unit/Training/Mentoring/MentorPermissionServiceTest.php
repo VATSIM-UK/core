@@ -290,6 +290,56 @@ class MentorPermissionServiceTest extends TestCase
         $this->assertTrue($mentor->fresh()->hasRole($sharedRole));
     }
 
+    #[Test]
+    public function it_queries_accounts_with_atc_mentoring_only_in_the_given_category(): void
+    {
+        $actor = Account::factory()->create();
+        $mentorInCategory = Account::factory()->create();
+        $otherCategoryMentor = Account::factory()->create();
+
+        $category = 'S2 Training';
+        $otherCategory = 'S3 Training';
+
+        $positionHere = $this->createTrainingPosition($category, ['LBLTEST_S2_A']);
+        $positionElsewhere = $this->createTrainingPosition($otherCategory, ['LBLTEST_S3_A']);
+
+        $this->createMentorAssignment($mentorInCategory, $positionHere, $actor);
+        $this->createMentorAssignment($otherCategoryMentor, $positionElsewhere, $actor);
+
+        $ids = $this->service->accountsWithMentoringInCategoryQuery($category)->pluck('id')->all();
+
+        $this->assertContains($mentorInCategory->id, $ids);
+        $this->assertNotContains($otherCategoryMentor->id, $ids);
+    }
+
+    #[Test]
+    public function it_queries_accounts_with_pilot_mentoring_for_the_qualification_mapped_to_category(): void
+    {
+        $actor = Account::factory()->create();
+        $mentor = Account::factory()->create();
+
+        CtsPosition::firstOrCreate(['callsign' => 'P2_MENTOR']);
+        $qualification = $this->getOrCreateQualification('IR');
+
+        $this->createMentorAssignment($mentor, $qualification, $actor);
+
+        $p2Ids = $this->service->accountsWithMentoringInCategoryQuery('P2 Training')->pluck('id')->all();
+        $p1Ids = $this->service->accountsWithMentoringInCategoryQuery('P1 Training')->pluck('id')->all();
+
+        $this->assertContains($mentor->id, $p2Ids);
+        $this->assertNotContains($mentor->id, $p1Ids);
+    }
+
+    private function createMentorAssignment(Account $account, TrainingPosition|Qualification $mentorable, Account $actor): void
+    {
+        MentorTrainingPosition::query()->create([
+            'account_id' => $account->id,
+            'mentorable_type' => $mentorable::class,
+            'mentorable_id' => $mentorable->id,
+            'created_by' => $actor->id,
+        ]);
+    }
+
     private function createAccountWithMember(): Account
     {
         $account = Account::factory()->create();
