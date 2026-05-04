@@ -1,0 +1,171 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Filament\Training\Pages\Mentor;
+
+use App\Repositories\Cts\SessionRepository;
+use App\Services\Training\MentorPermissionService;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Pages\Page;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Url;
+
+class MentoringHistory extends Page implements HasTable
+{
+    use InteractsWithTable;
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
+
+    protected string $view = 'filament.training.pages.mentoring-history';
+
+    protected static ?int $navigationSort = 30;
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Mentoring';
+
+    protected static ?string $title = 'Mentoring History';
+
+    #[Url]
+    public string $category = '';
+
+    public static function canAccess(): bool
+    {
+        // If a user has any mentoring permissions they are allowed to view this page
+        return auth()->user()->mentorTrainingPositions()->exists();
+    }
+
+    public function mount(): void
+    {
+        if (empty($this->category) || ! $this->canViewCategory($this->category)) {
+            $this->category = $this->firstVisibleCategory() ?? '';
+        }
+    }
+
+    protected function getHeaderActions(): array
+    {
+        $allCategories = collect(MentorPermissionService::atcCategories())->merge(MentorPermissionService::pilotCategories());
+
+        return [
+            ActionGroup::make(
+                $allCategories
+                    ->filter(fn (string $cat) => $this->canViewCategory($cat))
+                    ->map(fn (string $cat) => Action::make('cat_'.str($cat)->slug('_'))
+                        ->label($cat)
+                        ->url(static::getUrl(['category' => $cat]))
+                        ->icon($this->category === $cat ? 'heroicon-m-check' : null)
+                    )
+                    ->all()
+            )
+                ->label("Training Group: {$this->category}")
+                ->icon('heroicon-m-chevron-down')
+                ->color('gray')
+                ->button(),
+        ];
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->heading("{$this->category} Session History")
+            ->queryStringIdentifier('mentoring_history')
+            ->query((new SessionRepository)->getAllAcceptedSessionsForPositionsQuery($this->getVisibleCtsPositions()))
+            ->defaultSort('taken_date', 'desc')
+            ->paginated([10, 25, 50, 100])
+            ->defaultPaginationPageOption(25)
+            ->columns([
+                TextColumn::make('student.cid')
+                    ->label('Student CID')
+                    ->searchable(),
+
+                TextColumn::make('student.name')
+                    ->label('Student Name')
+                    ->searchable(),
+
+                TextColumn::make('position')
+                    ->label('Position')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('taken_date')
+                    ->label('Date')
+                    ->date('d/m/Y H:i')
+                    ->sortable(),
+
+                TextColumn::make('mentor.cid')
+                    ->label('Mentor CID')
+                    ->searchable(),
+
+                TextColumn::make('mentor.name')
+                    ->label('Mentor')
+                    ->searchable(),
+
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->getStateUsing(fn ($record) => match (true) {
+                        $record->noShow == 1 => 'No Show',
+                        $record->cancelled_datetime != null => 'Cancelled',
+                        $record->filed != null => 'Completed',
+                        default => 'Pending',
+                    })
+                    ->color(fn ($state) => match ($state) {
+                        'Pending' => 'primary',
+                        'No Show' => 'danger',
+                        'Cancelled' => 'warning',
+                        'Completed' => 'success',
+                    })
+                    ->wrap(),
+            ])
+            ->filters([
+                Filter::make('taken_date')
+                    ->form([
+                        DatePicker::make('from')->label('From Date'),
+                        DatePicker::make('until')->label('To Date'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('taken_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('taken_date', '<=', $date),
+                            );
+                    }),
+            ])
+            ->recordActions([
+                ViewAction::make()
+                    ->url(fn ($record) => "https://cts.vatsim.uk/mentors/report.php?id={$record->id}&view=report")
+                    ->visible(fn ($record) => $record->filed != null)
+                    ->openUrlInNewTab(),
+            ])
+            ->emptyStateHeading('No mentoring sessions found in this group');
+    }
+
+    private function getVisibleCtsPositions(): array
+    {
+        return app(MentorPermissionService::class)->getAssignedCtsCallsigns(auth()->user(), $this->category);
+    }
+
+    private function canViewCategory(string $category): bool
+    {
+        // Mentors should be allowed to view any category they hold at least one mentoring permission in
+        $assignedCallsigns = app(MentorPermissionService::class)->getAssignedCtsCallsigns(auth()->user(), $category);
+
+        return count($assignedCallsigns) > 0;
+    }
+
+    private function firstVisibleCategory(): ?string
+    {
+        return collect(MentorPermissionService::atcCategories())->merge(MentorPermissionService::pilotCategories())->first(fn (string $cat) => $this->canViewCategory($cat));
+    }
+}
