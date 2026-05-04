@@ -15,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
@@ -78,34 +79,33 @@ class MentoringHistory extends Page implements HasTable
             ->queryStringIdentifier('mentoring_history')
             ->query((new SessionRepository)->getAllAcceptedSessionsForPositionsQuery($this->getVisibleCtsPositions()))
             ->defaultSort('taken_date', 'desc')
+            ->striped()
             ->paginated([10, 25, 50, 100])
             ->defaultPaginationPageOption(25)
             ->columns([
-                TextColumn::make('student.cid')
-                    ->label('Student CID')
+                TextColumn::make('student_name')
+                    ->label('Student')
+                    ->getStateUsing(fn ($record) => $record->student->name)
+                    ->description(fn ($record) => $record->student->cid)
                     ->searchable(),
 
-                TextColumn::make('student.name')
-                    ->label('Student Name')
+                TextColumn::make('mentor_name')
+                    ->label('Mentor')
+                    ->getStateUsing(fn ($record) => $record->mentor?->name ?? 'Unknown')
+                    ->description(fn ($record) => $record->mentor?->cid ?? 'Unknown')
                     ->searchable(),
 
                 TextColumn::make('position')
                     ->label('Position')
+                    ->badge()
+                    ->color('gray')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('taken_date')
-                    ->label('Date')
-                    ->date('d/m/Y H:i')
+                    ->label('Date & Time')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable(),
-
-                TextColumn::make('mentor.cid')
-                    ->label('Mentor CID')
-                    ->searchable(),
-
-                TextColumn::make('mentor.name')
-                    ->label('Mentor')
-                    ->searchable(),
 
                 TextColumn::make('status')
                     ->label('Status')
@@ -125,6 +125,36 @@ class MentoringHistory extends Page implements HasTable
                     ->wrap(),
             ])
             ->filters([
+                SelectFilter::make('position')
+                    ->label('Position')
+                    ->options(function () {
+                        $positions = $this->getVisibleCtsPositions();
+
+                        return array_combine($positions, $positions);
+                    })
+                    ->searchable()
+                    ->multiple(),
+
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                        'no_show' => 'No Show',
+                        'pending' => 'Pending',
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return match ($data['value']) {
+                            'completed' => $query->whereNotNull('filed'),
+                            'cancelled' => $query->whereNotNull('cancelled_datetime'),
+                            'no_show' => $query->where('noShow', 1),
+                            'pending' => $query->whereNull('filed')
+                                ->whereNull('cancelled_datetime')
+                                ->where('noShow', 0),
+                            default => $query,
+                        };
+                    }),
+
                 Filter::make('taken_date')
                     ->form([
                         DatePicker::make('from')->label('From Date'),
@@ -158,7 +188,6 @@ class MentoringHistory extends Page implements HasTable
 
     private function canViewCategory(string $category): bool
     {
-        // Mentors should be allowed to view any category they hold at least one mentoring permission in
         $assignedCallsigns = app(MentorPermissionService::class)->getAssignedCtsCallsigns(auth()->user(), $category);
 
         return count($assignedCallsigns) > 0;
