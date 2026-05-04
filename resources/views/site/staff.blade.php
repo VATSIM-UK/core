@@ -169,6 +169,10 @@
                                 <td>Charlie Watson</td>
                             </tr>
                             <tr>
+                                <td>Division Instructor</td>
+                                <td>Thijs Schepman</td>
+                            </tr>
+                            <tr>
                                 <td>TG Instructor (New Controller)</td>
                                 <td>James Taylor</td>
                             </tr>
