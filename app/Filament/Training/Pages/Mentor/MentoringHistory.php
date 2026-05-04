@@ -79,7 +79,7 @@ class MentoringHistory extends Page implements HasTable
         return $table
             ->heading("{$this->category} Session History")
             ->queryStringIdentifier('mentoring_history')
-            ->query((new SessionRepository)->getAllAcceptedSessionsForPositionsQuery($this->getVisibleCtsPositions()))
+            ->query((new SessionRepository)->getAllAcceptedSessionsForPositionsQuery($this->getVisibleCtsPositions())->where('taken_date', '<', now()))
             ->defaultSort('taken_date', 'desc')
             ->striped()
             ->paginated([10, 25, 50, 100])
