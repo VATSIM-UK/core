@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Mentor;
 
+use App\Filament\Training\Support\TrainingMemberAccountSearch;
+use App\Models\Cts\Member;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
@@ -86,21 +88,17 @@ class MentoringHistory extends Page implements HasTable
                 TextColumn::make('student_name')
                     ->label('Student')
                     ->getStateUsing(fn ($record) => $record->student->name)
-                    ->description(fn ($record) => $record->student->cid)
-                    ->searchable(),
+                    ->description(fn ($record) => $record->student->cid),
 
                 TextColumn::make('mentor_name')
                     ->label('Mentor')
-                    ->getStateUsing(fn ($record) => $record->mentor?->name ?? 'Unknown')
-                    ->description(fn ($record) => $record->mentor?->cid ?? 'Unknown')
-                    ->searchable(),
+                    ->getStateUsing(fn ($record) => $record->mentor->name)
+                    ->description(fn ($record) => $record->mentor->cid),
 
                 TextColumn::make('position')
                     ->label('Position')
                     ->badge()
-                    ->color('gray')
-                    ->searchable()
-                    ->sortable(),
+                    ->color('gray'),
 
                 TextColumn::make('taken_date')
                     ->label('Date & Time')
@@ -134,6 +132,30 @@ class MentoringHistory extends Page implements HasTable
                     })
                     ->searchable()
                     ->multiple(),
+
+                SelectFilter::make('student')
+                    ->label('Student')
+                    ->searchable()
+                    ->getSearchResultsUsing(fn (string $search) => TrainingMemberAccountSearch::searchAccountsForSelect($search))
+                    ->getOptionLabelUsing(fn ($value) => Member::where('cid', $value)->first()?->name." ({$value})")
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['value'],
+                            fn (Builder $query, $value) => $query->whereHas('student', fn ($q) => $q->where('cid', $value))
+                        );
+                    }),
+
+                SelectFilter::make('mentor')
+                    ->label('Mentor')
+                    ->searchable()
+                    ->getSearchResultsUsing(fn (string $search) => TrainingMemberAccountSearch::searchAccountsForSelect($search))
+                    ->getOptionLabelUsing(fn ($value) => Member::where('cid', $value)->first()?->name." ({$value})")
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['value'],
+                            fn (Builder $query, $value) => $query->whereHas('mentor', fn ($q) => $q->where('cid', $value))
+                        );
+                    }),
 
                 SelectFilter::make('status')
                     ->label('Status')
