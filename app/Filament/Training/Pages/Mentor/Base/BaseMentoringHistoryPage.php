@@ -88,7 +88,7 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
                     ->visible(fn ($record) => $record->filed !== null)
                     ->openUrlInNewTab(),
             ])
-            ->emptyStateHeading('No mentoring sessions found');
+            ->emptyStateHeading('No mentoring sessions found in this training group');
     }
 
     private function getTableFilters(): array

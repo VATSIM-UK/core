@@ -171,7 +171,7 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->panelUser)
             ->test(MentoringHistory::class, ['category' => $category])
-            ->assertSee('No mentoring sessions found in this group');
+            ->assertSee('No mentoring sessions found in this training group');
     }
 
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition
