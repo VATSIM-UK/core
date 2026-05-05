@@ -115,7 +115,7 @@ class Token extends Model
     public static function generate($type, $allowDuplicates = false, $relation = null, $expireMinutes = 1440)
     {
         if ($allowDuplicates == false) {
-            foreach ($relation->sysTokens()->whereType($type)->notExpired()->get() as $t) {
+            foreach ($relation->tokens()->whereType($type)->notExpired()->get() as $t) {
                 $t->delete();
             }
         }
@@ -126,7 +126,7 @@ class Token extends Model
         $token->code = uniqid(uniqid());
 
         if ($relation != null) {
-            $relation->sysTokens()->save($token);
+            $relation->tokens()->save($token);
         } else {
             $token->save();
         }
