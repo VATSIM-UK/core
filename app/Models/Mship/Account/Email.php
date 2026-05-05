@@ -64,14 +64,9 @@ class Email extends Model
         return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id');
     }
 
-    public function tokens()
-    {
-        return $this->morphMany(Token::class, 'related');
-    }
-
     public function sysTokens()
     {
-        return $this->tokens();
+        return $this->morphMany(Token::class, 'related');
     }
 
     public function ssoEmails()
