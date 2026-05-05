@@ -76,6 +76,7 @@ class MyAvailability extends Page implements HasForms, HasTable
             'P1_PPL(A)_MEN',
             'P2_SEIR(A)_MEN',
             'P3_CMEL(A)_MEN',
+            'TFP_FLIGHT',
         ];
 
         $hasPilotValidation = PositionValidation::where('member_id', $ctsMember->id)
