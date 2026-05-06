@@ -45,6 +45,20 @@ class Position extends Model implements Endorseable
 
     const TYPE_FSS = 8;
 
+    public static function typeOptions(): array
+    {
+        return [
+            self::TYPE_ATIS => 'ATIS',
+            self::TYPE_DELIVERY => 'Delivery',
+            self::TYPE_GROUND => 'Ground',
+            self::TYPE_TOWER => 'Tower',
+            self::TYPE_APPROACH => 'Approach/Radar',
+            self::TYPE_ENROUTE => 'Enroute',
+            self::TYPE_TERMINAL => 'Terminal Control',
+            self::TYPE_FSS => 'Flight Service Stations',
+        ];
+    }
+
     public function airports(): BelongsToMany
     {
         return $this->belongsToMany(Airport::class, 'airport_positions');
@@ -63,26 +77,7 @@ class Position extends Model implements Endorseable
 
     public function getTypeAttribute(int $type): string
     {
-        switch ($type) {
-            case self::TYPE_ATIS:
-                return 'ATIS';
-            case self::TYPE_DELIVERY:
-                return 'Delivery';
-            case self::TYPE_GROUND:
-                return 'Ground';
-            case self::TYPE_TOWER:
-                return 'Tower';
-            case self::TYPE_APPROACH:
-                return 'Approach/Radar';
-            case self::TYPE_ENROUTE:
-                return 'Enroute';
-            case self::TYPE_TERMINAL:
-                return 'Terminal Control';
-            case self::TYPE_FSS:
-                return 'Flight Service Stations';
-            default:
-                return 'Unknown';
-        }
+        return static::typeOptions()[$type] ?? 'Unknown';
     }
 
     public function isVirtual(): bool

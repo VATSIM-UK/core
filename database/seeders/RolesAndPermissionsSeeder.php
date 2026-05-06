@@ -195,6 +195,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Operations System Permissions
             'operations.access',
+            'operations.positions',
 
             // Pilot System Permissions
             'pilot.access',
