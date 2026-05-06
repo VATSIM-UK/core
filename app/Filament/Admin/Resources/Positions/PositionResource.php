@@ -28,7 +28,7 @@ class PositionResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->can('operation.positions');
+        return auth()->user()->can('operations.positions');
     }
 
     public static function getFormSchema(): array
