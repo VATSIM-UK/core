@@ -12,6 +12,8 @@ class AccountInfoWidget extends Widget
 
     protected static bool $isLazy = false;
 
+    protected string|int|array $columnSpan = 'full';
+
     protected string $view = 'filament.widgets.account-info-widget';
 
     public static function canView(): bool

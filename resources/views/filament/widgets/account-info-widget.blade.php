@@ -1,6 +1,5 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-
         <div class="relative">
 
             {{-- Active / Inactive badge --}}
@@ -24,9 +23,12 @@
                 {{-- Main grid --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8 text-sm">
 
-                    <div x-data="{ copy(text) { navigator.clipboard.writeText(text) } }">
+                    <div x-data="{ copied:false, copy(text) { navigator.clipboard.writeText(text); this.copied = true; setTimeout(() => { this.copied = false; }, 2000); } }" class="relative inline-block">
                         <span class="text-gray-500">CID</span>
-                        <div class="font-medium cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition underline underline-offset-4 decoration-dotted" @click="copy('{{ $user->id }}')" title="Click to copy">{{ $user->id }}</div>
+                        <div class="font-medium cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition underline underline-offset-4 decoration-dotted" @click="copy('{{ $user->id }}')" title="Click to copy">
+                        {{ $user->id }}
+                            <div x-show="copied" x-transition class="absolute mt-1 text-xs p-1 rounded bg-gray-900 text-white dark:bg-gray-700">CID copied</div>
+                        </div>
                     </div>
 
                     <div>
