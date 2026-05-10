@@ -8,7 +8,7 @@
                 {{ $rosterStatus
                     ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200'
                     : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200'
-                }}">
+                }}" title="Roster Status">
                 {{ $rosterStatus ? 'Active' : 'Inactive' }}
             </span>
 
@@ -24,9 +24,9 @@
                 {{-- Main grid --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8 text-sm">
 
-                    <div>
+                    <div x-data="{ copy(text) { navigator.clipboard.writeText(text) } }">
                         <span class="text-gray-500">CID</span>
-                        <div class="font-medium">{{ $user->id }}</div>
+                        <div class="font-medium cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition underline underline-offset-4 decoration-dotted" @click="copy('{{ $user->id }}')" title="Click to copy">{{ $user->id }}</div>
                     </div>
 
                     <div>
@@ -50,6 +50,53 @@
 
                 <div class="border-t border-gray-200 dark:border-gray-700 mt-5 mb-2"></div>
 
+                @if($panel === 'training')
+                {{-- Mentor Groups --}}
+                @if ($atcMentorGroups->isNotEmpty() || $pilotMentorGroups->isNotEmpty())
+                    <div class="mt-3">
+                        <span>Mentor</span>
+
+                        <div class="mt-4 flex flex-wrap gap-2">
+
+                            {{-- ATC Mentor Groups --}}
+                            @foreach ($atcMentorGroups as $group)
+                                <span class="px-2.5 py-1 text-xs rounded-md bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-200 shadow-sm">
+                                    {{ $group }}
+                                </span>
+                            @endforeach
+
+                            {{-- Pilot Mentor Groups --}}
+                            @foreach ($pilotMentorGroups as $group)
+                                <span class="px-2.5 py-1 text-xs rounded-md bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200 shadow-sm">
+                                    {{ $group }}
+                                </span>
+                            @endforeach
+
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Examiner Levels --}}
+                @if ($examinerGroups->isNotEmpty())
+                    <div class="mt-3">
+                        <span>Examiner</span>
+
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            @foreach ($examinerGroups as $group)
+                                <span class="
+                                    px-2.5 py-1 text-xs rounded-md shadow-sm
+                                    {{ $group['type'] === 'atc'
+                                        ? 'bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-200'
+                                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
+                                    }}
+                                    ">
+                                    {{ $group['label'] }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 {{-- Endorsements --}}
                 <div>
                     <span>Endorsements</span>
@@ -67,7 +114,11 @@
                     </div>
                 </div>
 
+            @endif
+
+
                 {{-- Roles --}}
+                @if($panel === 'app')
                 <div class="mt-3">
                     <span>Roles</span>
 
@@ -83,6 +134,7 @@
                         @endif
                     </div>
                 </div>
+                @endif
 
                 <div class="border-t border-gray-200 dark:border-gray-700 mt-5 mb-3"></div>
 
