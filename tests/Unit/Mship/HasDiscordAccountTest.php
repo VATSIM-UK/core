@@ -22,8 +22,7 @@ class HasDiscordAccountTest extends TestCase
         $this->mock(Discord::class, function (MockInterface $mock) {
             $mock->shouldReceive('setNickname')->once();
             $mock->shouldReceive('getUserRoles')->andReturn(collect(['2']))->once();
-            $mock->shouldReceive('grantRoleById')->with($this->user, '1')->once();
-            $mock->shouldReceive('removeRoleById')->with($this->user, '2')->once();
+            $mock->shouldReceive('setRoles')->with($this->user, [1])->once();
         });
 
         $permissionHas = factory(Permission::class)->create(['name' => 'discord.test.role-1']);
