@@ -73,8 +73,12 @@ trait HasDiscordAccount
         // Retrieve users current roles
         $currentRoles = $discord->getUserRoles($this);
 
-        if ($currentRoles->isEmpty()) {
+        if ($currentRoles === null) {
             return;
+        }
+
+        if (! $currentRoles instanceof Collection) {
+            $currentRoles = collect($currentRoles);
         }
 
         // Handle if the user is banned on core
