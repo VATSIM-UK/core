@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
 
 class Discord
 {
@@ -27,16 +26,6 @@ class Discord
 
     /** @var array */
     private $headers;
-
-    /**
-     * Per-route rate limit bucket tracking (keyed by X-RateLimit-Bucket).
-     *
-     * @var array<string, array{remaining: int, reset_at: float}>
-     */
-    private array $rateLimitBuckets = [];
-
-    /** @var int Consecutive 429 responses for exponential backoff */
-    private int $consecutive429s = 0;
 
     public function __construct()
     {
@@ -116,24 +105,6 @@ class Discord
         return $this->result($response, $context);
     }
 
-    public function setRoles(Account $account, array $roleIds): bool
-    {
-        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}";
-        $context = [
-            'action' => 'setRoles',
-            'account_id' => $account->id,
-            'discord_id' => $account->discord_id,
-            'role_ids' => $roleIds,
-        ];
-
-        $response = $this->rateLimitedRequest(
-            fn () => Http::withHeaders($this->headers)->patch($endpoint, ['roles' => $roleIds]),
-            $context
-        );
-
-        return $this->result($response, $context);
-    }
-
     public function kick(Account $account): bool
     {
         $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}";
@@ -173,7 +144,7 @@ class Discord
             $context
         );
 
-        if ($response->status() > 300 && $response->json('code') == 30001) {
+        if ($response->status() > 300 && $response->json()['code'] == 30001) {
             Log::warning('Discord invite: server limit reached', $context);
             throw new DiscordUserInviteException($response, 'You have reached your Discord server limit! You must leave a server before you can join another one');
         }
@@ -201,7 +172,7 @@ class Discord
             return collect([]);
         }
 
-        return collect($response->json('roles', []));
+        return collect($response->json()['roles']);
     }
 
     public function getUserInformation(Account $account)
@@ -268,56 +239,21 @@ class Discord
     // --- Internal helpers ---
 
     /**
-     * Handles Discord rate limits with proactive header-based pacing,
-     * jittered retry backoff, and global rate limit protection.
-     *
-     * Per Discord docs:
-     * - Parse X-RateLimit-* headers from every response to avoid hitting limits
-     * - Use retry_after + jitter
-     * - Use exponential backoff for repeated 429s
-     * - Track global rate limit (50 req/sec) via Redis
+     * Handles Discord rate limits, logs, and fires events for observability.
      */
     protected function rateLimitedRequest(callable $requestCallback, array $context = [], int $maxAttempts = 5): Response
     {
         $attempt = 0;
-        $this->consecutive429s = 0;
-
         do {
-            $this->proactivePreRequestDelay();
-            $this->checkGlobalRateLimit();
-
             $response = $requestCallback();
-            $retry_after = $response->json('retry_after');
+            $retry_after = $response->json()['retry_after'] ?? null;
 
             if ($retry_after) {
-                $this->consecutive429s++;
-
                 $context['retry_after'] = $retry_after;
                 $context['attempt'] = $attempt + 1;
-                $context['ratelimit_global'] = $response->header('X-RateLimit-Global') === 'true';
-                $context['ratelimit_scope'] = $response->header('X-RateLimit-Scope');
-
                 Log::warning('Discord rate limit hit', $context);
                 Event::dispatch('discord.rate_limited', [$context, $response]);
-
-                $waitTime = (float) $retry_after;
-
-                // Exponential backoff
-                if ($this->consecutive429s > 1) {
-                    $backoffMultiplier = min(1.5 ** ($this->consecutive429s - 1), 5.0);
-                    $waitTime *= $backoffMultiplier;
-                }
-
-                // Jitter to prevent starting at once
-                $jitter = mt_rand(0, 1000) / 1000; // 0–1 seconds
-                $waitTime += $jitter;
-
-                $waitTime = min($waitTime, 30.0);
-
-                usleep((int) ($waitTime * 1_000_000));
-            } else {
-                $this->consecutive429s = 0;
-                $this->updateBucketTracking($response);
+                sleep((int) ceil($retry_after));
             }
 
             $attempt++;
@@ -335,74 +271,6 @@ class Discord
         }
 
         return $response;
-    }
-
-    /**
-     * Wait before a request if we're close to exhausting a known rate limit bucket.
-     */
-    protected function proactivePreRequestDelay(): void
-    {
-        $now = microtime(true);
-
-        foreach ($this->rateLimitBuckets as $bucket => $info) {
-            $timeUntilReset = $info['reset_at'] - $now;
-
-            // If we have ≤ 2 requests remaining and the bucket hasn't reset yet
-            if ($info['remaining'] <= 2 && $timeUntilReset > 0) {
-                $delay = $timeUntilReset + 0.05; // 50ms buffer
-                usleep((int) ($delay * 1_000_000));
-
-                return;
-            }
-        }
-    }
-
-    /**
-     * Track global rate limit (50 req/sec per bot) across all workers via Redis.
-     */
-    protected function checkGlobalRateLimit(): void
-    {
-        try {
-            $redis = Redis::connection();
-            $currentSecond = time();
-            $key = "discord:global_rps:{$currentSecond}";
-
-            $count = $redis->incr($key);
-            $redis->expire($key, 2);
-
-            if ($count > 45) {
-                // Approaching 50 req/sec — wait until the next second window
-                $waitTime = ($currentSecond + 1) - microtime(true) + 0.05;
-                if ($waitTime > 0) {
-                    usleep((int) ($waitTime * 1_000_000));
-                }
-            }
-        } catch (\Exception $e) {
-            Log::notice('Discord global rate limit check unavailable', [
-                'exception' => $e::class,
-                'message' => $e->getMessage(),
-            ]);
-        }
-    }
-
-    /**
-     * Parse X-RateLimit-* headers from a successful response and store per-bucket state
-     * for proactive pacing on subsequent requests within this sync session.
-     */
-    protected function updateBucketTracking(Response $response): void
-    {
-        $bucket = $response->header('X-RateLimit-Bucket');
-        if (! $bucket) {
-            return;
-        }
-
-        $remaining = (int) $response->header('X-RateLimit-Remaining', 0);
-        $resetAfter = (float) $response->header('X-RateLimit-Reset-After', 0);
-
-        $this->rateLimitBuckets[$bucket] = [
-            'remaining' => $remaining,
-            'reset_at' => microtime(true) + $resetAfter,
-        ];
     }
 
     private function findRole(string $roleName): int
@@ -431,7 +299,7 @@ class Discord
      */
     protected function result(Response $response, array $context = [])
     {
-        if ($response->status() == 404 && $response->json('message') == 'Unknown Member') {
+        if ($response->status() == 404 && ($response->json()['message'] ?? '') == 'Unknown Member') {
             Log::notice('Discord user not found', $context);
             Event::dispatch('discord.user_not_found', [$context, $response]);
             throw new DiscordUserNotFoundException($response);

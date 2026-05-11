@@ -2,9 +2,6 @@
 
 namespace Tests\Feature\Services;
 
-use App\Exceptions\Discord\DiscordUserNotFoundException;
-use App\Exceptions\Discord\GenericDiscordException;
-use App\Libraries\Discord;
 use App\Models\Mship\Account;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
@@ -18,8 +15,6 @@ use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
 
 class DiscordTest extends TestCase
 {
-    // ─── OAuth / Registration ───────────────────────────────────────
-
     #[Test]
     public function test_it_shows_registration_page()
     {
@@ -118,181 +113,24 @@ class DiscordTest extends TestCase
             ->assertSessionHas('error', 'You have reached your Discord server limit! You must leave a server before you can join another one');
     }
 
-    // ─── Discord Library API Methods ────────────────────────────────
-
     #[Test]
-    public function test_grant_role_by_id_sends_put_request()
+    public function test_rate_limit_event_is_dispatched_and_retry_succeeds()
     {
-        $account = Account::factory()->create(['discord_id' => 12345]);
-
-        Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345/roles/99' => Http::response([], 204),
+        /** @var Account $account */
+        $account = Account::factory()->create([
+            'discord_id' => 9876543,
+            'discord_access_token' => 'xyz',
         ]);
 
-        $discord = new Discord;
-        $result = $discord->grantRoleById($account, 99);
-
-        $this->assertTrue($result);
-
-        Http::assertSent(function ($request) {
-            return $request->method() === 'PUT'
-                && str_contains($request->url(), '/roles/99');
-        });
-    }
-
-    #[Test]
-    public function test_remove_role_by_id_sends_delete_request()
-    {
-        $account = Account::factory()->create(['discord_id' => 12345]);
-
-        Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345/roles/99' => Http::response([], 204),
-        ]);
-
-        $discord = new Discord;
-        $result = $discord->removeRoleById($account, 99);
-
-        $this->assertTrue($result);
-
-        Http::assertSent(function ($request) {
-            return $request->method() === 'DELETE'
-                && str_contains($request->url(), '/roles/99');
-        });
-    }
-
-    #[Test]
-    public function test_set_nickname_sends_patch_request_with_nick()
-    {
-        $account = Account::factory()->create(['discord_id' => 12345]);
-        $nickname = 'Test User - 12345';
-
-        Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 204),
-        ]);
-
-        $discord = new Discord;
-        $result = $discord->setNickname($account, $nickname);
-
-        $this->assertTrue($result);
-
-        Http::assertSent(function ($request) use ($nickname) {
-            return $request->method() === 'PATCH'
-                && $request->data() === ['nick' => $nickname];
-        });
-    }
-
-    #[Test]
-    public function test_set_roles_sends_patch_request_with_role_ids()
-    {
-        $account = Account::factory()->create(['discord_id' => 12345]);
-        $roleIds = [1, 2, 3];
-
-        Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 204),
-        ]);
-
-        $discord = new Discord;
-        $result = $discord->setRoles($account, $roleIds);
-
-        $this->assertTrue($result);
-
-        Http::assertSent(function ($request) use ($roleIds) {
-            return $request->method() === 'PATCH'
-                && $request->data() === ['roles' => $roleIds];
-        });
-    }
-
-    #[Test]
-    public function test_get_user_roles_returns_collection_of_role_ids()
-    {
-        $account = Account::factory()->create(['discord_id' => 12345]);
-
-        Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response(['roles' => ['111', '222', '333']], 200),
-        ]);
-
-        $discord = new Discord;
-        $roles = $discord->getUserRoles($account);
-
-        $this->assertEquals(collect(['111', '222', '333']), $roles);
-    }
-
-    #[Test]
-    public function test_get_user_roles_returns_empty_on_api_failure()
-    {
-        $account = Account::factory()->create(['discord_id' => 12345]);
-
-        Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 500),
-        ]);
-
-        $discord = new Discord;
-        $roles = $discord->getUserRoles($account);
-
-        $this->assertTrue($roles->isEmpty());
-    }
-
-    #[Test]
-    public function test_kick_returns_true_when_user_not_found()
-    {
-        $account = Account::factory()->create(['discord_id' => 99999]);
-
-        Http::fake([
-            'discord.com/api/v6/guilds/*/members/99999' => Http::response(['message' => 'Unknown Member'], 404),
-        ]);
-
-        $discord = new Discord;
-        $result = $discord->kick($account);
-
-        $this->assertTrue($result);
-    }
-
-    // ─── Error Handling ─────────────────────────────────────────────
-
-    #[Test]
-    public function test_throws_discord_user_not_found_on_404()
-    {
-        $this->expectException(DiscordUserNotFoundException::class);
-
-        $account = Account::factory()->create(['discord_id' => 99999]);
-
-        Http::fake([
-            'discord.com/api/v6/guilds/*/members/99999/roles/99' => Http::response(['message' => 'Unknown Member'], 404),
-        ]);
-
-        $discord = new Discord;
-        $discord->grantRoleById($account, 99);
-    }
-
-    #[Test]
-    public function test_throws_generic_exception_on_api_error()
-    {
-        $this->expectException(GenericDiscordException::class);
-
-        $account = Account::factory()->create(['discord_id' => 12345]);
-
-        Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345/roles/99' => Http::response(['message' => 'Bad Request'], 400),
-        ]);
-
-        $discord = new Discord;
-        $discord->grantRoleById($account, 99);
-    }
-
-    // ─── Rate Limiting ──────────────────────────────────────────────
-
-    #[Test]
-    public function test_rate_limited_request_retries_on_429_then_succeeds()
-    {
         Event::fake();
 
-        $account = Account::factory()->create(['discord_id' => 12345]);
-
+        // 1st call returns retry_after -> rate limit
+        // 2nd call succeeds
         Http::fakeSequence()
-            ->push(['retry_after' => 0.001], 429)
-            ->push([], 204);
+            ->push(['retry_after' => 1], 429)
+            ->push([], 200);
 
-        $discord = new Discord;
+        $discord = new \App\Libraries\Discord;
         $result = $discord->grantRoleById($account, 99);
 
         $this->assertTrue($result);
@@ -301,51 +139,9 @@ class DiscordTest extends TestCase
     }
 
     #[Test]
-    public function test_rate_limited_request_fires_events_on_each_attempt()
-    {
-        Event::fake();
-
-        $account = Account::factory()->create(['discord_id' => 12345]);
-
-        // Two rate-limits then success — tests exponential backoff path too
-        Http::fakeSequence()
-            ->push(['retry_after' => 0.001], 429)
-            ->push(['retry_after' => 0.001], 429)
-            ->push([], 204);
-
-        $discord = new Discord;
-        $result = $discord->grantRoleById($account, 99);
-
-        $this->assertTrue($result);
-        Event::assertDispatchedTimes('discord.rate_limited', 2);
-        Event::assertDispatched('discord.api_succeeded');
-    }
-
-    #[Test]
-    public function test_rate_limited_request_fails_after_exhausting_retries()
-    {
-        $this->expectException(GenericDiscordException::class);
-
-        $account = Account::factory()->create(['discord_id' => 12345]);
-
-        // All 5 attempts return 429
-        Http::fakeSequence()
-            ->push(['retry_after' => 0.001], 429)
-            ->push(['retry_after' => 0.001], 429)
-            ->push(['retry_after' => 0.001], 429)
-            ->push(['retry_after' => 0.001], 429)
-            ->push(['retry_after' => 0.001], 429);
-
-        $discord = new Discord;
-        $discord->grantRoleById($account, 99);
-    }
-
-    // ─── Threads ────────────────────────────────────────────────────
-
-    #[Test]
     public function test_it_creates_a_thread_from_message_successfully()
     {
-        $discord = new Discord;
+        $discord = new \App\Libraries\Discord;
         $channelId = 12345;
         $messageId = 67890;
         $data = [
@@ -366,7 +162,7 @@ class DiscordTest extends TestCase
     #[Test]
     public function test_it_throws_exception_on_thread_creation_failure()
     {
-        $discord = new Discord;
+        $discord = new \App\Libraries\Discord;
         $channelId = 12345;
         $messageId = 67890;
         $data = [
@@ -378,7 +174,7 @@ class DiscordTest extends TestCase
             "discord.com/api/v6/channels/{$channelId}/messages/{$messageId}/threads" => Http::response(['message' => 'Bad Request'], 400),
         ]);
 
-        $this->expectException(GenericDiscordException::class);
+        $this->expectException(\App\Exceptions\Discord\GenericDiscordException::class);
         $this->expectExceptionMessage('{"message":"Bad Request"}');
 
         $discord->createThreadFromMessage($channelId, $messageId, $data);

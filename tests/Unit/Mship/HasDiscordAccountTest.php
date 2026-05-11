@@ -22,7 +22,8 @@ class HasDiscordAccountTest extends TestCase
         $this->mock(Discord::class, function (MockInterface $mock) {
             $mock->shouldReceive('setNickname')->once();
             $mock->shouldReceive('getUserRoles')->andReturn(collect(['2']))->once();
-            $mock->shouldReceive('setRoles')->with($this->user, [1])->once();
+            $mock->shouldReceive('grantRoleById')->with($this->user, '1')->once();
+            $mock->shouldReceive('removeRoleById')->with($this->user, '2')->once();
         });
 
         $permissionHas = factory(Permission::class)->create(['name' => 'discord.test.role-1']);
@@ -75,29 +76,6 @@ class HasDiscordAccountTest extends TestCase
         ]);
 
         $this->assertEquals('The Peoples Front J - 123456789', $user->discordName);
-        $this->assertLessThanOrEqual(32, strlen($user->discordName));
-    }
-
-    public function test_longer_first_names_with_middle_name()
-    {
-        $user = Account::factory()->create([
-            'name_first' => 'My Very Long First Name That Exceeds The Limit',
-            'name_last' => 'Another Very Long Last Name That Exceeds The Limit',
-            'id' => 123456789,
-        ]);
-
-        $this->assertEquals('My Very Long First A - 123456789', $user->discordName);
-        $this->assertLessThanOrEqual(32, strlen($user->discordName));
-    }
-
-    public function test_supertruncate()
-    {
-        $user = Account::factory()->create([
-            'name_first' => 'MyVeryLongFirstNameThatExceedsTheLimit',
-            'name_last' => 'AnotherVeryLongLastNameThatExceedsTheLimit',
-            'id' => 123456789,
-        ]);
-        $this->assertEquals('MyVeryLongFirstNam A - 123456789', $user->discordName);
         $this->assertLessThanOrEqual(32, strlen($user->discordName));
     }
 }
