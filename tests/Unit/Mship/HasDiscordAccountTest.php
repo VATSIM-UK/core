@@ -90,7 +90,8 @@ class HasDiscordAccountTest extends TestCase
         $this->assertLessThanOrEqual(32, strlen($user->discordName));
     }
 
-    public function test_supertruncate() {
+    public function test_supertruncate()
+    {
         $user = Account::factory()->create([
             'name_first' => 'MyVeryLongFirstNameThatExceedsTheLimit',
             'name_last' => 'AnotherVeryLongLastNameThatExceedsTheLimit',
