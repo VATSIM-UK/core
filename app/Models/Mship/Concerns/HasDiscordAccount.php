@@ -31,7 +31,7 @@ trait HasDiscordAccount
                     if (Str::length("{$truncatedFirstName} {$part} {$firstLetterOfLastName} - {$this->id}") > 32) {
                         break;
                     }
-                    $truncatedFirstName .= ($truncatedFirstName ? ' ' : '') . $part;
+                    $truncatedFirstName .= ($truncatedFirstName ? ' ' : '').$part;
                 }
 
                 return "{$truncatedFirstName} {$firstLetterOfLastName} - {$this->id}";
