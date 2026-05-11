@@ -4,6 +4,7 @@ namespace App\Models\Mship\Concerns;
 
 use App\Events\Discord\DiscordUnlinked;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
+use App\Exceptions\Discord\GenericDiscordException;
 use App\Libraries\Discord;
 use App\Models\Discord\DiscordRoleRule;
 use Illuminate\Support\Facades\Log;
@@ -47,6 +48,13 @@ trait HasDiscordAccount
             $discord->setNickname($this, $this->discordName);
         } catch (DiscordUserNotFoundException $e) {
             return event(new DiscordUnlinked($this));
+        } catch (GenericDiscordException $e) {
+            Log::error('Discord sync: failed to set nickname, aborting sync', [
+                'account_id' => $this->id,
+                'discord_id' => $this->discord_id,
+                'exception' => $e->getMessage(),
+            ]);
+            throw $e;
         }
 
         // Retrieve users current roles
@@ -61,12 +69,32 @@ trait HasDiscordAccount
 
             // Remove each of their current roles
             $currentRoles->each(function (int $role) use ($discord) {
-                $discord->removeRoleById($this, $role);
+                try {
+                    $discord->removeRoleById($this, $role);
+                } catch (GenericDiscordException $e) {
+                    Log::error('Discord sync: failed to remove role during ban enforcement', [
+                        'account_id' => $this->id,
+                        'discord_id' => $this->discord_id,
+                        'role_id' => $role,
+                        'exception' => $e->getMessage(),
+                    ]);
+                    throw $e;
+                }
                 sleep(1);
             });
 
             // Give them the suspended user role
-            $discord->grantRoleById($this, $suspendedRoleId);
+            try {
+                $discord->grantRoleById($this, $suspendedRoleId);
+            } catch (GenericDiscordException $e) {
+                Log::error('Discord sync: failed to grant suspended role', [
+                    'account_id' => $this->id,
+                    'discord_id' => $this->discord_id,
+                    'role_id' => $suspendedRoleId,
+                    'exception' => $e->getMessage(),
+                ]);
+                throw $e;
+            }
 
             // We'll return, as suspended users should only have this suspended role
             return;
@@ -74,7 +102,17 @@ trait HasDiscordAccount
 
         // If they have the suspended role, remove it (no longer suspended)
         if ($currentRoles->contains($suspendedRoleId)) {
-            $discord->removeRoleById($this, $suspendedRoleId);
+            try {
+                $discord->removeRoleById($this, $suspendedRoleId);
+            } catch (GenericDiscordException $e) {
+                Log::error('Discord sync: failed to remove suspended role', [
+                    'account_id' => $this->id,
+                    'discord_id' => $this->discord_id,
+                    'role_id' => $suspendedRoleId,
+                    'exception' => $e->getMessage(),
+                ]);
+                throw $e;
+            }
         }
 
         // Evaluate available discord roles
@@ -88,7 +126,16 @@ trait HasDiscordAccount
                 // At least one role rule grants this discord role. We will give it to the user if they don't already have it
                 if (! $currentRoles->contains($discordRoleId)) {
                     Log::info("{$this->full_name} ({$this->getKey()}) should have discord role {$discordRoleId}, but doesn't");
-                    $discord->grantRoleById($this, $discordRoleId);
+                    try {
+                        $discord->grantRoleById($this, $discordRoleId);
+                    } catch (GenericDiscordException $e) {
+                        Log::error('Discord sync: failed to grant role', [
+                            'account_id' => $this->id,
+                            'discord_id' => $this->discord_id,
+                            'role_id' => $discordRoleId,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
                     sleep(1);
                 }
 
@@ -98,7 +145,16 @@ trait HasDiscordAccount
             if ($currentRoles->contains($discordRoleId)) {
                 // None of the rules grant this role. We will remove it if they have it
                 Log::info("{$this->full_name} ({$this->getKey()}) shouldn't have discord role {$discordRoleId}, but has it");
-                $discord->removeRoleById($this, $discordRoleId);
+                try {
+                    $discord->removeRoleById($this, $discordRoleId);
+                } catch (GenericDiscordException $e) {
+                    Log::error('Discord sync: failed to remove role', [
+                        'account_id' => $this->id,
+                        'discord_id' => $this->discord_id,
+                        'role_id' => $discordRoleId,
+                        'exception' => $e->getMessage(),
+                    ]);
+                }
                 sleep(1);
             }
         });
