@@ -130,7 +130,12 @@ trait HasDiscordAccount
         // Remove managed roles that aren't satisfied
         $targetRoles = $targetRoles->reject(fn ($role) => $managedRoleIds->contains((int) $role));
 
-        return $targetRoles->merge($satisfiedRoleIds)->unique()->values();
+        // Add satisfied managed roles, ensuring the suspended role can't be re-introduced
+        return $targetRoles
+            ->merge($satisfiedRoleIds)
+            ->unique()
+            ->reject(fn ($role) => (int) $role === (int) $suspendedRoleId)
+            ->values();
     }
 
     /**
