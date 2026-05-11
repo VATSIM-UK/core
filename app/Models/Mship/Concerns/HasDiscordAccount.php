@@ -21,7 +21,22 @@ trait HasDiscordAccount
         // in the event that the name + CID exceeds, truncate accordin
         $nameWithCid = "{$this->name} - {$this->id}";
         if (Str::length($nameWithCid) > 32) {
+            // Attempt to truncate last name
             $firstLetterOfLastName = substr($this->name_last, 0, 1);
+
+            if (Str::length("{$this->name_preferred} {$firstLetterOfLastName} - {$this->id}") > 32) {
+                // Attempt as many parts of the first name as possible
+                $firstNameParts = explode(' ', $this->name_preferred);
+                $truncatedFirstName = '';
+                foreach ($firstNameParts as $part) {
+                    if (Str::length("{$truncatedFirstName} {$part} {$firstLetterOfLastName} - {$this->id}") > 32) {
+                        break;
+                    }
+                    $truncatedFirstName .= ($truncatedFirstName ? ' ' : '') . $part;
+                }
+
+                return "{$truncatedFirstName} {$firstLetterOfLastName} - {$this->id}";
+            }
 
             return "{$this->name_preferred} {$firstLetterOfLastName} - {$this->id}";
         }
