@@ -35,6 +35,11 @@ trait HasDiscordAccount
                     $truncatedFirstName .= ($truncatedFirstName ? ' ' : '').$part;
                 }
 
+                if ($truncatedFirstName === '') {
+                    $availableFirstNameLength = 32 - Str::length(" {$firstLetterOfLastName} - {$this->id}");
+                    $truncatedFirstName = Str::substr($firstNameParts[0] ?? $this->name_preferred, 0, max($availableFirstNameLength, 1));
+                }
+
                 return "{$truncatedFirstName} {$firstLetterOfLastName} - {$this->id}";
             }
 
