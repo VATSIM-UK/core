@@ -173,7 +173,7 @@ class Discord
             $context
         );
 
-        if ($response->status() > 300 && $response->json()['code'] == 30001) {
+        if ($response->status() > 300 && $response->json('code') == 30001) {
             Log::warning('Discord invite: server limit reached', $context);
             throw new DiscordUserInviteException($response, 'You have reached your Discord server limit! You must leave a server before you can join another one');
         }
@@ -201,7 +201,7 @@ class Discord
             return collect([]);
         }
 
-        return collect($response->json()['roles']);
+        return collect($response->json('roles', []));
     }
 
     public function getUserInformation(Account $account)
@@ -287,7 +287,7 @@ class Discord
             $this->checkGlobalRateLimit();
 
             $response = $requestCallback();
-            $retry_after = $response->json()['retry_after'] ?? null;
+            $retry_after = $response->json('retry_after');
 
             if ($retry_after) {
                 $this->consecutive429s++;
@@ -431,7 +431,7 @@ class Discord
      */
     protected function result(Response $response, array $context = [])
     {
-        if ($response->status() == 404 && ($response->json()['message'] ?? '') == 'Unknown Member') {
+        if ($response->status() == 404 && $response->json('message') == 'Unknown Member') {
             Log::notice('Discord user not found', $context);
             Event::dispatch('discord.user_not_found', [$context, $response]);
             throw new DiscordUserNotFoundException($response);
