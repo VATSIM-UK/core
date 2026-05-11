@@ -378,6 +378,10 @@ class Discord
                 }
             }
         } catch (\Exception $e) {
+            Log::notice('Discord global rate limit check unavailable', [
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
