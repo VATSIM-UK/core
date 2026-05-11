@@ -78,4 +78,16 @@ class HasDiscordAccountTest extends TestCase
         $this->assertEquals('The Peoples Front J - 123456789', $user->discordName);
         $this->assertLessThanOrEqual(32, strlen($user->discordName));
     }
+
+    public function test_longer_first_names_with_middle_name()
+    {
+        $user = Account::factory()->create([
+            'name_first' => 'My Very Long First Name That Exceeds The Limit',
+            'name_last' => 'Another Very Long Last Name That Exceeds The Limit',
+            'id' => 123456789,
+        ]);
+
+        $this->assertEquals('My Very Long First A - 123456789', $user->discordName);
+        $this->assertLessThanOrEqual(32, strlen($user->discordName));
+    }
 }
