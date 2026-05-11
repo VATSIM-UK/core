@@ -9,7 +9,6 @@ use App\Models\Discord\DiscordRoleRule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Throwable;
 
 /**
  * Trait HasDiscordAccount.
@@ -59,27 +58,6 @@ trait HasDiscordAccount
             return;
         }
 
-        try {
-            $this->executeSyncToDiscord();
-        } catch (Throwable $e) {
-            Log::error('SyncToDiscord failed with unexpected exception', [
-                'account_id' => $this->id,
-                'discord_id' => $this->discord_id,
-                'exception' => get_class($e),
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ]);
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Execute the actual Discord sync logic.
-     */
-    private function executeSyncToDiscord()
-    {
         /** @var Discord */
         $discord = app()->make(Discord::class);
 
