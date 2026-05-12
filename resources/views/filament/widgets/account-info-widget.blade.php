@@ -87,9 +87,14 @@
                             @foreach ($examinerGroups as $group)
                                 <span class="
                                     px-2.5 py-1 text-xs rounded-md shadow-sm
-                                    {{ $group['type'] === 'atc'
+                                    {{  $group['type'] === 'all'
+                                        ? 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200'
+                                         : (
+                                    
+                                    $group['type'] === 'atc'
                                         ? 'bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-200'
                                         : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
+                                        )
                                     }}
                                     ">
                                     {{ $group['label'] }}
