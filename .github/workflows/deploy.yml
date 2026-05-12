@@ -196,6 +196,9 @@ jobs:
             # Bugsnag
             $PHP_PATH artisan bugsnag:deploy --repository "https://github.com/VATSIM-UK/core" --revision "$COMMIT" --builder "$GITHUB_ACTOR"
 
+            # Clear stale job overlap locks from Redis
+            $PHP_PATH artisan tinker --execute="foreach(Cache::connection()->keys('*laravel-queue-overlap:*') as \$k) { Cache::connection()->del(\$k); }"
+
             # Start Applications / Services
             $PHP_PATH artisan up
           envs: APPLICATION_ROOT,PHP_PATH,TAG,COMMIT,GITHUB_ACTOR
