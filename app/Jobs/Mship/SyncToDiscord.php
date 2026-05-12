@@ -17,7 +17,7 @@ class SyncToDiscord extends Job implements ShouldQueue
 
     private Account $account;
 
-    public $tries = 10;
+    public $tries = 3;
 
     public $backoff = 60;
 
@@ -40,13 +40,11 @@ class SyncToDiscord extends Job implements ShouldQueue
 
     public function middleware(): array
     {
-        $withoutOverlapping = new WithoutOverlapping($this->getAccountId(), 60, 90);
-        $withoutOverlapping->dontRelease();
-
         return [
             new RateLimitedWithRedis('discord-sync'),
-            // free lock after 90 seconds, do not release back to queue if locked
-            $withoutOverlapping,
+            (new WithoutOverlapping($this->getAccountId()))
+                ->releaseAfter(30) // 30s retry
+                ->expireAfter(120), // auto-release after 120s
         ];
     }
 }
