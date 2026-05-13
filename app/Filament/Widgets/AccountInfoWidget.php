@@ -72,6 +72,14 @@ class AccountInfoWidget extends Widget
                 $level = Str::upper(Str::after($perm->name, 'training.exams.conduct.'));
                 $atcLevels = ['OBS', 'TWR', 'APP', 'CTR'];
 
+                if ($level === '*') {
+                    return [
+                        'level' => '*',
+                        'label' => 'All Positions',
+                        'type' => 'all',
+                    ];
+                }
+
                 return [
                     'level' => $level,
                     'label' => array_key_exists($level, $atcMap) ? $atcMap[$level] : $pilotMap[$level] ?? $level,
@@ -92,6 +100,9 @@ class AccountInfoWidget extends Widget
         ])->filter()->values();
 
         $endorsements = $user->endorsements
+            ->filter(function ($endorsement) {
+                return $endorsement->endorsable_type === 'App\Models\Atc\PositionGroup';
+            })
             ->map(fn ($e) => $e->endorsable->name)
             ->filter()
             ->values();
