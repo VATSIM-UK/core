@@ -59,18 +59,26 @@ class ViewMentoringReport extends Page implements HasInfolists
     {
         return $schema->record($this->session)->components([
             Section::make('')->columnSpanFull()->schema([
-                Section::make('Student')->schema([
-                    TextEntry::make('student.account.name')->label('Name'),
-                    TextEntry::make('student.account.id')->label('CID'),
-                ])->columns(2)->columnSpan(1)->extraAttributes(['class' => 'h-full']),
+
+                Grid::make(1)->schema([
+                    Section::make('Student')->schema([
+                        TextEntry::make('student.account.name')->label('Name'),
+                        TextEntry::make('student.account.id')->label('CID')->copyable(),
+                    ])->columns(2),
+
+                    Section::make('Mentor')->schema([
+                        TextEntry::make('mentor.account.name')->label('Name'),
+                        TextEntry::make('mentor.account.id')->label('CID')->copyable(),
+                    ])->columns(2),
+                ])->columnSpan(1),
 
                 Section::make('Session')->schema([
                     TextEntry::make('position')->label('Position'),
                     TextEntry::make('taken_date')->label('Date')->date(),
                     TextEntry::make('taken_from')->label('From'),
                     TextEntry::make('taken_to')->label('To'),
-                    TextEntry::make('mentor.account.name')->label('Mentor'),
                 ])->columns(2)->columnSpan(1)->extraAttributes(['class' => 'h-full']),
+
             ])->columns(2)->extraAttributes(['class' => 'items-stretch']),
         ]);
     }
