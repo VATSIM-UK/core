@@ -2,11 +2,9 @@
 
 namespace App\Filament\Admin\Resources\Feedback\Pages;
 
-use App\Filament\Admin\Forms\Components\AccountSelect;
 use App\Filament\Admin\Helpers\Pages\BaseViewRecordPage;
 use App\Filament\Admin\Resources\Feedback\FeedbackResource;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Textarea;
 
 class ViewFeedback extends BaseViewRecordPage
 {
@@ -14,54 +12,42 @@ class ViewFeedback extends BaseViewRecordPage
 
     protected function getHeaderActions(): array
     {
+        $sendConfig = FeedbackResource::sendFeedbackConfig();
+        $actionConfig = FeedbackResource::actionFeedbackConfig();
+        $rejectConfig = FeedbackResource::rejectFeedbackConfig();
+        $reallocateConfig = FeedbackResource::reallocateFeedbackConfig();
+
         return [
             Action::make('send_feedback')
-                ->label('Send Feedback')
-                ->color('success')
-                ->icon('heroicon-o-paper-airplane')
+                ->label($sendConfig['label'])
+                ->color($sendConfig['color'])
+                ->icon($sendConfig['icon'])
                 ->action(fn ($data) => $this->record->markSent(auth()->user(), $data['comment']))
-                ->schema([
-                    Textarea::make('comment')
-                        ->label('Comment')
-                        ->rules('required', 'min:10'),
-                ])
+                ->schema($sendConfig['form'])
                 ->visible(fn () => $this->record->sent_at === null && ! $this->record->trashed() && auth()->user()->can('actionFeedback', $this->record)),
             Action::make('action_feedback')
-                ->label('Action Feedback')
-                ->color('info')
-                ->icon('heroicon-o-check-circle')
+                ->label($actionConfig['label'])
+                ->color($actionConfig['color'])
+                ->icon($actionConfig['icon'])
                 ->action(fn ($data) => $this->record->markActioned(auth()->user(), $data['comment']))
-                ->schema([
-                    Textarea::make('comment')
-                        ->label('Comment')
-                        ->rules('required', 'min:10'),
-                ])
+                ->schema($actionConfig['form'])
                 ->visible(fn () => $this->record->actioned_at === null && ! $this->record->trashed() && auth()->user()->can('actionFeedback', $this->record)),
 
             Action::make('reject_feedback')
-                ->label('Reject Feedback')
-                ->color('danger')
-                ->icon('heroicon-o-x-mark')
+                ->label($rejectConfig['label'])
+                ->color($rejectConfig['color'])
+                ->icon($rejectConfig['icon'])
                 ->action(fn ($data) => $this->record->markRejected(auth()->user(), $data['reason']))
-                ->schema([
-                    Textarea::make('reason')
-                        ->label('Rejection Reason')
-                        ->rules('required', 'min:10'),
-                ])
+                ->schema($rejectConfig['form'])
                 ->visible(fn () => ! $this->record->trashed() && auth()->user()->can('actionFeedback', $this->record)),
 
             Action::make('reallocate_feedback')
-                ->label('Reallocate feedback')
-                ->color('gray')
-                ->icon('heroicon-o-arrow-right')
+                ->label($reallocateConfig['label'])
+                ->color($reallocateConfig['color'])
+                ->icon($reallocateConfig['icon'])
                 ->action(fn ($data) => $this->record->reallocate($data['account_id']))
                 ->modalSubmitActionLabel('Reallocate')
-                ->schema([
-                    AccountSelect::make('account')
-                        ->label('Account')
-                        ->helperText('Select the account you want to reallocate the feedback to.')
-                        ->required(),
-                ])
+                ->schema($reallocateConfig['form'])
                 ->visible(fn () => $this->record->actioned_at === null && $this->record->sent_at === null && auth()->user()->can('actionFeedback', $this->record)),
         ];
     }
