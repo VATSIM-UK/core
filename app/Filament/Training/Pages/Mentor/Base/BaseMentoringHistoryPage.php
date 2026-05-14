@@ -4,6 +4,7 @@ namespace App\Filament\Training\Pages\Mentor\Base;
 
 use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Cts\Member;
+use Carbon\Carbon;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Page;
@@ -62,8 +63,16 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
 
                 TextColumn::make('taken_date')
                     ->label('Date & Time')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
+                    ->getStateUsing(function ($record) {
+                        $date = Carbon::parse($record->taken_date)->format('d/m/Y');
+                        $time = Carbon::parse($record->taken_from)->format('H:i');
+
+                        return trim("{$date} {$time}");
+                    })
+                    ->sortable(query: fn (Builder $query, string $direction) => $query
+                        ->orderBy('taken_date', $direction)
+                        ->orderBy('taken_from', $direction)
+                    ),
 
                 TextColumn::make('status')
                     ->label('Status')
