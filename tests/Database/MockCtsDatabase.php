@@ -491,6 +491,54 @@ class MockCtsDatabase
             KEY `sesh_search` (`sesh_id`, `sesh_type`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `prog_sheet_name` (
+            `prog_sheet_id` smallint unsigned NOT NULL AUTO_INCREMENT,
+            `name` varchar(50) NOT NULL DEFAULT '',
+            `created_by` int unsigned NOT NULL DEFAULT '0',
+            `created_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+            `disabled` tinyint unsigned NOT NULL DEFAULT '0',
+            PRIMARY KEY (`prog_sheet_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `prog_sheet_categories` (
+            `catId` int NOT NULL AUTO_INCREMENT,
+            `prog_sheet_id` int NOT NULL,
+            `catName` varchar(50) NOT NULL DEFAULT '',
+            `disabled` int NOT NULL DEFAULT '0',
+            PRIMARY KEY (`catId`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `prog_sheet_fields` (
+            `field_id` smallint unsigned NOT NULL AUTO_INCREMENT,
+            `prog_sheet_id` smallint unsigned NOT NULL DEFAULT '0',
+            `catId` int NOT NULL,
+            `groupId` int NOT NULL,
+            `field` varchar(300) NOT NULL DEFAULT '',
+            `created_by` int unsigned NOT NULL DEFAULT '0',
+            `created_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+            `disabled` tinyint unsigned NOT NULL DEFAULT '0',
+            PRIMARY KEY (`field_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `report_sheet` (
+            `id` mediumint unsigned NOT NULL AUTO_INCREMENT,
+            `seshid` int NOT NULL DEFAULT '0',
+            `student_id` int unsigned NOT NULL DEFAULT '0',
+            `prog_sheet_id` smallint unsigned NOT NULL DEFAULT '0',
+            `field_id` smallint unsigned NOT NULL DEFAULT '0',
+            `notes` longtext NOT NULL,
+            `field_score` tinyint unsigned NOT NULL DEFAULT '0',
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
     }
 
     public static function destroy()
@@ -582,5 +630,10 @@ class MockCtsDatabase
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `theory_answers`;'
         );
+
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `prog_sheet_name`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `prog_sheet_categories`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `prog_sheet_fields`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `report_sheet`;');
     }
 }
