@@ -1,7 +1,13 @@
 <x-filament-panels::page>
-    {{ $this->infolist }}
-
-    <h1 class="text-xl font-bold">Criteria</h1>
-
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div class="lg:col-span-4">
+            {{ $this->infolist }}
+        </div>
+        
+        <div class="lg:col-span-1">
+            {{ $this->previousSessionsInfolist }}
+        </div>
+    </div>
+        
     {{ $this->reportInfolist }}
 </x-filament-panels::page>

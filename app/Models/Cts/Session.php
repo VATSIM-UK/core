@@ -5,6 +5,7 @@ namespace App\Models\Cts;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Session extends Model
 {
@@ -37,5 +38,10 @@ class Session extends Model
     public function reportSheets(): HasMany
     {
         return $this->hasMany(ReportSheet::class, 'seshid', 'id');
+    }
+
+    public function reportNote(): HasOne
+    {
+        return $this->hasOne(ReportNote::class, 'seshid', 'id');
     }
 }

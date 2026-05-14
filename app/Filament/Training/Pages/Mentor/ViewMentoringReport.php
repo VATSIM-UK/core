@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Mentor;
 
+use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Models\Cts\Session;
+use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Services\Training\MentorPermissionService;
+use Carbon\Carbon;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
@@ -14,6 +19,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
+use Illuminate\Support\Collection;
 
 class ViewMentoringReport extends Page implements HasInfolists
 {
@@ -31,6 +37,8 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     public Session $session;
 
+    public Collection $previousSessions;
+
     public function mount(): void
     {
         $this->session = Session::with([
@@ -38,7 +46,16 @@ class ViewMentoringReport extends Page implements HasInfolists
             'mentor',
             'reportSheets.field.category',
             'reportSheets.progSheet',
+            'reportNote',
         ])->findOrFail($this->sessionId);
+
+        $this->previousSessions = Session::query()
+            ->where('student_id', $this->session->student_id)
+            ->where('id', '!=', $this->session->id)
+            ->where('position', $this->session->position) // TODO: I don't like this at all
+            ->orderBy('taken_date', 'desc')
+            ->limit(7)
+            ->get();
 
         $user = auth()->user();
 
@@ -52,34 +69,48 @@ class ViewMentoringReport extends Page implements HasInfolists
             return;
         }
 
-        // TODO: add position specific permission logic
+        if (app(MentorPermissionService::class)->canMentorPosition($user, $this->session->position)) {
+            return;
+        }
     }
 
     public function infolist(Schema $schema): Schema
     {
         return $schema->record($this->session)->components([
-            Section::make('')->columnSpanFull()->schema([
+            Section::make('Session Summary')
+                ->columns(3)
+                ->schema([
+                    TextEntry::make('student.account.name')
+                        ->label('Student')
+                        ->helperText(fn (Session $record) => $record->student->account->id)
+                        ->url(function (Session $record) {
+                            $user = auth()->user();
+                            if (! $user || ! $user->can('training-places.view.*')) {
+                                return null;
+                            }
 
-                Grid::make(1)->schema([
-                    Section::make('Student')->schema([
-                        TextEntry::make('student.account.name')->label('Name'),
-                        TextEntry::make('student.account.id')->label('CID')->copyable(),
-                    ])->columns(2),
+                            $trainingPlace = TrainingPlace::where('account_id', $record->student_id)->first();
 
-                    Section::make('Mentor')->schema([
-                        TextEntry::make('mentor.account.name')->label('Name'),
-                        TextEntry::make('mentor.account.id')->label('CID')->copyable(),
-                    ])->columns(2),
-                ])->columnSpan(1),
+                            return $trainingPlace ? ViewTrainingPlace::getUrl(['trainingPlaceId' => $trainingPlace->id]) : null;
+                        }),
 
-                Section::make('Session')->schema([
-                    TextEntry::make('position')->label('Position'),
-                    TextEntry::make('taken_date')->label('Date')->date(),
-                    TextEntry::make('taken_from')->label('From'),
-                    TextEntry::make('taken_to')->label('To'),
-                ])->columns(2)->columnSpan(1)->extraAttributes(['class' => 'h-full']),
+                    TextEntry::make('mentor.account.name')
+                        ->label('Mentor')
+                        ->helperText(fn (Session $record) => $record->mentor->account->id),
 
-            ])->columns(2)->extraAttributes(['class' => 'items-stretch']),
+                    TextEntry::make('position')
+                        ->label('Position & Time')
+                        ->helperText(fn (Session $record) => Carbon::parse($record->taken_date)->format('d/m/Y').' | '.Carbon::parse($record->taken_from)->format('H:i').' - '.Carbon::parse($record->taken_to)->format('H:i')),
+                ]),
+
+            Section::make('Additional Comments')
+                ->visible(fn () => (bool) $this->session->reportNote)
+                ->schema([
+                    TextEntry::make('reportNote.text')
+                        ->hiddenLabel()
+                        ->html()
+                        ->columnSpanFull(),
+                ]),
         ]);
     }
 
@@ -92,8 +123,20 @@ class ViewMentoringReport extends Page implements HasInfolists
         foreach ($groupedSheets as $categoryName => $sheets) {
 
             $sheetRows = [];
+            $totalSheets = count($sheets);
+            $currentIndex = 0;
+
             foreach ($sheets as $index => $sheet) {
+                $currentIndex++;
+                $isLast = ($currentIndex === $totalSheets);
+
                 $uniqueKey = $sheet->field_id ?? $index;
+
+                // If it's the last field in the category we don't want the divider
+                $rowClasses = 'pb-4 mb-4';
+                if (! $isLast) {
+                    $rowClasses .= ' border-b border-gray-200 dark:border-white/10';
+                }
 
                 $sheetRows[] = Grid::make(12)
                     ->schema([
@@ -119,7 +162,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                             ->columnSpan(12)
                             ->hidden(blank($sheet->notes)),
                     ])
-                    ->extraAttributes(['class' => 'border-b border-gray-200 dark:border-white/10 pb-4 mb-4']);
+                    ->extraAttributes(['class' => $rowClasses]);
             }
 
             $categorySections[] = Section::make($categoryName)
@@ -128,9 +171,30 @@ class ViewMentoringReport extends Page implements HasInfolists
         }
 
         return $schema->record($this->session)->components([
-            Section::make('Progress Report')
+            Section::make('Session Report')
                 ->columnSpanFull()
                 ->schema(count($categorySections) > 0 ? $categorySections : [TextEntry::make('empty')->label('')->state('No report data found for this session.')]),
         ]);
+    }
+
+    public function previousSessionsInfolist(Schema $schema): Schema
+    {
+        return $schema
+            ->state(['sessions' => $this->previousSessions])
+            ->components([
+                Section::make('Other Sessions')
+                    ->schema([
+                        RepeatableEntry::make('sessions')
+                            ->hiddenLabel()
+                            ->schema([
+                                TextEntry::make('taken_date')
+                                    ->hiddenLabel()
+                                    ->date()
+                                    ->url(fn (Session $record) => static::getUrl(['sessionId' => $record->id])),
+                            ])
+                            ->emptyTooltip('No previous sessions found.')
+                            ->extraAttributes(['class' => 'no-border-repeatable']),
+                    ]),
+            ]);
     }
 }

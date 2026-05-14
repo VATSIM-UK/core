@@ -539,6 +539,16 @@ class MockCtsDatabase
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
         );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `report_notes` (
+            `id` int NOT NULL AUTO_INCREMENT,
+            `seshid` int NOT NULL DEFAULT '0',
+            `type` varchar(255) NOT NULL DEFAULT '',
+            `text` longtext NOT NULL,
+            PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
     }
 
     public static function destroy()
@@ -635,5 +645,6 @@ class MockCtsDatabase
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `prog_sheet_categories`;');
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `prog_sheet_fields`;');
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `report_sheet`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `report_notes`;');
     }
 }
