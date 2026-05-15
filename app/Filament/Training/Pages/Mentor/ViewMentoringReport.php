@@ -227,7 +227,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             ->schema($this->sessionsModalSchema());
     }
 
-    protected function sessionsModalSchema(): array
+    public function sessionsModalSchema(): array
     {
         return [
             Tabs::make('Sessions Overview')
@@ -241,7 +241,7 @@ class ViewMentoringReport extends Page implements HasInfolists
         ];
     }
 
-    protected function getSessionsBySessionTab(): array
+    public function getSessionsBySessionTab(): array
     {
         return $this->allSessions
             ->map(function (Session $session): Section {
@@ -295,7 +295,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             ->all();
     }
 
-    protected function getSessionsByCriteriaTab(): array
+    public function getSessionsByCriteriaTab(): array
     {
         $sessions = $this->allSessions->sortBy('taken_date');
         $sessionCount = $sessions->count();
@@ -365,7 +365,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                 ];
 
                 foreach ($sessions as $session) {
-                    $score = $data['scores'][$session->id];
+                    $score = $data['scores'][$session->id] ?? '-';
                     $rowEntries[] = TextEntry::make("score_{$catName}_{$fieldId}_{$session->id}")
                         ->state($score)
                         ->hiddenLabel()

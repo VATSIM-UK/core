@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Cts;
 
+use App\Enums\FieldScore;
 use App\Models\Cts\Member;
 use App\Models\Cts\ProgSheet;
 use App\Models\Cts\ProgSheetField;
@@ -27,7 +28,7 @@ class ReportSheetFactory extends Factory
             'prog_sheet_id' => $progSheet->prog_sheet_id,
             'field_id' => $field->field_id,
             'notes' => $this->faker->paragraph,
-            'field_score' => $this->faker->numberBetween(0, 4),
+            'field_score' => $this->faker->randomElement(FieldScore::cases())->value,
         ];
     }
 
@@ -49,6 +50,13 @@ class ReportSheetFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'field_id' => $fieldId,
+        ]);
+    }
+
+    public function withScore(FieldScore $score): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'field_score' => $score->value,
         ]);
     }
 }

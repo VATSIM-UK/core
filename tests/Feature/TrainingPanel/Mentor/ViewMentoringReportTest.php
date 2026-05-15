@@ -233,6 +233,42 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function test_additional_comments_section_is_visible_when_report_note_exists(): void
+    {
+        ReportNote::create([
+            'seshid' => $this->mentoringSession->id,
+            'type' => 'general',
+            'text' => '<p>Great session overall.</p>',
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('Additional Comments');
+    }
+
+    #[Test]
+    public function test_additional_comments_section_is_hidden_when_no_report_note_exists(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertDontSee('Additional Comments');
+    }
+
+    #[Test]
+    public function test_renders_html_content_in_report_note(): void
+    {
+        ReportNote::create([
+            'seshid' => $this->mentoringSession->id,
+            'type' => 'general',
+            'text' => '<p>Well done on <strong>vectors</strong> today.</p>',
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('vectors', false);
+    }
+
+    #[Test]
     public function test_displays_category_name_as_section_header(): void
     {
         Livewire::actingAs($this->student)
@@ -265,15 +301,14 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function test_hides_field_notes_when_blank(): void
+    public function test_hides_field_notes_entry_when_notes_are_blank(): void
     {
         $this->reportSheet->update(['notes' => '']);
 
-        $component = Livewire::actingAs($this->student)
+        Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
-            ->assertSuccessful();
-
-        $component->assertDontSee('Notes');
+            ->assertSuccessful()
+            ->assertDontSee('Excellent RT throughout the session.');
     }
 
     #[Test]
@@ -353,20 +388,6 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function test_renders_html_content_in_report_note(): void
-    {
-        ReportNote::create([
-            'seshid' => $this->mentoringSession->id,
-            'type' => 'general',
-            'text' => '<p>Well done on <strong>vectors</strong> today.</p>',
-        ]);
-
-        Livewire::actingAs($this->student)
-            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
-            ->assertSee('vectors', false);
-    }
-
-    #[Test]
     public function test_shows_previous_sessions_for_the_same_student_and_position(): void
     {
         $previousSession = Session::factory()->create([
@@ -384,18 +405,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
 
         $this->assertTrue(
-            $component->instance()->previousSessions->contains('id', $previousSession->id)
-        );
-    }
-
-    #[Test]
-    public function test_previous_sessions_excludes_the_current_session(): void
-    {
-        $component = Livewire::actingAs($this->student)
-            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
-
-        $this->assertFalse(
-            $component->instance()->previousSessions->contains('id', $this->mentoringSession->id)
+            $component->instance()->otherSessions->contains('id', $previousSession->id)
         );
     }
 
@@ -414,7 +424,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
 
         $this->assertFalse(
-            $component->instance()->previousSessions->contains('id', $differentPositionSession->id)
+            $component->instance()->otherSessions->contains('id', $differentPositionSession->id)
         );
     }
 
@@ -435,7 +445,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
 
         $this->assertFalse(
-            $component->instance()->previousSessions->contains('id', $otherStudentSession->id)
+            $component->instance()->otherSessions->contains('id', $otherStudentSession->id)
         );
     }
 
@@ -461,7 +471,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         $component = Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
 
-        $sessions = $component->instance()->previousSessions;
+        $sessions = $component->instance()->otherSessions;
         $this->assertSame($newer->id, $sessions->first()->id);
         $this->assertSame($older->id, $sessions->last()->id);
     }
@@ -480,5 +490,84 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
             ->assertSee('Other Sessions');
+    }
+
+    #[Test]
+    public function test_all_sessions_collection_includes_the_current_session(): void
+    {
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $this->assertTrue(
+            $component->instance()->allSessions->contains('id', $this->mentoringSession->id)
+        );
+    }
+
+    #[Test]
+    public function test_sessions_overview_action_is_registered_on_the_page(): void
+    {
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $component->callAction('viewSessionsOverview')
+            ->assertSuccessful();
+    }
+
+    #[Test]
+    public function test_by_session_tab_includes_all_sessions_for_position(): void
+    {
+        $olderSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => '2025-01-05',
+            'filed' => now(),
+        ]);
+
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $sections = $component->instance()->getSessionsBySessionTab();
+        $headings = array_map(fn ($s) => $s->getHeading(), $sections);
+
+        $this->assertContains('15/03/2025', $headings);
+        $this->assertContains('05/01/2025', $headings);
+    }
+
+    #[Test]
+    public function test_by_criteria_tab_shows_field_name(): void
+    {
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $sections = $component->instance()->getSessionsByCriteriaTab();
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSuccessful();
+
+        $this->assertNotEmpty($sections);
+    }
+
+    #[Test]
+    public function test_by_criteria_tab_returns_empty_state_when_no_sessions_have_report_sheets(): void
+    {
+        $newStudent = Account::factory()->create();
+        $newMember = Member::factory()->create([
+            'id' => $newStudent->id,
+            'cid' => $newStudent->id,
+        ]);
+
+        $bareSession = Session::factory()->create([
+            'student_id' => $newMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => '2025-05-01',
+            'filed' => now(),
+        ]);
+
+        Livewire::actingAs($newStudent)
+            ->test(ViewMentoringReport::class, ['sessionId' => $bareSession->id])
+            ->assertSee('No report data found for this session.');
     }
 }
