@@ -17,6 +17,7 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
@@ -226,6 +227,20 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     protected function previousSessionsModalSchema(): array
     {
+        return [
+            Tabs::make('Previous Sessions Overview')
+                ->tabs([
+                    Tabs\Tab::make('By Criteria')
+                        ->schema($this->getSessionsByCriteriaTab()),
+
+                    Tabs\Tab::make('By Session')
+                        ->schema($this->getSessionsBySessionTab()),
+                ]),
+        ];
+    }
+
+    protected function getSessionsBySessionTab(): array
+    {
         return $this->previousSessions
             ->map(function (Session $session): Section {
                 $grouped = $session->reportSheets
@@ -271,5 +286,90 @@ class ViewMentoringReport extends Page implements HasInfolists
                     ->schema($rows);
             })
             ->all();
+    }
+
+    protected function getSessionsByCriteriaTab(): array
+    {
+        $sessions = $this->previousSessions->sortBy('taken_date');
+        $sessionCount = $sessions->count();
+
+        if ($sessionCount === 0) {
+            return [TextEntry::make('empty')->hiddenLabel()->state('No previous sessions found.')];
+        }
+
+        $criteriaData = [];
+        foreach ($sessions as $session) {
+            foreach ($session->reportSheets as $sheet) {
+                $catName = $sheet->field?->category?->catName;
+
+                $fieldId = $sheet->field_id;
+                $fieldName = $sheet->field?->field;
+                $sortOrder = $sheet->field?->sort_order ?? $fieldId;
+
+                if (! isset($criteriaData[$catName][$fieldId])) {
+                    $criteriaData[$catName][$fieldId] = [
+                        'name' => $fieldName,
+                        'sort' => $sortOrder,
+                        'scores' => [],
+                    ];
+                }
+
+                $criteriaData[$catName][$fieldId]['scores'][$session->id] = $sheet->field_score;
+            }
+        }
+
+        $sections = [];
+
+        foreach ($criteriaData as $catName => $fields) {
+            uasort($fields, fn ($a, $b) => $a['sort'] <=> $b['sort']);
+
+            $fieldRows = [];
+
+            $headerEntries = [
+                // Blank entry to fill the space in the column
+                TextEntry::make("header_cat_{$catName}")
+                    ->state('')
+                    ->hiddenLabel(),
+            ];
+
+            foreach ($sessions as $session) {
+                $headerEntries[] = TextEntry::make("header_date_{$session->id}_{$catName}")
+                    ->state(Carbon::parse($session->taken_date)->format('d/m/Y'))
+                    ->hiddenLabel()
+                    ->url(static::getUrl(['sessionId' => $session->id]))
+                    ->openUrlInNewTab()
+                    ->size(TextSize::Small)
+                    ->weight(FontWeight::Bold);
+            }
+
+            $fieldRows[] = Grid::make($sessionCount + 1)
+                ->schema($headerEntries);
+
+            foreach ($fields as $fieldId => $data) {
+                $rowEntries = [
+                    TextEntry::make("criteria_{$catName}_{$fieldId}")
+                        ->state($data['name'])
+                        ->hiddenLabel()
+                        ->size(TextSize::Small)
+                        ->weight(FontWeight::SemiBold),
+                ];
+
+                foreach ($sessions as $session) {
+                    $score = $data['scores'][$session->id];
+                    $rowEntries[] = TextEntry::make("score_{$catName}_{$fieldId}_{$session->id}")
+                        ->state($score)
+                        ->hiddenLabel()
+                        ->badge();
+                }
+
+                $fieldRows[] = Grid::make($sessionCount + 1)->schema($rowEntries)->extraAttributes([
+                    'class' => 'items-center border-b border-gray-200 dark:border-white/10 py-4',
+                ]);
+            }
+
+            $sections[] = Section::make($catName)->schema([Grid::make(1)->schema($fieldRows)->gap(false)]);
+        }
+
+        return $sections;
     }
 }
