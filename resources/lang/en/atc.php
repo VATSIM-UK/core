@@ -9,5 +9,5 @@ return [
     'type.ctr' => 'En-Route',
     'type.fss' => 'Flight Service Station',
 
-    'handbook.url' => '',
+    'handbook.url' => 'https://drive.google.com/file/d/1SKsHPvtfKxxvYchm1y37sw1Zq-8GsxMl/view',
 ];
