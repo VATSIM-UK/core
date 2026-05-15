@@ -19,6 +19,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
+use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
 use Illuminate\Support\Collection;
@@ -39,7 +40,9 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     public Session $session;
 
-    public Collection $previousSessions;
+    public Collection $allSessions;
+
+    public Collection $otherSessions;
 
     public function mount(): void
     {
@@ -51,14 +54,14 @@ class ViewMentoringReport extends Page implements HasInfolists
             'reportNote',
         ])->findOrFail($this->sessionId);
 
-        $this->previousSessions = Session::query()
+        $this->allSessions = Session::query()
             ->with(['mentor', 'reportSheets.field.category'])
             ->where('student_id', $this->session->student_id)
-            ->where('id', '!=', $this->session->id)
             ->where('position', $this->session->position)
             ->orderBy('taken_date', 'desc')
-            ->limit(10)
             ->get();
+
+        $this->otherSessions = $this->allSessions->where('id', '!=', $this->session->id);
 
         $user = auth()->user();
 
@@ -171,7 +174,6 @@ class ViewMentoringReport extends Page implements HasInfolists
             }
 
             $categorySections[] = Section::make($categoryName)
-
                 ->schema($sheetRows);
         }
 
@@ -185,7 +187,7 @@ class ViewMentoringReport extends Page implements HasInfolists
     public function previousSessionsInfolist(Schema $schema): Schema
     {
         return $schema
-            ->state(['sessions' => $this->previousSessions->take(4)])
+            ->state(['sessions' => $this->otherSessions->take(4)])
             ->components([
                 Section::make('Other Sessions')
                     ->schema([
@@ -208,27 +210,27 @@ class ViewMentoringReport extends Page implements HasInfolists
                             ->color('primary')
                             ->weight(FontWeight::SemiBold)
                             ->url(null)
-                            ->action($this->viewPreviousSessionOverviewAction()),
+                            ->action($this->viewSessionsOverviewAction()),
                     ]),
             ]);
     }
 
-    public function viewPreviousSessionOverviewAction(): Action
+    public function viewSessionsOverviewAction(): Action
     {
-        return Action::make('viewPreviousSessionsOverview')
+        return Action::make('viewSessionsOverview')
             ->label('View Overview')
             ->link()
-            ->modalHeading('Previous Sessions Overview')
+            ->modalHeading('All Sessions Overview')
             ->modalWidth('7xl')
             ->modalSubmitAction(false)
             ->modalCancelAction(false)
-            ->schema($this->previousSessionsModalSchema());
+            ->schema($this->sessionsModalSchema());
     }
 
-    protected function previousSessionsModalSchema(): array
+    protected function sessionsModalSchema(): array
     {
         return [
-            Tabs::make('Previous Sessions Overview')
+            Tabs::make('Sessions Overview')
                 ->tabs([
                     Tabs\Tab::make('By Criteria')
                         ->schema($this->getSessionsByCriteriaTab()),
@@ -241,7 +243,7 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     protected function getSessionsBySessionTab(): array
     {
-        return $this->previousSessions
+        return $this->allSessions
             ->map(function (Session $session): Section {
                 $grouped = $session->reportSheets
                     ->groupBy(fn ($sheet) => $sheet->field->category->catName);
@@ -273,15 +275,20 @@ class ViewMentoringReport extends Page implements HasInfolists
                         ->schema($columns);
                 }
 
-                return Section::make(Carbon::parse($session->taken_date)->format('d/m/Y'))
-                    ->description($session->mentor?->account?->name)
+                $isCurrentSession = $session->id === $this->session->id;
+                $sectionHeader = Carbon::parse($session->taken_date)->format('d/m/Y');
+                $sectionDescription = $session->mentor?->account?->name;
+
+                return Section::make($sectionHeader)
+                    ->description($sectionDescription)
                     ->headerActions([
                         Action::make("viewReport{$session->id}")
                             ->label('View Report')
                             ->icon('heroicon-o-arrow-top-right-on-square')
                             ->link()
                             ->url(static::getUrl(['sessionId' => $session->id]))
-                            ->openUrlInNewTab(),
+                            ->openUrlInNewTab(! $isCurrentSession)
+                            ->hidden($isCurrentSession),
                     ])
                     ->schema($rows);
             })
@@ -290,11 +297,11 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     protected function getSessionsByCriteriaTab(): array
     {
-        $sessions = $this->previousSessions->sortBy('taken_date');
+        $sessions = $this->allSessions->sortBy('taken_date');
         $sessionCount = $sessions->count();
 
         if ($sessionCount === 0) {
-            return [TextEntry::make('empty')->hiddenLabel()->state('No previous sessions found.')];
+            return [TextEntry::make('empty')->hiddenLabel()->state('No sessions found.')];
         }
 
         $criteriaData = [];
@@ -333,13 +340,16 @@ class ViewMentoringReport extends Page implements HasInfolists
             ];
 
             foreach ($sessions as $session) {
+                $isCurrentSession = $session->id === $this->session->id;
+
                 $headerEntries[] = TextEntry::make("header_date_{$session->id}_{$catName}")
                     ->state(Carbon::parse($session->taken_date)->format('d/m/Y'))
                     ->hiddenLabel()
-                    ->url(static::getUrl(['sessionId' => $session->id]))
+                    ->url($isCurrentSession ? null : static::getUrl(['sessionId' => $session->id]))
                     ->openUrlInNewTab()
                     ->size(TextSize::Small)
-                    ->weight(FontWeight::Bold);
+                    ->weight(FontWeight::SemiBold)
+                    ->color($isCurrentSession ? Color::Gray : 'white');
             }
 
             $fieldRows[] = Grid::make($sessionCount + 1)
