@@ -9,6 +9,7 @@ use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
+use Filament\Actions\Action;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -50,11 +51,12 @@ class ViewMentoringReport extends Page implements HasInfolists
         ])->findOrFail($this->sessionId);
 
         $this->previousSessions = Session::query()
+            ->with(['mentor', 'reportSheets.field.category'])
             ->where('student_id', $this->session->student_id)
             ->where('id', '!=', $this->session->id)
-            ->where('position', $this->session->position) // TODO: I don't like this at all
+            ->where('position', $this->session->position)
             ->orderBy('taken_date', 'desc')
-            ->limit(7)
+            ->limit(10)
             ->get();
 
         $user = auth()->user();
@@ -72,6 +74,8 @@ class ViewMentoringReport extends Page implements HasInfolists
         if (app(MentorPermissionService::class)->canMentorPosition($user, $this->session->position)) {
             return;
         }
+
+        abort(403);
     }
 
     public function infolist(Schema $schema): Schema
@@ -133,7 +137,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                 $uniqueKey = $sheet->field_id ?? $index;
 
                 // If it's the last field in the category we don't want the divider
-                $rowClasses = 'pb-4 mb-4';
+                $rowClasses = 'pb-4 mb-6';
                 if (! $isLast) {
                     $rowClasses .= ' border-b border-gray-200 dark:border-white/10';
                 }
@@ -166,8 +170,8 @@ class ViewMentoringReport extends Page implements HasInfolists
             }
 
             $categorySections[] = Section::make($categoryName)
-                ->schema($sheetRows)
-                ->collapsible();
+
+                ->schema($sheetRows);
         }
 
         return $schema->record($this->session)->components([
@@ -180,21 +184,92 @@ class ViewMentoringReport extends Page implements HasInfolists
     public function previousSessionsInfolist(Schema $schema): Schema
     {
         return $schema
-            ->state(['sessions' => $this->previousSessions])
+            ->state(['sessions' => $this->previousSessions->take(4)])
             ->components([
                 Section::make('Other Sessions')
                     ->schema([
                         RepeatableEntry::make('sessions')
                             ->hiddenLabel()
+                            ->columns(1)
                             ->schema([
                                 TextEntry::make('taken_date')
                                     ->hiddenLabel()
                                     ->date()
+                                    ->size(TextSize::Small)
+                                    ->weight(FontWeight::SemiBold)
+                                    ->helperText(fn (Session $record) => $record->mentor?->account?->name)
                                     ->url(fn (Session $record) => static::getUrl(['sessionId' => $record->id])),
-                            ])
-                            ->emptyTooltip('No previous sessions found.')
-                            ->extraAttributes(['class' => 'no-border-repeatable']),
+                            ]),
+
+                        TextEntry::make('view_more')
+                            ->hiddenLabel()
+                            ->state('View Sessions Overview')
+                            ->color('primary')
+                            ->weight(FontWeight::SemiBold)
+                            ->url(null)
+                            ->action($this->viewPreviousSessionOverviewAction()),
                     ]),
             ]);
+    }
+
+    public function viewPreviousSessionOverviewAction(): Action
+    {
+        return Action::make('viewPreviousSessionsOverview')
+            ->label('View Overview')
+            ->link()
+            ->modalHeading('Previous Sessions Overview')
+            ->modalWidth('7xl')
+            ->modalSubmitAction(false)
+            ->modalCancelAction(false)
+            ->schema($this->previousSessionsModalSchema());
+    }
+
+    protected function previousSessionsModalSchema(): array
+    {
+        return $this->previousSessions
+            ->map(function (Session $session): Section {
+                $grouped = $session->reportSheets
+                    ->groupBy(fn ($sheet) => $sheet->field->category->catName);
+
+                $rows = [];
+
+                foreach ($grouped as $category => $sheets) {
+                    $columns = $sheets
+                        ->sortBy(fn ($sheet) => $sheet->field->sort_order ?? $sheet->field_id)
+                        ->values()
+                        ->map(function ($sheet) {
+                            return Grid::make(1)
+                                ->schema([
+                                    TextEntry::make("field_{$sheet->id}")
+                                        ->state($sheet->field->field)
+                                        ->hiddenLabel()
+                                        ->size(TextSize::Small)
+                                        ->weight(FontWeight::SemiBold),
+
+                                    TextEntry::make("grade_{$sheet->id}")
+                                        ->state($sheet->field_score)
+                                        ->hiddenLabel()
+                                        ->badge(),
+                                ]);
+                        })
+                        ->all();
+
+                    $rows[] = Grid::make(6)
+                        ->schema($columns);
+                }
+
+                return Section::make(Carbon::parse($session->taken_date)->format('d/m/Y'))
+                    ->description($session->mentor?->account?->name)
+                    ->headerActions([
+                        Action::make("viewReport{$session->id}")
+                            ->label('View Report')
+                            ->icon('heroicon-o-arrow-top-right-on-square')
+                            ->link()
+                            ->url(static::getUrl(['sessionId' => $session->id]))
+                            ->openUrlInNewTab(),
+                    ])
+                    ->schema($rows);
+            })
+            ->all();
     }
 }

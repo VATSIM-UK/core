@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use Filament\Support\Colors\Color;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
@@ -28,10 +29,10 @@ enum FieldScore: int implements HasColor, HasLabel
     {
         return match ($this) {
             self::NOT_APPLICABLE => 'gray',
-            self::COVERED => 'gray',
-            self::DEVELOPING => 'gray',
-            self::GOOD => 'gray',
-            self::TEST_STANDARD => 'success',
+            self::COVERED => Color::Orange,
+            self::DEVELOPING => Color::Amber,
+            self::GOOD => Color::Lime,
+            self::TEST_STANDARD => Color::Emerald,
         };
     }
 }

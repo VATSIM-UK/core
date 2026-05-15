@@ -8,11 +8,14 @@ use App\Models\Cts\Member;
 use App\Models\Cts\ProgSheet;
 use App\Models\Cts\ProgSheetCategory;
 use App\Models\Cts\ProgSheetField;
+use App\Models\Cts\ReportNote;
 use App\Models\Cts\ReportSheet;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
@@ -58,9 +61,10 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
-            'taken_date' => now()->format('Y-m-d'),
+            'taken_date' => '2025-03-15',
             'taken_from' => '18:00',
             'taken_to' => '20:00',
+            'filed' => now(),
         ]);
 
         $this->progSheet = ProgSheet::factory()->create();
@@ -86,17 +90,15 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_loads_successfully_for_the_student()
+    public function it_loads_successfully_for_the_student(): void
     {
-        $this->withoutExceptionHandling();
-
         Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
             ->assertSuccessful();
     }
 
     #[Test]
-    public function it_loads_successfully_for_the_mentor()
+    public function it_loads_successfully_for_the_mentor_who_conducted_the_session(): void
     {
         Livewire::actingAs($this->mentor)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -104,40 +106,379 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function test_displays_student_and_mentor_information_correctly()
+    public function it_loads_for_a_user_whose_mentor_permission_service_allows_the_position(): void
     {
-        $component = Livewire::actingAs($this->student)
+        $authorisedMentor = Account::factory()->create();
+
+        $this->mock(MentorPermissionService::class, function ($mock) use ($authorisedMentor) {
+            $mock->shouldReceive('canMentorPosition')
+                ->with($authorisedMentor, 'EGLL_APP')
+                ->andReturn(true);
+        });
+
+        Livewire::actingAs($authorisedMentor)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
             ->assertSuccessful();
-
-        $component->assertSee($this->student->name)
-            ->assertSee($this->student->id)
-            ->assertSee($this->mentor->name)
-            ->assertSee($this->mentor->id);
     }
 
     #[Test]
-    public function test_displays_session_information_correctly()
+    public function it_denies_an_entirely_unrelated_user(): void
     {
-        $component = Livewire::actingAs($this->student)
-            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
-            ->assertSuccessful();
+        $unrelatedUser = Account::factory()->create();
 
-        $component->assertSee('EGLL_APP')
-            ->assertSee('18:00')
-            ->assertSee('20:00');
+        $this->mock(MentorPermissionService::class, function ($mock) use ($unrelatedUser) {
+            $mock->shouldReceive('canMentorPosition')
+                ->with($unrelatedUser, 'EGLL_APP')
+                ->andReturn(false);
+        });
+
+        Livewire::actingAs($unrelatedUser)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertForbidden();
     }
 
     #[Test]
-    public function test_displays_report_sheets_grouped_by_category()
+    public function it_denies_a_different_student_viewing_another_students_session(): void
     {
-        $component = Livewire::actingAs($this->student)
-            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
-            ->assertSuccessful();
+        $otherStudent = Account::factory()->create();
+        Member::factory()->create([
+            'id' => $otherStudent->id,
+            'cid' => $otherStudent->id,
+        ]);
 
-        $component->assertSee('General Control')
-            ->assertSee('Radio Telephony')
-            ->assertSee(FieldScore::TEST_STANDARD->getLabel())
+        $this->mock(MentorPermissionService::class, function ($mock) use ($otherStudent) {
+            $mock->shouldReceive('canMentorPosition')
+                ->with($otherStudent, 'EGLL_APP')
+                ->andReturn(false);
+        });
+
+        Livewire::actingAs($otherStudent)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function it_denies_a_mentor_who_did_not_conduct_the_session_and_lacks_position_permission(): void
+    {
+        $otherMentor = Account::factory()->create();
+        Member::factory()->create([
+            'id' => $otherMentor->id,
+            'cid' => $otherMentor->id,
+        ]);
+
+        $this->mock(MentorPermissionService::class, function ($mock) use ($otherMentor) {
+            $mock->shouldReceive('canMentorPosition')
+                ->with($otherMentor, 'EGLL_APP')
+                ->andReturn(false);
+        });
+
+        Livewire::actingAs($otherMentor)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function it_denies_a_user_whose_mentor_permission_service_returns_false(): void
+    {
+        $unauthorisedMentor = Account::factory()->create();
+
+        $this->mock(MentorPermissionService::class, function ($mock) {
+            $mock->shouldReceive('canMentorPosition')
+                ->andReturn(false);
+        });
+
+        Livewire::actingAs($unauthorisedMentor)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function test_displays_student_name(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee($this->student->name);
+    }
+
+    #[Test]
+    public function test_displays_student_cid(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee((string) $this->student->id);
+    }
+
+    #[Test]
+    public function test_displays_mentor_name(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee($this->mentor->name);
+    }
+
+    #[Test]
+    public function test_displays_mentor_cid(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee((string) $this->mentor->id);
+    }
+
+    #[Test]
+    public function test_displays_the_session_position(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('EGLL_APP');
+    }
+
+    #[Test]
+    public function test_displays_category_name_as_section_header(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('General Control');
+    }
+
+    #[Test]
+    public function test_displays_field_name_within_category(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('Radio Telephony');
+    }
+
+    #[Test]
+    public function test_displays_field_score_badge_label(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee(FieldScore::TEST_STANDARD->getLabel());
+    }
+
+    #[Test]
+    public function test_displays_field_notes_when_present(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
             ->assertSee('Excellent RT throughout the session.');
+    }
+
+    #[Test]
+    public function test_hides_field_notes_when_blank(): void
+    {
+        $this->reportSheet->update(['notes' => '']);
+
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSuccessful();
+
+        $component->assertDontSee('Notes');
+    }
+
+    #[Test]
+    public function test_displays_multiple_categories_as_separate_sections(): void
+    {
+        $category2 = ProgSheetCategory::factory()
+            ->forProgSheet($this->progSheet->prog_sheet_id)
+            ->create(['catName' => 'Separation Standards']);
+
+        $field2 = ProgSheetField::factory()
+            ->forProgSheet($this->progSheet->prog_sheet_id)
+            ->forCategory($category2->catId)
+            ->create(['field' => 'Horizontal Separation']);
+
+        ReportSheet::factory()
+            ->forSession($this->mentoringSession->id)
+            ->forStudent($this->studentMember->id)
+            ->forField($field2->field_id)
+            ->create([
+                'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+                'field_score' => FieldScore::GOOD->value,
+                'notes' => '',
+            ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('General Control')
+            ->assertSee('Separation Standards')
+            ->assertSee('Horizontal Separation');
+    }
+
+    #[Test]
+    public function test_displays_multiple_fields_within_the_same_category(): void
+    {
+        $field2 = ProgSheetField::factory()
+            ->forProgSheet($this->progSheet->prog_sheet_id)
+            ->forCategory($this->category->catId)
+            ->create(['field' => 'Phraseology']);
+
+        ReportSheet::factory()
+            ->forSession($this->mentoringSession->id)
+            ->forStudent($this->studentMember->id)
+            ->forField($field2->field_id)
+            ->create([
+                'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+                'field_score' => FieldScore::DEVELOPING->value,
+                'notes' => 'Needs improvement on phraseology.',
+            ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('Radio Telephony')
+            ->assertSee('Phraseology')
+            ->assertSee('Needs improvement on phraseology.');
+    }
+
+    public static function fieldScoreProvider(): array
+    {
+        return [
+            'not applicable' => [FieldScore::NOT_APPLICABLE],
+            'covered' => [FieldScore::COVERED],
+            'developing' => [FieldScore::DEVELOPING],
+            'good' => [FieldScore::GOOD],
+            'test standard' => [FieldScore::TEST_STANDARD],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('fieldScoreProvider')]
+    public function test_displays_correct_label_for_each_field_score(FieldScore $score): void
+    {
+        $this->reportSheet->update(['field_score' => $score->value]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee($score->getLabel());
+    }
+
+    #[Test]
+    public function test_renders_html_content_in_report_note(): void
+    {
+        ReportNote::create([
+            'seshid' => $this->mentoringSession->id,
+            'type' => 'general',
+            'text' => '<p>Well done on <strong>vectors</strong> today.</p>',
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('vectors', false);
+    }
+
+    #[Test]
+    public function test_shows_previous_sessions_for_the_same_student_and_position(): void
+    {
+        $previousSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => '2025-01-10',
+            'filed' => now(),
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $this->assertTrue(
+            $component->instance()->previousSessions->contains('id', $previousSession->id)
+        );
+    }
+
+    #[Test]
+    public function test_previous_sessions_excludes_the_current_session(): void
+    {
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $this->assertFalse(
+            $component->instance()->previousSessions->contains('id', $this->mentoringSession->id)
+        );
+    }
+
+    #[Test]
+    public function test_previous_sessions_excludes_sessions_for_a_different_position(): void
+    {
+        $differentPositionSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_TWR',
+            'taken_date' => '2025-01-05',
+            'filed' => now(),
+        ]);
+
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $this->assertFalse(
+            $component->instance()->previousSessions->contains('id', $differentPositionSession->id)
+        );
+    }
+
+    #[Test]
+    public function test_previous_sessions_excludes_sessions_for_a_different_student(): void
+    {
+        $otherStudent = Member::factory()->create();
+
+        $otherStudentSession = Session::factory()->create([
+            'student_id' => $otherStudent->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => '2025-01-08',
+            'filed' => now(),
+        ]);
+
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $this->assertFalse(
+            $component->instance()->previousSessions->contains('id', $otherStudentSession->id)
+        );
+    }
+
+    #[Test]
+    public function test_previous_sessions_are_ordered_most_recent_first(): void
+    {
+        $older = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => '2024-11-01',
+            'filed' => now(),
+        ]);
+
+        $newer = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => '2025-02-01',
+            'filed' => now(),
+        ]);
+
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $sessions = $component->instance()->previousSessions;
+        $this->assertSame($newer->id, $sessions->first()->id);
+        $this->assertSame($older->id, $sessions->last()->id);
+    }
+
+    #[Test]
+    public function test_page_renders_other_sessions_section(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => '2025-01-20',
+            'filed' => now(),
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('Other Sessions');
     }
 }
