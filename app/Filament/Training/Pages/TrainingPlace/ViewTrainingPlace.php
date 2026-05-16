@@ -240,7 +240,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             Callout::make('This training place is inactive')
                 ->icon('heroicon-o-exclamation-triangle')
                 ->danger()
-                ->description(fn () => 'This training place is now read only. Removed on '.$this->trainingPlace->deleted_at?->format('d/m/Y \a\t H:i').'.')
+                ->description(fn () => 'This training place has been removed and it is now inactive. Removed on '.$this->trainingPlace->deleted_at?->format('d/m/Y \a\t H:i').'.')
                 ->visible(fn (): bool => (bool) $this->trainingPlace->deleted_at)
                 ->columnSpanFull(),
             Section::make('Training Place Details')->columnSpanFull()->schema([
