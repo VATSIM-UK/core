@@ -23,6 +23,7 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
 use Illuminate\Support\Collection;
+use Illuminate\Support\HtmlString;
 
 class ViewMentoringReport extends Page implements HasInfolists
 {
@@ -58,6 +59,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             ->with(['mentor', 'reportSheets.field.category'])
             ->where('student_id', $this->session->student_id)
             ->where('position', $this->session->position)
+            ->whereNotNull('filed')
             ->orderBy('taken_date', 'desc')
             ->get();
 
@@ -173,7 +175,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                     ->extraAttributes(['class' => $rowClasses]);
             }
 
-            $categorySections[] = Section::make($categoryName)
+            $categorySections[] = Section::make(new HtmlString("<span class='text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white'>{$categoryName}</span>"))
                 ->schema($sheetRows);
         }
 
