@@ -29,3 +29,18 @@
     border-color: var(--color-gray-200, currentcolor);
   }
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5); /* gray-400 with opacity */
+    border-radius: 20px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(75, 85, 99, 0.5); /* gray-600 with opacity */
+}
