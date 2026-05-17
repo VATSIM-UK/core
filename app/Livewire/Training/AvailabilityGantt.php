@@ -49,11 +49,6 @@ class AvailabilityGantt extends Component implements HasForms
         $this->date = Carbon::today()->format('Y-m-d');
     }
 
-    public function updatedDate()
-    {
-        // Triggers re-render when date picker changes
-    }
-
     public function getAvailableCategoriesProperty(): array
     {
         return auth()->user()->getAvailableMentoringCategories();

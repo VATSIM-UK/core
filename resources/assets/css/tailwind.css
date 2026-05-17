@@ -38,9 +38,12 @@
     background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(156, 163, 175, 0.5); /* gray-400 with opacity */
+    background-color: rgba(156, 163, 175, 0.5);
     border-radius: 20px;
 }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(75, 85, 99, 0.5); /* gray-600 with opacity */
+    background-color: rgba(75, 85, 99, 0.5);
+}
+.custom-scrollbar::-webkit-scrollbar-corner {
+    background-color: transparent;
 }
