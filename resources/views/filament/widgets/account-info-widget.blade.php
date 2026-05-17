@@ -1,21 +1,20 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <div class="relative">
-
-            {{-- Active / Inactive badge --}}
-            <span class="px-4 py-1.5 text-xs font-semibold rounded-full absolute sm:right-6 sm:top-1 top-10 right-3
-                {{ $rosterStatus
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200'
-                    : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200'
-                }}" title="Roster Status">
-                {{ $rosterStatus ? 'Active' : 'Inactive' }}
-            </span>
-
             {{-- Header --}}
-            <div class="flex flex-col">
+            <div class="flex items-center justify-between gap-4">
                 <h2 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
-                    Welcome back, {{ $user->name }}
+                        Welcome back, {{ $user->name }}
                 </h2>
+
+                {{-- Active / Inactive badge --}}
+                <span class="shrink-0 px-4 py-1.5 text-xs font-semibold rounded-full
+                    {{ $rosterStatus
+                        ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200'
+                        : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200'
+                    }}" title="Roster Status">
+                    {{ $rosterStatus ? 'Active' : 'Inactive' }}
+                </span>
             </div>
 
             <div class="space-y-3 mt-5">

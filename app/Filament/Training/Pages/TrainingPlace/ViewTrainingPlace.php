@@ -24,6 +24,7 @@ use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -236,19 +237,12 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
     {
 
         return $schema->record($this->trainingPlace)->components([
-            Section::make('This training place is inactive')
+            Callout::make('This training place is inactive')
                 ->icon('heroicon-o-exclamation-triangle')
-                ->description('This training place is now read only.')
-                ->iconColor('danger')
-                ->collapsible()
-                ->collapsed(true)
+                ->danger()
+                ->description(fn () => 'This training place has been removed and it is now inactive. Removed on '.$this->trainingPlace->deleted_at?->format('d/m/Y \a\t H:i').'.')
                 ->visible(fn (): bool => (bool) $this->trainingPlace->deleted_at)
-                ->columnSpanFull()
-                ->schema([
-                    TextEntry::make('deleted_at')
-                        ->label('Removed on')
-                        ->dateTime('d/m/Y \a\t H:i'),
-                ]),
+                ->columnSpanFull(),
             Section::make('Training Place Details')->columnSpanFull()->schema([
                 TextEntry::make('account.name')->label('Name'),
                 TextEntry::make('account.id')->label('CID'),
