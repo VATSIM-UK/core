@@ -99,7 +99,13 @@ class ViewMentoringReport extends Page implements HasInfolists
                                 return null;
                             }
 
-                            $trainingPlace = TrainingPlace::where('account_id', $record->student_id)->first();
+                            $accountId = $record->student?->account->id;
+
+                            if (! $accountId) {
+                                return null;
+                            }
+
+                            $trainingPlace = TrainingPlace::where('account_id', $accountId)->first();
 
                             return $trainingPlace ? ViewTrainingPlace::getUrl(['trainingPlaceId' => $trainingPlace->id]) : null;
                         }),

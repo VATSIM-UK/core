@@ -8,6 +8,7 @@ use Filament\Support\Contracts\HasLabel;
 
 enum FieldScore: int implements HasColor, HasLabel
 {
+    case NOT_SCORED = 0;
     case NOT_APPLICABLE = 1;
     case COVERED = 2;
     case DEVELOPING = 3;
@@ -17,7 +18,7 @@ enum FieldScore: int implements HasColor, HasLabel
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::NOT_APPLICABLE => 'N/A',
+            self::NOT_SCORED, self::NOT_APPLICABLE => 'N/A',
             self::COVERED => 'Covered',
             self::DEVELOPING => 'Developing',
             self::GOOD => 'Good',
