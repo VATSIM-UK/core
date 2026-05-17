@@ -96,6 +96,26 @@ php artisan cts:migrate:fresh # Optional if you require a CTS database for tests
 php artisan db:seed # sets up the roles and permissions
 ```
 
+### Seed training panel development data (optional)
+
+If you work on the training panel locally, seed ATC/CTS positions, training positions, and fictional staff/student personas:
+
+```shell
+php artisan cts:migrate:fresh
+php artisan db:seed --class=Database\\Seeders\\LocalDevelopmentTrainingSeeder
+```
+
+| Persona | CID | Use |
+|---------|-----|-----|
+| Staff | `9000001` | Admin, examiner, mentor (impersonate from admin) |
+| Student | `9000010` | Availability checks / warnings |
+| Student (LOA) | `9000011` | Leave of absence |
+| Student (exams) | `9000012` | Exams and mentoring history |
+
+Log in with your [sandbox](https://vatsim.dev/services/connect/sandbox) account (`grant:superman`) first — the persona CIDs are not in OAuth.
+
+Full reference: [`database/seeders/LocalDevelopment/README.md`](../database/seeders/LocalDevelopment/README.md).
+
 ### Create a superuser
 
 *List of accounts available in the OAuth sandbox is available here: [https://vatsim.dev/services/connect/sandbox](https://vatsim.dev/services/connect/sandbox)*
