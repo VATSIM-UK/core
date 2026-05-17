@@ -363,6 +363,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             $fieldRows = [];
 
             $headerEntries = [
+                // Blank entry to fill the space in the column
                 TextEntry::make("header_cat_{$catName}")
                     ->state('')
                     ->hiddenLabel(),
