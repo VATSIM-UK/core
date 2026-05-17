@@ -97,7 +97,7 @@ class MyPendingExams extends Page implements HasTable
                                 ->rows(4),
                         ])
                         ->action(function (ExamBooking $record, array $data, CancelPendingExamService $service): void {
-                            $service->cancel($record, strip_tags($data['reason']), auth()->user());
+                            $service->cancelByStudent($record, strip_tags($data['reason']), auth()->user());
 
                             Notification::make()
                                 ->title('Exam cancelled')
