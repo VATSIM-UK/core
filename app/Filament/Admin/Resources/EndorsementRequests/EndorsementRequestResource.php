@@ -22,6 +22,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class EndorsementRequestResource extends Resource
 {
@@ -92,7 +93,16 @@ class EndorsementRequestResource extends Resource
                 SelectFilter::make('account')
                     ->label('CID')
                     ->multiple()
-                    ->relationship('account', 'id'),
+                    ->relationship(
+                        'account',
+                        'id',
+                        fn (Builder $query) => $query->whereIn(
+                            'id',
+                            EndorsementRequest::query()->select('account_id'),
+                        ),
+                    )
+                    ->searchable()
+                    ->preload(false),
                 SelectFilter::make('actioned_type')
                     ->label('Status')
                     ->multiple()
