@@ -16,6 +16,7 @@ use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
@@ -362,7 +363,6 @@ class ViewMentoringReport extends Page implements HasInfolists
             $fieldRows = [];
 
             $headerEntries = [
-                // Blank entry to fill the space in the column
                 TextEntry::make("header_cat_{$catName}")
                     ->state('')
                     ->hiddenLabel(),
@@ -381,8 +381,10 @@ class ViewMentoringReport extends Page implements HasInfolists
                     ->color($isCurrentSession ? Color::Gray : 'white');
             }
 
-            $fieldRows[] = Grid::make($sessionCount + 1)
-                ->schema($headerEntries);
+            $fieldRows[] = Group::make([
+                Grid::make(['default' => 1, 'lg' => $sessionCount + 1])
+                    ->schema($headerEntries),
+            ])->extraAttributes(['class' => 'hidden lg:block']);
 
             foreach ($fields as $fieldId => $data) {
                 $rowEntries = [
