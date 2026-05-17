@@ -43,6 +43,7 @@ class ViewAccount extends BaseViewRecordPage
             Action::make('request_central_update')
                 ->color('gray')
                 ->icon('heroicon-o-cloud-arrow-down')
+                ->label('Sync Member')
                 ->action(function ($action) {
                     UpdateMember::dispatch($this->record->id);
                     $action->success();

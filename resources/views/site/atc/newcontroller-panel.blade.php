@@ -24,7 +24,7 @@ Our Operations Department produces and maintains a controller pack, which provid
 You can download the [UK Controller Pack](https://docs.vatsim.uk/General/Software%20Downloads/Controller%20Pack%20%26%20Sector%20File/) from the downloads section of our website. You can find install instructions for the Controller Pack on our [documentation website](https://docs.vatsim.uk/General/Use%20of%20Software/EuroScope%20Setup%20Guide/), be sure to follow the instructions carefully.
 
 ### TrackAudio
-[TrackAudio](https://github.com/pierr3/TrackAudio/releases) is a programme we utilise to transmit and receive on ATC frequencies.
+[TrackAudio]({{ route('api.trackaudio.latest') }}) is a programme we utilise to transmit and receive on ATC frequencies.
 This software will allow you to connect and observe current controllers on frequency.
 
 ### TeamSpeak

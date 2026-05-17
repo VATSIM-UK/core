@@ -14,6 +14,7 @@ use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
@@ -165,7 +166,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(ManageMentors::class, ['category' => $category])
             ->callTableAction('addMentor', data: [
-                'account_id' => $target->id,
+                'account_ids' => [$target->id],
                 'position_ids' => [$trainingPositionOne->id, $trainingPositionTwo->id],
             ])
             ->assertHasNoTableActionErrors();
@@ -198,14 +199,14 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         $target = Account::factory()->create();
         Member::factory()->create(['cid' => $target->id]);
 
-        CtsPosition::firstOrCreate(['callsign' => 'P1_MENTOR']);
+        CtsPosition::firstOrCreate(['callsign' => 'P1_PPL(A)']);
 
         $pplQual = $this->getOrCreateQualification('PPL');
 
         Livewire::actingAs($this->panelUser)
             ->test(ManageMentors::class, ['category' => $category])
             ->callTableAction('addMentor', data: [
-                'account_id' => $target->id,
+                'account_ids' => [$target->id],
                 'position_ids' => [$pplQual->id],
             ])
             ->assertHasNoTableActionErrors();
@@ -219,7 +220,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
 
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $target->member->id,
-            'position_id' => CtsPosition::where('callsign', 'P1_MENTOR')->firstOrFail()->id,
+            'position_id' => CtsPosition::where('callsign', 'P1_PPL(A)')->firstOrFail()->id,
             'status' => PositionValidationStatusEnum::Mentor->value,
         ], 'cts');
 
@@ -303,6 +304,108 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
             'member_id' => $mentor->member->id,
             'position_id' => $ctsPosition->id,
         ], 'cts');
+    }
+
+    #[Test]
+    public function it_displays_never_if_the_mentor_has_no_valid_sessions_in_the_category(): void
+    {
+        $this->panelUser->givePermissionTo('training.mentors.view.atc');
+        $category = MentorPermissionService::atcCategories()[0];
+
+        $mentor = Account::factory()->create();
+        Member::factory()->create(['cid' => $mentor->id]);
+
+        $callsign = 'EGLL_GND';
+        $trainingPosition = $this->createTrainingPosition($category, $callsign);
+
+        app(MentorPermissionService::class)->assignToMentorable($mentor, $trainingPosition, $this->panelUser, $category);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageMentors::class, ['category' => $category])
+            ->assertTableColumnStateSet('last_mentored', 'Never', record: $mentor);
+    }
+
+    #[Test]
+    public function it_displays_the_correct_last_mentored_date_for_a_mentor(): void
+    {
+        $this->panelUser->givePermissionTo('training.mentors.view.atc');
+        $category = MentorPermissionService::atcCategories()[0];
+
+        $mentor = Account::factory()->create();
+        $ctsMember = Member::factory()->create(['cid' => $mentor->id]);
+
+        $callsign = 'EGKK_GND';
+        $trainingPosition = $this->createTrainingPosition($category, $callsign);
+
+        app(MentorPermissionService::class)->assignToMentorable($mentor, $trainingPosition, $this->panelUser, $category);
+
+        $date = now()->subDays(5);
+
+        DB::connection('cts')->table('sessions')->insert([
+            'mentor_id' => $ctsMember->id,
+            'position' => $callsign,
+            'progress_sheet_id' => 1,
+            'taken' => 1,
+            'session_done' => 1,
+            'cancelled_datetime' => null,
+            'taken_date' => $date->format('Y-m-d H:i:s'),
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageMentors::class, ['category' => $category])
+            ->assertTableColumnStateSet('last_mentored', $date->format('d/m/Y'), record: $mentor);
+    }
+
+    #[Test]
+    public function it_ignores_cancelled_or_incomplete_sessions_when_calculating_last_mentored(): void
+    {
+        $this->panelUser->givePermissionTo('training.mentors.view.atc');
+        $category = MentorPermissionService::atcCategories()[0];
+
+        $mentor = Account::factory()->create();
+        $ctsMember = Member::factory()->create(['cid' => $mentor->id]);
+
+        $callsign = 'EGKK_GND';
+        $trainingPosition = $this->createTrainingPosition($category, $callsign);
+
+        app(MentorPermissionService::class)->assignToMentorable($mentor, $trainingPosition, $this->panelUser, $category);
+
+        $validDate = now()->subDays(10);
+        $invalidDate = now()->subDays(2);
+
+        DB::connection('cts')->table('sessions')->insert([
+            'mentor_id' => $ctsMember->id,
+            'position' => $callsign,
+            'progress_sheet_id' => 1,
+            'taken' => 1,
+            'session_done' => 1,
+            'cancelled_datetime' => null,
+            'taken_date' => $validDate->format('Y-m-d H:i:s'),
+        ]);
+
+        DB::connection('cts')->table('sessions')->insert([
+            'mentor_id' => $ctsMember->id,
+            'position' => $callsign,
+            'progress_sheet_id' => 1,
+            'taken' => 1,
+            'session_done' => 1,
+            'cancelled_datetime' => $invalidDate->format('Y-m-d H:i:s'),
+            'taken_date' => $invalidDate->format('Y-m-d H:i:s'),
+        ]);
+
+        DB::connection('cts')->table('sessions')->insert([
+            'mentor_id' => $ctsMember->id,
+            'position' => $callsign,
+            'progress_sheet_id' => 1,
+            'taken' => 1,
+            'session_done' => 0,
+            'cancelled_datetime' => null,
+            'taken_date' => $invalidDate->format('Y-m-d H:i:s'),
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageMentors::class, ['category' => $category])
+            ->assertTableColumnStateSet('last_mentored', $validDate->format('d/m/Y'), record: $mentor);
     }
 
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition
