@@ -45,6 +45,8 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     public Collection $otherSessions;
 
+    public int $otherSessionsPage = 1;
+
     public function mount(): void
     {
         $this->session = Session::with([
@@ -195,9 +197,28 @@ class ViewMentoringReport extends Page implements HasInfolists
     public function previousSessionsInfolist(Schema $schema): Schema
     {
         return $schema
-            ->state(['sessions' => $this->otherSessions->take(4)])
+            ->state(fn () => ['sessions' => $this->otherSessions->forPage($this->otherSessionsPage, 3)->values()])
             ->components([
                 Section::make('Other Sessions')
+                    ->headerActions([
+                        Action::make('previousPage')
+                            ->icon('heroicon-m-chevron-left')
+                            ->hiddenLabel()
+                            ->link()
+                            ->tooltip('Previous 3 sessions')
+                            ->disabled(fn () => $this->otherSessionsPage <= 1)
+                            ->action(fn () => $this->otherSessionsPage--)
+                            ->visible(fn () => $this->otherSessions->count() > 3),
+
+                        Action::make('nextPage')
+                            ->icon('heroicon-m-chevron-right')
+                            ->hiddenLabel()
+                            ->link()
+                            ->tooltip('Next 3 sessions')
+                            ->disabled(fn () => ($this->otherSessionsPage * 3) >= $this->otherSessions->count())
+                            ->action(fn () => $this->otherSessionsPage++)
+                            ->visible(fn () => $this->otherSessions->count() > 3),
+                    ])
                     ->schema([
                         RepeatableEntry::make('sessions')
                             ->hiddenLabel()
