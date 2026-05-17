@@ -29,7 +29,7 @@ enum FieldScore: int implements HasColor, HasLabel
     public function getColor(): string|array|null
     {
         return match ($this) {
-            self::NOT_APPLICABLE => 'gray',
+            self::NOT_SCORED, self::NOT_APPLICABLE => 'gray',
             self::COVERED => Color::Orange,
             self::DEVELOPING => Color::Amber,
             self::GOOD => Color::Lime,
