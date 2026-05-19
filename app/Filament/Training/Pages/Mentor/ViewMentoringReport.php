@@ -152,23 +152,56 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                 $uniqueKey = $sheet->field_id ?? $index;
 
-                // If it's the last field in the category we don't want the divider
+                $previousSheet = $this->otherSessions
+                    ->where('taken_date', '<=', $this->session->taken_date)
+                    ->sortByDesc('taken_date')
+                    ->pluck('reportSheets')
+                    ->flatten()
+                    ->where('field_id', $sheet->field_id)
+                    ->first();
+
+                $previousScore = $previousSheet ? $previousSheet->field_score : 'N/A';
+
+                $allScores = $this->allSessions
+                    ->pluck('reportSheets')
+                    ->flatten()
+                    ->where('field_id', $sheet->field_id)
+                    ->pluck('field_score')
+                    ->push($sheet->field_score)
+                    ->filter();
+
+                $bestScore = $allScores->isNotEmpty() ? $allScores->sortByDesc(fn ($score) => $score instanceof \App\Enums\FieldScore ? $score->value : (int) $score)->first() : 'N/A';
+
                 $rowClasses = 'pb-4 mb-6';
                 if (! $isLast) {
                     $rowClasses .= ' border-b border-gray-200 dark:border-white/10';
                 }
 
-                $sheetRows[] = Grid::make(12)
+                $sheetRows[] = Grid::make(14)
                     ->schema([
                         TextEntry::make("field_name_{$uniqueKey}")
                             ->state($sheet->field->field)
                             ->hiddenLabel()
                             ->size(TextSize::Large)
                             ->weight(FontWeight::Bold)
-                            ->columnSpan(10),
+                            ->columnSpan(8),
+
+                        TextEntry::make("field_best_{$uniqueKey}")
+                            ->label('Best')
+                            ->state($bestScore)
+                            ->badge()
+                            ->icon('heroicon-m-trophy')
+                            ->columnSpan(2),
+
+                        TextEntry::make("field_previous_{$uniqueKey}")
+                            ->label('Previous')
+                            ->state($previousScore)
+                            ->badge()
+                            ->icon('heroicon-m-clock')
+                            ->columnSpan(2),
 
                         TextEntry::make("field_score_{$uniqueKey}")
-                            ->hiddenLabel()
+                            ->label('Current')
                             ->state($sheet->field_score)
                             ->badge()
                             ->columnSpan(2),
