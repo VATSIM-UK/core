@@ -26,24 +26,14 @@ class ExamCancelledExaminerNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        $examBooking = $this->examBooking->load(['student']);
-
-        $studentName = $examBooking->student?->account?->name ?? 'Unknown';
-        $studentCid = $examBooking->student?->account?->id ?? 'Unknown';
+        $this->examBooking->loadMissing('student');
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
-            ->subject("{$examBooking->exam} Practical Exam Cancelled")
+            ->subject("{$this->examBooking->exam} Practical Exam Cancelled")
             ->view('emails.training.exams.exam_cancelled_examiner', [
                 'recipient' => $notifiable,
-                'examBooking' => $examBooking,
-                'examType' => $examBooking->exam,
-                'position' => $examBooking->position_1,
-                'takenDate' => $examBooking->taken_date,
-                'takenFrom' => $examBooking->taken_from,
-                'takenTo' => $examBooking->taken_to,
-                'studentName' => $studentName,
-                'studentCid' => $studentCid,
+                'examBooking' => $this->examBooking,
                 'reason' => $this->reason,
             ]);
     }

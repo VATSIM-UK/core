@@ -7,6 +7,7 @@ use App\Filament\Admin\Resources\EndorsementRequests\Pages\ListEndorsementReques
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\EndorsementRequest;
 use App\Notifications\Mship\Endorsement\EndorsementRequestCreated;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
@@ -14,6 +15,26 @@ use Tests\Feature\Admin\BaseAdminTestCase;
 
 class EndorsementRequestCreateTest extends BaseAdminTestCase
 {
+    public function test_list_page_loads_when_many_accounts_exist_without_endorsement_requests(): void
+    {
+        Account::factory()->count(50)->create();
+
+        $accountWithRequest = Account::factory()->create();
+        $positionGroup = PositionGroup::factory()->create();
+        $endorsementRequest = EndorsementRequest::factory()->create([
+            'account_id' => $accountWithRequest->id,
+            'endorsable_id' => $positionGroup->id,
+            'endorsable_type' => PositionGroup::class,
+        ]);
+
+        $this->actingAsAdminUser('endorsement-request.access');
+
+        Livewire::test(ListEndorsementRequests::class)
+            ->assertSuccessful()
+            ->filterTable('account', [$accountWithRequest->id])
+            ->assertCanSeeTableRecords([$endorsementRequest]);
+    }
+
     public function test_create_not_visible_when_no_create_permission()
     {
         $this->actingAsAdminUser('endorsement-request.access');
