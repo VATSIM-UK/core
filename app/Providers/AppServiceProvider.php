@@ -7,7 +7,6 @@ use App\Http\Controllers\BaseController;
 use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
 use App\Libraries\UKCP;
-use App\Support\TableMacros;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Artisan;
@@ -70,8 +69,6 @@ class AppServiceProvider extends ServiceProvider
             ->csrf();
 
         $this->configureParallelTesting();
-
-        TableMacros::register();
     }
 
     /**

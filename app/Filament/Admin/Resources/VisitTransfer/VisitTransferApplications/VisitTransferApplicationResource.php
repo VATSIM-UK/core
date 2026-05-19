@@ -47,7 +47,7 @@ class VisitTransferApplicationResource extends Resource
             ->columns([
                 TextColumn::make('public_id')->label('Public ID')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('account_id')->label('CID')->searchable(),
-                TextColumn::make('account.name')->label('Name')->searchableByName(),
+                TextColumn::make('account.name')->label('Name')->searchable(['name_first', 'name_last']),
                 TextColumn::make('facility.name')->label('Facility Name'),
                 TextColumn::make('status')->label('Status')
                     ->badge()
