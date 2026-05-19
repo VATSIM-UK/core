@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
+use App\Livewire\Training\CriteriaCategoryTable;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\MentorPermissionService;
@@ -16,11 +17,10 @@ use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
-use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
 use Illuminate\Support\Collection;
@@ -327,91 +327,32 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     public function getSessionsByCriteriaTab(): array
     {
-        $sessions = $this->allSessions->sortBy('taken_date');
-        $sessionCount = $sessions->count();
+        $sessionIds = $this->allSessions->sortBy('taken_date')->pluck('id')->all();
 
-        if ($sessionCount === 0) {
-            return [TextEntry::make('empty')->hiddenLabel()->state('No sessions found.')];
-        }
+        $categories = $this->allSessions
+            ->flatMap(fn (Session $session) => $session->reportSheets)
+            ->map(fn ($sheet) => $sheet->field?->category?->catName)
+            ->filter()
+            ->unique()
+            ->values();
 
-        $criteriaData = [];
-        foreach ($sessions as $session) {
-            foreach ($session->reportSheets as $sheet) {
-                $catName = $sheet->field?->category?->catName;
-
-                $fieldId = $sheet->field_id;
-                $fieldName = $sheet->field?->field;
-                $sortOrder = $sheet->field?->sort_order ?? $fieldId;
-
-                if (! isset($criteriaData[$catName][$fieldId])) {
-                    $criteriaData[$catName][$fieldId] = [
-                        'name' => $fieldName,
-                        'sort' => $sortOrder,
-                        'scores' => [],
-                    ];
-                }
-
-                $criteriaData[$catName][$fieldId]['scores'][$session->id] = $sheet->field_score;
-            }
-        }
-
-        $sections = [];
-
-        foreach ($criteriaData as $catName => $fields) {
-            uasort($fields, fn ($a, $b) => $a['sort'] <=> $b['sort']);
-
-            $fieldRows = [];
-
-            $headerEntries = [
-                // Blank entry to fill the space in the column
-                TextEntry::make("header_cat_{$catName}")
-                    ->state('')
-                    ->hiddenLabel(),
-            ];
-
-            foreach ($sessions as $session) {
-                $isCurrentSession = $session->id === $this->session->id;
-
-                $headerEntries[] = TextEntry::make("header_date_{$session->id}_{$catName}")
-                    ->state(Carbon::parse($session->taken_date)->format('d/m/Y'))
+        if ($categories->isEmpty()) {
+            return [
+                TextEntry::make('no_sessions')
                     ->hiddenLabel()
-                    ->url($isCurrentSession ? null : static::getUrl(['sessionId' => $session->id]))
-                    ->openUrlInNewTab()
-                    ->size(TextSize::Small)
-                    ->weight(FontWeight::SemiBold)
-                    ->color($isCurrentSession ? Color::Gray : 'white');
-            }
-
-            $fieldRows[] = Group::make([
-                Grid::make(['default' => 1, 'lg' => $sessionCount + 1])
-                    ->schema($headerEntries),
-            ])->extraAttributes(['class' => 'hidden lg:block']);
-
-            foreach ($fields as $fieldId => $data) {
-                $rowEntries = [
-                    TextEntry::make("criteria_{$catName}_{$fieldId}")
-                        ->state($data['name'])
-                        ->hiddenLabel()
-                        ->size(TextSize::Small)
-                        ->weight(FontWeight::SemiBold),
-                ];
-
-                foreach ($sessions as $session) {
-                    $score = $data['scores'][$session->id] ?? '-';
-                    $rowEntries[] = TextEntry::make("score_{$catName}_{$fieldId}_{$session->id}")
-                        ->state($score)
-                        ->hiddenLabel()
-                        ->badge();
-                }
-
-                $fieldRows[] = Grid::make($sessionCount + 1)->schema($rowEntries)->extraAttributes([
-                    'class' => 'items-center border-b border-gray-200 dark:border-white/10 py-4',
-                ]);
-            }
-
-            $sections[] = Section::make($catName)->schema([Grid::make(1)->schema($fieldRows)->gap(false)]);
+                    ->state('No sessions found.'),
+            ];
         }
 
-        return $sections;
+        return $categories
+            ->map(fn (string $catName) => Section::make($catName)->schema([
+                Livewire::make(CriteriaCategoryTable::class, [
+                    'currentSessionId' => $this->session->id,
+                    'sessionIds' => $sessionIds,
+                    'categoryName' => $catName,
+                ]),
+            ])
+            )
+            ->all();
     }
 }
