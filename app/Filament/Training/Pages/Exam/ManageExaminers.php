@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Filament\Support\NameColumn;
 use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Mship\Account;
 use Filament\Actions\Action;
@@ -130,7 +131,7 @@ class ManageExaminers extends Page implements HasTable
             ->query($this->examinersQuery($roleName))
             ->columns([
                 TextColumn::make('id')->label('CID')->searchable(),
-                TextColumn::make('name')->searchable(['name_first', 'name_last']),
+                NameColumn::make('name'),
             ])
             ->headerActions([
                 Action::make('addMember')

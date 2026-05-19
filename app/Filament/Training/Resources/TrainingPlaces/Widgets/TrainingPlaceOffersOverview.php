@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Resources\TrainingPlaces\Widgets;
 
 use App\Enums\TrainingPlaceOfferStatus;
+use App\Filament\Support\NameColumn;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\WaitingList;
 use App\Services\Training\TrainingPlaceOfferService;
@@ -44,9 +45,8 @@ class TrainingPlaceOffersOverview extends BaseWidget
                     ->latest()
             )
             ->columns([
-                TextColumn::make('waitingListAccount.account.name')
-                    ->label('Student')
-                    ->searchable(['name_first', 'name_last']),
+                NameColumn::make('waitingListAccount.account.name')
+                    ->label('Student'),
 
                 TextColumn::make('waitingListAccount.account_id')
                     ->label('CID')

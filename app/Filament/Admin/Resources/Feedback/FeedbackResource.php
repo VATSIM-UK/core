@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Feedback;
 use App\Filament\Admin\Resources\Feedback\Pages\ListFeedback;
 use App\Filament\Admin\Resources\Feedback\Pages\ViewFeedback;
 use App\Filament\Admin\Resources\Feedback\Widgets\FeedbackOverview;
+use App\Filament\Support\NameColumn;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form as FeedbackForm;
 use App\Models\Mship\Qualification;
@@ -138,7 +139,7 @@ class FeedbackResource extends Resource
                     ->sortable(),
                 TextColumn::make('form.name')->label('Feedback Type')
                     ->sortable(),
-                TextColumn::make('account.name')->label('Subject')->searchable(['name_first', 'name_last']),
+                NameColumn::make('account.name')->label('Subject'),
                 TextColumn::make('submitter.name')->label('Submitted By')->visible(self::canSeeSubmitter()),
                 TextColumn::make('created_at')
                     ->dateTime('d/m/Y H:i')
