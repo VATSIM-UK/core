@@ -6,6 +6,7 @@ namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Livewire\Training\CriteriaCategoryTable;
+use App\Livewire\Training\SessionCriteriaTable;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\MentorPermissionService;
@@ -275,42 +276,10 @@ class ViewMentoringReport extends Page implements HasInfolists
     {
         return $this->allSessions
             ->map(function (Session $session): Section {
-                $grouped = $session->reportSheets
-                    ->groupBy(fn ($sheet) => $sheet->field->category->catName);
-
-                $rows = [];
-
-                foreach ($grouped as $category => $sheets) {
-                    $columns = $sheets
-                        ->sortBy(fn ($sheet) => $sheet->field->sort_order ?? $sheet->field_id)
-                        ->values()
-                        ->map(function ($sheet) {
-                            return Grid::make(1)
-                                ->schema([
-                                    TextEntry::make("field_{$sheet->id}")
-                                        ->state($sheet->field->field)
-                                        ->hiddenLabel()
-                                        ->size(TextSize::Small)
-                                        ->weight(FontWeight::SemiBold),
-
-                                    TextEntry::make("grade_{$sheet->id}")
-                                        ->state($sheet->field_score)
-                                        ->hiddenLabel()
-                                        ->badge(),
-                                ]);
-                        })
-                        ->all();
-
-                    $rows[] = Grid::make(6)
-                        ->schema($columns);
-                }
-
                 $isCurrentSession = $session->id === $this->session->id;
-                $sectionHeader = Carbon::parse($session->taken_date)->format('d/m/Y');
-                $sectionDescription = $session->mentor?->account?->name;
 
-                return Section::make($sectionHeader)
-                    ->description($sectionDescription)
+                return Section::make(Carbon::parse($session->taken_date)->format('d/m/Y'))
+                    ->description($session->mentor?->account?->name)
                     ->headerActions([
                         Action::make("viewReport{$session->id}")
                             ->label('View Report')
@@ -320,7 +289,11 @@ class ViewMentoringReport extends Page implements HasInfolists
                             ->openUrlInNewTab(! $isCurrentSession)
                             ->hidden($isCurrentSession),
                     ])
-                    ->schema($rows);
+                    ->schema([
+                        Livewire::make(SessionCriteriaTable::class, [
+                            'sessionId' => $session->id,
+                        ]),
+                    ]);
             })
             ->all();
     }
