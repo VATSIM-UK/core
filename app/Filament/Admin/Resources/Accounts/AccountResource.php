@@ -160,7 +160,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                     ->searchable()
                     ->label('Discord ID')
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('name')->sortable()->searchable(['name_first', 'name_last']),
+                TextColumn::make('name')->sortable()->searchableByName(),
                 TextColumn::make('qualification_atc')->sortable()->label('ATC Rating'),
                 TextColumn::make('qualification_pilot')->sortable()->label('Pilot Rating'),
                 TextColumn::make('state')

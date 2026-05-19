@@ -46,7 +46,7 @@ class TrainingPlaceOffersOverview extends BaseWidget
             ->columns([
                 TextColumn::make('waitingListAccount.account.name')
                     ->label('Student')
-                    ->searchable(['name_first', 'name_last']),
+                    ->searchableByName(),
 
                 TextColumn::make('waitingListAccount.account_id')
                     ->label('CID')

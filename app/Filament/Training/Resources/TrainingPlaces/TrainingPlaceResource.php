@@ -78,7 +78,7 @@ class TrainingPlaceResource extends Resource
 
                 TextColumn::make('account.name')
                     ->label('Student')
-                    ->searchable(['name_first', 'name_last'])
+                    ->searchableByName()
                     ->sortable()
                     ->url(fn (TrainingPlace $record) => ViewTrainingPlace::getUrl(['trainingPlaceId' => $record->id])),
 

@@ -130,7 +130,7 @@ class ManageExaminers extends Page implements HasTable
             ->query($this->examinersQuery($roleName))
             ->columns([
                 TextColumn::make('id')->label('CID')->searchable(),
-                TextColumn::make('name')->searchable(['name_first', 'name_last']),
+                TextColumn::make('name')->searchableByName(),
             ])
             ->headerActions([
                 Action::make('addMember')
