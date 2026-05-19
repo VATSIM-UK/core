@@ -1,0 +1,33 @@
+[[repos]]
+repo = "https://github.com/pre-commit/pre-commit-hooks"
+rev = "v6.0.0"
+hooks = [
+    { id = "check-yaml" },
+    { id = "end-of-file-fixer" },
+    { id = "trailing-whitespace" },
+    { id = "end-of-file-fixer" },
+    { id = "check-toml" },
+    { id = "pretty-format-json", args = [
+        "--autofix",
+    ], exclude = "composer\\.lock|package-lock\\.json" },
+]
+
+
+[[repos]]
+repo = "local"
+hooks = [
+    { id = "laravel-pint", name = "Laravel Pint", language = "system", entry = ".development/hooks/pre-commit", types = [
+        "php",
+    ], pass_filenames = false },
+]
+
+[[repos]]
+repo = "local"
+hooks = [
+    { id = "blade-formatter", name = "Blade Formatter", language = "system", entry = "npx --yes blade-formatter --write", files = "\\.blade\\.php$" },
+]
+
+[[repos]]
+repo = "https://github.com/igorshubovych/markdownlint-cli"
+rev = "v0.48.0"
+hooks = [{ id = "markdownlint" }]
