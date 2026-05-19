@@ -162,10 +162,6 @@
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
-                                <td>Fergus Walsh</td>
-                            </tr>
-                            <tr>
-                                <td>Division Instructor</td>
                                 <td>Charlie Watson</td>
                             </tr>
                             <tr>
@@ -195,7 +191,7 @@
                             </tr>
                             <tr>
                                 <td>TG Instructor (Heathrow)</td>
-                                <td>John Batten</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                         </table>
                     </div>
