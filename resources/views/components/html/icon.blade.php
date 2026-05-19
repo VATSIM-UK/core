@@ -1,1 +1,1 @@
-<i class="{{ $type }} {{ $type."-".$key }}"></i>
+<i class="{{ $type }} {{ $type . '-' . $key }}"></i>

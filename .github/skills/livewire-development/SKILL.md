@@ -28,6 +28,7 @@ Use the `php artisan make:livewire [Posts\CreatePost]` Artisan command to create
 ### Key Changes From Livewire 2
 
 These things changed in Livewire 3, but may not have been updated in this application. Verify this application's setup to ensure you follow existing conventions.
+
 - Use `wire:model.live` for real-time updates, `wire:model` is now deferred by default.
 - Components now use the `App\Livewire` namespace (not `App\Http\Livewire`).
 - Use `$this->dispatch()` to dispatch events (not `emit` or `dispatchBrowserEvent`).

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,19 +11,21 @@
 
     <title>{{ isset($title) ? "VATSIM UK | $title" : 'VATSIM UK' }}</title>
 </head>
+
 <body>
-<div class="flex w-screen h-screen items-center justify-center text-center bg-gray-100 overflow-y-hidden">
-    <div class="flex flex-col h-screen justify-center lg:px-8 md:w-2/3 px-6 py-12 w-full">
+    <div class="flex w-screen h-screen items-center justify-center text-center bg-gray-100 overflow-y-hidden">
+        <div class="flex flex-col h-screen justify-center lg:px-8 md:w-2/3 px-6 py-12 w-full">
             <div class="flex justify-center mb-2">
-            <a href="{{ route('site.home') }}">
-                <img width="200" src="{{ asset('images/branding/vatsimuk_blackblue.png') }}" unselectable="on">
-            </a>
+                <a href="{{ route('site.home') }}">
+                    <img width="200" src="{{ asset('images/branding/vatsimuk_blackblue.png') }}" unselectable="on">
+                </a>
+            </div>
+            <div class="flex justify-center overflow-y-auto">
+                {{ $slot }}
+            </div>
         </div>
-        <div class="flex justify-center overflow-y-auto">
-        {{ $slot }}
-        </div>
-    </div>
-    @filamentScripts
-    @livewire('notifications')
+        @filamentScripts
+        @livewire('notifications')
 </body>
+
 </html>

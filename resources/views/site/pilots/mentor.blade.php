@@ -8,7 +8,7 @@
                 <div class="panel-heading"><i class="glyphicon glyphicon-apple"></i> &thinsp; Becoming a Mentor
                 </div>
                 <div class="panel-body">
-                    Interested in joining our team? The requirements to join the team are simple:<br/>
+                    Interested in joining our team? The requirements to join the team are simple:<br />
 
                     <ul>
                         <li>Hold the subsequent rating that you wish to mentor, e.g if you wish to mentor P1 then you
@@ -17,16 +17,16 @@
                         <li>Be a member in good standing.</li>
                     </ul>
 
-                    @if(Auth::user() && $_account->primary_state->code == 'DIVISION')
+                    @if (Auth::user() && $_account->primary_state->code == 'DIVISION')
                         <strong>{{ $_account->name_first }}</strong>, <strong>you are</strong> a Division member, so you
-                        can get started straight away!<br/>
+                        can get started straight away!<br />
                         You can find details on how to start mentoring below.
                     @elseif(Auth::user())
                         <strong>{{ $_account->name_first }}</strong>, <strong>you're not</strong> currently a Division
-                        member!<br/>
+                        member!<br />
                         You can find details on how to start mentoring below.
                     @else
-                        You will need to be a member of VATSIM to become a mentor.<br/>
+                        You will need to be a member of VATSIM to become a mentor.<br />
                         Already a member? <a href="{{ route('login') }}">Click here to login</a> and find out which
                         route is the most applicable to you.
                     @endif
@@ -37,8 +37,7 @@
 
     <div class="row">
 
-        <div class="col-md-4 col-md-offset-2"
-             @if(Auth::user() && $_account->primary_state->code !== 'DIVISION')style="opacity: 0.3"@endif>
+        <div class="col-md-4 col-md-offset-2" @if (Auth::user() && $_account->primary_state->code !== 'DIVISION') style="opacity: 0.3" @endif>
             <div class="panel panel-uk-success">
                 <div class="panel-heading"><i class="glyphicon glyphicon-ok-circle"></i> &thinsp; I am a member of the
                     UK division
@@ -46,7 +45,8 @@
                 <div class="panel-body">
                     <ol>
                         <li>
-                            <a href="https://helpdesk.vatsim.uk/" rel="external nofollow">Send us a ticket</a> using&nbsp;our
+                            <a href="https://helpdesk.vatsim.uk/" rel="external nofollow">Send us a ticket</a>
+                            using&nbsp;our
                             <strong>Helpdesk</strong>, letting us know what course you would like to mentor on
                         </li>
                         <li>
@@ -58,7 +58,7 @@
                         </li>
                         <li>
                             Once your mentoring permissions have been assigned navigate to our <a
-                                    href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
+                                href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
                                 (CTS</a>).
                         </li>
                         <li>
@@ -79,8 +79,7 @@
             </div>
         </div>
 
-        <div class="col-md-4"
-             @if(Auth::user() && $_account->primary_state->code == 'DIVISION')style="opacity: 0.3"@endif>
+        <div class="col-md-4" @if (Auth::user() && $_account->primary_state->code == 'DIVISION') style="opacity: 0.3" @endif>
             <div class="panel panel-uk-danger">
                 <div class="panel-heading"><i class="glyphicon glyphicon-remove-circle"></i> &thinsp; I am not a member
                     of the UK divison
@@ -101,7 +100,7 @@
                         </li>
                         <li>
                             Once your mentoring permissions have been assigned navigate to our <a
-                                    href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
+                                href="https://cts.vatsim.uk/" rel="external nofollow">Central Training System
                                 (CTS</a>).
                         </li>
                         <li>
@@ -125,4 +124,3 @@
     </div>
 
 @stop
-

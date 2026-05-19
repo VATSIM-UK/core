@@ -19,9 +19,11 @@
 
                     <p>The programme consists of 3 different areas for members to engage with a mandatory Moodle course,
                         one-on-one sessions, and group sessions.</p>
-                    
-                    <p>As part of the VATSIM Achievement Badge Programme, pilots who successfully complete both theory and practical training
-                        are recognised with an official achievement badge, which will be displayed on their VATSIM Radar profile.</p>
+
+                    <p>As part of the VATSIM Achievement Badge Programme, pilots who successfully complete both theory and
+                        practical training
+                        are recognised with an official achievement badge, which will be displayed on their VATSIM Radar
+                        profile.</p>
 
                     <h3>The Moodle</h3>
 
@@ -99,7 +101,8 @@
                     </ul>
 
                     <p>
-                        The Moodle assessment is open book, with a time limit of 1 hour and a pass grade of 75%. The exam may
+                        The Moodle assessment is open book, with a time limit of 1 hour and a pass grade of 75%. The exam
+                        may
                         be retaken after a cooldown period, allowing you to revise the necessary areas.
                     </p>
 
@@ -214,8 +217,9 @@
                                 </p>
 
                                 <p>
-                                    Non UK home members must submit a visitor application via the <a href="https://www.vatsim.uk/visit-transfer/"
-                                        rel="external nofollow noopener" target="_blank">Visiting Dashboard</a> before commencing training.
+                                    Non UK home members must submit a visitor application via the <a
+                                        href="https://www.vatsim.uk/visit-transfer/" rel="external nofollow noopener"
+                                        target="_blank">Visiting Dashboard</a> before commencing training.
                                 </p>
 
                                 <p>
@@ -235,7 +239,8 @@
 
                                 <ul>
                                     <li style="margin-left:18pt;">
-                                        At least 200 hours of flying on the VATSIM network, with the exception of pilots holding a real life licence (considered on a per-case basis);
+                                        At least 200 hours of flying on the VATSIM network, with the exception of pilots
+                                        holding a real life licence (considered on a per-case basis);
                                     </li>
                                     <li style="margin-left:18pt;">
                                         Be a member in good standing in the division;

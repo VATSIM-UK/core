@@ -83,6 +83,7 @@ tests/
 ## Database
 
 Two MySQL connections are always active:
+
 - `mysql` (default) — Core application database (`DB_MYSQL_NAME`)
 - `cts` — Controller Training System database (`CTS_DATABASE`)
 
@@ -176,6 +177,7 @@ Two commonly used test helpers are `$this->user` (a regular `member`-role accoun
 ## Creating New Features
 
 When creating new features follow the existing patterns:
+
 - **Models**: Extend `App\Models\Model`, add traits from `App\Models\Concerns/` as needed.
 - **Filament resources**: Place in `app/Filament/Admin/Resources/` (admin panel) or `app/Filament/Training/` (training panel).
 - **Livewire components**: Place in `app/Livewire/` with corresponding Blade view in `resources/views/livewire/`.

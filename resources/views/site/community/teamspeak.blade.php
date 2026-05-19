@@ -48,8 +48,8 @@
                                     Conduct</a>;
                             </li>
                             <li>
-                                <a href="https://vatsim.net/docs/policy/code-of-regulations"
-                                   rel="external nofollow">Code of Regulations</a>;
+                                <a href="https://vatsim.net/docs/policy/code-of-regulations" rel="external nofollow">Code of
+                                    Regulations</a>;
                             </li>
                             <li>
                                 <a href="http://vats.im/ua" rel="external nofollow" target="_blank">User
@@ -66,7 +66,7 @@
                             from the server. If you wish to report a member breaking the rules, please approach
                             a member of staff (who is not currently in a coordination, mentoring or examination
                             room) or utilise the&nbsp;<a href="http://helpdesk.vatsim.uk/"
-                                                         rel="external nofollow">helpdesk</a>.
+                                rel="external nofollow">helpdesk</a>.
                         </p>
 
                         <ol>
@@ -249,8 +249,10 @@
 
                 <ol>
                     <li>
-                        Go to the&nbsp;<a href="https://teamspeak.com/en/downloads/#ts3client" rel="external nofollow" target="_blank">TeamSpeak
-                            website</a>&nbsp;and download the latest TeamSpeak 3 client appropriate for your operating system.
+                        Go to the&nbsp;<a href="https://teamspeak.com/en/downloads/#ts3client" rel="external nofollow"
+                            target="_blank">TeamSpeak
+                            website</a>&nbsp;and download the latest TeamSpeak 3 client appropriate for your operating
+                        system.
                     </li>
                 </ol>
 
@@ -260,7 +262,8 @@
 
                 <ol>
                     <li>
-                        Visit&nbsp;<a href="{{ route('teamspeak.new') }}" rel="external nofollow">the TeamSpeak registration page.</a>
+                        Visit&nbsp;<a href="{{ route('teamspeak.new') }}" rel="external nofollow">the TeamSpeak registration
+                            page.</a>
                     </li>
                     <li>
                         Follow the on-screen instructions.
@@ -268,8 +271,8 @@
                 </ol>
 
                 <p>
-                    If you have any issues with registering on our server, please&nbsp;<a
-                            href="http://helpdesk.vatsim.uk/" rel="external nofollow">submit a ticket</a>.
+                    If you have any issues with registering on our server, please&nbsp;<a href="http://helpdesk.vatsim.uk/"
+                        rel="external nofollow">submit a ticket</a>.
                 </p>
             </div>
         </div>

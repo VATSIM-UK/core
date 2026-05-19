@@ -7,15 +7,14 @@
     <ul>
         @foreach ($feedback as $item)
             @if ($item->targeted)
-              <li><strong>{{ $item->account->name }}</strong> - {{ $item->form->name }}
-                  (Submitted: {{ $item->created_at->toDateTimeString() }})
-              </li>
+                <li><strong>{{ $item->account->name }}</strong> - {{ $item->form->name }}
+                    (Submitted: {{ $item->created_at->toDateTimeString() }})
+                </li>
             @else
-              <li><strong>{{ $item->form->name }}
-                  (Submitted: {{ $item->created_at->toDateTimeString() }})
-              </li>
+                <li><strong>{{ $item->form->name }}
+                        (Submitted: {{ $item->created_at->toDateTimeString() }})
+                </li>
             @endif
-
         @endforeach
     </ul>
 

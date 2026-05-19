@@ -3,6 +3,7 @@
 ## Use Higher-Order Messages for Simple Operations
 
 Incorrect:
+
 ```php
 $users->each(function (User $user) {
     $user->markAsVip();

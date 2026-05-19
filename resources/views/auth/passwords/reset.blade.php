@@ -10,11 +10,11 @@
                     {{ session('status') }}
                 </div>
             @endif
-            
+
             <p>
                 To reset your secondary password, complete the form below.
             </p>
-            
+
             <form class="form-horizontal" role="form" method="POST" action="{{ route('password.request') }}">
                 {{ csrf_field() }}
 

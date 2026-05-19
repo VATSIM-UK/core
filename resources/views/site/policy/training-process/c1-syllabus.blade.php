@@ -8,7 +8,7 @@
                     C1 Syllabus and Lesson Plans
                 </div>
                 <div class="panel-body">
-                    @include("site.policy.training-process.c1-syllabus-body")
+                    @include('site.policy.training-process.c1-syllabus-body')
                 </div>
             </div>
         </div>

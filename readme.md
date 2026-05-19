@@ -5,6 +5,6 @@ Core application for VATSIM UK
 
 ## Getting Started
 
- - [Setup guide](https://github.com/VATSIM-UK/core/blob/main/.github/setup.md)
- - [Contributing guide](https://github.com/VATSIM-UK/core/blob/main/.github/CONTRIBUTING.md)
- - [Support page](https://github.com/VATSIM-UK/core/blob/main/.github/SUPPORT.md)
+- [Setup guide](https://github.com/VATSIM-UK/core/blob/main/.github/setup.md)
+- [Contributing guide](https://github.com/VATSIM-UK/core/blob/main/.github/CONTRIBUTING.md)
+- [Support page](https://github.com/VATSIM-UK/core/blob/main/.github/SUPPORT.md)

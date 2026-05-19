@@ -7,6 +7,7 @@ These hooks are stored in `.development/hooks/` to keep development-related file
 ## Available Hooks
 
 ### pre-commit
+
 - **Purpose**: Runs code style checks before each commit
 - **Command**: `composer lint` (Laravel Pint)
 - **Behavior**: Prevents commits if code style issues are found
@@ -36,7 +37,6 @@ This will remove existing hooks and create new symlinks.
 ## Manual Installation
 
 If you prefer to install manually, symlink the wanted hooks from `.development/hooks/` to `.git/hooks/`:
-
 
 ## For New Team Members
 

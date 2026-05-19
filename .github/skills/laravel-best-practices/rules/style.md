@@ -40,6 +40,7 @@
 Laravel provides `Str`, `Arr`, `Number`, and `Uri` helper classes that are more readable, chainable, and UTF-8 safe than raw PHP functions. Always prefer them.
 
 Strings — use `Str` and fluent `Str::of()` over raw PHP:
+
 ```php
 // Incorrect
 $slug = strtolower(str_replace(' ', '-', $title));
@@ -53,6 +54,7 @@ $class = class_basename('App\Models\User');
 ```
 
 Fluent strings — chain operations for complex transformations:
+
 ```php
 // Incorrect
 $result = strtolower(trim(str_replace('_', '-', $input)));
@@ -64,6 +66,7 @@ $result = Str::of($input)->trim()->replace('_', '-')->lower();
 Key `Str` methods to prefer: `Str::slug()`, `Str::limit()`, `Str::contains()`, `Str::before()`, `Str::after()`, `Str::between()`, `Str::camel()`, `Str::snake()`, `Str::kebab()`, `Str::headline()`, `Str::squish()`, `Str::mask()`, `Str::uuid()`, `Str::ulid()`, `Str::random()`, `Str::is()`.
 
 Arrays — use `Arr` over raw PHP:
+
 ```php
 // Incorrect
 $name = isset($array['user']['name']) ? $array['user']['name'] : 'default';
@@ -75,6 +78,7 @@ $name = Arr::get($array, 'user.name', 'default');
 Key `Arr` methods: `Arr::get()`, `Arr::has()`, `Arr::only()`, `Arr::except()`, `Arr::first()`, `Arr::flatten()`, `Arr::pluck()`, `Arr::where()`, `Arr::wrap()`.
 
 Numbers — use `Number` for display formatting:
+
 ```php
 Number::format(1000000);          // "1,000,000"
 Number::currency(1500, 'USD');    // "$1,500.00"
@@ -84,6 +88,7 @@ Number::percentage(75.5);         // "75.5%"
 ```
 
 URIs — use `Uri` for URL manipulation:
+
 ```php
 $uri = Uri::of('https://example.com/search')
     ->withQuery(['q' => 'laravel', 'page' => 1]);
@@ -98,11 +103,13 @@ Use `search-docs` for the full list of available methods — these helpers are e
 Do not put JS or CSS in Blade templates. Do not put HTML in PHP classes.
 
 Incorrect:
+
 ```blade
 let article = `{{ json_encode($article) }}`;
 ```
 
 Correct:
+
 ```blade
 <button class="js-fav-article" data-article='@json($article)'>{{ $article->name }}</button>
 ```
@@ -114,12 +121,14 @@ Pass data to JS via data attributes or use a dedicated PHP-to-JS package.
 Code should be readable on its own. Use descriptive method and variable names instead of comments. The only exception is config files, where descriptive comments are expected.
 
 Incorrect:
+
 ```php
 // Check if there are any joins
 if (count((array) $builder->getQuery()->joins) > 0)
 ```
 
 Correct:
+
 ```php
 if ($this->hasJoins())
 ```
