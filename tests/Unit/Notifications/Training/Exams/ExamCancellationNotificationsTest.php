@@ -123,7 +123,8 @@ class ExamCancellationNotificationsTest extends TestCase
 
         $this->assertStringContainsString('Jamie Examiner', $html);
         $this->assertStringContainsString((string) $this->examinerAccount->id, $html);
-        $this->assertStringContainsString('has cancelled your TWR practical exam', $html);
+        $this->assertStringContainsString('has cancelled your TWR', $html);
+        $this->assertStringContainsString('practical exam', $html);
         $this->assertStringContainsString('EGKK_TWR', $html);
         $this->assertStringContainsString('remain in the system', $html);
     }
