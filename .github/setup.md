@@ -133,7 +133,15 @@ npm run build # Build the assets
 
 ### Install Git hooks
 
-Follow [this guide](https://github.com/VATSIM-UK/core/tree/main/.development/hooks) to install git hooks (optional but recommended)
+Follow https://github.com/j178/prek installation instructions
+
+Install hooks:
+
+```bash
+prek install
+```
+
+Now the pre commit hooks will run automatically on every commit.
 
 ### Start the web server
 
