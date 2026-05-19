@@ -51,6 +51,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'admin.access',
             'horizon.access',
             'telescope.access',
+            'log-viewer.access',
 
             // Training Panel Permissions
             'training.access',
