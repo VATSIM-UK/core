@@ -110,7 +110,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     {
         $authorisedMentor = Account::factory()->create();
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->with($authorisedMentor, 'EGLL_APP')->andReturn(true));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->andReturn(true));
 
         Livewire::actingAs($authorisedMentor)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -122,7 +122,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     {
         $unrelatedUser = Account::factory()->create();
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->with($unrelatedUser, 'EGLL_APP')->andReturn(false));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->andReturn(false));
 
         Livewire::actingAs($unrelatedUser)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -138,7 +138,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'cid' => $otherStudent->id,
         ]);
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->with($otherStudent, 'EGLL_APP')->andReturn(false));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->andReturn(false));
 
         Livewire::actingAs($otherStudent)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -154,7 +154,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'cid' => $otherMentor->id,
         ]);
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->with($otherMentor, 'EGLL_APP')->andReturn(false));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->andReturn(false));
 
         Livewire::actingAs($otherMentor)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
