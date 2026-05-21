@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Mentor;
 
+use App\Enums\FieldScore;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Livewire\Training\CriteriaCategoryTable;
 use App\Livewire\Training\SessionCriteriaTable;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
-use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\RepeatableEntry;
@@ -72,20 +72,20 @@ class ViewMentoringReport extends Page implements HasInfolists
         $user = auth()->user();
 
         // Students may always view their own session report
-        if ($this->session->student?->cid === $user->id) {
+        if ($this->session->student_id === $user->id) {
             return;
         }
 
         // Mentors may always view reports for sessions they conducted
-        if ($this->session->mentor?->cid === $user->id) {
+        if ($this->session->mentor_id === $user->id) {
             return;
         }
 
-        if (app(MentorPermissionService::class)->canMentorPosition($user, $this->session->position)) {
+        if ($user->canMentorPosition($this->session->position)) {
             return;
         }
 
-        abort(403);
+        abort(403, 'You do not have permission to view this mentoring report.');
     }
 
     public function infolist(Schema $schema): Schema
@@ -136,12 +136,22 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     public function reportInfolist(Schema $schema): Schema
     {
-        $groupedSheets = $this->session->reportSheets->groupBy(fn ($sheet) => $sheet->field->category->catName);
+        $scoreMap = [];
+        foreach ($this->allSessions as $sess) {
+            foreach ($sess->reportSheets as $s) {
+                $scoreMap[$s->field_id][$sess->id] = $s->field_score;
+            }
+        }
 
+        $previousSession = $this->otherSessions
+            ->where('taken_date', '<=', $this->session->taken_date)
+            ->sortByDesc('taken_date')
+            ->first();
+
+        $groupedSheets = $this->session->reportSheets->groupBy(fn ($s) => $s->field->category->catName);
         $categorySections = [];
 
         foreach ($groupedSheets as $categoryName => $sheets) {
-
             $sheetRows = [];
             $totalSheets = count($sheets);
             $currentIndex = 0;
@@ -149,28 +159,11 @@ class ViewMentoringReport extends Page implements HasInfolists
             foreach ($sheets as $index => $sheet) {
                 $currentIndex++;
                 $isLast = ($currentIndex === $totalSheets);
-
                 $uniqueKey = $sheet->field_id ?? $index;
 
-                $previousSheet = $this->otherSessions
-                    ->where('taken_date', '<=', $this->session->taken_date)
-                    ->sortByDesc('taken_date')
-                    ->pluck('reportSheets')
-                    ->flatten()
-                    ->where('field_id', $sheet->field_id)
-                    ->first();
-
-                $previousScore = $previousSheet ? $previousSheet->field_score : 'N/A';
-
-                $allScores = $this->allSessions
-                    ->pluck('reportSheets')
-                    ->flatten()
-                    ->where('field_id', $sheet->field_id)
-                    ->pluck('field_score')
-                    ->push($sheet->field_score)
-                    ->filter();
-
-                $bestScore = $allScores->isNotEmpty() ? $allScores->sortByDesc(fn ($score) => $score instanceof \App\Enums\FieldScore ? $score->value : (int) $score)->first() : 'N/A';
+                $fieldScores = collect($scoreMap[$sheet->field_id] ?? []);
+                $previousScore = $previousSession ? ($fieldScores->get($previousSession->id) ?? FieldScore::NOT_SCORED) : FieldScore::NOT_SCORED;
+                $bestScore = $fieldScores->isNotEmpty() ? $fieldScores->sortByDesc(fn (FieldScore $s) => $s->value)->first() : FieldScore::NOT_SCORED;
 
                 $rowClasses = 'pb-4 mb-6';
                 if (! $isLast) {

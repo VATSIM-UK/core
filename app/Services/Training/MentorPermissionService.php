@@ -202,7 +202,7 @@ class MentorPermissionService
         return $account->member;
     }
 
-    private function getCtsCallsignsForMentorable($mentorable): array
+    public function getCtsCallsignsForMentorable($mentorable): array
     {
         if ($mentorable instanceof TrainingPosition) {
             return $mentorable->cts_positions ?? [];
@@ -332,10 +332,5 @@ class MentorPermissionService
             });
 
         return $callsigns->unique()->filter()->values()->toArray();
-    }
-
-    public function canMentorPosition(Account $user, string $position): bool
-    {
-        return $user->mentorTrainingPositions()->get()->contains(fn ($mtp) => in_array($position, $this->getCtsCallsignsForMentorable($mtp->mentorable)));
     }
 }

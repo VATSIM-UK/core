@@ -3,11 +3,10 @@
 namespace Database\Factories\Cts;
 
 use App\Models\Cts\ProgSheet;
-use App\Models\Cts\ProgSheetName;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<ProgSheetName>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<ProgSheet>
  */
 class ProgSheetFactory extends Factory
 {
