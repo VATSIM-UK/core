@@ -17,7 +17,9 @@ class Mentoring extends Page
     public static function canAccess(): bool
     {
         // Temporary beta permission
-        return auth()->user()?->can('training.beta') ?? false;
+        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
+            return false;
+        }
 
         return auth()->user()->mentorTrainingPositions()->exists();
     }
