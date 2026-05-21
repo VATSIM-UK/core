@@ -72,6 +72,11 @@ class ViewMentoringReport extends Page implements HasInfolists
 
         $user = auth()->user();
 
+        // Temporary beta permission
+        if (! app()->runningUnitTests() && auth()->user()?->can('training.beta')) {
+            return;
+        }
+
         // Students may always view their own session report
         if ($this->session->student_id === $user->id) {
             return;
