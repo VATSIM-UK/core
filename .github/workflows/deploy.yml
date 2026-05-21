@@ -179,6 +179,7 @@ jobs:
             $PHP_PATH artisan telescope:publish
             $PHP_PATH artisan horizon:publish
             $PHP_PATH artisan filament:assets
+            $PHP_PATH artisan log-viewer:publish
 
             # Run migrations
             $PHP_PATH artisan migrate --force
