@@ -215,7 +215,7 @@
                             </tr>
                             <tr>
                                 <td>VFR Flight Instructor</td>
-                                <td>Riley Casement</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>IFR Flight Instructor</td>
