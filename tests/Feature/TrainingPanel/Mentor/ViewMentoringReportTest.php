@@ -363,12 +363,10 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
+            'prog_sheet_id' => $this->progSheet->prog_sheet_id,
             'taken_date' => '2025-01-10',
             'filed' => now(),
         ]);
-
-        Livewire::actingAs($this->student)
-            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
 
         $component = Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
@@ -425,6 +423,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
+            'prog_sheet_id' => $this->progSheet->prog_sheet_id,
             'taken_date' => '2024-11-01',
             'filed' => now(),
         ]);
@@ -433,6 +432,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
+            'prog_sheet_id' => $this->progSheet->prog_sheet_id,
             'taken_date' => '2025-02-01',
             'filed' => now(),
         ]);
@@ -452,6 +452,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
+            'prog_sheet_id' => $this->progSheet->prog_sheet_id,
             'taken_date' => '2025-01-20',
             'filed' => now(),
         ]);
@@ -475,12 +476,14 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     #[Test]
     public function test_all_sessions_excludes_sessions_on_a_different_progress_sheet(): void
     {
+        $differentProgSheet = ProgSheet::factory()->create();
+
         $oldSheetSession = Session::factory()->create([
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
             'taken_date' => '2024-06-01',
-            'prog_sheet_id' => $this->progSheet->prog_sheet_id + 1,
+            'prog_sheet_id' => $differentProgSheet->prog_sheet_id,
             'filed' => now(),
         ]);
 
@@ -507,6 +510,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
+            'prog_sheet_id' => $this->progSheet->prog_sheet_id,
             'taken_date' => '2025-01-05',
             'filed' => now(),
         ]);
@@ -528,10 +532,6 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
 
         $sections = $component->instance()->getSessionsByCriteriaTab();
-
-        Livewire::actingAs($this->student)
-            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
-            ->assertSuccessful();
 
         $this->assertNotEmpty($sections);
     }
