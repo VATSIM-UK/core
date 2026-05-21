@@ -49,7 +49,7 @@ class MyAvailability extends Page implements HasForms, HasTable
     public static function canAccess(): bool
     {
         // Temporary beta permission
-        return auth()->user()->can('training.beta');
+        return auth()->user()?->can('training.beta') ?? false;
 
         $user = auth()->user();
 
