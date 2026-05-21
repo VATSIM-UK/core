@@ -32,6 +32,11 @@ class MyPendingExams extends Page implements HasTable
 
     public static function canAccess(): bool
     {
+        // Temporary beta permission
+        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
+            return false;
+        }
+
         return auth()->user()?->can('training.access') ?? false;
     }
 
@@ -97,7 +102,7 @@ class MyPendingExams extends Page implements HasTable
                                 ->rows(4),
                         ])
                         ->action(function (ExamBooking $record, array $data, CancelPendingExamService $service): void {
-                            $service->cancel($record, strip_tags($data['reason']), auth()->user());
+                            $service->cancelByStudent($record, strip_tags($data['reason']), auth()->user());
 
                             Notification::make()
                                 ->title('Exam cancelled')

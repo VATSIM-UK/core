@@ -4,6 +4,7 @@ namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
+use App\Services\Training\CancelPendingExamService;
 use App\Services\Training\ExamAnnouncementService;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -17,6 +18,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class AcceptedExamsTable extends Component implements HasActions, HasForms, HasTable
@@ -54,6 +57,49 @@ class AcceptedExamsTable extends Component implements HasActions, HasForms, HasT
                 Action::make('Conduct')
                     ->url(fn (ExamBooking $exam): string => ConductExam::getUrl(['examId' => $exam->id]))
                     ->visible(fn (ExamBooking $examBooking) => $examBooking->finished != ExamBooking::FINISHED_FLAG),
+                Action::make('CancelExam')
+                    ->label('Cancel exam')
+                    ->color('danger')
+                    ->icon('heroicon-o-x-circle')
+                    ->visible(function (ExamBooking $examBooking): bool {
+                        if ($examBooking->finished == ExamBooking::FINISHED_FLAG || ! $examBooking->exam) {
+                            return false;
+                        }
+
+                        return auth()->user()->can('training.exams.conduct.'.Str::lower($examBooking->exam));
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Cancel exam')
+                    ->modalDescription('This will release the exam slot, remove examiner assignments, and notify the student. Co-examiners can view the cancellation reason on the exam cancellations dashboard. This cannot be undone from here.')
+                    ->modalSubmitActionLabel('Yes, cancel exam')
+                    ->schema([
+                        Textarea::make('reason')
+                            ->label('Reason for cancellation')
+                            ->helperText('This will be sent to the student. Co-examiners can view it on the exam cancellations dashboard.')
+                            ->required()
+                            ->rows(4),
+                    ])
+                    ->action(function (ExamBooking $record, array $data, CancelPendingExamService $service): void {
+                        try {
+                            $service->cancelByExaminer($record, strip_tags($data['reason']), auth()->user());
+                        } catch (AuthorizationException $e) {
+                            Notification::make()
+                                ->title('Unable to cancel exam')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        Notification::make()
+                            ->title('Exam cancelled')
+                            ->body('The student has been notified. Co-examiners can view the reason on the exam cancellations dashboard.')
+                            ->success()
+                            ->send();
+
+                        $this->dispatch('exam-accepted');
+                    }),
                 Action::make('postExamAnnouncement')
                     ->label('Post Exam Announcement')
                     ->icon('heroicon-o-megaphone')

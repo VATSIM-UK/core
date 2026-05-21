@@ -6,9 +6,14 @@ use App\Filament\Training\Pages\MyTraining\MyPendingExams;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Models\Cts\Member;
+use App\Models\Cts\PracticalExaminers;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Notifications\Training\Exams\ExamCancelledExaminerNotification;
+use App\Notifications\Training\Exams\ExamCancelledStudentNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\View;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
@@ -152,5 +157,77 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
             ->assertSuccessful();
 
         $this->assertCount(0, $component->instance()->getTable()->getRecords());
+    }
+
+    #[Test]
+    public function it_student_can_cancel_accepted_exam_from_pending_exams_table(): void
+    {
+        Notification::fake();
+
+        $examinerAccount = Account::factory()->create();
+        Member::factory()->create([
+            'id' => $examinerAccount->id,
+            'cid' => $examinerAccount->id,
+            'examiner' => true,
+        ]);
+
+        $this->examBooking->update([
+            'taken' => 1,
+            'taken_date' => now()->addDays(3)->format('Y-m-d'),
+            'taken_from' => '14:00:00',
+            'taken_to' => '16:00:00',
+            'exmr_id' => $examinerAccount->id,
+        ]);
+
+        $this->examSetup->update(['booked' => 1]);
+
+        PracticalExaminers::create([
+            'examid' => $this->examBooking->id,
+            'senior' => $examinerAccount->id,
+        ]);
+
+        $reason = 'I can no longer make the scheduled time.';
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyPendingExams::class)
+            ->assertTableActionVisible('cancelExamRequest', $this->examBooking)
+            ->callTableAction('cancelExamRequest', $this->examBooking, [
+                'reason' => $reason,
+            ])
+            ->assertHasNoTableActionErrors();
+
+        $this->examBooking->refresh();
+        $this->examSetup->refresh();
+
+        $this->assertEquals(0, $this->examBooking->taken);
+        $this->assertNull($this->examBooking->taken_date);
+        $this->assertEquals(0, $this->examSetup->booked);
+        $this->assertDatabaseMissing('practical_examiners', ['examid' => $this->examBooking->id], 'cts');
+        $this->assertDatabaseHas('cancel_reason', [
+            'sesh_id' => $this->examBooking->id,
+            'sesh_type' => 'EX',
+            'reason' => $reason,
+            'reason_by' => $this->studentAccount->id,
+        ], 'cts');
+
+        Notification::assertSentTo(
+            $this->studentAccount,
+            ExamCancelledStudentNotification::class,
+            function (ExamCancelledStudentNotification $notification): bool {
+                $mail = $notification->toMail($this->studentAccount);
+                $html = View::make($mail->view, $mail->data())->render();
+
+                return str_contains($html, 'has been successfully cancelled');
+            },
+        );
+        Notification::assertSentTo(
+            $examinerAccount,
+            ExamCancelledExaminerNotification::class,
+            function (ExamCancelledExaminerNotification $notification) use ($reason, $examinerAccount): bool {
+                $mail = $notification->toMail($examinerAccount);
+
+                return $mail->viewData['reason'] === $reason;
+            },
+        );
     }
 }
