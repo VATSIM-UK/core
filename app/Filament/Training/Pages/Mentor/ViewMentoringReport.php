@@ -89,6 +89,12 @@ class ViewMentoringReport extends Page implements HasInfolists
         abort(403, 'You do not have permission to view this mentoring report.');
     }
 
+    public static function canAccess(): bool
+    {
+        // Temporary beta permission
+        return auth()->user()?->can('training.beta') ?? false;
+    }
+
     public function infolist(Schema $schema): Schema
     {
         return $schema->record($this->session)->components([
