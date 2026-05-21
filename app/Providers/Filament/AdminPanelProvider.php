@@ -78,6 +78,11 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-magnifying-glass')
                     ->url(fn () => route('telescope'))
                     ->visible(fn () => request()->user()->can('viewTelescope')),
+                NavigationItem::make('Log Viewer')
+                    ->group('Technology')
+                    ->icon('heroicon-o-document-text')
+                    ->url(fn () => route('log-viewer.index'))
+                    ->visible(fn () => request()->user()->can('viewLogViewer')),
             ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_LOGO_AFTER,

@@ -299,8 +299,8 @@
                                 <td>Noah Murdoch</td>
                             </tr>
                             <tr>
-                                <td>Community Assistant</td>
-                                <td>William Brushfield</td>
+                                <td>VFR Flight Instructor</td>
+                                <td><em>Vacant</em></td>
                             </tr>
                             <tr>
                                 <td>VT Assistant</td>
