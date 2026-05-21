@@ -37,7 +37,7 @@
 
         {{-- Page Arrows --}}
         @if($students->count() > $this->studentsPerPage)
-            <div class="flex items-center justify-end gap-2 pt-2 border-t border-gray-200 dark:border-white/10">
+            <div class="flex items-center justify-end gap-2 pt-2 border-gray-200 dark:border-white/10">
                 <x-filament::button
                     color="gray"
                     wire:click="previousStudentsPage"

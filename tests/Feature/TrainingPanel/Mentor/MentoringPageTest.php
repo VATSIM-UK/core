@@ -38,6 +38,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
 
         $this->trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => ['EGLL_APP'],
+            'category' => 'S3 Training',
         ]);
 
         MentorTrainingPosition::create([
