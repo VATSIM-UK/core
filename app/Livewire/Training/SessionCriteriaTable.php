@@ -35,7 +35,12 @@ class SessionCriteriaTable extends Component implements HasActions, HasForms, Ha
 
         $scores = [];
         $notes = [];
+
         foreach ($session->reportSheets as $sheet) {
+            if ($sheet->field_id === 0) {
+                continue;
+            }
+
             $scores[$sheet->field_id] = $sheet->field_score;
             $notes[$sheet->field_id] = $sheet->notes;
         }
