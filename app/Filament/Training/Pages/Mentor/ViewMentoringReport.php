@@ -56,7 +56,6 @@ class ViewMentoringReport extends Page implements HasInfolists
             'mentor',
             'reportSheets.field.category',
             'reportSheets.progSheet',
-            'reportNote',
         ])->findOrFail($this->sessionId);
 
         $this->allSessions = Session::query()
@@ -130,12 +129,13 @@ class ViewMentoringReport extends Page implements HasInfolists
                 ]),
 
             Section::make('Additional Comments')
-                ->visible(fn () => (bool) $this->session->reportNote)
+                ->visible(fn () => $this->session->reportSheets->contains('field_id', 0))
                 ->schema([
-                    TextEntry::make('reportNote.text')
+                    TextEntry::make('additional_comments')
                         ->hiddenLabel()
                         ->html()
-                        ->columnSpanFull(),
+                        ->columnSpanFull()
+                        ->state(fn (Session $record) => $record->reportSheets->firstWhere('field_id', 0)?->notes),
                 ]),
         ]);
     }
@@ -155,7 +155,8 @@ class ViewMentoringReport extends Page implements HasInfolists
             ->sortByDesc('taken_date')
             ->first();
 
-        $groupedSheets = $this->session->reportSheets->groupBy(fn ($s) => $s->field?->category?->catName ?? 'Uncategorized');
+        $groupedSheets = $this->session->reportSheets->reject(fn ($s) => $s->field_id === 0)->groupBy(fn ($s) => $s->field?->category?->catName ?? 'Uncategorized');
+
         $categorySections = [];
 
         foreach ($groupedSheets as $categoryName => $sheets) {
@@ -337,6 +338,7 @@ class ViewMentoringReport extends Page implements HasInfolists
 
         $categories = $this->allSessions
             ->flatMap(fn (Session $session) => $session->reportSheets)
+            ->reject(fn ($sheet) => $sheet->field_id === 0)
             ->map(fn ($sheet) => $sheet->field?->category?->catName)
             ->filter()
             ->unique()
