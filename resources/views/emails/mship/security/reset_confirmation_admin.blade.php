@@ -15,4 +15,3 @@
     {{{ url("/mship/security/forgotten-link", ["code" => $token->code]) }}}
 </p>
 @stop
-

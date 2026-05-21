@@ -1,5 +1,5 @@
 {
-    "[php]": {
-        "editor.defaultFormatter": "open-southeners.laravel-pint"
-    }
+  "[php]": {
+    "editor.defaultFormatter": "open-southeners.laravel-pint"
+  }
 }

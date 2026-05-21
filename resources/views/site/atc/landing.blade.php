@@ -5,8 +5,7 @@
     <div class="row row-flex">
 
         <div class="col-md-8 col-md-offset-2">
-            <img class="img-responsive center-block"
-                 src="/images/atctrainingheader.png"/>
+            <img class="img-responsive center-block" src="/images/atctrainingheader.png" />
         </div>
 
     </div>
@@ -17,7 +16,8 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; ATC Training
                 </div>
-                <div class="panel-body"><p>
+                <div class="panel-body">
+                    <p>
                         The ATC Training Department is responsible for developing and implementing the training scheme
                         for controllers, as well as providing mentoring and examinations towards rating progression. We
                         also offer a number of optional endorsements and conduct all transferring controller rating
@@ -26,12 +26,12 @@
 
                     <p>
                         The ATC Training department is structured into &quot;Training Groups&quot;, each of which deal
-                        with specific types of training at various facilities. The administrative aspect of Training 
-                        Groups are handled by the team of ATC Training and Community staff; please always use the 
-                        <a href="https://helpdesk.vatsim.uk/">Helpdesk</a> for queries related to ATC Training. Each 
-                        Training Group has a number of Training Group Instructors (TGI), who are responsible for 
-                        overseeing training in their respective groups - ensuring suitable progression and maintaining 
-                        standards. Every Training Group also has a number of mentors. The mentors provide practical 
+                        with specific types of training at various facilities. The administrative aspect of Training
+                        Groups are handled by the team of ATC Training and Community staff; please always use the
+                        <a href="https://helpdesk.vatsim.uk/">Helpdesk</a> for queries related to ATC Training. Each
+                        Training Group has a number of Training Group Instructors (TGI), who are responsible for
+                        overseeing training in their respective groups - ensuring suitable progression and maintaining
+                        standards. Every Training Group also has a number of mentors. The mentors provide practical
                         mentoring sessions to students and help them progress towards their next rating.
                     </p>
 
@@ -59,7 +59,7 @@
                     </ul>
 
                     <p>
-                        There are also a number of Division Instructors (I3 rated), who are experienced and long-standing 
+                        There are also a number of Division Instructors (I3 rated), who are experienced and long-standing
                         members take a wider view of training, from the perspective of the entire division.
                         They work on projects assigned to them by, and provide counsel to, the Training Director.
                     </p>

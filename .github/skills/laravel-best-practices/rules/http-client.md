@@ -5,11 +5,13 @@
 The default timeout is 30 seconds — too long for most API calls. Always set explicit `timeout` and `connectTimeout` to fail fast.
 
 Incorrect:
+
 ```php
 $response = Http::get('https://api.example.com/users');
 ```
 
 Correct:
+
 ```php
 $response = Http::timeout(5)
     ->connectTimeout(3)
@@ -34,6 +36,7 @@ $response = Http::github()->get('/repos/laravel/framework');
 External APIs have transient failures. Use `retry()` with increasing delays.
 
 Incorrect:
+
 ```php
 $response = Http::post('https://api.stripe.com/v1/charges', $data);
 
@@ -43,6 +46,7 @@ if ($response->failed()) {
 ```
 
 Correct:
+
 ```php
 $response = Http::retry([100, 500, 1000])
     ->timeout(10)
@@ -63,12 +67,14 @@ $response = Http::retry(3, 100, function (Throwable $exception, PendingRequest $
 The HTTP Client does not throw on 4xx/5xx by default. Always check status or use `throw()`.
 
 Incorrect:
+
 ```php
 $response = Http::get('https://api.example.com/users/1');
 $user = $response->json(); // Could be an error body
 ```
 
 Correct:
+
 ```php
 $response = Http::timeout(5)
     ->get('https://api.example.com/users/1')
@@ -98,6 +104,7 @@ $response->throw();
 When making multiple independent API calls, use `Http::pool()` instead of sequential calls.
 
 Incorrect:
+
 ```php
 $users = Http::get('https://api.example.com/users')->json();
 $posts = Http::get('https://api.example.com/posts')->json();
@@ -105,6 +112,7 @@ $comments = Http::get('https://api.example.com/comments')->json();
 ```
 
 Correct:
+
 ```php
 use Illuminate\Http\Client\Pool;
 
@@ -123,6 +131,7 @@ $posts = $responses['posts']->json();
 Never make real HTTP requests in tests. Use `Http::fake()` and `preventStrayRequests()`.
 
 Incorrect:
+
 ```php
 it('syncs user from API', function () {
     $service = new UserSyncService;
@@ -131,6 +140,7 @@ it('syncs user from API', function () {
 ```
 
 Correct:
+
 ```php
 it('syncs user from API', function () {
     Http::preventStrayRequests();

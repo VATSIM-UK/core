@@ -5,6 +5,7 @@
 If `retry_after` is shorter than the job's `timeout`, the queue worker re-dispatches the job while it's still running, causing duplicate execution.
 
 Incorrect (`retry_after` ≤ `timeout`):
+
 ```php
 class ProcessReport implements ShouldQueue
 {
@@ -15,6 +16,7 @@ class ProcessReport implements ShouldQueue
 ```
 
 Correct (`retry_after` > `timeout`):
+
 ```php
 class ProcessReport implements ShouldQueue
 {
@@ -29,6 +31,7 @@ class ProcessReport implements ShouldQueue
 Use progressively longer delays between retries to avoid hammering failing services.
 
 Incorrect (fixed retry interval):
+
 ```php
 class SyncWithStripe implements ShouldQueue
 {
@@ -38,6 +41,7 @@ class SyncWithStripe implements ShouldQueue
 ```
 
 Correct (exponential backoff):
+
 ```php
 class SyncWithStripe implements ShouldQueue
 {

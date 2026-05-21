@@ -5,12 +5,12 @@
         <div class="col-md-12">
             @include('components.html.panel_open', [
                 'title' => 'Withdraw',
-                'icon' => ['type' => 'fa', 'key' => 'tick']
+                'icon' => ['type' => 'fa', 'key' => 'tick'],
             ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <p>
-                        You may withdraw your application with no penalty.  To do so, please click the button below.<br>
+                        You may withdraw your application with no penalty. To do so, please click the button below.<br>
                         You <strong>will</strong> be able to open another application following this.
                 </div>
 

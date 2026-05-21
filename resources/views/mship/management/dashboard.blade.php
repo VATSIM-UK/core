@@ -22,8 +22,7 @@
                         </div>
                         <div class="panel-body">
                             <div class="embed-responsive embed-responsive-16by9">
-                                <iframe class="embed-responsive-item"
-                                        src="https://my.vatsim.net/user/email"></iframe>
+                                <iframe class="embed-responsive-item" src="https://my.vatsim.net/user/email"></iframe>
                             </div>
                         </div>
                     </div>
@@ -40,12 +39,8 @@
                 <div class="panel-heading"><i class="fa fa-male"></i> &thinsp; Personal Details
 
                     <div class="pull-right">
-                        <a
-                        class="tooltip_displays"
-                        href="{{ route('mship.manage.cert.update') }}"
-                        data-toggle="tooltip"
-                        title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} "
-                        >
+                        <a class="tooltip_displays" href="{{ route('mship.manage.cert.update') }}" data-toggle="tooltip"
+                            title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} ">
                             <i class="fa fa-sync"></i>
                         </a>
                     </div>
@@ -60,9 +55,9 @@
                         </div>
                         <div class="col-xs-4 pb-1">
                             <b>FULL NAME:</b>
-                            {{ $_account->name}}
+                            {{ $_account->name }}
                         </div>
-                        @if(false)
+                        @if (false)
                             <div class="col-xs-4 pb-1">
                                 <b>NICKNAME:</b>
                                 {{ $_account->name }}
@@ -70,14 +65,15 @@
                         @endif
                         <div class="col-xs-4 pb-1">
                             <b>MEMBERSHIP:</b>
-                            {{ $_account->status_string }} {{ !is_null($_account->primary_state) ? $_account->primary_state->name : 'unknown state' }}
+                            {{ $_account->status_string }}
+                            {{ !is_null($_account->primary_state) ? $_account->primary_state->name : 'unknown state' }}
                             Member
                         </div>
 
                         <div class="col-xs-4">
                             <b>LAST SSO LOGIN:</b>
 
-                            @if($_account->last_login_ip)
+                            @if ($_account->last_login_ip)
                                 {{ $_account->last_login_ip }}
                             @else
                                 <em>No login history available.</em>
@@ -89,7 +85,7 @@
 
                         <div class="col-xs-4">
                             <strong>CONTROLLER ROSTER:</strong>
-                            @if($roster)
+                            @if ($roster)
                                 <a href="{{ route('site.roster.show', ['account' => $_account->id]) }}">
                                     Active
                                 </a>
@@ -106,7 +102,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <a href="{{ route('mship.manage.cert.update') }}">
-                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net.
+                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update
+                                from VATSIM.net.
                             </a>
                         </div>
                     </div>
@@ -117,11 +114,11 @@
                     <i class="fa fa-envelope"></i>&thinsp;
                     Email Addresses
                     <div class="pull-right">
-                        <a href="{{ route("mship.manage.email.add") }}">
+                        <a href="{{ route('mship.manage.email.add') }}">
                             <i class="fa fa-plus-circle"></i>
                         </a>
                         &thinsp;
-                        <a href="{{ route("mship.manage.email.assignments") }}">
+                        <a href="{{ route('mship.manage.email.assignments') }}">
                             <i class="fa fa-cogs"></i>
                         </a>
                     </div>
@@ -132,39 +129,39 @@
                     <div class="row">
                         <div class="col-xs-4">
                             <b>PRIMARY EMAIL:</b>
-                            <br/>
+                            <br />
                             {{ $_account->email }}
                         </div>
 
                         <div class="col-xs-2">
                             <b>STATUS:</b>
-                            <br/>
+                            <br />
                             Verified
                         </div>
                         <div class="col-xs-4 hidden-xs hidden-sm">
-                            <br/>
+                            <br />
                         </div>
                         <div class="col-xs-2">
                             <br>
                             <button type="button" class="btn btn-xs btn-warning" data-toggle="modal"
-                                    data-target="#primaryEmailChangeModal">
+                                data-target="#primaryEmailChangeModal">
                                 Change
                             </button>
                         </div>
                     </div>
                     <!-- Top Row [END] -->
-                    <br/>
+                    <br />
                     @forelse($_account->secondaryEmails as $email)
                         <div class="row">
                             <div class="col-xs-4">
                                 <b>SECONDARY EMAIL:</b>
-                                <br/>
+                                <br />
                                 {{ $email->email }}
                             </div>
                             <div class="col-xs-2">
                                 <b>STATUS:</b>
-                                <br/>
-                                @if($email->verified_at == null)
+                                <br />
+                                @if ($email->verified_at == null)
                                     Unverified
                                 @else
                                     Verified
@@ -172,21 +169,21 @@
                             </div>
                             <div class="col-xs-4 hidden-xs hidden-sm">
                                 <b>ADDED:</b>
-                                <br/>
+                                <br />
                                 <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                   title="{{ $email->created_at }}">
+                                    title="{{ $email->created_at }}">
                                     <em>on {{ $email->created_at }}</em>
                                 </a>
                             </div>
                             <div class="col-xs-2">
                                 <br>
                                 <a href="{{ route('mship.manage.email.delete', ['email' => $email->id]) }}"
-                                   class="btn btn-xs btn-danger">
+                                    class="btn btn-xs btn-danger">
                                     Delete
                                 </a>
                             </div>
                         </div>
-                        <br/>
+                        <br />
                     @empty
                         You have no secondary email addresses.
                     @endforelse
@@ -209,23 +206,23 @@
                         </div>
                     </div>
                     <!-- Top Row [END] -->
-                    <br/>
+                    <br />
                     <!-- Second Row [START] -->
                     <div class="row">
                         <div class="col-xs-4">
                             <b>STATUS: </b>
-                            @if($_account->password)
+                            @if ($_account->password)
                                 ENABLED
                             @else
                                 DISABLED
                             @endif
                         </div>
-                        @if($_account->password)
+                        @if ($_account->password)
                             <div class="col-xs-4">
                                 <a href="{{ route('password.change') }}">Click to Modify</a>
                             </div>
                             <div class="col-xs-4">
-                                @if(!$_account->mandatory_password)
+                                @if (!$_account->mandatory_password)
                                     <a href="{{ route('password.delete') }}">Click to Disable</a>
                                 @else
                                     Cannot be disabled.
@@ -245,12 +242,8 @@
                 <div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications
 
                     <div class="pull-right">
-                        <a
-                        class="tooltip_displays"
-                        href="{{ route('mship.manage.cert.update') }}"
-                        data-toggle="tooltip"
-                        title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} "
-                        >
+                        <a class="tooltip_displays" href="{{ route('mship.manage.cert.update') }}" data-toggle="tooltip"
+                            title="{{ !is_null($_account->cert_checked_at) ? 'Last updated with VATSIM.net ' . $_account->cert_checked_at->diffForHumans() : 'Not yet updated with VATSIM.net.' }} ">
                             <i class="fa fa-sync"></i>
                         </a>
                     </div>
@@ -261,29 +254,29 @@
                             <div class="row">
                                 <div class="col-xs-6 col-lg-6 col-md-12 row-text-contain text-center">
                                     <b>ATC QUALIFICATIONS</b>
-                                    <br/>
+                                    <br />
                                     <small>Showing all achieved</small>
                                 </div>
                                 <div class="col-xs-6 col-lg-6 col-md-12 text-center">
-                                    @foreach($_account->qualifications_atc as $qual)
+                                    @foreach ($_account->qualifications_atc as $qual)
                                         {{ $qual }}
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                           title="{{ $qual->pivot->created_at }}">
+                                            title="{{ $qual->pivot->created_at }}">
                                             <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                         </a>
-                                        <br/>
+                                        <br />
                                     @endforeach
-                                    @if(count($_account->qualifications_atc) < 1)
+                                    @if (count($_account->qualifications_atc) < 1)
                                         You have no ATC ratings.
                                     @endif
 
-                                    @foreach($_account->qualifications_atc_training as $qual)
+                                    @foreach ($_account->qualifications_atc_training as $qual)
                                         {{ $qual }}
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                           title="{{ $qual->pivot->created_at }}">
+                                            title="{{ $qual->pivot->created_at }}">
                                             <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                         </a>
-                                        <br/>
+                                        <br />
                                     @endforeach
 
                                 </div>
@@ -293,36 +286,36 @@
                             <div class="row">
                                 <div class="col-xs-6 col-lg-6 col-md-12 row-text-contain text-center">
                                     <b>PILOT QUALIFICATIONS</b>
-                                    <br/>
+                                    <br />
                                     <small>Showing all achieved including military</small>
                                 </div>
                                 <div class="col-xs-6 col-lg-6 col-md-12 text-center">
-                                    @foreach($_account->qualifications_pilot as $qual)
+                                    @foreach ($_account->qualifications_pilot as $qual)
                                         {{ $qual }}
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                           title="{{ $qual->pivot->created_at }}">
+                                            title="{{ $qual->pivot->created_at }}">
                                             <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                         </a>
-                                        <br/>
+                                        <br />
                                     @endforeach
-                                    @if(count($_account->qualifications_pilot) < 1)
+                                    @if (count($_account->qualifications_pilot) < 1)
                                         You have no Pilot ratings.
                                     @endif
-                                    @foreach($_account->qualifications_pilot_training as $qual)
+                                    @foreach ($_account->qualifications_pilot_training as $qual)
                                         {{ $qual }}
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                           title="{{ $qual->pivot->created_at }}">
+                                            title="{{ $qual->pivot->created_at }}">
                                             <em>granted {{ $qual->pivot->created_at }}</em>
                                         </a>
-                                        <br/>
+                                        <br />
                                     @endforeach
-                                    @foreach($_account->qualifications_pilot_military as $qual)
+                                    @foreach ($_account->qualifications_pilot_military as $qual)
                                         {{ $qual }}
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                        title="{{ $qual->pivot->created_at }}">
+                                            title="{{ $qual->pivot->created_at }}">
                                             <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                         </a>
-                                        <br/>
+                                        <br />
                                     @endforeach
                                 </div>
                             </div>
@@ -335,7 +328,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <a href="{{ route('mship.manage.cert.update') }}">
-                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update from VATSIM.net.
+                                <span class='fa fa-sync'></span> Details look incorrect? Click here to request an update
+                                from VATSIM.net.
                             </a>
                         </div>
                     </div>
@@ -343,12 +337,12 @@
             </div>
         </div>
         <div class="col-md-6">
-            @if(!$_account->is_banned)
+            @if (!$_account->is_banned)
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><em class="fab fa-teamspeak"></em>
                         TeamSpeak Registrations
                         <div class="pull-right">
-                            <a href="{{ route("teamspeak.new") }}">
+                            <a href="{{ route('teamspeak.new') }}">
                                 <i class="fa fa-plus-circle"></i>
                             </a>
                         </div>
@@ -365,24 +359,25 @@
                                     @endif
                                     @foreach ($_account->teamspeakRegistrations as $tsreg)
                                         <div class="col-xs-6 row-text-contain">
-                                            [ <strong>Registration #{{ $tsreg->id }}</strong> ]<br/>
+                                            [ <strong>Registration #{{ $tsreg->id }}</strong> ]<br />
                                             <strong>CREATED</strong>:
                                             <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                               title="{{ $tsreg->created_at }}">
+                                                title="{{ $tsreg->created_at }}">
                                                 <em>{{ $tsreg->created_at->diffForHumans() }}</em>
                                             </a>
-                                            <br/>
+                                            <br />
                                             @if (is_null($tsreg->dbid))
                                                 <strong>STATUS</strong>
-                                                : <a href="{{ route('teamspeak.new') }}">New Registration</a><br/>
+                                                : <a href="{{ route('teamspeak.new') }}">New Registration</a><br />
                                             @elseif (!is_null($tsreg->dbid))
-                                                <strong>UNIQUE ID</strong>: {{ $tsreg->uid }}<br/>
-                                                <strong>LAST IP</strong>: {{ $tsreg->last_ip }}<br/>
-                                                <strong>LAST LOGIN</strong>: {{ $tsreg->last_login }}<br/>
-                                                <strong>OPERATING SYSTEM</strong>: {{ $tsreg->last_os }}<br/>
+                                                <strong>UNIQUE ID</strong>: {{ $tsreg->uid }}<br />
+                                                <strong>LAST IP</strong>: {{ $tsreg->last_ip }}<br />
+                                                <strong>LAST LOGIN</strong>: {{ $tsreg->last_login }}<br />
+                                                <strong>OPERATING SYSTEM</strong>: {{ $tsreg->last_os }}<br />
                                             @endif
-                                            [ <a href="{{ route('teamspeak.delete', [$tsreg->id]) }}">Remove Registration</a>
-                                            ]<br/>&nbsp;
+                                            [ <a href="{{ route('teamspeak.delete', [$tsreg->id]) }}">Remove
+                                                Registration</a>
+                                            ]<br />&nbsp;
                                         </div>
                                     @endforeach
                                 </div>
@@ -404,8 +399,8 @@
                 <div class="panel-heading"><em class="fab fa-discord"></em>
                     Discord Registration
                     <div class="pull-right">
-                        @if(!$_account->discord_id)
-                            <a href="{{ route("discord.create") }}">
+                        @if (!$_account->discord_id)
+                            <a href="{{ route('discord.create') }}">
                                 <em class="fa fa-plus-circle"></em>
                             </a>
                         @endif
@@ -414,23 +409,26 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-12">
-                            <p>Our community Discord server is the place to go to chat to other members of the UK Division and the wider network.</p>
-                            @if(!$_account->discord_id)
+                            <p>Our community Discord server is the place to go to chat to other members of the UK Division
+                                and the wider network.</p>
+                            @if (!$_account->discord_id)
                                 <p>
                                     Clicking the button below will take you to Discord.<br>
                                     There, you will need to create an account or login to an existing one.
                                 </p>
                                 <p>
-                                    Once logged in, you will be asked to click "Authorize" and give VATSIM UK permission to add you to our Discord server and assign you the relevant permissions.
+                                    Once logged in, you will be asked to click "Authorize" and give VATSIM UK permission to
+                                    add you to our Discord server and assign you the relevant permissions.
                                 </p>
                                 <a href="{{ route('discord.create') }}" style="text-decoration: none;">
-                                    <button class="btn btn-primary center-block"><em class="fab fa-discord"></em> &thinsp; Link Discord Account</button>
+                                    <button class="btn btn-primary center-block"><em class="fab fa-discord"></em> &thinsp;
+                                        Link Discord Account</button>
                                 </a>
                             @else
-
                                 <a href="#" style="text-decoration: none;">
-                                <button class="btn btn-primary center-block" disabled><em class="fab fa-discord"></em>
-                                        Currently registered with Discord account {{ $_account->discord_user ? '@' . ($_account->discord_user['username'] ?? 'Unknown') : $_account->discord_id }}.
+                                    <button class="btn btn-primary center-block" disabled><em class="fab fa-discord"></em>
+                                        Currently registered with Discord account
+                                        {{ $_account->discord_user ? '@' . ($_account->discord_user['username'] ?? 'Unknown') : $_account->discord_id }}.
                                     </button>
                                 </a>
                                 <p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
@@ -447,15 +445,16 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-4">
-                            <b>UK CONTROLLER<br/>PLUGIN KEYS</b>
-                            @if(count($pluginKeys))
+                            <b>UK CONTROLLER<br />PLUGIN KEYS</b>
+                            @if (count($pluginKeys))
                                 <div class="text-center pt-4">
                                     <a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.invalidate') }}">
                                         Invalidate Token(s)
                                     </a>
                                     </br>
                                     <small>
-                                        Note: If you are currently online, some operations, such as squawk assignments, will fail.
+                                        Note: If you are currently online, some operations, such as squawk assignments, will
+                                        fail.
                                     </small>
                                 </div>
                             @endif
@@ -464,20 +463,20 @@
                             <div class="row">
                                 @forelse($pluginKeys as $key)
                                     <div class="col-xs-6 row-text-contain" style="padding-bottom: 20px;">
-                                        [ <strong>Registration {{\App\Libraries\UKCP::getKeyForToken($key)}}</strong>
-                                        ]<br/>
+                                        [ <strong>Registration {{ \App\Libraries\UKCP::getKeyForToken($key) }}</strong>
+                                        ]<br />
                                         <strong>CREATED</strong>:
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                           title="{{ $key->created_at }}">
+                                            title="{{ $key->created_at }}">
                                             <em>{{ \Carbon\Carbon::createFromTimeString($key->created_at)->diffForHumans() }}</em>
                                         </a>
-                                        <br/>
+                                        <br />
                                         <strong>EXPIRES</strong>:
                                         <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                           title="{{ $key->expires_at }}">
+                                            title="{{ $key->expires_at }}">
                                             <em>{{ \Carbon\Carbon::createFromTimeString($key->expires_at)->diffForHumans() }}</em>
                                         </a>
-                                        <br/>
+                                        <br />
                                     </div>
                                 @empty
                                     <p>
@@ -487,15 +486,15 @@
                             </div>
                         </div>
                     </div>
-                    <br/>
+                    <br />
                     <div class="row">
                         <div class="col-xs-12">
-                            The UK Controller Plugin uses a key to identify who is using the plugin. <br/><b>Do not
+                            The UK Controller Plugin uses a key to identify who is using the plugin. <br /><b>Do not
                                 share
                                 your keys</b> as actions taken with these keys are logged against your account.
                         </div>
                     </div>
-                    <br/>
+                    <br />
                     <div class="row">
                         <div class="col-xs-12">
                             When you start EuroScope, the plugin will automatically take you through the process

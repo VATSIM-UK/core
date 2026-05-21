@@ -12,17 +12,17 @@ For Windows users, there's a video guide available here: [YouTube video](https:/
 
 ### Windows
 
-- **Git CLI + Git Bash** -  Git is used for versioning and Git Bash is required to run any git hooks in this repo + it will make following the rest of the guide easier - https://git-scm.com/downloads/win
-- **Docker Desktop** - If you don't want to go through running a database manually, Docker is recommended - https://docs.docker.com/desktop/setup/install/windows-install/
-- **Node.js** - https://nodejs.org/en/download (see the prebuilt section)
-- **Laravel Herd** - Herd is used to easily get PHP and Composer installed - https://herd.laravel.com/download/latest/windows
+- **Git CLI + Git Bash** -  Git is used for versioning and Git Bash is required to run any git hooks in this repo + it will make following the rest of the guide easier - <https://git-scm.com/downloads/win>
+- **Docker Desktop** - If you don't want to go through running a database manually, Docker is recommended - <https://docs.docker.com/desktop/setup/install/windows-install/>
+- **Node.js** - <https://nodejs.org/en/download> (see the prebuilt section)
+- **Laravel Herd** - Herd is used to easily get PHP and Composer installed - <https://herd.laravel.com/download/latest/windows>
 
 ### Linux / Mac
 
 *install via your package manager*
 
 - **Git CLI**
-- **Docker Engine** - https://docs.docker.com/engine/install/
+- **Docker Engine** - <https://docs.docker.com/engine/install/>
 - **Node.js**
 - **PHP**
 
@@ -54,7 +54,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-### Modify required ENV variables in the `.env` file:
+### Modify required ENV variables in the `.env` file
 
 ```
 APP_URL=core.test # Do not include any trailing slashes
@@ -133,7 +133,15 @@ npm run build # Build the assets
 
 ### Install Git hooks
 
-Follow [this guide](https://github.com/VATSIM-UK/core/tree/main/.development/hooks) to install git hooks (optional but recommended)
+Follow https://github.com/j178/prek installation instructions
+
+Install hooks:
+
+```bash
+prek install
+```
+
+Now the pre commit hooks will run automatically on every commit.
 
 ### Start the web server
 
