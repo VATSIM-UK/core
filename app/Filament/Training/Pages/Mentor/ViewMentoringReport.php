@@ -63,6 +63,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             ->with(['mentor', 'reportSheets.field.category'])
             ->where('student_id', $this->session->student_id)
             ->where('position', $this->session->position)
+            ->where('progress_sheet_id', $this->session->progress_sheet_id)
             ->whereNotNull('filed')
             ->orderBy('taken_date', 'desc')
             ->get();
@@ -339,7 +340,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             return [
                 TextEntry::make('no_sessions')
                     ->hiddenLabel()
-                    ->state('No sessions found.'),
+                    ->state('No criteria found.'),
             ];
         }
 

@@ -473,6 +473,24 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function test_all_sessions_excludes_sessions_on_a_different_progress_sheet(): void
+    {
+        $oldSheetSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => '2024-06-01',
+            'prog_sheet_id' => $this->progSheet->prog_sheet_id + 1,
+            'filed' => now(),
+        ]);
+
+        $component = Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id]);
+
+        $this->assertFalse($component->instance()->allSessions->contains('id', $oldSheetSession->id));
+    }
+
+    #[Test]
     public function test_sessions_overview_action_is_registered_on_the_page(): void
     {
         $component = Livewire::actingAs($this->student)

@@ -64,6 +64,7 @@ class SessionCriteriaTable extends Component implements HasActions, HasForms, Ha
                     ->collapsible()
                     ->titlePrefixedWithLabel(false)
             )
+            ->emptyStateHeading('No Criteria From Previous Sessions')
             ->paginated(false);
     }
 
