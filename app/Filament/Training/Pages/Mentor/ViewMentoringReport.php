@@ -145,7 +145,8 @@ class ViewMentoringReport extends Page implements HasInfolists
         $scoreMap = [];
         foreach ($this->allSessions as $sess) {
             foreach ($sess->reportSheets as $s) {
-                $scoreMap[$s->field_id][$sess->id] = $s->field_score;
+                $fieldId = $s->field_id ?? 'unknown';
+                $scoreMap[$fieldId][$sess->id] = $s->field_score;
             }
         }
 
@@ -154,7 +155,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             ->sortByDesc('taken_date')
             ->first();
 
-        $groupedSheets = $this->session->reportSheets->groupBy(fn ($s) => $s->field->category->catName);
+        $groupedSheets = $this->session->reportSheets->groupBy(fn ($s) => $s->field?->category?->catName ?? 'Uncategorized');
         $categorySections = [];
 
         foreach ($groupedSheets as $categoryName => $sheets) {
@@ -179,7 +180,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                 $sheetRows[] = Grid::make(14)
                     ->schema([
                         TextEntry::make("field_name_{$uniqueKey}")
-                            ->state($sheet->field->field)
+                            ->state($sheet->field?->field ?? 'Unknown Field')
                             ->hiddenLabel()
                             ->size(TextSize::Large)
                             ->weight(FontWeight::Bold)
