@@ -24,6 +24,10 @@ class AvailabilityGantt extends Component implements HasForms
 
     public ?string $positionFilter = null;
 
+    private const STUDENTS_PER_PAGE = 6;
+
+    public int $studentsPage = 1;
+
     public function mount()
     {
         $this->date = request()->query('date', Carbon::today()->format('Y-m-d'));
@@ -47,6 +51,35 @@ class AvailabilityGantt extends Component implements HasForms
     public function setToday()
     {
         $this->date = Carbon::today()->format('Y-m-d');
+    }
+
+    public function getPagedStudentsProperty()
+    {
+        return $this->students->forPage($this->studentsPage, self::STUDENTS_PER_PAGE);
+    }
+
+    public function previousStudentsPage(): void
+    {
+        if ($this->studentsPage > 1) {
+            $this->studentsPage--;
+        }
+    }
+
+    public function nextStudentsPage(): void
+    {
+        if ($this->studentsPage * self::STUDENTS_PER_PAGE < $this->students->count()) {
+            $this->studentsPage++;
+        }
+    }
+
+    public function updatedDate(): void
+    {
+        $this->studentsPage = 1;
+    }
+
+    public function updatedCategory(): void
+    {
+        $this->studentsPage = 1;
     }
 
     public function getAvailableCategoriesProperty(): array
@@ -99,7 +132,6 @@ class AvailabilityGantt extends Component implements HasForms
                     ->limit(1),
             ])
             ->orderByRaw("COALESCE(last_session_date, '1970-01-01') ASC")
-            ->limit(7)
             ->get();
     }
 
@@ -137,5 +169,10 @@ class AvailabilityGantt extends Component implements HasForms
             'hours' => range($startTimelineHour, $endTimelineHour),
             'displayDate' => Carbon::parse($this->date),
         ]);
+    }
+
+    public function getStudentsPerPageProperty(): int
+    {
+        return self::STUDENTS_PER_PAGE;
     }
 }
