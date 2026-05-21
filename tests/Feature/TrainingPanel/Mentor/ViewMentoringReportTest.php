@@ -61,6 +61,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
+            'progress_sheet_id' => 0,
             'taken_date' => '2025-03-15',
             'taken_from' => '18:00',
             'taken_to' => '20:00',
@@ -87,6 +88,8 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
                 'field_score' => FieldScore::TEST_STANDARD->value,
                 'notes' => 'Excellent RT throughout the session.',
             ]);
+
+        $this->mentoringSession->update(['progress_sheet_id' => $this->progSheet->prog_sheet_id]);
     }
 
     #[Test]
@@ -110,7 +113,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     {
         $authorisedMentor = Account::factory()->create();
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->andReturn(true));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn(['EGLL_APP']));
 
         Livewire::actingAs($authorisedMentor)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -122,7 +125,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     {
         $unrelatedUser = Account::factory()->create();
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->andReturn(false));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn([]));
 
         Livewire::actingAs($unrelatedUser)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -138,7 +141,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'cid' => $otherStudent->id,
         ]);
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->andReturn(false));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn([]));
 
         Livewire::actingAs($otherStudent)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -154,7 +157,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'cid' => $otherMentor->id,
         ]);
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('canMentorPosition')->andReturn(false));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn([]));
 
         Livewire::actingAs($otherMentor)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -363,7 +366,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
-            'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
             'taken_date' => '2025-01-10',
             'filed' => now(),
         ]);
@@ -423,7 +426,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
-            'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
             'taken_date' => '2024-11-01',
             'filed' => now(),
         ]);
@@ -432,7 +435,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
-            'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
             'taken_date' => '2025-02-01',
             'filed' => now(),
         ]);
@@ -452,7 +455,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
-            'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
             'taken_date' => '2025-01-20',
             'filed' => now(),
         ]);
@@ -483,7 +486,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
             'taken_date' => '2024-06-01',
-            'prog_sheet_id' => $differentProgSheet->prog_sheet_id,
+            'progress_sheet_id' => $differentProgSheet->prog_sheet_id,
             'filed' => now(),
         ]);
 
@@ -506,11 +509,11 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     #[Test]
     public function test_by_session_tab_includes_all_sessions_for_position(): void
     {
-        $olderSession = Session::factory()->create([
+        Session::factory()->create([
             'student_id' => $this->studentMember->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
-            'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
             'taken_date' => '2025-01-05',
             'filed' => now(),
         ]);
