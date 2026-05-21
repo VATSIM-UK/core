@@ -26,15 +26,18 @@ fi
 
 php_files=$(git diff --cached --name-only --diff-filter=ACM | { grep '\.php$' || true; })
 
-if [ -z "$php_files" ]; then
-    php_files=$(git ls-files '*.php' || true)
+if [ -n "$php_files" ]; then
+    # Staged files — check only these
+    echo "$php_files" | xargs "$PHP_BIN" "$PINT_BIN" --quiet --parallel || true
+    fixed_files=$(echo "$php_files" | xargs git diff --name-only --)
+else
+    # No staged files — let pint scan everything natively
+    dirty_before=$(git diff --name-only || true)
+    "$PHP_BIN" "$PINT_BIN" --quiet --parallel || true
+    dirty_after=$(git diff --name-only || true)
+
+    fixed_files=$(comm -13 <(echo "$dirty_before" | sort -u) <(echo "$dirty_after" | sort -u) || true)
 fi
-
-[ -z "$php_files" ] && exit 0
-
-echo "$php_files" | xargs -n 50 "$PHP_BIN" "$PINT_BIN" --quiet --parallel || true
-
-fixed_files=$(echo "$php_files" | xargs -n 100 git diff --name-only --)
 
 if [ -n "$fixed_files" ]; then
     echo
