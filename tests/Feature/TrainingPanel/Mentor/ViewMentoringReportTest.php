@@ -12,6 +12,8 @@ use App\Models\Cts\ReportNote;
 use App\Models\Cts\ReportSheet;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Training\Mentoring\MentorTrainingPosition;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
@@ -109,11 +111,20 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_loads_for_a_user_whose_mentor_permission_service_allows_the_position(): void
+    public function it_loads_for_a_user_with_a_mentor_training_position_for_the_session_position(): void
     {
         $authorisedMentor = Account::factory()->create();
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn(['EGLL_APP']));
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => ['EGLL_APP'],
+        ]);
+
+        MentorTrainingPosition::create([
+            'account_id' => $authorisedMentor->id,
+            'mentorable_type' => TrainingPosition::class,
+            'mentorable_id' => $trainingPosition->id,
+            'created_by' => $authorisedMentor->id,
+        ]);
 
         Livewire::actingAs($authorisedMentor)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
