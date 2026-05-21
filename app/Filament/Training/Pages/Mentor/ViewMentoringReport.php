@@ -145,8 +145,7 @@ class ViewMentoringReport extends Page implements HasInfolists
         $scoreMap = [];
         foreach ($this->allSessions as $sess) {
             foreach ($sess->reportSheets as $s) {
-                $fieldId = $s->field_id ?? 'unknown';
-                $scoreMap[$fieldId][$sess->id] = $s->field_score;
+                $scoreMap[$s->field_id][$sess->id] = $s->field_score;
             }
         }
 
