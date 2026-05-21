@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # pre-commit hook for Laravel Pint
-# Auto-fix staged files, but fail commit if anything was fixed.
+# Auto-fix files, but fail commit if anything was fixed.
 
 if [ -f "$HOME/.bashrc" ]; then
     . "$HOME/.bashrc"
@@ -9,15 +9,26 @@ fi
 
 set -euo pipefail
 
-# Get staged PHP files
-staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep '\.php$' || true)
-[ -z "$staged_files" ] && exit 0
+repo_root=$(git rev-parse --show-toplevel)
+cd "$repo_root"
+
+if [ $# -gt 0 ]; then
+    php_files=()
+    for file in "$@"; do
+        if [[ "$file" == *.php ]]; then
+            php_files+=("$file")
+        fi
+    done
+else
+    mapfile -t php_files < <(git diff --cached --name-only --diff-filter=ACM | grep '\.php$' || true)
+fi
+
+[ ${#php_files[@]} -eq 0 ] && exit 0
 
 echo "Running Pint..."
-composer lint -- --quiet $staged_files || true
+php.bat vendor/laravel/pint/builds/pint --quiet "${php_files[@]}" || true
 
-# Check if Pint changed any of the staged files
-fixed_files=$(git diff --name-only -- "$staged_files")
+fixed_files=$(git diff --name-only -- "${php_files[@]}")
 
 if [ -n "$fixed_files" ]; then
     echo
