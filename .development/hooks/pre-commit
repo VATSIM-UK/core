@@ -25,7 +25,6 @@ fi
 
 [ ${#php_files[@]} -eq 0 ] && exit 0
 
-echo "Running Pint..."
 php.bat vendor/laravel/pint/builds/pint --quiet "${php_files[@]}" || true
 
 fixed_files=$(git diff --name-only -- "${php_files[@]}")
@@ -37,5 +36,4 @@ if [ -n "$fixed_files" ]; then
     exit 1
 fi
 
-echo "✅ Pint made no changes."
 exit 0
