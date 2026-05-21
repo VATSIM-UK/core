@@ -32,6 +32,11 @@ class MyPendingExams extends Page implements HasTable
 
     public static function canAccess(): bool
     {
+        // Temporary beta permission
+        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
+            return false;
+        }
+
         return auth()->user()?->can('training.access') ?? false;
     }
 
