@@ -24,5 +24,6 @@ abstract class BaseTrainingPanelTestCase extends TestCase
         Member::factory()->create(['id' => $this->panelUser->id, 'cid' => $this->panelUser->id]);
 
         $this->panelUser->givePermissionTo('training.access');
+        $this->panelUser->givePermissionTo('training.beta');
     }
 }

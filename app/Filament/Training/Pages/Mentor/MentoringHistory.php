@@ -29,6 +29,9 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     public static function canAccess(): bool
     {
+        // Temporary beta permission
+        return auth()->user()->can('training.beta');
+
         // If a user has any mentoring permissions they are allowed to view this page
         return auth()->user()->mentorTrainingPositions()->exists();
     }

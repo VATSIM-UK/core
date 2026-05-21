@@ -18,6 +18,9 @@ class MyExamHistory extends Page
 
     public static function canAccess(): bool
     {
+        // Temporary beta permission
+        return auth()->user()->can('training.beta');
+
         return auth()->user()->can('training.access') ?? false;
     }
 
