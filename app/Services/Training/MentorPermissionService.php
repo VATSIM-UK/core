@@ -202,7 +202,7 @@ class MentorPermissionService
         return $account->member;
     }
 
-    private function getCtsCallsignsForMentorable($mentorable): array
+    public function getCtsCallsignsForMentorable($mentorable): array
     {
         if ($mentorable instanceof TrainingPosition) {
             return $mentorable->cts_positions ?? [];

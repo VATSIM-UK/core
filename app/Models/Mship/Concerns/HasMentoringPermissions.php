@@ -49,4 +49,9 @@ trait HasMentoringPermissions
     {
         return in_array($position, $this->getAllAssignedCallsigns(), true);
     }
+
+    public function canMentorPosition(string $position): bool
+    {
+        return $this->mentorTrainingPositions()->get()->contains(fn ($mtp) => in_array($position, app(MentorPermissionService::class)->getCtsCallsignsForMentorable($mtp->mentorable)));
+    }
 }
