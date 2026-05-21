@@ -3,7 +3,7 @@ repo = "local"
 hooks = [
     { id = "laravel-pint", name = "Laravel Pint", language = "system", entry = ".development/hooks/pre-commit", types = [
         "php",
-    ], pass_filenames = true },
+    ], pass_filenames = false },
 ]
 
 [[repos]]

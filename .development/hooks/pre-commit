@@ -12,22 +12,33 @@ set -euo pipefail
 repo_root=$(git rev-parse --show-toplevel)
 cd "$repo_root"
 
-if [ $# -gt 0 ]; then
-    php_files=()
-    for file in "$@"; do
-        if [[ "$file" == *.php ]]; then
-            php_files+=("$file")
-        fi
-    done
-else
-    mapfile -t php_files < <(git diff --cached --name-only --diff-filter=ACM | grep '\.php$' || true)
+# Cross-platform PHP detection (MINGW64 uses php.bat)
+PHP_BIN="php"
+if command -v php.bat &>/dev/null 2>&1; then
+    PHP_BIN="php.bat"
 fi
 
-[ ${#php_files[@]} -eq 0 ] && exit 0
+# Cross-platform pint binary detection
+PINT_BIN="vendor/bin/pint"
+if [ ! -f "$PINT_BIN" ] && [ ! -f "${PINT_BIN}.bat" ]; then
+    PINT_BIN="vendor/laravel/pint/builds/pint"
+fi
 
-php.bat vendor/laravel/pint/builds/pint --quiet "${php_files[@]}" || true
+# Collect PHP files: staged (pre-commit), or all tracked (prek run --all-files)
+php_files=$(git diff --cached --name-only --diff-filter=ACM | { grep '\.php$' || true; })
 
-fixed_files=$(git diff --name-only -- "${php_files[@]}")
+if [ -z "$php_files" ]; then
+    # Nothing staged — check all tracked PHP files (e.g. prek run --all-files)
+    php_files=$(git ls-files '*.php' || true)
+fi
+
+[ -z "$php_files" ] && exit 0
+
+# Use xargs to avoid "Argument list too long" with large file lists
+echo "$php_files" | xargs "$PHP_BIN" "$PINT_BIN" --quiet --parallel || true
+
+# Check if Pint changed any of the files
+fixed_files=$(echo "$php_files" | xargs git diff --name-only --)
 
 if [ -n "$fixed_files" ]; then
     echo
