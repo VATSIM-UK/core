@@ -8,7 +8,6 @@ use App\Models\Cts\Member;
 use App\Models\Cts\ProgSheet;
 use App\Models\Cts\ProgSheetCategory;
 use App\Models\Cts\ProgSheetField;
-use App\Models\Cts\ReportNote;
 use App\Models\Cts\ReportSheet;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
@@ -216,13 +215,16 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function test_additional_comments_section_is_visible_when_report_note_exists(): void
+    public function test_additional_comments_section_is_visible_when_comments_field_exists(): void
     {
-        ReportNote::create([
-            'seshid' => $this->mentoringSession->id,
-            'type' => 'general',
-            'text' => '<p>Great session overall.</p>',
-        ]);
+        ReportSheet::factory()
+            ->forSession($this->mentoringSession->id)
+            ->forStudent($this->studentMember->id)
+            ->create([
+                'field_id' => 0,
+                'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+                'notes' => '<p>Great session overall.</p>',
+            ]);
 
         Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -230,7 +232,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function test_additional_comments_section_is_hidden_when_no_report_note_exists(): void
+    public function test_additional_comments_section_is_hidden_when_no_comments_field_exists(): void
     {
         Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -238,13 +240,16 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function test_renders_html_content_in_report_note(): void
+    public function test_renders_html_content_in_additional_comments(): void
     {
-        ReportNote::create([
-            'seshid' => $this->mentoringSession->id,
-            'type' => 'general',
-            'text' => '<p>Well done on <strong>vectors</strong> today.</p>',
-        ]);
+        ReportSheet::factory()
+            ->forSession($this->mentoringSession->id)
+            ->forStudent($this->studentMember->id)
+            ->create([
+                'field_id' => 0,
+                'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+                'notes' => '<p>Well done on <strong>vectors</strong> today.</p>',
+            ]);
 
         Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
