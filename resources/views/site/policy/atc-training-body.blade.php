@@ -201,7 +201,8 @@ reasons for:
 issued;
 - Not availability/a session request entered and members have already received three
 availability/session request reminders;
-- Members ‘no show’ at three scheduled mentoring sessions. A session is ‘no showed’ if, after five minutes of its scheduled start time, a student is not present.
+- Members ‘no show’ at three scheduled mentoring sessions. A session is ‘no showed’ if, after five minutes of its
+scheduled start time, a student is not present.
 
 The ATC Training Director reserves the right to remove a training place in situations including, but not
 limited to:
@@ -220,7 +221,7 @@ To be eligible to mentor, members must:
 1. Be active on the controller roster;
 2. Hold the appropriate rating/endorsement for the rating/position they wish to mentor on;
 3. Spend a sufficient period of time (at the discretion of TG Instructors) consolidating knowledge on the
-    rating/position;
+rating/position;
 4. Be a member in good standing with no significant negative feedback.
 
 ### 3.2 Session Conduct
@@ -307,7 +308,7 @@ scenarios.
 An exam will not be marked as a pass if:
 
 - Any competency is marked as Fail or Not Assessed;
-    or
+or
 - 3 or more competencies are marked as Partly competent.
 
 ## Section 5 | Staff Policy
@@ -344,11 +345,11 @@ The ATC Training Director is delegated responsibility, from the Division Directo
 
 - Develop, direct, and implement new strategies and initiatives in relation to ATC training;
 - Manage and produce documentation relating to training concepts and guidance for others in the
-    department;
+department;
 - Provide updates to the VATSIM.net Vice Presidents and to Division and Region staff as appropriate;
 - Regularly review the standard of training;
 - Manage departmental staff members, and advise Division Staff on appointments from an
-    operational perspective;
+operational perspective;
 - Have sole responsibility for all ATC rating upgrades with the division.
 
 The ATC Training Director will also automatically assume the role of Division Instructor.
@@ -380,7 +381,7 @@ To qualify as a Division Instructor, C1+ members must:
 - Have performed extensive mentoring across all ratings;
 - Be up to date on current procedures and familiar with the ATC Training syllabi for all ratings;
 - Agree to maintain currency across ATC disciplines, either by controlling at various positions or
-    providing 'top-down' ATC services.
+providing 'top-down' ATC services.
 
 Further, prospective Division Instructors should:
 
@@ -396,6 +397,6 @@ To qualify as a Training Group Instructor, S3+ (or C1+ for TG Enroute) members m
 - Have performed extensive mentoring in the TG applied for;
 - Be up to date on current procedures and familiar with the ATC Training syllabi for the TG applied for;
 - Agree to maintain currency across ATC disciplines, either by controlling at various positions or
-    providing 'top-down' ATC services.
+providing 'top-down' ATC services.
 
 </x-markdown>

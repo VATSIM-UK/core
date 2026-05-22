@@ -14,13 +14,13 @@ Individual waiting lists are not defined explicitly in Core. Instead they are ma
 
 In addition to having a name and ID a waiting list:
 
--   Belongs to either the ATC or Pilot training departments.
+- Belongs to either the ATC or Pilot training departments.
     This drives downstream functionality, including the way we show waiting list positions to members
--   Has feature toggles
+- Has feature toggles
     These control if the waiting list checks cts exam statuses or atc hours
--   CTS exam level
+- CTS exam level
     For ATC training waiting lists store the id of the CTS exam used to check theory results.
--   Can be marked as for home members only.
+- Can be marked as for home members only.
     This is used to prevent addition of non division members and to automate removals of members transferring out of the division.
 
 Waiting lists also have a list of flags (also stored in the database) which are applied to members joining the list.
@@ -45,8 +45,8 @@ Waiting List Accounts have their flag status cached onto the WaitingListAccount 
 
 ## Feature Run Down
 
--   Add
-    -   Sync flags
-    -   Log
--   Check eligibility
-    -   this appears somewhat mislabelled as it's actually doing the flag caching?
+- Add
+  - Sync flags
+  - Log
+- Check eligibility
+  - this appears somewhat mislabelled as it's actually doing the flag caching?

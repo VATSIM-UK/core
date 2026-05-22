@@ -3,6 +3,7 @@
 ## Where to Find It
 
 Search with `search-docs`:
+
 - `"horizon metrics snapshot"` for the snapshot command and scheduling
 - `"horizon trim snapshots"` for retention configuration
 

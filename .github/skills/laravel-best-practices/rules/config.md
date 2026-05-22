@@ -5,11 +5,13 @@
 Direct `env()` calls may return `null` when config is cached.
 
 Incorrect:
+
 ```php
 $key = env('API_KEY');
 ```
 
 Correct:
+
 ```php
 // config/services.php
 'key' => env('API_KEY'),
@@ -23,6 +25,7 @@ $key = config('services.key');
 Never store production secrets in plain `.env` files in version control.
 
 Incorrect:
+
 ```bash
 
 # .env committed to repo or shared in Slack
@@ -32,6 +35,7 @@ AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI
 ```
 
 Correct:
+
 ```bash
 php artisan env:encrypt --env=production --readable
 php artisan env:decrypt --env=production
@@ -42,11 +46,13 @@ For cloud deployments, prefer the platform's native secret store (AWS Secrets Ma
 ## Use `App::environment()` for Environment Checks
 
 Incorrect:
+
 ```php
 if (env('APP_ENV') === 'production') {
 ```
 
 Correct:
+
 ```php
 if (app()->isProduction()) {
 // or

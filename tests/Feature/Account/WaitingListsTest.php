@@ -137,7 +137,7 @@ class WaitingListsTest extends TestCase
 
         $this->actingAs($account)
             ->get(route('mship.waiting-lists.index'))
-            ->assertSee('Waiting List Full')
+            ->assertSeeInOrder(['Waiting List', 'Full'])
             ->assertDontSee('Self Enrol');
     }
 

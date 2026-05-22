@@ -1,4 +1,5 @@
 <?php
+
 return [
     'title' => 'We use cookies',
     'intro' => 'This website uses cookies in order to enhance the overall user experience.',

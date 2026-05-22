@@ -1,5 +1,5 @@
 @extends('layout')
 
 @section('content')
-    @yield('content')
+	@yield('content')
 @stop

@@ -1,14 +1,14 @@
 <x-markdown>
 # VATSIM UK Division Policy
 
-**Version 8.0**  
+**Version 8.0**
 **Effective Date:** 1st March 2025
 
 ---
 
 ## Scope
 
-VATSIM United Kingdom (VATSIM UK) is a Division within the VATSIM Europe, Middle East and Africa Region (VATEMEA).  
+VATSIM United Kingdom (VATSIM UK) is a Division within the VATSIM Europe, Middle East and Africa Region (VATEMEA).
 This policy governs operations within VATSIM UK, including controlling any network positions under its jurisdiction.
 
 ---
@@ -17,10 +17,10 @@ This policy governs operations within VATSIM UK, including controlling any netwo
 
 **Acronyms**
 
-- **VATSIM UK** – VATSIM United Kingdom (Division)  
-- **EMEA** – Europe, Middle East and Africa  
-- **RVP** – Region Vice President (EMEA)  
-- **DSG** – Division Staff Group  
+- **VATSIM UK** – VATSIM United Kingdom (Division)
+- **EMEA** – Europe, Middle East and Africa
+- **RVP** – Region Vice President (EMEA)
+- **DSG** – Division Staff Group
 - **ATC** – Air Traffic Control
 
 **Terms**
@@ -101,11 +101,11 @@ Director when:
 - The Division Director declares themselves temporarily absent, or
 - The Region Vice President declares the Division Director temporarily absent, or
 - The Division Director and Region Vice President have been uncontactable to any DSG
-    members for 10 sequential days after a member of the DSG notifies the group they
-    believed the Division Director is absent. If assuming responsibility under this clause the
-    Deputy Division Director must notify any available Region Staff members.
+members for 10 sequential days after a member of the DSG notifies the group they
+believed the Division Director is absent. If assuming responsibility under this clause the
+Deputy Division Director must notify any available Region Staff members.
 - Upon resignation or removal of the Division Director, unless alternate arrangements are
-    made by the Region Vice President.
+made by the Region Vice President.
 
 1.2.c(iv) The Deputy Division Director can be removed by the Division Director. Removal shall be in
 consultation with the Region Vice President.
@@ -132,9 +132,9 @@ utilise this callsign.
 
 1.3.a Global Policy defines ratings used on the network. For this policy, ratings are referenced as follows:
 - Network Rating – The rating allocated on a user’s primary account. This rating encompasses
-    Controller Ratings, Instructor Ratings and Administrative Ratings.
+Controller Ratings, Instructor Ratings and Administrative Ratings.
 - Controller Rating – A rating awarded according to progress through the ATC training system
-    (OBS, S1, S2, S3, C1, C3)
+(OBS, S1, S2, S3, C1, C3)
 - Instructor Rating – A rating allocated to ATC Instructors (I1, I3)
 - Administrative Rating – Ratings allocated for duties outside of VATISM UK (SUP, ADM)
 - Pilot Rating – Ratings awarded for completing pilot training (prefix ‘P’)
@@ -188,12 +188,12 @@ Division unless they are unable to do so.
 
 2.2.c Controllers connecting to observe shall log on with one of the following formats:
 - XX_OBS / XXX_OBS / EGZZ_OBS - approved for use by all members (where X and Z are
-    replaced as defined). Members shall preferably log in displaying initials in place of ‘X’
-    (e.g. XX_OBS), though may use the ICAO that they are observing, replacing Z (i.e.
-    EGZZ_OBS)
+replaced as defined). Members shall preferably log in displaying initials in place of ‘X’
+(e.g. XX_OBS), though may use the ICAO that they are observing, replacing Z (i.e.
+EGZZ_OBS)
 - XX_INS / XXX_INS – approved for use only be members holding an Instructor Rating issued
-    by VATSIM UK. When using this format, instructors shall log in with their (recognisable)
-    initials.
+by VATSIM UK. When using this format, instructors shall log in with their (recognisable)
+initials.
 - VATUK – Callsigns containing VATUK are restricted to Division Staff as outlined in 1.2.e.
 
 2.2.d Controllers taking over a position using the published callsign shall utilise an additional underscore
@@ -234,7 +234,7 @@ VATSIM UK website, or in ATC Training Department policy.
 express permission of the mentor/validator/examiner (hereafter referred to as ‘Assessor’) must be
 obtained before:
 - A split of an underlying Ground/Delivery (GND/DEL) is opened during a Ground or Tower
-    ATC Training Session.
+ATC Training Session.
 - A split of an underlying Tower (TWR) is opened during a Tower ATC Training Session
 - A split of an Approach (APP) position is opened during an Approach ATC Training Session
 - A split of the student’s Area Sector is opened during an Area ATC Training Session.

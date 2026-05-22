@@ -2,10 +2,11 @@
 
 namespace App\Filament\Training\Pages\Mentor\Base;
 
+use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
 use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Cts\Member;
 use Carbon\Carbon;
-use Filament\Actions\ViewAction;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
@@ -108,8 +109,9 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
             ])
             ->filters($this->getTableFilters())
             ->recordActions([
-                ViewAction::make()
-                    ->url(fn ($record) => "https://cts.vatsim.uk/mentors/report.php?id={$record->id}&view=report")
+                Action::make('view')
+                    ->label('View Report')
+                    ->url(fn ($record) => ViewMentoringReport::getUrl(['sessionId' => $record->id]))
                     ->visible(fn ($record) => $record->filed !== null)
                     ->openUrlInNewTab(),
             ])

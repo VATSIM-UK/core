@@ -6,20 +6,20 @@ updates:
     schedule:
       interval: cron
       cronjob: 0 14 * * mon#1
-      
+
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: cron
       cronjob: 0 14 * * mon#1
     labels: []
-    
+
     groups:
       vite-stack:
         patterns:
           - vite
           - laravel-vite-plugin
-          
+
   - package-ecosystem: composer
     directory: /
     schedule:

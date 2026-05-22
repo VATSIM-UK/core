@@ -198,7 +198,8 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
 
                 return $mail->subject === 'Your practical exam has been cancelled'
                     && $mail->viewData['cancelledByExaminer']->id === $this->panelUser->id
-                    && str_contains($html, 'has cancelled your TWR practical exam')
+                    && str_contains($html, 'has cancelled your TWR')
+                    && str_contains($html, 'practical exam')
                     && str_contains($html, 'remain in the system');
             },
         );

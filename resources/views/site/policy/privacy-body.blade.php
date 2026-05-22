@@ -1,7 +1,7 @@
 <x-markdown>
 # VATSIM UK Privacy Policy
 
-**Revision 2**  
+**Revision 2**
 **Effective Date:** 21st July 2018
 
 ---
@@ -50,44 +50,44 @@ VATSIM and VATSIM UK has several legal responsibilities to you with regard to th
 data:
 
 1. VATSIM UK has a responsibility to be accountable and transparent in how and why we collect, store
-    and process your data (we do this via this Privacy Policy). Members with access to your data are
-    bound by our Data Protection and Handling Policy, which details and controls how we do this.
+and process your data (we do this via this Privacy Policy). Members with access to your data are
+bound by our Data Protection and Handling Policy, which details and controls how we do this.
 2. VATSIM UK has a responsibility to only collect, store, and process your data on a lawful basis. VATSIM
-    UK asserts it has a legitimate interest to do so in order to ensure the smooth functioning of the 
-    division and to ensure interactions between members and our services conform to the applicable
-    VATSIM and VATSIM UK policies. The legitimate interest constitutes a lawful basis for data collection,
-    storage, and processing. Your consent will be sought in changes to our privacy policy (this document);
-    where this consent cannot be asserted in a timely manner, we will assume you are exercising your
-    right to object and restrict access to our services as necessary.
+UK asserts it has a legitimate interest to do so in order to ensure the smooth functioning of the
+division and to ensure interactions between members and our services conform to the applicable
+VATSIM and VATSIM UK policies. The legitimate interest constitutes a lawful basis for data collection,
+storage, and processing. Your consent will be sought in changes to our privacy policy (this document);
+where this consent cannot be asserted in a timely manner, we will assume you are exercising your
+right to object and restrict access to our services as necessary.
 3. VATSIM UK has a responsibility to ensure that data protection is managed in accordance with our
-    Data Protection and Handling Policy.
+Data Protection and Handling Policy.
 4. VATSIM UK has a responsibility to report any data breaches to the appropriate authorities and will do
-    so without prejudice, undue delay or hesitation.
+so without prejudice, undue delay or hesitation.
 
 You, as a user of VATSIM UK, have several rights:
 
 1. You have the right to be informed why we collect your data. This policy explains these reasons to you.
 2. You have a right to access your data and view the data collected about you. This data will be released
-    to you on written request to sar@vatsim.uk, providing there is no legal basis to refuse such a request.
-    To protect the privacy of other individuals, certain information may be redacted, so long as this does
-    not censor your personal data.
+to you on written request to sar@vatsim.uk, providing there is no legal basis to refuse such a request.
+To protect the privacy of other individuals, certain information may be redacted, so long as this does
+not censor your personal data.
 3. You have a right to rectify data you believe to be inaccurate. We encourage members to ensure
-    details such as their email address is kept up to date through the VATSIM.net membership dashboard
-    and/or via VATSIM UK Core. Note: VATSIM.net data is only transmitted to VATSIM UK services via
-    explicit consent, obtained through SSO. This can take up to 72 hours after consent to be reflected
-    across VATSIM UK’s services. As a result, the data held in VATSIM UK services may be significantly
-    outdated if you do not renew your login. If you believe other data held about you is incorrect, you
-    may contact privacy@vatsim.uk to have it corrected.
+details such as their email address is kept up to date through the VATSIM.net membership dashboard
+and/or via VATSIM UK Core. Note: VATSIM.net data is only transmitted to VATSIM UK services via
+explicit consent, obtained through SSO. This can take up to 72 hours after consent to be reflected
+across VATSIM UK’s services. As a result, the data held in VATSIM UK services may be significantly
+outdated if you do not renew your login. If you believe other data held about you is incorrect, you
+may contact privacy@vatsim.uk to have it corrected.
 4. Membership of VATSIM UK is only possible via membership of VATSIM. In order to exercise your right
-    to erasure, you must do so via a request for your data be erased from the VATSIM systems as defined
-    in the VATSIM privacy policy. Supplementary data which VATSIM UK retains may be erased by
-    contacting privacy@vatsim.uk, where that data did not originate from VATSIM. For total erasure
-    across the entire network, requests should be submitted in accordance with VATSIM’s Privacy Policy.
+to erasure, you must do so via a request for your data be erased from the VATSIM systems as defined
+in the VATSIM privacy policy. Supplementary data which VATSIM UK retains may be erased by
+contacting privacy@vatsim.uk, where that data did not originate from VATSIM. For total erasure
+across the entire network, requests should be submitted in accordance with VATSIM’s Privacy Policy.
 5. You have the right to request we restrict the processing of your data. In the event of a dispute, we
-    may restrict your ability to connect to our services.
+may restrict your ability to connect to our services.
 6. You have the right to object to our legitimate interests (which we assert in section 2 .1 1 ). While your
-    objection is being considered, processing of your data may be frozen, and this may restrict your ability
-    to connect to our services.
+objection is being considered, processing of your data may be frozen, and this may restrict your ability
+to connect to our services.
 
 ### 2.3 Personal Statistical Information
 
@@ -148,7 +148,8 @@ VATSIM UK takes every reasonable precaution to protect its members' information.
 
 Certain information about members is considered to be restricted and is held in parts of our systems that are
 only accessible to those who have been explicitly granted access. Only those people who need the information
-to perform a specific job (including, but not limited to, instructors, division staff, and administrative assistants)
+to perform a specific job (including, but not limited to, instructors, division staff, and administrative
+assistants)
 are granted access to personally identifiable information.
 
 The VATSIM UK Data Protection and Handling Policy and the VATSIM UK Collective Responsibility Agreement
