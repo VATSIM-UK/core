@@ -8,9 +8,8 @@ hooks = [
 
 [[repos]]
 repo = "local"
-# Emails have a lot of legacy weirdness - ignored
 hooks = [
-    { id = "blade-formatter", name = "Blade Formatter", language = "system", entry = "npx --yes blade-formatter --write", files = "\\.blade\\.php$", exclude = "resources/views/emails/" },
+    { id = "blade-formatter", name = "Blade Formatter", language = "system", entry = "npx --yes blade-formatter --write", files = "\\.blade\\.php$" },
 ]
 
 [[repos]]
