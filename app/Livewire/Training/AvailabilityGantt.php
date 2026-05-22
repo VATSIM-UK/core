@@ -33,7 +33,10 @@ class AvailabilityGantt extends Component implements HasForms
         $this->date = request()->query('date', Carbon::today()->format('Y-m-d'));
         $this->category = request()->query('category', null);
 
-        if ($this->category && ! auth()->user()->hasMentoringPermissionForCategory($this->category)) {
+        $isAdmin = auth()->user()?->can('training.mentoring.view.*');
+
+        // Allow admins to bypass the category permission check
+        if ($this->category && ! $isAdmin && ! auth()->user()->hasMentoringPermissionForCategory($this->category)) {
             $this->category = null;
         }
     }
@@ -102,16 +105,23 @@ class AvailabilityGantt extends Component implements HasForms
         $targetDate = Carbon::parse($this->date);
         $allowedCallsigns = $this->getAllowedCallsigns();
 
-        if (empty($allowedCallsigns)) {
+        // Check if the user has the admin bypass permission
+        $hasViewAllPermission = auth()->user()?->can('training.mentoring.view.*');
+
+        if (empty($allowedCallsigns) && ! $hasViewAllPermission) {
             return collect();
         }
 
         return Member::query()
-            ->whereHas('sessions', function ($query) use ($allowedCallsigns) {
+            ->whereHas('sessions', function ($query) use ($allowedCallsigns, $hasViewAllPermission) {
                 $query->whereNull('mentor_id')
                     ->whereNull('filed')
-                    ->whereNull('cancelled_datetime')
-                    ->whereIn('position', $allowedCallsigns);
+                    ->whereNull('cancelled_datetime');
+
+                // If doesn't have view all permission, filter strictly by their allowed mentoring callsigns
+                if (! $hasViewAllPermission) {
+                    $query->whereIn('position', $allowedCallsigns);
+                }
             })
             ->whereHas('availabilities', function ($query) use ($targetDate) {
                 $query->whereDate('date', $targetDate);

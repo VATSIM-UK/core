@@ -34,6 +34,11 @@ trait HasMentoringPermissions
             MentorPermissionService::pilotCategories()
         );
 
+        // Allow admins to bypass the individual category checks and see all categories
+        if ($this->can('training.mentoring.view.*')) {
+            return $allCategories;
+        }
+
         return collect($allCategories)
             ->filter(fn (string $cat) => $this->hasMentoringPermissionForCategory($cat))
             ->values()
