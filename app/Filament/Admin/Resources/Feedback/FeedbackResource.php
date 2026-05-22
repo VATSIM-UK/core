@@ -123,8 +123,7 @@ class FeedbackResource extends Resource
                                 TextEntry::make('response')
                                     ->label('Answer')
                                     ->extraAttributes(['style' => 'white-space: pre-line;'])
-                                    ->state(fn ($record) => $record->response)
-                                    ->copyable(),
+                                    ->state(fn ($record) => $record->response),
                             ]),
                     ]),
             ]);
