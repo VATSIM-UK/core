@@ -41,16 +41,19 @@ class AvailabilityGantt extends Component implements HasForms
     public function previousDay()
     {
         $this->date = Carbon::parse($this->date)->subDay()->format('Y-m-d');
+        $this->studentsPage = 1;
     }
 
     public function nextDay()
     {
         $this->date = Carbon::parse($this->date)->addDay()->format('Y-m-d');
+        $this->studentsPage = 1;
     }
 
     public function setToday()
     {
         $this->date = Carbon::today()->format('Y-m-d');
+        $this->studentsPage = 1;
     }
 
     public function getPagedStudentsProperty()
@@ -128,6 +131,8 @@ class AvailabilityGantt extends Component implements HasForms
                 'last_session_date' => Session::select('taken_date')
                     ->whereColumn('student_id', 'members.id')
                     ->whereNotNull('taken_date')
+                    ->where('taken_date', '<=', now())
+                    ->whereNull('cancelled_datetime')
                     ->latest('taken_date')
                     ->limit(1),
             ])
