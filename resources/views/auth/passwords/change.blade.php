@@ -11,16 +11,17 @@
             <div class="row">
                 <div class="col-md-7 col-md-offset-2">
                     <form action="{{ route('password.change') }}" method="POST" class="form-horizontal">
-                    @csrf
-                    @include('auth.passwords.partials._old')
-                    @include('auth.passwords.partials._new')
-                    @include('auth.passwords.partials._submit')
+                        @csrf
+                        @include('auth.passwords.partials._old')
+                        @include('auth.passwords.partials._new')
+                        @include('auth.passwords.partials._submit')
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="resetConfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="resetConfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -28,7 +29,8 @@
                     <h4 class="modal-title">Reset Secondary Password</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Once you click this button, your old secondary password will be gone forever.  We'll then start the password recovery process for you - are you sure you wish to continue?</p>
+                    <p>Once you click this button, your old secondary password will be gone forever. We'll then start the
+                        password recovery process for you - are you sure you wish to continue?</p>
                 </div>
                 <div class="modal-footer">
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('password.email') }}">

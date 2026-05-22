@@ -6,23 +6,22 @@
     </form>
 
     <div class="items-center" wire:loading.flex>
-        <x-filament::loading-indicator class="w-10 mx-auto"/>
+        <x-filament::loading-indicator class="w-10 mx-auto" />
     </div>
-    @if($this->statistics)
+    @if ($this->statistics)
         <x-filament::card wire:loading.remove>
             <table class="table text-center table-auto w-full">
                 <tbody>
 
-                @foreach($this->statistics as $groupName => $statisticGroup)
-                    <td colspan="2" class="text-left"><strong>{{ $groupName }}<br></strong></td>
-                    @foreach($statisticGroup as $statistic)
-                        <tr>
-                            <td>{{ $statistic['name'] }}</td>
-                            <td> {{ $statistic['value'] }}</td>
-                        </tr>
+                    @foreach ($this->statistics as $groupName => $statisticGroup)
+                        <td colspan="2" class="text-left"><strong>{{ $groupName }}<br></strong></td>
+                        @foreach ($statisticGroup as $statistic)
+                            <tr>
+                                <td>{{ $statistic['name'] }}</td>
+                                <td> {{ $statistic['value'] }}</td>
+                            </tr>
+                        @endforeach
                     @endforeach
-
-                @endforeach
 
                 </tbody>
             </table>

@@ -116,7 +116,8 @@
                     </ul>
 
                     <p>
-                        Primary and Secondary Sectors are defined on the <a "{{ route('site.operations.sectors') }}" rel="">Area Sectors</a> page.
+                        Primary and Secondary Sectors are defined on the <a "{{ route('site.operations.sectors') }}"
+                            rel="">Area Sectors</a> page.
                     </p>
 
                 </div>

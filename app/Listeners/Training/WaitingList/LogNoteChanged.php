@@ -15,7 +15,7 @@ class LogNoteChanged
     public function handle(AccountNoteChanged $event)
     {
         Log::channel('training')
-            ->info("A note about {$event->account->name} ({$event->account->id}) in waiting list {$event->waitingListAccount->waitingList->name} ({$event->waitingListAccount->waitingList->id}) was changed from 
+            ->info("A note about {$event->account->name} ({$event->account->id}) in waiting list {$event->waitingListAccount->waitingList->name} ({$event->waitingListAccount->waitingList->id}) was changed from
             {$event->oldNoteContent} to {$event->newNoteContent}");
     }
 }

@@ -9,44 +9,46 @@
                     email other regional or international members, or inactive members.</p>
                 <form action="{{ route('mship.email.post') }}" method="POST" class="form-horizontal">
                     @csrf
-                <input name="recipient" id="recipient" type="hidden">
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">Recipient</label>
-                    <div class="col-sm-4">
-                        <p id="recipient-display" style="display: none; cursor: pointer; text-decoration: underline;" class="form-control-static" data-toggle="modal" data-target="#recipientModal"></p>
-                        <button type="button" class="btn btn-primary" id="recipient-button" data-toggle="modal" data-target="#recipientModal">
-                            Choose Recipient
-                        </button>
+                    <input name="recipient" id="recipient" type="hidden">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Recipient</label>
+                        <div class="col-sm-4">
+                            <p id="recipient-display" style="display: none; cursor: pointer; text-decoration: underline;"
+                                class="form-control-static" data-toggle="modal" data-target="#recipientModal"></p>
+                            <button type="button" class="btn btn-primary" id="recipient-button" data-toggle="modal"
+                                data-target="#recipientModal">
+                                Choose Recipient
+                            </button>
 
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="subject" class="col-sm-4 control-label">Subject</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" name="subject" placeholder="Subject">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="message" class="col-sm-4 control-label">Message</label>
-                    <div class="col-sm-4">
-                            <textarea class="form-control" rows="10" name="message"
-                                      placeholder="Enter your message here"></textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-4 col-sm-offset-4">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="hide-email"> Hide my email address<br><span style="overflow-wrap: break-word; hyphens: auto;">({{$_account->email}})</span>
-                            </label>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-4 col-sm-offset-4">
-                        <button type="submit" class="btn btn-default" id="send">Send</button>
+                    <div class="form-group">
+                        <label for="subject" class="col-sm-4 control-label">Subject</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" name="subject" placeholder="Subject">
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label for="message" class="col-sm-4 control-label">Message</label>
+                        <div class="col-sm-4">
+                            <textarea class="form-control" rows="10" name="message" placeholder="Enter your message here"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="hide-email"> Hide my email address<br><span
+                                        style="overflow-wrap: break-word; hyphens: auto;">({{ $_account->email }})</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-4">
+                            <button type="submit" class="btn btn-default" id="send">Send</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -74,8 +76,7 @@
                         <div id="recipient-search-fg" class="form-group">
                             <label for="recipient-search" class="col-sm-4 control-label">CID</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" id="recipient-search"
-                                       placeholder="Enter CID">
+                                <input type="text" class="form-control" id="recipient-search" placeholder="Enter CID">
                             </div>
                         </div>
                         <div class="form-group">
@@ -115,7 +116,7 @@
             };
 
             // get the list of potential recipients
-            $.get('{{route('mship.email.recipient-search')}}', data, function (res) {
+            $.get('{{ route('mship.email.recipient-search') }}', data, function(res) {
                 // reset recipient table and errors
                 $('#form-errors').html('');
                 $('#results table tr:gt(0)').remove();
@@ -125,9 +126,10 @@
                 if (res.match === 'exact') {
                     status = '<span class="fa fa-check-circle"></span>';
                     action = getChooseButton(res.data.id, res.data.name);
-                    $('#results table tbody').append(makeRecipientRow(res.data.id, res.data.name, status, action));
+                    $('#results table tbody').append(makeRecipientRow(res.data.id, res.data.name, status,
+                        action));
                 } else if (res.match === 'partial') {
-                    $.each(res.data, function (index, item) {
+                    $.each(res.data, function(index, item) {
                         if (item.valid) {
                             status = '<span class="fa fa-circle"></span>';
                             action = getChooseButton(item.id, item.name);
@@ -135,16 +137,17 @@
                             status = '<span class="fa fa-remove"></span>';
                             action = item.error;
                         }
-                        $('#results table tbody').append(makeRecipientRow(item.id, item.name, status, action));
+                        $('#results table tbody').append(makeRecipientRow(item.id, item.name,
+                            status, action));
                     });
                 }
-            }).fail(function (res) {
+            }).fail(function(res) {
                 // hide results table
                 $('#results').hide();
 
                 // display error
                 var errorsHtml = '<div class="alert alert-danger"><ul>';
-                $.each(res.responseJSON, function (key, value) {
+                $.each(res.responseJSON, function(key, value) {
                     errorsHtml += '<li>' + value[0] + '</li>';
                 });
                 errorsHtml += '</ul></di>';
@@ -153,7 +156,7 @@
             });
         });
 
-        $('#recipientModal').on('shown.bs.modal', function () {
+        $('#recipientModal').on('shown.bs.modal', function() {
             $('#recipient-search').select();
         });
 

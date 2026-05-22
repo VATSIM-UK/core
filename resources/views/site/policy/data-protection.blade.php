@@ -1,7 +1,6 @@
 @extends('layout')
 
 @section('content')
-
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-ukblue">
@@ -9,10 +8,9 @@
                     <i class="fa fa-exclamation"></i> &thinsp; Data Protection & Handling Policy
                 </div>
                 <div class="panel-body">
-                    @include("site.policy.data-protection-body")
+                    @include('site.policy.data-protection-body')
                 </div>
             </div>
         </div>
     </div>
-    
 @endsection

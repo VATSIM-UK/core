@@ -1,7 +1,6 @@
 @extends('layout')
 
 @section('content')
-
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-ukblue">
@@ -9,10 +8,9 @@
                     <i class="fa fa-exclamation"></i> &thinsp; ATC Training Policy
                 </div>
                 <div class="panel-body">
-                    @include("site.policy.atc-training-body")
+                    @include('site.policy.atc-training-body')
                 </div>
             </div>
         </div>
     </div>
-    
 @endsection

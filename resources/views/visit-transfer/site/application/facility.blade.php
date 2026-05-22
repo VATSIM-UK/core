@@ -5,28 +5,31 @@
         <div class="col-md-8">
             @include('components.html.panel_open', [
                 'title' => 'Choose your Facility',
-                'icon' => ['type' => 'fa', 'key' => 'question']
+                'icon' => ['type' => 'fa', 'key' => 'question'],
             ])
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
 
                     <p>
                         Choosing the right facility
-                        to {{ $application->status == \App\Models\VisitTransfer\Application::TYPE_VISIT ? "visit" : "transfer to" }}
+                        to
+                        {{ $application->status == \App\Models\VisitTransfer\Application::TYPE_VISIT ? 'visit' : 'transfer to' }}
                         is crucial
                         to your application progressing quickly.
                     </p>
 
-                    @if($application->status == \App\Models\VisitTransfer\Application::TYPE_VISIT)
+                    @if ($application->status == \App\Models\VisitTransfer\Application::TYPE_VISIT)
                         <p>
                             You can choose from all available facilities below.
                         <ul>
-                            <li>Should you apply to a facility where <span class="label label-warning" id="labelTrainingHelp">TRAINING IS REQUIRED</span>
+                            <li>Should you apply to a facility where <span class="label label-warning"
+                                    id="labelTrainingHelp">TRAINING IS REQUIRED</span>
                                 your visiting status can only be fully granted once your induction training has been
                                 completed.
                             </li>
                             <li>When applying to a facility labelled as
-                                <span class="label label-success" id="labelNoTrainingHelp">NO TRAINING REQUIRED</span>, your visitor status will
+                                <span class="label label-success" id="labelNoTrainingHelp">NO TRAINING REQUIRED</span>, your
+                                visitor status will
                                 be automatically granted
                                 once staff have accepted it.
                             </li>
@@ -43,7 +46,7 @@
         <div class="col-md-4">
             @include('components.html.panel_open', [
                 'title' => 'Facility Code',
-                'icon' => ['type' => 'fa', 'key' => 'question']
+                'icon' => ['type' => 'fa', 'key' => 'question'],
             ])
             <div class="row">
                 <div class="col-md-12">
@@ -54,14 +57,14 @@
                         Enter in the code below.
                     </p>
                     <p>
-                      <label for="facility-code">Facility Code:</label>
+                        <label for="facility-code">Facility Code:</label>
                     <form action="{{ route('visiting.application.facility.manual.post', $application->public_id) }}"
-                          method="POST" class="form-inline">
+                        method="POST" class="form-inline">
                         @csrf
                         <div class="form-group">
-                          <input type="text" name="facility-code" id="facility-code">
+                            <input type="text" name="facility-code" id="facility-code">
                         </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                     </p>
 
@@ -70,15 +73,15 @@
             </div>
             @include('components.html.panel_close')
         </div>
-      </div>
+    </div>
 
-      <div class="row">
-        @foreach($facilities as $facility)
+    <div class="row">
+        @foreach ($facilities as $facility)
             <div class="col-md-3">
                 @include('components.html.panel_open', [
                     'title' => $facility->name,
-                    'icon' => ['type' => 'vuk', 'key' => 'letter-'.strtolower($facility->name[0])],
-                    'attr' => ['style' => 'min-height: 220px;']
+                    'icon' => ['type' => 'vuk', 'key' => 'letter-' . strtolower($facility->name[0])],
+                    'attr' => ['style' => 'min-height: 220px;'],
                 ])
                 <div class="row">
                     <div class="col-md-12">
@@ -88,43 +91,48 @@
                         </p>
 
                         <p class="text-center">
-                            @if($facility->training_team === 'atc')
-                                <strong>Minimum ATC Rating:</strong> {{ $facility->minimumATCQualification->name ?? 'None' }}<br>
-                                <strong>Maximum ATC Rating:</strong> {{ $facility->maximumATCQualification->name ?? 'None' }}
+                            @if ($facility->training_team === 'atc')
+                                <strong>Minimum ATC Rating:</strong>
+                                {{ $facility->minimumATCQualification->name ?? 'None' }}<br>
+                                <strong>Maximum ATC Rating:</strong>
+                                {{ $facility->maximumATCQualification->name ?? 'None' }}
                             @else
-                                <strong>Minimum Pilot Rating:</strong> {{ $facility->minimumPilotQualification->name ?? 'None' }}<br>
-                                <strong>Maximum Pilot Rating:</strong> {{ $facility->maximumPilotQualification->name ?? 'None' }}
+                                <strong>Minimum Pilot Rating:</strong>
+                                {{ $facility->minimumPilotQualification->name ?? 'None' }}<br>
+                                <strong>Maximum Pilot Rating:</strong>
+                                {{ $facility->maximumPilotQualification->name ?? 'None' }}
                             @endif
                         </p>
 
                         <p class="text-center">
-                            @if($facility->training_required)
+                            @if ($facility->training_required)
                                 <span class="label label-warning">TRAINING IS REQUIRED</span>
-                                <br/>
-                                PLACES AVAILABLE: {!! ($facility->training_spaces === null ? "&infin;" : $facility->training_spaces) !!}
+                                <br />
+                                PLACES AVAILABLE: {!! $facility->training_spaces === null ? '&infin;' : $facility->training_spaces !!}
                             @else
                                 <span class="label label-success">NO TRAINING REQUIRED</span>
                             @endif
                         </p>
                         <form action="{{ route('visiting.application.facility.post', $application->public_id) }}"
-                              method="POST">
+                            method="POST">
                             @csrf
 
-                        <p class="text-center">
-                            @if($application->meetsRatingRequirements($facility))
-                                @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
-                                    <button type="submit" class="btn btn-primary">APPLY TO THIS FACILITY</button>
+                            <p class="text-center">
+                                @if ($application->meetsRatingRequirements($facility))
+                                    @if ($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
+                                        <button type="submit" class="btn btn-primary">APPLY TO THIS FACILITY</button>
+                                    @else
+                                        <button class="btn btn-danger" disabled="disabled">NO PLACES AVAILABLE</button>
+                                    @endif
                                 @else
-                                    <button class="btn btn-danger" disabled="disabled">NO PLACES AVAILABLE</button>
+                                    <button class="btn btn-default" disabled="disabled">INELIGIBLE</button>
+                                    <br>
+                                    <small class="text-danger">Your current rating does not meet this facility's
+                                        requirements.</small>
                                 @endif
-                            @else
-                                <button class="btn btn-default" disabled="disabled">INELIGIBLE</button>
-                                <br>
-                                <small class="text-danger">Your current rating does not meet this facility's requirements.</small>
-                            @endif
-                        </p>
+                            </p>
 
-                        <input type="hidden" name="facility_id" value="{{ $facility->id }}">
+                            <input type="hidden" name="facility_id" value="{{ $facility->id }}">
                         </form>
                     </div>
 

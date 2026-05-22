@@ -9,9 +9,9 @@
             <div class="row">
                 <div class="col-md-7 col-md-offset-2">
                     <form action="{{ route('password.delete') }}" class="form-horizontal" method="POST">
-                    @csrf
-                    @include('auth.passwords.partials._old')
-                    @include('auth.passwords.partials._submit')
+                        @csrf
+                        @include('auth.passwords.partials._old')
+                        @include('auth.passwords.partials._submit')
                     </form>
                 </div>
             </div>

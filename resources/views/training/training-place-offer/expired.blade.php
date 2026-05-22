@@ -9,7 +9,8 @@
                 <strong>{{ $offer->expires_at->format('H:i') }}Z on {{ $offer->expires_at->format('d/m/Y') }}</strong>
                 and is no longer available.
 
-                <p>If you believe this is a mistake or have any questions, please contact the ATC Training team via the helpdesk.</p>
+                <p>If you believe this is a mistake or have any questions, please contact the ATC Training team via the
+                    helpdesk.</p>
             </div>
 
             <a href="{{ route('mship.manage.dashboard') }}" class="btn btn-link">Return to Dashboard</a>

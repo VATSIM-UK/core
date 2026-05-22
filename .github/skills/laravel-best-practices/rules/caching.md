@@ -5,6 +5,7 @@
 Cleaner cache-aside pattern that removes boilerplate. use `Cache::lock()` for race conditions.
 
 Incorrect:
+
 ```php
 $val = Cache::get('stats');
 if (! $val) {
@@ -14,6 +15,7 @@ if (! $val) {
 ```
 
 Correct:
+
 ```php
 $val = Cache::remember('stats', 60, fn () => $this->computeStats());
 ```

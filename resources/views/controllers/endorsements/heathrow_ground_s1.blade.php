@@ -15,7 +15,8 @@
                         to provide a good service to pilots and get the most from your controlling session.
                     </p>
                     <p>
-                        S1 rated controllers must hold a Heathrow Endorsement in order to control EGLL_GND and EGLL_DEL positions.
+                        S1 rated controllers must hold a Heathrow Endorsement in order to control EGLL_GND and EGLL_DEL
+                        positions.
                     </p>
                     <h4>Step One</h4>
                     <p>
@@ -25,14 +26,16 @@
                     <ul>
                         <li>You must be active on the controller roster</li>
                         <li>You must be a home member of the UK</li>
-                        <li>You must hold an S1 rating</li>                   
+                        <li>You must hold an S1 rating</li>
                         <li>You must not have significant negative feedback</li>
                         <li>
-                            You must have a minimum of 100 hours on UK DEL/GND positions post the award of your S1, which must be made up of:
+                            You must have a minimum of 100 hours on UK DEL/GND positions post the award of your S1, which
+                            must be made up of:
                             <ul>
                                 <li>At least 30 hours on Gatwick DEL/GND positions</li>
                                 <li>At least 30 hours on Manchester DEL/GND positions</li>
-                                <li>The remaining hours on relevant, domestic UK DEL/GND positions (i.e. not overseas), excluding AFIS/AGCS and Military positions</li>
+                                <li>The remaining hours on relevant, domestic UK DEL/GND positions (i.e. not overseas),
+                                    excluding AFIS/AGCS and Military positions</li>
                             </ul>
                         </li>
                     </ul>
@@ -68,7 +71,7 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Membership Status</div>
                 <div class="panel-body">
-                    @if($_account->primary_state?->isDivision)
+                    @if ($_account->primary_state?->isDivision)
                         <p>You are a home member of the UK.</p>
                     @else
                         <p class="text-danger"><strong>You are not a home member of the UK Division. If you wish to hold
@@ -76,7 +79,7 @@
                                 by <a href="{{ route('visiting.landing') }}">clicking here</a>.</strong></p>
                     @endif
 
-                    @if($onRoster)
+                    @if ($onRoster)
                         <p>You are active on the controller roster.</p>
                     @else
                         <p class="text-danger">You are not active on the controller roster. If you wish to hold a
@@ -93,11 +96,8 @@
 
                     <p><strong>Gatwick DEL/GND</strong>
                     <div class="progress" data-toggle="tooltip" title="Hours on Gatwick DEL/GND">
-                        <div
-                            class="progress-bar {{ $gatwickMet ? 'progress-bar-success' : 'progress-bar-warning' }}"
-                            role="progressbar"
-                            style="width: {{ min(($gatwickHours / 30) * 100, 100) }}%"
-                            aria-valuemin="0"
+                        <div class="progress-bar {{ $gatwickMet ? 'progress-bar-success' : 'progress-bar-warning' }}"
+                            role="progressbar" style="width: {{ min(($gatwickHours / 30) * 100, 100) }}%" aria-valuemin="0"
                             aria-valuemax="30">
                             {{ floor($gatwickHours) }} Hrs
                         </div>
@@ -105,23 +105,17 @@
 
                     <p><strong>Manchester DEL/GND</strong>
                     <div class="progress" data-toggle="tooltip" title="Hours on Manchester DEL/GND">
-                        <div
-                            class="progress-bar {{ $manchesterMet ? 'progress-bar-success' : 'progress-bar-warning' }}"
-                            role="progressbar"
-                            style="width: {{ min(($manchesterHours / 30) * 100, 100) }}%"
-                            aria-valuemin="0"
-                            aria-valuemax="30">
+                        <div class="progress-bar {{ $manchesterMet ? 'progress-bar-success' : 'progress-bar-warning' }}"
+                            role="progressbar" style="width: {{ min(($manchesterHours / 30) * 100, 100) }}%"
+                            aria-valuemin="0" aria-valuemax="30">
                             {{ floor($manchesterHours) }} Hrs
                         </div>
                     </div>
 
                     <p><strong>Total UK DEL/GND</strong>
                     <div class="progress" data-toggle="tooltip" title="Total hours on UK DEL/GND">
-                        <div
-                            class="progress-bar {{ $totalMet ? 'progress-bar-success' : 'progress-bar-warning' }}"
-                            role="progressbar"
-                            style="width: {{ min(($totalHours / 100) * 100, 100) }}%"
-                            aria-valuemin="0"
+                        <div class="progress-bar {{ $totalMet ? 'progress-bar-success' : 'progress-bar-warning' }}"
+                            role="progressbar" style="width: {{ min(($totalHours / 100) * 100, 100) }}%" aria-valuemin="0"
                             aria-valuemax="100">
                             {{ floor($totalHours) }} Hrs
                         </div>
@@ -138,10 +132,11 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-info"></i> &thinsp; Request Moodle Course</div>
                 <div class="panel-body">
-                    @if($conditionsMet)
+                    @if ($conditionsMet)
                         <p>
                             <a href="https://helpdesk.vatsim.uk/open.php">Open a ticket with ATC Training</a>
-                            to request access to the Moodle Course</p>
+                            to request access to the Moodle Course
+                        </p>
                     @else
                         <button class="btn btn-info center-block" disabled>Request Moodle Course</button>
                     @endif

@@ -5,4 +5,3 @@
         <img src="{{ asset('images/cross_mark_circle.png') }}" width="20" alt="Cross">
     @endif
 </div>
-
