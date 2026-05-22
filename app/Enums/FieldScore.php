@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Enums;
+
+use Filament\Support\Colors\Color;
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
+
+enum FieldScore: int implements HasColor, HasLabel
+{
+    case NOT_SCORED = 0;
+    case NOT_APPLICABLE = 1;
+    case COVERED = 2;
+    case DEVELOPING = 3;
+    case GOOD = 4;
+    case TEST_STANDARD = 5;
+
+    public function getLabel(): ?string
+    {
+        return match ($this) {
+            self::NOT_SCORED, self::NOT_APPLICABLE => 'N/A',
+            self::COVERED => 'Covered',
+            self::DEVELOPING => 'Developing',
+            self::GOOD => 'Good',
+            self::TEST_STANDARD => 'Test Standard',
+        };
+    }
+
+    public function getColor(): string|array|null
+    {
+        return match ($this) {
+            self::NOT_SCORED, self::NOT_APPLICABLE => 'gray',
+            self::COVERED => Color::Orange,
+            self::DEVELOPING => Color::Amber,
+            self::GOOD => Color::Lime,
+            self::TEST_STANDARD => Color::Emerald,
+        };
+    }
+}

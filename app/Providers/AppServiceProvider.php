@@ -12,6 +12,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
@@ -21,6 +22,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Testing\ParallelTesting;
 use Laravel\Passport\Passport;
 use Livewire\Livewire;
+use Opcodes\LogViewer\Facades\LogViewer;
 use Spatie\Permission\PermissionRegistrar;
 use Whitecube\LaravelCookieConsent\Facades\Cookies;
 
@@ -70,6 +72,14 @@ class AppServiceProvider extends ServiceProvider
         Cookies::essentials()
             ->session()
             ->csrf();
+
+        Gate::define('viewLogViewer', function ($user) {
+            return $user?->hasPermissionTo('log-viewer.access') ?? false;
+        });
+
+        LogViewer::auth(function ($request) {
+            return $request->user()?->hasPermissionTo('log-viewer.access') ?? false;
+        });
 
         $this->configureParallelTesting();
     }

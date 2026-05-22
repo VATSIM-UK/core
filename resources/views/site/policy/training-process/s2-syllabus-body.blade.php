@@ -1,7 +1,7 @@
 <x-markdown>
 # Syllabus and Lesson Plans
 
-**Version 1.0**  
+**Version 1.0**
 **Effective Date:** 1st November 2025
 
 ---
@@ -15,12 +15,15 @@ This document details the training syllabus for VATSIM UK Student 2 controller t
 The syllabus details the competencies and content covered by the S2 training course in VATSIM UK. Students
 will meet the learning objectives through independent study of material provided in eLearning courses and
 traditional documentation, supported by mentors and instructors in one-to-one and group teaching
-sessions. Students are encouraged to ask questions in [#twr-students](https://discord.com/channels/705488311346790471/1044164274911711252) on [Discord](https://www.vatsim.uk/discord)
+sessions. Students are encouraged to ask questions in
+[#twr-students](https://discord.com/channels/705488311346790471/1044164274911711252) on
+[Discord](https://www.vatsim.uk/discord)
 
 ---
 
 ## Section 2 | Theoretical Knowledge course
-The [S2 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=37) e-Learning course covers the theoretical content of the S2 course, which includes the following areas of knowledge:
+The [S2 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=37) e-Learning course covers the
+theoretical content of the S2 course, which includes the following areas of knowledge:
 
 ### 2.1 Introduction to Aerodrome Control
 - Responsibilities of ADC
@@ -34,7 +37,7 @@ The [S2 | Aerodrome Control](https://moodle.vatsim.uk/course/view.php?id=37) e-L
 - Runway line-up and crossing clearances
 - Takeoff clearances
 - Landing clearances
-- Go-arounds and missed approaches 
+- Go-arounds and missed approaches
 
 ### 2.3 Meteorology
 - Meteorological reporting
@@ -72,7 +75,7 @@ S2 Training now encompasses a block training system to homogenise the Tower trai
 that all competencies are covered to a sufficient standard.
 
 Students will complete all blocks before being forwarded for a practical exam unless an exception is required
-(e.g. fast tracks). The system is split into two blocks: 
+(e.g. fast tracks). The system is split into two blocks:
 - Block 1 - Basic Training
 - Block 2 - Consolidation and Network Practice.
 
@@ -158,28 +161,33 @@ in a group session rather than individual 1-1 sessions. The session will endeavo
 the expectations of students during training - namely students’ engagement, self-study and
 progression.
 
-| Title       | Introduction to ADC / S2_SEMINAR                                   |
+| Title | Introduction to ADC / S2_SEMINAR |
 | ----------- | ------------------------------------------------------------------ |
-| Duration    | 1.5 hours                                                          |
-| Environment | Seminar                                                            |
-| Resources   | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
-| Covered Topics | 1. Euroscope Setup<br>2. Area of Responsibility<br>3. Takeoff and Landing Clearances<br>4. Conditional Clearances<br>5. Use of Datablocks and Scratchpads<br>6. Handover Coordination (RAWNS, CRAFT)<br>7. Flight Rules and Airspace Classification<br>8. Radiotelephony<br>9. Releases and Checks|
+| Duration | 1.5 hours |
+| Environment | Seminar |
+| Resources | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
+| Covered Topics | 1. Euroscope Setup<br>2. Area of Responsibility<br>3. Takeoff and Landing Clearances<br>4.
+Conditional Clearances<br>5. Use of Datablocks and Scratchpads<br>6. Handover Coordination (RAWNS, CRAFT)<br>7.
+Flight Rules and Airspace Classification<br>8. Radiotelephony<br>9. Releases and Checks|
 
 ### 4.2 Lesson Two
-| Title          | VFR Departures, Arrivals and Transits                              |
+| Title | VFR Departures, Arrivals and Transits |
 | -------------- | ------------------------------------------------------------------ |
-| Duration       | 2 hours                                                            |
-| Environment    | Sweatbox                                                           |
-| Resources      | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
-| Covered Topics | 1.Transfer of Traffic / Handoffs and Sector Ownership<br>2.Traffic Information<br>3.Altimetry and Meteorology<br>4.VFR Departures<br>5.VFR Arrivals<br>6.VFR Transits<br>7.Non-Standard IFR Departures |
+| Duration | 2 hours |
+| Environment | Sweatbox |
+| Resources | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
+| Covered Topics | 1.Transfer of Traffic / Handoffs and Sector Ownership<br>2.Traffic Information<br>3.Altimetry and
+Meteorology<br>4.VFR Departures<br>5.VFR Arrivals<br>6.VFR Transits<br>7.Non-Standard IFR Departures |
 
 ### 4.3 Lesson Three
-| Title       | VFR Circuits and Integration With IFR                              |
+| Title | VFR Circuits and Integration With IFR |
 | ----------- | ------------------------------------------------------------------ |
-| Duration    | 2 hours                                                            |
-| Environment | Sweatbox                                                           |
-| Resources   | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
-| Covered topics | 1. Missed Approaches<br>2. Land After<br>3. IFR/VFR Integration<br>4. Gap Strategies and Coordination with APC<br>5. VFR Circuits<br>6. Situational Awareness and Communication Priority<br>7. (Extra time to cover competencies at student request / mentor recommendation) |
+| Duration | 2 hours |
+| Environment | Sweatbox |
+| Resources | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
+| Covered topics | 1. Missed Approaches<br>2. Land After<br>3. IFR/VFR Integration<br>4. Gap Strategies and
+Coordination with APC<br>5. VFR Circuits<br>6. Situational Awareness and Communication Priority<br>7. (Extra time to
+cover competencies at student request / mentor recommendation) |
 
 ---
 
@@ -195,8 +203,10 @@ The student should be able to issue:
 ### 5.2 Missed Approaches
 The student should be able to:
 - Acknowledge a missed approach and coordinate the relevant receiving unit;
-- Issue appropriate tactical headings (no more than 30 degrees deviation from the runway course) should the situation require;
-- Complete all the above expeditiously, and any instructions given by the next controller (by coordination) are relayed to the pilot before hand-off occurs.
+- Issue appropriate tactical headings (no more than 30 degrees deviation from the runway course) should the
+situation require;
+- Complete all the above expeditiously, and any instructions given by the next controller (by coordination) are
+relayed to the pilot before hand-off occurs.
 
 ### 5.3 Transfer of Traffic / Handoffs and Sector Ownership
 The student should be able to:
@@ -226,7 +236,8 @@ The student should be able to:
 
 ### 5.7 Euroscope Setup
 The student should be able to:
-- Set up their controller client prior to beginning controlling in order to effectively control the position they are operating;
+- Set up their controller client prior to beginning controlling in order to effectively control the position they
+are operating;
 - Use a training callsign where required (_T_);
 - Use the up-to-date sector file;
 - Setup the active runway dialog;
@@ -246,15 +257,18 @@ The student should be able to:
 
 ### 5.10 VFR Departures
 The student should be able to:
-- Issue a standard clearance or obtain a non-standard clearance from the correct controller according local documentation;
+- Issue a standard clearance or obtain a non-standard clearance from the correct controller according local
+documentation;
 - Issue the coordinated clearance to the pilot in full and obtain a correct readback;
 - With the absence of top-down coverage, monitor aircraft up to a VRP/point within the vicinity of the CTR boundary.
 
 ### 5.11 VFR Arrivals
 The student should be able to:
 - Listen to and understand coordination from an adjacent controller regarding the arriving aircraft;
-- With the absence of top-down coverage, or where otherwise appropriate, the student provides a suitable clearance to enter controlled airspace;
-- Provide appropriate joining instructions to the aircraft having verified that the pilot has the aerodrome in-sight.
+- With the absence of top-down coverage, or where otherwise appropriate, the student provides a suitable clearance
+to enter controlled airspace;
+- Provide appropriate joining instructions to the aircraft having verified that the pilot has the aerodrome
+in-sight.
 
 ### 5.12 Circuit Management
 The student should be able to:
@@ -266,7 +280,8 @@ The student should be able to:
 ### 5.13 VFR Transits
 The student should be able to:
 - Cross transiting traffic with regard to any conflicting aircraft safely and efficiently;
-- Provide traffic information, ensures that visual contact has been established and use conditional instructions appropriately;
+- Provide traffic information, ensures that visual contact has been established and use conditional instructions
+appropriately;
 - Coordinate with the appropriate controller to establish a clearance limit for the transit where required.
 
 ### 5.14 Situational Awareness and Communicaion Priority
@@ -291,12 +306,15 @@ The student should be able to:
 ### 5.17 Sequencing
 The student should be able to:
 - Plan and execute an efficient departure order taking into account route, wake and speed separation minima;
-- Demonstrate an understanding of aircraft performance requirements and selects appropriate holding points for aircraft;
+- Demonstrate an understanding of aircraft performance requirements and selects appropriate holding points for
+aircraft;
 - Coordinate with GMC to assist in the planning of the departure order
 
 ### 5.18 Training Aerodrome Overview
 The student should be able to:
-- Present a general overview of their training aerodrome upon request and should include information such as, but not limited to: Preferential Runway, Circuit Information, VFR Procedures, Typical Route Separation and Local Squawk Ranges.
+- Present a general overview of their training aerodrome upon request and should include information such as, but
+not limited to: Preferential Runway, Circuit Information, VFR Procedures, Typical Route Separation and Local Squawk
+Ranges.
 
 ### 5.19 Area of Responsibility (AoR)
 The student should be able to:
@@ -317,7 +335,7 @@ The student should be able to:
 mnemonics listed below;
 
 **CRAFT**
-- **C** Controllers (Adjacent) 
+- **C** Controllers (Adjacent)
 - **R** Runway in use
 - **A** ATIS and Weather
 - **F** Flow Management (Any MDIs, CTOTs etc.)
@@ -340,11 +358,13 @@ The student should be able to:
 The student should be able to:
 - Select an appropriate runway for the given conditions;
 - Define when LVPs would be in force and update ATIS when required;
-- Identify where conditions may hinder the effectiveness of traffic information in their goal of VFR/IFR Integration;
+- Identify where conditions may hinder the effectiveness of traffic information in their goal of VFR/IFR
+Integration;
 - Explain the difference between height and altitude and identify which pressure setting should be used.
 
 ### 5.24 Non-standard IFR Departures
 The student should be able to:
-- Listen to and understand coordination from APC regarding non-standard approaches (anything other than an ILS approach);
+- Listen to and understand coordination from APC regarding non-standard approaches (anything other than an ILS
+approach);
 - Correctly coordinate non-standard IFR departures with APC/ENR as per local procedures.
 </x-markdown>

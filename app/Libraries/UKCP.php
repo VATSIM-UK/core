@@ -115,6 +115,10 @@ class UKCP
                     ];
                 })['stands'];
         } catch (ClientException $e) {
+            if ($e->getResponse() && $e->getResponse()->getStatusCode() === 404) {
+                return [];
+            }
+
             Log::warning("UKCP Client Error {$e->getMessage()} when getting stand status for {$airfield}");
 
             return [];

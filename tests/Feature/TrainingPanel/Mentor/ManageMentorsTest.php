@@ -166,7 +166,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(ManageMentors::class, ['category' => $category])
             ->callTableAction('addMentor', data: [
-                'account_id' => $target->id,
+                'account_ids' => [$target->id],
                 'position_ids' => [$trainingPositionOne->id, $trainingPositionTwo->id],
             ])
             ->assertHasNoTableActionErrors();
@@ -206,7 +206,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(ManageMentors::class, ['category' => $category])
             ->callTableAction('addMentor', data: [
-                'account_id' => $target->id,
+                'account_ids' => [$target->id],
                 'position_ids' => [$pplQual->id],
             ])
             ->assertHasNoTableActionErrors();

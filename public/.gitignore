@@ -6,3 +6,4 @@
 mix-manifest.json
 !vendor/telescope/mix-manifest.json
 /images/vendor
+vendor/log-viewer

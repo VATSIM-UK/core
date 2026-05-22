@@ -17,6 +17,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
@@ -156,5 +157,30 @@ class TrainingPlaceResource extends Resource
         return [
             'index' => ListTrainingPlaces::route('/'),
         ];
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['account_id', 'account.name_first', 'account.name_last'];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return "{$record->account?->name} ({$record->account_id})";
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['account'])->whereNull('deleted_at');
+    }
+
+    public static function getGlobalSearchResultUrl(Model $record): string
+    {
+        return ViewTrainingPlace::getUrl(['trainingPlaceId' => $record->id]);
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [$record->trainingPosition?->position?->name];
     }
 }

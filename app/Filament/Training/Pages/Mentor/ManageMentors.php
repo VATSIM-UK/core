@@ -12,6 +12,7 @@ use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
@@ -19,8 +20,10 @@ use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
 
 class ManageMentors extends Page implements HasTable
@@ -103,7 +106,53 @@ class ManageMentors extends Page implements HasTable
                 TextColumn::make('last_mentored')
                     ->label('Last Mentored')
                     ->state(fn (Account $record) => app(MentorPermissionService::class)->getLastMentoredDate($record, $this->category)?->format('d/m/Y') ?? 'Never')
-                    ->description(fn (string $state) => $state !== 'Never' ? Carbon::createFromFormat('d/m/Y', $state)->diffForHumans() : null),
+                    ->description(fn (string $state) => $state !== 'Never' ? Carbon::createFromFormat('d/m/Y', $state)->diffForHumans() : null)
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        $ids = $query->get()->sortBy(
+                            fn (Account $account) => app(MentorPermissionService::class)->getLastMentoredDate($account, $this->category)?->timestamp ?? 0,
+                            SORT_REGULAR,
+                            $direction === 'desc'
+                        )->pluck('id');
+
+                        return $query->orderByRaw('FIELD(id, '.$ids->implode(',').')');
+                    }),
+            ])->filters([
+                SelectFilter::make('position')
+                    ->label('Positions')
+                    ->options(fn () => $this->positionOptions($this->category))
+                    ->query(function (Builder $query, array $data) {
+                        if (empty($data['values'])) {
+                            return $query;
+                        }
+
+                        return $query->whereHas('mentorTrainingPositions', function (Builder $q) use ($data) {
+                            $q->whereIn('mentorable_id', $data['values']);
+                        });
+                    })
+                    ->multiple()
+                    ->searchable(),
+            ])
+            ->bulkActions([
+                BulkAction::make('bulkRemove')
+                    ->label('Remove Selected')
+                    ->icon('heroicon-o-x-mark')
+                    ->color('danger')
+                    ->modalHeading(fn () => 'Remove Selected Mentors from '.$this->category)
+                    ->modalSubheading('This will revoke all mentoring permissions for the selected members within this specific training group.')
+                    ->action(function (Collection $records) {
+                        foreach ($records as $record) {
+                            app(MentorPermissionService::class)->revokeFromCategory(
+                                $record,
+                                $this->category
+                            );
+                        }
+
+                        Notification::make()
+                            ->title('Mentor Access Revoked')
+                            ->body("All permissions for the selected mentors in {$this->category} have been removed.")
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->headerActions([
                 Action::make('addMentor')
@@ -113,13 +162,15 @@ class ManageMentors extends Page implements HasTable
                     ->modalSubmitActionLabel('Add Mentor')
                     ->visible(fn () => $canManage && ! empty($this->category))
                     ->form([
-                        Select::make('account_id')
-                            ->label('Member')
+                        Select::make('account_ids')
+                            ->label('Member(s)')
+                            ->multiple()
                             ->searchable()
                             ->getSearchResultsUsing(function (string $search) {
                                 return TrainingMemberAccountSearch::searchAccountsForSelect($search, 50);
                             })
-                            ->getOptionLabelUsing(fn ($v) => Account::find($v)?->name.' ('.$v.')')
+                            ->getOptionLabelsUsing(fn (array $values) => Account::whereIn('id', $values)->get()->mapWithKeys(fn (Account $a) => [$a->id => $a->name.' ('.$a->id.')'])->toArray())
+                            ->options([])
                             ->required(),
                         CheckboxList::make('position_ids')
                             ->label(fn () => $this->category.' Mentoring Permissions')
@@ -129,15 +180,16 @@ class ManageMentors extends Page implements HasTable
                             ->required(),
                     ])
                     ->action(function (array $data): void {
-                        $account = Account::findOrFail($data['account_id']);
+                        $accounts = Account::findMany($data['account_ids']);
                         $modelClass = app(MentorPermissionService::class)->getModelClassForCategory($this->category);
                         $items = $modelClass::findMany($data['position_ids']);
-
-                        foreach ($items as $item) {
-                            app(MentorPermissionService::class)->assignToMentorable($account, $item, auth()->user(), $this->category);
+                        foreach ($accounts as $account) {
+                            foreach ($items as $item) {
+                                app(MentorPermissionService::class)->assignToMentorable($account, $item, auth()->user(), $this->category);
+                            }
                         }
 
-                        Notification::make()->title('Mentor added')->success()->send();
+                        Notification::make()->title('Mentor(\'s) added')->success()->send();
                     }),
             ])
             ->recordActions([

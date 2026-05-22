@@ -1,7 +1,7 @@
 <x-markdown>
 # VATSIM UK Data Protection & Handling Policy
 
-**Version 1**  
+**Version 1**
 **Effective Date:** 8th June 2018
 
 ---
@@ -24,7 +24,7 @@ This policy has been put in place to achieve the following aims:
 
 - to comply with the law, particularly the EU General Data Protection Regulation
 - to ensure good data protection practice which when followed aims to protect members, staff, the
-    organisation and other individuals using our services.
+organisation and other individuals using our services.
 
 ### 2.2 Types of data
 
@@ -68,15 +68,15 @@ VATSIM UK has an unequivocal commitment to:
 
 - Comply with both the law and good practice
 - Respect individuals’ rights including:
-    o The right of access
-    o The right of rectification
-    o The right to object
-    o The right to suspend protest
-    o The right of erasure
+o The right of access
+o The right of rectification
+o The right to object
+o The right to suspend protest
+o The right of erasure
 - Be open and honest with individuals whose data is held
 - Provide guidance for staff who handle personal data, so that they can act confidently and consistently
 - Report any beliefs that a compromise of user data has occurred to the relevant data protection
-    authorities voluntarily, even if not legally required to do so.
+authorities voluntarily, even if not legally required to do so.
 
 ### 2.4 Key Risks
 
@@ -109,7 +109,8 @@ control and storage of data.
 
 All staff are required to read, understand and accept any policies and procedures that relate to the personal
 data they may handle in the course of their work within VATSIM UK as detailed in this policy. VATSIM UK
-expect the highest standard of probity of all staff at all levels. No access to data can take place unless there is a
+expect the highest standard of probity of all staff at all levels. No access to data can take place unless there is
+a
 valid network related reason for such access.
 
 ### 3.5 Enforcement

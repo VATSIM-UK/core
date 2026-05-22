@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\AccountInfoWidget;
 use App\Http\Middleware\AdminPanelFilamentAccessMiddleware;
 use App\Http\Middleware\TrackInactivity;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -12,7 +13,6 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\View\PanelsRenderHook;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -40,7 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                AccountInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -78,6 +78,11 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-magnifying-glass')
                     ->url(fn () => route('telescope'))
                     ->visible(fn () => request()->user()->can('viewTelescope')),
+                NavigationItem::make('Log Viewer')
+                    ->group('Technology')
+                    ->icon('heroicon-o-document-text')
+                    ->url(fn () => route('log-viewer.index'))
+                    ->visible(fn () => request()->user()->can('viewLogViewer')),
             ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_LOGO_AFTER,
