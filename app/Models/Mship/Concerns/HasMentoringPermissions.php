@@ -47,11 +47,19 @@ trait HasMentoringPermissions
 
     public function hasMentoringPermissionForCategory(string $category): bool
     {
+        if ($this->can('training.mentoring.view.*')) {
+            return true;
+        }
+
         return ! empty($this->getAssignedCallsignsForCategory($category));
     }
 
     public function hasMentoringPermissionForPosition(string $position): bool
     {
+        if ($this->can('training.mentoring.view.*')) {
+            return true;
+        }
+
         return in_array($position, $this->getAllAssignedCallsigns(), true);
     }
 

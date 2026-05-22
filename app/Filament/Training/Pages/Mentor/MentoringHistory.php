@@ -6,7 +6,6 @@ namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Repositories\Cts\SessionRepository;
-use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
@@ -52,12 +51,11 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     protected function getHeaderActions(): array
     {
-        $allCategories = collect(MentorPermissionService::atcCategories())->merge(MentorPermissionService::pilotCategories());
+        $availableCategories = auth()->user()->getAvailableMentoringCategories();
 
         return [
             ActionGroup::make(
-                $allCategories
-                    ->filter(fn (string $cat) => $this->canViewCategory($cat))
+                collect($availableCategories)
                     ->map(fn (string $cat) => Action::make('cat_'.str($cat)->slug('_'))
                         ->label($cat)
                         ->url(static::getUrl(['category' => $cat]))
@@ -65,7 +63,7 @@ class MentoringHistory extends BaseMentoringHistoryPage
                     )
                     ->all()
             )
-                ->label("Training Group: {$this->category}")
+                ->label('Training Group: '.($this->category ?: 'All'))
                 ->icon('heroicon-m-chevron-down')
                 ->color('gray')
                 ->button(),
@@ -88,18 +86,18 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     private function getVisibleCtsPositions(): array
     {
-        return app(MentorPermissionService::class)->getAssignedCtsCallsigns(auth()->user(), $this->category);
+        $user = auth()->user();
+
+        return $this->category ? $user->getAssignedCallsignsForCategory($this->category) : $user->getAllAssignedCallsigns();
     }
 
     private function canViewCategory(string $category): bool
     {
-        $assignedCallsigns = app(MentorPermissionService::class)->getAssignedCtsCallsigns(auth()->user(), $category);
-
-        return count($assignedCallsigns) > 0;
+        return in_array($category, auth()->user()->getAvailableMentoringCategories(), true);
     }
 
     private function firstVisibleCategory(): ?string
     {
-        return collect(MentorPermissionService::atcCategories())->merge(MentorPermissionService::pilotCategories())->first(fn (string $cat) => $this->canViewCategory($cat));
+        return collect(auth()->user()->getAvailableMentoringCategories())->first();
     }
 }
