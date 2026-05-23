@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Http\Middleware\PreventRequestForgery;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
