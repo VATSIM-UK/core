@@ -44,4 +44,9 @@ class Session extends Model
     {
         return $this->hasOne(ReportNote::class, 'seshid', 'id');
     }
+
+    public function cancelReason(): HasOne
+    {
+        return $this->hasOne(CancelReason::class, 'sesh_id', 'id')->where('sesh_type', 'ME');
+    }
 }
