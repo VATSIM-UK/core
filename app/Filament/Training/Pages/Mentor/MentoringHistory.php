@@ -6,6 +6,7 @@ namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Repositories\Cts\SessionRepository;
+use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
@@ -91,7 +92,7 @@ class MentoringHistory extends BaseMentoringHistoryPage
         if ($user->can('training.mentoring.view.*')) {
             return app(MentorPermissionService::class)->getAllCtsCallsignsForCategory($this->category);
         }
-      
+
         return $this->category ? $user->getAssignedCallsignsForCategory($this->category) : $user->getAllAssignedCallsigns();
     }
 
