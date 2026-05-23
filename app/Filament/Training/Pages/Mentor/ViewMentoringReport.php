@@ -179,7 +179,8 @@ class ViewMentoringReport extends Page implements HasInfolists
                                 ->count();
 
                             return [
-                                Text::make("Total student no-shows recorded: {$noShowCount}")
+                                Text::make('noShowCount')
+                                    ->content("Total student no-shows recorded: {$noShowCount}")
                                     ->color('gray'),
                             ];
                         })
