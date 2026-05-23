@@ -15,7 +15,8 @@ class MentoringPolicy
     use HandlesAuthorization;
 
     /**
-     * Mentoring panel pages are gated behind the training beta flag outside of tests.
+     * Mentoring panel pages are gated behind the training beta flag.
+     * Temporary until mentoring pages are released publically.
      */
     public function before(Account $user, string $ability): ?bool
     {
@@ -26,8 +27,10 @@ class MentoringPolicy
         return null;
     }
 
+    // View permission
+
     /**
-     * Access mentoring session pages.
+     * Access mentoring pages.
      */
     public function viewAny(Account $user): bool
     {
@@ -59,7 +62,8 @@ class MentoringPolicy
     }
 
     /**
-     * View positions/callsigns for a category, including all positions when the user may view all.
+     * View positions/callsigns for a category that a user has permissions to conduct mentoring sessions,
+     * including all positions when the user may view all.
      */
     public function visibleCtsPositionsForCategory(Account $user, MentoringScope $scope, string $category): array
     {
@@ -75,10 +79,12 @@ class MentoringPolicy
      */
     public function view(Account $user, Session $session): bool
     {
+        // Students should always be able to view their own reports
         if ($session->student_id === $user->id) {
             return true;
         }
 
+        // Mentors should always be able to view their own reports
         if ($session->mentor_id === $user->id) {
             return true;
         }
@@ -96,5 +102,15 @@ class MentoringPolicy
     public function viewStudentTrainingPlace(Account $user): bool
     {
         return $user->can('training-places.view.*');
+    }
+
+    // Action permissions
+
+    /**
+     * Check if a user has permission to mentor a specific position.
+     */
+    public function mentorPosition(Account $user, string $position): bool
+    {
+        return in_array($position, $user->getAllAssignedCallsigns(), true);
     }
 }

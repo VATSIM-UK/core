@@ -7,6 +7,7 @@ namespace App\Filament\Training\Pages\Mentor;
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
+use App\Policies\Training\Mentoring\MentoringPolicy;
 use App\Repositories\Cts\SessionRepository;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -80,7 +81,9 @@ class MentoringHistory extends BaseMentoringHistoryPage
         $user = auth()->user();
 
         if ($this->category) {
-            return $user->can('visibleCtsPositionsForCategory', [new MentoringScope, $this->category]);
+            $policy = app(MentoringPolicy::class);
+
+            return $policy->visibleCtsPositionsForCategory($user, new MentoringScope, $this->category);
         }
 
         return $user->getAllAssignedCallsigns();
@@ -88,7 +91,7 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     private function canViewCategory(string $category): bool
     {
-        return in_array($category, auth()->user()->getAvailableMentoringCategories(), true);
+        return auth()->user()?->can('viewCategory', [new MentoringScope, $category]) ?? false;
     }
 
     private function firstVisibleCategory(): ?string

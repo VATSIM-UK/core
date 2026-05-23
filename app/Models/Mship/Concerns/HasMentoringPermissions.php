@@ -53,11 +53,7 @@ trait HasMentoringPermissions
 
     public function hasMentoringPermissionForPosition(string $position): bool
     {
-        if ($this->can('viewAll', Session::class)) {
-            return true;
-        }
-
-        return in_array($position, $this->getAllAssignedCallsigns(), true);
+        return $this->can('mentorPosition', [Session::class, $position]);
     }
 
     public function canMentorPosition(string $position): bool
