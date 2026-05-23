@@ -111,6 +111,10 @@ class MentoringPolicy
      */
     public function mentorPosition(Account $user, string $position): bool
     {
+        if ($this->viewAll($user)) {
+            return true;
+        }
+
         return in_array($position, $user->getAllAssignedCallsigns(), true);
     }
 }

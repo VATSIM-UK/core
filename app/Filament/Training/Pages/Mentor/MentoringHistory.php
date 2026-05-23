@@ -9,7 +9,6 @@ use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
 use App\Policies\Training\Mentoring\MentoringPolicy;
 use App\Repositories\Cts\SessionRepository;
-use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
