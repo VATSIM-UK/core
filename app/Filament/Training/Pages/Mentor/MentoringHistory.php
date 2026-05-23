@@ -83,6 +83,10 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     private function getVisibleCtsPositions(): array
     {
+        if (auth()->user()->can('training.mentoring.view.*')) {
+            return app(MentorPermissionService::class)->getAllCtsCallsignsForCategory($this->category);
+        }
+
         return app(MentorPermissionService::class)->getAssignedCtsCallsigns(auth()->user(), $this->category);
     }
 
