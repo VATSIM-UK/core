@@ -74,7 +74,8 @@
                                 $widthPercent = ($durationMinutes / $totalTimelineMinutes) * 100;
                             @endphp
 
-                            <div class="absolute top-2 bottom-2 flex items-center justify-center px-1.5 rounded-md shadow-sm opacity-90 transition-all border group/block ring-1 bg-success-500 hover:bg-success-600 border-success-600 dark:border-success-400 ring-success-500/30 overflow-hidden"
+                            <div wire:click="mountAction('acceptSession', { availability_id: {{ $avail->id }} })"
+                                class="absolute top-2 bottom-2 flex items-center justify-center px-1.5 rounded-md shadow-sm opacity-90 transition-all border group/block cursor-pointer hover:shadow-md ring-1 bg-success-500 hover:bg-success-600 border-success-600 dark:border-success-400 ring-success-500/30 overflow-hidden"
                                 style="left: {{ $leftPercent }}%; width: {{ $widthPercent }}%;">
                             </div>
                         @endforeach

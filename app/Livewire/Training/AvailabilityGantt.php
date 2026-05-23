@@ -2,16 +2,26 @@
 
 namespace App\Livewire\Training;
 
+use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
+use App\Services\Training\MentoringSessionsService;
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Grid;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
-class AvailabilityGantt extends Component implements HasForms
+class AvailabilityGantt extends Component implements HasActions, HasForms
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     #[Url]
@@ -176,8 +186,134 @@ class AvailabilityGantt extends Component implements HasForms
         ]);
     }
 
+    public function acceptSessionAction(): Action
+    {
+        return Action::make('acceptSession')
+            ->modalHeading(function (array $arguments) {
+                $availability = Availability::find($arguments['availability_id']);
+                $student = Member::find($availability->student_id);
+
+                return "Accept Mentoring Session: {$student->name}";
+            })
+            ->modalDescription(function (array $arguments) {
+                $availability = Availability::find($arguments['availability_id']);
+                $date = Carbon::parse($availability->date)->format('l, jS F Y');
+
+                return "You are accepting a mentoring request for {$date}. Please confirm the exact start and end times below.";
+            })
+            ->modalSubmitActionLabel('Accept Session')
+            ->form(function (array $arguments) {
+                $availability = Availability::find($arguments['availability_id']);
+                $student = Member::find($availability->student_id);
+
+                $pendingSession = Session::query()
+                    ->where('student_id', $student->id)
+                    ->whereNull('mentor_id')
+                    ->whereNull('filed')
+                    ->whereNull('cancelled_datetime')
+                    ->first();
+
+                $minTime = Carbon::parse($availability->from)->format('H:i');
+                $maxTime = Carbon::parse($availability->to)->format('H:i');
+
+                $timeOptions = $this->generateTimeOptions($minTime, $maxTime);
+
+                return [
+                    Grid::make(3)->schema([
+                        Placeholder::make('student_name')
+                            ->label('Student Name')
+                            ->content($student->name),
+
+                        Placeholder::make('student_cid')
+                            ->label('Student CID')
+                            ->content($student->cid),
+
+                        Placeholder::make('position')
+                            ->label('Position')
+                            ->content($pendingSession?->position),
+                    ]),
+
+                    Grid::make(2)->schema([
+                        Select::make('taken_from')
+                            ->label('Start')
+                            ->required()
+                            ->searchable()
+                            ->allowHtml(false)
+                            ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                            ->options($timeOptions)
+                            ->default($minTime)
+                            ->optionsLimit(100),
+
+                        Select::make('taken_to')
+                            ->label('End')
+                            ->required()
+                            ->searchable()
+                            ->allowHtml(false)
+                            ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                            ->options($timeOptions)
+                            ->default($maxTime)
+                            ->optionsLimit(100),
+                    ]),
+                ];
+            })
+            ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService, Component $livewire) {
+                $availability = Availability::find($arguments['availability_id']);
+                $student = Member::find($availability->student_id);
+                $formattedDate = Carbon::parse($availability->date)->format('d/m/Y');
+
+                $success = $mentoringService->acceptSession($arguments['availability_id'], auth()->id(), $data['taken_from'], $data['taken_to']);
+
+                if ($success) {
+                    Notification::make()
+                        ->title('Session Accepted Successfully')
+                        ->body("You are now assigned to mentor {$student->name} on {$formattedDate} from {$data['taken_from']} to {$data['taken_to']}.")
+                        ->success()
+                        ->send();
+
+                    $livewire->dispatch('session-accepted');
+                } else {
+                    Notification::make()
+                        ->title('Booking Failed')
+                        ->body("We could not find an active pending session request for {$student->name} ({$student->cid}). It may have been cancelled or already picked up.")
+                        ->danger()
+                        ->send();
+                }
+            });
+    }
+
     public function getStudentsPerPageProperty(): int
     {
         return self::STUDENTS_PER_PAGE;
+    }
+
+    protected function generateTimeOptions(?string $minTime = null, ?string $maxTime = null): array
+    {
+        $options = [];
+
+        $minMinutes = $minTime ? (int) substr($minTime, 0, 2) * 60 + (int) substr($minTime, 3, 2) : 0;
+        $maxMinutes = $maxTime ? (int) substr($maxTime, 0, 2) * 60 + (int) substr($maxTime, 3, 2) : 1440;
+
+        for ($h = 0; $h < 24; $h++) {
+            for ($m = 0; $m < 60; $m += 15) {
+                $currentMinutes = $h * 60 + $m;
+
+                if ($currentMinutes >= $minMinutes && $currentMinutes <= $maxMinutes) {
+                    $time = sprintf('%02d:%02d', $h, $m);
+                    $options[$time] = $time;
+                }
+            }
+        }
+
+        if ($minTime && ! isset($options[$minTime])) {
+            $options[$minTime] = $minTime;
+        }
+
+        if ($maxTime && ! isset($options[$maxTime])) {
+            $options[$maxTime] = $maxTime;
+        }
+
+        ksort($options);
+
+        return $options;
     }
 }
