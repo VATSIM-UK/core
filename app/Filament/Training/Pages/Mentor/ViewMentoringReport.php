@@ -24,11 +24,13 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
 class ViewMentoringReport extends Page implements HasInfolists
 {
+    use AuthorizesRequests;
     use InteractsWithInfolists;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
@@ -69,33 +71,7 @@ class ViewMentoringReport extends Page implements HasInfolists
 
         $this->otherSessions = $this->allSessions->where('id', '!=', $this->session->id);
 
-        $user = auth()->user();
-
-        // Temporary beta permission
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            abort(403, 'You do not have permission to view this mentoring report.');
-        }
-
-        // Students may always view their own session report
-        if ($this->session->student_id === $user->id) {
-            return;
-        }
-
-        // Mentors may always view reports for sessions they conducted
-        if ($this->session->mentor_id === $user->id) {
-            return;
-        }
-
-        // Admin permission to allow access even without mentoring permissions
-        if (auth()->user()?->can('training.mentoring.view.*')) {
-            return;
-        }
-
-        if ($user->canMentorPosition($this->session->position)) {
-            return;
-        }
-
-        abort(403, 'You do not have permission to view this mentoring report.');
+        $this->authorize('view', $this->session);
     }
 
     public function infolist(Schema $schema): Schema
@@ -109,7 +85,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                         ->helperText(fn (Session $record) => $record->student->account->id)
                         ->url(function (Session $record) {
                             $user = auth()->user();
-                            if (! $user || ! $user->can('training-places.view.*')) {
+                            if (! $user || ! $user->can('viewStudentTrainingPlace', Session::class)) {
                                 return null;
                             }
 

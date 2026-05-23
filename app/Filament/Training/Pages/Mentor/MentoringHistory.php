@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
+use App\Models\Cts\Session;
+use App\Models\Training\Mentoring\MentoringScope;
 use App\Repositories\Cts\SessionRepository;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -28,18 +30,7 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     public static function canAccess(): bool
     {
-        // Temporary beta permission
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
-        // Admin permission to allow access even without mentoring permissions
-        if (auth()->user()?->can('training.mentoring.view.*')) {
-            return true;
-        }
-
-        // If a user has any mentoring permissions they are allowed to view this page
-        return auth()->user()->mentorTrainingPositions()->exists();
+        return auth()->user()?->can('viewAny', Session::class) ?? false;
     }
 
     public function mount(): void
@@ -88,7 +79,11 @@ class MentoringHistory extends BaseMentoringHistoryPage
     {
         $user = auth()->user();
 
-        return $this->category ? $user->getAssignedCallsignsForCategory($this->category) : $user->getAllAssignedCallsigns();
+        if ($this->category) {
+            return $user->can('visibleCtsPositionsForCategory', [new MentoringScope, $this->category]);
+        }
+
+        return $user->getAllAssignedCallsigns();
     }
 
     private function canViewCategory(string $category): bool
