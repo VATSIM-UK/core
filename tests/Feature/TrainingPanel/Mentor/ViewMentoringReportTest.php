@@ -4,6 +4,7 @@ namespace Tests\Feature\TrainingPanel\Mentor;
 
 use App\Enums\FieldScore;
 use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
+use App\Models\Cts\CancelReason;
 use App\Models\Cts\Member;
 use App\Models\Cts\ProgSheet;
 use App\Models\Cts\ProgSheetCategory;
@@ -575,5 +576,60 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($newStudent)
             ->test(ViewMentoringReport::class, ['sessionId' => $bareSession->id])
             ->assertSee('No report data found for this session.');
+    }
+
+    #[Test]
+    public function test_it_displays_session_cancelled_callout_with_correct_details(): void
+    {
+        $cancellingMember = Member::factory()->create(['name' => 'John Doe']);
+
+        CancelReason::factory()->create([
+            'sesh_id' => $this->mentoringSession->id,
+            'sesh_type' => 'ME',
+            'reason' => 'Family emergency.',
+            'reason_by' => $cancellingMember->id,
+        ]);
+
+        $this->mentoringSession->update([
+            'cancelled_datetime' => '2025-03-15 16:00:00',
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('Session Cancelled by John Doe')
+            ->assertSee('Family emergency.')
+            ->assertSee('2 hours notice given');
+    }
+
+    #[Test]
+    public function test_it_displays_student_no_show_callout_with_correct_historical_counter(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'noShow' => true,
+        ]);
+
+        $this->mentoringSession->update([
+            'noShow' => true,
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('This session has been marked as a student no-show.')
+            ->assertSee('Total student no-shows recorded: 2');
+    }
+
+    #[Test]
+    public function test_it_hides_cancelled_and_no_show_callouts_when_session_is_normal(): void
+    {
+        $this->mentoringSession->update([
+            'cancelled_datetime' => null,
+            'noShow' => false,
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertDontSee('Session Cancelled by')
+            ->assertDontSee('This session has been marked as a student no-show.');
     }
 }
