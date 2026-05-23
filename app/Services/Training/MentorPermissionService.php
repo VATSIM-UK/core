@@ -351,22 +351,4 @@ class MentorPermissionService
 
         return $callsigns->unique()->filter()->values()->toArray();
     }
-
-    public function getAllCtsCallsignsForCategory(string $category): array
-    {
-        if (self::categoryType($category) === 'atc') {
-            return TrainingPosition::where('category', $category)
-                ->get()
-                ->flatMap(fn ($tp) => $tp->cts_positions ?? [])
-                ->unique()
-                ->filter()
-                ->values()
-                ->toArray();
-        }
-
-        $qualCode = self::PILOT_CATEGORY_QUALIFICATION_MAP[$category] ?? null;
-        $callsign = $qualCode ? (self::QUALIFICATION_CTS_POSITION_MAP[$qualCode] ?? null) : null;
-
-        return $callsign ? [$callsign] : [];
-    }
 }
