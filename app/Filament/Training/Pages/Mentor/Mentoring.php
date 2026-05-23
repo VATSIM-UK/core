@@ -21,6 +21,11 @@ class Mentoring extends Page
             return false;
         }
 
+        // Admin permission to allow access even without mentoring permissions
+        if (auth()->user()?->can('training.mentoring.view.*')) {
+            return true;
+        }
+
         return auth()->user()->mentorTrainingPositions()->exists();
     }
 }

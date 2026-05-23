@@ -93,6 +93,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.mentors.manage.atc',
             'training.mentors.manage.pilot',
 
+            'training.mentoring.view.*',
+
             // Account Permissions
             'account.self',
             'account.view-insensitive.*',
