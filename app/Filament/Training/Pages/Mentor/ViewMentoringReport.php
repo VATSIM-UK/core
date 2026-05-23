@@ -86,6 +86,11 @@ class ViewMentoringReport extends Page implements HasInfolists
             return;
         }
 
+        // Admin permission to allow access even without mentoring permissions
+        if (auth()->user()?->can('training.mentoring.view.*')) {
+            return;
+        }
+
         if ($user->canMentorPosition($this->session->position)) {
             return;
         }
