@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Atc\PositionGroup;
+use App\Models\Cts\Session;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Feedback\Feedback;
-use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\ManageMentorsScope;
 use App\Models\Training\Mentoring\MentoringScope;
 use App\Models\Training\TrainingPlace\TrainingPlace;

@@ -6,8 +6,8 @@ namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\Mentor\Widgets\ManageMentorsStatsWidget;
 use App\Filament\Training\Support\TrainingMemberAccountSearch;
-use App\Models\Training\Mentoring\ManageMentorsScope;
 use App\Models\Mship\Account;
+use App\Models\Training\Mentoring\ManageMentorsScope;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
