@@ -138,7 +138,11 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                     Callout::make('Session Cancelled')
                         ->heading(function (Session $record): string {
-                            $cancelledBy = $record->cancelReason->member->name;
+                            $cancelledBy = $record->cancelReason?->member?->name;
+
+                            if (! $cancelledBy) {
+                                return 'Session Cancelled';
+                            }
 
                             return "Session Cancelled by {$cancelledBy}";
                         })
