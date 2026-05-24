@@ -4,6 +4,7 @@ namespace App\Livewire\Training;
 
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
+use App\Models\Training\Mentoring\MentoringScope;
 use Carbon\Carbon;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -33,10 +34,7 @@ class AvailabilityGantt extends Component implements HasForms
         $this->date = request()->query('date', Carbon::today()->format('Y-m-d'));
         $this->category = request()->query('category', null);
 
-        $isAdmin = auth()->user()?->can('training.mentoring.view.*');
-
-        // Allow admins to bypass the category permission check
-        if ($this->category && ! $isAdmin && ! auth()->user()->hasMentoringPermissionForCategory($this->category)) {
+        if ($this->category && ! (auth()->user()?->can('viewCategory', [new MentoringScope, $this->category]) ?? false)) {
             $this->category = null;
         }
     }
@@ -105,8 +103,7 @@ class AvailabilityGantt extends Component implements HasForms
         $targetDate = Carbon::parse($this->date);
         $allowedCallsigns = $this->getAllowedCallsigns();
 
-        // Check if the user has the admin bypass permission
-        $hasViewAllPermission = auth()->user()?->can('training.mentoring.view.*');
+        $hasViewAllPermission = auth()->user()?->can('viewAll', Session::class) ?? false;
 
         if (empty($allowedCallsigns) && ! $hasViewAllPermission) {
             return collect();
