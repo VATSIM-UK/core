@@ -46,28 +46,42 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 
     public function mount(): void
     {
+        if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
+            if (! $this->hasMultipleVisibleCategories()) {
+                $this->category = $this->firstVisibleCategory() ?? '';
+            }
+
+            return;
+        }
+
         if (empty($this->category) || ! $this->canViewCategory($this->category)) {
-            $this->category = $this->firstVisibleCategory() ?? '';
+            $this->category = $this->defaultCategory();
         }
     }
 
     protected function getHeaderActions(): array
     {
-        $allCategories = collect(MentorPermissionService::atcCategories())
-            ->merge(MentorPermissionService::pilotCategories());
+        $visibleCategories = $this->getVisibleCategories();
+
+        $categoryActions = collect($visibleCategories)
+            ->map(fn (string $cat) => Action::make('cat_'.str($cat)->slug('_'))
+                ->label($cat)
+                ->url(static::getUrl(['category' => $cat]))
+                ->icon($this->category === $cat ? 'heroicon-m-check' : null)
+            );
+
+        if ($this->hasMultipleVisibleCategories()) {
+            $categoryActions = $categoryActions->prepend(
+                Action::make('cat_all')
+                    ->label('All')
+                    ->url(static::getUrl(['category' => MentorPermissionService::ALL_CATEGORIES]))
+                    ->icon($this->category === MentorPermissionService::ALL_CATEGORIES ? 'heroicon-m-check' : null)
+            );
+        }
 
         return [
-            ActionGroup::make(
-                $allCategories
-                    ->filter(fn (string $cat) => $this->canViewCategory($cat))
-                    ->map(fn (string $cat) => Action::make('cat_'.str($cat)->slug('_'))
-                        ->label($cat)
-                        ->url(static::getUrl(['category' => $cat]))
-                        ->icon($this->category === $cat ? 'heroicon-m-check' : null)
-                    )
-                    ->all()
-            )
-                ->label('Training Group: '.($this->category ?: 'All'))
+            ActionGroup::make($categoryActions->all())
+                ->label('Training Group: '.$this->trainingGroupLabel())
                 ->icon('heroicon-m-chevron-down')
                 ->color('gray')
                 ->button(),
@@ -121,11 +135,52 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 
     private function getVisibleCtsPositions(): array
     {
+        $service = app(MentorPermissionService::class);
+
+        if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
+            return $service->getAllCtsCallsignsForCategories($this->getVisibleCategories());
+        }
+
         if (empty($this->category)) {
             return [];
         }
 
-        return app(MentorPermissionService::class)->getAllCtsCallsignsForCategory($this->category);
+        return $service->getAllCtsCallsignsForCategory($this->category);
+    }
+
+    private function trainingGroupLabel(): string
+    {
+        if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
+            return 'All';
+        }
+
+        return $this->category;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function getVisibleCategories(): array
+    {
+        return collect(MentorPermissionService::atcCategories())
+            ->merge(MentorPermissionService::pilotCategories())
+            ->filter(fn (string $cat) => $this->canViewCategory($cat))
+            ->values()
+            ->all();
+    }
+
+    private function hasMultipleVisibleCategories(): bool
+    {
+        return count($this->getVisibleCategories()) > 1;
+    }
+
+    private function defaultCategory(): string
+    {
+        if ($this->hasMultipleVisibleCategories()) {
+            return MentorPermissionService::ALL_CATEGORIES;
+        }
+
+        return $this->firstVisibleCategory() ?? '';
     }
 
     private function canViewCategory(string $category): bool
