@@ -67,6 +67,6 @@ class Session extends Model
         $from = Carbon::parse($this->taken_from)->format('H:i');
         $to = Carbon::parse($this->taken_to)->format('H:i');
 
-        return "{$date}, {$from}Z – {$to}Z";
+        return "{$date}, {$from} - {$to}";
     }
 }
