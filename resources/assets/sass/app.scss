@@ -40,7 +40,7 @@ body, html {
 }
 
 .dev_environment_notification {
-    height: 20px;
+    padding: 0.35em 0;
     background-color: red;
     text-align: center;
 }
@@ -130,11 +130,16 @@ body, html {
 
 .banner_breadcrumb_spacer {
   height: 90px;
+
+  @media (max-width: $screen-md-min) {
+    // Spacer + .page_content padding-top must equal --mobile-fixed-nav-height (set at runtime).
+    height: calc(var(--mobile-fixed-nav-height) - var(--mobile-page-content-padding-top));
+  }
 }
 
 .page_content {
   margin: 0 auto;
-  padding-top: 40px;
+  padding-top: var(--mobile-page-content-padding-top);
   width: 90%;
 }
 
