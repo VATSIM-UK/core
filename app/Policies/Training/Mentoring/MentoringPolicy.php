@@ -104,6 +104,15 @@ class MentoringPolicy
         return $user->can('training-places.view.*');
     }
 
+    public function viewUpcomingSessions(Account $user): bool
+    {
+        if ($this->viewAll($user)) {
+            return true;
+        }
+
+        return $user->can('training.mentors.view.atc') || $user->can('training.mentors.view.pilot');
+    }
+
     // Action permissions
 
     /**

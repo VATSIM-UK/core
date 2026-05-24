@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
+use App\Models\Training\Mentoring\MentoringScope;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
@@ -32,16 +33,7 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 
     public static function canAccess(): bool
     {
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
-        if (auth()->user()?->can('training.mentoring.view.*')) {
-            return true;
-        }
-
-        return auth()->user()?->can('training.mentors.view.atc')
-            || auth()->user()?->can('training.mentors.view.pilot');
+        return auth()->user()?->can('viewUpcomingSessions', new MentoringScope) ?? false;
     }
 
     public function mount(): void
@@ -185,11 +177,7 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 
     private function canViewCategory(string $category): bool
     {
-        if (auth()->user()->can('training.mentoring.view.*')) {
-            return true;
-        }
-
-        return auth()->user()->can('training.mentors.view.'.MentorPermissionService::categoryType($category));
+        return auth()->user()?->can('viewCategory', [new MentoringScope, $category]) ?? false;
     }
 
     private function firstVisibleCategory(): ?string
