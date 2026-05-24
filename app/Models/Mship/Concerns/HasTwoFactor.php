@@ -6,9 +6,13 @@ trait HasTwoFactor
 {
     public function getMandatoryTwoFactorAttribute(): bool
     {
+        if ($this->relationLoaded('roles')) {
+            return $this->roles->contains(fn ($role) => (bool) $role->two_factor_mandatory);
+        }
+
         return $this->roles()
-            ->get()
-            ->contains(fn ($role) => (bool) $role->two_factor_mandatory);
+            ->where('two_factor_mandatory', true)
+            ->exists();
     }
 
     public function requiresTwoFactorSetup(): bool
