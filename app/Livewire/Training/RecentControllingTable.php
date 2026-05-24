@@ -10,7 +10,6 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -41,7 +40,23 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
             ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('connected_at')->label('Date')->date('d/m/Y H:i:s'),
-                TextColumn::make('callsign')->label('Callsign'),
+                TextColumn::make('callsign')
+                    ->label('Callsign')
+                    ->icon(function ($record) {
+                        if ($record->hasOverlappingCompletedMentoringSession($this->getCompletedMentoringSessions())) {
+                            return 'heroicon-o-academic-cap';
+                        }
+
+                        return null;
+                    })
+                    ->iconColor('success')
+                    ->tooltip(function ($record) {
+                        if ($record->hasOverlappingCompletedMentoringSession($this->getCompletedMentoringSessions())) {
+                            return 'This session was part of a mentoring session';
+                        }
+
+                        return null;
+                    }),
                 TextColumn::make('duration')->label('Duration')->getStateUsing(function ($record) {
                     $minutes = $record->minutes_online ?? 0;
                     $interval = CarbonInterval::minutes($minutes)->cascade();
@@ -56,15 +71,6 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
 
                     return $parts ? implode(' ', $parts) : '0 minutes';
                 }),
-                IconColumn::make('has_mentoring')
-                    ->label('Mentoring')
-                    ->boolean()
-                    ->getStateUsing(function ($record) {
-                        return $record->hasOverlappingCompletedMentoringSession($this->getCompletedMentoringSessions());
-                    })
-                    ->trueIcon('heroicon-o-academic-cap')
-                    ->falseIcon('')
-                    ->trueColor('success'),
             ])
             ->emptyStateHeading('No records found');
     }
