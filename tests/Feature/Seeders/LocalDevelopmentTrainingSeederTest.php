@@ -96,7 +96,36 @@ class LocalDevelopmentTrainingSeederTest extends TestCase
         $this->assertTrue(CancelReason::query()->where('sesh_type', 'EX')->exists());
         $this->assertDatabaseHas('positions', ['callsign' => 'EGLL_N_TWR'], 'cts');
         $this->assertTrue(ExamSetup::query()->where('student_id', $examMemberId)->exists());
-        $this->assertTrue(Session::query()->where('student_id', $examMemberId)->exists());
+        $studentMemberId = Member::query()->where('cid', DevTrainingPersonas::STUDENT_CID)->value('id');
+        $loaMemberId = Member::query()->where('cid', DevTrainingPersonas::STUDENT_LOA_CID)->value('id');
+        $this->assertNotNull($studentMemberId);
+        $this->assertNotNull($loaMemberId);
+
+        foreach ([$studentMemberId, $loaMemberId, $examMemberId] as $memberId) {
+            $this->assertTrue(
+                Session::query()
+                    ->where('student_id', $memberId)
+                    ->where('session_done', 1)
+                    ->where('taken', 1)
+                    ->exists(),
+                "Expected completed mentoring sessions for CTS member {$memberId}",
+            );
+            $this->assertTrue(
+                Session::query()
+                    ->where('student_id', $memberId)
+                    ->whereNotNull('cancelled_datetime')
+                    ->exists(),
+                "Expected cancelled mentoring sessions for CTS member {$memberId}",
+            );
+        }
+
+        $this->assertTrue(
+            Session::query()
+                ->where('student_id', $examMemberId)
+                ->whereNull('mentor_id')
+                ->where('session_done', 0)
+                ->exists()
+        );
         $this->assertTrue(
             MentorTrainingPosition::query()->where('account_id', DevTrainingPersonas::STAFF_CID)->exists()
         );

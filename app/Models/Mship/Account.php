@@ -23,6 +23,7 @@ use App\Models\Mship\Concerns\HasQualifications;
 use App\Models\Mship\Concerns\HasRoles;
 use App\Models\Mship\Concerns\HasStates;
 use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
+use App\Models\Mship\Concerns\HasTwoFactor;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Concerns\HasWaitingLists;
 use App\Models\Mship\Note\Type;
@@ -42,6 +43,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\Contracts\OAuthenticatable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Models\Role;
 use Watson\Rememberable\Rememberable;
@@ -104,6 +106,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read bool $is_on_network
  * @property-read mixed $is_system_banned
  * @property-read bool $mandatory_password
+ * @property-read bool $mandatory_two_factor
  * @property-read mixed|string $name_preferred
  * @property-read mixed $network_ban
  * @property-read mixed $new_ts_registration
@@ -239,11 +242,13 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         HasRoles,
         HasStates,
         HasTeamSpeakRegistrations,
+        HasTwoFactor,
         HasVisitTransferApplications,
         HasWaitingLists,
         Notifiable,
         Rememberable,
-        SoftDeletingTrait;
+        SoftDeletingTrait,
+        TwoFactorAuthenticatable;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
@@ -292,11 +297,14 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'deleted_at' => 'datetime',
         'password_set_at' => 'datetime',
         'password_expires_at' => 'datetime',
+        'two_factor_confirmed_at' => 'datetime',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
         'discord_access_token',
         'discord_refresh_token',
         'vatsim_access_token',

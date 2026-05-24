@@ -72,6 +72,11 @@ trait HasPassword
         return $this->password !== null;
     }
 
+    public function requiresMandatoryPasswordSetup(): bool
+    {
+        return $this->mandatory_password && ! $this->hasPassword();
+    }
+
     /**
      * Determine whether the current password has expired.
      *

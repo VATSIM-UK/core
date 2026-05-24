@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Training\Pages\Dashboard;
 use App\Filament\Widgets\AccountInfoWidget;
+use App\Http\Middleware\MandatoryTwoFactor;
 use App\Http\Middleware\TrackInactivity;
 use App\Http\Middleware\TrainingPanelAccessMiddleware;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -49,6 +50,7 @@ class TrainingPanelProvider extends PanelProvider
                 PreventRequestForgery::class,
                 SubstituteBindings::class,
                 TrackInactivity::class,
+                MandatoryTwoFactor::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])

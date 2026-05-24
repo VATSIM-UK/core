@@ -7,6 +7,7 @@ namespace App\Filament\Training\Pages\Mentor;
 use App\Filament\Training\Pages\Mentor\Widgets\ManageMentorsStatsWidget;
 use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Mship\Account;
+use App\Models\Training\Mentoring\ManageMentorsScope;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
@@ -45,7 +46,7 @@ class ManageMentors extends Page implements HasTable
 
     public static function canAccess(): bool
     {
-        return auth()->user()->can('training.mentors.view.atc') || auth()->user()->can('training.mentors.view.pilot');
+        return auth()->user()?->can('viewAny', ManageMentorsScope::class) ?? false;
     }
 
     public function mount(): void
@@ -137,6 +138,7 @@ class ManageMentors extends Page implements HasTable
                     ->label('Remove Selected')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
+                    ->visible(fn () => $canManage && ! empty($this->category))
                     ->modalHeading(fn () => 'Remove Selected Mentors from '.$this->category)
                     ->modalSubheading('This will revoke all mentoring permissions for the selected members within this specific training group.')
                     ->action(function (Collection $records) {
@@ -243,19 +245,14 @@ class ManageMentors extends Page implements HasTable
             ]);
     }
 
-    private function getCategoryType(string $category): string
-    {
-        return MentorPermissionService::categoryType($category);
-    }
-
     private function canViewCategory(string $category): bool
     {
-        return auth()->user()->can('training.mentors.view.'.$this->getCategoryType($category));
+        return auth()->user()->can('viewCategory', [new ManageMentorsScope, $category]);
     }
 
     private function canManageCategory(string $category): bool
     {
-        return auth()->user()->can('training.mentors.manage.'.$this->getCategoryType($category));
+        return auth()->user()->can('manageCategory', [new ManageMentorsScope, $category]);
     }
 
     private function firstVisibleCategory(): ?string
