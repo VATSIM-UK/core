@@ -64,19 +64,19 @@ class LocalDevelopmentTrainingSeeder extends Seeder
                     'Student',
                     (string) DevTrainingPersonas::STUDENT_CID,
                     DevTrainingPersonas::STUDENT_EMAIL,
-                    'Training place with availability checks / warning',
+                    'Training place with availability checks, warning, mentoring history',
                 ],
                 [
                     'Student (LOA)',
                     (string) DevTrainingPersonas::STUDENT_LOA_CID,
                     DevTrainingPersonas::STUDENT_LOA_EMAIL,
-                    'Active leave of absence on EGLL_N_APP',
+                    'LOA on EGLL_N_APP; mentoring history on training place',
                 ],
                 [
                     'Student (exams)',
                     (string) DevTrainingPersonas::STUDENT_EXAMS_CID,
                     DevTrainingPersonas::STUDENT_EXAMS_EMAIL,
-                    'Exam request, scheduled, completed, cancelled',
+                    'Exams + mentoring history; open mentoring request',
                 ],
             ],
         );

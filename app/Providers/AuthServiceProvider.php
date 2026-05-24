@@ -3,10 +3,13 @@
 namespace App\Providers;
 
 use App\Models\Atc\PositionGroup;
+use App\Models\Cts\Session;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Feedback\Feedback;
+use App\Models\Training\Mentoring\ManageMentorsScope;
+use App\Models\Training\Mentoring\MentoringScope;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
@@ -18,6 +21,8 @@ use App\Policies\Mship\Account\NotePolicy;
 use App\Policies\PasswordPolicy;
 use App\Policies\PositionGroupPolicy;
 use App\Policies\RolePolicy;
+use App\Policies\Training\Mentoring\ManageMentorsPolicy;
+use App\Policies\Training\Mentoring\MentoringPolicy;
 use App\Policies\Training\WaitingList\WaitingListRetentionChecksPolicy;
 use App\Policies\Training\WaitingListFlagsPolicy;
 use App\Policies\Training\WaitingListPolicy;
@@ -54,6 +59,9 @@ class AuthServiceProvider extends ServiceProvider
         Note::class => NotePolicy::class,
         WaitingListRetentionCheck::class => WaitingListRetentionChecksPolicy::class,
         TrainingPlace::class => TrainingPlacePolicy::class,
+        Session::class => MentoringPolicy::class,
+        MentoringScope::class => MentoringPolicy::class,
+        ManageMentorsScope::class => ManageMentorsPolicy::class,
     ];
 
     /**

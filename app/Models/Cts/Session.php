@@ -69,4 +69,9 @@ class Session extends Model
 
         return "{$date}, {$from} - {$to}";
     }
+  
+    public function cancelReason(): HasOne
+    {
+        return $this->hasOne(CancelReason::class, 'sesh_id', 'id')->where('sesh_type', 'ME');
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Repositories\Cts;
 
 use App\Models\Cts\Session;
+use Illuminate\Database\Eloquent\Builder;
 
 class SessionRepository
 {
@@ -26,6 +27,26 @@ class SessionRepository
             })
             ->whereIn('position', $positionCallsigns)
             ->where('taken', 1);
+    }
+
+    public function getUpcomingAcceptedSessionsForPositionsQuery(array $positionCallsigns): Builder
+    {
+        return $this->getAllAcceptedSessionsForPositionsQuery($positionCallsigns)
+            ->whereNotNull('mentor_id')
+            ->whereNull('filed')
+            ->whereNull('cancelled_datetime')
+            ->where('noShow', 0)
+            ->where('taken_date', '>=', now());
+    }
+
+    public function getPendingReportSessionsForPositionsQuery(array $positionCallsigns): Builder
+    {
+        return $this->getAllAcceptedSessionsForPositionsQuery($positionCallsigns)
+            ->whereNotNull('mentor_id')
+            ->whereNull('filed')
+            ->whereNull('cancelled_datetime')
+            ->where('noShow', 0)
+            ->where('taken_date', '<', now());
     }
 
     public function getTotalSessionsForPosition(string $positionCallsign)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Auth\LoginFlow;
 use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use App\Providers\VATSIMOAuthProvider;
@@ -9,7 +10,6 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 /**
@@ -80,15 +80,7 @@ class LoginController extends BaseController
 
         Auth::guard('vatsim-sso')->loginUsingId($account->id);
 
-        if ($account->hasPassword()) {
-            return redirect()->route('auth-secondary');
-        }
-
-        $intended = Session::pull('url.intended', route('site.home'));
-
-        Auth::login(Auth::guard('vatsim-sso')->user(), true);
-
-        return redirect($intended);
+        return LoginFlow::redirectAfterVatsimOAuth($request, $account);
     }
 
     protected function completeLogin(object $resourceOwner, object $token)

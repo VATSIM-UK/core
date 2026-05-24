@@ -6,6 +6,7 @@ use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Services\Training\MentoringSessionsService;
+use App\Models\Training\Mentoring\MentoringScope;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -43,7 +44,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $this->date = request()->query('date', Carbon::today()->format('Y-m-d'));
         $this->category = request()->query('category', null);
 
-        if ($this->category && ! auth()->user()->hasMentoringPermissionForCategory($this->category)) {
+        if ($this->category && ! (auth()->user()?->can('viewCategory', [new MentoringScope, $this->category]) ?? false)) {
             $this->category = null;
         }
     }
@@ -112,16 +113,22 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $targetDate = Carbon::parse($this->date);
         $allowedCallsigns = $this->getAllowedCallsigns();
 
-        if (empty($allowedCallsigns)) {
+        $hasViewAllPermission = auth()->user()?->can('viewAll', Session::class) ?? false;
+
+        if (empty($allowedCallsigns) && ! $hasViewAllPermission) {
             return collect();
         }
 
         return Member::query()
-            ->whereHas('sessions', function ($query) use ($allowedCallsigns) {
+            ->whereHas('sessions', function ($query) use ($allowedCallsigns, $hasViewAllPermission) {
                 $query->whereNull('mentor_id')
                     ->whereNull('filed')
-                    ->whereNull('cancelled_datetime')
-                    ->whereIn('position', $allowedCallsigns);
+                    ->whereNull('cancelled_datetime');
+
+                // If doesn't have view all permission, filter strictly by their allowed mentoring callsigns
+                if (! $hasViewAllPermission) {
+                    $query->whereIn('position', $allowedCallsigns);
+                }
             })
             ->whereHas('availabilities', function ($query) use ($targetDate) {
                 $query->whereDate('date', $targetDate);

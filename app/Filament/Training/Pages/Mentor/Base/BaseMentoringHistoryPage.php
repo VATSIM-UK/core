@@ -38,84 +38,118 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
         return true;
     }
 
+    protected function defaultTableSortDirection(): string
+    {
+        return 'desc';
+    }
+
+    protected function tableRecordActions(): array
+    {
+        return [
+            Action::make('view')
+                ->label('View Report')
+                ->url(fn ($record) => ViewMentoringReport::getUrl(['sessionId' => $record->id]))
+                ->visible(fn ($record) => $record->filed !== null)
+                ->openUrlInNewTab(),
+        ];
+    }
+
+    protected function tableEmptyStateHeading(): string
+    {
+        return 'No mentoring sessions found in this training group';
+    }
+
+    protected function includeStatusColumn(): bool
+    {
+        return true;
+    }
+
+    protected function includeStatusFilter(): bool
+    {
+        return true;
+    }
+
     public function table(Table $table): Table
     {
         return $table
             ->query($this->getSessionQuery())
-            ->defaultSort('taken_date', 'desc')
+            ->defaultSort('taken_date', $this->defaultTableSortDirection())
             ->striped()
             ->paginated([10, 25, 50, 100])
             ->defaultPaginationPageOption(25)
-            ->columns([
-                TextColumn::make('student_name')
-                    ->label('Student')
-                    ->getStateUsing(fn ($record) => $record->student->name)
-                    ->description(fn ($record) => $record->student->cid)
-                    ->action(function ($record, $livewire) {
-                        if (! $this->showStudentFilter()) {
-                            return;
-                        }
-
-                        $livewire->tableFilters['student']['value'] = $record->student->cid;
-                        $livewire->updatedTableFilters();
-                    }),
-
-                TextColumn::make('mentor_name')
-                    ->label('Mentor')
-                    ->getStateUsing(fn ($record) => $record->mentor->name)
-                    ->description(fn ($record) => $record->mentor->cid)
-                    ->action(function ($record, $livewire) {
-                        if (! $this->showMentorFilter()) {
-                            return;
-                        }
-
-                        $livewire->tableFilters['mentor']['value'] = $record->mentor->cid;
-                        $livewire->updatedTableFilters();
-                    }),
-
-                TextColumn::make('position')
-                    ->label('Position')
-                    ->badge()
-                    ->color('gray'),
-
-                TextColumn::make('taken_date')
-                    ->label('Date & Time')
-                    ->getStateUsing(function ($record) {
-                        $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                        $time = Carbon::parse($record->taken_from)->format('H:i');
-
-                        return trim("{$date} {$time}");
-                    })
-                    ->sortable(query: fn (Builder $query, string $direction) => $query
-                        ->orderBy('taken_date', $direction)
-                        ->orderBy('taken_from', $direction)
-                    ),
-
-                TextColumn::make('status')
-                    ->label('Status')
-                    ->badge()
-                    ->getStateUsing(fn ($record) => match (true) {
-                        $record->noShow == 1 => 'No Show',
-                        $record->cancelled_datetime !== null => 'Cancelled',
-                        $record->filed !== null => 'Completed',
-                        default => 'Pending',
-                    })
-                    ->color(fn ($state) => match ($state) {
-                        'Pending' => 'primary',
-                        'No Show' => 'danger',
-                        'Cancelled' => 'warning',
-                        'Completed' => 'success',
-                    }),
-            ])
+            ->columns($this->getTableColumns())
             ->filters($this->getTableFilters())
-            ->recordActions([
-                Action::make('view')
-                    ->label('View Report')
-                    ->url(fn ($record) => ViewMentoringReport::getUrl(['sessionId' => $record->id]))
-                    ->visible(fn ($record) => $record->filed !== null)
-                    ->openUrlInNewTab(),
-            ])
-            ->emptyStateHeading('No mentoring sessions found in this training group');
+            ->recordActions($this->tableRecordActions())
+            ->emptyStateHeading($this->tableEmptyStateHeading());
+    }
+
+    protected function getTableColumns(): array
+    {
+        $columns = [
+            TextColumn::make('student_name')
+                ->label('Student')
+                ->getStateUsing(fn ($record) => $record->student->name)
+                ->description(fn ($record) => $record->student->cid)
+                ->action(function ($record, $livewire) {
+                    if (! $this->showStudentFilter()) {
+                        return;
+                    }
+
+                    $livewire->tableFilters['student']['value'] = $record->student->cid;
+                    $livewire->updatedTableFilters();
+                }),
+
+            TextColumn::make('mentor_name')
+                ->label('Mentor')
+                ->getStateUsing(fn ($record) => $record->mentor->name)
+                ->description(fn ($record) => $record->mentor->cid)
+                ->action(function ($record, $livewire) {
+                    if (! $this->showMentorFilter()) {
+                        return;
+                    }
+
+                    $livewire->tableFilters['mentor']['value'] = $record->mentor->cid;
+                    $livewire->updatedTableFilters();
+                }),
+
+            TextColumn::make('position')
+                ->label('Position')
+                ->badge()
+                ->color('gray'),
+
+            TextColumn::make('taken_date')
+                ->label('Date & Time')
+                ->getStateUsing(function ($record) {
+                    $date = Carbon::parse($record->taken_date)->format('d/m/Y');
+                    $time = Carbon::parse($record->taken_from)->format('H:i');
+
+                    return trim("{$date} {$time}");
+                })
+                ->sortable(query: fn (Builder $query, string $direction) => $query
+                    ->orderBy('taken_date', $direction)
+                    ->orderBy('taken_from', $direction)
+                ),
+        ];
+
+        if ($this->includeStatusColumn()) {
+            $columns[] = TextColumn::make('status')
+                ->label('Status')
+                ->badge()
+                ->getStateUsing(fn ($record) => match (true) {
+                    $record->noShow == 1 => 'No Show',
+                    $record->cancelled_datetime !== null => 'Cancelled',
+                    $record->filed !== null => 'Completed',
+                    default => 'Pending',
+                })
+                ->color(fn ($state) => match ($state) {
+                    'Pending' => 'primary',
+                    'No Show' => 'danger',
+                    'Cancelled' => 'warning',
+                    'Completed' => 'success',
+                });
+        }
+
+        return $columns;
     }
 
     private function getTableFilters(): array
@@ -154,7 +188,10 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
                 ));
         }
 
-        $filters[] = $this->statusFilter();
+        if ($this->includeStatusFilter()) {
+            $filters[] = $this->statusFilter();
+        }
+
         $filters[] = $this->dateRangeFilter();
 
         return $filters;

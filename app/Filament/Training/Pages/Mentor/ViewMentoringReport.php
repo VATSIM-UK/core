@@ -11,24 +11,29 @@ use App\Livewire\Training\SessionCriteriaTable;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Text;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
 class ViewMentoringReport extends Page implements HasInfolists
 {
+    use AuthorizesRequests;
     use InteractsWithInfolists;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
@@ -56,6 +61,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             'mentor',
             'reportSheets.field.category',
             'reportSheets.progSheet',
+            'cancelReason',
         ])->findOrFail($this->sessionId);
 
         $this->allSessions = Session::query()
@@ -69,28 +75,7 @@ class ViewMentoringReport extends Page implements HasInfolists
 
         $this->otherSessions = $this->allSessions->where('id', '!=', $this->session->id);
 
-        $user = auth()->user();
-
-        // Temporary beta permission
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            abort(403, 'You do not have permission to view this mentoring report.');
-        }
-
-        // Students may always view their own session report
-        if ($this->session->student_id === $user->id) {
-            return;
-        }
-
-        // Mentors may always view reports for sessions they conducted
-        if ($this->session->mentor_id === $user->id) {
-            return;
-        }
-
-        if ($user->canMentorPosition($this->session->position)) {
-            return;
-        }
-
-        abort(403, 'You do not have permission to view this mentoring report.');
+        $this->authorize('view', $this->session);
     }
 
     public function infolist(Schema $schema): Schema
@@ -104,7 +89,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                         ->helperText(fn (Session $record) => $record->student->account->id)
                         ->url(function (Session $record) {
                             $user = auth()->user();
-                            if (! $user || ! $user->can('training-places.view.*')) {
+                            if (! $user || ! $user->can('viewStudentTrainingPlace', Session::class)) {
                                 return null;
                             }
 
@@ -126,6 +111,60 @@ class ViewMentoringReport extends Page implements HasInfolists
                     TextEntry::make('position')
                         ->label('Position & Time')
                         ->helperText(fn (Session $record) => Carbon::parse($record->taken_date)->format('d/m/Y').' | '.Carbon::parse($record->taken_from)->format('H:i').' - '.Carbon::parse($record->taken_to)->format('H:i')),
+
+                    Callout::make('Session Cancelled')
+                        ->heading(function (Session $record): string {
+                            $cancelledBy = $record->cancelReason?->member?->name;
+
+                            if (! $cancelledBy) {
+                                return 'Session Cancelled';
+                            }
+
+                            return "Session Cancelled by {$cancelledBy}";
+                        })
+                        ->description(function (Session $record): string {
+                            if (! $record->cancelReason) {
+                                return 'This session was cancelled, but no reason was provided.';
+                            }
+
+                            return $record->cancelReason->reason;
+                        })
+                        ->warning()
+                        ->footer(function (Session $record): array {
+                            if (! $record->cancelReason || ! $record->cancelled_datetime) {
+                                return [];
+                            }
+
+                            $sessionStart = Carbon::parse($record->taken_date.' '.$record->taken_from);
+                            $cancelDate = Carbon::parse($record->cancelled_datetime);
+
+                            $notice = $cancelDate->diffForHumans($sessionStart, ['syntax' => CarbonInterface::DIFF_ABSOLUTE, 'parts' => 2]).' notice given';
+
+                            return [
+                                Text::make('notice')
+                                    ->content($notice),
+                            ];
+                        })
+                        ->columnSpanFull()
+                        ->visible(fn (Session $record) => $record->cancelled_datetime !== null),
+
+                    Callout::make('Student No-Showed')
+                        ->description('This session has been marked as a student no-show.')
+                        ->columnSpanFull()
+                        ->danger()
+                        ->footer(function (Session $record): array {
+                            $noShowCount = Session::query()
+                                ->where('student_id', $record->student_id)
+                                ->where('noShow', true)
+                                ->count();
+
+                            return [
+                                Text::make('noShowCount')
+                                    ->content("Total student no-shows recorded: {$noShowCount}")
+                                    ->color('gray'),
+                            ];
+                        })
+                        ->visible(fn (Session $record) => (bool) $record->noShow),
                 ]),
 
             Section::make('Additional Comments')
