@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Admin\Pages\Dashboard;
 use App\Filament\Widgets\AccountInfoWidget;
 use App\Http\Middleware\AdminPanelFilamentAccessMiddleware;
+use App\Http\Middleware\MandatoryTwoFactor;
 use App\Http\Middleware\TrackInactivity;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -51,6 +52,7 @@ class AdminPanelProvider extends PanelProvider
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
                 TrackInactivity::class,
+                MandatoryTwoFactor::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])

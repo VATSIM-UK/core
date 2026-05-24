@@ -186,6 +186,32 @@
 					@endforelse
 				</div>
 			</div>
+			@if ($_account->hasEnabledTwoFactorAuthentication())
+				<div class="panel panel-ukblue">
+					<div class="panel-heading"><i class="fa fa-shield"></i> &thinsp; Two-Factor Authentication
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-xs-12">
+								Two-factor authentication adds an extra layer of security using an authenticator application on
+								your phone or computer.
+							</div>
+						</div>
+						<br />
+						<div class="row">
+							<div class="col-xs-4">
+								<b>STATUS: </b>ENABLED
+							</div>
+							<div class="col-xs-8">
+								<a href="{{ route('two-factor.setup') }}">Manage Settings</a>
+								@if ($_account->mandatory_two_factor)
+									&mdash; Cannot be disabled.
+								@endif
+							</div>
+						</div>
+					</div>
+				</div>
+			@endif
 			<div class="panel panel-ukblue">
 				<div class="panel-heading"><i class="fa fa-lock"></i> &thinsp; Secondary Password
 				</div>
