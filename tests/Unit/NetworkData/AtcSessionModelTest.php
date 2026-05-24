@@ -88,4 +88,82 @@ class AtcSessionModelTest extends TestCase
 
         Event::assertDispatched(\App\Events\NetworkData\AtcSessionDeleted::class);
     }
+
+    #[Test]
+    public function it_detects_overlap_when_atc_session_overlaps_mentoring()
+    {
+        $atc = factory(\App\Models\NetworkData\Atc::class)->make();
+        $atc->connected_at = \Carbon\Carbon::parse('2026-03-29 18:30:00');
+        $atc->disconnected_at = \Carbon\Carbon::parse('2026-03-29 19:30:00');
+        $this->user->networkDataAtc()->save($atc);
+
+        $mentoring = \App\Models\Cts\Session::factory()->create([
+            'taken_date' => '2026-03-29',
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+            'session_done' => 1,
+            'noShow' => 0,
+            'cancelled_datetime' => null,
+        ]);
+
+        $this->assertTrue($atc->hasOverlappingCompletedMentoringSession(collect([$mentoring])));
+    }
+
+    #[Test]
+    public function it_returns_false_when_atc_session_does_not_overlap_mentoring()
+    {
+        $atc = factory(\App\Models\NetworkData\Atc::class)->make();
+        $atc->connected_at = \Carbon\Carbon::parse('2026-03-29 15:00:00');
+        $atc->disconnected_at = \Carbon\Carbon::parse('2026-03-29 17:00:00');
+        $this->user->networkDataAtc()->save($atc);
+
+        $differentDate = \App\Models\Cts\Session::factory()->create([
+            'taken_date' => '2026-05-10',
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+            'session_done' => 1,
+            'noShow' => 0,
+            'cancelled_datetime' => null,
+        ]);
+
+        $this->assertFalse($atc->hasOverlappingCompletedMentoringSession(collect([$differentDate])));
+    }
+
+    #[Test]
+    public function it_returns_false_when_atc_session_has_no_disconnected_at()
+    {
+        $atc = factory(\App\Models\NetworkData\Atc::class)->make();
+        $atc->connected_at = \Carbon\Carbon::parse('2026-03-29 18:30:00');
+        $atc->disconnected_at = null;
+        $this->user->networkDataAtc()->save($atc);
+
+        $this->assertFalse($atc->hasOverlappingCompletedMentoringSession(collect()));
+    }
+
+    #[Test]
+    public function it_matches_correct_mentoring_when_multiple_exist()
+    {
+        $atc = factory(\App\Models\NetworkData\Atc::class)->make();
+        $atc->connected_at = \Carbon\Carbon::parse('2026-04-26 20:00:00');
+        $atc->disconnected_at = \Carbon\Carbon::parse('2026-04-26 21:00:00');
+        $this->user->networkDataAtc()->save($atc);
+
+        $earlier = \App\Models\Cts\Session::factory()->create([
+            'taken_date' => '2026-03-29',
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+            'session_done' => 1,
+            'noShow' => 0,
+        ]);
+
+        $matching = \App\Models\Cts\Session::factory()->create([
+            'taken_date' => '2026-04-26',
+            'taken_from' => '19:30:00',
+            'taken_to' => '21:30:00',
+            'session_done' => 1,
+            'noShow' => 0,
+        ]);
+
+        $this->assertTrue($atc->hasOverlappingCompletedMentoringSession(collect([$earlier, $matching])));
+    }
 }
