@@ -219,7 +219,7 @@ class FeedbackResource extends Resource
     private static function configureBulkAction(BulkAction $action): BulkAction
     {
         return $action
-            ->visible(fn () => auth()->user()->can('actionFeedback'))
+            ->visible(fn () => auth()->user()->can('actionFeedback', Feedback::class))
             ->requiresConfirmation()
             ->deselectRecordsAfterCompletion();
     }
