@@ -138,6 +138,7 @@ class ManageMentors extends Page implements HasTable
                     ->label('Remove Selected')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
+                    ->visible(fn () => $canManage && ! empty($this->category))
                     ->modalHeading(fn () => 'Remove Selected Mentors from '.$this->category)
                     ->modalSubheading('This will revoke all mentoring permissions for the selected members within this specific training group.')
                     ->action(function (Collection $records) {
