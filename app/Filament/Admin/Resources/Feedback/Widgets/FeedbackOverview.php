@@ -10,7 +10,7 @@ class FeedbackOverview extends BaseWidget
 {
     protected ?string $pollingInterval = null;
 
-    protected function getCards(): array
+    protected function getStats(): array
     {
         $totalFeedback = Feedback::count();
 
