@@ -188,6 +188,30 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
+    public function confirm_password_redirect_accepts_same_host_urls(): void
+    {
+        $redirect = route('site.home');
+
+        $this->actingAs($this->account)
+            ->post(route('two-factor.confirm-password.store'), [
+                'password' => 'secret-password',
+                'redirect' => $redirect,
+            ])
+            ->assertRedirect($redirect);
+    }
+
+    #[Test]
+    public function confirm_password_redirect_rejects_external_urls(): void
+    {
+        $this->actingAs($this->account)
+            ->post(route('two-factor.confirm-password.store'), [
+                'password' => 'secret-password',
+                'redirect' => 'https://example.com/phishing',
+            ])
+            ->assertRedirect(route('mship.manage.dashboard'));
+    }
+
+    #[Test]
     public function setup_page_shows_manage_view_when_two_factor_is_enabled(): void
     {
         $this->enableTwoFactorFor($this->account);
