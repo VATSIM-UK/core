@@ -168,6 +168,20 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
+    public function setup_page_displays_manual_secret_when_pending_confirmation(): void
+    {
+        app(EnableTwoFactorAuthentication::class)($this->account, true);
+
+        $secret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
+
+        $this->actingAs($this->account)
+            ->get(route('two-factor.setup'))
+            ->assertOk()
+            ->assertSee($secret, false)
+            ->assertSee('Copy to clipboard', false);
+    }
+
+    #[Test]
     public function invalid_setup_confirmation_code_returns_to_setup_with_error(): void
     {
         app(EnableTwoFactorAuthentication::class)($this->account, true);
