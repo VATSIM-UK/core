@@ -1,0 +1,18 @@
+@extends('emails.messages.post')
+
+@section('body')
+    <p>
+        Your mentoring session has been scheduled.
+    </p>
+
+    <h4>Session Details:</h4>
+    <ul>
+        <li><strong>Position:</strong> {{ $position }}</li>
+        <li><strong>Mentor:</strong> {{ $mentorName }}</li>
+        <li><strong>Scheduled Date & Time:</strong> {{ $sessionDateTime }}</li>
+    </ul>
+@stop
+
+@section('signature')
+    VATSIM UK Training Department
+@stop

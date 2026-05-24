@@ -6,6 +6,12 @@ use App\Models\Cts\Availability;
 use App\Models\Cts\CancelReason;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionCancelledMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionRescheduledMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotification;
 use Carbon\Carbon;
 
 class MentoringSessionsService
@@ -48,6 +54,8 @@ class MentoringSessionsService
             'taken' => 1,
         ]);
 
+        $this->notifyAccepted($pendingSession);
+
         return true;
     }
 
@@ -65,6 +73,9 @@ class MentoringSessionsService
         if (! $session || ! $availability) {
             return false;
         }
+
+        $previousDateTime = "{$session->taken_date} {$session->taken_from}";
+        $this->notifyRescheduled($session, $previousDateTime);
 
         return $session->update([
             'taken_date' => Carbon::parse($availability->date)->format('Y-m-d'),
@@ -87,6 +98,8 @@ class MentoringSessionsService
             return false;
         }
 
+        $cancelledBy = Account::findOrFail($cancellerMemberId);
+
         $session->update([
             'cancelled_datetime' => now(),
         ]);
@@ -107,6 +120,37 @@ class MentoringSessionsService
             'request_time' => Carbon::now(),
         ]);
 
+        $this->notifyCancelled($session, $reason, $cancelledBy);
+
         return true;
+    }
+
+    private function notifyAccepted(Session $session): void
+    {
+        $session->studentAccount()?->notify(
+            new MentoringSessionAcceptedStudentNotification($session),
+        );
+
+        $session->mentorAccount()->notify(new MentoringSessionAcceptedMentorNotification($session));
+    }
+
+    private function notifyCancelled(Session $session, string $reason, Account $cancelledBy): void
+    {
+        $session->studentAccount()?->notify(
+            new MentoringSessionCancelledStudentNotification($session, $cancelledBy, $reason),
+        );
+
+        $cancelledBy->notify(new MentoringSessionCancelledMentorNotification($session, $reason));
+    }
+
+    private function notifyRescheduled(Session $session, string $previousDateTime): void
+    {
+        $session->studentAccount()?->notify(
+            new MentoringSessionRescheduledStudentNotification($session, $previousDateTime),
+        );
+
+        $session->mentorAccount()?->notify(
+            new MentoringSessionRescheduledMentorNotification($session, $previousDateTime),
+        );
     }
 }
