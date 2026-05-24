@@ -158,6 +158,61 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         ]);
     }
 
+    public function test_admin_can_add_student_without_join_date()
+    {
+        /** @var WaitingList $waitingList */
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
+        $accountToAdd = Account::factory()->create();
+        $accountToAdd->addState(State::findByCode('DIVISION'));
+
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.add-accounts-admin.*');
+
+        Livewire::actingAs($this->panelUser);
+        Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
+            ->callAction('add_student', data: [
+                'account_id' => $accountToAdd->id,
+            ]);
+
+        $this->assertTrue($waitingList->includesAccount($accountToAdd->id));
+
+        $this->assertDatabaseHas('training_waiting_list_account', [
+            'list_id' => $waitingList->id,
+            'account_id' => $accountToAdd->id,
+            'created_at' => $this->knownDate,
+        ]);
+    }
+
+    public function test_admin_cannot_add_student_with_epoch_join_date()
+    {
+        /** @var WaitingList $waitingList */
+        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
+        $accountToAdd = Account::factory()->create();
+        $accountToAdd->addState(State::findByCode('DIVISION'));
+
+        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('waiting-lists.add-accounts-admin.*');
+
+        Livewire::actingAs($this->panelUser);
+        Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
+            ->callAction('add_student', data: [
+                'account_id' => $accountToAdd->id,
+                'join_date' => '1970-01-01',
+            ])
+            ->assertHasActionErrors(['join_date']);
+
+        $this->assertFalse($waitingList->includesAccount($accountToAdd->id));
+
+        $this->assertDatabaseMissing('training_waiting_list_account', [
+            'list_id' => $waitingList->id,
+            'account_id' => $accountToAdd->id,
+        ]);
+    }
+
     public function test_admin_can_add_manual_flag_to_waiting_list()
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
