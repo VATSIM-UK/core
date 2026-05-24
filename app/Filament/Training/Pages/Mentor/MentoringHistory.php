@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
+use App\Models\Cts\Session;
+use App\Models\Training\Mentoring\MentoringScope;
+use App\Policies\Training\Mentoring\MentoringPolicy;
 use App\Repositories\Cts\SessionRepository;
-use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
@@ -29,18 +31,7 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     public static function canAccess(): bool
     {
-        // Temporary beta permission
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
-        // Admin permission to allow access even without mentoring permissions
-        if (auth()->user()?->can('training.mentoring.view.*')) {
-            return true;
-        }
-
-        // If a user has any mentoring permissions they are allowed to view this page
-        return auth()->user()->mentorTrainingPositions()->exists();
+        return auth()->user()?->can('viewAny', Session::class) ?? false;
     }
 
     public function mount(): void
@@ -89,16 +80,18 @@ class MentoringHistory extends BaseMentoringHistoryPage
     {
         $user = auth()->user();
 
-        if ($user->can('training.mentoring.view.*')) {
-            return app(MentorPermissionService::class)->getAllCtsCallsignsForCategory($this->category);
+        if ($this->category) {
+            $policy = app(MentoringPolicy::class);
+
+            return $policy->visibleCtsPositionsForCategory($user, new MentoringScope, $this->category);
         }
 
-        return $this->category ? $user->getAssignedCallsignsForCategory($this->category) : $user->getAllAssignedCallsigns();
+        return $user->getAllAssignedCallsigns();
     }
 
     private function canViewCategory(string $category): bool
     {
-        return in_array($category, auth()->user()->getAvailableMentoringCategories(), true);
+        return auth()->user()?->can('viewCategory', [new MentoringScope, $category]) ?? false;
     }
 
     private function firstVisibleCategory(): ?string
