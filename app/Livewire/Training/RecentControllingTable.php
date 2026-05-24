@@ -34,10 +34,10 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
             ->queryStringIdentifier('recent-controlling')
             ->query(
                 Atc::query()->where('account_id', $this->trainingPlace->account_id)
-                    ->where('created_at', '>=', $this->trainingPlace->created_at)
+                    ->where('connected_at', '>=', $this->trainingPlace->created_at)
                     ->isUk()
             )
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('connected_at', 'desc')
             ->columns([
                 TextColumn::make('connected_at')->label('Date')->date('d/m/Y H:i:s'),
                 TextColumn::make('callsign')
