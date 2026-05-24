@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin\Feedback\Pages;
 use App\Filament\Admin\Resources\Feedback\Pages\ListFeedback;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
 use Tests\Feature\Admin\BaseAdminTestCase;
@@ -59,8 +60,8 @@ class ListFeedbackPageTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListFeedback::class)
-            ->assertActionHidden('action_feedback')
-            ->assertActionHidden('send_feedback');
+            ->assertActionHidden(TestAction::make('action_feedback')->table()->bulk())
+            ->assertActionHidden(TestAction::make('send_feedback')->table()->bulk());
     }
 
     public function test_bulk_action_feedback_visible_with_permission()
@@ -74,8 +75,8 @@ class ListFeedbackPageTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListFeedback::class)
-            ->assertActionVisible('action_feedback')
-            ->assertActionVisible('send_feedback');
+            ->assertActionVisible(TestAction::make('action_feedback')->table()->bulk())
+            ->assertActionVisible(TestAction::make('send_feedback')->table()->bulk());
     }
 
     public function test_bulk_action_feedback_marks_records_as_actioned()
@@ -91,9 +92,9 @@ class ListFeedbackPageTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListFeedback::class)
-            ->assertActionVisible('action_feedback')
+            ->assertActionVisible(TestAction::make('action_feedback')->table()->bulk())
             ->selectTableRecords([$feedback1->id, $feedback2->id])
-            ->callAction('action_feedback', data: [
+            ->callAction(TestAction::make('action_feedback')->table()->bulk(), data: [
                 'comment' => 'Bulk actioned as part of review.',
             ]);
 
@@ -117,9 +118,9 @@ class ListFeedbackPageTest extends BaseAdminTestCase
 
         Livewire::actingAs($this->adminUser);
         Livewire::test(ListFeedback::class)
-            ->assertActionVisible('send_feedback')
+            ->assertActionVisible(TestAction::make('send_feedback')->table()->bulk())
             ->selectTableRecords([$feedback1->id])
-            ->callAction('send_feedback', data: [
+            ->callAction(TestAction::make('send_feedback')->table()->bulk(), data: [
                 'comment' => 'Bulk sent as part of review.',
             ]);
 
