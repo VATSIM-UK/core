@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Auth\TwoFactorLoginRedirect;
 use App\Http\Controllers\BaseController;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -43,5 +44,25 @@ class SecondaryLoginController extends BaseController
     protected function credentials(Request $request)
     {
         return ['id' => Auth::guard('vatsim-sso')->user()->id, 'password' => $request->input('password')];
+    }
+
+    protected function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        $user = Auth::guard('web')->user();
+
+        if ($response = TwoFactorLoginRedirect::afterSuccessfulLogin(
+            $request,
+            $user,
+            $request->boolean('remember'),
+            passwordVerified: true,
+        )) {
+            return $response;
+        }
+
+        return redirect()->intended($this->redirectPath());
     }
 }

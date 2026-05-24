@@ -13,4 +13,5 @@ import collapse from "@alpinejs/collapse";
 
 Alpine.plugin(collapse);
 
-Livewire.start();
+window.Alpine = Alpine;
+Alpine.start();

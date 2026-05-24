@@ -20,6 +20,15 @@ class PasswordPolicy extends Policy
         return $this->allow();
     }
 
+    public function setupDuringLogin(Account $user)
+    {
+        if (! $user->requiresMandatoryPasswordSetup()) {
+            return $this->deny('You are not required to set a secondary password at login.');
+        }
+
+        return $this->allow();
+    }
+
     /**
      * Determine whether the user can update their password.
      *
