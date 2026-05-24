@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\Roles\Pages\EditRole;
 use App\Filament\Admin\Resources\Roles\RelationManagers\DelegatesRelationManager;
 use App\Models\Mship\Account;
 use App\Services\Roles\DelegateRoleManagementService;
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
@@ -69,7 +70,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
                 'pageClass' => EditRole::class,
             ])
             ->assertSee('Create Delegate Permission')
-            ->callTableAction('create_permission');
+            ->callAction(TestAction::make('create_permission')->table());
 
         $this->assertDatabaseHas('mship_permission', ['name' => $expectedPermissionName, 'guard_name' => 'web']);
     }
@@ -115,8 +116,8 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
                 'ownerRecord' => $this->role,
                 'pageClass' => EditRole::class,
             ])
-            ->assertTableActionVisible('add_delegate')
-            ->callTableAction('add_delegate', data: [
+            ->assertTableActionVisible(TestAction::make('add_delegate')->table())
+            ->callAction(TestAction::make('add_delegate')->table(), data: [
                 'users_id' => $this->delegateAccount->id,
             ]);
 
