@@ -2,17 +2,21 @@
 
 namespace App\Livewire\Training;
 
+use App\Models\Cts\Session as CtsSession;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class RecentControllingTable extends Component implements HasActions, HasForms, HasTable
@@ -51,6 +55,15 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
 
                     return $parts ? implode(' ', $parts) : '0 minutes';
                 }),
+                IconColumn::make('has_mentoring')
+                    ->label('Mentoring')
+                    ->boolean()
+                    ->getStateUsing(function ($record) {
+                        return $this->hasOverlappingMentoringSession($record);
+                    })
+                    ->trueIcon('heroicon-o-academic-cap')
+                    ->falseIcon('')
+                    ->trueColor('success'),
             ])
             ->emptyStateHeading('No records found');
     }
@@ -58,5 +71,46 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
     public function render()
     {
         return view('livewire.training.recent-controlling-table');
+    }
+
+    private ?Collection $completedMentoringSessions = null;
+
+    private function getCompletedMentoringSessions(): Collection
+    {
+        if ($this->completedMentoringSessions === null) {
+            $member = $this->trainingPlace->account->member;
+
+            if (! $member) {
+                $this->completedMentoringSessions = collect();
+            } else {
+                $this->completedMentoringSessions = CtsSession::where('student_id', $member->id)
+                    ->where('session_done', 1)
+                    ->where('noShow', 0)
+                    ->whereNull('cancelled_datetime')
+                    ->whereNotNull('taken_date')
+                    ->whereNotNull('taken_from')
+                    ->whereNotNull('taken_to')
+                    ->get();
+            }
+        }
+
+        return $this->completedMentoringSessions;
+    }
+
+    private function hasOverlappingMentoringSession(Atc $atcSession): bool
+    {
+        $connectedAt = $atcSession->connected_at;
+        $disconnectedAt = $atcSession->disconnected_at;
+
+        if (! $connectedAt || ! $disconnectedAt) {
+            return false;
+        }
+
+        return $this->getCompletedMentoringSessions()->contains(function (CtsSession $mentoring) use ($connectedAt, $disconnectedAt) {
+            $mentoringStart = Carbon::parse($mentoring->taken_date.' '.$mentoring->taken_from);
+            $mentoringEnd = Carbon::parse($mentoring->taken_date.' '.$mentoring->taken_to);
+
+            return $connectedAt->lt($mentoringEnd) && $disconnectedAt->gt($mentoringStart);
+        });
     }
 }
