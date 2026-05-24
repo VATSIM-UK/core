@@ -72,7 +72,25 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
 
     public function getTitle(): string|Htmlable
     {
-        return "View Training Place - {$this->trainingPlace->account->name}";
+        $title = "View Training Place - {$this->trainingPlace->account->name}";
+        $callsign = $this->trainingPlace->trainingPosition?->position?->callsign;
+
+        if (filled($callsign)) {
+            $title .= " ({$callsign})";
+        }
+
+        return $title;
+    }
+
+    /**
+     * @return array<string, string>|array<int, string|Htmlable>
+     */
+    public function getBreadcrumbs(): array
+    {
+        return [
+            ListTrainingPlaces::getUrl() => 'Training Places',
+            $this->getTitle(),
+        ];
     }
 
     protected function getHeaderWidgets(): array
