@@ -104,8 +104,8 @@ Creates ad-hoc **training places** and related compliance data:
 
 | Scenario | Account | Callsign | Data |
 |----------|---------|----------|------|
-| Availability checks | `9000010` | `EGKK_TWR` | Passed + failed checks, pending warning, CTS `availability` |
-| Leave of absence | `9000011` | `EGLL_N_APP` | Active LOA on training place |
+| Availability checks | `9000010` | `EGKK_TWR` | Passed + failed checks, pending warning, CTS `availability`, mentoring session history |
+| Leave of absence | `9000011` | `EGLL_N_APP` | Active LOA on training place, mentoring session history |
 
 Requires `DevTrainingPersonasSeeder` and `AtcAndCtsTrainingPositionsSeeder` to have run first.
 
@@ -123,7 +123,7 @@ Seeds **CTS** practical exam and mentoring records for account `9000012`:
 | Scheduled exam (`taken=1`) + `practical_examiners` | Accepted exams / student pending exams |
 | Completed exam (`finished=1`) + `practical_results` | Exam history |
 | Cancelled exam + `cancel_reason` | Training place exam cancellations |
-| Completed + open mentoring `sessions` | Mentoring history |
+| Mentoring session history (completed, cancelled, no-show, upcoming) + open request | Training place mentoring history / mentor mentoring page |
 | Staff mentor on `EGKK_TWR` | Manage mentors |
 
 Staff (`9000001`) receives `ExaminerSettings` (TWR) and a `MentorTrainingPosition` via `MentorPermissionService`.
@@ -142,6 +142,7 @@ php artisan db:seed --class=Database\\Seeders\\LocalDevelopment\\Training\\CtsEx
 | `Concerns\CreatesLinkedAccount` | `firstOrCreate` mship `Account` + CTS `Member` + qualifications |
 | `Concerns\CreatesDevTrainingPlace` | Ad-hoc training place via `TrainingPlaceService` (CTS validations) |
 | `Concerns\SeedsCtsPosition` | `firstOrCreate` core `Position` and CTS `Position` for a callsign |
+| `Concerns\SeedsDevMentoringSessions` | Historical and pending CTS `sessions` for dev students |
 
 ## Idempotency
 
