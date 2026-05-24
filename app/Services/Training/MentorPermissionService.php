@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Log;
 
 class MentorPermissionService
 {
+    public const ALL_CATEGORIES = 'all';
+
     public const ATC_CATEGORY_ROLE_MAP = [
         'OBS to S1 Training' => 'ATC Mentor (OBS)',
         'S2 Training' => 'ATC Mentor (TWR)',
@@ -325,6 +327,20 @@ class MentorPermissionService
         $callsign = $qualCode ? (self::QUALIFICATION_CTS_POSITION_MAP[$qualCode] ?? null) : null;
 
         return $callsign ? [$callsign] : [];
+    }
+
+    /**
+     * @param  array<int, string>  $categories
+     * @return array<int, string>
+     */
+    public function getAllCtsCallsignsForCategories(array $categories): array
+    {
+        return collect($categories)
+            ->flatMap(fn (string $category) => $this->getAllCtsCallsignsForCategory($category))
+            ->unique()
+            ->filter()
+            ->values()
+            ->toArray();
     }
 
     public function getAssignedCtsCallsigns(Account $account, string $category): array

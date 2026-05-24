@@ -78,11 +78,41 @@ class PendingMentoringReportsTable extends Component implements HasActions, HasF
      */
     private function getVisibleCtsPositions(): array
     {
+        $service = app(MentorPermissionService::class);
+
+        if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
+            return $service->getAllCtsCallsignsForCategories($this->getVisibleCategories());
+        }
+
         if (empty($this->category)) {
             return [];
         }
 
-        return app(MentorPermissionService::class)->getAllCtsCallsignsForCategory($this->category);
+        return $service->getAllCtsCallsignsForCategory($this->category);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function getVisibleCategories(): array
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            return [];
+        }
+
+        return collect(MentorPermissionService::atcCategories())
+            ->merge(MentorPermissionService::pilotCategories())
+            ->filter(function (string $category) use ($user) {
+                if ($user->can('training.mentoring.view.*')) {
+                    return true;
+                }
+
+                return $user->can('training.mentors.view.'.MentorPermissionService::categoryType($category));
+            })
+            ->values()
+            ->all();
     }
 
     public function render()
