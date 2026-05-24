@@ -38,14 +38,14 @@
 
         {{-- Page Arrows --}}
         @if ($students->count() > $this->studentsPerPage)
-            <div class="flex items-center justify-end gap-2 pt-2 border-gray-200 dark:border-white/10">
-                <x-filament::button color="gray" wire:click="previousStudentsPage" icon="heroicon-m-chevron-left"
-                    class="!px-2" :disabled="$studentsPage <= 1" />
-                <x-filament::button color="gray" wire:click="nextStudentsPage" icon="heroicon-m-chevron-right"
-                    class="!px-2" :disabled="$studentsPage * $this->studentsPerPage >= $students->count()" />
-            </div>
-        @endif
-    @endif
+			<div class="flex items-center justify-end gap-2 pt-2 border-gray-200 dark:border-white/10">
+				<x-filament::button color="gray" wire:click="previousStudentsPage" icon="heroicon-m-chevron-left" class="!px-2"
+					:disabled="$studentsPage <= 1" />
+				<x-filament::button color="gray" wire:click="nextStudentsPage" icon="heroicon-m-chevron-right" class="!px-2"
+					:disabled="$studentsPage * $this->studentsPerPage >= $students->count()" />
+			</div>
+		@endif
+	@endif
 
     <x-filament-actions::modals />
 </x-filament::card>
