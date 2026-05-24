@@ -38,10 +38,6 @@
 		.two-factor-recovery-codes-copied {
 			margin-left: 0.75em;
 		}
-
-		[x-cloak] {
-			display: none !important;
-		}
 	</style>
 	@include('auth.two-factor.partials.setup-faqs-styles')
 @endsection
@@ -50,37 +46,26 @@
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
 			@include('components.html.panel_open', [
-				'title' => 'Two-Factor Authentication',
-				'icon' => ['type' => 'fa', 'key' => 'fa-shield'],
+				'title' => 'Save Your Recovery Codes',
+				'icon' => ['type' => 'fa', 'key' => 'fa-key'],
 			])
-			<p>Two-factor authentication is enabled for your account.</p>
 
-			<h4>Recovery Codes</h4>
-			<p class="text-muted">Store these recovery codes in a secure location. Each code may only be used once.</p>
+			<p>
+				Two-factor authentication is now enabled. Save these recovery codes before continuing — each code can
+				only be used once if you lose access to your authenticator application.
+			</p>
 
 			@include('auth.two-factor.partials.why-backup-codes-matter')
 
 			@include('auth.two-factor.partials.recovery-codes-display', ['recoveryCodes' => $recoveryCodes])
 
-			<form method="POST" action="{{ route('two-factor.regenerate-recovery-codes') }}" class="form-horizontal"
-				style="margin-bottom: 1.5em;">
-				@csrf
-				<input class="btn btn-default" type="submit" value="Regenerate Recovery Codes"
-					onclick="return confirm('This will invalidate your existing recovery codes. Continue?');">
-			</form>
-
-			@if (!Auth::user()->mandatory_two_factor)
-				<form method="POST" action="{{ route('two-factor.disable') }}"
-					onsubmit="return confirm('Disable two-factor authentication for this account?');">
-					@csrf
-					@method('DELETE')
-					<input class="btn btn-danger" type="submit" value="Disable Two-Factor Authentication">
-				</form>
-			@endif
-
-			<p style="margin-top: 1.5em;">
-				<a href="{{ route('mship.manage.dashboard') }}">Return to dashboard</a>
+			<p class="text-muted">
+				Keep these codes somewhere secure, such as a password manager. Do not store them in the same place as
+				your authenticator application.
 			</p>
+
+			<a href="{{ route('mship.manage.dashboard') }}" class="btn btn-primary">Continue to dashboard</a>
+
 			@include('components.html.panel_close')
 		</div>
 	</div>
