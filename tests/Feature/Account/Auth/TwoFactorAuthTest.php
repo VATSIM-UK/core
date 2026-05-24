@@ -226,6 +226,40 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
+    public function confirming_two_factor_redirects_to_backup_codes_page(): void
+    {
+        app(EnableTwoFactorAuthentication::class)($this->account, true);
+
+        $secret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
+        $code = app(Google2FA::class)->getCurrentOtp($secret);
+        $recoveryCode = $this->account->fresh()->recoveryCodes()[0];
+
+        $this->actingAs($this->account)
+            ->withSession(['auth.password_confirmed_at' => now()->unix()])
+            ->post(route('two-factor.confirm'), ['code' => $code])
+            ->assertRedirect(route('two-factor.backup-codes'))
+            ->assertSessionHas('success');
+
+        $this->actingAs($this->account)
+            ->get(route('two-factor.backup-codes'))
+            ->assertOk()
+            ->assertSee('Save Your Recovery Codes', false)
+            ->assertSee('Why are recovery codes important?', false)
+            ->assertSee($recoveryCode, false)
+            ->assertSee('Copy to clipboard', false)
+            ->assertSee('Download as text file', false)
+            ->assertSee('Continue to dashboard', false);
+    }
+
+    #[Test]
+    public function backup_codes_page_requires_enabled_two_factor(): void
+    {
+        $this->actingAs($this->account)
+            ->get(route('two-factor.backup-codes'))
+            ->assertRedirect(route('two-factor.setup'));
+    }
+
+    #[Test]
     public function setup_page_shows_manage_view_when_two_factor_is_enabled(): void
     {
         $this->enableTwoFactorFor($this->account);
@@ -233,7 +267,10 @@ class TwoFactorAuthTest extends TestCase
         $this->actingAs($this->account)
             ->get(route('two-factor.setup'))
             ->assertOk()
-            ->assertSee('Recovery Codes', false);
+            ->assertSee('Recovery Codes', false)
+            ->assertSee('Why are recovery codes important?', false)
+            ->assertSee('Copy to clipboard', false)
+            ->assertSee('Download as text file', false);
     }
 
     #[Test]

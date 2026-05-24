@@ -14,7 +14,7 @@ class TwoFactorConfirmedResponse implements TwoFactorConfirmedResponseContract
         }
 
         return redirect()
-            ->intended(route('mship.manage.dashboard'))
+            ->route('two-factor.backup-codes')
             ->withSuccess('Two-factor authentication has been enabled for your account.');
     }
 }

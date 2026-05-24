@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\TwoFactorBackupCodesController;
 use App\Http\Controllers\Auth\TwoFactorSetupController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -27,6 +28,9 @@ Route::prefix('auth/two-factor')->middleware(config('fortify.middleware', ['web'
 
     Route::middleware($authMiddleware)->group(function () use ($authMiddleware) {
         Route::get('setup', [TwoFactorSetupController::class, 'show'])->name('two-factor.setup');
+
+        Route::get('backup-codes', [TwoFactorBackupCodesController::class, 'show'])
+            ->name('two-factor.backup-codes');
 
         Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
             ->name('two-factor.confirm-password');
