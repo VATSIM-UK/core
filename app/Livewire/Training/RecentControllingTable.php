@@ -5,7 +5,6 @@ namespace App\Livewire\Training;
 use App\Models\Cts\Session as CtsSession;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\TrainingPlace\TrainingPlace;
-use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -27,6 +26,8 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
 
     public TrainingPlace $trainingPlace;
 
+    private ?Collection $completedMentoringSessions = null;
+
     public function table(Table $table): Table
     {
         return $table
@@ -39,7 +40,7 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
             )
             ->defaultSort('created_at', 'desc')
             ->columns([
-                TextColumn::make('created_at')->label('Date')->date('d/m/Y H:i:s'),
+                TextColumn::make('connected_at')->label('Date')->date('d/m/Y H:i:s'),
                 TextColumn::make('callsign')->label('Callsign'),
                 TextColumn::make('duration')->label('Duration')->getStateUsing(function ($record) {
                     $minutes = $record->minutes_online ?? 0;
@@ -59,7 +60,7 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
                     ->label('Mentoring')
                     ->boolean()
                     ->getStateUsing(function ($record) {
-                        return $this->hasOverlappingMentoringSession($record);
+                        return $record->hasOverlappingCompletedMentoringSession($this->getCompletedMentoringSessions());
                     })
                     ->trueIcon('heroicon-o-academic-cap')
                     ->falseIcon('')
@@ -72,8 +73,6 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
     {
         return view('livewire.training.recent-controlling-table');
     }
-
-    private ?Collection $completedMentoringSessions = null;
 
     private function getCompletedMentoringSessions(): Collection
     {
@@ -95,22 +94,5 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
         }
 
         return $this->completedMentoringSessions;
-    }
-
-    private function hasOverlappingMentoringSession(Atc $atcSession): bool
-    {
-        $connectedAt = $atcSession->connected_at;
-        $disconnectedAt = $atcSession->disconnected_at;
-
-        if (! $connectedAt || ! $disconnectedAt) {
-            return false;
-        }
-
-        return $this->getCompletedMentoringSessions()->contains(function (CtsSession $mentoring) use ($connectedAt, $disconnectedAt) {
-            $mentoringStart = Carbon::parse($mentoring->taken_date.' '.$mentoring->taken_from);
-            $mentoringEnd = Carbon::parse($mentoring->taken_date.' '.$mentoring->taken_to);
-
-            return $connectedAt->lt($mentoringEnd) && $disconnectedAt->gt($mentoringStart);
-        });
     }
 }
