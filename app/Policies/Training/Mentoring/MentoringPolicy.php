@@ -75,10 +75,14 @@ class MentoringPolicy
     }
 
     /**
-     * View a mentoring session report.
+     * View a filed mentoring session report.
      */
     public function view(Account $user, Session $session): bool
     {
+        if ($session->filed === null) {
+            return false;
+        }
+
         // Students should always be able to view their own reports
         if ($session->student_id === $user->id) {
             return true;

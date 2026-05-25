@@ -132,6 +132,29 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_denies_viewing_an_unfiled_report(): void
+    {
+        $unfiledSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
+            'taken_date' => '2025-03-10',
+            'taken_from' => '18:00',
+            'taken_to' => '20:00',
+            'filed' => null,
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $unfiledSession->id])
+            ->assertForbidden();
+
+        Livewire::actingAs($this->mentor)
+            ->test(ViewMentoringReport::class, ['sessionId' => $unfiledSession->id])
+            ->assertForbidden();
+    }
+
+    #[Test]
     public function it_denies_an_entirely_unrelated_user(): void
     {
         $unrelatedUser = Account::factory()->create();

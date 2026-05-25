@@ -57,7 +57,7 @@ class MentoringPolicyTest extends TestCase
     public function view_allows_the_student_who_attended_the_session(): void
     {
         $student = Account::factory()->create();
-        $session = $this->createSessionForStudent($student);
+        $session = $this->createSessionForStudent($student, filed: now());
 
         $this->assertTrue($this->policy->view($student, $session));
     }
@@ -67,7 +67,10 @@ class MentoringPolicyTest extends TestCase
     {
         $mentor = Account::factory()->create();
         $mentorMember = Member::factory()->create(['id' => $mentor->id, 'cid' => $mentor->id]);
-        $session = Session::factory()->create(['mentor_id' => $mentorMember->id]);
+        $session = Session::factory()->create([
+            'mentor_id' => $mentorMember->id,
+            'filed' => now(),
+        ]);
 
         $this->assertTrue($this->policy->view($mentor, $session));
     }
@@ -76,16 +79,51 @@ class MentoringPolicyTest extends TestCase
     public function view_allows_a_mentor_with_permission_for_the_session_position(): void
     {
         $mentor = $this->createMentorWithPosition('EGLL_APP');
-        $session = Session::factory()->create(['position' => 'EGLL_APP']);
+        $session = Session::factory()->create([
+            'position' => 'EGLL_APP',
+            'filed' => now(),
+        ]);
 
         $this->assertTrue($this->policy->view($mentor, $session));
+    }
+
+    #[Test]
+    public function view_denies_unfiled_reports_even_for_the_student(): void
+    {
+        $student = Account::factory()->create();
+        $session = $this->createSessionForStudent($student);
+
+        $this->assertFalse($this->policy->view($student, $session));
+    }
+
+    #[Test]
+    public function view_denies_unfiled_reports_even_for_the_mentor(): void
+    {
+        $mentor = Account::factory()->create();
+        $mentorMember = Member::factory()->create(['id' => $mentor->id, 'cid' => $mentor->id]);
+        $session = Session::factory()->create(['mentor_id' => $mentorMember->id]);
+
+        $this->assertFalse($this->policy->view($mentor, $session));
+    }
+
+    #[Test]
+    public function view_denies_unfiled_reports_even_for_view_all_users(): void
+    {
+        $admin = Account::factory()->create();
+        $admin->givePermissionTo('training.mentoring.view.*');
+        $session = Session::factory()->create(['position' => 'EGLL_APP']);
+
+        $this->assertFalse($this->policy->view($admin, $session));
     }
 
     #[Test]
     public function view_denies_unrelated_users(): void
     {
         $account = Account::factory()->create();
-        $session = Session::factory()->create(['position' => 'EGLL_APP']);
+        $session = Session::factory()->create([
+            'position' => 'EGLL_APP',
+            'filed' => now(),
+        ]);
 
         $this->assertFalse($this->policy->view($account, $session));
     }
@@ -142,13 +180,16 @@ class MentoringPolicyTest extends TestCase
         return $account;
     }
 
-    private function createSessionForStudent(Account $student): Session
+    private function createSessionForStudent(Account $student, ?\DateTimeInterface $filed = null): Session
     {
         $studentMember = Member::factory()->create([
             'id' => $student->id,
             'cid' => $student->id,
         ]);
 
-        return Session::factory()->create(['student_id' => $studentMember->id]);
+        return Session::factory()->create([
+            'student_id' => $studentMember->id,
+            'filed' => $filed,
+        ]);
     }
 }
