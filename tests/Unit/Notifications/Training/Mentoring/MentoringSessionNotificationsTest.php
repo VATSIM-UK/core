@@ -42,7 +42,7 @@ class MentoringSessionNotificationsTest extends TestCase
         ]);
 
         $this->studentMember = Member::factory()->create([
-            'id' => $this->studentAccount->generateCTSInternalID(),
+            'id' => $this->studentAccount->generateCTSInternalID($this->studentAccount->id),
             'cid' => $this->studentAccount->id,
         ]);
 
@@ -52,7 +52,7 @@ class MentoringSessionNotificationsTest extends TestCase
         ]);
 
         $this->mentorMember = Member::factory()->create([
-            'id' => $this->mentorAccount->generateCTSInternalID(),
+            'id' => $this->mentorAccount->generateCTSInternalID($this->mentorAccount->id),
             'cid' => $this->mentorAccount->id,
         ]);
 

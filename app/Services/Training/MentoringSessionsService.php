@@ -26,11 +26,8 @@ class MentoringSessionsService
      */
     public function acceptSession(int $availabilityId, Account $mentorAccount, string $takenFrom, string $takenTo): bool
     {
-        $availability = Availability::findOrFail($availabilityId);
-
-        $this->validateSessionTimes($availability, $takenFrom, $takenTo);
-
-        return DB::transaction(function () use ($mentorAccount, $takenFrom, $takenTo) {
+        return DB::transaction(function () use ($availabilityId, $mentorAccount, $takenFrom, $takenTo) {
+            $availability = Availability::findOrFail($availabilityId);
             $mentorMember = Member::where('cid', $mentorAccount->id)->firstOrFail();
 
             $session = Session::query()
@@ -43,6 +40,8 @@ class MentoringSessionsService
             if (! $session) {
                 return false;
             }
+
+            $this->validateSessionTimes($availability, $takenFrom, $takenTo);
 
             if ($mentorAccount->cannot('accept', $session)) {
                 throw new AuthorizationException('You are not authorized to accept mentoring sessions for this position.');
@@ -79,6 +78,10 @@ class MentoringSessionsService
 
         if ($availability->student_id !== $session->student_id) {
             throw new InvalidArgumentException("The selected availability does not belong to the session's student.");
+        }
+
+        if (! $session) {
+            return false;
         }
 
         $this->validateSessionTimes($availability, $takenFrom, $takenTo);
