@@ -1,5 +1,20 @@
 @import "bootstrap-sass/assets/stylesheets/bootstrap/variables";
 
+$nav-clearance-buffer: 8px;
+$mobile-page-content-padding-top: 40px;
+$mobile-fixed-nav-height-fallback: 90px;
+
+$nav-top-section-padding-y: 10px;
+$nav-top-section-border-bottom-width: 5px;
+$nav-link-padding-y: 16px;
+$nav-link-font-size: 16px;
+
+$nav-toggle-margin-top: 13px;
+$nav-toggle-padding-y: 9px;
+$nav-toggle-bar-height: 2px;
+$nav-toggle-bar-spacing: 6px;
+$nav-secondary-border-bottom-width: 1px;
+
 .navbar {
   color: white;
 }
@@ -22,7 +37,7 @@
   display: block;
   width: 100%;
   background-color: #0f131a;
-  border-bottom: 1px solid #666;
+  border-bottom: $nav-secondary-border-bottom-width solid #666;
 
   .nav_upper_container {
     margin: 0 auto;
@@ -31,8 +46,8 @@
 }
 
 .navbar-toggle {
-  margin-top: 13px;
-  padding: 9px 10px !important;
+  margin-top: $nav-toggle-margin-top;
+  padding: $nav-toggle-padding-y 10px !important;
 }
 
 
@@ -51,14 +66,14 @@
 }
 
 .nav_top_section {
-  border-bottom: 5px solid #00b0f0;
+  border-bottom: $nav-top-section-border-bottom-width solid #00b0f0;
   margin-bottom: 0;
 
   .nav_upper_container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: $nav-top-section-padding-y 0;
   }
 
   .navbar-header {
@@ -170,8 +185,8 @@
 }
 
 .navcustom > li > a {
-  padding: 16px 15px;
-  font-size: 16px;
+  padding: $nav-link-padding-y 15px;
+  font-size: $nav-link-font-size;
   color: #fff;
   display: block;
 }
@@ -240,8 +255,8 @@
 .nav-collapsed-icon {
   display: block;
   width: 27px;
-  height: 2px;
-  margin: 6px 0;
+  height: $nav-toggle-bar-height;
+  margin: $nav-toggle-bar-spacing 0;
   border-radius: 1px;
   background-color: #fff;
 }
@@ -259,7 +274,21 @@ Nav Collapse Breakpoint
   }
 }
 
+:root {
+  --nav-clearance-buffer: #{$nav-clearance-buffer};
+  --mobile-page-content-padding-top: #{$mobile-page-content-padding-top};
+  --mobile-fixed-nav-height: #{$mobile-fixed-nav-height-fallback};
+}
+
 @media (max-width: $screen-md-min) {
+  html {
+    scroll-padding-top: var(--mobile-fixed-nav-height);
+  }
+
+  #nav.navbar-fixed-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
   #nav-inner {
     overflow-y: scroll !important;
     overflow-x: hidden !important;

@@ -59,7 +59,16 @@ class ChangePasswordController extends BaseController
     {
         $this->authorize('create', 'password');
 
-        return $this->viewMake('auth.passwords.create');
+        return $this->viewMake('auth.passwords.create')->with($this->createFormViewData());
+    }
+
+    protected function createFormViewData(): array
+    {
+        return [
+            'heading' => 'Secondary Password',
+            'intro' => 'To create your secondary password, complete the form below.',
+            'formAction' => route('password.create'),
+        ];
     }
 
     public function create(Request $request)

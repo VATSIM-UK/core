@@ -45,7 +45,7 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_defaults_to_the_first_visible_category_when_category_is_empty(): void
+    public function it_defaults_to_all_when_category_is_empty_and_multiple_groups_are_visible(): void
     {
         $this->panelUser->givePermissionTo('training.mentors.view.atc');
 
@@ -54,11 +54,11 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->panelUser)
             ->test(UpcomingMentoringSessions::class)
-            ->assertSet('category', $category);
+            ->assertSet('category', MentorPermissionService::ALL_CATEGORIES);
     }
 
     #[Test]
-    public function it_defaults_to_the_first_visible_category_when_category_is_invalid(): void
+    public function it_defaults_to_all_when_category_is_invalid_and_multiple_groups_are_visible(): void
     {
         $this->panelUser->givePermissionTo('training.mentors.view.atc');
 
@@ -67,7 +67,7 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->panelUser)
             ->test(UpcomingMentoringSessions::class, ['category' => 'Not A Real Category'])
-            ->assertSet('category', $category);
+            ->assertSet('category', MentorPermissionService::ALL_CATEGORIES);
     }
 
     #[Test]
@@ -198,6 +198,35 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(UpcomingMentoringSessions::class, ['category' => $category])
             ->assertCanNotSeeTableRecords([$session]);
+    }
+
+    #[Test]
+    public function it_shows_sessions_from_all_visible_categories_when_all_is_selected(): void
+    {
+        $this->panelUser->givePermissionTo('training.mentors.view.atc');
+
+        $categoryOne = MentorPermissionService::atcCategories()[0];
+        $categoryTwo = MentorPermissionService::atcCategories()[1];
+
+        $this->createTrainingPosition($categoryOne, 'EGKK_GND');
+        $this->createTrainingPosition($categoryTwo, 'EGKK_TWR');
+
+        $mentorCtsMember = $this->getOrCreateCtsMember($this->panelUser);
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $tomorrow = Carbon::tomorrow()->format('Y-m-d H:i:s');
+
+        $sessionInCategoryOne = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGKK_GND', takenDate: $tomorrow);
+        $sessionInCategoryTwo = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGKK_TWR', takenDate: $tomorrow);
+
+        $sessionOne = Session::on('cts')->find($sessionInCategoryOne);
+        $sessionTwo = Session::on('cts')->find($sessionInCategoryTwo);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(UpcomingMentoringSessions::class, ['category' => MentorPermissionService::ALL_CATEGORIES])
+            ->assertSet('category', MentorPermissionService::ALL_CATEGORIES)
+            ->assertCanSeeTableRecords([$sessionOne, $sessionTwo]);
     }
 
     #[Test]

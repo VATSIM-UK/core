@@ -6,6 +6,7 @@ use App\Events\NetworkData\AtcSessionDeleted;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionStarted;
 use App\Events\NetworkData\AtcSessionUpdated;
+use App\Models\Cts\Session as CtsSession;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Malahierba\PublicId\PublicId;
@@ -315,5 +316,27 @@ class Atc extends Model
         $this->minutes_online = $this->connected_at->diffInMinutes($this->disconnected_at);
 
         return $this->save();
+    }
+
+    /**
+     * Determine if this controlling session overlapped with any of the given completed mentoring sessions.
+     *
+     * A mentoring session is considered overlapping when the ATC session's time range
+     * has any intersection with the mentoring session's time range.
+     *
+     * @param  \Illuminate\Support\Collection<int, CtsSession>  $mentoringSessions
+     */
+    public function hasOverlappingCompletedMentoringSession(\Illuminate\Support\Collection $mentoringSessions): bool
+    {
+        if (! $this->connected_at || ! $this->disconnected_at) {
+            return false;
+        }
+
+        return $mentoringSessions->contains(function (CtsSession $mentoring) {
+            $mentoringStart = \Carbon\Carbon::parse($mentoring->taken_date.' '.$mentoring->taken_from);
+            $mentoringEnd = \Carbon\Carbon::parse($mentoring->taken_date.' '.$mentoring->taken_to);
+
+            return $this->connected_at->lt($mentoringEnd) && $this->disconnected_at->gt($mentoringStart);
+        });
     }
 }

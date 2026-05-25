@@ -3,6 +3,13 @@
 @section('content')
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2 ">
+			<div class="alert alert-danger">
+				<h3 style="margin-top: 0">Long Waiting Times - Please expect delays to begin Pilot Training</h3>
+				<p>Please note that for new pilots joining our flying programme will be put onto a waiting list due to significant
+					demand. You should be prepared for this wait - the division is working hard to improve training times, but demand is
+					high. Thank you for your patience.</p>
+			</div>
+
 			<div class="panel panel-ukblue">
 				<div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; The Flying Programme
 				</div>
