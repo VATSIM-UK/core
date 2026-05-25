@@ -14,186 +14,137 @@ use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentNotific
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotification;
 use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class MentoringSessionsService
 {
     /**
-     * Assigns a mentor to a student's pending session based on an availability slot.
-     *
-     * @param  int|string  $availabilityId
-     * @param  int|string  $mentorId
-     * @return bool True if a session was found and successfully updated, false otherwise.
+     * Accepts a pending session by claiming a student's availability slot.
      */
-    public function acceptSession($availabilityId, $mentorId, string $takenFrom, string $takenTo): bool
+    public function acceptSession(int $availabilityId, Account $mentorAccount, string $takenFrom, string $takenTo): bool
     {
-        $availability = Availability::find($availabilityId);
+        return DB::transaction(function () use ($availabilityId, $mentorAccount, $takenFrom, $takenTo) {
+            $availability = Availability::findOrFail($availabilityId);
 
-        if (! $availability) {
-            return false;
-        }
+            $mentorMember = Member::where('cid', $mentorAccount->id)->firstOrFail();
 
-        $pendingSession = Session::query()
-            ->where('student_id', $availability->student_id)
-            ->whereNull('mentor_id')
-            ->whereNull('filed')
-            ->whereNull('cancelled_datetime')
-            ->first();
+            $session = Session::query()
+                ->where('student_id', $availability->student_id)
+                ->whereNull('mentor_id')
+                ->whereNull('filed')
+                ->whereNull('cancelled_datetime')
+                ->first();
 
-        if (! $pendingSession) {
-            return false;
-        }
+            if (! $session) {
+                return false;
+            }
 
-        $mentorMember = Member::find($mentorId);
-        $mentor = Account::find($mentorMember->cid);
+            $session->update([
+                'mentor_id' => $mentorMember->id,
+                'mentor_rating' => $mentorAccount->qualification_atc?->vatsim,
+                'taken' => 1,
+                'taken_date' => $availability->date,
+                'taken_from' => $takenFrom,
+                'taken_to' => $takenTo,
+            ]);
 
-        if (! $mentor->can('mentorPosition', [Session::class, $pendingSession->position])) {
-            return false;
-        }
+            $this->notifyParticipants($session, 'accepted');
 
-        if (! $this->isTimeRangeValid($availability, $takenFrom, $takenTo)) {
-            return false;
-        }
-
-        $mentorRating = $mentor?->qualification_atc?->vatsim;
-        $updated = $pendingSession->update([
-            'mentor_id' => $mentorMember->id,
-            'mentor_rating' => $mentorRating,
-            'taken_date' => Carbon::parse($availability->date)->format('Y-m-d'),
-            'taken_from' => $takenFrom,
-            'taken_to' => $takenTo,
-            'taken' => 1,
-        ]);
-
-        if (! $updated) {
-            return false;
-        }
-
-        $this->notifyAccepted($pendingSession->fresh());
-
-        return true;
+            return true;
+        });
     }
 
     /**
-     * Reschedules an existing session based on a new availability slot.
-     *
-     * @param  int|string  $sessionId
-     * @param  int|string  $availabilityId
+     * Reschedules an existing session to a new availability slot.
      */
-    public function rescheduleSession($sessionId, $availabilityId, string $takenFrom, string $takenTo): bool
+    public function rescheduleSession(int $sessionId, int $newAvailabilityId, string $takenFrom, string $takenTo): bool
     {
-        $session = Session::find($sessionId);
-        $availability = Availability::find($availabilityId);
+        return DB::transaction(function () use ($sessionId, $newAvailabilityId, $takenFrom, $takenTo) {
+            $session = Session::findOrFail($sessionId);
+            $availability = Availability::findOrFail($newAvailabilityId);
 
-        if (! $session || ! $availability) {
-            return false;
-        }
+            $previousDateTime = $session->formattedSessionDateTime();
 
-        if (! $this->isTimeRangeValid($availability, $takenFrom, $takenTo)) {
-            return false;
-        }
+            $session->update([
+                'taken_date' => $availability->date,
+                'taken_from' => $takenFrom,
+                'taken_to' => $takenTo,
+            ]);
 
-        $previousDateTime = "{$session->taken_date} {$session->taken_from}";
-        $updated = $session->update([
-            'taken_date' => Carbon::parse($availability->date)->format('Y-m-d'),
-            'taken_from' => $takenFrom,
-            'taken_to' => $takenTo,
-        ]);
+            $this->notifyParticipants($session, 'rescheduled', [
+                'previousDateTime' => $previousDateTime,
+            ]);
 
-        if (! $updated) {
-            return false;
-        }
-
-        $this->notifyRescheduled($session->fresh(), $previousDateTime);
-
-        return true;
+            return true;
+        });
     }
 
     /**
-     * Cancels an existing session and logs the reason.
-     *
-     * @param  int|string  $sessionId
-     * @param  int|string  $cancellerMemberId
+     * Cancels an existing mentoring session and logs the reason.
      */
-    public function cancelSession($sessionId, string $reason, $cancellerMemberId): bool
+    public function cancelSession(int $sessionId, string $reason, Account $cancellerAccount): bool
     {
-        $session = Session::find($sessionId);
-        $cancellerMember = Member::find($cancellerMemberId);
+        return DB::transaction(function () use ($sessionId, $reason, $cancellerAccount) {
+            $session = Session::findOrFail($sessionId);
+            $cancellerMember = Member::where('cid', $cancellerAccount->id)->firstOrFail();
 
-        $cancelledBy = Account::find($cancellerMember->cid);
+            $session->update([
+                'cancelled_datetime' => now(),
+            ]);
 
-        $updated = $session->update([
-            'cancelled_datetime' => now(),
-        ]);
+            CancelReason::create([
+                'sesh_id' => $session->id,
+                'sesh_type' => 'ME',
+                'reason' => $reason,
+                'reason_by' => $cancellerMember->id,
+            ]);
 
-        if (! $updated) {
-            return false;
+            Session::create([
+                'rts_id' => $session->rts_id,
+                'position' => $session->position,
+                'progress_sheet_id' => $session->progress_sheet_id,
+                'student_id' => $session->student_id,
+                'student_rating' => $session->student_rating,
+                'request_time' => Carbon::now(),
+            ]);
+
+            $this->notifyParticipants($session, 'cancelled', [
+                'reason' => $reason,
+                'cancellerAccount' => $cancellerAccount,
+            ]);
+
+            return true;
+        });
+    }
+
+    private function notifyParticipants(Session $session, string $action, array $data = []): void
+    {
+        $studentAccount = $session->studentAccount();
+        $mentorAccount = $session->mentorAccount();
+
+        if (! $studentAccount || ! $mentorAccount) {
+            return;
         }
 
-        CancelReason::create([
-            'sesh_id' => $session->id,
-            'sesh_type' => 'ME',
-            'reason' => $reason,
-            'reason_by' => $cancellerMemberId,
-        ]);
+        switch ($action) {
+            case 'accepted':
+                $studentAccount->notify(new MentoringSessionAcceptedStudentNotification($session));
+                $mentorAccount->notify(new MentoringSessionAcceptedMentorNotification($session));
+                break;
 
-        Session::create([
-            'rts_id' => $session->rts_id,
-            'position' => $session->position,
-            'progress_sheet_id' => $session->progress_sheet_id,
-            'student_id' => $session->student_id,
-            'student_rating' => $session->student_rating,
-            'request_time' => Carbon::now(),
-        ]);
+            case 'rescheduled':
+                $studentAccount->notify(new MentoringSessionRescheduledStudentNotification($session, $data['previousDateTime']));
+                $mentorAccount->notify(new MentoringSessionRescheduledMentorNotification($session, $data['previousDateTime']));
+                break;
 
-        $this->notifyCancelled($session, $reason, $cancelledBy);
+            case 'cancelled':
+                $studentAccount->notify(new MentoringSessionCancelledStudentNotification($session, $data['cancellerAccount'], $data['reason']));
+                $mentorAccount->notify(new MentoringSessionCancelledMentorNotification($session, $data['reason']));
+                break;
 
-        return true;
-    }
-
-    private function isTimeRangeValid(Availability $availability, string $takenFrom, string $takenTo): bool
-    {
-        $availabilityStart = Carbon::parse($availability->from);
-        $availabilityEnd = Carbon::parse($availability->to);
-        $takenFromTime = Carbon::parse($takenFrom);
-        $takenToTime = Carbon::parse($takenTo);
-
-        if ($takenFromTime->greaterThanOrEqualTo($takenToTime)) {
-            return false;
+            default:
+                throw new Exception("Unknown notification action: {$action}");
         }
-
-        if ($takenFromTime->lessThan($availabilityStart) || $takenToTime->greaterThan($availabilityEnd)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private function notifyAccepted(Session $session): void
-    {
-        $session->studentAccount()?->notify(
-            new MentoringSessionAcceptedStudentNotification($session),
-        );
-
-        $session->mentorAccount()->notify(new MentoringSessionAcceptedMentorNotification($session));
-    }
-
-    private function notifyCancelled(Session $session, string $reason, Account $cancelledBy): void
-    {
-        $session->studentAccount()?->notify(
-            new MentoringSessionCancelledStudentNotification($session, $cancelledBy, $reason),
-        );
-
-        $cancelledBy->notify(new MentoringSessionCancelledMentorNotification($session, $reason));
-    }
-
-    private function notifyRescheduled(Session $session, string $previousDateTime): void
-    {
-        $session->studentAccount()?->notify(
-            new MentoringSessionRescheduledStudentNotification($session, $previousDateTime),
-        );
-
-        $session->mentorAccount()?->notify(
-            new MentoringSessionRescheduledMentorNotification($session, $previousDateTime),
-        );
     }
 }

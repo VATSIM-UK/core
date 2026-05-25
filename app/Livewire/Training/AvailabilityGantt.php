@@ -300,7 +300,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                 $student = Member::find($availability->student_id);
                 $formattedDate = Carbon::parse($availability->date)->format('d/m/Y');
 
-                $success = $mentoringService->acceptSession($arguments['availability_id'], Auth()->user()->member->id, $data['taken_from'], $data['taken_to']);
+                $success = $mentoringService->acceptSession($arguments['availability_id'], auth()->user(), $data['taken_from'], $data['taken_to']);
 
                 if ($success) {
                     Notification::make()

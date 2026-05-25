@@ -190,9 +190,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                 ->minLength(10),
                         ])
                         ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
-                            $memberId = auth()->user()->member->id;
-
-                            $success = $mentoringService->cancelSession($record->id, $data['reason'], $memberId);
+                            $success = $mentoringService->cancelSession($record->id, $data['reason'], auth()->user());
 
                             if ($success) {
                                 Notification::make()

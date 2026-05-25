@@ -56,14 +56,16 @@ class MentoringSessionsServiceTest extends TestCase
     }
 
     #[Test]
-    public function accept_session_returns_false_when_availability_does_not_exist(): void
+    public function accept_session_throws_exception_when_availability_does_not_exist(): void
     {
         Session::factory()->create([
             'student_id' => $this->studentMember->id,
             'mentor_id' => null,
         ]);
 
-        $this->assertFalse($this->service->acceptSession(999999, $this->mentorAccount->id, '10:00', '12:00'));
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->service->acceptSession(999999, $this->mentorAccount, '10:00', '12:00');
     }
 
     #[Test]
@@ -76,7 +78,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->assertFalse($this->service->acceptSession(
             $availability->id,
-            $this->mentorAccount->id,
+            $this->mentorAccount,
             '10:00',
             '12:00',
         ));
@@ -98,7 +100,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->assertFalse($this->service->acceptSession(
             $availability->id,
-            $this->mentorAccount->id,
+            $this->mentorAccount,
             '10:00',
             '12:00',
         ));
@@ -120,7 +122,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->assertFalse($this->service->acceptSession(
             $availability->id,
-            $this->mentorAccount->id,
+            $this->mentorAccount,
             '10:00',
             '12:00',
         ));
@@ -147,14 +149,15 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->assertTrue($this->service->acceptSession(
             $availability->id,
-            $this->mentorAccount->id,
+            $this->mentorAccount,
             '10:00',
             '12:00',
         ));
 
         $pendingSession->refresh();
 
-        $this->assertSame($this->mentorAccount->id, $pendingSession->mentor_id);
+        // Service explicitly tracks internal CTS Member ID for mentor_id mapping
+        $this->assertSame($this->mentorMember->id, $pendingSession->mentor_id);
         $this->assertSame(1, $pendingSession->taken);
         $this->assertSame('2026-06-15', Carbon::parse($pendingSession->taken_date)->format('Y-m-d'));
         $this->assertSame('10:00:00', Carbon::parse($pendingSession->taken_from)->format('H:i:s'));
@@ -185,7 +188,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->assertTrue($this->service->acceptSession(
             $availability->id,
-            $this->mentorAccount->id,
+            $this->mentorAccount,
             '10:00',
             '12:00',
         ));
@@ -218,7 +221,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->assertTrue($this->service->acceptSession(
             $availability->id,
-            $this->mentorAccount->id,
+            $this->mentorAccount,
             '10:00',
             '12:00',
         ));
@@ -228,18 +231,20 @@ class MentoringSessionsServiceTest extends TestCase
     }
 
     #[Test]
-    public function reschedule_session_returns_false_when_session_does_not_exist(): void
+    public function reschedule_session_throws_exception_when_session_does_not_exist(): void
     {
         $availability = Availability::factory()->create([
             'student_id' => $this->studentMember->id,
             'date' => Carbon::tomorrow(),
         ]);
 
-        $this->assertFalse($this->service->rescheduleSession(999999, $availability->id, '14:00', '16:00'));
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->service->rescheduleSession(999999, $availability->id, '14:00', '16:00');
     }
 
     #[Test]
-    public function reschedule_session_returns_false_when_availability_does_not_exist(): void
+    public function reschedule_session_throws_exception_when_availability_does_not_exist(): void
     {
         $session = Session::factory()->create([
             'student_id' => $this->studentMember->id,
@@ -250,7 +255,9 @@ class MentoringSessionsServiceTest extends TestCase
             'taken_to' => '12:00:00',
         ]);
 
-        $this->assertFalse($this->service->rescheduleSession($session->id, 999999, '14:00', '16:00'));
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->service->rescheduleSession($session->id, 999999, '14:00', '16:00');
     }
 
     #[Test]
@@ -322,13 +329,15 @@ class MentoringSessionsServiceTest extends TestCase
     }
 
     #[Test]
-    public function cancel_session_returns_false_when_session_does_not_exist(): void
+    public function cancel_session_throws_exception_when_session_does_not_exist(): void
     {
-        $this->assertFalse($this->service->cancelSession(
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->service->cancelSession(
             999999,
             'Unable to conduct session on this date.',
-            $this->mentorAccount->id,
-        ));
+            $this->mentorAccount,
+        );
     }
 
     #[Test]
@@ -342,7 +351,10 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->expectException(ModelNotFoundException::class);
 
-        $this->service->cancelSession($session->id, 'Reason here.', 999999);
+        // Pass an Account instance whose ID has no corresponding CTS Member record
+        $nonExistentAccount = Account::factory()->make(['id' => 999999]);
+
+        $this->service->cancelSession($session->id, 'Reason here.', $nonExistentAccount);
     }
 
     #[Test]
@@ -359,7 +371,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $reason = 'Unable to conduct session on this date.';
 
-        $this->assertTrue($this->service->cancelSession($session->id, $reason, $this->mentorAccount->id));
+        $this->assertTrue($this->service->cancelSession($session->id, $reason, $this->mentorAccount));
 
         $this->assertNotNull($session->fresh()->cancelled_datetime);
     }
@@ -377,13 +389,13 @@ class MentoringSessionsServiceTest extends TestCase
 
         $reason = 'Mentor is unavailable due to a prior commitment.';
 
-        $this->service->cancelSession($session->id, $reason, $this->mentorAccount->id);
+        $this->service->cancelSession($session->id, $reason, $this->mentorAccount);
 
         $this->assertDatabaseHas('cancel_reason', [
             'sesh_id' => $session->id,
             'sesh_type' => 'ME',
             'reason' => $reason,
-            'reason_by' => $this->mentorAccount->id,
+            'reason_by' => $this->mentorMember->id,
         ], 'cts');
     }
 
@@ -411,7 +423,7 @@ class MentoringSessionsServiceTest extends TestCase
         $this->service->cancelSession(
             $session->id,
             'Unable to conduct session on this date.',
-            $this->mentorAccount->id,
+            $this->mentorAccount,
         );
 
         $newPending = Session::query()
@@ -452,7 +464,7 @@ class MentoringSessionsServiceTest extends TestCase
         $this->assertTrue($this->service->cancelSession(
             $session->id,
             'Unable to conduct session on this date.',
-            $this->mentorAccount->id,
+            $this->mentorAccount,
         ));
 
         Notification::assertSentTo($this->studentAccount, MentoringSessionCancelledStudentNotification::class);
