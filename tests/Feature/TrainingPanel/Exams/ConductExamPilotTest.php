@@ -128,7 +128,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
             'examid' => $exam->id,
             'student_id' => $student->id,
             'result' => ExamResultEnum::Pass->value,
-            'notes' => 'Student passed all sections.',
+            'notes' => '<p>Student passed all sections.</p>',
             'exam' => 'P1',
         ]);
 

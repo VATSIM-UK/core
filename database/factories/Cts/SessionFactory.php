@@ -30,6 +30,7 @@ class SessionFactory extends Factory
     public function accepted(): Factory
     {
         return $this->state([
+            'taken' => 1,
             'mentor_id' => Member::Factory()->create()->id,
             'mentor_rating' => 5,
             'taken_time' => now(),

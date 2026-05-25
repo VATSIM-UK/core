@@ -129,6 +129,20 @@ class LocalDevelopmentTrainingSeederTest extends TestCase
         $this->assertTrue(
             MentorTrainingPosition::query()->where('account_id', DevTrainingPersonas::STAFF_CID)->exists()
         );
+
+        $mentorMemberId = Member::query()->where('cid', DevTrainingPersonas::MENTOR_CONDUCT_CID)->value('id');
+        $this->assertNotNull($mentorMemberId);
+        $this->assertTrue(
+            Session::query()
+                ->where('mentor_id', $mentorMemberId)
+                ->where('position', 'EGKK_TWR')
+                ->whereNull('filed')
+                ->where('taken', 1)
+                ->exists(),
+        );
+        $this->assertTrue(
+            Account::findOrFail(DevTrainingPersonas::MENTOR_CONDUCT_CID)->hasPermissionTo('training.beta'),
+        );
     }
 
     #[Test]

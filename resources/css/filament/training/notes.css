@@ -1,0 +1,44 @@
+@layer components {
+    /* Conduct mentoring: notes area matches filed report (no input box chrome). */
+    .fi-fo-field.mentoring-report-notes-field .fi-input-wrp.fi-fo-rich-editor {
+        @apply rounded-none bg-transparent shadow-none ring-0 dark:bg-transparent;
+    }
+
+    .fi-fo-field.mentoring-report-notes-field .fi-fo-rich-editor-toolbar {
+        @apply border-0 bg-transparent px-0 pt-0;
+    }
+
+    .fi-fo-field.mentoring-report-notes-field .fi-fo-rich-editor-content {
+        @apply px-0;
+    }
+
+    .cts-notes-content h1,
+    .cts-notes-content h2,
+    .cts-notes-content h3,
+    .cts-notes-content h4,
+    .cts-notes-content h5,
+    .cts-notes-content h6 {
+        @apply font-semibold leading-tight;
+    }
+
+    .cts-notes-content h1 {
+        @apply text-2xl;
+    }
+
+    .cts-notes-content h2 {
+        @apply text-xl;
+    }
+
+    .cts-notes-content h3 {
+        @apply text-lg;
+    }
+
+    .cts-notes-content h4 {
+        @apply text-base;
+    }
+
+    .cts-notes-content h5,
+    .cts-notes-content h6 {
+        @apply text-sm;
+    }
+}
