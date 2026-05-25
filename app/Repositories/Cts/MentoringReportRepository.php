@@ -158,16 +158,19 @@ class MentoringReportRepository
 
     public function getPrimaryPosition(string $position): string
     {
-        $callsigns = TrainingPosition::query()
+        $trainingPositions = TrainingPosition::query()
             ->whereJsonContains('cts_positions', $position)
-            ->get()
-            ->flatMap(fn (TrainingPosition $trainingPosition) => $trainingPosition->cts_positions ?? [])
-            ->unique()
-            ->filter()
-            ->values()
-            ->all();
+            ->get();
 
-        return $callsigns[0] ?? $position;
+        foreach ($trainingPositions as $trainingPosition) {
+            $primary = $trainingPosition->cts_primary_position;
+
+            if (is_string($primary) && trim($primary) !== '') {
+                return trim($primary);
+            }
+        }
+
+        return $position;
     }
 
     /**
