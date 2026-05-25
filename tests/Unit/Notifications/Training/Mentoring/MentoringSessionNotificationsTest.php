@@ -40,8 +40,9 @@ class MentoringSessionNotificationsTest extends TestCase
             'name_first' => 'Alex',
             'name_last' => 'Student',
         ]);
+
         $this->studentMember = Member::factory()->create([
-            'id' => $this->studentAccount->id,
+            'id' => Account::generateCTSInternalID(),
             'cid' => $this->studentAccount->id,
         ]);
 
@@ -49,8 +50,9 @@ class MentoringSessionNotificationsTest extends TestCase
             'name_first' => 'Jamie',
             'name_last' => 'Mentor',
         ]);
+
         $this->mentorMember = Member::factory()->create([
-            'id' => $this->mentorAccount->id,
+            'id' => Account::generateCTSInternalID(),
             'cid' => $this->mentorAccount->id,
         ]);
 

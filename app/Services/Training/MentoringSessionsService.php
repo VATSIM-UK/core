@@ -15,7 +15,9 @@ use App\Notifications\Training\Mentoring\MentoringSessionRescheduledMentorNotifi
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotification;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 
 class MentoringSessionsService
 {
@@ -40,6 +42,10 @@ class MentoringSessionsService
                 return false;
             }
 
+            if ($mentorAccount->cannot('accept', $session)) {
+                throw new AuthorizationException('You are not authorized to accept mentoring sessions for this position.');
+            }
+
             $session->update([
                 'mentor_id' => $mentorMember->id,
                 'mentor_rating' => $mentorAccount->qualification_atc?->vatsim,
@@ -49,7 +55,9 @@ class MentoringSessionsService
                 'taken_to' => $takenTo,
             ]);
 
-            $this->notifyParticipants($session, 'accepted');
+            DB::afterCommit(function () use ($session) {
+                $this->notifyParticipants($session, 'accepted');
+            });
 
             return true;
         });
@@ -58,12 +66,33 @@ class MentoringSessionsService
     /**
      * Reschedules an existing session to a new availability slot.
      */
-    public function rescheduleSession(int $sessionId, int $newAvailabilityId, string $takenFrom, string $takenTo): bool
+    public function rescheduleSession(int $sessionId, int $newAvailabilityId, string $takenFrom, string $takenTo, Account $userAccount): bool
     {
-        return DB::transaction(function () use ($sessionId, $newAvailabilityId, $takenFrom, $takenTo) {
-            $session = Session::findOrFail($sessionId);
-            $availability = Availability::findOrFail($newAvailabilityId);
+        $session = Session::findOrFail($sessionId);
+        $availability = Availability::findOrFail($newAvailabilityId);
 
+        if ($userAccount->cannot('reschedule', $session)) {
+            throw new AuthorizationException('You are not authorized to reschedule this session.');
+        }
+
+        if ($availability->student_id !== $session->student_id) {
+            throw new InvalidArgumentException("The selected availability does not belong to the session's student.");
+        }
+
+        if (strtotime($takenTo) <= strtotime($takenFrom)) {
+            throw new InvalidArgumentException('The session end time must be after the start time.');
+        }
+
+        $requestedStart = strtotime($takenFrom);
+        $requestedEnd = strtotime($takenTo);
+        $availabilityStart = strtotime($availability->from);
+        $availabilityEnd = strtotime($availability->to);
+
+        if ($requestedStart < $availabilityStart || $requestedEnd > $availabilityEnd) {
+            throw new InvalidArgumentException("The requested times fall outside the student's availability window.");
+        }
+
+        return DB::transaction(function () use ($session, $availability, $takenFrom, $takenTo) {
             $previousDateTime = $session->formattedSessionDateTime();
 
             $session->update([
@@ -72,9 +101,11 @@ class MentoringSessionsService
                 'taken_to' => $takenTo,
             ]);
 
-            $this->notifyParticipants($session, 'rescheduled', [
-                'previousDateTime' => $previousDateTime,
-            ]);
+            DB::afterCommit(function () use ($session, $previousDateTime) {
+                $this->notifyParticipants($session, 'rescheduled', [
+                    'previousDateTime' => $previousDateTime,
+                ]);
+            });
 
             return true;
         });
@@ -85,8 +116,13 @@ class MentoringSessionsService
      */
     public function cancelSession(int $sessionId, string $reason, Account $cancellerAccount): bool
     {
-        return DB::transaction(function () use ($sessionId, $reason, $cancellerAccount) {
-            $session = Session::findOrFail($sessionId);
+        $session = Session::findOrFail($sessionId);
+
+        if ($cancellerAccount->cannot('cancel', $session)) {
+            throw new AuthorizationException('You are not authorized to cancel this session.');
+        }
+
+        return DB::transaction(function () use ($session, $reason, $cancellerAccount) {
             $cancellerMember = Member::where('cid', $cancellerAccount->id)->firstOrFail();
 
             $session->update([
@@ -109,10 +145,12 @@ class MentoringSessionsService
                 'request_time' => Carbon::now(),
             ]);
 
-            $this->notifyParticipants($session, 'cancelled', [
-                'reason' => $reason,
-                'cancellerAccount' => $cancellerAccount,
-            ]);
+            DB::afterCommit(function () use ($session, $reason, $cancellerAccount) {
+                $this->notifyParticipants($session, 'cancelled', [
+                    'reason' => $reason,
+                    'cancellerAccount' => $cancellerAccount,
+                ]);
+            });
 
             return true;
         });

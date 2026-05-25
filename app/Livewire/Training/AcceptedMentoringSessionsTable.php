@@ -210,7 +210,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                 $record->id,
                                 $availability->id,
                                 $data['taken_from'],
-                                $data['taken_to']
+                                $data['taken_to'],
+                                auth()->user(),
                             );
 
                             if ($success) {
