@@ -239,6 +239,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                             ->state($this->ctsPlainNotesForHtmlDisplay($sheet->notes))
                             ->hiddenLabel()
                             ->html()
+                            ->prose()
                             ->extraAttributes(['style' => 'word-break:break-word'])
                             ->columnSpan(12)
                             ->hidden(blank($sheet->notes)),
