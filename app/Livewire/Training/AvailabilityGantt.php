@@ -265,7 +265,18 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             ->searchable()
                             ->allowHtml(false)
                             ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
-                            ->options($timeOptions)
+                            ->after('taken_from')
+                            ->options(function (Get $get) use ($timeOptions) {
+                                $startTime = $get('taken_from');
+
+                                if (! $startTime) {
+                                    return $timeOptions;
+                                }
+
+                                return collect($timeOptions)
+                                    ->filter(fn ($label, $key) => $key > $startTime)
+                                    ->toArray();
+                            })
                             ->default(array_key_last($timeOptions))
                             ->optionsLimit(100),
                     ]),
@@ -289,7 +300,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                 $student = Member::find($availability->student_id);
                 $formattedDate = Carbon::parse($availability->date)->format('d/m/Y');
 
-                $success = $mentoringService->acceptSession($arguments['availability_id'], auth()->id(), $data['taken_from'], $data['taken_to']);
+                $success = $mentoringService->acceptSession($arguments['availability_id'], Auth()->user()->member->id, $data['taken_from'], $data['taken_to']);
 
                 if ($success) {
                     Notification::make()

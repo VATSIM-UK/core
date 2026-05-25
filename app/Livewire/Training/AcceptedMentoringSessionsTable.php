@@ -116,6 +116,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                     ->required()
                                     ->searchable()
                                     ->allowHtml(false)
+                                    ->live()
                                     ->optionsLimit(100)
                                     ->options(function (Get $get) {
                                         $avail = Availability::find($get('selected_availability_id'));
@@ -135,6 +136,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                     ->searchable()
                                     ->allowHtml(false)
                                     ->optionsLimit(100)
+                                    ->after('taken_from')
                                     ->options(function (Get $get) {
                                         $avail = Availability::find($get('selected_availability_id'));
                                         if (! $avail) {

@@ -76,11 +76,11 @@
 								$heightPercent = ($durationMinutes / $totalTimelineMinutes) * 100;
 							@endphp
 
-							<div wire:click="mountAction('acceptSession', { availability_id: {{ $avail->id }} })"
+							<button type="button" wire:click="mountAction('acceptSession', { availability_id: {{ $avail->id }} })"
 								class="absolute left-2 right-2 flex flex-col items-center justify-center p-1 rounded-md shadow-sm opacity-90 transition-all border group/block ring-1 bg-success-500 hover:bg-success-600 border-success-600 dark:border-success-400 ring-success-500/30 overflow-hidden text-[10px] text-white font-medium line-clamp-2"
 								style="top: {{ $topPercent }}%; height: {{ $heightPercent }}%;"
 								title="{{ $student->name }}: {{ $start->format('H:i') }} - {{ $end->format('H:i') }}">
-							</div>
+							</button>
 						@endforeach
 
 					</div>

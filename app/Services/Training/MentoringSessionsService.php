@@ -4,6 +4,7 @@ namespace App\Services\Training;
 
 use App\Models\Cts\Availability;
 use App\Models\Cts\CancelReason;
+use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
@@ -42,11 +43,20 @@ class MentoringSessionsService
             return false;
         }
 
-        $mentor = Account::find($mentorId);
-        $mentorRating = $mentor?->qualification_atc?->vatsim;
+        $mentorMember = Member::find($mentorId);
+        $mentor = Account::find($mentorMember->cid);
 
-        $pendingSession->update([
-            'mentor_id' => $mentorId,
+        if (! $mentor->can('mentorPosition', [Session::class, $pendingSession->position])) {
+            return false;
+        }
+
+        if (! $this->isTimeRangeValid($availability, $takenFrom, $takenTo)) {
+            return false;
+        }
+
+        $mentorRating = $mentor?->qualification_atc?->vatsim;
+        $updated = $pendingSession->update([
+            'mentor_id' => $mentorMember->id,
             'mentor_rating' => $mentorRating,
             'taken_date' => Carbon::parse($availability->date)->format('Y-m-d'),
             'taken_from' => $takenFrom,
@@ -54,7 +64,11 @@ class MentoringSessionsService
             'taken' => 1,
         ]);
 
-        $this->notifyAccepted($pendingSession);
+        if (! $updated) {
+            return false;
+        }
+
+        $this->notifyAccepted($pendingSession->fresh());
 
         return true;
     }
@@ -74,14 +88,24 @@ class MentoringSessionsService
             return false;
         }
 
-        $previousDateTime = "{$session->taken_date} {$session->taken_from}";
-        $this->notifyRescheduled($session, $previousDateTime);
+        if (! $this->isTimeRangeValid($availability, $takenFrom, $takenTo)) {
+            return false;
+        }
 
-        return $session->update([
+        $previousDateTime = "{$session->taken_date} {$session->taken_from}";
+        $updated = $session->update([
             'taken_date' => Carbon::parse($availability->date)->format('Y-m-d'),
             'taken_from' => $takenFrom,
             'taken_to' => $takenTo,
         ]);
+
+        if (! $updated) {
+            return false;
+        }
+
+        $this->notifyRescheduled($session->fresh(), $previousDateTime);
+
+        return true;
     }
 
     /**
@@ -93,16 +117,17 @@ class MentoringSessionsService
     public function cancelSession($sessionId, string $reason, $cancellerMemberId): bool
     {
         $session = Session::find($sessionId);
+        $cancellerMember = Member::find($cancellerMemberId);
 
-        if (! $session) {
-            return false;
-        }
+        $cancelledBy = Account::find($cancellerMember->cid);
 
-        $cancelledBy = Account::findOrFail($cancellerMemberId);
-
-        $session->update([
+        $updated = $session->update([
             'cancelled_datetime' => now(),
         ]);
+
+        if (! $updated) {
+            return false;
+        }
 
         CancelReason::create([
             'sesh_id' => $session->id,
@@ -121,6 +146,24 @@ class MentoringSessionsService
         ]);
 
         $this->notifyCancelled($session, $reason, $cancelledBy);
+
+        return true;
+    }
+
+    private function isTimeRangeValid(Availability $availability, string $takenFrom, string $takenTo): bool
+    {
+        $availabilityStart = Carbon::parse($availability->from);
+        $availabilityEnd = Carbon::parse($availability->to);
+        $takenFromTime = Carbon::parse($takenFrom);
+        $takenToTime = Carbon::parse($takenTo);
+
+        if ($takenFromTime->greaterThanOrEqualTo($takenToTime)) {
+            return false;
+        }
+
+        if ($takenFromTime->lessThan($availabilityStart) || $takenToTime->greaterThan($availabilityEnd)) {
+            return false;
+        }
 
         return true;
     }
