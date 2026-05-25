@@ -227,6 +227,11 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
                 $timeOptions = $this->generateTimeOptions($minTime, $maxTime);
 
+                if (Carbon::parse($availability->date)->isToday()) {
+                    $nowTime = now()->format('H:i');
+                    $timeOptions = array_filter($timeOptions, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
+                }
+
                 return [
                     Grid::make(3)->schema([
                         Placeholder::make('student_name')
@@ -251,7 +256,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             ->allowHtml(false)
                             ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
                             ->options($timeOptions)
-                            ->default($minTime)
+                            ->default(array_key_first($timeOptions))
                             ->optionsLimit(100),
 
                         Select::make('taken_to')
@@ -261,7 +266,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             ->allowHtml(false)
                             ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
                             ->options($timeOptions)
-                            ->default($maxTime)
+                            ->default(array_key_last($timeOptions))
                             ->optionsLimit(100),
                     ]),
                     Callout::make('24_hours_notice')
