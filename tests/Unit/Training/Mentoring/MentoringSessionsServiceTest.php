@@ -44,13 +44,13 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->mentorAccount = Account::factory()->create();
         $this->mentorMember = Member::factory()->create([
-            'id' => $this->mentorAccount->id,
+            'id' => $this->mentorAccount->generateCTSInternalID($this->mentorAccount->id),
             'cid' => $this->mentorAccount->id,
         ]);
 
         $this->studentAccount = Account::factory()->create();
         $this->studentMember = Member::factory()->create([
-            'id' => $this->studentAccount->id,
+            'id' => $this->studentAccount->generateCTSInternalID($this->mentorAccount->id),
             'cid' => $this->studentAccount->id,
         ]);
     }
