@@ -186,6 +186,8 @@ class MentoringSessionsServiceTest extends TestCase
         $availability = Availability::factory()->create([
             'student_id' => $this->studentMember->id,
             'date' => Carbon::tomorrow(),
+            'from' => '09:00:00',
+            'to' => '13:00:00',
         ]);
 
         $this->assertTrue($this->service->acceptSession(
@@ -219,6 +221,8 @@ class MentoringSessionsServiceTest extends TestCase
         $availability = Availability::factory()->create([
             'student_id' => $this->studentMember->id,
             'date' => Carbon::tomorrow(),
+            'from' => '09:00:00',
+            'to' => '13:00:00',
         ]);
 
         $this->assertTrue($this->service->acceptSession(
