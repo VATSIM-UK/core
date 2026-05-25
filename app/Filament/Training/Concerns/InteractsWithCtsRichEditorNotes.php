@@ -94,7 +94,7 @@ trait InteractsWithCtsRichEditorNotes
 
     protected function ctsAllowedNotesHtmlTags(): string
     {
-        return '<p><br><strong><b><em><i><u><s><ul><ol><li>';
+        return '<p><br><h1><h2><h3><h4><h5><h6><strong><b><em><i><u><s><ul><ol><li>';
     }
 
     protected function ctsSanitizeNotesHtml(string $html): string

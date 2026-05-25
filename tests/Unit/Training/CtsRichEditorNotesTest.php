@@ -25,6 +25,17 @@ class CtsRichEditorNotesTest extends TestCase
     }
 
     #[Test]
+    public function it_preserves_heading_tags_when_saving(): void
+    {
+        $html = '<h2>Section title</h2><p>Body text</p>';
+
+        $saved = $this->ctsRichContentNotesForCts($html);
+
+        $this->assertStringContainsString('<h2>Section title</h2>', $saved);
+        $this->assertStringContainsString('<p>Body text</p>', $saved);
+    }
+
+    #[Test]
     public function it_preserves_paragraphs_and_line_breaks_when_saving(): void
     {
         $html = '<p>First line</p><p>Second line</p><p>Third with<br>break</p>';
@@ -84,5 +95,16 @@ class CtsRichEditorNotesTest extends TestCase
         $this->assertStringContainsString('<strong>Legacy</strong>', $display);
         $this->assertStringContainsString('<p><br></p>', $display);
         $this->assertStringContainsString('white-space:pre-wrap', $display);
+    }
+
+    #[Test]
+    public function it_renders_heading_tags_for_display(): void
+    {
+        $html = '<h3>Criteria</h3><p>Details</p>';
+
+        $display = $this->ctsPlainNotesForHtmlDisplay($html);
+
+        $this->assertStringContainsString('<h3>Criteria</h3>', $display);
+        $this->assertStringContainsString('<p>Details</p>', $display);
     }
 }
