@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Pages\Exam;
 
 use App\Enums\ExamResultEnum;
+use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
@@ -33,6 +34,7 @@ use Livewire\Attributes\Session;
 
 class ConductExam extends Page implements HasForms, HasInfolists
 {
+    use InteractsWithCtsRichEditorNotes;
     use InteractsWithForms, InteractsWithInfolists;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
@@ -116,7 +118,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     return [
                         $item->id => [
                             'grade' => $existingAssessment['grade'] ?? 'N',
-                            'comments' => $this->richEditorHtmlForHydration($existingAssessment['comments'] ?? null),
+                            'comments' => $this->ctsRichEditorHtmlForHydration($existingAssessment['comments'] ?? null),
                         ],
                     ];
                 }
@@ -222,7 +224,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                         'style' => 'min-height: 200px;',
                     ])
                     ->afterStateHydrated(fn ($component) => $component->state(
-                        $this->richEditorHtmlForHydration($this->additionalComments)
+                        $this->ctsRichEditorHtmlForHydration($this->additionalComments)
                     ))
                     // save additional comments in session to persist in session in case navigation occurs
                     ->afterStateUpdated(fn ($state, $livewire) => ($this->additionalComments = $state)),
@@ -415,32 +417,8 @@ class ConductExam extends Page implements HasForms, HasInfolists
             })->get()->each->delete();
     }
 
-    /**
-     * Filament v4 / Tiptap PHP parse HTML via DOMDocument::loadHTML; empty or whitespace-only strings
-     * yield no &lt;body&gt; node, so DOMParser::getDocumentBody() returns null and crashes.
-     */
-    private function richEditorHtmlForHydration(mixed $html): mixed
-    {
-        if ($html === null || $html === '' || (is_string($html) && trim($html) === '')) {
-            return '<p></p>';
-        }
-
-        return $html;
-    }
-
-    /**
-     * CTS stores criteria / result notes as plain text; Filament RichEditor state is HTML.
-     */
     private function richContentNotesForCts(mixed $html): string
     {
-        if (! is_string($html) || trim($html) === '') {
-            return '';
-        }
-
-        $withNewlines = preg_replace('/<\/p>\s*<p>/i', "\n", $html);
-        $text = html_entity_decode(strip_tags($withNewlines), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        $text = str_replace("\xc2\xa0", ' ', $text);
-
-        return trim($text);
+        return $this->ctsRichContentNotesForCts($html) ?? '';
     }
 }

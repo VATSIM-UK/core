@@ -2,3 +2,5 @@
 
 @source '../../../../app/Filament/Training/**/*';
 @source '../../../../resources/views/filament/training/**/*';
+
+@import './notes.css';

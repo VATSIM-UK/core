@@ -152,6 +152,34 @@ trait SeedsDevMentoringSessions
     }
 
     /**
+     * Accepted session past its scheduled time, awaiting a filed report (conduct page).
+     */
+    protected function seedDevPendingConductSession(Member $student, Member $mentor, string $position, int $progressSheetId = 1): Session
+    {
+        return $this->upsertDevMentoringSession(
+            [
+                'student_id' => $student->id,
+                'position' => $position,
+                'mentor_id' => $mentor->id,
+                'taken_date' => now()->subDay()->format('Y-m-d'),
+            ],
+            [
+                'mentor_rating' => 3,
+                'taken' => 1,
+                'session_done' => 0,
+                'filed' => null,
+                'taken_time' => now()->subDays(3),
+                'taken_from' => '18:00:00',
+                'taken_to' => '20:00:00',
+                'cancelled_datetime' => null,
+                'noShow' => 0,
+                'request_time' => now()->subDays(10),
+                'progress_sheet_id' => $progressSheetId,
+            ],
+        );
+    }
+
+    /**
      * @param  array<string, mixed>  $match
      * @param  array<string, mixed>  $attributes
      */
