@@ -16,7 +16,9 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
@@ -245,6 +247,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             ->label('Start')
                             ->required()
                             ->searchable()
+                            ->live()
                             ->allowHtml(false)
                             ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
                             ->options($timeOptions)
@@ -261,6 +264,19 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             ->default($maxTime)
                             ->optionsLimit(100),
                     ]),
+                    Callout::make('24_hours_notice')
+                        ->heading('This session is being booked with less than 24 hours notice')
+                        ->description('Please contact the student via Discord to confirm their attendance.')
+                        ->warning()
+                        ->visible(function (Get $get) use ($availability) {
+                            $selectedTime = $get('taken_from');
+                            if (! $selectedTime) {
+                                return false;
+                            }
+                            $sessionStart = Carbon::parse($availability->date)->setTimeFromTimeString($selectedTime);
+
+                            return $sessionStart->isAfter(now()) && now()->diffInHours($sessionStart, false) < 24;
+                        }),
                 ];
             })
             ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService, Component $livewire) {
