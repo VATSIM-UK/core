@@ -47,5 +47,5 @@
 		@endif
 	@endif
 
-    <x-filament-actions::modals />
+	<x-filament-actions::modals />
 </x-filament::card>
