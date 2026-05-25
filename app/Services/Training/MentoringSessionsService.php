@@ -26,9 +26,11 @@ class MentoringSessionsService
      */
     public function acceptSession(int $availabilityId, Account $mentorAccount, string $takenFrom, string $takenTo): bool
     {
-        return DB::transaction(function () use ($availabilityId, $mentorAccount, $takenFrom, $takenTo) {
-            $availability = Availability::findOrFail($availabilityId);
+        $availability = Availability::findOrFail($availabilityId);
 
+        $this->validateSessionTimes($availability, $takenFrom, $takenTo);
+
+        return DB::transaction(function () use ($mentorAccount, $takenFrom, $takenTo) {
             $mentorMember = Member::where('cid', $mentorAccount->id)->firstOrFail();
 
             $session = Session::query()
@@ -79,9 +81,7 @@ class MentoringSessionsService
             throw new InvalidArgumentException("The selected availability does not belong to the session's student.");
         }
 
-        if (strtotime($takenTo) <= strtotime($takenFrom)) {
-            throw new InvalidArgumentException('The session end time must be after the start time.');
-        }
+        $this->validateSessionTimes($availability, $takenFrom, $takenTo);
 
         $requestedStart = strtotime($takenFrom);
         $requestedEnd = strtotime($takenTo);
@@ -183,6 +183,22 @@ class MentoringSessionsService
 
             default:
                 throw new Exception("Unknown notification action: {$action}");
+        }
+    }
+
+    private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void
+    {
+        if (strtotime($takenTo) <= strtotime($takenFrom)) {
+            throw new InvalidArgumentException('The session end time must be after the start time.');
+        }
+
+        $requestedStart = strtotime($takenFrom);
+        $requestedEnd = strtotime($takenTo);
+        $availabilityStart = strtotime($availability->from);
+        $availabilityEnd = strtotime($availability->to);
+
+        if ($requestedStart < $availabilityStart || $requestedEnd > $availabilityEnd) {
+            throw new InvalidArgumentException("The requested times fall outside the student's availability window.");
         }
     }
 }
