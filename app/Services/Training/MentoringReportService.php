@@ -64,13 +64,13 @@ class MentoringReportService
 
         DB::connection('cts')->transaction(function () use ($session): void {
             $this->repository->fileSession($session);
-
-            $studentAccount = $session->student?->account;
-
-            if ($studentAccount) {
-                $studentAccount->notify(new MentoringReportFiled($session));
-            }
         });
+
+        $studentAccount = $session->student?->account;
+
+        if ($studentAccount) {
+            $studentAccount->notify(new MentoringReportFiled($session));
+        }
     }
 
     public function canMarkNoShow(Session $session): bool
@@ -134,9 +134,9 @@ class MentoringReportService
 
             $this->repository->upsertAdditionalComments($session, null);
             $this->repository->fileSession($session, noShow: true);
-
-            $this->notifyTgisOfNoShow($session);
         });
+
+        $this->notifyTgisOfNoShow($session);
     }
 
     public function cancelSessionAsMentor(Session $session, string $reason): void

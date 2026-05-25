@@ -23,6 +23,8 @@ trait InteractsWithCtsRichEditorNotes
     /**
      * Filament v4 / Tiptap PHP parse HTML via DOMDocument::loadHTML; empty or whitespace-only strings
      * yield no <body> node, so DOMParser::getDocumentBody() returns null and crashes.
+     *
+     * Plain-text notes from CTS are converted into paragraph HTML for the editor.
      */
     protected function ctsRichEditorHtmlForHydration(mixed $html): mixed
     {
@@ -30,11 +32,28 @@ trait InteractsWithCtsRichEditorNotes
             return '<p></p>';
         }
 
-        return $html;
+        if (! is_string($html) || $this->ctsNotesContainHtmlMarkup($html)) {
+            return $html;
+        }
+
+        $lines = preg_split("/\r\n|\n|\r/", $html);
+
+        if ($lines === false || $lines === []) {
+            return '<p></p>';
+        }
+
+        $paragraphs = array_map(
+            fn (string $line): string => $line === ''
+                ? '<p><br></p>'
+                : '<p>'.$this->ctsEscapePlainTextLineForEditor($line).'</p>',
+            $lines,
+        );
+
+        return implode('', $paragraphs);
     }
 
     /**
-     * CTS stores mentoring/exam notes as plain text; Filament RichEditor state is HTML.
+     * Persist RichEditor HTML for CTS, keeping basic formatting (bold, italic, lists, etc.).
      *
      * Returns null when the content is empty.
      */
@@ -44,11 +63,68 @@ trait InteractsWithCtsRichEditorNotes
             return null;
         }
 
-        $withNewlines = preg_replace('/<\/p>\s*<p>/i', "\n", $html);
-        $text = html_entity_decode(strip_tags($withNewlines), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        $text = str_replace("\xc2\xa0", ' ', $text);
-        $text = trim($text);
+        if (! $this->ctsNotesContainHtmlMarkup($html)) {
+            return trim($html) !== '' ? $html : null;
+        }
 
-        return $text !== '' ? $text : null;
+        $sanitized = $this->ctsSanitizeNotesHtml($html);
+
+        if (trim(strip_tags($sanitized)) === '') {
+            return null;
+        }
+
+        return $this->ctsNormalizeEmptyParagraphs($sanitized);
+    }
+
+    /**
+     * Render CTS notes for Filament TextEntry::html().
+     */
+    protected function ctsPlainNotesForHtmlDisplay(mixed $notes): ?string
+    {
+        if (! is_string($notes) || trim($notes) === '') {
+            return null;
+        }
+
+        $content = $this->ctsNotesContainHtmlMarkup($notes)
+            ? $this->ctsNormalizeEmptyParagraphs($this->ctsSanitizeNotesHtml($notes))
+            : e($notes);
+
+        return '<div class="cts-notes-content" style="white-space:pre-wrap;word-break:break-word">'.$content.'</div>';
+    }
+
+    protected function ctsAllowedNotesHtmlTags(): string
+    {
+        return '<p><br><strong><b><em><i><u><s><ul><ol><li>';
+    }
+
+    protected function ctsSanitizeNotesHtml(string $html): string
+    {
+        $withoutScripts = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $html) ?? $html;
+        $withoutEventHandlers = preg_replace('/\s+on\w+\s*=\s*("|\').*?\1/i', '', $withoutScripts) ?? $withoutScripts;
+
+        return strip_tags($withoutEventHandlers, $this->ctsAllowedNotesHtmlTags());
+    }
+
+    protected function ctsNormalizeEmptyParagraphs(string $html): string
+    {
+        $normalised = preg_replace('/<p>\s*<\/p>/i', '<p><br></p>', $html) ?? $html;
+
+        return preg_replace('/<p><br\s*\/?>\s*<\/p>/i', '<p><br></p>', $normalised) ?? $normalised;
+    }
+
+    protected function ctsEscapePlainTextLineForEditor(string $line): string
+    {
+        $escaped = htmlspecialchars($line, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        while (str_contains($escaped, '  ')) {
+            $escaped = str_replace('  ', ' &nbsp;', $escaped);
+        }
+
+        return $escaped;
+    }
+
+    protected function ctsNotesContainHtmlMarkup(string $value): bool
+    {
+        return (bool) preg_match('/<[a-z][^>]*>/i', $value);
     }
 }

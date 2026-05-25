@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Mentor;
 
+use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Filament\Training\Support\MentoringReportLayout;
 use App\Filament\Training\Support\MentoringReportScores;
@@ -34,6 +35,7 @@ use Illuminate\Support\Collection;
 class ViewMentoringReport extends Page implements HasInfolists
 {
     use AuthorizesRequests;
+    use InteractsWithCtsRichEditorNotes;
     use InteractsWithInfolists;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
@@ -174,7 +176,9 @@ class ViewMentoringReport extends Page implements HasInfolists
                         ->hiddenLabel()
                         ->html()
                         ->columnSpanFull()
-                        ->state(fn (Session $record) => $record->reportSheets->firstWhere('field_id', 0)?->notes),
+                        ->state(fn (Session $record) => $this->ctsPlainNotesForHtmlDisplay(
+                            $record->reportSheets->firstWhere('field_id', 0)?->notes,
+                        )),
                 ]),
         ]);
     }
@@ -232,7 +236,7 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                         TextEntry::make("field_notes_{$uniqueKey}")
                             ->label('Notes')
-                            ->state($sheet->notes)
+                            ->state($this->ctsPlainNotesForHtmlDisplay($sheet->notes))
                             ->hiddenLabel()
                             ->html()
                             ->extraAttributes(['style' => 'word-break:break-word'])

@@ -6,10 +6,11 @@ namespace App\Notifications\Training;
 
 use App\Models\Cts\Session;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class StudentMentoringNoShow extends Notification
+class StudentMentoringNoShow extends Notification implements ShouldQueue
 {
     use Queueable;
 
