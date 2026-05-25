@@ -69,6 +69,14 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
         return true;
     }
 
+    /**
+     * @return string|array<int, string>|\Closure(mixed, mixed): string|array<int, string>
+     */
+    protected function getPositionColumnBadgeColor(): string|array|\Closure
+    {
+        return 'gray';
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -115,7 +123,7 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
             TextColumn::make('position')
                 ->label('Position')
                 ->badge()
-                ->color('gray'),
+                ->color($this->getPositionColumnBadgeColor()),
 
             TextColumn::make('taken_date')
                 ->label('Date & Time')
