@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Mentor;
 
+use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Filament\Training\Pages\Mentor\Widgets\ManageMentorsStatsWidget;
 use App\Filament\Training\Support\TrainingMemberAccountSearch;
 use App\Models\Mship\Account;
@@ -30,6 +31,7 @@ use Livewire\Attributes\Url;
 class ManageMentors extends Page implements HasTable
 {
     use InteractsWithTable;
+    use RemembersTrainingGroupCategory;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
@@ -51,9 +53,13 @@ class ManageMentors extends Page implements HasTable
 
     public function mount(): void
     {
+        $this->rememberCategory();
+
         if (empty($this->category) || ! $this->canViewCategory($this->category)) {
             $this->category = $this->firstVisibleCategory() ?? '';
         }
+
+        $this->saveCategoryToSession();
     }
 
     protected function getHeaderWidgets(): array
