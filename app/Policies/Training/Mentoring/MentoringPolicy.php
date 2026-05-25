@@ -94,7 +94,7 @@ class MentoringPolicy
             return true;
         }
 
-        return $user->canMentorPosition($session->position);
+        return $this->mentorPosition($user, $session->position);
     }
 
     /**
@@ -128,7 +128,7 @@ class MentoringPolicy
             return true;
         }
 
-        return $user->canMentorPosition($session->position);
+        return $this->mentorPosition($user, $session->position);
     }
 
     /**

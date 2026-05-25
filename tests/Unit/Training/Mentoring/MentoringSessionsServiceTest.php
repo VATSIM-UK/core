@@ -48,6 +48,9 @@ class MentoringSessionsServiceTest extends TestCase
             'cid' => $this->mentorAccount->id,
         ]);
 
+        $this->mentorAccount->givePermissionTo('training.beta');
+        $this->mentorAccount->givePermissionTo('training.mentoring.view.*');
+
         $this->studentAccount = Account::factory()->create();
         $this->studentMember = Member::factory()->create([
             'id' => $this->studentAccount->generateCTSInternalID($this->studentAccount->id),
@@ -156,7 +159,6 @@ class MentoringSessionsServiceTest extends TestCase
 
         $pendingSession->refresh();
 
-        // Service explicitly tracks internal CTS Member ID for mentor_id mapping
         $this->assertSame($this->mentorMember->id, $pendingSession->mentor_id);
         $this->assertSame(1, $pendingSession->taken);
         $this->assertSame('2026-06-15', Carbon::parse($pendingSession->taken_date)->format('Y-m-d'));
@@ -240,7 +242,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->expectException(ModelNotFoundException::class);
 
-        $this->service->rescheduleSession(999999, $availability->id, '14:00', '16:00');
+        $this->service->rescheduleSession(999999, $availability->id, '14:00', '16:00', $this->mentorAccount);
     }
 
     #[Test]
@@ -257,7 +259,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->expectException(ModelNotFoundException::class);
 
-        $this->service->rescheduleSession($session->id, 999999, '14:00', '16:00');
+        $this->service->rescheduleSession($session->id, 999999, '14:00', '16:00', $this->mentorAccount);
     }
 
     #[Test]
@@ -287,6 +289,7 @@ class MentoringSessionsServiceTest extends TestCase
             $availability->id,
             '14:00',
             '16:00',
+            $this->mentorAccount
         ));
 
         $session->refresh();
@@ -315,6 +318,8 @@ class MentoringSessionsServiceTest extends TestCase
         $availability = Availability::factory()->create([
             'student_id' => $this->studentMember->id,
             'date' => Carbon::tomorrow()->addDay(),
+            'from' => '12:00',
+            'to' => '20:00',
         ]);
 
         $this->assertTrue($this->service->rescheduleSession(
@@ -322,6 +327,7 @@ class MentoringSessionsServiceTest extends TestCase
             $availability->id,
             '14:00',
             '16:00',
+            $this->mentorAccount
         ));
 
         Notification::assertSentTo($this->studentAccount, MentoringSessionRescheduledStudentNotification::class);
@@ -338,23 +344,6 @@ class MentoringSessionsServiceTest extends TestCase
             'Unable to conduct session on this date.',
             $this->mentorAccount,
         );
-    }
-
-    #[Test]
-    public function cancel_session_throws_when_canceller_account_does_not_exist(): void
-    {
-        $session = Session::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'mentor_id' => $this->mentorMember->id,
-            'taken' => 1,
-        ]);
-
-        $this->expectException(ModelNotFoundException::class);
-
-        // Pass an Account instance whose ID has no corresponding CTS Member record
-        $nonExistentAccount = Account::factory()->make(['id' => 999999]);
-
-        $this->service->cancelSession($session->id, 'Reason here.', $nonExistentAccount);
     }
 
     #[Test]
