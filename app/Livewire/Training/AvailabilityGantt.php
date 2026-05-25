@@ -199,21 +199,21 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
     {
         return Action::make('acceptSession')
             ->modalHeading(function (array $arguments) {
-                $availability = Availability::find($arguments['availability_id']);
-                $student = Member::find($availability->student_id);
+                $availability = Availability::findOrFail($arguments['availability_id']);
+                $student = Member::findOrFail($availability->student_id);
 
                 return "Accept Mentoring Session: {$student->name}";
             })
             ->modalDescription(function (array $arguments) {
-                $availability = Availability::find($arguments['availability_id']);
+                $availability = Availability::findOrFail($arguments['availability_id']);
                 $date = Carbon::parse($availability->date)->format('l, jS F Y');
 
                 return "You are accepting a mentoring request for {$date}. Please confirm the exact start and end times below.";
             })
             ->modalSubmitActionLabel('Accept Session')
             ->form(function (array $arguments) {
-                $availability = Availability::find($arguments['availability_id']);
-                $student = Member::find($availability->student_id);
+                $availability = Availability::findOrFail($arguments['availability_id']);
+                $student = Member::findOrFail($availability->student_id);
 
                 $pendingSession = Session::query()
                     ->where('student_id', $student->id)
@@ -224,7 +224,6 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
                 $minTime = Carbon::parse($availability->from)->format('H:i');
                 $maxTime = Carbon::parse($availability->to)->format('H:i');
-
                 $timeOptions = $this->generateTimeOptions($minTime, $maxTime);
 
                 if (Carbon::parse($availability->date)->isToday()) {
@@ -244,7 +243,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
                         Placeholder::make('position')
                             ->label('Position')
-                            ->content($pendingSession?->position),
+                            ->content($pendingSession?->position ?? 'N/A'),
                     ]),
 
                     Grid::make(2)->schema([
@@ -280,6 +279,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             ->default(array_key_last($timeOptions))
                             ->optionsLimit(100),
                     ]),
+
                     Callout::make('24_hours_notice')
                         ->heading('This session is being booked with less than 24 hours notice')
                         ->description('Please contact the student via Discord to confirm their attendance.')
@@ -289,34 +289,37 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             if (! $selectedTime) {
                                 return false;
                             }
+
                             $sessionStart = Carbon::parse($availability->date)->setTimeFromTimeString($selectedTime);
 
                             return $sessionStart->isAfter(now()) && now()->diffInHours($sessionStart, false) < 24;
                         }),
                 ];
             })
-            ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService, Component $livewire) {
-                $availability = Availability::find($arguments['availability_id']);
-                $student = Member::find($availability->student_id);
+            ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService) {
+                $availability = Availability::findOrFail($arguments['availability_id']);
+                $student = Member::findOrFail($availability->student_id);
                 $formattedDate = Carbon::parse($availability->date)->format('d/m/Y');
 
-                $success = $mentoringService->acceptSession($arguments['availability_id'], auth()->user(), $data['taken_from'], $data['taken_to']);
+                $success = $mentoringService->acceptSession($availability->id, auth()->user(), $data['taken_from'], $data['taken_to']);
 
                 if ($success) {
                     Notification::make()
                         ->title('Session Accepted Successfully')
-                        ->body("You are now assigned to mentor {$student->name} on {$formattedDate} from {$data['taken_from']} to {$data['taken_to']}.")
+                        ->body("You have now accepted a session to mentor {$student->name} on {$formattedDate} from {$data['taken_from']} to {$data['taken_to']}.")
                         ->success()
                         ->send();
 
-                    $livewire->dispatch('session-accepted');
-                } else {
-                    Notification::make()
-                        ->title('Booking Failed')
-                        ->body("We could not find an active pending session request for {$student->name} ({$student->cid}). It may have been cancelled or already picked up.")
-                        ->danger()
-                        ->send();
+                    $this->dispatch('session-accepted');
+
+                    return;
                 }
+
+                Notification::make()
+                    ->title('Booking Failed')
+                    ->body('We could not find an active pending session request for this slot. It may have been cancelled or already claimed.')
+                    ->danger()
+                    ->send();
             });
     }
 

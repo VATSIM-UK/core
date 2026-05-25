@@ -84,30 +84,39 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                 ->label('Student Availability Slot')
                                 ->required()
                                 ->live()
-                                ->options(function (Session $record) {
-                                    return Availability::query()
-                                        ->where('student_id', $record->student_id)
-                                        ->whereDate('date', '>=', now())
-                                        ->orderBy('date')
-                                        ->orderBy('from')
-                                        ->get()
-                                        ->mapWithKeys(function ($avail) {
-                                            $date = Carbon::parse($avail->date)->format('D, d M Y');
-                                            $start = Carbon::parse($avail->from)->format('H:i');
-                                            $end = Carbon::parse($avail->to)->format('H:i');
+                                ->options(fn (Session $record) => Availability::query()
+                                    ->where('student_id', $record->student_id)
+                                    ->whereDate('date', '>=', now())
+                                    ->orderBy('date')
+                                    ->orderBy('from')
+                                    ->get()
+                                    ->mapWithKeys(function ($avail) {
+                                        $date = Carbon::parse($avail->date)->format('D, d M Y');
+                                        $start = Carbon::parse($avail->from)->format('H:i');
+                                        $end = Carbon::parse($avail->to)->format('H:i');
 
-                                            return [$avail->id => "{$date} ({$start} to {$end})"];
-                                        });
-                                })
+                                        return [$avail->id => "{$date} ({$start} to {$end})"];
+                                    })
+                                )
                                 ->afterStateUpdated(function (Set $set, $state) {
-                                    $newAvail = Availability::find($state);
-                                    if ($newAvail) {
-                                        $set('taken_from', Carbon::parse($newAvail->from)->format('H:i'));
-                                        $set('taken_to', Carbon::parse($newAvail->to)->format('H:i'));
-                                    } else {
+                                    if (! $state || ! $newAvail = Availability::find($state)) {
                                         $set('taken_from', null);
                                         $set('taken_to', null);
+
+                                        return;
                                     }
+
+                                    $minTime = Carbon::parse($newAvail->from)->format('H:i');
+                                    $maxTime = Carbon::parse($newAvail->to)->format('H:i');
+                                    $options = $this->generateTimeOptions($minTime, $maxTime);
+
+                                    if (Carbon::parse($newAvail->date)->isToday()) {
+                                        $nowTime = now()->format('H:i');
+                                        $options = array_filter($options, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
+                                    }
+
+                                    $set('taken_from', array_key_first($options));
+                                    $set('taken_to', array_key_last($options));
                                 }),
 
                             Grid::make(2)->schema([
@@ -119,15 +128,26 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                     ->live()
                                     ->optionsLimit(100)
                                     ->options(function (Get $get) {
-                                        $avail = Availability::find($get('selected_availability_id'));
+                                        if (! $availId = $get('selected_availability_id')) {
+                                            return [];
+                                        }
+
+                                        $avail = Availability::find($availId);
                                         if (! $avail) {
                                             return [];
                                         }
 
-                                        return $this->generateTimeOptions(
+                                        $options = $this->generateTimeOptions(
                                             Carbon::parse($avail->from)->format('H:i'),
                                             Carbon::parse($avail->to)->format('H:i')
                                         );
+
+                                        if (Carbon::parse($avail->date)->isToday()) {
+                                            $nowTime = now()->format('H:i');
+                                            $options = array_filter($options, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
+                                        }
+
+                                        return $options;
                                     }),
 
                                 Select::make('taken_to')
@@ -136,31 +156,65 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                     ->searchable()
                                     ->allowHtml(false)
                                     ->optionsLimit(100)
-                                    ->after('taken_from')
                                     ->options(function (Get $get) {
-                                        $avail = Availability::find($get('selected_availability_id'));
+                                        if (! $availId = $get('selected_availability_id')) {
+                                            return [];
+                                        }
+
+                                        $avail = Availability::find($availId);
                                         if (! $avail) {
                                             return [];
                                         }
 
-                                        return $this->generateTimeOptions(
+                                        $options = $this->generateTimeOptions(
                                             Carbon::parse($avail->from)->format('H:i'),
                                             Carbon::parse($avail->to)->format('H:i')
                                         );
+
+                                        $startTime = $get('taken_from');
+                                        if (! $startTime) {
+                                            return $options;
+                                        }
+
+                                        return collect($options)
+                                            ->filter(fn ($label, $key) => $key > $startTime)
+                                            ->toArray();
                                     }),
                             ]),
                         ])
                         ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
+                            $availability = Availability::find($data['selected_availability_id']);
+
+                            if (! $availability) {
+                                Notification::make()
+                                    ->title('Reschedule Failed')
+                                    ->body('The selected availability slot could no longer be found.')
+                                    ->danger()
+                                    ->send();
+
+                                return;
+                            }
+
+                            $proposedStart = Carbon::parse($availability->date)->setTimeFromTimeString($data['taken_from']);
+                            if ($proposedStart->isPast()) {
+                                Notification::make()
+                                    ->title('Invalid Time Chosen')
+                                    ->body('You cannot reschedule a mentoring session to a time that has already passed.')
+                                    ->danger()
+                                    ->send();
+
+                                return;
+                            }
+
                             $success = $mentoringService->rescheduleSession(
                                 $record->id,
-                                $data['selected_availability_id'],
+                                $availability->id,
                                 $data['taken_from'],
                                 $data['taken_to']
                             );
 
                             if ($success) {
-                                $avail = Availability::find($data['selected_availability_id']);
-                                $dateFormatted = Carbon::parse($avail->date)->format('d/m/Y');
+                                $dateFormatted = Carbon::parse($availability->date)->format('d/m/Y');
 
                                 Notification::make()
                                     ->title('Session Rescheduled')
@@ -170,7 +224,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                             } else {
                                 Notification::make()
                                     ->title('Error')
-                                    ->body('Could not reschedule the session.')
+                                    ->body('Could not reschedule the session. Please confirm the request is still valid.')
                                     ->danger()
                                     ->send();
                             }
@@ -200,8 +254,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                     ->send();
                             } else {
                                 Notification::make()
-                                    ->title('Error')
-                                    ->body('Could not cancel the session.')
+                                    ->title('Cancellation Failed')
+                                    ->body('Could not cancel the session. It may have already been modified or completed.')
                                     ->danger()
                                     ->send();
                             }
