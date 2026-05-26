@@ -21,7 +21,7 @@ class MentoringPolicy
      */
     public function before(Account $user, string $ability): ?bool
     {
-        if (! app()->runningUnitTests() && ! $user->can('training.beta')) {
+        if (app()->isProduction() && ! $user->can('training.beta')) {
             return false;
         }
 
@@ -120,7 +120,7 @@ class MentoringPolicy
             return true;
         }
 
-        return in_array($position, $user->getAllAssignedCallsigns(), true);
+        return $user->canMentorPosition($position);
     }
 
     /**
