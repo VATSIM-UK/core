@@ -4,20 +4,26 @@ declare(strict_types=1);
 
 namespace App\Livewire\Training;
 
+use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
 use App\Filament\Training\Support\MentoringTrainingGroupBadgeColor;
 use App\Models\Cts\Session;
 use App\Repositories\Cts\SessionRepository;
+use App\Services\Training\MentoringReportService;
 use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class PendingMentoringReportsTable extends Component implements HasActions, HasForms, HasTable
@@ -74,6 +80,59 @@ class PendingMentoringReportsTable extends Component implements HasActions, HasF
                         ->orderBy('taken_date', $direction)
                         ->orderBy('taken_from', $direction)
                     ),
+            ])
+            ->recordActions([
+                Action::make('conduct')
+                    ->label('Conduct')
+                    ->url(fn (Session $record): string => ConductMentoringSession::getUrl(['sessionId' => $record->id]))
+                    ->visible(fn (Session $record): bool => auth()->user()?->can('conduct', $record) ?? false),
+                Action::make('markNoShow')
+                    ->label('Mark no-show')
+                    ->color('danger')
+                    ->icon('heroicon-o-user-minus')
+                    ->visible(fn (Session $record): bool => auth()->user()?->can('markNoShow', $record)
+                        && app(MentoringReportService::class)->canMarkNoShow($record))
+                    ->requiresConfirmation()
+                    ->modalHeading('Mark session as no-show')
+                    ->modalDescription(fn (Session $record) => app(MentoringReportService::class)->wasBookedWithShortNotice($record)
+                        ? 'This session was booked with less than 24 hours notice. Did the student confirm their non-attendance via Discord?'
+                        : 'Are you sure you want to mark this session as a no-show? The report will be filed automatically.')
+                    ->schema(fn (Session $record) => app(MentoringReportService::class)->wasBookedWithShortNotice($record)
+                        ? [
+                            Toggle::make('student_confirmed_discord')
+                                ->label('Student confirmed non-attendance via Discord')
+                                ->required(),
+                        ]
+                        : [])
+                    ->action(function (Session $record, array $data, MentoringReportService $service): void {
+                        $wasShortNotice = $service->wasBookedWithShortNotice($record);
+                        $confirmed = (bool) ($data['student_confirmed_discord'] ?? false);
+
+                        try {
+                            $service->markNoShow($record, $confirmed);
+                        } catch (ValidationException $exception) {
+                            Notification::make()
+                                ->title('Unable to mark no-show')
+                                ->body(collect($exception->errors())->flatten()->first())
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        if ($wasShortNotice && ! $confirmed) {
+                            Notification::make()
+                                ->title('Session cancelled')
+                                ->body('The session was cancelled on your behalf. No no-show has been recorded for the student.')
+                                ->success()
+                                ->send();
+                        } else {
+                            Notification::make()
+                                ->title('Session marked as no-show')
+                                ->success()
+                                ->send();
+                        }
+                    }),
             ])
             ->emptyStateHeading('No pending mentoring reports in this training group');
     }
