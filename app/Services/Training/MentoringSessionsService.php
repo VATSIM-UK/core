@@ -80,20 +80,7 @@ class MentoringSessionsService
             throw new InvalidArgumentException("The selected availability does not belong to the session's student.");
         }
 
-        if (! $session) {
-            return false;
-        }
-
         $this->validateSessionTimes($availability, $takenFrom, $takenTo);
-
-        $requestedStart = strtotime($takenFrom);
-        $requestedEnd = strtotime($takenTo);
-        $availabilityStart = strtotime($availability->from);
-        $availabilityEnd = strtotime($availability->to);
-
-        if ($requestedStart < $availabilityStart || $requestedEnd > $availabilityEnd) {
-            throw new InvalidArgumentException("The requested times fall outside the student's availability window.");
-        }
 
         return DB::transaction(function () use ($session, $availability, $takenFrom, $takenTo) {
             $previousDateTime = $session->formattedSessionDateTime();
