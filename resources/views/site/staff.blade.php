@@ -210,15 +210,15 @@
 								</tr>
 								<tr>
 									<td>Initial Flight Instructor</td>
+									<td><em>Vacant</em></td>
+								</tr>
+								<tr>
+									<td>VFR Flight Instructor</td>
 									<td>Aiden Bok</td>
 								</tr>
 								<tr>
 									<td>VFR Flight Instructor</td>
 									<td><em>Vacant</em></td>
-								</tr>
-								<tr>
-									<td>VFR Flight Instructor</td>
-									<td>Riley Casement</td>
 								</tr>
 								<tr>
 									<td>IFR Flight Instructor</td>

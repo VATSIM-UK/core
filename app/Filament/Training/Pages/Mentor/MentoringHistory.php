@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
+use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
 use App\Policies\Training\Mentoring\MentoringPolicy;
@@ -16,6 +17,8 @@ use Livewire\Attributes\Url;
 
 class MentoringHistory extends BaseMentoringHistoryPage
 {
+    use RemembersTrainingGroupCategory;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected string $view = 'filament.training.pages.mentoring-history';
@@ -36,9 +39,13 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     public function mount(): void
     {
+        $this->rememberCategory();
+
         if (empty($this->category) || ! $this->canViewCategory($this->category)) {
             $this->category = $this->firstVisibleCategory() ?? '';
         }
+
+        $this->saveCategoryToSession();
     }
 
     protected function getHeaderActions(): array

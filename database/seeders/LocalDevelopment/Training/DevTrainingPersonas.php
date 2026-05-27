@@ -61,6 +61,9 @@ final class DevTrainingPersonas
 
     public const STUDENT_EXAMS_CID = 9000012;
 
+    /** Sandbox / local mentor account for conduct-session testing. */
+    public const MENTOR_CONDUCT_CID = 10000005;
+
     public const STAFF_EMAIL = 'dev-training-staff@example.test';
 
     public const STUDENT_EMAIL = 'dev-training-student@example.test';

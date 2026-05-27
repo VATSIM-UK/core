@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Training;
 
+use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
@@ -14,6 +15,7 @@ use Livewire\Component;
 class AvailabilityGantt extends Component implements HasForms
 {
     use InteractsWithForms;
+    use RemembersTrainingGroupCategory;
 
     #[Url]
     public string $date;
@@ -34,9 +36,13 @@ class AvailabilityGantt extends Component implements HasForms
         $this->date = request()->query('date', Carbon::today()->format('Y-m-d'));
         $this->category = request()->query('category', null);
 
+        $this->rememberCategory();
+
         if ($this->category && ! (auth()->user()?->can('viewCategory', [new MentoringScope, $this->category]) ?? false)) {
             $this->category = null;
         }
+
+        $this->saveCategoryToSession();
     }
 
     public function previousDay()
@@ -84,6 +90,8 @@ class AvailabilityGantt extends Component implements HasForms
     public function updatedCategory(): void
     {
         $this->studentsPage = 1;
+
+        $this->saveCategoryToSession();
     }
 
     public function getAvailableCategoriesProperty(): array

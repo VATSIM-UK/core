@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
+use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
@@ -15,6 +16,8 @@ use Livewire\Attributes\Url;
 
 class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 {
+    use RemembersTrainingGroupCategory;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
     protected string $view = 'filament.training.pages.upcoming-mentoring-sessions';
@@ -46,10 +49,14 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 
     public function mount(): void
     {
+        $this->rememberCategory();
+
         if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
             if (! $this->hasMultipleVisibleCategories()) {
                 $this->category = $this->firstVisibleCategory() ?? '';
             }
+
+            $this->saveCategoryToSession();
 
             return;
         }
@@ -57,6 +64,8 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
         if (empty($this->category) || ! $this->canViewCategory($this->category)) {
             $this->category = $this->defaultCategory();
         }
+
+        $this->saveCategoryToSession();
     }
 
     protected function getHeaderActions(): array
