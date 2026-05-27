@@ -295,10 +295,6 @@
 								<td>Noah Murdoch</td>
 							</tr>
 							<tr>
-								<td>VFR Flight Instructor</td>
-								<td><em>Vacant</em></td>
-							</tr>
-							<tr>
 								<td>VT Assistant</td>
 								<td>Dylan Parkes</td>
 							</tr>
