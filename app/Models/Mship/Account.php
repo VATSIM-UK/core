@@ -172,7 +172,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TeamSpeak\Registration> $teamspeakRegistrations
  * @property-read int|null $teamspeak_registrations_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Token> $sysTokens
- * @property-read int|null $tokens_count
+ * @property-read int|null $sys_tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Application> $visitTransferApplications
  * @property-read int|null $visit_transfer_applications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList> $waitingLists
