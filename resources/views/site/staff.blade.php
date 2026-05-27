@@ -288,10 +288,6 @@
 							</tr>
 							<tr>
 								<td>Outreach Assistant</td>
-								<td>Callum Hicks</td>
-							</tr>
-							<tr>
-								<td>Outreach Assistant</td>
 								<td>Charles Newman</td>
 							</tr>
 							<tr>
