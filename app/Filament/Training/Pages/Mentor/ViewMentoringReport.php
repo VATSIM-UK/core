@@ -12,6 +12,7 @@ use App\Livewire\Training\CriteriaCategoryTable;
 use App\Livewire\Training\SessionCriteriaTable;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Filament\Actions\Action;
@@ -82,9 +83,21 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     public function infolist(Schema $schema): Schema
     {
+        $syllabusUrl = $this->relevantSyllabusUrl();
+
         return $schema->record($this->session)->components([
             Section::make('Session Summary')
                 ->columns(3)
+                ->headerActions([
+                    Action::make('viewSyllabus')
+                        ->label('View Syllabus')
+                        ->icon('heroicon-m-document-text')
+                        ->color('gray')
+                        ->size('sm')
+                        ->url($syllabusUrl)
+                        ->openUrlInNewTab()
+                        ->visible(fn () => filled($syllabusUrl)),
+                ])
                 ->schema([
                     TextEntry::make('student.account.name')
                         ->label('Student')
@@ -390,5 +403,17 @@ class ViewMentoringReport extends Page implements HasInfolists
             ])
             )
             ->all();
+    }
+
+    /**
+     * Resolves the syllabus link.
+     */
+    private function relevantSyllabusUrl(): ?string
+    {
+        $trainingPosition = TrainingPosition::query()
+            ->whereJsonContains('cts_positions', $this->session->position)
+            ->first();
+
+        return $trainingPosition?->syllabus_url;
     }
 }
