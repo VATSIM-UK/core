@@ -11,6 +11,7 @@ use App\Filament\Training\Support\MentoringReportScores;
 use App\Livewire\Training\CriteriaCategoryTable;
 use App\Livewire\Training\SessionCriteriaTable;
 use App\Models\Cts\Session;
+use App\Models\NetworkData\Atc as NetworkdataAtc;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use Carbon\Carbon;
@@ -126,6 +127,17 @@ class ViewMentoringReport extends Page implements HasInfolists
                     TextEntry::make('position')
                         ->label('Position & Time')
                         ->helperText(fn (Session $record) => Carbon::parse($record->taken_date)->format('d/m/Y').' | '.Carbon::parse($record->taken_from)->format('H:i').' - '.Carbon::parse($record->taken_to)->format('H:i')),
+
+                    Callout::make('adjacent_atc')
+                        ->visible(fn (Session $record) => NetworkdataAtc::adjacentPositionsForMentoringSession($record)->isNotEmpty())
+                        ->icon('heroicon-m-signal')
+                        ->color('primary')
+                        ->columnSpanFull()
+                        ->heading('Adjacent ATC Online')
+                        ->description(fn (Session $record) => NetworkdataAtc::adjacentPositionsForMentoringSession($record)
+                            ->map(fn (NetworkdataAtc $atc) => $atc->callsign)
+                            ->implode(', ')
+                        ),
 
                     Callout::make('Session Cancelled')
                         ->heading(function (Session $record): string {

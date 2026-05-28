@@ -11,6 +11,7 @@ use App\Filament\Training\Support\MentoringReportLayout;
 use App\Models\Cts\ProgSheetField;
 use App\Models\Cts\ReportSheet;
 use App\Models\Cts\Session;
+use App\Models\NetworkData\Atc as NetworkdataAtc;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\MentoringReportRepository;
 use App\Services\Training\MentoringReportService;
@@ -25,6 +26,7 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -186,8 +188,24 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                         TextEntry::make('schedule')
                             ->label('Date & Time')
                             ->getStateUsing(fn () => "{$this->session->taken_date} | {$this->session->taken_from} - {$this->session->taken_to}"),
+                        Callout::make('adjacent_atc')
+                            ->visible(fn () => $this->adjacentAtcPositions->isNotEmpty())
+                            ->icon('heroicon-m-signal')
+                            ->color('primary')
+                            ->columnSpanFull()
+                            ->heading('Adjacent ATC Online')
+                            ->description(
+                                $this->adjacentAtcPositions
+                                    ->map(fn (NetworkdataAtc $atc) => $atc->callsign)
+                                    ->implode(', ')
+                            ),
                     ])->columns(2),
             ]);
+    }
+
+    public function getAdjacentAtcPositionsProperty(): \Illuminate\Support\Collection
+    {
+        return NetworkdataAtc::adjacentPositionsForMentoringSession($this->session);
     }
 
     public function form(Schema $schema): Schema
