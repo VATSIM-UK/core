@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Concerns;
 
-use Filament\Forms\Components\RichEditor;
+use App\Filament\Forms\Components\CtsRichEditor;
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 
 trait InteractsWithCtsRichEditorNotes
 {
     /**
      * Notes editor styled like filed mentoring reports (borderless, full width).
      */
-    protected function mentoringReportNotesEditor(RichEditor $editor): RichEditor
+    protected function mentoringReportNotesEditor(CtsRichEditor $editor): CtsRichEditor
     {
         return $editor
             ->hiddenLabel()
@@ -59,6 +60,12 @@ trait InteractsWithCtsRichEditorNotes
      */
     protected function ctsRichContentNotesForCts(mixed $html): ?string
     {
+        if (is_array($html)) {
+            $html = RichContentRenderer::make($html)
+                ->textColors(CtsRichEditor::ctsTextColors())
+                ->toUnsafeHtml();
+        }
+
         if (! is_string($html) || trim($html) === '') {
             return null;
         }
@@ -81,6 +88,12 @@ trait InteractsWithCtsRichEditorNotes
      */
     protected function ctsPlainNotesForHtmlDisplay(mixed $notes): ?string
     {
+        if (is_array($notes)) {
+            $notes = RichContentRenderer::make($notes)
+                ->textColors(CtsRichEditor::ctsTextColors())
+                ->toUnsafeHtml();
+        }
+
         if (! is_string($notes) || trim($notes) === '') {
             return null;
         }
@@ -94,15 +107,21 @@ trait InteractsWithCtsRichEditorNotes
 
     protected function ctsAllowedNotesHtmlTags(): string
     {
-        return '<p><br><h1><h2><h3><h4><h5><h6><strong><b><em><i><u><s><ul><ol><li>';
+        return '<p><br><h1><h2><h3><h4><h5><h6><strong><b><em><i><u><s><ul><ol><li><a><span>';
     }
 
     protected function ctsSanitizeNotesHtml(string $html): string
     {
         $withoutScripts = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $html) ?? $html;
         $withoutEventHandlers = preg_replace('/\s+on\w+\s*=\s*("|\').*?\1/i', '', $withoutScripts) ?? $withoutScripts;
+        $sanitized = strip_tags($withoutEventHandlers, $this->ctsAllowedNotesHtmlTags());
 
-        return strip_tags($withoutEventHandlers, $this->ctsAllowedNotesHtmlTags());
+        return $this->ctsStripUnsafeLinks($sanitized);
+    }
+
+    protected function ctsStripUnsafeLinks(string $html): string
+    {
+        return preg_replace('/\s+href\s*=\s*("|\')\s*(?:javascript|data|vbscript):.*?\1/i', '', $html) ?? $html;
     }
 
     protected function ctsNormalizeEmptyParagraphs(string $html): string
