@@ -43,7 +43,6 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Passport\Contracts\OAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Models\Role;
 use Watson\Rememberable\Rememberable;
@@ -171,8 +170,8 @@ use Watson\Rememberable\Rememberable;
  * @property-read int|null $states_history_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TeamSpeak\Registration> $teamspeakRegistrations
  * @property-read int|null $teamspeak_registrations_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Token> $sysTokens
- * @property-read int|null $sys_tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Token> $tokens
+ * @property-read int|null $tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VisitTransfer\Application> $visitTransferApplications
  * @property-read int|null $visit_transfer_applications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Training\WaitingList> $waitingLists
@@ -222,7 +221,7 @@ use Watson\Rememberable\Rememberable;
  *
  * @mixin \Eloquent
  */
-class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, OAuthenticatable
+class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use Authenticatable,
         Authorizable,
@@ -321,9 +320,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             }
         });
 
-        self::created(static function ($model) {
-            static::eventCreated($model);
-        });
+        self::created([get_called_class(), 'eventCreated']);
     }
 
     /**
@@ -382,7 +379,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         return $this->hasMany(AccountNoteData::class, 'writer_id');
     }
 
-    public function sysTokens()
+    public function tokens()
     {
         return $this->morphMany(\App\Models\Sys\Token::class, 'related');
     }

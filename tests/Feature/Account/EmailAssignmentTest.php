@@ -174,7 +174,7 @@ class EmailAssignmentTest extends TestCase
         $email = factory(Email::class)->states('unverified')->create();
 
         $this->actingAs($this->user)
-            ->get(route('mship.manage.email.verify', $email->sysTokens->first()))
+            ->get(route('mship.manage.email.verify', $email->tokens->first()))
             ->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('success', 'Your new email address ('.$email->email.') has been verified!');
     }
