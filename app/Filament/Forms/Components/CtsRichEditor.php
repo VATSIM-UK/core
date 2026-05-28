@@ -79,6 +79,7 @@ class CtsRichEditor extends RichEditor
         $actions = parent::getDefaultActions();
         $replaced = false;
 
+        // Replacing old link action with new custom link action
         foreach ($actions as $index => $action) {
             if ($action->getName() !== 'link') {
                 continue;
