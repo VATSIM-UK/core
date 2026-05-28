@@ -6,6 +6,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\NetworkData\Atc;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -26,6 +27,10 @@ class WaitingListSelfEnrolment
         }
 
         if ($waitingList->includesAccount($account)) {
+            return false;
+        }
+
+        if (TrainingPlace::where('account_id', $account->id)->whereNull('deleted_at')->exists()) {
             return false;
         }
 
