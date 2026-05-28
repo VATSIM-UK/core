@@ -27,7 +27,9 @@ class ShowTest extends TestCase
         Livewire::test(Show::class, ['account' => $account])
             ->set('searchTerm', 'ZZZ')
             ->call('search')
-            ->assertNotified('Position cannot be found.')
+            ->assertSessionHas('filament.notifications', function ($value) {
+                return $value[0]['title'] == 'Position cannot be found.' && $value[0]['status'] == 'danger';
+            })
             // ensure the position is cleared from any previous searches
             ->assertSet('positions', null)
             ->assertSet('searchTerm', null);
@@ -110,9 +112,11 @@ class ShowTest extends TestCase
             ->assertDontSee("{$account->id} can control {$uncontrollablePosition->callsign}")
             ->set('searchTerm', 'EGKK_DEP')
             ->call('search')
-            ->assertNotified('Position cannot be found.')
+            ->assertSessionHas('filament.notifications', function ($value) {
+                return $value[0]['title'] == 'Position cannot be found.' && $value[0]['status'] == 'danger';
+            })
             ->assertDontSee("{$account->id} can control {$uncontrollablePosition->callsign}")
-            ->assertSet('positions', null)
+            ->assertSet('position', null)
             ->assertSet('searchTerm', null);
     }
 
