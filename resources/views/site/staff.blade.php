@@ -288,19 +288,11 @@
 							</tr>
 							<tr>
 								<td>Outreach Assistant</td>
-								<td>Callum Hicks</td>
-							</tr>
-							<tr>
-								<td>Outreach Assistant</td>
 								<td>Charles Newman</td>
 							</tr>
 							<tr>
 								<td>Outreach Assistant</td>
 								<td>Noah Murdoch</td>
-							</tr>
-							<tr>
-								<td>VFR Flight Instructor</td>
-								<td><em>Vacant</em></td>
 							</tr>
 							<tr>
 								<td>VT Assistant</td>
