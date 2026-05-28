@@ -11,7 +11,7 @@ use Filament\Forms\Components\RichEditor\EditorCommand;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\Enums\Width;
 
-class CtsLinkAction
+class TrainingLinkAction
 {
     public static function make(): Action
     {

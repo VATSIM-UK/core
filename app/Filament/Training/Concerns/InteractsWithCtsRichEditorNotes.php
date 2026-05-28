@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Concerns;
 
-use App\Filament\Forms\Components\CtsRichEditor;
+use App\Filament\Forms\Components\TrainingRichEditor;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 
 trait InteractsWithCtsRichEditorNotes
@@ -12,7 +12,7 @@ trait InteractsWithCtsRichEditorNotes
     /**
      * Notes editor styled like filed mentoring reports (borderless, full width).
      */
-    protected function mentoringReportNotesEditor(CtsRichEditor $editor): CtsRichEditor
+    protected function mentoringReportNotesEditor(TrainingRichEditor $editor): TrainingRichEditor
     {
         return $editor
             ->hiddenLabel()
@@ -62,7 +62,7 @@ trait InteractsWithCtsRichEditorNotes
     {
         if (is_array($html)) {
             $html = RichContentRenderer::make($html)
-                ->textColors(CtsRichEditor::ctsTextColors())
+                ->textColors(TrainingRichEditor::ctsTextColors())
                 ->toUnsafeHtml();
         }
 
@@ -90,7 +90,7 @@ trait InteractsWithCtsRichEditorNotes
     {
         if (is_array($notes)) {
             $notes = RichContentRenderer::make($notes)
-                ->textColors(CtsRichEditor::ctsTextColors())
+                ->textColors(TrainingRichEditor::ctsTextColors())
                 ->toUnsafeHtml();
         }
 

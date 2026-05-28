@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Filament\Forms\Components;
 
-use App\Filament\Forms\Components\RichEditor\Actions\CtsLinkAction;
+use App\Filament\Forms\Components\RichEditor\Actions\TrainingLinkAction;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\RichEditorTool;
 use Filament\Forms\Components\RichEditor\TextColor;
 use Filament\Support\Icons\Heroicon;
 
-class CtsRichEditor extends RichEditor
+class TrainingRichEditor extends RichEditor
 {
     protected function setUp(): void
     {
@@ -85,12 +85,12 @@ class CtsRichEditor extends RichEditor
                 continue;
             }
 
-            $actions[$index] = CtsLinkAction::make();
+            $actions[$index] = TrainingLinkAction::make();
             $replaced = true;
         }
 
         if (! $replaced) {
-            $actions[] = CtsLinkAction::make();
+            $actions[] = TrainingLinkAction::make();
         }
 
         return $actions;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Enums\FieldScore;
-use App\Filament\Forms\Components\CtsRichEditor;
+use App\Filament\Forms\Components\TrainingRichEditor;
 use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
 use App\Filament\Training\Support\MentoringReportLayout;
 use App\Models\Cts\ProgSheetField;
@@ -206,7 +206,7 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                 Section::make('Additional Comments')
                     ->columnSpanFull()
                     ->schema([
-                        $this->mentoringReportNotesEditor(CtsRichEditor::make('body'))
+                        $this->mentoringReportNotesEditor(TrainingRichEditor::make('body'))
                             ->columnSpanFull()
                             ->live(debounce: 1000)
                             ->extraInputAttributes(['style' => 'min-height: 200px;'])
@@ -262,7 +262,7 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                     ->columnSpan(2)
                     ->live()
                     ->afterStateUpdated(fn () => $this->save(withNotification: false)),
-                $this->mentoringReportNotesEditor(CtsRichEditor::make("criteria.{$fieldId}.notes"))
+                $this->mentoringReportNotesEditor(TrainingRichEditor::make("criteria.{$fieldId}.notes"))
                     ->default('<p></p>')
                     ->columnSpan(12)
                     ->live(debounce: 500)
