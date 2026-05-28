@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Testing\ParallelTesting;
+use Laravel\Passport\Passport;
 use Livewire\Livewire;
 use Opcodes\LogViewer\Facades\LogViewer;
 use Spatie\Permission\PermissionRegistrar;
@@ -35,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+        Passport::$clientUuids = false;
 
         Bugsnag::registerCallback(function ($report) {
             if (Auth::check()) {

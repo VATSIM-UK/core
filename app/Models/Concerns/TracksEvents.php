@@ -22,9 +22,10 @@ trait TracksEvents
      */
     public static function bootTracksEvents()
     {
-        $instance = new static;
+        $trackedEvents = (new \ReflectionClass(static::class))
+            ->getDefaultProperties()['trackedEvents'] ?? [];
 
-        foreach ($instance->trackedEvents as $event) {
+        foreach ($trackedEvents as $event) {
             static::$event(function ($model) use ($event) {
                 $model->addActivity($event);
             });
