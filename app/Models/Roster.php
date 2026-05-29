@@ -10,6 +10,8 @@ use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Qualification;
 use App\Notifications\Roster\RemovedFromRoster;
+use App\Observers\RosterObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +27,7 @@ use Illuminate\Support\Facades\DB;
  *
  * @mixin \Eloquent
  */
+#[ObservedBy([RosterObserver::class])]
 class Roster extends Model
 {
     use HasFactory;

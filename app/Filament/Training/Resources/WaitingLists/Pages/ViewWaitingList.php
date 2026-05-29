@@ -41,7 +41,7 @@ class ViewWaitingList extends ViewRecord
                 ->action(function ($data, $action) {
                     $account = Account::find($data['account_id']);
                     $joinDate = Arr::get($data, 'join_date');
-                    $createdAt = $joinDate ? new Carbon($joinDate) : null;
+                    $createdAt = filled($joinDate) ? Carbon::parse($joinDate) : null;
                     $this->record->addToWaitingList($account, auth()->user(), $createdAt);
 
                     $action->success();
@@ -81,7 +81,10 @@ class ViewWaitingList extends ViewRecord
                         ->required(),
                     DatePicker::make('join_date')
                         ->visible(fn () => auth()->user()->can('addAccountsAdmin', $this->record))
-                        ->helperText('This field should only be used to override the date a member joined the waiting list. It is only available to admin-level users..'),
+                        ->nullable()
+                        ->rules(['nullable', 'date', 'after:1970-01-01', 'before_or_equal:today'])
+                        ->maxDate(now())
+                        ->helperText('This field should only be used to override the date a member joined the waiting list. It is only available to admin-level users.'),
                 ])
                 ->visible(fn () => auth()->user()->can('addAccounts', $this->record)),
 

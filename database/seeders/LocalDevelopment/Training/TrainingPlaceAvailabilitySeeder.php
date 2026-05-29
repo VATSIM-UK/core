@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Database\Seeders\LocalDevelopment\Training\Concerns\AssignsDevTrainingRoles;
 use Database\Seeders\LocalDevelopment\Training\Concerns\CreatesDevTrainingPlace;
 use Database\Seeders\LocalDevelopment\Training\Concerns\CreatesLinkedAccount;
+use Database\Seeders\LocalDevelopment\Training\Concerns\SeedsDevMentoringSessions;
 use Illuminate\Database\Seeder;
 use RuntimeException;
 
@@ -27,6 +28,7 @@ class TrainingPlaceAvailabilitySeeder extends Seeder
     use AssignsDevTrainingRoles;
     use CreatesDevTrainingPlace;
     use CreatesLinkedAccount;
+    use SeedsDevMentoringSessions;
 
     public function run(): void
     {
@@ -49,13 +51,13 @@ class TrainingPlaceAvailabilitySeeder extends Seeder
 
         $this->seedAvailabilityChecksAndWarning($availabilityPlace);
 
-        $studentMemberId = Member::query()
-            ->where('cid', DevTrainingFoundation::$student->id)
-            ->value('id');
+        $staffMember = Member::query()->where('cid', DevTrainingFoundation::$staff->id)->firstOrFail();
+        $studentMember = Member::query()->where('cid', DevTrainingFoundation::$student->id)->firstOrFail();
+        $this->seedDevMentoringHistory($studentMember, $staffMember, 'EGKK_TWR');
 
         Availability::query()->updateOrCreate(
             [
-                'student_id' => $studentMemberId,
+                'student_id' => $studentMember->id,
                 'date' => now()->addDays(3)->format('Y-m-d'),
             ],
             [
@@ -83,7 +85,10 @@ class TrainingPlaceAvailabilitySeeder extends Seeder
             ],
         );
 
-        $this->command?->info('Training place availability, warnings, LOA, and CTS availability seeded.');
+        $loaStudentMember = Member::query()->where('cid', DevTrainingFoundation::$studentLoa->id)->firstOrFail();
+        $this->seedDevMentoringHistory($loaStudentMember, $staffMember, 'EGLL_N_APP');
+
+        $this->command?->info('Training place availability, warnings, LOA, mentoring history, and CTS availability seeded.');
     }
 
     private function ensurePrerequisites(): void

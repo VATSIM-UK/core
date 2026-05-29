@@ -9,7 +9,11 @@ Route::get('login')->uses('Auth\LoginController@login')->name('login');
 Route::post('login')->uses('Auth\LoginController@login')->name('login.post');
 Route::get('login-secondary')->uses('Auth\LoginController@showLoginForm')->middleware('auth:vatsim-sso')->name('auth-secondary');
 Route::post('login-secondary')->uses('Auth\SecondaryLoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
+Route::get('login/password/setup')->uses('Auth\LoginPasswordSetupController@show')->middleware('auth:vatsim-sso')->name('login.password.setup');
+Route::post('login/password/setup')->uses('Auth\LoginPasswordSetupController@store')->middleware('auth:vatsim-sso')->name('login.password.setup.store');
 Route::post('logout')->uses('Auth\LogoutController')->name('logout');
+
+require base_path('routes/fortify-two-factor.php');
 
 Route::get('/staff')->uses('Site\StaffPageController@staff')->middleware('auth_full_group')->name('site.staff');
 

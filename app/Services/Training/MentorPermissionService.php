@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Log;
 
 class MentorPermissionService
 {
+    public const ALL_CATEGORIES = 'all';
+
     public const ATC_CATEGORY_ROLE_MAP = [
         'OBS to S1 Training' => 'ATC Mentor (OBS)',
         'S2 Training' => 'ATC Mentor (TWR)',
@@ -307,6 +309,38 @@ class MentorPermissionService
         }
 
         return Carbon::parse($lastMentoredDate);
+    }
+
+    public function getAllCtsCallsignsForCategory(string $category): array
+    {
+        if (self::categoryType($category) === 'atc') {
+            return TrainingPosition::where('category', $category)
+                ->get()
+                ->flatMap(fn ($tp) => $tp->cts_positions ?? [])
+                ->unique()
+                ->filter()
+                ->values()
+                ->toArray();
+        }
+
+        $qualCode = self::PILOT_CATEGORY_QUALIFICATION_MAP[$category] ?? null;
+        $callsign = $qualCode ? (self::QUALIFICATION_CTS_POSITION_MAP[$qualCode] ?? null) : null;
+
+        return $callsign ? [$callsign] : [];
+    }
+
+    /**
+     * @param  array<int, string>  $categories
+     * @return array<int, string>
+     */
+    public function getAllCtsCallsignsForCategories(array $categories): array
+    {
+        return collect($categories)
+            ->flatMap(fn (string $category) => $this->getAllCtsCallsignsForCategory($category))
+            ->unique()
+            ->filter()
+            ->values()
+            ->toArray();
     }
 
     public function getAssignedCtsCallsigns(Account $account, string $category): array

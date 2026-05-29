@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Training;
 
+use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
+use App\Models\Training\Mentoring\MentoringScope;
 use Carbon\Carbon;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -13,6 +15,7 @@ use Livewire\Component;
 class AvailabilityGantt extends Component implements HasForms
 {
     use InteractsWithForms;
+    use RemembersTrainingGroupCategory;
 
     #[Url]
     public string $date;
@@ -33,24 +36,31 @@ class AvailabilityGantt extends Component implements HasForms
         $this->date = request()->query('date', Carbon::today()->format('Y-m-d'));
         $this->category = request()->query('category', null);
 
-        if ($this->category && ! auth()->user()->hasMentoringPermissionForCategory($this->category)) {
+        $this->rememberCategory();
+
+        if ($this->category && ! (auth()->user()?->can('viewCategory', [new MentoringScope, $this->category]) ?? false)) {
             $this->category = null;
         }
+
+        $this->saveCategoryToSession();
     }
 
     public function previousDay()
     {
         $this->date = Carbon::parse($this->date)->subDay()->format('Y-m-d');
+        $this->studentsPage = 1;
     }
 
     public function nextDay()
     {
         $this->date = Carbon::parse($this->date)->addDay()->format('Y-m-d');
+        $this->studentsPage = 1;
     }
 
     public function setToday()
     {
         $this->date = Carbon::today()->format('Y-m-d');
+        $this->studentsPage = 1;
     }
 
     public function getPagedStudentsProperty()
@@ -80,6 +90,8 @@ class AvailabilityGantt extends Component implements HasForms
     public function updatedCategory(): void
     {
         $this->studentsPage = 1;
+
+        $this->saveCategoryToSession();
     }
 
     public function getAvailableCategoriesProperty(): array
@@ -99,16 +111,22 @@ class AvailabilityGantt extends Component implements HasForms
         $targetDate = Carbon::parse($this->date);
         $allowedCallsigns = $this->getAllowedCallsigns();
 
-        if (empty($allowedCallsigns)) {
+        $hasViewAllPermission = auth()->user()?->can('viewAll', Session::class) ?? false;
+
+        if (empty($allowedCallsigns) && ! $hasViewAllPermission) {
             return collect();
         }
 
         return Member::query()
-            ->whereHas('sessions', function ($query) use ($allowedCallsigns) {
+            ->whereHas('sessions', function ($query) use ($allowedCallsigns, $hasViewAllPermission) {
                 $query->whereNull('mentor_id')
                     ->whereNull('filed')
-                    ->whereNull('cancelled_datetime')
-                    ->whereIn('position', $allowedCallsigns);
+                    ->whereNull('cancelled_datetime');
+
+                // If doesn't have view all permission, filter strictly by their allowed mentoring callsigns
+                if (! $hasViewAllPermission) {
+                    $query->whereIn('position', $allowedCallsigns);
+                }
             })
             ->whereHas('availabilities', function ($query) use ($targetDate) {
                 $query->whereDate('date', $targetDate);
@@ -128,6 +146,8 @@ class AvailabilityGantt extends Component implements HasForms
                 'last_session_date' => Session::select('taken_date')
                     ->whereColumn('student_id', 'members.id')
                     ->whereNotNull('taken_date')
+                    ->where('taken_date', '<=', now())
+                    ->whereNull('cancelled_datetime')
                     ->latest('taken_date')
                     ->limit(1),
             ])

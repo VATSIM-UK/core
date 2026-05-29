@@ -6,6 +6,7 @@ use App\Events\NetworkData\AtcSessionDeleted;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionStarted;
 use App\Events\NetworkData\AtcSessionUpdated;
+use App\Models\Cts\Session as CtsSession;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Malahierba\PublicId\PublicId;
@@ -315,5 +316,54 @@ class Atc extends Model
         $this->minutes_online = $this->connected_at->diffInMinutes($this->disconnected_at);
 
         return $this->save();
+    }
+
+    /**
+     * Determine if this controlling session overlapped with any of the given completed mentoring sessions.
+     *
+     * A mentoring session is considered overlapping when the ATC session's time range
+     * has any intersection with the mentoring session's time range.
+     *
+     * @param  \Illuminate\Support\Collection<int, CtsSession>  $mentoringSessions
+     */
+    public function hasOverlappingCompletedMentoringSession(\Illuminate\Support\Collection $mentoringSessions): bool
+    {
+        if (! $this->connected_at || ! $this->disconnected_at) {
+            return false;
+        }
+
+        return $mentoringSessions->contains(function (CtsSession $mentoring) {
+            $mentoringStart = \Carbon\Carbon::parse($mentoring->taken_date.' '.$mentoring->taken_from);
+            $mentoringEnd = \Carbon\Carbon::parse($mentoring->taken_date.' '.$mentoring->taken_to);
+
+            return $this->connected_at->lt($mentoringEnd) && $this->disconnected_at->gt($mentoringStart);
+        });
+    }
+
+    /**
+     * Find adjacent ATC positions on the same aerodrome that were active during a mentoring session.
+     *
+     * This detects controllers on other positions at the same aerodrome during the session.
+     * We exclude the position being mentored on.
+     *
+     * @return \Illuminate\Support\Collection<int, static>
+     */
+    public static function adjacentPositionsForMentoringSession(CtsSession $mentoringSession): \Illuminate\Support\Collection
+    {
+        $areaCode = explode('_', $mentoringSession->position)[0];
+
+        $sessionStart = \Carbon\Carbon::parse($mentoringSession->taken_date.' '.$mentoringSession->taken_from);
+        $sessionEnd = \Carbon\Carbon::parse($mentoringSession->taken_date.' '.$mentoringSession->taken_to);
+
+        return static::where('callsign', 'like', $areaCode.'_%')
+            ->where('callsign', '!=', $mentoringSession->position)
+            ->where('connected_at', '<', $sessionEnd)
+            ->where(function ($query) use ($sessionStart) {
+                $query->whereNull('disconnected_at')
+                    ->orWhere('disconnected_at', '>', $sessionStart);
+            })
+            ->get()
+            ->unique('callsign')
+            ->values();
     }
 }

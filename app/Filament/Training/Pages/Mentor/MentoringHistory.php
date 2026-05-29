@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
+use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
+use App\Models\Cts\Session;
+use App\Models\Training\Mentoring\MentoringScope;
+use App\Policies\Training\Mentoring\MentoringPolicy;
 use App\Repositories\Cts\SessionRepository;
-use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +17,8 @@ use Livewire\Attributes\Url;
 
 class MentoringHistory extends BaseMentoringHistoryPage
 {
+    use RemembersTrainingGroupCategory;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected string $view = 'filament.training.pages.mentoring-history';
@@ -29,30 +34,27 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     public static function canAccess(): bool
     {
-        // Temporary beta permission
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
-        // If a user has any mentoring permissions they are allowed to view this page
-        return auth()->user()->mentorTrainingPositions()->exists();
+        return auth()->user()?->can('viewAny', Session::class) ?? false;
     }
 
     public function mount(): void
     {
+        $this->rememberCategory();
+
         if (empty($this->category) || ! $this->canViewCategory($this->category)) {
             $this->category = $this->firstVisibleCategory() ?? '';
         }
+
+        $this->saveCategoryToSession();
     }
 
     protected function getHeaderActions(): array
     {
-        $allCategories = collect(MentorPermissionService::atcCategories())->merge(MentorPermissionService::pilotCategories());
+        $availableCategories = auth()->user()->getAvailableMentoringCategories();
 
         return [
             ActionGroup::make(
-                $allCategories
-                    ->filter(fn (string $cat) => $this->canViewCategory($cat))
+                collect($availableCategories)
                     ->map(fn (string $cat) => Action::make('cat_'.str($cat)->slug('_'))
                         ->label($cat)
                         ->url(static::getUrl(['category' => $cat]))
@@ -60,7 +62,7 @@ class MentoringHistory extends BaseMentoringHistoryPage
                     )
                     ->all()
             )
-                ->label("Training Group: {$this->category}")
+                ->label('Training Group: '.($this->category ?: 'All'))
                 ->icon('heroicon-m-chevron-down')
                 ->color('gray')
                 ->button(),
@@ -83,18 +85,24 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     private function getVisibleCtsPositions(): array
     {
-        return app(MentorPermissionService::class)->getAssignedCtsCallsigns(auth()->user(), $this->category);
+        $user = auth()->user();
+
+        if ($this->category) {
+            $policy = app(MentoringPolicy::class);
+
+            return $policy->visibleCtsPositionsForCategory($user, new MentoringScope, $this->category);
+        }
+
+        return $user->getAllAssignedCallsigns();
     }
 
     private function canViewCategory(string $category): bool
     {
-        $assignedCallsigns = app(MentorPermissionService::class)->getAssignedCtsCallsigns(auth()->user(), $category);
-
-        return count($assignedCallsigns) > 0;
+        return auth()->user()?->can('viewCategory', [new MentoringScope, $category]) ?? false;
     }
 
     private function firstVisibleCategory(): ?string
     {
-        return collect(MentorPermissionService::atcCategories())->merge(MentorPermissionService::pilotCategories())->first(fn (string $cat) => $this->canViewCategory($cat));
+        return collect(auth()->user()->getAvailableMentoringCategories())->first();
     }
 }

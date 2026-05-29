@@ -13,6 +13,7 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -39,6 +40,10 @@ class RoleResource extends Resource
             ->components([
                 TextInput::make('name')->required()->unique(ignorable: fn ($record) => $record),
                 TextInput::make('guard_name')->default('web')->in(array_keys(config('auth.guards'))),
+                Checkbox::make('password_mandatory')
+                    ->label('Secondary password mandatory'),
+                Checkbox::make('two_factor_mandatory')
+                    ->label('Two-factor authentication mandatory'),
                 CheckboxList::make('permissions')
                     ->relationship('permissions', 'name')
                     ->columns(3)

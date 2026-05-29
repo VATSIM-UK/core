@@ -63,48 +63,47 @@ trait HasDiscordAccount
 
         $suspendedRoleId = config('services.discord.suspended_member_role_id');
 
-        // Attempt to set user's nickname
         try {
             $discord->setNickname($this, $this->discordName);
-        } catch (DiscordUserNotFoundException $e) {
-            return event(new DiscordUnlinked($this));
-        }
 
-        // Retrieve users current roles
-        $currentRoles = $discord->getUserRoles($this);
+            // Retrieve users current roles
+            $currentRoles = $discord->getUserRoles($this);
 
-        if ($currentRoles === null) {
-            return;
-        }
-
-        if (! $currentRoles instanceof Collection) {
-            $currentRoles = collect($currentRoles);
-        }
-
-        // Handle if the user is banned on core
-        if ($this->isBanned) {
-            // If they are already in the suspended role, we are happy
-            if ($currentRoles->contains($suspendedRoleId)) {
+            if ($currentRoles === null) {
                 return;
             }
 
-            // Set their roles to only the suspended role (replaces all current roles
-            $discord->setRoles($this, [(int) $suspendedRoleId]);
+            if (! $currentRoles instanceof Collection) {
+                $currentRoles = collect($currentRoles);
+            }
 
-            return;
-        }
+            // Handle if the user is banned on core
+            if ($this->isBanned) {
+                // If they are already in the suspended role, we are happy
+                if ($currentRoles->contains($suspendedRoleId)) {
+                    return;
+                }
 
-        // Compute desired roles based on DiscordRoleRules
-        $targetRoles = $this->computeTargetRoles($currentRoles, $suspendedRoleId);
+                // Set their roles to only the suspended role (replaces all current roles
+                $discord->setRoles($this, [(int) $suspendedRoleId]);
 
-        // Only call the API if roles actually changed
-        if ($this->rolesNeedUpdate($currentRoles, $targetRoles)) {
-            Log::info("Updating Discord roles for {$this->full_name} ({$this->getKey()})", [
-                'current' => $currentRoles->toArray(),
-                'target' => $targetRoles->toArray(),
-            ]);
+                return;
+            }
 
-            $discord->setRoles($this, $targetRoles->values()->toArray());
+            // Compute desired roles based on DiscordRoleRules
+            $targetRoles = $this->computeTargetRoles($currentRoles, $suspendedRoleId);
+
+            // Only call the API if roles actually changed
+            if ($this->rolesNeedUpdate($currentRoles, $targetRoles)) {
+                Log::info("Updating Discord roles for {$this->full_name} ({$this->getKey()})", [
+                    'current' => $currentRoles->toArray(),
+                    'target' => $targetRoles->toArray(),
+                ]);
+
+                $discord->setRoles($this, $targetRoles->values()->toArray());
+            }
+        } catch (DiscordUserNotFoundException $e) {
+            return event(new DiscordUnlinked($this));
         }
     }
 

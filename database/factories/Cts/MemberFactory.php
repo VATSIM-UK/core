@@ -13,10 +13,11 @@ class MemberFactory extends Factory
     public function definition(): array
     {
         $joined = Carbon::now();
+        $cid = $this->faker->unique()->numberBetween(810000, 1400000);
 
         return [
-            'id' => rand(810000, 1400000),
-            'cid' => rand(810000, 1400000),
+            'id' => $cid,
+            'cid' => $cid,
             'name' => $this->faker->name,
             'joined' => $joined,
             'joined_div' => $joined->addDays(rand(-240, 0)),

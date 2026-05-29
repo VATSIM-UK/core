@@ -2,11 +2,14 @@
 
 namespace Tests\Unit\Mship;
 
+use App\Events\Discord\DiscordUnlinked;
 use App\Libraries\Discord;
 use App\Models\Discord\DiscordRoleRule;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Http;
 use Mockery\MockInterface;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
@@ -39,6 +42,50 @@ class HasDiscordAccountTest extends TestCase
         $this->user->syncPermissions([$permissionHas]);
 
         $this->user->syncToDiscord();
+    }
+
+    public function test_sync_to_discord_dispatches_discord_unlinked_when_nickname_unknown_member(): void
+    {
+        Event::fake([DiscordUnlinked::class]);
+        Config::set('services.discord.token', 'test-token');
+        Config::set('services.discord.guild_id', 123);
+
+        $account = Account::factory()->create(['discord_id' => 12345]);
+
+        Http::fake([
+            'discord.com/api/v6/guilds/*/members/12345' => Http::response(['message' => 'Unknown Member'], 404),
+        ]);
+
+        $account->syncToDiscord();
+
+        Event::assertDispatched(DiscordUnlinked::class, fn (DiscordUnlinked $event) => $event->account->is($account));
+    }
+
+    public function test_sync_to_discord_dispatches_discord_unlinked_when_set_roles_unknown_member(): void
+    {
+        Event::fake([DiscordUnlinked::class]);
+        Config::set('services.discord.token', 'test-token');
+        Config::set('services.discord.guild_id', 123);
+
+        $permissionHas = factory(Permission::class)->create(['name' => 'discord.test.role-1']);
+        $missingPermission = factory(Permission::class)->create(['name' => 'discord.test.role-2']);
+
+        DiscordRoleRule::factory()->create(['discord_id' => '1', 'permission_id' => $permissionHas]);
+        DiscordRoleRule::factory()->create(['discord_id' => '2', 'permission_id' => $missingPermission]);
+
+        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account->syncPermissions([$permissionHas]);
+
+        Http::fake([
+            'discord.com/api/v6/guilds/*/members/12345' => Http::sequence()
+                ->push([], 204)
+                ->push(['roles' => ['2']], 200)
+                ->push(['message' => 'Unknown Member'], 404),
+        ]);
+
+        $account->syncToDiscord();
+
+        Event::assertDispatched(DiscordUnlinked::class, fn (DiscordUnlinked $event) => $event->account->is($account));
     }
 
     public function test_includes_cid_in_name()
