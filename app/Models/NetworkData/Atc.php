@@ -339,4 +339,31 @@ class Atc extends Model
             return $this->connected_at->lt($mentoringEnd) && $this->disconnected_at->gt($mentoringStart);
         });
     }
+
+    /**
+     * Find adjacent ATC positions on the same aerodrome that were active during a mentoring session.
+     *
+     * This detects controllers on other positions at the same aerodrome during the session.
+     * We exclude the position being mentored on.
+     *
+     * @return \Illuminate\Support\Collection<int, static>
+     */
+    public static function adjacentPositionsForMentoringSession(CtsSession $mentoringSession): \Illuminate\Support\Collection
+    {
+        $areaCode = explode('_', $mentoringSession->position)[0];
+
+        $sessionStart = \Carbon\Carbon::parse($mentoringSession->taken_date.' '.$mentoringSession->taken_from);
+        $sessionEnd = \Carbon\Carbon::parse($mentoringSession->taken_date.' '.$mentoringSession->taken_to);
+
+        return static::where('callsign', 'like', $areaCode.'_%')
+            ->where('callsign', '!=', $mentoringSession->position)
+            ->where('connected_at', '<', $sessionEnd)
+            ->where(function ($query) use ($sessionStart) {
+                $query->whereNull('disconnected_at')
+                    ->orWhere('disconnected_at', '>', $sessionStart);
+            })
+            ->get()
+            ->unique('callsign')
+            ->values();
+    }
 }
