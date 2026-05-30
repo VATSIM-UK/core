@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Training\Concerns;
 
 use App\Filament\Forms\Components\TrainingRichEditor;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 
 trait InteractsWithCtsRichEditorNotes
@@ -19,6 +20,22 @@ trait InteractsWithCtsRichEditorNotes
             ->disableToolbarButtons(['attachFiles', 'blockquote'])
             ->extraAttributes(['class' => 'mentoring-report-notes-editor'])
             ->extraFieldWrapperAttributes(['class' => 'mentoring-report-notes-field']);
+    }
+
+    /**
+     * Sync RichEditor state on blur only to avoid Livewire re-renders resetting TipTap cursor position mid-edit.
+     *
+     * @param  (callable(mixed): void)|null  $afterStateUpdated
+     */
+    protected function conductSessionRichEditor(RichEditor $editor, ?callable $afterStateUpdated = null): RichEditor
+    {
+        $editor = $editor->live(onBlur: true);
+
+        if ($afterStateUpdated !== null) {
+            return $editor->afterStateUpdated($afterStateUpdated);
+        }
+
+        return $editor->afterStateUpdated(fn () => $this->markDirty());
     }
 
     /**
