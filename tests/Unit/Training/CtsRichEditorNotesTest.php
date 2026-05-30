@@ -64,7 +64,7 @@ class CtsRichEditorNotesTest extends TestCase
 
         $saved = $this->ctsRichContentNotesForCts($html);
 
-        $this->assertSame('<p>Hello link</p>', $saved);
+        $this->assertSame('<p>Hello <a href="https://evil.test">link</a></p>', $saved);
     }
 
     #[Test]

@@ -23,6 +23,9 @@ class MentorPermissionService
 {
     public const ALL_CATEGORIES = 'all';
 
+    /** @var array<string, string>|null */
+    private ?array $ctsCallsignToCategoryMap = null;
+
     public const ATC_CATEGORY_ROLE_MAP = [
         'OBS to S1 Training' => 'ATC Mentor (OBS)',
         'S2 Training' => 'ATC Mentor (TWR)',
@@ -309,6 +312,42 @@ class MentorPermissionService
         }
 
         return Carbon::parse($lastMentoredDate);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getCtsCallsignToCategoryMap(): array
+    {
+        if ($this->ctsCallsignToCategoryMap !== null) {
+            return $this->ctsCallsignToCategoryMap;
+        }
+
+        $map = [];
+
+        TrainingPosition::query()
+            ->whereNotNull('category')
+            ->get()
+            ->each(function (TrainingPosition $position) use (&$map): void {
+                foreach ($position->cts_positions ?? [] as $callsign) {
+                    $map[$callsign] = $position->category;
+                }
+            });
+
+        foreach (self::PILOT_CATEGORY_QUALIFICATION_MAP as $category => $qualificationCode) {
+            $callsign = self::QUALIFICATION_CTS_POSITION_MAP[$qualificationCode] ?? null;
+
+            if ($callsign !== null) {
+                $map[$callsign] = $category;
+            }
+        }
+
+        return $this->ctsCallsignToCategoryMap = $map;
+    }
+
+    public function resolveCategoryForCtsCallsign(string $callsign): ?string
+    {
+        return $this->getCtsCallsignToCategoryMap()[$callsign] ?? null;
     }
 
     public function getAllCtsCallsignsForCategory(string $category): array
