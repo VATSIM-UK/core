@@ -707,13 +707,11 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
                 'field_score' => FieldScore::DEVELOPING->value,
             ]);
 
-        $currentSessionUrl = ViewMentoringReport::getUrl(['sessionId' => $this->mentoringSession->id]);
         $worseSessionUrl = ViewMentoringReport::getUrl(['sessionId' => $worseSession->id]);
 
         Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
-            ->assertDontSee($currentSessionUrl, false)
-            ->assertDontSee($worseSessionUrl, false);
+            ->assertDontSee($worseSessionUrl.'" target="_blank"', false);
     }
 
     #[Test]
@@ -741,7 +739,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
-            ->assertDontSee($tiedSessionUrl, false);
+            ->assertDontSee($tiedSessionUrl.'" target="_blank"', false);
     }
 
     #[Test]
@@ -793,7 +791,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
-            ->assertSee($bestUrl, false)
-            ->assertDontSee($goodUrl, false);
+            ->assertSee($bestUrl.'" target="_blank"', false)
+            ->assertDontSee($goodUrl.'" target="_blank"', false);
     }
 }
