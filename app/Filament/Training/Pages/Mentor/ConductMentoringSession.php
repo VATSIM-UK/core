@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Enums\FieldScore;
+use App\Filament\Forms\Components\TrainingRichEditor;
 use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
 use App\Filament\Training\Support\MentoringReportLayout;
 use App\Models\Cts\ProgSheetField;
 use App\Models\Cts\ReportSheet;
 use App\Models\Cts\Session;
+use App\Models\NetworkData\Atc as NetworkdataAtc;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\MentoringReportRepository;
 use App\Services\Training\MentoringReportService;
 use Filament\Actions\Action;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -24,11 +26,13 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\FontWeight;
+use Filament\Support\Enums\IconSize;
 use Filament\Support\Enums\TextSize;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -136,7 +140,9 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
         return [
             Action::make('save')
                 ->label(fn () => $this->hasUnsavedChanges ? 'Save' : 'Saved')
-                ->icon(fn () => $this->hasUnsavedChanges ? 'heroicon-o-exclamation-triangle' : 'heroicon-o-check')
+                ->icon(fn () => $this->hasUnsavedChanges ? 'heroicon-o-exclamation-triangle' : 'heroicon-o-check-circle')
+                ->color(fn () => $this->hasUnsavedChanges ? 'warning' : 'success')
+                ->iconSize(IconSize::Large)
                 ->action(fn () => $this->save()),
             Action::make('markNoShow')
                 ->label('Mark no-show')
@@ -153,23 +159,53 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
 
     public function sessionDetailsInfolist(Schema $schema): Schema
     {
+        $syllabusUrl = $this->relevantSyllabusUrl();
+
         return $schema
             ->record($this->session)
             ->components([
-                Section::make('Session Details')->columnSpanFull()->schema([
-                    TextEntry::make('student')
-                        ->label('Student')
-                        ->getStateUsing(fn () => "{$this->session->student->name} ({$this->session->student->cid})"),
-                    TextEntry::make('mentor')
-                        ->label('Mentor')
-                        ->getStateUsing(fn () => "{$this->session->mentor->name} ({$this->session->mentor->cid})"),
-                    TextEntry::make('position')
-                        ->label('Position'),
-                    TextEntry::make('schedule')
-                        ->label('Date & Time')
-                        ->getStateUsing(fn () => "{$this->session->taken_date} | {$this->session->taken_from} - {$this->session->taken_to}"),
-                ])->columns(2),
+                Section::make('Session Details')
+                    ->columnSpanFull()
+                    ->headerActions([
+                        Action::make('viewSyllabus')
+                            ->label('View Syllabus')
+                            ->icon('heroicon-m-document-text')
+                            ->color('gray')
+                            ->size('sm')
+                            ->url($syllabusUrl)
+                            ->openUrlInNewTab()
+                            ->visible(fn () => filled($syllabusUrl)),
+                    ])
+                    ->schema([
+                        TextEntry::make('student')
+                            ->label('Student')
+                            ->getStateUsing(fn () => "{$this->session->student->name} ({$this->session->student->cid})"),
+                        TextEntry::make('mentor')
+                            ->label('Mentor')
+                            ->getStateUsing(fn () => "{$this->session->mentor->name} ({$this->session->mentor->cid})"),
+                        TextEntry::make('position')
+                            ->label('Position'),
+                        TextEntry::make('schedule')
+                            ->label('Date & Time')
+                            ->getStateUsing(fn () => "{$this->session->taken_date} | {$this->session->taken_from} - {$this->session->taken_to}"),
+                        Callout::make('adjacent_atc')
+                            ->visible(fn () => $this->adjacentAtcPositions->isNotEmpty())
+                            ->icon('heroicon-m-signal')
+                            ->color('primary')
+                            ->columnSpanFull()
+                            ->heading('Adjacent ATC Online')
+                            ->description(
+                                $this->adjacentAtcPositions
+                                    ->map(fn (NetworkdataAtc $atc) => $atc->callsign)
+                                    ->implode(', ')
+                            ),
+                    ])->columns(2),
             ]);
+    }
+
+    public function getAdjacentAtcPositionsProperty(): \Illuminate\Support\Collection
+    {
+        return NetworkdataAtc::adjacentPositionsForMentoringSession($this->session);
     }
 
     public function form(Schema $schema): Schema
@@ -203,9 +239,9 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                 Section::make('Additional Comments')
                     ->columnSpanFull()
                     ->schema([
-                        $this->mentoringReportNotesEditor(RichEditor::make('body'))
+                        $this->mentoringReportNotesEditor(TrainingRichEditor::make('body'))
                             ->columnSpanFull()
-                            ->live(debounce: 1000)
+                            ->live(onBlur: true)
                             ->extraInputAttributes(['style' => 'min-height: 200px;'])
                             ->afterStateHydrated(fn ($component) => $component->state(
                                 $this->ctsRichEditorHtmlForHydration($this->additionalComments)
@@ -259,10 +295,10 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                     ->columnSpan(2)
                     ->live()
                     ->afterStateUpdated(fn () => $this->save(withNotification: false)),
-                $this->mentoringReportNotesEditor(RichEditor::make("criteria.{$fieldId}.notes"))
+                $this->mentoringReportNotesEditor(TrainingRichEditor::make("criteria.{$fieldId}.notes"))
                     ->default('<p></p>')
                     ->columnSpan(12)
-                    ->live(debounce: 500)
+                    ->live(onBlur: true)
                     ->extraInputAttributes(['style' => 'min-height: 150px;'])
                     ->afterStateUpdated(fn () => $this->markDirty()),
             ])
@@ -421,5 +457,17 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
             ->where('field_id', '!=', 0)
             ->pluck('notes', 'field_id')
             ->all();
+    }
+
+    /**
+     * Resolves the syllabus link.
+     */
+    private function relevantSyllabusUrl(): ?string
+    {
+        $trainingPosition = TrainingPosition::query()
+            ->whereJsonContains('cts_positions', $this->session->position)
+            ->first();
+
+        return $trainingPosition?->syllabus_url;
     }
 }
