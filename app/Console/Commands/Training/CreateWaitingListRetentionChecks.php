@@ -40,7 +40,7 @@ class CreateWaitingListRetentionChecks extends Command
                  * determined by when the account was added to the waiting list,
                  * create the first retention check.
                  */
-                if ($retentionChecks->isEmpty() && $waitingListAccount->created_at->diffInMonths(now()) >= $waitingList->retention_checks_months) {
+                if ($retentionChecks->isEmpty() && $waitingListAccount->created_at->lte(now()->subMonths($waitingList->retention_checks_months))) {
                     SendWaitingListRetentionCheck::dispatch($waitingListAccount);
 
                     continue;
@@ -59,7 +59,12 @@ class CreateWaitingListRetentionChecks extends Command
                  * determined by when the account was added to the waiting list,
                  * create a new retention check.
                  */
-                if (min($mostRecentRetentionCheck->created_at, $mostRecentRetentionCheck->email_sent_at)->diffInMonths(now()) >= $waitingList->retention_checks_months) {
+                $lastRetentionCheckAt = min(
+                    $mostRecentRetentionCheck->created_at,
+                    $mostRecentRetentionCheck->email_sent_at ?? $mostRecentRetentionCheck->created_at,
+                );
+
+                if ($lastRetentionCheckAt->lte(now()->subMonths($waitingList->retention_checks_months))) {
                     SendWaitingListRetentionCheck::dispatch($waitingListAccount);
                 }
             }
