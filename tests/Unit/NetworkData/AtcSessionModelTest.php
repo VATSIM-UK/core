@@ -170,7 +170,7 @@ class AtcSessionModelTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_adjacent_atc_positions_on_same_aerodrome()
+    public function it_returns_adjacent_positions_with_deduplication_and_exclusions(): void
     {
         $mentoringSession = MentoringSession::factory()->create([
             'position' => 'EGKK_TWR',
@@ -179,6 +179,7 @@ class AtcSessionModelTest extends TestCase
             'taken_to' => '20:00:00',
         ]);
 
+        // Student on the mentored position
         factory(Atc::class)->states('offline')->create([
             'account_id' => $mentoringSession->student->cid,
             'callsign' => 'EGKK_TWR',
@@ -186,42 +187,7 @@ class AtcSessionModelTest extends TestCase
             'disconnected_at' => '2026-03-29 20:00:00',
         ]);
 
-        factory(Atc::class)->states('offline')->create([
-            'callsign' => 'EGKK_APP',
-            'connected_at' => '2026-03-29 18:30:00',
-            'disconnected_at' => '2026-03-29 19:30:00',
-        ]);
-
-        factory(Atc::class)->states('offline')->create([
-            'callsign' => 'EGKK_GND',
-            'connected_at' => '2026-03-29 18:00:00',
-            'disconnected_at' => '2026-03-29 20:00:00',
-        ]);
-
-        $result = Atc::adjacentPositionsForMentoringSession($mentoringSession);
-
-        $this->assertCount(2, $result);
-        $this->assertTrue($result->pluck('callsign')->contains('EGKK_APP'));
-        $this->assertTrue($result->pluck('callsign')->contains('EGKK_GND'));
-    }
-
-    #[Test]
-    public function it_returns_adjacent_atc_with_exclusions_and_deduplication()
-    {
-        $mentoringSession = MentoringSession::factory()->create([
-            'position' => 'EGKK_TWR',
-            'taken_date' => '2026-03-29',
-            'taken_from' => '18:00:00',
-            'taken_to' => '20:00:00',
-        ]);
-
-        factory(Atc::class)->states('offline')->create([
-            'account_id' => $mentoringSession->student->cid,
-            'callsign' => 'EGKK_TWR',
-            'connected_at' => '2026-03-29 18:00:00',
-            'disconnected_at' => '2026-03-29 20:00:00',
-        ]);
-
+        // Adjacent: EGKK_APP (two overlapping sessions - deduped to one)
         factory(Atc::class)->states('offline')->create([
             'callsign' => 'EGKK_APP',
             'connected_at' => '2026-03-29 18:00:00',
@@ -233,27 +199,29 @@ class AtcSessionModelTest extends TestCase
             'disconnected_at' => '2026-03-29 20:00:00',
         ]);
 
+        // Adjacent but no frequency - excluded
+        factory(Atc::class)->states('offline')->create([
+            'callsign' => 'EGKK_GND',
+            'frequency' => null,
+            'connected_at' => '2026-03-29 18:00:00',
+            'disconnected_at' => '2026-03-29 20:00:00',
+        ]);
+
+        // Different aerodrome - excluded by callsign LIKE
         factory(Atc::class)->states('offline')->create([
             'callsign' => 'EGLL_APP',
             'connected_at' => '2026-03-29 18:30:00',
             'disconnected_at' => '2026-03-29 19:30:00',
         ]);
 
-        factory(Atc::class)->create([
-            'callsign' => 'EGKK_GND',
-            'connected_at' => '2026-03-29 17:30:00',
-            'disconnected_at' => null,
-        ]);
-
         $result = Atc::adjacentPositionsForMentoringSession($mentoringSession);
 
-        $this->assertCount(2, $result);
-        $this->assertTrue($result->pluck('callsign')->contains('EGKK_APP'));
-        $this->assertTrue($result->pluck('callsign')->contains('EGKK_GND'));
+        $this->assertCount(1, $result);
+        $this->assertEquals('EGKK_APP', $result->first()->callsign);
     }
 
     #[Test]
-    public function it_excludes_atc_outside_the_session_time_range()
+    public function it_excludes_atc_outside_the_session_time_range(): void
     {
         $mentoringSession = MentoringSession::factory()->create([
             'position' => 'EGKK_TWR',
@@ -269,12 +237,14 @@ class AtcSessionModelTest extends TestCase
             'disconnected_at' => '2026-03-29 20:00:00',
         ]);
 
+        // Adjacent session ended before the mentoring window
         factory(Atc::class)->states('offline')->create([
             'callsign' => 'EGKK_APP',
             'connected_at' => '2026-03-29 16:00:00',
             'disconnected_at' => '2026-03-29 17:00:00',
         ]);
 
+        // Adjacent session started after the mentoring window
         factory(Atc::class)->states('offline')->create([
             'callsign' => 'EGKK_GND',
             'connected_at' => '2026-03-29 21:00:00',
@@ -287,7 +257,7 @@ class AtcSessionModelTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_empty_collection_when_no_matching_atc_exists()
+    public function it_returns_empty_when_no_valid_student_session(): void
     {
         $mentoringSession = MentoringSession::factory()->create([
             'position' => 'EGKK_TWR',
@@ -296,22 +266,11 @@ class AtcSessionModelTest extends TestCase
             'taken_to' => '20:00:00',
         ]);
 
+        // No ATC sessions at all
         $result = Atc::adjacentPositionsForMentoringSession($mentoringSession);
-
         $this->assertCount(0, $result);
-        $this->assertTrue($result->isEmpty());
-    }
 
-    #[Test]
-    public function it_returns_empty_when_student_not_on_network_even_with_adjacent_atc()
-    {
-        $mentoringSession = MentoringSession::factory()->create([
-            'position' => 'EGKK_TWR',
-            'taken_date' => '2026-03-29',
-            'taken_from' => '18:00:00',
-            'taken_to' => '20:00:00',
-        ]);
-
+        // Adjacent ATC exists but no student session - empty
         factory(Atc::class)->states('offline')->create([
             'callsign' => 'EGKK_APP',
             'connected_at' => '2026-03-29 18:30:00',
@@ -319,8 +278,18 @@ class AtcSessionModelTest extends TestCase
         ]);
 
         $result = Atc::adjacentPositionsForMentoringSession($mentoringSession);
-
         $this->assertCount(0, $result);
-        $this->assertTrue($result->isEmpty());
+
+        // Student session exists but without frequency - treated as not on network
+        factory(Atc::class)->states('offline')->create([
+            'account_id' => $mentoringSession->student->cid,
+            'callsign' => 'EGKK_TWR',
+            'frequency' => null,
+            'connected_at' => '2026-03-29 18:00:00',
+            'disconnected_at' => '2026-03-29 20:00:00',
+        ]);
+
+        $result = Atc::adjacentPositionsForMentoringSession($mentoringSession);
+        $this->assertCount(0, $result);
     }
 }

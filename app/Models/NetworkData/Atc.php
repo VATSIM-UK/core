@@ -360,6 +360,7 @@ class Atc extends Model
 
         // If the student has no network ATC session during this time (e.g. sweatbox) - return []
         $studentHasNetworkSession = static::where('account_id', $mentoringSession->student->cid)
+            ->onFrequency()
             ->where('connected_at', '<', $sessionEnd)
             ->where(function ($query) use ($sessionStart) {
                 $query->whereNull('disconnected_at')
@@ -373,6 +374,7 @@ class Atc extends Model
 
         return static::where('callsign', 'like', $areaCode.'_%')
             ->where('callsign', '!=', $mentoringSession->position)
+            ->onFrequency()
             ->where('connected_at', '<', $sessionEnd)
             ->where(function ($query) use ($sessionStart) {
                 $query->whereNull('disconnected_at')
