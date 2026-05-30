@@ -69,6 +69,69 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_defaults_to_all_when_category_is_empty_and_multiple_groups_are_visible(): void
+    {
+        $categoryOne = MentorPermissionService::atcCategories()[0];
+        $categoryTwo = MentorPermissionService::atcCategories()[1];
+
+        $positionOne = $this->createTrainingPosition($categoryOne, 'EGLL_GND');
+        $positionTwo = $this->createTrainingPosition($categoryTwo, 'EGKK_TWR');
+
+        app(MentorPermissionService::class)->assignToMentorable($this->panelUser, $positionOne, $this->panelUser, $categoryOne);
+        app(MentorPermissionService::class)->assignToMentorable($this->panelUser, $positionTwo, $this->panelUser, $categoryTwo);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(MentoringHistory::class)
+            ->assertSet('category', MentorPermissionService::ALL_CATEGORIES);
+    }
+
+    #[Test]
+    public function it_defaults_to_all_when_category_is_invalid_and_multiple_groups_are_visible(): void
+    {
+        $categoryOne = MentorPermissionService::atcCategories()[0];
+        $categoryTwo = MentorPermissionService::atcCategories()[1];
+
+        $positionOne = $this->createTrainingPosition($categoryOne, 'EGLL_GND');
+        $positionTwo = $this->createTrainingPosition($categoryTwo, 'EGKK_TWR');
+
+        app(MentorPermissionService::class)->assignToMentorable($this->panelUser, $positionOne, $this->panelUser, $categoryOne);
+        app(MentorPermissionService::class)->assignToMentorable($this->panelUser, $positionTwo, $this->panelUser, $categoryTwo);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(MentoringHistory::class, ['category' => 'Not A Real Category'])
+            ->assertSet('category', MentorPermissionService::ALL_CATEGORIES);
+    }
+
+    #[Test]
+    public function it_shows_sessions_from_all_visible_categories_when_all_is_selected(): void
+    {
+        $categoryOne = MentorPermissionService::atcCategories()[0];
+        $categoryTwo = MentorPermissionService::atcCategories()[1];
+
+        $positionOne = $this->createTrainingPosition($categoryOne, 'EGKK_GND');
+        $positionTwo = $this->createTrainingPosition($categoryTwo, 'EGKK_TWR');
+
+        $mentorCtsMember = $this->getOrCreateCtsMember($this->panelUser);
+
+        app(MentorPermissionService::class)->assignToMentorable($this->panelUser, $positionOne, $this->panelUser, $categoryOne);
+        app(MentorPermissionService::class)->assignToMentorable($this->panelUser, $positionTwo, $this->panelUser, $categoryTwo);
+
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $sessionInCategoryOne = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGKK_GND');
+        $sessionInCategoryTwo = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGKK_TWR');
+
+        $sessionOne = Session::on('cts')->find($sessionInCategoryOne);
+        $sessionTwo = Session::on('cts')->find($sessionInCategoryTwo);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(MentoringHistory::class, ['category' => MentorPermissionService::ALL_CATEGORIES])
+            ->assertSet('category', MentorPermissionService::ALL_CATEGORIES)
+            ->assertCanSeeTableRecords([$sessionOne, $sessionTwo]);
+    }
+
+    #[Test]
     public function it_shows_sessions_for_the_selected_atc_category_only(): void
     {
         $categoryOne = MentorPermissionService::atcCategories()[0];
