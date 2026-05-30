@@ -346,6 +346,9 @@ class Atc extends Model
      * This detects controllers on other positions at the same aerodrome during the session.
      * We exclude the position being mentored on.
      *
+     * If the student was not on the VATSIM network during the session (e.g. a sweatbox session),
+     * an empty collection is returned since there can be no adjacent positions to detect.
+     *
      * @return \Illuminate\Support\Collection<int, static>
      */
     public static function adjacentPositionsForMentoringSession(CtsSession $mentoringSession): \Illuminate\Support\Collection
@@ -354,6 +357,19 @@ class Atc extends Model
 
         $sessionStart = \Carbon\Carbon::parse($mentoringSession->taken_date.' '.$mentoringSession->taken_from);
         $sessionEnd = \Carbon\Carbon::parse($mentoringSession->taken_date.' '.$mentoringSession->taken_to);
+
+        // If the student has no network ATC session during this time (e.g. sweatbox) - return []
+        $studentHasNetworkSession = static::where('account_id', $mentoringSession->student->cid)
+            ->where('connected_at', '<', $sessionEnd)
+            ->where(function ($query) use ($sessionStart) {
+                $query->whereNull('disconnected_at')
+                    ->orWhere('disconnected_at', '>', $sessionStart);
+            })
+            ->exists();
+
+        if (! $studentHasNetworkSession) {
+            return collect();
+        }
 
         return static::where('callsign', 'like', $areaCode.'_%')
             ->where('callsign', '!=', $mentoringSession->position)
