@@ -59,7 +59,13 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public function previousDay()
     {
-        $this->date = Carbon::parse($this->date)->subDay()->format('Y-m-d');
+        $previous = Carbon::parse($this->date)->subDay();
+
+        if ($previous->isBefore(Carbon::today())) {
+            return;
+        }
+
+        $this->date = $previous->format('Y-m-d');
         $this->studentsPage = 1;
     }
 

@@ -178,6 +178,12 @@ class MentoringSessionsService
 
     private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void
     {
+        $sessionStart = Carbon::parse($availability->date)->setTimeFromTimeString($takenFrom);
+
+        if ($sessionStart->isPast()) {
+            throw new InvalidArgumentException('Cannot accept a mentoring session that is in the past.');
+        }
+
         if (strtotime($takenTo) <= strtotime($takenFrom)) {
             throw new InvalidArgumentException('The session end time must be after the start time.');
         }
