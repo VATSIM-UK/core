@@ -3,12 +3,15 @@
 	{{-- Toolbar --}}
 	<div class="flex flex-col md:flex-row items-center gap-3 border-gray-200 dark:border-white/10 pb-4">
 		<div class="flex flex-wrap md:flex-nowrap items-center justify-center gap-2">
-			<x-filament::button color="gray" wire:click="previousDay" icon="heroicon-m-chevron-left" class="!px-2" :disabled="$date <= \Carbon\Carbon::today()->format('Y-m-d')"/>
+			<x-filament::button color="gray" wire:click="previousDay" icon="heroicon-m-chevron-left" class="!px-2"
+				:disabled="$date <= \Carbon\Carbon::today()->format('Y-m-d')" />
 			<x-filament::button color="gray" wire:click="setToday">Today</x-filament::button>
 			<x-filament::input.wrapper>
-				<x-filament::input type="date" wire:model.live="date" class="min-w-[140px]" min="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"/>
+				<x-filament::input type="date" wire:model.live="date" class="min-w-[140px]"
+					min="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" />
 			</x-filament::input.wrapper>
-			<x-filament::button color="gray" wire:click="nextDay" icon="heroicon-m-chevron-right" icon-alias="next" class="!px-2" />
+			<x-filament::button color="gray" wire:click="nextDay" icon="heroicon-m-chevron-right" icon-alias="next"
+				class="!px-2" />
 
 			<x-filament::input.wrapper class="ml-4">
 				<x-filament::input.select wire:model.live="category">
