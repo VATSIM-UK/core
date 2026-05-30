@@ -8,8 +8,7 @@
 			<x-filament::input.wrapper>
 				<x-filament::input type="date" wire:model.live="date" class="min-w-[140px]" min="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"/>
 			</x-filament::input.wrapper>
-			<x-filament::button color="gray" wire:click="nextDay" icon="heroicon-m-chevron-right" icon-alias="next"
-				class="!px-2" />
+			<x-filament::button color="gray" wire:click="nextDay" icon="heroicon-m-chevron-right" icon-alias="next" class="!px-2" />
 
 			<x-filament::input.wrapper class="ml-4">
 				<x-filament::input.select wire:model.live="category">
