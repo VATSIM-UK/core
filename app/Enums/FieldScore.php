@@ -26,6 +26,22 @@ enum FieldScore: int implements HasColor, HasLabel
         };
     }
 
+    /**
+     * Score options for mentoring conduct forms (CTS values 1–5).
+     *
+     * @return array<int, string>
+     */
+    public static function mentoringConductOptions(): array
+    {
+        return [
+            self::NOT_APPLICABLE->value => 'Not Covered',
+            self::COVERED->value => 'Covered',
+            self::DEVELOPING->value => 'Developing',
+            self::GOOD->value => 'Good',
+            self::TEST_STANDARD->value => 'Test Standard',
+        ];
+    }
+
     public function getColor(): string|array|null
     {
         return match ($this) {

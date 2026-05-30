@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Mentor;
 
-use App\Enums\FieldScore;
+use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
+use App\Filament\Training\Support\MentoringReportLayout;
+use App\Filament\Training\Support\MentoringReportScores;
 use App\Livewire\Training\CriteriaCategoryTable;
 use App\Livewire\Training\SessionCriteriaTable;
 use App\Models\Cts\Session;
+use App\Models\NetworkData\Atc as NetworkdataAtc;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Filament\Actions\Action;
@@ -29,11 +33,11 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
-use Illuminate\Support\HtmlString;
 
 class ViewMentoringReport extends Page implements HasInfolists
 {
     use AuthorizesRequests;
+    use InteractsWithCtsRichEditorNotes;
     use InteractsWithInfolists;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
@@ -80,9 +84,21 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     public function infolist(Schema $schema): Schema
     {
+        $syllabusUrl = $this->relevantSyllabusUrl();
+
         return $schema->record($this->session)->components([
             Section::make('Session Summary')
                 ->columns(3)
+                ->headerActions([
+                    Action::make('viewSyllabus')
+                        ->label('View Syllabus')
+                        ->icon('heroicon-m-document-text')
+                        ->color('gray')
+                        ->size('sm')
+                        ->url($syllabusUrl)
+                        ->openUrlInNewTab()
+                        ->visible(fn () => filled($syllabusUrl)),
+                ])
                 ->schema([
                     TextEntry::make('student.account.name')
                         ->label('Student')
@@ -111,6 +127,17 @@ class ViewMentoringReport extends Page implements HasInfolists
                     TextEntry::make('position')
                         ->label('Position & Time')
                         ->helperText(fn (Session $record) => Carbon::parse($record->taken_date)->format('d/m/Y').' | '.Carbon::parse($record->taken_from)->format('H:i').' - '.Carbon::parse($record->taken_to)->format('H:i')),
+
+                    Callout::make('adjacent_atc')
+                        ->visible(fn (Session $record) => NetworkdataAtc::adjacentPositionsForMentoringSession($record)->isNotEmpty())
+                        ->icon('heroicon-m-signal')
+                        ->color('primary')
+                        ->columnSpanFull()
+                        ->heading('Adjacent ATC Online')
+                        ->description(fn (Session $record) => NetworkdataAtc::adjacentPositionsForMentoringSession($record)
+                            ->map(fn (NetworkdataAtc $atc) => $atc->callsign)
+                            ->implode(', ')
+                        ),
 
                     Callout::make('Session Cancelled')
                         ->heading(function (Session $record): string {
@@ -174,19 +201,16 @@ class ViewMentoringReport extends Page implements HasInfolists
                         ->hiddenLabel()
                         ->html()
                         ->columnSpanFull()
-                        ->state(fn (Session $record) => $record->reportSheets->firstWhere('field_id', 0)?->notes),
+                        ->state(fn (Session $record) => $this->ctsPlainNotesForHtmlDisplay(
+                            $record->reportSheets->firstWhere('field_id', 0)?->notes,
+                        )),
                 ]),
         ]);
     }
 
     public function reportInfolist(Schema $schema): Schema
     {
-        $scoreMap = [];
-        foreach ($this->allSessions as $sess) {
-            foreach ($sess->reportSheets as $s) {
-                $scoreMap[$s->field_id][$sess->id] = $s->field_score;
-            }
-        }
+        $scoreMap = MentoringReportScores::scoreMapForSessions($this->allSessions);
 
         $previousSession = $this->otherSessions
             ->where('taken_date', '<=', $this->session->taken_date)
@@ -199,22 +223,12 @@ class ViewMentoringReport extends Page implements HasInfolists
 
         foreach ($groupedSheets as $categoryName => $sheets) {
             $sheetRows = [];
-            $totalSheets = count($sheets);
-            $currentIndex = 0;
 
             foreach ($sheets as $index => $sheet) {
-                $currentIndex++;
-                $isLast = ($currentIndex === $totalSheets);
                 $uniqueKey = $sheet->field_id ?? $index;
 
-                $fieldScores = collect($scoreMap[$sheet->field_id] ?? []);
-                $previousScore = $previousSession ? ($fieldScores->get($previousSession->id) ?? FieldScore::NOT_SCORED) : FieldScore::NOT_SCORED;
-                $bestScore = $fieldScores->isNotEmpty() ? $fieldScores->sortByDesc(fn (FieldScore $s) => $s->value)->first() : FieldScore::NOT_SCORED;
-
-                $rowClasses = 'pb-4 mb-6';
-                if (! $isLast) {
-                    $rowClasses .= ' border-b border-gray-200 dark:border-white/10';
-                }
+                $previousScore = MentoringReportScores::previousScore($scoreMap, $sheet->field_id, $previousSession);
+                $bestScore = MentoringReportScores::bestScore($scoreMap, $sheet->field_id);
 
                 $sheetRows[] = Grid::make(14)
                     ->schema([
@@ -247,17 +261,18 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                         TextEntry::make("field_notes_{$uniqueKey}")
                             ->label('Notes')
-                            ->state($sheet->notes)
+                            ->state($this->ctsPlainNotesForHtmlDisplay($sheet->notes))
                             ->hiddenLabel()
                             ->html()
+                            ->prose()
                             ->extraAttributes(['style' => 'word-break:break-word'])
                             ->columnSpan(12)
                             ->hidden(blank($sheet->notes)),
                     ])
-                    ->extraAttributes(['class' => $rowClasses]);
+                    ->extraAttributes(['class' => MentoringReportLayout::CRITERION_ROW_CLASSES]);
             }
 
-            $categorySections[] = Section::make(new HtmlString("<span class='text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white'>{$categoryName}</span>"))
+            $categorySections[] = Section::make(MentoringReportLayout::categorySectionTitle($categoryName))
                 ->schema($sheetRows);
         }
 
@@ -400,5 +415,17 @@ class ViewMentoringReport extends Page implements HasInfolists
             ])
             )
             ->all();
+    }
+
+    /**
+     * Resolves the syllabus link.
+     */
+    private function relevantSyllabusUrl(): ?string
+    {
+        $trainingPosition = TrainingPosition::query()
+            ->whereJsonContains('cts_positions', $this->session->position)
+            ->first();
+
+        return $trainingPosition?->syllabus_url;
     }
 }
