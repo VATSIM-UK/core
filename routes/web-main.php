@@ -60,6 +60,7 @@ Route::group([
         'prefix' => 'manage',
     ], function () {
         Route::get('dashboard')->uses('Management@getDashboard')->name('dashboard');
+        Route::get('dashboard/beta')->uses('Management@getDashboardBeta')->name('dashboard.beta');
         Route::get('cert/update')->uses('Management@requestCertCheck')->name('cert.update');
         Route::get('email/verify/{code}')->uses('Management@getVerifyEmail')->name('email.verify');
         Route::get('email/add')->uses('Management@getEmailAdd')->name('email.add');

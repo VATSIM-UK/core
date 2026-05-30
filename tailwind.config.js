@@ -6,6 +6,7 @@ export default {
         colors: {
             // Core
             brand: '#25ADE3',
+            uknavy: '#17375e',
             transparent: 'transparent',
             black: colors.black,
             white: colors.white,
