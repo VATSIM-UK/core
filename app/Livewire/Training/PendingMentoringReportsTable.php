@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
+use App\Filament\Training\Support\MentoringTrainingGroupBadgeColor;
 use App\Models\Cts\Session;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\MentoringReportService;
@@ -61,7 +62,11 @@ class PendingMentoringReportsTable extends Component implements HasActions, HasF
                 TextColumn::make('position')
                     ->label('Position')
                     ->badge()
-                    ->color('gray'),
+                    ->color(
+                        $this->category === MentorPermissionService::ALL_CATEGORIES
+                            ? fn (Session $record) => MentoringTrainingGroupBadgeColor::forCtsCallsign($record->position)
+                            : 'gray'
+                    ),
 
                 TextColumn::make('taken_date')
                     ->label('Date & Time')

@@ -47,7 +47,7 @@ return [
     |
     */
 
-    'back_to_system_url' => config('app.url').'/admin',
+    'back_to_system_url' => '/admin',
 
     'back_to_system_label' => 'Back to Admin',
 
