@@ -6,6 +6,7 @@ namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
+use App\Filament\Training\Support\MentoringTrainingGroupBadgeColor;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
@@ -140,6 +141,15 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
     protected function includeStatusFilter(): bool
     {
         return false;
+    }
+
+    protected function getPositionColumnBadgeColor(): string|array|\Closure
+    {
+        if ($this->category !== MentorPermissionService::ALL_CATEGORIES) {
+            return 'gray';
+        }
+
+        return fn ($record) => MentoringTrainingGroupBadgeColor::forCtsCallsign($record->position);
     }
 
     private function getVisibleCtsPositions(): array
