@@ -169,8 +169,6 @@ class AtcSessionModelTest extends TestCase
         $this->assertTrue($atc->hasOverlappingCompletedMentoringSession(collect([$earlier, $matching])));
     }
 
-    // ─── adjacentPositionsForMentoringSession tests ───────────────────────────────
-
     #[Test]
     public function it_returns_adjacent_atc_positions_on_same_aerodrome()
     {
@@ -181,7 +179,13 @@ class AtcSessionModelTest extends TestCase
             'taken_to' => '20:00:00',
         ]);
 
-        // Create ATC sessions on the same aerodrome (EGKK) during the session time
+        factory(Atc::class)->states('offline')->create([
+            'account_id' => $mentoringSession->student->cid,
+            'callsign' => 'EGKK_TWR',
+            'connected_at' => '2026-03-29 18:00:00',
+            'disconnected_at' => '2026-03-29 20:00:00',
+        ]);
+
         factory(Atc::class)->states('offline')->create([
             'callsign' => 'EGKK_APP',
             'connected_at' => '2026-03-29 18:30:00',
@@ -211,14 +215,13 @@ class AtcSessionModelTest extends TestCase
             'taken_to' => '20:00:00',
         ]);
 
-        // Same position as the mentoring session — should be excluded
         factory(Atc::class)->states('offline')->create([
+            'account_id' => $mentoringSession->student->cid,
             'callsign' => 'EGKK_TWR',
             'connected_at' => '2026-03-29 18:00:00',
             'disconnected_at' => '2026-03-29 20:00:00',
         ]);
 
-        // Two ATC sessions with same callsign — should be deduplicated
         factory(Atc::class)->states('offline')->create([
             'callsign' => 'EGKK_APP',
             'connected_at' => '2026-03-29 18:00:00',
@@ -230,14 +233,12 @@ class AtcSessionModelTest extends TestCase
             'disconnected_at' => '2026-03-29 20:00:00',
         ]);
 
-        // Different aerodrome — should be excluded
         factory(Atc::class)->states('offline')->create([
             'callsign' => 'EGLL_APP',
             'connected_at' => '2026-03-29 18:30:00',
             'disconnected_at' => '2026-03-29 19:30:00',
         ]);
 
-        // ATC still online (no disconnected_at) — should be included
         factory(Atc::class)->create([
             'callsign' => 'EGKK_GND',
             'connected_at' => '2026-03-29 17:30:00',
@@ -261,14 +262,19 @@ class AtcSessionModelTest extends TestCase
             'taken_to' => '20:00:00',
         ]);
 
-        // ATC session that ended before the mentoring session started
+        factory(Atc::class)->states('offline')->create([
+            'account_id' => $mentoringSession->student->cid,
+            'callsign' => 'EGKK_TWR',
+            'connected_at' => '2026-03-29 18:00:00',
+            'disconnected_at' => '2026-03-29 20:00:00',
+        ]);
+
         factory(Atc::class)->states('offline')->create([
             'callsign' => 'EGKK_APP',
             'connected_at' => '2026-03-29 16:00:00',
             'disconnected_at' => '2026-03-29 17:00:00',
         ]);
 
-        // ATC session that started after the mentoring session ended
         factory(Atc::class)->states('offline')->create([
             'callsign' => 'EGKK_GND',
             'connected_at' => '2026-03-29 21:00:00',
@@ -288,6 +294,28 @@ class AtcSessionModelTest extends TestCase
             'taken_date' => '2026-03-29',
             'taken_from' => '18:00:00',
             'taken_to' => '20:00:00',
+        ]);
+
+        $result = Atc::adjacentPositionsForMentoringSession($mentoringSession);
+
+        $this->assertCount(0, $result);
+        $this->assertTrue($result->isEmpty());
+    }
+
+    #[Test]
+    public function it_returns_empty_when_student_not_on_network_even_with_adjacent_atc()
+    {
+        $mentoringSession = MentoringSession::factory()->create([
+            'position' => 'EGKK_TWR',
+            'taken_date' => '2026-03-29',
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+        ]);
+
+        factory(Atc::class)->states('offline')->create([
+            'callsign' => 'EGKK_APP',
+            'connected_at' => '2026-03-29 18:30:00',
+            'disconnected_at' => '2026-03-29 19:30:00',
         ]);
 
         $result = Atc::adjacentPositionsForMentoringSession($mentoringSession);
