@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\TrainingPlace;
 
+use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
@@ -255,9 +256,10 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'taken' => 1,
             'taken_date' => now()->subDays(5),
             'student_id' => $trainingPlace->account->member->id,
+            'filed' => now(),
         ]);
 
-        $expectedUrl = "https://cts.vatsim.uk/mentors/report.php?id={$session->getKey()}&view=report";
+        $expectedUrl = ViewMentoringReport::getUrl(['sessionId' => $session->getKey()]);
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
