@@ -7,6 +7,7 @@ namespace App\Filament\Training\Pages\Mentor;
 use App\Enums\FieldScore;
 use App\Filament\Forms\Components\TrainingRichEditor;
 use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
+use App\Filament\Training\Concerns\InteractsWithTrainingConductAutosave;
 use App\Filament\Training\Support\MentoringReportLayout;
 use App\Models\Cts\ProgSheetField;
 use App\Models\Cts\ReportSheet;
@@ -45,6 +46,7 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
     use InteractsWithCtsRichEditorNotes;
     use InteractsWithForms;
     use InteractsWithInfolists;
+    use InteractsWithTrainingConductAutosave;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
@@ -65,18 +67,6 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
 
     /** @var array<int, FieldScore> */
     public array $bestScores = [];
-
-    public bool $hasUnsavedChanges = false;
-
-    public bool $isSaving = false;
-
-    public ?int $lastChangedAt = null;
-
-    public int $autosaveIdleSeconds = 1;
-
-    public int $autosaveMinInterval = 5;
-
-    public ?int $lastAutosaveAt = null;
 
     #[LivewireSession('mentoringAdditionalComments.{sessionId}')]
     public ?string $additionalComments = '';
@@ -239,17 +229,18 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                 Section::make('Additional Comments')
                     ->columnSpanFull()
                     ->schema([
-                        $this->mentoringReportNotesEditor(TrainingRichEditor::make('body'))
-                            ->columnSpanFull()
-                            ->live(onBlur: true)
-                            ->extraInputAttributes(['style' => 'min-height: 200px;'])
-                            ->afterStateHydrated(fn ($component) => $component->state(
-                                $this->ctsRichEditorHtmlForHydration($this->additionalComments)
-                            ))
-                            ->afterStateUpdated(function ($state): void {
+                        $this->conductSessionRichEditor(
+                            $this->mentoringReportNotesEditor(TrainingRichEditor::make('body'))
+                                ->columnSpanFull()
+                                ->extraInputAttributes(['style' => 'min-height: 200px;']),
+                            function ($state): void {
                                 $this->additionalComments = $state;
                                 $this->markDirty();
-                            }),
+                            },
+                        )
+                            ->afterStateHydrated(fn ($component) => $component->state(
+                                $this->ctsRichEditorHtmlForHydration($this->additionalComments)
+                            )),
                         Actions::make([
                             Action::make('submit_report')
                                 ->label('Submit Report')
@@ -294,13 +285,13 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                     ->required()
                     ->columnSpan(2)
                     ->live()
-                    ->afterStateUpdated(fn () => $this->save(withNotification: false)),
-                $this->mentoringReportNotesEditor(TrainingRichEditor::make("criteria.{$fieldId}.notes"))
-                    ->default('<p></p>')
-                    ->columnSpan(12)
-                    ->live(onBlur: true)
-                    ->extraInputAttributes(['style' => 'min-height: 150px;'])
-                    ->afterStateUpdated(fn () => $this->markDirty()),
+                    ->afterStateUpdated(fn () => $this->markDirty(skipRender: true)),
+                $this->conductSessionRichEditor(
+                    $this->mentoringReportNotesEditor(TrainingRichEditor::make("criteria.{$fieldId}.notes"))
+                        ->default('<p></p>')
+                        ->columnSpan(12)
+                        ->extraInputAttributes(['style' => 'min-height: 150px;']),
+                ),
             ])
             ->extraAttributes(['class' => MentoringReportLayout::CRITERION_ROW_CLASSES]);
     }
@@ -333,6 +324,8 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                     ->title('Mentoring report saved')
                     ->success()
                     ->send();
+            } else {
+                $this->skipRender();
             }
         } finally {
             $this->isSaving = false;
@@ -394,32 +387,6 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
         }
 
         $this->redirect(Mentoring::getUrl());
-    }
-
-    public function autosave(): void
-    {
-        if ($this->isSaving || ! $this->hasUnsavedChanges) {
-            return;
-        }
-
-        $now = now()->timestamp;
-
-        if ($this->lastChangedAt && ($now - $this->lastChangedAt) < $this->autosaveIdleSeconds) {
-            return;
-        }
-
-        if ($this->lastAutosaveAt && ($now - $this->lastAutosaveAt) < $this->autosaveMinInterval) {
-            return;
-        }
-
-        $this->lastAutosaveAt = $now;
-        $this->save(withNotification: false);
-    }
-
-    public function markDirty(): void
-    {
-        $this->hasUnsavedChanges = true;
-        $this->lastChangedAt = now()->timestamp;
     }
 
     private function noShowModalDescription(): string

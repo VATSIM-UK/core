@@ -4,6 +4,7 @@ namespace App\Filament\Training\Pages\Exam;
 
 use App\Enums\ExamResultEnum;
 use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
+use App\Filament\Training\Concerns\InteractsWithTrainingConductAutosave;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
@@ -36,6 +37,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
 {
     use InteractsWithCtsRichEditorNotes;
     use InteractsWithForms, InteractsWithInfolists;
+    use InteractsWithTrainingConductAutosave;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
@@ -52,18 +54,6 @@ class ConductExam extends Page implements HasForms, HasInfolists
     public int $examId;
 
     public ExamBooking $examBooking;
-
-    public bool $hasUnsavedChanges = false;
-
-    public bool $isSaving = false;
-
-    public ?int $lastChangedAt = null;
-
-    public int $autosaveIdleSeconds = 1;
-
-    public int $autosaveMinInterval = 5;
-
-    public ?int $lastAutosaveAt = null;
 
     // save additional comments in session to persist across form submissions
     // this is because we don't save additional comments in the CTS database until the exam is completed
@@ -179,16 +169,16 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->label($criteria->criteria)
                     ->columnSpanFull()
                     ->schema([
-                        RichEditor::make("form.{$criteria->id}.comments")
-                            ->label('Comments')
-                            ->default('<p></p>')
-                            ->columnSpan(9)
-                            ->disableToolbarButtons(['attachFiles', 'blockquote'])
-                            ->live(debounce: 500)
-                            ->extraInputAttributes([
-                                'style' => 'min-height: 200px;',
-                            ])
-                            ->afterStateUpdated(fn () => $this->markDirty()),
+                        $this->conductSessionRichEditor(
+                            RichEditor::make("form.{$criteria->id}.comments")
+                                ->label('Comments')
+                                ->default('<p></p>')
+                                ->columnSpan(9)
+                                ->disableToolbarButtons(['attachFiles', 'blockquote'])
+                                ->extraInputAttributes([
+                                    'style' => 'min-height: 200px;',
+                                ]),
+                        ),
                         Select::make("form.{$criteria->id}.grade")
                             ->label('Grade')
                             ->options(ExamCriteriaAssessment::gradeDropdownOptions())
@@ -196,7 +186,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                             ->columnSpan(3)
                             ->required()
                             ->live()
-                            ->afterStateUpdated(fn () => $this->save(withNotification: false)),
+                            ->afterStateUpdated(fn () => $this->markDirty(skipRender: true)),
                     ])->columns(12);
             }
         );
@@ -214,20 +204,22 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ->label('Exam Result')
             ->columnSpanFull()
             ->schema([
-                RichEditor::make('additional_comments')
-                    ->label('Additional Comments')
-                    ->disableToolbarButtons(['attachFiles', 'blockquote'])
-                    ->columnSpan(9)
-                    ->live(debounce: 1000)
-                    // save additional comments in session to persist in session in case navigation occurs
-                    ->extraInputAttributes([
-                        'style' => 'min-height: 200px;',
-                    ])
+                $this->conductSessionRichEditor(
+                    RichEditor::make('additional_comments')
+                        ->label('Additional Comments')
+                        ->disableToolbarButtons(['attachFiles', 'blockquote'])
+                        ->columnSpan(9)
+                        ->extraInputAttributes([
+                            'style' => 'min-height: 200px;',
+                        ]),
+                    function ($state): void {
+                        $this->additionalComments = $state;
+                        $this->markDirty();
+                    },
+                )
                     ->afterStateHydrated(fn ($component) => $component->state(
                         $this->ctsRichEditorHtmlForHydration($this->additionalComments)
-                    ))
-                    // save additional comments in session to persist in session in case navigation occurs
-                    ->afterStateUpdated(fn ($state, $livewire) => ($this->additionalComments = $state)),
+                    )),
 
                 Select::make('exam_result')
                     ->label('Result')
@@ -366,34 +358,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
                 ->title('Exam report saved')
                 ->success()
                 ->send();
+        } else {
+            $this->skipRender();
         }
-    }
-
-    public function autosave(): void
-    {
-        if ($this->isSaving || ! $this->hasUnsavedChanges) {
-            return;
-        }
-
-        $now = now()->timestamp;
-
-        if ($this->lastChangedAt && ($now - $this->lastChangedAt) < $this->autosaveIdleSeconds) {
-            return;
-        }
-
-        if ($this->lastAutosaveAt && ($now - $this->lastAutosaveAt) < $this->autosaveMinInterval) {
-            return;
-        }
-
-        $this->lastAutosaveAt = $now;
-
-        $this->save(withNotification: false);
-    }
-
-    public function markDirty(): void
-    {
-        $this->hasUnsavedChanges = true;
-        $this->lastChangedAt = now()->timestamp;
     }
 
     public function removeTrainingPlace()
