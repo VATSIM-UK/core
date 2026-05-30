@@ -45,7 +45,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public function mount()
     {
-        $this->date = request()->query('date', Carbon::today()->format('Y-m-d'));
+        $this->date = max(request()->query('date', Carbon::today()->format('Y-m-d')), Carbon::today()->format('Y-m-d'));
         $this->category = request()->query('category', null);
 
         $this->rememberCategory();
