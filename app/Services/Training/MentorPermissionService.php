@@ -50,7 +50,7 @@ class MentorPermissionService
 
     public const QUALIFICATION_CTS_POSITION_MAP = [
         'PPL' => 'P1_PPL(A)',
-        'IR' => 'P2_SEIRA)',
+        'IR' => 'P2_SEIR(A)',
         'CMEL' => 'P3_CMEL(A)',
     ];
 
