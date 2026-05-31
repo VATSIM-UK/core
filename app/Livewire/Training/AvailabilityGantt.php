@@ -296,7 +296,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
                     Callout::make('slot_in_past')
                         ->heading('This availability slot is in the past')
-                        ->description('The student\'s availability window for this slot has already expired. You won\'t be able to accept this session.')
+                        ->description('The student\'s availability window for this slot has already expired. You won\'t be able to accept a session during this slot.')
                         ->danger()
                         ->visible(function () use ($availability) {
                             $slotEnd = Carbon::parse($availability->date)
