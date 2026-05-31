@@ -49,6 +49,23 @@ final class MentoringReportScores
     /**
      * @param  array<int, array<int, FieldScore>>  $scoreMap
      */
+    public static function bestScoreSessionId(array $scoreMap, int $fieldId): ?int
+    {
+        $fieldScores = collect($scoreMap[$fieldId] ?? []);
+
+        if ($fieldScores->isEmpty()) {
+            return null;
+        }
+
+        return $fieldScores
+            ->sortByDesc(fn (FieldScore $s) => $s->value)
+            ->keys()
+            ->first();
+    }
+
+    /**
+     * @param  array<int, array<int, FieldScore>>  $scoreMap
+     */
     public static function previousScore(array $scoreMap, int $fieldId, ?Session $previousSession): FieldScore
     {
         if (! $previousSession) {

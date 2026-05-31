@@ -229,6 +229,7 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                 $previousScore = MentoringReportScores::previousScore($scoreMap, $sheet->field_id, $previousSession);
                 $bestScore = MentoringReportScores::bestScore($scoreMap, $sheet->field_id);
+                $bestScoreSessionId = MentoringReportScores::bestScoreSessionId($scoreMap, $sheet->field_id);
 
                 $sheetRows[] = Grid::make(14)
                     ->schema([
@@ -244,6 +245,18 @@ class ViewMentoringReport extends Page implements HasInfolists
                             ->state($bestScore)
                             ->badge()
                             ->icon('heroicon-m-trophy')
+                            ->url(function () use ($bestScoreSessionId, $bestScore, $sheet): ?string {
+                                if (! $bestScoreSessionId || $bestScoreSessionId === $this->session->id) {
+                                    return null;
+                                }
+
+                                if ($sheet->field_score === $bestScore) {
+                                    return null;
+                                }
+
+                                return static::getUrl(['sessionId' => $bestScoreSessionId]);
+                            })
+                            ->openUrlInNewTab()
                             ->columnSpan(2),
 
                         TextEntry::make("field_previous_{$uniqueKey}")
