@@ -2,6 +2,7 @@
 
 namespace App\Filament\Training\Pages\TrainingPlace;
 
+use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
 use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
 use App\Filament\Training\Resources\TrainingPlaces\Pages\ListTrainingPlaces;
 use App\Models\Atc\Position;
@@ -14,7 +15,6 @@ use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
 use Exception;
 use Filament\Actions\Action;
-use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -310,7 +310,11 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                     }),
             ])
             ->recordActions([
-                ViewAction::make()->url(fn ($record) => "https://cts.vatsim.uk/mentors/report.php?id={$record->id}&view=report"),
+                Action::make('view')
+                    ->label('View Report')
+                    ->url(fn ($record) => ViewMentoringReport::getUrl(['sessionId' => $record->id]))
+                    ->visible(fn ($record) => $record->filed !== null)
+                    ->openUrlInNewTab(),
             ])
             ->emptyStateHeading('No mentoring sessions found');
     }

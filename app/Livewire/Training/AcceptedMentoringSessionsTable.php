@@ -5,13 +5,16 @@ namespace App\Livewire\Training;
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Session;
+use App\Services\Training\MentoringAnnouncementService;
 use App\Services\Training\MentoringReportService;
 use App\Services\Training\MentoringSessionsService;
+use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -82,6 +85,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->visible(fn (Session $record): bool => auth()->user()?->can('conduct', $record) ?? false),
 
                 $this->markNoShowTableAction(),
+
+                $this->postMentoringSessionAnnouncementAction(),
 
                 ActionGroup::make([
                     Action::make('reschedule')
@@ -355,6 +360,54 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     Notification::make()
                         ->title('Session marked as no-show')
                         ->success()
+                        ->send();
+                }
+            });
+    }
+
+    protected function postMentoringSessionAnnouncementAction(): Action
+    {
+        return Action::make('postMentoringAnnouncement')
+            ->label('Post Mentoring Announcement')
+            ->icon('heroicon-o-megaphone')
+            ->color('info')
+            ->visible(function (Session $record): bool {
+                $category = app(MentorPermissionService::class)->resolveCategoryForCtsCallsign($record->position);
+
+                if ($category === 'OBS to S1 Training') {
+                    return false;
+                }
+
+                return app(MentoringAnnouncementService::class)->canPostAnnouncement($record, auth()->user()->member->id);
+            })
+            ->form([
+                Checkbox::make('ping_pilot')
+                    ->label('Ping: Pilot Role')
+                    ->default(true),
+
+                Checkbox::make('ping_controller')
+                    ->label('Ping: Controller Role')
+                    ->default(false),
+
+                Textarea::make('notes')
+                    ->label('Additional notes')
+                    ->placeholder('Optional: additional notes')
+                    ->rows(4)
+                    ->maxLength(1000),
+            ])
+            ->requiresConfirmation()
+            ->action(function (Session $record, array $data): void {
+                try {
+                    app(MentoringAnnouncementService::class)->postAnnouncement($record, $data);
+
+                    Notification::make()
+                        ->title('Discord notification sent')
+                        ->success()
+                        ->send();
+                } catch (\Throwable) {
+                    Notification::make()
+                        ->title('Failed to post to Discord')
+                        ->danger()
                         ->send();
                 }
             });
