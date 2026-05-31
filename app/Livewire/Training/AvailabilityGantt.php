@@ -8,6 +8,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
 use App\Services\Training\MentoringSessionsService;
+use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -39,7 +40,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public ?string $positionFilter = null;
 
-    private const STUDENTS_PER_PAGE = 6;
+    public int $studentsPerPage = 6;
 
     public int $studentsPage = 1;
 
@@ -48,13 +49,9 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $this->date = max(request()->query('date', Carbon::today()->format('Y-m-d')), Carbon::today()->format('Y-m-d'));
         $this->category = request()->query('category', null);
 
-        $this->rememberCategory();
-
         if ($this->category && ! (auth()->user()?->can('viewCategory', [new MentoringScope, $this->category]) ?? false)) {
             $this->category = null;
         }
-
-        $this->saveCategoryToSession();
     }
 
     public function previousDay()
@@ -83,7 +80,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public function getPagedStudentsProperty()
     {
-        return $this->students->forPage($this->studentsPage, self::STUDENTS_PER_PAGE);
+        return $this->students->forPage($this->studentsPage, $this->studentsPerPage);
     }
 
     public function previousStudentsPage(): void
@@ -95,7 +92,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public function nextStudentsPage(): void
     {
-        if ($this->studentsPage * self::STUDENTS_PER_PAGE < $this->students->count()) {
+        if ($this->studentsPage * $this->studentsPerPage < $this->students->count()) {
             $this->studentsPage++;
         }
     }
@@ -121,6 +118,16 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
     {
         $user = auth()->user();
 
+        if ($user?->can('viewAll', Session::class) ?? false) {
+            $service = app(MentorPermissionService::class);
+
+            if ($this->category) {
+                return $service->getAllCtsCallsignsForCategory($this->category);
+            }
+
+            return $service->getAllCtsCallsignsForCategories($user->getAvailableMentoringCategories());
+        }
+
         return $this->category ? $user->getAssignedCallsignsForCategory($this->category) : $user->getAllAssignedCallsigns();
     }
 
@@ -129,22 +136,12 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $targetDate = Carbon::parse($this->date);
         $allowedCallsigns = $this->getAllowedCallsigns();
 
-        $hasViewAllPermission = auth()->user()?->can('viewAll', Session::class) ?? false;
-
-        if (empty($allowedCallsigns) && ! $hasViewAllPermission) {
-            return collect();
-        }
-
         return Member::query()
-            ->whereHas('sessions', function ($query) use ($allowedCallsigns, $hasViewAllPermission) {
+            ->whereHas('sessions', function ($query) use ($allowedCallsigns) {
                 $query->whereNull('mentor_id')
                     ->whereNull('filed')
-                    ->whereNull('cancelled_datetime');
-
-                // If doesn't have view all permission, filter strictly by their allowed mentoring callsigns
-                if (! $hasViewAllPermission) {
-                    $query->whereIn('position', $allowedCallsigns);
-                }
+                    ->whereNull('cancelled_datetime')
+                    ->whereIn('position', $allowedCallsigns);
             })
             ->whereHas('availabilities', function ($query) use ($targetDate) {
                 $query->whereDate('date', $targetDate);
