@@ -1,8 +1,6 @@
 @extends('emails.messages.post')
 
 @section('body')
-    <p>Dear {{ $recipient->name }},</p>
-
     <p>Confirmation of your re-scheduled mentoring session is as follows:</p>
 
     <ul>

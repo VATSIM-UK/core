@@ -1,8 +1,6 @@
 @extends('emails.messages.post')
 
 @section('body')
-    <p>Dear {{ $recipient->name }},</p>
-
     <p>{{ $mentorName }} has <strong>rescheduled</strong> your mentoring session. The session will now take place as follows:</p>
 
     <ul>

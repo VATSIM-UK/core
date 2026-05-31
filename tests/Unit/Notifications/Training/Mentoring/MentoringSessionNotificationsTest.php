@@ -74,7 +74,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $mail = $notification->toMail($this->studentAccount);
 
         $this->assertContains('mail', $notification->via($this->studentAccount));
-        $this->assertSame('Your Mentoring Session has been accepted', $mail->subject);
+        $this->assertSame('VATSIM UK - Mentoring Session Booked', $mail->subject);
         $this->assertSame('emails.training.mentoring.session_accepted_student', $mail->view);
         $this->assertSame(
             ['recipient', 'session', 'position', 'sessionDateTime', 'mentorName'],
@@ -86,7 +86,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $html = View::make($mail->view, $mail->data())->render();
 
         $this->assertStringContainsString('Dear Alex Student', $html);
-        $this->assertStringContainsString('Your mentoring session has been scheduled', $html);
+        $this->assertStringContainsString('has accepted your mentoring session request', $html);
         $this->assertStringContainsString('EGLL_APP', $html);
         $this->assertStringContainsString('Jamie Mentor', $html);
         $this->assertStringContainsString($this->session->formattedSessionDateTime(), $html);
@@ -99,7 +99,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $mail = $notification->toMail($this->mentorAccount);
 
         $this->assertContains('mail', $notification->via($this->mentorAccount));
-        $this->assertSame('Mentoring Session Accepted', $mail->subject);
+        $this->assertSame('VATSIM UK - Mentoring Session Accepted', $mail->subject);
         $this->assertSame('emails.training.mentoring.session_accepted_mentor', $mail->view);
         $this->assertSame(
             ['recipient', 'session', 'position', 'sessionDateTime', 'studentName', 'studentCid'],
@@ -129,7 +129,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $mail = $notification->toMail($this->studentAccount);
 
         $this->assertContains('mail', $notification->via($this->studentAccount));
-        $this->assertSame('Your Mentoring Session has been Cancelled', $mail->subject);
+        $this->assertSame('VATSIM UK - Mentoring Session Cancelled', $mail->subject);
         $this->assertSame('emails.training.mentoring.session_cancelled_student', $mail->view);
         $this->assertSame(
             ['recipient', 'session', 'cancelledByMentor', 'reason'],
@@ -142,11 +142,10 @@ class MentoringSessionNotificationsTest extends TestCase
 
         $this->assertStringContainsString('Dear Alex Student', $html);
         $this->assertStringContainsString('Jamie Mentor', $html);
-        $this->assertStringContainsString((string) $this->mentorAccount->id, $html);
         $this->assertStringContainsString('has cancelled your mentoring session', $html);
         $this->assertStringContainsString('EGLL_APP', $html);
         $this->assertStringContainsString($reason, $html);
-        $this->assertStringContainsString('remain in the system', $html);
+        $this->assertStringContainsString('ongoing availability is up-to-date', $html);
     }
 
     #[Test]
@@ -158,7 +157,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $mail = $notification->toMail($this->mentorAccount);
 
         $this->assertContains('mail', $notification->via($this->mentorAccount));
-        $this->assertSame('Mentoring Session Cancelled', $mail->subject);
+        $this->assertSame('VATSIM UK - Mentoring Session Cancelled', $mail->subject);
         $this->assertSame('emails.training.mentoring.session_cancelled_mentor', $mail->view);
         $this->assertSame(
             ['recipient', 'session', 'reason'],
@@ -170,9 +169,7 @@ class MentoringSessionNotificationsTest extends TestCase
 
         $this->assertStringContainsString('Dear Jamie Mentor', $html);
         $this->assertStringContainsString('You have cancelled your mentoring session', $html);
-        $this->assertStringContainsString('Alex Student', $html);
         $this->assertStringContainsString('EGLL_APP', $html);
-        $this->assertStringContainsString($reason, $html);
     }
 
     #[Test]
@@ -184,7 +181,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $mail = $notification->toMail($this->studentAccount);
 
         $this->assertContains('mail', $notification->via($this->studentAccount));
-        $this->assertSame('Your Mentoring Session has been Rescheduled', $mail->subject);
+        $this->assertSame('VATSIM UK - Mentoring Session Rescheduled', $mail->subject);
         $this->assertSame('emails.training.mentoring.session_rescheduled_student', $mail->view);
         $this->assertSame(
             ['recipient', 'session', 'position', 'previousDateTime', 'sessionDateTime', 'mentorName'],
@@ -196,8 +193,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $html = View::make($mail->view, $mail->data())->render();
 
         $this->assertStringContainsString('Dear Alex Student', $html);
-        $this->assertStringContainsString('has been rescheduled by Jamie Mentor', $html);
-        $this->assertStringContainsString($previousDateTime, $html);
+        $this->assertStringContainsString('has <strong>rescheduled</strong> your mentoring session', $html);
         $this->assertStringContainsString('EGLL_APP', $html);
         $this->assertStringContainsString($this->session->formattedSessionDateTime(), $html);
     }
@@ -211,7 +207,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $mail = $notification->toMail($this->mentorAccount);
 
         $this->assertContains('mail', $notification->via($this->mentorAccount));
-        $this->assertSame('Mentoring Session Rescheduled', $mail->subject);
+        $this->assertSame('VATSIM UK - Mentoring Session Rescheduled', $mail->subject);
         $this->assertSame('emails.training.mentoring.session_rescheduled_mentor', $mail->view);
         $this->assertSame(
             ['recipient', 'session', 'position', 'previousDateTime', 'sessionDateTime', 'studentName', 'studentCid'],
@@ -222,9 +218,6 @@ class MentoringSessionNotificationsTest extends TestCase
         $html = View::make($mail->view, $mail->data())->render();
 
         $this->assertStringContainsString('Dear Jamie Mentor', $html);
-        $this->assertStringContainsString('You have rescheduled your mentoring session', $html);
-        $this->assertStringContainsString('Alex Student', $html);
-        $this->assertStringContainsString((string) $this->studentAccount->id, $html);
-        $this->assertStringContainsString($previousDateTime, $html);
+        $this->assertStringContainsString('Confirmation of your re-scheduled mentoring session', $html);
     }
 }

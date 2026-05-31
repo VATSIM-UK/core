@@ -1,12 +1,16 @@
 @extends('emails.messages.post')
 
 @section('body')
-    <p>Dear {{ $recipient->name }},</p>
-
     <p>Thank you for accepting a mentoring session for VATISM UK. Details of your accepted session are shown below:</p>
 
     <ul>
-        <li><strong>Student</strong>: <a href="{{ url('/training/mentoring-history?student_cid='.$studentCid) }}">{{ $studentName }}</a> ({{ $studentCid }})</li>
+        <li>
+            <strong>Student</strong>:
+            <a href="{{ \App\Filament\Training\Pages\Mentor\MentoringHistory::getUrl(parameters: ['tableFilters' => ['student' => ['value' => $studentCid]]], panel: 'training') }}">
+                {{ $studentName }}
+            </a>
+            ({{ $studentCid }})
+        </li>
         <li><strong>Position:</strong> {{ $position }}</li>
         <li><strong>Date/Time</strong>: {{ $sessionDateTime }}</li>
     </ul>

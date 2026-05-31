@@ -1,8 +1,6 @@
 @extends('emails.messages.post')
 
 @section('body')
-    <p>Dear {{ $recipient->name }},</p>
-
     <p>{{ $cancelledByMentor->name }} has cancelled your mentoring session, which was due to take place on {{ $session->position }} on {{ \Carbon\Carbon::parse($session->taken_date)->format('l jS M y') }} at
     {{ \Carbon\Carbon::parse($session->taken_from)->format('H:i') }}Z.</p>
 
