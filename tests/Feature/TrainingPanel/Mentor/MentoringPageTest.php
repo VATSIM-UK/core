@@ -201,14 +201,25 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function previous_day_decrements_the_date(): void
+    public function previous_day_does_not_go_before_today_when_date_is_set_as_today(): void
+    {
+        $component = Livewire::actingAs($this->mentor)->test(AvailabilityGantt::class);
+
+        $component->call('previousDay');
+
+        $this->assertSame(Carbon::today()->format('Y-m-d'), $component->instance()->date);
+    }
+
+    #[Test]
+    public function previous_day_decrements_the_date_when_viewing_a_future_date(): void
     {
         $component = Livewire::actingAs($this->mentor)
             ->test(AvailabilityGantt::class);
 
+        $component->call('nextDay');
         $component->call('previousDay');
 
-        $this->assertSame(Carbon::yesterday()->format('Y-m-d'), $component->instance()->date);
+        $this->assertSame(Carbon::today()->format('Y-m-d'), $component->instance()->date);
     }
 
     #[Test]

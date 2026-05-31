@@ -12,6 +12,7 @@ use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Policies\Training\Mentoring\MentoringPolicy;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Gate;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -85,6 +86,18 @@ class MentoringPolicyTest extends TestCase
         ]);
 
         $this->assertTrue($this->policy->view($mentor, $session));
+    }
+
+    #[Test]
+    public function gate_allows_a_mentor_with_permission_for_the_session_position(): void
+    {
+        $mentor = $this->createMentorWithPosition('EGLL_APP');
+        $session = Session::factory()->create([
+            'position' => 'EGLL_APP',
+            'filed' => now(),
+        ]);
+
+        $this->assertTrue(Gate::forUser($mentor)->allows('view', $session));
     }
 
     #[Test]

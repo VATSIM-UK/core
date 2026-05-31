@@ -3,20 +3,27 @@
 namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
+use App\Models\Cts\Availability;
 use App\Models\Cts\Session;
 use App\Services\Training\MentoringAnnouncementService;
 use App\Services\Training\MentoringReportService;
+use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -71,15 +78,241 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->orderBy('taken_from', $direction)
                     ),
             ])
-            ->recordActions([
+            ->actions([
                 Action::make('conduct')
                     ->label('Conduct')
                     ->url(fn (Session $record): string => ConductMentoringSession::getUrl(['sessionId' => $record->id]))
                     ->visible(fn (Session $record): bool => auth()->user()?->can('conduct', $record) ?? false),
+
                 $this->markNoShowTableAction(),
+
                 $this->postMentoringSessionAnnouncementAction(),
+
+                ActionGroup::make([
+                    Action::make('reschedule')
+                        ->label('Reschedule')
+                        ->icon('heroicon-m-clock')
+                        ->color('warning')
+                        ->modalHeading(fn (Session $record) => "Reschedule Session: {$record->student->name}")
+                        ->modalSubmitActionLabel('Reschedule Session')
+                        ->form([
+                            Select::make('selected_availability_id')
+                                ->label('Student Availability Slot')
+                                ->required()
+                                ->live()
+                                ->options(fn (Session $record) => Availability::query()
+                                    ->where('student_id', $record->student_id)
+                                    ->whereDate('date', '>=', now())
+                                    ->orderBy('date')
+                                    ->orderBy('from')
+                                    ->get()
+                                    ->mapWithKeys(function ($avail) {
+                                        $date = Carbon::parse($avail->date)->format('D, d M Y');
+                                        $start = Carbon::parse($avail->from)->format('H:i');
+                                        $end = Carbon::parse($avail->to)->format('H:i');
+
+                                        return [$avail->id => "{$date} ({$start} to {$end})"];
+                                    })
+                                )
+                                ->afterStateUpdated(function (Set $set, $state) {
+                                    if (! $state || ! $newAvail = Availability::find($state)) {
+                                        $set('taken_from', null);
+                                        $set('taken_to', null);
+
+                                        return;
+                                    }
+
+                                    $minTime = Carbon::parse($newAvail->from)->format('H:i');
+                                    $maxTime = Carbon::parse($newAvail->to)->format('H:i');
+                                    $options = $this->generateTimeOptions($minTime, $maxTime);
+
+                                    if (Carbon::parse($newAvail->date)->isToday()) {
+                                        $nowTime = now()->format('H:i');
+                                        $options = array_filter($options, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
+                                    }
+
+                                    $set('taken_from', array_key_first($options));
+                                    $set('taken_to', array_key_last($options));
+                                }),
+
+                            Grid::make(2)->schema([
+                                Select::make('taken_from')
+                                    ->label('New Start Time')
+                                    ->required()
+                                    ->searchable()
+                                    ->allowHtml(false)
+                                    ->live()
+                                    ->optionsLimit(100)
+                                    ->options(function (Get $get) {
+                                        if (! $availId = $get('selected_availability_id')) {
+                                            return [];
+                                        }
+
+                                        $avail = Availability::find($availId);
+                                        if (! $avail) {
+                                            return [];
+                                        }
+
+                                        $options = $this->generateTimeOptions(
+                                            Carbon::parse($avail->from)->format('H:i'),
+                                            Carbon::parse($avail->to)->format('H:i')
+                                        );
+
+                                        if (Carbon::parse($avail->date)->isToday()) {
+                                            $nowTime = now()->format('H:i');
+                                            $options = array_filter($options, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
+                                        }
+
+                                        return $options;
+                                    }),
+
+                                Select::make('taken_to')
+                                    ->label('New End Time')
+                                    ->required()
+                                    ->searchable()
+                                    ->allowHtml(false)
+                                    ->optionsLimit(100)
+                                    ->options(function (Get $get) {
+                                        if (! $availId = $get('selected_availability_id')) {
+                                            return [];
+                                        }
+
+                                        $avail = Availability::find($availId);
+                                        if (! $avail) {
+                                            return [];
+                                        }
+
+                                        $options = $this->generateTimeOptions(
+                                            Carbon::parse($avail->from)->format('H:i'),
+                                            Carbon::parse($avail->to)->format('H:i')
+                                        );
+
+                                        $startTime = $get('taken_from');
+                                        if (! $startTime) {
+                                            return $options;
+                                        }
+
+                                        return collect($options)
+                                            ->filter(fn ($label, $key) => $key > $startTime)
+                                            ->toArray();
+                                    }),
+                            ]),
+                        ])
+                        ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
+                            $availability = Availability::find($data['selected_availability_id']);
+
+                            if (! $availability) {
+                                Notification::make()
+                                    ->title('Reschedule Failed')
+                                    ->body('The selected availability slot could no longer be found.')
+                                    ->danger()
+                                    ->send();
+
+                                return;
+                            }
+
+                            $proposedStart = Carbon::parse($availability->date)->setTimeFromTimeString($data['taken_from']);
+                            if ($proposedStart->isPast()) {
+                                Notification::make()
+                                    ->title('Invalid Time Chosen')
+                                    ->body('You cannot reschedule a mentoring session to a time that has already passed.')
+                                    ->danger()
+                                    ->send();
+
+                                return;
+                            }
+
+                            $success = $mentoringService->rescheduleSession(
+                                $record->id,
+                                $availability->id,
+                                $data['taken_from'],
+                                $data['taken_to'],
+                                auth()->user(),
+                            );
+
+                            if ($success) {
+                                $dateFormatted = Carbon::parse($availability->date)->format('d/m/Y');
+
+                                Notification::make()
+                                    ->title('Session Rescheduled')
+                                    ->body("The session with {$record->student->name} has been moved to {$dateFormatted} from {$data['taken_from']} to {$data['taken_to']}.")
+                                    ->success()
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('Error')
+                                    ->body('Could not reschedule the session. Please confirm the request is still valid.')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+
+                    Action::make('cancel')
+                        ->label('Cancel Session')
+                        ->icon('heroicon-m-x-circle')
+                        ->color('danger')
+                        ->modalHeading(fn (Session $record) => "Cancel Session: {$record->student->name}")
+                        ->modalDescription('Please provide a reason for cancelling this session. This will be recorded and visible to the student.')
+                        ->modalSubmitActionLabel('Cancel Session')
+                        ->form([
+                            Textarea::make('reason')
+                                ->label('Cancellation Reason')
+                                ->required()
+                                ->minLength(10),
+                        ])
+                        ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
+                            $success = $mentoringService->cancelSession($record->id, $data['reason'], auth()->user());
+
+                            if ($success) {
+                                Notification::make()
+                                    ->title('Session Cancelled')
+                                    ->body("The session with {$record->student->name} has been successfully cancelled.")
+                                    ->success()
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('Cancellation Failed')
+                                    ->body('Could not cancel the session. It may have already been modified or completed.')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+                ])
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->tooltip('Manage Session'),
             ])
             ->emptyStateHeading('No upcoming mentoring sessions found');
+    }
+
+    protected function generateTimeOptions(?string $minTime = null, ?string $maxTime = null): array
+    {
+        $options = [];
+
+        $minMinutes = $minTime ? (int) substr($minTime, 0, 2) * 60 + (int) substr($minTime, 3, 2) : 0;
+        $maxMinutes = $maxTime ? (int) substr($maxTime, 0, 2) * 60 + (int) substr($maxTime, 3, 2) : 1440;
+
+        for ($h = 0; $h < 24; $h++) {
+            for ($m = 0; $m < 60; $m += 15) {
+                $currentMinutes = $h * 60 + $m;
+
+                if ($currentMinutes >= $minMinutes && $currentMinutes <= $maxMinutes) {
+                    $time = sprintf('%02d:%02d', $h, $m);
+                    $options[$time] = $time;
+                }
+            }
+        }
+
+        if ($minTime && ! isset($options[$minTime])) {
+            $options[$minTime] = $minTime;
+        }
+
+        if ($maxTime && ! isset($options[$maxTime])) {
+            $options[$maxTime] = $maxTime;
+        }
+
+        ksort($options);
+
+        return $options;
     }
 
     protected function markNoShowTableAction(): Action

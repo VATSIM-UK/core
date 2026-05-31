@@ -2,6 +2,8 @@
 
 namespace App\Models\Cts;
 
+use App\Models\Mship\Account;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -43,6 +45,29 @@ class Session extends Model
     public function reportNote(): HasOne
     {
         return $this->hasOne(ReportNote::class, 'seshid', 'id');
+    }
+
+    public function studentAccount(): ?Account
+    {
+        $this->loadMissing('student');
+
+        return $this->student ? Account::find($this->student->cid) : null;
+    }
+
+    public function mentorAccount(): ?Account
+    {
+        $this->loadMissing('mentor');
+
+        return $this->mentor ? Account::find($this->mentor->cid) : null;
+    }
+
+    public function formattedSessionDateTime(): string
+    {
+        $date = Carbon::parse($this->taken_date)->format('l jS M Y');
+        $from = Carbon::parse($this->taken_from)->format('H:i');
+        $to = Carbon::parse($this->taken_to)->format('H:i');
+
+        return "{$date}, {$from} - {$to}";
     }
 
     public function cancelReason(): HasOne

@@ -114,6 +114,10 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     public function it_loads_for_a_user_with_a_mentor_training_position_for_the_session_position(): void
     {
         $authorisedMentor = Account::factory()->create();
+        Member::factory()->create([
+            'id' => $authorisedMentor->id,
+            'cid' => $authorisedMentor->id,
+        ]);
 
         $trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => ['EGLL_APP'],
@@ -159,7 +163,10 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     {
         $unrelatedUser = Account::factory()->create();
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn([]));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock
+            ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
+            ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+        );
 
         Livewire::actingAs($unrelatedUser)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -175,7 +182,10 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'cid' => $otherStudent->id,
         ]);
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn([]));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock
+            ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
+            ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+        );
 
         Livewire::actingAs($otherStudent)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -191,7 +201,10 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'cid' => $otherMentor->id,
         ]);
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn([]));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock
+            ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
+            ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+        );
 
         Livewire::actingAs($otherMentor)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])

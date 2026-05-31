@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies\Training\Mentoring;
 
+use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Training\Mentoring\MentoringScope;
@@ -20,14 +21,14 @@ class MentoringPolicy
      */
     public function before(Account $user, string $ability): ?bool
     {
-        if (! app()->runningUnitTests() && ! $user->can('training.beta')) {
+        if (app()->isProduction() && ! $user->can('training.beta')) {
             return false;
         }
 
         return null;
     }
 
-    // View permission
+    // View permissions
 
     /**
      * Access mentoring pages.
@@ -89,7 +90,7 @@ class MentoringPolicy
         }
 
         // Mentors should always be able to view their own reports
-        if ($session->mentor_id === $user->id) {
+        if ($this->isAssignedMentor($user, $session)) {
             return true;
         }
 
@@ -97,7 +98,7 @@ class MentoringPolicy
             return true;
         }
 
-        return $user->canMentorPosition($session->position);
+        return $this->mentorPosition($user, $session->position);
     }
 
     /**
@@ -119,7 +120,43 @@ class MentoringPolicy
             return true;
         }
 
-        return in_array($position, $user->getAllAssignedCallsigns(), true);
+        return $user->canMentorPosition($position);
+    }
+
+    /**
+     * Determine if a user can accept a pending session.
+     */
+    public function accept(Account $user, Session $session): bool
+    {
+        if ($this->viewAll($user)) {
+            return true;
+        }
+
+        return $this->mentorPosition($user, $session->position);
+    }
+
+    /**
+     * Determine if a user can reschedule a session.
+     */
+    public function reschedule(Account $user, Session $session): bool
+    {
+        if ($this->viewAll($user)) {
+            return true;
+        }
+
+        return $this->isAssignedMentor($user, $session);
+    }
+
+    /**
+     * Determine if the user can cancel the mentoring session.
+     */
+    public function cancel(Account $user, Session $session): bool
+    {
+        if ($this->viewAll($user)) {
+            return true;
+        }
+
+        return $this->isAssignedMentor($user, $session);
     }
 
     /**
@@ -142,7 +179,6 @@ class MentoringPolicy
 
     private function canManageOwnOpenSession(Account $user, Session $session): bool
     {
-        // explicitly check the mentor's CID to avoid CTS member ID mismatch issues
         if ($session->mentor?->cid !== $user->id) {
             return false;
         }
@@ -156,5 +192,12 @@ class MentoringPolicy
         }
 
         return (int) $session->taken === 1;
+    }
+
+    private function isAssignedMentor(Account $user, Session $session): bool
+    {
+        $member = Member::where('cid', $user->id)->first();
+
+        return $member && $session->mentor_id === $member->id;
     }
 }
