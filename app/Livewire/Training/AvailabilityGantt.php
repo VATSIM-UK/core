@@ -294,6 +294,17 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             ->optionsLimit(100),
                     ]),
 
+                    Callout::make('slot_in_past')
+                        ->heading('This availability slot is in the past')
+                        ->description('The student\'s availability window for this slot has already expired. You won\'t be able to accept this session.')
+                        ->danger()
+                        ->visible(function () use ($availability) {
+                            $slotEnd = Carbon::parse($availability->date)
+                                ->setTimeFromTimeString(Carbon::parse($availability->to)->format('H:i'));
+
+                            return $slotEnd->isBefore(now());
+                        }),
+
                     Callout::make('24_hours_notice')
                         ->heading('This session is being booked with less than 24 hours notice')
                         ->description('Please contact the student via Discord to confirm their attendance.')
