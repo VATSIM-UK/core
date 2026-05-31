@@ -40,11 +40,23 @@
 
 		{{-- Page Arrows --}}
 		@if ($students->count() > $this->studentsPerPage)
-			<div class="flex items-center justify-end gap-2 pt-2 border-gray-200 dark:border-white/10">
-				<x-filament::button color="gray" wire:click="previousStudentsPage" icon="heroicon-m-chevron-left" class="!px-2"
-					:disabled="$studentsPage <= 1" />
-				<x-filament::button color="gray" wire:click="nextStudentsPage" icon="heroicon-m-chevron-right" class="!px-2"
-					:disabled="$studentsPage * $this->studentsPerPage >= $students->count()" />
+			@php
+				$totalStudents = $students->count();
+				$totalPages = (int) ceil($totalStudents / $this->studentsPerPage);
+			@endphp
+			<div class="flex items-center justify-between gap-3 pt-2 border-gray-200 dark:border-white/10">
+				<div class="text-sm text-gray-500 dark:text-gray-400">
+					{{ $totalStudents }} student{{ $totalStudents === 1 ? '' : 's' }} with availability
+				</div>
+				<div class="flex items-center gap-3">
+					<x-filament::button color="gray" wire:click="previousStudentsPage" icon="heroicon-m-chevron-left" class="!px-2"
+						:disabled="$studentsPage <= 1" />
+					<div class="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+						Page {{ $studentsPage }} / {{ $totalPages }}
+					</div>
+					<x-filament::button color="gray" wire:click="nextStudentsPage" icon="heroicon-m-chevron-right" class="!px-2"
+						:disabled="$studentsPage * $this->studentsPerPage >= $students->count()" />
+				</div>
 			</div>
 		@endif
 	@endif

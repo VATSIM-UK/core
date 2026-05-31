@@ -39,7 +39,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public ?string $positionFilter = null;
 
-    private const STUDENTS_PER_PAGE = 6;
+    public int $studentsPerPage = 6;
 
     public int $studentsPage = 1;
 
@@ -83,7 +83,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public function getPagedStudentsProperty()
     {
-        return $this->students->forPage($this->studentsPage, self::STUDENTS_PER_PAGE);
+        return $this->students->forPage($this->studentsPage, $this->studentsPerPage);
     }
 
     public function previousStudentsPage(): void
@@ -95,7 +95,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public function nextStudentsPage(): void
     {
-        if ($this->studentsPage * self::STUDENTS_PER_PAGE < $this->students->count()) {
+        if ($this->studentsPage * $this->studentsPerPage < $this->students->count()) {
             $this->studentsPage++;
         }
     }
