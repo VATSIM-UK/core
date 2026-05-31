@@ -49,13 +49,9 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $this->date = max(request()->query('date', Carbon::today()->format('Y-m-d')), Carbon::today()->format('Y-m-d'));
         $this->category = request()->query('category', null);
 
-        $this->rememberCategory();
-
         if ($this->category && ! (auth()->user()?->can('viewCategory', [new MentoringScope, $this->category]) ?? false)) {
             $this->category = null;
         }
-
-        $this->saveCategoryToSession();
     }
 
     public function previousDay()
