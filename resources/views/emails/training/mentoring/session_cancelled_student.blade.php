@@ -1,26 +1,19 @@
 @extends('emails.messages.post')
 
 @section('body')
-    <p>
-        {{ $cancelledByMentor->name }} ({{ $cancelledByMentor->id }}) has cancelled your mentoring session. Details are shown below.
-    </p>
+    <p>Dear {{ $recipient->name }},</p>
 
-    <h4>Position</h4>
-    <p>{{ $session->position }}</p>
+    <p>{{ $cancelledByMentor->name }} has cancelled your mentoring session, which was due to take place on {{ $session->position }} on {{ \Carbon\Carbon::parse($session->taken_date)->format('l jS M y') }} at
+    {{ \Carbon\Carbon::parse($session->taken_from)->format('H:i') }}Z.</p>
 
-    <h4>Session date</h4>
-    <p>
-        {{ \Carbon\Carbon::parse($session->taken_date)->format('l jS M y') }}<br>
-        {{ \Carbon\Carbon::parse($session->taken_from)->format('H:i') }}Z &ndash;
-        {{ \Carbon\Carbon::parse($session->taken_to)->format('H:i') }}Z
-    </p>
+    @if(!empty($reason))
+        <p>Your mentor left this message for you:</p>
+        <p>{{ $reason }}</p>
+    @endif
 
-    <h4>Reason for cancellation</h4>
-    <p>{{ $reason }}</p>
+    <p>We apologise for any inconvenience caused. It is possible that another mentor will pick your mentoring session up, so you should ensure that your ongoing availability is up-to-date.</p>
 
-    <p>
-        Your mentoring request will remain in the system so it may be picked up by another mentor.
-    </p>
+    <p>To stop receiving these alerts, you can amend your email settings in the STUDENT menu.</p>
 @stop
 
 @section('signature')

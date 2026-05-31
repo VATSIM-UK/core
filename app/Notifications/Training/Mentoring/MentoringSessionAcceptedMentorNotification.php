@@ -27,7 +27,7 @@ class MentoringSessionAcceptedMentorNotification extends Notification
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
-            ->subject('Mentoring Session Accepted')
+            ->subject('VATSIM UK - Mentoring Session Accepted')
             ->view('emails.training.mentoring.session_accepted_mentor', [
                 'recipient' => $notifiable,
                 'session' => $session,

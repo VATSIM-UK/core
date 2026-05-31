@@ -1,16 +1,21 @@
 @extends('emails.messages.post')
 
 @section('body')
-    <p>
-        You have accepted a mentoring session.
-    </p>
+    <p>Dear {{ $recipient->name }},</p>
 
-    <h4>Session Details:</h4>
+    <p>Thank you for accepting a mentoring session for VATISM UK. Details of your accepted session are shown below:</p>
+
     <ul>
-        <li><strong>Student:</strong> {{ $studentName }} ({{ $studentCid }})</li>
+        <li><strong>Student</strong>: <a href="{{ url('/training/mentoring-history?student_cid='.$studentCid) }}">{{ $studentName }}</a> ({{ $studentCid }})</li>
         <li><strong>Position:</strong> {{ $position }}</li>
-        <li><strong>Scheduled Date & Time:</strong> {{ $sessionDateTime }}</li>
+        <li><strong>Date/Time</strong>: {{ $sessionDateTime }}</li>
     </ul>
+
+    <p>Please note that the times displayed are in Zulu/GMT.</p>
+
+    <p>You student has been sent an e-mail reminding them to prepare for the session, including refering to relevant reference material and previous mentoring session reports. If they have failed to do so, please inform the TGI and consider whether the session should be delayed.</p>
+
+    <p>To stop receiving these alerts, you can amend your email settings in the STUDENT menu.</p>
 @stop
 
 @section('signature')

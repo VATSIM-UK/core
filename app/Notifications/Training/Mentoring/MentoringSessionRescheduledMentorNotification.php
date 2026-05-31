@@ -30,7 +30,7 @@ class MentoringSessionRescheduledMentorNotification extends Notification
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
-            ->subject('Mentoring Session Rescheduled')
+            ->subject('VATSIM UK - Mentoring Session Rescheduled')
             ->view('emails.training.mentoring.session_rescheduled_mentor', [
                 'recipient' => $notifiable,
                 'session' => $session,

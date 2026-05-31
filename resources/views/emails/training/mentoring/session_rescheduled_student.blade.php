@@ -1,18 +1,20 @@
 @extends('emails.messages.post')
 
 @section('body')
-    <p>
-        Your mentoring session has been rescheduled by {{ $mentorName }}.
-    </p>
+    <p>Dear {{ $recipient->name }},</p>
 
-    <h4>Position</h4>
-    <p>{{ $position }}</p>
+    <p>{{ $mentorName }} has <strong>rescheduled</strong> your mentoring session. The session will now take place as follows:</p>
 
-    <h4>Previous date & time</h4>
-    <p>{{ $previousDateTime }}</p>
+    <ul>
+        <li><strong>Position</strong>: {{ $position }}</li>
+        <li><strong>New date</strong>: {{ $sessionDateTime }}</li>
+    </ul>
 
-    <h4>New date & time</h4>
-    <p>{{ $sessionDateTime }}</p>
+    <p>Please note that the times displayed are in Zulu/GMT.</p>
+
+    <p>Please try to be punctual and ensure that you are well prepared for the session. If you need to cancel, please do so in plenty of time. Sessions can be cancelled via Manage Sessions.</p>
+
+    <p>To stop receiving these alerts, you can amend your email settings in the STUDENT menu.</p>
 @stop
 
 @section('signature')
