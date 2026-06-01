@@ -423,7 +423,7 @@ class Discord
             ->pluck('id')
             ->first();
 
-        return (int) $role_id;
+        return $role_id;
     }
 
     /**
