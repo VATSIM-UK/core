@@ -61,7 +61,7 @@ use Watson\Rememberable\Rememberable;
  * @property \Illuminate\Support\Carbon|null $last_login
  * @property string $last_login_ip
  * @property string|null $remember_token
- * @property int|null $discord_id
+ * @property string|null $discord_id
  * @property string|null $discord_access_token
  * @property string|null $discord_refresh_token
  * @property string|null $vatsim_access_token
@@ -287,7 +287,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     protected $casts = [
         'inactive' => 'boolean',
-        'discord_id' => 'int',
+        'discord_id' => 'string',
         'last_login' => 'datetime',
         'joined_at' => 'datetime',
         'cert_checked_at' => 'datetime',
