@@ -405,7 +405,7 @@ class Discord
         ];
     }
 
-    private function findRole(string $roleName): int
+    private function findRole(string $roleName)
     {
         $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/roles";
         $context = [
