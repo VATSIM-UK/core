@@ -85,7 +85,7 @@ trait HasDiscordAccount
                 }
 
                 // Set their roles to only the suspended role (replaces all current roles
-                $discord->setRoles($this, [(int) $suspendedRoleId]);
+                $discord->setRoles($this, [$suspendedRoleId]);
 
                 return;
             }
@@ -117,7 +117,7 @@ trait HasDiscordAccount
      */
     private function computeTargetRoles(Collection $currentRoles, $suspendedRoleId): Collection
     {
-        $targetRoles = $currentRoles->reject(fn ($role) => (int) $role === (int) $suspendedRoleId);
+        $targetRoles = $currentRoles->reject(fn ($role) => $role === $suspendedRoleId);
 
         $discordRoleRules = DiscordRoleRule::all()->map(function (DiscordRoleRule $roleRule) {
             return ['discord_id' => $roleRule->discord_id, 'satisfied' => $roleRule->accountSatisfies($this)];
@@ -131,13 +131,13 @@ trait HasDiscordAccount
             ->keys();
 
         // Remove managed roles that aren't satisfied
-        $targetRoles = $targetRoles->reject(fn ($role) => $managedRoleIds->contains((int) $role));
+        $targetRoles = $targetRoles->reject(fn ($role) => $managedRoleIds->contains($role));
 
         // Add satisfied managed roles, ensuring the suspended role can't be re-introduced
         return $targetRoles
             ->merge($satisfiedRoleIds)
             ->unique()
-            ->reject(fn ($role) => (int) $role === (int) $suspendedRoleId)
+            ->reject(fn ($role) => $role === $suspendedRoleId)
             ->values();
     }
 
