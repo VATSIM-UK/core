@@ -31,10 +31,31 @@
 						class="w-64 flex-shrink-0 sticky left-0 z-20 bg-inherit border-r border-gray-200 dark:border-white/10 px-4 py-3 flex flex-col justify-center">
 						<div class="flex items-start justify-between gap-2">
 							<div class="font-medium text-sm text-gray-950 dark:text-white truncate">
-								{{ $student->name }}
+								<a
+									href="{{ \App\Filament\Training\Pages\Mentor\MentoringHistory::getUrl(
+									    parameters: [
+									        'tableFilters' => [
+									            'student' => ['value' => $student->cid],
+									        ],
+									        'category' => \App\Services\Training\MentorPermissionService::ALL_CATEGORIES,
+									    ],
+									    panel: 'training',
+									) }}"
+									target="_blank" rel="noopener noreferrer">
+									{{ $student->name }}
+								</a>
 							</div>
 							@if ($student->pending_position)
-								<x-filament::badge color="gray" size="sm">
+								@php
+									$isAllCategories = empty($category);
+									$badgeColor = $isAllCategories
+									    ? \App\Filament\Training\Support\MentoringTrainingGroupBadgeColor::forCtsCallsign(
+									        $student->pending_position,
+									    )
+									    : 'gray';
+								@endphp
+
+								<x-filament::badge :color="$badgeColor" size="sm">
 									{{ $student->pending_position }}
 								</x-filament::badge>
 							@endif
