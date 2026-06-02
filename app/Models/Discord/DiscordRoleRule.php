@@ -22,6 +22,7 @@ class DiscordRoleRule extends Model
 
     protected $casts = [
         'permission_id' => 'int',
+        'discord_id' => 'string',
     ];
 
     /**
