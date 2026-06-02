@@ -12,6 +12,9 @@ use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotificat
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedNewMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedOldMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotification;
 use App\Services\Training\MentoringSessionsService;
@@ -462,5 +465,79 @@ class MentoringSessionsServiceTest extends TestCase
 
         Notification::assertSentTo($this->studentAccount, MentoringSessionCancelledStudentNotification::class);
         Notification::assertSentTo($this->mentorAccount, MentoringSessionCancelledMentorNotification::class);
+    }
+
+    #[Test]
+    public function reallocate_session_updates_mentor_id(): void
+    {
+        Notification::fake();
+
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $newMentorAccount = Account::factory()->create();
+        $newMentorMember = Member::factory()->create([
+            'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
+            'cid' => $newMentorAccount->id,
+        ]);
+        $newMentorAccount->givePermissionTo('training.beta');
+        $newMentorAccount->givePermissionTo('training.mentoring.view.*');
+
+        $this->assertTrue($this->service->reallocateSession(
+            $session->id,
+            $newMentorAccount->id,
+            $this->mentorAccount,
+            'Mentor is unavailable due to prior commitments.',
+        ));
+
+        $session->refresh();
+
+        $this->assertSame($newMentorMember->id, $session->mentor_id);
+        $this->assertSame('10:00:00', Carbon::parse($session->taken_from)->format('H:i:s'));
+        $this->assertSame('12:00:00', Carbon::parse($session->taken_to)->format('H:i:s'));
+    }
+
+    #[Test]
+    public function reallocate_session_sends_notifications_to_all_parties(): void
+    {
+        Notification::fake();
+
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $newMentorAccount = Account::factory()->create();
+        Member::factory()->create([
+            'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
+            'cid' => $newMentorAccount->id,
+        ]);
+        $newMentorAccount->givePermissionTo('training.beta');
+        $newMentorAccount->givePermissionTo('training.mentoring.view.*');
+
+        $reason = 'Mentor is unavailable due to prior commitments.';
+
+        $this->assertTrue($this->service->reallocateSession(
+            $session->id,
+            $newMentorAccount->id,
+            $this->mentorAccount,
+            $reason,
+        ));
+
+        Notification::assertSentTo($this->studentAccount, MentoringSessionReallocatedStudentNotification::class);
+        Notification::assertSentTo($this->mentorAccount, MentoringSessionReallocatedOldMentorNotification::class);
+        Notification::assertSentTo($newMentorAccount, MentoringSessionReallocatedNewMentorNotification::class);
     }
 }

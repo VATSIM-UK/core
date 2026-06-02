@@ -11,6 +11,9 @@ use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotificat
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedNewMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedOldMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotification;
 use Carbon\Carbon;
@@ -146,6 +149,43 @@ class MentoringSessionsService
         });
     }
 
+    /**
+     * Re-allocates an existing mentoring session to a new mentor.
+     */
+    public function reallocateSession(int $sessionId, int $newMentorCid, Account $userAccount, string $reason): bool
+    {
+        $session = Session::findOrFail($sessionId);
+
+        if ($userAccount->cannot('reallocate', $session)) {
+            throw new AuthorizationException('You are not authorized to reallocate this session.');
+        }
+
+        $newMentorMember = Member::where('cid', $newMentorCid)->firstOrFail();
+        $newMentorAccount = Account::findOrFail($newMentorCid);
+
+        if (! $newMentorAccount->canMentorPosition($session->position)) {
+            throw new AuthorizationException('The selected mentor does not have permission to mentor this position.');
+        }
+
+        return DB::transaction(function () use ($session, $newMentorMember, $newMentorAccount, $reason) {
+            $oldMentorAccount = $session->mentorAccount();
+
+            $session->update([
+                'mentor_id' => $newMentorMember->id,
+            ]);
+
+            DB::afterCommit(function () use ($session, $oldMentorAccount, $newMentorAccount, $reason) {
+                $this->notifyParticipants($session, 'reallocated', [
+                    'oldMentorAccount' => $oldMentorAccount,
+                    'newMentorAccount' => $newMentorAccount,
+                    'reason' => $reason,
+                ]);
+            });
+
+            return true;
+        });
+    }
+
     private function notifyParticipants(Session $session, string $action, array $data = []): void
     {
         $studentAccount = $session->studentAccount();
@@ -169,6 +209,24 @@ class MentoringSessionsService
             case 'cancelled':
                 $studentAccount->notify(new MentoringSessionCancelledStudentNotification($session, $data['cancellerAccount'], $data['reason']));
                 $mentorAccount->notify(new MentoringSessionCancelledMentorNotification($session, $data['reason']));
+                break;
+
+            case 'reallocated':
+                $oldMentorAccount = $data['oldMentorAccount'];
+                $newMentorAccount = $data['newMentorAccount'];
+                $reason = $data['reason'];
+                $oldMentorName = $oldMentorAccount?->name ?? 'Unknown';
+
+                if ($studentAccount) {
+                    $studentAccount->notify(new MentoringSessionReallocatedStudentNotification($session, $oldMentorName));
+                }
+
+                if ($oldMentorAccount) {
+                    $newMentorName = $newMentorAccount->name ?? 'Unknown';
+                    $oldMentorAccount->notify(new MentoringSessionReallocatedOldMentorNotification($session, $reason, $newMentorName));
+                }
+
+                $newMentorAccount->notify(new MentoringSessionReallocatedNewMentorNotification($session, $reason));
                 break;
 
             default:
