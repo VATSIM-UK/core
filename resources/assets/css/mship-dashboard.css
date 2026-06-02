@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@config '../../../tailwind.config.js';
+
+@source '../../../resources/views/mship/management/dashboard-beta.blade.php';
+@source '../../../resources/views/mship/management/dashboard-beta/**/*.blade.php';
+@source '../../../resources/views/components/mship/**/*.blade.php';
+
+[x-cloak] {
+    display: none !important;
+}

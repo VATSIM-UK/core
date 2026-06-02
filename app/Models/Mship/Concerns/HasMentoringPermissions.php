@@ -2,6 +2,8 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Models\Cts\Session;
+use App\Models\Training\Mentoring\MentoringScope;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -34,6 +36,10 @@ trait HasMentoringPermissions
             MentorPermissionService::pilotCategories()
         );
 
+        if ($this->can('viewAll', Session::class)) {
+            return $allCategories;
+        }
+
         return collect($allCategories)
             ->filter(fn (string $cat) => $this->hasMentoringPermissionForCategory($cat))
             ->values()
@@ -42,12 +48,12 @@ trait HasMentoringPermissions
 
     public function hasMentoringPermissionForCategory(string $category): bool
     {
-        return ! empty($this->getAssignedCallsignsForCategory($category));
+        return $this->can('viewCategory', [new MentoringScope, $category]);
     }
 
     public function hasMentoringPermissionForPosition(string $position): bool
     {
-        return in_array($position, $this->getAllAssignedCallsigns(), true);
+        return $this->can('mentorPosition', [Session::class, $position]);
     }
 
     public function canMentorPosition(string $position): bool

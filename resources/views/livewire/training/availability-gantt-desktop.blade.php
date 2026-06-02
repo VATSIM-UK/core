@@ -31,10 +31,31 @@
 						class="w-64 flex-shrink-0 sticky left-0 z-20 bg-inherit border-r border-gray-200 dark:border-white/10 px-4 py-3 flex flex-col justify-center">
 						<div class="flex items-start justify-between gap-2">
 							<div class="font-medium text-sm text-gray-950 dark:text-white truncate">
-								{{ $student->name }}
+								<a
+									href="{{ \App\Filament\Training\Pages\Mentor\MentoringHistory::getUrl(
+									    parameters: [
+									        'tableFilters' => [
+									            'student' => ['value' => $student->cid],
+									        ],
+									        'category' => \App\Services\Training\MentorPermissionService::ALL_CATEGORIES,
+									    ],
+									    panel: 'training',
+									) }}"
+									target="_blank" rel="noopener noreferrer">
+									{{ $student->name }}
+								</a>
 							</div>
 							@if ($student->pending_position)
-								<x-filament::badge color="gray" size="sm">
+								@php
+									$isAllCategories = empty($category);
+									$badgeColor = $isAllCategories
+									    ? \App\Filament\Training\Support\MentoringTrainingGroupBadgeColor::forCtsCallsign(
+									        $student->pending_position,
+									    )
+									    : 'gray';
+								@endphp
+
+								<x-filament::badge :color="$badgeColor" size="sm">
 									{{ $student->pending_position }}
 								</x-filament::badge>
 							@endif
@@ -72,15 +93,14 @@
 								$widthPercent = ($durationMinutes / $totalTimelineMinutes) * 100;
 							@endphp
 
-							<div
-								class="absolute top-2 bottom-2 flex items-center justify-center px-1.5 rounded-md shadow-sm opacity-90 transition-all border group/block ring-1 bg-success-500 hover:bg-success-600 border-success-600 dark:border-success-400 ring-success-500/30 overflow-hidden"
+							<button type="button" wire:click="mountAction('acceptSession', { availability_id: {{ $avail->id }} })"
+								class="absolute top-2 bottom-2 flex items-center justify-center px-1.5 rounded-md shadow-sm opacity-90 transition-all border group/block cursor-pointer hover:shadow-md ring-1 bg-success-500 hover:bg-success-600 border-success-600 dark:border-success-400 ring-success-500/30 overflow-hidden"
 								style="left: {{ $leftPercent }}%; width: {{ $widthPercent }}%;">
-							</div>
+							</button>
 						@endforeach
 					</div>
 				</div>
 			@endforeach
 		</div>
-
 	</div>
 </div>

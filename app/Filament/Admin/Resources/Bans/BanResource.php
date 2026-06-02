@@ -101,7 +101,8 @@ class BanResource extends Resource
             ->recordActions([
                 ViewAction::make(),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->defaultPaginationPageOption(50);
     }
 
     public static function getRelations(): array

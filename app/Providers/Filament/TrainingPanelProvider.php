@@ -2,14 +2,15 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Training\Pages\Dashboard;
 use App\Filament\Widgets\AccountInfoWidget;
+use App\Http\Middleware\MandatoryTwoFactor;
 use App\Http\Middleware\TrackInactivity;
 use App\Http\Middleware\TrainingPanelAccessMiddleware;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\View\PanelsRenderHook;
@@ -34,7 +35,7 @@ class TrainingPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Training/Resources'), for: 'App\\Filament\\Training\\Resources')
             ->discoverPages(in: app_path('Filament/Training/Pages'), for: 'App\\Filament\\Training\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Training/Widgets'), for: 'App\\Filament\\Training\\Widgets')
             ->widgets([
@@ -49,6 +50,7 @@ class TrainingPanelProvider extends PanelProvider
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
                 TrackInactivity::class,
+                MandatoryTwoFactor::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
@@ -57,6 +59,7 @@ class TrainingPanelProvider extends PanelProvider
             ])
             ->brandLogo(asset('images/branding/vatsimuk_blackblue.png'))
             ->darkModeBrandLogo(asset('images/branding/vatsimuk_whiteblue.png'))
+            ->brandName('VATSIM UK')
             ->navigationGroups([
                 'My Training',
                 'Exams',

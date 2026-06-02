@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use Database\Seeders\LocalDevelopment\Training\AtcAndCtsTrainingPositionsSeeder;
 use Database\Seeders\LocalDevelopment\Training\CtsExamsAndMentoringSeeder;
+use Database\Seeders\LocalDevelopment\Training\DevMentorConductSeeder;
 use Database\Seeders\LocalDevelopment\Training\DevTrainingFoundation;
 use Database\Seeders\LocalDevelopment\Training\DevTrainingPersonas;
 use Database\Seeders\LocalDevelopment\Training\DevTrainingPersonasSeeder;
@@ -36,6 +37,7 @@ class LocalDevelopmentTrainingSeeder extends Seeder
             DevTrainingPersonasSeeder::class,
             TrainingPlaceAvailabilitySeeder::class,
             CtsExamsAndMentoringSeeder::class,
+            DevMentorConductSeeder::class,
         ]);
 
         $this->printSummary();
@@ -64,19 +66,25 @@ class LocalDevelopmentTrainingSeeder extends Seeder
                     'Student',
                     (string) DevTrainingPersonas::STUDENT_CID,
                     DevTrainingPersonas::STUDENT_EMAIL,
-                    'Training place with availability checks / warning',
+                    'Training place with availability checks, warning, mentoring history',
                 ],
                 [
                     'Student (LOA)',
                     (string) DevTrainingPersonas::STUDENT_LOA_CID,
                     DevTrainingPersonas::STUDENT_LOA_EMAIL,
-                    'Active leave of absence on EGLL_N_APP',
+                    'LOA on EGLL_N_APP; mentoring history on training place',
                 ],
                 [
                     'Student (exams)',
                     (string) DevTrainingPersonas::STUDENT_EXAMS_CID,
                     DevTrainingPersonas::STUDENT_EXAMS_EMAIL,
-                    'Exam request, scheduled, completed, cancelled',
+                    'Exams + mentoring history; open mentoring request',
+                ],
+                [
+                    'Mentor (conduct)',
+                    (string) DevTrainingPersonas::MENTOR_CONDUCT_CID,
+                    '(your sandbox account if present)',
+                    'Pending conduct session on EGKK_TWR — log in as this CID',
                 ],
             ],
         );

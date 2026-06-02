@@ -13,12 +13,12 @@ use App\Models\Cts\ExamSetup;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalExaminers;
 use App\Models\Cts\PracticalResult;
-use App\Models\Cts\Session;
 use App\Services\Training\MentorPermissionService;
 use Database\Seeders\LocalDevelopment\Training\Concerns\AssignsDevTrainingRoles;
 use Database\Seeders\LocalDevelopment\Training\Concerns\CreatesDevTrainingPlace;
 use Database\Seeders\LocalDevelopment\Training\Concerns\CreatesLinkedAccount;
 use Database\Seeders\LocalDevelopment\Training\Concerns\SeedsCtsPosition;
+use Database\Seeders\LocalDevelopment\Training\Concerns\SeedsDevMentoringSessions;
 use Illuminate\Database\Seeder;
 use RuntimeException;
 
@@ -33,6 +33,7 @@ class CtsExamsAndMentoringSeeder extends Seeder
     use CreatesDevTrainingPlace;
     use CreatesLinkedAccount;
     use SeedsCtsPosition;
+    use SeedsDevMentoringSessions;
 
     public function run(): void
     {
@@ -92,7 +93,8 @@ class CtsExamsAndMentoringSeeder extends Seeder
         $this->seedScheduledExam($examStudentMember, $staffMember);
         $this->seedCompletedExam($examStudentMember, $staffMember);
         $this->seedCancelledExam($examStudentMember);
-        $this->seedMentoringSessions($examStudentMember, $staffMember);
+        $this->seedDevMentoringHistory($examStudentMember, $staffMember, 'EGKK_TWR');
+        $this->seedDevMentoringPendingRequest($examStudentMember, 'EGKK_TWR');
         $this->seedMentorAssignment();
 
         $this->command?->info('CTS exams, sessions, and mentor assignment seeded.');
@@ -249,46 +251,6 @@ class CtsExamsAndMentoringSeeder extends Seeder
                 'used' => 0,
                 'reason_by' => $student->cid,
                 'date' => now()->subDays(2),
-            ],
-        );
-    }
-
-    private function seedMentoringSessions(Member $student, Member $mentor): void
-    {
-        Session::query()->updateOrCreate(
-            [
-                'student_id' => $student->id,
-                'position' => 'EGKK_TWR',
-                'session_done' => 1,
-            ],
-            [
-                'rts_id' => 1,
-                'student_rating' => 1,
-                'mentor_id' => $mentor->id,
-                'mentor_rating' => 3,
-                'taken_date' => now()->subDays(14)->format('Y-m-d'),
-                'taken_time' => now()->subDays(14),
-                'taken_from' => '19:00:00',
-                'taken_to' => '21:00:00',
-                'cancelled_datetime' => null,
-                'noShow' => 0,
-                'request_time' => now()->subDays(21),
-                'progress_sheet_id' => 0,
-            ],
-        );
-
-        Session::query()->updateOrCreate(
-            [
-                'student_id' => $student->id,
-                'position' => 'EGKK_TWR',
-                'session_done' => 0,
-                'mentor_id' => null,
-            ],
-            [
-                'rts_id' => 1,
-                'student_rating' => 1,
-                'request_time' => now()->subDay(),
-                'progress_sheet_id' => 0,
             ],
         );
     }

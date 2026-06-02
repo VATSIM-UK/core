@@ -38,7 +38,23 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function getDashboard()
     {
-        // Load necessary data, early!
+        return $this->viewMake('mship.management.dashboard')
+            ->with($this->dashboardViewData());
+    }
+
+    public function getDashboardBeta()
+    {
+        $this->setTitle('Dashboard (Beta)');
+
+        return $this->viewMake('mship.management.dashboard-beta')
+            ->with($this->dashboardViewData());
+    }
+
+    /**
+     * @return array{pluginKeys: \Illuminate\Support\Collection, roster: bool}
+     */
+    private function dashboardViewData(): array
+    {
         $this->account->load(
             'secondaryEmails',
             'qualifications',
@@ -46,12 +62,10 @@ class Management extends \App\Http\Controllers\BaseController
             'teamspeakRegistrations'
         );
 
-        $pluginKeys = $this->ukcp->getValidTokensFor(auth()->user());
-        $roster = Roster::where('account_id', auth()->user()->id)->exists();
-
-        return $this->viewMake('mship.management.dashboard')
-            ->with('pluginKeys', $pluginKeys)
-            ->with('roster', $roster);
+        return [
+            'pluginKeys' => $this->ukcp->getValidTokensFor(auth()->user()),
+            'roster' => Roster::where('account_id', auth()->user()->id)->exists(),
+        ];
     }
 
     public function getEmailAdd()

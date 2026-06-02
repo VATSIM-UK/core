@@ -3,10 +3,12 @@
 	{{-- Toolbar --}}
 	<div class="flex flex-col md:flex-row items-center gap-3 border-gray-200 dark:border-white/10 pb-4">
 		<div class="flex flex-wrap md:flex-nowrap items-center justify-center gap-2">
-			<x-filament::button color="gray" wire:click="previousDay" icon="heroicon-m-chevron-left" class="!px-2" />
+			<x-filament::button color="gray" wire:click="previousDay" icon="heroicon-m-chevron-left" class="!px-2"
+				:disabled="$date <= \Carbon\Carbon::today()->format('Y-m-d')" />
 			<x-filament::button color="gray" wire:click="setToday">Today</x-filament::button>
 			<x-filament::input.wrapper>
-				<x-filament::input type="date" wire:model.live="date" class="min-w-[140px]" />
+				<x-filament::input type="date" wire:model.live="date" class="min-w-[140px]"
+					min="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" />
 			</x-filament::input.wrapper>
 			<x-filament::button color="gray" wire:click="nextDay" icon="heroicon-m-chevron-right" icon-alias="next"
 				class="!px-2" />
@@ -38,12 +40,26 @@
 
 		{{-- Page Arrows --}}
 		@if ($students->count() > $this->studentsPerPage)
-			<div class="flex items-center justify-end gap-2 pt-2 border-gray-200 dark:border-white/10">
-				<x-filament::button color="gray" wire:click="previousStudentsPage" icon="heroicon-m-chevron-left" class="!px-2"
-					:disabled="$studentsPage <= 1" />
-				<x-filament::button color="gray" wire:click="nextStudentsPage" icon="heroicon-m-chevron-right" class="!px-2"
-					:disabled="$studentsPage * $this->studentsPerPage >= $students->count()" />
+			@php
+				$totalStudents = $students->count();
+				$totalPages = (int) ceil($totalStudents / $this->studentsPerPage);
+			@endphp
+			<div class="flex items-center justify-between gap-3 pt-2 border-gray-200 dark:border-white/10">
+				<div class="text-sm text-gray-500 dark:text-gray-400">
+					{{ $totalStudents }} student{{ $totalStudents === 1 ? '' : 's' }} with availability
+				</div>
+				<div class="flex items-center gap-3">
+					<x-filament::button color="gray" wire:click="previousStudentsPage" icon="heroicon-m-chevron-left" class="!px-2"
+						:disabled="$studentsPage <= 1" />
+					<div class="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+						Page {{ $studentsPage }} / {{ $totalPages }}
+					</div>
+					<x-filament::button color="gray" wire:click="nextStudentsPage" icon="heroicon-m-chevron-right" class="!px-2"
+						:disabled="$studentsPage * $this->studentsPerPage >= $students->count()" />
+				</div>
 			</div>
 		@endif
 	@endif
+
+	<x-filament-actions::modals />
 </x-filament::card>

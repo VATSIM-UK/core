@@ -161,7 +161,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         $this->assertDatabaseHas('practical_criteria_assess', connection: 'cts', data: [
             'examid' => $exam->id,
             'criteria_id' => $examCriteria->id,
-            'notes' => 'Test comment for test criteria',
+            'notes' => '<p>Test comment for test criteria</p>',
             'result' => ExamResultEnum::Incomplete->value,
         ]);
     }
@@ -252,7 +252,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
             'examid' => $exam->id,
             'student_id' => $student->id,
             'result' => 'P',
-            'notes' => 'Test notes for test result',
+            'notes' => '<p>Test notes for test result</p>',
             'date' => now(),
             'exam' => 'TWR',
         ], connection: 'cts');

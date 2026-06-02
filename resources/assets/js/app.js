@@ -1,6 +1,7 @@
 import "@fortawesome/fontawesome-free/js/fontawesome";
 import "@fortawesome/fontawesome-free/js/solid";
 import "@fortawesome/fontawesome-free/js/brands";
+import "./mobile-fixed-nav-height";
 
 $("body").scrollspy({
     target: ".navbar-fixed-top",
@@ -13,4 +14,5 @@ import collapse from "@alpinejs/collapse";
 
 Alpine.plugin(collapse);
 
-Livewire.start();
+window.Alpine = Alpine;
+Alpine.start();

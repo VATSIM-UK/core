@@ -4,6 +4,7 @@ namespace Tests\Feature\TrainingPanel\Mentor;
 
 use App\Enums\FieldScore;
 use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
+use App\Models\Cts\CancelReason;
 use App\Models\Cts\Member;
 use App\Models\Cts\ProgSheet;
 use App\Models\Cts\ProgSheetCategory;
@@ -113,6 +114,10 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     public function it_loads_for_a_user_with_a_mentor_training_position_for_the_session_position(): void
     {
         $authorisedMentor = Account::factory()->create();
+        Member::factory()->create([
+            'id' => $authorisedMentor->id,
+            'cid' => $authorisedMentor->id,
+        ]);
 
         $trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => ['EGLL_APP'],
@@ -131,11 +136,37 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_denies_viewing_an_unfiled_report(): void
+    {
+        $unfiledSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
+            'taken_date' => '2025-03-10',
+            'taken_from' => '18:00',
+            'taken_to' => '20:00',
+            'filed' => null,
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $unfiledSession->id])
+            ->assertForbidden();
+
+        Livewire::actingAs($this->mentor)
+            ->test(ViewMentoringReport::class, ['sessionId' => $unfiledSession->id])
+            ->assertForbidden();
+    }
+
+    #[Test]
     public function it_denies_an_entirely_unrelated_user(): void
     {
         $unrelatedUser = Account::factory()->create();
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn([]));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock
+            ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
+            ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+        );
 
         Livewire::actingAs($unrelatedUser)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -151,7 +182,10 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'cid' => $otherStudent->id,
         ]);
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn([]));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock
+            ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
+            ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+        );
 
         Livewire::actingAs($otherStudent)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -167,7 +201,10 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'cid' => $otherMentor->id,
         ]);
 
-        $this->mock(MentorPermissionService::class, fn ($mock) => $mock->shouldReceive('getCtsCallsignsForMentorable')->andReturn([]));
+        $this->mock(MentorPermissionService::class, fn ($mock) => $mock
+            ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
+            ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+        );
 
         Livewire::actingAs($otherMentor)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
@@ -575,5 +612,199 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($newStudent)
             ->test(ViewMentoringReport::class, ['sessionId' => $bareSession->id])
             ->assertSee('No report data found for this session.');
+    }
+
+    #[Test]
+    public function test_it_displays_session_cancelled_callout_with_correct_details(): void
+    {
+        $cancellingMember = Member::factory()->create(['name' => 'John Doe']);
+
+        CancelReason::factory()->create([
+            'sesh_id' => $this->mentoringSession->id,
+            'sesh_type' => 'ME',
+            'reason' => 'Family emergency.',
+            'reason_by' => $cancellingMember->id,
+        ]);
+
+        $this->mentoringSession->update([
+            'cancelled_datetime' => '2025-03-15 16:00:00',
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('Session Cancelled by John Doe')
+            ->assertSee('Family emergency.')
+            ->assertSee('2 hours notice given');
+    }
+
+    #[Test]
+    public function test_it_displays_student_no_show_callout_with_correct_historical_counter(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'noShow' => true,
+        ]);
+
+        $this->mentoringSession->update([
+            'noShow' => true,
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('This session has been marked as a student no-show.')
+            ->assertSee('Total student no-shows recorded: 2');
+    }
+
+    #[Test]
+    public function test_it_hides_cancelled_and_no_show_callouts_when_session_is_normal(): void
+    {
+        $this->mentoringSession->update([
+            'cancelled_datetime' => null,
+            'noShow' => false,
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertDontSee('Session Cancelled by')
+            ->assertDontSee('This session has been marked as a student no-show.');
+    }
+
+    #[Test]
+    public function test_best_badge_links_to_session_with_higher_score_for_criterion(): void
+    {
+        $this->reportSheet->update(['field_score' => FieldScore::DEVELOPING->value]);
+
+        $betterSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
+            'taken_date' => '2025-01-10',
+            'filed' => now(),
+        ]);
+
+        ReportSheet::factory()
+            ->forSession($betterSession->id)
+            ->forStudent($this->studentMember->id)
+            ->forField($this->field->field_id)
+            ->create([
+                'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+                'field_score' => FieldScore::TEST_STANDARD->value,
+            ]);
+
+        $expectedUrl = ViewMentoringReport::getUrl(['sessionId' => $betterSession->id]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee($expectedUrl, false);
+    }
+
+    #[Test]
+    public function test_best_badge_has_no_link_when_current_session_has_the_best_score(): void
+    {
+        $worseSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
+            'taken_date' => '2025-01-10',
+            'filed' => now(),
+        ]);
+
+        ReportSheet::factory()
+            ->forSession($worseSession->id)
+            ->forStudent($this->studentMember->id)
+            ->forField($this->field->field_id)
+            ->create([
+                'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+                'field_score' => FieldScore::DEVELOPING->value,
+            ]);
+
+        $worseSessionUrl = ViewMentoringReport::getUrl(['sessionId' => $worseSession->id]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertDontSee($worseSessionUrl.'" target="_blank"', false);
+    }
+
+    #[Test]
+    public function test_best_badge_has_no_link_when_current_session_ties_the_best_score(): void
+    {
+        $tiedSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
+            'taken_date' => '2025-01-10',
+            'filed' => now(),
+        ]);
+
+        ReportSheet::factory()
+            ->forSession($tiedSession->id)
+            ->forStudent($this->studentMember->id)
+            ->forField($this->field->field_id)
+            ->create([
+                'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+                'field_score' => FieldScore::TEST_STANDARD->value,
+            ]);
+
+        $tiedSessionUrl = ViewMentoringReport::getUrl(['sessionId' => $tiedSession->id]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertDontSee($tiedSessionUrl.'" target="_blank"', false);
+    }
+
+    #[Test]
+    public function test_best_badge_has_no_link_when_there_is_only_one_session(): void
+    {
+        $currentSessionUrl = ViewMentoringReport::getUrl(['sessionId' => $this->mentoringSession->id]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertDontSee($currentSessionUrl, false);
+    }
+
+    #[Test]
+    public function test_best_badge_links_to_the_highest_scoring_session_among_multiple(): void
+    {
+        $this->reportSheet->update(['field_score' => FieldScore::COVERED->value]);
+
+        $goodSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
+            'taken_date' => '2025-01-10',
+            'filed' => now(),
+        ]);
+
+        $bestSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
+            'taken_date' => '2025-02-10',
+            'filed' => now(),
+        ]);
+
+        foreach ([[$goodSession, FieldScore::GOOD], [$bestSession, FieldScore::TEST_STANDARD]] as [$session, $score]) {
+            ReportSheet::factory()
+                ->forSession($session->id)
+                ->forStudent($this->studentMember->id)
+                ->forField($this->field->field_id)
+                ->create([
+                    'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+                    'field_score' => $score->value,
+                ]);
+        }
+
+        $bestUrl = ViewMentoringReport::getUrl(['sessionId' => $bestSession->id]);
+        $goodUrl = ViewMentoringReport::getUrl(['sessionId' => $goodSession->id]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee($bestUrl.'" target="_blank"', false)
+            ->assertDontSee($goodUrl.'" target="_blank"', false);
     }
 }

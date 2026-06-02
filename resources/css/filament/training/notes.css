@@ -1,0 +1,31 @@
+@layer components {
+    .cts-notes-content h1,
+    .cts-notes-content h2,
+    .cts-notes-content h3,
+    .cts-notes-content h4,
+    .cts-notes-content h5,
+    .cts-notes-content h6 {
+        @apply font-semibold leading-tight;
+    }
+
+    .cts-notes-content h1 {
+        @apply text-2xl;
+    }
+
+    .cts-notes-content h2 {
+        @apply text-xl;
+    }
+
+    .cts-notes-content h3 {
+        @apply text-lg;
+    }
+
+    .cts-notes-content h4 {
+        @apply text-base;
+    }
+
+    .cts-notes-content h5,
+    .cts-notes-content h6 {
+        @apply text-sm;
+    }
+}
