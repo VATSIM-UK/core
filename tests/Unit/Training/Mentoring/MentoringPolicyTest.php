@@ -169,10 +169,10 @@ class MentoringPolicyTest extends TestCase
     }
 
     #[Test]
-    public function reallocate_allows_users_with_manage_mentors_atc_permission(): void
+    public function reallocate_allows_users_with_reallocate_permission(): void
     {
         $manager = Account::factory()->create();
-        $manager->givePermissionTo('training.mentors.manage.atc');
+        $manager->givePermissionTo('training.mentoring.sessions.reallocate.*');
 
         $session = Session::factory()->create(['position' => 'EGLL_APP']);
 
