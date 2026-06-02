@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications;
 
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\Pages\ListVisitTransferApplications;
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\Pages\ViewVisitTransferApplication;
+use App\Filament\Support\NameColumn;
 use App\Models\VisitTransfer\Application;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
@@ -47,7 +48,7 @@ class VisitTransferApplicationResource extends Resource
             ->columns([
                 TextColumn::make('public_id')->label('Public ID')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('account_id')->label('CID')->searchable(),
-                TextColumn::make('account.name')->label('Name')->searchable(['name_first', 'name_last']),
+                NameColumn::make('account.name')->label('Name'),
                 TextColumn::make('facility.name')->label('Facility Name'),
                 TextColumn::make('status')->label('Status')
                     ->badge()

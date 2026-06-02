@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Mentor;
 
+use App\Filament\Support\NameColumn;
 use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Filament\Training\Pages\Mentor\Widgets\ManageMentorsStatsWidget;
 use App\Filament\Training\Support\TrainingMemberAccountSearch;
@@ -101,7 +102,7 @@ class ManageMentors extends Page implements HasTable
             ->query($this->mentorsQuery($this->category))
             ->columns([
                 TextColumn::make('id')->label('CID')->searchable(),
-                TextColumn::make('name')->searchable(['name_first', 'name_last']),
+                NameColumn::make('name'),
                 TextColumn::make('mentoring_permissions')
                     ->label(fn () => $this->category.' Permissions')
                     ->state(fn (Account $record) => $this->resolvePermissionsArray($record, $this->category))

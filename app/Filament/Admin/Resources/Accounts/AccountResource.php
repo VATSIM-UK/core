@@ -16,6 +16,7 @@ use App\Filament\Admin\Resources\Accounts\RelationManagers\RetentionChecksRelati
 use App\Filament\Admin\Resources\Accounts\RelationManagers\RolesRelationManager;
 use App\Filament\Admin\Resources\Accounts\RelationManagers\StatesRelationManager;
 use App\Filament\Admin\Resources\Accounts\RelationManagers\VisitTransferRelationManager;
+use App\Filament\Support\NameColumn;
 use App\Filament\Training\Resources\AccountResource\RelationManagers\WaitingListsRelationManager;
 use App\Models\Mship\Account;
 use App\Models\Roster;
@@ -160,7 +161,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                     ->searchable()
                     ->label('Discord ID')
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('name')->sortable()->searchable(['name_first', 'name_last']),
+                NameColumn::make('name')->sortable(),
                 TextColumn::make('qualification_atc')->sortable()->label('ATC Rating'),
                 TextColumn::make('qualification_pilot')->sortable()->label('Pilot Rating'),
                 TextColumn::make('state')
