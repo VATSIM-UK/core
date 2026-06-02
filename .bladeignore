@@ -2,3 +2,4 @@ resources/views/emails/
 resources/views/site/policy/**/*-body.blade.php
 resources/views/site/atc/newcontroller-*.blade.php
 resources/views/site/atc/heathrow-*.blade.php
+resources/views/site/operations/markdown/*
