@@ -84,8 +84,14 @@ trait HasDiscordAccount
                     return;
                 }
 
-                // Set their roles to only the suspended role (replaces all current roles
-                $discord->setRoles($this, [$suspendedRoleId]);
+                $rolesToAdd = [$suspendedRoleId];
+
+                if ($currentRoles->contains(config('services.discord.booster_role_id'))) {
+                    $rolesToAdd[] = config('services.discord.booster_role_id');
+                }
+
+                // Set their roles to only the suspended role (replaces all current roles)
+                $discord->setRoles($this, [...$rolesToAdd]);
 
                 return;
             }

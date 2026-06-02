@@ -52,6 +52,7 @@ return [
         'base_discord_uri' => env('DISCORD_API_BASE', 'https://discord.com/api/v6'),
         'suspended_member_role_id' => env('DISCORD_SUSPENDED_MEMBER_ROLE_ID', null),
         'training_alerts_channel_id' => env('DISCORD_TRAINING_ALERTS_CHANNEL_ID', null),
+        'booster_role_id' => env('DISCORD_BOOSTER_ROLE_ID', '740539876889591878'),
     ],
 
     'google' => [
