@@ -373,7 +373,7 @@ class Atc extends Model
         }
 
         return static::where('callsign', 'like', $areaCode.'_%')
-            ->where('callsign', '!=', $mentoringSession->position)
+            ->where('account_id', '!=', $mentoringSession->student->cid)
             ->onFrequency()
             ->where('connected_at', '<', $sessionEnd)
             ->where(function ($query) use ($sessionStart) {

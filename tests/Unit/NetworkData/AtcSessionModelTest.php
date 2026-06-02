@@ -292,4 +292,26 @@ class AtcSessionModelTest extends TestCase
         $result = Atc::adjacentPositionsForMentoringSession($mentoringSession);
         $this->assertCount(0, $result);
     }
+
+    #[Test]
+    public function it_excludes_relief_sessions_from_the_student_being_mentored(): void
+    {
+        $mentoringSession = MentoringSession::factory()->create([
+            'position' => 'EGKK_TWR',
+            'taken_date' => '2026-03-29',
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+        ]);
+
+        // Adjacent session from the same student on relief - should be ignored
+        factory(Atc::class)->states('offline')->create([
+            'account_id' => $mentoringSession->student->cid,
+            'callsign' => 'EGKK__TWR',
+            'connected_at' => '2026-03-29 18:30:00',
+            'disconnected_at' => '2026-03-29 19:30:00',
+        ]);
+
+        $result = Atc::adjacentPositionsForMentoringSession($mentoringSession);
+        $this->assertCount(0, $result);
+    }
 }
