@@ -279,7 +279,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                             ->html()
                             ->prose()
                             ->extraAttributes(['style' => 'word-break:break-word'])
-                            ->columnSpan(12)
+                            ->columnSpan(8)
                             ->hidden(blank($sheet->notes)),
                     ])
                     ->extraAttributes(['class' => MentoringReportLayout::CRITERION_ROW_CLASSES]);
