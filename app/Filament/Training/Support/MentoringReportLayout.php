@@ -9,7 +9,7 @@ use Illuminate\Support\HtmlString;
 final class MentoringReportLayout
 {
     /** Vertical rhythm between criteria rows (no border separators). */
-    public const CRITERION_ROW_CLASSES = 'mb-10 last:mb-0';
+    public const CRITERION_ROW_CLASSES = 'mb-2 last:mb-0';
 
     public static function categorySectionTitle(string $categoryName): HtmlString
     {

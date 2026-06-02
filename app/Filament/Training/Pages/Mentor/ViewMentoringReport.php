@@ -234,12 +234,14 @@ class ViewMentoringReport extends Page implements HasInfolists
                 $sheetRows[] = Grid::make(14)
                     ->schema([
                         Grid::make(1)
+                            ->extraAttributes(['class' => 'gap-0'])
                             ->schema([
                                 TextEntry::make("field_name_{$uniqueKey}")
                                     ->state($sheet->field?->field ?? 'Unknown Field')
                                     ->hiddenLabel()
                                     ->size(TextSize::Large)
-                                    ->weight(FontWeight::Bold),
+                                    ->weight(FontWeight::Bold)
+                                    ->extraAttributes(['style' => 'margin-bottom:0.5px']),
 
                                 TextEntry::make("field_notes_{$uniqueKey}")
                                     ->label('Notes')
