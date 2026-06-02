@@ -233,12 +233,23 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                 $sheetRows[] = Grid::make(14)
                     ->schema([
-                        TextEntry::make("field_name_{$uniqueKey}")
-                            ->state($sheet->field?->field ?? 'Unknown Field')
-                            ->hiddenLabel()
-                            ->size(TextSize::Large)
-                            ->weight(FontWeight::Bold)
-                            ->columnSpan(8),
+                        Grid::make(1)
+                            ->schema([
+                                TextEntry::make("field_name_{$uniqueKey}")
+                                    ->state($sheet->field?->field ?? 'Unknown Field')
+                                    ->hiddenLabel()
+                                    ->size(TextSize::Large)
+                                    ->weight(FontWeight::Bold),
+
+                                TextEntry::make("field_notes_{$uniqueKey}")
+                                    ->label('Notes')
+                                    ->state($this->ctsPlainNotesForHtmlDisplay($sheet->notes))
+                                    ->hiddenLabel()
+                                    ->html()
+                                    ->prose()
+                                    ->extraAttributes(['style' => 'word-break:break-word'])
+                                    ->hidden(blank($sheet->notes)),
+                            ])->columnSpan(8),
 
                         TextEntry::make("field_best_{$uniqueKey}")
                             ->label('Best')
@@ -271,16 +282,6 @@ class ViewMentoringReport extends Page implements HasInfolists
                             ->state($sheet->field_score)
                             ->badge()
                             ->columnSpan(2),
-
-                        TextEntry::make("field_notes_{$uniqueKey}")
-                            ->label('Notes')
-                            ->state($this->ctsPlainNotesForHtmlDisplay($sheet->notes))
-                            ->hiddenLabel()
-                            ->html()
-                            ->prose()
-                            ->extraAttributes(['style' => 'word-break:break-word'])
-                            ->columnSpan(8)
-                            ->hidden(blank($sheet->notes)),
                     ])
                     ->extraAttributes(['class' => MentoringReportLayout::CRITERION_ROW_CLASSES]);
             }
