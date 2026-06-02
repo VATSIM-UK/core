@@ -141,7 +141,7 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
                     ->icon('heroicon-m-arrow-path')
                     ->color('warning')
                     ->modalHeading(fn (Session $record) => "Reallocate Session: {$record->student->name}")
-                    ->modalDescription('Select a new mentor for this session. The previous mentor will lose access immediately.')
+                    ->modalDescription('Select a new mentor for this session.')
                     ->modalSubmitActionLabel('Reallocate Session')
                     ->visible(fn (Session $record): bool => auth()->user()?->can('reallocate', $record) ?? false)
                     ->form(fn (Session $record): array => [
