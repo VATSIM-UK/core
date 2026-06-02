@@ -61,7 +61,7 @@ trait HasDiscordAccount
         /** @var Discord */
         $discord = app()->make(Discord::class);
 
-        $suspendedRoleId = config('services.discord.suspended_member_role_id');
+        $suspendedRoleId = config('services.discord.suspended_member_role_id') ?? '';
 
         try {
             $discord->setNickname($this, $this->discordName);
