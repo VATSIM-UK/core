@@ -99,10 +99,10 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ->assertSuccessful();
 
         // Should show no table data since user has no conduct permissions
-        $component->assertDontSee($this->practicalResults['OBS']->student->account->name);
-        $component->assertDontSee($this->practicalResults['TWR']->student->account->name);
-        $component->assertDontSee($this->practicalResults['APP']->student->account->name);
-        $component->assertDontSee($this->practicalResults['CTR']->student->account->name);
+        $component->assertDontSee($this->practicalResults['OBS']->student->name);
+        $component->assertDontSee($this->practicalResults['TWR']->student->name);
+        $component->assertDontSee($this->practicalResults['APP']->student->name);
+        $component->assertDontSee($this->practicalResults['CTR']->student->name);
     }
 
     #[Test]
@@ -115,13 +115,13 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ->assertSuccessful();
 
         // Should show OBS exams
-        $component->assertSee($this->practicalResults['OBS']->student->account->name);
+        $component->assertSee($this->practicalResults['OBS']->student->name);
         $component->assertSee('OBS');
 
         // Should not show other exam types
-        $component->assertDontSee($this->practicalResults['TWR']->student->account->name);
-        $component->assertDontSee($this->practicalResults['APP']->student->account->name);
-        $component->assertDontSee($this->practicalResults['CTR']->student->account->name);
+        $component->assertDontSee($this->practicalResults['TWR']->student->name);
+        $component->assertDontSee($this->practicalResults['APP']->student->name);
+        $component->assertDontSee($this->practicalResults['CTR']->student->name);
     }
 
     #[Test]
@@ -134,13 +134,13 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ->assertSuccessful();
 
         // Should show TWR exams
-        $component->assertSee($this->practicalResults['TWR']->student->account->name);
+        $component->assertSee($this->practicalResults['TWR']->student->name);
         $component->assertSee('TWR');
 
         // Should not show other exam types
-        $component->assertDontSee($this->practicalResults['OBS']->student->account->name);
-        $component->assertDontSee($this->practicalResults['APP']->student->account->name);
-        $component->assertDontSee($this->practicalResults['CTR']->student->account->name);
+        $component->assertDontSee($this->practicalResults['OBS']->student->name);
+        $component->assertDontSee($this->practicalResults['APP']->student->name);
+        $component->assertDontSee($this->practicalResults['CTR']->student->name);
     }
 
     #[Test]
@@ -153,13 +153,13 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ->assertSuccessful();
 
         // Should show APP exams
-        $component->assertSee($this->practicalResults['APP']->student->account->name);
+        $component->assertSee($this->practicalResults['APP']->student->name);
         $component->assertSee('APP');
 
         // Should not show other exam types
-        $component->assertDontSee($this->practicalResults['OBS']->student->account->name);
-        $component->assertDontSee($this->practicalResults['TWR']->student->account->name);
-        $component->assertDontSee($this->practicalResults['CTR']->student->account->name);
+        $component->assertDontSee($this->practicalResults['OBS']->student->name);
+        $component->assertDontSee($this->practicalResults['TWR']->student->name);
+        $component->assertDontSee($this->practicalResults['CTR']->student->name);
     }
 
     #[Test]
@@ -172,13 +172,13 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ->assertSuccessful();
 
         // Should show CTR exams
-        $component->assertSee($this->practicalResults['CTR']->student->account->name);
+        $component->assertSee($this->practicalResults['CTR']->student->name);
         $component->assertSee('CTR');
 
         // Should not show other exam types
-        $component->assertDontSee($this->practicalResults['OBS']->student->account->name);
-        $component->assertDontSee($this->practicalResults['TWR']->student->account->name);
-        $component->assertDontSee($this->practicalResults['APP']->student->account->name);
+        $component->assertDontSee($this->practicalResults['OBS']->student->name);
+        $component->assertDontSee($this->practicalResults['TWR']->student->name);
+        $component->assertDontSee($this->practicalResults['APP']->student->name);
     }
 
     #[Test]
@@ -195,14 +195,14 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ->assertSuccessful();
 
         // Should show OBS and TWR exams
-        $component->assertSee($this->practicalResults['OBS']->student->account->name);
-        $component->assertSee($this->practicalResults['TWR']->student->account->name);
+        $component->assertSee($this->practicalResults['OBS']->student->name);
+        $component->assertSee($this->practicalResults['TWR']->student->name);
         $component->assertSee('OBS');
         $component->assertSee('TWR');
 
         // Should not show APP and CTR exams
-        $component->assertDontSee($this->practicalResults['APP']->student->account->name);
-        $component->assertDontSee($this->practicalResults['CTR']->student->account->name);
+        $component->assertDontSee($this->practicalResults['APP']->student->name);
+        $component->assertDontSee($this->practicalResults['CTR']->student->name);
     }
 
     #[Test]
@@ -221,10 +221,10 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ->assertSuccessful();
 
         // Should show all exam types
-        $component->assertSee($this->practicalResults['OBS']->student->account->name);
-        $component->assertSee($this->practicalResults['TWR']->student->account->name);
-        $component->assertSee($this->practicalResults['APP']->student->account->name);
-        $component->assertSee($this->practicalResults['CTR']->student->account->name);
+        $component->assertSee($this->practicalResults['OBS']->student->name);
+        $component->assertSee($this->practicalResults['TWR']->student->name);
+        $component->assertSee($this->practicalResults['APP']->student->name);
+        $component->assertSee($this->practicalResults['CTR']->student->name);
 
         $component->assertSee('OBS');
         $component->assertSee('TWR');
@@ -270,7 +270,7 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
 
         // Should show exam information
         $component->assertSee($twr->student->account->id); // CID
-        $component->assertSee($twr->student->account->name); // Name
+        $component->assertSee($twr->student->name); // Name
         $component->assertSee('TWR'); // Exam type
         $component->assertSee($twr->examBooking->position_1); // Position
     }
@@ -299,7 +299,7 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ->assertSuccessful();
 
         // Should show TWR exam even though permission is lowercase 'twr'
-        $component->assertSee($this->practicalResults['TWR']->student->account->name);
+        $component->assertSee($this->practicalResults['TWR']->student->name);
         $component->assertSee('TWR');
     }
 
@@ -385,10 +385,10 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ]);
 
         // Should find the OBS exam (within last 10 days)
-        $component->assertSee($this->practicalResults['OBS']->student->account->name);
+        $component->assertSee($this->practicalResults['OBS']->student->name);
 
         // Should not find the TWR exam (older than 10 days)
-        $component->assertDontSee($this->practicalResults['TWR']->student->account->name);
+        $component->assertDontSee($this->practicalResults['TWR']->student->name);
     }
 
     #[Test]
@@ -416,11 +416,11 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ]);
 
         // Should find the TWR exam
-        $component->assertSee($this->practicalResults['TWR']->student->account->name);
+        $component->assertSee($this->practicalResults['TWR']->student->name);
 
         // Should not find other exams
-        $component->assertDontSee($this->practicalResults['OBS']->student->account->name);
-        $component->assertDontSee($this->practicalResults['APP']->student->account->name);
+        $component->assertDontSee($this->practicalResults['OBS']->student->name);
+        $component->assertDontSee($this->practicalResults['APP']->student->name);
 
         // Reset and filter for multiple positions
         $component->resetTableFilters()
@@ -429,11 +429,11 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ]);
 
         // Should find OBS and APP exams
-        $component->assertSee($this->practicalResults['OBS']->student->account->name);
-        $component->assertSee($this->practicalResults['APP']->student->account->name);
+        $component->assertSee($this->practicalResults['OBS']->student->name);
+        $component->assertSee($this->practicalResults['APP']->student->name);
 
         // Should not find TWR exam
-        $component->assertDontSee($this->practicalResults['TWR']->student->account->name);
+        $component->assertDontSee($this->practicalResults['TWR']->student->name);
     }
 
     #[Test]
@@ -476,10 +476,10 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             ]);
 
         // Should find OBS and TWR exams (within last 14 days)
-        $component->assertSee($this->practicalResults['OBS']->student->account->name);
-        $component->assertSee($this->practicalResults['TWR']->student->account->name);
+        $component->assertSee($this->practicalResults['OBS']->student->name);
+        $component->assertSee($this->practicalResults['TWR']->student->name);
 
         // Should not find APP exam (older than 14 days)
-        $component->assertDontSee($this->practicalResults['APP']->student->account->name);
+        $component->assertDontSee($this->practicalResults['APP']->student->name);
     }
 }
