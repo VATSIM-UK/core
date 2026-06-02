@@ -80,18 +80,19 @@ trait HasDiscordAccount
             // Handle if the user is banned on core
             if ($this->isBanned) {
                 // If they are already in the suspended role, we are happy
-                if ($currentRoles->contains($suspendedRoleId)) {
+                if ($currentRoles->contains((string) $suspendedRoleId)) {
                     return;
                 }
 
-                $rolesToAdd = [$suspendedRoleId];
+                $rolesToAdd = [(string) $suspendedRoleId];
 
-                if ($currentRoles->contains(config('services.discord.booster_role_id'))) {
-                    $rolesToAdd[] = config('services.discord.booster_role_id');
+                $boosterRoleId = config('services.discord.booster_role_id');
+                if ($boosterRoleId && $currentRoles->contains((string) $boosterRoleId)) {
+                    $rolesToAdd[] = (string) $boosterRoleId;
                 }
 
                 // Set their roles to only the suspended role (replaces all current roles)
-                $discord->setRoles($this, [...$rolesToAdd]);
+                $discord->setRoles($this, $rolesToAdd);
 
                 return;
             }
@@ -121,9 +122,9 @@ trait HasDiscordAccount
      * - Unmanaged roles are preserved as-is.
      * - The suspended role is always excluded from the result.
      */
-    private function computeTargetRoles(Collection $currentRoles, $suspendedRoleId): Collection
+    private function computeTargetRoles(Collection $currentRoles, string $suspendedRoleId): Collection
     {
-        $targetRoles = $currentRoles->reject(fn ($role) => $role === $suspendedRoleId);
+        $targetRoles = $currentRoles->reject(fn ($role) => (string) $role === $suspendedRoleId);
 
         $discordRoleRules = DiscordRoleRule::all()->map(function (DiscordRoleRule $roleRule) {
             return ['discord_id' => $roleRule->discord_id, 'satisfied' => $roleRule->accountSatisfies($this)];
@@ -134,16 +135,17 @@ trait HasDiscordAccount
         $satisfiedRoleIds = $discordRoleRules
             ->groupBy('discord_id')
             ->filter(fn (Collection $group) => $group->contains(fn ($rule) => $rule['satisfied']))
-            ->keys();
+            ->keys()
+            ->map(fn ($id) => (string) $id);
 
         // Remove managed roles that aren't satisfied
-        $targetRoles = $targetRoles->reject(fn ($role) => $managedRoleIds->contains($role));
+        $targetRoles = $targetRoles->reject(fn ($role) => $managedRoleIds->contains((string) $role));
 
         // Add satisfied managed roles, ensuring the suspended role can't be re-introduced
         return $targetRoles
             ->merge($satisfiedRoleIds)
             ->unique()
-            ->reject(fn ($role) => $role === $suspendedRoleId)
+            ->reject(fn ($role) => (string) $role === $suspendedRoleId)
             ->values();
     }
 
@@ -152,6 +154,7 @@ trait HasDiscordAccount
      */
     private function rolesNeedUpdate(Collection $currentRoles, Collection $targetRoles): bool
     {
-        return $currentRoles->sort()->values()->toArray() !== $targetRoles->sort()->values()->toArray();
+        return $currentRoles->map(fn ($role) => (string) $role)->sort()->values()->toArray()
+            !== $targetRoles->map(fn ($role) => (string) $role)->sort()->values()->toArray();
     }
 }
