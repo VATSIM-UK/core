@@ -167,23 +167,19 @@ class MentoringSessionsService
             throw new AuthorizationException('The selected mentor does not have permission to mentor this position.');
         }
 
-        return DB::transaction(function () use ($session, $newMentorMember, $newMentorAccount, $reason) {
-            $oldMentorAccount = $session->mentorAccount();
+        $oldMentorAccount = $session->mentorAccount();
 
-            $session->update([
-                'mentor_id' => $newMentorMember->id,
-            ]);
+        $session->update([
+            'mentor_id' => $newMentorMember->id,
+        ]);
 
-            DB::afterCommit(function () use ($session, $oldMentorAccount, $newMentorAccount, $reason) {
-                $this->notifyParticipants($session, 'reallocated', [
-                    'oldMentorAccount' => $oldMentorAccount,
-                    'newMentorAccount' => $newMentorAccount,
-                    'reason' => $reason,
-                ]);
-            });
+        $this->notifyParticipants($session, 'reallocated', [
+            'oldMentorAccount' => $oldMentorAccount,
+            'newMentorAccount' => $newMentorAccount,
+            'reason' => $reason,
+        ]);
 
-            return true;
-        });
+        return true;
     }
 
     private function notifyParticipants(Session $session, string $action, array $data = []): void

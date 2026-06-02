@@ -8,6 +8,8 @@ use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Training\Mentoring\MentorTrainingPosition;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledMentorNotification;
@@ -487,8 +489,18 @@ class MentoringSessionsServiceTest extends TestCase
             'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
             'cid' => $newMentorAccount->id,
         ]);
-        $newMentorAccount->givePermissionTo('training.beta');
-        $newMentorAccount->givePermissionTo('training.mentoring.view.*');
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'category' => 'S3 Training',
+            'cts_positions' => ['EGLL_APP'],
+        ]);
+
+        MentorTrainingPosition::create([
+            'account_id' => $newMentorAccount->id,
+            'mentorable_type' => TrainingPosition::class,
+            'mentorable_id' => $trainingPosition->id,
+            'created_by' => $newMentorAccount->id,
+        ]);
 
         $this->assertTrue($this->service->reallocateSession(
             $session->id,
@@ -524,8 +536,18 @@ class MentoringSessionsServiceTest extends TestCase
             'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
             'cid' => $newMentorAccount->id,
         ]);
-        $newMentorAccount->givePermissionTo('training.beta');
-        $newMentorAccount->givePermissionTo('training.mentoring.view.*');
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'category' => 'S3 Training',
+            'cts_positions' => ['EGLL_APP'],
+        ]);
+
+        MentorTrainingPosition::create([
+            'account_id' => $newMentorAccount->id,
+            'mentorable_type' => TrainingPosition::class,
+            'mentorable_id' => $trainingPosition->id,
+            'created_by' => $newMentorAccount->id,
+        ]);
 
         $reason = 'Mentor is unavailable due to prior commitments.';
 

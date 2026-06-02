@@ -10,7 +10,6 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
-use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
@@ -469,9 +468,10 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function reallocate_button_is_visible_for_users_with_manage_permission(): void
+    public function reallocate_button_is_visible_for_users_with_reallocate_permission(): void
     {
-        $this->panelUser->givePermissionTo('training.mentors.manage.atc');
+        $this->panelUser->givePermissionTo('training.mentoring.sessions.reallocate.*');
+        $this->panelUser->givePermissionTo('training.mentoring.view.*');
 
         $category = MentorPermissionService::atcCategories()[0];
         $this->createTrainingPosition($category, 'EGPH_GND');
@@ -522,52 +522,6 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
             ->test(UpcomingMentoringSessions::class, ['category' => $category])
             ->assertCanSeeTableRecords([$session])
             ->assertDontSee('Reallocate');
-    }
-
-    #[Test]
-    public function reallocate_action_updates_mentor_on_session(): void
-    {
-        $this->panelUser->givePermissionTo('training.mentors.manage.atc');
-
-        $category = MentorPermissionService::atcCategories()[0];
-        $this->createTrainingPosition($category, 'EGPH_GND');
-
-        $oldMentor = Account::factory()->create();
-        $oldMentorCtsMember = $this->getOrCreateCtsMember($oldMentor);
-
-        $student = Account::factory()->create();
-        $studentCtsMember = $this->getOrCreateCtsMember($student);
-
-        $sessionId = $this->insertSession(
-            $oldMentorCtsMember->id,
-            $studentCtsMember->id,
-            'EGPH_GND',
-            takenDate: Carbon::tomorrow()->format('Y-m-d H:i:s'),
-        );
-
-        $newMentor = Account::factory()->create();
-        $this->getOrCreateCtsMember($newMentor);
-
-        $trainingPosition = TrainingPosition::where('category', $category)->first();
-        MentorTrainingPosition::create([
-            'account_id' => $newMentor->id,
-            'mentorable_type' => TrainingPosition::class,
-            'mentorable_id' => $trainingPosition->id,
-            'created_by' => $newMentor->id,
-        ]);
-
-        $session = Session::on('cts')->find($sessionId);
-
-        Livewire::actingAs($this->panelUser)
-            ->test(UpcomingMentoringSessions::class, ['category' => $category])
-            ->callTableAction('reallocate', $session, data: [
-                'new_mentor_cid' => (string) $newMentor->id,
-                'reason' => 'Mentor is unavailable due to scheduling conflict.',
-            ]);
-
-        $session->refresh();
-
-        $this->assertSame($newMentor->id, $session->mentor->cid);
     }
 
     #[Test]
