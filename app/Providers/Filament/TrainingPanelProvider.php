@@ -31,7 +31,6 @@ class TrainingPanelProvider extends PanelProvider
             ->colors([
                 'primary' => '#25ADE3',
             ])
-            ->login()
             ->discoverResources(in: app_path('Filament/Training/Resources'), for: 'App\\Filament\\Training\\Resources')
             ->discoverPages(in: app_path('Filament/Training/Pages'), for: 'App\\Filament\\Training\\Pages')
             ->pages([

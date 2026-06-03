@@ -30,7 +30,6 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->path('admin')
-            ->login()
             ->colors([
                 'primary' => '#25ADE3',
             ])
