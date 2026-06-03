@@ -22,7 +22,7 @@ use Carbon\Carbon;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $is_verified
  * @property-read \Illuminate\Database\Eloquent\Collection|SSOEmail[] $ssoEmails
- * @property-read \Illuminate\Database\Eloquent\Collection|Token[] $sysTokens
+ * @property-read \Illuminate\Database\Eloquent\Collection|Token[] $tokens
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email emailMatches($email)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email verified()
@@ -64,7 +64,7 @@ class Email extends Model
         return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id');
     }
 
-    public function sysTokens()
+    public function tokens()
     {
         return $this->morphMany(Token::class, 'related');
     }
