@@ -2,9 +2,7 @@
 
 namespace App\Notifications\Training;
 
-use App\Enums\EmailType;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
-use App\Notifications\Contracts\HasEmailType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -14,18 +12,13 @@ use Illuminate\Support\Str;
  * This notification is sent to an account when an availability warning is created for their training place.
  * This is deliberately not queued, as it's sent within the same database transaction as creating the warning.
  */
-class AvailabilityWarningCreated extends Notification implements HasEmailType
+class AvailabilityWarningCreated extends Notification
 {
     use Queueable;
 
     public function __construct(public AvailabilityWarning $availabilityWarning)
     {
         //
-    }
-
-    public function getEmailType(): EmailType
-    {
-        return EmailType::AvailabilityReminder;
     }
 
     /**
