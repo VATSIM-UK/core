@@ -77,6 +77,10 @@ class Kernel extends ConsoleKernel
             ->twiceDaily(2, 14)
             ->graceTimeInMinutes(15);
 
+        $schedule->command('mship:sync-expired-bans')
+            ->twiceDaily(5, 17)
+            ->graceTimeInMinutes(15);
+
         $schedule->command('waiting-lists:create-retention-checks')
             ->dailyAt('07:00')
             ->graceTimeInMinutes(15);
