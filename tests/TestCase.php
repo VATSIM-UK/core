@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use App\Http\Middleware\PreventRequestForgery;
+use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -28,7 +28,7 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         // Exclude Middleware Across All Tests
-        $this->withoutMiddleware(PreventRequestForgery::class);
+        $this->withoutMiddleware(VerifyCsrfToken::class);
 
         // Add HTTP protocol
         $parsed = parse_url(config('app.url'));

@@ -50,7 +50,7 @@ class TrackInactivity
     /**
      * Determine if the request has a URI that should pass through.
      *
-     * Method used from Illuminate\Foundation\Http\Middleware\PreventRequestForgery
+     * Method used from Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
