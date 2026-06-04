@@ -20,10 +20,8 @@
 						@php
 							$isAllCategories = empty($category);
 							$badgeColor = $isAllCategories
-								? \App\Filament\Training\Support\MentoringTrainingGroupBadgeColor::forCtsCallsign(
-									$student->pending_position,
-								)
-								: 'gray';
+							    ? \App\Filament\Training\Support\MentoringTrainingGroupBadgeColor::forCtsCallsign($student->pending_position)
+							    : 'gray';
 						@endphp
 
 						@if ($student->pending_position)
