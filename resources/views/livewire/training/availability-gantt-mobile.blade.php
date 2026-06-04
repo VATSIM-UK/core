@@ -17,9 +17,18 @@
 						<div class="text-[10px] text-gray-500 dark:text-gray-400">
 							{{ $student->cid }}
 						</div>
+						@php
+							$isAllCategories = empty($category);
+							$badgeColor = $isAllCategories
+								? \App\Filament\Training\Support\MentoringTrainingGroupBadgeColor::forCtsCallsign(
+									$student->pending_position,
+								)
+								: 'gray';
+						@endphp
+
 						@if ($student->pending_position)
 							<div class="mt-0.5">
-								<x-filament::badge color="gray" size="sm">
+								<x-filament::badge :color="$badgeColor" size="sm">
 									{{ $student->pending_position }}
 								</x-filament::badge>
 							</div>
