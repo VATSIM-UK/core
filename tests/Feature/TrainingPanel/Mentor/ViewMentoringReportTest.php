@@ -593,28 +593,6 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function test_by_criteria_tab_returns_empty_state_when_no_sessions_have_report_sheets(): void
-    {
-        $newStudent = Account::factory()->create();
-        $newMember = Member::factory()->create([
-            'id' => $newStudent->id,
-            'cid' => $newStudent->id,
-        ]);
-
-        $bareSession = Session::factory()->create([
-            'student_id' => $newMember->id,
-            'mentor_id' => $this->mentorMember->id,
-            'position' => 'EGLL_APP',
-            'taken_date' => '2025-05-01',
-            'filed' => now(),
-        ]);
-
-        Livewire::actingAs($newStudent)
-            ->test(ViewMentoringReport::class, ['sessionId' => $bareSession->id])
-            ->assertSee('No report data found for this session.');
-    }
-
-    #[Test]
     public function test_it_displays_session_cancelled_callout_with_correct_details(): void
     {
         $cancellingMember = Member::factory()->create(['name' => 'John Doe']);

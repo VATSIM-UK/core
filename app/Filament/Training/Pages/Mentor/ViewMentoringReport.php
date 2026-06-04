@@ -295,7 +295,8 @@ class ViewMentoringReport extends Page implements HasInfolists
         return $schema->record($this->session)->components([
             Section::make('Session Report')
                 ->columnSpanFull()
-                ->schema(count($categorySections) > 0 ? $categorySections : [TextEntry::make('empty')->label('')->state('No report data found for this session.')]),
+                ->visible(count($categorySections) > 0)
+                ->schema($categorySections),
         ]);
     }
 
