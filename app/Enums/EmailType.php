@@ -58,7 +58,7 @@ enum EmailType: string
             self::ExamCancelled => 'Sent when your exam is cancelled',
 
             // Mentor
-            self::MentorSessionConfirmation => 'Sent when a session you are mentoring is confirmed',
+            self::MentorSessionConfirmation => 'Sent when you accept a mentoring session',
             self::MentorSessionCancelled => 'Sent when a student cancels their session',
             self::MentorSessionRescheduled => 'Sent when a session you are mentoring is rescheduled',
 
