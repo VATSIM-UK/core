@@ -57,8 +57,8 @@ class SyncExpiredBansCommandTest extends TestCase
     public function it_does_not_dispatch_for_bans_outside_the_lookback_window(): void
     {
         $this->createBan([
-            'period_start' => now()->subDays(2),
-            'period_finish' => now()->subDays(1),
+            'period_start' => now()->subDays(3),
+            'period_finish' => now()->subDays(2),
         ]);
 
         Artisan::call('mship:sync-expired-bans');
