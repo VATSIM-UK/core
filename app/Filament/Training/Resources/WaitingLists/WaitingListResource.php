@@ -88,6 +88,20 @@ class WaitingListResource extends Resource
                             ->relationship('requiredEndorsement', 'name')
                             ->searchable(),
 
+                        Toggle::make('retention_checks_enabled')
+                            ->label('Enable Retention Checks')
+                            ->helperText('When enabled, members will be periodically asked to confirm they are still interested in remaining on this waiting list.')
+                            ->default(false)
+                            ->live(),
+
+                        TextInput::make('retention_checks_months')
+                            ->label('Retention Check Interval (Months)')
+                            ->helperText('How often (in months) retention checks are sent. The first check is sent after this period from when the member joined.')
+                            ->integer()
+                            ->minValue(1)
+                            ->required()
+                            ->visible(fn (callable $get) => $get('retention_checks_enabled') === true),
+
                     ])
                     ->collapsible()
                     ->collapsed(),
