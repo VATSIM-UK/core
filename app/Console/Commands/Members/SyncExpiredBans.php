@@ -37,7 +37,7 @@ class SyncExpiredBans extends Command
             $syncedCount++;
         }
 
-        $this->log("Dispatched {$syncedCount} account sync(s) for accounts with expired bans in the last 13h.");
+        $this->log("Dispatched {$syncedCount} account sync(s) for accounts with expired bans in the last 24 hours.");
 
         return Command::SUCCESS;
     }
