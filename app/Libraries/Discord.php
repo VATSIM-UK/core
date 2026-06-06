@@ -265,6 +265,34 @@ class Discord
         return $response->json();
     }
 
+    /*
+     * Temporarily mutes the user and removes all messages from the last 24 hours
+     */
+    public function softBan(Account $account, int $messageRemovalHours, int $muteDurationDays, string $reason = 'Soft ban')
+    {
+        // time out the user
+        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}";
+        $context = [
+            'action' => 'softBan_timeout',
+            'account_id' => $account->id,
+            'discord_id' => $account->discord_id,
+            'mute_duration_days' => $muteDurationDays,
+            'reason' => $reason,
+        ];
+
+        $expiresAt = now()->addDays($muteDurationDays)->toIso8601String();
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->patch($endpoint, ['communication_disabled_until' => $expiresAt]),
+            $context
+        );
+
+        if ($response->failed()) {
+            Log::error('Failed to timeout Discord user', $context + ['status' => $response->status(), 'body' => $response->json()]);
+            throw new GenericDiscordException($response);
+        }
+    }
+
     // --- Internal helpers ---
 
     /**

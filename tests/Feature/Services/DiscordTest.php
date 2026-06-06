@@ -383,4 +383,52 @@ class DiscordTest extends TestCase
 
         $discord->createThreadFromMessage($channelId, $messageId, $data);
     }
+
+    // ─── Soft Ban ───────────────────────────────────────────────────
+
+    #[Test]
+    public function test_softban_timeout_sends_correct_patch_request()
+    {
+        $account = Account::factory()->create(['discord_id' => 12345]);
+
+        Http::fake([
+            'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 204),
+        ]);
+
+        $discord = new Discord;
+        $discord->softBan($account, 24, 7);
+
+        Http::assertSent(function ($request) {
+            if ($request->method() !== 'PATCH') {
+                return false;
+            }
+
+            $data = $request->data();
+            if (! isset($data['communication_disabled_until'])) {
+                return false;
+            }
+
+            // Verify the expiry is roughly 7 days from now (within 5 seconds)
+            $expectedExpiry = now()->addDays(7);
+            $actualExpiry = new \DateTime($data['communication_disabled_until']);
+            $diff = $expectedExpiry->diffInSeconds($actualExpiry);
+
+            return $diff < 5;
+        });
+    }
+
+    #[Test]
+    public function test_softban_throws_exception_on_timeout_failure()
+    {
+        $this->expectException(GenericDiscordException::class);
+
+        $account = Account::factory()->create(['discord_id' => 12345]);
+
+        Http::fake([
+            'discord.com/api/v6/guilds/*/members/12345' => Http::response(['message' => 'Missing Permissions'], 403),
+        ]);
+
+        $discord = new Discord;
+        $discord->softBan($account, 24, 7);
+    }
 }
