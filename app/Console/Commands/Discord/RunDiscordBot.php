@@ -62,7 +62,7 @@ class RunDiscordBot extends Command
         $discord->run();
     }
 
-    public function HandleHoneypotMessage(Message $message, Discord $discord)
+    public function handleHoneypotMessage(Message $message, Discord $discord)
     {
         $discordAuthor = $message->author;
         $message->delete();
