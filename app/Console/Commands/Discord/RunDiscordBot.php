@@ -4,6 +4,7 @@ namespace App\Console\Commands\Discord;
 
 use App\Libraries\Discord as CoreDiscord;
 use App\Models\Mship\Account;
+use App\Models\Mship\Note\Type as NoteType;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 use Discord\WebSockets\Event;
@@ -30,7 +31,7 @@ class RunDiscordBot extends Command
     /**
      * @var CoreDiscord
      */
-    protected $coreDiscord;
+    public $coreDiscord;
 
     /**
      * Execute the console command.
@@ -53,23 +54,31 @@ class RunDiscordBot extends Command
                 }
 
                 if ($message->channel_id == config('services.discord.honeypot_channel_id')) {
-                    $discordAuthor = $message->author;
-                    $message->delete();
-
-                    $account = Account::where('discord_id', $discordAuthor->id)->first();
-
-                    $this->coreDiscord->softBan($account, 1, 7, 'Honeypot');
-
-                    Log::notice("Message received in honeypot channel from {$message->author->username} ({$message->author->id}): {$message->content}");
-
-                    $account->notes()->create([
-                        'admin_id' => null,
-                        'content' => "User sent a message in the honeypot channel. Message content: {$message->content}",
-                    ]);
+                    $this->HandleHoneypotMessage($message, $discord);
                 }
             });
         });
 
         $discord->run();
+    }
+
+    public function HandleHoneypotMessage(Message $message, Discord $discord)
+    {
+        $discordAuthor = $message->author;
+        $message->delete();
+
+        $account = Account::where('discord_id', (string) $discordAuthor->id)->first();
+
+        if (! $account) {
+            Log::warning("Honeypot message from unlinked Discord user {$discordAuthor->username} ({$discordAuthor->id}), skipping");
+
+            return;
+        }
+
+        $this->coreDiscord->softBan($account, 1, 7, 'Honeypot');
+
+        Log::notice("Message received in honeypot channel from {$discordAuthor->username} ({$discordAuthor->id}): {$message->content}");
+
+        $account->addNote(NoteType::isShortCode('discipline')->first(), "User sent a message in the honeypot channel. Message content: {$message->content}", null);
     }
 }

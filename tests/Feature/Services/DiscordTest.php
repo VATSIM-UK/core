@@ -384,8 +384,6 @@ class DiscordTest extends TestCase
         $discord->createThreadFromMessage($channelId, $messageId, $data);
     }
 
-    // ─── Soft Ban ───────────────────────────────────────────────────
-
     #[Test]
     public function test_softban_timeout_sends_correct_patch_request()
     {
@@ -393,12 +391,19 @@ class DiscordTest extends TestCase
 
         Http::fake([
             'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 204),
+            'discord.com/api/v6/guilds/*/messages/search*' => Http::response([
+                'messages' => [],
+                'total_results' => 0,
+            ]),
         ]);
+
+        $now = now();
+        $expectedExpiry = $now->copy()->addDays(7);
 
         $discord = new Discord;
         $discord->softBan($account, 24, 7);
 
-        Http::assertSent(function ($request) {
+        Http::assertSent(function ($request) use ($expectedExpiry) {
             if ($request->method() !== 'PATCH') {
                 return false;
             }
@@ -408,8 +413,6 @@ class DiscordTest extends TestCase
                 return false;
             }
 
-            // Verify the expiry is roughly 7 days from now (within 5 seconds)
-            $expectedExpiry = now()->addDays(7);
             $actualExpiry = new \DateTime($data['communication_disabled_until']);
             $diff = $expectedExpiry->diffInSeconds($actualExpiry);
 
@@ -430,5 +433,130 @@ class DiscordTest extends TestCase
 
         $discord = new Discord;
         $discord->softBan($account, 24, 7);
+    }
+
+    #[Test]
+    public function test_softban_purges_recent_messages()
+    {
+        $account = Account::factory()->create(['discord_id' => 12345]);
+
+        Http::fake([
+            'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 204),
+            'discord.com/api/v6/guilds/*/messages/search*' => Http::response([
+                'messages' => [
+                    [['id' => '1', 'channel_id' => '100', 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg1']],
+                    [['id' => '2', 'channel_id' => '100', 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg2']],
+                    [['id' => '3', 'channel_id' => '200', 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg3']],
+                ],
+                'total_results' => 3,
+            ]),
+            'discord.com/api/v6/channels/*/messages/bulk-delete' => Http::response([], 204),
+        ]);
+
+        $discord = new Discord;
+        $discord->softBan($account, 24, 7);
+
+        Http::assertSent(function ($request) {
+            return $request->method() === 'POST'
+                && str_contains($request->url(), '/channels/100/messages/bulk-delete')
+                && $request->data() === ['messages' => ['1', '2']];
+        });
+        Http::assertSent(function ($request) {
+            return $request->method() === 'POST'
+                && str_contains($request->url(), '/channels/200/messages/bulk-delete')
+                && $request->data() === ['messages' => ['3']];
+        });
+    }
+
+    #[Test]
+    public function test_search_messages_returns_messages_within_time_window()
+    {
+        Http::fake([
+            'discord.com/api/v6/guilds/*/messages/search*' => Http::response([
+                'messages' => [
+                    [['id' => '1', 'channel_id' => '100', 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'recent']],
+                ],
+                'total_results' => 1,
+            ]),
+        ]);
+
+        $messages = (new Discord)->searchMessagesFromDiscordUser('12345', 6);
+
+        $this->assertCount(1, $messages);
+        $this->assertSame('1', $messages[0]['id']);
+    }
+
+    #[Test]
+    public function test_search_messages_returns_empty_when_all_messages_are_old()
+    {
+        Http::fake([
+            'discord.com/api/v6/guilds/*/messages/search*' => Http::response([
+                'messages' => [
+                    [['id' => '1', 'channel_id' => '100', 'timestamp' => now()->subHours(10)->toIso8601String(), 'content' => 'old']],
+                ],
+                'total_results' => 1,
+            ]),
+        ]);
+
+        $messages = (new Discord)->searchMessagesFromDiscordUser('12345', 6);
+
+        $this->assertCount(0, $messages);
+    }
+
+    #[Test]
+    public function test_search_messages_paginates_and_stops_when_no_recent_messages_left()
+    {
+        $recent = now()->subHour()->toIso8601String();
+        $old = now()->subHours(10)->toIso8601String();
+
+        Http::fakeSequence()
+            ->push(['messages' => [[['id' => '1', 'channel_id' => '100', 'timestamp' => $recent, 'content' => 'recent']]], 'total_results' => 100])
+            ->push(['messages' => [[['id' => '2', 'channel_id' => '100', 'timestamp' => $old, 'content' => 'old']]], 'total_results' => 100]);
+
+        $messages = (new Discord)->searchMessagesFromDiscordUser('12345', 6);
+
+        $this->assertCount(1, $messages);
+        $this->assertSame('1', $messages[0]['id']);
+    }
+
+    #[Test]
+    public function test_search_messages_throws_on_api_failure()
+    {
+        $this->expectException(GenericDiscordException::class);
+
+        Http::fake([
+            'discord.com/api/v6/guilds/*/messages/search*' => Http::response([], 500),
+        ]);
+
+        (new Discord)->searchMessagesFromDiscordUser('12345', 6);
+    }
+
+    #[Test]
+    public function test_bulk_delete_messages_sends_post_request_with_message_ids()
+    {
+        Http::fake([
+            'discord.com/api/v6/channels/*/messages/bulk-delete' => Http::response([], 204),
+        ]);
+
+        $result = (new Discord)->bulkDeleteMessages('100', ['1', '2', '3']);
+
+        $this->assertTrue($result);
+
+        Http::assertSent(function ($request) {
+            return $request->method() === 'POST'
+                && $request->data() === ['messages' => ['1', '2', '3']];
+        });
+    }
+
+    #[Test]
+    public function test_bulk_delete_messages_throws_on_api_failure()
+    {
+        $this->expectException(GenericDiscordException::class);
+
+        Http::fake([
+            'discord.com/api/v6/channels/*/messages/bulk-delete' => Http::response(['message' => 'Missing Permissions'], 403),
+        ]);
+
+        (new Discord)->bulkDeleteMessages('100', ['1', '2', '3']);
     }
 }

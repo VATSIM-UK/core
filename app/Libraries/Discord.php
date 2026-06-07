@@ -266,7 +266,7 @@ class Discord
     }
 
     /*
-     * Temporarily mutes the user and removes all messages from the last 24 hours
+     * Temporarily mutes the user and purges their recent messages
      */
     public function softBan(Account $account, int $messageRemovalHours, int $muteDurationDays, string $reason = 'Soft ban')
     {
@@ -291,6 +291,97 @@ class Discord
             Log::error('Failed to timeout Discord user', $context + ['status' => $response->status(), 'body' => $response->json()]);
             throw new GenericDiscordException($response);
         }
+
+        // delete recent messages
+        $messages = $this->searchMessagesFromDiscordUser($account->discord_id, $messageRemovalHours);
+        $messagesByChannel = collect($messages)->groupBy('channel_id');
+        foreach ($messagesByChannel as $channelId => $messages) {
+            $messageIds = collect($messages)->pluck('id')->toArray();
+            $this->bulkDeleteMessages($channelId, $messageIds);
+        }
+    }
+
+    /*
+     * Search for messages from a user in the guild within the last N hours.
+     *
+     * @return array List of message objects
+     */
+
+    public function searchMessagesFromDiscordUser(string $userId, int $hours = 6): array
+    {
+        $cutoff = now()->subHours($hours);
+        $allMessages = [];
+        $offset = 0;
+
+        do {
+            $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/messages/search";
+            $context = [
+                'action' => 'searchMessagesFromDiscordUser',
+                'user_id' => $userId,
+                'offset' => $offset,
+            ];
+
+            $response = $this->rateLimitedRequest(
+                fn () => Http::withHeaders($this->headers)->get($endpoint, [
+                    'author_id' => $userId,
+                    'sort_by' => 'timestamp',
+                    'sort_order' => 'desc',
+                    'offset' => $offset,
+                ]),
+                $context
+            );
+
+            if ($response->failed()) {
+                Log::error('Failed to search Discord messages', $context + ['status' => $response->status(), 'body' => $response->json()]);
+                throw new GenericDiscordException($response);
+            }
+
+            $messageGroups = $response->json('messages', []);
+            $hadMessagesWithinCutoff = false;
+
+            foreach ($messageGroups as $group) {
+                foreach ($group as $message) {
+                    if (isset($message['timestamp']) && now()->parse($message['timestamp'])->greaterThan($cutoff)) {
+                        $allMessages[] = $message;
+                        $hadMessagesWithinCutoff = true;
+                    }
+                }
+            }
+
+            if (! $hadMessagesWithinCutoff) {
+                break;
+            }
+
+            $offset += count($messageGroups);
+            $totalResults = $response->json('total_results', 0);
+        } while ($offset < $totalResults);
+
+        return $allMessages;
+    }
+
+    /*
+     * Bulk delete messages in a channel by their IDs.
+     */
+    public function bulkDeleteMessages(string $channelId, array $messageIds)
+    {
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages/bulk-delete";
+        $context = [
+            'action' => 'bulkDeleteMessages',
+            'channel_id' => $channelId,
+            'message_ids' => $messageIds,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->post($endpoint, ['messages' => $messageIds]),
+            $context
+        );
+
+        if ($response->failed()) {
+            Log::error('Failed to bulk delete Discord messages', $context + ['status' => $response->status(), 'body' => $response->json()]);
+            throw new GenericDiscordException($response);
+        }
+
+        return true;
     }
 
     // --- Internal helpers ---
