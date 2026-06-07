@@ -20,11 +20,6 @@ class HandleHoneypotTrigger extends Job implements ShouldQueue
 
     public $queue = 'discord';
 
-    /**
-     * @param  string  $discordUserId  Snowflake of the Discord user who triggered the honeypot
-     * @param  string  $discordUsername  Username (for logging if the account isn't linked)
-     * @param  string  $messageContent  Content of the message (for the discipline note)
-     */
     public function __construct(
         private readonly string $discordUserId,
         private readonly string $discordUsername,

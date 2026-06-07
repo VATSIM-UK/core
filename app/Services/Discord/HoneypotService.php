@@ -30,7 +30,6 @@ class HoneypotService
             return;
         }
 
-        // Soft-ban (timeout + bulk-delete recent messages) inside the guild
         $this->discord->softBan($account, 1, 7, 'Honeypot');
 
         Log::notice("Honeypot triggered by {$discordUsername} ({$discordUserId}): {$messageContent}");
