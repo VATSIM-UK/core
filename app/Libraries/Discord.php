@@ -341,7 +341,7 @@ class Discord
 
             foreach ($messageGroups as $group) {
                 foreach ($group as $message) {
-                    if (isset($message['timestamp']) && now()->parse($message['timestamp'])->greaterThan($cutoff)) {
+                    if (isset($message['timestamp']) && \Illuminate\Support\Carbon::parse($message['timestamp'])->greaterThan($cutoff)) {
                         $allMessages[] = $message;
                         $hadMessagesWithinCutoff = true;
                     }
