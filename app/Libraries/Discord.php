@@ -399,6 +399,10 @@ class Discord
             $context
         );
 
+        if ($response->status() === 404) {
+            return true;
+        }
+
         return $this->result($response, $context);
     }
 

@@ -465,9 +465,8 @@ class DiscordTest extends TestCase
                 && $request->data() === ['messages' => ['1', '2']];
         });
         Http::assertSent(function ($request) {
-            return $request->method() === 'POST'
-                && str_contains($request->url(), '/channels/200/messages/bulk-delete')
-                && $request->data() === ['messages' => ['3']];
+            return $request->method() === 'DELETE'
+                && str_contains($request->url(), '/channels/200/messages/3');
         });
     }
 
