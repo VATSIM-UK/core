@@ -20,11 +20,17 @@ class HoneypotService
     public function handleTrigger(
         string $discordUserId,
         string $discordUsername,
+        string $messageId,
     ): void {
         $account = Account::where('discord_id', $discordUserId)->first();
 
         if (! $account) {
             Log::warning("Honeypot message from unlinked Discord user {$discordUsername} ({$discordUserId}), skipping");
+
+            $this->discord->deleteMessage(
+                channelId: config('services.discord.honeypot_channel_id'),
+                messageId: $messageId,
+            );
 
             return;
         }

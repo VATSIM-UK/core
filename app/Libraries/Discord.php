@@ -358,9 +358,33 @@ class Discord
         return array_values($found);
     }
 
-    /*
-     * Bulk delete messages in a channel by their IDs.
+    /**
+     * Fetch recent messages from a channel
+     *
+     * @return array List of message arrays, newest first
      */
+    public function getChannelMessages(string $channelId, int $limit = 100): array
+    {
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages";
+        $context = [
+            'action' => 'getChannelMessages',
+            'channel_id' => $channelId,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->get($endpoint, ['limit' => $limit]),
+            $context
+        );
+
+        if ($response->failed()) {
+            Log::warning('Failed to get channel messages', $context + ['status' => $response->status()]);
+
+            return [];
+        }
+
+        return $response->json() ?? [];
+    }
+
     public function deleteMessage(string $channelId, string $messageId): bool
     {
         $endpoint = "{$this->base_url}/channels/{$channelId}/messages/{$messageId}";

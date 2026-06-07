@@ -550,6 +550,75 @@ class DiscordTest extends TestCase
     }
 
     #[Test]
+    public function test_get_channel_messages_returns_messages()
+    {
+        Http::fake([
+            'discord.com/api/v10/channels/100/messages*' => Http::response([
+                ['id' => '1', 'channel_id' => '100', 'content' => 'hello'],
+                ['id' => '2', 'channel_id' => '100', 'content' => 'world'],
+            ]),
+        ]);
+
+        $messages = (new Discord)->getChannelMessages('100', 100);
+
+        $this->assertCount(2, $messages);
+        $this->assertSame('1', $messages[0]['id']);
+    }
+
+    #[Test]
+    public function test_get_channel_messages_returns_empty_on_failure()
+    {
+        Http::fake([
+            'discord.com/api/v10/channels/100/messages*' => Http::response([], 500),
+        ]);
+
+        $messages = (new Discord)->getChannelMessages('100', 100);
+
+        $this->assertCount(0, $messages);
+    }
+
+    #[Test]
+    public function test_delete_message_sends_delete_request()
+    {
+        Http::fake([
+            'discord.com/api/v10/channels/100/messages/99' => Http::response([], 204),
+        ]);
+
+        $result = (new Discord)->deleteMessage('100', '99');
+
+        $this->assertTrue($result);
+
+        Http::assertSent(function ($request) {
+            return $request->method() === 'DELETE'
+                && str_contains($request->url(), '/channels/100/messages/99');
+        });
+    }
+
+    #[Test]
+    public function test_delete_message_returns_true_on_404()
+    {
+        Http::fake([
+            'discord.com/api/v10/channels/100/messages/99' => Http::response(['message' => 'Unknown Message'], 404),
+        ]);
+
+        $result = (new Discord)->deleteMessage('100', '99');
+
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function test_delete_message_throws_on_api_error()
+    {
+        $this->expectException(GenericDiscordException::class);
+
+        Http::fake([
+            'discord.com/api/v10/channels/100/messages/99' => Http::response(['message' => 'Missing Permissions'], 403),
+        ]);
+
+        (new Discord)->deleteMessage('100', '99');
+    }
+
+    #[Test]
     public function test_bulk_delete_messages_sends_post_request_with_message_ids()
     {
         Http::fake([
@@ -563,6 +632,23 @@ class DiscordTest extends TestCase
         Http::assertSent(function ($request) {
             return $request->method() === 'POST'
                 && $request->data() === ['messages' => ['1', '2', '3']];
+        });
+    }
+
+    #[Test]
+    public function test_bulk_delete_single_message_falls_back_to_delete_message()
+    {
+        Http::fake([
+            'discord.com/api/v10/channels/100/messages/1' => Http::response([], 204),
+        ]);
+
+        $result = (new Discord)->bulkDeleteMessages('100', ['1']);
+
+        $this->assertTrue($result);
+
+        Http::assertSent(function ($request) {
+            return $request->method() === 'DELETE'
+                && str_contains($request->url(), '/channels/100/messages/1');
         });
     }
 
