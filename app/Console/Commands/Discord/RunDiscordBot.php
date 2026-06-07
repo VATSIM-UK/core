@@ -49,7 +49,6 @@ class RunDiscordBot extends Command
                     HandleHoneypotTrigger::dispatch(
                         discordUserId: (string) $message->author->id,
                         discordUsername: $message->author->username,
-                        messageContent: $message->content,
                     );
                 }
             });

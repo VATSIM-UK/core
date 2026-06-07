@@ -280,7 +280,7 @@ class Discord
             'reason' => $reason,
         ];
 
-        $expiresAt = now()->addDays($muteDurationDays)->toIso8601String();
+        $expiresAt = now()->addDays($muteDurationDays)->format('Y-m-d\TH:i:s.uP');
 
         $response = $this->rateLimitedRequest(
             fn () => Http::withHeaders($this->headers)->patch($endpoint, ['communication_disabled_until' => $expiresAt]),
@@ -293,84 +293,107 @@ class Discord
         }
 
         // delete recent messages
-        $messages = $this->searchMessagesFromDiscordUser($account->discord_id, $messageRemovalHours);
+        $messages = $this->getMessagesFromUserInGuild($account->discord_id, $messageRemovalHours);
         $messagesByChannel = collect($messages)->groupBy('channel_id');
         foreach ($messagesByChannel as $channelId => $messages) {
-            $messageIds = collect($messages)->pluck('id')->toArray();
+            $messageIds = collect($messages)->pluck('id')->unique()->values()->toArray();
             $this->bulkDeleteMessages($channelId, $messageIds);
         }
     }
 
-    /*
-     * Search for messages from a user in the guild within the last N hours.
+    /**
+     * Fetch recent messages from a user across all text channels in the guild.
      *
-     * @return array List of message objects
+     *
+     * @return array List of message objects with at least `id`, `channel_id`, `timestamp`
      */
-
-    public function searchMessagesFromDiscordUser(string $userId, int $hours = 6): array
+    public function getMessagesFromUserInGuild(string $userId, int $hours = 6): array
     {
         $cutoff = now()->subHours($hours);
-        $allMessages = [];
-        $offset = 0;
+        $found = [];
 
-        do {
-            $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/messages/search";
-            $context = [
-                'action' => 'searchMessagesFromDiscordUser',
-                'user_id' => $userId,
-                'offset' => $offset,
-            ];
+        // list all channeůs
+        $channelsResponse = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->get("{$this->base_url}/guilds/{$this->guild_id}/channels"),
+            ['action' => 'getGuildChannels', 'user_id' => $userId]
+        );
+
+        if ($channelsResponse->failed()) {
+            Log::warning('Failed to list guild channels for message purge', ['status' => $channelsResponse->status()]);
+
+            return [];
+        }
+
+        // for each text channel, fetch recent messages and filter by author
+        $textChannelTypes = [0, 5]; // GUILD_TEXT, GUILD_NEWS
+        foreach ($channelsResponse->json() as $channel) {
+            if (! in_array($channel['type'] ?? -1, $textChannelTypes, true)) {
+                continue;
+            }
 
             $response = $this->rateLimitedRequest(
-                fn () => Http::withHeaders($this->headers)->get($endpoint, [
-                    'author_id' => $userId,
-                    'sort_by' => 'timestamp',
-                    'sort_order' => 'desc',
-                    'offset' => $offset,
-                ]),
-                $context
+                fn () => Http::withHeaders($this->headers)->get(
+                    "{$this->base_url}/channels/{$channel['id']}/messages",
+                    ['limit' => 100]
+                ),
+                ['action' => 'getChannelMessages', 'channel_id' => $channel['id'], 'user_id' => $userId]
             );
 
             if ($response->failed()) {
-                Log::error('Failed to search Discord messages', $context + ['status' => $response->status(), 'body' => $response->json()]);
-                throw new GenericDiscordException($response);
+                continue;
             }
 
-            $messageGroups = $response->json('messages', []);
-            $hadMessagesWithinCutoff = false;
-
-            foreach ($messageGroups as $group) {
-                foreach ($group as $message) {
-                    if (isset($message['timestamp']) && \Illuminate\Support\Carbon::parse($message['timestamp'])->greaterThan($cutoff)) {
-                        $allMessages[] = $message;
-                        $hadMessagesWithinCutoff = true;
-                    }
+            foreach ($response->json() as $message) {
+                if (
+                    isset($message['author']['id'])
+                    && (string) $message['author']['id'] === (string) $userId
+                    && isset($message['timestamp'])
+                    && \Illuminate\Support\Carbon::parse($message['timestamp'])->greaterThan($cutoff)
+                ) {
+                    $found[$message['id']] = $message;
                 }
             }
+        }
 
-            if (! $hadMessagesWithinCutoff) {
-                break;
-            }
-
-            $offset += count($messageGroups);
-            $totalResults = $response->json('total_results', 0);
-        } while ($offset < $totalResults);
-
-        return $allMessages;
+        return array_values($found);
     }
 
     /*
      * Bulk delete messages in a channel by their IDs.
      */
+    public function deleteMessage(string $channelId, string $messageId): bool
+    {
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages/{$messageId}";
+        $context = [
+            'action' => 'deleteMessage',
+            'channel_id' => $channelId,
+            'message_id' => $messageId,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->delete($endpoint),
+            $context
+        );
+
+        return $this->result($response, $context);
+    }
+
     public function bulkDeleteMessages(string $channelId, array $messageIds): bool
     {
-        if (count($messageIds) > 100) {
+        $count = count($messageIds);
+
+        if ($count === 1) {
+            return $this->deleteMessage($channelId, $messageIds[0]);
+        }
+
+        if ($count > 100) {
             foreach (array_chunk($messageIds, 100) as $chunk) {
                 $this->bulkDeleteMessages($channelId, $chunk);
             }
 
             return true;
         }
+
         $endpoint = "{$this->base_url}/channels/{$channelId}/messages/bulk-delete";
         $context = [
             'action' => 'bulkDeleteMessages',

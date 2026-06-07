@@ -23,7 +23,6 @@ class HandleHoneypotTrigger extends Job implements ShouldQueue
     public function __construct(
         private readonly string $discordUserId,
         private readonly string $discordUsername,
-        private readonly string $messageContent,
     ) {}
 
     public function handle(HoneypotService $service): void
@@ -31,7 +30,6 @@ class HandleHoneypotTrigger extends Job implements ShouldQueue
         $service->handleTrigger(
             discordUserId: $this->discordUserId,
             discordUsername: $this->discordUsername,
-            messageContent: $this->messageContent,
         );
     }
 

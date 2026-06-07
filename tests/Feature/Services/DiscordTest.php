@@ -107,7 +107,7 @@ class DiscordTest extends TestCase
         }));
 
         Http::fake([
-            'discord.com/api/v6/guilds//members/123456789' => Http::response(['message' => 'You are at the 100 server limit.', 'code' => 30001], 304),
+            'discord.com/api/v10/guilds/*/members/123456789' => Http::response(['message' => 'You are at the 100 server limit.', 'code' => 30001], 304),
         ]);
 
         $this->actingAs($this->user)
@@ -126,7 +126,7 @@ class DiscordTest extends TestCase
         $account = Account::factory()->create(['discord_id' => 12345]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345/roles/99' => Http::response([], 204),
+            'discord.com/api/v10/guilds/*/members/12345/roles/99' => Http::response([], 204),
         ]);
 
         $discord = new Discord;
@@ -146,7 +146,7 @@ class DiscordTest extends TestCase
         $account = Account::factory()->create(['discord_id' => 12345]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345/roles/99' => Http::response([], 204),
+            'discord.com/api/v10/guilds/*/members/12345/roles/99' => Http::response([], 204),
         ]);
 
         $discord = new Discord;
@@ -167,7 +167,7 @@ class DiscordTest extends TestCase
         $nickname = 'Test User - 12345';
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 204),
+            'discord.com/api/v10/guilds/*/members/12345' => Http::response([], 204),
         ]);
 
         $discord = new Discord;
@@ -188,7 +188,7 @@ class DiscordTest extends TestCase
         $roleIds = [1, 2, 3];
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 204),
+            'discord.com/api/v10/guilds/*/members/12345' => Http::response([], 204),
         ]);
 
         $discord = new Discord;
@@ -208,7 +208,7 @@ class DiscordTest extends TestCase
         $account = Account::factory()->create(['discord_id' => 12345]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response(['roles' => ['111', '222', '333']], 200),
+            'discord.com/api/v10/guilds/*/members/12345' => Http::response(['roles' => ['111', '222', '333']], 200),
         ]);
 
         $discord = new Discord;
@@ -223,7 +223,7 @@ class DiscordTest extends TestCase
         $account = Account::factory()->create(['discord_id' => 12345]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 500),
+            'discord.com/api/v10/guilds/*/members/12345' => Http::response([], 500),
         ]);
 
         $discord = new Discord;
@@ -238,7 +238,7 @@ class DiscordTest extends TestCase
         $account = Account::factory()->create(['discord_id' => 99999]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/99999' => Http::response(['message' => 'Unknown Member'], 404),
+            'discord.com/api/v10/guilds/*/members/99999' => Http::response(['message' => 'Unknown Member'], 404),
         ]);
 
         $discord = new Discord;
@@ -257,7 +257,7 @@ class DiscordTest extends TestCase
         $account = Account::factory()->create(['discord_id' => 99999]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/99999/roles/99' => Http::response(['message' => 'Unknown Member'], 404),
+            'discord.com/api/v10/guilds/*/members/99999/roles/99' => Http::response(['message' => 'Unknown Member'], 404),
         ]);
 
         $discord = new Discord;
@@ -272,7 +272,7 @@ class DiscordTest extends TestCase
         $account = Account::factory()->create(['discord_id' => 12345]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345/roles/99' => Http::response(['message' => 'Bad Request'], 400),
+            'discord.com/api/v10/guilds/*/members/12345/roles/99' => Http::response(['message' => 'Bad Request'], 400),
         ]);
 
         $discord = new Discord;
@@ -354,7 +354,7 @@ class DiscordTest extends TestCase
         ];
 
         Http::fake([
-            "discord.com/api/v6/channels/{$channelId}/messages/{$messageId}/threads" => Http::response(['id' => 'thread123', 'name' => 'Test Thread'], 200),
+            "discord.com/api/v10/channels/{$channelId}/messages/{$messageId}/threads" => Http::response(['id' => 'thread123', 'name' => 'Test Thread'], 200),
         ]);
 
         $result = $discord->createThreadFromMessage($channelId, $messageId, $data);
@@ -375,7 +375,7 @@ class DiscordTest extends TestCase
         ];
 
         Http::fake([
-            "discord.com/api/v6/channels/{$channelId}/messages/{$messageId}/threads" => Http::response(['message' => 'Bad Request'], 400),
+            "discord.com/api/v10/channels/{$channelId}/messages/{$messageId}/threads" => Http::response(['message' => 'Bad Request'], 400),
         ]);
 
         $this->expectException(GenericDiscordException::class);
@@ -390,11 +390,11 @@ class DiscordTest extends TestCase
         $account = Account::factory()->create(['discord_id' => 12345]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 204),
-            'discord.com/api/v6/guilds/*/messages/search*' => Http::response([
-                'messages' => [],
-                'total_results' => 0,
+            'discord.com/api/v10/guilds/*/members/12345' => Http::response([], 204),
+            'discord.com/api/v10/guilds/*/channels' => Http::response([
+                ['id' => '100', 'type' => 0, 'name' => 'general'],
             ]),
+            'discord.com/api/v10/channels/100/messages*' => Http::response([]),
         ]);
 
         $now = now();
@@ -428,7 +428,7 @@ class DiscordTest extends TestCase
         $account = Account::factory()->create(['discord_id' => 12345]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response(['message' => 'Missing Permissions'], 403),
+            'discord.com/api/v10/guilds/*/members/12345' => Http::response(['message' => 'Missing Permissions'], 403),
         ]);
 
         $discord = new Discord;
@@ -441,16 +441,19 @@ class DiscordTest extends TestCase
         $account = Account::factory()->create(['discord_id' => 12345]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 204),
-            'discord.com/api/v6/guilds/*/messages/search*' => Http::response([
-                'messages' => [
-                    [['id' => '1', 'channel_id' => '100', 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg1']],
-                    [['id' => '2', 'channel_id' => '100', 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg2']],
-                    [['id' => '3', 'channel_id' => '200', 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg3']],
-                ],
-                'total_results' => 3,
+            'discord.com/api/v10/guilds/*/members/12345' => Http::response([], 204),
+            'discord.com/api/v10/guilds/*/channels' => Http::response([
+                ['id' => '100', 'type' => 0, 'name' => 'general'],
+                ['id' => '200', 'type' => 0, 'name' => 'other'],
             ]),
-            'discord.com/api/v6/channels/*/messages/bulk-delete' => Http::response([], 204),
+            'discord.com/api/v10/channels/100/messages*' => Http::response([
+                ['id' => '1', 'channel_id' => '100', 'author' => ['id' => (string) $account->discord_id], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg1'],
+                ['id' => '2', 'channel_id' => '100', 'author' => ['id' => (string) $account->discord_id], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg2'],
+            ]),
+            'discord.com/api/v10/channels/200/messages*' => Http::response([
+                ['id' => '3', 'channel_id' => '200', 'author' => ['id' => (string) $account->discord_id], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg3'],
+            ]),
+            'discord.com/api/v10/channels/*/messages/bulk-delete' => Http::response([], 204),
         ]);
 
         $discord = new Discord;
@@ -469,73 +472,88 @@ class DiscordTest extends TestCase
     }
 
     #[Test]
-    public function test_search_messages_returns_messages_within_time_window()
+    public function test_get_messages_from_user_returns_messages_in_time_window()
     {
+        $userId = '12345';
+        $channelId = '100';
+
         Http::fake([
-            'discord.com/api/v6/guilds/*/messages/search*' => Http::response([
-                'messages' => [
-                    [['id' => '1', 'channel_id' => '100', 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'recent']],
-                ],
-                'total_results' => 1,
+            'discord.com/api/v10/guilds/*/channels' => Http::response([
+                ['id' => $channelId, 'type' => 0, 'name' => 'general'],
+            ]),
+            "discord.com/api/v10/channels/{$channelId}/messages*" => Http::response([
+                ['id' => '1', 'channel_id' => $channelId, 'author' => ['id' => $userId], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'recent'],
             ]),
         ]);
 
-        $messages = (new Discord)->searchMessagesFromDiscordUser('12345', 6);
+        $messages = (new Discord)->getMessagesFromUserInGuild($userId, 6);
 
         $this->assertCount(1, $messages);
         $this->assertSame('1', $messages[0]['id']);
     }
 
     #[Test]
-    public function test_search_messages_returns_empty_when_all_messages_are_old()
+    public function test_get_messages_from_user_returns_empty_when_all_old()
     {
+        $userId = '12345';
+        $channelId = '100';
+
         Http::fake([
-            'discord.com/api/v6/guilds/*/messages/search*' => Http::response([
-                'messages' => [
-                    [['id' => '1', 'channel_id' => '100', 'timestamp' => now()->subHours(10)->toIso8601String(), 'content' => 'old']],
-                ],
-                'total_results' => 1,
+            'discord.com/api/v10/guilds/*/channels' => Http::response([
+                ['id' => $channelId, 'type' => 0, 'name' => 'general'],
+            ]),
+            "discord.com/api/v10/channels/{$channelId}/messages*" => Http::response([
+                ['id' => '1', 'channel_id' => $channelId, 'author' => ['id' => $userId], 'timestamp' => now()->subHours(10)->toIso8601String(), 'content' => 'old'],
             ]),
         ]);
 
-        $messages = (new Discord)->searchMessagesFromDiscordUser('12345', 6);
+        $messages = (new Discord)->getMessagesFromUserInGuild($userId, 6);
 
         $this->assertCount(0, $messages);
     }
 
     #[Test]
-    public function test_search_messages_paginates_and_stops_when_no_recent_messages_left()
+    public function test_get_messages_from_user_skips_non_text_channels()
     {
-        $recent = now()->subHour()->toIso8601String();
-        $old = now()->subHours(10)->toIso8601String();
+        $userId = '12345';
 
-        Http::fakeSequence()
-            ->push(['messages' => [[['id' => '1', 'channel_id' => '100', 'timestamp' => $recent, 'content' => 'recent']]], 'total_results' => 100])
-            ->push(['messages' => [[['id' => '2', 'channel_id' => '100', 'timestamp' => $old, 'content' => 'old']]], 'total_results' => 100]);
+        Http::fake([
+            'discord.com/api/v10/guilds/*/channels' => Http::response([
+                ['id' => '1', 'type' => 2, 'name' => 'voice'],      // GUILD_VOICE — skipped
+                ['id' => '2', 'type' => 4, 'name' => 'category'],  // GUILD_CATEGORY — skipped
+                ['id' => '3', 'type' => 0, 'name' => 'text'],      // GUILD_TEXT — includes messages
+                ['id' => '4', 'type' => 5, 'name' => 'news'],      // GUILD_NEWS — includes messages
+            ]),
+            'discord.com/api/v10/channels/3/messages*' => Http::response([
+                ['id' => 'm1', 'channel_id' => '3', 'author' => ['id' => $userId], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'from text'],
+            ]),
+            'discord.com/api/v10/channels/4/messages*' => Http::response([
+                ['id' => 'm2', 'channel_id' => '4', 'author' => ['id' => $userId], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'from news'],
+            ]),
+        ]);
 
-        $messages = (new Discord)->searchMessagesFromDiscordUser('12345', 6);
+        $messages = (new Discord)->getMessagesFromUserInGuild($userId, 6);
 
-        $this->assertCount(1, $messages);
-        $this->assertSame('1', $messages[0]['id']);
+        $this->assertCount(2, $messages);
     }
 
     #[Test]
-    public function test_search_messages_throws_on_api_failure()
+    public function test_get_messages_from_user_returns_empty_on_channel_list_failure()
     {
-        $this->expectException(GenericDiscordException::class);
-
         Http::fake([
-            'discord.com/api/v6/guilds/*/messages/search*' => Http::response([], 500),
+            'discord.com/api/v10/guilds/*/channels' => Http::response([], 500),
         ]);
 
-        (new Discord)->searchMessagesFromDiscordUser('12345', 6);
+        $messages = (new Discord)->getMessagesFromUserInGuild('12345', 6);
+
+        $this->assertCount(0, $messages);
     }
 
     #[Test]
     public function test_bulk_delete_messages_sends_post_request_with_message_ids()
     {
         Http::fake([
-            'discord.com/api/v6/channels/*/messages/bulk-delete' => Http::response([], 204),
+            'discord.com/api/v10/channels/*/messages/bulk-delete' => Http::response([], 204),
         ]);
 
         $result = (new Discord)->bulkDeleteMessages('100', ['1', '2', '3']);
@@ -554,7 +572,7 @@ class DiscordTest extends TestCase
         $this->expectException(GenericDiscordException::class);
 
         Http::fake([
-            'discord.com/api/v6/channels/*/messages/bulk-delete' => Http::response(['message' => 'Missing Permissions'], 403),
+            'discord.com/api/v10/channels/*/messages/bulk-delete' => Http::response(['message' => 'Missing Permissions'], 403),
         ]);
 
         (new Discord)->bulkDeleteMessages('100', ['1', '2', '3']);

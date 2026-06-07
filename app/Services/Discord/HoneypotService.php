@@ -20,7 +20,6 @@ class HoneypotService
     public function handleTrigger(
         string $discordUserId,
         string $discordUsername,
-        string $messageContent,
     ): void {
         $account = Account::where('discord_id', $discordUserId)->first();
 
@@ -30,11 +29,11 @@ class HoneypotService
             return;
         }
 
+        Log::notice("Honeypot triggered by {$discordUsername} ({$discordUserId}) linked to account {$account->id}");
+
         $this->discord->softBan($account, 1, 7, 'Honeypot');
 
-        Log::notice("Honeypot triggered by {$discordUsername} ({$discordUserId}): {$messageContent}");
-
         $noteType = NoteType::isShortCode('discipline')->first();
-        $account->addNote($noteType, "User sent a message in the honeypot channel. Message content: {$messageContent}", null);
+        $account->addNote($noteType, 'User sent a message in the honeypot channel, recent messages have been deleted and user has been timed out for 7 days', null);
     }
 }
