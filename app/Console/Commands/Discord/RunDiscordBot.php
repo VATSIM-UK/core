@@ -53,8 +53,8 @@ class RunDiscordBot extends Command
                     return;
                 }
 
-                if ($message->channel_id == config('services.discord.honeypot_channel_id')) {
-                    $this->HandleHoneypotMessage($message, $discord);
+                if ((string) $message->channel_id === (string) config('services.discord.honeypot_channel_id')) {
+                    $this->handleHoneypotMessage($message, $discord);
                 }
             });
         });
