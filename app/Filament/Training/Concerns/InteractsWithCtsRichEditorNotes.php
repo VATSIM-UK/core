@@ -29,7 +29,9 @@ trait InteractsWithCtsRichEditorNotes
      */
     protected function conductSessionRichEditor(RichEditor $editor, ?callable $afterStateUpdated = null): RichEditor
     {
-        $editor = $editor->live(onBlur: true);
+        $editor = $editor
+            ->live()
+            ->extraFieldWrapperAttributes(['wire:ignore' => true]);
 
         if ($afterStateUpdated !== null) {
             return $editor->afterStateUpdated($afterStateUpdated);
