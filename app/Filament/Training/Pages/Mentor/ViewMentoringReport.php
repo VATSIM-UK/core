@@ -67,6 +67,16 @@ class ViewMentoringReport extends Page implements HasInfolists
         ];
     }
 
+    public function getTitle(): string
+    {
+        return sprintf(
+            '%s - %s - %s',
+            $this->session->student?->account?->name,
+            $this->session->position,
+            Carbon::parse($this->session->taken_date)->format('d M Y'),
+        );
+    }
+
     public function mount(): void
     {
         $this->session = Session::with([
