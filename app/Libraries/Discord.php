@@ -362,8 +362,15 @@ class Discord
     /*
      * Bulk delete messages in a channel by their IDs.
      */
-    public function bulkDeleteMessages(string $channelId, array $messageIds)
+    public function bulkDeleteMessages(string $channelId, array $messageIds): bool
     {
+        if (count($messageIds) > 100) {
+            foreach (array_chunk($messageIds, 100) as $chunk) {
+                $this->bulkDeleteMessages($channelId, $chunk);
+            }
+
+            return true;
+        }
         $endpoint = "{$this->base_url}/channels/{$channelId}/messages/bulk-delete";
         $context = [
             'action' => 'bulkDeleteMessages',
