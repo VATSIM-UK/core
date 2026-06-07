@@ -292,70 +292,17 @@ class Discord
             throw new GenericDiscordException($response);
         }
 
-        // delete recent messages
-        $messages = $this->getMessagesFromUserInGuild($account->discord_id, $messageRemovalHours);
-        $messagesByChannel = collect($messages)->groupBy('channel_id');
+        // delete recent cached messages
+        $cacheKey = "discord:user:{$account->discord_id}:messages";
+        $cachedMessages = Cache::get($cacheKey, []);
+
+        $messagesByChannel = collect($cachedMessages)->groupBy('channel_id');
         foreach ($messagesByChannel as $channelId => $messages) {
-            $messageIds = collect($messages)->pluck('id')->unique()->values()->toArray();
+            $messageIds = collect($messages)->pluck('message_id')->unique()->values()->toArray();
             $this->bulkDeleteMessages($channelId, $messageIds);
         }
-    }
 
-    /**
-     * Fetch recent messages from a user across all text channels in the guild.
-     *
-     *
-     * @return array List of message objects with at least `id`, `channel_id`, `timestamp`
-     */
-    public function getMessagesFromUserInGuild(string $userId, int $hours = 6): array
-    {
-        $cutoff = now()->subHours($hours);
-        $found = [];
-
-        // list all channeůs
-        $channelsResponse = $this->rateLimitedRequest(
-            fn () => Http::withHeaders($this->headers)->get("{$this->base_url}/guilds/{$this->guild_id}/channels"),
-            ['action' => 'getGuildChannels', 'user_id' => $userId]
-        );
-
-        if ($channelsResponse->failed()) {
-            Log::warning('Failed to list guild channels for message purge', ['status' => $channelsResponse->status()]);
-
-            return [];
-        }
-
-        // for each text channel, fetch recent messages and filter by author
-        $textChannelTypes = [0, 5]; // GUILD_TEXT, GUILD_NEWS
-        foreach ($channelsResponse->json() as $channel) {
-            if (! in_array($channel['type'] ?? -1, $textChannelTypes, true)) {
-                continue;
-            }
-
-            $response = $this->rateLimitedRequest(
-                fn () => Http::withHeaders($this->headers)->get(
-                    "{$this->base_url}/channels/{$channel['id']}/messages",
-                    ['limit' => 100]
-                ),
-                ['action' => 'getChannelMessages', 'channel_id' => $channel['id'], 'user_id' => $userId]
-            );
-
-            if ($response->failed()) {
-                continue;
-            }
-
-            foreach ($response->json() as $message) {
-                if (
-                    isset($message['author']['id'])
-                    && (string) $message['author']['id'] === (string) $userId
-                    && isset($message['timestamp'])
-                    && \Illuminate\Support\Carbon::parse($message['timestamp'])->greaterThan($cutoff)
-                ) {
-                    $found[$message['id']] = $message;
-                }
-            }
-        }
-
-        return array_values($found);
+        Cache::forget($cacheKey);
     }
 
     /**

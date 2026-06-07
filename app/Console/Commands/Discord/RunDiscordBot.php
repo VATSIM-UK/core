@@ -10,6 +10,7 @@ use Discord\Parts\Channel\Message;
 use Discord\WebSockets\Event;
 use Discord\WebSockets\Intents;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class RunDiscordBot extends Command
 {
@@ -51,7 +52,13 @@ class RunDiscordBot extends Command
                     return;
                 }
 
-                if ((string) $message->channel_id === (string) config('services.discord.honeypot_channel_id')) {
+                $this->cacheMessage(
+                    discordUserId: $message->author->id,
+                    channelId: $message->channel_id,
+                    messageId: $message->id,
+                );
+
+                if ($message->channel_id === config('services.discord.honeypot_channel_id')) {
                     HandleHoneypotTrigger::dispatch(
                         discordUserId: $message->author->id,
                         discordUsername: $message->author->username,
@@ -80,6 +87,12 @@ class RunDiscordBot extends Command
 
         foreach ($messages as $message) {
             if (empty($message['author']['bot'])) {
+                $this->cacheMessage(
+                    discordUserId: $message['author']['id'],
+                    channelId: $honeypotChannelId,
+                    messageId: $message['id'],
+                );
+
                 HandleHoneypotTrigger::dispatch(
                     discordUserId: $message['author']['id'],
                     discordUsername: $message['author']['username'],
@@ -87,5 +100,30 @@ class RunDiscordBot extends Command
                 );
             }
         }
+    }
+
+    /**
+     * Cache a message mapping for easy bulk lookup and removal.
+     *
+     * Stores a mapping of discordUserId -> [{channelId, messageId}] in Redis,
+     * deduplicated by messageId, retaining only messages from the last 10 minutes.
+     */
+    private function cacheMessage(string $discordUserId, string $channelId, string $messageId): void
+    {
+        $key = "discord:user:{$discordUserId}:messages";
+        $messages = Cache::get($key, []);
+        $cutoff = now()->subMinutes(10);
+
+        // purge entries older than 10 minutes, then add the new one
+        $messages = collect($messages)
+            ->reject(fn (array $entry) => isset($entry['cached_at']) && $entry['cached_at'] < $cutoff->timestamp)
+            ->put($messageId, [
+                'channel_id' => $channelId,
+                'message_id' => $messageId,
+                'cached_at' => now()->timestamp,
+            ])
+            ->all();
+
+        Cache::put($key, $messages, 600);
     }
 }

@@ -6,6 +6,7 @@ use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Exceptions\Discord\GenericDiscordException;
 use App\Libraries\Discord;
 use App\Models\Mship\Account;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
@@ -391,10 +392,6 @@ class DiscordTest extends TestCase
 
         Http::fake([
             'discord.com/api/v10/guilds/*/members/12345' => Http::response([], 204),
-            'discord.com/api/v10/guilds/*/channels' => Http::response([
-                ['id' => '100', 'type' => 0, 'name' => 'general'],
-            ]),
-            'discord.com/api/v10/channels/100/messages*' => Http::response([]),
         ]);
 
         $now = now();
@@ -440,19 +437,15 @@ class DiscordTest extends TestCase
     {
         $account = Account::factory()->create(['discord_id' => 12345]);
 
+        // pre-populate cache
+        Cache::put("discord:user:{$account->discord_id}:messages", [
+            '1' => ['channel_id' => '100', 'message_id' => '1', 'cached_at' => now()->timestamp],
+            '2' => ['channel_id' => '100', 'message_id' => '2', 'cached_at' => now()->timestamp],
+            '3' => ['channel_id' => '200', 'message_id' => '3', 'cached_at' => now()->timestamp],
+        ], 600);
+
         Http::fake([
             'discord.com/api/v10/guilds/*/members/12345' => Http::response([], 204),
-            'discord.com/api/v10/guilds/*/channels' => Http::response([
-                ['id' => '100', 'type' => 0, 'name' => 'general'],
-                ['id' => '200', 'type' => 0, 'name' => 'other'],
-            ]),
-            'discord.com/api/v10/channels/100/messages*' => Http::response([
-                ['id' => '1', 'channel_id' => '100', 'author' => ['id' => (string) $account->discord_id], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg1'],
-                ['id' => '2', 'channel_id' => '100', 'author' => ['id' => (string) $account->discord_id], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg2'],
-            ]),
-            'discord.com/api/v10/channels/200/messages*' => Http::response([
-                ['id' => '3', 'channel_id' => '200', 'author' => ['id' => (string) $account->discord_id], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'msg3'],
-            ]),
             'discord.com/api/v10/channels/*/messages/bulk-delete' => Http::response([], 204),
         ]);
 
@@ -468,84 +461,9 @@ class DiscordTest extends TestCase
             return $request->method() === 'DELETE'
                 && str_contains($request->url(), '/channels/200/messages/3');
         });
-    }
 
-    #[Test]
-    public function test_get_messages_from_user_returns_messages_in_time_window()
-    {
-        $userId = '12345';
-        $channelId = '100';
-
-        Http::fake([
-            'discord.com/api/v10/guilds/*/channels' => Http::response([
-                ['id' => $channelId, 'type' => 0, 'name' => 'general'],
-            ]),
-            "discord.com/api/v10/channels/{$channelId}/messages*" => Http::response([
-                ['id' => '1', 'channel_id' => $channelId, 'author' => ['id' => $userId], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'recent'],
-            ]),
-        ]);
-
-        $messages = (new Discord)->getMessagesFromUserInGuild($userId, 6);
-
-        $this->assertCount(1, $messages);
-        $this->assertSame('1', $messages[0]['id']);
-    }
-
-    #[Test]
-    public function test_get_messages_from_user_returns_empty_when_all_old()
-    {
-        $userId = '12345';
-        $channelId = '100';
-
-        Http::fake([
-            'discord.com/api/v10/guilds/*/channels' => Http::response([
-                ['id' => $channelId, 'type' => 0, 'name' => 'general'],
-            ]),
-            "discord.com/api/v10/channels/{$channelId}/messages*" => Http::response([
-                ['id' => '1', 'channel_id' => $channelId, 'author' => ['id' => $userId], 'timestamp' => now()->subHours(10)->toIso8601String(), 'content' => 'old'],
-            ]),
-        ]);
-
-        $messages = (new Discord)->getMessagesFromUserInGuild($userId, 6);
-
-        $this->assertCount(0, $messages);
-    }
-
-    #[Test]
-    public function test_get_messages_from_user_skips_non_text_channels()
-    {
-        $userId = '12345';
-
-        Http::fake([
-            'discord.com/api/v10/guilds/*/channels' => Http::response([
-                ['id' => '1', 'type' => 2, 'name' => 'voice'],      // GUILD_VOICE — skipped
-                ['id' => '2', 'type' => 4, 'name' => 'category'],  // GUILD_CATEGORY — skipped
-                ['id' => '3', 'type' => 0, 'name' => 'text'],      // GUILD_TEXT — includes messages
-                ['id' => '4', 'type' => 5, 'name' => 'news'],      // GUILD_NEWS — includes messages
-            ]),
-            'discord.com/api/v10/channels/3/messages*' => Http::response([
-                ['id' => 'm1', 'channel_id' => '3', 'author' => ['id' => $userId], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'from text'],
-            ]),
-            'discord.com/api/v10/channels/4/messages*' => Http::response([
-                ['id' => 'm2', 'channel_id' => '4', 'author' => ['id' => $userId], 'timestamp' => now()->subHour()->toIso8601String(), 'content' => 'from news'],
-            ]),
-        ]);
-
-        $messages = (new Discord)->getMessagesFromUserInGuild($userId, 6);
-
-        $this->assertCount(2, $messages);
-    }
-
-    #[Test]
-    public function test_get_messages_from_user_returns_empty_on_channel_list_failure()
-    {
-        Http::fake([
-            'discord.com/api/v10/guilds/*/channels' => Http::response([], 500),
-        ]);
-
-        $messages = (new Discord)->getMessagesFromUserInGuild('12345', 6);
-
-        $this->assertCount(0, $messages);
+        // Cache should be cleared after deletion
+        $this->assertNull(Cache::get("discord:user:{$account->discord_id}:messages"));
     }
 
     #[Test]
