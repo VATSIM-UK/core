@@ -6,7 +6,7 @@ use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Qualification;
-use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
@@ -83,7 +83,15 @@ class EndorsementsRelationManager extends RelationManager
             ->recordActions([
                 EditAction::make()
                     ->visible(fn ($record) => $record->expires_at),
-                DeleteAction::make(),
+                Action::make('revoke')
+                    ->label('Revoke')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->icon('heroicon-o-no-symbol')
+                    ->modalHeading('Revoke Endorsement')
+                    ->modalSubmitActionLabel('Revoke')
+                    ->visible(fn (Endorsement $record) => $record->expires_at?->isFuture() ?? true)
+                    ->action(fn (Endorsement $record) => $record->update(['expires_at' => now()->subDay()->toDateString()])),
             ])
             ->filters([
                 SelectFilter::make('endorsable_type')
