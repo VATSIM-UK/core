@@ -447,6 +447,7 @@ class DiscordTest extends TestCase
         Http::fake([
             'discord.com/api/v10/guilds/*/members/12345' => Http::response([], 204),
             'discord.com/api/v10/channels/*/messages/bulk-delete' => Http::response([], 204),
+            'discord.com/api/v10/channels/*/messages/*' => Http::response([], 204),
         ]);
 
         $discord = new Discord;
