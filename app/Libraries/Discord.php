@@ -157,6 +157,23 @@ class Discord
         return $this->result($response, $context);
     }
 
+    public function deleteMessage(string $channelId, string $messageId): bool
+    {
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages/{$messageId}";
+        $context = [
+            'action' => 'deleteMessage',
+            'channel_id' => $channelId,
+            'message_id' => $messageId,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->delete($endpoint),
+            $context
+        );
+
+        return $this->result($response, $context);
+    }
+
     public function invite(Account $account): bool
     {
         $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}";
