@@ -31,9 +31,7 @@ class AtcServerGroupService
                 return;
             }
 
-            $server->request(
-                "servergroupaddclient sgid={$group->ts_sgid} cldbid={$registration->dbid}"
-            );
+            $server->request("servergroupaddclient sgid={$group->ts_sgid} cldbid={$registration->dbid}");
 
             AtcGroupAssignment::updateOrCreate(
                 ['account_id' => $account->id],
@@ -70,9 +68,8 @@ class AtcServerGroupService
 
         if ($registration) {
             try {
-                $server->request(
-                    "servergroupdelclient sgid={$group->ts_sgid} cldbid={$registration->dbid}"
-                );
+                $server->request("servergroupdelclient sgid={$group->ts_sgid} cldbid={$registration->dbid}");
+                Log::info("Removed account {$account->id} from ATC group '{$group->callsign}' (sgid={$group->ts_sgid})");
             } catch (ServerQueryException $e) {
                 Log::warning("servergroupdelclient failed for account {$account->id}: {$e->getMessage()}");
             }
@@ -139,9 +136,7 @@ class AtcServerGroupService
             $sgid = $server->serverGroupCreate($callsign);
 
             // Set the server group to display infront of the username
-            $server->request(
-                "servergroupaddperm sgid={$sgid} permsid=i_group_show_name_in_tree permvalue=1 permnegated=0 permskip=1"
-            );
+            $server->request("servergroupaddperm sgid={$sgid} permsid=i_group_show_name_in_tree permvalue=1 permnegated=0 permskip=1");
 
             Log::info("Created ATC server group '{$callsign}' with sgid={$sgid}");
         }
