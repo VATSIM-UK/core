@@ -43,6 +43,10 @@ class Kernel extends ConsoleKernel
             ->doNotMonitor()
             ->everyTenMinutes();
 
+        $schedule->command('teamspeak:cleanup-atc-groups')
+            ->doNotMonitor()
+            ->everyFiveMinutes();
+
         // === By Hour === //
         $schedule->command('sync:cts-roles')
             ->hourlyAt(15)
