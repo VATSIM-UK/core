@@ -138,6 +138,7 @@ class AtcServerGroupService
         } catch (ServerQueryException $e) {
             $sgid = $server->serverGroupCreate($callsign);
 
+            // Set the server group to display infront of the username
             $server->request(
                 "servergroupaddperm sgid={$sgid} permsid=i_group_show_name_in_tree permvalue=1 permnegated=0 permskip=1"
             );

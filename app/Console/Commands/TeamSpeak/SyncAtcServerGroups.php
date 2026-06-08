@@ -8,11 +8,11 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use PlanetTeamSpeak\TeamSpeak3Framework\Node\Server;
 
-class CleanupAtcServerGroups extends Command
+class SyncAtcServerGroups extends Command
 {
-    protected $signature = 'teamspeak:cleanup-atc-groups';
+    protected $signature = 'teamspeak:sync-atc-groups';
 
-    protected $description = 'Reconcile ATC session assignments and prune empty groups.';
+    protected $description = 'Sync ATC groups.';
 
     public function __construct(private readonly AtcServerGroupService $service)
     {
@@ -27,17 +27,16 @@ class CleanupAtcServerGroups extends Command
             return self::SUCCESS;
         }
 
-        /** @var Host|null $server */
         $server = null;
 
         try {
-            $server = TeamSpeak::run('vUK ATC Cleanup Bot');
+            $server = TeamSpeak::run('vUK ATC Groups Sync');
             $this->service->sync($server);
-            $this->info('ATC session groups reconciled.');
-            Log::info('CleanupAtcServerGroups: reconciled ATC session groups.');
+            $this->info('ATC groups synced.');
+            Log::info('ATC groups synced.');
         } catch (\Throwable $e) {
             $this->error('Cleanup failed: '.$e->getMessage());
-            Log::error('CleanupAtcServerGroups failed', ['exception' => $e->getMessage()]);
+            Log::error('SyncAtcServerGroups failed', ['exception' => $e->getMessage()]);
 
             return self::FAILURE;
         } finally {
@@ -56,7 +55,7 @@ class CleanupAtcServerGroups extends Command
         try {
             $server->request('quit');
         } catch (\Throwable) {
-            // Connection may already be closed — nothing to do
+
         }
     }
 }

@@ -43,10 +43,6 @@ class Kernel extends ConsoleKernel
             ->doNotMonitor()
             ->everyTenMinutes();
 
-        $schedule->command('teamspeak:cleanup-atc-groups')
-            ->doNotMonitor()
-            ->everyFiveMinutes();
-
         // === By Hour === //
         $schedule->command('sync:cts-roles')
             ->hourlyAt(15)
@@ -63,6 +59,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('training-places:create-cts-session-requests')
             ->hourlyAt(5)
             ->graceTimeInMinutes(10);
+
+        $schedule->command('teamspeak:sync-atc-groups')
+            ->doNotMonitor()
+            ->twiceHourly(10, 50);
 
         // === By Day === //
         $schedule->command('telescope:prune')

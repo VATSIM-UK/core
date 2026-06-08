@@ -2,17 +2,28 @@
 
 namespace App\Listeners\TeamSpeak;
 
+use App\Events\NetworkData\AtcSessionStarted;
 use App\Libraries\TeamSpeak;
 use App\Models\NetworkData\Atc;
 use App\Services\TeamSpeak\AtcServerGroupService;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use PlanetTeamSpeak\TeamSpeak3Framework\Node\Server;
 
-class AssignAtcServerGroup
+class AssignAtcServerGroup implements ShouldQueue
 {
+    use InteractsWithQueue;
+
+    public string $queue = 'teamspeak';
+
+    public int $tries = 3;
+
+    public int $backoff = 5;
+
     public function __construct(private readonly AtcServerGroupService $service) {}
 
-    public function handle(\App\Events\NetworkData\AtcSessionStarted $event): void
+    public function handle(AtcSessionStarted $event): void
     {
         $atcSession = $event->atcSession;
 
@@ -30,7 +41,7 @@ class AssignAtcServerGroup
         $server = null;
 
         try {
-            $server = TeamSpeak::run('vUK ATC Group Bot');
+            $server = TeamSpeak::run('vUK Assign ATC Group');
             $this->service->assign($account, $callsign, $server);
         } catch (\Throwable $e) {
             Log::error('Failed to assign ATC server group', [
@@ -38,6 +49,8 @@ class AssignAtcServerGroup
                 'callsign' => $callsign,
                 'exception' => $e->getMessage(),
             ]);
+
+            $this->fail($e);
         } finally {
             self::closeConnection($server);
         }
@@ -52,7 +65,6 @@ class AssignAtcServerGroup
         try {
             $server->request('quit');
         } catch (\Throwable) {
-            // Connection may already be closed — nothing to do
         }
     }
 }

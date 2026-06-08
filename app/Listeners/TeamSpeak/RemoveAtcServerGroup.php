@@ -2,17 +2,28 @@
 
 namespace App\Listeners\TeamSpeak;
 
+use App\Events\NetworkData\AtcSessionEnded;
 use App\Libraries\TeamSpeak;
 use App\Models\NetworkData\Atc;
 use App\Services\TeamSpeak\AtcServerGroupService;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use PlanetTeamSpeak\TeamSpeak3Framework\Node\Server;
 
-class RemoveAtcServerGroup
+class RemoveAtcServerGroup implements ShouldQueue
 {
+    use InteractsWithQueue;
+
+    public string $queue = 'teamspeak';
+
+    public int $tries = 3;
+
+    public int $backoff = 5;
+
     public function __construct(private readonly AtcServerGroupService $service) {}
 
-    public function handle(\App\Events\NetworkData\AtcSessionEnded $event): void
+    public function handle(AtcSessionEnded $event): void
     {
         $atcSession = $event->atcSession;
 
@@ -26,7 +37,6 @@ class RemoveAtcServerGroup
 
         $account = $event->getAccount();
 
-        /** @var Host|null $server */
         $server = null;
 
         try {
@@ -37,6 +47,8 @@ class RemoveAtcServerGroup
                 'account_id' => $account->id,
                 'exception' => $e->getMessage(),
             ]);
+
+            $this->fail($e);
         } finally {
             self::closeConnection($server);
         }
@@ -51,7 +63,7 @@ class RemoveAtcServerGroup
         try {
             $server->request('quit');
         } catch (\Throwable) {
-            // Connection may already be closed — nothing to do
+
         }
     }
 }
