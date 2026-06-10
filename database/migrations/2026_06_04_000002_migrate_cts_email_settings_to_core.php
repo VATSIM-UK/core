@@ -23,69 +23,64 @@ return new class extends Migration
             'exam_cancel' => 'examiner_exam_cancelled',
         ];
 
-        $rows = [];
+        $total = 0;
+        $buffer = [];
+        $chunkSize = 500;
 
-        $rtsRows = $cts->table('email_settings_rts')
-            ->join('members', 'members.id', '=', 'email_settings_rts.member_id')
-            ->select('members.cid as account_id', 'email_settings_rts.*')
-            ->get();
-
-        foreach ($rtsRows as $row) {
-            if (! $row->account_id) {
-                continue;
+        $flush = function () use (&$buffer, &$total) {
+            if (empty($buffer)) {
+                return;
             }
 
-            foreach ($rtsMapping as $ctsField => $emailType) {
-                if (! isset($row->$ctsField)) {
+            DB::table('mship_email_settings')->insertOrIgnore($buffer);
+            $total += count($buffer);
+            $buffer = [];
+        };
+
+        $process = function (iterable $rows, array $mapping) use (&$buffer, &$total, $chunkSize, $flush) {
+            foreach ($rows as $row) {
+                if (! $row->account_id) {
                     continue;
                 }
 
-                if ($row->$ctsField == 0) {
-                    $rows[] = [
+                foreach ($mapping as $ctsField => $emailType) {
+                    if (! isset($row->$ctsField) || $row->$ctsField != 0) {
+                        continue;
+                    }
+
+                    $buffer[] = [
                         'account_id' => $row->account_id,
                         'email_type' => $emailType,
                         'enabled' => false,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
+
+                    if (count($buffer) >= $chunkSize) {
+                        $flush();
+                    }
                 }
             }
-        }
+        };
 
-        $genRows = $cts->table('email_settings_gen')
-            ->join('members', 'members.id', '=', 'email_settings_gen.member_id')
-            ->select('members.cid as account_id', 'email_settings_gen.*')
-            ->get();
+        $process(
+            $cts->table('email_settings_rts')
+                ->join('members', 'members.id', '=', 'email_settings_rts.member_id')
+                ->select('members.cid as account_id', 'email_settings_rts.*')
+                ->cursor(),
+            $rtsMapping
+        );
 
-        foreach ($genRows as $row) {
-            if (! $row->account_id) {
-                continue;
-            }
+        $process(
+            $cts->table('email_settings_gen')
+                ->join('members', 'members.id', '=', 'email_settings_gen.member_id')
+                ->select('members.cid as account_id', 'email_settings_gen.*')
+                ->cursor(),
+            $genMapping
+        );
 
-            foreach ($genMapping as $ctsField => $emailType) {
-                if (! isset($row->$ctsField)) {
-                    continue;
-                }
+        $flush();
 
-                if ($row->$ctsField == 0) {
-                    $rows[] = [
-                        'account_id' => $row->account_id,
-                        'email_type' => $emailType,
-                        'enabled' => false,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
-                }
-            }
-        }
-
-        // Chunk insert to avoid memory issues
-        $chunks = array_chunk($rows, 500);
-
-        foreach ($chunks as $chunk) {
-            DB::table('mship_email_settings')->insertOrIgnore($chunk);
-        }
-
-        Log::info('CTS email settings migrated, '.count($rows).' preferences disabled.');
+        Log::info("CTS email settings migrated, {$total} preferences disabled.");
     }
 };

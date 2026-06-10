@@ -3,8 +3,8 @@
 namespace App\Models\Mship\Account;
 
 use App\Enums\EmailType;
+use App\Models\Model;
 use App\Models\Mship\Account;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EmailSetting extends Model
