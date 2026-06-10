@@ -8,7 +8,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use PlanetTeamSpeak\TeamSpeak3Framework\Node\Server;
 
-// Runs twice daily so if there is any server downtime, the teamspeak server groups are updated to reflect the current live state
 class SyncAtcServerGroups extends Command
 {
     protected $signature = 'teamspeak:sync-atc-groups';

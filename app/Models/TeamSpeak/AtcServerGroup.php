@@ -2,7 +2,7 @@
 
 namespace App\Models\TeamSpeak;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 
 class AtcServerGroup extends Model
 {

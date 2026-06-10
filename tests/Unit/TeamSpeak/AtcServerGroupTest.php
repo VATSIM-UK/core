@@ -262,7 +262,7 @@ class AtcServerGroupTest extends TestCase
         $this->makeAssignment($this->account, $group);
         $this->server->method('request')->willReturn($this->makeReply());
 
-        $this->service->release($this->account, $this->server);
+        $this->service->releaseExisting($this->account, $this->server);
 
         $this->assertDatabaseMissing('teamspeak_atc_group_assignments', [
             'account_id' => $this->account->id,
@@ -284,7 +284,7 @@ class AtcServerGroupTest extends TestCase
                 return $reply;
             });
 
-        $this->service->release($this->account, $this->server);
+        $this->service->releaseExisting($this->account, $this->server);
 
         $this->assertContains('servergroupdelclient sgid=100 cldbid=12345', $requests);
     }
@@ -295,7 +295,7 @@ class AtcServerGroupTest extends TestCase
         $this->makeAssignment($this->account, $group);
         $this->server->method('request')->willReturn($this->makeReply());
 
-        $this->service->release($this->account, $this->server);
+        $this->service->releaseExisting($this->account, $this->server);
 
         $this->assertDatabaseMissing('teamspeak_atc_server_groups', ['id' => $group->id]);
     }
@@ -308,7 +308,7 @@ class AtcServerGroupTest extends TestCase
         $this->makeAssignment($otherAccount, $group);
         $this->server->method('request')->willReturn($this->makeReply());
 
-        $this->service->release($this->account, $this->server);
+        $this->service->releaseExisting($this->account, $this->server);
 
         $this->assertDatabaseHas('teamspeak_atc_server_groups', ['id' => $group->id]);
         $this->assertDatabaseHas('teamspeak_atc_group_assignments', [

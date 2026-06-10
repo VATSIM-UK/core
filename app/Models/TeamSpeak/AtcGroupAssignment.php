@@ -2,8 +2,8 @@
 
 namespace App\Models\TeamSpeak;
 
+use App\Models\Model;
 use App\Models\Mship\Account;
-use Illuminate\Database\Eloquent\Model;
 
 class AtcGroupAssignment extends Model
 {
