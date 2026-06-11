@@ -61,10 +61,6 @@ class Kernel extends ConsoleKernel
             ->graceTimeInMinutes(10);
 
         // === By Day === //
-        $schedule->command('sitemap:generate')
-            ->dailyAt('02:00')
-            ->doNotMonitor();
-
         $schedule->command('telescope:prune')
             ->dailyAt('03:30')
             ->doNotMonitor();
