@@ -108,6 +108,10 @@ class TrainingPlaceOfferFlowTest extends TestCase
 
         $offer = TrainingPlaceOffer::where('waiting_list_account_id', $this->waitingListAccount->id)->firstOrFail();
 
+        $this->trainingPosition->update([
+            'training_team_discord_channel_id' => '123456789',
+        ]);
+
         Carbon::setTestNow($this->offerTime->copy()->addHours(12));
 
         $this->actingAs($this->student)

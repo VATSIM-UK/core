@@ -215,6 +215,9 @@ class TrainingPlaceOfferServiceTest extends TestCase
         Notification::fake();
 
         $offer = $this->createOffer();
+        $offer->trainingPosition->update([
+            'training_team_discord_channel_id' => '123456789',
+        ]);
         $this->service->declineOffer($offer);
 
         Notification::assertSentTo($offer->waitingListAccount->account, TrainingPlaceOfferDeclined::class);
