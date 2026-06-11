@@ -8,6 +8,7 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Notifications\Training\TrainingPlaceOfferDeclined;
 use App\Notifications\Training\TrainingPlaceOffered;
 use App\Notifications\Training\TrainingPlaceOfferRescinded;
 use App\Notifications\Training\TrainingPlaceOfferRescindedAndRemoved;
@@ -63,6 +64,8 @@ class TrainingPlaceOfferService
                 'training',
                 "The member declined a training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign}. Member removed from waiting list."
             );
+
+            $trainingPlaceOffer->waitingListAccount->account->notify(new TrainingPlaceOfferDeclined($trainingPlaceOffer));
         });
     }
 

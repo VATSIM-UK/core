@@ -13,6 +13,7 @@ use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Notifications\Training\TrainingPlaceOfferDeclined;
 use App\Notifications\Training\TrainingPlaceOffered;
 use App\Notifications\Training\TrainingPlaceOfferRescinded;
 use App\Notifications\Training\TrainingPlaceOfferRescindedAndRemoved;
@@ -107,6 +108,10 @@ class TrainingPlaceOfferFlowTest extends TestCase
 
         $offer = TrainingPlaceOffer::where('waiting_list_account_id', $this->waitingListAccount->id)->firstOrFail();
 
+        $this->trainingPosition->update([
+            'training_team_discord_channel_id' => '123456789',
+        ]);
+
         Carbon::setTestNow($this->offerTime->copy()->addHours(12));
 
         $this->actingAs($this->student)
@@ -116,6 +121,7 @@ class TrainingPlaceOfferFlowTest extends TestCase
 
         $this->assertEquals(TrainingPlaceOfferStatus::Declined, $offer->fresh()->status);
         $this->assertNotNull($offer->fresh()->response_at);
+        Notification::assertSentTo($this->student, TrainingPlaceOfferDeclined::class);
 
         $this->assertDatabaseMissing('training_places', [
             'waiting_list_account_id' => $this->waitingListAccount->id,
