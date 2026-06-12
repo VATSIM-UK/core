@@ -81,12 +81,17 @@ class WaitingListResource extends Resource
                             ->helperText('Leave empty for unlimited capacity. Set a number to limit how many users can be on this waiting list.')
                             ->integer()
                             ->minValue(1),
+
                         Select::make('requiredEndorsement')
                             ->label('Required Endorsement')
                             ->helperText('If set, only members with this endorsement can be on the waiting list.')
                             ->nullable()
                             ->relationship('requiredEndorsement', 'name')
                             ->searchable(),
+
+                        Toggle::make('is_vt')
+                            ->label('Visiting Transfer List')
+                            ->default(false),
 
                         Toggle::make('retention_checks_enabled')
                             ->label('Enable Retention Checks')
