@@ -90,7 +90,7 @@ class WaitingListResource extends Resource
                             ->searchable(),
 
                         Toggle::make('is_vt')
-                            ->label('Visiting Transfer List')
+                            ->label('Visiting / Transfer List')
                             ->default(false),
 
                         Toggle::make('retention_checks_enabled')
