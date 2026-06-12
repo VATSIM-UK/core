@@ -177,6 +177,18 @@ class MentoringPolicy
         return $this->conduct($user, $session);
     }
 
+    /**
+     * Determine if a user can reallocate a session to another mentor.
+     */
+    public function reallocate(Account $user, Session $session): bool
+    {
+        if ($this->viewAll($user)) {
+            return true;
+        }
+
+        return $user->can('training.mentoring.sessions.reallocate.*');
+    }
+
     private function canManageOwnOpenSession(Account $user, Session $session): bool
     {
         if ($session->mentor?->cid !== $user->id) {

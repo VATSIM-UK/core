@@ -158,6 +158,37 @@ class MentoringPolicyTest extends TestCase
     }
 
     #[Test]
+    public function reallocate_allows_users_with_view_all_permission(): void
+    {
+        $admin = Account::factory()->create();
+        $admin->givePermissionTo('training.mentoring.view.*');
+
+        $session = Session::factory()->create(['position' => 'EGLL_APP']);
+
+        $this->assertTrue($this->policy->reallocate($admin, $session));
+    }
+
+    #[Test]
+    public function reallocate_allows_users_with_reallocate_permission(): void
+    {
+        $manager = Account::factory()->create();
+        $manager->givePermissionTo('training.mentoring.sessions.reallocate.*');
+
+        $session = Session::factory()->create(['position' => 'EGLL_APP']);
+
+        $this->assertTrue($this->policy->reallocate($manager, $session));
+    }
+
+    #[Test]
+    public function reallocate_denies_users_without_reallocate_permission(): void
+    {
+        $account = Account::factory()->create();
+        $session = Session::factory()->create(['position' => 'EGLL_APP']);
+
+        $this->assertFalse($this->policy->reallocate($account, $session));
+    }
+
+    #[Test]
     public function visible_cts_positions_for_category_includes_all_positions_for_view_all_users(): void
     {
         $admin = Account::factory()->create();

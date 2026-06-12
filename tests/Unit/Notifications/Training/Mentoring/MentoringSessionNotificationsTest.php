@@ -11,6 +11,9 @@ use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotificat
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedNewMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedOldMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -219,5 +222,83 @@ class MentoringSessionNotificationsTest extends TestCase
 
         $this->assertStringContainsString('Dear Jamie Mentor', $html);
         $this->assertStringContainsString('Confirmation of your re-scheduled mentoring session', $html);
+    }
+
+    #[Test]
+    public function reallocated_student_notification_uses_expected_subject_view_and_data(): void
+    {
+        $oldMentorName = $this->mentorAccount->name;
+
+        $notification = new MentoringSessionReallocatedStudentNotification($this->session, $oldMentorName);
+        $mail = $notification->toMail($this->studentAccount);
+
+        $this->assertContains('mail', $notification->via($this->studentAccount));
+        $this->assertSame('VATSIM UK - Mentoring Session Reallocated', $mail->subject);
+        $this->assertSame('emails.training.mentoring.session_reallocated_student', $mail->view);
+        $this->assertSame(
+            ['recipient', 'session', 'position', 'sessionDateTime', 'newMentorName'],
+            array_keys($mail->viewData),
+        );
+        $this->assertSame($this->session->id, $mail->viewData['session']->id);
+        $this->assertSame('EGLL_APP', $mail->viewData['position']);
+
+        $html = View::make($mail->view, $mail->data())->render();
+
+        $this->assertStringContainsString('Dear Alex Student', $html);
+        $this->assertStringContainsString('re-allocated your mentoring session to another mentor', $html);
+        $this->assertStringContainsString('EGLL_APP', $html);
+        $this->assertStringContainsString($this->session->formattedSessionDateTime(), $html);
+        $this->assertStringContainsString('Jamie Mentor', $html);
+    }
+
+    #[Test]
+    public function reallocated_old_mentor_notification_uses_expected_subject_view_and_data(): void
+    {
+        $reason = 'Mentor is unavailable due to prior commitments.';
+        $newMentorName = 'Sam Newmentor';
+
+        $notification = new MentoringSessionReallocatedOldMentorNotification($this->session, $reason, $newMentorName);
+        $mail = $notification->toMail($this->mentorAccount);
+
+        $this->assertContains('mail', $notification->via($this->mentorAccount));
+        $this->assertSame('VATSIM UK - Mentoring Session Reallocated', $mail->subject);
+        $this->assertSame('emails.training.mentoring.session_reallocated_old_mentor', $mail->view);
+        $this->assertSame(
+            ['recipient', 'session', 'position', 'sessionDateTime', 'studentName', 'newMentorName', 'reason'],
+            array_keys($mail->viewData),
+        );
+        $this->assertSame($reason, $mail->viewData['reason']);
+        $this->assertSame($newMentorName, $mail->viewData['newMentorName']);
+
+        $html = View::make($mail->view, $mail->data())->render();
+
+        $this->assertStringContainsString('Dear Jamie Mentor', $html);
+        $this->assertStringContainsString('re-allocated your mentoring session to another mentor', $html);
+        $this->assertStringContainsString('EGLL_APP', $html);
+        $this->assertStringContainsString($reason, $html);
+    }
+
+    #[Test]
+    public function reallocated_new_mentor_notification_uses_expected_subject_view_and_data(): void
+    {
+        $reason = 'Original mentor had a scheduling conflict.';
+
+        $notification = new MentoringSessionReallocatedNewMentorNotification($this->session, $reason);
+        $mail = $notification->toMail($this->studentAccount);
+
+        $this->assertContains('mail', $notification->via($this->studentAccount));
+        $this->assertSame('VATSIM UK - Mentoring Session Reallocated', $mail->subject);
+        $this->assertSame('emails.training.mentoring.session_reallocated_new_mentor', $mail->view);
+        $this->assertSame(
+            ['recipient', 'session', 'position', 'sessionDateTime', 'studentName', 'reason'],
+            array_keys($mail->viewData),
+        );
+        $this->assertSame($reason, $mail->viewData['reason']);
+
+        $html = View::make($mail->view, $mail->data())->render();
+
+        $this->assertStringContainsString('re-allocated a mentoring session to you from another mentor', $html);
+        $this->assertStringContainsString('EGLL_APP', $html);
+        $this->assertStringContainsString($reason, $html);
     }
 }
