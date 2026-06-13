@@ -222,7 +222,7 @@ class WaitingListRetentionChecksNotificationsTest extends TestCase
     #[Test]
     public function it_sends_vt_specific_email_view_for_vt_waiting_lists()
     {
-        $waitingList = $this->createList(['is_vt' => true]);
+        $waitingList = $this->createList(['feature_toggles' => ['is_vt' => true]]);
         $account = Account::factory()->create([
             'id' => 1,
         ]);
@@ -245,7 +245,7 @@ class WaitingListRetentionChecksNotificationsTest extends TestCase
     #[Test]
     public function it_sends_standard_email_view_for_non_vt_waiting_lists()
     {
-        $waitingList = $this->createList(['is_vt' => false]);
+        $waitingList = $this->createList(['feature_toggles' => ['is_vt' => false]]);
         $account = Account::factory()->create([
             'id' => 1,
         ]);

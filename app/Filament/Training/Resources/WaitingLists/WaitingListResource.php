@@ -89,7 +89,7 @@ class WaitingListResource extends Resource
                             ->relationship('requiredEndorsement', 'name')
                             ->searchable(),
 
-                        Toggle::make('is_vt')
+                        Toggle::make('feature_toggles.is_vt')
                             ->label('Visiting / Transfer List')
                             ->default(false),
 

@@ -37,6 +37,7 @@ use Illuminate\Support\Number;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListFlag> $flags
  * @property-read int|null $flags_count
  * @property-read object $feature_toggles_formatted
+ * @property-read bool $is_vt
  * @property-read mixed $formatted_department
  * @property-read bool $should_check_atc_hours
  * @property-read bool $should_check_cts_theory_exam
@@ -94,7 +95,7 @@ class WaitingList extends Model
 
     public $table = 'training_waiting_list';
 
-    protected $fillable = ['name', 'slug', 'department', 'is_vt', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours', 'max_capacity', 'retention_checks_enabled', 'retention_checks_months', 'required_endorsement_id'];
+    protected $fillable = ['name', 'slug', 'department', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours', 'max_capacity', 'retention_checks_enabled', 'retention_checks_months', 'required_endorsement_id'];
 
     const ATC_DEPARTMENT = 'atc';
 
@@ -105,7 +106,6 @@ class WaitingList extends Model
     const ANY_FLAGS = 'any';
 
     protected $casts = [
-        'is_vt' => 'boolean',
         'home_members_only' => 'boolean',
         'feature_toggles' => 'array',
         'deleted_at' => 'datetime',
@@ -300,7 +300,7 @@ class WaitingList extends Model
 
     public function isVtList()
     {
-        return $this->is_vt;
+        return $this->feature_toggles['is_vt'] ?? false;
     }
 
     public function getFormattedDepartmentAttribute()
@@ -327,6 +327,7 @@ class WaitingList extends Model
         return (object) [
             'check_atc_hours' => $this->getShouldCheckAtcHoursAttribute(),
             'check_cts_theory_exam' => $this->getShouldCheckCtsTheoryExamAttribute(),
+            'is_vt' => $this->getIsVtAttribute(),
         ];
     }
 
