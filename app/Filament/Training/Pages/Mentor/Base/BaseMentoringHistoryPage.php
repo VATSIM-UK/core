@@ -93,51 +93,49 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
 
     protected function getTableColumns(): array
     {
-        $columns = [
-            TextColumn::make('student_name')
+        $columns = [];
+
+        if ($this->showStudentFilter()) {
+            $columns[] = TextColumn::make('student_name')
                 ->label('Student')
                 ->getStateUsing(fn ($record) => $record->student->name)
                 ->description(fn ($record) => $record->student->cid)
                 ->action(function ($record, $livewire) {
-                    if (! $this->showStudentFilter()) {
-                        return;
-                    }
-
                     $livewire->tableFilters['student']['value'] = $record->student->cid;
                     $livewire->updatedTableFilters();
-                }),
+                });
+        }
 
-            TextColumn::make('mentor_name')
-                ->label('Mentor')
-                ->getStateUsing(fn ($record) => $record->mentor->name)
-                ->description(fn ($record) => $record->mentor->cid)
-                ->action(function ($record, $livewire) {
-                    if (! $this->showMentorFilter()) {
-                        return;
-                    }
+        $columns[] = TextColumn::make('mentor_name')
+            ->label('Mentor')
+            ->getStateUsing(fn ($record) => $record->mentor->name)
+            ->description(fn ($record) => $record->mentor->cid)
+            ->action(function ($record, $livewire) {
+                if (! $this->showMentorFilter()) {
+                    return;
+                }
 
-                    $livewire->tableFilters['mentor']['value'] = $record->mentor->cid;
-                    $livewire->updatedTableFilters();
-                }),
+                $livewire->tableFilters['mentor']['value'] = $record->mentor->cid;
+                $livewire->updatedTableFilters();
+            });
 
-            TextColumn::make('position')
-                ->label('Position')
-                ->badge()
-                ->color($this->getPositionColumnBadgeColor()),
+        $columns[] = TextColumn::make('position')
+            ->label('Position')
+            ->badge()
+            ->color($this->getPositionColumnBadgeColor());
 
-            TextColumn::make('taken_date')
-                ->label('Date & Time')
-                ->getStateUsing(function ($record) {
-                    $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                    $time = Carbon::parse($record->taken_from)->format('H:i');
+        $columns[] = TextColumn::make('taken_date')
+            ->label('Date & Time')
+            ->getStateUsing(function ($record) {
+                $date = Carbon::parse($record->taken_date)->format('d/m/Y');
+                $time = Carbon::parse($record->taken_from)->format('H:i');
 
-                    return trim("{$date} {$time}");
-                })
-                ->sortable(query: fn (Builder $query, string $direction) => $query
-                    ->orderBy('taken_date', $direction)
-                    ->orderBy('taken_from', $direction)
-                ),
-        ];
+                return trim("{$date} {$time}");
+            })
+            ->sortable(query: fn (Builder $query, string $direction) => $query
+                ->orderBy('taken_date', $direction)
+                ->orderBy('taken_from', $direction)
+            );
 
         if ($this->includeStatusColumn()) {
             $columns[] = TextColumn::make('status')
