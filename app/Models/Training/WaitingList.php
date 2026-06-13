@@ -37,6 +37,7 @@ use Illuminate\Support\Number;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListFlag> $flags
  * @property-read int|null $flags_count
  * @property-read object $feature_toggles_formatted
+ * @property-read bool $is_vt
  * @property-read mixed $formatted_department
  * @property-read bool $should_check_atc_hours
  * @property-read bool $should_check_cts_theory_exam
@@ -297,6 +298,11 @@ class WaitingList extends Model
         return $this->department == self::PILOT_DEPARTMENT;
     }
 
+    public function getIsVtAttribute(): bool
+    {
+        return $this->feature_toggles['is_vt'] ?? false;
+    }
+
     public function getFormattedDepartmentAttribute()
     {
         return match ($this->department) {
@@ -321,6 +327,7 @@ class WaitingList extends Model
         return (object) [
             'check_atc_hours' => $this->getShouldCheckAtcHoursAttribute(),
             'check_cts_theory_exam' => $this->getShouldCheckCtsTheoryExamAttribute(),
+            'is_vt' => $this->is_vt,
         ];
     }
 
