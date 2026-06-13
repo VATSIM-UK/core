@@ -29,6 +29,29 @@ class SessionRepository
             ->where('taken', 1);
     }
 
+    public function getPastAcceptedSessionsForStudentQuery(int $studentId): Builder
+    {
+        return Session::query()
+            ->with(['student', 'mentor'])
+            ->where('student_id', $studentId)
+            ->where('taken', 1)
+            ->where('taken_date', '<', now());
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getPositionsForStudent(int $studentId): array
+    {
+        return Session::query()
+            ->where('student_id', $studentId)
+            ->where('taken', 1)
+            ->distinct()
+            ->orderBy('position')
+            ->pluck('position')
+            ->all();
+    }
+
     public function getUpcomingAcceptedSessionsForPositionsQuery(array $positionCallsigns): Builder
     {
         return $this->getAllAcceptedSessionsForPositionsQuery($positionCallsigns)
