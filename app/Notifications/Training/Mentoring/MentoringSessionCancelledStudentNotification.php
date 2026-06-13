@@ -2,13 +2,15 @@
 
 namespace App\Notifications\Training\Mentoring;
 
+use App\Enums\EmailType;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Notifications\Contracts\HasEmailType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class MentoringSessionCancelledStudentNotification extends Notification
+class MentoringSessionCancelledStudentNotification extends Notification implements HasEmailType
 {
     use Queueable;
 
@@ -17,6 +19,11 @@ class MentoringSessionCancelledStudentNotification extends Notification
         private Account $cancelledByMentor,
         private string $reason,
     ) {}
+
+    public function getEmailType(): EmailType
+    {
+        return EmailType::SessionCancelledByMentor;
+    }
 
     /**
      * @return array<int, string>

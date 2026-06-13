@@ -3,10 +3,12 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Training\Pages\Dashboard;
+use App\Filament\Training\Pages\EmailSettings;
 use App\Filament\Widgets\AccountInfoWidget;
 use App\Http\Middleware\MandatoryTwoFactor;
 use App\Http\Middleware\TrackInactivity;
 use App\Http\Middleware\TrainingPanelAccessMiddleware;
+use Filament\Actions\Action;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -35,6 +37,7 @@ class TrainingPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Training/Pages'), for: 'App\\Filament\\Training\\Pages')
             ->pages([
                 Dashboard::class,
+                EmailSettings::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Training/Widgets'), for: 'App\\Filament\\Training\\Widgets')
             ->widgets([
@@ -71,6 +74,11 @@ class TrainingPanelProvider extends PanelProvider
                     ->url(fn () => route('filament.app.pages.dashboard'))
                     ->icon('heroicon-o-briefcase')
                     ->visible(fn () => request()->user()->hasPermissionTo('admin.access')),
+            ])
+            ->userMenuItems([
+                Action::make('Email Settings')
+                    ->url(fn () => route('filament.training.pages.email-settings'))
+                    ->icon('heroicon-m-envelope'),
             ])
             ->viteTheme('resources/assets/css/tailwind.css')
             ->renderHook(
