@@ -60,6 +60,10 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(5)
             ->graceTimeInMinutes(10);
 
+        $schedule->command('teamspeak:sync-atc-groups')
+            ->hourlyAt(45)
+            ->withoutOverlapping();
+
         // === By Day === //
         $schedule->command('telescope:prune')
             ->dailyAt('03:30')
@@ -80,10 +84,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('mship:sync-expired-bans')
             ->twiceDaily(5, 17)
             ->graceTimeInMinutes(15);
-
-        $schedule->command('teamspeak:sync-atc-groups')
-            ->twiceDaily(6, 18)
-            ->withoutOverlapping();
 
         $schedule->command('waiting-lists:create-retention-checks')
             ->dailyAt('07:00')
