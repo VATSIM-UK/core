@@ -2,7 +2,6 @@
 
 namespace App\Models\Mship\Account;
 
-use App\Enums\EmailType;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,15 +23,5 @@ class EmailSetting extends Model
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class, 'account_id');
-    }
-
-    public function scopeEnabled($query)
-    {
-        return $query->where('enabled', true);
-    }
-
-    public function scopeForType($query, EmailType $type)
-    {
-        return $query->where('email_type', $type->value);
     }
 }
