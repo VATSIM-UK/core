@@ -298,7 +298,7 @@ class WaitingList extends Model
         return $this->department == self::PILOT_DEPARTMENT;
     }
 
-    public function isVtList()
+    public function getIsVtAttribute(): bool
     {
         return $this->feature_toggles['is_vt'] ?? false;
     }
@@ -327,7 +327,7 @@ class WaitingList extends Model
         return (object) [
             'check_atc_hours' => $this->getShouldCheckAtcHoursAttribute(),
             'check_cts_theory_exam' => $this->getShouldCheckCtsTheoryExamAttribute(),
-            'is_vt' => $this->getIsVtAttribute(),
+            'is_vt' => $this->is_vt,
         ];
     }
 
