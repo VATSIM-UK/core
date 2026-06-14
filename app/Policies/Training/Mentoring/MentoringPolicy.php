@@ -85,7 +85,8 @@ class MentoringPolicy
         }
 
         // Students should always be able to view their own reports
-        if ($session->student_id === $user->id) {
+        $member = Member::where('cid', $user->id)->first();
+        if ($member && $session->student_id === $member->id) {
             return true;
         }
 

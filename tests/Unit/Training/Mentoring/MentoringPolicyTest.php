@@ -64,6 +64,22 @@ class MentoringPolicyTest extends TestCase
     }
 
     #[Test]
+    public function view_allows_the_student_when_member_id_differs_from_account_id(): void
+    {
+        $student = Account::factory()->create();
+        $studentMember = Member::factory()->create([
+            'id' => $student->id + 1000,
+            'cid' => $student->id,
+        ]);
+        $session = Session::factory()->create([
+            'student_id' => $studentMember->id,
+            'filed' => now(),
+        ]);
+
+        $this->assertTrue($this->policy->view($student, $session));
+    }
+
+    #[Test]
     public function view_allows_the_mentor_who_conducted_the_session(): void
     {
         $mentor = Account::factory()->create();
