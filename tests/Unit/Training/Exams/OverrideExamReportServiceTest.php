@@ -11,6 +11,8 @@ use App\Models\Cts\Member;
 use App\Models\Cts\PracticalResult;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
+use App\Models\Roster;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\ExamResubmissionService;
 use App\Services\Training\OverrideExamReportService;
@@ -254,5 +256,116 @@ class OverrideExamReportServiceTest extends TestCase
 
         $this->assertFalse($result);
         $this->assertSame($noteCount, $this->studentAccount->notes()->count());
+    }
+
+    public function test_overriding_obs_exam_to_pass_adds_student_to_roster_if_in_division_state(): void
+    {
+        $state = State::findByCode('DIVISION');
+        $this->studentAccount->states()->attach($state);
+
+        $obsBooking = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::FINISHED_FLAG,
+            'exam' => 'OBS',
+            'student_id' => $this->studentMember->id,
+        ]);
+
+        $obsResult = PracticalResult::factory()->create([
+            'examid' => $obsBooking->id,
+            'student_id' => $this->studentMember->id,
+            'result' => ExamResultEnum::Fail->value,
+            'exam' => 'OBS',
+        ]);
+
+        $service = app(OverrideExamReportService::class);
+
+        $this->assertFalse(Roster::where('account_id', $this->studentAccount->id)->exists());
+
+        $service->handle($obsResult, [
+            'exam_result' => ExamResultEnum::Pass->value,
+            'reason' => 'Overridden to pass',
+            'additional_comments' => $obsResult->notes,
+            'criteria_updates' => [],
+        ], $this->actor);
+
+        $this->assertTrue(Roster::where('account_id', $this->studentAccount->id)->exists());
+    }
+
+    public function test_overriding_obs_exam_to_pass_does_not_add_student_to_roster_if_not_in_division_state(): void
+    {
+        $obsBooking = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::FINISHED_FLAG,
+            'exam' => 'OBS',
+            'student_id' => $this->studentMember->id,
+        ]);
+
+        $obsResult = PracticalResult::factory()->create([
+            'examid' => $obsBooking->id,
+            'student_id' => $this->studentMember->id,
+            'result' => ExamResultEnum::Fail->value,
+            'exam' => 'OBS',
+        ]);
+
+        $service = app(OverrideExamReportService::class);
+
+        $service->handle($obsResult, [
+            'exam_result' => ExamResultEnum::Pass->value,
+            'reason' => 'Overridden to pass without division state',
+            'additional_comments' => $obsResult->notes,
+            'criteria_updates' => [],
+        ], $this->actor);
+
+        $this->assertFalse(Roster::where('account_id', $this->studentAccount->id)->exists());
+    }
+
+    public function test_overriding_non_obs_exam_to_pass_does_not_add_student_to_roster(): void
+    {
+        $state = State::findByCode('DIVISION');
+        $this->studentAccount->states()->attach($state);
+
+        $this->practicalResult->update(['result' => ExamResultEnum::Fail->value]);
+
+        $service = app(OverrideExamReportService::class);
+
+        $service->handle($this->practicalResult, [
+            'exam_result' => ExamResultEnum::Pass->value,
+            'reason' => 'Overridden TWR exam',
+            'additional_comments' => $this->practicalResult->notes,
+            'criteria_updates' => [],
+        ], $this->actor);
+
+        $this->assertFalse(Roster::where('account_id', $this->studentAccount->id)->exists());
+    }
+
+    public function test_overriding_obs_exam_to_non_pass_does_not_add_student_to_roster(): void
+    {
+        $state = State::findByCode('DIVISION');
+        $this->studentAccount->states()->attach($state);
+
+        $obsBooking = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::FINISHED_FLAG,
+            'exam' => 'OBS',
+            'student_id' => $this->studentMember->id,
+        ]);
+
+        $obsResult = PracticalResult::factory()->create([
+            'examid' => $obsBooking->id,
+            'student_id' => $this->studentMember->id,
+            'result' => ExamResultEnum::Pass->value,
+            'exam' => 'OBS',
+        ]);
+
+        $service = app(OverrideExamReportService::class);
+
+        $service->handle($obsResult, [
+            'exam_result' => ExamResultEnum::Fail->value,
+            'reason' => 'Overridden to fail',
+            'additional_comments' => $obsResult->notes,
+            'criteria_updates' => [],
+        ], $this->actor);
+
+        $this->assertFalse(Roster::where('account_id', $this->studentAccount->id)->exists());
     }
 }
