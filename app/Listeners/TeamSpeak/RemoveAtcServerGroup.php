@@ -42,7 +42,6 @@ class RemoveAtcServerGroup implements ShouldQueue
         $server = null;
 
         try {
-            usleep(random_int(500000, 2000000));
             $server = TeamSpeak::run('vUK Remove ATC Group');
             $this->service->releaseExisting($account, $server);
         } catch (\Throwable $e) {
