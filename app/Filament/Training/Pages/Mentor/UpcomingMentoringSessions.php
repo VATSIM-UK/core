@@ -40,6 +40,8 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 
     protected static ?string $navigationLabel = 'Upcoming Sessions';
 
+    protected static ?string $slug = 'mentoring/upcoming-sessions';
+
     #[Url]
     public string $category = '';
 

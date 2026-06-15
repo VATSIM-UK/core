@@ -44,6 +44,8 @@ class ManageMentors extends Page implements HasTable
 
     protected static ?string $title = 'Manage Mentors';
 
+    protected static ?string $slug = 'mentoring/mentors';
+
     #[Url]
     public string $category = '';
 
