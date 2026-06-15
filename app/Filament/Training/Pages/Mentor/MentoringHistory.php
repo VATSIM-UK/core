@@ -51,6 +51,8 @@ class MentoringHistory extends BaseMentoringHistoryPage
                 $this->category = $this->firstVisibleCategory() ?? '';
             }
 
+            $this->saveCategoryToSession();
+
             return;
         }
 

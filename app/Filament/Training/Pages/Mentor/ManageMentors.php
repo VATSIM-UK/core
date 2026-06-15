@@ -56,7 +56,10 @@ class ManageMentors extends Page implements HasTable
     {
         $this->rememberCategory();
 
-        if (empty($this->category) || ! $this->canViewCategory($this->category)) {
+        if ($this->category === MentorPermissionService::ALL_CATEGORIES
+            || empty($this->category)
+            || ! $this->canViewCategory($this->category)
+        ) {
             $this->category = $this->firstVisibleCategory() ?? '';
         }
 
