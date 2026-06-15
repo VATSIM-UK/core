@@ -21,6 +21,8 @@ class RemoveAtcServerGroup implements ShouldQueue
 
     public int $backoff = 5;
 
+    public int $delay = 5;
+
     public function __construct(private readonly AtcServerGroupService $service) {}
 
     public function handle(AtcSessionEnded $event): void
