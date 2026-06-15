@@ -19,6 +19,8 @@ class MyMentoringHistory extends BaseMentoringHistoryPage
 
     protected static ?string $navigationLabel = 'My Mentoring History';
 
+    protected static ?string $slug = 'my-training/mentoring-history';
+
     protected static ?int $navigationSort = 25;
 
     public static function canAccess(): bool
