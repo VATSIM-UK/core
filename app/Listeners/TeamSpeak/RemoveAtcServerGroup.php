@@ -21,6 +21,8 @@ class RemoveAtcServerGroup implements ShouldQueue
 
     public int $backoff = 5;
 
+    public int $delay = 5;
+
     public function __construct(private readonly AtcServerGroupService $service) {}
 
     public function handle(AtcSessionEnded $event): void
@@ -40,6 +42,7 @@ class RemoveAtcServerGroup implements ShouldQueue
         $server = null;
 
         try {
+            usleep(random_int(500000, 2000000));
             $server = TeamSpeak::run('vUK Remove ATC Group');
             $this->service->releaseExisting($account, $server);
         } catch (\Throwable $e) {
