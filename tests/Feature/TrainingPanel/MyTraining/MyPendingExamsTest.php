@@ -74,7 +74,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         Member::factory()->recycle($noAccessAccount)->create(['cid' => $noAccessAccount->id]);
 
         $this->actingAs($noAccessAccount)
-            ->get('/training/my-pending-exams')
+            ->get('/training/my-training/pending-exams')
             ->assertNotFound();
     }
 
