@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransfer\Facility;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -19,6 +20,8 @@ class ActionWaitingListRetentionCheckRemovalTest extends TestCase
 
     private WaitingList $waitingList;
 
+    private Facility $facility;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -27,6 +30,7 @@ class ActionWaitingListRetentionCheckRemovalTest extends TestCase
 
         $this->account = Account::factory()->create();
         $this->waitingList = WaitingList::factory()->create();
+        $this->facility = Facility::factory()->create();
 
         $waitingListAccount = $this->waitingList->addToWaitingList($this->account, $this->account);
 
@@ -39,10 +43,19 @@ class ActionWaitingListRetentionCheckRemovalTest extends TestCase
 
     private function setWaitingListAsVt(bool $isVt = true): void
     {
-        $this->waitingList->update([
-            'feature_toggles' => ['is_vt' => $isVt],
-        ]);
+        $this->waitingList->update(['feature_toggles' => ['is_vt' => $isVt]]);
         $this->waitingList->refresh();
+    }
+
+    private function makeAcceptedApplication(Account $account): Application
+    {
+        return Application::factory()->create([
+            'account_id' => $account->id,
+            'facility_id' => $this->facility->id,
+            'status' => Application::STATUS_ACCEPTED,
+            'type' => Application::TYPE_VISIT,
+            'training_team' => 'atc',
+        ]);
     }
 
     #[Test]
@@ -50,14 +63,25 @@ class ActionWaitingListRetentionCheckRemovalTest extends TestCase
     {
         $this->setWaitingListAsVt();
 
-        $application = Application::factory()->create([
-            'account_id' => $this->account->id,
-            'status' => Application::STATUS_ACCEPTED,
-        ]);
+        $application = $this->makeAcceptedApplication($this->account);
 
         (new ActionWaitingListRetentionCheckRemoval($this->retentionCheck))->handle();
 
         $this->assertEquals(Application::STATUS_CANCELLED, $application->fresh()->status);
+    }
+
+    #[Test]
+    public function it_cancels_all_accepted_vt_applications_when_the_account_has_multiple(): void
+    {
+        $this->setWaitingListAsVt();
+
+        $applicationOne = $this->makeAcceptedApplication($this->account);
+        $applicationTwo = $this->makeAcceptedApplication($this->account);
+
+        (new ActionWaitingListRetentionCheckRemoval($this->retentionCheck))->handle();
+
+        $this->assertEquals(Application::STATUS_CANCELLED, $applicationOne->fresh()->status);
+        $this->assertEquals(Application::STATUS_CANCELLED, $applicationTwo->fresh()->status);
     }
 
     #[Test]
@@ -67,6 +91,7 @@ class ActionWaitingListRetentionCheckRemovalTest extends TestCase
 
         $application = Application::factory()->create([
             'account_id' => $this->account->id,
+            'facility_id' => $this->facility->id,
             'status' => Application::STATUS_SUBMITTED,
         ]);
 
@@ -81,10 +106,7 @@ class ActionWaitingListRetentionCheckRemovalTest extends TestCase
         $this->setWaitingListAsVt();
 
         $otherAccount = Account::factory()->create();
-        $application = Application::factory()->create([
-            'account_id' => $otherAccount->id,
-            'status' => Application::STATUS_ACCEPTED,
-        ]);
+        $application = $this->makeAcceptedApplication($otherAccount);
 
         (new ActionWaitingListRetentionCheckRemoval($this->retentionCheck))->handle();
 
@@ -96,10 +118,7 @@ class ActionWaitingListRetentionCheckRemovalTest extends TestCase
     {
         $this->setWaitingListAsVt(false);
 
-        $application = Application::factory()->create([
-            'account_id' => $this->account->id,
-            'status' => Application::STATUS_ACCEPTED,
-        ]);
+        $application = $this->makeAcceptedApplication($this->account);
 
         (new ActionWaitingListRetentionCheckRemoval($this->retentionCheck))->handle();
 
