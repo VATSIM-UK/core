@@ -75,11 +75,11 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\Mship\Endorsement\PositionEndorsementAdded::class => [
             \App\Listeners\Mship\Endorsement\NotifyOfPositionEndorsement::class,
         ],
-      
+
         NotificationSending::class => [
             CheckEmailPreferences::class,
         ],
-      
+
         \App\Events\NetworkData\AtcSessionStarted::class => [
             \App\Listeners\TeamSpeak\AssignAtcServerGroup::class,
         ],
