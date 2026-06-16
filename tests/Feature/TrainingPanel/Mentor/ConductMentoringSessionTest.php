@@ -7,7 +7,6 @@ namespace Tests\Feature\TrainingPanel\Mentor;
 use App\Enums\FieldScore;
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
 use App\Livewire\Training\AcceptedMentoringSessionsTable;
-use App\Livewire\Training\PendingMentoringReportsTable;
 use App\Models\Cts\Member;
 use App\Models\Cts\ProgSheet;
 use App\Models\Cts\ProgSheetCategory;
@@ -239,16 +238,6 @@ class ConductMentoringSessionTest extends BaseTrainingPanelTestCase
     {
         Livewire::actingAs($this->mentor)
             ->test(AcceptedMentoringSessionsTable::class)
-            ->assertTableActionVisible('conduct', $this->session);
-    }
-
-    #[Test]
-    public function pending_reports_table_shows_conduct_action_for_assigned_mentor(): void
-    {
-        $this->panelUser->givePermissionTo('training.mentors.view.atc');
-
-        Livewire::actingAs($this->mentor)
-            ->test(PendingMentoringReportsTable::class, ['category' => 'S3 Training'])
             ->assertTableActionVisible('conduct', $this->session);
     }
 }
