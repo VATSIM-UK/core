@@ -8,6 +8,8 @@ use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\PracticalResult;
 use App\Models\Mship\Account;
+use App\Models\Mship\State;
+use App\Models\Roster;
 use App\Repositories\Cts\ExamAssessmentRepository;
 
 class OverrideExamReportService
@@ -40,6 +42,11 @@ class OverrideExamReportService
                 result: $newResult->value,
                 userId: $actor->id,
             );
+
+            $isObsExam = $practicalResult->examBooking->exam === 'OBS';
+            if ($isObsExam && $newResult === ExamResultEnum::Pass && $account->hasState(State::findByCode('DIVISION'))) {
+                Roster::upsert(['account_id' => $account->id], uniqueBy: ['account_id']);
+            }
         }
 
         $hasChanges = $resultChanged || $additionalCommentsChanged || $criteriaChanged;
