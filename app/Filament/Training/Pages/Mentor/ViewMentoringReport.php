@@ -58,6 +58,15 @@ class ViewMentoringReport extends Page implements HasInfolists
 
     public int $otherSessionsPage = 1;
 
+    public function getBreadcrumbs(): array
+    {
+        $category = session('mentoring.category', '');
+
+        return [
+            MentoringHistory::getUrl(array_filter(['category' => $category])) => 'Mentoring History', '' => 'Session Report',
+        ];
+    }
+
     public function mount(): void
     {
         $this->session = Session::with([
@@ -295,7 +304,8 @@ class ViewMentoringReport extends Page implements HasInfolists
         return $schema->record($this->session)->components([
             Section::make('Session Report')
                 ->columnSpanFull()
-                ->schema(count($categorySections) > 0 ? $categorySections : [TextEntry::make('empty')->label('')->state('No report data found for this session.')]),
+                ->visible(count($categorySections) > 0)
+                ->schema($categorySections),
         ]);
     }
 

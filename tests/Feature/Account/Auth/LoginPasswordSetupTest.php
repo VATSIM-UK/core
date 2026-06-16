@@ -153,6 +153,35 @@ class LoginPasswordSetupTest extends TestCase
         $this->assertTrue($response->isRedirect(route('auth-secondary')));
     }
 
+    #[Test]
+    public function two_factor_redirect_preserves_intended_url_in_session(): void
+    {
+        $this->enableTwoFactorFor($this->account);
+
+        $intendedUrl = 'https://www.vatsim.uk/mship/waiting-lists';
+
+        $session = $this->app['session.store'];
+        $session->put('url.intended', $intendedUrl);
+
+        $request = Request::create('/');
+        $request->setLaravelSession($session);
+
+        $response = LoginFlow::establishWebSession(
+            $request,
+            $this->account->fresh(),
+            remember: true,
+        );
+
+        $this->assertTrue($response->isRedirect(route('two-factor.login')));
+        $this->assertGuest('web');
+        $this->assertEquals(
+            $intendedUrl,
+            $session->get('url.intended'),
+            'The intended URL must remain in the session so that TwoFactorLoginResponse '
+            .'can redirect the user after the 2FA challenge completes.',
+        );
+    }
+
     protected function enableTwoFactorFor(Account $account): void
     {
         app(EnableTwoFactorAuthentication::class)($account, true);

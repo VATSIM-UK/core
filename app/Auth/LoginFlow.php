@@ -48,6 +48,8 @@ class LoginFlow
             $remember,
             $passwordVerified,
         )) {
+            Session::put('url.intended', $intended);
+
             return $response;
         }
 

@@ -5,6 +5,7 @@ namespace App\Models\TeamSpeak;
 use App\Libraries\TeamSpeak;
 use App\Models\Model;
 use App\Models\Mship\Account;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
 use PlanetTeamSpeak\TeamSpeak3Framework\TeamSpeak3;
@@ -48,7 +49,7 @@ use PlanetTeamSpeak\TeamSpeak3Framework\TeamSpeak3;
  */
 class Registration extends Model
 {
-    use SoftDeletingTrait;
+    use HasFactory, SoftDeletingTrait;
 
     protected $table = 'teamspeak_registration';
 

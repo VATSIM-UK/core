@@ -85,7 +85,8 @@ class MentoringPolicy
         }
 
         // Students should always be able to view their own reports
-        if ($session->student_id === $user->id) {
+        $member = Member::where('cid', $user->id)->first();
+        if ($member && $session->student_id === $member->id) {
             return true;
         }
 
@@ -175,6 +176,18 @@ class MentoringPolicy
     public function markNoShow(Account $user, Session $session): bool
     {
         return $this->conduct($user, $session);
+    }
+
+    /**
+     * Determine if a user can reallocate a session to another mentor.
+     */
+    public function reallocate(Account $user, Session $session): bool
+    {
+        if ($this->viewAll($user)) {
+            return true;
+        }
+
+        return $user->can('training.mentoring.sessions.reallocate.*');
     }
 
     private function canManageOwnOpenSession(Account $user, Session $session): bool

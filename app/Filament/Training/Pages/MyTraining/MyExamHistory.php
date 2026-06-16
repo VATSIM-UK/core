@@ -14,6 +14,8 @@ class MyExamHistory extends Page
 
     protected static ?string $navigationLabel = 'My Exam History';
 
+    protected static ?string $slug = 'my-training/exam-history';
+
     protected static ?int $navigationSort = 20;
 
     public static function canAccess(): bool

@@ -64,6 +64,22 @@ class MentoringPolicyTest extends TestCase
     }
 
     #[Test]
+    public function view_allows_the_student_when_member_id_differs_from_account_id(): void
+    {
+        $student = Account::factory()->create();
+        $studentMember = Member::factory()->create([
+            'id' => $student->id + 1000,
+            'cid' => $student->id,
+        ]);
+        $session = Session::factory()->create([
+            'student_id' => $studentMember->id,
+            'filed' => now(),
+        ]);
+
+        $this->assertTrue($this->policy->view($student, $session));
+    }
+
+    #[Test]
     public function view_allows_the_mentor_who_conducted_the_session(): void
     {
         $mentor = Account::factory()->create();
@@ -155,6 +171,37 @@ class MentoringPolicyTest extends TestCase
         $mentor = $this->createMentorWithPosition('EGLL_APP', 'S3 Training');
 
         $this->assertFalse($this->policy->viewCategory($mentor, new MentoringScope, 'S2 Training'));
+    }
+
+    #[Test]
+    public function reallocate_allows_users_with_view_all_permission(): void
+    {
+        $admin = Account::factory()->create();
+        $admin->givePermissionTo('training.mentoring.view.*');
+
+        $session = Session::factory()->create(['position' => 'EGLL_APP']);
+
+        $this->assertTrue($this->policy->reallocate($admin, $session));
+    }
+
+    #[Test]
+    public function reallocate_allows_users_with_reallocate_permission(): void
+    {
+        $manager = Account::factory()->create();
+        $manager->givePermissionTo('training.mentoring.sessions.reallocate.*');
+
+        $session = Session::factory()->create(['position' => 'EGLL_APP']);
+
+        $this->assertTrue($this->policy->reallocate($manager, $session));
+    }
+
+    #[Test]
+    public function reallocate_denies_users_without_reallocate_permission(): void
+    {
+        $account = Account::factory()->create();
+        $session = Session::factory()->create(['position' => 'EGLL_APP']);
+
+        $this->assertFalse($this->policy->reallocate($account, $session));
     }
 
     #[Test]

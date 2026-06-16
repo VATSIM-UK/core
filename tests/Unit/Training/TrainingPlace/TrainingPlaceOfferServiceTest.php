@@ -9,6 +9,7 @@ use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
+use App\Notifications\Training\TrainingPlaceOfferDeclined;
 use App\Notifications\Training\TrainingPlaceOffered;
 use App\Notifications\Training\TrainingPlaceOfferRescinded;
 use App\Notifications\Training\TrainingPlaceOfferRescindedAndRemoved;
@@ -206,6 +207,20 @@ class TrainingPlaceOfferServiceTest extends TestCase
         $this->assertDatabaseHas('mship_account_note', [
             'account_id' => $offer->waitingListAccount->account_id,
         ]);
+    }
+
+    #[Test]
+    public function it_sends_declined_notification_to_the_member()
+    {
+        Notification::fake();
+
+        $offer = $this->createOffer();
+        $offer->trainingPosition->update([
+            'training_team_discord_channel_id' => '123456789',
+        ]);
+        $this->service->declineOffer($offer);
+
+        Notification::assertSentTo($offer->waitingListAccount->account, TrainingPlaceOfferDeclined::class);
     }
 
     #[Test]

@@ -7,11 +7,20 @@ namespace App\Filament\Training\Pages\Mentor;
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Filament\Training\Support\MentoringTrainingGroupBadgeColor;
+use App\Filament\Training\Support\TrainingMemberAccountSearch;
+use App\Models\Cts\Member;
+use App\Models\Cts\Session;
 use App\Repositories\Cts\SessionRepository;
+use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Table;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
 
@@ -30,6 +39,8 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
     protected static ?string $title = 'Upcoming Sessions';
 
     protected static ?string $navigationLabel = 'Upcoming Sessions';
+
+    protected static ?string $slug = 'mentoring/upcoming-sessions';
 
     #[Url]
     public string $category = '';
@@ -125,7 +136,77 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 
     protected function tableRecordActions(): array
     {
-        return [];
+        return [
+            ActionGroup::make([
+                Action::make('reallocate')
+                    ->label('Reallocate')
+                    ->icon('heroicon-m-arrow-path')
+                    ->color('warning')
+                    ->modalHeading(fn (Session $record) => "Reallocate Session: {$record->student->name}")
+                    ->modalDescription('Select a new mentor for this session.')
+                    ->modalSubmitActionLabel('Reallocate Session')
+                    ->visible(fn (Session $record): bool => auth()->user()?->can('reallocate', $record) ?? false)
+                    ->form(fn (Session $record): array => [
+                        TextInput::make('current_mentor')
+                            ->label('Current Mentor')
+                            ->disabled()
+                            ->default($record->mentor?->name.' ('.$record->mentor?->cid.')'),
+
+                        Select::make('new_mentor_cid')
+                            ->label('New Mentor')
+                            ->searchable()
+                            ->getSearchResultsUsing(function (string $search) use ($record): array {
+                                $category = app(MentorPermissionService::class)->resolveCategoryForCtsCallsign($record->position);
+
+                                if (! $category) {
+                                    return [];
+                                }
+
+                                $eligibleAccountIds = app(MentorPermissionService::class)
+                                    ->accountsWithMentoringInCategoryQuery($category)
+                                    ->pluck('id')
+                                    ->toArray();
+
+                                return collect(TrainingMemberAccountSearch::searchAccountsForSelect($search))
+                                    ->filter(fn ($label, $cid) => in_array((int) $cid, $eligibleAccountIds, true) && (int) $cid !== $record->mentor?->cid)
+                                    ->all();
+                            })
+                            ->getOptionLabelUsing(fn ($value): string => Member::where('cid', $value)->first()?->name." ({$value})")
+                            ->required(),
+
+                        Textarea::make('reason')
+                            ->label('Reason for reallocation')
+                            ->required()
+                            ->minLength(10)
+                            ->maxLength(1000),
+                    ])
+                    ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
+                        try {
+                            $success = $mentoringService->reallocateSession($record->id, $data['new_mentor_cid'], auth()->user(), $data['reason']);
+
+                            if ($success) {
+                                Notification::make()
+                                    ->title('Session Reallocated')
+                                    ->body("The session with {$record->student->name} has been reallocated to the new mentor.")
+                                    ->success()
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('Reallocation Failed')
+                                    ->body('Could not reallocate the session. It may have been modified or is no longer valid.')
+                                    ->danger()
+                                    ->send();
+                            }
+                        } catch (AuthorizationException $e) {
+                            Notification::make()
+                                ->title('Reallocation Failed')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
+            ]),
+        ];
     }
 
     protected function tableEmptyStateHeading(): string

@@ -8,10 +8,15 @@ use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Training\Mentoring\MentorTrainingPosition;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedNewMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedOldMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionReallocatedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotification;
 use App\Services\Training\MentoringSessionsService;
@@ -145,7 +150,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $availability = Availability::factory()->create([
             'student_id' => $this->studentMember->id,
-            'date' => Carbon::parse('2026-06-15'),
+            'date' => Carbon::tomorrow(),
             'from' => '10:00:00',
             'to' => '12:00:00',
         ]);
@@ -161,7 +166,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->assertSame($this->mentorMember->id, $pendingSession->mentor_id);
         $this->assertSame(1, $pendingSession->taken);
-        $this->assertSame('2026-06-15', Carbon::parse($pendingSession->taken_date)->format('Y-m-d'));
+        $this->assertSame(Carbon::tomorrow()->format('Y-m-d'), Carbon::parse($pendingSession->taken_date)->format('Y-m-d'));
         $this->assertSame('10:00:00', Carbon::parse($pendingSession->taken_from)->format('H:i:s'));
         $this->assertSame('12:00:00', Carbon::parse($pendingSession->taken_to)->format('H:i:s'));
     }
@@ -462,5 +467,99 @@ class MentoringSessionsServiceTest extends TestCase
 
         Notification::assertSentTo($this->studentAccount, MentoringSessionCancelledStudentNotification::class);
         Notification::assertSentTo($this->mentorAccount, MentoringSessionCancelledMentorNotification::class);
+    }
+
+    #[Test]
+    public function reallocate_session_updates_mentor_id(): void
+    {
+        Notification::fake();
+
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $newMentorAccount = Account::factory()->create();
+        $newMentorMember = Member::factory()->create([
+            'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
+            'cid' => $newMentorAccount->id,
+        ]);
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'category' => 'S3 Training',
+            'cts_positions' => ['EGLL_APP'],
+        ]);
+
+        MentorTrainingPosition::create([
+            'account_id' => $newMentorAccount->id,
+            'mentorable_type' => TrainingPosition::class,
+            'mentorable_id' => $trainingPosition->id,
+            'created_by' => $newMentorAccount->id,
+        ]);
+
+        $this->assertTrue($this->service->reallocateSession(
+            $session->id,
+            $newMentorAccount->id,
+            $this->mentorAccount,
+            'Mentor is unavailable due to prior commitments.',
+        ));
+
+        $session->refresh();
+
+        $this->assertSame($newMentorMember->id, $session->mentor_id);
+        $this->assertSame('10:00:00', Carbon::parse($session->taken_from)->format('H:i:s'));
+        $this->assertSame('12:00:00', Carbon::parse($session->taken_to)->format('H:i:s'));
+    }
+
+    #[Test]
+    public function reallocate_session_sends_notifications_to_all_parties(): void
+    {
+        Notification::fake();
+
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $newMentorAccount = Account::factory()->create();
+        Member::factory()->create([
+            'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
+            'cid' => $newMentorAccount->id,
+        ]);
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'category' => 'S3 Training',
+            'cts_positions' => ['EGLL_APP'],
+        ]);
+
+        MentorTrainingPosition::create([
+            'account_id' => $newMentorAccount->id,
+            'mentorable_type' => TrainingPosition::class,
+            'mentorable_id' => $trainingPosition->id,
+            'created_by' => $newMentorAccount->id,
+        ]);
+
+        $reason = 'Mentor is unavailable due to prior commitments.';
+
+        $this->assertTrue($this->service->reallocateSession(
+            $session->id,
+            $newMentorAccount->id,
+            $this->mentorAccount,
+            $reason,
+        ));
+
+        Notification::assertSentTo($this->studentAccount, MentoringSessionReallocatedStudentNotification::class);
+        Notification::assertSentTo($this->mentorAccount, MentoringSessionReallocatedOldMentorNotification::class);
+        Notification::assertSentTo($newMentorAccount, MentoringSessionReallocatedNewMentorNotification::class);
     }
 }
