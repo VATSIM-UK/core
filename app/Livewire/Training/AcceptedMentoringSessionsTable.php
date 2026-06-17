@@ -3,6 +3,7 @@
 namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
+use App\Filament\Training\Pages\Mentor\MentoringHistory;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Session;
 use App\Services\Training\MentoringAnnouncementService;
@@ -58,7 +59,17 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 TextColumn::make('student_name')
                     ->label('Student')
                     ->getStateUsing(fn (Session $record) => $record->student->name)
-                    ->description(fn (Session $record) => $record->student->cid),
+                    ->description(fn (Session $record) => $record->student->cid)
+                    ->url(fn (Session $record) => MentoringHistory::getUrl(
+                        parameters: [
+                            'tableFilters' => [
+                                'student' => ['value' => $record->student->cid],
+                            ],
+                            'category' => MentorPermissionService::ALL_CATEGORIES,
+                        ],
+                        panel: 'training',
+                    ))
+                    ->openUrlInNewTab(),
 
                 TextColumn::make('position')
                     ->label('Position')
