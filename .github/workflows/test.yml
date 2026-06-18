@@ -146,6 +146,9 @@ jobs:
       - name: Serve Application
         run: php artisan serve -q &
 
+      - name: Run migrations
+        run: php artisan migrate --force
+
       - name: Execute Tests
         run: php artisan test --display-notices
 
