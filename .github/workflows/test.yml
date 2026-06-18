@@ -146,6 +146,9 @@ jobs:
       - name: Serve Application
         run: php artisan serve -q &
 
+      - name: Create CTS database
+        run: php artisan cts:migrate:fresh
+
       - name: Run migrations
         run: php artisan migrate --force
 
