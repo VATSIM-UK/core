@@ -81,12 +81,31 @@ class WaitingListResource extends Resource
                             ->helperText('Leave empty for unlimited capacity. Set a number to limit how many users can be on this waiting list.')
                             ->integer()
                             ->minValue(1),
+
                         Select::make('requiredEndorsement')
                             ->label('Required Endorsement')
                             ->helperText('If set, only members with this endorsement can be on the waiting list.')
                             ->nullable()
                             ->relationship('requiredEndorsement', 'name')
                             ->searchable(),
+
+                        Toggle::make('feature_toggles.is_vt')
+                            ->label('Visiting / Transfer List')
+                            ->default(false),
+
+                        Toggle::make('retention_checks_enabled')
+                            ->label('Enable Retention Checks')
+                            ->helperText('When enabled, members will be periodically asked to confirm they are still interested in remaining on this waiting list.')
+                            ->default(false)
+                            ->live(),
+
+                        TextInput::make('retention_checks_months')
+                            ->label('Retention Check Interval (Months)')
+                            ->helperText('How often (in months) retention checks are sent. The first check is sent after this period from when the member joined.')
+                            ->integer()
+                            ->minValue(1)
+                            ->required()
+                            ->visible(fn (callable $get) => $get('retention_checks_enabled') === true),
 
                     ])
                     ->collapsible()

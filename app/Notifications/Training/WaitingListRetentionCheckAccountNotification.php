@@ -42,18 +42,20 @@ class WaitingListRetentionCheckAccountNotification extends Notification
     public function toMail($notifiable)
     {
         $waitingListAccount = $this->retentionCheck->waitingListAccount;
-        $waitingListName = $waitingListAccount->waitingList->name;
+        $waitingList = $waitingListAccount->waitingList;
 
         $retentionCheckUrl = route('mship.waiting-lists.retention.token', [
             'token' => $this->retentionCheck->token,
         ]);
 
+        $view = $waitingList->is_vt ? 'emails.training.waiting_list_retention_check_vt' : 'emails.training.waiting_list_retention_check';
+
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject('UK Training Waiting List Retention Check')
-            ->view('emails.training.waiting_list_retention_check', [
+            ->view($view, [
                 'recipient' => $notifiable,
-                'waiting_list_name' => $waitingListName,
+                'waiting_list_name' => $waitingList->name,
                 'retention_check_url' => $retentionCheckUrl,
             ]);
     }
