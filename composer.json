@@ -91,7 +91,7 @@
     "laravel/fortify": "^1.37",
     "laravel/framework": "^12.0",
     "laravel/helpers": "^1.1",
-    "laravel/horizon": "^5.0",
+    "laravel/horizon": "^5.47.0",
     "laravel/passport": "^12.0",
     "laravel/telescope": "^5.0",
     "laravel/tinker": "^3.0",
