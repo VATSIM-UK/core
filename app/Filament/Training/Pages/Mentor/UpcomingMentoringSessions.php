@@ -47,10 +47,6 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 
     public static function canAccess(): bool
     {
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
         if (auth()->user()?->can('training.mentoring.view.*')) {
             return true;
         }

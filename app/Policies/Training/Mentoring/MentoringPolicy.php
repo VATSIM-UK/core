@@ -15,19 +15,6 @@ class MentoringPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Mentoring panel pages are gated behind the training beta flag.
-     * Temporary until mentoring pages are released publically.
-     */
-    public function before(Account $user, string $ability): ?bool
-    {
-        if (app()->isProduction() && ! $user->can('training.beta')) {
-            return false;
-        }
-
-        return null;
-    }
-
     // View permissions
 
     /**

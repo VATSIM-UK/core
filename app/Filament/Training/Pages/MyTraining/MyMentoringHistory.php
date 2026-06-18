@@ -25,10 +25,6 @@ class MyMentoringHistory extends BaseMentoringHistoryPage
 
     public static function canAccess(): bool
     {
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
         return auth()->user()?->can('training.access') ?? false;
     }
 
