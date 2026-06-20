@@ -288,7 +288,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $availability = Availability::factory()->create([
             'student_id' => $this->studentMember->id,
-            'date' => Carbon::parse('2026-06-20'),
+            'date' => Carbon::tomorrow(),
             'from' => '14:00:00',
             'to' => '16:00:00',
         ]);
@@ -303,7 +303,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $session->refresh();
 
-        $this->assertSame('2026-06-20', Carbon::parse($session->taken_date)->format('Y-m-d'));
+        $this->assertSame(Carbon::tomorrow()->format('Y-m-d'), Carbon::parse($session->taken_date)->format('Y-m-d'));
         $this->assertSame('14:00:00', Carbon::parse($session->taken_from)->format('H:i:s'));
         $this->assertSame('16:00:00', Carbon::parse($session->taken_to)->format('H:i:s'));
         $this->assertSame($this->mentorMember->id, $session->mentor_id);
