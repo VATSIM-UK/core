@@ -149,13 +149,13 @@ jobs:
       - name: Execute Tests
         run: php artisan test --parallel --processes=4 --recreate-databases --log-junit=junit.xml
 
-      - name: Upload to Codecov
-        uses: codecov/codecov-action@v6
-        with:
-          files: junit.xml
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload test results to Codecov
+        uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
