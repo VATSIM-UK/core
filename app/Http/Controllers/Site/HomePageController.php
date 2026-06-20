@@ -6,7 +6,6 @@ use App\Models\Mship\State;
 use App\Repositories\Cts\EventRepository;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 
 class HomePageController extends \App\Http\Controllers\BaseController
 {
@@ -21,23 +20,8 @@ class HomePageController extends \App\Http\Controllers\BaseController
     private function nextEvent()
     {
         return Cache::remember('home.nextEvent', now()->addDay(), function () {
-            $response = Http::get('https://cts.vatsim.uk/extras/next_event.php');
-
-            return $response->failed() ? '' : $this->getHTMLByID('next', $response);
+            return app(EventRepository::class)->getNextEvent();
         });
-    }
-
-    private function getHTMLByID($id, $html)
-    {
-        $dom = new \DOMDocument;
-        libxml_use_internal_errors(true);
-        $dom->loadHTML($html);
-        $node = $dom->getElementById($id);
-        if ($node) {
-            return $dom->saveXML($node);
-        }
-
-        return false;
     }
 
     private function stats()
