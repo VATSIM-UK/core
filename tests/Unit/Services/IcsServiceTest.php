@@ -38,7 +38,7 @@ class IcsServiceTest extends TestCase
         $this->assertStringContainsString('DTEND:20260620T133000Z', $ics);
         $this->assertStringContainsString('SUMMARY:Practical Exam - APP', $ics);
         $this->assertStringContainsString('LOCATION:EGKK_APP', $ics);
-        $this->assertStringContainsString('ORGANIZER;CN=VATSIM UK Training Department:mailto:training@vatsim.uk', $ics);
+        $this->assertStringContainsString('ORGANIZER;CN=VATSIM UK Training Department:mailto:atc-training@vatsim.uk', $ics);
     }
 
     #[Test]

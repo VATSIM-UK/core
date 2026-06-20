@@ -38,7 +38,7 @@ class MentoringSessionAcceptedStudentNotification extends Notification implement
         $icsContent = IcsService::generate(
             uid: "session-{$session->id}@vatsim.uk",
             summary: "Mentoring Session - {$session->position}",
-            description: "Position: {$session->position}\nMentor: {$mentorName}\n\nPlease ensure you are prepared for your mentoring session.",
+            description: "Position: {$session->position}\nMentor: {$mentorName}",
             start: Carbon::parse("{$session->taken_date} {$session->taken_from}"),
             end: Carbon::parse("{$session->taken_date} {$session->taken_to}"),
             location: $session->position,

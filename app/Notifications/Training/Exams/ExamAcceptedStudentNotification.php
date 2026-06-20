@@ -51,7 +51,7 @@ class ExamAcceptedStudentNotification extends Notification implements HasEmailTy
         $icsContent = IcsService::generate(
             uid: "exam-{$examBooking->id}@vatsim.uk",
             summary: "Practical Exam - {$examType}",
-            description: "Exam Type: {$examType}\nPosition: {$position}\nPrimary Examiner: {$primaryExaminer}\n\nPlease ensure you are prepared and on time for your exam. Most importantly - good luck!",
+            description: "Exam Type: {$examType}\nPosition: {$position}\nPrimary Examiner: {$primaryExaminer}",
             start: Carbon::parse("{$examBooking->taken_date} {$examBooking->taken_from}"),
             end: Carbon::parse("{$examBooking->taken_date} {$examBooking->taken_to}"),
             location: $position,
