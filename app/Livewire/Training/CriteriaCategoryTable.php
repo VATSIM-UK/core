@@ -32,6 +32,8 @@ class CriteriaCategoryTable extends Component implements HasActions, HasForms, H
 
     public string $categoryName;
 
+    public bool $greyCurrentSession = true;
+
     public function table(Table $table): Table
     {
         $sessions = Session::query()
@@ -62,7 +64,7 @@ class CriteriaCategoryTable extends Component implements HasActions, HasForms, H
         ];
 
         foreach ($sessions as $session) {
-            $isCurrentSession = $session->id === $this->currentSessionId;
+            $isCurrentSession = $this->greyCurrentSession && $session->id === $this->currentSessionId;
 
             $sessionId = $session->id;
 

@@ -107,6 +107,12 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         $user = Auth::user();
 
         return [
+            Action::make('studentOverview')
+                ->label('Student Overview')
+                ->icon('heroicon-o-user')
+                ->color('primary')
+                ->url(fn () => ViewStudentOverview::getUrl(['trainingPlaceId' => $this->trainingPlace->id])),
+
             Action::make('forwardForExam')
                 ->label('Forward for Practical Exam')
                 ->icon('heroicon-o-arrow-right')
