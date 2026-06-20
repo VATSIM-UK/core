@@ -47,7 +47,7 @@ class ExamAcceptedExaminerNotification extends Notification implements HasEmailT
         $position = $examBooking->position_1 ?? 'N/A';
         $examDateTime = $examBooking->startDate;
         $studentName = $examBooking->student?->account?->name ?? 'Unknown';
-        $studentCid = $examBooking->student?->account?->id ?? 'Unknown';
+        $studentCid = $examBooking->student?->account?->cid ?? 'Unknown';
         $primaryExaminer = $examBooking->examiners?->primaryExaminer?->account?->name ?? 'TBD';
 
         $icsContent = IcsService::generate(

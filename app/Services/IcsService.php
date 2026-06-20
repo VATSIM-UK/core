@@ -52,7 +52,7 @@ class IcsService
             $lines[] = "LOCATION:{$escapedLocation}";
         }
 
-        $lines[] = 'ORGANIZER;CN=VATSIM UK Training Department:mailto:training@vatsim.uk';
+        $lines[] = 'ORGANIZER;CN=VATSIM UK Training Department:mailto:atc-training@vatsim.uk';
         $lines[] = 'END:VEVENT';
         $lines[] = 'END:VCALENDAR';
 
