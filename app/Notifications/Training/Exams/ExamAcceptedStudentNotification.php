@@ -5,6 +5,8 @@ namespace App\Notifications\Training\Exams;
 use App\Enums\EmailType;
 use App\Models\Cts\ExamBooking;
 use App\Notifications\Contracts\HasEmailType;
+use App\Services\IcsService;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -46,6 +48,16 @@ class ExamAcceptedStudentNotification extends Notification implements HasEmailTy
         $examDateTime = $examBooking->startDate;
         $primaryExaminer = $examBooking->examiners?->primaryExaminer?->account?->name ?? 'TBD';
 
+        $sessionDate = Carbon::parse($examBooking->taken_date)->format('Y-m-d');
+        $icsContent = IcsService::generate(
+            uid: "exam-{$examBooking->id}@vatsim.uk",
+            summary: "Practical Exam - {$examType}",
+            description: "Exam Type: {$examType}\nPosition: {$position}\nPrimary Examiner: {$primaryExaminer}",
+            start: Carbon::parse("{$sessionDate} {$examBooking->taken_from}"),
+            end: Carbon::parse("{$sessionDate} {$examBooking->taken_to}"),
+            location: $position,
+        );
+
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject("Your {$examType} Practical Exam has been Accepted")
@@ -56,6 +68,7 @@ class ExamAcceptedStudentNotification extends Notification implements HasEmailTy
                 'position' => $position,
                 'examDateTime' => $examDateTime,
                 'primaryExaminer' => $primaryExaminer,
-            ]);
+            ])
+            ->attachData($icsContent, 'event.ics', ['mime' => 'text/calendar']);
     }
 }
