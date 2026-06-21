@@ -136,7 +136,7 @@ class ViewAccount extends BaseViewRecordPage
                     })
                     ->requiresConfirmation()
                     ->successNotificationTitle('Discord account unlinked'),
-                EditAction::make()->visible(auth()->user()->can('update', $this->record)),
+                EditAction::make()->visible(auth()->user()?->can('update', $this->record) ?? false),
             ]),
         ];
 
