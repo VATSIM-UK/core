@@ -50,12 +50,13 @@ class ExamAcceptedExaminerNotification extends Notification implements HasEmailT
         $studentCid = $examBooking->student?->account?->cid ?? 'Unknown';
         $primaryExaminer = $examBooking->examiners?->primaryExaminer?->account?->name ?? 'TBD';
 
+        $sessionDate = $examBooking->taken_date->format('Y-m-d');
         $icsContent = IcsService::generate(
             uid: "exam-{$examBooking->id}@vatsim.uk",
             summary: "Practical Exam - {$examType}",
             description: "Student: {$studentName} ({$studentCid})\nExam Type: {$examType}\nPosition: {$position}\nPrimary Examiner: {$primaryExaminer}",
-            start: Carbon::parse("{$examBooking->taken_date} {$examBooking->taken_from}"),
-            end: Carbon::parse("{$examBooking->taken_date} {$examBooking->taken_to}"),
+            start: Carbon::parse("{$sessionDate} {$examBooking->taken_from}"),
+            end: Carbon::parse("{$sessionDate} {$examBooking->taken_to}"),
             location: $position,
         );
 

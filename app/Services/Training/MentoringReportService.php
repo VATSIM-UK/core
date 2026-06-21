@@ -79,7 +79,7 @@ class MentoringReportService
             return false;
         }
 
-        $sessionStart = Carbon::parse("{$session->taken_date} {$session->taken_from}");
+        $sessionStart = Carbon::parse($session->taken_date->format('Y-m-d').' '.$session->taken_from);
         $delayMinutes = config('training.mentoring.no_show_delay_minutes', 5);
 
         return now()->greaterThanOrEqualTo($sessionStart->copy()->addMinutes($delayMinutes));
@@ -91,7 +91,7 @@ class MentoringReportService
             return false;
         }
 
-        $sessionStart = Carbon::parse("{$session->taken_date} {$session->taken_from}");
+        $sessionStart = Carbon::parse($session->taken_date->format('Y-m-d').' '.$session->taken_from);
         $bookedAt = Carbon::parse($session->taken_time);
         $shortNoticeHours = config('training.mentoring.short_notice_hours', 24);
 
