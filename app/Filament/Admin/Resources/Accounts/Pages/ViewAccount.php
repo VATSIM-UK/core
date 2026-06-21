@@ -160,8 +160,11 @@ class ViewAccount extends BaseViewRecordPage
             ->modalSubmitActionLabel('Impersonate')
             ->action(function (array $data) {
                 // Notify Privellged users that a user has been impersonated
-                Contact::where('key', 'PRIVACC')->first()
-                    ->notify(new UserImpersonated($this->record, auth()->user(), $data['reason']));
+                $privacc = Contact::where('key', 'PRIVACC')->first();
+
+                if ($privacc) {
+                    $privacc->notify(new UserImpersonated($this->record, auth()->user(), $data['reason']));
+                }
 
                 // Let's do the login!
                 Auth::loginUsingId($this->record->id, false);
