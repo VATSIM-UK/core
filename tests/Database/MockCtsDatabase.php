@@ -265,7 +265,7 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             "CREATE TABLE `sessions` (
-              `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+              `id` int unsigned NOT NULL AUTO_INCREMENT,
               `rts_id` smallint unsigned NOT NULL DEFAULT '0',
               `position` varchar(20) NOT NULL DEFAULT '',
               `progress_sheet_id` mediumint NOT NULL,
@@ -329,7 +329,7 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             "CREATE TABLE `exam_book` (
-          `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+          `id` int unsigned NOT NULL AUTO_INCREMENT,
           `rts_id` smallint unsigned NOT NULL DEFAULT '0',
           `student_id` int unsigned NOT NULL DEFAULT '0',
           `student_rating` tinyint unsigned NOT NULL DEFAULT '0',
@@ -466,7 +466,7 @@ class MockCtsDatabase
         DB::connection('cts')->statement(
             "CREATE TABLE `cancel_reason` (
             `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-            `sesh_id` smallint(5) unsigned NOT NULL DEFAULT '0',
+            `sesh_id` int unsigned NOT NULL DEFAULT '0',
             `sesh_type` char(2) NOT NULL DEFAULT '',
             `reason` longtext NOT NULL,
             `used` tinyint(3) unsigned NOT NULL DEFAULT '0',
