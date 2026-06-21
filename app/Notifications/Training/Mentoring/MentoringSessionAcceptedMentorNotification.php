@@ -36,7 +36,7 @@ class MentoringSessionAcceptedMentorNotification extends Notification implements
         $studentName = $session->student?->account?->name ?? 'Unknown';
         $studentCid = $session->student?->cid ?? 'Unknown';
 
-        $sessionDate = $session->taken_date->format('Y-m-d');
+        $sessionDate = Carbon::parse($session->taken_date)->format('Y-m-d');
         $icsContent = IcsService::generate(
             uid: "session-{$session->id}@vatsim.uk",
             summary: "Mentoring Session - {$session->position}",
