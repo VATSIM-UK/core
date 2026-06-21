@@ -154,9 +154,8 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./junit.xml
-          report-type: test_results
-          fail_ci_if_error: true
+          report_type: test_results
+          files: junit.xml
 
   trigger-deploy:
     name: Trigger Deploy
