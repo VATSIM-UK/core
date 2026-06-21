@@ -8,7 +8,7 @@
         days of this email, you have no session request/availability in the CT System, we will have to re-assign your
         training place to the next person on the waiting list.</p>
 
-    <p>To continue your training, please submit your availability in CT System as soon as possible.
+    <p>To continue your training, please submit your availability in the CT System as soon as possible.
         You have <strong>{{ $days_to_expire }}</strong>
         (until <strong>{{ $expires_at->format('d/m/Y H:i') }} Zulu</strong>) to submit your availability.</p>
 
