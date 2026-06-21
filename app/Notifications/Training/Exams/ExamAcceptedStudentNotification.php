@@ -2,12 +2,14 @@
 
 namespace App\Notifications\Training\Exams;
 
+use App\Enums\EmailType;
 use App\Models\Cts\ExamBooking;
+use App\Notifications\Contracts\HasEmailType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ExamAcceptedStudentNotification extends Notification
+class ExamAcceptedStudentNotification extends Notification implements HasEmailType
 {
     use Queueable;
 
@@ -15,6 +17,11 @@ class ExamAcceptedStudentNotification extends Notification
      * Create a new notification instance.
      */
     public function __construct(private ExamBooking $examBooking) {}
+
+    public function getEmailType(): EmailType
+    {
+        return EmailType::ExamAccepted;
+    }
 
     /**
      * Get the notification's delivery channels.

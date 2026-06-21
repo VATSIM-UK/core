@@ -2,16 +2,23 @@
 
 namespace App\Notifications\Training\Mentoring;
 
+use App\Enums\EmailType;
 use App\Models\Cts\Session;
+use App\Notifications\Contracts\HasEmailType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class MentoringSessionAcceptedMentorNotification extends Notification
+class MentoringSessionAcceptedMentorNotification extends Notification implements HasEmailType
 {
     use Queueable;
 
     public function __construct(private Session $session) {}
+
+    public function getEmailType(): EmailType
+    {
+        return EmailType::MentorSessionConfirmation;
+    }
 
     /**
      * @return array<int, string>

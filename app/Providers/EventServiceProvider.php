@@ -6,7 +6,9 @@ use App\Events\Discord\DiscordLinked;
 use App\Events\Discord\DiscordUnlinked;
 use App\Listeners\Discord\RemoveDiscordUser;
 use App\Listeners\Discord\SetupDiscordUser;
+use App\Listeners\Mship\CheckEmailPreferences;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Notifications\Events\NotificationSending;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -72,6 +74,18 @@ class EventServiceProvider extends ServiceProvider
         ],
         \App\Events\Mship\Endorsement\PositionEndorsementAdded::class => [
             \App\Listeners\Mship\Endorsement\NotifyOfPositionEndorsement::class,
+        ],
+
+        NotificationSending::class => [
+            CheckEmailPreferences::class,
+        ],
+
+        \App\Events\NetworkData\AtcSessionStarted::class => [
+            \App\Listeners\TeamSpeak\AssignAtcServerGroup::class,
+        ],
+
+        \App\Events\NetworkData\AtcSessionEnded::class => [
+            \App\Listeners\TeamSpeak\RemoveAtcServerGroup::class,
         ],
     ];
 

@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models\Mship\Account;
+
+use App\Models\Model;
+use App\Models\Mship\Account;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class EmailSetting extends Model
+{
+    protected $table = 'mship_email_settings';
+
+    protected $fillable = [
+        'account_id',
+        'email_type',
+        'enabled',
+    ];
+
+    protected $casts = [
+        'enabled' => 'boolean',
+    ];
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'account_id');
+    }
+}

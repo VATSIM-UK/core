@@ -56,7 +56,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
         Member::factory()->recycle($noAccessAccount)->create(['cid' => $noAccessAccount->id]);
 
         $this->actingAs($noAccessAccount)
-            ->get('/training/my-availability')
+            ->get('/training/my-training/availability')
             ->assertNotFound();
     }
 
@@ -68,7 +68,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
         $accountWithPermission->givePermissionTo('training.access');
 
         $this->actingAs($accountWithPermission)
-            ->get('/training/my-availability')
+            ->get('/training/my-training/availability')
             ->assertForbidden();
     }
 
@@ -89,7 +89,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
         ]);
 
         $this->actingAs($accountWithValidation)
-            ->get('/training/my-availability')
+            ->get('/training/my-training/availability')
             ->assertSuccessful();
     }
 
@@ -110,7 +110,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
         ]);
 
         $this->actingAs($accountWithNonPilot)
-            ->get('/training/my-availability')
+            ->get('/training/my-training/availability')
             ->assertForbidden();
     }
 

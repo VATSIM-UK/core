@@ -200,6 +200,9 @@ jobs:
             # Clear stale job overlap locks from Redis
             # $PHP_PATH artisan tinker --execute="foreach(Cache::connection()->keys('*laravel-queue-overlap:*') as \$k) { Cache::connection()->del(\$k); }"
 
+            # Generate sitemap
+            $PHP_PATH artisan sitemap:generate
+
             # Start Applications / Services
             $PHP_PATH artisan up
           envs: APPLICATION_ROOT,PHP_PATH,TAG,COMMIT,GITHUB_ACTOR

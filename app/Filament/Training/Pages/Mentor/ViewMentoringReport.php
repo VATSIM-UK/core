@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
+use App\Filament\Training\Pages\MyTraining\MyMentoringHistory;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Filament\Training\Support\MentoringReportLayout;
 use App\Filament\Training\Support\MentoringReportScores;
@@ -57,6 +58,22 @@ class ViewMentoringReport extends Page implements HasInfolists
     public Collection $otherSessions;
 
     public int $otherSessionsPage = 1;
+
+    public function getBreadcrumbs(): array
+    {
+        $category = session('mentoring.category', '');
+
+        if (auth()->user()?->can('viewAny', Session::class)) {
+            $url = MentoringHistory::getUrl(array_filter(['category' => $category]));
+        } else {
+            $url = MyMentoringHistory::getUrl();
+        }
+
+        return [
+            $url => 'Mentoring History',
+            '' => 'Session Report',
+        ];
+    }
 
     public function mount(): void
     {
@@ -295,7 +312,8 @@ class ViewMentoringReport extends Page implements HasInfolists
         return $schema->record($this->session)->components([
             Section::make('Session Report')
                 ->columnSpanFull()
-                ->schema(count($categorySections) > 0 ? $categorySections : [TextEntry::make('empty')->label('')->state('No report data found for this session.')]),
+                ->visible(count($categorySections) > 0)
+                ->schema($categorySections),
         ]);
     }
 

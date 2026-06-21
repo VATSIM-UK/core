@@ -64,6 +64,11 @@ class Position extends Model implements Endorseable
         return $this->belongsToMany(Airport::class, 'airport_positions');
     }
 
+    public function positionGroups(): BelongsToMany
+    {
+        return $this->belongsToMany(PositionGroup::class, 'position_group_positions', 'position_id', 'position_group_id');
+    }
+
     public function getMinimumVatsimQualificationAttribute()
     {
         return match ($this->type) {

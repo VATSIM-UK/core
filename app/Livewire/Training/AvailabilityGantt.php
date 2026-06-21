@@ -283,8 +283,17 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                                     return $timeOptions;
                                 }
 
+                                [$startH, $startM] = explode(':', $startTime);
+                                $startMinutes = (int) $startH * 60 + (int) $startM;
+                                $minEndMinutes = $startMinutes + 45;
+
                                 return collect($timeOptions)
-                                    ->filter(fn ($label, $key) => $key > $startTime)
+                                    ->filter(function ($label, $key) use ($minEndMinutes) {
+                                        [$h, $m] = explode(':', $key);
+                                        $keyMinutes = (int) $h * 60 + (int) $m;
+
+                                        return $keyMinutes >= $minEndMinutes;
+                                    })
                                     ->toArray();
                             })
                             ->default(array_key_last($timeOptions))
@@ -322,6 +331,19 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::findOrFail($availability->student_id);
                 $formattedDate = Carbon::parse($availability->date)->format('d/m/Y');
+
+                $from = Carbon::parse($data['taken_from']);
+                $to = Carbon::parse($data['taken_to']);
+
+                if ($from->diffInMinutes($to) < 45) {
+                    Notification::make()
+                        ->title('Session Too Short')
+                        ->body('The session must be at least 45 minutes long.')
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
 
                 $success = $mentoringService->acceptSession($availability->id, auth()->user(), $data['taken_from'], $data['taken_to']);
 

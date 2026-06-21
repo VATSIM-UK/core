@@ -31,6 +31,8 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     protected static ?string $title = 'Mentoring History';
 
+    protected static ?string $slug = 'mentoring/history';
+
     #[Url]
     public string $category = '';
 

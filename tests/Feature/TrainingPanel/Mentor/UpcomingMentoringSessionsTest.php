@@ -468,6 +468,63 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function reallocate_button_is_visible_for_users_with_reallocate_permission(): void
+    {
+        $this->panelUser->givePermissionTo('training.mentoring.sessions.reallocate.*');
+        $this->panelUser->givePermissionTo('training.mentoring.view.*');
+
+        $category = MentorPermissionService::atcCategories()[0];
+        $this->createTrainingPosition($category, 'EGPH_GND');
+
+        $mentor = Account::factory()->create();
+        $mentorCtsMember = $this->getOrCreateCtsMember($mentor);
+
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $sessionId = $this->insertSession(
+            $mentorCtsMember->id,
+            $studentCtsMember->id,
+            'EGPH_GND',
+            takenDate: Carbon::tomorrow()->format('Y-m-d H:i:s'),
+        );
+        $session = Session::on('cts')->find($sessionId);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(UpcomingMentoringSessions::class, ['category' => $category])
+            ->assertCanSeeTableRecords([$session])
+            ->assertSee('Reallocate');
+    }
+
+    #[Test]
+    public function reallocate_button_is_hidden_for_users_without_manage_permission(): void
+    {
+        $this->panelUser->givePermissionTo('training.mentors.view.atc');
+
+        $category = MentorPermissionService::atcCategories()[0];
+        $this->createTrainingPosition($category, 'EGPH_GND');
+
+        $mentor = Account::factory()->create();
+        $mentorCtsMember = $this->getOrCreateCtsMember($mentor);
+
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $sessionId = $this->insertSession(
+            $mentorCtsMember->id,
+            $studentCtsMember->id,
+            'EGPH_GND',
+            takenDate: Carbon::tomorrow()->format('Y-m-d H:i:s'),
+        );
+        $session = Session::on('cts')->find($sessionId);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(UpcomingMentoringSessions::class, ['category' => $category])
+            ->assertCanSeeTableRecords([$session])
+            ->assertDontSee('Reallocate');
+    }
+
+    #[Test]
     public function the_page_renders_the_pending_reports_section(): void
     {
         $this->panelUser->givePermissionTo('training.mentors.view.atc');

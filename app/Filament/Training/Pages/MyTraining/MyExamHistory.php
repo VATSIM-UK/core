@@ -14,15 +14,12 @@ class MyExamHistory extends Page
 
     protected static ?string $navigationLabel = 'My Exam History';
 
+    protected static ?string $slug = 'my-training/exam-history';
+
     protected static ?int $navigationSort = 20;
 
     public static function canAccess(): bool
     {
-        // Temporary beta permission
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
         return auth()->user()->can('training.access') ?? false;
     }
 

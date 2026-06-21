@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -41,14 +42,26 @@ class PositionResource extends Resource
             TextInput::make('name')
                 ->required()
                 ->maxLength(191),
-            TextInput::make('frequency')
-                ->helperText('MHz (e.g. 123.450)')
-                ->required()
-                ->numeric()
-                ->step(0.001),
-            Select::make('type')
-                ->required()
-                ->options(Position::typeOptions()),
+            Grid::make(3)->schema([
+                TextInput::make('frequency')
+                    ->helperText('MHz (e.g. 123.450)')
+                    ->required()
+                    ->numeric()
+                    ->step(0.001),
+                Select::make('type')
+                    ->required()
+                    ->options(Position::typeOptions())
+                    ->afterStateHydrated(function ($record, $set) {
+                        if ($record) {
+                            $set('type', $record->getRawOriginal('type'));
+                        }
+                    }),
+                Select::make('positionGroups')
+                    ->label('Position Group')
+                    ->relationship('positionGroups', 'name')
+                    ->preload()
+                    ->searchable(),
+            ])->columnSpanFull(),
             Toggle::make('sub_station')
                 ->label('Sub Station'),
             Toggle::make('temporarily_endorsable')
@@ -96,6 +109,9 @@ class PositionResource extends Resource
                     ->boolean()
                     ->trueColor('success')
                     ->falseColor('gray'),
+                TextColumn::make('positionGroups.name')
+                    ->label('Position Group')
+                    ->badge(),
             ])
             ->filters([
                 SelectFilter::make('type')

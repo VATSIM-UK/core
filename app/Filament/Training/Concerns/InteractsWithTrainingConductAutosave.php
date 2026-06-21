@@ -14,7 +14,7 @@ trait InteractsWithTrainingConductAutosave
 
     public int $autosaveIdleSeconds = 1;
 
-    public int $autosaveMinInterval = 5;
+    public int $autosaveMinInterval = 3;
 
     public ?int $lastAutosaveAt = null;
 

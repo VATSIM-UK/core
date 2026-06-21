@@ -94,6 +94,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.mentors.manage.pilot',
 
             'training.mentoring.view.*',
+            'training.mentoring.sessions.*',
+            'training.mentoring.sessions.reallocate.*',
 
             // Account Permissions
             'account.self',
