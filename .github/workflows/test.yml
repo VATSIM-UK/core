@@ -86,7 +86,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           tools: composer:${{ matrix.composer }}
-          coverage: pcov
+          coverage: none
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -147,13 +147,7 @@ jobs:
         run: php artisan serve -q &
 
       - name: Execute Tests
-        run: php artisan test --parallel --processes=4 --recreate-databases --log-junit=junit.xml --coverage-clover=coverage.xml
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
+        run: php artisan test --parallel --processes=4 --recreate-databases --log-junit=junit.xml
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
