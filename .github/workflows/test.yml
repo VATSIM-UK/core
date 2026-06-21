@@ -155,6 +155,15 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./junit.xml
+          report-type: test_results
+          fail_ci_if_error: true
+
   trigger-deploy:
     name: Trigger Deploy
     needs: [lint, test]
