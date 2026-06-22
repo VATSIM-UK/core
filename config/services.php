@@ -54,6 +54,7 @@ return [
         'training_alerts_channel_id' => env('DISCORD_TRAINING_ALERTS_CHANNEL_ID', null),
         'booster_role_id' => env('DISCORD_BOOSTER_ROLE_ID', '740539876889591878'),
         'honeypot_channel_id' => env('DISCORD_HONEYPOT_CHANNEL_ID', '1518675437973409854'),
+        'moderators_chat_channel_id' => env('DISCORD_MODERATORS_CHANNEL_ID', '705818062871330818'),
     ],
 
     'google' => [

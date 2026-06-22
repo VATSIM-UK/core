@@ -268,7 +268,7 @@ class Discord
     /*
      * Temporarily mutes the user and purges their recent messages
      */
-    public function softBan(Account $account, int $messageRemovalHours, int $muteDurationDays, string $reason = 'Soft ban'): void
+    public function softBan(Account $account, int $muteDurationDays, string $reason = 'Soft ban'): void
     {
         // time out the user
         $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}";

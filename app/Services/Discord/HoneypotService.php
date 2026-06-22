@@ -37,9 +37,16 @@ class HoneypotService
 
         Log::notice("Honeypot triggered by {$discordUsername} ({$discordUserId}) linked to account {$account->id}");
 
-        $this->discord->softBan($account, 1, 7, 'Honeypot');
+        $this->discord->softBan($account, 7, 'Honeypot');
 
         $noteType = NoteType::isShortCode('discipline')->first();
         $account->addNote($noteType, 'User sent a message in the honeypot channel, recent messages have been deleted and user has been timed out for 7 days', null);
+
+        $this->discord->sendMessageToChannel(
+            channelId: config('services.discord.moderators_chat_channel_id'),
+            messageContents: [
+                'content' => "Honeypot triggered by {$discordUsername} ({$discordUserId}) linked to account [{$account->id}](https://www.vatsim.uk/admin/accounts/{$account->id})",
+            ],
+        );
     }
 }
