@@ -203,6 +203,9 @@ jobs:
             # Generate sitemap
             $PHP_PATH artisan sitemap:generate
 
+            # Restart Discord bot
+            sudo systemctl restart core-discord-honeypot
+
             # Start Applications / Services
             $PHP_PATH artisan up
           envs: APPLICATION_ROOT,PHP_PATH,TAG,COMMIT,GITHUB_ACTOR
