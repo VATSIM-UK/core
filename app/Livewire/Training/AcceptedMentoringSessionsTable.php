@@ -23,7 +23,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -276,139 +275,109 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
             ->color('warning')
             ->modalHeading(fn (Session $record) => "Reschedule Session: {$record->student->name}")
             ->modalSubmitActionLabel('Reschedule Session')
-            ->form(function (Session $record) {
-                return [
-                    Select::make('selected_availability_id')
-                        ->label('Student Availability Slot')
+            ->form([
+                Select::make('selected_availability_id')
+                    ->label('Student Availability Slot')
+                    ->required()
+                    ->live()
+                    ->options(fn (Session $record) => Availability::query()
+                        ->where('student_id', $record->student_id)
+                        ->whereDate('date', '>=', now())
+                        ->orderBy('date')
+                        ->orderBy('from')
+                        ->get()
+                        ->mapWithKeys(function ($avail) {
+                            $date = Carbon::parse($avail->date)->format('D, d M Y');
+                            $start = Carbon::parse($avail->from)->format('H:i');
+                            $end = Carbon::parse($avail->to)->format('H:i');
+
+                            return [$avail->id => "{$date} ({$start} to {$end})"];
+                        })
+                    )
+                    ->afterStateUpdated(function (Set $set, $state) {
+                        if (! $state || ! $newAvail = Availability::find($state)) {
+                            $set('taken_from', null);
+                            $set('taken_to', null);
+
+                            return;
+                        }
+
+                        $minTime = Carbon::parse($newAvail->from)->format('H:i');
+                        $maxTime = Carbon::parse($newAvail->to)->format('H:i');
+                        $options = $this->generateTimeOptions($minTime, $maxTime);
+
+                        if (Carbon::parse($newAvail->date)->isToday()) {
+                            $nowTime = now()->format('H:i');
+                            $options = array_filter($options, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
+                        }
+
+                        $set('taken_from', array_key_first($options));
+                        $set('taken_to', array_key_last($options));
+                    }),
+
+                Grid::make(2)->schema([
+                    Select::make('taken_from')
+                        ->label('New Start Time')
                         ->required()
+                        ->searchable()
+                        ->allowHtml(false)
                         ->live()
-                        ->options(fn (Session $record) => Availability::query()
-                            ->where('student_id', $record->student_id)
-                            ->whereDate('date', '>=', now())
-                            ->orderBy('date')
-                            ->orderBy('from')
-                            ->get()
-                            ->mapWithKeys(function ($avail) {
-                                $date = Carbon::parse($avail->date)->format('D, d M Y');
-                                $start = Carbon::parse($avail->from)->format('H:i');
-                                $end = Carbon::parse($avail->to)->format('H:i');
-
-                                return [$avail->id => "{$date} ({$start} to {$end})"];
-                            })
-                        )
-                        ->afterStateUpdated(function (Set $set, $state) {
-                            if (! $state || ! $newAvail = Availability::find($state)) {
-                                $set('taken_from', null);
-                                $set('taken_to', null);
-
-                                return;
+                        ->optionsLimit(100)
+                        ->options(function (Get $get) {
+                            if (! $availId = $get('selected_availability_id')) {
+                                return [];
                             }
 
-                            $minTime = Carbon::parse($newAvail->from)->format('H:i');
-                            $maxTime = Carbon::parse($newAvail->to)->format('H:i');
-                            $options = $this->generateTimeOptions($minTime, $maxTime);
+                            $avail = Availability::find($availId);
+                            if (! $avail) {
+                                return [];
+                            }
 
-                            if (Carbon::parse($newAvail->date)->isToday()) {
+                            $options = $this->generateTimeOptions(
+                                Carbon::parse($avail->from)->format('H:i'),
+                                Carbon::parse($avail->to)->format('H:i')
+                            );
+
+                            if (Carbon::parse($avail->date)->isToday()) {
                                 $nowTime = now()->format('H:i');
                                 $options = array_filter($options, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
                             }
 
-                            $set('taken_from', array_key_first($options));
-                            $set('taken_to', array_key_last($options));
+                            return $options;
                         }),
 
-                    Grid::make(2)->schema([
-                        Select::make('taken_from')
-                            ->label('New Start Time')
-                            ->required()
-                            ->searchable()
-                            ->allowHtml(false)
-                            ->live()
-                            ->optionsLimit(100)
-                            ->options(function (Get $get) {
-                                if (! $availId = $get('selected_availability_id')) {
-                                    return [];
-                                }
+                    Select::make('taken_to')
+                        ->label('New End Time')
+                        ->required()
+                        ->searchable()
+                        ->allowHtml(false)
+                        ->optionsLimit(100)
+                        ->options(function (Get $get) {
+                            if (! $availId = $get('selected_availability_id')) {
+                                return [];
+                            }
 
-                                $avail = Availability::find($availId);
-                                if (! $avail) {
-                                    return [];
-                                }
+                            $avail = Availability::find($availId);
+                            if (! $avail) {
+                                return [];
+                            }
 
-                                $options = $this->generateTimeOptions(
-                                    Carbon::parse($avail->from)->format('H:i'),
-                                    Carbon::parse($avail->to)->format('H:i')
-                                );
+                            $options = $this->generateTimeOptions(
+                                Carbon::parse($avail->from)->format('H:i'),
+                                Carbon::parse($avail->to)->format('H:i')
+                            );
 
-                                if (Carbon::parse($avail->date)->isToday()) {
-                                    $nowTime = now()->format('H:i');
-                                    $options = array_filter($options, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
-                                }
-
+                            $startTime = $get('taken_from');
+                            if (! $startTime) {
                                 return $options;
-                            }),
-
-                        Select::make('taken_to')
-                            ->label('New End Time')
-                            ->required()
-                            ->searchable()
-                            ->allowHtml(false)
-                            ->optionsLimit(100)
-                            ->options(function (Get $get) {
-                                if (! $availId = $get('selected_availability_id')) {
-                                    return [];
-                                }
-
-                                $avail = Availability::find($availId);
-                                if (! $avail) {
-                                    return [];
-                                }
-
-                                $options = $this->generateTimeOptions(
-                                    Carbon::parse($avail->from)->format('H:i'),
-                                    Carbon::parse($avail->to)->format('H:i')
-                                );
-
-                                $startTime = $get('taken_from');
-                                if (! $startTime) {
-                                    return $options;
-                                }
-
-                                return collect($options)
-                                    ->filter(fn ($label, $key) => $key > $startTime)
-                                    ->toArray();
-                            }),
-                    ]),
-
-                    Callout::make('overlapping_booking')
-                        ->heading(function (Get $get) use ($record) {
-                            $overlap = $this->getOverlappingBooking($get, $record);
-
-                            if (! $overlap) {
-                                return '';
                             }
 
-                            return $overlap instanceof Session ? 'Overlapping Session Detected' : 'Overlapping Exam Detected';
-                        })
-                        ->description(function (Get $get) use ($record) {
-                            $overlap = $this->getOverlappingBooking($get, $record);
-
-                            if (! $overlap) {
-                                return '';
-                            }
-
-                            $type = $overlap instanceof Session ? 'session' : 'exam';
-                            $from = $overlap->taken_from;
-                            $to = $overlap->taken_to;
-
-                            return "There is already a {$type} booked on this position from {$from} to {$to}.";
-                        })
-                        ->danger()
-                        ->visible(function (Get $get) use ($record) {
-                            return $this->getOverlappingBooking($get, $record) !== null;
+                            return collect($options)
+                                ->filter(fn ($label, $key) => $key > $startTime)
+                                ->toArray();
                         }),
-                ];
-            })
+                ]),
+            ])
             ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
                 $availability = Availability::find($data['selected_availability_id']);
 
