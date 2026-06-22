@@ -6,6 +6,7 @@ use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Exceptions\Discord\GenericDiscordException;
 use App\Libraries\Discord;
 use App\Models\Mship\Account;
+use App\Services\Discord\HoneypotService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
@@ -465,6 +466,36 @@ class DiscordTest extends TestCase
 
         // Cache should be cleared after deletion
         $this->assertNull(Cache::get("discord:user:{$account->discord_id}:messages"));
+    }
+
+    #[Test]
+    public function test_honeypot_alert_sends_message_to_mods_channel()
+    {
+        $account = Account::factory()->create(['discord_id' => 12345]);
+
+        Config::set('services.discord.honeypot_channel_id', 'honeypot-123');
+        Config::set('services.discord.moderators_chat_channel_id', 'mods-456');
+
+        $discord = Mockery::mock(Discord::class, function (MockInterface $mock) use ($account) {
+            $mock->shouldReceive('softBan')
+                ->once()
+                ->with(Mockery::on(fn ($a) => $a->is($account)), 7, 'Honeypot');
+
+            $mock->shouldReceive('sendMessageToChannel')
+                ->once()
+                ->with(
+                    'mods-456',
+                    Mockery::on(fn (array $message) => $message['content'] === "Honeypot triggered by honeypotUser (12345) linked to account [{$account->id}](https://www.vatsim.uk/admin/accounts/{$account->id})"
+                    )
+                );
+        });
+
+        $service = new HoneypotService($discord);
+        $service->handleTrigger(
+            discordUserId: '12345',
+            discordUsername: 'honeypotUser',
+            messageId: '67890',
+        );
     }
 
     #[Test]
