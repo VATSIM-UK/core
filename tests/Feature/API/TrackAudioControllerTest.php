@@ -1,10 +1,28 @@
 <?php
 
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-class TrackAudioControllerTest extends Tests\TestCase
+class TrackAudioControllerTest extends BaseTestCase
 {
+    use Tests\CreatesApplication;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withoutMiddleware(App\Http\Middleware\VerifyCsrfToken::class);
+
+        $parsed = parse_url(config('app.url'));
+        if (empty($parsed['scheme'])) {
+            config(['app.url' => 'http://'.config('app.url')]);
+        }
+
+        Carbon::setTestNow(now()->setMicro(0));
+    }
+
     public function test_it_redirects_to_cached_latest_trackaudio_release(): void
     {
         Cache::put('trackaudio_latest_version', '1.2.3', now()->addMinutes(5));
