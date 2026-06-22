@@ -45,7 +45,7 @@ class HoneypotService
         $this->discord->sendMessageToChannel(
             channelId: config('services.discord.moderators_chat_channel_id'),
             messageContents: [
-                'content' => "Honeypot triggered by {$discordUsername} ({$discordUserId}) linked to account [{$account->id}](https://www.vatsim.uk/admin/accounts/{$account->id})",
+                'content' => "Honeypot triggered by <@{$discordUserId}> linked to account [{$account->id}](https://www.vatsim.uk/admin/accounts/{$account->id})",
             ],
         );
     }

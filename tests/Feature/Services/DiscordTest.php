@@ -485,7 +485,7 @@ class DiscordTest extends TestCase
                 ->once()
                 ->with(
                     'mods-456',
-                    Mockery::on(fn (array $message) => $message['content'] === "Honeypot triggered by honeypotUser (12345) linked to account [{$account->id}](https://www.vatsim.uk/admin/accounts/{$account->id})"
+                    Mockery::on(fn (array $message) => $message['content'] === "Honeypot triggered by <@12345> linked to account [{$account->id}](https://www.vatsim.uk/admin/accounts/{$account->id})"
                     )
                 );
         });
