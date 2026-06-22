@@ -26,7 +26,7 @@ class ViewBan extends BaseViewRecordPage
                 ->color('warning')
                 ->visible(auth()->user()->can('update', $this->record))
                 ->schema([
-                    DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->nullable()->notIn($this->record->period_finish ?? ''),
+                    DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->nullable()->notIn($this->record->period_finish ?? '')->helperText('Leave blank for permanent ban'),
                     Grid::make(2)->columnSpanFull()->schema([
                         Textarea::make('extra_info')
                             ->required()
