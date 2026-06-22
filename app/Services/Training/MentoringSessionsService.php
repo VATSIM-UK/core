@@ -4,6 +4,7 @@ namespace App\Services\Training;
 
 use App\Models\Cts\Availability;
 use App\Models\Cts\CancelReason;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
@@ -44,7 +45,7 @@ class MentoringSessionsService
                 return false;
             }
 
-            $this->validateSessionTimes($availability, $takenFrom, $takenTo);
+            $this->validateSessionTimes($availability, $takenFrom, $takenTo, $session->position, $session->id);
 
             if ($mentorAccount->cannot('accept', $session)) {
                 throw new AuthorizationException('You are not authorized to accept mentoring sessions for this position.');
@@ -83,7 +84,7 @@ class MentoringSessionsService
             throw new InvalidArgumentException("The selected availability does not belong to the session's student.");
         }
 
-        $this->validateSessionTimes($availability, $takenFrom, $takenTo);
+        $this->validateSessionTimes($availability, $takenFrom, $takenTo, $session->position, $session->id);
 
         return DB::transaction(function () use ($session, $availability, $takenFrom, $takenTo) {
             $previousDateTime = $session->formattedSessionDateTime();
@@ -230,7 +231,34 @@ class MentoringSessionsService
         }
     }
 
-    private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void
+    public function checkForOverlappingBookings(string $callsign, string $date, string $takenFrom, string $takenTo, ?int $ignoreSessionId = null): Session|ExamBooking|null
+    {
+        $overlappingSession = Session::query()
+            ->where('position', $callsign)
+            ->whereDate('taken_date', $date)
+            ->where('taken_from', '<', $takenTo)
+            ->where('taken_to', '>', $takenFrom)
+            ->whereNull('cancelled_datetime')
+            ->when($ignoreSessionId, function ($query, $ignoreSessionId) {
+                $query->where('id', '!=', $ignoreSessionId);
+            })
+            ->first();
+
+        if ($overlappingSession) {
+            return $overlappingSession;
+        }
+
+        return ExamBooking::query()
+            ->where('position_1', $callsign)
+            ->whereDate('taken_date', $date)
+            ->where('taken_from', '<', $takenTo)
+            ->where('taken_to', '>', $takenFrom)
+            ->where('taken', 1)
+            ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->first();
+    }
+
+    private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo, string $callsign, ?int $ignoreSessionId = null): void
     {
         $sessionStart = Carbon::parse($availability->date)->setTimeFromTimeString($takenFrom);
 
@@ -249,6 +277,16 @@ class MentoringSessionsService
 
         if ($requestedStart < $availabilityStart || $requestedEnd > $availabilityEnd) {
             throw new InvalidArgumentException("The requested times fall outside the student's availability window.");
+        }
+
+        $overlap = $this->checkForOverlappingBookings($callsign, $availability->date, $takenFrom, $takenTo, $ignoreSessionId);
+
+        if ($overlap instanceof Session) {
+            throw new InvalidArgumentException("There is already a mentoring session booked on this position from {$overlap->taken_from} to {$overlap->taken_to}.");
+        }
+
+        if ($overlap instanceof ExamBooking) {
+            throw new InvalidArgumentException("There is already an exam booked on this position from {$overlap->taken_from} to {$overlap->taken_to}.");
         }
     }
 }
