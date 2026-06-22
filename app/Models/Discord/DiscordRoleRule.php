@@ -10,6 +10,7 @@ use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Permission;
 use App\Models\Roster;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -23,6 +24,7 @@ class DiscordRoleRule extends Model
     protected $casts = [
         'permission_id' => 'int',
         'discord_id' => 'string',
+        'position_type' => 'int',
     ];
 
     /**
@@ -69,7 +71,8 @@ class DiscordRoleRule extends Model
             && $this->accountSatisfiesQualificationRequirement($account)
             && $this->accountSatisfiesStateRequirement($account)
             && $this->accountSatisfiesCTSMayControlRequirement($account)
-            && $this->accountSatisfiesCanControlOnRosterRequirement($account);
+            && $this->accountSatisfiesCanControlOnRosterRequirement($account)
+            && $this->accountSatisfiesSoloEndorsementPositionTypeRequirement($account);
     }
 
     protected function accountSatisfiesPermissionRequirement(Account $account): bool
@@ -121,5 +124,20 @@ class DiscordRoleRule extends Model
         }
 
         return true;
+    }
+
+    protected function accountSatisfiesSoloEndorsementPositionTypeRequirement(Account $account): bool
+    {
+        if (! $this->position_type) {
+            return true;
+        }
+
+        return $account
+            ->endorsements()
+            ->active()
+            ->whereHasMorph('endorsable', [Position::class], function (Builder $query) {
+                $query->where('type', $this->position_type);
+            })
+            ->exists();
     }
 }
