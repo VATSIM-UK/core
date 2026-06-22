@@ -16,7 +16,7 @@ class WaitingListCapacityFeatureTest extends TestCase
     #[Test]
     public function it_shows_success_message_when_self_enrolling_with_space_available()
     {
-        $account = Account::factory()->createQuietly();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
         $waitingList = WaitingList::factory()->create([
@@ -38,7 +38,7 @@ class WaitingListCapacityFeatureTest extends TestCase
     #[Test]
     public function it_shows_error_message_when_self_enrolling_at_capacity()
     {
-        $account = Account::factory()->createQuietly();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
         $waitingList = WaitingList::factory()->create([
@@ -67,7 +67,7 @@ class WaitingListCapacityFeatureTest extends TestCase
     #[Test]
     public function it_allows_self_enrollment_when_no_capacity_limit_is_set()
     {
-        $account = Account::factory()->createQuietly();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
         $waitingList = WaitingList::factory()->create([
@@ -78,7 +78,7 @@ class WaitingListCapacityFeatureTest extends TestCase
         ]);
 
         // Add many users to test unlimited capacity
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $user = Account::factory()->createQuietly();
             $waitingList->addToWaitingList($user, $this->privacc);
         }
@@ -94,7 +94,7 @@ class WaitingListCapacityFeatureTest extends TestCase
     #[Test]
     public function it_displays_capacity_limited_lists_correctly_on_index_page()
     {
-        $account = Account::factory()->createQuietly();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
         // Create a list with available space
@@ -144,7 +144,7 @@ class WaitingListCapacityFeatureTest extends TestCase
     #[Test]
     public function it_prevents_enrollment_when_capacity_is_reached_between_page_load_and_submission()
     {
-        $account = Account::factory()->createQuietly();
+        $account = Account::factory()->create();
         $account->addState(State::findByCode('DIVISION'));
 
         $waitingList = WaitingList::factory()->create([
@@ -180,10 +180,10 @@ class WaitingListCapacityFeatureTest extends TestCase
             'requires_roster_membership' => false,
         ]);
 
-        $account1 = Account::factory()->createQuietly();
+        $account1 = Account::factory()->create();
         $account1->addState(State::findByCode('DIVISION'));
 
-        $account2 = Account::factory()->createQuietly();
+        $account2 = Account::factory()->create();
         $account2->addState(State::findByCode('DIVISION'));
 
         // First user enrolls successfully
