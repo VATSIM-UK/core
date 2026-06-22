@@ -50,7 +50,7 @@ class HasDiscordAccountTest extends TestCase
         $account = Account::factory()->createQuietly(['discord_id' => 12345]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response(['message' => 'Unknown Member'], 404),
+            'discord.com/api/v10/guilds/*/members/12345' => Http::response(['message' => 'Unknown Member'], 404),
         ]);
 
         $account->syncToDiscord();
@@ -74,7 +74,7 @@ class HasDiscordAccountTest extends TestCase
         $account->syncPermissions([$permissionHas]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::sequence()
+            'discord.com/api/v10/guilds/*/members/12345' => Http::sequence()
                 ->push([], 204)
                 ->push(['roles' => ['2']], 200)
                 ->push(['message' => 'Unknown Member'], 404),

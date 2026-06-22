@@ -49,10 +49,11 @@ return [
         'client_id' => env('DISCORD_CLIENT', null),
         'client_secret' => env('DISCORD_SECRET', null),
         'redirect_uri' => env('DISCORD_REDIRECT_URI', null),
-        'base_discord_uri' => env('DISCORD_API_BASE', 'https://discord.com/api/v6'),
+        'base_discord_uri' => env('DISCORD_API_BASE', 'https://discord.com/api/v10'),
         'suspended_member_role_id' => env('DISCORD_SUSPENDED_MEMBER_ROLE_ID', '1511158845987229737'),
         'training_alerts_channel_id' => env('DISCORD_TRAINING_ALERTS_CHANNEL_ID', null),
         'booster_role_id' => env('DISCORD_BOOSTER_ROLE_ID', '740539876889591878'),
+        'honeypot_channel_id' => env('DISCORD_HONEYPOT_CHANNEL_ID', '1518675437973409854'),
     ],
 
     'google' => [
