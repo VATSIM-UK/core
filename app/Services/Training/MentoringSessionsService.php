@@ -278,15 +278,5 @@ class MentoringSessionsService
         if ($requestedStart < $availabilityStart || $requestedEnd > $availabilityEnd) {
             throw new InvalidArgumentException("The requested times fall outside the student's availability window.");
         }
-
-        $overlap = $this->checkForOverlappingBookings($callsign, $availability->date, $takenFrom, $takenTo, $ignoreSessionId);
-
-        if ($overlap instanceof Session) {
-            throw new InvalidArgumentException("There is already a mentoring session booked on this position from {$overlap->taken_from} to {$overlap->taken_to}.");
-        }
-
-        if ($overlap instanceof ExamBooking) {
-            throw new InvalidArgumentException("There is already an exam booked on this position from {$overlap->taken_from} to {$overlap->taken_to}.");
-        }
     }
 }
