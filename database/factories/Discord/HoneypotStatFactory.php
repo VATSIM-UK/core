@@ -15,8 +15,6 @@ class HoneypotStatFactory extends Factory
     protected $model = HoneypotStat::class;
 
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
