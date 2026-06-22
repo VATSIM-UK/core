@@ -80,7 +80,7 @@ class BanResource extends Resource
                 TextColumn::make('banner.name')->label('Banned By')->searchable(['name_first', 'name_last', 'id'])->viewResource(AccountResource::class),
                 TextColumn::make('created_at')->label('Issued')->dateTime('d/m/Y')->sortable(),
                 TextColumn::make('period_start')->label('Started')->since()->description(fn ($record) => $record->period_start),
-                TextColumn::make('period_finish')->label('Ends')->since()->description(fn ($record) => $record->period_finish)->sortable(),
+                TextColumn::make('period_finish')->label('Ends')->description(fn ($record) => $record->period_finish ? $record->period_finish->toDayDateTimeString() : 'Never')->getStateUsing(fn ($record) => $record->period_finish ? $record->period_finish->diffForHumans() : 'Permanent')->sortable(),
                 TextColumn::make('type_string')->label('Type'),
                 IconColumn::make('active')->boolean()->getStateUsing(fn ($record) => $record->is_active)->trueColor('danger')->falseColor('success'),
             ])
