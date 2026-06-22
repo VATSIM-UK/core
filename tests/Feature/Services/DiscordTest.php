@@ -5,6 +5,7 @@ namespace Tests\Feature\Services;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Exceptions\Discord\GenericDiscordException;
 use App\Libraries\Discord;
+use App\Models\Discord\HoneypotStat;
 use App\Models\Mship\Account;
 use App\Services\Discord\HoneypotService;
 use Illuminate\Support\Facades\Cache;
@@ -469,12 +470,21 @@ class DiscordTest extends TestCase
     }
 
     #[Test]
-    public function test_honeypot_alert_sends_message_to_mods_channel()
+    public function test_honeypot_alert_sends_message_to_mods_channel_and_updates_embed()
     {
         $account = Account::factory()->create(['discord_id' => 12345]);
 
         Config::set('services.discord.honeypot_channel_id', 'honeypot-123');
         Config::set('services.discord.moderators_chat_channel_id', 'mods-456');
+
+        // Pre-populate the cached bot message so the embed update path runs
+        Cache::put('discord:honeypot:bot_message', [
+            'channel_id' => 'honeypot-123',
+            'message_id' => 'bot-msg-1',
+        ], null);
+
+        HoneypotStat::factory()->count(3)->create();
+        HoneypotStat::factory()->create(['account_id' => (string) $account->id]);
 
         $discord = Mockery::mock(Discord::class, function (MockInterface $mock) use ($account) {
             $mock->shouldReceive('softBan')
@@ -488,6 +498,42 @@ class DiscordTest extends TestCase
                     Mockery::on(fn (array $message) => $message['content'] === "Honeypot triggered by <@12345> linked to account [{$account->id}](https://www.vatsim.uk/admin/accounts/{$account->id})"
                     )
                 );
+
+            $mock->shouldReceive('editMessage')
+                ->once()
+                ->with(
+                    'honeypot-123',
+                    'bot-msg-1',
+                    Mockery::on(fn (array $content) => isset($content['embeds'][0])
+                    )
+                );
+        });
+
+        $service = new HoneypotService($discord);
+        $service->handleTrigger(
+            discordUserId: '12345',
+            discordUsername: 'honeypotUser',
+            messageId: '67890',
+        );
+    }
+
+    #[Test]
+    public function test_honeypot_alert_skips_embed_update_when_no_bot_message_cached()
+    {
+        $account = Account::factory()->create(['discord_id' => 12345]);
+
+        Config::set('services.discord.honeypot_channel_id', 'honeypot-123');
+        Config::set('services.discord.moderators_chat_channel_id', 'mods-456');
+
+        $discord = Mockery::mock(Discord::class, function (MockInterface $mock) use ($account) {
+            $mock->shouldReceive('softBan')
+                ->once()
+                ->with(Mockery::on(fn ($a) => $a->is($account)), 7, 'Honeypot');
+
+            $mock->shouldReceive('sendMessageToChannel')
+                ->once();
+
+            $mock->shouldNotReceive('editMessage');
         });
 
         $service = new HoneypotService($discord);
@@ -565,6 +611,46 @@ class DiscordTest extends TestCase
         ]);
 
         (new Discord)->deleteMessage('100', '99');
+    }
+
+    #[Test]
+    public function test_edit_message_sends_patch_request()
+    {
+        Http::fake([
+            'discord.com/api/v10/channels/100/messages/99' => Http::response([], 204),
+        ]);
+
+        $newContent = [
+            'content' => null,
+            'embeds' => [
+                [
+                    'title' => 'DO NOT SEND MESSAGES HERE',
+                    'footer' => ['text' => 'So far I\'ve baited 0 people'],
+                ],
+            ],
+        ];
+
+        $result = (new Discord)->editMessage('100', '99', $newContent);
+
+        $this->assertTrue($result);
+
+        Http::assertSent(function ($request) use ($newContent) {
+            return $request->method() === 'PATCH'
+                && str_contains($request->url(), '/channels/100/messages/99')
+                && $request->data() === $newContent;
+        });
+    }
+
+    #[Test]
+    public function test_edit_message_throws_on_api_error()
+    {
+        $this->expectException(GenericDiscordException::class);
+
+        Http::fake([
+            'discord.com/api/v10/channels/100/messages/99' => Http::response(['message' => 'Missing Permissions'], 403),
+        ]);
+
+        (new Discord)->editMessage('100', '99', []);
     }
 
     #[Test]

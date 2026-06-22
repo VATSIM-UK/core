@@ -3,8 +3,10 @@
 namespace App\Services\Discord;
 
 use App\Libraries\Discord;
+use App\Models\Discord\HoneypotStat;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type as NoteType;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class HoneypotService
@@ -35,6 +37,10 @@ class HoneypotService
             return;
         }
 
+        HoneypotStat::create([
+            'account_id' => $account->id,
+        ]);
+
         Log::notice("Honeypot triggered by {$discordUsername} ({$discordUserId}) linked to account {$account->id}");
 
         $this->discord->softBan($account, 7, 'Honeypot');
@@ -46,6 +52,34 @@ class HoneypotService
             channelId: config('services.discord.moderators_chat_channel_id'),
             messageContents: [
                 'content' => "Honeypot triggered by <@{$discordUserId}> linked to account [{$account->id}](https://www.vatsim.uk/admin/accounts/{$account->id})",
+            ],
+        );
+
+        $honeypotMessageData = Cache::get('discord:honeypot:bot_message');
+
+        if (! $honeypotMessageData) {
+            \Log::warning('Cached honeypoot bot message not found');
+
+            return;
+        }
+
+        $victimCount = HoneypotStat::count();
+
+        $this->discord->editMessage(
+            channelId: $honeypotMessageData['channel_id'],
+            messageId: $honeypotMessageData['message_id'],
+            newContent: [
+                'content' => null,
+                'embeds' => [
+                    [
+                        'title' => 'DO NOT SEND MESSAGES HERE',
+                        'description' => "**If you send a message to this channel you will be muted!**\n\n_This channel is designed as a trap for spammers._",
+                        'color' => 2469347,
+                        'footer' => [
+                            'text' => "So far I've baited {$victimCount} people",
+                        ],
+                    ],
+                ],
             ],
         );
     }

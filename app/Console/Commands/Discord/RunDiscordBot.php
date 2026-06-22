@@ -98,6 +98,12 @@ class RunDiscordBot extends Command
                     discordUsername: $message['author']['username'],
                     messageId: $message['id'],
                 );
+            } else {
+                // This is my message - cache it for stats
+                Cache::put('discord:honeypot:bot_message', [
+                    'channel_id' => $honeypotChannelId,
+                    'message_id' => $message['id'],
+                ], null);
             }
         }
     }

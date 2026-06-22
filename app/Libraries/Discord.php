@@ -389,6 +389,24 @@ class Discord
         return true;
     }
 
+    public function editMessage(string $channelId, string $messageId, array $newContent): bool
+    {
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages/{$messageId}";
+        $context = [
+            'action' => 'editMessage',
+            'channel_id' => $channelId,
+            'message_id' => $messageId,
+            'new_content' => $newContent,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->patch($endpoint, $newContent),
+            $context
+        );
+
+        return $this->result($response, $context);
+    }
+
     // --- Internal helpers ---
 
     /**
