@@ -73,7 +73,7 @@ class HoneypotService
                 'embeds' => [
                     [
                         'title' => 'DO NOT SEND MESSAGES HERE',
-                        'description' => '_This channel is designed as a trap for spammers._',
+                        'description' => '"**If you send a message to this channel you will be muted!**\n\n_This channel is designed as a trap for spammers._',
                         'color' => 2469347,
                         'footer' => [
                             'text' => "So far I've baited {$victimCount} people",
