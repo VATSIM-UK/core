@@ -3,14 +3,11 @@
 namespace Tests\Unit\Mship;
 
 use App\Models\Mship\Qualification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class MilitaryPilotQualificationDetectionTest extends TestCase
 {
-    use RefreshDatabase;
-
     #[DataProvider('militaryRatingsTestData')]
     public function test_it_handles_military_pilot_ratings($networkBitmask, $expectedCode)
     {

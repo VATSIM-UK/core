@@ -6,15 +6,12 @@ use App\Filament\Admin\Resources\Accounts\Pages\ViewAccount;
 use App\Filament\Admin\Resources\Accounts\RelationManagers\RolesRelationManager;
 use App\Models\Mship\Account;
 use App\Services\Roles\DelegateRoleManagementService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
 class RolesRelationManagerTest extends BaseAdminTestCase
 {
-    use RefreshDatabase;
-
     private DelegateRoleManagementService $service;
 
     private Account $targetAccount;
@@ -30,7 +27,7 @@ class RolesRelationManagerTest extends BaseAdminTestCase
         parent::setUp();
 
         $this->service = new DelegateRoleManagementService;
-        $this->targetAccount = Account::factory()->create();
+        $this->targetAccount = Account::factory()->createQuietly();
 
         $this->role1 = Role::create(['name' => 'Role 1', 'guard_name' => 'web']);
         $this->role2 = Role::create(['name' => 'Role 2', 'guard_name' => 'web']);

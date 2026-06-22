@@ -123,7 +123,7 @@ class DiscordTest extends TestCase
     #[Test]
     public function test_grant_role_by_id_sends_put_request()
     {
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
 
         Http::fake([
             'discord.com/api/v6/guilds/*/members/12345/roles/99' => Http::response([], 204),
@@ -143,7 +143,7 @@ class DiscordTest extends TestCase
     #[Test]
     public function test_remove_role_by_id_sends_delete_request()
     {
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
 
         Http::fake([
             'discord.com/api/v6/guilds/*/members/12345/roles/99' => Http::response([], 204),
@@ -163,7 +163,7 @@ class DiscordTest extends TestCase
     #[Test]
     public function test_set_nickname_sends_patch_request_with_nick()
     {
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
         $nickname = 'Test User - 12345';
 
         Http::fake([
@@ -184,7 +184,7 @@ class DiscordTest extends TestCase
     #[Test]
     public function test_set_roles_sends_patch_request_with_role_ids()
     {
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
         $roleIds = [1, 2, 3];
 
         Http::fake([
@@ -205,7 +205,7 @@ class DiscordTest extends TestCase
     #[Test]
     public function test_get_user_roles_returns_collection_of_role_ids()
     {
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
 
         Http::fake([
             'discord.com/api/v6/guilds/*/members/12345' => Http::response(['roles' => ['111', '222', '333']], 200),
@@ -220,7 +220,7 @@ class DiscordTest extends TestCase
     #[Test]
     public function test_get_user_roles_returns_empty_on_api_failure()
     {
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
 
         Http::fake([
             'discord.com/api/v6/guilds/*/members/12345' => Http::response([], 500),
@@ -235,7 +235,7 @@ class DiscordTest extends TestCase
     #[Test]
     public function test_kick_returns_true_when_user_not_found()
     {
-        $account = Account::factory()->create(['discord_id' => 99999]);
+        $account = Account::factory()->createQuietly(['discord_id' => 99999]);
 
         Http::fake([
             'discord.com/api/v6/guilds/*/members/99999' => Http::response(['message' => 'Unknown Member'], 404),
@@ -254,7 +254,7 @@ class DiscordTest extends TestCase
     {
         $this->expectException(DiscordUserNotFoundException::class);
 
-        $account = Account::factory()->create(['discord_id' => 99999]);
+        $account = Account::factory()->createQuietly(['discord_id' => 99999]);
 
         Http::fake([
             'discord.com/api/v6/guilds/*/members/99999/roles/99' => Http::response(['message' => 'Unknown Member'], 404),
@@ -269,7 +269,7 @@ class DiscordTest extends TestCase
     {
         $this->expectException(GenericDiscordException::class);
 
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
 
         Http::fake([
             'discord.com/api/v6/guilds/*/members/12345/roles/99' => Http::response(['message' => 'Bad Request'], 400),
@@ -286,7 +286,7 @@ class DiscordTest extends TestCase
     {
         Event::fake();
 
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
 
         Http::fakeSequence()
             ->push(['retry_after' => 0.001], 429)
@@ -305,7 +305,7 @@ class DiscordTest extends TestCase
     {
         Event::fake();
 
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
 
         // Two rate-limits then success — tests exponential backoff path too
         Http::fakeSequence()
@@ -326,7 +326,7 @@ class DiscordTest extends TestCase
     {
         $this->expectException(GenericDiscordException::class);
 
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
 
         // All 5 attempts return 429
         Http::fakeSequence()
