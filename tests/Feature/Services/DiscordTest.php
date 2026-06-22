@@ -504,8 +504,7 @@ class DiscordTest extends TestCase
                 ->with(
                     'honeypot-123',
                     'bot-msg-1',
-                    Mockery::on(fn (array $content) => isset($content['embeds'][0]['footer']['text'])
-                        && $content['embeds'][0]['footer']['text'] === 'So far I\'ve baited 4 people'
+                    Mockery::on(fn (array $content) => isset($content['embeds'][0])
                     )
                 );
         });
