@@ -45,7 +45,7 @@ class MentoringSessionsService
                 return false;
             }
 
-            $this->validateSessionTimes($availability, $takenFrom, $takenTo, $session->position, $session->id);
+            $this->validateSessionTimes($availability, $takenFrom, $takenTo);
 
             if ($mentorAccount->cannot('accept', $session)) {
                 throw new AuthorizationException('You are not authorized to accept mentoring sessions for this position.');
@@ -84,7 +84,7 @@ class MentoringSessionsService
             throw new InvalidArgumentException("The selected availability does not belong to the session's student.");
         }
 
-        $this->validateSessionTimes($availability, $takenFrom, $takenTo, $session->position, $session->id);
+        $this->validateSessionTimes($availability, $takenFrom, $takenTo);
 
         return DB::transaction(function () use ($session, $availability, $takenFrom, $takenTo) {
             $previousDateTime = $session->formattedSessionDateTime();
@@ -258,7 +258,7 @@ class MentoringSessionsService
             ->first();
     }
 
-    private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo, string $callsign, ?int $ignoreSessionId = null): void
+    private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void
     {
         $sessionStart = Carbon::parse($availability->date)->setTimeFromTimeString($takenFrom);
 
