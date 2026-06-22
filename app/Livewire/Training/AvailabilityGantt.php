@@ -374,6 +374,35 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     return;
                 }
 
+                $pendingSession = Session::query()
+                    ->where('student_id', $availability->student_id)
+                    ->whereNull('mentor_id')
+                    ->whereNull('filed')
+                    ->whereNull('cancelled_datetime')
+                    ->first();
+
+                if ($pendingSession) {
+                    $overlap = $mentoringService->checkForOverlappingBookings(
+                        $pendingSession->position,
+                        $availability->date,
+                        $data['taken_from'],
+                        $data['taken_to'],
+                        $pendingSession->id
+                    );
+
+                    if ($overlap) {
+                        $type = $overlap instanceof Session ? 'session' : 'exam';
+
+                        Notification::make()
+                            ->title('Booking Blocked')
+                            ->body("There is already a {$type} booked on this position during the requested time.")
+                            ->danger()
+                            ->send();
+
+                        return;
+                    }
+                }
+
                 $success = $mentoringService->acceptSession($availability->id, auth()->user(), $data['taken_from'], $data['taken_to']);
 
                 if ($success) {

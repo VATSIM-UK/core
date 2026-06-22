@@ -376,6 +376,26 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     return;
                 }
 
+                $overlap = $mentoringService->checkForOverlappingBookings(
+                    $record->position,
+                    $availability->date,
+                    $data['taken_from'],
+                    $data['taken_to'],
+                    $record->id
+                );
+
+                if ($overlap) {
+                    $type = $overlap instanceof Session ? 'session' : 'exam';
+
+                    Notification::make()
+                        ->title('Reschedule Blocked')
+                        ->body("There is already a {$type} booked on this position during the requested time.")
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
                 $success = $mentoringService->rescheduleSession(
                     $record->id,
                     $availability->id,
