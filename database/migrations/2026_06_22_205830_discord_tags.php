@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('discord_tags', function (Blueprint $table) {
             $table->id();
             $table->string('key')->unique();
+            $table->text('title');
             $table->text('value');
             $table->timestamps();
         });

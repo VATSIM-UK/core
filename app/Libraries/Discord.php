@@ -5,6 +5,7 @@ namespace App\Libraries;
 use App\Exceptions\Discord\DiscordUserInviteException;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Exceptions\Discord\GenericDiscordException;
+use App\Models\Discord\DiscordTag;
 use App\Models\Mship\Account;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
@@ -405,6 +406,133 @@ class Discord
         );
 
         return $this->result($response, $context);
+    }
+
+    public function syncTagCommands(): void
+    {
+        $applicationId = config('services.discord.client_id');
+
+        if (! $applicationId) {
+            Log::error('Cannot sync tag commands: no Discord client ID configured');
+
+            return;
+        }
+
+        $tags = DiscordTag::all();
+
+        if ($tags->isEmpty()) {
+            $this->deleteGuildCommand('tag', $applicationId);
+
+            return;
+        }
+
+        $choices = $tags->map(fn (DiscordTag $tag) => [
+            'name' => $tag->key,
+            'value' => $tag->key,
+        ])->values()->toArray();
+
+        if (count($choices) > 25) {
+            Log::warning('Too many tags for slash command choices, truncating to the first 25');
+            $choices = array_slice($choices, 0, 25);
+        }
+
+        $commandPayload = [
+            'name' => 'tag',
+            'description' => 'Display a tag',
+            'options' => [
+                [
+                    'type' => 3, // STRING
+                    'name' => 'key',
+                    'description' => 'The tag to display',
+                    'required' => true,
+                    'choices' => $choices,
+                ],
+            ],
+        ];
+
+        $this->upsertGuildCommand($commandPayload, $applicationId);
+    }
+
+    /**
+     * Create or update a guild slash command.
+     */
+    private function upsertGuildCommand(array $commandPayload, string $applicationId): void
+    {
+        $listEndpoint = "{$this->base_url}/applications/{$applicationId}/guilds/{$this->guild_id}/commands";
+        $context = ['action' => 'listGuildCommands'];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->get($listEndpoint),
+            $context
+        );
+
+        if ($response->failed()) {
+            Log::error('Failed to list guild commands', $context + ['status' => $response->status()]);
+
+            return;
+        }
+
+        $existingCommands = $response->json() ?? [];
+        $existing = collect($existingCommands)->firstWhere('name', $commandPayload['name']);
+
+        if ($existing) {
+            $endpoint = "{$listEndpoint}/{$existing['id']}";
+            $context = ['action' => 'updateGuildCommand', 'command' => $commandPayload['name']];
+
+            $response = $this->rateLimitedRequest(
+                fn () => Http::withHeaders($this->headers)->patch($endpoint, $commandPayload),
+                $context
+            );
+        } else {
+            $context = ['action' => 'createGuildCommand', 'command' => $commandPayload['name']];
+
+            $response = $this->rateLimitedRequest(
+                fn () => Http::withHeaders($this->headers)->post($listEndpoint, $commandPayload),
+                $context
+            );
+        }
+
+        if ($response->failed()) {
+            Log::error('Failed to sync guild command', $context + ['status' => $response->status(), 'body' => $response->json()]);
+
+            return;
+        }
+
+        $choicesCount = count($commandPayload['options'][0]['choices'] ?? []);
+        Log::info("Synced /{$commandPayload['name']} command with {$choicesCount} choices");
+    }
+
+    /**
+     * Delete a guild slash command by name.
+     */
+    private function deleteGuildCommand(string $commandName, string $applicationId): void
+    {
+        $listEndpoint = "{$this->base_url}/applications/{$applicationId}/guilds/{$this->guild_id}/commands";
+        $context = ['action' => 'listGuildCommands'];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->get($listEndpoint),
+            $context
+        );
+
+        if ($response->failed()) {
+            return;
+        }
+
+        $existingCommands = $response->json() ?? [];
+        $existing = collect($existingCommands)->firstWhere('name', $commandName);
+
+        if (! $existing) {
+            return;
+        }
+
+        $endpoint = "{$listEndpoint}/{$existing['id']}";
+        $context = ['action' => 'deleteGuildCommand', 'command' => $commandName];
+
+        $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->delete($endpoint),
+            $context
+        );
     }
 
     // --- Internal helpers ---
