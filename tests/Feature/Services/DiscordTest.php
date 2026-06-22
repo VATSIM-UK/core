@@ -399,7 +399,7 @@ class DiscordTest extends TestCase
         $expectedExpiry = $now->copy()->addDays(7);
 
         $discord = new Discord;
-        $discord->softBan($account, 24, 7);
+        $discord->softBan($account, 7);
 
         Http::assertSent(function ($request) use ($expectedExpiry) {
             if ($request->method() !== 'PATCH') {
@@ -430,7 +430,7 @@ class DiscordTest extends TestCase
         ]);
 
         $discord = new Discord;
-        $discord->softBan($account, 24, 7);
+        $discord->softBan($account, 7);
     }
 
     #[Test]
@@ -452,7 +452,7 @@ class DiscordTest extends TestCase
         ]);
 
         $discord = new Discord;
-        $discord->softBan($account, 24, 7);
+        $discord->softBan($account, 7);
 
         Http::assertSent(function ($request) {
             return $request->method() === 'POST'
