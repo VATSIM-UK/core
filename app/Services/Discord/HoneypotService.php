@@ -41,7 +41,7 @@ class HoneypotService
             'account_id' => $account->id,
         ]);
 
-        Log::notice("Honeypot triggered by {$discordUsername} ({$discordUserId}) linked to account {$account->id}");
+        Log::info("Honeypot triggered by {$discordUsername} ({$discordUserId}) linked to account {$account->id}");
 
         $this->discord->softBan($account, 7, 'Honeypot');
 
