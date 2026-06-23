@@ -2,6 +2,8 @@
 
 namespace App\Filament\Training\Pages\StudentOverview;
 
+use App\Livewire\Training\CriteriaCategoryTable;
+use App\Livewire\Training\SessionCriteriaTable;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\TrainingProgressCalculator;
@@ -52,10 +54,6 @@ class ViewStudentOverview extends Page implements HasInfolists
         $this->calculator = new TrainingProgressCalculator($this->trainingPlace);
     }
 
-    // -------------------------------------------------------------------------
-    // Page metadata
-    // -------------------------------------------------------------------------
-
     public function getTitle(): string|Htmlable
     {
         $name = $this->trainingPlace->account->name;
@@ -92,7 +90,7 @@ class ViewStudentOverview extends Page implements HasInfolists
         $allSessionsContent = $categories ? array_map(fn ($categoryName) => Section::make($categoryName)
             ->compact()
             ->schema([
-                Livewire::make(\App\Livewire\Training\CriteriaCategoryTable::class, [
+                Livewire::make(CriteriaCategoryTable::class, [
                     'currentSessionId' => $latestSessionId,
                     'sessionIds' => $sessionIds,
                     'categoryName' => $categoryName,
@@ -101,9 +99,7 @@ class ViewStudentOverview extends Page implements HasInfolists
             ]), $categories)
             : [Text::make('no_categories')->content('No completed sessions yet.')];
 
-        $latestSessionContent = $latestSessionId
-            ? Livewire::make(\App\Livewire\Training\SessionCriteriaTable::class, ['sessionId' => $latestSessionId])
-            : Text::make('no_sessions')->content('No completed sessions yet.');
+        $latestSessionContent = $latestSessionId ? Livewire::make(SessionCriteriaTable::class, ['sessionId' => $latestSessionId]) : Text::make('no_sessions')->content('No completed sessions yet.');
 
         return [
             Tabs::make('criteria_tabs')->tabs([
@@ -113,18 +109,10 @@ class ViewStudentOverview extends Page implements HasInfolists
         ];
     }
 
-    // -------------------------------------------------------------------------
-    // Progress data (consumed by the Blade template)
-    // -------------------------------------------------------------------------
-
     public function getTrainingProgressData(): array
     {
         return $this->calculator->calculate();
     }
-
-    // -------------------------------------------------------------------------
-    // Static utilities
-    // -------------------------------------------------------------------------
 
     public static function getProgressColor(int $percentage): string
     {

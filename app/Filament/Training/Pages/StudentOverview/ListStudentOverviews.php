@@ -6,14 +6,12 @@ use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
@@ -121,18 +119,7 @@ class ListStudentOverviews extends Page implements HasForms, HasTable
                 SelectFilter::make('category')
                     ->label('Category')
                     ->options(fn () => $this->getCategoryOptions($allowedCategories))
-                    ->query(fn (Builder $query, array $data): Builder => filled($data['value'] ?? null)
-                        ? $query->whereHas('trainingPosition', fn (Builder $q) => $q->where('category', $data['value']))
-                        : $query),
-                Filter::make('created_at')
-                    ->form([
-                        DatePicker::make('from')->label('From Date'),
-                        DatePicker::make('until')->label('To Date'),
-                    ])
-                    ->query(fn (Builder $query, array $data): Builder => $query
-                        ->when($data['from'], fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
-                        ->when($data['until'], fn ($q, $date) => $q->whereDate('created_at', '<=', $date))
-                    ),
+                    ->query(fn (Builder $query, array $data): Builder => filled($data['value'] ?? null) ? $query->whereHas('trainingPosition', fn (Builder $q) => $q->where('category', $data['value'])) : $query),
             ])
             ->defaultSort('created_at', 'desc')
             ->paginated([25, 50, 100])

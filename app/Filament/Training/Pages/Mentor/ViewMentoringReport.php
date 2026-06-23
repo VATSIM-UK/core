@@ -6,6 +6,7 @@ namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
 use App\Filament\Training\Pages\MyTraining\MyMentoringHistory;
+use App\Filament\Training\Pages\StudentOverview\ViewStudentOverview;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Filament\Training\Support\MentoringReportLayout;
 use App\Filament\Training\Support\MentoringReportScores;
@@ -115,6 +116,27 @@ class ViewMentoringReport extends Page implements HasInfolists
                         ->url($syllabusUrl)
                         ->openUrlInNewTab()
                         ->visible(fn () => filled($syllabusUrl)),
+
+                    Action::make('viewStudentOverview')
+                        ->label('View Student Overview')
+                        ->icon('heroicon-o-user')
+                        ->color('gray')
+                        ->size('sm')
+                        ->url(function (): ?string {
+                            $trainingPlace = TrainingPlace::where('account_id', $this->session->student->cid)
+                                ->whereHas('trainingPosition', fn ($query) => $query->whereJsonContains('cts_positions', $this->session->position))
+                                ->first();
+
+                            if (! $trainingPlace) {
+                                return null;
+                            }
+
+                            return ViewStudentOverview::getUrl(['trainingPlaceId' => $trainingPlace->id]);
+                        })
+                        ->openUrlInNewTab()
+                        ->hidden(fn (): bool => ! TrainingPlace::where('account_id', $this->session->student->cid)
+                            ->whereHas('trainingPosition', fn ($query) => $query->whereJsonContains('cts_positions', $this->session->position))
+                            ->exists()),
                 ])
                 ->schema([
                     TextEntry::make('student.account.name')
