@@ -121,7 +121,8 @@ class RunDiscordBot extends Command
 
             if (! $tag) {
                 $interaction->respondWithMessage(
-                    MessageBuilder::new()->setContent("Tag `{$key}` not found.")
+                    MessageBuilder::new()->setContent("Tag `{$key}` not found."),
+                    ephemeral: true
                 );
 
                 return;
