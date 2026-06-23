@@ -220,7 +220,9 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             },
             modalSubmitActionLabel: 'Accept Session',
             resolveAvailability: fn (array $arguments, $record = null): Availability => Availability::findOrFail($arguments['availability_id']),
-            onSuccess: function () { $this->dispatch('session-accepted'); },
+            onSuccess: function () {
+                $this->dispatch('session-accepted');
+            },
         );
     }
 
