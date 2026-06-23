@@ -18,6 +18,7 @@ class DiscordTagFactory extends Factory
     {
         return [
             'key' => fake()->unique()->word(),
+            'title' => fake()->sentence(3),
             'value' => fake()->sentence(),
         ];
     }
