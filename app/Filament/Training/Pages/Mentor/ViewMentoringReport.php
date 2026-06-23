@@ -117,15 +117,15 @@ class ViewMentoringReport extends Page implements HasInfolists
                         ->openUrlInNewTab()
                         ->visible(fn () => filled($syllabusUrl)),
 
-                    Action::make('viewStudentOverview')
+                    Action::make('studentOverview')
                         ->label('View Student Overview')
                         ->icon('heroicon-o-user')
                         ->color('gray')
-                        ->size('sm')
-                        ->url(function (): ?string {
-                            $trainingPlace = TrainingPlace::where('account_id', $this->session->student->cid)
-                                ->whereHas('trainingPosition', fn ($query) => $query->whereJsonContains('cts_positions', $this->session->position))
-                                ->first();
+                        ->visible(function (Session $record): bool {
+                            return TrainingPlace::where('account_id', $record->student->cid)->exists();
+                        })
+                        ->url(function (Session $record): ?string {
+                            $trainingPlace = TrainingPlace::where('account_id', $record->student->cid)->first();
 
                             if (! $trainingPlace) {
                                 return null;
@@ -133,10 +133,7 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                             return ViewStudentOverview::getUrl(['trainingPlaceId' => $trainingPlace->id]);
                         })
-                        ->openUrlInNewTab()
-                        ->hidden(fn (): bool => ! TrainingPlace::where('account_id', $this->session->student->cid)
-                            ->whereHas('trainingPosition', fn ($query) => $query->whereJsonContains('cts_positions', $this->session->position))
-                            ->exists()),
+                        ->openUrlInNewTab(),
                 ])
                 ->schema([
                     TextEntry::make('student.account.name')
