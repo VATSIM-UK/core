@@ -61,7 +61,9 @@ class StudentAvailabilityTable extends Component implements HasActions, HasForms
                         return $this->trainingPlace->trainingPosition?->cts_primary_position
                             ?? $this->trainingPlace->trainingPosition?->position?->callsign;
                     },
-                    onSuccess: function () { $this->dispatch('session-booked'); },
+                    onSuccess: function () {
+                        $this->dispatch('session-booked');
+                    },
                 ),
             ])
             ->emptyStateHeading('No upcoming availability')
