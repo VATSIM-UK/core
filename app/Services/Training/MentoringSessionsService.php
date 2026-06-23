@@ -4,6 +4,7 @@ namespace App\Services\Training;
 
 use App\Models\Cts\Availability;
 use App\Models\Cts\CancelReason;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
@@ -228,6 +229,33 @@ class MentoringSessionsService
             default:
                 throw new Exception("Unknown notification action: {$action}");
         }
+    }
+
+    public function checkForOverlappingBookings(string $callsign, string $date, string $takenFrom, string $takenTo, ?int $ignoreSessionId = null): Session|ExamBooking|null
+    {
+        $overlappingSession = Session::query()
+            ->where('position', $callsign)
+            ->whereDate('taken_date', $date)
+            ->where('taken_from', '<', $takenTo)
+            ->where('taken_to', '>', $takenFrom)
+            ->whereNull('cancelled_datetime')
+            ->when($ignoreSessionId, function ($query, $ignoreSessionId) {
+                $query->where('id', '!=', $ignoreSessionId);
+            })
+            ->first();
+
+        if ($overlappingSession) {
+            return $overlappingSession;
+        }
+
+        return ExamBooking::query()
+            ->where('position_1', $callsign)
+            ->whereDate('taken_date', $date)
+            ->where('taken_from', '<', $takenTo)
+            ->where('taken_to', '>', $takenFrom)
+            ->where('taken', 1)
+            ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->first();
     }
 
     private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void

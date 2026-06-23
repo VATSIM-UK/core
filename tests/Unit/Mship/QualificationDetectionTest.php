@@ -3,15 +3,12 @@
 namespace Tests\Unit\Mship;
 
 use App\Models\Mship\Qualification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Metadata\DataProvider;
 use Tests\TestCase;
 
 class QualificationDetectionTest extends TestCase
 {
-    use RefreshDatabase;
-
     #[Test]
     public function it_handles_minus1_by_not_assigning_pilot_ratings()
     {

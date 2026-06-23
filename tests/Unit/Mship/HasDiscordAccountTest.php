@@ -6,7 +6,6 @@ use App\Events\Discord\DiscordUnlinked;
 use App\Libraries\Discord;
 use App\Models\Discord\DiscordRoleRule;
 use App\Models\Mship\Account;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
@@ -16,8 +15,6 @@ use Tests\TestCase;
 
 class HasDiscordAccountTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_correct_roles_assigned()
     {
         Config::set('services.discord.token', '123');
@@ -50,10 +47,10 @@ class HasDiscordAccountTest extends TestCase
         Config::set('services.discord.token', 'test-token');
         Config::set('services.discord.guild_id', 123);
 
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::response(['message' => 'Unknown Member'], 404),
+            'discord.com/api/v10/guilds/*/members/12345' => Http::response(['message' => 'Unknown Member'], 404),
         ]);
 
         $account->syncToDiscord();
@@ -73,11 +70,11 @@ class HasDiscordAccountTest extends TestCase
         DiscordRoleRule::factory()->create(['discord_id' => '1', 'permission_id' => $permissionHas]);
         DiscordRoleRule::factory()->create(['discord_id' => '2', 'permission_id' => $missingPermission]);
 
-        $account = Account::factory()->create(['discord_id' => 12345]);
+        $account = Account::factory()->createQuietly(['discord_id' => 12345]);
         $account->syncPermissions([$permissionHas]);
 
         Http::fake([
-            'discord.com/api/v6/guilds/*/members/12345' => Http::sequence()
+            'discord.com/api/v10/guilds/*/members/12345' => Http::sequence()
                 ->push([], 204)
                 ->push(['roles' => ['2']], 200)
                 ->push(['message' => 'Unknown Member'], 404),
@@ -90,7 +87,7 @@ class HasDiscordAccountTest extends TestCase
 
     public function test_includes_cid_in_name()
     {
-        $user = Account::factory()->create([
+        $user = Account::factory()->createQuietly([
             'name_first' => 'Test',
             'name_last' => 'Name',
             'id' => 123456789,
@@ -101,7 +98,7 @@ class HasDiscordAccountTest extends TestCase
 
     public function test_include_cid_in_name_when_name_too_long()
     {
-        $user = Account::factory()->create([
+        $user = Account::factory()->createQuietly([
             'name_first' => 'Test',
             'name_last' => 'Name',
             'id' => 123456789,
@@ -115,7 +112,7 @@ class HasDiscordAccountTest extends TestCase
 
     public function test_longer_names_with_middle_name()
     {
-        $user = Account::factory()->create([
+        $user = Account::factory()->createQuietly([
             'name_first' => 'The Peoples Front',
             'name_last' => 'Judea',
             'id' => 123456789,
@@ -127,7 +124,7 @@ class HasDiscordAccountTest extends TestCase
 
     public function test_longer_first_names_with_middle_name()
     {
-        $user = Account::factory()->create([
+        $user = Account::factory()->createQuietly([
             'name_first' => 'My Very Long First Name That Exceeds The Limit',
             'name_last' => 'Another Very Long Last Name That Exceeds The Limit',
             'id' => 123456789,
@@ -139,7 +136,7 @@ class HasDiscordAccountTest extends TestCase
 
     public function test_supertruncate()
     {
-        $user = Account::factory()->create([
+        $user = Account::factory()->createQuietly([
             'name_first' => 'MyVeryLongFirstNameThatExceedsTheLimit',
             'name_last' => 'AnotherVeryLongLastNameThatExceedsTheLimit',
             'id' => 123456789,

@@ -15,4 +15,13 @@ class EventRepository
 
         return $bookings;
     }
+
+    public function getNextEvent()
+    {
+        return Event::where('date', '>=', Carbon::now()->toDateString())
+            ->where('gone', '=', 0)
+            ->orderBy('date')
+            ->orderBy('from')
+            ->first();
+    }
 }

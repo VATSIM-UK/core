@@ -6,15 +6,12 @@ use App\Filament\Admin\Resources\Roles\Pages\EditRole;
 use App\Filament\Admin\Resources\Roles\RelationManagers\DelegatesRelationManager;
 use App\Models\Mship\Account;
 use App\Services\Roles\DelegateRoleManagementService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
 class DelegatesRelationManagerTest extends BaseAdminTestCase
 {
-    use RefreshDatabase;
-
     private Role $role;
 
     private DelegateRoleManagementService $service;
@@ -27,7 +24,7 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
 
         $this->service = new DelegateRoleManagementService;
         $this->role = Role::create(['name' => 'Test Role', 'guard_name' => 'web']);
-        $this->delegateAccount = Account::factory()->create();
+        $this->delegateAccount = Account::factory()->createQuietly();
     }
 
     public function test_shows_empty_state_when_no_delegate_permission_exists()
@@ -129,8 +126,8 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
         $this->user->givePermissionTo('role.manage-delegates.*');
 
         $this->service->createDelegatePermission($this->role);
-        $delegate1 = Account::factory()->create(['name_first' => 'John', 'name_last' => 'Doe']);
-        $delegate2 = Account::factory()->create(['name_first' => 'Jane', 'name_last' => 'Smith']);
+        $delegate1 = Account::factory()->createQuietly(['name_first' => 'John', 'name_last' => 'Doe']);
+        $delegate2 = Account::factory()->createQuietly(['name_first' => 'Jane', 'name_last' => 'Smith']);
 
         $delegate1->givePermissionTo($this->service->delegatePermissionName($this->role));
         $delegate2->givePermissionTo($this->service->delegatePermissionName($this->role));
