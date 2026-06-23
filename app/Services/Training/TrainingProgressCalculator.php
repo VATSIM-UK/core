@@ -148,9 +148,7 @@ class TrainingProgressCalculator
             $totalCriteriaCount += $catTotal;
         }
 
-        $percentage = $totalCriteriaCount > 0
-            ? min(100, round(($totalAssessedScore / ($totalCriteriaCount * 100)) * 100))
-            : 0;
+        $percentage = $totalCriteriaCount > 0 ? min(100, (int) round(($totalAssessedScore / ($totalCriteriaCount * 100)) * 100)) : 0;
 
         return [
             'percentage' => $percentage,
@@ -182,9 +180,7 @@ class TrainingProgressCalculator
         }
 
         $total = $fields->count();
-        $percentage = $total > 0
-            ? min(100, round(($assessedScore / ($total * 100)) * 100))
-            : 0;
+        $percentage = $total > 0 ? min(100, (int) round(($assessedScore / ($total * 100)) * 100)) : 0;
 
         return [
             'data' => [
