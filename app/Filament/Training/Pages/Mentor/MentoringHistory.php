@@ -37,10 +37,6 @@ class MentoringHistory extends BaseMentoringHistoryPage
     #[Url]
     public ?array $tableFilters = null;
 
-    public static function canAccess(): bool
-    {
-        return auth()->user()?->can('viewAny', Session::class) ?? false;
-    }
 
     public function mount(): void
     {
