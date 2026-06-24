@@ -265,6 +265,41 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_shows_sessions_where_user_mentored_in_a_removed_training_group(): void
+    {
+        $category = MentorPermissionService::atcCategories()[0];
+        $trainingPosition = $this->createTrainingPosition($category, 'EGPX_GND');
+
+        $mentorCtsMember = $this->getOrCreateCtsMember($this->panelUser);
+
+        app(MentorPermissionService::class)->assignToMentorable(
+            $this->panelUser, $trainingPosition, $this->panelUser, $category
+        );
+
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $sessionId = $this->insertSession(
+            $mentorCtsMember->id,
+            $studentCtsMember->id,
+            'EGPX_GND',
+            filed: now()->toDateTimeString(),
+            takenDate: now()->subDay()->format('Y-m-d H:i:s'),
+        );
+
+        $session = Session::on('cts')->find($sessionId);
+
+        app(MentorPermissionService::class)->revokeFromCategory($this->panelUser, $category);
+
+        $this->assertNotContains($category, $this->panelUser->fresh()->getAvailableMentoringCategories());
+
+        Livewire::actingAs($this->panelUser)
+            ->test(MentoringHistory::class)
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords([$session]);
+    }
+
+    #[Test]
     public function it_shows_mentor_based_sessions_alongside_permission_based_sessions(): void
     {
         $category = MentorPermissionService::atcCategories()[0];
