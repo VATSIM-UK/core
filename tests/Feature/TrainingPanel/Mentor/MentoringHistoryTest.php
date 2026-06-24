@@ -339,17 +339,21 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         ]);
     }
 
+    private static int $nextCtsMemberId = 900000;
+
     private function getOrCreateCtsMember(Account $account): Member
     {
-        return Member::on('cts')->firstOrCreate(
+        $member = Member::on('cts')->firstOrCreate(
             ['cid' => $account->id],
             [
-                'id' => $account->id,
+                'id' => self::$nextCtsMemberId++,
                 'old_rts_id' => 0,
                 'name' => $account->name,
                 'joined' => now(),
                 'joined_div' => now(),
             ]
         );
+
+        return $member;
     }
 }
