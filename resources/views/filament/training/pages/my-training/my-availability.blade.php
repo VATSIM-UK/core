@@ -26,9 +26,6 @@
 		<div class="availability-col">
 			<x-filament::section>
 				<x-slot name="heading">Add Availability</x-slot>
-				<x-slot name="description">
-					Times in <strong>{{ $this->timezone }}</strong>
-				</x-slot>
 
 				{{ $this->form }}
 
@@ -44,9 +41,6 @@
 		<div class="availability-col">
 			<x-filament::section>
 				<x-slot name="heading">My Availability</x-slot>
-				<x-slot name="description">
-					Times in <strong>{{ $this->timezone }}</strong>
-				</x-slot>
 
 				{{ $this->table }}
 			</x-filament::section>
