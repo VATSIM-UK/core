@@ -422,10 +422,12 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
     {
         $tz = app(TimezoneService::class)->getTimezone();
         $date = $availability->date->format('Y-m-d');
+        $from = $availability->from instanceof Carbon ? $availability->from->format('H:i:s') : $availability->from;
+        $to = $availability->to instanceof Carbon ? $availability->to->format('H:i:s') : $availability->to;
 
         return $this->normalizeAvailabilityTimes(
-            Carbon::parse("{$date} {$availability->from}", 'UTC')->setTimezone($tz),
-            Carbon::parse("{$date} {$availability->to}", 'UTC')->setTimezone($tz),
+            Carbon::parse("{$date} {$from}", 'UTC')->setTimezone($tz),
+            Carbon::parse("{$date} {$to}", 'UTC')->setTimezone($tz),
         );
     }
 
