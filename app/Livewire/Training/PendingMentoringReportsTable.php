@@ -8,7 +8,6 @@ use App\Filament\Training\Support\MentoringTrainingGroupBadgeColor;
 use App\Models\Cts\Session;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\MentorPermissionService;
-use Carbon\Carbon;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -65,8 +64,8 @@ class PendingMentoringReportsTable extends Component implements HasActions, HasF
                 TextColumn::make('taken_date')
                     ->label('Date & Time')
                     ->getStateUsing(function (Session $record) {
-                        $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                        $time = Carbon::parse($record->taken_from)->format('H:i');
+                        $date = display_date($record->taken_date.' '.$record->taken_from, 'D j M Y');
+                        $time = display_date($record->taken_date.' '.$record->taken_from, 'H:i');
 
                         return trim("{$date} {$time}");
                     })

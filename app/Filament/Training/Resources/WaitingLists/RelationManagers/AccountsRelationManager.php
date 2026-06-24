@@ -114,7 +114,9 @@ class AccountsRelationManager extends RelationManager
                 TextColumn::make('account_id')->label('CID')->searchable(),
                 NameColumn::make('account.name')->label('Name'),
                 IconColumn::make('on_roster')->boolean()->label('On Roster')->getStateUsing(fn (WaitingListAccount $record) => $record->account->onRoster())->visible(fn () => $this->ownerRecord->feature_toggles['display_on_roster'] ?? true),
-                TextColumn::make('created_at')->label('Added On')->dateTime('d/m/Y H:i:s'),
+                TextColumn::make('created_at')
+                    ->label('Added On')
+                    ->state(fn ($record) => display_datetime($record->created_at, 'd/m/Y H:i:s')),
                 IconColumn::make('cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn (WaitingListAccount $record) => $record->theory_exam_passed)->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
                 ...$this->getFlagColumns(),
                 IconColumn::make('has_notes')->label('')->getStateUsing(fn (WaitingListAccount $record) => filled($record->notes))->icon(fn (WaitingListAccount $record) => filled($record->notes) ? 'heroicon-o-exclamation-triangle' : null)->color('warning')->tooltip('This user has notes on their waiting list account'),
@@ -134,7 +136,7 @@ class AccountsRelationManager extends RelationManager
                             ->latest()
                             ->get();
 
-                        $feedbackEntries = $recentFeedback->map(fn (Feedback $feedback) => Section::make("Feedback - {$feedback->created_at->format('d/m/Y H:i')}")
+                        $feedbackEntries = $recentFeedback->map(fn (Feedback $feedback) => Section::make('Feedback - '.display_datetime($feedback->created_at, 'd/m/Y H:i'))
                             ->columnSpanFull()
                             ->schema([
                                 ...$feedback->answers->map(fn ($answer) => Placeholder::make("answer_{$answer->id}")
@@ -272,11 +274,11 @@ class AccountsRelationManager extends RelationManager
 
                                     Placeholder::make('offer_expires_at')
                                         ->label('Expires At')
-                                        ->content($offer->expires_at->format('d/m/Y H:i').' UTC'),
+                                        ->content(display_datetime($offer->expires_at, 'd/m/Y H:i')),
 
                                     Placeholder::make('offer_responded_at')
                                         ->label('Member Responded At')
-                                        ->content($offer->response_at?->format('d/m/Y H:i') ?? '—'),
+                                        ->content($offer->response_at ? display_datetime($offer->response_at, 'd/m/Y H:i') : '—'),
                                 ])
                                 ->columns(2),
                         ] : [];

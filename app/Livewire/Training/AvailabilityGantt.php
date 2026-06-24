@@ -8,6 +8,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
+use App\Services\TimezoneService;
 use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
@@ -234,12 +235,13 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     ->whereNull('cancelled_datetime')
                     ->first();
 
-                $minTime = Carbon::parse($availability->from)->format('H:i');
-                $maxTime = Carbon::parse($availability->to)->format('H:i');
+                $tzService = app(TimezoneService::class);
+                $minTime = $tzService->utcTimeToLocal($availability->date, $availability->from);
+                $maxTime = $tzService->utcTimeToLocal($availability->date, $availability->to);
                 $timeOptions = $this->generateTimeOptions($minTime, $maxTime);
 
                 if (Carbon::parse($availability->date)->isToday()) {
-                    $nowTime = now()->format('H:i');
+                    $nowTime = now()->setTimezone($tzService->getTimezone())->format('H:i');
                     $timeOptions = array_filter($timeOptions, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
                 }
 
@@ -359,12 +361,18 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::findOrFail($availability->student_id);
+                $tzService = app(TimezoneService::class);
+                $tz = $tzService->getTimezone();
                 $formattedDate = Carbon::parse($availability->date)->format('d/m/Y');
 
-                $from = Carbon::parse($data['taken_from']);
-                $to = Carbon::parse($data['taken_to']);
+                // Convert selected local times to full UTC datetimes (date may shift)
+                $utcStart = Carbon::parse($availability->date.' '.$data['taken_from'], $tz)->utc();
+                $utcEnd = Carbon::parse($availability->date.' '.$data['taken_to'], $tz)->utc();
 
-                if ($from->diffInMinutes($to) < 45) {
+                $utcFrom = $utcStart->format('H:i');
+                $utcTo = $utcEnd->format('H:i');
+
+                if ($utcStart->diffInMinutes($utcEnd) < 45) {
                     Notification::make()
                         ->title('Session Too Short')
                         ->body('The session must be at least 45 minutes long.')
@@ -374,7 +382,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     return;
                 }
 
-                $success = $mentoringService->acceptSession($availability->id, auth()->user(), $data['taken_from'], $data['taken_to']);
+                $success = $mentoringService->acceptSession($availability->id, auth()->user(), $utcFrom, $utcTo);
 
                 if ($success) {
                     Notification::make()

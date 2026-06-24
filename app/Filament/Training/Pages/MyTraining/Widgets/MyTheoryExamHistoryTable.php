@@ -36,7 +36,7 @@ class MyTheoryExamHistoryTable extends BaseWidget
                     'Failed' => 'danger',
                     default => 'gray',
                 })->label('Result'),
-                TextColumn::make('submitted_time')->label('Exam date')->isoDateTimeFormat('lll'),
+                TextColumn::make('submitted_time')->label('Exam date')->formatStateUsing(fn ($state) => $state ? display_datetime($state, 'lll') : null),
             ])
             ->defaultSort('submitted_time', 'desc')
             ->recordActions([

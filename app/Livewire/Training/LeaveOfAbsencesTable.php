@@ -42,11 +42,11 @@ class LeaveOfAbsencesTable extends Component implements HasActions, HasForms, Ha
             ->columns([
                 TextColumn::make('begins_at')
                     ->label('Start')
-                    ->date('d/m/Y'),
+                    ->formatStateUsing(fn ($state) => $state ? display_date($state, 'd/m/Y') : null),
 
                 TextColumn::make('ends_at')
                     ->label('End')
-                    ->date('d/m/Y'),
+                    ->formatStateUsing(fn ($state) => $state ? display_date($state, 'd/m/Y') : null),
 
                 TextColumn::make('duration')
                     ->label('Duration')

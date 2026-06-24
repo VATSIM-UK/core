@@ -142,9 +142,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     TextEntry::make('Student')->getStateUsing(fn () => "{$this->examBooking->studentAccount()->name} ({$this->examBooking->studentAccount()->id})"),
                     TextEntry::make('Student Rating')->getStateUsing(fn () => $this->examBooking->studentQualification->name),
                     TextEntry::make('position_1')->label('Position'),
-                    TextEntry::make('Exam Start')->getStateUsing(fn () => $this->examBooking->startDate),
-                    TextEntry::make('Exam End')->getStateUsing(fn () => $this->examBooking->endDate),
-                    TextEntry::make('Exam Accepted At')->getStateUsing(fn () => $this->examBooking->time_taken),
+                    TextEntry::make('Exam Start')->getStateUsing(fn () => $this->examBooking->startDate ? display_datetime($this->examBooking->startDate) : null),
+                    TextEntry::make('Exam End')->getStateUsing(fn () => $this->examBooking->endDate ? display_datetime($this->examBooking->endDate) : null),
+                    TextEntry::make('Exam Accepted At')->getStateUsing(fn () => $this->examBooking->time_taken ? display_datetime($this->examBooking->time_taken) : null),
                 ])
                     ->columns(3),
                 Section::make('Examiner Details')->columnSpanFull()->schema([

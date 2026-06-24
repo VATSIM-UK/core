@@ -217,3 +217,30 @@ if (! function_exists('str_contains')) {
         return Illuminate\Support\Str::contains($haystack, $needle);
     }
 }
+
+if (! function_exists('display_date')) {
+    /**
+     * Display a UTC date string in the user's selected training timezone.
+     */
+    function display_date(string|Carbon\Carbon $date, string $format = 'D j M Y'): string
+    {
+        $service = app(App\Services\TimezoneService::class);
+
+        if ($date instanceof Carbon\Carbon) {
+            return $service->formatCarbon($date, $format);
+        }
+
+        return $service->formatDate($date, $format);
+    }
+}
+
+if (! function_exists('display_datetime')) {
+    /**
+     * Display a UTC date/time in the user's selected training timezone.
+     * Default format: "25 Dec 2025 18:00".
+     */
+    function display_datetime(string|Carbon\Carbon $date, string $format = 'd M Y H:i'): string
+    {
+        return display_date($date, $format);
+    }
+}

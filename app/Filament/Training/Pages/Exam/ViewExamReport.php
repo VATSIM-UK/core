@@ -84,7 +84,7 @@ class ViewExamReport extends Page implements HasInfolists
                 Section::make('Exam')->columnSpanFull()->schema([
                     TextEntry::make('examBooking.exam')->label('Exam'),
                     TextEntry::make('examBooking.position_1')->label('Position'),
-                    TextEntry::make('examBooking.start_date')->label('Date'),
+                    TextEntry::make('examBooking.start_date')->label('Date')->formatStateUsing(fn ($state) => $state ? display_datetime($state) : null),
                     TextEntry::make('examBooking.examiners.primaryExaminer.account.name')->label('Primary Examiner'),
                     TextEntry::make('examBooking.examiners.secondaryExaminer.account.name')->label('Secondary Examiner'),
                     TextEntry::make('examBooking.examiners.traineeExaminer.account.name')->label('Trainee Examiner'),

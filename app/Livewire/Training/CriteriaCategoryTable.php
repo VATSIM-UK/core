@@ -7,7 +7,6 @@ namespace App\Livewire\Training;
 use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
 use App\Models\Cts\ProgSheetField;
 use App\Models\Cts\Session;
-use Carbon\Carbon;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -67,7 +66,7 @@ class CriteriaCategoryTable extends Component implements HasActions, HasForms, H
             $sessionId = $session->id;
 
             $columns[] = TextColumn::make("score_{$sessionId}")
-                ->label(Carbon::parse($session->taken_date)->format('d/m/Y'))
+                ->label(display_date($session->taken_date, 'd/m/Y'))
                 ->badge()
                 ->url($isCurrentSession ? null : ViewMentoringReport::getUrl(['sessionId' => $sessionId]))
                 ->state(fn (ProgSheetField $record) => $scores[$record->field_id][$sessionId] ?? null)

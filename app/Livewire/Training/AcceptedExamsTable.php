@@ -51,7 +51,7 @@ class AcceptedExamsTable extends Component implements HasActions, HasForms, HasT
                 TextColumn::make('examiners.primaryExaminer.name')->label('Primary Examiner'),
                 TextColumn::make('exam')->label('Level'),
                 TextColumn::make('position_1')->label('Position'),
-                TextColumn::make('start_date')->label('Date'),
+                TextColumn::make('start_date')->label('Date')->formatStateUsing(fn ($state) => $state ? display_datetime($state) : null),
             ])
             ->recordActions([
                 Action::make('Conduct')

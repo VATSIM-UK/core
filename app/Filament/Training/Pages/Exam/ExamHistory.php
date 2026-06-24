@@ -52,8 +52,8 @@ class ExamHistory extends Page implements HasTable
             TextColumn::make('examBooking.exam')->label('Exam'),
             TextColumn::make('result')->getStateUsing(fn ($record) => $record->resultHuman())->badge()->color(fn ($state) => $examHistoryService->getResultBadgeColor($state))->label('Result'),
             TextColumn::make('examBooking.position_1')->label('Position'),
-            TextColumn::make('examBooking.start_date')->label('Exam date'),
-            TextColumn::make('date')->label('Report filed'),
+            TextColumn::make('examBooking.start_date')->label('Exam date')->formatStateUsing(fn ($state) => $state ? display_datetime($state) : null),
+            TextColumn::make('date')->label('Report filed')->formatStateUsing(fn ($state) => $state ? display_datetime($state) : null),
         ])->defaultSort('date', 'desc')
             ->recordActions([
                 Action::make('view')->label('View')->url(fn ($record) => ViewExamReport::getUrl(['examId' => $record->examid])),

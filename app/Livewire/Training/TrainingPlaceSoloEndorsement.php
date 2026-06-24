@@ -44,8 +44,12 @@ class TrainingPlaceSoloEndorsement extends Component implements HasActions, HasF
             ->groupingSettingsHidden()
             ->columns([
                 TextColumn::make('endorsable.description')->label('Position'),
-                TextColumn::make('created_at')->label('Granted')->date('d/m/Y H:i'),
-                TextColumn::make('expires_at')->label('Expires')->date('d/m/Y H:i'),
+                TextColumn::make('created_at')
+                    ->label('Granted')
+                    ->state(fn ($record) => display_datetime($record->created_at, 'd/m/Y H:i')),
+                TextColumn::make('expires_at')
+                    ->label('Expires')
+                    ->state(fn ($record) => display_datetime($record->expires_at, 'd/m/Y H:i')),
                 TextColumn::make('duration')
                     ->label('Duration')
                     ->getStateUsing(fn ($record) => floor($record->created_at->diffInDays($record->expires_at)).' days')

@@ -8,6 +8,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Services\TimezoneService;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
 use CodeWithKyrian\FilamentDateRange\Forms\Components\DateRangePicker;
@@ -25,7 +26,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Session;
 
 class MyAvailability extends Page implements HasForms, HasTable
 {
@@ -113,67 +113,20 @@ class MyAvailability extends Page implements HasForms, HasTable
         if (in_array($timezone, timezone_identifiers_list()) && $this->browserTimezone !== $timezone) {
             $this->browserTimezone = $timezone;
 
-            if (! Session::has('availability_timezone')) {
-                $this->timezone = $timezone;
-                Session::put('availability_timezone', $timezone);
+            $timezoneService = app(TimezoneService::class);
+            $timezoneService->setBrowserTimezone($timezone);
 
-                $this->form->fill([
-                    'from' => '18:00',
-                    'to' => '21:00',
-                ]);
+            // If no timezone has been explicitly chosen yet, set it to the detected browser timezone
+            if (! session()->has(TimezoneService::SESSION_KEY)) {
+                $this->timezone = $timezone;
+                $timezoneService->setTimezone($timezone);
             }
         }
     }
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Action::make('changeTimezone')
-                ->label(fn () => 'Timezone: '.$this->getTimezoneLabel($this->timezone))
-                ->icon('heroicon-o-globe-alt')
-                ->form([
-                    Select::make('timezone')
-                        ->label('Select your local timezone')
-                        ->options(function () {
-                            $zones = timezone_identifiers_list();
-                            $options = array_combine($zones, $zones);
-
-                            // Append (not ZULU) suffix for Europe/London option during British Summer Time
-                            if (isset($options['Europe/London'])) {
-                                $options['Europe/London'] = $this->getTimezoneLabel('Europe/London');
-                            }
-
-                            $topZones = [];
-
-                            if ($this->browserTimezone && isset($options[$this->browserTimezone])) {
-                                $topZones[$this->browserTimezone] = 'Detected: '.$this->getTimezoneLabel($this->browserTimezone);
-                                unset($options[$this->browserTimezone]);
-                            }
-
-                            if (isset($options['UTC'])) {
-                                $topZones['UTC'] = 'UTC (Zulu)';
-                                unset($options['UTC']);
-                            }
-
-                            return $topZones + $options;
-                        })
-                        ->searchable()
-                        ->live()
-                        ->default($this->timezone)
-                        ->required(),
-                ])
-                ->action(function (array $data): void {
-                    $this->timezone = $data['timezone'];
-                    Session::put('availability_timezone', $data['timezone']);
-
-                    Notification::make()->title('Timezone updated')->success()->send();
-                }),
-        ];
-    }
-
     public function mount(): void
     {
-        $this->timezone = Session::get('availability_timezone', 'UTC');
+        $this->timezone = app(TimezoneService::class)->getTimezone();
 
         $this->form->fill([
             'from' => '18:00',
@@ -371,14 +324,7 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     protected function getTimezoneLabel(string $timezone, ?string $prefix = null): string
     {
-        $label = $prefix ?? $timezone;
-
-        // Add (not ZULU) suffix for Europe/London during British Summer Time
-        if ($timezone === 'Europe/London' && now()->setTimezone('Europe/London')->offsetHours === 1) {
-            $label .= ' (not ZULU)';
-        }
-
-        return $label;
+        return app(TimezoneService::class)->getTimezoneLabel($timezone, $prefix);
     }
 
     protected function resolveStudentId(): ?int

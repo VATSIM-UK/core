@@ -38,7 +38,7 @@ class WaitingListsRelationManager extends RelationManager
                 TextColumn::make('waitingList.name')->label('Waiting List')->sortable(),
                 TextColumn::make('waitingList.formatted_department')->label('Department')->sortable(),
                 TextColumn::make('position')->label('Position')->getStateUsing(fn ($record) => $record->position ?? '-'),
-                TextColumn::make('created_at')->label('Added On')->date()->sortable(),
+                TextColumn::make('created_at')->label('Added On')->formatStateUsing(fn ($state) => $state ? display_date($state, 'd/m/Y') : null)->sortable(),
             ])
             ->filters([
                 TrashedFilter::make(),

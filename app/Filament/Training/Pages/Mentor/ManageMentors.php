@@ -115,8 +115,9 @@ class ManageMentors extends Page implements HasTable
                     ->wrap(),
                 TextColumn::make('last_mentored')
                     ->label('Last Mentored')
-                    ->state(fn (Account $record) => app(MentorPermissionService::class)->getLastMentoredDate($record, $this->category)?->format('d/m/Y') ?? 'Never')
-                    ->description(fn (string $state) => $state !== 'Never' ? Carbon::createFromFormat('d/m/Y', $state)->diffForHumans() : null)
+                    ->state(fn (Account $record) => app(MentorPermissionService::class)->getLastMentoredDate($record, $this->category))
+                    ->formatStateUsing(fn (?Carbon $date) => $date ? display_date($date->format('Y-m-d'), 'd/m/Y') : 'Never')
+                    ->description(fn (?Carbon $date) => $date ? $date->diffForHumans() : null)
                     ->sortable(query: function (Builder $query, string $direction): Builder {
                         $ids = $query->get()->sortBy(
                             fn (Account $account) => app(MentorPermissionService::class)->getLastMentoredDate($account, $this->category)?->timestamp ?? 0,

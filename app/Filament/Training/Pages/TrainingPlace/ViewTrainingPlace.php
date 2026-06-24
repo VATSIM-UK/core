@@ -258,17 +258,19 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             Callout::make('This training place is inactive')
                 ->icon('heroicon-o-exclamation-triangle')
                 ->danger()
-                ->description(fn () => 'This training place has been removed and it is now inactive. Removed on '.$this->trainingPlace->deleted_at?->format('d/m/Y \a\t H:i').'.')
+                ->description(fn () => 'This training place has been removed and it is now inactive. Removed on '.($this->trainingPlace->deleted_at ? display_datetime($this->trainingPlace->deleted_at, 'd/m/Y \a\t H:i') : '').'.')
                 ->visible(fn (): bool => (bool) $this->trainingPlace->deleted_at)
                 ->columnSpanFull(),
             Section::make('Training Place Details')->columnSpanFull()->schema([
                 TextEntry::make('account.name')->label('Name'),
                 TextEntry::make('account.id')->label('CID'),
                 TextEntry::make('trainingPosition.position.name')->label('Position'),
-                TextEntry::make('created_at')->label('Training Start')->date('d/m/Y'),
+                TextEntry::make('created_at')
+                    ->label('Training Start')
+                    ->state(fn ($record) => display_date($record->created_at, 'd/m/Y')),
                 TextEntry::make('waitingListAccount.created_at')
                     ->label('Waiting List Join Date')
-                    ->date('d/m/Y')
+                    ->state(fn ($record) => $record->waitingListAccount?->created_at ? display_date($record->waitingListAccount->created_at, 'd/m/Y') : null)
                     ->visible(fn (): bool => (bool) $this->trainingPlace->waiting_list_account_id),
                 IconEntry::make('has_pending_exam')
                     ->label('Has Pending Exam Booking')
@@ -292,7 +294,9 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             ->defaultPaginationPageOption(10)
             ->columns([
                 TextColumn::make('position')->label('Position'),
-                TextColumn::make('taken_date')->label('Date')->date('d/m/Y'),
+                TextColumn::make('taken_date')
+                    ->label('Date')
+                    ->state(fn ($record) => display_date($record->taken_date, 'd/m/Y')),
                 TextColumn::make('mentor.cid')->label('Mentor CID'),
                 TextColumn::make('mentor.name')->label('Mentor'),
                 TextColumn::make('status')->label('Status')->badge()->getStateUsing(

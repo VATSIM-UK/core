@@ -8,11 +8,14 @@ use App\Filament\Widgets\AccountInfoWidget;
 use App\Http\Middleware\MandatoryTwoFactor;
 use App\Http\Middleware\TrackInactivity;
 use App\Http\Middleware\TrainingPanelAccessMiddleware;
+use App\Services\TimezoneService;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationItem;
+use Filament\Notifications\Notification;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\View\PanelsRenderHook;
@@ -79,6 +82,26 @@ class TrainingPanelProvider extends PanelProvider
                 Action::make('Email Settings')
                     ->url(fn () => route('filament.training.pages.email-settings'))
                     ->icon('heroicon-m-envelope'),
+                Action::make('changeTimezone')
+                    ->label(fn () => 'Timezone: '.app(TimezoneService::class)->getTimezoneLabel())
+                    ->icon('heroicon-m-globe-alt')
+                    ->form([
+                        Select::make('timezone')
+                            ->label('Select your local timezone')
+                            ->options(fn () => app(TimezoneService::class)->getTimezoneList())
+                            ->searchable()
+                            ->default(fn () => app(TimezoneService::class)->getTimezone())
+                            ->required(),
+                    ])
+                    ->successRedirectUrl(fn (): string => request()->header('referer', url()->previous()))
+                    ->action(function (array $data) {
+                        app(TimezoneService::class)->setTimezone($data['timezone']);
+
+                        Notification::make()
+                            ->title('Timezone updated')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->viteTheme('resources/assets/css/tailwind.css')
             ->renderHook(
@@ -86,6 +109,13 @@ class TrainingPanelProvider extends PanelProvider
                 fn (): string => app()->environment('local')
                 ? '<div style="position: absolute; left: 50%; transform: translateX(-50%); color: #ef4444; font-weight: 600; pointer-events: none;">Development environment</div>'
                 : '',
+            )
+            ->renderHook(
+                PanelsRenderHook::GLOBAL_SEARCH_AFTER,
+                fn (): string => view('filament.training.components.timezone-display', [
+                    'timezone' => app(TimezoneService::class)->getTimezone(),
+                    'label' => app(TimezoneService::class)->getTimezoneLabel(),
+                ])->render(),
             );
     }
 }

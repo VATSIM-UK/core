@@ -143,7 +143,15 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                     TextEntry::make('position')
                         ->label('Position & Time')
-                        ->helperText(fn (Session $record) => Carbon::parse($record->taken_date)->format('d/m/Y').' | '.Carbon::parse($record->taken_from)->format('H:i').' - '.Carbon::parse($record->taken_to)->format('H:i')),
+                        ->helperText(function (Session $record) {
+                            $tzService = app(TimezoneService::class);
+                            $tz = $tzService->getTimezone();
+
+                            $start = Carbon::parse($record->taken_date.' '.$record->taken_from, 'UTC')->setTimezone($tz);
+                            $end = Carbon::parse($record->taken_date.' '.$record->taken_to, 'UTC')->setTimezone($tz);
+
+                            return $start->format('d/m/Y').' | '.$start->format('H:i').' - '.$end->format('H:i');
+                        }),
 
                     Callout::make('adjacent_atc')
                         ->visible(fn (Session $record) => NetworkdataAtc::adjacentPositionsForMentoringSession($record)->isNotEmpty())
@@ -349,7 +357,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                             ->schema([
                                 TextEntry::make('taken_date')
                                     ->hiddenLabel()
-                                    ->date()
+                                    ->state(fn (Session $record) => display_date($record->taken_date, 'd/m/Y'))
                                     ->size(TextSize::Small)
                                     ->weight(FontWeight::SemiBold)
                                     ->helperText(fn (Session $record) => $record->mentor?->account?->name)
@@ -399,7 +407,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             ->map(function (Session $session): Section {
                 $isCurrentSession = $session->id === $this->session->id;
 
-                return Section::make(Carbon::parse($session->taken_date)->format('d/m/Y'))
+                return Section::make(display_date($session->taken_date, 'd/m/Y'))
                     ->description($session->mentor?->account?->name)
                     ->headerActions([
                         Action::make("viewReport{$session->id}")

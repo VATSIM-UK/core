@@ -175,7 +175,7 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                             ->label('Position'),
                         TextEntry::make('schedule')
                             ->label('Date & Time')
-                            ->getStateUsing(fn () => "{$this->session->taken_date} | {$this->session->taken_from} - {$this->session->taken_to}"),
+                            ->getStateUsing(fn () => display_date($this->session->taken_date.' '.$this->session->taken_from, 'd/m/Y').' | '.display_date($this->session->taken_date.' '.$this->session->taken_from, 'H:i').' - '.display_date($this->session->taken_date.' '.$this->session->taken_to, 'H:i')),
                         Callout::make('adjacent_atc')
                             ->visible(fn () => $this->adjacentAtcPositions->isNotEmpty())
                             ->icon('heroicon-m-signal')

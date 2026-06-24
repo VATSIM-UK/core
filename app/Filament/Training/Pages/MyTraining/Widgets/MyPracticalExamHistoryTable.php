@@ -5,7 +5,6 @@ namespace App\Filament\Training\Pages\MyTraining\Widgets;
 use App\Filament\Training\Pages\Exam\ViewExamReport;
 use App\Models\Cts\PracticalResult;
 use App\Services\Training\ExamHistoryService;
-use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -39,7 +38,7 @@ class MyPracticalExamHistoryTable extends BaseWidget
                     ->color(fn ($state) => $examHistoryService->getResultBadgeColor($state))
                     ->label('Result'),
 
-                TextColumn::make('examBooking.start_date')->label('Exam date')->formatStateUsing(fn ($state) => Carbon::parse($state)->isoFormat('lll')),
+                TextColumn::make('examBooking.start_date')->label('Exam date')->formatStateUsing(fn ($state) => $state ? display_datetime($state, 'lll') : null),
             ])
             ->defaultSort('date', 'desc')
             ->recordActions([

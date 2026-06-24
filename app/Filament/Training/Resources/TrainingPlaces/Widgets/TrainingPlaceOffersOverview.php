@@ -70,17 +70,17 @@ class TrainingPlaceOffersOverview extends BaseWidget
 
                 TextColumn::make('created_at')
                     ->label('Offered At')
-                    ->dateTime('d/m/Y H:i')
+                    ->state(fn ($record) => display_datetime($record->created_at, 'd/m/Y H:i'))
                     ->sortable(),
 
                 TextColumn::make('expires_at')
                     ->label('Expires At')
-                    ->dateTime('d/m/Y H:i')
+                    ->state(fn ($record) => display_datetime($record->expires_at, 'd/m/Y H:i'))
                     ->sortable(),
 
                 TextColumn::make('response_at')
                     ->label('Responded At')
-                    ->dateTime('d/m/Y H:i')
+                    ->state(fn ($record) => $record->response_at ? display_datetime($record->response_at, 'd/m/Y H:i') : null)
                     ->sortable()
                     ->placeholder('-'),
             ])

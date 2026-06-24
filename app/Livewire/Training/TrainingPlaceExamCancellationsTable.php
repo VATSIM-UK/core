@@ -31,7 +31,7 @@ class TrainingPlaceExamCancellationsTable extends Component implements HasForms,
             ->columns([
                 TextColumn::make('date')
                     ->label('Date/Time')
-                    ->dateTime('d/m/Y H:i')
+                    ->formatStateUsing(fn ($state) => $state ? display_datetime($state, 'd/m/Y H:i') : null)
                     ->sortable(),
                 TextColumn::make('reason')
                     ->label('Reason')

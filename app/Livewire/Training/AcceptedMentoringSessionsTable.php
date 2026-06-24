@@ -7,6 +7,7 @@ use App\Filament\Training\Pages\Mentor\MentoringHistory;
 use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Session;
+use App\Services\TimezoneService;
 use App\Services\Training\MentoringAnnouncementService;
 use App\Services\Training\MentoringReportService;
 use App\Services\Training\MentoringSessionsService;
@@ -81,8 +82,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 TextColumn::make('taken_date')
                     ->label('Date & Time')
                     ->getStateUsing(function (Session $record) {
-                        $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                        $time = Carbon::parse($record->taken_from)->format('H:i');
+                        $date = display_date($record->taken_date.' '.$record->taken_from, 'D j M Y');
+                        $time = display_date($record->taken_date.' '.$record->taken_from, 'H:i');
 
                         return trim("{$date} {$time}");
                     })
@@ -288,9 +289,10 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->orderBy('from')
                         ->get()
                         ->mapWithKeys(function ($avail) {
+                            $tzService = app(TimezoneService::class);
                             $date = Carbon::parse($avail->date)->format('D, d M Y');
-                            $start = Carbon::parse($avail->from)->format('H:i');
-                            $end = Carbon::parse($avail->to)->format('H:i');
+                            $start = $tzService->utcTimeToLocal($avail->date, $avail->from);
+                            $end = $tzService->utcTimeToLocal($avail->date, $avail->to);
 
                             return [$avail->id => "{$date} ({$start} to {$end})"];
                         })
@@ -303,12 +305,14 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                             return;
                         }
 
-                        $minTime = Carbon::parse($newAvail->from)->format('H:i');
-                        $maxTime = Carbon::parse($newAvail->to)->format('H:i');
+                        $tzService = app(TimezoneService::class);
+                        $minTime = $tzService->utcTimeToLocal($newAvail->date, $newAvail->from);
+                        $maxTime = $tzService->utcTimeToLocal($newAvail->date, $newAvail->to);
                         $options = $this->generateTimeOptions($minTime, $maxTime);
 
                         if (Carbon::parse($newAvail->date)->isToday()) {
-                            $nowTime = now()->format('H:i');
+                            $tz = $tzService->getTimezone();
+                            $nowTime = now()->setTimezone($tz)->format('H:i');
                             $options = array_filter($options, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
                         }
 
@@ -334,13 +338,14 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                 return [];
                             }
 
+                            $tzService = app(TimezoneService::class);
                             $options = $this->generateTimeOptions(
-                                Carbon::parse($avail->from)->format('H:i'),
-                                Carbon::parse($avail->to)->format('H:i')
+                                $tzService->utcTimeToLocal($avail->date, $avail->from),
+                                $tzService->utcTimeToLocal($avail->date, $avail->to)
                             );
 
                             if (Carbon::parse($avail->date)->isToday()) {
-                                $nowTime = now()->format('H:i');
+                                $nowTime = now()->setTimezone($tzService->getTimezone())->format('H:i');
                                 $options = array_filter($options, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
                             }
 
@@ -364,9 +369,10 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                 return [];
                             }
 
+                            $tzService = app(TimezoneService::class);
                             $options = $this->generateTimeOptions(
-                                Carbon::parse($avail->from)->format('H:i'),
-                                Carbon::parse($avail->to)->format('H:i')
+                                $tzService->utcTimeToLocal($avail->date, $avail->from),
+                                $tzService->utcTimeToLocal($avail->date, $avail->to)
                             );
 
                             $startTime = $get('taken_from');
@@ -397,9 +403,10 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                             return '';
                         }
 
+                        $tzService = app(TimezoneService::class);
                         $type = $overlap instanceof Session ? 'session' : 'exam';
-                        $from = $overlap->taken_from;
-                        $to = $overlap->taken_to;
+                        $from = $tzService->utcTimeToLocal($overlap->taken_date, $overlap->taken_from);
+                        $to = $tzService->utcTimeToLocal($overlap->taken_date, $overlap->taken_to);
 
                         return "There is already a {$type} booked on this position from {$from} to {$to}.";
                     })
@@ -421,7 +428,17 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     return;
                 }
 
-                $proposedStart = Carbon::parse($availability->date)->setTimeFromTimeString($data['taken_from']);
+                $tzService = app(TimezoneService::class);
+                $tz = $tzService->getTimezone();
+
+                // Convert selected local times to full UTC datetimes (date may shift on day boundaries)
+                $utcStart = Carbon::parse($availability->date->format('Y-m-d').' '.$data['taken_from'], $tz)->utc();
+                $utcEnd = Carbon::parse($availability->date->format('Y-m-d').' '.$data['taken_to'], $tz)->utc();
+
+                $utcFrom = $utcStart->format('H:i');
+                $utcTo = $utcEnd->format('H:i');
+
+                $proposedStart = $utcStart;
                 if ($proposedStart->isPast()) {
                     Notification::make()
                         ->title('Invalid Time Chosen')
@@ -435,8 +452,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 $success = $mentoringService->rescheduleSession(
                     $record->id,
                     $availability->id,
-                    $data['taken_from'],
-                    $data['taken_to'],
+                    $utcFrom,
+                    $utcTo,
                     auth()->user(),
                 );
 

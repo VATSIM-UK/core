@@ -60,7 +60,7 @@ class ExamCancellationsTable extends Component implements HasForms, HasTable
 
                 TextColumn::make('date')
                     ->label('Cancelled Date')
-                    ->dateTime()
+                    ->formatStateUsing(fn ($state) => $state ? display_datetime($state) : null)
                     ->sortable(),
 
                 TextColumn::make('reason_by')

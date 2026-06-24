@@ -5,7 +5,6 @@ namespace App\Filament\Training\Pages\MyTraining;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Services\Training\CancelPendingExamService;
-use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Textarea;
@@ -65,8 +64,7 @@ class MyPendingExams extends Page implements HasTable
 
                 TextColumn::make('taken_date')
                     ->label('Exam Date')
-                    ->state(fn ($record) => $record->taken_date)
-                    ->date()
+                    ->state(fn ($record) => $record->taken_date ? display_date($record->taken_date, 'D j M Y') : null)
                     ->placeholder('Not yet scheduled'),
 
                 TextColumn::make('taken_time')
@@ -76,7 +74,7 @@ class MyPendingExams extends Page implements HasTable
                             return null;
                         }
 
-                        return Carbon::parse($record->start_date)->format('H:i').'Z – '.Carbon::parse($record->end_date)->format('H:i').'Z';
+                        return display_date($record->start_date, 'H:i').' – '.display_date($record->end_date, 'H:i');
                     })
                     ->placeholder('Not yet scheduled'),
             ])
@@ -90,7 +88,7 @@ class MyPendingExams extends Page implements HasTable
                         ->requiresConfirmation()
                         ->modalHeading(fn (ExamBooking $record) => "Cancel {$record->exam} Exam")
                         ->modalDescription(fn (ExamBooking $record) => implode(' ', [
-                            'You are about to cancel your', $record->exam, 'exam scheduled for', Carbon::parse($record->taken_date)->format('l jS M Y'), 'at', Carbon::parse($record->taken_from)->format('H:i').'Z –', Carbon::parse($record->taken_to)->format('H:i').'Z.', 'Your examiner will be notified.']))
+                            'You are about to cancel your', $record->exam, 'exam scheduled for', display_date($record->taken_date.' '.$record->taken_from, 'l jS M Y \a\t H:i').' – '.display_date($record->taken_date.' '.$record->taken_to, 'H:i').'.', 'Your examiner will be notified.']))
                         ->form([
                             Textarea::make('reason')
                                 ->label('Reason for cancellation')
