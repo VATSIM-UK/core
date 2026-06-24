@@ -51,10 +51,10 @@ class TimezoneService
         $carbon = Carbon::parse($dateString, 'UTC');
 
         if (! preg_match('/\d{1,2}:\d{2}/', $dateString)) {
-            return $carbon->format($format);
+            return $carbon->isoFormat($format);
         }
 
-        return $carbon->setTimezone($this->getTimezone())->format($format);
+        return $carbon->setTimezone($this->getTimezone())->isoFormat($format);
     }
 
     /**
@@ -62,7 +62,7 @@ class TimezoneService
      */
     public function formatCarbon(Carbon $date, string $format): string
     {
-        return $this->convertFromUtc($date)->format($format);
+        return $this->convertFromUtc($date)->isoFormat($format);
     }
 
     /**
