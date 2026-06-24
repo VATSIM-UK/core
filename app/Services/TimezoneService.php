@@ -67,20 +67,30 @@ class TimezoneService
 
     /**
      * Convert a local time to UTC (returns H:i). The date provides DST context.
+     * Both parameters accept Carbon instances (from Eloquent casts) or strings.
      */
-    public function localTimeToUtc(string $dateString, string $timeString): string
+    public function localTimeToUtc(string|Carbon $date, string|Carbon $time): string
     {
-        return Carbon::parse("{$dateString} {$timeString}", $this->getTimezone())
+        if ($time instanceof Carbon) {
+            $time = $time->format('H:i:s');
+        }
+
+        return Carbon::parse("{$date} {$time}", $this->getTimezone())
             ->utc()
             ->format('H:i');
     }
 
     /**
      * Convert a UTC time to local (returns H:i). The date provides DST context.
+     * Both parameters accept Carbon instances (from Eloquent casts) or strings.
      */
-    public function utcTimeToLocal(string $dateString, string $timeString): string
+    public function utcTimeToLocal(string|Carbon $date, string|Carbon $time): string
     {
-        return Carbon::parse("{$dateString} {$timeString}", 'UTC')
+        if ($time instanceof Carbon) {
+            $time = $time->format('H:i:s');
+        }
+
+        return Carbon::parse("{$date} {$time}", 'UTC')
             ->setTimezone($this->getTimezone())
             ->format('H:i');
     }
