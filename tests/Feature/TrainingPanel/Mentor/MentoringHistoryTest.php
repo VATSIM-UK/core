@@ -294,7 +294,7 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $this->assertNotContains($category, $this->panelUser->fresh()->getAvailableMentoringCategories());
 
         Livewire::actingAs($this->panelUser)
-            ->test(MentoringHistory::class)
+            ->test(MentoringHistory::class, ['category' => MentorPermissionService::ALL_CATEGORIES])
             ->assertSuccessful()
             ->assertCanSeeTableRecords([$session]);
     }
