@@ -43,9 +43,9 @@ class TimezoneService
     private function resolveFormat(string $format): string
     {
         return match ($format) {
-            'lll' => 'D j M Y H:i',
-            'LL' => 'j F Y',
-            'LT' => 'H:i',
+            'lll' => 'M j, Y g:i A',
+            'LL' => 'F j, Y',
+            'LT' => 'g:i A',
             default => $format,
         };
     }
@@ -115,7 +115,7 @@ class TimezoneService
     public function getTimezoneLabel(?string $timezone = null, ?string $prefix = null): string
     {
         $timezone = $timezone ?? $this->getTimezone();
-        $label = $prefix ?? $timezone;
+        $label = ($prefix ?? '').$timezone;
 
         if ($timezone === 'Europe/London' && now()->setTimezone('Europe/London')->offsetHours === 1) {
             $label .= ' (not ZULU)';

@@ -348,8 +348,8 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
             ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
             ->assertSuccessful();
 
-        // Check that the exam date is displayed (uses startDate accessor)
-        $component->assertSee($examDate->format('Y-m-d'));
+        // Check that the exam date is displayed (uses display_datetime helper)
+        $component->assertSee($examDate->format('d M Y H:i'));
     }
 
     #[Test]

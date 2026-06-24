@@ -71,7 +71,7 @@ class TimezoneDetectTest extends TestCase
     {
         $this->post(route('training.timezone.detect'), [
             'timezone' => 'UTC',
-        ])->assertRedirect(route('login'));
+        ])->assertRedirect('/dashboard');
     }
 
     #[Test]

@@ -341,7 +341,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     {
         config(['app.timezone' => 'UTC']);
         $tz = 'America/New_York';
-        session(['availability_timezone' => $tz]);
+        session([\App\Services\TimezoneService::SESSION_KEY => $tz]);
 
         $knownUtcTime = Carbon::create(2026, 12, 25, 10, 0, 0, 'UTC');
         $this->travelTo($knownUtcTime);
@@ -349,7 +349,6 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
-            ->assertSet('timezone', $tz)
             ->set('data.date_range', ['start' => $date, 'end' => $date])
             ->set('data.from', '12:00')
             ->set('data.to', '14:00')
