@@ -7,6 +7,7 @@ namespace App\Filament\Training\Pages\Mentor;
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Filament\Training\Support\MentoringTrainingGroupBadgeColor;
+use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
 use App\Policies\Training\Mentoring\MentoringPolicy;
@@ -41,7 +42,20 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->can('viewAny', Session::class) ?? false;
+        $user = auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        if ($user->can('viewAny', Session::class)) {
+            return true;
+        }
+
+        // mentors who have past mentoring sessions
+        return (new SessionRepository)
+            ->getSessionsForMentor($user->id)
+            ->exists();
     }
 
     public function mount(): void
@@ -101,9 +115,24 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     protected function getSessionQuery(): Builder
     {
-        return (new SessionRepository)
+        $sessionRepository = new SessionRepository;
+
+        $member = Member::where('cid', auth()->id())->first();
+
+        $sessionsWithPermissions = $sessionRepository
             ->getAllAcceptedSessionsForPositionsQuery($this->getVisibleCtsPositions())
             ->where('taken_date', '<', now());
+
+        $sessionsUserMentored = $sessionRepository
+            ->getSessionsForMentor($member->cid);
+
+        $union = $sessionsWithPermissions->union($sessionsUserMentored);
+
+        return Session::query()
+            ->fromSub($union, 'sessions')
+            ->orderByDesc('taken_date')
+            ->orderByDesc('taken_from')
+            ->orderByDesc('id');
     }
 
     protected function getPositionFilterOptions(): array
