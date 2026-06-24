@@ -37,6 +37,19 @@ class TimezoneService
         }
     }
 
+    /**
+     * Map Carbon isoFormat macros to PHP date() format strings.
+     */
+    private function resolveFormat(string $format): string
+    {
+        return match ($format) {
+            'lll' => 'D j M Y H:i',
+            'LL' => 'j F Y',
+            'LT' => 'H:i',
+            default => $format,
+        };
+    }
+
     public function convertFromUtc(Carbon $date): Carbon
     {
         return $date->copy()->setTimezone($this->getTimezone());
@@ -49,12 +62,13 @@ class TimezoneService
     public function formatDate(string $dateString, string $format = 'D j M Y'): string
     {
         $carbon = Carbon::parse($dateString, 'UTC');
+        $format = $this->resolveFormat($format);
 
         if (! preg_match('/\d{1,2}:\d{2}/', $dateString)) {
-            return $carbon->isoFormat($format);
+            return $carbon->format($format);
         }
 
-        return $carbon->setTimezone($this->getTimezone())->isoFormat($format);
+        return $carbon->setTimezone($this->getTimezone())->format($format);
     }
 
     /**
@@ -62,7 +76,7 @@ class TimezoneService
      */
     public function formatCarbon(Carbon $date, string $format): string
     {
-        return $this->convertFromUtc($date)->isoFormat($format);
+        return $this->convertFromUtc($date)->format($this->resolveFormat($format));
     }
 
     /**
