@@ -40,6 +40,24 @@ class MentoringHistory extends BaseMentoringHistoryPage
     #[Url]
     public ?array $tableFilters = null;
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        if ($user->can('viewAny', Session::class)) {
+            return true;
+        }
+
+        // mentors who have past mentoring sessions
+        return (new SessionRepository)
+            ->getSessionsForMentor($user->id)
+            ->exists();
+    }
+
     public function mount(): void
     {
         $this->rememberCategory();

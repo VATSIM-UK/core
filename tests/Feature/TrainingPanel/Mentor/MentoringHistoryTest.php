@@ -35,13 +35,11 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_loads_when_user_has_no_mentoring_positions(): void
+    public function it_is_forbidden_when_user_has_no_mentoring_positions_and_no_mentor_sessions(): void
     {
-        // The canAccess() gate was removed so that previous mentors can still
-        // access the page and see sessions they personally mentored.
         Livewire::actingAs($this->panelUser)
             ->test(MentoringHistory::class)
-            ->assertSuccessful();
+            ->assertForbidden();
     }
 
     #[Test]
