@@ -40,15 +40,13 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 
     protected static ?string $navigationLabel = 'Upcoming Sessions';
 
+    protected static ?string $slug = 'mentoring/upcoming-sessions';
+
     #[Url]
     public string $category = '';
 
     public static function canAccess(): bool
     {
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
         if (auth()->user()?->can('training.mentoring.view.*')) {
             return true;
         }

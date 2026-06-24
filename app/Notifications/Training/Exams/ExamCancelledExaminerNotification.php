@@ -2,12 +2,14 @@
 
 namespace App\Notifications\Training\Exams;
 
+use App\Enums\EmailType;
 use App\Models\Cts\ExamBooking;
+use App\Notifications\Contracts\HasEmailType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ExamCancelledExaminerNotification extends Notification
+class ExamCancelledExaminerNotification extends Notification implements HasEmailType
 {
     use Queueable;
 
@@ -15,6 +17,11 @@ class ExamCancelledExaminerNotification extends Notification
         private ExamBooking $examBooking,
         private string $reason,
     ) {}
+
+    public function getEmailType(): EmailType
+    {
+        return EmailType::ExaminerExamCancelled;
+    }
 
     /**
      * @return array<int, string>

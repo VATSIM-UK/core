@@ -5,6 +5,7 @@ namespace App\Jobs\Training;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
+use App\Models\VisitTransfer\Application;
 use App\Notifications\Training\RemovedFromWaitingListFailedRetention;
 use App\Services\Training\WaitingListRetentionChecks;
 use Exception;
@@ -53,6 +54,15 @@ class ActionWaitingListRetentionCheckRemoval implements ShouldQueue
 
         $waitingList = $this->retentionCheck->waitingListAccount->waitingList;
         $waitingList->removeFromWaitingList($account, new Removal(RemovalReason::FailedRetention, null));
+
+        if ($waitingList->is_vt) {
+            Application::where('account_id', $account->id)
+                ->where('status', Application::STATUS_ACCEPTED)
+                ->get()
+                ->each(function (Application $application) {
+                    $application->cancel('Your visiting/transfer application has been cancelled as you were removed from the waiting list due to a failed retention check.');
+                });
+        }
 
         Log::info("Member {$account->id} was removed from waiting list  {$waitingList->id} due to failed retention check {$this->retentionCheck->id}");
 

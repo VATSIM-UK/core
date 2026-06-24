@@ -28,15 +28,12 @@ class MyPendingExams extends Page implements HasTable
 
     protected static ?string $navigationLabel = 'My Pending Exams';
 
+    protected static ?string $slug = 'my-training/pending-exams';
+
     protected static ?int $navigationSort = 10;
 
     public static function canAccess(): bool
     {
-        // Temporary beta permission
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
         return auth()->user()?->can('training.access') ?? false;
     }
 

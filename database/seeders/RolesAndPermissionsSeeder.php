@@ -285,6 +285,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'roster.restriction.remove',
             'atc.stats',
 
+            // Discord
+            'discord.tag.view',
+            'discord.tag.manage',
+
         ];
 
         foreach ($permissions as $permission) {

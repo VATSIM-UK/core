@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Training\Mentoring;
 
 use App\Models\Cts\Availability;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
@@ -150,7 +151,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $availability = Availability::factory()->create([
             'student_id' => $this->studentMember->id,
-            'date' => Carbon::parse('2026-06-15'),
+            'date' => Carbon::tomorrow(),
             'from' => '10:00:00',
             'to' => '12:00:00',
         ]);
@@ -166,7 +167,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->assertSame($this->mentorMember->id, $pendingSession->mentor_id);
         $this->assertSame(1, $pendingSession->taken);
-        $this->assertSame('2026-06-15', Carbon::parse($pendingSession->taken_date)->format('Y-m-d'));
+        $this->assertSame(Carbon::tomorrow()->format('Y-m-d'), Carbon::parse($pendingSession->taken_date)->format('Y-m-d'));
         $this->assertSame('10:00:00', Carbon::parse($pendingSession->taken_from)->format('H:i:s'));
         $this->assertSame('12:00:00', Carbon::parse($pendingSession->taken_to)->format('H:i:s'));
     }
@@ -288,7 +289,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $availability = Availability::factory()->create([
             'student_id' => $this->studentMember->id,
-            'date' => Carbon::parse('2026-06-20'),
+            'date' => Carbon::tomorrow(),
             'from' => '14:00:00',
             'to' => '16:00:00',
         ]);
@@ -303,7 +304,7 @@ class MentoringSessionsServiceTest extends TestCase
 
         $session->refresh();
 
-        $this->assertSame('2026-06-20', Carbon::parse($session->taken_date)->format('Y-m-d'));
+        $this->assertSame(Carbon::tomorrow()->format('Y-m-d'), Carbon::parse($session->taken_date)->format('Y-m-d'));
         $this->assertSame('14:00:00', Carbon::parse($session->taken_from)->format('H:i:s'));
         $this->assertSame('16:00:00', Carbon::parse($session->taken_to)->format('H:i:s'));
         $this->assertSame($this->mentorMember->id, $session->mentor_id);
@@ -561,5 +562,136 @@ class MentoringSessionsServiceTest extends TestCase
         Notification::assertSentTo($this->studentAccount, MentoringSessionReallocatedStudentNotification::class);
         Notification::assertSentTo($this->mentorAccount, MentoringSessionReallocatedOldMentorNotification::class);
         Notification::assertSentTo($newMentorAccount, MentoringSessionReallocatedNewMentorNotification::class);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_returns_null_when_no_overlap(): void
+    {
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            'EGLL_APP',
+            Carbon::tomorrow()->format('Y-m-d'),
+            '14:00',
+            '16:00',
+        );
+
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_returns_session_when_overlap_exists(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            'EGLL_APP',
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+        );
+
+        $this->assertInstanceOf(Session::class, $result);
+        $this->assertSame('10:00:00', $result->taken_from);
+        $this->assertSame('12:00:00', $result->taken_to);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_returns_exam_when_overlap_exists(): void
+    {
+        ExamBooking::factory()->create([
+            'position_1' => 'EGLL_APP',
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            'EGLL_APP',
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+        );
+
+        $this->assertInstanceOf(ExamBooking::class, $result);
+        $this->assertSame('10:00:00', $result->taken_from);
+        $this->assertSame('12:00:00', $result->taken_to);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_ignores_session_when_ignore_id_is_provided(): void
+    {
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            'EGLL_APP',
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+            $session->id,
+        );
+
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_returns_session_when_both_session_and_exam_overlap(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        ExamBooking::factory()->create([
+            'position_1' => 'EGLL_APP',
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            'EGLL_APP',
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+        );
+
+        $this->assertInstanceOf(Session::class, $result);
     }
 }

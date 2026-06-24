@@ -14,6 +14,10 @@ class Event extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'date' => 'date:Y-m-d',
+    ];
+
     public const CREATED_AT = 'add_date';
 
     public const UPDATED_AT = null;

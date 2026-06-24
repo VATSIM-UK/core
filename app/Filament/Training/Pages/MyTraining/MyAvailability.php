@@ -40,6 +40,8 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     protected static ?string $navigationLabel = 'My Availability';
 
+    protected static ?string $slug = 'my-training/availability';
+
     protected static ?int $navigationSort = 5;
 
     public ?array $data = [];
@@ -48,11 +50,6 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     public static function canAccess(): bool
     {
-        // Temporary beta permission
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
         $user = auth()->user();
 
         if (! $user?->can('training.access')) {

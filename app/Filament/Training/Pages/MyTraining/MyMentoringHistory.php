@@ -19,14 +19,12 @@ class MyMentoringHistory extends BaseMentoringHistoryPage
 
     protected static ?string $navigationLabel = 'My Mentoring History';
 
+    protected static ?string $slug = 'my-training/mentoring-history';
+
     protected static ?int $navigationSort = 25;
 
     public static function canAccess(): bool
     {
-        if (! app()->runningUnitTests() && ! auth()->user()?->can('training.beta')) {
-            return false;
-        }
-
         return auth()->user()?->can('training.access') ?? false;
     }
 
