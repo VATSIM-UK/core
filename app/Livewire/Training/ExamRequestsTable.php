@@ -119,7 +119,10 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                                             return [];
                                         }
 
-                                        [$availStart, $availEnd] = $this->localAvailabilityTimes($availability);
+                                        [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
+                                            Carbon::parse($availability->from),
+                                            Carbon::parse($availability->to),
+                                        );
 
                                         $latestStartHour = min($availEnd->copy()->subHour()->hour, 22); // Don't allow a start hour to be 2300+ as they won't have the minimum of 60 minutes for the exam.
                                         $hours = [];
@@ -147,7 +150,10 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                                             return [];
                                         }
 
-                                        [$availStart, $availEnd] = $this->localAvailabilityTimes($availability);
+                                        [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
+                                            Carbon::parse($availability->from),
+                                            Carbon::parse($availability->to),
+                                        );
 
                                         return $this->generateStartMinuteOptions($selectedHour, $availStart, $availEnd);
                                     })
@@ -174,7 +180,10 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                                             return [];
                                         }
 
-                                        [$availStart, $availEnd] = $this->localAvailabilityTimes($availability);
+                                        [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
+                                            Carbon::parse($availability->from),
+                                            Carbon::parse($availability->to),
+                                        );
 
                                         $startTime = Carbon::create(null, null, null, $startHour, $startMinute);
                                         $minEndTime = $startTime->copy()->addMinutes(60); // Minimum 60 minutes
@@ -245,17 +254,15 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                             throw new \Exception('Selected availability slot not found.');
                         }
 
-                        $tzService = app(TimezoneService::class);
                         $availabilityDate = $availability->date->format('Y-m-d');
 
-                        // Create time strings from hour/minute components (in user's local timezone)
-                        $localStart = sprintf('%02d:%02d:00', $data['start_hour'], $data['start_minute']);
-                        $localEnd = sprintf('%02d:%02d:00', $data['end_hour'], $data['end_minute']);
+                        // Create time strings from hour/minute components
+                        $startTime = sprintf('%02d:%02d:00', $data['start_hour'], $data['start_minute']);
+                        $endTime = sprintf('%02d:%02d:00', $data['end_hour'], $data['end_minute']);
 
-                        // Convert to full UTC datetimes (date may shift on day boundaries)
-                        $tz = $tzService->getTimezone();
-                        $examStartDateTime = Carbon::parse("{$availabilityDate} {$localStart}", $tz)->utc();
-                        $examEndDateTime = Carbon::parse("{$availabilityDate} {$localEnd}", $tz)->utc();
+                        // Combine the availability date with the selected times
+                        $examStartDateTime = Carbon::parse("{$availabilityDate} {$startTime}");
+                        $examEndDateTime = Carbon::parse("{$availabilityDate} {$endTime}");
 
                         // Validate exam duration constraints
                         $durationMinutes = $examStartDateTime->diffInMinutes($examEndDateTime);
