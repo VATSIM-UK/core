@@ -150,8 +150,11 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $student = Account::factory()->create();
         $studentCtsMember = $this->getOrCreateCtsMember($student);
 
+        $otherMentor = Account::factory()->create();
+        $otherMentorCtsMember = $this->getOrCreateCtsMember($otherMentor);
+
         $sessionInCategory = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGKK_GND');
-        $sessionOutOfCategory = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGKK_TWR');
+        $sessionOutOfCategory = $this->insertSession($otherMentorCtsMember->id, $studentCtsMember->id, 'EGKK_TWR');
 
         $sessionInRecord = Session::on('cts')->find($sessionInCategory);
         $sessionOutRecord = Session::on('cts')->find($sessionOutOfCategory);
@@ -288,6 +291,7 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
             $studentCtsMember->id,
             'EGLL_GND',
             filed: now()->toDateTimeString(),
+            takenDate: now()->subDay()->format('Y-m-d H:i:s'),
         );
 
         // Session 2: Our user mentored on a DIFFERENT position they have no permission for
