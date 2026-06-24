@@ -40,7 +40,6 @@ class MentoringHistory extends BaseMentoringHistoryPage
     #[Url]
     public ?array $tableFilters = null;
 
-
     public function mount(): void
     {
         $this->rememberCategory();
@@ -98,7 +97,7 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     protected function getSessionQuery(): Builder
     {
-        $sessionRepository = new SessionRepository();
+        $sessionRepository = new SessionRepository;
 
         $member = Member::where('cid', auth()->id())->first();
 
@@ -117,7 +116,6 @@ class MentoringHistory extends BaseMentoringHistoryPage
             ->orderByDesc('taken_from')
             ->orderByDesc('id');
     }
-
 
     protected function getPositionFilterOptions(): array
     {

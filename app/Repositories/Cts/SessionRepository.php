@@ -126,6 +126,7 @@ class SessionRepository
             ->whereNotNull('cancelled_datetime')
             ->count();
     }
+
     public function getSessionsForMentor(int $mentorId): Builder
     {
         return Session::query()
