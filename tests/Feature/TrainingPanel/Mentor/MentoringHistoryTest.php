@@ -35,11 +35,13 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_is_forbidden_when_user_has_no_mentoring_positions(): void
+    public function it_loads_when_user_has_no_mentoring_positions(): void
     {
+        // The canAccess() gate was removed so that previous mentors can still
+        // access the page and see sessions they personally mentored.
         Livewire::actingAs($this->panelUser)
             ->test(MentoringHistory::class)
-            ->assertForbidden();
+            ->assertSuccessful();
     }
 
     #[Test]
@@ -235,6 +237,75 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(MentoringHistory::class, ['category' => $category])
             ->assertSee('No mentoring sessions found in this training group');
+    }
+
+    #[Test]
+    public function it_shows_sessions_where_user_was_the_mentor_even_without_position_permissions(): void
+    {
+        $mentorCtsMember = $this->getOrCreateCtsMember($this->panelUser);
+
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $sessionId = $this->insertSession(
+            $mentorCtsMember->id,
+            $studentCtsMember->id,
+            'EGLL_GND',
+            filed: now()->toDateTimeString(),
+            takenDate: now()->subDay()->format('Y-m-d H:i:s'),
+        );
+
+        $session = Session::on('cts')->find($sessionId);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(MentoringHistory::class)
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords([$session]);
+    }
+
+    #[Test]
+    public function it_shows_mentor_based_sessions_alongside_permission_based_sessions(): void
+    {
+        // Arrange: user has mentoring permission on EGLL_GND
+        $category = MentorPermissionService::atcCategories()[0];
+        $permittedPosition = $this->createTrainingPosition($category, 'EGLL_GND');
+
+        $mentorCtsMember = $this->getOrCreateCtsMember($this->panelUser);
+        app(MentorPermissionService::class)->assignToMentorable(
+            $this->panelUser, $permittedPosition, $this->panelUser, $category
+        );
+
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        // Another mentor for the permission-based session
+        $otherMentor = Account::factory()->create();
+        $otherMentorCtsMember = $this->getOrCreateCtsMember($otherMentor);
+
+        // Session 1: Other mentor mentored on user's permitted position (permission-based)
+        $permSessionId = $this->insertSession(
+            $otherMentorCtsMember->id,
+            $studentCtsMember->id,
+            'EGLL_GND',
+            filed: now()->toDateTimeString(),
+        );
+
+        // Session 2: Our user mentored on a DIFFERENT position they have no permission for
+        $mentorSessionId = $this->insertSession(
+            $mentorCtsMember->id,
+            $studentCtsMember->id,
+            'EGKK_TWR',
+            filed: now()->toDateTimeString(),
+            takenDate: now()->subDay()->format('Y-m-d H:i:s'),
+        );
+
+        $permSession = Session::on('cts')->find($permSessionId);
+        $mentorSession = Session::on('cts')->find($mentorSessionId);
+
+        // Act & Assert: both sessions are visible when viewing all categories
+        Livewire::actingAs($this->panelUser)
+            ->test(MentoringHistory::class, ['category' => $category])
+            ->assertCanSeeTableRecords([$permSession, $mentorSession]);
     }
 
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition
