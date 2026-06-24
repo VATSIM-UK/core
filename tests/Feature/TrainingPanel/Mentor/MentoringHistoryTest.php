@@ -267,7 +267,6 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_shows_mentor_based_sessions_alongside_permission_based_sessions(): void
     {
-        // Arrange: user has mentoring permission on EGLL_GND
         $category = MentorPermissionService::atcCategories()[0];
         $permittedPosition = $this->createTrainingPosition($category, 'EGLL_GND');
 
@@ -279,11 +278,9 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $student = Account::factory()->create();
         $studentCtsMember = $this->getOrCreateCtsMember($student);
 
-        // Another mentor for the permission-based session
         $otherMentor = Account::factory()->create();
         $otherMentorCtsMember = $this->getOrCreateCtsMember($otherMentor);
 
-        // Session 1: Other mentor mentored on user's permitted position (permission-based)
         $permSessionId = $this->insertSession(
             $otherMentorCtsMember->id,
             $studentCtsMember->id,
@@ -292,7 +289,6 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
             takenDate: now()->subDay()->format('Y-m-d H:i:s'),
         );
 
-        // Session 2: Our user mentored on a DIFFERENT position they have no permission for
         $mentorSessionId = $this->insertSession(
             $mentorCtsMember->id,
             $studentCtsMember->id,
@@ -304,7 +300,6 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $permSession = Session::on('cts')->find($permSessionId);
         $mentorSession = Session::on('cts')->find($mentorSessionId);
 
-        // Act & Assert: both sessions are visible when viewing all categories
         Livewire::actingAs($this->panelUser)
             ->test(MentoringHistory::class, ['category' => $category])
             ->assertCanSeeTableRecords([$permSession, $mentorSession]);
