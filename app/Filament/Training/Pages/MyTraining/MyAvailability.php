@@ -25,8 +25,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Session;
-
 class MyAvailability extends Page implements HasForms, HasTable
 {
     use InteractsWithForms;
@@ -45,8 +43,6 @@ class MyAvailability extends Page implements HasForms, HasTable
     protected static ?int $navigationSort = 5;
 
     public ?array $data = [];
-
-    public string $timezone = 'UTC';
 
     public static function canAccess(): bool
     {
@@ -106,75 +102,8 @@ class MyAvailability extends Page implements HasForms, HasTable
         ];
     }
 
-    public ?string $browserTimezone = null;
-
-    public function setBrowserTimezone(string $timezone): void
-    {
-        if (in_array($timezone, timezone_identifiers_list()) && $this->browserTimezone !== $timezone) {
-            $this->browserTimezone = $timezone;
-
-            if (! Session::has('availability_timezone')) {
-                $this->timezone = $timezone;
-                Session::put('availability_timezone', $timezone);
-
-                $this->form->fill([
-                    'from' => '18:00',
-                    'to' => '21:00',
-                ]);
-            }
-        }
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Action::make('changeTimezone')
-                ->label(fn () => 'Timezone: '.$this->getTimezoneLabel($this->timezone))
-                ->icon('heroicon-o-globe-alt')
-                ->form([
-                    Select::make('timezone')
-                        ->label('Select your local timezone')
-                        ->options(function () {
-                            $zones = timezone_identifiers_list();
-                            $options = array_combine($zones, $zones);
-
-                            // Append (not ZULU) suffix for Europe/London option during British Summer Time
-                            if (isset($options['Europe/London'])) {
-                                $options['Europe/London'] = $this->getTimezoneLabel('Europe/London');
-                            }
-
-                            $topZones = [];
-
-                            if ($this->browserTimezone && isset($options[$this->browserTimezone])) {
-                                $topZones[$this->browserTimezone] = 'Detected: '.$this->getTimezoneLabel($this->browserTimezone);
-                                unset($options[$this->browserTimezone]);
-                            }
-
-                            if (isset($options['UTC'])) {
-                                $topZones['UTC'] = 'UTC (Zulu)';
-                                unset($options['UTC']);
-                            }
-
-                            return $topZones + $options;
-                        })
-                        ->searchable()
-                        ->live()
-                        ->default($this->timezone)
-                        ->required(),
-                ])
-                ->action(function (array $data): void {
-                    $this->timezone = $data['timezone'];
-                    Session::put('availability_timezone', $data['timezone']);
-
-                    Notification::make()->title('Timezone updated')->success()->send();
-                }),
-        ];
-    }
-
     public function mount(): void
     {
-        $this->timezone = Session::get('availability_timezone', 'UTC');
-
         $this->form->fill([
             'from' => '18:00',
             'to' => '21:00',
@@ -188,7 +117,7 @@ class MyAvailability extends Page implements HasForms, HasTable
                 DateRangePicker::make('date_range')
                     ->label('Date(s)')
                     ->required()
-                    ->minDate(now()->setTimezone($this->timezone)->startOfDay()),
+                    ->minDate(now()->startOfDay()),
 
                 Select::make('from')
                     ->label('From')
@@ -229,8 +158,8 @@ class MyAvailability extends Page implements HasForms, HasTable
         for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
             $dateString = $date->toDateString();
 
-            $startUtc = Carbon::parse("{$dateString} {$data['from']}", $this->timezone)->utc();
-            $endUtc = Carbon::parse("{$dateString} {$data['to']}", $this->timezone)->utc();
+            $startUtc = Carbon::parse("{$dateString} {$data['from']}", 'UTC');
+            $endUtc = Carbon::parse("{$dateString} {$data['to']}", 'UTC');
 
             $result = $this->getAvailabilityService()->addOrMergeSlot($studentId, $startUtc, $endUtc);
 
@@ -266,15 +195,14 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->label('Date')
                     ->state(function (Availability $record) {
                         return Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC')
-                            ->setTimezone($this->timezone)
                             ->format('D j M Y');
                     }),
 
                 TextColumn::make('time_window')
                     ->label('Time')
                     ->state(function (Availability $record): string {
-                        $start = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC')->setTimezone($this->timezone);
-                        $end = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC')->setTimezone($this->timezone);
+                        $start = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC');
+                        $end = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC');
 
                         if ($record->to->format('H:i:s') < $record->from->format('H:i:s')) {
                             $end->addDay();
@@ -296,8 +224,8 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->successNotification(null)
                     ->modalSubmitActionLabel('Update')
                     ->mutateRecordDataUsing(function (Availability $record): array {
-                        $start = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC')->setTimezone($this->timezone);
-                        $end = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC')->setTimezone($this->timezone);
+                        $start = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC');
+                        $end = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC');
 
                         if ($record->to->format('H:i:s') < $record->from->format('H:i:s')) {
                             $end->addDay();
@@ -315,11 +243,8 @@ class MyAvailability extends Page implements HasForms, HasTable
                         Select::make('to')->options($this->generateTimeOptions())->required(),
                     ])
                     ->action(function (Availability $record, array $data): void {
-                        $startLocal = Carbon::parse("{$data['date']} {$data['from']}", $this->timezone);
-                        $endLocal = Carbon::parse("{$data['date']} {$data['to']}", $this->timezone);
-
-                        $startUtc = $startLocal->clone()->utc();
-                        $endUtc = $endLocal->clone()->utc();
+                        $startUtc = Carbon::parse("{$data['date']} {$data['from']}", 'UTC');
+                        $endUtc = Carbon::parse("{$data['date']} {$data['to']}", 'UTC');
 
                         [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
                             $record->student_id, $startUtc, $endUtc, $record->id
@@ -367,18 +292,6 @@ class MyAvailability extends Page implements HasForms, HasTable
         }
 
         return $options;
-    }
-
-    protected function getTimezoneLabel(string $timezone, ?string $prefix = null): string
-    {
-        $label = $prefix ?? $timezone;
-
-        // Add (not ZULU) suffix for Europe/London during British Summer Time
-        if ($timezone === 'Europe/London' && now()->setTimezone('Europe/London')->offsetHours === 1) {
-            $label .= ' (not ZULU)';
-        }
-
-        return $label;
     }
 
     protected function resolveStudentId(): ?int
