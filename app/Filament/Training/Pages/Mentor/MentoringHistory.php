@@ -16,6 +16,7 @@ use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Url;
 
 class MentoringHistory extends BaseMentoringHistoryPage
@@ -60,19 +61,47 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     public function mount(): void
     {
+        Log::debug('[MentoringHistory] mount() START', [
+            'auth_id' => auth()->id(),
+            'category_before' => $this->category ?: '(empty)',
+            'saved_category_in_session' => session('training.mentoring.last_category'),
+            'visible_categories' => $this->getVisibleCategories(),
+            'has_multiple_visible' => $this->hasMultipleVisibleCategories(),
+        ]);
+
         $this->rememberCategory();
 
+        Log::debug('[MentoringHistory] mount() after rememberCategory', [
+            'category_after_remember' => $this->category ?: '(empty)',
+        ]);
+
         if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
+            Log::debug('[MentoringHistory] mount() ALL_CATEGORIES branch entered');
+
             if (! $this->hasMultipleVisibleCategories()) {
-                $this->category = $this->firstVisibleCategory() ?? '';
+                $newCat = $this->firstVisibleCategory() ?? '';
+                Log::debug('[MentoringHistory] mount() downgrading ALL to single category', [
+                    'new_category' => $newCat ?: '(empty)',
+                ]);
+                $this->category = $newCat;
             }
 
             return;
         }
 
         if (empty($this->category) || ! $this->canViewCategory($this->category)) {
-            $this->category = $this->defaultCategory();
+            $newCat = $this->defaultCategory();
+            Log::debug('[MentoringHistory] mount() resetting invalid/empty category', [
+                'old_category' => $this->category ?: '(empty)',
+                'can_view' => empty($this->category) ? 'n/a (empty)' : ($this->canViewCategory($this->category) ? 'yes' : 'no'),
+                'new_category' => $newCat ?: '(empty)',
+            ]);
+            $this->category = $newCat;
         }
+
+        Log::debug('[MentoringHistory] mount() END', [
+            'final_category' => $this->category ?: '(empty)',
+        ]);
 
         $this->saveCategoryToSession();
     }
@@ -119,20 +148,72 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
         $member = Member::where('cid', auth()->id())->first();
 
+        $visiblePositions = $this->getVisibleCtsPositions();
+
+        Log::debug('[MentoringHistory] getSessionQuery START', [
+            'auth_id' => auth()->id(),
+            'category' => $this->category,
+            'visible_categories' => $this->getVisibleCategories(),
+            'visible_positions_count' => count($visiblePositions),
+            'visible_positions_sample' => array_slice($visiblePositions, 0, 20),
+            'member_exists' => $member !== null,
+            'member_id' => $member?->id,
+            'member_cid' => $member?->cid,
+        ]);
+
         $sessionsWithPermissions = $sessionRepository
-            ->getAllAcceptedSessionsForPositionsQuery($this->getVisibleCtsPositions())
+            ->getAllAcceptedSessionsForPositionsQuery($visiblePositions)
             ->where('taken_date', '<', now());
 
         $sessionsUserMentored = $sessionRepository
             ->getSessionsForMentor($member->cid);
 
+        Log::debug('[MentoringHistory] Sub-queries built', [
+            'permissions_sql' => $sessionsWithPermissions->toSql(),
+            'permissions_bindings' => $sessionsWithPermissions->getBindings(),
+            'mentored_sql' => $sessionsUserMentored->toSql(),
+            'mentored_bindings' => $sessionsUserMentored->getBindings(),
+        ]);
+
+        // Run the mentor sub-query standalone to verify it returns expected rows
+        $mentoredCount = (clone $sessionsUserMentored)->count();
+        $mentoredSample = (clone $sessionsUserMentored)->limit(5)->pluck('position', 'id')->all();
+
+        Log::debug('[MentoringHistory] Standalone mentor query results', [
+            'mentored_count' => $mentoredCount,
+            'mentored_sample' => $mentoredSample,
+        ]);
+
         $union = $sessionsWithPermissions->union($sessionsUserMentored);
 
-        return Session::query()
+        Log::debug('[MentoringHistory] Union built', [
+            'union_sql' => $union->toSql(),
+            'union_bindings' => $union->getBindings(),
+        ]);
+
+        $finalQuery = Session::query()
             ->fromSub($union, 'sessions')
             ->orderByDesc('taken_date')
             ->orderByDesc('taken_from')
             ->orderByDesc('id');
+
+        // Execute the final query and log what we actually get
+        $finalResults = (clone $finalQuery)->limit(5)->get();
+
+        Log::debug('[MentoringHistory] Final query results (sample)', [
+            'final_sql' => $finalQuery->toSql(),
+            'final_bindings' => $finalQuery->getBindings(),
+            'final_count' => (clone $finalQuery)->count(),
+            'final_sample' => $finalResults->map(fn ($s) => [
+                'id' => $s->id,
+                'position' => $s->position,
+                'mentor_id' => $s->mentor_id,
+                'taken_date' => $s->taken_date,
+                'filed' => $s->filed,
+            ])->all(),
+        ]);
+
+        return $finalQuery;
     }
 
     protected function getPositionFilterOptions(): array
@@ -148,20 +229,42 @@ class MentoringHistory extends BaseMentoringHistoryPage
         $policy = app(MentoringPolicy::class);
         $scope = new MentoringScope;
 
+        $viewAll = $policy->viewAll($user);
+        $result = [];
+
         if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
-            if ($policy->viewAll($user)) {
-                return app(MentorPermissionService::class)
+            if ($viewAll) {
+                $result = app(MentorPermissionService::class)
                     ->getAllCtsCallsignsForCategories($this->getVisibleCategories());
+                Log::debug('[MentoringHistory] getVisibleCtsPositions ALL + viewAll', [
+                    'count' => count($result),
+                    'sample' => array_slice($result, 0, 10),
+                ]);
+            } else {
+                $result = $user->getAllAssignedCallsigns();
+                Log::debug('[MentoringHistory] getVisibleCtsPositions ALL (no viewAll)', [
+                    'count' => count($result),
+                    'sample' => array_slice($result, 0, 10),
+                ]);
             }
 
-            return $user->getAllAssignedCallsigns();
+            return $result;
         }
 
         if (empty($this->category)) {
+            Log::debug('[MentoringHistory] getVisibleCtsPositions empty category → []');
+
             return [];
         }
 
-        return $policy->visibleCtsPositionsForCategory($user, $scope, $this->category);
+        $result = $policy->visibleCtsPositionsForCategory($user, $scope, $this->category);
+        Log::debug('[MentoringHistory] getVisibleCtsPositions specific category', [
+            'category' => $this->category,
+            'count' => count($result),
+            'sample' => array_slice($result, 0, 10),
+        ]);
+
+        return $result;
     }
 
     private function trainingGroupLabel(): string
