@@ -8,6 +8,7 @@ use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -130,7 +131,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $targetDate = Carbon::parse($this->date);
         $allowedCallsigns = $this->getAllowedCallsigns();
 
-        return Member::query()
+        $students = Member::query()
             ->whereHas('sessions', function ($query) use ($allowedCallsigns) {
                 $query->whereNull('mentor_id')
                     ->whereNull('filed')
@@ -162,6 +163,18 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             ])
             ->orderByRaw("COALESCE(last_session_date, '1970-01-01') ASC")
             ->get();
+
+        $trainingPlaces = TrainingPlace::whereIn('account_id', $students->pluck('cid'))
+            ->select('id', 'account_id')
+            ->get()
+            ->keyBy('account_id');
+
+        foreach ($students as $student) {
+            $place = $trainingPlaces->get($student->cid);
+            $student->trainingPlaceId = $place?->id;
+        }
+
+        return $students;
     }
 
     public function render()
