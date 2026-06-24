@@ -25,6 +25,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+
 class MyAvailability extends Page implements HasForms, HasTable
 {
     use InteractsWithForms;
