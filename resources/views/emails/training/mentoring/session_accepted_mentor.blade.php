@@ -19,7 +19,7 @@
 
     <p>Your student has been sent an e-mail reminding them to prepare for the session, including referring to relevant reference material and previous mentoring session reports. If they have failed to do so, please inform the TGI and consider whether the session should be delayed.</p>
 
-    <p>To stop receiving these alerts, you can amend your email settings in the STUDENT menu.</p>
+    <p>To stop receiving these alerts, you can amend your email settings in the <a href="{{ route('filament.training.pages.email-settings') }}">Training Panel</a>.</p>
 @stop
 
 @section('signature')
