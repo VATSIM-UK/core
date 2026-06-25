@@ -156,7 +156,7 @@ class MyAvailability extends Page implements HasForms, HasTable
         $startTime = Carbon::parse("{$startDate->toDateString()} {$data['from']}", 'UTC');
         $endTime = Carbon::parse("{$startDate->toDateString()} {$data['to']}", 'UTC');
 
-        if ($startTime->diffInMinutes($endTime) < AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES) {
+        if (! $this->getAvailabilityService()->meetsMinimumDuration($startTime, $endTime)) {
             Notification::make()
                 ->title('Availability slots must be at least '.AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes long.')
                 ->danger()
