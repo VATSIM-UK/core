@@ -191,6 +191,22 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_shows_notification_when_slot_is_shorter_than_minimum_duration(): void
+    {
+        $tomorrow = now()->addDay()->toDateString();
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.date_range', ['start' => $tomorrow, 'end' => $tomorrow])
+            ->set('data.from', '18:00')
+            ->set('data.to', '18:30')
+            ->call('create')
+            ->assertNotified();
+
+        $this->assertCount(0, Availability::where('student_id', $this->studentMember->id)->get());
+    }
+
+    #[Test]
     public function it_adds_multiple_slots_across_a_date_range(): void
     {
         $start = now()->addDay()->toDateString();
