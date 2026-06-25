@@ -5,6 +5,7 @@ namespace Tests\Feature\Services;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Exceptions\Discord\GenericDiscordException;
 use App\Libraries\Discord;
+use App\Models\Discord\DiscordTag;
 use App\Models\Discord\HoneypotStat;
 use App\Models\Mship\Account;
 use App\Services\Discord\HoneypotService;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use League\OAuth2\Client\Token\AccessToken;
 use Mockery;
 use Mockery\MockInterface;
@@ -697,5 +699,166 @@ class DiscordTest extends TestCase
         ]);
 
         (new Discord)->bulkDeleteMessages('100', ['1', '2', '3']);
+    }
+
+    // ─── synctagCommands ───────────────────────────────────────────
+
+    private function configureDiscordApi(): void
+    {
+        Config::set('services.discord.token', 'test-token');
+        Config::set('services.discord.guild_id', 'test-guild');
+        Config::set('services.discord.client_id', 'test-app');
+        Config::set('services.discord.base_discord_uri', 'https://discord.com/api/v10');
+    }
+
+    #[Test]
+    public function sync_tag_commands_creates_new_command_when_none_exists()
+    {
+        $this->configureDiscordApi();
+        DiscordTag::factory()->create(['key' => 'help', 'value' => 'Help text']);
+
+        Http::fake([
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands' => Http::sequence()
+                ->push([], 200)
+                ->push(['id' => 'cmd-1'], 200),
+        ]);
+
+        (new Discord)->syncTagCommands();
+
+        Http::assertSent(function ($request) {
+            return $request->method() === 'POST'
+                && str_contains($request->url(), '/commands')
+                && $request->data()['name'] === 'tag'
+                && $request->data()['options'][0]['choices'][0]['name'] === 'help';
+        });
+    }
+
+    #[Test]
+    public function sync_tag_commands_updates_existing_command()
+    {
+        $this->configureDiscordApi();
+        $tag = DiscordTag::factory()->create(['key' => 'faq', 'value' => 'FAQ content']);
+
+        Http::fake([
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands' => Http::response([
+                ['id' => 'cmd-1', 'name' => 'tag'],
+            ], 200),
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands/cmd-1' => Http::response([], 200),
+        ]);
+
+        (new Discord)->syncTagCommands();
+
+        Http::assertSent(function ($request) {
+            return $request->method() === 'PATCH'
+                && str_contains($request->url(), '/commands/cmd-1');
+        });
+    }
+
+    #[Test]
+    public function sync_tag_commands_deletes_command_when_no_tags_exist()
+    {
+        $this->configureDiscordApi();
+
+        Http::fake([
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands' => Http::response([
+                ['id' => 'cmd-1', 'name' => 'tag'],
+            ], 200),
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands/cmd-1' => Http::response([], 204),
+        ]);
+
+        (new Discord)->syncTagCommands();
+
+        Http::assertSent(function ($request) {
+            return $request->method() === 'DELETE'
+                && str_contains($request->url(), '/commands/cmd-1');
+        });
+    }
+
+    #[Test]
+    public function sync_tag_commands_logs_error_when_no_client_id()
+    {
+        Config::set('services.discord.token', 'test-token');
+        Config::set('services.discord.guild_id', 'test-guild');
+        Config::set('services.discord.client_id', null);
+        Config::set('services.discord.base_discord_uri', 'https://discord.com/api/v10');
+
+        Log::shouldReceive('error')
+            ->once()
+            ->with('Cannot sync tag commands: no Discord client ID configured');
+
+        (new Discord)->syncTagCommands();
+    }
+
+    #[Test]
+    public function sync_tag_commands_truncates_choices_when_over_25()
+    {
+        $this->configureDiscordApi();
+
+        // Create 30 tags — more than the 25 choice limit
+        DiscordTag::factory()->count(30)->create();
+
+        Http::fake([
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands' => Http::sequence()
+                ->push([], 200)
+                ->push(['id' => 'cmd-1'], 200),
+        ]);
+
+        (new Discord)->syncTagCommands();
+
+        Http::assertSent(function ($request) {
+            if ($request->method() !== 'POST') {
+                return false;
+            }
+
+            $data = $request->data();
+            $choices = $data['options'][0]['choices'] ?? [];
+
+            return count($choices) === 25;
+        });
+    }
+
+    #[Test]
+    public function sync_tag_commands_builds_choices_from_tag_keys()
+    {
+        $this->configureDiscordApi();
+        DiscordTag::factory()->create(['key' => 'alpha', 'value' => 'First tag']);
+        DiscordTag::factory()->create(['key' => 'beta', 'value' => 'Second tag']);
+
+        Http::fake([
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands' => Http::sequence()
+                ->push([], 200)
+                ->push(['id' => 'cmd-1'], 200),
+        ]);
+
+        (new Discord)->syncTagCommands();
+
+        Http::assertSent(function ($request) {
+            if ($request->method() !== 'POST') {
+                return false;
+            }
+
+            $data = $request->data();
+            $choices = $data['options'][0]['choices'] ?? [];
+
+            return collect($choices)->pluck('name')->values()->toArray() === ['alpha', 'beta']
+                && collect($choices)->pluck('value')->values()->toArray() === ['alpha', 'beta'];
+        });
+    }
+
+    #[Test]
+    public function sync_tag_commands_logs_failure_when_list_fails()
+    {
+        $this->configureDiscordApi();
+        DiscordTag::factory()->create(['key' => 'test', 'value' => 'Test']);
+
+        Http::fake([
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands' => Http::response([], 500),
+        ]);
+
+        (new Discord)->syncTagCommands();
+
+        Http::assertSent(function ($request) {
+            return $request->method() === 'GET';
+        });
     }
 }

@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Console\Commands\Discord;
 
 use App\Jobs\Discord\HandleHoneypotTrigger;
+use App\Models\Discord\DiscordTag;
+use Discord\Builders\MessageBuilder;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
+use Discord\Parts\Interactions\ApplicationCommand;
 use Discord\WebSockets\Event;
 use Discord\WebSockets\Intents;
 use Illuminate\Console\Command;
@@ -47,6 +50,8 @@ class RunDiscordBot extends Command
         $discord->on('init', function (Discord $discord) {
             $this->honeypotStartup();
 
+            $this->registerTagCommand($discord);
+
             $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) {
                 if ($message->author->bot) {
                     return;
@@ -69,6 +74,75 @@ class RunDiscordBot extends Command
         });
 
         $discord->run();
+    }
+
+    private function registerTagCommand(Discord $discord): void
+    {
+        $discord->listenCommand('tag', function (ApplicationCommand $interaction) {
+            $key = $interaction->data->options->get('name', 'key')?->value;
+
+            if (! $key) {
+                $interaction->respondWithMessage(
+                    MessageBuilder::new()->setContent('Please specify a tag key.')
+                );
+
+                return;
+            }
+
+            $userId = $interaction->member->user->id;
+            $channelId = $interaction->channel_id;
+
+            // Per-user rate limit: once per minute
+            $userKey = "discord:ratelimit:user:{$userId}";
+            $userCooldown = Cache::get($userKey);
+            if ($userCooldown) {
+                $remaining = 60 - (now()->timestamp - $userCooldown);
+                $interaction->respondWithMessage(
+                    MessageBuilder::new()->setContent("You're using tags too fast. Try again in {$remaining} seconds."),
+                    ephemeral: true
+                );
+
+                return;
+            }
+
+            // Per-tag-per-channel rate limit: once every 5 minutes
+            $tagKey = "discord:ratelimit:tag:{$key}:{$channelId}";
+            $tagCooldown = Cache::get($tagKey);
+            if ($tagCooldown) {
+                $interaction->respondWithMessage(
+                    MessageBuilder::new()->setContent("The `{$key}` tag was recently used in this channel. Try again in a few minutes."),
+                    ephemeral: true
+                );
+
+                return;
+            }
+
+            $tag = DiscordTag::where('key', $key)->first();
+
+            if (! $tag) {
+                $interaction->respondWithMessage(
+                    MessageBuilder::new()->setContent("Tag `{$key}` not found."),
+                    ephemeral: true
+                );
+
+                return;
+            }
+
+            Cache::put($userKey, now()->timestamp, 60);
+            Cache::put($tagKey, now()->timestamp, 300);
+
+            $interaction->respondWithMessage(
+                MessageBuilder::new()
+                    ->addEmbed([
+                        'title' => "{$tag->title}",
+                        'description' => $tag->value,
+                        'color' => 2469347,
+                        'footer' => [
+                            'text' => "/tag {$tag->key}",
+                        ],
+                    ])
+            );
+        });
     }
 
     public function honeypotStartup()

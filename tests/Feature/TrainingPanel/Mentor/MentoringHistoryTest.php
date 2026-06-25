@@ -35,7 +35,7 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_is_forbidden_when_user_has_no_mentoring_positions(): void
+    public function it_is_forbidden_when_user_has_no_mentoring_positions_and_no_mentor_sessions(): void
     {
         Livewire::actingAs($this->panelUser)
             ->test(MentoringHistory::class)
@@ -148,8 +148,11 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $student = Account::factory()->create();
         $studentCtsMember = $this->getOrCreateCtsMember($student);
 
+        $otherMentor = Account::factory()->create();
+        $otherMentorCtsMember = $this->getOrCreateCtsMember($otherMentor);
+
         $sessionInCategory = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGKK_GND');
-        $sessionOutOfCategory = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGKK_TWR');
+        $sessionOutOfCategory = $this->insertSession($otherMentorCtsMember->id, $studentCtsMember->id, 'EGKK_TWR');
 
         $sessionInRecord = Session::on('cts')->find($sessionInCategory);
         $sessionOutRecord = Session::on('cts')->find($sessionOutOfCategory);
@@ -237,6 +240,71 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
             ->assertSee('No mentoring sessions found in this training group');
     }
 
+    #[Test]
+    public function it_shows_sessions_where_user_was_the_mentor_even_without_position_permissions(): void
+    {
+        $mentorCtsMember = $this->getOrCreateCtsMember($this->panelUser);
+
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $sessionId = $this->insertSession(
+            $mentorCtsMember->id,
+            $studentCtsMember->id,
+            'EGLL_GND',
+            filed: now()->toDateTimeString(),
+            takenDate: now()->subDay()->format('Y-m-d H:i:s'),
+        );
+
+        $session = Session::on('cts')->find($sessionId);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(MentoringHistory::class)
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords([$session]);
+    }
+
+    #[Test]
+    public function it_shows_mentor_based_sessions_alongside_permission_based_sessions(): void
+    {
+        $category = MentorPermissionService::atcCategories()[0];
+        $permittedPosition = $this->createTrainingPosition($category, 'EGLL_GND');
+
+        $mentorCtsMember = $this->getOrCreateCtsMember($this->panelUser);
+        app(MentorPermissionService::class)->assignToMentorable(
+            $this->panelUser, $permittedPosition, $this->panelUser, $category
+        );
+
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $otherMentor = Account::factory()->create();
+        $otherMentorCtsMember = $this->getOrCreateCtsMember($otherMentor);
+
+        $permSessionId = $this->insertSession(
+            $otherMentorCtsMember->id,
+            $studentCtsMember->id,
+            'EGLL_GND',
+            filed: now()->toDateTimeString(),
+            takenDate: now()->subDay()->format('Y-m-d H:i:s'),
+        );
+
+        $mentorSessionId = $this->insertSession(
+            $mentorCtsMember->id,
+            $studentCtsMember->id,
+            'EGKK_TWR',
+            filed: now()->toDateTimeString(),
+            takenDate: now()->subDay()->format('Y-m-d H:i:s'),
+        );
+
+        $permSession = Session::on('cts')->find($permSessionId);
+        $mentorSession = Session::on('cts')->find($mentorSessionId);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(MentoringHistory::class, ['category' => $category])
+            ->assertCanSeeTableRecords([$permSession, $mentorSession]);
+    }
+
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition
     {
         CtsPosition::firstOrCreate(['callsign' => $callsign]);
@@ -271,17 +339,21 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         ]);
     }
 
+    private static int $nextCtsMemberId = 900000;
+
     private function getOrCreateCtsMember(Account $account): Member
     {
-        return Member::on('cts')->firstOrCreate(
+        $member = Member::on('cts')->firstOrCreate(
             ['cid' => $account->id],
             [
-                'id' => $account->id,
+                'id' => self::$nextCtsMemberId++,
                 'old_rts_id' => 0,
                 'name' => $account->name,
                 'joined' => now(),
                 'joined_div' => now(),
             ]
         );
+
+        return $member;
     }
 }
