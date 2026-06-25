@@ -10,7 +10,9 @@ use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionCancelledByStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentConfirmationNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionReallocatedNewMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionReallocatedOldMentorNotification;
@@ -204,8 +206,15 @@ class MentoringSessionsService
                 break;
 
             case 'cancelled':
-                $studentAccount->notify(new MentoringSessionCancelledStudentNotification($session, $data['cancellerAccount'], $data['reason']));
-                $mentorAccount->notify(new MentoringSessionCancelledMentorNotification($session, $data['reason']));
+                $cancellerAccount = $data['cancellerAccount'];
+
+                if ($cancellerAccount->id === $studentAccount->id) {
+                    $mentorAccount->notify(new MentoringSessionCancelledByStudentNotification($session, $data['reason']));
+                    $studentAccount->notify(new MentoringSessionCancelledStudentConfirmationNotification($session));
+                } else {
+                    $studentAccount->notify(new MentoringSessionCancelledStudentNotification($session, $cancellerAccount, $data['reason']));
+                    $mentorAccount->notify(new MentoringSessionCancelledMentorNotification($session, $data['reason']));
+                }
                 break;
 
             case 'reallocated':
