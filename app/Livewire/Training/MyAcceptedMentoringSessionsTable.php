@@ -54,7 +54,7 @@ class MyAcceptedMentoringSessionsTable extends Component implements HasActions, 
                         $start = Carbon::parse($record->taken_from)->format('H:i');
                         $end = Carbon::parse($record->taken_to)->format('H:i');
 
-                        return trim("{$date} {$start}Z - {$end}Z");
+                        return trim("{$date} {$start} - {$end}");
                     })
                     ->description(function (Session $record) {
                         $sessionStart = Carbon::parse("{$record->taken_date} {$record->taken_from}");
