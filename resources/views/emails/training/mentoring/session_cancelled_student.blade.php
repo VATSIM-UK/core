@@ -11,7 +11,7 @@
 
     <p>We apologise for any inconvenience caused. It is possible that another mentor will pick your mentoring session up, so you should ensure that your ongoing availability is up-to-date.</p>
 
-    <p>To stop receiving these alerts, you can amend your email settings in the STUDENT menu.</p>
+    <p>To stop receiving these alerts, you can amend your email settings in the <a href="{{ route('filament.training.pages.email-settings') }}">Training Panel</a>.</p>
 @stop
 
 @section('signature')
