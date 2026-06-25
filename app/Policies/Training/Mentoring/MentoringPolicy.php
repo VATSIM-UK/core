@@ -144,7 +144,13 @@ class MentoringPolicy
             return true;
         }
 
-        return $this->isAssignedMentor($user, $session);
+        if ($this->isAssignedMentor($user, $session)) {
+            return true;
+        }
+
+        $member = Member::where('cid', $user->id)->first();
+
+        return $member && $session->student_id === $member->id;
     }
 
     /**
