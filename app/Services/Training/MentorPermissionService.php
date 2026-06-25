@@ -42,6 +42,22 @@ class MentorPermissionService
         'P3 Training' => 'Pilot Mentor',
     ];
 
+    public const ATC_TGI_CATEGORY_ROLE_MAP = [
+        'OBS to S1 Training' => 'ATC NC Instructor',
+        'S2 Training' => 'ATC TWR Instructor',
+        'S3 Training' => 'ATC APP Instructor',
+        'C1 Training' => 'ATC Enroute Instructor',
+        'Heathrow GMC' => 'ATC Heathrow Instructor',
+        'Heathrow AIR' => 'ATC Heathrow Instructor',
+        'Heathrow APC' => 'ATC Heathrow Instructor',
+    ];
+
+    public const PILOT_TGI_CATEGORY_ROLE_MAP = [
+        'P1 Training' => 'Pilot Instructor',
+        'P2 Training' => 'Pilot Instructor',
+        'P3 Training' => 'Pilot Instructor',
+    ];
+
     public const PILOT_CATEGORY_QUALIFICATION_MAP = [
         'P1 Training' => 'PPL',
         'P2 Training' => 'IR',
@@ -72,6 +88,11 @@ class MentorPermissionService
     public static function roleForCategory(string $category): ?string
     {
         return self::ATC_CATEGORY_ROLE_MAP[$category] ?? self::PILOT_CATEGORY_ROLE_MAP[$category] ?? null;
+    }
+
+    public static function tgiRoleForCategory(string $category): ?string
+    {
+        return self::ATC_TGI_CATEGORY_ROLE_MAP[$category] ?? self::PILOT_TGI_CATEGORY_ROLE_MAP[$category] ?? null;
     }
 
     public function getModelClassForCategory(string $category): string
