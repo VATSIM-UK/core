@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Training;
 
+use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Models\Cts\Session;
 use App\Services\Training\MentoringSessionsService;
 use Carbon\Carbon;
@@ -19,9 +20,11 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
+use Spatie\CalendarLinks\Link;
 
 class MyAcceptedMentoringSessionsTable extends Component implements HasActions, HasForms, HasTable
 {
+    use AddToCalendar;
     use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
@@ -76,11 +79,38 @@ class MyAcceptedMentoringSessionsTable extends Component implements HasActions, 
                     ),
             ])
             ->actions([
+                $this->getCalendarActionGroup(),
                 ActionGroup::make([
                     $this->cancelSessionAction(),
                 ]),
             ])
             ->emptyStateHeading('No upcoming mentoring sessions found');
+    }
+
+    protected function buildCalendarLinkObject(mixed $record): Link
+    {
+        \assert($record instanceof Session);
+
+        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
+        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
+        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
+
+        if ($end->lte($start)) {
+            $end->addDay();
+        }
+
+        $mentorName = $record->mentor?->name ?? 'Unknown';
+
+        return Link::create("Mentoring Session - {$record->position}", $start, $end)
+            ->description("Position: {$record->position}\nMentor: {$mentorName}")
+            ->address($record->position);
+    }
+
+    protected function getCalendarIcsFilename(mixed $record): string
+    {
+        \assert($record instanceof Session);
+
+        return 'mentoring-session-'.str($record->position)->slug();
     }
 
     public function cancelSessionAction(): Action
