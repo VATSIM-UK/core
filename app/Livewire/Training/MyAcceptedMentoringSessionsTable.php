@@ -4,11 +4,16 @@ namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Models\Cts\Session;
+use App\Services\Training\MentoringSessionsService;
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -75,6 +80,9 @@ class MyAcceptedMentoringSessionsTable extends Component implements HasActions, 
             ])
             ->actions([
                 $this->getCalendarActionGroup(),
+                ActionGroup::make([
+                    $this->cancelSessionAction(),
+                ]),
             ])
             ->emptyStateHeading('No upcoming mentoring sessions found');
     }
@@ -99,6 +107,41 @@ class MyAcceptedMentoringSessionsTable extends Component implements HasActions, 
         \assert($record instanceof Session);
 
         return 'mentoring-session-'.str($record->position)->slug();
+    }
+
+    public function cancelSessionAction(): Action
+    {
+        return Action::make('cancel')
+            ->label('Cancel Session')
+            ->icon('heroicon-m-x-circle')
+            ->color('danger')
+            ->visible(fn (Session $record): bool => Carbon::parse("{$record->taken_date} {$record->taken_from}")->isFuture())
+            ->modalHeading(fn (Session $record) => 'Cancel Session')
+            ->modalDescription(fn (Session $record) => 'Please provide a reason for cancelling this session, it will be visible to the mentor and relevent training staff.')
+            ->modalSubmitActionLabel('Cancel Session')
+            ->form([
+                Textarea::make('reason')
+                    ->label('Cancellation Reason')
+                    ->required()
+                    ->minLength(10),
+            ])
+            ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
+                $success = $mentoringService->cancelSession($record->id, $data['reason'], auth()->user());
+
+                if ($success) {
+                    Notification::make()
+                        ->title('Session Cancelled')
+                        ->body('Your seession has been successfully cancelled.')
+                        ->success()
+                        ->send();
+                } else {
+                    Notification::make()
+                        ->title('Cancellation Failed')
+                        ->body('Could not cancel the session. It may have already been modified or completed.')
+                        ->danger()
+                        ->send();
+                }
+            });
     }
 
     public function render()
