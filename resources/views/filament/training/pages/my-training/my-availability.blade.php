@@ -53,4 +53,7 @@
 		</div>
 	</div>
 	<x-filament-actions::modals />
+
+	@livewire(\App\Livewire\Training\MyAcceptedMentoringSessionsTable::class)
+
 </x-filament-panels::page>
