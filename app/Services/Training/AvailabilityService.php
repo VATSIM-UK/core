@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class AvailabilityService
 {
+    public const MINIMUM_SLOT_DURATION_MINUTES = 45;
+
     public function resolveMemberId(int $cid): ?int
     {
         return Member::where('cid', $cid)->value('id');
@@ -56,6 +58,10 @@ class AvailabilityService
     {
         if ($startUtc->greaterThanOrEqualTo($endUtc)) {
             return [false, 'The availability end time must be after the start time.'];
+        }
+
+        if ($startUtc->diffInMinutes($endUtc) < static::MINIMUM_SLOT_DURATION_MINUTES) {
+            return [false, 'Availability slots must be at least '.static::MINIMUM_SLOT_DURATION_MINUTES.' minutes long.'];
         }
 
         if ($startUtc->isPast()) {
