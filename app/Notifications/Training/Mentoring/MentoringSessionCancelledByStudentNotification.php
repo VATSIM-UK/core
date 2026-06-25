@@ -4,7 +4,6 @@ namespace App\Notifications\Training\Mentoring;
 
 use App\Enums\EmailType;
 use App\Models\Cts\Session;
-use App\Models\Mship\Account;
 use App\Notifications\Contracts\HasEmailType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
