@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Mentor;
 
+use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Filament\Training\Support\MentoringTrainingGroupBadgeColor;
@@ -13,6 +14,7 @@ use App\Models\Cts\Session;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Select;
@@ -23,9 +25,11 @@ use Filament\Tables\Table;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
+use Spatie\CalendarLinks\Link;
 
 class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 {
+    use AddToCalendar;
     use RemembersTrainingGroupCategory;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
@@ -133,6 +137,7 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
     protected function tableRecordActions(): array
     {
         return [
+            $this->getCalendarActionGroup(),
             ActionGroup::make([
                 Action::make('reallocate')
                     ->label('Reallocate')
@@ -227,6 +232,28 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
         }
 
         return fn ($record) => MentoringTrainingGroupBadgeColor::forCtsCallsign($record->position);
+    }
+
+    protected function buildCalendarLinkObject(mixed $record): Link
+    {
+        \assert($record instanceof Session);
+
+        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
+        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
+        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
+
+        $mentorName = $record->mentor?->name ?? 'TBD';
+
+        return Link::create("Mentoring Session - {$record->position}", $start, $end)
+            ->description("Position: {$record->position}\nMentor: {$mentorName}")
+            ->address($record->position);
+    }
+
+    protected function getCalendarIcsFilename(mixed $record): string
+    {
+        \assert($record instanceof Session);
+
+        return 'mentoring-session-'.str($record->position)->slug();
     }
 
     private function getVisibleCtsPositions(): array

@@ -11,6 +11,7 @@ use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\CalendarLinks\Link;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class MyAcceptedMentoringSessionsTableTest extends BaseTrainingPanelTestCase
@@ -170,6 +171,21 @@ class MyAcceptedMentoringSessionsTableTest extends BaseTrainingPanelTestCase
             ->assertSuccessful()
             ->assertCanSeeTableRecords([$this->acceptedSession])
             ->assertCanNotSeeTableRecords([$noShowSession]);
+    }
+
+    #[Test]
+    public function it_builds_calendar_link_object_with_correct_properties(): void
+    {
+        $method = new \ReflectionMethod(MyAcceptedMentoringSessionsTable::class, 'buildCalendarLinkObject');
+        $component = new MyAcceptedMentoringSessionsTable;
+        $link = $method->invoke($component, $this->acceptedSession);
+
+        $this->assertInstanceOf(Link::class, $link);
+        $this->assertSame('Mentoring Session - EGLL_APP', $link->title);
+        $this->assertSame($this->acceptedSession->taken_date.' 10:00:00', $link->from->format('Y-m-d H:i:s'));
+        $this->assertSame($this->acceptedSession->taken_date.' 12:00:00', $link->to->format('Y-m-d H:i:s'));
+        $this->assertStringContainsString('Position: EGLL_APP', $link->description);
+        $this->assertSame('EGLL_APP', $link->address);
     }
 
     #[Test]

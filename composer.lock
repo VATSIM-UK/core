@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f3a09aebf80ef53f1e6646e585b9d56",
+    "content-hash": "8bbc60a09531ba2c5de0295107847069",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -10532,6 +10532,65 @@
                 }
             ],
             "time": "2026-05-26T13:13:33+00:00"
+        },
+        {
+            "name": "spatie/calendar-links",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/calendar-links.git",
+                "reference": "a189cfa5fa20a44f02739be21efb113b2127882c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/a189cfa5fa20a44f02739be21efb113b2127882c",
+                "reference": "a189cfa5fa20a44f02739be21efb113b2127882c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.93",
+                "phpunit/phpunit": "^12.5 || ^13.0",
+                "spatie/phpunit-snapshot-assertions": "^5.3",
+                "vimeo/psalm": "^6.15"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\CalendarLinks\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian De Deyne",
+                    "email": "sebastian@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Generate add to calendar links for Google, iCal and other calendar systems",
+            "homepage": "https://github.com/spatie/calendar-links",
+            "keywords": [
+                "calendar-links",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/calendar-links/issues",
+                "source": "https://github.com/spatie/calendar-links/tree/2.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                }
+            ],
+            "time": "2026-05-29T07:53:23+00:00"
         },
         {
             "name": "spatie/commonmark-shiki-highlighter",

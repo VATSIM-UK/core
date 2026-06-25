@@ -10,6 +10,7 @@ use App\Models\Cts\PracticalExaminers;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Notifications\Training\Exams\ExamCancelledExaminerNotification;
+use Spatie\CalendarLinks\Link;
 use App\Notifications\Training\Exams\ExamCancelledStudentNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
@@ -230,4 +231,25 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
             },
         );
     }
-}
+
+    #[Test]
+    public function it_builds_calendar_link_object_with_correct_properties_when_exam_is_scheduled(): void
+    {
+        $this->examBooking->update([
+            'taken' => 1,
+            'taken_date' => '2026-07-15',
+            'taken_from' => '14:00:00',
+            'taken_to' => '16:00:00',
+        ]);
+
+        $method = new \ReflectionMethod(MyPendingExams::class, 'buildCalendarLinkObject');
+        $page = new MyPendingExams();
+        $link = $method->invoke($page, $this->examBooking);
+
+        $this->assertInstanceOf(Link::class, $link);
+        $this->assertSame("Practical Exam - {$this->examBooking->exam}", $link->title);
+        $this->assertSame('2026-07-15 14:00:00', $link->from->format('Y-m-d H:i:s'));
+        $this->assertSame('2026-07-15 16:00:00', $link->to->format('Y-m-d H:i:s'));
+        $this->assertStringContainsString("Exam Type: {$this->examBooking->exam}", $link->description);
+        $this->assertStringContainsString('EGKK_TWR', $link->address);
+    }
