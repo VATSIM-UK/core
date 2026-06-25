@@ -242,6 +242,10 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
         $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
         $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
 
+        if ($end->lte($start)) {
+            $end->addDay();
+        }
+
         $mentorName = $record->mentor?->name ?? 'TBD';
 
         return Link::create("Mentoring Session - {$record->position}", $start, $end)
