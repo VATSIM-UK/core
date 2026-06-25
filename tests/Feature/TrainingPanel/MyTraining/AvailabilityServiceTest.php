@@ -41,6 +41,32 @@ class AvailabilityServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_returns_false_if_slot_is_shorter_than_minimum_duration()
+    {
+        $start = Carbon::parse('2026-04-19 18:00:00');
+        $end = Carbon::parse('2026-04-19 18:30:00');
+
+        [$valid, $message] = $this->service->isSlotValid($this->member->id, $start, $end);
+
+        $this->assertFalse($valid);
+        $this->assertEquals(
+            'Availability slots must be at least '.AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes long.',
+            $message
+        );
+    }
+
+    #[Test]
+    public function it_returns_true_if_slot_exactly_meets_minimum_duration()
+    {
+        $start = Carbon::parse('2026-04-19 18:00:00');
+        $end = Carbon::parse('2026-04-19 18:45:00');
+
+        [$valid] = $this->service->isSlotValid($this->member->id, $start, $end);
+
+        $this->assertTrue($valid);
+    }
+
+    #[Test]
     public function it_returns_false_if_slot_is_in_the_past()
     {
         $start = Carbon::parse('2026-04-17 12:00:00');
