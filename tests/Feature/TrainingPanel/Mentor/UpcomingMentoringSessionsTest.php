@@ -394,6 +394,7 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
             'EGLL_APP',
             takenDate: Carbon::tomorrow()->format('Y-m-d H:i:s'),
         );
+        DB::connection('cts')->table('sessions')->where('id', $sessionId)->update(['taken_to' => '12:00:00']);
         $session = Session::on('cts')->find($sessionId);
 
         $method = new \ReflectionMethod(UpcomingMentoringSessions::class, 'buildCalendarLinkObject');
