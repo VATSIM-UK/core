@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Training;
 
+use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
 use App\Filament\Training\Pages\Mentor\MentoringHistory;
 use App\Models\Cts\Availability;
@@ -34,9 +35,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
+use Spatie\CalendarLinks\Link;
 
 class AcceptedMentoringSessionsTable extends Component implements HasActions, HasForms, HasTable
 {
+    use AddToCalendar;
     use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
@@ -96,6 +99,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->label('Conduct Session')
                     ->url(fn (Session $record): string => ConductMentoringSession::getUrl(['sessionId' => $record->id]))
                     ->visible(fn (Session $record): bool => auth()->user()?->can('conduct', $record) ?? false),
+
+                $this->getCalendarActionGroup(),
 
                 ActionGroup::make([
                     ActionGroup::make([
@@ -490,6 +495,28 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->send();
                 }
             });
+    }
+
+    protected function buildCalendarLinkObject(mixed $record): Link
+    {
+        \assert($record instanceof Session);
+
+        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
+        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
+        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
+
+        $mentorName = $record->mentor?->name ?? 'Unknown';
+
+        return Link::create("Mentoring Session - {$record->position}", $start, $end)
+            ->description("Position: {$record->position}\nMentor: {$mentorName}")
+            ->address($record->position);
+    }
+
+    protected function getCalendarIcsFilename(mixed $record): string
+    {
+        \assert($record instanceof Session);
+
+        return 'mentoring-session-'.str($record->position)->slug();
     }
 
     public function render()
