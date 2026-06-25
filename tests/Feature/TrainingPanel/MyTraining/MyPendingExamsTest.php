@@ -10,13 +10,13 @@ use App\Models\Cts\PracticalExaminers;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Notifications\Training\Exams\ExamCancelledExaminerNotification;
-use Spatie\CalendarLinks\Link;
 use App\Notifications\Training\Exams\ExamCancelledStudentNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\CalendarLinks\Link;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class MyPendingExamsTest extends BaseTrainingPanelTestCase
@@ -243,7 +243,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         ]);
 
         $method = new \ReflectionMethod(MyPendingExams::class, 'buildCalendarLinkObject');
-        $page = new MyPendingExams();
+        $page = new MyPendingExams;
         $link = $method->invoke($page, $this->examBooking);
 
         $this->assertInstanceOf(Link::class, $link);
@@ -253,3 +253,4 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         $this->assertStringContainsString("Exam Type: {$this->examBooking->exam}", $link->description);
         $this->assertStringContainsString('EGKK_TWR', $link->address);
     }
+}
