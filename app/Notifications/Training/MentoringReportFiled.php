@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Notifications\Training;
 
+use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
 use App\Models\Cts\Session;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,6 +36,7 @@ class MentoringReportFiled extends Notification implements ShouldQueue
                 'subject' => $subject,
                 'recipient' => $notifiable,
                 'session' => $this->session,
+                'reportUrl' => ViewMentoringReport::getUrl(['sessionId' => $this->session->id]),
             ]);
     }
 }
