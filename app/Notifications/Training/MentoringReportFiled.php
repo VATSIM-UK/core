@@ -36,7 +36,7 @@ class MentoringReportFiled extends Notification implements ShouldQueue
                 'subject' => $subject,
                 'recipient' => $notifiable,
                 'session' => $this->session,
-                'reportUrl' => ViewMentoringReport::getUrl(['sessionId' => $this->session->id]),
+                'reportUrl' => ViewMentoringReport::getUrl(['sessionId' => $this->session->id], panel: 'training'),
             ]);
     }
 }
