@@ -21,7 +21,7 @@ class AtcTrainingStatistics extends Page
 
     protected ?string $subheading = 'Ongoing ATC training statistics for each Training Group.';
 
-    protected static ?string $slug = 'statistics/atc-training-groups';
+    protected static ?string $slug = 'statistics/atc-training';
 
     public static function canAccess(): bool
     {
