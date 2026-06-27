@@ -59,6 +59,16 @@ class MentorPermissionService
         return array_keys(self::ATC_CATEGORY_ROLE_MAP);
     }
 
+    public static function atcRatingTrainingCategories(): array
+    {
+        return [
+            'OBS to S1 Training',
+            'S2 Training',
+            'S3 Training',
+            'C1 Training',
+        ];
+    }
+
     public static function pilotCategories(): array
     {
         return array_keys(self::PILOT_CATEGORY_ROLE_MAP);

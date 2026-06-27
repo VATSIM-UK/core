@@ -66,6 +66,7 @@ class TrainingPanelProvider extends PanelProvider
                 'My Training',
                 'Exams',
                 'Mentoring',
+                'Statistics',
                 'Training',
                 'Theory',
             ])
