@@ -28,14 +28,6 @@ class AtcTrainingStatistics extends Page
         return auth()->user()?->can('training.statistics.view.atc') ?? false;
     }
 
-    public static function shouldRegisterNavigation(): bool
-    {
-        return auth()->user()?->can('training.statistics.view.atc') ?? false;
-    }
-
-    /**
-     * @return array<int, string>
-     */
     public function getCategories(): array
     {
         return MentorPermissionService::atcRatingTrainingCategories();
