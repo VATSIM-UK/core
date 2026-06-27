@@ -31,19 +31,18 @@
 						class="w-64 flex-shrink-0 sticky left-0 z-20 bg-inherit border-r border-gray-200 dark:border-white/10 px-4 py-3 flex flex-col justify-center">
 						<div class="flex items-start justify-between gap-2">
 							<div class="font-medium text-sm text-gray-950 dark:text-white truncate">
-								<a
-									href="{{ \App\Filament\Training\Pages\Mentor\MentoringHistory::getUrl(
-									    parameters: [
-									        'tableFilters' => [
-									            'student' => ['value' => $student->cid],
-									        ],
-									        'category' => \App\Services\Training\MentorPermissionService::ALL_CATEGORIES,
-									    ],
-									    panel: 'training',
-									) }}"
-									target="_blank" rel="noopener noreferrer">
+								@if ($student->trainingPlaceId)
+									<a
+										href="{{ \App\Filament\Training\Pages\StudentOverview\ViewStudentOverview::getUrl(
+										    parameters: ['trainingPlaceId' => $student->trainingPlaceId],
+										    panel: 'training',
+										) }}"
+										target="_blank" rel="noopener noreferrer">
+										{{ $student->name }}
+									</a>
+								@else
 									{{ $student->name }}
-								</a>
+								@endif
 							</div>
 							@if ($student->pending_position)
 								@php

@@ -28,7 +28,7 @@ class TrainingPlaceService
             return;
         }
 
-        $ctsPositions = $trainingPlace->trainingPosition->cts_positions;
+        $ctsPositions = $trainingPlace->trainingPosition->cts_positions ?? [];
 
         foreach ($ctsPositions as $ctsPosition) {
             $ctsPositionModel = Position::where('callsign', $ctsPosition)->first();
