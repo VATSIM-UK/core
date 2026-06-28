@@ -23,7 +23,7 @@ class SoloEndorsementResource extends Resource
 
     protected static ?string $modelLabel = 'Solo Endorsements';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Mentoring';
+    protected static string|\UnitEnum|null $navigationGroup = 'Endorsements';
 
     public static function getEloquentQuery(): Builder
     {

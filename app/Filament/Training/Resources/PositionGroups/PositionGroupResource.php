@@ -21,7 +21,7 @@ class PositionGroupResource extends Resource
 
     protected static ?string $modelLabel = 'Tier Endorsements';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Mentoring';
+    protected static string|\UnitEnum|null $navigationGroup = 'Endorsements';
 
     public static function infolist(Schema $schema): Schema
     {
