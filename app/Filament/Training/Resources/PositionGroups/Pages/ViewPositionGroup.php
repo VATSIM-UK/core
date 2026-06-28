@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\PositionGroups\Pages;
+namespace App\Filament\Training\Resources\PositionGroups\Pages;
 
-use App\Filament\Admin\Resources\PositionGroups\PositionGroupResource;
+use App\Filament\Training\Resources\PositionGroups\PositionGroupResource;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewPositionGroup extends ViewRecord

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Admin\Resources\PositionGroups;
+namespace App\Filament\Training\Resources\PositionGroups;
 
-use App\Filament\Admin\Resources\PositionGroups\Pages\ListPositionGroups;
-use App\Filament\Admin\Resources\PositionGroups\Pages\ViewPositionGroup;
-use App\Filament\Admin\Resources\PositionGroups\RelationManagers\MembershipEndorsementRelationManager;
+use App\Filament\Training\Resources\PositionGroups\Pages\ListPositionGroups;
+use App\Filament\Training\Resources\PositionGroups\Pages\ViewPositionGroup;
+use App\Filament\Training\Resources\PositionGroups\RelationManagers\MembershipEndorsementRelationManager;
 use App\Models\Atc\PositionGroup;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;

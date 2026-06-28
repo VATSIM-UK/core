@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Admin\Resources\EndorsementRequests;
+namespace App\Filament\Training\Resources\EndorsementRequests;
 
 use App\Events\Training\EndorsementRequestApproved;
-use App\Filament\Admin\Resources\EndorsementRequests\Pages\CreateEndorsementRequest;
-use App\Filament\Admin\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
+use App\Filament\Training\Resources\EndorsementRequests\Pages\CreateEndorsementRequest;
+use App\Filament\Training\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\EndorsementRequest;

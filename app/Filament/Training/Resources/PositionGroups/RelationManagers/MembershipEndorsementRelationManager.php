@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Resources\PositionGroups\RelationManagers;
+namespace App\Filament\Training\Resources\PositionGroups\RelationManagers;
 
 use App\Models\Mship\Account;
 use App\Services\Training\EndorsementService;

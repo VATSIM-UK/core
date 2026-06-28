@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\SoloEndorsements\Pages;
+namespace App\Filament\Training\Resources\SoloEndorsements\Pages;
 
-use App\Filament\Admin\Resources\SoloEndorsements\SoloEndorsementResource;
+use App\Filament\Training\Resources\SoloEndorsements\SoloEndorsementResource;
 use Filament\Resources\Pages\ListRecords;
 
 class ListSoloEndorsements extends ListRecords
