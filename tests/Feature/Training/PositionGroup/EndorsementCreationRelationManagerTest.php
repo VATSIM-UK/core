@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Feature\Admin\PositionGroup;
+namespace Tests\Feature\Training\PositionGroup;
 
-use App\Filament\Admin\Resources\PositionGroups\RelationManagers\MembershipEndorsementRelationManager;
+use App\Filament\Training\Resources\PositionGroups\RelationManagers\MembershipEndorsementRelationManager;
 use App\Filament\Training\Resources\WaitingLists\Pages\ViewWaitingList;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
@@ -18,7 +18,7 @@ class EndorsementCreationRelationManagerTest extends BaseAdminTestCase
     {
         $positionGroup = PositionGroup::factory()->create();
 
-        $this->actingAsAdminUser();
+        $this->actingAsAdminUser(['training.access']);
 
         Livewire::test(MembershipEndorsementRelationManager::class, ['ownerRecord' => $positionGroup, 'pageClass' => ViewWaitingList::class])
             ->assertTableActionHidden('create');
@@ -29,7 +29,7 @@ class EndorsementCreationRelationManagerTest extends BaseAdminTestCase
         $positionGroup = PositionGroup::factory()->create();
         $accountToEndorse = Account::factory()->create();
 
-        $this->actingAsAdminUser(['endorsement.create.*']);
+        $this->actingAsAdminUser(['training.access', 'endorsement.create.*']);
 
         Livewire::test(MembershipEndorsementRelationManager::class, ['ownerRecord' => $positionGroup, 'pageClass' => ViewWaitingList::class])
             ->assertTableActionExists('create')
@@ -48,7 +48,7 @@ class EndorsementCreationRelationManagerTest extends BaseAdminTestCase
     {
         $positionGroup = PositionGroup::factory()->create();
 
-        $this->actingAsAdminUser(['endorsement.create.*']);
+        $this->actingAsAdminUser(['training.access', 'endorsement.create.*']);
 
         Livewire::test(MembershipEndorsementRelationManager::class, ['ownerRecord' => $positionGroup, 'pageClass' => ViewWaitingList::class])
             ->assertTableActionVisible('create')

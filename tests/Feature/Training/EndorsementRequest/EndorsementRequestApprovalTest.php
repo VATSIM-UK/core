@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Feature\Admin\EndorsementRequest;
+namespace Tests\Feature\Training\EndorsementRequest;
 
-use App\Filament\Admin\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
+use App\Filament\Training\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
@@ -23,6 +23,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
     {
         parent::setUp();
 
+        $this->adminUser->givePermissionTo('training.access');
         $this->adminUser->givePermissionTo('endorsement-request.access');
 
         Notification::fake();

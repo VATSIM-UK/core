@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Feature\Admin\SoloEndorsement\Pages;
+namespace Tests\Feature\Training\SoloEndorsement\Pages;
 
-use App\Filament\Admin\Resources\SoloEndorsements\Pages\ListSoloEndorsements;
+use App\Filament\Training\Resources\SoloEndorsements\Pages\ListSoloEndorsements;
 use App\Models\Atc\Position;
 use App\Models\Mship\Account\Endorsement;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -17,6 +17,7 @@ class ListSoloEndorsementPageTest extends BaseAdminTestCase
     {
         parent::setUp();
 
+        $this->adminUser->givePermissionTo('training.access');
         Livewire::actingAs($this->adminUser);
     }
 

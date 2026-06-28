@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Admin\EndorsementRequest;
+namespace Tests\Feature\Training\EndorsementRequest;
 
-use App\Filament\Admin\Resources\EndorsementRequests\Pages\CreateEndorsementRequest;
-use App\Filament\Admin\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
+use App\Filament\Training\Resources\EndorsementRequests\Pages\CreateEndorsementRequest;
+use App\Filament\Training\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
@@ -27,7 +27,7 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
             'endorsable_type' => PositionGroup::class,
         ]);
 
-        $this->actingAsAdminUser('endorsement-request.access');
+        $this->actingAsAdminUser(['training.access', 'endorsement-request.access']);
 
         Livewire::test(ListEndorsementRequests::class)
             ->assertSuccessful()
@@ -37,7 +37,7 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
 
     public function test_create_not_visible_when_no_create_permission()
     {
-        $this->actingAsAdminUser('endorsement-request.access');
+        $this->actingAsAdminUser(['training.access', 'endorsement-request.access']);
 
         Livewire::test(ListEndorsementRequests::class)
             ->assertDontSee('New endorsement request');
@@ -45,7 +45,7 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
 
     public function test_create_visible_when_create_permission()
     {
-        $this->actingAsAdminUser(['endorsement-request.access', 'endorsement-request.create.*']);
+        $this->actingAsAdminUser(['training.access', 'endorsement-request.access', 'endorsement-request.create.*']);
 
         Livewire::test(ListEndorsementRequests::class)
             ->assertSee('New endorsement request');
@@ -53,7 +53,7 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
 
     public function test_cannot_create_endorsement_request_for_position_group_without_permission()
     {
-        $this->actingAsAdminUser('endorsement-request.access');
+        $this->actingAsAdminUser(['training.access', 'endorsement-request.access']);
 
         Livewire::test(CreateEndorsementRequest::class)
             ->assertForbidden();
@@ -64,7 +64,7 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
         $accountRequestingFor = Account::factory()->create();
         $positionGroup = PositionGroup::factory()->create();
 
-        $this->actingAsAdminUser(['endorsement-request.access', 'endorsement-request.create.*']);
+        $this->actingAsAdminUser(['training.access', 'endorsement-request.access', 'endorsement-request.create.*']);
         Livewire::test(CreateEndorsementRequest::class)
             // check if the position group is visible
             ->set('data.endorsable_type', 'App\Models\Atc\PositionGroup')
@@ -126,7 +126,7 @@ class EndorsementRequestCreateTest extends BaseAdminTestCase
 
         $userWithoutPermission = Account::factory()->create();
 
-        $this->actingAsAdminUser(['endorsement-request.access', 'endorsement-request.create.*', 'endorsement-request.approve.*']);
+        $this->actingAsAdminUser(['training.access', 'endorsement-request.access', 'endorsement-request.create.*', 'endorsement-request.approve.*']);
 
         Livewire::test(CreateEndorsementRequest::class)
             ->set('data.endorsable_type', 'App\Models\Atc\PositionGroup')
