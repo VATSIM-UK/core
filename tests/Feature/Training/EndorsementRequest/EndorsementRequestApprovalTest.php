@@ -13,9 +13,9 @@ use App\Notifications\Mship\Endorsement\TierEndorsementNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
-use Tests\Feature\Admin\BaseAdminTestCase;
+use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
-class EndorsementRequestApprovalTest extends BaseAdminTestCase
+class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
 {
     use DatabaseTransactions;
 
@@ -23,8 +23,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
     {
         parent::setUp();
 
-        $this->adminUser->givePermissionTo('training.access');
-        $this->adminUser->givePermissionTo('endorsement-request.access');
+        $this->panelUser->givePermissionTo('endorsement-request.access');
 
         Notification::fake();
     }

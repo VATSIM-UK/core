@@ -8,9 +8,9 @@ use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire;
-use Tests\Feature\Admin\BaseAdminTestCase;
+use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
-class EndorsementCreationRelationManagerTest extends BaseAdminTestCase
+class EndorsementCreationRelationManagerTest extends BaseTrainingPanelTestCase
 {
     use DatabaseTransactions;
 
@@ -18,7 +18,7 @@ class EndorsementCreationRelationManagerTest extends BaseAdminTestCase
     {
         $positionGroup = PositionGroup::factory()->create();
 
-        $this->actingAsAdminUser(['training.access']);
+        $this->actingAs($this->panelUser);
 
         Livewire::test(MembershipEndorsementRelationManager::class, ['ownerRecord' => $positionGroup, 'pageClass' => ViewWaitingList::class])
             ->assertTableActionHidden('create');
@@ -48,7 +48,8 @@ class EndorsementCreationRelationManagerTest extends BaseAdminTestCase
     {
         $positionGroup = PositionGroup::factory()->create();
 
-        $this->actingAsAdminUser(['training.access', 'endorsement.create.*']);
+        $this->actingAs($this->panelUser);
+        $this->panelUser->givePermissionTo('endorsement.create.*');
 
         Livewire::test(MembershipEndorsementRelationManager::class, ['ownerRecord' => $positionGroup, 'pageClass' => ViewWaitingList::class])
             ->assertTableActionVisible('create')
