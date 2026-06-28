@@ -32,10 +32,18 @@
 		</div>
 	@else
 		<div class="hidden lg:!block">
-			@include('livewire.training.availability-gantt-desktop', ['students' => $this->pagedStudents])
+			@include('livewire.training.availability-gantt-desktop', [
+				'students' => $this->pagedStudents,
+				'hours' => $hours,
+				'nowLinePercent' => $nowLinePercent,
+			])
 		</div>
 		<div class="block lg:!hidden">
-			@include('livewire.training.availability-gantt-mobile', ['students' => $this->pagedStudents])
+			@include('livewire.training.availability-gantt-mobile', [
+				'students' => $this->pagedStudents,
+				'hours' => $hours,
+				'nowLinePercent' => $nowLinePercent,
+			])
 		</div>
 
 		{{-- Page Arrows --}}

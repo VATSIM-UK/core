@@ -459,4 +459,63 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         $this->assertTrue($students->first()->id === $olderStudent->id);
         $this->assertTrue($students->last()->id === $recentStudent->id);
     }
+
+    #[Test]
+    public function availability_gantt_shows_now_line_when_viewing_today(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(14, 30));
+
+        $student = Member::factory()->create();
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Availability::factory()->create([
+            'student_id' => $student->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '10:00:00',
+            'to' => '18:00:00',
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertSeeHtml('data-gantt-now-line');
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function availability_gantt_does_not_show_now_line_when_viewing_a_future_date(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(14, 30));
+
+        $student = Member::factory()->create();
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Availability::factory()->create([
+            'student_id' => $student->id,
+            'date' => Carbon::tomorrow()->format('Y-m-d'),
+            'from' => '10:00:00',
+            'to' => '18:00:00',
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->call('nextDay')
+            ->assertDontSeeHtml('data-gantt-now-line');
+
+        Carbon::setTestNow();
+    }
 }

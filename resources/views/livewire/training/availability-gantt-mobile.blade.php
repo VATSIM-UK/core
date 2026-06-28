@@ -64,6 +64,11 @@
 					@endforeach
 				</div>
 
+				@if ($nowLinePercent !== null)
+					<div class="absolute inset-x-0 z-30 pointer-events-none" data-gantt-now-line
+						style="top: calc({{ $nowLinePercent }}% - 1px); height: 2px; background-color: #ef4444;"></div>
+				@endif
+
 				@foreach ($students as $student)
 					<div
 						class="flex-1 min-w-[140px] relative bg-inherit group hover:bg-gray-50/50 dark:hover:bg-white/5 transition duration-75">
