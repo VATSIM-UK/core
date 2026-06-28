@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Training;
 
+use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
 use App\Filament\Training\Pages\Mentor\MentoringHistory;
 use App\Models\Cts\Availability;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Session;
 use App\Services\Training\MentoringAnnouncementService;
 use App\Services\Training\MentoringReportService;
@@ -22,6 +24,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -32,9 +35,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
+use Spatie\CalendarLinks\Link;
 
 class AcceptedMentoringSessionsTable extends Component implements HasActions, HasForms, HasTable
 {
+    use AddToCalendar;
     use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
@@ -95,6 +100,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->url(fn (Session $record): string => ConductMentoringSession::getUrl(['sessionId' => $record->id]))
                     ->visible(fn (Session $record): bool => auth()->user()?->can('conduct', $record) ?? false),
 
+                $this->getCalendarActionGroup(),
+
                 ActionGroup::make([
                     ActionGroup::make([
                         $this->postMentoringSessionAnnouncementAction(),
@@ -110,6 +117,31 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->tooltip('Session Actions'),
             ])
             ->emptyStateHeading('No upcoming mentoring sessions found');
+    }
+
+    protected function getOverlappingBooking(Get $get, Session $session): Session|ExamBooking|null
+    {
+        $takenFrom = $get('taken_from');
+        $takenTo = $get('taken_to');
+        $availId = $get('selected_availability_id');
+
+        if (! $takenFrom || ! $takenTo || ! $availId) {
+            return null;
+        }
+
+        $availability = Availability::find($availId);
+
+        if (! $availability) {
+            return null;
+        }
+
+        return app(MentoringSessionsService::class)->checkForOverlappingBookings(
+            $session->position,
+            $availability->date,
+            $takenFrom,
+            $takenTo,
+            $session->id
+        );
     }
 
     protected function generateTimeOptions(?string $minTime = null, ?string $maxTime = null): array
@@ -249,7 +281,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
             ->color('warning')
             ->modalHeading(fn (Session $record) => "Reschedule Session: {$record->student->name}")
             ->modalSubmitActionLabel('Reschedule Session')
-            ->form([
+            ->form(fn (Session $record) => [
                 Select::make('selected_availability_id')
                     ->label('Student Availability Slot')
                     ->required()
@@ -325,6 +357,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->required()
                         ->searchable()
                         ->allowHtml(false)
+                        ->live()
                         ->optionsLimit(100)
                         ->options(function (Get $get) {
                             if (! $availId = $get('selected_availability_id')) {
@@ -351,6 +384,34 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                                 ->toArray();
                         }),
                 ]),
+
+                Callout::make('overlapping_booking')
+                    ->heading(function (Get $get) use ($record) {
+                        $overlap = $this->getOverlappingBooking($get, $record);
+
+                        if (! $overlap) {
+                            return '';
+                        }
+
+                        return $overlap instanceof Session ? 'Overlapping Session Detected' : 'Overlapping Exam Detected';
+                    })
+                    ->description(function (Get $get) use ($record) {
+                        $overlap = $this->getOverlappingBooking($get, $record);
+
+                        if (! $overlap) {
+                            return '';
+                        }
+
+                        $type = $overlap instanceof Session ? 'session' : 'exam';
+                        $from = $overlap->taken_from;
+                        $to = $overlap->taken_to;
+
+                        return "There is already a {$type} booked on this position from {$from} to {$to}.";
+                    })
+                    ->danger()
+                    ->visible(function (Get $get) use ($record) {
+                        return $this->getOverlappingBooking($get, $record) !== null;
+                    }),
             ])
             ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
                 $availability = Availability::find($data['selected_availability_id']);
@@ -434,6 +495,32 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->send();
                 }
             });
+    }
+
+    protected function buildCalendarLinkObject(mixed $record): Link
+    {
+        \assert($record instanceof Session);
+
+        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
+        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
+        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
+
+        if ($end->lte($start)) {
+            $end->addDay();
+        }
+
+        $mentorName = $record->mentor?->name ?? 'Unknown';
+
+        return Link::create("Mentoring Session - {$record->position}", $start, $end)
+            ->description("Position: {$record->position}\nMentor: {$mentorName}")
+            ->address($record->position);
+    }
+
+    protected function getCalendarIcsFilename(mixed $record): string
+    {
+        \assert($record instanceof Session);
+
+        return 'mentoring-session-'.str($record->position)->slug();
     }
 
     public function render()

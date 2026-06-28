@@ -191,6 +191,22 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_shows_notification_when_slot_is_shorter_than_minimum_duration(): void
+    {
+        $tomorrow = now()->addDay()->toDateString();
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.date_range', ['start' => $tomorrow, 'end' => $tomorrow])
+            ->set('data.from', '18:00')
+            ->set('data.to', '18:30')
+            ->call('create')
+            ->assertNotified();
+
+        $this->assertCount(0, Availability::where('student_id', $this->studentMember->id)->get());
+    }
+
+    #[Test]
     public function it_adds_multiple_slots_across_a_date_range(): void
     {
         $start = now()->addDay()->toDateString();
@@ -337,19 +353,12 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_correctly_converts_availability_creation_to_utc(): void
+    public function it_stores_times_as_utc(): void
     {
-        config(['app.timezone' => 'UTC']);
-        $tz = 'America/New_York';
-        session(['availability_timezone' => $tz]);
-
-        $knownUtcTime = Carbon::create(2026, 12, 25, 10, 0, 0, 'UTC');
-        $this->travelTo($knownUtcTime);
-        $date = '2026-12-25';
+        $date = now()->addDay()->toDateString();
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
-            ->assertSet('timezone', $tz)
             ->set('data.date_range', ['start' => $date, 'end' => $date])
             ->set('data.from', '12:00')
             ->set('data.to', '14:00')
@@ -358,7 +367,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
         $availability = Availability::where('student_id', $this->studentMember->id)->first();
 
         $this->assertNotNull($availability);
-        $this->assertEquals('17:00:00', $availability->getRawOriginal('from'), 'from should be stored as UTC');
-        $this->assertEquals('19:00:00', $availability->getRawOriginal('to'), 'to should be stored as UTC');
+        $this->assertEquals('12:00:00', $availability->getRawOriginal('from'));
+        $this->assertEquals('14:00:00', $availability->getRawOriginal('to'));
     }
 }

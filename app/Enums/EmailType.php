@@ -8,6 +8,7 @@ enum EmailType: string
     case SessionAcceptedByMentor = 'session_accepted_by_mentor';
     case SessionCancelledByMentor = 'session_cancelled_by_mentor';
     case SessionRescheduledByMentor = 'session_rescheduled_by_mentor';
+    case SessionCancelledByStudent = 'session_cancelled_by_student';
 
     // Student - Exams
     case ExamAccepted = 'exam_accepted';
@@ -29,6 +30,7 @@ enum EmailType: string
             self::SessionAcceptedByMentor => 'Mentor accepts session',
             self::SessionCancelledByMentor => 'Mentor cancels session',
             self::SessionRescheduledByMentor => 'Mentor reschedules session',
+            self::SessionCancelledByStudent => 'Student cancels session',
 
             // Student - Exams
             self::ExamAccepted => 'Exam accepted',
@@ -52,6 +54,7 @@ enum EmailType: string
             self::SessionAcceptedByMentor => 'Sent when a mentor accepts your session request',
             self::SessionCancelledByMentor => 'Sent when a mentor cancels your session',
             self::SessionRescheduledByMentor => 'Sent when a mentor reschedules your session',
+            self::SessionCancelledByStudent => 'Sent when you cancel your own session',
 
             // Student - Exams
             self::ExamAccepted => 'Sent when an examiner accepts your exam request',
@@ -74,6 +77,7 @@ enum EmailType: string
             self::SessionAcceptedByMentor,
             self::SessionCancelledByMentor,
             self::SessionRescheduledByMentor,
+            self::SessionCancelledByStudent,
             self::ExamAccepted,
             self::ExamCancelled => 'Student',
 

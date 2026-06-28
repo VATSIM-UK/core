@@ -25,7 +25,7 @@
 						@endphp
 
 						@if ($student->pending_position)
-							<div class="mt-0.5">
+							<div class="mt-0.5 shrink-0 max-w-full overflow-visible">
 								<x-filament::badge :color="$badgeColor" size="sm">
 									{{ $student->pending_position }}
 								</x-filament::badge>

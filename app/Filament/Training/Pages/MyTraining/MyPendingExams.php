@@ -2,6 +2,7 @@
 
 namespace App\Filament\Training\Pages\MyTraining;
 
+use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Services\Training\CancelPendingExamService;
@@ -15,9 +16,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Spatie\CalendarLinks\Link;
 
 class MyPendingExams extends Page implements HasTable
 {
+    use AddToCalendar;
     use InteractsWithTable;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
@@ -81,6 +84,8 @@ class MyPendingExams extends Page implements HasTable
                     ->placeholder('Not yet scheduled'),
             ])
             ->actions([
+                $this->getCalendarActionGroup()
+                    ->visible(fn (ExamBooking $record) => $record->taken),
                 ActionGroup::make([
                     Action::make('cancelExamRequest')
                         ->label('Cancel Exam')
@@ -112,5 +117,25 @@ class MyPendingExams extends Page implements HasTable
             ->paginated(false)
             ->emptyStateHeading('No pending exam requests')
             ->emptyStateDescription('You have no pending exam requests.');
+    }
+
+    protected function buildCalendarLinkObject(mixed $record): Link
+    {
+        \assert($record instanceof ExamBooking);
+
+        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
+        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
+        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
+
+        return Link::create("Practical Exam - {$record->exam}", $start, $end)
+            ->description("Exam Type: {$record->exam}\nPosition: {$record->position_1}")
+            ->address($record->position_1 ?? '');
+    }
+
+    protected function getCalendarIcsFilename(mixed $record): string
+    {
+        \assert($record instanceof ExamBooking);
+
+        return 'practical-exam-'.str($record->exam)->slug();
     }
 }

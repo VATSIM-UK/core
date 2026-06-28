@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Training\Mentoring;
 
 use App\Models\Cts\Availability;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
@@ -12,7 +13,9 @@ use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionCancelledByStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentConfirmationNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionReallocatedNewMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionReallocatedOldMentorNotification;
@@ -470,6 +473,109 @@ class MentoringSessionsServiceTest extends TestCase
     }
 
     #[Test]
+    public function cancel_session_by_student_marks_session_as_cancelled(): void
+    {
+        Notification::fake();
+
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'cancelled_datetime' => null,
+        ]);
+
+        $this->assertTrue($this->service->cancelSession($session->id, 'Unable to attend.', $this->studentAccount));
+
+        $this->assertNotNull($session->fresh()->cancelled_datetime);
+    }
+
+    #[Test]
+    public function cancel_session_by_student_inserts_cancel_reason_record_with_student_id(): void
+    {
+        Notification::fake();
+
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+        ]);
+
+        $reason = 'Student has a prior commitment.';
+
+        $this->service->cancelSession($session->id, $reason, $this->studentAccount);
+
+        $this->assertDatabaseHas('cancel_reason', [
+            'sesh_id' => $session->id,
+            'sesh_type' => 'ME',
+            'reason' => $reason,
+            'reason_by' => $this->studentMember->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function cancel_session_by_student_creates_new_pending_session_request(): void
+    {
+        Notification::fake();
+
+        $session = Session::factory()->create([
+            'rts_id' => 42,
+            'position' => 'EGLL_APP',
+            'progress_sheet_id' => 7,
+            'student_id' => $this->studentMember->id,
+            'student_rating' => 3,
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+        ]);
+
+        $this->service->cancelSession(
+            $session->id,
+            'Unable to attend.',
+            $this->studentAccount,
+        );
+
+        $newPending = Session::query()
+            ->where('student_id', $this->studentMember->id)
+            ->whereNull('mentor_id')
+            ->whereNull('cancelled_datetime')
+            ->where('id', '!=', $session->id)
+            ->latest('id')
+            ->first();
+
+        $this->assertNotNull($newPending);
+        $this->assertSame(42, $newPending->rts_id);
+        $this->assertSame('EGLL_APP', $newPending->position);
+        $this->assertSame(7, $newPending->progress_sheet_id);
+        $this->assertSame(3, $newPending->student_rating);
+        $this->assertNotNull($newPending->request_time);
+    }
+
+    #[Test]
+    public function cancel_session_by_student_sends_correct_notifications(): void
+    {
+        Notification::fake();
+
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $this->assertTrue($this->service->cancelSession(
+            $session->id,
+            'Unable to attend.',
+            $this->studentAccount,
+        ));
+
+        Notification::assertSentTo($this->mentorAccount, MentoringSessionCancelledByStudentNotification::class);
+        Notification::assertSentTo($this->studentAccount, MentoringSessionCancelledStudentConfirmationNotification::class);
+        Notification::assertNotSentTo($this->studentAccount, MentoringSessionCancelledStudentNotification::class);
+        Notification::assertNotSentTo($this->mentorAccount, MentoringSessionCancelledMentorNotification::class);
+    }
+
+    #[Test]
     public function reallocate_session_updates_mentor_id(): void
     {
         Notification::fake();
@@ -561,5 +667,136 @@ class MentoringSessionsServiceTest extends TestCase
         Notification::assertSentTo($this->studentAccount, MentoringSessionReallocatedStudentNotification::class);
         Notification::assertSentTo($this->mentorAccount, MentoringSessionReallocatedOldMentorNotification::class);
         Notification::assertSentTo($newMentorAccount, MentoringSessionReallocatedNewMentorNotification::class);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_returns_null_when_no_overlap(): void
+    {
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            'EGLL_APP',
+            Carbon::tomorrow()->format('Y-m-d'),
+            '14:00',
+            '16:00',
+        );
+
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_returns_session_when_overlap_exists(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            'EGLL_APP',
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+        );
+
+        $this->assertInstanceOf(Session::class, $result);
+        $this->assertSame('10:00:00', $result->taken_from);
+        $this->assertSame('12:00:00', $result->taken_to);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_returns_exam_when_overlap_exists(): void
+    {
+        ExamBooking::factory()->create([
+            'position_1' => 'EGLL_APP',
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            'EGLL_APP',
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+        );
+
+        $this->assertInstanceOf(ExamBooking::class, $result);
+        $this->assertSame('10:00:00', $result->taken_from);
+        $this->assertSame('12:00:00', $result->taken_to);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_ignores_session_when_ignore_id_is_provided(): void
+    {
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            'EGLL_APP',
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+            $session->id,
+        );
+
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_returns_session_when_both_session_and_exam_overlap(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        ExamBooking::factory()->create([
+            'position_1' => 'EGLL_APP',
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            'EGLL_APP',
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+        );
+
+        $this->assertInstanceOf(Session::class, $result);
     }
 }
